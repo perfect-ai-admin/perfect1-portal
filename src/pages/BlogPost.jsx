@@ -4,12 +4,10 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowRight, Clock, User, Calendar, Share2, MessageCircle, Phone, RefreshCw } from 'lucide-react';
+import { ArrowRight, Clock, User, Calendar, Share2, MessageCircle, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SEOOptimized from './SEOOptimized';
 import LeadForm from '../components/forms/LeadForm';
-import InternalLinker from '../components/seo/InternalLinker';
-import FAQSchema from '../components/seo/FAQSchema';
 
 export default function BlogPost() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -22,33 +20,6 @@ export default function BlogPost() {
   });
 
   const post = posts[0];
-
-  // Extract FAQs from content if exists
-  const extractFAQs = (content) => {
-    if (!content) return [];
-    const faqs = [];
-    const lines = content.split('\n');
-    
-    for (let i = 0; i < lines.length - 1; i++) {
-      const line = lines[i].trim();
-      const nextLine = lines[i + 1]?.trim();
-      
-      // Check if line is a question (contains ?)
-      if (line.includes('?') && nextLine && !nextLine.includes('?')) {
-        // Remove HTML tags
-        const question = line.replace(/<[^>]*>/g, '').trim();
-        const answer = nextLine.replace(/<[^>]*>/g, '').trim();
-        
-        if (question.length > 10 && answer.length > 20) {
-          faqs.push({ question, answer });
-        }
-      }
-    }
-    
-    return faqs.slice(0, 10); // Max 10 FAQs
-  };
-
-  const postFAQs = post ? extractFAQs(post.content) : [];
 
   const { data: relatedPosts = [] } = useQuery({
     queryKey: ['related-posts', post?.category],
@@ -82,12 +53,8 @@ export default function BlogPost() {
     }
   };
 
-  const wasRecentlyUpdated = post && post.updated_date && 
-    new Date(post.updated_date) > new Date(post.created_date);
-
   return (
     <>
-      {postFAQs.length > 0 && <FAQSchema faqs={postFAQs} />}
       <SEOOptimized
         title={post.meta_title || post.title}
         description={post.meta_description || post.excerpt}
@@ -137,12 +104,6 @@ export default function BlogPost() {
                     <Calendar className="w-4 h-4" />
                     <span>{new Date(post.created_date).toLocaleDateString('he-IL')}</span>
                   </div>
-                  {wasRecentlyUpdated && (
-                    <div className="flex items-center gap-2 bg-[#27AE60]/10 px-3 py-1 rounded-full">
-                      <RefreshCw className="w-4 h-4 text-[#27AE60]" />
-                      <span className="text-[#27AE60] font-bold">עודכן ב-{new Date(post.updated_date).toLocaleDateString('he-IL')}</span>
-                    </div>
-                  )}
                   {post.read_time && (
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4" />
@@ -171,7 +132,14 @@ export default function BlogPost() {
 
               {/* Content */}
               <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-12">
-                <InternalLinker content={post.content} />
+                <div 
+                  className="prose prose-lg max-w-none"
+                  style={{
+                    direction: 'rtl',
+                    fontFamily: 'Heebo, sans-serif'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }}
+                />
               </div>
 
               {/* CTA */}
