@@ -13,6 +13,9 @@ import Services from './pages/Services';
 import TechnicianLanding from './pages/TechnicianLanding';
 import UrgentInvoice from './pages/UrgentInvoice';
 import FreelancerLanding from './pages/FreelancerLanding';
+import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
+import PhotographerLanding from './pages/PhotographerLanding';
+import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -32,6 +35,9 @@ export const PAGES = {
     "TechnicianLanding": TechnicianLanding,
     "UrgentInvoice": UrgentInvoice,
     "FreelancerLanding": FreelancerLanding,
+    "GraphicDesignerLanding": GraphicDesignerLanding,
+    "PhotographerLanding": PhotographerLanding,
+    "FitnessTrainerLanding": FitnessTrainerLanding,
 }
 
 export const pagesConfig = {
