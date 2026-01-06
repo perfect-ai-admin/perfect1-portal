@@ -42,8 +42,8 @@ export default function UrgentInvoice() {
                   פותחים עוסק פטור <strong className="text-[#D4AF37]">מהיום להיום</strong> ומוציאים חשבונית כחוק
                 </p>
 
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
-                  <div className="grid grid-cols-2 gap-4 text-white">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/20">
+                  <div className="grid grid-cols-2 gap-3 text-white">
                     {[
                       { icon: CheckCircle, text: 'פתרון מיידי' },
                       { icon: Shield, text: 'חוקי 100%' },
@@ -52,7 +52,7 @@ export default function UrgentInvoice() {
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <item.icon className="w-5 h-5 text-[#27AE60]" />
-                        <span className="font-medium">{item.text}</span>
+                        <span className="font-semibold text-sm">{item.text}</span>
                       </div>
                     ))}
                   </div>
@@ -79,20 +79,21 @@ export default function UrgentInvoice() {
                 animate={{ opacity: 1, x: 0 }}
                 className="hidden lg:block"
               >
-                <LeadForm
-                  title="⚡ צריך חשבונית? השאר פרטים!"
-                  subtitle="נחזור אליך מיידית עם פתרון"
-                  sourcePage="דף דחוף - חשבונית"
-                  variant="card"
-                  compact={true}
-                />
+                <div className="bg-white rounded-2xl shadow-2xl p-6 border border-white/20">
+                 <h3 className="text-2xl font-black text-[#1E3A5F] mb-2 text-center">⚡ צריך חשבונית?</h3>
+                 <p className="text-gray-600 text-center mb-6">השאר פרטים - נחזור תוך דקות</p>
+                 <LeadForm
+                   sourcePage="דף דחוף - חשבונית"
+                   compact={true}
+                 />
+                </div>
               </motion.div>
             </div>
           </div>
         </section>
 
         {/* Pain Points */}
-        <section className="py-16 bg-white">
+        <section className="py-12 bg-white">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -138,7 +139,7 @@ export default function UrgentInvoice() {
         </section>
 
         {/* Solution */}
-        <section className="py-20 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -182,13 +183,12 @@ export default function UrgentInvoice() {
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="lg:hidden"
+                className="lg:hidden bg-white rounded-3xl shadow-xl p-6"
               >
+                <h3 className="text-2xl font-black text-[#1E3A5F] mb-2 text-center">⚡ צריך פתרון מיידי?</h3>
+                <p className="text-gray-600 text-center mb-6">השאר פרטים - נחזור תוך דקות</p>
                 <LeadForm
-                  title="⚡ צריך פתרון מיידי?"
-                  subtitle="השאר פרטים ונחזור אליך עכשיו"
                   sourcePage="דף דחוף - חשבונית"
-                  variant="card"
                 />
               </motion.div>
 
@@ -219,7 +219,7 @@ export default function UrgentInvoice() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 bg-gradient-to-br from-[#27AE60] to-[#229954]">
+        <section className="py-12 bg-gradient-to-br from-[#27AE60] to-[#229954]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -252,17 +252,7 @@ export default function UrgentInvoice() {
           </div>
         </section>
 
-        {/* Mobile Form */}
-        <section className="lg:hidden py-16 bg-white">
-          <div className="max-w-2xl mx-auto px-4">
-            <LeadForm
-              title="⚡ צריך חשבונית? פתרון מיידי!"
-              subtitle="השאר פרטים ונחזור אליך תוך דקות"
-              sourcePage="דף דחוף - חשבונית"
-              variant="card"
-            />
-          </div>
-        </section>
+
       </main>
     </>
   );
