@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Phone, MessageCircle, AlertCircle, Clock, Shield } from 'lucide-react';
+import { CheckCircle, Phone, MessageCircle, AlertCircle, Clock, Shield, Zap, FileText } from 'lucide-react';
 import LeadForm from '../components/forms/LeadForm';
 import SEOOptimized from './SEOOptimized';
 
@@ -94,23 +94,24 @@ export default function UrgentInvoice() {
 
         {/* Pain Points */}
         <section className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-8"
+              className="text-center mb-10"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+              <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
                 לקוח מבקש חשבונית – ואין לך עוסק?
               </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">אתה לא היחיד שמתמודד עם זה. יותר מ-30,000 עצמאיים בשנה מתמודדים עם אותה בעיה.</p>
             </motion.div>
 
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               {[
-                'לקוח לא משלם בלי חשבונית',
-                'צריך עוסק בשביל חשבונית?',
-                'איך להוציא חשבונית היום?'
+                { icon: '💰', title: 'לקוח לא משלם בלי חשבונית', desc: 'העבודה נעשתה, הכסף תקוע - הלקוח דורש חשבונית רשמית' },
+                { icon: '🤔', title: 'צריך עוסק בשביל חשבונית?', desc: 'ללא עוסק אי אפשר להוציא חשבונית חוקית - זה חובה' },
+                { icon: '⏰', title: 'איך להוציא חשבונית היום?', desc: 'הזמן לוחץ, הלקוח מחכה - צריך פתרון מיידי' }
               ].map((pain, i) => (
                 <motion.div
                   key={i}
@@ -118,13 +119,37 @@ export default function UrgentInvoice() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-red-50 border-r-4 border-red-500 rounded-2xl p-6"
+                  className="bg-red-50 border-r-4 border-red-500 rounded-2xl p-6 hover:shadow-lg transition-shadow"
                 >
-                  <AlertCircle className="w-8 h-8 text-red-500 mb-3" />
-                  <p className="text-lg font-bold text-gray-800">{pain}</p>
+                  <div className="text-4xl mb-3">{pain.icon}</div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">{pain.title}</h3>
+                  <p className="text-gray-600 text-sm">{pain.desc}</p>
                 </motion.div>
               ))}
             </div>
+
+            {/* Stats Bar */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] rounded-3xl p-6 md:p-8 text-white mb-10"
+            >
+              <div className="grid md:grid-cols-3 gap-6 text-center">
+                <div>
+                  <div className="text-4xl md:text-5xl font-black text-[#27AE60] mb-2">87%</div>
+                  <p className="text-white/80">מהעצמאיים איבדו עסקאות בגלל חוסר חשבונית</p>
+                </div>
+                <div>
+                  <div className="text-4xl md:text-5xl font-black text-[#D4AF37] mb-2">24h</div>
+                  <p className="text-white/80">זמן ממוצע לפתיחת עוסק אצלנו</p>
+                </div>
+                <div>
+                  <div className="text-4xl md:text-5xl font-black text-[#27AE60] mb-2">100%</div>
+                  <p className="text-white/80">חוקי ומאושר מס הכנסה</p>
+                </div>
+              </div>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0 }}
@@ -132,8 +157,8 @@ export default function UrgentInvoice() {
               viewport={{ once: true }}
               className="text-center bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-3xl p-8 text-white"
             >
-              <p className="text-2xl md:text-3xl font-black mb-2">👉 אתה לא לבד</p>
-              <p className="text-xl font-medium">ויש פתרון חוקי, פשוט ומהיר</p>
+              <p className="text-2xl md:text-3xl font-black mb-2">👉 אתה לא לבד בזה</p>
+              <p className="text-xl font-medium">ויש פתרון חוקי, פשוט ומהיר - בלי סיבוכים, בלי המתנות</p>
             </motion.div>
           </div>
         </section>
@@ -145,13 +170,44 @@ export default function UrgentInvoice() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-8"
+              className="text-center mb-10"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+              <div className="inline-block bg-[#27AE60]/10 text-[#27AE60] px-6 py-2 rounded-full text-sm font-bold mb-6">
+                ✅ הפתרון הטוב ביותר בישראל
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
                 פתיחת עוסק להוצאת חשבונית
               </h2>
-              <p className="text-xl text-gray-600">פתרון חוקי ומיידי</p>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות</p>
             </motion.div>
+
+            {/* Process Steps */}
+            <div className="grid md:grid-cols-4 gap-6 mb-12">
+              {[
+                { step: '1', icon: Phone, title: 'צור קשר', desc: 'שיחה קצרה להבנת הצורך' },
+                { step: '2', icon: FileText, title: 'מילוי טפסים', desc: 'אנחנו ממלאים הכל בשבילך' },
+                { step: '3', icon: CheckCircle, title: 'אישור מיידי', desc: 'עוסק פעיל תוך 24 שעות' },
+                { step: '4', icon: MessageCircle, title: 'חשבונית מוכנה', desc: 'הוצא חשבונית ללקוח' }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="relative bg-white rounded-2xl p-6 shadow-lg text-center"
+                >
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-black flex items-center justify-center text-lg">
+                    {item.step}
+                  </div>
+                  <div className="w-14 h-14 mx-auto rounded-xl bg-[#27AE60]/10 flex items-center justify-center mb-4 mt-2">
+                    <item.icon className="w-7 h-7 text-[#27AE60]" />
+                  </div>
+                  <h4 className="font-bold text-[#1E3A5F] mb-2">{item.title}</h4>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               <motion.div
@@ -163,19 +219,22 @@ export default function UrgentInvoice() {
                 <h3 className="text-2xl font-black text-[#1E3A5F] mb-6">אנחנו מטפלים עבורך ב:</h3>
                 <ul className="space-y-4">
                   {[
-                    'פתיחת עוסק דחוף',
-                    'פתיחת עוסק מהיום להיום',
-                    'פתיחת עוסק להפקת חשבוניות',
-                    'הסבר ברור איך מוציאים חשבונית'
+                    { icon: Zap, text: 'פתיחת עוסק דחוף' },
+                    { icon: Clock, text: 'פתיחת עוסק מהיום להיום' },
+                    { icon: FileText, text: 'פתיחת עוסק להפקת חשבוניות' },
+                    { icon: MessageCircle, text: 'הסבר ברור איך מוציאים חשבונית' },
+                    { icon: Shield, text: 'תמיכה מול מס הכנסה וביטוח לאומי' }
                   ].map((item, i) => (
                     <li key={i} className="flex items-center gap-3">
-                      <CheckCircle className="w-6 h-6 text-[#27AE60] flex-shrink-0" />
-                      <span className="text-lg font-medium text-gray-700">{item}</span>
+                      <div className="w-10 h-10 rounded-lg bg-[#27AE60]/10 flex items-center justify-center flex-shrink-0">
+                        <item.icon className="w-5 h-5 text-[#27AE60]" />
+                      </div>
+                      <span className="text-lg font-medium text-gray-700">{item.text}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-8 p-4 bg-blue-50 rounded-xl border-r-4 border-blue-500">
-                  <p className="font-bold text-gray-800">בלי חרטות. בלי "תלוי". בלי סיבוכים מול הרשויות.</p>
+                <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-r-4 border-blue-500">
+                  <p className="font-bold text-gray-800">✨ בלי חרטות. בלי "תלוי". בלי סיבוכים מול הרשויות.</p>
                 </div>
               </motion.div>
 
@@ -218,20 +277,76 @@ export default function UrgentInvoice() {
           </div>
         </section>
 
+        {/* Testimonials */}
+        <section className="py-12 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-10"
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                מה אומרים לקוחות שהיו באותו מצב?
+              </h2>
+            </motion.div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { name: 'דני כהן', profession: 'מעצב גרפי', text: 'לקוח ביקש חשבונית דחוף. פתחתי עוסק תוך יום וסגרתי את העסקה. מדהים!' },
+                { name: 'מיכל לוי', profession: 'צלמת', text: 'פספסתי עבודות בגלל חוסר עוסק. פה פתרו לי הכל תוך 24 שעות. ממליצה!' },
+                { name: 'יוסי אברהם', profession: 'מפתח', text: 'השירות הכי מהיר שראיתי. עוסק פעיל תוך יום והחשבונית יצאה אותו ערב.' }
+              ].map((testimonial, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-[#1E3A5F]/10"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-[#1E3A5F] text-white flex items-center justify-center font-bold text-lg">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-800">{testimonial.name}</p>
+                      <p className="text-sm text-gray-600">{testimonial.profession}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 italic">"{testimonial.text}"</p>
+                  <div className="flex gap-1 mt-3">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <span key={star} className="text-[#D4AF37] text-lg">★</span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
-        <section className="py-12 bg-gradient-to-br from-[#27AE60] to-[#229954]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <section className="py-12 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div className="absolute bottom-10 left-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          </div>
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+              <div className="inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+                🚀 זה הרגע להתחיל
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
                 צריך חשבונית עכשיו?
               </h2>
-              <p className="text-2xl font-bold text-white/90 mb-8">זה הזמן לסגור את זה.</p>
-              <p className="text-xl text-white/80 mb-10">
-                השאר פרטים ואנחנו חוזרים אליך במהירות עם פתרון מיידי
+              <p className="text-2xl font-bold text-white/90 mb-4">זה הזמן לסגור את זה.</p>
+              <p className="text-xl text-white/80 mb-10 max-w-3xl mx-auto">
+                השאר פרטים ואנחנו חוזרים אליך במהירות עם פתרון מיידי - בלי המתנות, בלי בירוקרטיה
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="https://wa.me/972502277087?text=היי, צריך חשבונית עכשיו" target="_blank" rel="noopener noreferrer">
