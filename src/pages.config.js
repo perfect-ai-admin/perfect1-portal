@@ -19,6 +19,7 @@ import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
 import CosmeticianLanding from './pages/CosmeticianLanding';
 import MakeupArtistLanding from './pages/MakeupArtistLanding';
+import PricingLanding from './pages/PricingLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -44,6 +45,7 @@ export const PAGES = {
     "ComputerTechnicianLanding": ComputerTechnicianLanding,
     "CosmeticianLanding": CosmeticianLanding,
     "MakeupArtistLanding": MakeupArtistLanding,
+    "PricingLanding": PricingLanding,
 }
 
 export const pagesConfig = {
