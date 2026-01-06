@@ -52,10 +52,28 @@ export default function OsekPaturOnlineLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור אונליין - 100% דיגיטלי מהבית | Perfect One"
-        description="פתיחת עוסק פטור אונליין בלי לצאת מהבית! תהליך מקוון לחלוטין - חתימה דיגיטלית, העלאת מסמכים מהנייד, וליווי מלא. מתחילים לעבוד חוקי תוך 24-48 שעות. 0502277087"
-        keywords="פתיחת עוסק פטור אונליין, פתיחת עוסק אונליין, פתיחת עוסק פטור דיגיטלי, פתיחת עוסק מהבית, פתיחת עוסק ללא יציאה מהבית"
+        title="פתיחת עוסק פטור אונליין - 100% דיגיטלי + ליווי מלא | Perfect One"
+        description="פתיחת עוסק פטור אונליין בלי לצאת מהבית! תהליך מקוון 100% - חתימה דיגיטלית, אפליקציה לניהול העסק, ליווי חודשי מלא והכנת דוח שנתי. ☎ 0502277087"
+        keywords="פתיחת עוסק פטור אונליין, פתיחת עוסק אונליין, פתיחת עוסק פטור דיגיטלי, פתיחת עוסק מהבית, פתיחת עוסק ללא יציאה מהבית, חתימה דיגיטלית עוסק פטור"
         canonical="https://perfect1.co.il/osek-patur-online"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "פתיחת עוסק פטור אונליין",
+          "description": "שירות פתיחת עוסק פטור אונליין 100% דיגיטלי כולל ליווי חודשי ודוח שנתי",
+          "provider": {
+            "@type": "Organization",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il",
+            "telephone": "+972-50-227-7087"
+          },
+          "areaServed": "IL",
+          "offers": {
+            "@type": "Offer",
+            "price": "249",
+            "priceCurrency": "ILS"
+          }
+        }}
       />
       <main className="pt-20 bg-[#F8F9FA]">
         {/* Hero Section */}
