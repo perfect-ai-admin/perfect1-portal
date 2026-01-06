@@ -25,7 +25,7 @@ export default function Header() {
 
   const services = [
     { name: 'פתיחת עוסק פטור', href: createPageUrl('OsekPaturLanding') },
-    { name: 'פתיחת עוסק אונליין', href: createPageUrl('ServicePage') + '?service=ptihat-osek-patur-online' },
+    { name: 'פתיחת עוסק אונליין', href: createPageUrl('OsekPaturOnlineLanding') },
     { name: 'ליווי חודשי', href: createPageUrl('ServicePage') + '?service=livui-chodshi' },
     { name: 'דוח שנתי', href: createPageUrl('ServicePage') + '?service=doch-shnati' },
     { name: '💰 כמה עולה לפתוח עוסק?', href: createPageUrl('PricingLanding') },
