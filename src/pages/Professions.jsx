@@ -31,6 +31,7 @@ export default function Professions() {
 
       {/* Professions Grid - Show All */}
       <ProfessionsGrid showAll={true} />
-    </main>
+      </main>
+    </>
   );
 }

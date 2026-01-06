@@ -127,6 +127,7 @@ export default function Pricing() {
 
       <FAQSection />
       <CTASection />
-    </main>
+      </main>
+    </>
   );
 }
