@@ -234,6 +234,36 @@ export default function ComputerTechnicianLanding() {
           </div>
         </section>
 
+        {/* Mid-Page Strong CTA */}
+        <section className="py-12 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+            >
+              <div className="inline-block bg-[#27AE60]/20 backdrop-blur-sm text-[#27AE60] px-6 py-2 rounded-full text-sm font-bold mb-6 border border-[#27AE60]/30">
+                ⏰ זה הזמן לפעול
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
+                מוכן להתחיל לעבוד חוקית?
+              </h2>
+              <p className="text-xl text-white/90 mb-8">
+                השאר פרטים עכשיו ונחזור אליך תוך שעות עם כל המידע
+              </p>
+              <Button 
+                onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
+                size="lg" 
+                className="h-20 px-12 text-2xl font-black rounded-3xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl"
+              >
+                <Wrench className="ml-3 w-7 h-7" />
+                כן, אני רוצה לפתוח עוסק!
+              </Button>
+              <p className="text-white/80 mt-4">✨ ללא התחייבות • שיחה קצרה • הסבר ברור</p>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Solution Section */}
         <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
