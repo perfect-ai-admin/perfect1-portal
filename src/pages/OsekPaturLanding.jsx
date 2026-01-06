@@ -135,9 +135,9 @@ export default function OsekPaturLanding() {
                     {[
                       'פתיחת תיק עוסק פטור',
                       'טיפול מול כל הרשויות',
-                      'ליווי אישי וזמין',
-                      'התחלה חוקית ושקט נפשי',
-                      'אפשרות להמשך ליווי שנתי'
+                      'אפליקציה לניהול העסק',
+                      'ליווי שוטף + הכנת דוח שנתי',
+                      'תמיכה אישית וזמינה'
                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3">
                         <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
@@ -232,12 +232,12 @@ export default function OsekPaturLanding() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { icon: FileText, title: 'פתיחת עוסק פטור אונליין', desc: 'כל התהליך מתבצע בצורה דיגיטלית - בלי ריצות' },
+                { icon: FileText, title: 'פתיחת עוסק פטור', desc: 'כל התהליך מתבצע בליווי מלא - בלי ריצות' },
                 { icon: Users, title: 'טיפול מול כל הרשויות', desc: 'מס הכנסה, מע"מ וביטוח לאומי - אנחנו מטפלים בהכל' },
-                { icon: MessageCircle, title: 'ליווי אישי והסברים פשוטים', desc: 'תמיד יש עם מי לדבר, בשפה פשוטה וברורה' },
-                { icon: Zap, title: 'הכול נעשה עבורך', desc: 'אתה לא צריך להבין בירוקרטיה - אנחנו כן' },
-                { icon: Shield, title: 'מחיר ברור וללא הפתעות', desc: 'שקיפות מלאה - אתה יודע בדיוק מה אתה משלם' },
-                { icon: TrendingUp, title: 'התחלה נכונה', desc: 'מתחילים בצורה חוקית ומסודרת מהיום הראשון' }
+                { icon: Smartphone, title: 'אפליקציה לניהול העסק', desc: 'מערכת דיגיטלית לניהול הכנסות, הוצאות והפקת קבלות' },
+                { icon: TrendingUp, title: 'ליווי חודשי מלא', desc: 'ליווי שוטף מול הרשויות ומענה לכל שאלה' },
+                { icon: FileText, title: 'הכנת דוח שנתי', desc: 'אנחנו מכינים ומגישים את הדוח השנתי בשבילך' },
+                { icon: Shield, title: 'שקט נפשי מלא', desc: 'עובדים חוקית ומסודרים מהיום הראשון' }
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -250,8 +250,8 @@ export default function OsekPaturLanding() {
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center mb-4">
                     <item.icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
+                  <h3 className="text-xl font-bold text-[#1E3A5F] mb-2 leading-tight">{item.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -311,10 +311,10 @@ export default function OsekPaturLanding() {
                 {[
                   'פתיחת תיק עוסק פטור',
                   'טיפול מלא מול כל הרשויות',
-                  'ליווי אישי וזמין',
-                  'התחלה חוקית ושקט נפשי',
-                  'בלי ריצות, בלי בירוקרטיה',
-                  'אפשרות להמשך ליווי שנתי'
+                  'אפליקציה לניהול הכנסות והוצאות',
+                  'ליווי חודשי מלא',
+                  'הכנת והגשת דוח שנתי',
+                  'תמיכה אישית ושקט נפשי'
                 ].map((item, i) => (
                   <motion.li
                     key={i}

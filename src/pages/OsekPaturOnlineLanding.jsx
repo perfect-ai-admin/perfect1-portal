@@ -89,17 +89,23 @@ export default function OsekPaturOnlineLanding() {
                   <strong className="text-[#D4AF37]">תהליך מקוון לחלוטין - פשוט, מהיר וחוקי</strong>
                 </p>
 
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
-                  <div className="grid grid-cols-2 gap-4 text-white">
+                <div className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-8 border-2 border-white/40 shadow-2xl">
+                  <div className="text-center mb-4">
+                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-2">
+                      <Monitor className="w-5 h-5 text-white" />
+                      <span className="text-white text-sm font-black">100% דיגיטלי</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-white">
                     {[
-                      { icon: Monitor, text: '100% אונליין' },
                       { icon: Smartphone, text: 'מהנייד שלך' },
                       { icon: Lock, text: 'חתימה דיגיטלית' },
+                      { icon: Wifi, text: 'בלי לצאת מהבית' },
                       { icon: Clock, text: 'תוך 24-48 שעות' }
                     ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <item.icon className="w-5 h-5 text-[#27AE60]" />
-                        <span className="font-semibold text-sm">{item.text}</span>
+                      <div key={i} className="flex items-center gap-2 bg-white/10 rounded-xl p-3">
+                        <item.icon className="w-5 h-5 text-white" />
+                        <span className="font-bold text-sm">{item.text}</span>
                       </div>
                     ))}
                   </div>
@@ -135,9 +141,9 @@ export default function OsekPaturOnlineLanding() {
                     {[
                       'פתיחה דיגיטלית 100%',
                       'חתימה מאובטחת אונליין',
-                      'העלאת מסמכים מהנייד',
-                      'מעקב סטטוס בזמן אמת',
-                      'ללא צורך להגיע פיזית',
+                      'אפליקציה לניהול העסק',
+                      'ליווי חודשי מלא',
+                      'הכנת דוח שנתי',
                       'תמיכה בוואטסאפ 24/7'
                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3">
@@ -236,9 +242,9 @@ export default function OsekPaturOnlineLanding() {
                 { icon: Smartphone, title: 'מילוי טופס מקוון', desc: 'כל הפרטים מתמלאים בצורה נוחה מהנייד או מהמחשב' },
                 { icon: FileText, title: 'העלאת מסמכים דיגיטלית', desc: 'צילום תעודת זהות ואישור בנק - ישירות מהטלפון' },
                 { icon: Lock, title: 'חתימה דיגיטלית מאובטחת', desc: 'חותמים על המסמכים בצורה מאובטחת ומוכרת חוקית' },
-                { icon: Zap, title: 'אנחנו מגישים את הבקשות', desc: 'אנחנו מטפלים בכל ההגשות מול הרשויות' },
-                { icon: Clock, title: 'מעקב בזמן אמת', desc: 'עדכונים שוטפים על התקדמות התהליך' },
-                { icon: CheckCircle, title: 'קבלת אישורים למייל', desc: 'כל האישורים מגיעים ישירות למייל שלך' }
+                { icon: Monitor, title: 'אפליקציה דיגיטלית לניהול', desc: 'מערכת אונליין לניהול הכנסות, הוצאות והפקת קבלות' },
+                { icon: Users, title: 'ליווי חודשי מלא', desc: 'ליווי שוטף מול הרשויות והכנת דוח שנתי' },
+                { icon: CheckCircle, title: 'הכל מהבית - 100% אונליין', desc: 'כל התהליך והליווי - דיגיטלי לחלוטין' }
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -310,12 +316,12 @@ export default function OsekPaturOnlineLanding() {
             <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl shadow-xl p-8 md:p-10 border-2 border-[#3498DB]/10">
               <ul className="grid md:grid-cols-2 gap-6">
                 {[
-                  'תהליך מקוון לחלוטין',
+                  'תהליך מקוון לחלוטין - 100% אונליין',
                   'חתימה דיגיטלית מאובטחת',
-                  'העלאת מסמכים מהנייד',
-                  'מעקב סטטוס בזמן אמת',
-                  'ללא צורך להגיע פיזית',
-                  'תמיכה בוואטסאפ 24/7'
+                  'אפליקציה דיגיטלית לניהול העסק',
+                  'ליווי חודשי מלא כלול',
+                  'הכנת והגשת דוח שנתי',
+                  'תמיכה מלאה בוואטסאפ'
                 ].map((item, i) => (
                   <motion.li
                     key={i}
