@@ -28,6 +28,7 @@ export default function Header() {
     { name: 'פתיחת עוסק אונליין', href: createPageUrl('ServicePage') + '?service=ptihat-osek-patur-online' },
     { name: 'ליווי חודשי', href: createPageUrl('ServicePage') + '?service=livui-chodshi' },
     { name: 'דוח שנתי', href: createPageUrl('ServicePage') + '?service=doch-shnati' },
+    { name: '🚨 צריך חשבונית עכשיו?', href: createPageUrl('UrgentInvoice') },
     { name: 'כל השירותים', href: createPageUrl('Services') }
   ];
 
