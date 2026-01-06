@@ -65,6 +65,13 @@ export default function Header() {
             >
               דף הבית
             </Link>
+
+            <Link
+              to={createPageUrl('Blog')}
+              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
+            >
+              בלוג
+            </Link>
             
             <Link
               to={createPageUrl('Professions')}
@@ -175,6 +182,15 @@ export default function Header() {
                           className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
                           דף הבית
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to={createPageUrl('Blog')}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        >
+                          בלוג
                         </Link>
                       </li>
                       <li>
