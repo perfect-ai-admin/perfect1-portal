@@ -31,7 +31,7 @@ const steps = [
 
 export default function ProcessSection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] relative overflow-hidden">
+    <section className="py-12 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -44,7 +44,7 @@ export default function ProcessSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             איך זה עובד?

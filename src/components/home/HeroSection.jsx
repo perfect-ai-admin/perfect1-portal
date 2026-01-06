@@ -27,7 +27,7 @@ export default function HeroSection() {
         className="absolute bottom-20 left-20 w-96 h-96 bg-[#27AE60]/20 rounded-full blur-3xl"
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
           <motion.div
