@@ -16,6 +16,7 @@ import FreelancerLanding from './pages/FreelancerLanding';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import PhotographerLanding from './pages/PhotographerLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
+import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -38,6 +39,7 @@ export const PAGES = {
     "GraphicDesignerLanding": GraphicDesignerLanding,
     "PhotographerLanding": PhotographerLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
+    "ComputerTechnicianLanding": ComputerTechnicianLanding,
 }
 
 export const pagesConfig = {
