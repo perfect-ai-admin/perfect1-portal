@@ -147,196 +147,228 @@ export default function ProfessionPage() {
 
   const whatsappMessage = `היי, אני ${profession.name} ומעוניין לפתוח עוסק פטור. אשמח לייעוץ`;
 
+  const answerBlock = {
+    question: `איך פותחים עוסק פטור ${profession.name}?`,
+    answer: `פתיחת עוסק פטור ${profession.name} כוללת רישום במס הכנסה, פטור ממע"מ, ופתיחת תיק בביטוח לאומי. התהליך אורך 24-72 שעות ומאפשר לעבוד באופן חוקי ולהפיק קבלות. אנחנו מטפלים בכל הבירוקרטיה והמסמכים הנדרשים, כך שתוכל להתחיל לעבוד במהירות.`
+  };
+
+  const localBusinessSchema = {
+    ...schemaTemplates.organization,
+    "@type": "ProfessionalService",
+    "name": `פתיחת עוסק פטור ${profession.name}`,
+    "description": profession.description,
+    "areaServed": {
+      "@type": "Country",
+      "name": "ישראל"
+    }
+  };
+
   return (
-    <main className="pt-20">
-      {/* Hero */}
-      <section 
-        className="py-20 relative overflow-hidden"
-        style={{ backgroundColor: profession.color + '15' }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <div 
-              className="w-24 h-24 mx-auto rounded-3xl flex items-center justify-center text-5xl mb-6 shadow-lg"
-              style={{ backgroundColor: profession.color + '30' }}
+    <>
+      <SEOOptimized
+        title={`פתיחת עוסק פטור ${profession.name} - ליווי מקצועי | Perfect One`}
+        description={`${profession.description} ליווי מלא לפתיחת עוסק פטור ${profession.name} בישראל. ${profession.services[0]}, ${profession.services[1]} ועוד. התקשרו: 0502277087`}
+        keywords={`עוסק פטור ${profession.name}, פתיחת עוסק ${profession.name}, ${profession.name} עצמאי, ${profession.services.join(', ')}`}
+        canonical={`https://perfect1.co.il${window.location.pathname}${window.location.search}`}
+        schema={localBusinessSchema}
+      />
+      <Breadcrumbs 
+        items={[
+          { label: 'בית', url: 'Home' },
+          { label: 'מקצועות', url: 'Professions' },
+          { label: profession.name }
+        ]}
+      />
+      <main className="pt-20">
+        {/* Hero */}
+        <section 
+          className="py-20 relative overflow-hidden"
+          style={{ backgroundColor: profession.color + '15' }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
             >
-              {profession.icon}
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
-              פתיחת עוסק פטור ל{profession.name}ים
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-              ליווי מקצועי מהצעד הראשון ועד ניהול העסק השוטף
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href={`https://wa.me/972502277087?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
-                <Button 
-                  size="lg" 
-                  className="h-14 px-8 text-lg font-bold rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white"
+              <div 
+                className="w-24 h-24 mx-auto rounded-3xl flex items-center justify-center text-5xl mb-6 shadow-lg"
+                style={{ backgroundColor: profession.color + '30' }}
+              >
+                {profession.icon}
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
+                פתיחת עוסק פטור ל{profession.name}ים
+              </h1>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+                ליווי מקצועי מהצעד הראשון ועד ניהול העסק השוטף
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href={`https://wa.me/972502277087?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    size="lg" 
+                    className="h-14 px-8 text-lg font-bold rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white"
+                  >
+                    <MessageCircle className="w-5 h-5 ml-2" />
+                    דברו איתנו בוואטסאפ
+                  </Button>
+                </a>
+                <a href="tel:0502277087">
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="h-14 px-8 text-lg font-bold rounded-full border-[#1E3A5F] text-[#1E3A5F]"
+                  >
+                    <Phone className="w-5 h-5 ml-2" />
+                    0502277087
+                  </Button>
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-3 gap-12">
+              {/* Main Content */}
+              <div className="lg:col-span-2 space-y-12">
+                {/* Answer Block */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                 >
-                  <MessageCircle className="w-5 h-5 ml-2" />
-                  דברו איתנו בוואטסאפ
-                </Button>
-              </a>
-              <a href="tel:0502277087">
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="h-14 px-8 text-lg font-bold rounded-full border-[#1E3A5F] text-[#1E3A5F]"
+                  <AnswerBlock 
+                    question={answerBlock.question}
+                    answer={answerBlock.answer}
+                  />
+                </motion.div>
+
+                {/* About */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                 >
-                  <Phone className="w-5 h-5 ml-2" />
-                  0502277087
-                </Button>
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+                  <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
+                    📌 על המקצוע
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed text-lg">
+                    {profession.description}
+                  </p>
+                </motion.div>
 
-      {/* Content */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-3 gap-12">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-12">
-              {/* Answer Block */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <AnswerBlock 
-                  question={answerBlock.question}
-                  answer={answerBlock.answer}
-                />
-              </motion.div>
-
-              {/* About */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                  📌 על המקצוע
-                </h2>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {profession.description}
-                </p>
-              </motion.div>
-
-              {/* Services */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                  📌 שירותים נפוצים במקצוע
-                </h2>
-                <ul className="grid sm:grid-cols-2 gap-3">
-                  {profession.services.map((service, index) => (
-                    <li key={index} className="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
-                      <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
-                      <span className="text-gray-700">{service}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-
-              {/* What's Included */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                  📌 מה כולל תהליך הפתיחה
-                </h2>
-                <div className="bg-gradient-to-br from-[#E8F4FD] to-white rounded-2xl p-6 border border-[#1E3A5F]/10">
-                  <ul className="space-y-3">
-                    {[
-                      'פתיחת תיק במס הכנסה',
-                      'רישום כעוסק פטור במע"מ',
-                      'פתיחת תיק בביטוח לאומי',
-                      'הנפקת חשבוניות/קבלות',
-                      'ליווי שוטף ודיווחים'
-                    ].map((item, index) => (
-                      <li key={index} className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-full bg-[#1E3A5F] flex items-center justify-center">
-                          <CheckCircle className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="text-gray-700">{item}</span>
+                {/* Services */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
+                    📌 שירותים נפוצים במקצוע
+                  </h2>
+                  <ul className="grid sm:grid-cols-2 gap-3">
+                    {profession.services.map((service, index) => (
+                      <li key={index} className="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                        <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
+                        <span className="text-gray-700">{service}</span>
                       </li>
                     ))}
                   </ul>
-                </div>
-              </motion.div>
+                </motion.div>
 
-              {/* Tips */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                  📌 טיפים חשובים ל{profession.name}ים
-                </h2>
-                <div className="space-y-3">
-                  {profession.tips.map((tip, index) => (
-                    <div key={index} className="flex items-start gap-3 bg-[#D4AF37]/10 rounded-xl p-4">
-                      <Lightbulb className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700">{tip}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Warning */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-amber-50 rounded-2xl p-6 border border-amber-200"
-              >
-                <div className="flex items-start gap-4">
-                  <AlertTriangle className="w-6 h-6 text-amber-500 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-bold text-gray-800 mb-2">חשוב לדעת</h3>
-                    <p className="text-gray-600">
-                      תקרת הכנסה לעוסק פטור: <strong>120,000₪ לשנה</strong> (נכון ל-2024). 
-                      אם אתה צפוי להרוויח יותר, כדאי לשקול לפתוח עוסק מורשה.
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Sidebar - Form */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-28">
+                {/* What's Included */}
                 <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                 >
-                  <LeadForm 
-                    title={`רוצה לפתוח עוסק פטור כ${profession.name}?`}
-                    subtitle="השאר פרטים ונחזור אליך"
-                    defaultProfession={profession.name}
-                    sourcePage={`דף מקצוע - ${profession.name}`}
-                    variant="card"
-                  />
+                  <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
+                    📌 מה כולל תהליך הפתיחה
+                  </h2>
+                  <div className="bg-gradient-to-br from-[#E8F4FD] to-white rounded-2xl p-6 border border-[#1E3A5F]/10">
+                    <ul className="space-y-3">
+                      {[
+                        'פתיחת תיק במס הכנסה',
+                        'רישום כעוסק פטור במע"מ',
+                        'פתיחת תיק בביטוח לאומי',
+                        'הנפקת חשבוניות/קבלות',
+                        'ליווי שוטף ודיווחים'
+                      ].map((item, index) => (
+                        <li key={index} className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded-full bg-[#1E3A5F] flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </motion.div>
+
+                {/* Tips */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
+                    📌 טיפים חשובים ל{profession.name}ים
+                  </h2>
+                  <div className="space-y-3">
+                    {profession.tips.map((tip, index) => (
+                      <div key={index} className="flex items-start gap-3 bg-[#D4AF37]/10 rounded-xl p-4">
+                        <Lightbulb className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-700">{tip}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Warning */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-amber-50 rounded-2xl p-6 border border-amber-200"
+                >
+                  <div className="flex items-start gap-4">
+                    <AlertTriangle className="w-6 h-6 text-amber-500 flex-shrink-0 mt-1" />
+                    <div>
+                      <h3 className="font-bold text-gray-800 mb-2">חשוב לדעת</h3>
+                      <p className="text-gray-600">
+                        תקרת הכנסה לעוסק פטור: <strong>120,000₪ לשנה</strong> (נכון ל-2024). 
+                        אם אתה צפוי להרוויח יותר, כדאי לשקול לפתוח עוסק מורשה.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Sidebar - Form */}
+              <div className="lg:col-span-1">
+                <div className="sticky top-28">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    <LeadForm 
+                      title={`רוצה לפתוח עוסק פטור כ${profession.name}?`}
+                      subtitle="השאר פרטים ונחזור אליך"
+                      defaultProfession={profession.name}
+                      sourcePage={`דף מקצוע - ${profession.name}`}
+                      variant="card"
+                    />
+                  </motion.div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     </>
   );
 }
