@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, Monitor, Smartphone, Wifi, Lock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
+import FAQSchema from '../components/seo/FAQSchema';
 
 export default function OsekPaturOnlineLanding() {
   const [formData, setFormData] = useState({
@@ -49,8 +50,32 @@ export default function OsekPaturOnlineLanding() {
     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const faqs = [
+    {
+      question: "איך פותחים עוסק פטור אונליין?",
+      answer: "התהליך מקוון לחלוטין: ממלאים טופס דיגיטלי, מעלים מסמכים (ת.ז. + אישור בנק) מהנייד, וחותמים דיגיטלית. אנחנו מטפלים בכל השאר מול הרשויות."
+    },
+    {
+      question: "האם חתימה דיגיטלית מוכרת חוקית?",
+      answer: "כן, חתימה דיגיטלית מוכרת במלואה על פי חוק החתימה האלקטרונית בישראל ומקובלת על ידי כל הרשויות."
+    },
+    {
+      question: "כמה זמן לוקח לפתוח עוסק פטור אונליין?",
+      answer: "24-48 שעות מרגע שליחת הטופס והמסמכים. התהליך מהיר יותר מפתיחה מסורתית כי הכל דיגיטלי."
+    },
+    {
+      question: "האם צריך להגיע למשרד או למוסד ממשלתי?",
+      answer: "לא צריך להגיע לשום מקום. כל התהליך 100% אונליין - מילוי, העלאה, חתימה וקבלת האישורים - הכל מהבית."
+    },
+    {
+      question: "מה כולל השירות של פתיחת עוסק פטור אונליין?",
+      answer: "השירות כולל: תהליך דיגיטלי מלא, חתימה מאובטחת, אפליקציה דיגיטלית לניהול העסק, ליווי חודשי מלא, הכנת דוח שנתי, ותמיכה בוואטסאפ 24/7."
+    }
+  ];
+
   return (
     <>
+      <FAQSchema faqs={faqs} />
       <SEOOptimized
         title="פתיחת עוסק פטור אונליין - 100% דיגיטלי + ליווי מלא | Perfect One"
         description="פתיחת עוסק פטור אונליין בלי לצאת מהבית! תהליך מקוון 100% - חתימה דיגיטלית, אפליקציה לניהול העסק, ליווי חודשי מלא והכנת דוח שנתי. ☎ 0502277087"
@@ -58,20 +83,36 @@ export default function OsekPaturOnlineLanding() {
         canonical="https://perfect1.co.il/osek-patur-online"
         schema={{
           "@context": "https://schema.org",
-          "@type": "Service",
-          "name": "פתיחת עוסק פטור אונליין",
+          "@type": "LocalBusiness",
+          "name": "Perfect One - פתיחת עוסק פטור אונליין בישראל",
           "description": "שירות פתיחת עוסק פטור אונליין 100% דיגיטלי כולל ליווי חודשי ודוח שנתי",
+          "url": "https://perfect1.co.il/osek-patur-online",
+          "telephone": "+972-50-227-7087",
+          "priceRange": "₪₪",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "IL",
+            "addressRegion": "ישראל"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "ישראל"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "31.0461",
+            "longitude": "34.8516"
+          },
+          "serviceType": "פתיחת עוסק פטור אונליין",
           "provider": {
             "@type": "Organization",
-            "name": "Perfect One",
-            "url": "https://perfect1.co.il",
-            "telephone": "+972-50-227-7087"
+            "name": "Perfect One"
           },
-          "areaServed": "IL",
           "offers": {
             "@type": "Offer",
             "price": "249",
-            "priceCurrency": "ILS"
+            "priceCurrency": "ILS",
+            "availability": "https://schema.org/InStock"
           }
         }}
       />
@@ -96,13 +137,13 @@ export default function OsekPaturOnlineLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור
+                  פתיחת עוסק פטור אונליין
                   <br />
-                  <span className="text-[#27AE60]">אונליין 🌐</span>
+                  <span className="text-[#27AE60]">100% דיגיטלי 🌐</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">
-                  פותחים עוסק פטור בלי לצאת מהבית
+                  שירות ארצי לכל ישראל - פותחים עוסק פטור בלי לצאת מהבית
                   <br />
                   <strong className="text-[#D4AF37]">תהליך מקוון לחלוטין - פשוט, מהיר וחוקי</strong>
                 </p>

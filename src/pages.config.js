@@ -25,6 +25,10 @@ import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Sitemap from './pages/Sitemap';
+import SitemapPages from './pages/SitemapPages';
+import SitemapArticles from './pages/SitemapArticles';
+import SitemapFAQ from './pages/SitemapFAQ';
+import SitemapGeo from './pages/SitemapGeo';
 import __Layout from './Layout.jsx';
 
 
@@ -56,6 +60,10 @@ export const PAGES = {
     "Blog": Blog,
     "BlogPost": BlogPost,
     "Sitemap": Sitemap,
+    "SitemapPages": SitemapPages,
+    "SitemapArticles": SitemapArticles,
+    "SitemapFAQ": SitemapFAQ,
+    "SitemapGeo": SitemapGeo,
 }
 
 export const pagesConfig = {

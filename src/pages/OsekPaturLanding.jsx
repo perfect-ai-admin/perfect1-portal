@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft } from 'lucide-react';
+import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
+import FAQSchema from '../components/seo/FAQSchema';
 
 export default function OsekPaturLanding() {
   const [formData, setFormData] = useState({
@@ -49,8 +50,32 @@ export default function OsekPaturLanding() {
     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const faqs = [
+    {
+      question: "כמה זמן לוקח לפתוח עוסק פטור?",
+      answer: "התהליך לוקח 24-48 שעות עסקים. אנחנו מטפלים בכל הבירוקרטיה מול מס הכנסה, מע\"מ וביטוח לאומי, ואתה מקבל את כל האישורים תוך יומיים."
+    },
+    {
+      question: "כמה עולה לפתוח עוסק פטור?",
+      answer: "פתיחת עוסק פטור עולה 249₪ בלבד וכוללת טיפול מלא מול כל הרשויות, אפליקציה לניהול העסק, ליווי חודשי והכנת דוח שנתי."
+    },
+    {
+      question: "מה המסמכים הנדרשים לפתיחת עוסק פטור?",
+      answer: "נדרשים רק שני מסמכים: תעודת זהות ואישור ניהול חשבון בנק. זהו. אנחנו דואגים לכל השאר."
+    },
+    {
+      question: "האם צריך להגיע פיזית למשרד?",
+      answer: "לא. כל התהליך מתבצע אונליין - מילוי טופס, העלאת מסמכים וחתימה דיגיטלית. בלי ריצות ובלי יציאה מהבית."
+    },
+    {
+      question: "מה כולל השירות של פתיחת עוסק פטור?",
+      answer: "השירות כולל: פתיחת תיק במס הכנסה, רישום במע\"מ, פתיחת תיק בביטוח לאומי, אפליקציה דיגיטלית לניהול הכנסות והוצאות, ליווי חודשי מלא, והכנת והגשת דוח שנתי."
+    }
+  ];
+
   return (
     <>
+      <FAQSchema faqs={faqs} />
       <SEOOptimized
         title="פתיחת עוסק פטור - ליווי מלא + אפליקציה + דוח שנתי | Perfect One"
         description="פתיחת עוסק פטור בליווי מלא תוך 24-48 שעות. כולל: טיפול מול הרשויות, אפליקציה לניהול העסק, ליווי חודשי מלא והכנת דוח שנתי. התחל לעבוד חוקי עכשיו! ☎ 0502277087"
@@ -58,20 +83,36 @@ export default function OsekPaturLanding() {
         canonical="https://perfect1.co.il/osek-patur"
         schema={{
           "@context": "https://schema.org",
-          "@type": "Service",
-          "name": "פתיחת עוסק פטור",
+          "@type": "LocalBusiness",
+          "name": "Perfect One - פתיחת עוסק פטור בישראל",
           "description": "שירות מלא לפתיחת עוסק פטור כולל ליווי חודשי ודוח שנתי",
+          "url": "https://perfect1.co.il/osek-patur",
+          "telephone": "+972-50-227-7087",
+          "priceRange": "₪₪",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "IL",
+            "addressRegion": "ישראל"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "ישראל"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "31.0461",
+            "longitude": "34.8516"
+          },
+          "serviceType": "פתיחת עוסק פטור",
           "provider": {
             "@type": "Organization",
-            "name": "Perfect One",
-            "url": "https://perfect1.co.il",
-            "telephone": "+972-50-227-7087"
+            "name": "Perfect One"
           },
-          "areaServed": "IL",
           "offers": {
             "@type": "Offer",
             "price": "249",
-            "priceCurrency": "ILS"
+            "priceCurrency": "ILS",
+            "availability": "https://schema.org/InStock"
           }
         }}
       />
@@ -96,13 +137,13 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור אונליין
+                  פתיחת עוסק פטור בישראל
                   <br />
                   <span className="text-[#27AE60]">פשוט, מהיר וחוקי</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">
-                  אנחנו פותחים לך עוסק פטור בליווי מלא
+                  שירות ארצי לכל רחבי ישראל - פותחים עוסק פטור בליווי מלא
                   <br />
                   <strong className="text-[#D4AF37]">בלי בירוקרטיה ובלי התעסקות</strong>
                 </p>
