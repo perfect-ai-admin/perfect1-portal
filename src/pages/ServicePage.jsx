@@ -345,7 +345,8 @@ export default function ServicePage() {
             </div>
           </div>
         </div>
-      </section>
-    </>
-  );
-}
+        </section>
+        </main>
+        </>
+        );
+        }
