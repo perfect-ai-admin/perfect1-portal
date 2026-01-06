@@ -5,6 +5,9 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowLeft, Phone, MessageCircle, AlertTriangle } from 'lucide-react';
 import LeadForm from '../components/forms/LeadForm';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
+import AnswerBlock from '../components/seo/AnswerBlock';
+import SEOOptimized, { schemaTemplates } from './SEOOptimized';
 
 const servicesData = {
   'ptihat-osek-patur': {
@@ -124,9 +127,56 @@ export default function ServicePage() {
   
   const service = servicesData[serviceId] || defaultService;
 
+  const answerBlockData = {
+    'ptihat-osek-patur': {
+      question: 'מה זה פתיחת עוסק פטור?',
+      answer: 'פתיחת עוסק פטור היא רישום רשמי במס הכנסה המאפשר לעצמאים להתחיל לעבוד באופן חוקי בישראל. התהליך כולל פתיחת תיק במס הכנסה, רישום כפטור ממע"מ, ופתיחת תיק בביטוח לאומי. הליך זה נמשך 24-72 שעות וחובה לכל מי שרוצה לעבוד כעצמאי בישראל.'
+    },
+    'ptihat-osek-patur-online': {
+      question: 'איך פותחים עוסק פטור אונליין?',
+      answer: 'ניתן לפתוח עוסק פטור אונליין באמצעות תהליך דיגיטלי מלא, כולל העלאת מסמכים מהנייד וחתימה דיגיטלית. המשמעות היא שאין צורך להגיע פיזית למשרדים או לרשויות. התהליך כולל מילוי טופס מקוון, העלאת תעודת זהות ואישור בנק, וחתימה דיגיטלית מאובטחת.'
+    },
+    'livui-chodshi': {
+      question: 'מה כולל ליווי חודשי לעוסק פטור?',
+      answer: 'ליווי חודשי לעוסק פטור כולל אפליקציה לניהול הכנסות והוצאות, הפקת קבלות, דיווחים שוטפים לרשויות, וגישה ישירה לרואה חשבון או יועץ מס. השירות נועד להבטיח שכל החובות המשפטיים והחשבונאיים מתקיימים, תוך חיסכון בזמן ובטעויות עבור העצמאי.'
+    },
+    'doch-shnati': {
+      question: 'מה זה דוח שנתי לעוסק פטור?',
+      answer: 'דוח שנתי (טופס 1301) הוא דוח חובה שכל עוסק פטור חייב להגיש למס הכנסה עד ה-30 באפריל. הדוח מרכז את כל ההכנסות וההוצאות המוכרות במהלך השנה, ומחשב את המס שיש לשלם או את ההחזר המגיע. הגשת דוח מאוחרת עלולה להביא לקנסות ולעיכובים.'
+    }
+  };
+
+  const currentAnswerBlock = answerBlockData[serviceId];
+
+  const localBusinessSchema = {
+    ...schemaTemplates.organization,
+    "@type": "ProfessionalService",
+    "name": service.title,
+    "description": service.description,
+    "areaServed": {
+      "@type": "Country",
+      "name": "ישראל"
+    }
+  };
+
   return (
-    <main className="pt-20">
-      {/* Hero */}
+    <>
+      <SEOOptimized
+        title={`${service.title} - שירות מקצועי לעצמאים | Perfect One`}
+        description={service.description}
+        keywords={`${service.title}, עוסק פטור, עצמאים בישראל, שירותים לעוסקים`}
+        canonical={`https://perfect1.co.il${createPageUrl('ServicePage')}?service=${serviceId}`}
+        schema={localBusinessSchema}
+      />
+      <Breadcrumbs 
+        items={[
+          { label: 'בית', url: 'Home' },
+          { label: 'שירותים', url: 'Services' },
+          { label: service.title }
+        ]}
+      />
+      <main className="pt-20">
+        {/* Hero */}
       <section 
         className="py-20"
         style={{ backgroundColor: service.color + '15' }}
@@ -159,6 +209,20 @@ export default function ServicePage() {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12">
+              {/* Answer Block */}
+              {currentAnswerBlock && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <AnswerBlock 
+                    question={currentAnswerBlock.question}
+                    answer={currentAnswerBlock.answer}
+                  />
+                </motion.div>
+              )}
+
               {/* Description */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -282,6 +346,6 @@ export default function ServicePage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

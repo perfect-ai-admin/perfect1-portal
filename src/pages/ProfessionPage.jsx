@@ -322,6 +322,6 @@ export default function ProfessionPage() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

@@ -4,11 +4,17 @@ import BlogPost from './pages/BlogPost';
 import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
 import Contact from './pages/Contact';
 import CosmeticianLanding from './pages/CosmeticianLanding';
+import CosmeticianLandingNew from './pages/CosmeticianLandingNew';
+import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
+import HairStylistLanding from './pages/HairStylistLanding';
 import Home from './pages/Home';
+import LashArtistLanding from './pages/LashArtistLanding';
 import MakeupArtistLanding from './pages/MakeupArtistLanding';
+import MakeupArtistLandingNew from './pages/MakeupArtistLandingNew';
+import ManicuristLanding from './pages/ManicuristLanding';
 import OsekPatur from './pages/OsekPatur';
 import OsekPaturLanding from './pages/OsekPaturLanding';
 import OsekPaturOnline from './pages/OsekPaturOnline';
@@ -29,12 +35,6 @@ import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
 import TechnicianLanding from './pages/TechnicianLanding';
 import UrgentInvoice from './pages/UrgentInvoice';
-import MakeupArtistLandingNew from './pages/MakeupArtistLandingNew';
-import CosmeticianLandingNew from './pages/CosmeticianLandingNew';
-import ManicuristLanding from './pages/ManicuristLanding';
-import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
-import LashArtistLanding from './pages/LashArtistLanding';
-import HairStylistLanding from './pages/HairStylistLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -45,11 +45,17 @@ export const PAGES = {
     "ComputerTechnicianLanding": ComputerTechnicianLanding,
     "Contact": Contact,
     "CosmeticianLanding": CosmeticianLanding,
+    "CosmeticianLandingNew": CosmeticianLandingNew,
+    "EyebrowStylistLanding": EyebrowStylistLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
     "FreelancerLanding": FreelancerLanding,
     "GraphicDesignerLanding": GraphicDesignerLanding,
+    "HairStylistLanding": HairStylistLanding,
     "Home": Home,
+    "LashArtistLanding": LashArtistLanding,
     "MakeupArtistLanding": MakeupArtistLanding,
+    "MakeupArtistLandingNew": MakeupArtistLandingNew,
+    "ManicuristLanding": ManicuristLanding,
     "OsekPatur": OsekPatur,
     "OsekPaturLanding": OsekPaturLanding,
     "OsekPaturOnline": OsekPaturOnline,
@@ -70,12 +76,6 @@ export const PAGES = {
     "SitemapPages": SitemapPages,
     "TechnicianLanding": TechnicianLanding,
     "UrgentInvoice": UrgentInvoice,
-    "MakeupArtistLandingNew": MakeupArtistLandingNew,
-    "CosmeticianLandingNew": CosmeticianLandingNew,
-    "ManicuristLanding": ManicuristLanding,
-    "EyebrowStylistLanding": EyebrowStylistLanding,
-    "LashArtistLanding": LashArtistLanding,
-    "HairStylistLanding": HairStylistLanding,
 }
 
 export const pagesConfig = {

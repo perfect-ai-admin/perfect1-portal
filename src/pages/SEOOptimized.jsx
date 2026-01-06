@@ -142,6 +142,10 @@ export const schemaTemplates = {
       "@type": "PostalAddress",
       "addressCountry": "IL"
     },
+    "areaServed": {
+      "@type": "Country",
+      "name": "ישראל"
+    },
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.9",
