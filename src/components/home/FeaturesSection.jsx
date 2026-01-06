@@ -35,23 +35,23 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className="py-20 bg-[#F8F9FA]">
+    <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1E3A5F] mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-3">
             למה לבחור בנו?
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            אלפי עצמאים כבר בחרו בנו לליווי העסק שלהם
+            מעל 2,000 עוסקים פטורים מצטרפים אלינו מדי שנה
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {features.map((feature, index) => (
             <motion.div
               key={index}
@@ -59,16 +59,15 @@ export default function FeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
+              whileHover={{ y: -5 }}
               className="group"
             >
-              <div className="bg-white rounded-2xl p-8 shadow-elegant hover:shadow-elegant-hover transition-all duration-300 h-full">
-                <div className={`w-16 h-16 rounded-2xl ${feature.bgColor} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className={`w-8 h-8 bg-gradient-to-br ${feature.color} bg-clip-text`} style={{ color: 'transparent', WebkitBackgroundClip: 'text', backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }} />
-                  <feature.icon className={`w-8 h-8 text-[#1E3A5F]`} />
+              <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 h-full border border-gray-100">
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 shadow-lg`}>
+                  <feature.icon className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-3">{feature.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                <h3 className="text-lg font-black text-[#1E3A5F] mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
               </div>
             </motion.div>
           ))}
