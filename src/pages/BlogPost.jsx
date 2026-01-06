@@ -133,7 +133,7 @@ export default function BlogPost() {
               {/* Content */}
               <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-12">
                 <div 
-                  className="prose prose-lg max-w-none"
+                  className="prose prose-lg prose-headings:text-[#1E3A5F] prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-2xl prose-h3:mt-6 prose-h3:mb-3 prose-p:text-gray-700 prose-p:leading-relaxed prose-strong:text-[#1E3A5F] prose-strong:font-bold prose-ul:my-4 prose-li:my-2 prose-a:text-[#27AE60] prose-a:no-underline hover:prose-a:underline max-w-none"
                   style={{
                     direction: 'rtl',
                     fontFamily: 'Heebo, sans-serif'

@@ -115,7 +115,10 @@ export default function Blog() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.1 }}
                   >
-                    <Link to={`${createPageUrl('BlogPost')}?slug=${post.slug}`}>
+                    <Link 
+                      to={`${createPageUrl('BlogPost')}?slug=${post.slug}`}
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    >
                       <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all overflow-hidden h-full flex flex-col">
                         {post.featured_image && (
                           <img
