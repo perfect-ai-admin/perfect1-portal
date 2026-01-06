@@ -17,13 +17,12 @@ export default function Footer() {
           {/* About */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/abab5750e_PERFECT-LOGO.png" 
-                alt="Perfect One"
-                className="h-12 w-auto object-contain brightness-0 invert"
-              />
+              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                <span className="text-[#D4AF37] font-bold text-xl">P1</span>
+              </div>
               <div>
-                <p className="text-sm text-white/90 font-bold">המרכז לעוסקים פטורים</p>
+                <h3 className="font-bold text-lg">פרפקט וואן</h3>
+                <p className="text-sm text-gray-300">המרכז לעוסקים פטורים</p>
               </div>
             </div>
             <p className="text-gray-300 leading-relaxed">

@@ -46,13 +46,12 @@ export default function Header() {
             to={createPageUrl('Home')} 
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/abab5750e_PERFECT-LOGO.png" 
-              alt="Perfect One"
-              className="h-14 w-auto object-contain"
-            />
+            <div className="w-14 h-14 rounded-2xl gradient-primary flex items-center justify-center shadow-md">
+              <span className="text-white font-black text-2xl">P1</span>
+            </div>
             <div>
-              <p className="text-sm text-gray-600 font-bold">המרכז לעוסקים פטורים</p>
+              <h1 className="font-black text-xl text-[#1E3A5F] leading-tight">פרפקט וואן</h1>
+              <p className="text-xs text-gray-500 font-medium">המרכז לעוסקים פטורים</p>
             </div>
           </Link>
 
@@ -155,13 +154,12 @@ export default function Header() {
                 <div className="flex flex-col h-full">
                   <div className="p-6 border-b">
                     <div className="flex items-center gap-3">
-                      <img 
-                        src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/abab5750e_PERFECT-LOGO.png" 
-                        alt="Perfect One"
-                        className="h-10 w-auto object-contain"
-                      />
+                      <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                        <span className="text-white font-bold">P1</span>
+                      </div>
                       <div>
-                        <p className="text-xs text-gray-600 font-bold">המרכז לעוסקים פטורים</p>
+                        <h2 className="font-bold text-[#1E3A5F]">פרפקט וואן</h2>
+                        <p className="text-xs text-gray-500">המרכז לעוסקים פטורים</p>
                       </div>
                     </div>
                   </div>
