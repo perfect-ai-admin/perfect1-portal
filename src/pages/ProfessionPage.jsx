@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Lightbulb, AlertTriangle, ArrowLeft, Phone, MessageCircle } from 'lucide-react';
 import LeadForm from '../components/forms/LeadForm';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
+import AnswerBlock from '../components/seo/AnswerBlock';
+import SEOOptimized, { schemaTemplates } from './SEOOptimized';
 
 const professionsData = {
   'meatzev-grafi': {
@@ -200,6 +203,18 @@ export default function ProfessionPage() {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12">
+              {/* Answer Block */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <AnswerBlock 
+                  question={answerBlock.question}
+                  answer={answerBlock.answer}
+                />
+              </motion.div>
+
               {/* About */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
