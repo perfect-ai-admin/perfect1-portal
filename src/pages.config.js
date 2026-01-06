@@ -7,6 +7,7 @@ import Professions from './pages/Professions';
 import ServicePage from './pages/ServicePage';
 import Services from './pages/Services';
 import ProfessionLanding from './pages/ProfessionLanding';
+import SEOOptimized from './pages/SEOOptimized';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "ServicePage": ServicePage,
     "Services": Services,
     "ProfessionLanding": ProfessionLanding,
+    "SEOOptimized": SEOOptimized,
 }
 
 export const pagesConfig = {

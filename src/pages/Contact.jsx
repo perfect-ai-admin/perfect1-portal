@@ -1,12 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { Phone, MessageCircle, Mail, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LeadForm from '../components/forms/LeadForm';
 
 export default function Contact() {
   return (
-    <main className="pt-20">
+    <>
+      <SEOOptimized 
+        {...seoPresets.contact}
+        canonical="https://perfect1.co.il/contact"
+      />
+      <main className="pt-20">
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

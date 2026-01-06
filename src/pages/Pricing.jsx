@@ -3,11 +3,22 @@ import { motion } from 'framer-motion';
 import PricingSection from '../components/home/PricingSection';
 import FAQSection from '../components/home/FAQSection';
 import CTASection from '../components/home/CTASection';
+import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import { CheckCircle, Info } from 'lucide-react';
 
 export default function Pricing() {
   return (
-    <main className="pt-20">
+    <>
+      <SEOOptimized 
+        {...seoPresets.pricing}
+        canonical="https://perfect1.co.il/pricing"
+        schema={[
+          schemaTemplates.service('פתיחת עוסק פטור', '199'),
+          schemaTemplates.service('ליווי חודשי לעוסק פטור', '149'),
+          schemaTemplates.service('דוח שנתי עוסק פטור', '500')
+        ]}
+      />
+      <main className="pt-20">
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -1,10 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import ProfessionsGrid from '../components/home/ProfessionsGrid';
+import SEOOptimized, { seoPresets } from './SEOOptimized';
 
 export default function Professions() {
   return (
-    <main className="pt-20">
+    <>
+      <SEOOptimized 
+        {...seoPresets.professions}
+        canonical="https://perfect1.co.il/professions"
+      />
+      <main className="pt-20">
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

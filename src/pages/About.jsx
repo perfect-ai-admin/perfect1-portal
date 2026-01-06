@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
+import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { CheckCircle, Users, Award, Clock, ArrowLeft, Target, Heart, Shield } from 'lucide-react';
 
 const values = [
@@ -32,7 +33,12 @@ const stats = [
 
 export default function About() {
   return (
-    <main className="pt-20">
+    <>
+      <SEOOptimized 
+        {...seoPresets.about}
+        canonical="https://perfect1.co.il/about"
+      />
+      <main className="pt-20">
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
