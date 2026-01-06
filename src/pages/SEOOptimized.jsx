@@ -15,6 +15,13 @@ export default function SEOOptimized({
       document.title = title;
     }
 
+    // Ensure no noindex
+    const removeNoIndex = () => {
+      const noindexTags = document.querySelectorAll('meta[name="robots"][content*="noindex"]');
+      noindexTags.forEach(tag => tag.remove());
+    };
+    removeNoIndex();
+
     // Update or create meta tags
     const updateMetaTag = (name, content, isProperty = false) => {
       if (!content) return;
@@ -30,6 +37,9 @@ export default function SEOOptimized({
       
       element.setAttribute('content', content);
     };
+
+    // Ensure indexable
+    updateMetaTag('robots', 'index, follow');
 
     // Basic meta tags
     updateMetaTag('description', description);

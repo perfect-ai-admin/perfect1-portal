@@ -24,6 +24,7 @@ import UrgentInvoice from './pages/UrgentInvoice';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import Sitemap from './pages/Sitemap';
 import __Layout from './Layout.jsx';
 
 
@@ -54,6 +55,7 @@ export const PAGES = {
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
     "Blog": Blog,
     "BlogPost": BlogPost,
+    "Sitemap": Sitemap,
 }
 
 export const pagesConfig = {
