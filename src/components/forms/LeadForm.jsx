@@ -1,0 +1,211 @@
+import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { User, Phone, Mail, Briefcase, MessageSquare, Loader2, CheckCircle, Send } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const PROFESSIONS = [
+  "מעצב גרפי", "צלם", "אנימטור", "מאייר", "עורך וידאו", "מעצב פנים", "מעצב אופנה",
+  "קופירייטר", "כותב תוכן", "מתרגם", "סופר", "בלוגר",
+  "מפתח אתרים", "מעצב UX/UI", "מנהל מדיה חברתית", "מומחה SEO", "מומחה אקסל",
+  "מוזיקאי", "מפיק מוזיקלי", "מורה למוזיקה", "DJ", "זמר",
+  "מאמן כושר", "מטפל אלטרנטיבי", "יועץ תזונה", "מורה יוגה", "מסאז'יסט",
+  "עוזר וירטואלי", "מנהל פרויקטים", "יועץ עסקי", "נהג הובלות", "איש תחזוקה",
+  "שף פרטי", "קונדיטור", "ברמן", "קייטרינג", "מארגן אירועים",
+  "מורה פרטי", "מדריך ילדים", "קואוצ'ר", "מורה לשפות", "אחר"
+];
+
+export default function LeadForm({ 
+  title = "💼 קבל ייעוץ חינם לפתיחת עוסק פטור",
+  subtitle = "מלא את הפרטים ונחזור אליך תוך 24 שעות",
+  defaultProfession = "",
+  sourcePage = "כללי",
+  compact = false,
+  variant = "default" // default, card, inline
+}) {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    profession: defaultProfession,
+    notes: '',
+    consent: false
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!formData.name || !formData.phone) {
+      setError('נא למלא שם וטלפון');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await base44.entities.Lead.create({
+        ...formData,
+        source_page: sourcePage,
+        status: 'new'
+      });
+
+      // Send to WhatsApp
+      const message = `🔔 ליד חדש מהאתר!
+
+👤 שם: ${formData.name}
+📞 טלפון: ${formData.phone}
+📧 אימייל: ${formData.email || 'לא צוין'}
+💼 מקצוע: ${formData.profession || 'לא צוין'}
+💬 הערות: ${formData.notes || 'אין'}
+
+📍 מקור: ${sourcePage}
+📅 תאריך: ${new Date().toLocaleString('he-IL')}`;
+
+      window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
+
+      setIsSuccess(true);
+    } catch (err) {
+      setError('אירעה שגיאה, נסה שוב');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isSuccess) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className={`text-center p-8 ${variant === 'card' ? 'bg-white rounded-2xl shadow-elegant' : ''}`}
+      >
+        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+          <CheckCircle className="w-10 h-10 text-green-500" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
+        <p className="text-gray-600">נציג יצור איתך קשר בהקדם</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className={variant === 'card' ? 'bg-white rounded-2xl shadow-elegant p-8' : ''}>
+      {title && (
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">{title}</h3>
+          {subtitle && <p className="text-gray-600">{subtitle}</p>}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className={compact ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'}>
+          <div className="relative">
+            <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Input
+              placeholder="שם מלא *"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="pr-11 h-12 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]"
+              required
+            />
+          </div>
+
+          <div className="relative">
+            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Input
+              type="tel"
+              placeholder="טלפון *"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="pr-11 h-12 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]"
+              required
+            />
+          </div>
+        </div>
+
+        {!compact && (
+          <>
+            <div className="relative">
+              <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Input
+                type="email"
+                placeholder="אימייל"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="pr-11 h-12 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]"
+              />
+            </div>
+
+            <div className="relative">
+              <Briefcase className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
+              <Select
+                value={formData.profession}
+                onValueChange={(value) => setFormData({ ...formData, profession: value })}
+              >
+                <SelectTrigger className="pr-11 h-12 rounded-xl border-gray-200">
+                  <SelectValue placeholder="בחר מקצוע" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROFESSIONS.map((prof) => (
+                    <SelectItem key={prof} value={prof}>{prof}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="relative">
+              <MessageSquare className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
+              <Textarea
+                placeholder="הערות נוספות"
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                className="pr-11 min-h-24 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] resize-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="consent"
+                checked={formData.consent}
+                onCheckedChange={(checked) => setFormData({ ...formData, consent: checked })}
+              />
+              <Label htmlFor="consent" className="text-sm text-gray-600 cursor-pointer">
+                אני מסכים/ה לקבל מידע ועדכונים
+              </Label>
+            </div>
+          </>
+        )}
+
+        {error && (
+          <p className="text-red-500 text-sm text-center">{error}</p>
+        )}
+
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-14 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#219a52] hover:to-[#27AE60] text-white shadow-lg hover:shadow-xl transition-all"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin ml-2" />
+              שולח...
+            </>
+          ) : (
+            <>
+              <Send className="w-5 h-5 ml-2" />
+              קדימה, בואו נפתח לך עסק!
+            </>
+          )}
+        </Button>
+      </form>
+    </div>
+  );
+}
