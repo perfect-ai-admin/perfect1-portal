@@ -21,8 +21,8 @@ const PROFESSIONS = [
 ];
 
 export default function LeadForm({ 
-  title = "💼 קבל ייעוץ חינם לפתיחת עוסק פטור",
-  subtitle = "מלא את הפרטים ונחזור אליך תוך 24 שעות",
+  title = "🚀 התחל את העסק שלך היום",
+  subtitle = "מלא פרטים ונחזור אליך תוך שעות",
   defaultProfession = "",
   sourcePage = "כללי",
   compact = false,
@@ -97,35 +97,35 @@ export default function LeadForm({
   }
 
   return (
-    <div className={variant === 'card' ? 'bg-white rounded-2xl shadow-elegant p-8' : ''}>
+    <div className={variant === 'card' ? 'bg-gradient-to-br from-white to-blue-50/30 rounded-3xl shadow-2xl p-8 md:p-10 border border-blue-100' : ''}>
       {title && (
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">{title}</h3>
-          {subtitle && <p className="text-gray-600">{subtitle}</p>}
+        <div className="text-center mb-8">
+          <h3 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-3 leading-tight">{title}</h3>
+          {subtitle && <p className="text-lg text-gray-600 font-medium">{subtitle}</p>}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className={compact ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'}>
           <div className="relative">
-            <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <User className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#1E3A5F]/40" />
             <Input
               placeholder="שם מלא *"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="pr-11 h-12 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]"
+              className="pr-14 h-16 text-lg rounded-2xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium shadow-sm"
               required
             />
           </div>
 
           <div className="relative">
-            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Phone className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#1E3A5F]/40" />
             <Input
               type="tel"
               placeholder="טלפון *"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="pr-11 h-12 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]"
+              className="pr-14 h-16 text-lg rounded-2xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium shadow-sm"
               required
             />
           </div>
@@ -134,23 +134,23 @@ export default function LeadForm({
         {!compact && (
           <>
             <div className="relative">
-              <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#1E3A5F]/40" />
               <Input
                 type="email"
                 placeholder="אימייל"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="pr-11 h-12 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F]"
+                className="pr-14 h-16 text-lg rounded-2xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium shadow-sm"
               />
             </div>
 
             <div className="relative">
-              <Briefcase className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
+              <Briefcase className="absolute right-4 top-4 w-6 h-6 text-[#1E3A5F]/40 z-10" />
               <Select
                 value={formData.profession}
                 onValueChange={(value) => setFormData({ ...formData, profession: value })}
               >
-                <SelectTrigger className="pr-11 h-12 rounded-xl border-gray-200">
+                <SelectTrigger className="pr-14 h-16 text-lg rounded-2xl border-2 border-gray-200 font-medium shadow-sm">
                   <SelectValue placeholder="בחר מקצוע" />
                 </SelectTrigger>
                 <SelectContent>
@@ -162,12 +162,12 @@ export default function LeadForm({
             </div>
 
             <div className="relative">
-              <MessageSquare className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
+              <MessageSquare className="absolute right-4 top-4 w-6 h-6 text-[#1E3A5F]/40" />
               <Textarea
-                placeholder="הערות נוספות"
+                placeholder="ספר לנו קצת על העסק שלך..."
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="pr-11 min-h-24 rounded-xl border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] resize-none"
+                className="pr-14 min-h-32 text-lg rounded-2xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 resize-none font-medium shadow-sm"
               />
             </div>
 
@@ -191,17 +191,17 @@ export default function LeadForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-14 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#219a52] hover:to-[#27AE60] text-white shadow-lg hover:shadow-xl transition-all"
+          className="w-full h-20 text-xl md:text-2xl font-black rounded-3xl bg-gradient-to-r from-[#27AE60] via-[#2ECC71] to-[#27AE60] hover:from-[#2ECC71] hover:via-[#27AE60] hover:to-[#2ECC71] text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse-glow"
         >
           {isSubmitting ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin ml-2" />
+              <Loader2 className="w-6 h-6 animate-spin ml-3" />
               שולח...
             </>
           ) : (
             <>
-              <Send className="w-5 h-5 ml-2" />
-              קדימה, בואו נפתח לך עסק!
+              <Send className="w-6 h-6 ml-3" />
+              בואו נתחיל את העסק! 🚀
             </>
           )}
         </Button>
