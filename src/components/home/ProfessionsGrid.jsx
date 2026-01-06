@@ -13,6 +13,7 @@ const categories = [
   { id: 'tech', name: 'טכנולוגיה', icon: '💻' },
   { id: 'music', name: 'מוזיקה', icon: '🎵' },
   { id: 'health', name: 'בריאות', icon: '💪' },
+  { id: 'cosmetics', name: 'קוסמטיקה', icon: '💄' },
   { id: 'services', name: 'שירותים', icon: '🏠' },
   { id: 'food', name: 'מזון', icon: '🍳' },
   { id: 'education', name: 'חינוך', icon: '📚' }
@@ -70,8 +71,14 @@ const professions = [
   { name: 'מסאז\'יסט', slug: 'masagist', icon: '💆', color: '#00BCD4', category: 'health' },
   { name: 'רפלקסולוג', slug: 'reflexolog', icon: '🦶', color: '#009688', category: 'health' },
   { name: 'מאמן אישי', slug: 'meamen-ishi', icon: '🏋️', color: '#FF5722', category: 'health' },
-  { name: 'קוסמטיקאית', slug: 'kosmetikayt', icon: '💄', color: '#FF4081', category: 'health' },
-  { name: 'מעצבת ציפורניים', slug: 'meatzevet-tzipornayim', icon: '💅', color: '#FF69B4', category: 'health' },
+  
+  // Cosmetics
+  { name: 'מאפרת', slug: 'makeup-artist', icon: '💄', color: '#FF69B4', category: 'cosmetics' },
+  { name: 'קוסמטיקאית', slug: 'cosmetician', icon: '✨', color: '#DDA0DD', category: 'cosmetics' },
+  { name: 'מניקוריסטית', slug: 'manicurist', icon: '💅', color: '#FF1493', category: 'cosmetics' },
+  { name: 'מעצבת גבות', slug: 'eyebrow-stylist', icon: '👁️', color: '#CD853F', category: 'cosmetics' },
+  { name: 'מעצבת ריסים', slug: 'lash-artist', icon: '👀', color: '#8B4789', category: 'cosmetics' },
+  { name: 'מעצבת שיער', slug: 'hair-stylist', icon: '💇', color: '#FF6347', category: 'cosmetics' },
   
   // Services
   { name: 'עוזר וירטואלי', slug: 'ozer-virtuali', icon: '👩‍💼', color: '#607D8B', category: 'services' },
@@ -174,7 +181,10 @@ export default function ProfessionsGrid({ showAll = false }) {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3, delay: index * 0.02 }}
               >
-                <Link to={createPageUrl('ProfessionPage') + `?slug=${prof.slug}`}>
+                <Link 
+                  to={createPageUrl('ProfessionPage') + `?slug=${prof.slug}`}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                >
                   <div className="group bg-white rounded-2xl p-4 border border-gray-100 hover:border-transparent hover:shadow-elegant-hover transition-all duration-300 text-center h-full">
                     <div 
                       className="w-14 h-14 mx-auto rounded-xl flex items-center justify-center text-2xl mb-3 transition-transform group-hover:scale-110"
