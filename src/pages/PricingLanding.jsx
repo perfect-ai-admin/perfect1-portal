@@ -135,12 +135,11 @@ export default function PricingLanding() {
                   </div>
 
                   <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 mb-6 text-center">
-                    <p className="text-white/80 text-sm mb-2">החל מ-</p>
+                    <p className="text-white/80 text-sm mb-2">מחיר מיוחד ל-</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-black text-white">199</span>
-                      <span className="text-2xl font-bold text-white/80">₪</span>
+                      <span className="text-5xl font-black text-white">?</span>
                     </div>
-                    <p className="text-white/60 text-sm mt-2">תשלום חד-פעמי</p>
+                    <p className="text-white/60 text-sm mt-2">השאר פרטים ונגלה לך</p>
                   </div>
 
                   <ul className="space-y-3 mb-6">
@@ -170,11 +169,7 @@ export default function PricingLanding() {
         {/* Trust Bar */}
         <section className="py-8 bg-white border-b border-gray-200">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-4 gap-6 text-center">
-              <div>
-                <div className="text-4xl font-black text-[#1E3A5F] mb-2">199₪</div>
-                <p className="text-gray-600 font-medium">פתיחת תיק</p>
-              </div>
+            <div className="grid md:grid-cols-3 gap-6 text-center">
               <div>
                 <div className="text-4xl font-black text-[#27AE60] mb-2">0₪</div>
                 <p className="text-gray-600 font-medium">עמלות נסתרות</p>
