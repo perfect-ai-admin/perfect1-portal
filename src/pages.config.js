@@ -8,6 +8,8 @@ import ServicePage from './pages/ServicePage';
 import Services from './pages/Services';
 import ProfessionLanding from './pages/ProfessionLanding';
 import SEOOptimized from './pages/SEOOptimized';
+import OsekPatur from './pages/OsekPatur';
+import OsekPaturOnline from './pages/OsekPaturOnline';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +24,8 @@ export const PAGES = {
     "Services": Services,
     "ProfessionLanding": ProfessionLanding,
     "SEOOptimized": SEOOptimized,
+    "OsekPatur": OsekPatur,
+    "OsekPaturOnline": OsekPaturOnline,
 }
 
 export const pagesConfig = {
