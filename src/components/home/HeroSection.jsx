@@ -64,17 +64,17 @@ export default function HeroSection() {
               <Link to={createPageUrl('Contact')}>
                 <Button 
                   size="lg" 
-                  className="h-14 px-8 text-lg font-bold rounded-full bg-gradient-to-r from-[#D4AF37] to-[#F4D03F] hover:from-[#c9a432] hover:to-[#D4AF37] text-[#1E3A5F] shadow-xl hover:shadow-2xl transition-all"
+                  className="h-16 px-10 text-xl font-black rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#F4D03F] hover:from-[#c9a432] hover:to-[#D4AF37] text-[#1E3A5F] shadow-2xl hover:shadow-3xl transition-all hover:scale-105"
                 >
                   לפתיחת עוסק פטור עכשיו
-                  <ArrowLeft className="mr-2 w-5 h-5" />
+                  <ArrowLeft className="mr-2 w-6 h-6" />
                 </Button>
               </Link>
               <a href="tel:0502277087">
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="h-14 px-8 text-lg font-bold rounded-full border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all"
+                  className="h-16 px-10 text-xl font-black rounded-2xl border-3 border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all hover:scale-105 shadow-xl"
                 >
                   📞 0502277087
                 </Button>

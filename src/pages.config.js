@@ -1,25 +1,29 @@
-import Home from './pages/Home';
-import Professions from './pages/Professions';
-import ProfessionPage from './pages/ProfessionPage';
-import Pricing from './pages/Pricing';
-import Contact from './pages/Contact';
 import About from './pages/About';
-import Services from './pages/Services';
+import Contact from './pages/Contact';
+import Home from './pages/Home';
+import Pricing from './pages/Pricing';
+import ProfessionPage from './pages/ProfessionPage';
+import Professions from './pages/Professions';
 import ServicePage from './pages/ServicePage';
+import Services from './pages/Services';
+import ProfessionLanding from './pages/ProfessionLanding';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
-    "Professions": Professions,
-    "ProfessionPage": ProfessionPage,
-    "Pricing": Pricing,
-    "Contact": Contact,
     "About": About,
-    "Services": Services,
+    "Contact": Contact,
+    "Home": Home,
+    "Pricing": Pricing,
+    "ProfessionPage": ProfessionPage,
+    "Professions": Professions,
     "ServicePage": ServicePage,
+    "Services": Services,
+    "ProfessionLanding": ProfessionLanding,
 }
 
 export const pagesConfig = {
     mainPage: "Home",
     Pages: PAGES,
+    Layout: __Layout,
 };
