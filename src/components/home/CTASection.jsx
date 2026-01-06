@@ -16,14 +16,15 @@ export default function CTASection() {
             <span className="inline-block bg-[#27AE60]/10 text-[#27AE60] px-4 py-2 rounded-full text-sm font-medium mb-6">
               🚀 מוכנים להתחיל?
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1E3A5F] mb-6 leading-tight">
-              פתח עוסק פטור עכשיו
+            <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-6 leading-tight">
+              מוכן להתחיל את העסק שלך?
               <br />
-              <span className="text-[#D4AF37]">והתחל להרוויח</span>
+              <span className="text-[#27AE60]">אנחנו כאן בשבילך!</span>
             </h2>
-            <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-              השאר פרטים ונציג יחזור אליך תוך 24 שעות לייעוץ חינם וללא התחייבות. 
-              נעזור לך להבין מה הכי מתאים לך ונלווה אותך בכל הדרך.
+            <p className="text-gray-700 text-xl mb-8 leading-relaxed font-medium">
+              השאר פרטים ונציג יחזור אליך תוך שעות. 
+              <br />
+              <strong>ייעוץ חינם וללא התחייבות</strong> - רק עזרה אמיתית להתחיל נכון.
             </p>
 
             <div className="space-y-4">

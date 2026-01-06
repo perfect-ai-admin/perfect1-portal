@@ -23,7 +23,6 @@ export default function Home() {
         <ServicesSection />
         <ProfessionsGrid />
         <ProcessSection />
-        <PricingSection />
         <FAQSection />
         <CTASection />
       </main>
