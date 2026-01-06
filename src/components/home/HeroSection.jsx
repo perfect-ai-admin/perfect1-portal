@@ -48,15 +48,15 @@ export default function HeroSection() {
             </motion.div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-              פתיחת עוסק פטור
+              רוצה לפתוח עסק?
               <br />
-              <span className="text-[#D4AF37]">בקליק אחד</span>
+              <span className="text-[#D4AF37]">אנחנו נעשה את זה בשבילך!</span>
             </h1>
 
-            <p className="text-xl text-white/80 mb-8 leading-relaxed max-w-xl lg:mr-0 lg:ml-auto mx-auto">
-              ליווי מקצועי מא' ועד ת' - אתה עובד, אנחנו מטפלים ברשויות.
+            <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-xl lg:mr-0 lg:ml-auto mx-auto font-medium">
+              ליווי מלא מהצעד הראשון - אתה עובד, אנחנו מטפלים בכל השאר.
               <br />
-              המרכז הארצי לעוסקים פטורים בישראל.
+              <strong className="text-[#27AE60]">תוך 24-72 שעות תתחיל לעבוד חוקית!</strong>
             </p>
 
             {/* CTA Buttons */}
@@ -64,19 +64,19 @@ export default function HeroSection() {
               <Link to={createPageUrl('Contact')}>
                 <Button 
                   size="lg" 
-                  className="h-16 px-10 text-xl font-black rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#F4D03F] hover:from-[#c9a432] hover:to-[#D4AF37] text-[#1E3A5F] shadow-2xl hover:shadow-3xl transition-all hover:scale-105"
+                  className="h-20 px-12 text-2xl font-black rounded-3xl bg-gradient-to-r from-[#27AE60] via-[#2ECC71] to-[#27AE60] hover:from-[#2ECC71] hover:via-[#27AE60] hover:to-[#2ECC71] text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse-glow"
                 >
-                  לפתיחת עוסק פטור עכשיו
-                  <ArrowLeft className="mr-2 w-6 h-6" />
+                  🚀 בוא נתחיל את העסק!
+                  <ArrowLeft className="mr-3 w-6 h-6" />
                 </Button>
               </Link>
               <a href="tel:0502277087">
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="h-16 px-10 text-xl font-black rounded-2xl border-3 border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-all hover:scale-105 shadow-xl"
+                  className="h-20 px-12 text-2xl font-black rounded-3xl border-4 border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-[#1E3A5F] transition-all hover:scale-105 shadow-2xl"
                 >
-                  📞 0502277087
+                  📞 התקשר עכשיו
                 </Button>
               </a>
             </div>
@@ -150,16 +150,7 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              {/* Floating Price Card */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-2xl p-6"
-              >
-                <p className="text-gray-500 text-sm mb-1">פתיחת תיק</p>
-                <p className="text-3xl font-black text-[#1E3A5F]">199₪</p>
-                <p className="text-gray-400 text-xs">+מע"מ</p>
-              </motion.div>
+
 
               {/* Floating Badge */}
               <motion.div
