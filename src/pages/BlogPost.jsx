@@ -8,6 +8,7 @@ import { ArrowRight, Clock, User, Calendar, Share2, MessageCircle, Phone } from 
 import { Button } from '@/components/ui/button';
 import SEOOptimized from './SEOOptimized';
 import LeadForm from '../components/forms/LeadForm';
+import InternalLinker from '../components/seo/InternalLinker';
 
 export default function BlogPost() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -138,8 +139,12 @@ export default function BlogPost() {
                     direction: 'rtl',
                     fontFamily: 'Heebo, sans-serif'
                   }}
-                  dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }}
-                />
+                >
+                  <InternalLinker 
+                    content={post.content.replace(/\n/g, '<br />')} 
+                    currentPage="BlogPost" 
+                  />
+                </div>
               </div>
 
               {/* CTA */}

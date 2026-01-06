@@ -7,6 +7,7 @@ import { CheckCircle, ArrowLeft, Phone, MessageCircle, AlertTriangle } from 'luc
 import LeadForm from '../components/forms/LeadForm';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import AnswerBlock from '../components/seo/AnswerBlock';
+import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { schemaTemplates } from './SEOOptimized';
 
 const servicesData = {
@@ -232,9 +233,9 @@ export default function ServicePage() {
                 <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
                   📌 על השירות
                 </h2>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {service.description}
-                </p>
+                <div className="text-gray-600 leading-relaxed text-lg">
+                  <InternalLinker content={service.description} currentPage="ServicePage" />
+                </div>
               </motion.div>
 
               {/* Features */}

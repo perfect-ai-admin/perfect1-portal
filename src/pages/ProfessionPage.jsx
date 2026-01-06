@@ -5,6 +5,7 @@ import { CheckCircle, Lightbulb, AlertTriangle, ArrowLeft, Phone, MessageCircle 
 import LeadForm from '../components/forms/LeadForm';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import AnswerBlock from '../components/seo/AnswerBlock';
+import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { schemaTemplates } from './SEOOptimized';
 
 const professionsData = {
@@ -255,9 +256,9 @@ export default function ProfessionPage() {
                   <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
                     📌 על המקצוע
                   </h2>
-                  <p className="text-gray-600 leading-relaxed text-lg">
-                    {profession.description}
-                  </p>
+                  <div className="text-gray-600 leading-relaxed text-lg">
+                    <InternalLinker content={profession.description} currentPage="ProfessionPage" />
+                  </div>
                 </motion.div>
 
                 {/* Services */}
