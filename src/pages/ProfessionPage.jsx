@@ -1040,17 +1040,17 @@ export default function ProfessionPage() {
       >
         {profession.icon}
       </div>
-      <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4 px-4">
         פתיחת עוסק פטור - {profession.name}
       </h1>
-      <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+      <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-8 px-4">
         ליווי מקצועי מהצעד הראשון ועד ניהול העסק השוטף
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <a href={`https://wa.me/972502277087?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
           <Button 
             size="lg" 
-            className="h-14 px-8 text-lg font-bold rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white"
+            className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-bold rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white"
           >
             <MessageCircle className="w-5 h-5 ml-2" />
             דברו איתנו בוואטסאפ
@@ -1060,7 +1060,7 @@ export default function ProfessionPage() {
           <Button 
             size="lg" 
             variant="outline"
-            className="h-14 px-8 text-lg font-bold rounded-full border-[#1E3A5F] text-[#1E3A5F]"
+            className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-bold rounded-full border-[#1E3A5F] text-[#1E3A5F]"
           >
             <Phone className="w-5 h-5 ml-2" />
             0502277087
@@ -1078,9 +1078,9 @@ export default function ProfessionPage() {
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="max-w-4xl"
+      className="max-w-4xl px-4"
       >
-      <p className="text-gray-700 leading-relaxed text-lg">
+      <p className="text-gray-700 leading-relaxed text-base sm:text-lg">
         מחפשים <a href="/Professions" className="text-[#1E3A5F] font-semibold hover:underline">פתיחת עוסק פטור לפי מקצוע</a>? 
         כל מקצוע דורש התאמה ייחודית בתהליך הרישום. 
         ב-<a href="/" className="text-[#1E3A5F] font-semibold hover:underline">מדריך לפתיחת עוסק פטור</a> שלנו 
@@ -1141,19 +1141,19 @@ export default function ProfessionPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-8 text-center text-white"
+                  className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 sm:p-8 text-center text-white"
                 >
-                  <h3 className="text-2xl font-black mb-3">
+                  <h3 className="text-xl sm:text-2xl font-black mb-3">
                     💬 רוצה לפתוח עוסק פטור כמו {profession.name}?
                   </h3>
-                  <p className="text-lg mb-6 text-white/90">
+                  <p className="text-base sm:text-lg mb-6 text-white/90">
                     דבר איתנו עכשיו ונתחיל את התהליך תוך 24 שעות
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <a href={`https://wa.me/972502277087?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
                       <Button 
                         size="lg"
-                        className="w-full sm:w-auto h-12 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold rounded-xl"
+                        className="w-full h-12 sm:h-14 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold rounded-xl text-base sm:text-lg"
                       >
                         <MessageCircle className="w-5 h-5 ml-2" />
                         שלח וואטסאפ
@@ -1162,7 +1162,7 @@ export default function ProfessionPage() {
                     <a href="tel:0502277087">
                       <Button 
                         size="lg"
-                        className="w-full sm:w-auto h-12 bg-[#D4AF37] hover:bg-[#F4D03F] text-[#1E3A5F] font-bold rounded-xl"
+                        className="w-full h-12 sm:h-14 bg-[#D4AF37] hover:bg-[#F4D03F] text-[#1E3A5F] font-bold rounded-xl text-base sm:text-lg"
                       >
                         <Phone className="w-5 h-5 ml-2" />
                         התקשר: 0502277087
@@ -1262,12 +1262,12 @@ export default function ProfessionPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="bg-gradient-to-br from-[#27AE60] to-[#2ECC71] rounded-2xl p-8 text-center text-white shadow-lg"
+                  className="bg-gradient-to-br from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 sm:p-8 text-center text-white shadow-lg"
                 >
-                  <h3 className="text-2xl font-black mb-3">
+                  <h3 className="text-xl sm:text-2xl font-black mb-3">
                     🚀 מוכנים להתחיל?
                   </h3>
-                  <p className="text-lg mb-6 text-white/95">
+                  <p className="text-base sm:text-lg mb-6 text-white/95">
                     נפתח לך עוסק פטור תוך 24 שעות - כולל כל המסמכים והליווי המקצועי
                   </p>
                   <LeadForm 

@@ -93,15 +93,15 @@ export default function LeadForm({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 gap-3">
           <div className="relative">
             <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A5F]/40" />
             <Input
               placeholder="שם מלא *"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="pr-11 h-12 text-base rounded-xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium"
+              className="pr-11 h-14 text-base sm:text-lg rounded-xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium"
               required
             />
           </div>
@@ -113,7 +113,7 @@ export default function LeadForm({
               placeholder="טלפון *"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="pr-11 h-12 text-base rounded-xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium"
+              className="pr-11 h-14 text-base sm:text-lg rounded-xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium"
               required
             />
           </div>
@@ -127,7 +127,7 @@ export default function LeadForm({
               placeholder="אימייל (אופציונלי)"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="pr-11 h-12 text-base rounded-xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium"
+              className="pr-11 h-14 text-base sm:text-lg rounded-xl border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 font-medium"
             />
           </div>
         )}
@@ -139,7 +139,7 @@ export default function LeadForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-14 text-lg md:text-xl font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
+          className="w-full h-16 text-lg sm:text-xl font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg hover:shadow-xl transition-all active:scale-95 touch-manipulation"
         >
           {isSubmitting ? (
             <>
