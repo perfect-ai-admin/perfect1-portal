@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, MousePointer, Clock, Globe, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Users, MousePointer, Clock, Globe, TrendingUp, Loader2, AlertCircle } from 'lucide-react';
 
-// נתוני דמו - ניתן לחבר ל-Google Analytics API
-const TRAFFIC_DATA = {
+// נתוני דמו - יוחלפו בנתונים אמיתיים כשBackend Functions מופעל
+const DEMO_TRAFFIC_DATA = {
   overview: {
     totalVisitors: 12450,
     pageViews: 34820,
@@ -32,8 +33,70 @@ const TRAFFIC_DATA = {
 };
 
 export default function TrafficAnalytics() {
+  const [trafficData, setTrafficData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    fetchAnalyticsData();
+  }, []);
+  
+  const fetchAnalyticsData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/getAnalyticsData', { method: 'POST' });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setTrafficData(data);
+        setError(null);
+      } else {
+        // אם אין Backend Functions - השתמש בנתוני דמו
+        console.warn('Analytics API not available, using demo data');
+        setTrafficData(DEMO_TRAFFIC_DATA);
+        setError(data.note || 'Backend Functions לא מופעל');
+      }
+    } catch (err) {
+      console.error('Analytics fetch error:', err);
+      setTrafficData(DEMO_TRAFFIC_DATA);
+      setError('Backend Functions לא מופעל - מציג נתוני דמו');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+  
+  const TRAFFIC_DATA = trafficData || DEMO_TRAFFIC_DATA;
+  
   return (
     <div className="space-y-6">
+      {error && (
+        <Card className="bg-yellow-50 border-yellow-200">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm text-yellow-800 mb-2">
+                  <strong>נתוני דמו:</strong> {error}
+                </p>
+                <p className="text-xs text-yellow-700">
+                  להפעלת נתונים אמיתיים: Dashboard → Settings → Backend Functions → Enable
+                </p>
+              </div>
+              <Button size="sm" variant="outline" onClick={fetchAnalyticsData}>
+                נסה שוב
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       {/* Overview Stats */}
       <div className="grid md:grid-cols-4 gap-4">
         <Card>
@@ -183,14 +246,15 @@ export default function TrafficAnalytics() {
         </Card>
       </div>
 
-      {/* Note */}
-      <Card className="bg-yellow-50 border-yellow-200">
-        <CardContent className="pt-6">
-          <p className="text-sm text-yellow-800">
-            💡 <strong>הערה:</strong> אלו נתוני דמו. לנתונים אמיתיים, חבר את Google Analytics API ב-Backend Functions.
-          </p>
-        </CardContent>
-      </Card>
+      {!error && (
+        <Card className="bg-green-50 border-green-200">
+          <CardContent className="pt-6">
+            <p className="text-sm text-green-800">
+              ✅ <strong>נתונים אמיתיים מ-Google Analytics</strong> - מתעדכנים כל פעם שהדף נטען
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

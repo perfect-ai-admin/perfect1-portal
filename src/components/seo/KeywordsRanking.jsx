@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, TrendingDown, Minus, Search, Target } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Search, Target, Loader2, AlertCircle } from 'lucide-react';
 
-// מילות מפתח יעד (כאן אפשר להוסיף אינטגרציה עם Google Search Console API)
-const TRACKED_KEYWORDS = [
+// מילות מפתח דמו - יוחלפו בנתונים אמיתיים
+const DEMO_KEYWORDS = [
   { keyword: 'עוסק פטור', position: 3, change: 2, url: '/OsekPatur', searches: 8100, difficulty: 'high' },
   { keyword: 'פתיחת עוסק פטור', position: 1, change: 0, url: '/Services', searches: 2400, difficulty: 'medium' },
   { keyword: 'עוסק פטור אונליין', position: 2, change: 1, url: '/OsekPaturOnline', searches: 1900, difficulty: 'medium' },
@@ -21,6 +21,46 @@ const TRACKED_KEYWORDS = [
 
 export default function KeywordsRanking() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [keywords, setKeywords] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    fetchKeywordsData();
+  }, []);
+  
+  const fetchKeywordsData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/getSearchConsoleData', { method: 'POST' });
+      const data = await response.json();
+      
+      if (response.ok) {
+        setKeywords(data.keywords);
+        setError(null);
+      } else {
+        console.warn('Search Console API not available, using demo data');
+        setKeywords(DEMO_KEYWORDS);
+        setError(data.note || 'Backend Functions לא מופעל');
+      }
+    } catch (err) {
+      console.error('Search Console fetch error:', err);
+      setKeywords(DEMO_KEYWORDS);
+      setError('Backend Functions לא מופעל - מציג נתוני דמו');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+  
+  const TRACKED_KEYWORDS = keywords || DEMO_KEYWORDS;
   
   const filteredKeywords = TRACKED_KEYWORDS.filter(kw =>
     kw.keyword.toLowerCase().includes(searchTerm.toLowerCase())
@@ -65,6 +105,27 @@ export default function KeywordsRanking() {
   
   return (
     <div className="space-y-6">
+      {error && (
+        <Card className="bg-yellow-50 border-yellow-200">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm text-yellow-800 mb-2">
+                  <strong>נתוני דמו:</strong> {error}
+                </p>
+                <p className="text-xs text-yellow-700">
+                  להפעלת נתונים אמיתיים: Dashboard → Settings → Backend Functions → Enable
+                </p>
+              </div>
+              <Button size="sm" variant="outline" onClick={fetchKeywordsData}>
+                נסה שוב
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
       {/* Stats Overview */}
       <div className="grid md:grid-cols-4 gap-4">
         <Card>
@@ -158,15 +219,25 @@ export default function KeywordsRanking() {
       {/* SEO Tips */}
       <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
         <CardHeader>
-          <CardTitle>💡 המלצות SEO</CardTitle>
+          <CardTitle>💡 {error ? 'איך להפעיל נתונים אמיתיים' : 'המלצות SEO'}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li>✓ <strong>מילות מפתח במקום 1-3:</strong> המשך לייצר תוכן איכותי ולעדכן עמודים אלה</li>
-            <li>✓ <strong>מילות מפתח במקום 4-10:</strong> שפר תוכן, הוסף קישורים פנימיים וחצוניים</li>
-            <li>⚠️ <strong>מילות מפתח מתחת למקום 10:</strong> בדוק תוכן, שפר SEO טכני, הוסף מדיה</li>
-            <li>🔍 <strong>חבר Google Search Console:</strong> קבל נתונים מדויקים ובזמן אמת</li>
-          </ul>
+          {error ? (
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li><strong>שלב 1:</strong> לך ל-Dashboard → Settings → Backend Functions</li>
+              <li><strong>שלב 2:</strong> לחץ על Enable Backend Functions</li>
+              <li><strong>שלב 3:</strong> חבר Google App Connector (OAuth)</li>
+              <li><strong>שלב 4:</strong> בקש הרשאות: Analytics + Search Console</li>
+              <li><strong>שלב 5:</strong> רענן עמוד זה - הנתונים יהיו אמיתיים!</li>
+            </ul>
+          ) : (
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li>✓ <strong>מילות מפתח במקום 1-3:</strong> המשך לייצר תוכן איכותי ולעדכן עמודים אלה</li>
+              <li>✓ <strong>מילות מפתח במקום 4-10:</strong> שפר תוכן, הוסף קישורים פנימיים וחצוניים</li>
+              <li>⚠️ <strong>מילות מפתח מתחת למקום 10:</strong> בדוק תוכן, שפר SEO טכני, הוסף מדיה</li>
+              <li>🔍 <strong>נתונים אמיתיים מ-Google:</strong> מתעדכנים אוטומטית!</li>
+            </ul>
+          )}
         </CardContent>
       </Card>
     </div>
