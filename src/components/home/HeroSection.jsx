@@ -42,19 +42,19 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-8"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 sm:px-4 py-2 mb-8 max-w-full"
             >
-              <Users className="w-4 h-4 text-[#D4AF37]" />
-              <span className="text-white/90 text-sm font-medium">פותחים כ-2,000 עוסקים פטורים בשנה</span>
+              <Users className="w-3 sm:w-4 h-3 sm:h-4 text-[#D4AF37] flex-shrink-0" />
+              <span className="text-white/90 text-xs sm:text-sm font-medium truncate">פותחים כ-2,000 עוסקים פטורים בשנה</span>
             </motion.div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 px-2">
               רוצה לפתוח עסק?
               <br />
               <span className="text-[#D4AF37]">אנחנו נעשה את זה בשבילך!</span>
             </h1>
 
-            <div className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-xl lg:mr-0 lg:ml-auto mx-auto font-medium">
+            <div className="text-lg sm:text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-xl lg:mr-0 lg:ml-auto mx-auto font-medium px-4">
               <InternalLinker 
                 content="פתיחת עוסק פטור עם ליווי מלא מהצעד הראשון - אתה עובד, אנחנו מטפלים בכל השאר. תוך 24-72 שעות תתחיל לעבוד חוקית!"
                 currentPage="Home"
@@ -62,23 +62,23 @@ export default function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to={createPageUrl('Contact')}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4">
+              <Link to={createPageUrl('Contact')} className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
-                  className="h-20 px-12 text-2xl font-black rounded-3xl bg-gradient-to-r from-[#27AE60] via-[#2ECC71] to-[#27AE60] hover:from-[#2ECC71] hover:via-[#27AE60] hover:to-[#2ECC71] text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse-glow"
+                  className="w-full sm:w-auto h-14 sm:h-16 md:h-20 px-6 sm:px-8 md:px-12 text-base sm:text-lg md:text-2xl font-black rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#27AE60] via-[#2ECC71] to-[#27AE60] hover:from-[#2ECC71] hover:via-[#27AE60] hover:to-[#2ECC71] text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse-glow"
                 >
-                  🚀 בוא נתחיל את העסק!
-                  <ArrowLeft className="mr-3 w-6 h-6" />
+                  🚀 בוא נתחיל!
+                  <ArrowLeft className="mr-2 sm:mr-3 w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" />
                 </Button>
               </Link>
-              <a href="tel:0502277087">
+              <a href="tel:0502277087" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="h-20 px-12 text-2xl font-black rounded-3xl border-4 border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-[#1E3A5F] transition-all hover:scale-105 shadow-2xl"
+                  className="w-full sm:w-auto h-14 sm:h-16 md:h-20 px-6 sm:px-8 md:px-12 text-base sm:text-lg md:text-2xl font-black rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-white/40 bg-white/10 backdrop-blur-sm text-white hover:bg-white hover:text-[#1E3A5F] transition-all hover:scale-105 shadow-2xl"
                 >
-                  📞 התקשר עכשיו
+                  📞 התקשר
                 </Button>
               </a>
             </div>
@@ -88,18 +88,18 @@ export default function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-10"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-6 mt-10 px-4"
             >
-              <div className="flex items-center gap-2 text-white/70">
-                <CheckCircle className="w-5 h-5 text-[#27AE60]" />
+              <div className="flex items-center gap-2 text-white/70 text-sm sm:text-base">
+                <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-[#27AE60] flex-shrink-0" />
                 <span>מחיר שקוף</span>
               </div>
-              <div className="flex items-center gap-2 text-white/70">
-                <CheckCircle className="w-5 h-5 text-[#27AE60]" />
+              <div className="flex items-center gap-2 text-white/70 text-sm sm:text-base">
+                <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-[#27AE60] flex-shrink-0" />
                 <span>רו"ח זמין</span>
               </div>
-              <div className="flex items-center gap-2 text-white/70">
-                <CheckCircle className="w-5 h-5 text-[#27AE60]" />
+              <div className="flex items-center gap-2 text-white/70 text-sm sm:text-base">
+                <CheckCircle className="w-4 sm:w-5 h-4 sm:h-5 text-[#27AE60] flex-shrink-0" />
                 <span>24-72 שעות</span>
               </div>
             </motion.div>
