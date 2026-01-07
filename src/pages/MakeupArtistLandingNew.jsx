@@ -41,7 +41,7 @@ export default function MakeupArtistLandingNew() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור למאפרות 2026 - המדריך המלא + ליווי מקצועי"
+        title="פתיחת עוסק פטור מאפרת 2026 - המדריך המלא + ליווי מקצועי"
         description="מאפרת שרוצה לעבוד חוקית? פתיחת עוסק פטור למאפרות ב-249₪ בלבד. כולל הנפקת קבלות, ליווי שוטף ודוח שנתי. התחילי לעבוד חוקית עוד היום!"
         keywords="פתיחת עוסק פטור למאפרת, מאפרת עוסק פטור, איפור עוסק פטור, פתיחת עסק למאפרת"
         canonical="https://perfect1.co.il/makeup-artist-osek-patur"

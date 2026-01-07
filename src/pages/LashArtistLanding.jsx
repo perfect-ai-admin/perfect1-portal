@@ -39,7 +39,7 @@ export default function LashArtistLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור להארכת ריסים 2026 - מעצבות ריסים"
+        title="פתיחת עוסק פטור הארכת ריסים 2026 - מעצבת ריסים"
         description="מעצבת ריסים שרוצה לעבוד חוקית? פתיחת עוסק פטור ב-249₪. מושלם להארכת ריסים, למינציה וליפט. אפליקציה + ליווי + דוח שנתי."
         keywords="פתיחת עוסק פטור הארכת ריסים, מעצבת ריסים עוסק פטור, למינציה ריסים עוסק פטור"
         canonical="https://perfect1.co.il/lash-artist-osek-patur"

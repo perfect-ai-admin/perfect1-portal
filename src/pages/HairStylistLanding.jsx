@@ -39,7 +39,7 @@ export default function HairStylistLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור למעצבות שיער 2026 - סלון ביתי או כיסא בסלון"
+        title="פתיחת עוסק פטור מעצבת שיער 2026 - סלון ביתי או כיסא בסלון"
         description="מעצבת שיער שרוצה לפתוח סלון ביתי או כיסא בסלון? פתיחת עוסק פטור ב-249₪. כולל אפליקציה, ליווי ודוח שנתי. עבדי חוקית!"
         keywords="פתיחת עוסק פטור מעצבת שיער, מספרה עוסק פטור, סלון שיער ביתי עוסק פטור"
         canonical="https://perfect1.co.il/hair-stylist-osek-patur"

@@ -199,7 +199,7 @@ export default function ProfessionPage() {
                 {profession.icon}
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
-                פתיחת עוסק פטור ל{profession.name}ים
+                פתיחת עוסק פטור - {profession.name}
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
                 ליווי מקצועי מהצעד הראשון ועד ניהול העסק השוטף
@@ -316,7 +316,7 @@ export default function ProfessionPage() {
                   viewport={{ once: true }}
                 >
                   <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                    📌 טיפים חשובים ל{profession.name}ים
+                    📌 טיפים חשובים למקצוע
                   </h2>
                   <div className="space-y-3">
                     {profession.tips.map((tip, index) => (
@@ -357,7 +357,7 @@ export default function ProfessionPage() {
                     viewport={{ once: true }}
                   >
                     <LeadForm 
-                      title={`רוצה לפתוח עוסק פטור כ${profession.name}?`}
+                      title="רוצה לפתוח עוסק פטור?"
                       subtitle="השאר פרטים ונחזור אליך"
                       defaultProfession={profession.name}
                       sourcePage={`דף מקצוע - ${profession.name}`}
