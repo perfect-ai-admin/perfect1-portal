@@ -9,7 +9,7 @@ export default function TechnicianLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור לטכנאי מחשבים וסלולר | Perfect One"
+        title="פתיחת עוסק פטור טכנאי מחשבים | Perfect One"
         description="פתיחת עוסק פטור לטכנאי מחשבים וסלולר בליווי מלא. טיפול מול הרשויות, בלי בירוקרטיה. התחל לעבוד חוקי תוך 24-72 שעות."
         keywords="פתיחת עוסק טכנאי מחשבים, עוסק פטור טכנאי סלולר, פתיחת תיק טכנאי מחשבים, רואה חשבון לטכנאים, טכנאי עצמאי, עוסק פטור תיקון מחשבים"
         canonical="https://perfect1.co.il/technician"

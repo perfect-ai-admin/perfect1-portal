@@ -9,7 +9,7 @@ export default function FitnessTrainerLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור למאמני כושר | Perfect One"
+        title="פתיחת עוסק פטור מאמן כושר | Perfect One"
         description="פתיחת עוסק מאמן כושר בליווי מלא. עוסק פטור מאמן אישי - טיפול מול הרשויות, בלי בירוקרטיה. רואה חשבון למאמני כושר. התחל לאמן חוקית תוך 24-72 שעות."
         keywords="פתיחת עוסק מאמן כושר, עוסק פטור מאמן אישי, פתיחת תיק מאמן כושר, רואה חשבון למאמני כושר, מאמן כושר עצמאי"
         canonical="https://perfect1.co.il/fitness-trainer"

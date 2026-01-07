@@ -40,7 +40,7 @@ export default function ComputerTechnicianLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור לטכנאי מחשבים וסלולר | Perfect One"
+        title="פתיחת עוסק פטור לטכנאי מחשבים | Perfect One"
         description="פתיחת עוסק פטור לטכנאי מחשבים וטכנאי סלולר. ליווי מלא, בלי בירוקרטיה, בלי ריצות. התחל לעבוד חוקי ולהוציא חשבוניות. 0502277087"
         keywords="פתיחת עוסק טכנאי מחשבים, עוסק פטור טכנאי סלולר, פתיחת תיק טכנאי מחשבים, רואה חשבון לטכנאים, טכנאי עצמאי, עוסק פטור תיקון מחשבים"
         canonical="https://perfect1.co.il/computer-technician"

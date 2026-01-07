@@ -9,7 +9,7 @@ export default function PhotographerLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור לצלמים | Perfect One"
+        title="פתיחת עוסק פטור צלם | Perfect One"
         description="פתיחת עוסק צלם בליווי מלא. עוסק פטור צילום - טיפול מול הרשויות, בלי בירוקרטיה. רואה חשבון לצלמים. התחל לעבוד חוקי תוך 24-72 שעות."
         keywords="פתיחת עוסק צלם, עוסק פטור צילום, פתיחת תיק לצלם, רואה חשבון לצלמים, צלם עצמאי, עוסק פטור לצלמים"
         canonical="https://perfect1.co.il/photographer"

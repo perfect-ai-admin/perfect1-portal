@@ -44,7 +44,7 @@ export default function MakeupArtistLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור למאפרות | המרכז לעוסקים פטורים"
+        title="פתיחת עוסק פטור מאפרת | המרכז לעוסקים פטורים"
         description="פתיחת עוסק פטור למאפרות בליווי מלא, אונליין, בלי בירוקרטיה. התחילי לעבוד חוקי ולהוציא קבלות. 0502277087"
         keywords="פתיחת עוסק פטור מאפרת, עוסק פטור למאפרות, רואה חשבון למאפרת, מאפרת עצמאית, איפור כלות"
         canonical="https://perfect1.co.il/makeup-artist"

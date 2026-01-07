@@ -9,7 +9,7 @@ export default function GraphicDesignerLanding() {
   return (
     <>
       <SEOOptimized
-        title="פתיחת עוסק פטור למעצבים גרפיים | Perfect One"
+        title="פתיחת עוסק פטור מעצב גרפי | Perfect One"
         description="פתיחת עוסק פטור מעצב גרפי בליווי מלא. טיפול מול הרשויות, בלי בירוקרטיה. רואה חשבון למעצבים גרפיים. התחל לעבוד חוקי תוך 24-72 שעות."
         keywords="פתיחת עוסק מעצב גרפי, עוסק פטור מעצב גרפי, פתיחת תיק עיצוב גרפי, רואה חשבון למעצבים גרפיים, מעצב גרפי עצמאי, עוסק פטור עיצוב"
         canonical="https://perfect1.co.il/graphic-designer"
