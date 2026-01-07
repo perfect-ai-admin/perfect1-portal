@@ -71,8 +71,8 @@ export default function Home() {
         <FeaturesSection />
         <ServicesSection />
         <ProfessionsGrid />
-        <ProcessSection />
         <QuickCTASection />
+        <ProcessSection />
         <FAQSection />
         <CTASection />
       </main>
