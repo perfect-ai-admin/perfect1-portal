@@ -136,7 +136,13 @@ export default function InternalLinker({
 
   return (
     <div 
-      className="internal-linked-content"
+      className="prose prose-lg prose-headings:text-[#1E3A5F] prose-headings:font-black prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:border-b prose-h2:border-gray-200 prose-h2:pb-3 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-[#2C5282] prose-p:text-gray-700 prose-p:leading-loose prose-p:mb-6 prose-strong:text-[#1E3A5F] prose-strong:font-bold prose-em:text-[#D4AF37] prose-em:font-semibold prose-ul:my-6 prose-ul:space-y-3 prose-li:my-0 prose-li:pl-2 prose-a:text-[#1E3A5F] prose-a:font-semibold prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 hover:prose-a:text-[#27AE60] prose-blockquote:border-r-4 prose-blockquote:border-[#D4AF37] prose-blockquote:bg-gray-50 prose-blockquote:pr-6 prose-blockquote:py-4 prose-blockquote:my-8 prose-blockquote:rounded-lg prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:text-[#1E3A5F] max-w-none"
+      style={{
+        direction: 'rtl',
+        fontFamily: 'Heebo, sans-serif',
+        fontSize: '1.125rem',
+        lineHeight: '1.8'
+      }}
       dangerouslySetInnerHTML={{ __html: processedContent }}
     />
   );
