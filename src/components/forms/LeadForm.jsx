@@ -59,6 +59,25 @@ export default function LeadForm({
         status: 'new'
       });
 
+      // Send to Google Sheets
+      const whatsappLink = `https://wa.me/972${formData.phone.replace(/^0/, '')}`;
+      try {
+        await base44.integrations.Core.GoogleSheetsAppendRow({
+          spreadsheet_id: '1NX5zwyW3WLxN9vAs60sfyq0r5bnTc8_WzGaD525EiVI',
+          range: 'Sheet1!A:E',
+          values: [[
+            formData.name,
+            formData.phone,
+            sourcePage,
+            whatsappLink,
+            new Date().toLocaleString('he-IL')
+          ]]
+        });
+      } catch (sheetsError) {
+        console.error('Google Sheets error:', sheetsError);
+        // Continue even if sheets fails
+      }
+
       // Send to WhatsApp
       const message = `🔔 ליד חדש מהאתר!
 
