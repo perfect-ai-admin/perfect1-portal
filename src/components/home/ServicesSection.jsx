@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import InternalLinker from '../seo/InternalLinker';
 import { CheckCircle, FileText, Building2, Shield, Receipt, LineChart, Smartphone, UserCheck } from 'lucide-react';
 
 const services = [
@@ -29,9 +30,12 @@ export default function ServicesSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-[#1E3A5F] mb-4">
             מה כולל השירות שלנו?
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            שירות מקיף שמלווה אותך מהרגע הראשון ולאורך כל הדרך
-          </p>
+          <div className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <InternalLinker 
+              content="שירות מקיף לפתיחת עוסק פטור שמלווה אותך מהרגע הראשון ולאורך כל הדרך עם ליווי חודשי ודוח שנתי"
+              currentPage="Home"
+            />
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
