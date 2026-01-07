@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
+import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { Button } from '@/components/ui/button';
 import { 
@@ -94,9 +95,12 @@ export default function Services() {
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
               השירותים שלנו
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              מגוון שירותים מקיף לעוסקים פטורים - הכל במקום אחד
-            </p>
+            <div className="text-xl text-white/80 max-w-2xl mx-auto">
+              <InternalLinker
+                content="מגוון שירותים מקיף לפתיחת עוסק פטור וליווי חודשי - הכל במקום אחד"
+                currentPage="Services"
+              />
+            </div>
           </motion.div>
         </div>
       </section>
@@ -156,9 +160,12 @@ export default function Services() {
             <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">
               לא בטוח מה מתאים לך?
             </h2>
-            <p className="text-gray-600 text-lg mb-8">
-              צור קשר לייעוץ חינם ונעזור לך למצוא את השירות המתאים
-            </p>
+            <div className="text-gray-600 text-lg mb-8">
+              <InternalLinker
+                content="צור קשר לייעוץ חינם ונעזור לך לפתוח עוסק פטור ולמצוא את השירות המתאים"
+                currentPage="Services"
+              />
+            </div>
             <Link to={createPageUrl('Contact')}>
               <Button 
                 size="lg"
