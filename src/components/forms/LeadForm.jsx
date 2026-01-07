@@ -173,10 +173,14 @@ export default function LeadForm({
           ) : (
             <>
               <Send className="w-5 h-5 ml-2" />
-              קבל ייעוץ חינם 🚀
+              בדיקה ללא התחייבות
             </>
           )}
         </Button>
+
+        <p className="text-xs text-center text-gray-500 mt-3">
+          🔒 ליווי אנושי, לא בוט • הכוונה מותאמת אישית • בלי ספאם
+        </p>
       </form>
     </div>
   );
