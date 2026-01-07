@@ -6,6 +6,7 @@ import LeadForm from '../components/forms/LeadForm';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import AnswerBlock from '../components/seo/AnswerBlock';
 import InternalLinker from '../components/seo/InternalLinker';
+import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { schemaTemplates } from './SEOOptimized';
 
 const professionsData = {
