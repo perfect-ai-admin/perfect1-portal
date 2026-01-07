@@ -95,34 +95,13 @@ export default function ThankYou() {
               </p>
             </motion.div>
 
-            {/* Contact Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
-            >
-              <a href="https://wa.me/972502277087?text=היי, השארתי פרטים באתר" target="_blank" rel="noopener noreferrer">
-                <Button className="w-full sm:w-auto bg-[#25D366] hover:bg-[#128C7E] text-white h-12 px-6">
-                  <MessageCircle className="w-5 h-5 ml-2" />
-                  שלח וואטסאפ עכשיו
-                </Button>
-              </a>
-              <a href="tel:0502277087">
-                <Button variant="outline" className="w-full sm:w-auto border-[#1E3A5F] text-[#1E3A5F] h-12 px-6">
-                  <Phone className="w-5 h-5 ml-2" />
-                  התקשר: 0502277087
-                </Button>
-              </a>
-            </motion.div>
-
             {/* Divider */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-white px-4 text-sm text-gray-500">רגע לפני שאתה הולך...</span>
+                <span className="bg-white px-4 text-sm text-gray-500">בינתיים, יש לנו משהו מיוחד בשבילך...</span>
               </div>
             </div>
 
@@ -131,21 +110,54 @@ export default function ThankYou() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="bg-gradient-to-br from-[#D4AF37]/10 to-[#F4D03F]/10 rounded-2xl p-6 border-2 border-[#D4AF37]/30"
+              className="bg-gradient-to-br from-[#D4AF37] to-[#F4D03F] rounded-2xl p-6 md:p-8"
             >
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Sparkles className="w-6 h-6 text-[#D4AF37]" />
-                <h3 className="text-xl font-bold text-[#1E3A5F]">הצעה מיוחדת רק בשבילך!</h3>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Sparkles className="w-8 h-8 text-white" />
+                <h3 className="text-2xl md:text-3xl font-black text-white">מתנה מיוחדת!</h3>
               </div>
-              <p className="text-gray-600 mb-4">
-                רוצה להתחיל לקבל לקוחות דרך האינטרנט?<br />
-                קבל <strong>ייעוץ שיווק דיגיטלי ראשוני בחינם</strong> 🎁
+              
+              <p className="text-white text-xl font-bold mb-6 text-center">
+                ייעוץ שיווק דיגיטלי בשווי 500₪ - בחינם! 🎁
               </p>
+
+              {/* Why Marketing is Important */}
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-6 text-right">
+                <h4 className="text-white font-bold text-lg mb-4 text-center">למה שיווק זה קריטי להצלחת העסק?</h4>
+                <ul className="space-y-3 text-white/95">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                    <span><strong>לקוחות לא יבואו מעצמם</strong> - גם אם יש לך את השירות הכי טוב בעולם, בלי שיווק נכון אף אחד לא יגיע אליך</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                    <span><strong>תחרות עזה בכל תחום</strong> - יש עשרות ומאות עסקים דומים לשלך. שיווק חכם עוזר לך להתבלט ולהגיע ראשון ללקוחות הפוטנציאליים</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                    <span><strong>החזר השקעה מדהים</strong> - שיווק נכון מחזיר את ההשקעה פי 3-5 בממוצע! זו לא הוצאה, זו ההשקעה החכמה ביותר שתעשה</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                    <span><strong>בניית מותג חזק</strong> - שיווק עקבי ואיכותי בונה לך מותג מוכר ומהימן שמביא לקוחות שחוזרים ומפנים אחרים</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                    <span><strong>התחלה נכונה = הצלחה מהירה</strong> - רוב העסקים שנכשלים לא עשו מספיק שיווק בתקופה הראשונית. נתחיל אותך נכון!</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p className="text-white/90 text-center mb-6">
+                לכן, אנחנו מעניקים לך <strong>ייעוץ מקצועי שווה 500₪ בחינם</strong><br />
+                כדי שתתחיל את הדרך נכון ותראה תוצאות מהר יותר 🚀
+              </p>
+
               <Button
                 onClick={() => setShowMarketingPopup(true)}
-                className="w-full h-12 bg-gradient-to-r from-[#D4AF37] to-[#F4D03F] hover:from-[#F4D03F] hover:to-[#D4AF37] text-white font-bold text-lg"
+                className="w-full h-14 bg-white text-[#1E3A5F] hover:bg-white/90 font-black text-lg shadow-xl"
               >
-                כן! אני רוצה ייעוץ בחינם
+                כן! אני רוצה את הייעוץ בחינם
               </Button>
             </motion.div>
           </div>
