@@ -5,8 +5,8 @@
 
 export const LINKING_CONFIG = {
   enabled: true,
-  maxLinksPerPage: 5, // מקסימום קישורים אוטומטיים לדף
-  maxLinksToSameTarget: 2, // מקסימום קישורים לאותו דף יעד מאותו עמוד
+  maxLinksPerPage: 3, // מקסימום קישורים אוטומטיים לדף (הפחתה למניעת ספאם)
+  maxLinksToSameTarget: 1, // רק קישור אחד לכל דף יעד (מניעת קניבליזציה)
 };
 
 // =====================================================
@@ -16,22 +16,22 @@ export const LINKING_CONFIG = {
 export const KEYWORD_MAPPING = [
   // ============ Primary Keywords ============
   {
-    keywords: ['פתיחת עוסק פטור', 'לפתוח עוסק פטור', 'פותחים עוסק פטור'],
+    keywords: ['פתיחת עוסק פטור', 'לפתוח עוסק פטור', 'איך פותחים עוסק פטור'],
     target: {
-      page: 'OsekPaturLanding',
+      page: 'Home',
       params: null
     },
     priority: 'primary',
     context: ['עצמאי', 'עסק', 'רישום', 'מס הכנסה']
   },
   {
-    keywords: ['פתיחת תיק עוסק פטור', 'פתיחת תיק במס הכנסה'],
+    keywords: ['מדריך פתיחת עוסק פטור', 'מדריך לפתיחת עוסק'],
     target: {
       page: 'Home',
       params: null
     },
     priority: 'primary',
-    context: ['תיק', 'מס', 'רישום']
+    context: ['מדריך', 'הסבר', 'שלבים']
   },
   {
     keywords: ['פתיחת עוסק פטור אונליין', 'עוסק פטור אונליין', 'פתיחת עוסק אונליין'],
@@ -72,9 +72,20 @@ export const KEYWORD_MAPPING = [
     context: ['שנתי', 'דיווח', 'מס הכנסה']
   },
 
+  // ============ Category Page ============
+  {
+    keywords: ['פתיחת עוסק פטור לפי מקצוע', 'עוסק פטור למקצועות שונים'],
+    target: {
+      page: 'Professions',
+      params: null
+    },
+    priority: 'secondary',
+    context: ['מקצוע', 'מקצועות', 'תחום']
+  },
+
   // ============ Profession Keywords (Long-tail) ============
   {
-    keywords: ['צלם עוסק פטור', 'פתיחת עוסק פטור לצלם'],
+    keywords: ['עוסק פטור לצלם', 'פתיחת עוסק פטור לצלם'],
     target: {
       page: 'ProfessionPage',
       params: 'slug=tzalam'
@@ -83,7 +94,7 @@ export const KEYWORD_MAPPING = [
     context: ['צילום', 'צלם', 'אירועים']
   },
   {
-    keywords: ['מעצב גרפי עוסק פטור', 'פתיחת עוסק פטור למעצבים'],
+    keywords: ['עוסק פטור למעצב גרפי', 'פתיחת עוסק פטור למעצב גרפי'],
     target: {
       page: 'ProfessionPage',
       params: 'slug=meatzev-grafi'
@@ -92,7 +103,7 @@ export const KEYWORD_MAPPING = [
     context: ['עיצוב', 'גרפיקה', 'לוגו']
   },
   {
-    keywords: ['קופירייטר עוסק פטור', 'כותב תוכן עוסק פטור'],
+    keywords: ['עוסק פטור לקופירייטר', 'פתיחת עוסק פטור לקופירייטר'],
     target: {
       page: 'ProfessionPage',
       params: 'slug=copywriter'
@@ -101,7 +112,7 @@ export const KEYWORD_MAPPING = [
     context: ['כתיבה', 'תוכן', 'קופירייטינג']
   },
   {
-    keywords: ['מפתח אתרים עוסק פטור', 'פתיחת עוסק למפתח'],
+    keywords: ['עוסק פטור למפתח אתרים', 'פתיחת עוסק פטור למפתח'],
     target: {
       page: 'ProfessionPage',
       params: 'slug=mefateach-atarim'
@@ -110,7 +121,7 @@ export const KEYWORD_MAPPING = [
     context: ['אתרים', 'פיתוח', 'קוד']
   },
   {
-    keywords: ['מאמן כושר עוסק פטור', 'פתיחת עוסק למאמן כושר'],
+    keywords: ['עוסק פטור למאמן כושר', 'פתיחת עוסק פטור למאמן כושר'],
     target: {
       page: 'ProfessionPage',
       params: 'slug=meamen-kosher'

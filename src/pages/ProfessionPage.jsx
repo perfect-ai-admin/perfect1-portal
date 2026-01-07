@@ -241,8 +241,8 @@ export default function ProfessionPage() {
       />
       <Breadcrumbs 
         items={[
-          { label: 'בית', url: 'Home' },
-          { label: 'מקצועות', url: 'Professions' },
+          { label: 'פתיחת עוסק פטור', url: 'Home' },
+          { label: 'לפי מקצוע', url: 'Professions' },
           { label: profession.name }
         ]}
       />
@@ -411,6 +411,27 @@ export default function ProfessionPage() {
                       </p>
                     </div>
                   </div>
+                </motion.div>
+
+                {/* Navigation Links */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200"
+                >
+                  <a 
+                    href="/Professions" 
+                    className="flex-1 text-center px-6 py-3 bg-white border-2 border-[#1E3A5F] text-[#1E3A5F] rounded-xl hover:bg-[#1E3A5F] hover:text-white transition-colors font-medium"
+                  >
+                    ← חזרה לכל המקצועות
+                  </a>
+                  <a 
+                    href="/" 
+                    className="flex-1 text-center px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:border-[#1E3A5F] hover:text-[#1E3A5F] transition-colors font-medium"
+                  >
+                    למדריך פתיחת עוסק פטור
+                  </a>
                 </motion.div>
               </div>
 

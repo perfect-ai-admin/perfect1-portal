@@ -13,18 +13,34 @@ export default function Professions() {
       <main className="pt-20">
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
               פתיחת עוסק פטור לפי מקצוע
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              יש לנו ניסיון רב בפתיחת עוסקים פטורים ליותר מ-60 מקצועות שונים. 
-              מצא את המקצוע שלך וקבל מידע מותאם.
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              לכל מקצוע יש דרישות, הוצאות מוכרות ודגשים שונים בתהליך פתיחת העוסק הפטור.
+              בחר את המקצוע שלך וקבל מידע מותאם אישית - מהפתיחה ועד הניהול השוטף.
             </p>
+          </motion.div>
+          
+          {/* Internal Link to Main Guide */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-center"
+          >
+            <a 
+              href="/" 
+              className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm"
+            >
+              ← למדריך המלא לפתיחת עוסק פטור
+            </a>
           </motion.div>
         </div>
       </section>
