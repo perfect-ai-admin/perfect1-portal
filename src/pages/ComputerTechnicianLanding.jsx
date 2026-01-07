@@ -29,17 +29,7 @@ export default function ComputerTechnicianLanding() {
         status: 'new'
       });
 
-      const message = `🔧 ליד חדש - טכנאי!
-
-👤 שם: ${formData.name}
-📞 טלפון: ${formData.phone}
-💼 מקצוע: ${formData.profession}
-
-📍 מקור: דף נחיתה טכנאי מחשבים
-📅 ${new Date().toLocaleString('he-IL')}`;
-
-      window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
-      setIsSuccess(true);
+      window.location.href = '/ThankYou';
     } catch (err) {
       console.error(err);
     } finally {
