@@ -65,33 +65,18 @@ export default function LeadForm({
         await base44.integrations.Core.GoogleSheetsAppendRow({
           spreadsheet_url: 'https://docs.google.com/spreadsheets/d/1NX5zwyW3WLxN9vAs60sfyq0r5bnTc8_WzGaD525EiVI/edit',
           sheet_name: 'Sheet1',
-          values: [
-            new Date().toLocaleString('he-IL'),
-            sourcePage,
+          values: [[
             formData.name,
             formData.phone,
             formData.email || '',
+            sourcePage,
             whatsappLink
-          ]
+          ]]
         });
       } catch (sheetsError) {
         console.error('Google Sheets error:', sheetsError);
         // Continue even if sheets fails
       }
-
-      // Send to WhatsApp
-      const message = `🔔 ליד חדש מהאתר!
-
-👤 שם: ${formData.name}
-📞 טלפון: ${formData.phone}
-📧 אימייל: ${formData.email || 'לא צוין'}
-💼 מקצוע: ${formData.profession || 'לא צוין'}
-💬 הערות: ${formData.notes || 'אין'}
-
-📍 מקור: ${sourcePage}
-📅 תאריך: ${new Date().toLocaleString('he-IL')}`;
-
-      window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
 
       // Show success and redirect
       setIsSuccess(true);
