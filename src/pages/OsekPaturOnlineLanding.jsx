@@ -28,17 +28,7 @@ export default function OsekPaturOnlineLanding() {
         status: 'new'
       });
 
-      const message = `🌐 ליד חדש - פתיחת עוסק פטור אונליין!
-
-👤 שם: ${formData.name}
-📞 טלפון: ${formData.phone}
-💼 עיסוק: ${formData.profession || 'לא צוין'}
-
-📍 מקור: דף נחיתה פתיחת עוסק פטור אונליין
-📅 ${new Date().toLocaleString('he-IL')}`;
-
-      window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
-      setIsSuccess(true);
+      window.location.href = '/ThankYou';
     } catch (err) {
       console.error(err);
     } finally {
