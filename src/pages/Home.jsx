@@ -68,10 +68,10 @@ export default function Home() {
       <main>
         <HeroSection />
         <WhatIsSection />
-        <QuickCTASection />
         <FeaturesSection />
         <ServicesSection />
         <ProfessionsGrid />
+        <QuickCTASection />
         <ProcessSection />
         <FAQSection />
         <CTASection />
