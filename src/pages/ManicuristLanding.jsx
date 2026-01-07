@@ -33,11 +33,7 @@ export default function ManicuristLanding() {
       status: 'new'
     });
 
-    const message = `היי, אני ${formData.name} - מניקוריסטית, מעוניינת לפתוח עוסק פטור. טלפון: ${formData.phone}`;
-    window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
-
-    setIsSuccess(true);
-    setIsSubmitting(false);
+    window.location.href = '/ThankYou';
   };
 
   return (
