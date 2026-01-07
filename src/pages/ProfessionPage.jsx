@@ -1217,8 +1217,14 @@ const defaultProfessionData = {
 };
 
 export default function ProfessionPage() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const slug = urlParams.get('slug') || 'meatzev-grafi';
+  const [slug, setSlug] = React.useState('');
+  
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const slugParam = urlParams.get('slug') || 'meatzev-grafi';
+    setSlug(slugParam);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [window.location.search]);
   
   const professionDetails = professionsData[slug];
   
