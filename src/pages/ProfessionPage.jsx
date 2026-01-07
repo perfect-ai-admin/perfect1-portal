@@ -207,8 +207,9 @@ export default function ProfessionPage() {
   };
   
   const profession = {
+    ...defaultProfessionData,
     ...professionBasic,
-    ...(professionDetails || defaultProfessionData)
+    ...professionDetails
   };
 
   const whatsappMessage = `היי, אני ${profession.name} ומעוניין לפתוח עוסק פטור. אשמח לייעוץ`;
