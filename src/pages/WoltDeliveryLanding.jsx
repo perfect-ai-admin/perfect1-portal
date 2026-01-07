@@ -31,7 +31,7 @@ export default function WoltDeliveryLanding() {
       // Send email notification
       try {
         await base44.integrations.Core.SendEmail({
-          to: 'office@perfect1.co.il',
+          to: 'yosi5919@gmail.com',
           subject: '🚴 ליד חדש - שליח וולט',
           body: `
             <div style="direction: rtl; font-family: Arial, sans-serif;">
