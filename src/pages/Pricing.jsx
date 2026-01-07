@@ -122,7 +122,7 @@ export default function Pricing() {
               <h4 className="font-bold text-gray-800 mb-2">חשוב לדעת</h4>
               <div className="text-gray-600">
                 <InternalLinker 
-                  content="כל המחירים הם + מע"מ. ניתן לבטל את ליווי חודשי בכל עת ללא קנסות. דוח שנתי נדרש רק פעם בשנה ואינו חובה לכל עוסק פטור."
+                  content='כל המחירים הם + מע"מ. ניתן לבטל את ליווי חודשי בכל עת ללא קנסות. דוח שנתי נדרש רק פעם בשנה ואינו חובה לכל עוסק פטור.'
                   currentPage="Pricing"
                 />
               </div>
