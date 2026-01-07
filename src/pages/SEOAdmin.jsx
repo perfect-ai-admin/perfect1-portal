@@ -11,6 +11,10 @@ import { motion } from 'framer-motion';
 
 export default function SEOAdmin() {
   const [excludeUrl, setExcludeUrl] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterAction, setFilterAction] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterDate, setFilterDate] = useState('all');
   const queryClient = useQueryClient();
 
   // Fetch config
@@ -96,6 +100,74 @@ export default function SEOAdmin() {
     } catch (error) {
       alert('❌ שגיאה בשליחת ping: ' + error.message);
     }
+  };
+
+  // Filter and search logs
+  const filteredLogs = logs.filter(log => {
+    // Search filter
+    if (searchQuery && !log.url?.toLowerCase().includes(searchQuery.toLowerCase()) && 
+        !log.entity_name?.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    
+    // Action filter
+    if (filterAction !== 'all' && log.action !== filterAction) {
+      return false;
+    }
+    
+    // Status filter
+    if (filterStatus !== 'all' && log.ping_status !== filterStatus) {
+      return false;
+    }
+    
+    // Date filter
+    if (filterDate !== 'all') {
+      const logDate = new Date(log.created_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (filterDate === 'today') {
+        const logDay = new Date(logDate);
+        logDay.setHours(0, 0, 0, 0);
+        if (logDay.getTime() !== today.getTime()) return false;
+      } else if (filterDate === 'week') {
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        if (logDate < weekAgo) return false;
+      } else if (filterDate === 'month') {
+        const monthAgo = new Date(today);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        if (logDate < monthAgo) return false;
+      }
+    }
+    
+    return true;
+  });
+
+  // Export to CSV
+  const exportToCSV = () => {
+    const headers = ['תאריך', 'Entity', 'פעולה', 'URL', 'שדות שהשתנו', 'שינוי מהותי', 'Ping נשלח', 'סטטוס', 'שגיאה'];
+    const rows = filteredLogs.map(log => [
+      new Date(log.created_date).toLocaleString('he-IL'),
+      log.entity_name,
+      log.action,
+      log.url || '',
+      log.fields_changed?.join(', ') || '',
+      log.is_substantial_change ? 'כן' : 'לא',
+      log.ping_sent ? 'כן' : 'לא',
+      log.ping_status,
+      log.error_message || ''
+    ]);
+    
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+    
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `seo-logs-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
   };
 
   const getStatusBadge = (status) => {
@@ -253,19 +325,137 @@ export default function SEOAdmin() {
         {/* Activity Logs */}
         <Card>
           <CardHeader>
-            <CardTitle>לוג פעילות (50 אחרונים)</CardTitle>
-            <CardDescription>מעקב אחר כל השינויים והפעולות</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>לוג פעילות</CardTitle>
+                <CardDescription>מעקב אחר כל השינויים והפעולות ({filteredLogs.length} תוצאות)</CardDescription>
+              </div>
+              <Button
+                onClick={exportToCSV}
+                variant="outline"
+                size="sm"
+                disabled={filteredLogs.length === 0}
+                className="flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                ייצא ל-CSV
+              </Button>
+            </div>
           </CardHeader>
+          <CardContent>
+            {/* Filters */}
+            <div className="bg-gray-50 p-4 rounded-lg mb-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Search */}
+                <div>
+                  <label className="text-xs font-semibold text-gray-700 mb-2 block">חיפוש</label>
+                  <Input
+                    placeholder="חפש לפי URL או Entity..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-9"
+                  />
+                </div>
+
+                {/* Date Filter */}
+                <div>
+                  <label className="text-xs font-semibold text-gray-700 mb-2 block">תקופה</label>
+                  <select
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                    className="h-9 w-full rounded-md border border-gray-300 px-3 text-sm"
+                  >
+                    <option value="all">כל התקופה</option>
+                    <option value="today">היום</option>
+                    <option value="week">שבוע אחרון</option>
+                    <option value="month">חודש אחרון</option>
+                  </select>
+                </div>
+
+                {/* Action Filter */}
+                <div>
+                  <label className="text-xs font-semibold text-gray-700 mb-2 block">פעולה</label>
+                  <select
+                    value={filterAction}
+                    onChange={(e) => setFilterAction(e.target.value)}
+                    className="h-9 w-full rounded-md border border-gray-300 px-3 text-sm"
+                  >
+                    <option value="all">הכל</option>
+                    <option value="created">נוצר</option>
+                    <option value="updated_content">עודכן (תוכן)</option>
+                    <option value="updated_minor">עודכן (קל)</option>
+                    <option value="deleted">נמחק</option>
+                    <option value="manual_ping">Ping ידני</option>
+                  </select>
+                </div>
+
+                {/* Status Filter */}
+                <div>
+                  <label className="text-xs font-semibold text-gray-700 mb-2 block">סטטוס</label>
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="h-9 w-full rounded-md border border-gray-300 px-3 text-sm"
+                  >
+                    <option value="all">הכל</option>
+                    <option value="success">הצלחה</option>
+                    <option value="failed">נכשל</option>
+                    <option value="skipped">דולג</option>
+                    <option value="error">שגיאה</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Active Filters Summary */}
+              {(searchQuery || filterDate !== 'all' || filterAction !== 'all' || filterStatus !== 'all') && (
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-semibold text-gray-700">מסננים פעילים:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {searchQuery && (
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        חיפוש: {searchQuery}
+                        <button onClick={() => setSearchQuery('')} className="hover:text-red-600">×</button>
+                      </Badge>
+                    )}
+                    {filterDate !== 'all' && (
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        {filterDate === 'today' ? 'היום' : filterDate === 'week' ? 'שבוע' : 'חודש'}
+                        <button onClick={() => setFilterDate('all')} className="hover:text-red-600">×</button>
+                      </Badge>
+                    )}
+                    {filterAction !== 'all' && (
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        {filterAction}
+                        <button onClick={() => setFilterAction('all')} className="hover:text-red-600">×</button>
+                      </Badge>
+                    )}
+                    {filterStatus !== 'all' && (
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        {filterStatus}
+                        <button onClick={() => setFilterStatus('all')} className="hover:text-red-600">×</button>
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
           <CardContent>
             {logsLoading ? (
               <div className="text-center py-8">
                 <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" />
               </div>
-            ) : logs.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">אין פעילות עדיין</p>
+            ) : filteredLogs.length === 0 ? (
+              <div className="text-center py-12">
+                <AlertCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <p className="text-gray-500 font-medium">לא נמצאו תוצאות</p>
+                <p className="text-sm text-gray-400 mt-1">נסה לשנות את הסינון או החיפוש</p>
+              </div>
             ) : (
               <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                {logs.map((log) => (
+                {filteredLogs.map((log) => (
                   <motion.div
                     key={log.id}
                     initial={{ opacity: 0, y: 10 }}
