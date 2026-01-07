@@ -10,6 +10,7 @@ import FAQSection from '../components/home/FAQSection';
 import CTASection from '../components/home/CTASection';
 import QuickCTASection from '../components/home/QuickCTASection';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
+import MicroCTA from '../components/cro/MicroCTA';
 
 export default function Home() {
   return (

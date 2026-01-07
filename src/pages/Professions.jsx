@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import ProfessionsGrid from '../components/home/ProfessionsGrid';
+import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 
 export default function Professions() {

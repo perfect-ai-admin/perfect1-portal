@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import InternalLinker from '../components/seo/InternalLinker';
+import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { Phone, MessageCircle, Mail, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -110,6 +111,8 @@ export default function Contact() {
                   <p className="text-[#1E3A5F]/80">זמן תגובה מקסימלי</p>
                 </div>
               </div>
+
+              <MicroCTA text="מעדיפים להתחיל ישירות?" cta="השאירו פרטים ונחזור אליכם" variant="subtle" />
             </motion.div>
 
             {/* Form */}
