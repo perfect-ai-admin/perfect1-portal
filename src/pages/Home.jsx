@@ -1,5 +1,6 @@
 import React from 'react';
 import HeroSection from '../components/home/HeroSection';
+import WhatIsSection from '../components/home/WhatIsSection';
 import FeaturesSection from '../components/home/FeaturesSection';
 import ServicesSection from '../components/home/ServicesSection';
 import ProcessSection from '../components/home/ProcessSection';
@@ -65,6 +66,7 @@ export default function Home() {
       />
       <main>
         <HeroSection />
+        <WhatIsSection />
         <FeaturesSection />
         <ServicesSection />
         <ProfessionsGrid />
