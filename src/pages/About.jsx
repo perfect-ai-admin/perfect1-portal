@@ -104,7 +104,15 @@ export default function About() {
               </h2>
               <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
                 <InternalLinker 
-                  content="פרפקט וואן נוסדה מתוך הבנה עמוקה שפתיחת עוסק פטור לא צריכה להיות מסובכת. ראינו אנשים מוכשרים שמפחדים לקחת את הצעד הראשון בגלל הבירוקרטיה והחששות מהרשויות. החלטנו לשנות את זה. יצרנו שירות שמלווה עצמאים מהרגע הראשון - מפתיחת תיק עוסק פטור ועד ניהול העסק השוטף. הכל במחיר הוגן ושקוף. היום אנחנו גאים לומר שעזרנו לאלפי עצמאים לפתוח עוסק ולהגשים את החלום שלהם."
+                  content="פרפקט וואן נוסדה מתוך הבנה עמוקה שפתיחת עוסק פטור לא צריכה להיות מסובכת. ראינו אנשים מוכשרים שמפחדים לקחת את הצעד הראשון בגלל הבירוקרטיה והחששות מהרשויות. החלטנו לשנות את זה."
+                  currentPage="About"
+                />
+                <p className="text-gray-600">
+                  <strong>המייסדים שלנו</strong> - רואי חשבון ויועצי מס מוסמכים עם למעלה מעשור ניסיון בתחום. 
+                  עברנו את כל התהליכים בעצמנו, הכרנו את הקשיים מקרוב, ויצרנו פתרון שממש עובד.
+                </p>
+                <InternalLinker 
+                  content="יצרנו שירות שמלווה עצמאים מהרגע הראשון - מפתיחת תיק עוסק פטור ועד ניהול העסק השוטף. הכל במחיר הוגן ושקוף. היום אנחנו גאים לומר שעזרנו לאלפי עצמאים לפתוח עוסק ולהגשים את החלום שלהם."
                   currentPage="About"
                 />
               </div>
@@ -181,6 +189,41 @@ export default function About() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Contact & Trust Section */}
+      <section className="py-16 bg-white border-t border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <h2 className="text-2xl font-bold text-[#1E3A5F] mb-6">צרו איתנו קשר</h2>
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              <div className="p-4">
+                <p className="text-gray-500 text-sm mb-1">טלפון</p>
+                <a href="tel:0502277087" className="text-[#1E3A5F] font-bold text-lg hover:text-[#27AE60]">
+                  050-227-7087
+                </a>
+              </div>
+              <div className="p-4">
+                <p className="text-gray-500 text-sm mb-1">אימייל</p>
+                <a href="mailto:info@perfect1.co.il" className="text-[#1E3A5F] font-bold text-lg hover:text-[#27AE60]">
+                  info@perfect1.co.il
+                </a>
+              </div>
+              <div className="p-4">
+                <p className="text-gray-500 text-sm mb-1">שעות פעילות</p>
+                <p className="text-gray-700 font-medium">ראשון-חמישי 9:00-18:00</p>
+              </div>
+            </div>
+            <p className="text-gray-500 text-sm">
+              פרפקט וואן | ח.פ. מוסמך | רישום עוסקים פטורים ברחבי הארץ | כל הזכויות שמורות © 2024
+            </p>
+          </motion.div>
         </div>
       </section>
 
