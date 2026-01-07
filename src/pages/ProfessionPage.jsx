@@ -233,8 +233,8 @@ export default function ProfessionPage() {
     <>
       <SEOOptimized
         title={`פתיחת עוסק פטור ${profession.name} - ליווי מקצועי | Perfect One`}
-        description={`${profession.description} ליווי מלא לפתיחת עוסק פטור ${profession.name} בישראל. ${profession.services[0]}, ${profession.services[1]} ועוד. התקשרו: 0502277087`}
-        keywords={`עוסק פטור ${profession.name}, פתיחת עוסק ${profession.name}, ${profession.name} עצמאי, ${profession.services.join(', ')}`}
+        description={`${profession.description} ליווי מלא לפתיחת עוסק פטור ${profession.name} בישראל. ${profession.services && profession.services[0] ? `${profession.services[0]}, ${profession.services[1]} ועוד.` : ''} התקשרו: 0502277087`}
+        keywords={`עוסק פטור ${profession.name}, פתיחת עוסק ${profession.name}, ${profession.name} עצמאי${profession.services ? ', ' + profession.services.join(', ') : ''}`}
         canonical={`https://perfect1.co.il${window.location.pathname}${window.location.search}`}
         schema={localBusinessSchema}
       />
