@@ -989,53 +989,72 @@ export default function ProfessionPage() {
         ]}
       />
       <main className="pt-20">
-        {/* Hero */}
-        <section 
-          className="py-20 relative overflow-hidden"
-          style={{ backgroundColor: profession.color + '15' }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center"
-            >
-              <div 
-                className="w-24 h-24 mx-auto rounded-3xl flex items-center justify-center text-5xl mb-6 shadow-lg"
-                style={{ backgroundColor: profession.color + '30' }}
-              >
-                {profession.icon}
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
-                פתיחת עוסק פטור - {profession.name}
-              </h1>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-                ליווי מקצועי מהצעד הראשון ועד ניהול העסק השוטף
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href={`https://wa.me/972502277087?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
-                  <Button 
-                    size="lg" 
-                    className="h-14 px-8 text-lg font-bold rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white"
-                  >
-                    <MessageCircle className="w-5 h-5 ml-2" />
-                    דברו איתנו בוואטסאפ
-                  </Button>
-                </a>
-                <a href="tel:0502277087">
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    className="h-14 px-8 text-lg font-bold rounded-full border-[#1E3A5F] text-[#1E3A5F]"
-                  >
-                    <Phone className="w-5 h-5 ml-2" />
-                    0502277087
-                  </Button>
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+      {/* Hero */}
+      <section 
+      className="py-20 relative overflow-hidden"
+      style={{ backgroundColor: profession.color + '15' }}
+      >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-center"
+      >
+      <div 
+        className="w-24 h-24 mx-auto rounded-3xl flex items-center justify-center text-5xl mb-6 shadow-lg"
+        style={{ backgroundColor profession.color + '30' }}
+      >
+        {profession.icon}
+      </div>
+      <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
+        פתיחת עוסק פטור - {profession.name}
+      </h1>
+      <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+        ליווי מקצועי מהצעד הראשון ועד ניהול העסק השוטף
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={`https://wa.me/972502277087?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
+          <Button 
+            size="lg" 
+            className="h-14 px-8 text-lg font-bold rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white"
+          >
+            <MessageCircle className="w-5 h-5 ml-2" />
+            דברו איתנו בוואטסאפ
+          </Button>
+        </a>
+        <a href="tel:0502277087">
+          <Button 
+            size="lg" 
+            variant="outline"
+            className="h-14 px-8 text-lg font-bold rounded-full border-[#1E3A5F] text-[#1E3A5F]"
+          >
+            <Phone className="w-5 h-5 ml-2" />
+            0502277087
+          </Button>
+        </a>
+      </div>
+      </motion.div>
+      </div>
+      </section>
+
+      {/* Context Introduction - SEO Hierarchical */}
+      <section className="py-8 bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="max-w-4xl"
+      >
+      <p className="text-gray-700 leading-relaxed text-lg">
+        מחפשים <a href="/Professions" className="text-[#1E3A5F] font-semibold hover:underline">פתיחת עוסק פטור לפי מקצוע</a>? 
+        כל מקצוע דורש התאמה ייחודית בתהליך הרישום. 
+        ב-<a href="/" className="text-[#1E3A5F] font-semibold hover:underline">מדריך לפתיחת עוסק פטור</a> שלנו 
+        תמצאו את כל המידע המקצועי והליווי שתצטרכו כדי לפתוח עוסק פטור בצורה נכונה ומהירה.
+      </p>
+      </motion.div>
+      </div>
+      </section>
 
         {/* Content */}
         <section className="py-16 bg-white">
