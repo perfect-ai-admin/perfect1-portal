@@ -1226,6 +1226,8 @@ export default function ProfessionPage() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [window.location.search]);
   
+  if (!slug) return null;
+  
   const professionDetails = professionsData[slug];
   
   // Get basic profession info from the grid data or use defaults
