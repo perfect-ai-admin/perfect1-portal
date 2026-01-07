@@ -127,7 +127,7 @@ export default function ProfessionLanding() {
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 bg-[#27AE60]/10 text-[#27AE60] px-4 py-2 rounded-full mb-4">
                   <Award className="w-5 h-5" />
-                  <span className="font-bold">הצעה מיוחדת ל{data.name}ים</span>
+                  <span className="font-bold">הצעה מיוחדת למקצוע</span>
                 </div>
                 <h2 className="text-2xl font-black text-[#1E3A5F] mb-2">
                   פתיחת תיק תוך 24-72 שעות
@@ -197,7 +197,7 @@ export default function ProfessionLanding() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl font-black text-[#1E3A5F] mb-6">
-                שירותים נפוצים ל{data.name}ים
+                שירותים נפוצים במקצוע
               </h2>
               <ul className="space-y-3">
                 {data.services.map((service, index) => (
@@ -215,7 +215,7 @@ export default function ProfessionLanding() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl font-black text-[#1E3A5F] mb-6">
-                טיפים חשובים ל{data.name}ים
+                טיפים חשובים למקצוע
               </h2>
               <ul className="space-y-3">
                 {data.tips.map((tip, index) => (
@@ -287,7 +287,7 @@ export default function ProfessionLanding() {
               מוכן להתחיל?
             </h2>
             <p className="text-xl text-[#1E3A5F]/80 mb-8">
-              הצטרף לאלפי ה{data.name}ים שכבר עובדים חוקית
+              הצטרף לאלפי העצמאים שכבר עובדים באופן חוקי
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
