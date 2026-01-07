@@ -5,7 +5,7 @@
 
 export const LINKING_CONFIG = {
   enabled: true,
-  maxLinksPerPage: 3, // מקסימום קישורים אוטומטיים לדף
+  maxLinksPerPage: 5, // מקסימום קישורים אוטומטיים לדף
   maxLinksToSameTarget: 2, // מקסימום קישורים לאותו דף יעד מאותו עמוד
 };
 
@@ -146,14 +146,12 @@ export const KEYWORD_MAPPING = [
 // Excluded Pages - דפים שלא מבצעים בהם קישור אוטומטי
 // =====================================================
 export const EXCLUDED_PAGES = [
-  'Contact',
-  'About',
-  'Pricing',
   'Sitemap',
   'SitemapArticles',
   'SitemapFAQ',
   'SitemapGeo',
-  'SitemapPages'
+  'SitemapPages',
+  'ThankYou'
 ];
 
 // =====================================================
