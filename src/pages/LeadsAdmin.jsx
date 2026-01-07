@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X } from 'lucide-react';
+import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function LeadsAdmin() {
@@ -14,6 +14,8 @@ export default function LeadsAdmin() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingNotes, setEditingNotes] = useState({});
+  const [editingFollowUp, setEditingFollowUp] = useState({});
   const queryClient = useQueryClient();
 
   const { data: leads, isLoading } = useQuery({
@@ -27,8 +29,37 @@ export default function LeadsAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setSelectedLead(null);
+      setEditingNotes({});
+      setEditingFollowUp({});
     }
   });
+
+  const deleteLeadMutation = useMutation({
+    mutationFn: (id) => base44.entities.Lead.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+    }
+  });
+
+  const handleDeleteLead = (lead) => {
+    if (window.confirm(`למחוק את ${lead.name}?`)) {
+      deleteLeadMutation.mutate(lead.id);
+    }
+  };
+
+  const handleSaveNotes = (lead) => {
+    updateLeadMutation.mutate({
+      id: lead.id,
+      data: { ...lead, notes: editingNotes[lead.id] }
+    });
+  };
+
+  const handleSaveFollowUp = (lead) => {
+    updateLeadMutation.mutate({
+      id: lead.id,
+      data: { ...lead, follow_up_date: editingFollowUp[lead.id] }
+    });
+  };
 
   const handleQuickStatusUpdate = (lead, newStatus) => {
     updateLeadMutation.mutate({
@@ -206,6 +237,7 @@ export default function LeadsAdmin() {
                   <th className="px-4 py-3 text-center">סטטוס</th>
                   <th className="px-4 py-3 text-center">עדיפות</th>
                   <th className="px-4 py-3 text-right">חזרה</th>
+                  <th className="px-4 py-3 text-right">הערות</th>
                   <th className="px-4 py-3 text-center">פעולות</th>
                 </tr>
               </thead>
@@ -245,12 +277,80 @@ export default function LeadsAdmin() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      {lead.follow_up_date ? (
-                        <div className={`flex items-center gap-1 ${lead.follow_up_date === new Date().toISOString().split('T')[0] ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
-                          <Calendar className="w-3 h-3" />
-                          {format(new Date(lead.follow_up_date), 'dd/MM/yy')}
+                      {editingFollowUp[lead.id] !== undefined ? (
+                        <div className="flex items-center gap-1">
+                          <Input
+                            type="date"
+                            value={editingFollowUp[lead.id]}
+                            onChange={(e) => setEditingFollowUp({ ...editingFollowUp, [lead.id]: e.target.value })}
+                            className="h-8 text-xs w-32"
+                          />
+                          <button
+                            onClick={() => handleSaveFollowUp(lead)}
+                            className="text-green-600 hover:text-green-700"
+                          >
+                            <Save className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              const { [lead.id]: _, ...rest } = editingFollowUp;
+                              setEditingFollowUp(rest);
+                            }}
+                            className="text-gray-400 hover:text-gray-600"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
                         </div>
-                      ) : '-'}
+                      ) : (
+                        <button
+                          onClick={() => setEditingFollowUp({ ...editingFollowUp, [lead.id]: lead.follow_up_date || new Date().toISOString().split('T')[0] })}
+                          className="text-right w-full hover:bg-gray-100 rounded px-2 py-1"
+                        >
+                          {lead.follow_up_date ? (
+                            <div className={`flex items-center gap-1 ${lead.follow_up_date === new Date().toISOString().split('T')[0] ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                              <Calendar className="w-3 h-3" />
+                              {format(new Date(lead.follow_up_date), 'dd/MM/yy')}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">הוסף תאריך</span>
+                          )}
+                        </button>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-sm max-w-xs">
+                      {editingNotes[lead.id] !== undefined ? (
+                        <div className="flex items-center gap-1">
+                          <Input
+                            value={editingNotes[lead.id]}
+                            onChange={(e) => setEditingNotes({ ...editingNotes, [lead.id]: e.target.value })}
+                            placeholder="הערות..."
+                            className="h-8 text-xs"
+                          />
+                          <button
+                            onClick={() => handleSaveNotes(lead)}
+                            className="text-green-600 hover:text-green-700 flex-shrink-0"
+                          >
+                            <Save className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              const { [lead.id]: _, ...rest } = editingNotes;
+                              setEditingNotes(rest);
+                            }}
+                            className="text-gray-400 hover:text-gray-600 flex-shrink-0"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setEditingNotes({ ...editingNotes, [lead.id]: lead.notes || '' })}
+                          className="text-right w-full hover:bg-gray-100 rounded px-2 py-1 truncate"
+                          title={lead.notes}
+                        >
+                          {lead.notes || <span className="text-gray-400">הוסף הערה</span>}
+                        </button>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-2">
@@ -266,9 +366,16 @@ export default function LeadsAdmin() {
                         <button
                           onClick={() => setSelectedLead(lead)}
                           className="text-[#1E3A5F] hover:text-[#2C5282]"
-                          title="ערוך"
+                          title="ערוך מלא"
                         >
                           <Edit2 className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteLead(lead)}
+                          className="text-red-500 hover:text-red-700"
+                          title="מחק"
+                        >
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
                     </td>
