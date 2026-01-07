@@ -14,6 +14,11 @@ export default function BlogPost() {
   const urlParams = new URLSearchParams(window.location.search);
   const slug = urlParams.get('slug');
 
+  // Force re-render when URL changes
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [slug]);
+
   const { data: posts = [] } = useQuery({
     queryKey: ['blog-post', slug],
     queryFn: () => base44.entities.BlogPost.filter({ slug, published: true }),
@@ -169,10 +174,10 @@ export default function BlogPost() {
               <h2 className="text-3xl font-bold text-gray-900 mb-8">מאמרים נוספים</h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {relatedPosts.filter(p => p.id !== post.id).slice(0, 3).map((relatedPost) => (
-                  <Link 
+                  <a 
                     key={relatedPost.id} 
-                    to={`${createPageUrl('BlogPost')}?slug=${relatedPost.slug}`}
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    href={`${createPageUrl('BlogPost')}?slug=${relatedPost.slug}`}
+                    className="block"
                   >
                     <div className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer">
                       <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
@@ -182,7 +187,7 @@ export default function BlogPost() {
                         {relatedPost.excerpt}
                       </p>
                     </div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
