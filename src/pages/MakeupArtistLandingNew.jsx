@@ -61,7 +61,7 @@ export default function MakeupArtistLandingNew() {
                 </div>
 
                 <h1 className="text-4xl md:text-6xl font-black text-[#1E3A5F] mb-6 leading-tight">
-                  פתחי עוסק פטור והתחילי לעבוד חוקית כמאפרת 💄
+                  פתחי עוסק פטור והתחילי לעבוד באופן חוקי כמאפרת 💄
                 </h1>
 
                 <p className="text-xl text-gray-600 mb-8 leading-relaxed">

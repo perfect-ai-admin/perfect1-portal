@@ -268,7 +268,7 @@ export default function GraphicDesignerLanding() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl md:text-4xl font-black text-white mb-6">
-                רוצה להתחיל לעבוד כמעצב גרפי חוקי?
+                רוצה להתחיל לעבוד כמעצב גרפי באופן חוקי?
               </h2>
               <p className="text-xl text-white/80 mb-8">
                 השאר פרטים ונחזור אליך תוך שעות עם פתרון מלא

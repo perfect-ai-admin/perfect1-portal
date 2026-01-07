@@ -54,7 +54,7 @@ export default function EyebrowStylistLanding() {
                 animate={{ opacity: 1, x: 0 }}
               >
                 <h1 className="text-4xl md:text-6xl font-black text-[#1E3A5F] mb-6 leading-tight">
-                  פתחי עוסק פטור ותעבדי חוקית כמעצבת גבות 👁️
+                  פתחי עוסק פטור והתחילי לעבוד באופן חוקי כמעצבת גבות 👁️
                 </h1>
 
                 <p className="text-xl text-gray-600 mb-8">
@@ -175,7 +175,7 @@ export default function EyebrowStylistLanding() {
         <section className="py-20 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282]">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-              התחילי לעבוד חוקית עוד היום 👁️✨
+              התחילי לעבוד באופן חוקי עוד היום 👁️✨
             </h2>
             <p className="text-xl text-white/90 mb-8">
               הצטרפי למאות מעצבות גבות שכבר עובדות איתנו

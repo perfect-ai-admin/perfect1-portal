@@ -238,7 +238,7 @@ export default function CosmeticianLandingNew() {
               viewport={{ once: true }}
             >
               <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-                מוכנה לפתוח קליניקה חוקית? ✨
+                מוכנה לפתוח קליניקה באופן חוקי? ✨
               </h2>
               <p className="text-xl text-white/90 mb-8">
                 הצטרפי ל-300+ קוסמטיקאיות שכבר עובדות איתנו

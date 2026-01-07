@@ -54,7 +54,7 @@ export default function LashArtistLanding() {
                 animate={{ opacity: 1, x: 0 }}
               >
                 <h1 className="text-4xl md:text-6xl font-black text-[#1E3A5F] mb-6 leading-tight">
-                  פתחי סטודיו להארכת ריסים חוקי 👀✨
+                  פתחי סטודיו להארכת ריסים באופן חוקי 👀✨
                 </h1>
 
                 <p className="text-xl text-gray-600 mb-8">
