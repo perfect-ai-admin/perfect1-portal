@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save } from 'lucide-react';
+import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function LeadsAdmin() {
   const [selectedLead, setSelectedLead] = useState(null);
+  const [showAddLeadDialog, setShowAddLeadDialog] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,6 +23,14 @@ export default function LeadsAdmin() {
     queryKey: ['leads'],
     queryFn: () => base44.entities.Lead.list('-created_date', 1000),
     initialData: []
+  });
+
+  const createLeadMutation = useMutation({
+    mutationFn: (data) => base44.entities.Lead.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      setShowAddLeadDialog(false);
+    }
   });
 
   const updateLeadMutation = useMutation({
@@ -152,9 +161,18 @@ export default function LeadsAdmin() {
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6" dir="rtl">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-[#1E3A5F] mb-2">ניהול לידים - CRM</h1>
-          <p className="text-gray-600">כל הלידים שמגיעים מהאתר</p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-[#1E3A5F] mb-2">ניהול לידים - CRM</h1>
+            <p className="text-gray-600">כל הלידים שמגיעים מהאתר + מעקב אחר לחיצות</p>
+          </div>
+          <Button 
+            onClick={() => setShowAddLeadDialog(true)}
+            className="bg-[#27AE60] hover:bg-[#2ECC71]"
+          >
+            <UserPlus className="w-5 h-5 ml-2" />
+            הוסף ליד ידנית
+          </Button>
         </div>
 
         {/* Stats */}
@@ -234,6 +252,7 @@ export default function LeadsAdmin() {
                   <th className="px-4 py-3 text-right">טלפון</th>
                   <th className="px-4 py-3 text-right">מקצוע</th>
                   <th className="px-4 py-3 text-right">מקור</th>
+                  <th className="px-4 py-3 text-right">סוג</th>
                   <th className="px-4 py-3 text-center">סטטוס</th>
                   <th className="px-4 py-3 text-center">עדיפות</th>
                   <th className="px-4 py-3 text-right">חזרה</th>
@@ -256,6 +275,19 @@ export default function LeadsAdmin() {
                     </td>
                     <td className="px-4 py-3 text-sm">{lead.profession || '-'}</td>
                     <td className="px-4 py-3 text-xs text-gray-500">{lead.source_page || '-'}</td>
+                    <td className="px-4 py-3 text-xs">
+                      <span className={`inline-block px-2 py-1 rounded ${
+                        lead.interaction_type === 'phone_click' ? 'bg-blue-100 text-blue-700' :
+                        lead.interaction_type === 'whatsapp_click' ? 'bg-green-100 text-green-700' :
+                        lead.interaction_type === 'manual' ? 'bg-purple-100 text-purple-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {lead.interaction_type === 'phone_click' ? '📞 חייג' :
+                         lead.interaction_type === 'whatsapp_click' ? '💬 וואטסאפ' :
+                         lead.interaction_type === 'manual' ? '✋ ידני' :
+                         '📝 טופס'}
+                      </span>
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <Select 
                         value={lead.status || 'new'} 
@@ -411,6 +443,22 @@ export default function LeadsAdmin() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Add Lead Dialog */}
+      <Dialog open={showAddLeadDialog} onOpenChange={setShowAddLeadDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">הוספת ליד ידנית</DialogTitle>
+          </DialogHeader>
+          <AddLeadForm
+            onSave={(data) => {
+              createLeadMutation.mutate({ ...data, interaction_type: 'manual' });
+            }}
+            onCancel={() => setShowAddLeadDialog(false)}
+            isLoading={createLeadMutation.isPending}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -507,6 +555,126 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading }) {
       <div className="flex gap-3 pt-4">
         <Button type="submit" disabled={isLoading} className="flex-1 bg-[#27AE60] hover:bg-[#2ECC71]">
           {isLoading ? 'שומר...' : 'שמור שינויים'}
+        </Button>
+        <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+          ביטול
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function AddLeadForm({ onSave, onCancel, isLoading }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    profession: '',
+    notes: '',
+    source_page: 'הוספה ידנית',
+    status: 'new',
+    priority: 'medium'
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone) {
+      alert('נא למלא שם וטלפון');
+      return;
+    }
+    onSave(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4" dir="rtl">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">שם מלא *</label>
+          <Input
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="שם מלא"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">טלפון *</label>
+          <Input
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="05X-XXXXXXX"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">אימייל</label>
+          <Input
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            placeholder="email@example.com"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">מקצוע</label>
+          <Input
+            value={formData.profession}
+            onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+            placeholder="מקצוע"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">סטטוס</label>
+          <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="new">חדש</SelectItem>
+              <SelectItem value="contacted">יצרנו קשר</SelectItem>
+              <SelectItem value="qualified">מתאים</SelectItem>
+              <SelectItem value="converted">נסגר</SelectItem>
+              <SelectItem value="closed">סגור</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">עדיפות</label>
+          <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low">נמוך</SelectItem>
+              <SelectItem value="medium">בינוני</SelectItem>
+              <SelectItem value="high">גבוה</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">הערות</label>
+        <Textarea
+          value={formData.notes}
+          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          rows={3}
+          placeholder="הערות נוספות..."
+        />
+      </div>
+
+      <div className="flex gap-3 pt-4">
+        <Button type="submit" disabled={isLoading} className="flex-1 bg-[#27AE60] hover:bg-[#2ECC71]">
+          {isLoading ? 'שומר...' : 'הוסף ליד'}
         </Button>
         <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
           ביטול
