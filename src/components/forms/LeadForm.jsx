@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -72,7 +73,8 @@ export default function LeadForm({
 
       window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
 
-      setIsSuccess(true);
+      // Redirect to Thank You page
+      window.location.href = '/ThankYou';
     } catch (err) {
       setError('אירעה שגיאה, נסה שוב');
     } finally {

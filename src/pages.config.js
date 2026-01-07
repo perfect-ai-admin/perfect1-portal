@@ -35,6 +35,7 @@ import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
 import TechnicianLanding from './pages/TechnicianLanding';
 import UrgentInvoice from './pages/UrgentInvoice';
+import ThankYou from './pages/ThankYou';
 import __Layout from './Layout.jsx';
 
 
@@ -76,6 +77,7 @@ export const PAGES = {
     "SitemapPages": SitemapPages,
     "TechnicianLanding": TechnicianLanding,
     "UrgentInvoice": UrgentInvoice,
+    "ThankYou": ThankYou,
 }
 
 export const pagesConfig = {
