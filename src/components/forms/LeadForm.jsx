@@ -78,11 +78,8 @@ export default function LeadForm({
         // Continue even if sheets fails
       }
 
-      // Show success and redirect
-      setIsSuccess(true);
-      setTimeout(() => {
-        window.location.href = createPageUrl('ThankYou');
-      }, 2000);
+      // Redirect to Thank You page
+      window.location.href = createPageUrl('ThankYou');
     } catch (err) {
       setError('אירעה שגיאה, נסה שוב');
     } finally {
