@@ -50,15 +50,15 @@ const professions = [
   { name: 'מומחה אקסל', slug: 'momche-excel', icon: '📊', color: '#217346', category: 'tech' },
   { name: 'מפתח אפליקציות', slug: 'mefateach-apps', icon: '📲', color: '#5C6BC0', category: 'tech' },
   { name: 'מומחה אוטומציה', slug: 'momche-automation', icon: '⚙️', color: '#607D8B', category: 'tech' },
-  { name: 'מנהל Google Ads', slug: 'menahel-google-ads', icon: '🎯', color: '#4285F4', category: 'tech' },
-  { name: 'מנהל Facebook Ads', slug: 'menahel-facebook-ads', icon: '📘', color: '#1877F2', category: 'tech' },
-  { name: 'Data Analyst', slug: 'data-analyst', icon: '📉', color: '#00BFA5', category: 'tech' },
+  { name: 'מנהל גוגל', slug: 'menahel-google-ads', icon: '🎯', color: '#4285F4', category: 'tech' },
+  { name: 'מנהל פייסבוק', slug: 'menahel-facebook-ads', icon: '📘', color: '#1877F2', category: 'tech' },
+  { name: 'אנליסט נתונים', slug: 'data-analyst', icon: '📉', color: '#00BFA5', category: 'tech' },
   
   // Music
   { name: 'מוזיקאי', slug: 'muzikai', icon: '🎵', color: '#673AB7', category: 'music' },
   { name: 'מפיק מוזיקלי', slug: 'mafik-muzikali', icon: '🎧', color: '#FF5722', category: 'music' },
   { name: 'מורה למוזיקה', slug: 'more-lemuzika', icon: '🎹', color: '#9C27B0', category: 'music' },
-  { name: 'DJ', slug: 'dj', icon: '🎛️', color: '#E040FB', category: 'music' },
+  { name: 'תקליטן', slug: 'dj', icon: '🎛️', color: '#E040FB', category: 'music' },
   { name: 'זמר', slug: 'zamar', icon: '🎤', color: '#F44336', category: 'music' },
   { name: 'מורה לאומנות', slug: 'more-leomanut', icon: '🎭', color: '#795548', category: 'music' },
   
