@@ -34,8 +34,8 @@ import SitemapFAQ from './pages/SitemapFAQ';
 import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
 import TechnicianLanding from './pages/TechnicianLanding';
-import UrgentInvoice from './pages/UrgentInvoice';
 import ThankYou from './pages/ThankYou';
+import UrgentInvoice from './pages/UrgentInvoice';
 import __Layout from './Layout.jsx';
 
 
@@ -76,8 +76,8 @@ export const PAGES = {
     "SitemapGeo": SitemapGeo,
     "SitemapPages": SitemapPages,
     "TechnicianLanding": TechnicianLanding,
-    "UrgentInvoice": UrgentInvoice,
     "ThankYou": ThankYou,
+    "UrgentInvoice": UrgentInvoice,
 }
 
 export const pagesConfig = {

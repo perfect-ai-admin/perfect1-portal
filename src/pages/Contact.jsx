@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { Phone, MessageCircle, Mail, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,9 +24,12 @@ export default function Contact() {
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
               צור קשר
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              נשמח לענות על כל שאלה ולעזור לך להתחיל את הדרך כעצמאי
-            </p>
+            <div className="text-xl text-white/80 max-w-2xl mx-auto">
+              <InternalLinker
+                content="נשמח לענות על כל שאלה ולעזור לך לפתוח עוסק פטור ולהתחיל את הדרך כעצמאי"
+                currentPage="Contact"
+              />
+            </div>
           </motion.div>
         </div>
       </section>
@@ -45,9 +49,12 @@ export default function Contact() {
                 <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">
                   דברו איתנו
                 </h2>
-                <p className="text-gray-600 text-lg">
-                  הצוות שלנו זמין לענות על כל שאלה. בחרו את הדרך הנוחה לכם ליצור קשר.
-                </p>
+                <div className="text-gray-600 text-lg">
+                  <InternalLinker
+                    content="הצוות שלנו זמין לענות על כל שאלה לגבי פתיחת עוסק פטור. בחרו את הדרך הנוחה לכם ליצור קשר."
+                    currentPage="Contact"
+                  />
+                </div>
               </div>
 
               {/* Contact Cards */}
