@@ -59,25 +59,6 @@ export default function LeadForm({
         status: 'new'
       });
 
-      // Send to Google Sheets
-      const whatsappLink = `https://wa.me/972${formData.phone.replace(/^0/, '')}?text=${encodeURIComponent(`היי, אני ${formData.name} מדף ${sourcePage}. מעוניין בייעוץ`)}`;
-      try {
-        await base44.integrations.Core.GoogleSheetsAppendRow({
-          spreadsheet_url: 'https://docs.google.com/spreadsheets/d/1NX5zwyW3WLxN9vAs60sfyq0r5bnTc8_WzGaD525EiVI/edit',
-          sheet_name: 'Sheet1',
-          values: [[
-            formData.name,
-            formData.phone,
-            formData.email || '',
-            sourcePage,
-            whatsappLink
-          ]]
-        });
-      } catch (sheetsError) {
-        console.error('Google Sheets error:', sheetsError);
-        // Continue even if sheets fails
-      }
-
       // Redirect to Thank You page immediately
       window.location.href = '/ThankYou';
     } catch (err) {
