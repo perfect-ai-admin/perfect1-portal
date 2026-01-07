@@ -68,28 +68,95 @@ export default async function seoWebhook(event, context) {
     
     if (isSubstantialChange) {
       try {
-        const sitemapUrl = 'https://perfect1.co.il/sitemap.xml';
+        // עדכון PageSnapshot
+        const existingSnapshots = await base44.asServiceRole.entities.PageSnapshot.filter({ url: url });
+        const contentHash = await hashContent(data);
+        
+        if (existingSnapshots.length > 0) {
+          await base44.asServiceRole.entities.PageSnapshot.update(existingSnapshots[0].id, {
+            lastmod: new Date().toISOString(),
+            last_scanned: new Date().toISOString(),
+            content_hash: contentHash,
+            title: data.title || data.name,
+            status: 'active'
+          });
+        } else {
+          await base44.asServiceRole.entities.PageSnapshot.create({
+            url: url,
+            entity_name: entityName,
+            entity_id: data.id,
+            lastmod: new Date().toISOString(),
+            last_scanned: new Date().toISOString(),
+            content_hash: contentHash,
+            title: data.title || data.name,
+            status: 'active'
+          });
+        }
+        
+        // שליחת ping אמיתי לגוגל
+        const sitemapUrl = 'https://perfect1.co.il/api/generateSitemap';
         const pingUrl = `https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`;
         
-        // שליחת ping לגוגל
-        const response = await fetch(pingUrl);
+        const response = await fetch(pingUrl, {
+          method: 'GET',
+          headers: { 'User-Agent': 'Perfect1-SEO-Bot/1.0' }
+        });
         
         if (response.ok) {
           pingSent = true;
           pingStatus = 'success';
+          
+          // שליחת התראה למייל
+          try {
+            await base44.asServiceRole.integrations.Core.SendEmail({
+              to: 'admin@perfect1.co.il',
+              subject: `🔔 עדכון SEO: ${data.title || data.name}`,
+              body: `
+שלום,
+
+זוהה שינוי מהותי בעמוד:
+📄 ${data.title || data.name}
+🔗 ${url}
+
+שדות ששונו: ${fieldsChanged.join(', ')}
+
+✅ Ping נשלח בהצלחה לגוגל
+📅 ${new Date().toLocaleString('he-IL')}
+
+מערכת SEO אוטומטית - Perfect One
+              `
+            });
+          } catch (emailError) {
+            console.log('Email notification failed:', emailError.message);
+          }
         } else {
           pingStatus = 'failed';
           errorMessage = `HTTP ${response.status}`;
         }
         
         // עדכון תאריך ping אחרון
-        await base44.asServiceRole.entities.SEOConfig.update(config.id, {
-          last_ping_sent: new Date().toISOString()
-        });
+        const configToUpdate = configs.length > 0 ? configs[0] : null;
+        if (configToUpdate) {
+          await base44.asServiceRole.entities.SEOConfig.update(configToUpdate.id, {
+            last_ping_sent: new Date().toISOString()
+          });
+        }
       } catch (error) {
         pingStatus = 'failed';
         errorMessage = error.message;
       }
+    }
+    
+    // פונקציית hash
+    async function hashContent(content) {
+      const str = JSON.stringify(content);
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return hash.toString(36);
     }
     
     // שמירת לוג

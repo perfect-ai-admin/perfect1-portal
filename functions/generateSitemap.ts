@@ -9,6 +9,13 @@ export default async function generateSitemap(event, context) {
   const { base44 } = context;
   
   try {
+    // Fetch all page snapshots for accurate lastmod
+    const snapshots = await base44.asServiceRole.entities.PageSnapshot.list();
+    const snapshotMap = {};
+    snapshots.forEach(snap => {
+      snapshotMap[snap.url] = snap.lastmod;
+    });
+    
     // Fetch published blog posts
     const posts = await base44.asServiceRole.entities.BlogPost.filter({ published: true });
     
@@ -43,29 +50,46 @@ export default async function generateSitemap(event, context) {
       xml += '  </url>\n';
     });
     
-    // Add blog posts with REAL lastmod from DB
+    // Add blog posts with REAL lastmod from PageSnapshot or DB
     posts.forEach(post => {
-      // שימוש ב-updated_date האמיתי מה-DB
-      const lastmod = post.updated_date 
-        ? new Date(post.updated_date).toISOString().split('T')[0]
-        : new Date(post.created_date).toISOString().split('T')[0];
+      const url = `${baseUrl}/BlogPost?slug=${post.slug}`;
+      
+      // בדיקה אם יש snapshot עם lastmod מדויק
+      let lastmod = snapshotMap[url];
+      
+      // אם אין snapshot, נשתמש ב-DB
+      if (!lastmod) {
+        lastmod = post.updated_date 
+          ? new Date(post.updated_date).toISOString().split('T')[0]
+          : new Date(post.created_date).toISOString().split('T')[0];
+      } else {
+        lastmod = new Date(lastmod).toISOString().split('T')[0];
+      }
       
       xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}/BlogPost?slug=${post.slug}</loc>\n`;
+      xml += `    <loc>${url}</loc>\n`;
       xml += `    <lastmod>${lastmod}</lastmod>\n`;
       xml += `    <changefreq>weekly</changefreq>\n`;
       xml += `    <priority>0.7</priority>\n`;
       xml += '  </url>\n';
     });
     
-    // Add profession pages
+    // Add profession pages with PageSnapshot lastmod
     professions.forEach(profession => {
-      const lastmod = profession.updated_date 
-        ? new Date(profession.updated_date).toISOString().split('T')[0]
-        : today;
+      const url = `${baseUrl}/ProfessionPage?slug=${profession.slug}`;
+      
+      let lastmod = snapshotMap[url];
+      
+      if (!lastmod) {
+        lastmod = profession.updated_date 
+          ? new Date(profession.updated_date).toISOString().split('T')[0]
+          : today;
+      } else {
+        lastmod = new Date(lastmod).toISOString().split('T')[0];
+      }
       
       xml += '  <url>\n';
-      xml += `    <loc>${baseUrl}/ProfessionPage?slug=${profession.slug}</loc>\n`;
+      xml += `    <loc>${url}</loc>\n`;
       xml += `    <lastmod>${lastmod}</lastmod>\n`;
       xml += `    <changefreq>monthly</changefreq>\n`;
       xml += `    <priority>0.8</priority>\n`;
