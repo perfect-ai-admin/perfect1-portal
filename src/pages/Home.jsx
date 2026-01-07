@@ -68,11 +68,13 @@ export default function Home() {
       <main>
         <HeroSection />
         <WhatIsSection />
+        <MicroCTA text="רוצה לדעת אם עוסק פטור מתאים לך?" cta="בדיקה מהירה ללא עלות" variant="subtle" />
         <FeaturesSection />
         <ServicesSection />
         <ProfessionsGrid />
         <QuickCTASection />
         <ProcessSection />
+        <MicroCTA text="מוכנים להתחיל?" cta="שיחה קצרה ללא התחייבות" />
         <FAQSection />
         <CTASection />
       </main>

@@ -5,6 +5,7 @@ import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import InternalLinker from '../components/seo/InternalLinker';
+import MicroCTA from '../components/cro/MicroCTA';
 import { CheckCircle, Users, Award, Clock, ArrowLeft, Target, Heart, Shield } from 'lucide-react';
 
 const values = [
@@ -140,6 +141,10 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <MicroCTA text="רוצים להצטרף לאלפי העצמאים שבחרו בנו?" cta="בדיקה ללא התחייבות" />
+      </div>
 
       {/* Values */}
       <section className="py-20 bg-white">

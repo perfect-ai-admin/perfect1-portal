@@ -1417,6 +1417,8 @@ export default function ProfessionPage() {
                   </div>
                 </motion.div>
 
+                <MicroCTA text="רוצה לדעת אם זה מתאים למקצוע שלך?" cta="בדיקת התאמה אישית" variant="subtle" />
+
                 {/* Services */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

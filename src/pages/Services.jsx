@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import InternalLinker from '../components/seo/InternalLinker';
+import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { Button } from '@/components/ui/button';
 import { 
@@ -148,6 +149,10 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <MicroCTA text="רוצה לשמוע עוד על השירותים?" cta="שיחה קצרה ללא התחייבות" />
+      </div>
 
       {/* CTA */}
       <section className="py-16 bg-white">

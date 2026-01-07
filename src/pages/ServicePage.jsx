@@ -8,6 +8,7 @@ import LeadForm from '../components/forms/LeadForm';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import AnswerBlock from '../components/seo/AnswerBlock';
 import InternalLinker from '../components/seo/InternalLinker';
+import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { schemaTemplates } from './SEOOptimized';
 
 const servicesData = {
@@ -237,6 +238,8 @@ export default function ServicePage() {
                   <InternalLinker content={service.description} currentPage="ServicePage" />
                 </div>
               </motion.div>
+
+              <MicroCTA text="רוצה להבין אם זה מתאים לך?" cta="בדיקה מהירה ללא עלות" variant="subtle" />
 
               {/* Features */}
               <motion.div
