@@ -790,19 +790,33 @@ export default function ProfessionPage() {
                   />
                 </motion.div>
 
-                {/* About */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                >
-                  <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                    📌 על המקצוע
-                  </h2>
-                  <div className="text-gray-600 leading-relaxed text-lg">
-                    <InternalLinker content={profession.description} currentPage="ProfessionPage" />
-                  </div>
-                </motion.div>
+                {/* Full Content or About */}
+                {profession.fullContent ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="prose prose-lg max-w-none"
+                  >
+                    <div 
+                      className="text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: profession.fullContent }}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
+                      📌 על המקצוע
+                    </h2>
+                    <div className="text-gray-600 leading-relaxed text-lg">
+                      <InternalLinker content={profession.description || 'מקצוע זה מציע הזדמנויות רבות לעצמאים בישראל.'} currentPage="ProfessionPage" />
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* Services */}
                 <motion.div
