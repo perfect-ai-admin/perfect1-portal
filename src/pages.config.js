@@ -25,6 +25,7 @@ import PricingLanding from './pages/PricingLanding';
 import ProfessionLanding from './pages/ProfessionLanding';
 import ProfessionPage from './pages/ProfessionPage';
 import Professions from './pages/Professions';
+import SEOAdmin from './pages/SEOAdmin';
 import SEOOptimized from './pages/SEOOptimized';
 import ServicePage from './pages/ServicePage';
 import Services from './pages/Services';
@@ -36,7 +37,6 @@ import SitemapPages from './pages/SitemapPages';
 import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
-import SEOAdmin from './pages/SEOAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -68,6 +68,7 @@ export const PAGES = {
     "ProfessionLanding": ProfessionLanding,
     "ProfessionPage": ProfessionPage,
     "Professions": Professions,
+    "SEOAdmin": SEOAdmin,
     "SEOOptimized": SEOOptimized,
     "ServicePage": ServicePage,
     "Services": Services,
@@ -79,7 +80,6 @@ export const PAGES = {
     "TechnicianLanding": TechnicianLanding,
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
-    "SEOAdmin": SEOAdmin,
 }
 
 export const pagesConfig = {

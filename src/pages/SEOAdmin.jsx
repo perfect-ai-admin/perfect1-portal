@@ -6,8 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, CheckCircle, XCircle, AlertCircle, RefreshCw, Settings, List } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Loader2, CheckCircle, XCircle, AlertCircle, RefreshCw, Settings, List, BarChart3, Link2, Target, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
+import InternalLinksAnalytics from '../components/seo/InternalLinksAnalytics';
+import KeywordsRanking from '../components/seo/KeywordsRanking';
+import TrafficAnalytics from '../components/seo/TrafficAnalytics';
 
 export default function SEOAdmin() {
   const [excludeUrl, setExcludeUrl] = useState('');
@@ -215,8 +219,8 @@ export default function SEOAdmin() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-[#1E3A5F] mb-2">⚙️ SEO Automation Control</h1>
-          <p className="text-gray-600">ניהול אוטומציית אינדקס חכמה לגוגל</p>
+          <h1 className="text-4xl font-black text-[#1E3A5F] mb-2">📊 SEO Command Center</h1>
+          <p className="text-gray-600">ניהול מקיף של SEO, תנועה, קישורים ודירוגים</p>
         </div>
 
         {/* Scan Results Alert */}
@@ -290,7 +294,33 @@ export default function SEOAdmin() {
           </Card>
         )}
 
-        {/* Main Controls */}
+        {/* Tabs Navigation */}
+        <Tabs defaultValue="automation" className="mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
+            <TabsTrigger value="automation" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              אוטומציה
+            </TabsTrigger>
+            <TabsTrigger value="traffic" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              תנועה
+            </TabsTrigger>
+            <TabsTrigger value="keywords" className="flex items-center gap-2">
+              <Target className="w-4 h-4" />
+              מילות מפתח
+            </TabsTrigger>
+            <TabsTrigger value="internal-links" className="flex items-center gap-2">
+              <Link2 className="w-4 h-4" />
+              קישורים פנימיים
+            </TabsTrigger>
+            <TabsTrigger value="logs" className="flex items-center gap-2">
+              <Activity className="w-4 h-4" />
+              לוגים
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Automation Tab */}
+          <TabsContent value="automation">
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Automation Toggle */}
           <Card>
@@ -432,7 +462,25 @@ export default function SEOAdmin() {
           </CardContent>
         </Card>
 
-        {/* Activity Logs */}
+          </TabsContent>
+
+          {/* Traffic Analytics Tab */}
+          <TabsContent value="traffic">
+            <TrafficAnalytics />
+          </TabsContent>
+
+          {/* Keywords Ranking Tab */}
+          <TabsContent value="keywords">
+            <KeywordsRanking />
+          </TabsContent>
+
+          {/* Internal Links Tab */}
+          <TabsContent value="internal-links">
+            <InternalLinksAnalytics />
+          </TabsContent>
+
+          {/* Logs Tab */}
+          <TabsContent value="logs">
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -617,6 +665,9 @@ export default function SEOAdmin() {
             )}
           </CardContent>
         </Card>
+
+          </TabsContent>
+        </Tabs>
 
         {/* Sitemap Link */}
         <Card className="mt-6">
