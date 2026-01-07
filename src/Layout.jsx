@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/layout/WhatsAppButton';
+import SidePopup from './components/cro/SidePopup';
+import StickyCTA from './components/cro/StickyCTA';
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
@@ -33,6 +35,8 @@ export default function Layout({ children, currentPageName }) {
       </main>
       <Footer />
       <WhatsAppButton message={getWhatsAppMessage()} />
-    </div>
-  );
-}
+      <SidePopup />
+      <StickyCTA />
+      </div>
+      );
+      }
