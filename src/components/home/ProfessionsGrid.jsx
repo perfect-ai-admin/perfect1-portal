@@ -91,6 +91,7 @@ const professions = [
   { name: 'אינסטלטור', slug: 'instalator', icon: '🔧', color: '#1565C0', category: 'services' },
   { name: 'חשמלאי', slug: 'chashmlay', icon: '⚡', color: '#FFC107', category: 'services' },
   { name: 'טכנאי מיזוג', slug: 'technay-mizug', icon: '❄️', color: '#03A9F4', category: 'services' },
+  { name: 'שליח', slug: 'shaliach', icon: '🛵', color: '#FF6B00', category: 'services' },
   
   // Food
   { name: 'שף פרטי', slug: 'chef-prati', icon: '👨‍🍳', color: '#FF7043', category: 'food' },
