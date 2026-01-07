@@ -1136,6 +1136,41 @@ export default function ProfessionPage() {
                   </motion.div>
                 )}
 
+                {/* Quick CTA */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-8 text-center text-white"
+                >
+                  <h3 className="text-2xl font-black mb-3">
+                    💬 רוצה לפתוח עוסק פטור כמו {profession.name}?
+                  </h3>
+                  <p className="text-lg mb-6 text-white/90">
+                    דבר איתנו עכשיו ונתחיל את התהליך תוך 24 שעות
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href={`https://wa.me/972502277087?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        size="lg"
+                        className="w-full sm:w-auto h-12 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold rounded-xl"
+                      >
+                        <MessageCircle className="w-5 h-5 ml-2" />
+                        שלח וואטסאפ
+                      </Button>
+                    </a>
+                    <a href="tel:0502277087">
+                      <Button 
+                        size="lg"
+                        className="w-full sm:w-auto h-12 bg-[#D4AF37] hover:bg-[#F4D03F] text-[#1E3A5F] font-bold rounded-xl"
+                      >
+                        <Phone className="w-5 h-5 ml-2" />
+                        התקשר: 0502277087
+                      </Button>
+                    </a>
+                  </div>
+                </motion.div>
+
                 {/* Services */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
