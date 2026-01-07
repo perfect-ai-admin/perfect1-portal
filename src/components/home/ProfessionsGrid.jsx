@@ -14,6 +14,7 @@ const categories = [
   { id: 'music', name: 'מוזיקה', icon: '🎵' },
   { id: 'health', name: 'בריאות', icon: '💪' },
   { id: 'cosmetics', name: 'קוסמטיקה', icon: '💄' },
+  { id: 'delivery', name: 'שליחים', icon: '🛵' },
   { id: 'services', name: 'שירותים', icon: '🏠' },
   { id: 'food', name: 'מזון', icon: '🍳' },
   { id: 'education', name: 'חינוך', icon: '📚' }
@@ -80,6 +81,13 @@ const professions = [
   { name: 'מעצבת ריסים', slug: 'lash-artist', icon: '👀', color: '#8B4789', category: 'cosmetics' },
   { name: 'מעצבת שיער', slug: 'hair-stylist', icon: '💇', color: '#FF6347', category: 'cosmetics' },
   
+  // Delivery
+  { name: 'שליח וולט', slug: 'shaliach-wolt', icon: '🛵', color: '#00C2E8', category: 'delivery' },
+  { name: 'שליח טנדר', slug: 'shaliach-tenbis', icon: '🍕', color: '#FF6B00', category: 'delivery' },
+  { name: 'שליח פורטר', slug: 'shaliach-porter', icon: '📦', color: '#FF4081', category: 'delivery' },
+  { name: 'שליח מיטל', slug: 'shaliach-mital', icon: '🍔', color: '#4CAF50', category: 'delivery' },
+  { name: 'שליח עצמאי', slug: 'shaliach-atzmay', icon: '🚴', color: '#FF9800', category: 'delivery' },
+  
   // Services
   { name: 'עוזר וירטואלי', slug: 'ozer-virtuali', icon: '👩‍💼', color: '#607D8B', category: 'services' },
   { name: 'מנהל פרויקטים', slug: 'menahel-projects', icon: '📋', color: '#00BCD4', category: 'services' },
@@ -91,7 +99,6 @@ const professions = [
   { name: 'אינסטלטור', slug: 'instalator', icon: '🔧', color: '#1565C0', category: 'services' },
   { name: 'חשמלאי', slug: 'chashmlay', icon: '⚡', color: '#FFC107', category: 'services' },
   { name: 'טכנאי מיזוג', slug: 'technay-mizug', icon: '❄️', color: '#03A9F4', category: 'services' },
-  { name: 'שליח', slug: 'shaliach', icon: '🛵', color: '#FF6B00', category: 'services' },
   
   // Food
   { name: 'שף פרטי', slug: 'chef-prati', icon: '👨‍🍳', color: '#FF7043', category: 'food' },
