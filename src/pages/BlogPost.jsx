@@ -19,7 +19,7 @@ export default function BlogPost() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [slug]);
 
-  const { data: posts = [] } = useQuery({
+  const { data: posts = [], isLoading } = useQuery({
     queryKey: ['blog-post', slug],
     queryFn: () => base44.entities.BlogPost.filter({ slug, published: true }),
     enabled: !!slug
@@ -35,6 +35,16 @@ export default function BlogPost() {
     }, '-created_date', 3),
     enabled: !!post
   });
+
+  if (isLoading) {
+    return (
+      <main className="pt-20 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1E3A5F] mx-auto"></div>
+        </div>
+      </main>
+    );
+  }
 
   if (!post) {
     return (
