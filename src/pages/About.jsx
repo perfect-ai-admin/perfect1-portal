@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
+import InternalLinker from '../components/seo/InternalLinker';
 import { CheckCircle, Users, Award, Clock, ArrowLeft, Target, Heart, Shield } from 'lucide-react';
 
 const values = [
@@ -101,17 +102,10 @@ export default function About() {
                 הסיפור שלנו
               </h2>
               <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
-                <p>
-                  פרפקט וואן נוסדה מתוך הבנה עמוקה שפתיחת עסק לא צריכה להיות מסובכת. 
-                  ראינו אנשים מוכשרים שמפחדים לקחת את הצעד הראשון בגלל הבירוקרטיה והחששות מהרשויות.
-                </p>
-                <p>
-                  החלטנו לשנות את זה. יצרנו שירות שמלווה עצמאים מהרגע הראשון - 
-                  מפתיחת התיק ועד ניהול העסק השוטף. הכל במחיר הוגן ושקוף.
-                </p>
-                <p>
-                  היום אנחנו גאים לומר שעזרנו לאלפי עצמאים לפתוח עסק ולהגשים את החלום שלהם.
-                </p>
+                <InternalLinker 
+                  content="פרפקט וואן נוסדה מתוך הבנה עמוקה שפתיחת עוסק פטור לא צריכה להיות מסובכת. ראינו אנשים מוכשרים שמפחדים לקחת את הצעד הראשון בגלל הבירוקרטיה והחששות מהרשויות. החלטנו לשנות את זה. יצרנו שירות שמלווה עצמאים מהרגע הראשון - מפתיחת תיק עוסק פטור ועד ניהול העסק השוטף. הכל במחיר הוגן ושקוף. היום אנחנו גאים לומר שעזרנו לאלפי עצמאים לפתוח עוסק ולהגשים את החלום שלהם."
+                  currentPage="About"
+                />
               </div>
             </motion.div>
 
