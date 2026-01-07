@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
+import InternalLinker from '../seo/InternalLinker';
 import { ArrowLeft, CheckCircle, Users, Sparkles, Shield, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -53,11 +54,12 @@ export default function HeroSection() {
               <span className="text-[#D4AF37]">אנחנו נעשה את זה בשבילך!</span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-xl lg:mr-0 lg:ml-auto mx-auto font-medium">
-              ליווי מלא מהצעד הראשון - אתה עובד, אנחנו מטפלים בכל השאר.
-              <br />
-              <strong className="text-[#27AE60]">תוך 24-72 שעות תתחיל לעבוד חוקית!</strong>
-            </p>
+            <div className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-xl lg:mr-0 lg:ml-auto mx-auto font-medium">
+              <InternalLinker 
+                content="פתיחת עוסק פטור עם ליווי מלא מהצעד הראשון - אתה עובד, אנחנו מטפלים בכל השאר. תוך 24-72 שעות תתחיל לעבוד חוקית!"
+                currentPage="Home"
+              />
+            </div>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
