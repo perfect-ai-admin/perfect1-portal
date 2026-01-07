@@ -19,10 +19,10 @@ export default function InternalLinker({
   currentPage, 
   excludeFromLinking = false 
 }) {
-  const processedContent = useMemo(() => {
+  const processedElements = useMemo(() => {
     // בדיקות ראשוניות
     if (!content || !LINKING_CONFIG.enabled || excludeFromLinking) {
-      return content;
+      return [{ type: 'text', content }];
     }
 
     // סינון מיפוי לפי עדיפות
@@ -30,106 +30,73 @@ export default function InternalLinker({
       return (PRIORITY_WEIGHTS[b.priority] || 0) - (PRIORITY_WEIGHTS[a.priority] || 0);
     });
 
-    let processedText = content;
-    const linkedPositions = []; // מעקב אחר מיקומים שכבר קושרו
-    const targetPageCount = {}; // ספירת קישורים לכל דף יעד
-    const usedKeywords = new Set(); // ביטויים שכבר קושרו
+    const elements = [];
+    let remainingText = content;
+    const linkedKeywords = new Set();
+    const targetPageCount = {};
     let totalLinksAdded = 0;
 
     // מעבר על כל מיפוי
     for (const mapping of sortedMapping) {
-      // בדיקת מגבלת קישורים כוללת
-      if (totalLinksAdded >= LINKING_CONFIG.maxLinksPerPage) {
-        break;
-      }
-
+      if (totalLinksAdded >= LINKING_CONFIG.maxLinksPerPage) break;
+      
       const targetKey = mapping.target.page + (mapping.target.params || '');
       
-      // מניעת cannibalization - אם הדף הנוכחי הוא דף היעד, דלג
-      if (currentPage === mapping.target.page) {
-        continue;
-      }
-
+      // מניעת cannibalization
+      if (currentPage === mapping.target.page) continue;
+      
       // בדיקת מגבלת קישורים לאותו דף יעד
-      if ((targetPageCount[targetKey] || 0) >= LINKING_CONFIG.maxLinksToSameTarget) {
-        continue;
-      }
+      if ((targetPageCount[targetKey] || 0) >= LINKING_CONFIG.maxLinksToSameTarget) continue;
 
       // מעבר על מילות המפתח
       for (const keyword of mapping.keywords) {
-        if (usedKeywords.has(keyword)) {
-          continue;
-        }
+        if (linkedKeywords.has(keyword)) continue;
 
-        // חיפוש ההופעה הראשונה של הביטוי
-        const regex = new RegExp(`(?<!<[^>]*)\\b(${keyword})\\b(?![^<]*>)`, 'gi');
-        const matches = [];
-        let match;
-
-        while ((match = regex.exec(processedText)) !== null) {
-          const position = match.index;
-          const length = match[0].length;
-
-          // בדיקה שהמיקום לא חופף למיקום קיים
-          const isOverlapping = linkedPositions.some(
-            pos => position < pos.end && position + length > pos.start
-          );
-
-          // בדיקת context - האם הטקסט מסביב רלוונטי
-          const contextStart = Math.max(0, position - 100);
-          const contextEnd = Math.min(processedText.length, position + length + 100);
-          const contextText = processedText.substring(contextStart, contextEnd).toLowerCase();
-          
-          const hasRelevantContext = mapping.context.some(ctx => 
-            contextText.includes(ctx.toLowerCase())
-          );
-
-          // בדיקה שלא בתוך כותרת או תגית HTML
-          const beforeMatch = processedText.substring(Math.max(0, position - 10), position);
-          const afterMatch = processedText.substring(position + length, Math.min(processedText.length, position + length + 10));
-          const isInHeading = /<h[1-6][^>]*>/.test(beforeMatch) && /<\/h[1-6]>/.test(afterMatch);
-          
-          if (!isOverlapping && !isInHeading) {
-            matches.push({ 
-              position, 
-              length, 
-              text: match[0],
-              hasContext: hasRelevantContext 
-            });
-          }
-        }
-
-        // קישור ההופעה הראשונה (עם העדפה למי שיש context)
-        const bestMatch = matches.find(m => m.hasContext) || matches[0];
+        // חיפוש הביטוי
+        const regex = new RegExp(`\\b(${keyword})\\b`, 'i');
+        const match = remainingText.match(regex);
         
-        if (bestMatch) {
+        if (match) {
+          const index = match.index;
+          const matchedText = match[0];
+          
+          // פיצול הטקסט
+          const before = remainingText.substring(0, index);
+          const after = remainingText.substring(index + matchedText.length);
+          
+          // יצירת URL
           const url = mapping.target.params 
             ? `${createPageUrl(mapping.target.page)}?${mapping.target.params}`
             : createPageUrl(mapping.target.page);
 
-          const before = processedText.substring(0, bestMatch.position);
-          const keywordText = bestMatch.text;
-          const after = processedText.substring(bestMatch.position + bestMatch.length);
-          
-          processedText = before + 
-            `<a href="${url}" class="text-[#1E3A5F] font-semibold hover:text-[#27AE60] transition-colors underline decoration-2 underline-offset-2" title="${keywordText}">${keywordText}</a>` + 
-            after;
-
-          // עדכון מעקב
-          linkedPositions.push({ 
-            start: bestMatch.position, 
-            end: bestMatch.position + bestMatch.length 
+          // הוספת האלמנטים
+          if (before) elements.push({ type: 'text', content: before });
+          elements.push({ 
+            type: 'link', 
+            content: matchedText, 
+            url,
+            title: matchedText 
           });
-          usedKeywords.add(keyword);
+          
+          // עדכון הטקסט הנותר
+          remainingText = after;
+          
+          // עדכון מעקב
+          linkedKeywords.add(keyword);
           targetPageCount[targetKey] = (targetPageCount[targetKey] || 0) + 1;
           totalLinksAdded++;
-
-          break; // עבור לביטוי הבא
+          
+          break;
         }
       }
     }
 
-    return processedText;
+    // הוספת הטקסט שנותר
+    if (remainingText) {
+      elements.push({ type: 'text', content: remainingText });
+    }
+
+    return elements;
   }, [content, currentPage, excludeFromLinking]);
 
   if (!content) return null;
@@ -143,8 +110,23 @@ export default function InternalLinker({
         fontSize: '1.125rem',
         lineHeight: '1.8'
       }}
-      dangerouslySetInnerHTML={{ __html: processedContent }}
-    />
+    >
+      {processedElements.map((element, index) => {
+        if (element.type === 'link') {
+          return (
+            <Link
+              key={index}
+              to={element.url}
+              className="text-[#1E3A5F] font-semibold hover:text-[#27AE60] transition-colors underline decoration-2 underline-offset-2"
+              title={element.title}
+            >
+              {element.content}
+            </Link>
+          );
+        }
+        return <span key={index} dangerouslySetInnerHTML={{ __html: element.content }} />;
+      })}
+    </div>
   );
 }
 
