@@ -154,6 +154,15 @@ export default function BlogPost() {
                 />
               </div>
 
+              {/* Lead Form */}
+              <div className="mb-12">
+                <LeadForm 
+                  title="מעוניין לפתוח עוסק פטור?"
+                  subtitle="נשמח לעזור לך להתחיל"
+                  sourcePage={`מאמר: ${post.title}`}
+                />
+              </div>
+
               {/* CTA */}
               <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-8 text-center text-white mb-12">
                 <h3 className="text-2xl font-bold mb-4">מעוניין לפתוח עוסק פטור?</h3>
