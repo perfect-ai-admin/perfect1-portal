@@ -37,6 +37,7 @@ import SitemapPages from './pages/SitemapPages';
 import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
+import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -80,6 +81,7 @@ export const PAGES = {
     "TechnicianLanding": TechnicianLanding,
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
+    "WoltDeliveryLanding": WoltDeliveryLanding,
 }
 
 export const pagesConfig = {
