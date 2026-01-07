@@ -1257,6 +1257,29 @@ export default function ProfessionPage() {
                   </div>
                 </motion.div>
 
+                {/* CTA After Warning */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-gradient-to-br from-[#27AE60] to-[#2ECC71] rounded-2xl p-8 text-center text-white shadow-lg"
+                >
+                  <h3 className="text-2xl font-black mb-3">
+                    🚀 מוכנים להתחיל?
+                  </h3>
+                  <p className="text-lg mb-6 text-white/95">
+                    נפתח לך עוסק פטור תוך 24 שעות - כולל כל המסמכים והליווי המקצועי
+                  </p>
+                  <LeadForm 
+                    title=""
+                    subtitle=""
+                    defaultProfession={profession.name}
+                    sourcePage={`דף מקצוע - ${profession.name} - CTA אמצעי`}
+                    compact={true}
+                    variant="inline"
+                  />
+                </motion.div>
+
                 {/* Navigation Links */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
