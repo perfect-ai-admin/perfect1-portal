@@ -22,11 +22,33 @@ export default function WoltDeliveryLanding() {
 
     setIsSubmitting(true);
     try {
-      await base44.entities.Lead.create({
+      const newLead = await base44.entities.Lead.create({
         ...formData,
         source_page: 'דף נחיתה - שליח וולט',
         status: 'new'
       });
+
+      // Send email notification
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: 'office@perfect1.co.il',
+          subject: '🚴 ליד חדש - שליח וולט',
+          body: `
+            <div style="direction: rtl; font-family: Arial, sans-serif;">
+              <h2 style="color: #00C2E8;">ליד חדש משליח וולט! 🛵</h2>
+              <p><strong>שם:</strong> ${newLead.name}</p>
+              <p><strong>טלפון:</strong> ${newLead.phone}</p>
+              <p><strong>מקצוע:</strong> ${newLead.profession}</p>
+              <p><strong>תאריך:</strong> ${new Date().toLocaleString('he-IL')}</p>
+              <br>
+              <a href="https://perfect1.co.il/LeadsAdmin" style="background: #00C2E8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">צפה בלידים</a>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.error('Failed to send email:', emailErr);
+      }
+
       window.location.href = '/ThankYou';
     } catch (err) {
       setIsSubmitting(false);

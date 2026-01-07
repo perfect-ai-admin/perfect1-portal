@@ -53,11 +53,35 @@ export default function LeadForm({
     setIsSubmitting(true);
 
     try {
-      await base44.entities.Lead.create({
+      const newLead = await base44.entities.Lead.create({
         ...formData,
         source_page: sourcePage,
         status: 'new'
       });
+
+      // Send email notification
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: 'office@perfect1.co.il',
+          subject: `🎯 ליד חדש מ${sourcePage}`,
+          body: `
+            <div style="direction: rtl; font-family: Arial, sans-serif;">
+              <h2 style="color: #1E3A5F;">ליד חדש התקבל! 🎉</h2>
+              <p><strong>שם:</strong> ${newLead.name}</p>
+              <p><strong>טלפון:</strong> ${newLead.phone}</p>
+              ${newLead.email ? `<p><strong>אימייל:</strong> ${newLead.email}</p>` : ''}
+              ${newLead.profession ? `<p><strong>מקצוע:</strong> ${newLead.profession}</p>` : ''}
+              ${newLead.notes ? `<p><strong>הערות:</strong> ${newLead.notes}</p>` : ''}
+              <p><strong>מקור:</strong> ${sourcePage}</p>
+              <p><strong>תאריך:</strong> ${new Date().toLocaleString('he-IL')}</p>
+              <br>
+              <a href="https://perfect1.co.il/LeadsAdmin" style="background: #27AE60; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">צפה בלידים</a>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.error('Failed to send email:', emailErr);
+      }
 
       // Redirect to Thank You page immediately
       window.location.href = '/ThankYou';

@@ -12,6 +12,7 @@ import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
 import Home from './pages/Home';
 import LashArtistLanding from './pages/LashArtistLanding';
+import LeadsAdmin from './pages/LeadsAdmin';
 import MakeupArtistLanding from './pages/MakeupArtistLanding';
 import MakeupArtistLandingNew from './pages/MakeupArtistLandingNew';
 import ManicuristLanding from './pages/ManicuristLanding';
@@ -38,7 +39,6 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import LeadsAdmin from './pages/LeadsAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +57,7 @@ export const PAGES = {
     "HairStylistLanding": HairStylistLanding,
     "Home": Home,
     "LashArtistLanding": LashArtistLanding,
+    "LeadsAdmin": LeadsAdmin,
     "MakeupArtistLanding": MakeupArtistLanding,
     "MakeupArtistLandingNew": MakeupArtistLandingNew,
     "ManicuristLanding": ManicuristLanding,
@@ -83,7 +84,6 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "LeadsAdmin": LeadsAdmin,
 }
 
 export const pagesConfig = {
