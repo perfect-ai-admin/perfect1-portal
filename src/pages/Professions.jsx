@@ -46,6 +46,10 @@ export default function Professions() {
         </div>
       </section>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <MicroCTA text="רוצה לדעת איזה מסלול מתאים לך?" cta="ייעוץ מהיר ללא עלות" variant="subtle" />
+      </div>
+
       {/* Professions Grid - Show All */}
       <ProfessionsGrid showAll={true} />
       </main>
