@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import PricingSection from '../components/home/PricingSection';
 import FAQSection from '../components/home/FAQSection';
 import CTASection from '../components/home/CTASection';
+import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import { CheckCircle, Info } from 'lucide-react';
 
@@ -32,9 +33,12 @@ export default function Pricing() {
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
               מחירים ברורים מראש
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              אצלנו הכל שקוף - בלי אותיות קטנות, בלי עמלות נסתרות
-            </p>
+            <div className="text-xl text-white/80 max-w-2xl mx-auto">
+              <InternalLinker 
+                content="מחיר פתיחת עוסק פטור שקוף וברור - בלי אותיות קטנות, בלי עמלות נסתרות"
+                currentPage="Pricing"
+              />
+            </div>
           </motion.div>
         </div>
       </section>
@@ -116,10 +120,12 @@ export default function Pricing() {
             <Info className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1" />
             <div>
               <h4 className="font-bold text-gray-800 mb-2">חשוב לדעת</h4>
-              <p className="text-gray-600">
-                כל המחירים הם + מע"מ. ניתן לבטל את הליווי החודשי בכל עת ללא קנסות. 
-                הדוח השנתי נדרש רק פעם בשנה ואינו חובה לכל עוסק פטור.
-              </p>
+              <div className="text-gray-600">
+                <InternalLinker 
+                  content="כל המחירים הם + מע"מ. ניתן לבטל את ליווי חודשי בכל עת ללא קנסות. דוח שנתי נדרש רק פעם בשנה ואינו חובה לכל עוסק פטור."
+                  currentPage="Pricing"
+                />
+              </div>
             </div>
           </motion.div>
         </div>
