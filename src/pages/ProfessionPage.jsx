@@ -1022,7 +1022,7 @@ export default function ProfessionPage() {
       >
       <div 
         className="w-24 h-24 mx-auto rounded-3xl flex items-center justify-center text-5xl mb-6 shadow-lg"
-        style={{ backgroundColor profession.color + '30' }}
+        style={{ backgroundColor: profession.color + '30' }}
       >
         {profession.icon}
       </div>
