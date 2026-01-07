@@ -61,18 +61,19 @@ export default function LeadForm({
       });
 
       // Send to Google Sheets
-      const whatsappLink = `https://wa.me/972${formData.phone.replace(/^0/, '')}`;
+      const whatsappLink = `https://wa.me/972${formData.phone.replace(/^0/, '')}?text=${encodeURIComponent(`היי, אני ${formData.name} מדף ${sourcePage}. מעוניין בייעוץ`)}`;
       try {
         await base44.integrations.Core.GoogleSheetsAppendRow({
-          spreadsheet_id: '1NX5zwyW3WLxN9vAs60sfyq0r5bnTc8_WzGaD525EiVI',
-          range: 'Sheet1!A:E',
-          values: [[
+          spreadsheet_url: 'https://docs.google.com/spreadsheets/d/1NX5zwyW3WLxN9vAs60sfyq0r5bnTc8_WzGaD525EiVI/edit',
+          sheet_name: 'Sheet1',
+          values: [
+            new Date().toLocaleString('he-IL'),
+            sourcePage,
             formData.name,
             formData.phone,
-            sourcePage,
-            whatsappLink,
-            new Date().toLocaleString('he-IL')
-          ]]
+            formData.email || '',
+            whatsappLink
+          ]
         });
       } catch (sheetsError) {
         console.error('Google Sheets error:', sheetsError);
@@ -93,8 +94,11 @@ export default function LeadForm({
 
       window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
 
-      // Redirect to Thank You page
-      window.location.href = '/ThankYou';
+      // Show success and redirect
+      setIsSuccess(true);
+      setTimeout(() => {
+        window.location.href = createPageUrl('ThankYou');
+      }, 2000);
     } catch (err) {
       setError('אירעה שגיאה, נסה שוב');
     } finally {
