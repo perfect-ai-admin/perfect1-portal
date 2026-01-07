@@ -78,8 +78,8 @@ export default function LeadForm({
         // Continue even if sheets fails
       }
 
-      // Redirect to Thank You page
-      window.location.href = createPageUrl('ThankYou');
+      // Redirect to Thank You page immediately
+      window.location.href = '/ThankYou';
     } catch (err) {
       setError('אירעה שגיאה, נסה שוב');
     } finally {
