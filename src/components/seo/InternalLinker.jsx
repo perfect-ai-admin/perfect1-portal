@@ -19,10 +19,10 @@ export default function InternalLinker({
   currentPage, 
   excludeFromLinking = false 
 }) {
-  const processedElements = useMemo(() => {
+  const processedContent = useMemo(() => {
     // בדיקות ראשוניות
     if (!content || !LINKING_CONFIG.enabled || excludeFromLinking) {
-      return [{ type: 'text', content }];
+      return content;
     }
 
     // סינון מיפוי לפי עדיפות
@@ -30,8 +30,7 @@ export default function InternalLinker({
       return (PRIORITY_WEIGHTS[b.priority] || 0) - (PRIORITY_WEIGHTS[a.priority] || 0);
     });
 
-    const elements = [];
-    let remainingText = content;
+    let text = content;
     const linkedKeywords = new Set();
     const targetPageCount = {};
     let totalLinksAdded = 0;
@@ -52,34 +51,23 @@ export default function InternalLinker({
       for (const keyword of mapping.keywords) {
         if (linkedKeywords.has(keyword)) continue;
 
-        // חיפוש הביטוי
-        const regex = new RegExp(`\\b(${keyword})\\b`, 'i');
-        const match = remainingText.match(regex);
+        // חיפוש הביטוי - רק אם הוא לא כבר בתוך תגית <a>
+        const regex = new RegExp(`(?!<a[^>]*>)(${keyword})(?![^<]*<\/a>)`, 'i');
+        const match = text.match(regex);
         
-        if (match) {
-          const index = match.index;
-          const matchedText = match[0];
+        if (match && match.index !== undefined) {
+          const matchedText = match[1];
           
-          // פיצול הטקסט
-          const before = remainingText.substring(0, index);
-          const after = remainingText.substring(index + matchedText.length);
-          
-          // יצירת URL
+          // יצירת URL מלא
           const url = mapping.target.params 
             ? `${createPageUrl(mapping.target.page)}?${mapping.target.params}`
             : createPageUrl(mapping.target.page);
 
-          // הוספת האלמנטים
-          if (before) elements.push({ type: 'text', content: before });
-          elements.push({ 
-            type: 'link', 
-            content: matchedText, 
-            url,
-            title: matchedText 
-          });
-          
-          // עדכון הטקסט הנותר
-          remainingText = after;
+          // החלפת הביטוי הראשון בקישור HTML
+          text = text.replace(
+            regex,
+            `<a href="${url}" class="text-[#1E3A5F] font-bold hover:text-[#27AE60] transition-colors underline decoration-2 underline-offset-2">${matchedText}</a>`
+          );
           
           // עדכון מעקב
           linkedKeywords.add(keyword);
@@ -91,42 +79,22 @@ export default function InternalLinker({
       }
     }
 
-    // הוספת הטקסט שנותר
-    if (remainingText) {
-      elements.push({ type: 'text', content: remainingText });
-    }
-
-    return elements;
+    return text;
   }, [content, currentPage, excludeFromLinking]);
 
   if (!content) return null;
 
   return (
     <div 
-      className="prose prose-lg prose-headings:text-[#1E3A5F] prose-headings:font-black prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:border-b prose-h2:border-gray-200 prose-h2:pb-3 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-[#2C5282] prose-p:text-gray-700 prose-p:leading-loose prose-p:mb-6 prose-strong:text-[#1E3A5F] prose-strong:font-bold prose-em:text-[#D4AF37] prose-em:font-semibold prose-ul:my-6 prose-ul:space-y-3 prose-li:my-0 prose-li:pl-2 prose-a:text-[#1E3A5F] prose-a:font-semibold prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 hover:prose-a:text-[#27AE60] prose-blockquote:border-r-4 prose-blockquote:border-[#D4AF37] prose-blockquote:bg-gray-50 prose-blockquote:pr-6 prose-blockquote:py-4 prose-blockquote:my-8 prose-blockquote:rounded-lg prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:text-[#1E3A5F] max-w-none"
+      className="prose prose-lg prose-headings:text-[#1E3A5F] prose-headings:font-black prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:border-b prose-h2:border-gray-200 prose-h2:pb-3 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-[#2C5282] prose-p:text-gray-700 prose-p:leading-loose prose-p:mb-6 prose-strong:text-[#1E3A5F] prose-strong:font-bold prose-em:text-[#D4AF37] prose-em:font-semibold prose-ul:my-6 prose-ul:space-y-3 prose-li:my-0 prose-li:pl-2 prose-a:text-[#1E3A5F] prose-a:font-bold prose-a:underline prose-a:decoration-2 prose-a:underline-offset-2 hover:prose-a:text-[#27AE60] prose-blockquote:border-r-4 prose-blockquote:border-[#D4AF37] prose-blockquote:bg-gray-50 prose-blockquote:pr-6 prose-blockquote:py-4 prose-blockquote:my-8 prose-blockquote:rounded-lg prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:text-[#1E3A5F] max-w-none"
       style={{
         direction: 'rtl',
         fontFamily: 'Heebo, sans-serif',
         fontSize: '1.125rem',
         lineHeight: '1.8'
       }}
-    >
-      {processedElements.map((element, index) => {
-        if (element.type === 'link') {
-          return (
-            <Link
-              key={index}
-              to={element.url}
-              className="text-[#1E3A5F] font-semibold hover:text-[#27AE60] transition-colors underline decoration-2 underline-offset-2"
-              title={element.title}
-            >
-              {element.content}
-            </Link>
-          );
-        }
-        return <span key={index} dangerouslySetInnerHTML={{ __html: element.content }} />;
-      })}
-    </div>
+      dangerouslySetInnerHTML={{ __html: processedContent }}
+    />
   );
 }
 
