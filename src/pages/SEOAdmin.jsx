@@ -35,6 +35,28 @@ export default function SEOAdmin() {
     queryFn: () => base44.entities.SEOLog.list('-created_date', 50)
   });
 
+  // Fetch page snapshots
+  const { data: snapshots = [], isLoading: snapshotsLoading } = useQuery({
+    queryKey: ['page-snapshots'],
+    queryFn: () => base44.entities.PageSnapshot.filter({ status: 'changed' })
+  });
+
+  // Scan all pages mutation
+  const [scanResults, setScanResults] = useState(null);
+  const scanPagesMutation = useMutation({
+    mutationFn: async () => {
+      // קריאה ל-backend function
+      const response = await fetch('/api/scanAllPages', { method: 'POST' });
+      const data = await response.json();
+      return data;
+    },
+    onSuccess: (data) => {
+      setScanResults(data);
+      queryClient.invalidateQueries(['seo-logs']);
+      queryClient.invalidateQueries(['page-snapshots']);
+    }
+  });
+
   // Update config mutation
   const updateConfigMutation = useMutation({
     mutationFn: async (updates) => {
@@ -197,6 +219,77 @@ export default function SEOAdmin() {
           <p className="text-gray-600">ניהול אוטומציית אינדקס חכמה לגוגל</p>
         </div>
 
+        {/* Scan Results Alert */}
+        {scanResults && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <Card className="border-blue-200 bg-blue-50">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-6 h-6 text-blue-600 mt-1" />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-blue-900 mb-2">סריקה הושלמה בהצלחה!</h3>
+                    <div className="text-sm text-blue-800 space-y-1">
+                      <p>✓ נסרקו {scanResults.scanned} עמודים</p>
+                      <p>✓ זוהו {scanResults.changed} שינויים מהותיים</p>
+                      <p>✓ {scanResults.new} עמודים חדשים</p>
+                    </div>
+                    {scanResults.changes && scanResults.changes.length > 0 && (
+                      <div className="mt-3 bg-white rounded-lg p-3 max-h-40 overflow-y-auto">
+                        <p className="font-semibold text-xs text-blue-900 mb-2">שינויים שזוהו:</p>
+                        {scanResults.changes.map((change, idx) => (
+                          <div key={idx} className="text-xs text-blue-800 py-1 border-b border-blue-100 last:border-0">
+                            <Badge variant={change.type === 'new' ? 'default' : 'outline'} className="mr-2">
+                              {change.type === 'new' ? 'חדש' : 'שונה'}
+                            </Badge>
+                            {change.title} - {change.entity}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setScanResults(null)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    ×
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* Changed Pages Alert */}
+        {snapshots.length > 0 && (
+          <Card className="mb-6 border-orange-200 bg-orange-50">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-6 h-6 text-orange-600 mt-1" />
+                <div className="flex-1">
+                  <h3 className="font-bold text-orange-900 mb-2">
+                    ⚠️ זוהו {snapshots.length} עמודים עם שינויים שטרם טופלו
+                  </h3>
+                  <p className="text-sm text-orange-800 mb-3">
+                    עמודים אלה עברו שינוי מהותי ומחכים לטיפול (ping לגוגל)
+                  </p>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {snapshots.slice(0, 5).map((snapshot) => (
+                      <div key={snapshot.id} className="text-xs bg-white rounded p-2">
+                        <span className="font-semibold text-orange-900">{snapshot.title}</span>
+                        <span className="text-orange-700 block truncate">{snapshot.url}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Main Controls */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Automation Toggle */}
@@ -226,7 +319,7 @@ export default function SEOAdmin() {
                 />
               </div>
 
-              <div className="mt-6">
+              <div className="mt-6 space-y-2">
                 <Button
                   onClick={sendManualPing}
                   variant="outline"
@@ -234,6 +327,23 @@ export default function SEOAdmin() {
                 >
                   <RefreshCw className="w-4 h-4 mr-2" />
                   שלח Ping ידני לגוגל
+                </Button>
+                
+                <Button
+                  onClick={() => scanPagesMutation.mutate()}
+                  disabled={scanPagesMutation.isLoading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {scanPagesMutation.isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      סורק...
+                    </>
+                  ) : (
+                    <>
+                      🔍 סרוק את כל העמודים
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>
