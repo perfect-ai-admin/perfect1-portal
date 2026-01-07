@@ -8,6 +8,7 @@ import PricingSection from '../components/home/PricingSection';
 import ProfessionsGrid from '../components/home/ProfessionsGrid';
 import FAQSection from '../components/home/FAQSection';
 import CTASection from '../components/home/CTASection';
+import QuickCTASection from '../components/home/QuickCTASection';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 
 export default function Home() {
@@ -71,6 +72,7 @@ export default function Home() {
         <ServicesSection />
         <ProfessionsGrid />
         <ProcessSection />
+        <QuickCTASection />
         <FAQSection />
         <CTASection />
       </main>
