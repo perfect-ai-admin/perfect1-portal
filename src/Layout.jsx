@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/layout/WhatsAppButton';
 import SidePopup from './components/cro/SidePopup';
 import StickyCTA from './components/cro/StickyCTA';
+import CriticalCSS from './components/performance/CriticalCSS';
+import ResourceHints from './components/performance/ResourceHints';
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
@@ -28,15 +31,22 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
-      <Header />
-      <main>
-        {children}
-      </main>
-      <Footer />
-      <WhatsAppButton message={getWhatsAppMessage()} />
-      <SidePopup />
-      <StickyCTA />
+    <HelmetProvider>
+      <CriticalCSS />
+      <ResourceHints 
+        priorityImages={['/logo.png']}
+        prefetchPages={['/Services', '/Pricing', '/Contact']}
+      />
+      <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
+        <Header />
+        <main>
+          {children}
+        </main>
+        <Footer />
+        <WhatsAppButton message={getWhatsAppMessage()} />
+        <SidePopup />
+        <StickyCTA />
       </div>
-      );
-      }
+    </HelmetProvider>
+  );
+}
