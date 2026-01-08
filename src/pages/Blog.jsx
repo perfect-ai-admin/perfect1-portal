@@ -33,6 +33,35 @@ export default function Blog() {
     return matchesSearch && matchesCategory;
   });
 
+  // Enhanced Blog Schema
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "בלוג Perfect One לעוסקים פטורים",
+    "description": "מדריכים, טיפים ומאמרים מקצועיים לעצמאים ועוסקים פטורים בישראל",
+    "url": "https://perfect1.co.il/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ]
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "עוסק פטור בישראל",
+      "description": "מדריכים וטיפים לעוסקים פטורים"
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il"
+    }
+  };
+
   return (
     <>
       <SEOOptimized
@@ -40,6 +69,7 @@ export default function Blog() {
         description="מדריכים, טיפים ומאמרים לעצמאים ועוסקים פטורים בישראל. כל מה שצריך לדעת על פתיחת עוסק, מיסים, דיווחים ומקצועות עצמאיים."
         keywords="בלוג עצמאים, מדריך עוסק פטור, טיפים לעצמאים, מיסים לעצמאים, דיווחים לעוסק פטור"
         canonical="https://perfect1.co.il/blog"
+        schema={blogSchema}
       />
       <main className="pt-20 bg-[#F8F9FA]">
         {/* Hero */}

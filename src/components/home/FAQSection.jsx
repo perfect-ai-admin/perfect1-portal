@@ -44,6 +44,36 @@ const faqs = [
 ];
 
 export default function FAQSection() {
+  // Add FAQ Schema
+  React.useEffect(() => {
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    };
+
+    let script = document.querySelector('script[data-schema-type="faq"]');
+    if (!script) {
+      script = document.createElement('script');
+      script.setAttribute('type', 'application/ld+json');
+      script.setAttribute('data-schema-type', 'faq');
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(faqSchema);
+
+    return () => {
+      const scriptToRemove = document.querySelector('script[data-schema-type="faq"]');
+      if (scriptToRemove) scriptToRemove.remove();
+    };
+  }, []);
+
   return (
     <section className="py-12 bg-[#F8F9FA]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
