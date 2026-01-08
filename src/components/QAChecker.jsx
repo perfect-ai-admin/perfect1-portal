@@ -236,7 +236,7 @@ export default function QAChecker() {
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-16 right-0 w-96 max-h-96 overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 p-4 space-y-3">
+        <div className="absolute bottom-16 left-0 w-96 max-h-96 overflow-y-auto bg-white rounded-xl shadow-2xl border border-gray-200 p-4 space-y-3">
           {issues.length === 0 ? (
             <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
               <CheckCircle className="w-5 h-5 text-green-600" />
