@@ -11,6 +11,8 @@ import CTASection from '../components/home/CTASection';
 import QuickCTASection from '../components/home/QuickCTASection';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import MicroCTA from '../components/cro/MicroCTA';
+import GeoContent from '../components/seo/GeoContent';
+import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 
 export default function Home() {
   return (
@@ -88,6 +90,7 @@ export default function Home() {
         <ProfessionsGrid />
         <QuickCTASection />
         <ProcessSection />
+        <GeoContent />
         <MicroCTA text="מוכנים להתחיל?" cta="שיחה קצרה ללא התחייבות" />
         <FAQSection />
         <CTASection />
