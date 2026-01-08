@@ -14,6 +14,11 @@ import QAChecker from './components/QAChecker';
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
 
+  // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
+  if (currentPageName === 'SystemLogicMap') {
+    return children;
+  }
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location.pathname, location.search]);
