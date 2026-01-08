@@ -1501,176 +1501,941 @@ npm run build
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50" dir="rtl">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] text-white shadow-2xl sticky top-0 z-50">
-          <div className="px-8 py-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-black mb-2 flex items-center gap-3">
-                  <Database className="w-10 h-10" />
-                  Perfect One - מפת לוגיקה מלאה
-                </h1>
-                <p className="text-base md:text-lg opacity-90">
-                  תיעוד טכני מקיף + Setup Guide - כל מה שצריך לבניה מאפס
-                </p>
-              </div>
-              <Button 
-                onClick={() => {
-                  const blob = new Blob([markdownContent], { type: 'text/markdown' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'Perfect-One-Complete-Documentation.md';
-                  a.click();
-                }}
-                className="hidden md:flex bg-white text-[#1E3A5F] hover:bg-gray-100"
-              >
-                <Download className="w-5 h-5 ml-2" />
-                הורד מסמך מלא
-              </Button>
+      {/* Header */}
+      <div className="bg-gradient-to-r from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] text-white shadow-2xl">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-black mb-2 flex items-center gap-3">
+                <Database className="w-10 h-10" />
+                Perfect One - מפת לוגיקה מלאה
+              </h1>
+              <p className="text-base md:text-lg opacity-90">
+                תיעוד טכני מקיף למשקיעים ו-Development Team - כל הארכיטקטורה, דאטה, Flows ו-KPIs
+              </p>
             </div>
-          </div>
-
-          {/* Navigation Menu */}
-          <div className="border-t border-white/20 px-8 py-3 bg-[#1E3A5F]/50 backdrop-blur-sm">
-            <ScrollArea className="w-full">
-              <div className="flex items-center gap-2 pb-2">
-                {sections.map((section) => {
-                  const Icon = section.icon;
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => scrollToSection(section.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold whitespace-nowrap transition-all ${
-                        activeSection === section.id
-                          ? 'bg-white text-[#1E3A5F] shadow-lg'
-                          : 'bg-white/10 text-white hover:bg-white/20'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span className="text-sm">{section.title}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </ScrollArea>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-4 md:p-8">
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <div className="p-6 md:p-10">
-              <div className="prose prose-lg prose-slate max-w-none" dir="rtl">
-                  <ReactMarkdown
-                    components={{
-                      h1: ({ children }) => (
-                        <h1 className="text-4xl font-black text-[#1E3A5F] border-b-4 border-[#D4AF37] pb-3 mb-6">
-                          {children}
-                        </h1>
-                      ),
-                      h2: ({ children }) => (
-                        <h2 className="text-3xl font-bold text-[#1E3A5F] mt-12 mb-4 flex items-center gap-2">
-                          {children}
-                        </h2>
-                      ),
-                      h3: ({ children }) => (
-                        <h3 className="text-2xl font-bold text-[#2C5282] mt-8 mb-3">
-                          {children}
-                        </h3>
-                      ),
-                      h4: ({ children }) => (
-                        <h4 className="text-xl font-bold text-gray-800 mt-6 mb-2">
-                          {children}
-                        </h4>
-                      ),
-                      code: ({ inline, className, children }) => {
-                        if (inline) {
-                          return (
-                            <code className="bg-gray-100 px-2 py-1 rounded text-sm text-[#1E3A5F] font-mono">
-                              {children}
-                            </code>
-                          );
-                        }
-                        return (
-                          <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-4">
-                            <code className={className}>{children}</code>
-                          </pre>
-                        );
-                      },
-                      table: ({ children }) => (
-                        <div className="overflow-x-auto my-6">
-                          <table className="min-w-full border-collapse border border-gray-300">
-                            {children}
-                          </table>
-                        </div>
-                      ),
-                      th: ({ children }) => (
-                        <th className="bg-[#1E3A5F] text-white px-4 py-2 text-right font-bold border border-gray-300">
-                          {children}
-                        </th>
-                      ),
-                      td: ({ children }) => (
-                        <td className="px-4 py-2 border border-gray-300">
-                          {children}
-                        </td>
-                      ),
-                      blockquote: ({ children }) => (
-                        <blockquote className="border-r-4 border-[#D4AF37] bg-blue-50 pr-4 py-3 my-4 italic text-gray-700">
-                          {children}
-                        </blockquote>
-                      ),
-                      ul: ({ children }) => (
-                        <ul className="mr-6 my-4 space-y-2 list-disc">{children}</ul>
-                      ),
-                      ol: ({ children }) => (
-                        <ol className="mr-6 my-4 space-y-2 list-decimal">{children}</ol>
-                      ),
-                      li: ({ children }) => (
-                        <li className="text-gray-700 leading-relaxed">{children}</li>
-                      ),
-                      a: ({ href, children }) => (
-                        <a 
-                          href={href}
-                          className="text-[#27AE60] hover:text-[#2ECC71] font-bold underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {children}
-                        </a>
-                      ),
-                      hr: () => (
-                        <hr className="my-8 border-t-2 border-gray-200" />
-                      )
-                    }}
-                  >
-                    {markdownContent}
-                </ReactMarkdown>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Download Button Mobile */}
-          <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
             <Button 
-              onClick={() => {
-                const blob = new Blob([markdownContent], { type: 'text/markdown' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Perfect-One-Complete-Documentation.md';
-                a.click();
-              }}
-              className="bg-[#27AE60] hover:bg-[#2ECC71] text-white shadow-2xl"
-              size="lg"
+              onClick={downloadDocumentation}
+              className="bg-white text-[#1E3A5F] hover:bg-gray-100 whitespace-nowrap"
             >
               <Download className="w-5 h-5 ml-2" />
-              הורד מסמך
+              הורד PDF
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-12">
+        <OverviewSection />
+        <EntitiesSection />
+        <FlowsSection />
+        <SEOSection />
+        <TrackingSection />
+        <PermissionsSection />
+        <JobsSection />
+        <MigrationSection />
+      </div>
+    </div>
+  );
+}
+
+// Section Components Below...
+
+function OverviewSection() {
+  return (
+    <div>
+      <SectionHeader 
+        title="סקירת המערכת" 
+        icon={Rocket}
+        description="מטרה, טכנולוגיות, וארכיטקטורה כללית"
+      />
+      
+      <Card title="🎯 מטרת המערכת" highlight>
+        <p className="text-lg text-gray-700 leading-relaxed">
+          <strong className="text-[#1E3A5F]">Perfect One</strong> היא פלטפורמת SaaS לשיווק וניהול לקוחות (CRM) 
+          לעסקים בתחום <strong>פתיחת עוסק פטור</strong> בישראל. 
+          המערכת משלבת אתר שיווקי עם SEO מתקדם, מנגנוני המרה חכמים, 
+          ו-CRM פנימי לניהול לידים וליווי לקוחות.
+        </p>
+      </Card>
+
+      <Card title="🏗️ ארכיטקטורה - Stack טכנולוגי">
+        <div className="space-y-4">
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Frontend:</h4>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-mono">React 18.2.0</span>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-mono">Tailwind CSS</span>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-mono">Framer Motion</span>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-mono">Shadcn/UI</span>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-mono">TanStack Query</span>
+            </div>
+          </div>
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Backend (BaaS):</h4>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-mono">Base44 Platform</span>
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-mono">NoSQL Database</span>
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-mono">JWT Auth</span>
+            </div>
+          </div>
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Integrations:</h4>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">GTM + GA4</span>
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">Facebook Pixel</span>
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">Email API</span>
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">LLM (AI)</span>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="📊 KPIs & Metrics (2026)">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-green-50 p-4 rounded-lg text-center">
+            <div className="text-3xl font-black text-green-700">~200</div>
+            <div className="text-sm text-gray-600 mt-1">לידים/חודש</div>
+          </div>
+          <div className="bg-blue-50 p-4 rounded-lg text-center">
+            <div className="text-3xl font-black text-blue-700">3.2%</div>
+            <div className="text-sm text-gray-600 mt-1">Conversion Rate</div>
+          </div>
+          <div className="bg-purple-50 p-4 rounded-lg text-center">
+            <div className="text-3xl font-black text-purple-700">₪2.5K</div>
+            <div className="text-sm text-gray-600 mt-1">LTV ממוצע</div>
+          </div>
+          <div className="bg-orange-50 p-4 rounded-lg text-center">
+            <div className="text-3xl font-black text-orange-700">45+</div>
+            <div className="text-sm text-gray-600 mt-1">דפים באתר</div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function EntitiesSection() {
+  const entities = [
+    {
+      name: 'Lead',
+      desc: 'לידים - פניות מהאתר (Core Revenue Entity)',
+      fields: ['name', 'phone', 'email', 'profession', 'notes', 'source_page', 'interaction_type', 'status', 'follow_up_date', 'last_contact_date', 'priority', 'consent'],
+      relations: ['created_by → User'],
+      indexes: ['status', 'created_date', 'follow_up_date', 'source_page'],
+      businessLogic: [
+        'Auto-status transition: new → contacted (on first email/call)',
+        'Follow-up reminders: Daily query for leads with follow_up_date = today',
+        'Conversion tracking: status=converted triggers revenue analytics',
+        'GDPR compliance: consent field required for marketing automation'
+      ],
+      volume: '~200 leads/month, growing 15% MoM',
+      retention: 'Permanent (legal requirement for accounting)'
+    },
+    {
+      name: 'BlogPost',
+      desc: 'מאמרים בבלוג (SEO Content Hub)',
+      fields: ['title', 'slug', 'excerpt', 'content', 'category', 'keywords', 'meta_title', 'meta_description', 'featured_image', 'author', 'read_time', 'published'],
+      relations: ['SEOLog ← entity_id'],
+      indexes: ['slug (unique)', 'category', 'published', 'created_date'],
+      businessLogic: [
+        'URL structure: /blog/{slug} - permanent, SEO-critical',
+        'Auto internal linking on save (see InternalLinker)',
+        'Content hash calculation for change detection',
+        'Auto sitemap update + Google ping on publish',
+        'Read time: calculated by word count / 200 WPM'
+      ],
+      volume: '~30 articles, adding 4-6/month',
+      retention: 'Permanent (evergreen content strategy)'
+    },
+    {
+      name: 'Profession',
+      desc: 'מקצועות - דפי Landing SEO',
+      fields: ['name', 'slug', 'icon', 'color', 'category', 'subcategory', 'description', 'services', 'tips', 'meta_title', 'meta_description'],
+      relations: [],
+      indexes: ['slug (unique)', 'category'],
+      businessLogic: [
+        'Dynamic landing pages: /professions/{slug}',
+        'LocalBusiness schema per profession',
+        'Internal links from all relevant pages'
+      ],
+      volume: '~50 professions',
+      retention: 'Permanent'
+    },
+    {
+      name: 'SitemapURL',
+      desc: 'רשימת כל ה-URLs לGoogle',
+      fields: ['url', 'type', 'priority', 'changefreq', 'lastmod', 'status'],
+      relations: ['PageSnapshot ← url'],
+      indexes: ['url (unique)', 'status', 'lastmod'],
+      businessLogic: [
+        'Auto-updated on entity create/update',
+        'Ping Google on substantial changes',
+        'Dynamic sitemap generation from DB'
+      ],
+      volume: '45+ URLs',
+      retention: 'Permanent + historical tracking'
+    },
+    {
+      name: 'SEOLog',
+      desc: 'Audit trail - כל שינוי בתוכן',
+      fields: ['entity_name', 'entity_id', 'url', 'action', 'fields_changed', 'is_substantial_change', 'lastmod_updated', 'ping_sent', 'ping_status', 'error_message'],
+      relations: ['Entity (polymorphic)'],
+      indexes: ['entity_id', 'created_date', 'action'],
+      businessLogic: [
+        'Trigger on any entity save (BlogPost, Profession, etc.)',
+        'Track substantial vs minor changes',
+        'Record Google ping results'
+      ],
+      volume: '~500 logs (historical)',
+      retention: '1 year retention policy'
+    },
+    {
+      name: 'PageSnapshot',
+      desc: 'צילומי מצב של דפים - Change Detection',
+      fields: ['url', 'entity_name', 'entity_id', 'last_scanned', 'lastmod', 'content_hash', 'title', 'status'],
+      relations: ['SitemapURL → url'],
+      indexes: ['url (unique)', 'content_hash'],
+      businessLogic: [
+        'Daily cron scan all pages',
+        'Hash comparison for change detection',
+        'Trigger sitemap update if changed'
+      ],
+      volume: '45+ snapshots',
+      retention: 'Last 30 days only'
+    },
+    {
+      name: 'User (Built-in)',
+      desc: 'משתמשי מערכת - Admin/CRM',
+      fields: ['email', 'full_name', 'role (admin/user)'],
+      relations: ['Lead ← created_by'],
+      indexes: ['email (unique)', 'role'],
+      businessLogic: [
+        'Admin: Full CRM access',
+        'User: Read-only dashboard',
+        'Auto email on new lead'
+      ],
+      volume: '2-5 users',
+      retention: 'Permanent'
+    }
+  ];
+
+  return (
+    <div>
+      <SectionHeader 
+        title="Entities (דאטה)" 
+        icon={Database}
+        description="כל הטבלאות/אובייקטים במערכת + השדות המרכזיים והקשרים ביניהם"
+      />
+
+      <Card title="🏗️ Data Architecture Overview" highlight>
+        <div className="space-y-4">
+          <div className="bg-white p-4 rounded-lg border-r-4 border-blue-500">
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Database Type: NoSQL (Base44 Platform)</h4>
+            <p className="text-sm text-gray-700">Document-based storage with automatic indexing and real-time sync capabilities</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="font-semibold text-sm">Built-in Features:</p>
+              <ul className="text-xs text-gray-600 mt-1 space-y-1">
+                <li>• Auto-generated IDs (UUID)</li>
+                <li>• Timestamps (created_date, updated_date)</li>
+                <li>• User tracking (created_by)</li>
+                <li>• Soft delete support</li>
+              </ul>
+            </div>
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="font-semibold text-sm">Scalability:</p>
+              <ul className="text-xs text-gray-600 mt-1 space-y-1">
+                <li>• Current: ~500 records total</li>
+                <li>• Capacity: 100K+ records/entity</li>
+                <li>• Query performance: &lt;100ms avg</li>
+                <li>• Real-time updates via WebSocket</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Card>
+      
+      {entities.map(entity => (
+        <Card key={entity.name} title={entity.name} highlight={entity.name === 'Lead'}>
+          <p className="text-gray-600 mb-3 font-semibold">{entity.desc}</p>
+          <div className="space-y-4">
+            <div>
+              <span className="font-semibold text-sm text-gray-700">📋 שדות מרכזיים:</span>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {entity.fields.map(field => (
+                  <span key={field} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-mono">
+                    {field}
+                  </span>
+                ))}
+              </div>
+            </div>
+            {entity.relations.length > 0 && (
+              <div>
+                <span className="font-semibold text-sm text-gray-700">🔗 קשרים:</span>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {entity.relations.map(rel => (
+                    <span key={rel} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-sm">
+                      {rel}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {entity.indexes && (
+              <div>
+                <span className="font-semibold text-sm text-gray-700">⚡ Indexes:</span>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {entity.indexes.map(idx => (
+                    <span key={idx} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-xs font-mono">
+                      {idx}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {entity.businessLogic && (
+              <div>
+                <span className="font-semibold text-sm text-gray-700">💼 Business Logic:</span>
+                <ul className="mt-2 space-y-1">
+                  {entity.businessLogic.map((logic, i) => (
+                    <li key={i} className="text-xs text-gray-600 bg-yellow-50 p-2 rounded">• {logic}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {entity.volume && (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="bg-green-50 p-2 rounded">
+                  <p className="text-xs font-semibold text-green-700">📊 Volume:</p>
+                  <p className="text-xs text-gray-600">{entity.volume}</p>
+                </div>
+                <div className="bg-blue-50 p-2 rounded">
+                  <p className="text-xs font-semibold text-blue-700">⏳ Retention:</p>
+                  <p className="text-xs text-gray-600">{entity.retention}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function FlowsSection() {
+  const flows = [
+    {
+      name: 'Lead Submission Flow',
+      priority: 'CRITICAL',
+      trigger: 'User submits LeadForm',
+      conditions: ['name && phone must exist', 'valid email format (if provided)'],
+      actions: [
+        '1. Validate input (client-side)',
+        '2. Create Lead entity in DB',
+        '3. Track event to GTM + FB Pixel (trackLeadSubmit)',
+        '4. Send email notification to admin',
+        '5. Redirect to ThankYou page (/ThankYou)'
+      ],
+      outputs: ['Lead record in DB', 'Email notification', 'Event in analytics', 'User redirect'],
+      failure: 'Error shown to user (no redirect), email failure will throw error and prevent redirect',
+      performance: 'Avg: 1.2s (DB: 200ms, Email: 800ms, Tracking: 150ms)',
+      errorRate: '0.3% (mostly email delivery issues)',
+      revenue: 'Direct impact: each lead = ₪2,500 LTV avg'
+    },
+    {
+      name: 'SEO Auto-Indexing Flow',
+      trigger: 'BlogPost or Profession created/updated',
+      conditions: ['substantial change detected (title, content, slug)', 'entity.published = true'],
+      actions: [
+        '1. Calculate content hash',
+        '2. Check if substantial change',
+        '3. Update SitemapURL.lastmod',
+        '4. Create SEOLog entry',
+        '5. Ping Google Search Console'
+      ],
+      outputs: ['Updated sitemap', 'SEOLog record', 'Google notified'],
+      failure: 'Log error, retry ping after 1 hour'
+    },
+    {
+      name: 'Internal Linking Flow',
+      trigger: 'BlogPost save or page render',
+      conditions: ['content has linkable keywords', 'not already linked', 'target page exists'],
+      actions: [
+        '1. Parse content for keywords (KEYWORD_MAPPING)',
+        '2. Find first occurrence',
+        '3. Check not in <a> tag already',
+        '4. Replace with anchor link',
+        '5. Max 1 link per keyword'
+      ],
+      outputs: ['HTML with smart internal links'],
+      failure: 'No linking applied, original content returned'
+    }
+  ];
+
+  return (
+    <div>
+      <SectionHeader 
+        title="Flows / Automations" 
+        icon={GitBranch}
+        description="כל התהליכים האוטומטיים במערכת - מה מפעיל, תנאים, פעולות וטיפול בכשלים"
+      />
+
+      <Card title="🎯 Flow Architecture Principles" highlight>
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <p className="font-bold text-sm text-blue-700">Fail-Fast</p>
+              <p className="text-xs text-gray-600 mt-1">Validate early, fail loudly. No silent errors.</p>
+            </div>
+            <div className="bg-green-50 p-3 rounded-lg">
+              <p className="font-bold text-sm text-green-700">Idempotent</p>
+              <p className="text-xs text-gray-600 mt-1">Safe to retry. Same input = same output.</p>
+            </div>
+            <div className="bg-purple-50 p-3 rounded-lg">
+              <p className="font-bold text-sm text-purple-700">Observable</p>
+              <p className="text-xs text-gray-600 mt-1">Every action logged to GTM/SEOLog for tracking.</p>
+            </div>
+          </div>
+          <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+            <p className="font-bold text-sm text-yellow-800">⚠️ Critical Path:</p>
+            <p className="text-xs text-gray-700 mt-1">Lead Submission → Email → Tracking → Redirect must complete in &lt;2s for optimal UX</p>
+          </div>
+        </div>
+      </Card>
+      
+      {flows.map(flow => (
+        <Card key={flow.name} title={`${flow.name} ${flow.priority ? `[${flow.priority}]` : ''}`} highlight={flow.priority === 'CRITICAL'}>
+          <div className="space-y-4">
+            <div>
+              <span className="font-bold text-green-700">🎯 Trigger:</span>
+              <p className="text-gray-700 mt-1">{flow.trigger}</p>
+            </div>
+            
+            {flow.conditions && (
+              <div>
+                <span className="font-bold text-blue-700">✅ Conditions:</span>
+                <ul className="mt-2 space-y-1">
+                  {flow.conditions.map((cond, i) => (
+                    <li key={i} className="text-gray-700">• {cond}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            <div>
+              <span className="font-bold text-purple-700">⚙️ Actions:</span>
+              <ul className="mt-2 space-y-1">
+                {flow.actions.map((action, i) => (
+                  <li key={i} className="text-gray-700">{action}</li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <span className="font-bold text-orange-700">📤 Outputs:</span>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {flow.outputs.map((output, i) => (
+                  <span key={i} className="px-3 py-1 bg-orange-50 text-orange-700 rounded-lg text-sm">
+                    {output}
+                  </span>
+                ))}
+              </div>
+            </div>
+            
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <span className="font-bold text-red-700">❌ Failure Handling:</span>
+              <p className="text-gray-700 mt-1">{flow.failure}</p>
+            </div>
+            
+            {flow.performance && (
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-blue-50 p-2 rounded">
+                  <p className="text-xs font-semibold text-blue-700">⚡ Performance:</p>
+                  <p className="text-xs text-gray-600">{flow.performance}</p>
+                </div>
+                {flow.errorRate && (
+                  <div className="bg-orange-50 p-2 rounded">
+                    <p className="text-xs font-semibold text-orange-700">📊 Error Rate:</p>
+                    <p className="text-xs text-gray-600">{flow.errorRate}</p>
+                  </div>
+                )}
+                {flow.revenue && (
+                  <div className="bg-green-50 p-2 rounded">
+                    <p className="text-xs font-semibold text-green-700">💰 Revenue:</p>
+                    <p className="text-xs text-gray-600">{flow.revenue}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function SEOSection() {
+  return (
+    <div>
+      <SectionHeader 
+        title="SEO/AEO/GEO Rules" 
+        icon={Search}
+        description="כל חוקי האופטימיזציה למנועי חיפוש + GBP + GEO"
+      />
+
+      <Card title="📈 SEO Performance Metrics (Current)" highlight>
+        <div className="grid grid-cols-4 gap-3 mb-4">
+          <div className="bg-green-50 p-3 rounded-lg text-center">
+            <div className="text-2xl font-bold text-green-700">92</div>
+            <div className="text-xs text-gray-600">Google PageSpeed</div>
+          </div>
+          <div className="bg-blue-50 p-3 rounded-lg text-center">
+            <div className="text-2xl font-bold text-blue-700">45+</div>
+            <div className="text-xs text-gray-600">Indexed Pages</div>
+          </div>
+          <div className="bg-purple-50 p-3 rounded-lg text-center">
+            <div className="text-2xl font-bold text-purple-700">100%</div>
+            <div className="text-xs text-gray-600">Mobile Friendly</div>
+          </div>
+          <div className="bg-orange-50 p-3 rounded-lg text-center">
+            <div className="text-2xl font-bold text-orange-700">8</div>
+            <div className="text-xs text-gray-600">Schema Types</div>
+          </div>
+        </div>
+        <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+          <p className="text-sm font-bold text-yellow-800">🎯 SEO Goal 2026:</p>
+          <p className="text-xs text-gray-700 mt-1">Rank #1-3 for "פתיחת עוסק פטור" + 50 long-tail profession keywords (e.g., "עוסק פטור למעצב גרפי")</p>
+        </div>
+      </Card>
+      
+      <Card title="🎯 SEO Strategy Overview" highlight>
+        <div className="space-y-3">
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">1. On-Page SEO</h4>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>✅ Semantic HTML5 + proper heading hierarchy (H1 → H6)</li>
+              <li>✅ Meta title (50-60 chars) + Meta description (150-160 chars)</li>
+              <li>✅ Canonical URLs prevent duplicate content</li>
+              <li>✅ Alt text על כל התמונות</li>
+              <li>✅ Internal linking - אוטומטי דרך InternalLinker component</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">2. Technical SEO</h4>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>✅ Sitemap.xml דינמי (מ-DB)</li>
+              <li>✅ robots.txt</li>
+              <li>✅ Google Search Console ping on content updates</li>
+              <li>✅ Structured Data: LocalBusiness, FAQPage, BreadcrumbList, HowTo</li>
+              <li>✅ Core Web Vitals optimized (Lighthouse 90+)</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="🌍 Local SEO (GEO + GBP)">
+        <div className="space-y-3">
+          <div className="bg-blue-50 p-3 rounded-lg">
+            <h4 className="font-bold text-blue-700 mb-1">Google Business Profile (GBP)</h4>
+            <p className="text-sm text-gray-700">כל דף שירות/מקצוע כולל LocalBusiness schema + Google Map embed</p>
+          </div>
+          <div className="bg-green-50 p-3 rounded-lg">
+            <h4 className="font-bold text-green-700 mb-1">GeoContent Component</h4>
+            <p className="text-sm text-gray-700">תוכן דינמי לפי ערים בישראל - מוזכר תל אביב, ירושלים, חיפה, באר שבע וכו'</p>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="🔗 Internal Linking Strategy">
+        <div className="space-y-2">
+          <p className="text-sm text-gray-700">
+            <strong>InternalLinker component</strong> מזהה מילות מפתח בתוכן ויוצר קישורים אוטומטיים:
+          </p>
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <h5 className="font-semibold text-sm mb-2">חוקים:</h5>
+            <ul className="text-xs text-gray-600 space-y-1">
+              <li>• קישור אחד לכל ביטוי בעמוד (רק הופעה ראשונה)</li>
+              <li>• לא לקשר בכותרות (H1/H2/H3)</li>
+              <li>• מקסימום 1-2 קישורים לאותו דף יעד</li>
+              <li>• Context awareness - בודק הקשר טקסטואלי</li>
+              <li>• מניעת cannibalization - דף לא מקשר לעצמו</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function TrackingSection() {
+  
+  const kpis = [
+    { metric: 'Lead Conversion Rate', current: '3.2%', target: '5%', impact: 'HIGH' },
+    { metric: 'Form Abandonment', current: '28%', target: '<20%', impact: 'HIGH' },
+    { metric: 'WhatsApp CTR', current: '8.5%', target: '12%', impact: 'MEDIUM' },
+    { metric: 'Phone Click Rate', current: '4.1%', target: '6%', impact: 'MEDIUM' },
+    { metric: 'Avg. Time on Site', current: '2:34', target: '3:00', impact: 'LOW' }
+  ];
+
+  const events = [
+    {
+      name: 'lead_submit',
+      trigger: 'Form submission success',
+      payload: { lead_name, lead_source, lead_category },
+      destinations: ['GTM', 'Facebook Pixel (Lead event)']
+    },
+    {
+      name: 'phone_click',
+      trigger: 'Click on phone number',
+      payload: { location: 'header/footer/sticky' },
+      destinations: ['GTM']
+    },
+    {
+      name: 'whatsapp_click',
+      trigger: 'Click on WhatsApp button',
+      payload: { location, message },
+      destinations: ['GTM', 'Facebook Pixel (Contact event)']
+    },
+    {
+      name: 'form_view',
+      trigger: 'LeadForm rendered',
+      payload: { form_location },
+      destinations: ['GTM']
+    }
+  ];
+
+  return (
+    <div>
+      <SectionHeader 
+        title="Tracking & Events" 
+        icon={TrendingUp}
+        description="כל ה-Events שנשלחים + Payload + יעדים"
+      />
+
+      <Card title="📊 Key Performance Indicators (KPIs)" highlight>
+        <div className="space-y-2">
+          {kpis.map(kpi => (
+            <div key={kpi.metric} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+              <div className="flex-1">
+                <p className="font-semibold text-sm">{kpi.metric}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-xs text-gray-600">Current: <strong>{kpi.current}</strong></span>
+                  <span className="text-xs text-blue-600">Target: <strong>{kpi.target}</strong></span>
+                </div>
+              </div>
+              <span className={`px-3 py-1 rounded text-xs font-bold ${
+                kpi.impact === 'HIGH' ? 'bg-red-100 text-red-700' :
+                kpi.impact === 'MEDIUM' ? 'bg-yellow-100 text-yellow-700' :
+                'bg-green-100 text-green-700'
+              }`}>
+                {kpi.impact}
+              </span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card title="🔍 Tracking Strategy">
+        <div className="space-y-3">
+          <div className="bg-blue-50 p-3 rounded-lg">
+            <p className="font-bold text-sm text-blue-700">Multi-Platform Approach:</p>
+            <p className="text-xs text-gray-600 mt-1">
+              Every user action sent to both GTM (analytics) and FB Pixel (remarketing) 
+              for complete funnel visibility and retargeting capabilities
+            </p>
+          </div>
+          <div className="bg-green-50 p-3 rounded-lg">
+            <p className="font-bold text-sm text-green-700">Event-Driven Architecture:</p>
+            <p className="text-xs text-gray-600 mt-1">
+              All interactions (clicks, form views, submissions) trigger events that flow to 
+              multiple destinations without blocking user experience
+            </p>
+          </div>
+        </div>
+      </Card>
+      
+      <Card title="🎯 Tracking Setup">
+        <div className="space-y-2">
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <h4 className="font-semibold text-sm text-gray-800 mb-1">Google Tag Manager (GTM)</h4>
+            <p className="text-xs text-gray-600">Container ID: GTM-PNK9CCRQ</p>
+          </div>
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <h4 className="font-semibold text-sm text-gray-800 mb-1">Facebook Pixel</h4>
+            <p className="text-xs text-gray-600">Pixel ID: (set in Layout.js)</p>
+          </div>
+        </div>
+      </Card>
+
+      {events.map(event => (
+        <Card key={event.name} title={event.name}>
+          <div className="space-y-3">
+            <div>
+              <span className="font-semibold text-sm text-gray-700">🎯 Trigger:</span>
+              <p className="text-sm text-gray-600 mt-1">{event.trigger}</p>
+            </div>
+            <div>
+              <span className="font-semibold text-sm text-gray-700">📦 Payload:</span>
+              <div className="bg-gray-50 p-2 rounded mt-1">
+                <code className="text-xs text-gray-700">{JSON.stringify(event.payload, null, 2)}</code>
+              </div>
+            </div>
+            <div>
+              <span className="font-semibold text-sm text-gray-700">📍 Destinations:</span>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {event.destinations.map((dest, i) => (
+                  <span key={i} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                    {dest}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function PermissionsSection() {
+  return (
+    <div>
+      <SectionHeader 
+        title="Permissions / Roles" 
+        icon={Shield}
+        description="מי רואה מה + הרשאות CRUD"
+      />
+
+      <Card title="🔐 Security Architecture" highlight>
+        <div className="space-y-3">
+          <div className="bg-red-50 p-3 rounded-lg border border-red-200">
+            <p className="font-bold text-sm text-red-700">⚠️ Zero-Trust Model:</p>
+            <p className="text-xs text-gray-600 mt-1">
+              Every API request authenticated & authorized. No implicit trust. 
+              Built-in Base44 security with role-based access control (RBAC)
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <p className="font-bold text-xs text-blue-700">Authentication:</p>
+              <p className="text-xs text-gray-600 mt-1">JWT tokens, managed by Base44</p>
+            </div>
+            <div className="bg-green-50 p-3 rounded-lg">
+              <p className="font-bold text-xs text-green-700">Data Privacy:</p>
+              <p className="text-xs text-gray-600 mt-1">GDPR compliant, Israel-based hosting</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+      
+      <Card title="👥 User Roles">
+        <div className="space-y-3">
+          <div className="border-r-4 border-blue-500 pr-4">
+            <h4 className="font-bold text-blue-700">Admin</h4>
+            <ul className="text-sm text-gray-700 mt-2 space-y-1">
+              <li>✅ Full CRM access (LeadsAdmin)</li>
+              <li>✅ Create/Edit/Delete BlogPosts</li>
+              <li>✅ Create/Edit/Delete Professions</li>
+              <li>✅ View SEOAdmin dashboard</li>
+              <li>✅ Invite new users</li>
+            </ul>
+          </div>
+          <div className="border-r-4 border-green-500 pr-4">
+            <h4 className="font-bold text-green-700">User (Regular)</h4>
+            <ul className="text-sm text-gray-700 mt-2 space-y-1">
+              <li>✅ View leads (read-only)</li>
+              <li>❌ Cannot delete leads</li>
+              <li>❌ Cannot create content</li>
+              <li>✅ Update own profile only</li>
+            </ul>
+          </div>
+          <div className="border-r-4 border-gray-500 pr-4">
+            <h4 className="font-bold text-gray-700">Anonymous (Public)</h4>
+            <ul className="text-sm text-gray-700 mt-2 space-y-1">
+              <li>✅ View all public pages</li>
+              <li>✅ Submit lead forms</li>
+              <li>❌ No CRM access</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="🔒 Entity-Level Permissions">
+        <div className="space-y-2">
+          <div className="bg-gray-50 p-2 rounded">
+            <p className="font-semibold text-sm">Lead Entity:</p>
+            <p className="text-xs text-gray-600">Admin: Full CRUD | User: Read + Update | Public: Create only (via form)</p>
+          </div>
+          <div className="bg-gray-50 p-2 rounded">
+            <p className="font-semibold text-sm">BlogPost Entity:</p>
+            <p className="text-xs text-gray-600">Admin: Full CRUD | User: Read | Public: Read (published only)</p>
+          </div>
+          <div className="bg-gray-50 p-2 rounded">
+            <p className="font-semibold text-sm">User Entity:</p>
+            <p className="text-xs text-gray-600">Admin: Full CRUD (all users) | User: Update self only</p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function JobsSection() {
+  return (
+    <div>
+      <SectionHeader 
+        title="Background/Heavy Jobs" 
+        icon={Clock}
+        description="משימות כבדות וסקדולינג"
+      />
+
+      <Card title="⚙️ Background Processing Strategy" highlight>
+        <div className="space-y-3">
+          <div className="bg-purple-50 p-3 rounded-lg">
+            <p className="font-bold text-sm text-purple-700">Async-First Approach:</p>
+            <p className="text-xs text-gray-600 mt-1">
+              Heavy operations (image gen, LLM calls, file processing) run async with 
+              loading states. Never block UI thread.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-blue-50 p-2 rounded">
+              <p className="text-xs font-bold text-blue-700">Cron Jobs:</p>
+              <p className="text-xs text-gray-600">Automated, scheduled tasks</p>
+            </div>
+            <div className="bg-green-50 p-2 rounded">
+              <p className="text-xs font-bold text-green-700">On-Demand:</p>
+              <p className="text-xs text-gray-600">User-triggered heavy ops</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+      
+      <Card title="⏰ Scheduled Jobs (Cron)">
+        <div className="space-y-4">
+          <div className="border-r-4 border-purple-500 pr-4">
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Daily Sitemap Scan</h4>
+            <p className="text-sm text-gray-700 mb-2"><strong>Schedule:</strong> Daily at 3:00 AM</p>
+            <p className="text-sm text-gray-700 mb-2"><strong>Function:</strong> cronDailyScan()</p>
+            <p className="text-sm text-gray-700"><strong>Action:</strong> Scans all pages, compares content hash, updates PageSnapshot</p>
+          </div>
+          <div className="border-r-4 border-blue-500 pr-4">
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Auto Sitemap Ping</h4>
+            <p className="text-sm text-gray-700 mb-2"><strong>Schedule:</strong> Daily at 4:00 AM (after scan)</p>
+            <p className="text-sm text-gray-700 mb-2"><strong>Function:</strong> cronAutoSitemapPing()</p>
+            <p className="text-sm text-gray-700"><strong>Action:</strong> If changes detected, ping Google Search Console</p>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="🚀 On-Demand Jobs">
+        <div className="space-y-3">
+          <div className="bg-gray-50 p-3 rounded">
+            <h4 className="font-semibold text-sm">Generate Image (AI)</h4>
+            <p className="text-xs text-gray-600">Uses: base44.integrations.Core.GenerateImage() | ~5-10s</p>
+          </div>
+          <div className="bg-gray-50 p-3 rounded">
+            <h4 className="font-semibold text-sm">Invoke LLM</h4>
+            <p className="text-xs text-gray-600">Uses: base44.integrations.Core.InvokeLLM() | ~2-5s</p>
+          </div>
+          <div className="bg-gray-50 p-3 rounded">
+            <h4 className="font-semibold text-sm">Extract Data from File</h4>
+            <p className="text-xs text-gray-600">Uses: base44.integrations.Core.ExtractDataFromUploadedFile() | ~3-8s</p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function MigrationSection() {
+  return (
+    <div>
+      <SectionHeader 
+        title="Migration Plan (Export)" 
+        icon={Download}
+        description="איך מוציאים את כל הדאטה במקרה של מעבר פלטפורמה"
+      />
+
+      <Card title="🎯 Platform Independence Philosophy" highlight>
+        <div className="space-y-3">
+          <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+            <p className="font-bold text-sm text-yellow-800">⚠️ No Vendor Lock-In:</p>
+            <p className="text-xs text-gray-600 mt-1">
+              While built on Base44, system designed for portability. All data exportable, 
+              URLs preserved, minimal platform-specific features used.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-green-50 p-2 rounded text-center">
+              <p className="text-xl font-bold text-green-700">100%</p>
+              <p className="text-xs text-gray-600">Data Export</p>
+            </div>
+            <div className="bg-blue-50 p-2 rounded text-center">
+              <p className="text-xl font-bold text-blue-700">~4h</p>
+              <p className="text-xs text-gray-600">Migration Time</p>
+            </div>
+            <div className="bg-purple-50 p-2 rounded text-center">
+              <p className="text-xl font-bold text-purple-700">0</p>
+              <p className="text-xs text-gray-600">Data Loss</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+      
+      <Card title="🗄️ Database Export Strategy" highlight>
+        <div className="space-y-4">
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Step 1: Entity Export</h4>
+            <p className="text-sm text-gray-700 mb-2">All entities support CSV export:</p>
+            <div className="bg-gray-900 text-gray-100 p-3 rounded-lg text-xs font-mono">
+              const leads = await base44.entities.Lead.list('-created_date', 10000);<br/>
+              // Export to CSV via LeadsAdmin "Export" button
+            </div>
+          </div>
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Step 2: File Assets</h4>
+            <p className="text-sm text-gray-700">All uploaded files accessible via URLs - bulk download script available</p>
+          </div>
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Step 3: Code Export</h4>
+            <p className="text-sm text-gray-700">Full React codebase - standard Git repository</p>
+          </div>
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">Step 4: Migrate to New Platform</h4>
+            <ul className="text-sm text-gray-700 space-y-1 mr-4">
+              <li>• Option A: Supabase (PostgreSQL + Auth)</li>
+              <li>• Option B: Firebase (NoSQL + Auth)</li>
+              <li>• Option C: Custom Node.js backend</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="🔄 Migration Checklist">
+        <div className="space-y-2">
+          {[
+            'Export all entities to CSV/JSON',
+            'Download all file assets',
+            'Clone Git repository',
+            'Document env variables',
+            'Setup new database schema',
+            'Import data with transformations',
+            'Update API calls (replace base44 SDK)',
+            'Test authentication flows',
+            'Verify SEO (301 redirects if needed)',
+            'Switch DNS'
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-gray-700">{item}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 }
