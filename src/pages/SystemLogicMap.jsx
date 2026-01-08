@@ -42,8 +42,19 @@ function Card({ title, children, highlight = false }) {
 }
 
 export default function SystemLogicMap() {
+  const [activeTab, setActiveTab] = React.useState('overview');
 
-
+  const categories = [
+    { id: 'overview', label: '🎯 Overview', icon: Rocket },
+    { id: 'entities', label: '🗄️ Database', icon: Database },
+    { id: 'code', label: '💻 Code', icon: Code },
+    { id: 'flows', label: '⚙️ Flows', icon: GitBranch },
+    { id: 'seo', label: '🔍 SEO', icon: Search },
+    { id: 'tracking', label: '📊 Tracking', icon: TrendingUp },
+    { id: 'security', label: '🔐 Security', icon: Shield },
+    { id: 'jobs', label: '⏰ Jobs', icon: Clock },
+    { id: 'migration', label: '📤 Migration', icon: Download }
+  ];
 
   const downloadDocumentation = () => {
     const docContent = `# Perfect One - מפת הלוגיקה המלאה
@@ -1502,7 +1513,7 @@ npm run build
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50" dir="rtl">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] text-white shadow-2xl">
+      <div className="bg-gradient-to-r from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] text-white shadow-2xl sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
@@ -1511,7 +1522,7 @@ npm run build
                 Perfect One - מפת לוגיקה מלאה
               </h1>
               <p className="text-base md:text-lg opacity-90">
-                תיעוד טכני מקיף למשקיעים ו-Development Team - כל הארכיטקטורה, דאטה, Flows ו-KPIs
+                תיעוד טכני מקיף למשקיעים ו-Development Team
               </p>
             </div>
             <Button 
@@ -1525,16 +1536,38 @@ npm run build
         </div>
       </div>
 
+      {/* Category Navigation */}
+      <div className="bg-white border-b border-gray-200 sticky top-24 z-30">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex overflow-x-auto gap-2 py-4">
+            {categories.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveTab(cat.id)}
+                className={`px-4 py-2 rounded-lg font-bold whitespace-nowrap transition-all ${
+                  activeTab === cat.id
+                    ? 'bg-[#1E3A5F] text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-12">
-        <OverviewSection />
-        <EntitiesSection />
-        <FlowsSection />
-        <SEOSection />
-        <TrackingSection />
-        <PermissionsSection />
-        <JobsSection />
-        <MigrationSection />
+        {activeTab === 'overview' && <OverviewSection />}
+        {activeTab === 'entities' && <EntitiesSection />}
+        {activeTab === 'code' && <CodeSection />}
+        {activeTab === 'flows' && <FlowsSection />}
+        {activeTab === 'seo' && <SEOSection />}
+        {activeTab === 'tracking' && <TrackingSection />}
+        {activeTab === 'security' && <PermissionsSection />}
+        {activeTab === 'jobs' && <JobsSection />}
+        {activeTab === 'migration' && <MigrationSection />}
       </div>
     </div>
   );
