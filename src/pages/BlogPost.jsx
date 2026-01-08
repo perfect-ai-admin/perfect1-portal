@@ -4,11 +4,12 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowRight, Clock, User, Calendar, Share2, MessageCircle, Phone } from 'lucide-react';
+import { ArrowRight, Clock, User, Calendar, MessageCircle, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SEOOptimized from './SEOOptimized';
 import LeadForm from '../components/forms/LeadForm';
 import InternalLinker from '../components/seo/InternalLinker';
+import SocialShare from '../components/blog/SocialShare';
 
 export default function BlogPost() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -69,21 +70,26 @@ export default function BlogPost() {
     }
   };
 
-  // Enhanced Article Schema
+  // Enhanced Article Schema with full AEO support
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": post.title,
     "description": post.excerpt,
-    "image": post.featured_image,
+    "image": post.featured_image || "https://perfect1.co.il/default-blog.jpg",
     "author": {
       "@type": "Person",
-      "name": post.author
+      "name": post.author,
+      "url": "https://perfect1.co.il/Team"
     },
     "publisher": {
       "@type": "Organization",
       "name": "Perfect One",
       "url": "https://perfect1.co.il",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://perfect1.co.il/logo.png"
+      },
       "sameAs": [
         "https://www.facebook.com/perfect1.co.il",
         "https://www.linkedin.com/company/perfect1",
@@ -94,19 +100,27 @@ export default function BlogPost() {
     "dateModified": post.updated_date || post.created_date,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://perfect1.co.il/blog/${post.slug}`
+      "@id": `https://perfect1.co.il/blog/${post.slug}`,
+      "url": `https://perfect1.co.il/blog/${post.slug}`
     },
     "about": {
       "@type": "Thing",
-      "name": "עוסק פטור",
-      "description": "עוסק פטור בישראל"
+      "name": "עוסק פטור בישראל",
+      "description": post.category === 'osek-patur' ? 'עוסק פטור' : post.category
     },
     "isPartOf": {
       "@type": "Blog",
       "name": "בלוג Perfect One לעוסקים פטורים",
-      "url": "https://perfect1.co.il/Blog"
+      "url": "https://perfect1.co.il/Blog",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Perfect One"
+      }
     },
-    "keywords": post.keywords?.join(', ')
+    "keywords": post.keywords?.join(', '),
+    "articleSection": post.category,
+    "wordCount": post.content?.split(' ').length || 0,
+    "inLanguage": "he-IL"
   };
 
   return (
@@ -167,15 +181,15 @@ export default function BlogPost() {
                       <span>{post.read_time} דקות קריאה</span>
                     </div>
                   )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleShare}
-                    className="mr-auto"
-                  >
-                    <Share2 className="w-4 h-4 ml-2" />
-                    שתף
-                  </Button>
+                </div>
+
+                {/* Social Share */}
+                <div className="mb-6">
+                  <SocialShare 
+                    title={post.title}
+                    excerpt={post.excerpt}
+                    url={`https://perfect1.co.il/blog/${post.slug}`}
+                  />
                 </div>
 
                 {post.featured_image && (
