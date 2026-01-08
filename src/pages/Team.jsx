@@ -4,6 +4,7 @@ import { Award, BookOpen, Users, Shield, Star, Briefcase } from 'lucide-react';
 import SEOOptimized from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import LeadForm from '../components/forms/LeadForm';
+import RelatedContent from '../components/seo/RelatedContent';
 
 export default function Team() {
   const breadcrumbs = [
@@ -260,6 +261,9 @@ export default function Team() {
               </div>
             </div>
           </motion.div>
+
+          {/* Related Content */}
+          <RelatedContent pageType="support" />
 
           {/* CTA */}
           <motion.div
