@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu, Phone, MessageCircle, ChevronDown } from 'lucide-react';
+import { trackPhoneClick, trackWhatsAppClick } from '../tracking/EventTracker';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -132,6 +133,7 @@ export default function Header() {
             <a
               href="tel:0502277087"
               className="hidden md:flex"
+              onClick={() => trackPhoneClick('header')}
             >
               <Button 
                 variant="outline" 
@@ -148,6 +150,7 @@ export default function Header() {
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex"
+              onClick={() => trackWhatsAppClick('header', 'היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור')}
             >
               <Button 
                 size="lg"
@@ -255,7 +258,7 @@ export default function Header() {
                   </nav>
                   
                   <div className="p-6 border-t bg-gray-50 space-y-3">
-                    <a href="tel:0502277087" className="block">
+                    <a href="tel:0502277087" className="block" onClick={() => trackPhoneClick('mobile_menu')}>
                       <Button 
                         variant="outline" 
                         size="lg"
@@ -270,6 +273,7 @@ export default function Header() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block"
+                      onClick={() => trackWhatsAppClick('mobile_menu', 'היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור')}
                     >
                       <Button 
                         size="lg"
