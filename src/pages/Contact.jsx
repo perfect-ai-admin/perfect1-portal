@@ -8,8 +8,14 @@ import { Button } from '@/components/ui/button';
 import LeadForm from '../components/forms/LeadForm';
 import GoogleMapEmbed from '../components/maps/GoogleMapEmbed';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
 
 export default function Contact() {
+  const breadcrumbs = [
+    { label: 'דף הבית', url: '/' },
+    { label: 'צור קשר' }
+  ];
+
   return (
     <>
       <LocalBusinessSchema />
@@ -17,6 +23,7 @@ export default function Contact() {
         {...seoPresets.contact}
         canonical="https://perfect1.co.il/contact"
       />
+      <Breadcrumbs items={breadcrumbs} />
       <main className="pt-20">
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
