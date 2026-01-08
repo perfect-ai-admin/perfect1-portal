@@ -983,7 +983,7 @@ function JobsSection() {
         </div>
       </Card>
       
-      <Card title="⏰ Scheduled Jobs (Cron)
+      <Card title="⏰ Scheduled Jobs (Cron)">
         <div className="space-y-4">
           <div className="border-r-4 border-purple-500 pr-4">
             <h4 className="font-bold text-[#1E3A5F] mb-2">Daily Sitemap Scan</h4>
