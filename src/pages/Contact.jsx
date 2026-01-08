@@ -6,6 +6,8 @@ import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { Phone, MessageCircle, Mail, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LeadForm from '../components/forms/LeadForm';
+import GoogleMapEmbed from '../components/maps/GoogleMapEmbed';
+import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 
 export default function Contact() {
   return (
@@ -130,6 +132,20 @@ export default function Contact() {
               />
             </motion.div>
           </div>
+
+          {/* Google Map */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12"
+          >
+            <GoogleMapEmbed 
+              title="Perfect One - פתיחת עוסק פטור"
+              address="שירות ארצי - זמינים בכל מקום בישראל"
+              height="450px"
+            />
+          </motion.div>
         </div>
       </section>
       </main>

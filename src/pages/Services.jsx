@@ -6,6 +6,8 @@ import InternalLinker from '../components/seo/InternalLinker';
 import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import { Button } from '@/components/ui/button';
+import GeoContent from '../components/seo/GeoContent';
+import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 import { 
   FileText, Laptop, Calculator, Receipt, BarChart3, XCircle, 
   Shield, Building2, ArrowLeft, CheckCircle 
@@ -188,6 +190,11 @@ export default function Services() {
                 </Link>
               </motion.div>
             ))}
+          </div>
+
+          {/* GEO Content */}
+          <div className="mt-16">
+            <GeoContent title="מטפלים בעוסקים פטורים בכל רחבי הארץ" showStats={false} />
           </div>
         </div>
       </section>
