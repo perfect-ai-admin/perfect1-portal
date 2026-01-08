@@ -16,6 +16,7 @@ const servicesData = {
     title: 'פתיחת עוסק פטור',
     subtitle: 'ליווי מקצועי מא\' ועד ת\'',
     description: 'פתיחת עוסק פטור היא הצעד הראשון להתחלת עסק עצמאי בישראל. אנחנו מטפלים בכל הבירוקרטיה עבורך - פתיחת תיק במס הכנסה, רישום במע"מ כפטור, ופתיחת תיק בביטוח לאומי.',
+    quickAnswer: 'פתיחת עוסק פטור בישראל היא תהליך רישום רשמי במס הכנסה המאפשר לעצמאים לעבוד חוקית. התהליך כולל פתיחת תיק במס הכנסה, פטור ממע"מ ורישום בביטוח לאומי תוך 24-72 שעות.',
     color: '#27AE60',
     price: '249₪',
     features: [
@@ -52,6 +53,7 @@ const servicesData = {
     title: 'פתיחת עוסק פטור אונליין',
     subtitle: 'הכל דיגיטלי - ללא יציאה מהבית',
     description: 'תהליך מקוון לחלוטין לפתיחת עוסק פטור. חתימה דיגיטלית, העלאת מסמכים מהנייד, ומעקב סטטוס בזמן אמת.',
+    quickAnswer: 'פתיחת עוסק פטור אונליין בישראל היא תהליך דיגיטלי מלא ללא יציאה מהבית. כולל העלאת מסמכים מהנייד, חתימה דיגיטלית מאובטחת ומעקב סטטוס בזמן אמת.',
     color: '#3498DB',
     price: '249₪',
     features: [
@@ -75,6 +77,7 @@ const servicesData = {
     title: 'ליווי חודשי',
     subtitle: 'רו"ח זמין לכל שאלה',
     description: 'ליווי שוטף הכולל אפליקציה לניהול הכנסות והוצאות, דיווחים לרשויות, וגישה לרואה חשבון או יועץ מס לכל שאלה.',
+    quickAnswer: 'ליווי חודשי לעוסק פטור בישראל כולל אפליקציה לניהול הכנסות והוצאות, דיווחים שוטפים לרשויות, וגישה ישירה לרואה חשבון מוסמך לכל שאלה.',
     color: '#D4AF37',
     price: '199₪ לחודש',
     features: [
@@ -92,6 +95,7 @@ const servicesData = {
     title: 'הגשת דוח שנתי',
     subtitle: 'נדאג להגשה בזמן',
     description: 'הכנה והגשת דוח שנתי למס הכנסה (טופס 1301). נרכז את כל הנתונים, נכין את הדוח, ונגיש אותו בזמן.',
+    quickAnswer: 'דוח שנתי עוסק פטור (טופס 1301) הוא דוח חובה למס הכנסה שמוגש עד 30 באפריל. כולל ריכוז הכנסות והוצאות, חישוב מס והגשה דיגיטלית לרשויות.',
     color: '#E67E22',
     price: '1,199₪',
     features: [
@@ -129,6 +133,41 @@ export default function ServicePage() {
   
   const service = servicesData[serviceId] || defaultService;
 
+  // Enhanced Schema with HowTo, isPartOf, sameAs
+  const enhancedSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": service.title,
+    "description": service.quickAnswer || service.description,
+    "totalTime": serviceId === 'ptihat-osek-patur' ? 'P3D' : serviceId === 'doch-shnati' ? 'P7D' : 'P1M',
+    "isPartOf": {
+      "@type": "WebPage",
+      "name": "שירותים לעוסקים פטורים",
+      "url": "https://perfect1.co.il/Services"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "עוסק פטור",
+      "description": "עוסק פטור בישראל"
+    },
+    "provider": {
+      "@type": "ProfessionalService",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ]
+    },
+    "step": service.steps.map((step, idx) => ({
+      "@type": "HowToStep",
+      "position": idx + 1,
+      "name": step,
+      "text": step
+    }))
+  };
+
   const answerBlockData = {
     'ptihat-osek-patur': {
       question: 'מה זה פתיחת עוסק פטור?',
@@ -164,11 +203,11 @@ export default function ServicePage() {
   return (
     <>
       <SEOOptimized
-        title={`${service.title} - שירות מקצועי לעצמאים | Perfect One`}
-        description={service.description}
-        keywords={`${service.title}, עוסק פטור, עצמאים בישראל, שירותים לעוסקים`}
+        title={`${service.title} בישראל 2024 - ליווי מקצועי | Perfect One`}
+        description={service.quickAnswer || service.description}
+        keywords={`${service.title}, ${service.title} בישראל, עוסק פטור, עצמאים בישראל, שירותים לעוסקים`}
         canonical={`https://perfect1.co.il${createPageUrl('ServicePage')}?service=${serviceId}`}
-        schema={localBusinessSchema}
+        schema={enhancedSchema}
       />
       <Breadcrumbs 
         items={[
@@ -190,7 +229,7 @@ export default function ServicePage() {
             className="text-center"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
-              {service.title}
+              {service.title} בישראל
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-6">
               {service.subtitle}
@@ -211,6 +250,30 @@ export default function ServicePage() {
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12">
+              {/* Quick Answer - AEO */}
+              {service.quickAnswer && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-blue-50 border-r-4 border-blue-600 rounded-xl p-6"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-bold text-blue-900 mb-2">
+                        תשובה מהירה - {service.title}
+                      </h2>
+                      <p className="text-gray-800 leading-relaxed">
+                        {service.quickAnswer}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Answer Block */}
               {currentAnswerBlock && (
                 <motion.div
@@ -232,7 +295,7 @@ export default function ServicePage() {
                 viewport={{ once: true }}
               >
                 <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                  📌 על השירות
+                  על השירות
                 </h2>
                 <div className="text-gray-600 leading-relaxed text-lg">
                   <InternalLinker content={service.description} currentPage="ServicePage" />

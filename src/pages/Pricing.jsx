@@ -8,16 +8,71 @@ import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import { CheckCircle, Info } from 'lucide-react';
 
 export default function Pricing() {
+  // Enhanced Pricing Schema with isPartOf and sameAs
+  const pricingSchema = {
+    "@context": "https://schema.org",
+    "@type": "PriceSpecification",
+    "name": "מחירון עוסק פטור בישראל",
+    "description": "מחירים שקופים לפתיחת וליווי עוסק פטור",
+    "priceCurrency": "ILS",
+    "offers": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "פתיחת עוסק פטור",
+          "description": "תהליך פתיחה מלא"
+        },
+        "price": "199",
+        "priceCurrency": "ILS",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "ליווי חודשי",
+          "description": "ליווי שוטף ואפליקציה"
+        },
+        "price": "149",
+        "priceCurrency": "ILS",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "דוח שנתי",
+          "description": "הכנה והגשת דוח שנתי"
+        },
+        "price": "500",
+        "priceCurrency": "ILS",
+        "availability": "https://schema.org/InStock"
+      }
+    ],
+    "seller": {
+      "@type": "Organization",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ]
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il"
+    }
+  };
+
   return (
     <>
       <SEOOptimized 
         {...seoPresets.pricing}
         canonical="https://perfect1.co.il/pricing"
-        schema={[
-          schemaTemplates.service('פתיחת עוסק פטור', '199'),
-          schemaTemplates.service('ליווי חודשי לעוסק פטור', '149'),
-          schemaTemplates.service('דוח שנתי עוסק פטור', '500')
-        ]}
+        schema={pricingSchema}
       />
       <main className="pt-20">
       {/* Hero */}
@@ -31,7 +86,7 @@ export default function Pricing() {
               💰 מחירון שקוף ללא הפתעות
             </span>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              מחירים ברורים מראש
+              מחירון עוסק פטור בישראל 2024
             </h1>
             <div className="text-xl text-white/80 max-w-2xl mx-auto">
               <InternalLinker 

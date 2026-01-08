@@ -69,6 +69,46 @@ export default function BlogPost() {
     }
   };
 
+  // Enhanced Article Schema
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": post.featured_image,
+    "author": {
+      "@type": "Person",
+      "name": post.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ]
+    },
+    "datePublished": post.created_date,
+    "dateModified": post.updated_date || post.created_date,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://perfect1.co.il/blog/${post.slug}`
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "עוסק פטור",
+      "description": "עוסק פטור בישראל"
+    },
+    "isPartOf": {
+      "@type": "Blog",
+      "name": "בלוג Perfect One לעוסקים פטורים",
+      "url": "https://perfect1.co.il/Blog"
+    },
+    "keywords": post.keywords?.join(', ')
+  };
+
   return (
     <>
       <SEOOptimized
@@ -76,6 +116,7 @@ export default function BlogPost() {
         description={post.meta_description || post.excerpt}
         keywords={post.keywords?.join(', ')}
         canonical={`https://perfect1.co.il/blog/${post.slug}`}
+        schema={articleSchema}
       />
       <main className="pt-20 bg-[#F8F9FA]">
         {/* Breadcrumb */}
