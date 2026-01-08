@@ -78,18 +78,33 @@ export default function Regulation() {
         canonical="https://perfect1.co.il/Regulation"
         schema={{
           "@context": "https://schema.org",
-          "@type": "GovernmentService",
+          "@type": "WebPage",
           "name": "רגולציה לעוסק פטור בישראל",
           "description": "מידע רשמי על הרגולציה והחוקים החלים על עוסקים פטורים בישראל",
-          "serviceType": "ייעוץ רגולטורי",
-          "provider": {
-            "@type": "Organization",
-            "name": "Perfect One"
+          "about": {
+            "@type": "Thing",
+            "name": "רגולציה עוסק פטור בישראל",
+            "description": "חוקים ותקנות לעוסקים פטורים"
           },
-          "areaServed": {
-            "@type": "Country",
-            "name": "ישראל"
-          }
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Perfect One",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ]
+          },
+          "mainEntity": regulations.map(reg => ({
+            "@type": "Thing",
+            "name": reg.title,
+            "description": reg.description
+          }))
         }}
       />
 

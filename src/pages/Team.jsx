@@ -81,6 +81,12 @@ export default function Team() {
           "mainEntity": {
             "@type": "ProfessionalService",
             "name": "Perfect One",
+            "url": "https://perfect1.co.il",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ],
             "employee": teamMembers.map(member => ({
               "@type": "Person",
               "name": member.name,
@@ -88,6 +94,16 @@ export default function Team() {
               "description": member.description,
               "hasCredential": member.credentials
             }))
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "צוות מקצועי לעוסקים פטורים",
+            "description": "רואי חשבון מוסמכים מומחים בעוסקים פטורים"
+          },
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
           }
         }}
       />

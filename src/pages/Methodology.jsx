@@ -79,6 +79,25 @@ export default function Methodology() {
           "name": "תהליך פתיחת עוסק פטור מקצועי",
           "description": "מדריך מקיף לפתיחת עוסק פטור בישראל בליווי מקצועי",
           "totalTime": "P3D",
+          "provider": {
+            "@type": "Organization",
+            "name": "Perfect One",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ]
+          },
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "עוסק פטור בישראל",
+            "description": "מתודולוגיה מקצועית לפתיחת עוסקים פטורים"
+          },
           "step": methodologySteps.map((step, idx) => ({
             "@type": "HowToStep",
             "position": idx + 1,
