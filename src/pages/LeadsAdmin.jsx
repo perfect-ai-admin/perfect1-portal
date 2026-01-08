@@ -275,6 +275,19 @@ export default function LeadsAdmin() {
                 <SelectItem value="low">נמוך</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={filterCategory} onValueChange={setFilterCategory}>
+              <SelectTrigger className="w-full md:w-48">
+                <SelectValue placeholder="קטגוריה" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">כל הקטגוריות</SelectItem>
+                <SelectItem value="osek_patur">פתיחת עוסק</SelectItem>
+                <SelectItem value="monthly_support">ליווי חודשי</SelectItem>
+                <SelectItem value="invoice">חשבונית</SelectItem>
+                <SelectItem value="consultation">ייעוץ</SelectItem>
+                <SelectItem value="other">אחר</SelectItem>
+              </SelectContent>
+            </Select>
             <Button onClick={exportToCSV} className="bg-[#27AE60] hover:bg-[#2ECC71]">
               <Download className="w-5 h-5 ml-2" />
               ייצא
@@ -292,6 +305,7 @@ export default function LeadsAdmin() {
                   <th className="px-4 py-3 text-right">טלפון</th>
                   <th className="px-4 py-3 text-right">מקצוע</th>
                   <th className="px-4 py-3 text-right">מקור</th>
+                  <th className="px-4 py-3 text-right">קטגוריה</th>
                   <th className="px-4 py-3 text-right">סוג</th>
                   <th 
                     className="px-4 py-3 text-center cursor-pointer hover:bg-[#2C5282] transition-colors"
@@ -333,6 +347,11 @@ export default function LeadsAdmin() {
                     </td>
                     <td className="px-4 py-3 text-sm">{lead.profession || '-'}</td>
                     <td className="px-4 py-3 text-xs text-gray-500">{lead.source_page || '-'}</td>
+                    <td className="px-4 py-3 text-xs">
+                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${categoryColors[lead.category || 'osek_patur']}`}>
+                        {categoryLabels[lead.category || 'osek_patur']}
+                      </span>
+                    </td>
                     <td className="px-4 py-3 text-xs">
                       <span className={`inline-block px-2 py-1 rounded ${
                         lead.interaction_type === 'phone_click' ? 'bg-blue-100 text-blue-700' :
