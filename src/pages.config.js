@@ -43,6 +43,7 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import DeveloperSetup from './pages/DeveloperSetup';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +93,7 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "DeveloperSetup": DeveloperSetup,
 }
 
 export const pagesConfig = {
