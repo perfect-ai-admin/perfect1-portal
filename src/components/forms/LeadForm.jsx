@@ -53,14 +53,17 @@ export default function LeadForm({
     setIsSubmitting(true);
 
     try {
+      console.log('Creating lead...');
       const newLead = await base44.entities.Lead.create({
         ...formData,
         source_page: sourcePage,
         status: 'new'
       });
+      console.log('Lead created:', newLead);
 
       // Send email notification
-      await base44.integrations.Core.SendEmail({
+      console.log('Sending email to yosi5919@gmail.com...');
+      const emailResult = await base44.integrations.Core.SendEmail({
         to: 'yosi5919@gmail.com',
         subject: `🎯 ליד חדש מ${sourcePage}`,
         body: `
@@ -78,11 +81,13 @@ export default function LeadForm({
           </div>
         `
       });
+      console.log('Email sent successfully:', emailResult);
 
       // Redirect to Thank You page immediately
       window.location.href = '/ThankYou';
     } catch (err) {
-      setError('אירעה שגיאה, נסה שוב');
+      console.error('Error in form submission:', err);
+      setError(`אירעה שגיאה: ${err.message || 'נסה שוב'}`);
     } finally {
       setIsSubmitting(false);
     }
