@@ -8,6 +8,8 @@ import AnswerBlock from '../components/seo/AnswerBlock';
 import InternalLinker from '../components/seo/InternalLinker';
 import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { schemaTemplates } from './SEOOptimized';
+import ProfessionContent from '../components/seo/ProfessionContent';
+import { getEnhancedProfessionData } from '../components/seo/professionsData';
 
 const professionsData = {
   'meatzev-grafi': {
@@ -1237,38 +1239,83 @@ export default function ProfessionPage() {
     color: '#1E3A5F'
   };
   
-  const profession = {
+  const profession = getEnhancedProfessionData(slug, {
     ...defaultProfessionData,
     ...professionBasic,
     ...professionDetails
-  };
+  });
 
   const whatsappMessage = `היי, אני ${profession.name} ומעוניין לפתוח עוסק פטור. אשמח לייעוץ`;
 
-  const answerBlock = {
-    question: `איך פותחים עוסק פטור ${profession.name}?`,
-    answer: `פתיחת עוסק פטור ${profession.name} כוללת רישום במס הכנסה, פטור ממע"מ, ופתיחת תיק בביטוח לאומי. התהליך אורך 24-72 שעות ומאפשר לעבוד באופן חוקי ולהפיק קבלות. אנחנו מטפלים בכל הבירוקרטיה והמסמכים הנדרשים, כך שתוכל להתחיל לעבוד במהירות.`
-  };
-
-  const localBusinessSchema = {
-    ...schemaTemplates.organization,
-    "@type": "ProfessionalService",
-    "name": `פתיחת עוסק פטור ${profession.name}`,
-    "description": profession.description,
-    "areaServed": {
-      "@type": "Country",
-      "name": "ישראל"
-    }
+  // Enhanced Schema with isPartOf, sameAs, about
+  const enhancedSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": `פתיחת עוסק פטור ${profession.name} בישראל`,
+    "description": `מדריך מקיף לפתיחת עוסק פטור למקצוע ${profession.name} בישראל - תהליך, דרישות והוצאות מוכרות`,
+    "totalTime": "P3D",
+    "about": {
+      "@type": "Thing",
+      "name": profession.name,
+      "description": `${profession.name} עצמאי בישראל`
+    },
+    "isPartOf": {
+      "@type": "WebPage",
+      "name": "פתיחת עוסק פטור לפי מקצוע",
+      "url": "https://perfect1.co.il/Professions"
+    },
+    "provider": {
+      "@type": "ProfessionalService",
+      "name": "Perfect One",
+      "description": "שירות פתיחת עוסקים פטורים בישראל",
+      "url": "https://perfect1.co.il",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ],
+      "areaServed": {
+        "@type": "Country",
+        "name": "ישראל"
+      }
+    },
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "ייעוץ ראשוני",
+        "text": `שיחה עם רואה חשבון מוסמך להבנת הצרכים של ${profession.name} עצמאי`,
+        "url": "https://perfect1.co.il"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "רישום במס הכנסה",
+        "text": `הגשת מסמכים ורישום ${profession.name} כעוסק פטור במס הכנסה`,
+        "url": "https://perfect1.co.il"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "רישום בביטוח לאומי",
+        "text": `פתיחת תיק בביטוח לאומי עבור ${profession.name} עצמאי`,
+        "url": "https://perfect1.co.il"
+      }
+    ],
+    "tool": profession.services ? profession.services.slice(0, 3).map(service => ({
+      "@type": "HowToTool",
+      "name": service
+    })) : []
   };
 
   return (
     <>
       <SEOOptimized
-        title={`פתיחת עוסק פטור ${profession.name} - ליווי מקצועי | Perfect One`}
-        description={`${profession.description} ליווי מלא לפתיחת עוסק פטור ${profession.name} בישראל. ${profession.services && profession.services[0] ? `${profession.services[0]}, ${profession.services[1]} ועוד.` : ''} התקשרו: 0502277087`}
-        keywords={`עוסק פטור ${profession.name}, פתיחת עוסק ${profession.name}, ${profession.name} עצמאי${profession.services ? ', ' + profession.services.join(', ') : ''}`}
+        title={`פתיחת עוסק פטור ${profession.name} בישראל 2024 | Perfect One`}
+        description={`${profession.quickAnswer || profession.description} ליווי מלא לפתיחת עוסק פטור ${profession.name} בישראל. ${profession.services && profession.services[0] ? `${profession.services[0]}, ${profession.services[1]} ועוד.` : ''} התקשרו: 0502277087`}
+        keywords={`עוסק פטור ${profession.name}, פתיחת עוסק ${profession.name}, ${profession.name} עצמאי בישראל, ${profession.name} ${profession.entityType || 'עצמאי'}${profession.services ? ', ' + profession.services.slice(0, 3).join(', ') : ''}`}
         canonical={`https://perfect1.co.il${window.location.pathname}${window.location.search}`}
-        schema={localBusinessSchema}
+        schema={enhancedSchema}
       />
       <Breadcrumbs 
         items={[
@@ -1296,7 +1343,7 @@ export default function ProfessionPage() {
         {profession.icon}
       </div>
       <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4 px-4">
-        פתיחת עוסק פטור - {profession.name}
+        פתיחת עוסק פטור {profession.name} בישראל
       </h1>
       <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-8 px-4">
         ליווי מקצועי מהצעד הראשון ועד ניהול העסק השוטף
@@ -1351,45 +1398,8 @@ export default function ProfessionPage() {
             <div className="grid lg:grid-cols-3 gap-12">
               {/* Main Content */}
               <div className="lg:col-span-2 space-y-12">
-                {/* Answer Block */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                >
-                  <AnswerBlock 
-                    question={answerBlock.question}
-                    answer={answerBlock.answer}
-                  />
-                </motion.div>
-
-                {/* Full Content or About */}
-                {profession.fullContent ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="prose prose-lg max-w-none"
-                  >
-                    <div 
-                      className="text-gray-700 leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: profession.fullContent }}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                  >
-                    <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                      📌 על המקצוע
-                    </h2>
-                    <div className="text-gray-600 leading-relaxed text-lg">
-                      <InternalLinker content={profession.description || 'מקצוע זה מציע הזדמנויות רבות לעצמאים בישראל.'} currentPage="ProfessionPage" />
-                    </div>
-                  </motion.div>
-                )}
+                {/* AI-Optimized Content Component */}
+                <ProfessionContent profession={profession} slug={slug} />
 
                 {/* Quick CTA */}
                 <motion.div
@@ -1399,7 +1409,7 @@ export default function ProfessionPage() {
                   className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 sm:p-8 text-center text-white"
                 >
                   <h3 className="text-xl sm:text-2xl font-black mb-3">
-                    💬 רוצה לפתוח עוסק פטור כמו {profession.name}?
+                    💬 רוצה לפתוח עוסק פטור {profession.name} בישראל?
                   </h3>
                   <p className="text-base sm:text-lg mb-6 text-white/90">
                     דבר איתנו עכשיו ונתחיל את התהליך תוך 24 שעות
