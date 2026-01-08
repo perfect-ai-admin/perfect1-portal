@@ -649,7 +649,10 @@ function AddLeadForm({ onSave, onCancel, isLoading }) {
             <SelectContent>
               <SelectItem value="new">חדש</SelectItem>
               <SelectItem value="contacted">יצרנו קשר</SelectItem>
+              <SelectItem value="no_answer">אין מענה</SelectItem>
+              <SelectItem value="in_progress">בתהליך</SelectItem>
               <SelectItem value="qualified">מתאים</SelectItem>
+              <SelectItem value="not_interested">לא מעוניין</SelectItem>
               <SelectItem value="converted">נסגר</SelectItem>
               <SelectItem value="closed">סגור</SelectItem>
             </SelectContent>
