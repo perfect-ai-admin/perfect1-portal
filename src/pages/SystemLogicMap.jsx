@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Download, Code, Database, GitBranch, Settings, Lock, AlertCircle } from 'lucide-react';
+import { Download, Code, Database, GitBranch, Settings, Lock, AlertCircle, Rocket, Package, Play, FileText, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function SystemLogicMap() {
+  const [activeSection, setActiveSection] = useState('overview');
+
+  const sections = [
+    { id: 'overview', title: '📖 סקירת המערכת', icon: FileText },
+    { id: 'database', title: '🗄️ Database', icon: Database },
+    { id: 'dataflow', title: '🔄 Data Flow', icon: GitBranch },
+    { id: 'api', title: '📡 API Patterns', icon: Code },
+    { id: 'pages', title: '📄 Pages', icon: FileText },
+    { id: 'components', title: '🎨 Components', icon: Code },
+    { id: 'seo', title: '🚀 SEO & Performance', icon: Rocket },
+    { id: 'security', title: '🔐 Security', icon: Lock },
+    { id: 'setup', title: '⚙️ Developer Setup', icon: Settings },
+    { id: 'deployment', title: '🚀 Deployment', icon: Rocket }
+  ];
+
   const markdownContent = `
 # 📚 Perfect One - מפת הלוגיקה המלאה של המערכת
 
@@ -1117,24 +1133,359 @@ body {
 - ✅ Security & Authentication
 - ✅ Code Standards
 
-**עכשיו תעבור ל-Developer Setup Guide →**
+---
+
+## ⚙️ Developer Setup Guide
+
+### 📋 דרישות מערכת
+
+#### ✅ חובה
+- **Node.js**: v18+ (מומלץ v20)
+- **npm**: v9+ או **yarn**: v1.22+
+- **Git**: כל גרסה
+- חשבון **Base44** (להרשמה: [base44.com](https://base44.com))
+
+#### 🔧 כלים מומלצים
+- **VS Code** עם Extensions:
+  - ESLint
+  - Prettier
+  - Tailwind CSS IntelliSense
+  - ES7+ React/Redux snippets
+
+---
+
+### 🚀 התקנה לוקלית
+
+#### שלב 1: Clone הפרויקט
+\`\`\`bash
+# אם יש לך גישה לגיטהאב
+git clone https://github.com/your-org/perfect-one.git
+cd perfect-one
+
+# או צור פרויקט חדש Base44
+npx @base44/cli create perfect-one
+cd perfect-one
+\`\`\`
+
+#### שלב 2: התקן תלויות
+\`\`\`bash
+npm install
+# או
+yarn install
+\`\`\`
+
+#### שלב 3: הגדר Environment Variables
+צור קובץ \`.env.local\` בשורש הפרויקט:
+
+\`\`\`env
+# Base44 Configuration
+VITE_BASE44_APP_ID=your_app_id_here
+VITE_BASE44_API_KEY=your_api_key_here
+
+# Analytics (Optional)
+VITE_GTM_ID=GTM-PNK9CCRQ
+VITE_FB_PIXEL_ID=your_pixel_id
+
+# Contact Info
+VITE_PHONE=0502277087
+VITE_WHATSAPP=972502277087
+VITE_EMAIL=yosi5919@gmail.com
+\`\`\`
+
+> 💡 **איפה למצוא את ה-App ID & API Key?**
+> 1. היכנס ל-[Dashboard של Base44](https://app.base44.com)
+> 2. Settings → API Keys
+> 3. העתק את ה-App ID ו-API Key
+
+#### שלב 4: הרץ את השרת המקומי
+\`\`\`bash
+npm run dev
+# או
+yarn dev
+\`\`\`
+
+הפרויקט יהיה זמין ב: **http://localhost:5173**
+
+---
+
+### 📄 Environment Variables מלא
+
+\`\`\`env
+# ========================================
+# Base44 Backend Configuration
+# ========================================
+VITE_BASE44_APP_ID=your_app_id
+VITE_BASE44_API_KEY=your_api_key
+VITE_BASE44_API_URL=https://api.base44.com
+
+# ========================================
+# Analytics & Tracking
+# ========================================
+VITE_GTM_ID=GTM-PNK9CCRQ
+VITE_FB_PIXEL_ID=1234567890
+VITE_GA4_ID=G-XXXXXXXXXX
+
+# ========================================
+# Contact Information
+# ========================================
+VITE_PHONE=0502277087
+VITE_WHATSAPP=972502277087
+VITE_EMAIL=yosi5919@gmail.com
+
+# ========================================
+# SEO & Metadata
+# ========================================
+VITE_SITE_URL=https://perfect1.co.il
+VITE_SITE_NAME=Perfect One
+VITE_DEFAULT_TITLE=פתיחת עוסק פטור | Perfect One
+VITE_DEFAULT_DESCRIPTION=פתיחת עוסק פטור מהיר ופשוט
+
+# ========================================
+# Feature Flags
+# ========================================
+VITE_ENABLE_BLOG=true
+VITE_ENABLE_CHAT=false
+VITE_MAINTENANCE_MODE=false
+\`\`\`
+
+---
+
+### 📦 Package.json מלא
+
+\`\`\`json
+{
+  "name": "perfect-one",
+  "version": "2.0.0",
+  "description": "Perfect One - The Ultimate Osek Patur Platform",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js,.jsx",
+    "lint:fix": "eslint . --ext .js,.jsx --fix",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@base44/sdk": "^0.8.11",
+    "@tanstack/react-query": "^5.84.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.26.0",
+    "framer-motion": "^11.16.4",
+    "lucide-react": "^0.475.0",
+    "tailwindcss": "^3.4.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.2.10"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
+\`\`\`
+
+---
+
+### ⚙️ Vite Configuration
+
+\`\`\`javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { base44VitePlugin } from '@base44/vite-plugin';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    base44VitePlugin()
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './'),
+    },
+  },
+  server: {
+    port: 5173,
+    open: true,
+    host: true
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['@radix-ui/react-dialog'],
+          animations: ['framer-motion']
+        }
+      }
+    }
+  }
+});
+\`\`\`
+
+---
+
+## 🚀 Deployment Guide
+
+### Deploy ל-Production
+
+#### Option 1: Base44 Hosting (Recommended)
+\`\`\`bash
+# Build
+npm run build
+
+# Deploy
+npx @base44/cli deploy
+\`\`\`
+
+#### Option 2: Vercel
+\`\`\`bash
+npm i -g vercel
+vercel --prod
+\`\`\`
+
+**vercel.json:**
+\`\`\`json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+\`\`\`
+
+#### Option 3: Netlify
+\`\`\`bash
+npm i -g netlify-cli
+netlify deploy --prod
+\`\`\`
+
+**netlify.toml:**
+\`\`\`toml
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+\`\`\`
+
+---
+
+### 🔧 CI/CD Pipeline (GitHub Actions)
+
+\`\`\`.github/workflows/deploy.yml
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Build
+        run: npm run build
+        env:
+          VITE_BASE44_APP_ID: \${{ secrets.BASE44_APP_ID }}
+          VITE_BASE44_API_KEY: \${{ secrets.BASE44_API_KEY }}
+          
+      - name: Deploy
+        run: npx @base44/cli deploy
+        env:
+          BASE44_TOKEN: \${{ secrets.BASE44_TOKEN }}
+\`\`\`
+
+---
+
+### 🔍 Troubleshooting
+
+#### ❌ בעיות נפוצות
+
+**1. "Module not found" Error**
+\`\`\`bash
+rm -rf node_modules package-lock.json
+npm install
+\`\`\`
+
+**2. Base44 SDK לא עובד**
+- ✅ בדוק \`.env.local\` קיים
+- ✅ בדוק App ID נכון
+- ✅ Restart dev server
+
+**3. Build נכשל**
+\`\`\`bash
+rm -rf dist .vite node_modules
+npm install
+npm run build
+\`\`\`
+
+---
+
+### ✅ Checklist לפני Production
+
+- [ ] Environment Variables מוגדרים
+- [ ] GTM & Analytics מחוברים
+- [ ] WhatsApp & Phone מעודכנים
+- [ ] SEO Meta Tags מוגדרים
+- [ ] Sitemap עובד
+- [ ] Forms שולחים מיילים
+- [ ] Admin Panel מאובטח
+- [ ] Mobile Responsive
+- [ ] Performance (Lighthouse > 90)
+- [ ] טסטים ידניים
+
+---
+
+**🎉 סיימנו! המערכת מתועדת ומוכנה לפיתוח/שכפול!**
 
 `;
 
+  const scrollToSection = (sectionId) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50" dir="rtl">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white p-8">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] text-white shadow-2xl sticky top-0 z-50">
+          <div className="px-8 py-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-4xl font-black mb-2 flex items-center gap-3">
+                <h1 className="text-3xl md:text-4xl font-black mb-2 flex items-center gap-3">
                   <Database className="w-10 h-10" />
-                  מפת הלוגיקה המלאה - Perfect One
+                  Perfect One - מפת לוגיקה מלאה
                 </h1>
-                <p className="text-xl opacity-90">
-                  תיעוד טכני מקיף ומלא - כל מה שצריך כדי להבין ולבנות את המערכת מאפס
+                <p className="text-base md:text-lg opacity-90">
+                  תיעוד טכני מקיף + Setup Guide - כל מה שצריך לבניה מאפס
                 </p>
               </div>
               <Button 
@@ -1143,33 +1494,48 @@ body {
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement('a');
                   a.href = url;
-                  a.download = 'Perfect-One-SystemLogicMap.md';
+                  a.download = 'Perfect-One-Complete-Documentation.md';
                   a.click();
                 }}
-                className="bg-white text-[#1E3A5F] hover:bg-gray-100"
+                className="hidden md:flex bg-white text-[#1E3A5F] hover:bg-gray-100"
               >
                 <Download className="w-5 h-5 ml-2" />
-                הורד Markdown
+                הורד מסמך מלא
               </Button>
             </div>
           </div>
 
-          {/* Content */}
-          <div className="p-8">
-            <Tabs defaultValue="preview" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="preview" className="text-lg">
-                  <Code className="w-5 h-5 ml-2" />
-                  תצוגת מסמך
-                </TabsTrigger>
-                <TabsTrigger value="raw" className="text-lg">
-                  <GitBranch className="w-5 h-5 ml-2" />
-                  Markdown גולמי
-                </TabsTrigger>
-              </TabsList>
+          {/* Navigation Menu */}
+          <div className="border-t border-white/20 px-8 py-3 bg-[#1E3A5F]/50 backdrop-blur-sm">
+            <ScrollArea className="w-full">
+              <div className="flex items-center gap-2 pb-2">
+                {sections.map((section) => {
+                  const Icon = section.icon;
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => scrollToSection(section.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold whitespace-nowrap transition-all ${
+                        activeSection === section.id
+                          ? 'bg-white text-[#1E3A5F] shadow-lg'
+                          : 'bg-white/10 text-white hover:bg-white/20'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="text-sm">{section.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
 
-              <TabsContent value="preview">
-                <div className="prose prose-lg prose-slate max-w-none" dir="rtl">
+        {/* Content */}
+        <div className="p-4 md:p-8">
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div className="p-6 md:p-10">
+              <div className="prose prose-lg prose-slate max-w-none" dir="rtl">
                   <ReactMarkdown
                     components={{
                       h1: ({ children }) => (
@@ -1253,18 +1619,28 @@ body {
                     }}
                   >
                     {markdownContent}
-                  </ReactMarkdown>
-                </div>
-              </TabsContent>
+                </ReactMarkdown>
+              </div>
+            </div>
+          </div>
 
-              <TabsContent value="raw">
-                <div className="bg-gray-900 text-gray-100 p-6 rounded-lg">
-                  <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed">
-                    {markdownContent}
-                  </pre>
-                </div>
-              </TabsContent>
-            </Tabs>
+          {/* Bottom Download Button Mobile */}
+          <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+            <Button 
+              onClick={() => {
+                const blob = new Blob([markdownContent], { type: 'text/markdown' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Perfect-One-Complete-Documentation.md';
+                a.click();
+              }}
+              className="bg-[#27AE60] hover:bg-[#2ECC71] text-white shadow-2xl"
+              size="lg"
+            >
+              <Download className="w-5 h-5 ml-2" />
+              הורד מסמך
+            </Button>
           </div>
         </div>
       </div>
