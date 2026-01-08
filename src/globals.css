@@ -97,6 +97,22 @@ body {
   background: #2C5282;
 }
 
+/* Performance optimizations */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* Prevent layout shift for images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Animations */
 @keyframes fadeInUp {
   from {
