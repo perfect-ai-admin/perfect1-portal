@@ -54,8 +54,9 @@ export default function SidePopup() {
       setTimeout(() => {
         handleClose();
       }, 2000);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      alert('אירעה שגיאה, אנא נסה שוב');
     } finally {
       setIsSubmitting(false);
     }
