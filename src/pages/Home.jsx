@@ -15,6 +15,7 @@ import MicroCTA from '../components/cro/MicroCTA';
 export default function Home() {
   return (
     <>
+      <LocalBusinessSchema />
       <SEOOptimized 
         {...seoPresets.home}
         canonical="https://perfect1.co.il"

@@ -121,6 +121,7 @@ export default function Services() {
 
   return (
     <>
+      <LocalBusinessSchema />
       <SEOOptimized 
         {...seoPresets.services}
         canonical="https://perfect1.co.il/services"

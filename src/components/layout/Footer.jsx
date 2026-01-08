@@ -135,6 +135,19 @@ export default function Footer() {
                 </div>
                 <span>א'-ה' 9:00-18:00</span>
               </li>
+              <li>
+                <a 
+                  href="https://maps.google.com/?q=Perfect+One+Israel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
+                >
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <span>גוגל מפות</span>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -144,9 +157,19 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} פרפקט וואן - המרכז לעוסקים פטורים. כל הזכויות שמורות.
-            </p>
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <p className="text-gray-400 text-sm">
+                © {new Date().getFullYear()} פרפקט וואן - המרכז לעוסקים פטורים. כל הזכויות שמורות.
+              </p>
+              <a 
+                href="https://g.page/r/YOUR_GOOGLE_BUSINESS_ID/review"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#D4AF37] hover:text-white text-sm font-medium transition-colors"
+              >
+                ⭐ דרגו אותנו בגוגל
+              </a>
+            </div>
             <Button
               onClick={scrollToTop}
               variant="ghost"

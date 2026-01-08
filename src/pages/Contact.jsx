@@ -10,6 +10,7 @@ import LeadForm from '../components/forms/LeadForm';
 export default function Contact() {
   return (
     <>
+      <LocalBusinessSchema />
       <SEOOptimized 
         {...seoPresets.contact}
         canonical="https://perfect1.co.il/contact"
