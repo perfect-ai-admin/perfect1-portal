@@ -63,7 +63,19 @@ export default function Home() {
             "ratingValue": "4.9",
             "reviewCount": "2000"
           },
-          "serviceType": ["פתיחת עוסק פטור", "ליווי חודשי", "דוח שנתי"]
+          "serviceType": ["פתיחת עוסק פטור", "ליווי חודשי", "דוח שנתי"],
+          "sameAs": [
+            "https://www.facebook.com/perfect1.co.il",
+            "https://www.linkedin.com/company/perfect1",
+            "https://www.instagram.com/perfect1.co.il"
+          ],
+          "knowsAbout": ["מס הכנסה", "ביטוח לאומי", "חשבונאות עצמאים", "רגולציה ישראלית"],
+          "slogan": "המומחים לפתיחת עוסקים פטורים בישראל",
+          "founder": {
+            "@type": "Person",
+            "name": "יוסי כהן",
+            "jobTitle": "רואה חשבון מוסמך"
+          }
         }}
       />
       <main>
