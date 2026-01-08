@@ -23,7 +23,7 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const services = [
+  const menuItems = [
     { name: 'פתיחת עוסק פטור', href: createPageUrl('OsekPaturLanding') },
     { name: 'פתיחת עוסק אונליין', href: createPageUrl('OsekPaturOnlineLanding') },
     { name: 'ליווי חודשי', href: createPageUrl('ServicePage') + '?service=livui-chodshi' },
@@ -89,13 +89,13 @@ export default function Header() {
                 <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                {services.map((service) => (
-                  <DropdownMenuItem key={service.name} asChild>
+                {menuItems.map((item) => (
+                  <DropdownMenuItem key={item.name} asChild>
                     <Link 
-                      to={service.href}
+                      to={item.href}
                       className="cursor-pointer text-base"
                     >
-                      {service.name}
+                      {item.name}
                     </Link>
                   </DropdownMenuItem>
                 ))}
@@ -211,14 +211,14 @@ export default function Header() {
                       <li>
                         <div className="px-4 py-2 text-gray-400 text-sm font-semibold">שירותים</div>
                         <ul className="mr-4 space-y-1">
-                          {services.map((service) => (
-                            <li key={service.name}>
+                          {menuItems.map((item) => (
+                            <li key={item.name}>
                               <Link
-                                to={service.href}
+                                to={item.href}
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
                               >
-                                {service.name}
+                                {item.name}
                               </Link>
                             </li>
                           ))}
