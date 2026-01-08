@@ -43,18 +43,7 @@ function Card({ title, children, highlight = false }) {
 
 export default function SystemLogicMap() {
 
-  const sections = [
-    { id: 'overview', title: '📖 סקירת המערכת', icon: FileText },
-    { id: 'database', title: '🗄️ Database', icon: Database },
-    { id: 'dataflow', title: '🔄 Data Flow', icon: GitBranch },
-    { id: 'api', title: '📡 API Patterns', icon: Code },
-    { id: 'pages', title: '📄 Pages', icon: FileText },
-    { id: 'components', title: '🎨 Components', icon: Code },
-    { id: 'seo', title: '🚀 SEO & Performance', icon: Rocket },
-    { id: 'security', title: '🔐 Security', icon: Lock },
-    { id: 'setup', title: '⚙️ Developer Setup', icon: Settings },
-    { id: 'deployment', title: '🚀 Deployment', icon: Rocket }
-  ];
+
 
   const markdownContent = `
 # 📚 Perfect One - מפת הלוגיקה המלאה של המערכת
