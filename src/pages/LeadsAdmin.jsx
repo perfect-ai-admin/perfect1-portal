@@ -14,6 +14,7 @@ export default function LeadsAdmin() {
   const [showAddLeadDialog, setShowAddLeadDialog] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
@@ -107,11 +108,12 @@ export default function LeadsAdmin() {
   const filteredLeads = leads.filter(lead => {
     const matchStatus = filterStatus === 'all' || lead.status === filterStatus;
     const matchPriority = filterPriority === 'all' || lead.priority === filterPriority;
+    const matchCategory = filterCategory === 'all' || lead.category === filterCategory;
     const matchSearch = !searchTerm || 
       (lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
        lead.phone?.includes(searchTerm) ||
        lead.email?.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchStatus && matchPriority && matchSearch;
+    return matchStatus && matchPriority && matchCategory && matchSearch;
   });
 
   // Sort leads if sortBy is active
@@ -158,6 +160,22 @@ export default function LeadsAdmin() {
     low: 'נמוך',
     medium: 'בינוני',
     high: 'גבוה'
+  };
+
+  const categoryColors = {
+    osek_patur: 'bg-indigo-100 text-indigo-800',
+    monthly_support: 'bg-teal-100 text-teal-800',
+    invoice: 'bg-amber-100 text-amber-800',
+    consultation: 'bg-pink-100 text-pink-800',
+    other: 'bg-slate-100 text-slate-800'
+  };
+
+  const categoryLabels = {
+    osek_patur: 'פתיחת עוסק',
+    monthly_support: 'ליווי חודשי',
+    invoice: 'חשבונית',
+    consultation: 'ייעוץ',
+    other: 'אחר'
   };
 
   const stats = {
