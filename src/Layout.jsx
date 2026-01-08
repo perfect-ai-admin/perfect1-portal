@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/layout/WhatsAppButton';
@@ -33,6 +33,15 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <HelmetProvider>
+      <Helmet>
+        <script>
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PNK9CCRQ');`}
+        </script>
+      </Helmet>
       <CriticalCSS />
       <ResourceHints 
         priorityImages={['/logo.png']}
@@ -40,6 +49,14 @@ export default function Layout({ children, currentPageName }) {
       />
       <WebVitalsMonitor />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
+        <noscript>
+          <iframe 
+            src="https://www.googletagmanager.com/ns.html?id=GTM-PNK9CCRQ"
+            height="0" 
+            width="0" 
+            style={{display: 'none', visibility: 'hidden'}}
+          />
+        </noscript>
         <Header />
         <main>
           {children}
