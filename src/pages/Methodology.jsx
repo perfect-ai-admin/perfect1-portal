@@ -5,6 +5,7 @@ import SEOOptimized, { seoPresets } from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import InternalLinker from '../components/seo/InternalLinker';
 import LeadForm from '../components/forms/LeadForm';
+import RelatedContent from '../components/seo/RelatedContent';
 
 export default function Methodology() {
   const breadcrumbs = [
@@ -69,9 +70,9 @@ export default function Methodology() {
   return (
     <>
       <SEOOptimized 
-        title="המתודולוגיה המקצועית שלנו | Perfect One"
+        title="המתודולוגיה שלנו - איך פותחים עוסק פטור ב-4 שלבים | Perfect One"
         description="גלו את המתודולוגיה המקצועית והמוכחת שלנו לפתיחת עוסקים פטורים. תהליך בן 4 שלבים, בפיקוח רואי חשבון מוסמכים, עם אחריות מלאה."
-        keywords={['מתודולוגיה עוסק פטור', 'תהליך פתיחת עוסק', 'רואה חשבון מוסמך', 'פתיחת עוסק מקצועית']}
+        keywords={['מתודולוגיה עוסק פטור', 'תהליך פתיחת עוסק', 'רואה חשבון מוסמך', 'פתיחת עוסק מקצועית', 'שלבי פתיחת עוסק']}
         canonical="https://perfect1.co.il/Methodology"
         schema={{
           "@context": "https://schema.org",
@@ -230,6 +231,9 @@ export default function Methodology() {
               </div>
             </div>
           </motion.div>
+
+          {/* Related Content */}
+          <RelatedContent pageType="guide" />
 
           {/* CTA */}
           <motion.div
