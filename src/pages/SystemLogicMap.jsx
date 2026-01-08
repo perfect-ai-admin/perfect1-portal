@@ -53,7 +53,8 @@ export default function SystemLogicMap() {
     { id: 'tracking', label: '📊 Tracking', icon: TrendingUp },
     { id: 'security', label: '🔐 Security', icon: Shield },
     { id: 'jobs', label: '⏰ Jobs', icon: Clock },
-    { id: 'migration', label: '📤 Migration', icon: Download }
+    { id: 'migration', label: '📤 Migration', icon: Download },
+    { id: 'seo_tools', label: '🛠️ SEO Tools', icon: Download }
   ];
 
   const downloadDocumentation = () => {
@@ -1568,6 +1569,7 @@ npm run build
         {activeTab === 'security' && <PermissionsSection />}
         {activeTab === 'jobs' && <JobsSection />}
         {activeTab === 'migration' && <MigrationSection />}
+        {activeTab === 'seo_tools' && <SEOToolsSection />}
       </div>
     </div>
   );
@@ -2569,6 +2571,91 @@ function JobsSection() {
             <h4 className="font-semibold text-sm">Extract Data from File</h4>
             <p className="text-xs text-gray-600">Uses: base44.integrations.Core.ExtractDataFromUploadedFile() | ~3-8s</p>
           </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function SEOToolsSection() {
+  return (
+    <div>
+      <SectionHeader 
+        title="Advanced SEO Tools" 
+        icon={Search}
+        description="Competitor analysis, AI content suggestions, and broken link checker"
+      />
+
+      <Card title="🔍 Competitor Analyzer" highlight>
+        <p className="text-gray-700 mb-3">
+          <strong>Purpose:</strong> Monitor and analyze top-ranking competitors for target keywords.
+        </p>
+        <div className="space-y-2">
+          <p className="text-sm text-gray-700">✅ <strong>Features:</strong></p>
+          <ul className="text-sm text-gray-600 space-y-1 ml-4">
+            <li>• Add competitors by domain</li>
+            <li>• Auto-analyze using LLM (title, meta, word count, schema)</li>
+            <li>• Benchmark against your content</li>
+            <li>• Store in CompetitorData entity</li>
+          </ul>
+        </div>
+      </Card>
+
+      <Card title="💡 Content Suggestion Engine" highlight>
+        <p className="text-gray-700 mb-3">
+          <strong>Purpose:</strong> AI-powered recommendations for SEO improvements based on competitors.
+        </p>
+        <div className="space-y-2">
+          <p className="text-sm text-gray-700">✅ <strong>Capabilities:</strong></p>
+          <ul className="text-sm text-gray-600 space-y-1 ml-4">
+            <li>• Analyze BlogPosts & Professions</li>
+            <li>• Compare vs competitor benchmarks</li>
+            <li>• Suggest: titles, meta, keywords, schema, internal links</li>
+            <li>• Track implementation status</li>
+            <li>• Powered by LLM with competitor context</li>
+          </ul>
+        </div>
+      </Card>
+
+      <Card title="🔗 Broken Link Checker" highlight>
+        <p className="text-gray-700 mb-3">
+          <strong>Purpose:</strong> Audit entire website for broken links and crawl errors.
+        </p>
+        <div className="space-y-2">
+          <p className="text-sm text-gray-700">✅ <strong>Features:</strong></p>
+          <ul className="text-sm text-gray-600 space-y-1 ml-4">
+            <li>• Full-site link crawl</li>
+            <li>• Detects: 404s, timeouts, DNS errors</li>
+            <li>• Severity levels (critical, high, medium, low)</li>
+            <li>• Track fixes and recheck history</li>
+            <li>• Stores in LinkReport entity</li>
+          </ul>
+        </div>
+      </Card>
+
+      <Card title="📊 Database Schema" highlight>
+        <div className="space-y-3">
+          <div className="bg-gray-50 p-3 rounded">
+            <p className="font-semibold text-sm">CompetitorData Entity</p>
+            <p className="text-xs text-gray-600 mt-1">Stores: domain, url, keyword, metrics (word count, images, links, schema), ranking position</p>
+          </div>
+          <div className="bg-gray-50 p-3 rounded">
+            <p className="font-semibold text-sm">ContentSuggestion Entity</p>
+            <p className="text-xs text-gray-600 mt-1">Stores: suggestion type, current/suggested values, reasoning, impact level, implementation status</p>
+          </div>
+          <div className="bg-gray-50 p-3 rounded">
+            <p className="font-semibold text-sm">LinkReport Entity</p>
+            <p className="text-xs text-gray-600 mt-1">Stores: broken link URL, page source, error type, status code, severity, fix status, recheck history</p>
+          </div>
+        </div>
+      </Card>
+
+      <Card title="🚀 New Page: /SEOAnalytics">
+        <p className="text-sm text-gray-700 mb-3">
+          Dedicated dashboard with 3 tabs for accessing all SEO analysis tools. Located at pages/SEOAnalytics.js
+        </p>
+        <div className="bg-blue-50 p-3 rounded text-xs text-gray-700">
+          Tabs: Competitors | Content Suggestions | Link Audit
         </div>
       </Card>
     </div>
