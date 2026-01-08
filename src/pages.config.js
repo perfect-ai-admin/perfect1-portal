@@ -37,12 +37,12 @@ import SitemapArticles from './pages/SitemapArticles';
 import SitemapFAQ from './pages/SitemapFAQ';
 import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
+import SystemLogicMap from './pages/SystemLogicMap';
 import Team from './pages/Team';
 import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import SystemLogicMap from './pages/SystemLogicMap';
 import __Layout from './Layout.jsx';
 
 
@@ -86,12 +86,12 @@ export const PAGES = {
     "SitemapFAQ": SitemapFAQ,
     "SitemapGeo": SitemapGeo,
     "SitemapPages": SitemapPages,
+    "SystemLogicMap": SystemLogicMap,
     "Team": Team,
     "TechnicianLanding": TechnicianLanding,
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "SystemLogicMap": SystemLogicMap,
 }
 
 export const pagesConfig = {
