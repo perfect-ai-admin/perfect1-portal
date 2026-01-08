@@ -1226,7 +1226,7 @@ export default function ProfessionPage() {
     const slugParam = urlParams.get('slug') || 'meatzev-grafi';
     setSlug(slugParam);
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [window.location.search]);
+  }, []);
   
   if (!slug) return null;
   

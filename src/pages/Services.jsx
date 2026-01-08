@@ -79,11 +79,52 @@ const services = [
 ];
 
 export default function Services() {
+  // Enhanced Services Hub Schema
+  const servicesSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "שירותים לעוסקים פטורים בישראל",
+    "description": "מגוון שירותים מקיף לעוסקים פטורים - פתיחה, ליווי, דוחות, הנהלת חשבונות",
+    "url": "https://perfect1.co.il/services",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "שירותים לעוסקים פטורים",
+      "description": "שירותי פתיחה וליווי עוסקים פטורים בישראל"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "Perfect One",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ]
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "קטלוג שירותים",
+      "itemListElement": services.map(service => ({
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": service.title,
+          "description": service.description
+        }
+      }))
+    }
+  };
+
   return (
     <>
       <SEOOptimized 
         {...seoPresets.services}
         canonical="https://perfect1.co.il/services"
+        schema={servicesSchema}
       />
       <main className="pt-20">
       {/* Hero */}
@@ -94,7 +135,7 @@ export default function Services() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              השירותים שלנו
+              שירותים לעוסקים פטורים בישראל
             </h1>
             <div className="text-xl text-white/80 max-w-2xl mx-auto">
               <InternalLinker
