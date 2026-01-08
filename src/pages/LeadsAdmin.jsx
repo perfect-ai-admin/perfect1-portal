@@ -17,6 +17,7 @@ export default function LeadsAdmin() {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
+  const [sortBy, setSortBy] = useState(null); // 'status' or 'priority'
   const queryClient = useQueryClient();
 
   const { data: leads, isLoading } = useQuery({
@@ -111,6 +112,18 @@ export default function LeadsAdmin() {
        lead.phone?.includes(searchTerm) ||
        lead.email?.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchStatus && matchPriority && matchSearch;
+  });
+
+  // Sort leads if sortBy is active
+  const sortedLeads = [...filteredLeads].sort((a, b) => {
+    if (sortBy === 'status') {
+      const statusOrder = { new: 1, contacted: 2, no_answer: 3, in_progress: 4, qualified: 5, not_interested: 6, converted: 7, closed: 8 };
+      return (statusOrder[a.status || 'new'] || 99) - (statusOrder[b.status || 'new'] || 99);
+    } else if (sortBy === 'priority') {
+      const priorityOrder = { high: 1, medium: 2, low: 3 };
+      return (priorityOrder[a.priority || 'medium'] || 99) - (priorityOrder[b.priority || 'medium'] || 99);
+    }
+    return 0; // No sorting
   });
 
   const statusColors = {
@@ -262,15 +275,33 @@ export default function LeadsAdmin() {
                   <th className="px-4 py-3 text-right">מקצוע</th>
                   <th className="px-4 py-3 text-right">מקור</th>
                   <th className="px-4 py-3 text-right">סוג</th>
-                  <th className="px-4 py-3 text-center">סטטוס</th>
-                  <th className="px-4 py-3 text-center">עדיפות</th>
+                  <th 
+                    className="px-4 py-3 text-center cursor-pointer hover:bg-[#2C5282] transition-colors"
+                    onClick={() => setSortBy(sortBy === 'status' ? null : 'status')}
+                    title="לחץ למיון לפי סטטוס"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      סטטוס
+                      {sortBy === 'status' && <span className="text-yellow-300">▼</span>}
+                    </div>
+                  </th>
+                  <th 
+                    className="px-4 py-3 text-center cursor-pointer hover:bg-[#2C5282] transition-colors"
+                    onClick={() => setSortBy(sortBy === 'priority' ? null : 'priority')}
+                    title="לחץ למיון לפי עדיפות"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      עדיפות
+                      {sortBy === 'priority' && <span className="text-yellow-300">▼</span>}
+                    </div>
+                  </th>
                   <th className="px-4 py-3 text-right">חזרה</th>
                   <th className="px-4 py-3 text-right">הערות</th>
                   <th className="px-4 py-3 text-center">פעולות</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredLeads.map((lead, index) => (
+                {sortedLeads.map((lead, index) => (
                   <tr key={lead.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
                     <td className="px-4 py-3">
                       <div className="font-medium">{lead.name}</div>
@@ -427,7 +458,7 @@ export default function LeadsAdmin() {
           </div>
         </div>
 
-        {filteredLeads.length === 0 && (
+        {sortedLeads.length === 0 && (
           <div className="text-center py-12 text-gray-500">
             אין לידים להצגה
           </div>
