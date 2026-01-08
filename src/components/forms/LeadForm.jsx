@@ -63,9 +63,12 @@ export default function LeadForm({
     // Track conversion
     trackLeadSubmit(newLead);
 
-    // Send email notification - this will now throw error if it fails
+    // Get current user email
+    const currentUser = await base44.auth.me();
+
+    // Send email notification to current user
     await base44.integrations.Core.SendEmail({
-      to: 'yosi5919@gmail.com',
+      to: currentUser.email,
       subject: `🎯 ליד חדש מ${sourcePage}`,
       body: `
         <div style="direction: rtl; font-family: Arial, sans-serif;">
