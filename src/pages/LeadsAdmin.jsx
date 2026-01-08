@@ -116,7 +116,10 @@ export default function LeadsAdmin() {
   const statusColors = {
     new: 'bg-blue-100 text-blue-800',
     contacted: 'bg-yellow-100 text-yellow-800',
+    no_answer: 'bg-orange-100 text-orange-800',
+    in_progress: 'bg-cyan-100 text-cyan-800',
     qualified: 'bg-purple-100 text-purple-800',
+    not_interested: 'bg-red-100 text-red-800',
     converted: 'bg-green-100 text-green-800',
     closed: 'bg-gray-100 text-gray-800'
   };
@@ -124,7 +127,10 @@ export default function LeadsAdmin() {
   const statusLabels = {
     new: 'חדש',
     contacted: 'יצרנו קשר',
+    no_answer: 'אין מענה',
+    in_progress: 'בתהליך',
     qualified: 'מתאים',
+    not_interested: 'לא מעוניין',
     converted: 'נסגר',
     closed: 'סגור'
   };
@@ -219,7 +225,10 @@ export default function LeadsAdmin() {
                 <SelectItem value="all">כל הסטטוסים</SelectItem>
                 <SelectItem value="new">חדש</SelectItem>
                 <SelectItem value="contacted">יצרנו קשר</SelectItem>
+                <SelectItem value="no_answer">אין מענה</SelectItem>
+                <SelectItem value="in_progress">בתהליך</SelectItem>
                 <SelectItem value="qualified">מתאים</SelectItem>
+                <SelectItem value="not_interested">לא מעוניין</SelectItem>
                 <SelectItem value="converted">נסגר</SelectItem>
                 <SelectItem value="closed">סגור</SelectItem>
               </SelectContent>
