@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { CheckCircle, Phone, MessageCircle, Shield, Clock, TrendingDown, DollarSign, FileText, Users, Sparkles, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
 
 export default function PricingLanding() {
   const [formData, setFormData] = useState({
@@ -42,12 +43,44 @@ export default function PricingLanding() {
   return (
     <>
       <SEOOptimized
-        title="כמה עולה לפתוח עוסק פטור? מחיר ברור וללא הפתעות | המרכז לעוסקים פטורים"
+        title="כמה עולה לפתוח עוסק פטור? מחיר ברור וללא הפתעות | Perfect One"
         description="מחפש לדעת כמה עולה לפתוח עוסק פטור? מחיר ברור, שקוף וידוע מראש. בלי אותיות קטנות, בלי הפתעות. פתיחה אונליין וליווי מלא. 0502277087"
         keywords="כמה עולה לפתוח עוסק פטור, מחיר רואה חשבון לעוסק פטור, עלות פתיחת תיק, מחיר חשבונאי לעוסק פטור, מחיר פתיחת עוסק פטור"
         canonical="https://perfect1.co.il/pricing-landing"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "כמה עולה לפתוח עוסק פטור - מחירים שקופים",
+          "description": "מחיר ברור ושקוף לפתיחת עוסק פטור בישראל",
+          "url": "https://perfect1.co.il/pricing-landing",
+          "about": {
+            "@type": "Thing",
+            "name": "מחיר פתיחת עוסק פטור",
+            "description": "תמחור שקוף לפתיחת עוסקים פטורים"
+          },
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Perfect One",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ]
+          }
+        }}
       />
       <main className="pt-20 bg-[#F8F9FA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          <Breadcrumbs items={[
+            { label: 'דף הבית', url: '/' },
+            { label: 'כמה עולה לפתוח עוסק פטור' }
+          ]} />
+        </div>
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847] overflow-hidden">
           <div className="absolute inset-0 opacity-10">
@@ -68,9 +101,9 @@ export default function PricingLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  כמה עולה לפתוח
+                  כמה עולה לפתוח עוסק פטור
                   <br />
-                  <span className="text-[#D4AF37]">עוסק פטור?</span>
+                  <span className="text-[#D4AF37]">בישראל 2026?</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">

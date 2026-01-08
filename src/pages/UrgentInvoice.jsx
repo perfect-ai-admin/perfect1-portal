@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle, Phone, MessageCircle, AlertCircle, Clock, Shield, Zap, FileText } from 'lucide-react';
 import LeadForm from '../components/forms/LeadForm';
 import SEOOptimized from './SEOOptimized';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
 
 export default function UrgentInvoice() {
   return (
@@ -13,8 +14,40 @@ export default function UrgentInvoice() {
         description="לקוח מבקש חשבונית ואין לך עוסק? פותחים עוסק פטור מהיום להיום. פתרון מיידי להוצאת חשבוניות כחוק. בלי ריצות, בלי הסתבכויות."
         keywords="צריך חשבונית עכשיו, פתיחת עוסק דחוף, פתיחת עוסק להפקת חשבוניות, איך להוציא חשבונית כחוק, פתיחת עוסק מהיום להיום"
         canonical="https://perfect1.co.il/urgent-invoice"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "פתרון מיידי להוצאת חשבונית - פתיחת עוסק דחוף",
+          "description": "פתרון מהיר לפתיחת עוסק פטור והוצאת חשבוניות",
+          "url": "https://perfect1.co.il/urgent-invoice",
+          "about": {
+            "@type": "Thing",
+            "name": "פתיחת עוסק דחוף להוצאת חשבונית",
+            "description": "פתרון מיידי לעצמאיים שצריכים חשבונית"
+          },
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Perfect One",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ]
+          }
+        }}
       />
       <main className="pt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          <Breadcrumbs items={[
+            { label: 'דף הבית', url: '/' },
+            { label: 'צריך חשבונית עכשיו' }
+          ]} />
+        </div>
         {/* Hero Section */}
         <section className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
@@ -30,9 +63,9 @@ export default function UrgentInvoice() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  צריך חשבונית
+                  צריך חשבונית עכשיו בישראל?
                   <br />
-                  <span className="text-[#27AE60]">עכשיו?</span>
+                  <span className="text-[#27AE60]">פתרון מיידי!</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-4 leading-relaxed font-bold">

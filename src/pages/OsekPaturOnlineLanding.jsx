@@ -6,6 +6,7 @@ import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, Trending
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
 
 export default function OsekPaturOnlineLanding() {
   const [formData, setFormData] = useState({
@@ -96,17 +97,38 @@ export default function OsekPaturOnlineLanding() {
           "serviceType": "פתיחת עוסק פטור אונליין",
           "provider": {
             "@type": "Organization",
-            "name": "Perfect One"
+            "name": "Perfect One",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ]
           },
           "offers": {
             "@type": "Offer",
             "price": "249",
             "priceCurrency": "ILS",
             "availability": "https://schema.org/InStock"
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "פתיחת עוסק פטור אונליין בישראל",
+            "description": "פתיחה דיגיטלית 100% של עוסק פטור"
+          },
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
           }
         }}
       />
       <main className="pt-20 bg-[#F8F9FA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          <Breadcrumbs items={[
+            { label: 'דף הבית', url: '/' },
+            { label: 'פתיחת עוסק פטור אונליין' }
+          ]} />
+        </div>
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#3498DB] via-[#2980B9] to-[#1E5F8C] overflow-hidden">
           <div className="absolute inset-0 opacity-10">
@@ -127,7 +149,7 @@ export default function OsekPaturOnlineLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור אונליין
+                  פתיחת עוסק פטור אונליין בישראל
                   <br />
                   <span className="text-[#27AE60]">100% דיגיטלי 🌐</span>
                 </h1>

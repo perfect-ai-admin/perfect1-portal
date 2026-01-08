@@ -6,6 +6,7 @@ import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, Trending
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
 
 export default function OsekPaturLanding() {
   const [formData, setFormData] = useState({
@@ -96,17 +97,38 @@ export default function OsekPaturLanding() {
           "serviceType": "פתיחת עוסק פטור",
           "provider": {
             "@type": "Organization",
-            "name": "Perfect One"
+            "name": "Perfect One",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ]
           },
           "offers": {
             "@type": "Offer",
             "price": "249",
             "priceCurrency": "ILS",
             "availability": "https://schema.org/InStock"
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "פתיחת עוסק פטור בישראל",
+            "description": "שירות מקצועי לפתיחת עוסקים פטורים"
+          },
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
           }
         }}
       />
       <main className="pt-20 bg-[#F8F9FA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          <Breadcrumbs items={[
+            { label: 'דף הבית', url: '/' },
+            { label: 'פתיחת עוסק פטור' }
+          ]} />
+        </div>
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847] overflow-hidden">
           <div className="absolute inset-0 opacity-10">
@@ -127,7 +149,7 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור בישראל
+                  פתיחת עוסק פטור בישראל 2026
                   <br />
                   <span className="text-[#27AE60]">פשוט, מהיר וחוקי</span>
                 </h1>

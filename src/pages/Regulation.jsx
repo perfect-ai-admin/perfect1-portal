@@ -53,17 +53,17 @@ export default function Regulation() {
 
   const recentChanges = [
     {
-      date: '01/01/2024',
+      date: '01/01/2026',
       title: 'עדכון תקרת הכנסה לעוסק פטור',
-      description: 'תקרת ההכנסה השנתית לעוסק פטור נותרה על 120,000 ₪. לא בוצע שינוי ב-2024.'
+      description: 'תקרת ההכנסה השנתית לעוסק פטור נותרה על 120,000 ₪. לא בוצע שינוי ב-2026.'
     },
     {
-      date: '15/11/2023',
+      date: '15/10/2025',
       title: 'שינוי בהגשת דוחות שנתיים',
       description: 'רשות המיסים הקלה על עוסקים פטורים בהגשת דוחות דיגיטליים דרך מערכת שירות זה.'
     },
     {
-      date: '01/09/2023',
+      date: '01/07/2025',
       title: 'הנחיות חדשות לביטוח לאומי',
       description: 'ביטוח לאומי פרסם הנחיות מעודכנות לחישוב דמי ביטוח לעוסקים עצמאיים.'
     }
@@ -72,7 +72,7 @@ export default function Regulation() {
   return (
     <>
       <SEOOptimized 
-        title="רגולציה וחוקים לעוסק פטור בישראל 2024 | Perfect One"
+        title="רגולציה וחוקים לעוסק פטור בישראל 2026 | Perfect One"
         description="מדריך מקיף לכל הרגולציה והחוקים הרלוונטיים לעוסק פטור בישראל. מס הכנסה, ביטוח לאומי, עדכונים שוטפים ועמידה בחוק."
         keywords={['רגולציה עוסק פטור', 'חוקים עוסק פטור', 'מס הכנסה', 'ביטוח לאומי', 'חוק עסקאות גופים ציבוריים']}
         canonical="https://perfect1.co.il/Regulation"
@@ -119,11 +119,11 @@ export default function Regulation() {
             className="text-center mb-16"
           >
             <h1 className="text-4xl md:text-5xl font-black text-[#1E3A5F] mb-6">
-              רגולציה וחוקים - עוסק פטור 2024
+              רגולציה וחוקים - עוסק פטור בישראל 2026
             </h1>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
               כל המידע המשפטי והרגולטורי שצריך לדעת על פתיחה וניהול של עוסק פטור בישראל.
-              <strong> מעודכן לשנת 2024</strong> בהתאם לכל שינויי החוק.
+              <strong> מעודכן לשנת 2026</strong> בהתאם לכל שינויי החוק.
             </p>
           </motion.div>
 
