@@ -133,39 +133,88 @@ export default function ServicePage() {
   
   const service = servicesData[serviceId] || defaultService;
 
-  // Enhanced Schema with HowTo, isPartOf, sameAs
+  // Enhanced Service Schema with offers and hasOfferCatalog
   const enhancedSchema = {
     "@context": "https://schema.org",
-    "@type": "HowTo",
+    "@type": "Service",
     "name": service.title,
     "description": service.quickAnswer || service.description,
-    "totalTime": serviceId === 'ptihat-osek-patur' ? 'P3D' : serviceId === 'doch-shnati' ? 'P7D' : 'P1M',
-    "isPartOf": {
-      "@type": "WebPage",
-      "name": "שירותים לעוסקים פטורים",
-      "url": "https://perfect1.co.il/Services"
-    },
-    "about": {
-      "@type": "Thing",
-      "name": "עוסק פטור",
-      "description": "עוסק פטור בישראל"
-    },
+    "serviceType": service.title,
     "provider": {
       "@type": "ProfessionalService",
       "name": "Perfect One",
       "url": "https://perfect1.co.il",
+      "telephone": "+972-50-227-7087",
+      "email": "info@perfect1.co.il",
+      "logo": "https://perfect1.co.il/logo.png",
       "sameAs": [
         "https://www.facebook.com/perfect1.co.il",
         "https://www.linkedin.com/company/perfect1",
         "https://www.instagram.com/perfect1.co.il"
       ]
     },
-    "step": service.steps.map((step, idx) => ({
-      "@type": "HowToStep",
-      "position": idx + 1,
-      "name": step,
-      "text": step
-    }))
+    "areaServed": {
+      "@type": "Country",
+      "name": "ישראל"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": service.price.replace(/[^\d]/g, ''),
+      "priceCurrency": "ILS",
+      "availability": "https://schema.org/InStock",
+      "url": `https://perfect1.co.il${createPageUrl('ServicePage')}?service=${serviceId}`
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "שירותים לעוסקים פטורים",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "פתיחת עוסק פטור",
+            "description": "תהליך פתיחה מלא במס הכנסה, מע\"מ וביטוח לאומי"
+          },
+          "price": "249",
+          "priceCurrency": "ILS"
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "פתיחת עוסק פטור אונליין",
+            "description": "תהליך דיגיטלי מלא ללא יציאה מהבית"
+          },
+          "price": "249",
+          "priceCurrency": "ILS"
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "ליווי חודשי",
+            "description": "ליווי שוטף עם אפליקציה ורו\"ח זמין"
+          },
+          "price": "199",
+          "priceCurrency": "ILS"
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "הגשת דוח שנתי",
+            "description": "הכנה והגשת דוח שנתי למס הכנסה"
+          },
+          "price": "1199",
+          "priceCurrency": "ILS"
+        }
+      ]
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "עוסק פטור בישראל",
+      "description": "שירותי פתיחה וליווי עוסקים פטורים"
+    }
   };
 
   const answerBlockData = {
