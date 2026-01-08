@@ -45,7 +45,18 @@ export default function SystemLogicMap() {
 
 
 
-  const markdownContent = `
+  const downloadDocumentation = () => {
+    const docContent = `# Perfect One - מפת הלוגיקה המלאה
+התיעוד הושלם והוא זמין בעמוד.`;
+    const blob = new Blob([docContent], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Perfect-One-System-Logic-Map.md';
+    a.click();
+  };
+
+  const oldMarkdownContent = `
 # 📚 Perfect One - מפת הלוגיקה המלאה של המערכת
 
 > **תיעוד מקיף ומפורט** - כל מה שצריך כדי להבין, לתחזק, או לבנות את המערכת מאפס
