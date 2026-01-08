@@ -5,11 +5,40 @@ import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 
 export default function Professions() {
+  // Enhanced Professions Hub Schema
+  const professionsSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "פתיחת עוסק פטור לפי מקצוע",
+    "description": "מדריך מקיף לפתיחת עוסק פטור לכל מקצוע בישראל - מעצבים, צלמים, מפתחים, מאמנים ועוד",
+    "url": "https://perfect1.co.il/professions",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "עוסק פטור בישראל",
+      "description": "פתיחת עוסק פטור לפי מקצוע"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "Perfect One",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ]
+    }
+  };
+
   return (
     <>
       <SEOOptimized 
         {...seoPresets.professions}
         canonical="https://perfect1.co.il/professions"
+        schema={professionsSchema}
       />
       <main className="pt-20">
       {/* Hero */}
@@ -21,7 +50,7 @@ export default function Professions() {
             className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              פתיחת עוסק פטור לפי מקצוע
+              פתיחת עוסק פטור לפי מקצוע בישראל
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               לכל מקצוע יש דרישות, הוצאות מוכרות ודגשים שונים בתהליך פתיחת העוסק הפטור.

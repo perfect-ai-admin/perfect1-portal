@@ -34,11 +34,53 @@ const stats = [
 ];
 
 export default function About() {
+  // Enhanced About Schema with sameAs and about
+  const aboutSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Perfect One - פרפקט וואן",
+      "alternateName": "המרכז הארצי לעוסקים פטורים",
+      "url": "https://perfect1.co.il",
+      "logo": "https://perfect1.co.il/logo.png",
+      "description": "המרכז המוביל בישראל לפתיחת עוסקים פטורים. מעל 2,000 עוסקים פטורים בשנה.",
+      "foundingDate": "2014",
+      "telephone": "+972-50-227-7087",
+      "email": "info@perfect1.co.il",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ],
+      "knowsAbout": ["עוסק פטור", "מס הכנסה", "ביטוח לאומי", "רגולציה ישראלית"],
+      "areaServed": {
+        "@type": "Country",
+        "name": "ישראל"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "2000"
+      },
+      "numberOfEmployees": {
+        "@type": "QuantitativeValue",
+        "value": "15"
+      }
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "עוסק פטור בישראל",
+      "description": "שירותי פתיחה וליווי עוסקים פטורים"
+    }
+  };
+
   return (
     <>
       <SEOOptimized 
         {...seoPresets.about}
         canonical="https://perfect1.co.il/about"
+        schema={aboutSchema}
       />
       <main className="pt-20">
       {/* Hero */}
@@ -58,7 +100,7 @@ export default function About() {
               <span className="text-white/90 text-sm font-medium">המרכז הארצי לעוסקים פטורים</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              פרפקט וואן - הבית לעצמאים
+              אודות Perfect One - המרכז לעוסקים פטורים בישראל
             </h1>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
               אנחנו מאמינים שכל אחד יכול להיות עצמאי מצליח. 
