@@ -39,6 +39,9 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import Methodology from './pages/Methodology';
+import Regulation from './pages/Regulation';
+import Team from './pages/Team';
 import __Layout from './Layout.jsx';
 
 
@@ -84,6 +87,9 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "Methodology": Methodology,
+    "Regulation": Regulation,
+    "Team": Team,
 }
 
 export const pagesConfig = {
