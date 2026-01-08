@@ -6,6 +6,8 @@ import { CheckCircle, Phone, MessageCircle, Shield, Clock, TrendingDown, DollarS
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
+import RelatedContent from '../components/seo/RelatedContent';
+import PageTracker from '../components/seo/PageTracker';
 
 export default function PricingLanding() {
   const [formData, setFormData] = useState({
@@ -42,6 +44,7 @@ export default function PricingLanding() {
 
   return (
     <>
+      <PageTracker pageUrl="/pricing-landing" pageType="landing" />
       <SEOOptimized
         title="כמה עולה לפתוח עוסק פטור? מחיר ברור וללא הפתעות | Perfect One"
         description="מחפש לדעת כמה עולה לפתוח עוסק פטור? מחיר ברור, שקוף וידוע מראש. בלי אותיות קטנות, בלי הפתעות. פתיחה אונליין וליווי מלא. 0502277087"
@@ -480,6 +483,9 @@ export default function PricingLanding() {
             )}
           </div>
         </section>
+
+        {/* Related Content */}
+        <RelatedContent pageType="landing" />
 
         {/* Final CTA */}
         <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">

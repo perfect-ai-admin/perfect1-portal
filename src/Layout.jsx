@@ -8,6 +8,7 @@ import SidePopup from './components/cro/SidePopup';
 import StickyCTA from './components/cro/StickyCTA';
 import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
+import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
@@ -37,6 +38,7 @@ export default function Layout({ children, currentPageName }) {
         priorityImages={['/logo.png']}
         prefetchPages={['/Services', '/Pricing', '/Contact']}
       />
+      <WebVitalsMonitor />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
         <Header />
         <main>

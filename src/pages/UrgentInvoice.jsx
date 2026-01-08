@@ -5,10 +5,13 @@ import { CheckCircle, Phone, MessageCircle, AlertCircle, Clock, Shield, Zap, Fil
 import LeadForm from '../components/forms/LeadForm';
 import SEOOptimized from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
+import RelatedContent from '../components/seo/RelatedContent';
+import PageTracker from '../components/seo/PageTracker';
 
 export default function UrgentInvoice() {
   return (
     <>
+      <PageTracker pageUrl="/urgent-invoice" pageType="landing" />
       <SEOOptimized
         title="צריך חשבונית עכשיו? פתיחת עוסק פטור דחוף | Perfect One"
         description="לקוח מבקש חשבונית ואין לך עוסק? פותחים עוסק פטור מהיום להיום. פתרון מיידי להוצאת חשבוניות כחוק. בלי ריצות, בלי הסתבכויות."
@@ -358,6 +361,9 @@ export default function UrgentInvoice() {
             </div>
           </div>
         </section>
+
+        {/* Related Content */}
+        <RelatedContent pageType="landing" />
 
         {/* Final CTA */}
         <section className="py-12 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">

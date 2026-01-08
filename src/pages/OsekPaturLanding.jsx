@@ -7,6 +7,8 @@ import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
+import RelatedContent from '../components/seo/RelatedContent';
+import PageTracker from '../components/seo/PageTracker';
 
 export default function OsekPaturLanding() {
   const [formData, setFormData] = useState({
@@ -66,6 +68,7 @@ export default function OsekPaturLanding() {
 
   return (
     <>
+      <PageTracker pageUrl="/osek-patur" pageType="landing" />
       <FAQSchema faqs={faqs} />
       <SEOOptimized
         title="פתיחת עוסק פטור - ליווי מלא + אפליקציה + דוח שנתי | Perfect One"
@@ -601,6 +604,9 @@ export default function OsekPaturLanding() {
             </div>
           </div>
         </section>
+
+        {/* Related Content */}
+        <RelatedContent pageType="landing" />
 
         {/* Final CTA */}
         <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
