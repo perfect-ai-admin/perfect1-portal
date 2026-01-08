@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { User, Phone, Mail, Briefcase, MessageSquare, Loader2, CheckCircle, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { trackLeadSubmit } from '../tracking/EventTracker';
 
 const PROFESSIONS = [
   "מעצב גרפי", "צלם", "אנימטור", "מאייר", "עורך וידאו", "מעצב פנים", "מעצב אופנה",
@@ -58,6 +59,9 @@ export default function LeadForm({
       source_page: sourcePage,
       status: 'new'
     });
+
+    // Track conversion
+    trackLeadSubmit(newLead);
 
     // Send email notification - this will now throw error if it fails
     await base44.integrations.Core.SendEmail({
