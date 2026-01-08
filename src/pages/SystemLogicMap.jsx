@@ -1573,6 +1573,197 @@ npm run build
   );
 }
 
+// Code Section Component
+function CodeSection() {
+  const [expandedFile, setExpandedFile] = React.useState(null);
+
+  const codeFiles = [
+    {
+      name: 'entities/Lead.json',
+      category: 'Database',
+      code: `{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string", "description": "שם המוביל" },
+    "phone": { "type": "string", "description": "מספר טלפון" },
+    "email": { "type": "string", "description": "כתובת אימייל" },
+    "profession": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": ["osek_patur", "monthly_support", "invoice", "consultation", "other"],
+      "default": "osek_patur"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["new", "contacted", "no_answer", "in_progress", "qualified", "not_interested", "converted", "closed"],
+      "default": "new"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "default": "medium"
+    },
+    "source_page": { "type": "string" },
+    "interaction_type": {
+      "type": "string",
+      "enum": ["form", "phone_click", "whatsapp_click", "manual"],
+      "default": "form"
+    },
+    "follow_up_date": { "type": "string", "format": "date" },
+    "last_contact_date": { "type": "string", "format": "date" },
+    "consent": { "type": "boolean", "default": false }
+  },
+  "required": ["name", "phone"]
+}`
+    },
+    {
+      name: 'entities/BlogPost.json',
+      category: 'Database',
+      code: `{
+  "name": "BlogPost",
+  "type": "object",
+  "properties": {
+    "title": { "type": "string" },
+    "slug": { "type": "string", "description": "URL slug" },
+    "excerpt": { "type": "string" },
+    "content": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": ["general", "osek-patur", "taxes", "professions", "guides"]
+    },
+    "keywords": { "type": "array", "items": { "type": "string" } },
+    "meta_title": { "type": "string" },
+    "meta_description": { "type": "string" },
+    "featured_image": { "type": "string" },
+    "author": { "type": "string", "default": "צוות Perfect One" },
+    "read_time": { "type": "number" },
+    "published": { "type": "boolean", "default": true }
+  },
+  "required": ["title", "slug", "content", "category"]
+}`
+    },
+    {
+      name: 'components/forms/LeadForm.jsx',
+      category: 'Frontend',
+      code: `import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { trackLeadSubmit } from '../tracking/EventTracker';
+
+export default function LeadForm({ 
+  title = "🚀 התחל את העסק שלך היום",
+  sourcePage = "כללי"
+}) {
+  const [formData, setFormData] = useState({
+    name: '', phone: '', email: '', profession: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Create lead
+    const newLead = await base44.entities.Lead.create({
+      ...formData,
+      source_page: sourcePage,
+      status: 'new'
+    });
+
+    // Track conversion
+    trackLeadSubmit(newLead);
+
+    // Send email
+    await base44.integrations.Core.SendEmail({
+      to: 'yosi5919@gmail.com',
+      subject: \`🎯 ליד חדש מ\${sourcePage}\`,
+      body: \`<h2>ליד חדש!</h2><p>שם: \${newLead.name}</p>\`
+    });
+
+    window.location.href = '/ThankYou';
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Input placeholder="שם מלא *" required />
+      <Input type="tel" placeholder="טלפון *" required />
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? 'שולח...' : 'בדיקה ללא התחייבות'}
+      </Button>
+    </form>
+  );
+}`
+    },
+    {
+      name: 'components/tracking/EventTracker.js',
+      category: 'Frontend',
+      code: `export const trackLeadSubmit = (lead) => {
+  window.dataLayer?.push({
+    event: 'lead_submit',
+    lead_name: lead.name,
+    lead_source: lead.source_page,
+    lead_category: lead.category
+  });
+
+  window.fbq?.('track', 'Lead', {
+    content_name: lead.source_page,
+    value: 500,
+    currency: 'ILS'
+  });
+};
+
+export const trackPhoneClick = (location) => {
+  window.dataLayer?.push({
+    event: 'phone_click',
+    location: location
+  });
+};
+
+export const trackWhatsAppClick = (location, message) => {
+  window.dataLayer?.push({
+    event: 'whatsapp_click',
+    location: location,
+    message: message
+  });
+};`
+    }
+  ];
+
+  return (
+    <div>
+      <SectionHeader 
+        title="💻 Code Library" 
+        icon={Code}
+        description="כל הקודים הקריטיים בפרויקט - Database, Frontend & Tracking"
+      />
+
+      <div className="space-y-4">
+        {codeFiles.map(file => (
+          <Card key={file.name} title={`${file.category} / ${file.name}`}>
+            <button
+              onClick={() => setExpandedFile(expandedFile === file.name ? null : file.name)}
+              className="w-full flex items-center justify-between p-3 bg-gray-100 hover:bg-gray-200 rounded-lg font-semibold text-[#1E3A5F] transition-all"
+            >
+              <span>{expandedFile === file.name ? '▼' : '▶'} הצג קוד</span>
+              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">{file.category}</span>
+            </button>
+            
+            {expandedFile === file.name && (
+              <div className="mt-4 bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+                <pre className="text-xs leading-relaxed font-mono">
+                  <code>{file.code}</code>
+                </pre>
+              </div>
+            )}
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Section Components Below...
 
 function OverviewSection() {
