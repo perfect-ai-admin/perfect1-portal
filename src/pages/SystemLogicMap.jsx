@@ -2084,7 +2084,7 @@ function TrackingSection() {
     {
       name: 'lead_submit',
       trigger: 'Form submission success',
-      payload: { lead_name, lead_source, lead_category },
+      payload: { lead_name: 'string', lead_source: 'string', lead_category: 'string' },
       destinations: ['GTM', 'Facebook Pixel (Lead event)']
     },
     {
@@ -2096,13 +2096,13 @@ function TrackingSection() {
     {
       name: 'whatsapp_click',
       trigger: 'Click on WhatsApp button',
-      payload: { location, message },
+      payload: { location: 'string', message: 'string' },
       destinations: ['GTM', 'Facebook Pixel (Contact event)']
     },
     {
       name: 'form_view',
       trigger: 'LeadForm rendered',
-      payload: { form_location },
+      payload: { form_location: 'string' },
       destinations: ['GTM']
     }
   ];
