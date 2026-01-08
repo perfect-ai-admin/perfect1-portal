@@ -55,6 +55,21 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to={createPageUrl('Team')} className="text-gray-300 hover:text-white transition-colors">
+                  הצוות שלנו
+                </Link>
+              </li>
+              <li>
+                <Link to={createPageUrl('Methodology')} className="text-gray-300 hover:text-white transition-colors">
+                  המתודולוגיה
+                </Link>
+              </li>
+              <li>
+                <Link to={createPageUrl('Regulation')} className="text-gray-300 hover:text-white transition-colors">
+                  רגולציה
+                </Link>
+              </li>
+              <li>
                 <Link to={createPageUrl('Contact')} className="text-gray-300 hover:text-white transition-colors">
                   צור קשר
                 </Link>
