@@ -1,12 +1,47 @@
-import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Download, Code, Database, GitBranch, Settings, Lock, AlertCircle, Rocket, Package, Play, FileText, Menu } from 'lucide-react';
+import React from 'react';
+import { Download, Code, Database, GitBranch, Settings, Lock, AlertCircle, Rocket, Package, Play, FileText, Search, TrendingUp, Shield, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
+
+// Helper component for section headers
+function SectionHeader({ title, icon: Icon, description }) {
+  return (
+    <div className="mb-8 border-b-4 border-[#D4AF37] pb-4">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center">
+          <Icon className="w-6 h-6 text-white" />
+        </div>
+        <h2 className="text-3xl font-black text-[#1E3A5F]">{title}</h2>
+      </div>
+      {description && <p className="text-gray-600 text-lg mr-15">{description}</p>}
+    </div>
+  );
+}
+
+// Helper component for cards
+function Card({ title, children, highlight = false }) {
+  return (
+    <div className={`mb-6 rounded-xl border-2 overflow-hidden ${
+      highlight 
+        ? 'border-[#D4AF37] bg-gradient-to-br from-yellow-50 to-orange-50 shadow-lg' 
+        : 'border-gray-200 bg-white shadow-md'
+    }`}>
+      {title && (
+        <div className={`px-6 py-4 border-b-2 ${
+          highlight ? 'bg-[#D4AF37] border-[#D4AF37]' : 'bg-gray-50 border-gray-200'
+        }`}>
+          <h3 className={`text-xl font-bold ${
+            highlight ? 'text-white' : 'text-[#1E3A5F]'
+          }`}>{title}</h3>
+        </div>
+      )}
+      <div className="p-6">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export default function SystemLogicMap() {
-  const [activeSection, setActiveSection] = useState('overview');
 
   const sections = [
     { id: 'overview', title: '📖 סקירת המערכת', icon: FileText },
