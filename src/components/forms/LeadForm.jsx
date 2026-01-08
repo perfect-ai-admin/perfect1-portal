@@ -75,7 +75,7 @@ export default function LeadForm({
               <p><strong>מקור:</strong> ${sourcePage}</p>
               <p><strong>תאריך:</strong> ${new Date().toLocaleString('he-IL')}</p>
               <br>
-              <a href="https://perfect1.co.il/LeadsAdmin" style="background: #27AE60; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">צפה בלידים</a>
+              <a href="https://perfect1.co.il${createPageUrl('LeadsAdmin')}" style="background: #27AE60; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px;">🚀 טפל בליד עכשיו</a>
             </div>
           `
         });
