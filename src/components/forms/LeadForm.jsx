@@ -52,45 +52,35 @@ export default function LeadForm({
 
     setIsSubmitting(true);
 
-    try {
-      console.log('Creating lead...');
-      const newLead = await base44.entities.Lead.create({
-        ...formData,
-        source_page: sourcePage,
-        status: 'new'
-      });
-      console.log('Lead created:', newLead);
+    // Create lead
+    const newLead = await base44.entities.Lead.create({
+      ...formData,
+      source_page: sourcePage,
+      status: 'new'
+    });
 
-      // Send email notification
-      console.log('Sending email to yosi5919@gmail.com...');
-      const emailResult = await base44.integrations.Core.SendEmail({
-        to: 'yosi5919@gmail.com',
-        subject: `🎯 ליד חדש מ${sourcePage}`,
-        body: `
-          <div style="direction: rtl; font-family: Arial, sans-serif;">
-            <h2 style="color: #1E3A5F;">ליד חדש התקבל! 🎉</h2>
-            <p><strong>שם:</strong> ${newLead.name}</p>
-            <p><strong>טלפון:</strong> ${newLead.phone}</p>
-            ${newLead.email ? `<p><strong>אימייל:</strong> ${newLead.email}</p>` : ''}
-            ${newLead.profession ? `<p><strong>מקצוע:</strong> ${newLead.profession}</p>` : ''}
-            ${newLead.notes ? `<p><strong>הערות:</strong> ${newLead.notes}</p>` : ''}
-            <p><strong>מקור:</strong> ${sourcePage}</p>
-            <p><strong>תאריך:</strong> ${new Date().toLocaleString('he-IL')}</p>
-            <br>
-            <a href="https://perfect1.co.il${createPageUrl('LeadsAdmin')}" style="background: #27AE60; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px;">🚀 טפל בליד עכשיו</a>
-          </div>
-        `
-      });
-      console.log('Email sent successfully:', emailResult);
+    // Send email notification - this will now throw error if it fails
+    await base44.integrations.Core.SendEmail({
+      to: 'yosi5919@gmail.com',
+      subject: `🎯 ליד חדש מ${sourcePage}`,
+      body: `
+        <div style="direction: rtl; font-family: Arial, sans-serif;">
+          <h2 style="color: #1E3A5F;">ליד חדש התקבל! 🎉</h2>
+          <p><strong>שם:</strong> ${newLead.name}</p>
+          <p><strong>טלפון:</strong> ${newLead.phone}</p>
+          ${newLead.email ? `<p><strong>אימייל:</strong> ${newLead.email}</p>` : ''}
+          ${newLead.profession ? `<p><strong>מקצוע:</strong> ${newLead.profession}</p>` : ''}
+          ${newLead.notes ? `<p><strong>הערות:</strong> ${newLead.notes}</p>` : ''}
+          <p><strong>מקור:</strong> ${sourcePage}</p>
+          <p><strong>תאריך:</strong> ${new Date().toLocaleString('he-IL')}</p>
+          <br>
+          <a href="https://perfect1.co.il${createPageUrl('LeadsAdmin')}" style="background: #27AE60; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px;">🚀 טפל בליד עכשיו</a>
+        </div>
+      `
+    });
 
-      // Redirect to Thank You page immediately
-      window.location.href = '/ThankYou';
-    } catch (err) {
-      console.error('Error in form submission:', err);
-      setError(`אירעה שגיאה: ${err.message || 'נסה שוב'}`);
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Redirect to Thank You page
+    window.location.href = '/ThankYou';
   };
 
   if (isSuccess) {
