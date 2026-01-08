@@ -9,6 +9,7 @@ import StickyCTA from './components/cro/StickyCTA';
 import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
 import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
+import QAChecker from './components/QAChecker';
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
@@ -60,6 +61,7 @@ fbq('track', 'PageView');`}
         prefetchPages={['/Services', '/Pricing', '/Contact']}
       />
       <WebVitalsMonitor />
+      <QAChecker />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
         <noscript>
           <iframe 
