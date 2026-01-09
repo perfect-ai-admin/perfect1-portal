@@ -9,7 +9,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/layout/WhatsAppButton';
 import SidePopup from './components/cro/SidePopup';
-import StickyCTA from './components/cro/StickyCTA';
+
 import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
 import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
@@ -81,7 +81,7 @@ export default function Layout({ children, currentPageName }) {
         <Footer />
         <WhatsAppButton message={getWhatsAppMessage()} />
         <SidePopup />
-        <StickyCTA />
+
       </div>
     </HelmetProvider>
   );
