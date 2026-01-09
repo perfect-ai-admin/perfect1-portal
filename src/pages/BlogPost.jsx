@@ -147,24 +147,24 @@ export default function BlogPost() {
         </section>
 
         {/* Article */}
-        <article className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <article className="py-8 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               {/* Header */}
-              <header className="mb-12">
+              <header className="mb-6">
                 <Link to={createPageUrl('Blog')}>
-                  <Button variant="ghost" className="mb-6 hover:bg-gray-100">
+                  <Button variant="ghost" size="sm" className="mb-4 hover:bg-gray-100">
                     <ArrowRight className="w-4 h-4 ml-2" />
                     חזרה לבלוג
                   </Button>
                 </Link>
 
                 {/* Category Badge */}
-                <div className="mb-4">
-                  <span className="inline-block px-4 py-1 bg-[#1E3A5F] text-white text-sm font-semibold rounded-full">
+                <div className="mb-3">
+                  <span className="inline-block px-3 py-1 bg-[#1E3A5F] text-white text-xs font-bold rounded-full uppercase tracking-wide">
                     {post.category === 'osek-patur' ? 'עוסק פטור' : 
                      post.category === 'taxes' ? 'מיסים' :
                      post.category === 'professions' ? 'מקצועות' :
@@ -172,194 +172,150 @@ export default function BlogPost() {
                   </span>
                 </div>
 
-                <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 leading-[1.1] tracking-tight">
+                <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 leading-[1.15]">
                   {post.title}
                 </h1>
 
-                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                <p className="text-lg text-gray-600 mb-5 leading-relaxed">
                   {post.excerpt}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-6 pb-6 border-b border-gray-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#1E3A5F] flex items-center justify-center">
-                      <User className="w-5 h-5 text-white" />
+                <div className="flex flex-wrap items-center gap-4 pb-4 mb-4 border-b border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-[#1E3A5F] flex items-center justify-center">
+                      <User className="w-4 h-4 text-white" />
                     </div>
-                    <div>
+                    <div className="text-sm">
                       <div className="font-semibold text-gray-900">{post.author}</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {new Date(post.created_date).toLocaleDateString('he-IL', { 
                           year: 'numeric', 
-                          month: 'long', 
+                          month: 'short', 
                           day: 'numeric' 
                         })}
                       </div>
                     </div>
                   </div>
                   {post.read_time && (
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Clock className="w-5 h-5" />
-                      <span className="font-medium">{post.read_time} דקות קריאה</span>
+                    <div className="flex items-center gap-1.5 text-sm text-gray-600">
+                      <Clock className="w-4 h-4" />
+                      <span>{post.read_time} דקות</span>
                     </div>
                   )}
-                </div>
-
-                {/* Social Share */}
-                <div className="mt-6">
-                  <SocialShare 
-                    title={post.title}
-                    excerpt={post.excerpt}
-                    url={`https://perfect1.co.il/blog/${post.slug}`}
-                  />
+                  <div className="mr-auto">
+                    <SocialShare 
+                      title={post.title}
+                      excerpt={post.excerpt}
+                      url={`https://perfect1.co.il/blog/${post.slug}`}
+                    />
+                  </div>
                 </div>
               </header>
 
               {post.featured_image && (
-                <figure className="mb-12">
+                <figure className="mb-6">
                   <img
                     src={post.featured_image}
                     alt={`${post.title} | מדריך מקצועי לפתיחת עוסק פטור בישראל - Perfect One`}
                     loading="lazy"
                     width="1200"
                     height="630"
-                    className="w-full h-[400px] md:h-[500px] object-cover rounded-3xl shadow-2xl"
+                    className="w-full h-[300px] md:h-[400px] object-cover rounded-2xl shadow-lg"
                   />
-                  <figcaption className="text-sm text-gray-500 text-center mt-3">
+                  <figcaption className="text-xs text-gray-500 text-center mt-2">
                     {post.title} - Perfect One
                   </figcaption>
                 </figure>
               )}
 
-              {/* Content - Premium Magazine Style */}
-              <div className="bg-white mb-12">
-                {/* Article Body with Premium Typography */}
+              {/* Content - Clean Professional Style */}
+              <div className="bg-white">
+                {/* Article Body */}
                 <div 
                   className="
-                    prose prose-xl max-w-none
-                    prose-headings:font-black prose-headings:text-gray-900 prose-headings:mb-4 prose-headings:mt-8
-                    prose-h2:text-3xl prose-h2:border-b-4 prose-h2:border-[#1E3A5F] prose-h2:pb-3 prose-h2:mb-6
-                    prose-h3:text-2xl prose-h3:text-[#1E3A5F]
-                    prose-p:text-gray-700 prose-p:leading-[1.9] prose-p:mb-6 prose-p:text-lg
-                    prose-strong:text-[#1E3A5F] prose-strong:font-bold
-                    prose-a:text-[#1E3A5F] prose-a:font-semibold prose-a:underline prose-a:decoration-2
-                    prose-ul:my-6 prose-ul:space-y-3
-                    prose-li:text-gray-700 prose-li:leading-relaxed prose-li:text-lg
-                    prose-blockquote:border-r-4 prose-blockquote:border-[#D4AF37] prose-blockquote:bg-amber-50 prose-blockquote:p-6 prose-blockquote:rounded-xl prose-blockquote:not-italic
-                    prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-[#1E3A5F]
+                    prose prose-lg max-w-none
+                    prose-headings:font-bold prose-headings:text-gray-900 prose-headings:mb-3 prose-headings:mt-6
+                    prose-h2:text-2xl prose-h2:border-b-2 prose-h2:border-[#1E3A5F]/20 prose-h2:pb-2
+                    prose-h3:text-xl prose-h3:text-[#1E3A5F]
+                    prose-p:text-gray-700 prose-p:leading-[1.75] prose-p:mb-4 prose-p:text-base
+                    prose-strong:text-[#1E3A5F] prose-strong:font-semibold
+                    prose-a:text-[#1E3A5F] prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
+                    prose-ul:my-4 prose-ul:space-y-2
+                    prose-li:text-gray-700 prose-li:leading-relaxed prose-li:text-base
+                    prose-blockquote:border-r-4 prose-blockquote:border-[#D4AF37] prose-blockquote:bg-amber-50/50 prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:rounded-lg prose-blockquote:not-italic prose-blockquote:my-4
+                    prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:text-[#1E3A5F]
+                    prose-img:rounded-xl prose-img:shadow-md prose-img:my-6
                   "
-                  style={{
-                    fontFamily: "'Heebo', sans-serif",
-                    wordSpacing: '0.05em',
-                    letterSpacing: '0.01em'
-                  }}
                 >
                   <InternalLinker 
                     content={post.content.replace(/\n/g, '<br />')} 
                     currentPage="BlogPost" 
                   />
                 </div>
-
-                {/* Mid-Article Image (if exists) */}
-                {post.featured_image && (
-                  <figure className="my-12">
-                    <img
-                      src={post.featured_image}
-                      alt={`${post.title} - המדריך המלא מאת Perfect One`}
-                      loading="lazy"
-                      width="1200"
-                      height="600"
-                      className="w-full h-[350px] md:h-[450px] object-cover rounded-2xl shadow-xl"
-                    />
-                  </figure>
-                )}
                 
-                {/* SEO Internal Links Box - Premium Design */}
-                <div className="mt-12 p-8 md:p-10 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl border-2 border-[#1E3A5F]/20 shadow-lg">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-[#1E3A5F] flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-black text-gray-900">מדריכים מומלצים</h3>
-                  </div>
+                {/* SEO Internal Links - Compact */}
+                <div className="mt-8 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-[#1E3A5F]/10">
+                  <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <span className="text-xl">📚</span>
+                    מדריכים נוספים
+                  </h3>
                   
-                  <div className="space-y-5">
-                    <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border-r-4 border-[#1E3A5F]">
-                      <div className="flex items-start gap-4">
-                        <span className="text-3xl">🎯</span>
-                        <div>
-                          <a href="/OsekPaturLanding" className="text-xl font-black text-[#1E3A5F] hover:underline decoration-2 block mb-2">
-                            המדריך המלא לפתיחת עוסק פטור בישראל
-                          </a>
-                          <p className="text-gray-600 leading-relaxed">
-                            כל מה שצריך לדעת על פתיחת עוסק פטור - תהליך, עלויות, דרישות וטיפים חשובים
-                          </p>
-                        </div>
-                      </div>
+                  <div className="space-y-2.5">
+                    <div className="bg-white rounded-lg p-3 hover:shadow-md transition-shadow">
+                      <a href="/OsekPaturLanding" className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
+                        <span>🎯</span>
+                        המדריך המלא לפתיחת עוסק פטור בישראל
+                      </a>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border-r-4 border-[#3498DB]">
-                      <div className="flex items-start gap-4">
-                        <span className="text-3xl">💻</span>
-                        <div>
-                          <a href="/OsekPaturOnlineLanding" className="text-xl font-black text-[#1E3A5F] hover:underline decoration-2 block mb-2">
-                            פתיחת עוסק פטור אונליין - 100% דיגיטלי
-                          </a>
-                          <p className="text-gray-600 leading-relaxed">
-                            פתחו עוסק פטור אונליין בלי לצאת מהבית - תהליך מקוון מלא עם חתימה דיגיטלית
-                          </p>
-                        </div>
-                      </div>
+                    <div className="bg-white rounded-lg p-3 hover:shadow-md transition-shadow">
+                      <a href="/OsekPaturOnlineLanding" className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
+                        <span>💻</span>
+                        פתיחת עוסק פטור אונליין - 100% דיגיטלי
+                      </a>
                     </div>
 
-                    <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border-r-4 border-[#27AE60]">
-                      <div className="flex items-start gap-4">
-                        <span className="text-3xl">👥</span>
-                        <div>
-                          <a href="/Professions" className="text-xl font-black text-[#1E3A5F] hover:underline decoration-2 block mb-2">
-                            מדריכים ייעודיים לפי מקצוע
-                          </a>
-                          <p className="text-gray-600 leading-relaxed">
-                            מידע מפורט והתאמה אישית לכל מקצוע - מעצבים, צלמים, מאמנים ועוד
-                          </p>
-                        </div>
-                      </div>
+                    <div className="bg-white rounded-lg p-3 hover:shadow-md transition-shadow">
+                      <a href="/Professions" className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
+                        <span>👥</span>
+                        מדריכים ייעודיים לפי מקצוע
+                      </a>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Lead Form - News Style */}
-              <div className="mb-12 bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl p-8 border-2 border-gray-200">
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-2">
+              {/* Lead Form - Compact */}
+              <div className="my-8 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
+                <div className="text-center mb-4">
+                  <h3 className="text-xl font-bold text-[#1E3A5F] mb-1">
                     רוצה לפתוח עוסק פטור?
                   </h3>
-                  <p className="text-gray-600 text-lg">השאר פרטים ונחזור אליך תוך שעות</p>
+                  <p className="text-gray-600 text-sm">השאר פרטים ונחזור אליך תוך שעות</p>
                 </div>
                 <LeadForm 
                   title=""
                   subtitle=""
                   sourcePage={`מאמר: ${post.title}`}
                   variant="inline"
+                  compact={true}
                 />
               </div>
 
-              {/* CTA */}
-              <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-8 text-center text-white mb-12">
-                <h3 className="text-2xl font-bold mb-4">מעוניין לפתוח עוסק פטור?</h3>
-                <p className="text-white/90 mb-6">נשמח לעזור לך להתחיל את הדרך כעצמאי</p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {/* CTA - Compact */}
+              <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-5 text-center text-white my-8">
+                <h3 className="text-lg font-bold mb-2">מעוניין לפתוח עוסק פטור?</h3>
+                <p className="text-white/90 text-sm mb-4">נשמח לעזור לך להתחיל</p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <a href="https://wa.me/972502277087?text=היי, קראתי את המאמר ואשמח לקבל ייעוץ" target="_blank" rel="noopener noreferrer">
-                    <Button className="w-full sm:w-auto bg-[#25D366] hover:bg-[#128C7E] text-white">
-                      <MessageCircle className="w-5 h-5 ml-2" />
+                    <Button size="sm" className="w-full sm:w-auto bg-[#25D366] hover:bg-[#128C7E] text-white">
+                      <MessageCircle className="w-4 h-4 ml-2" />
                       דבר איתנו בווצאפ
                     </Button>
                   </a>
                   <a href="tel:0502277087">
-                    <Button variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-[#1E3A5F]">
-                      <Phone className="w-5 h-5 ml-2" />
+                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-[#1E3A5F]">
+                      <Phone className="w-4 h-4 ml-2" />
                       0502277087
                     </Button>
                   </a>
@@ -369,23 +325,23 @@ export default function BlogPost() {
           </div>
         </article>
 
-        {/* Related Posts */}
+        {/* Related Posts - Compact */}
         {relatedPosts.length > 0 && (
-          <section className="py-12 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">מאמרים נוספים</h2>
-              <div className="grid md:grid-cols-3 gap-6">
+          <section className="py-8 bg-gray-50">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">מאמרים נוספים שיעניינו אותך</h2>
+              <div className="grid md:grid-cols-3 gap-4">
                 {relatedPosts.filter(p => p.id !== post.id).slice(0, 3).map((relatedPost) => (
                   <a 
                     key={relatedPost.id} 
                     href={`${createPageUrl('BlogPost')}?slug=${relatedPost.slug}`}
-                    className="block"
+                    className="block group"
                   >
-                    <div className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer">
-                      <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
+                    <div className="bg-white rounded-xl p-4 hover:shadow-md transition-all border border-gray-200 h-full">
+                      <h3 className="text-base font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-[#1E3A5F]">
                         {relatedPost.title}
                       </h3>
-                      <p className="text-gray-600 text-sm line-clamp-3">
+                      <p className="text-gray-600 text-sm line-clamp-2 leading-snug">
                         {relatedPost.excerpt}
                       </p>
                     </div>
