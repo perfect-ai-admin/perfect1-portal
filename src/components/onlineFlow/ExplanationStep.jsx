@@ -103,3 +103,114 @@ export default function ExplanationStep({ onNext }) {
     </div>
   );
 }
+
+function QuickForm({ onSuccess, onBack }) {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    email: ''
+  });
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.fullName.trim()) newErrors.fullName = 'שם חובה';
+    if (!formData.phone.trim()) newErrors.phone = 'טלפון חובה';
+    if (!formData.email.trim()) newErrors.email = 'אימייל חובה';
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      onSuccess(formData);
+    } else {
+      setErrors(newErrors);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h2 className="text-2xl font-black text-[#1E3A5F] mb-0.5">
+          מתחילים 🎯
+        </h2>
+        <p className="text-xs text-gray-600">פתיחת עוסק פטור אונליין</p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+      >
+        <Input
+          placeholder="שם מלא"
+          value={formData.fullName}
+          onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+          className={`h-9 rounded-lg border-2 text-sm ${
+            errors.fullName ? 'border-red-500' : 'border-gray-200'
+          }`}
+        />
+        {errors.fullName && <p className="text-red-500 text-xs mt-0.5">{errors.fullName}</p>}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.08 }}
+      >
+        <Input
+          type="tel"
+          placeholder="טלפון"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          className={`h-9 rounded-lg border-2 text-sm ${
+            errors.phone ? 'border-red-500' : 'border-gray-200'
+          }`}
+        />
+        {errors.phone && <p className="text-red-500 text-xs mt-0.5">{errors.phone}</p>}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <Input
+          type="email"
+          placeholder="אימייל"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className={`h-9 rounded-lg border-2 text-sm ${
+            errors.email ? 'border-red-500' : 'border-gray-200'
+          }`}
+        />
+        {errors.email && <p className="text-red-500 text-xs mt-0.5">{errors.email}</p>}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.12 }}
+        className="space-y-2 pt-1"
+      >
+        <Button
+          type="submit"
+          className="w-full h-11 font-black text-sm rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
+        >
+          המשך →
+        </Button>
+        <button
+          type="button"
+          onClick={onBack}
+          className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-xs text-gray-600 font-medium"
+        >
+          ← חזור
+        </button>
+      </motion.div>
+    </form>
+  );
+}
