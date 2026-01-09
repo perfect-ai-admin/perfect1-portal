@@ -63,23 +63,31 @@ export default function LeadForm({
     // Track conversion
     trackLeadSubmit(newLead);
 
-    // Send email via backend function
+    // Send email notification directly
     try {
-      await base44.functions.sendLeadEmail({
-        lead_id: newLead.id,
-        lead_name: newLead.name,
-        lead_phone: newLead.phone,
-        lead_email: newLead.email,
-        lead_profession: newLead.profession,
-        lead_notes: newLead.notes,
-        source_page: sourcePage
+      await base44.integrations.Core.SendEmail({
+        to: 'yosi5919@gmail.com',
+        subject: `🎯 ליד חדש מ${sourcePage}`,
+        body: `
+          <div style="direction: rtl; font-family: Arial, sans-serif;">
+            <h2 style="color: #1E3A5F;">ליד חדש התקבל! 🎉</h2>
+            <p><strong>שם:</strong> ${newLead.name}</p>
+            <p><strong>טלפון:</strong> ${newLead.phone}</p>
+            ${newLead.email ? `<p><strong>אימייל:</strong> ${newLead.email}</p>` : ''}
+            ${newLead.profession ? `<p><strong>מקצוע:</strong> ${newLead.profession}</p>` : ''}
+            ${newLead.notes ? `<p><strong>הערות:</strong> ${newLead.notes}</p>` : ''}
+            <p><strong>מקור:</strong> ${sourcePage}</p>
+            <p><strong>תאריך:</strong> ${new Date().toLocaleString('he-IL')}</p>
+          </div>
+        `
       });
+      console.log('✅ Email sent successfully');
     } catch (emailError) {
-      console.error('Email send failed:', emailError);
+      console.error('❌ Email send failed:', emailError);
     }
 
     // Wait a bit then redirect
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Redirect to Thank You page
     window.location.href = '/ThankYou';
