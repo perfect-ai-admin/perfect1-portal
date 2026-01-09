@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
+
+// GTM Scripts injected directly
+const gtmScriptId = 'gtm-script';
+const noscriptId = 'gtm-noscript';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/layout/WhatsAppButton';
