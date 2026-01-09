@@ -271,16 +271,15 @@ export default function ServicePage() {
           />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1E3A5F] mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               {service.title} בישראל
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-6">
+            <p className="text-xl text-white/80 max-w-2xl mx-auto mb-6">
               {service.subtitle}
             </p>
             <div 
