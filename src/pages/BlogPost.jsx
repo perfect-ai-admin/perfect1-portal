@@ -262,24 +262,24 @@ export default function BlogPost() {
                   
                   <div className="space-y-2.5">
                     <div className="bg-white rounded-lg p-3 hover:shadow-md transition-shadow">
-                      <a href="/OsekPaturLanding" className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
+                      <Link to={createPageUrl('OsekPaturLanding')} className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
                         <span>🎯</span>
                         המדריך המלא לפתיחת עוסק פטור בישראל
-                      </a>
+                      </Link>
                     </div>
 
                     <div className="bg-white rounded-lg p-3 hover:shadow-md transition-shadow">
-                      <a href="/OsekPaturOnlineLanding" className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
+                      <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
                         <span>💻</span>
                         פתיחת עוסק פטור אונליין - 100% דיגיטלי
-                      </a>
+                      </Link>
                     </div>
 
                     <div className="bg-white rounded-lg p-3 hover:shadow-md transition-shadow">
-                      <a href="/Professions" className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
+                      <Link to={createPageUrl('Professions')} className="text-base font-bold text-[#1E3A5F] hover:underline flex items-center gap-2">
                         <span>👥</span>
                         מדריכים ייעודיים לפי מקצוע
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
