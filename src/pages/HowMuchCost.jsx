@@ -227,7 +227,11 @@ export default function HowMuchCost() {
                 </ul>
 
                 <p className="text-sm bg-gray-50 p-4 rounded-lg mt-6">
-                  <strong>למי זה מתאים:</strong> למי שמחפש תהליך דיגיטלי מלא, מהיר, וללא התחייבות לליווי ארוך טווח. לא צריך לפגוש רואה חשבון, הכל מתנהל בטלפון או דסקטופ.
+                   <strong>למי זה מתאים:</strong> למי שמחפש תהליך דיגיטלי מלא, מהיר, וללא התחייבות לליווי ארוך טווח. לא צריך לפגוש רואה חשבון, הכל מתנהל בטלפון או דסקטופ. אם אתה מחפש בדיוק את זה, אתה יכול{' '}
+                  <Link to={createPageUrl('OsekPaturOnline')} className="text-[#1E3A5F] font-semibold hover:underline">
+                    לפתוח עוסק פטור אונליין בצורה פשוטה ומהירה
+                  </Link>
+                  .
                 </p>
               </div>
             </motion.div>
