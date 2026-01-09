@@ -60,7 +60,7 @@ export default function CTASection() {
                variant="card"
                title="🚀 התחל את העסק שלך היום"
                subtitle="מלא פרטים ונחזור אליך תוך שעות"
-               ctaText="בדיקה ללא התחייבות"
+               ctaText="בדוק אם זה מתאים לך"
                fields={["name", "phone", "email"]}
                sourcePage="דף הבית - CTA"
              />
