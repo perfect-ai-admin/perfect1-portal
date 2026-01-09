@@ -41,7 +41,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר למעצבים גרפיים?</h3>
       <p>אנחנו מבינים את המקצוע - יודעים מה מוכר כהוצאה ומה לא, עוזרים לך להבין איך לדווח נכון על הכנסות ממקורות שונים, ונותנים לך אפליקציה נוחה לניהול הכנסות והוצאות. כך תוכל להתמקד ביצירה ולא בבירוקרטיה.</p>
       
-      <p>במקרים מסוימים, <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">תהליך פתיחת עוסק פטור</a> משתנה לפי סוג הפעילות והיקף ההכנסות הצפוי. אנחנו מתאימים את התהליך בדיוק למה שאתה צריך.</p>
+      <p>במקרים מסוימים, <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">תהליך פתיחת עוסק פטור</a> משתנה לפי סוג הפעילות והיקף ההכנסות הצפוי. אנחנו מתאימים את התהליך בדיוק למה שאתה צריך.</p>
     `,
     services: [
       'עיצוב לוגואים ומיתוג',
@@ -88,7 +88,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לצלמים?</h3>
       <p>אנחנו יודעים בדיוק מה מוכר במקצוע שלך - ציוד, תוכנות, נסיעות. נעזור לך להבין איך לרשום הוצאות נכון, ונספק אפליקציה נוחה לניהול ההכנסות וההוצאות שלך.</p>
       
-      <p>חשוב לדעת ש<a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> לצלמים כוללת התייחסות מיוחדת לציוד יקר ולהוצאות ייחודיות למקצוע. אנחנו דואגים שכל ההוצאות שלך יוכרו כראוי.</p>
+      <p>חשוב לדעת ש<a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> לצלמים כוללת התייחסות מיוחדת לציוד יקר ולהוצאות ייחודיות למקצוע. אנחנו דואגים שכל ההוצאות שלך יוכרו כראוי.</p>
     `,
     services: [
       'צילום אירועים (חתונות, בר מצוות)',
@@ -135,7 +135,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לקופירייטרים?</h3>
       <p>אנחנו מכירים את המקצוע - יודעים אילו הוצאות מוכרות, עוזרים לך לדווח נכון על הכנסות ממקורות מקוונים, ונותנים לך אפליקציה פשוטה לניהול. כך תוכל להתמקד בכתיבה ולא בביורוקרטיה.</p>
       
-      <p>כותבי תוכן שעובדים עם לקוחות בינלאומיים צריכים לדעת ש<a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">תהליך פתיחת עוסק פטור</a> מאפשר גם דיווח על הכנסות מחו"ל. נדאג שהכל יהיה מסודר וחוקי.</p>
+      <p>כותבי תוכן שעובדים עם לקוחות בינלאומיים צריכים לדעת ש<a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">תהליך פתיחת עוסק פטור</a> מאפשר גם דיווח על הכנסות מחו"ל. נדאג שהכל יהיה מסודר וחוקי.</p>
     `,
     services: [
       'כתיבת תוכן לאתרים',
@@ -182,7 +182,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר למפתחי אתרים?</h3>
       <p>אנחנו מבינים את המקצוע - יודעים מה מוכר כהוצאה, עוזרים לך לדווח נכון על הכנסות ממקורות שונים, ונותנים לך אפליקציה נוחה לניהול. כך תוכל להתמקד בפיתוח ולא בבירוקרטיה.</p>
       
-      <p>מפתחים שעובדים עם פלטפורמות מקוונות צריכים לזכור ש<a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> כוללת גם התאמה למקורות הכנסה דיגיטליים. נדאג שהכל יהיה תקין.</p>
+      <p>מפתחים שעובדים עם פלטפורמות מקוונות צריכים לזכור ש<a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> כוללת גם התאמה למקורות הכנסה דיגיטליים. נדאג שהכל יהיה תקין.</p>
     `,
     services: [
       'בניית אתרי תדמית',
@@ -229,7 +229,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר למאמני כושר?</h3>
       <p>אנחנו מכירים את המקצוע - יודעים מה מוכר כהוצאה, עוזרים לך לדווח נכון, ונותנים לך אפליקציה נוחה לניהול לקוחות והכנסות.</p>
       
-      <p>מאמני כושר שעובדים עם ביטוח מקצועי יכולים לנצל את זה במסגרת <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> כהוצאה מוכרת. נראה לך איך לעשות את זה נכון.</p>
+      <p>מאמני כושר שעובדים עם ביטוח מקצועי יכולים לנצל את זה במסגרת <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> כהוצאה מוכרת. נראה לך איך לעשות את זה נכון.</p>
     `,
     services: [
       'אימון אישי 1 על 1',
@@ -276,7 +276,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לאנימטורים?</h3>
       <p>אנחנו מבינים את ההוצאות הגבוהות במקצוע - תוכנות, ציוד, שירותי רינדר. נעזור לך לדווח נכון ולנצל את כל הזיכויים.</p>
       
-      <p>אנימטורים המשקיעים בתוכנות יקרות יכולים לקבל זיכוי מלא במסגרת <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נדאג שכל ההוצאות יוכרו.</p>
+      <p>אנימטורים המשקיעים בתוכנות יקרות יכולים לקבל זיכוי מלא במסגרת <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נדאג שכל ההוצאות יוכרו.</p>
     `
   },
   'mayer': { 
@@ -309,7 +309,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר למאיירים?</h3>
       <p>אנחנו מכירים את הצרכים של מאיירים - דיגיטליים ופיזיים. נעזור לך לדווח נכון ולנצל את כל הזיכויים.</p>
       
-      <p>מאיירים שעובדים עם ציוד דיגיטלי וגם פיזי יכולים לנצל את שני הסוגים במסגרת <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נדאג שהכל מוכר כראוי.</p>
+      <p>מאיירים שעובדים עם ציוד דיגיטלי וגם פיזי יכולים לנצל את שני הסוגים במסגרת <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נדאג שהכל מוכר כראוי.</p>
     `
   },
   'orech-video': { 
@@ -342,7 +342,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לעורכי וידאו?</h3>
       <p>אנחנו מבינים את ההוצאות הגבוהות במקצוע - תוכנות, ציוד, פלאגינים. נעזור לך לדווח נכון ולנצל את כל הזיכויים.</p>
       
-      <p>עורכי וידאו עם מנויים חודשיים לתוכנות יכולים לנצל את זה במלואו במסגרת <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נראה לך איך.</p>
+      <p>עורכי וידאו עם מנויים חודשיים לתוכנות יכולים לנצל את זה במלואו במסגרת <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נראה לך איך.</p>
     `
   },
   'meatzev-pnim': { 
@@ -375,7 +375,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר למעצבי פנים?</h3>
       <p>אנחנו מכירים את המקצוע - יודעים מה מוכר, עוזרים לך לדווח נכון, ונותנים לך אפליקציה נוחה לניהול.</p>
       
-      <p>מעצבים שנוסעים לאתרים ופוגשים ספקים יכולים לנצל את הנסיעות במסגרת <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נדאג שהכל מתועד.</p>
+      <p>מעצבים שנוסעים לאתרים ופוגשים ספקים יכולים לנצל את הנסיעות במסגרת <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>. נדאג שהכל מתועד.</p>
     `
   },
   'meatzev-ofna': { 
@@ -408,7 +408,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר למעצבי אופנה?</h3>
       <p>אנחנו מכירים את הצרכים שלך - חומרי גלם, ציוד, תערוכות. נעזור לך לדווח נכון ולנצל את כל הזיכויים.</p>
       
-      <p>מעצבים שמשתתפים בתערוכות ושווקים יכולים לנצל את ההשתתפות במסגרת <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> כהוצאה מוכרת.</p>
+      <p>מעצבים שמשתתפים בתערוכות ושווקים יכולים לנצל את ההשתתפות במסגרת <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a> כהוצאה מוכרת.</p>
     `
   },
   'tzalam-mutzarim': { 
@@ -536,7 +536,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לכותבי תוכן?</h3>
       <p>אנחנו מבינים את העבודה הדיגיטלית - כלים, מנויים, קורסים. נעזור לך לדווח נכון.</p>
       
-      <p>כותבים שעובדים עם כלי SEO יכולים לנצל את המנויים במסגרת <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">מידע כללי על פתיחת עוסק פטור</a>.</p>
+      <p>כותבים שעובדים עם כלי SEO יכולים לנצל את המנויים במסגרת <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">פתיחת עוסק פטור</a>.</p>
     `
   },
   'metargem': { 
@@ -984,7 +984,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לשליחי וולט?</h3>
       <p>אנחנו מבינים את וולט - יודעים בדיוק מה מוכר, עוזרים לך לדווח נכון על הכנסות וטיפים, ונותנים אפליקציה נוחה לניהול. כך תוכל להתמקד בעבודה עם וולט ולא בבירוקרטיה.</p>
 
-      <p>שליחי וולט שמתחילים צריכים <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">עוסק פטור לשליחים</a> תוך 24 שעות. אנחנו דואגים לכל התהליך ותוכל להתחיל לעבוד מיד.</p>
+      <p>שליחי וולט שמתחילים צריכים <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">עוסק פטור לשליחים</a> תוך 24 שעות. אנחנו דואגים לכל התהליך ותוכל להתחיל לעבוד מיד.</p>
     `,
     services: [
       'משלוחי אוכל מוולט',
@@ -1033,7 +1033,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לשליחי טנדר?</h3>
       <p>אנחנו מבינים את העבודה עם טנדר והוצאות הרכב. נעזור לך לדווח נכון על דלק, תחזוקה ופחת רכב, כך שתשלם פחות מס ותמקסם רווחים.</p>
 
-      <p>שליחי טנדר עם הוצאות רכב גבוהות יכולים לחסוך אלפי שקלים בשנה דרך <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של עוסק פטור</a>. נדאג שכל ההוצאות שלך יוכרו.</p>
+      <p>שליחי טנדר עם הוצאות רכב גבוהות יכולים לחסוך אלפי שקלים בשנה דרך <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של עוסק פטור</a>. נדאג שכל ההוצאות שלך יוכרו.</p>
     `,
     services: [
       'משלוחי אוכל מטנדר',
@@ -1082,7 +1082,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לשליחי פורטר?</h3>
       <p>אנחנו מבינים את האינטנסיביות של העבודה עם פורטר - קילומטרים רבים, הוצאות גבוהות. נעזור לך לנהל נכון את כל ההוצאות ולחסוך מקסימום במס.</p>
 
-      <p>שליחי פורטר יכולים לחסוך אלפי שקלים בשנה עם <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של הוצאות</a>. נדריך אותך בכל שלב.</p>
+      <p>שליחי פורטר יכולים לחסוך אלפי שקלים בשנה עם <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של הוצאות</a>. נדריך אותך בכל שלב.</p>
     `,
     services: [
       'משלוחי חבילות מהירים',
@@ -1131,7 +1131,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לשליחי מיטל?</h3>
       <p>אנחנו מכירים את העבודה עם מיטל והדרישות הספציפיות. נעזור לך לדווח נכון על כל ההוצאות ולמקסם את הרווחים שלך.</p>
 
-      <p>שליחי מיטל שעובדים באזורים תפוסים יכולים להרוויח טוב, ועם <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של עוסק פטור</a> - לחסוך הרבה במס.</p>
+      <p>שליחי מיטל שעובדים באזורים תפוסים יכולים להרוויח טוב, ועם <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של עוסק פטור</a> - לחסוך הרבה במס.</p>
     `,
     services: [
       'משלוחי אוכל ממיטל',
@@ -1181,7 +1181,7 @@ const professionsData = {
       <h3>איך Perfect One עוזר לשליחים עצמאים?</h3>
       <p>אנחנו מבינים את הייחודיות של העבודה העצמאית - מספר מקורות הכנסה, הוצאות משתנות. נעזור לך לנהל הכל נכון ולמקסם רווחים.</p>
 
-      <p>שליחים עצמאים שעובדים חכם יכולים להרוויח יותר מעובדים שכירים, ועם <a href="/" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של עוסק פטור</a> - גם לחסוך במס.</p>
+      <p>שליחים עצמאים שעובדים חכם יכולים להרוויח יותר מעובדים שכירים, ועם <a href="/OsekPaturLanding" style="color: #1E3A5F; font-weight: 600; text-decoration: underline;">ניהול נכון של עוסק פטור</a> - גם לחסוך במס.</p>
     `,
     services: [
       'עבודה עם מסעדות ישירות',
@@ -1385,7 +1385,7 @@ export default function ProfessionPage() {
       <p className="text-gray-700 leading-relaxed text-base sm:text-lg">
         מחפשים <a href="/Professions" className="text-[#1E3A5F] font-semibold hover:underline">פתיחת עוסק פטור לפי מקצוע</a>? 
         כל מקצוע דורש התאמה ייחודית בתהליך הרישום. 
-        ב-<a href="/" className="text-[#1E3A5F] font-semibold hover:underline">מדריך לפתיחת עוסק פטור</a> שלנו 
+        ב-<a href="/OsekPaturLanding" className="text-[#1E3A5F] font-semibold hover:underline">מדריך לפתיחת עוסק פטור</a> שלנו 
         תמצאו את כל המידע המקצועי והליווי שתצטרכו כדי לפתוח עוסק פטור בצורה נכונה ומהירה.
       </p>
       </motion.div>
@@ -1561,7 +1561,7 @@ export default function ProfessionPage() {
                     ← חזרה לכל המקצועות
                   </a>
                   <a 
-                    href="/" 
+                    href="/OsekPaturLanding" 
                     className="flex-1 text-center px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-xl hover:border-[#1E3A5F] hover:text-[#1E3A5F] transition-colors font-medium"
                   >
                     למדריך פתיחת עוסק פטור
