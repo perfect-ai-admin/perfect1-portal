@@ -23,7 +23,7 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         name: formData.fullName,
         phone: formData.phone,
         email: formData.email,
-        profession: formData.profession,
+        profession: formData.profession || 'לא צוין',
         category: 'osek_patur',
         source_page: `דף נחיתה - פתיחת עוסק פטור אונליין - ${selectedPlan.name}`,
         interaction_type: 'form',
