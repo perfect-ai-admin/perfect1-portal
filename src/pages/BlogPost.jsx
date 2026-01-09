@@ -230,28 +230,102 @@ export default function BlogPost() {
                 </figure>
               )}
 
-              {/* Content - News Style */}
-              <div className="prose prose-lg prose-slate max-w-none mb-12">
-                <div className="leading-[1.8] text-gray-800 text-lg">
+              {/* Content - Premium Magazine Style */}
+              <div className="bg-white mb-12">
+                {/* Article Body with Premium Typography */}
+                <div 
+                  className="
+                    prose prose-xl max-w-none
+                    prose-headings:font-black prose-headings:text-gray-900 prose-headings:mb-4 prose-headings:mt-8
+                    prose-h2:text-3xl prose-h2:border-b-4 prose-h2:border-[#1E3A5F] prose-h2:pb-3 prose-h2:mb-6
+                    prose-h3:text-2xl prose-h3:text-[#1E3A5F]
+                    prose-p:text-gray-700 prose-p:leading-[1.9] prose-p:mb-6 prose-p:text-lg
+                    prose-strong:text-[#1E3A5F] prose-strong:font-bold
+                    prose-a:text-[#1E3A5F] prose-a:font-semibold prose-a:underline prose-a:decoration-2
+                    prose-ul:my-6 prose-ul:space-y-3
+                    prose-li:text-gray-700 prose-li:leading-relaxed prose-li:text-lg
+                    prose-blockquote:border-r-4 prose-blockquote:border-[#D4AF37] prose-blockquote:bg-amber-50 prose-blockquote:p-6 prose-blockquote:rounded-xl prose-blockquote:not-italic
+                    prose-code:bg-gray-100 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-[#1E3A5F]
+                  "
+                  style={{
+                    fontFamily: "'Heebo', sans-serif",
+                    wordSpacing: '0.05em',
+                    letterSpacing: '0.01em'
+                  }}
+                >
                   <InternalLinker 
                     content={post.content.replace(/\n/g, '<br />')} 
                     currentPage="BlogPost" 
                   />
                 </div>
+
+                {/* Mid-Article Image (if exists) */}
+                {post.featured_image && (
+                  <figure className="my-12">
+                    <img
+                      src={post.featured_image}
+                      alt={`${post.title} - המדריך המלא מאת Perfect One`}
+                      loading="lazy"
+                      width="1200"
+                      height="600"
+                      className="w-full h-[350px] md:h-[450px] object-cover rounded-2xl shadow-xl"
+                    />
+                  </figure>
+                )}
                 
-                {/* SEO Internal Links - More Prominent */}
-                <div className="mt-12 p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-r-4 border-[#1E3A5F]">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">📚 מדריכים נוספים</h3>
-                  <div className="space-y-3 text-lg">
-                    <p className="leading-relaxed">
-                      🎯 <a href="/OsekPaturLanding" className="text-[#1E3A5F] font-bold hover:underline decoration-2">המדריך המלא לפתיחת עוסק פטור</a> - כל מה שצריך לדעת על פתיחת עוסק פטור בישראל
-                    </p>
-                    <p className="leading-relaxed">
-                      💻 <a href="/OsekPaturOnlineLanding" className="text-[#1E3A5F] font-bold hover:underline decoration-2">פתיחת עוסק פטור אונליין</a> - פתחו עוסק מהבית בלי לצאת החוצה
-                    </p>
-                    <p className="leading-relaxed">
-                      👥 <a href="/Professions" className="text-[#1E3A5F] font-bold hover:underline decoration-2">מדריכים לפי מקצוע</a> - מידע ייעודי לכל מקצוע ועיסוק
-                    </p>
+                {/* SEO Internal Links Box - Premium Design */}
+                <div className="mt-12 p-8 md:p-10 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-3xl border-2 border-[#1E3A5F]/20 shadow-lg">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-[#1E3A5F] flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-black text-gray-900">מדריכים מומלצים</h3>
+                  </div>
+                  
+                  <div className="space-y-5">
+                    <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border-r-4 border-[#1E3A5F]">
+                      <div className="flex items-start gap-4">
+                        <span className="text-3xl">🎯</span>
+                        <div>
+                          <a href="/OsekPaturLanding" className="text-xl font-black text-[#1E3A5F] hover:underline decoration-2 block mb-2">
+                            המדריך המלא לפתיחת עוסק פטור בישראל
+                          </a>
+                          <p className="text-gray-600 leading-relaxed">
+                            כל מה שצריך לדעת על פתיחת עוסק פטור - תהליך, עלויות, דרישות וטיפים חשובים
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border-r-4 border-[#3498DB]">
+                      <div className="flex items-start gap-4">
+                        <span className="text-3xl">💻</span>
+                        <div>
+                          <a href="/OsekPaturOnlineLanding" className="text-xl font-black text-[#1E3A5F] hover:underline decoration-2 block mb-2">
+                            פתיחת עוסק פטור אונליין - 100% דיגיטלי
+                          </a>
+                          <p className="text-gray-600 leading-relaxed">
+                            פתחו עוסק פטור אונליין בלי לצאת מהבית - תהליך מקוון מלא עם חתימה דיגיטלית
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border-r-4 border-[#27AE60]">
+                      <div className="flex items-start gap-4">
+                        <span className="text-3xl">👥</span>
+                        <div>
+                          <a href="/Professions" className="text-xl font-black text-[#1E3A5F] hover:underline decoration-2 block mb-2">
+                            מדריכים ייעודיים לפי מקצוע
+                          </a>
+                          <p className="text-gray-600 leading-relaxed">
+                            מידע מפורט והתאמה אישית לכל מקצוע - מעצבים, צלמים, מאמנים ועוד
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
