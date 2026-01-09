@@ -89,23 +89,28 @@ export default function ProfessionsGrid({ showAll = false }) {
             />
           </div>
 
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((cat) => (
-              <Button
-                key={cat.id}
-                variant={activeCategory === cat.id ? 'default' : 'outline'}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`rounded-full px-4 ${
-                  activeCategory === cat.id 
-                    ? 'bg-[#1E3A5F] text-white' 
-                    : 'border-gray-200 hover:border-[#1E3A5F]'
-                }`}
-              >
-                <span className="ml-2">{cat.icon}</span>
-                {cat.name}
-              </Button>
-            ))}
-          </div>
+          <details className="flex flex-wrap justify-center gap-2 cursor-pointer">
+            <summary className="rounded-full px-4 py-2 bg-[#1E3A5F] text-white font-medium hover:bg-[#2C5282] transition-colors list-none flex items-center">
+              <span>📂 סנן לפי קטגוריה</span>
+            </summary>
+            <div className="w-full flex flex-wrap justify-center gap-2 mt-4">
+              {categories.map((cat) => (
+                <Button
+                  key={cat.id}
+                  variant={activeCategory === cat.id ? 'default' : 'outline'}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`rounded-full px-4 ${
+                    activeCategory === cat.id 
+                      ? 'bg-[#1E3A5F] text-white' 
+                      : 'border-gray-200 hover:border-[#1E3A5F]'
+                  }`}
+                >
+                  <span className="ml-2">{cat.icon}</span>
+                  {cat.name}
+                </Button>
+              ))}
+            </div>
+          </details>
         </div>
 
         {/* Grid */}
