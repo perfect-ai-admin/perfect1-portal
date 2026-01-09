@@ -40,99 +40,115 @@ const plans = [
   }
 ];
 
-export default function PlanSelector({ onSelectPlan, onBack }) {
+export default function PlanSelector({ onSelectPlan, onBack, formData }) {
+  const [selectedId, setSelectedId] = React.useState(null);
+
+  const handleSelect = (plan) => {
+    setSelectedId(plan.id);
+  };
+
+  const handleContinue = () => {
+    if (selectedId) {
+      const selected = plans.find(p => p.id === selectedId);
+      onSelectPlan(selected);
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 py-2">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <h2 className="text-2xl font-black text-[#1E3A5F] mb-0.5">
-          <span className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] bg-clip-text text-transparent">המשך בתהליך</span>
+          בחרו את המסלול המתאים
         </h2>
-        <p className="text-xs text-gray-600">בחר את המסלול המתאים לך</p>
+        <p className="text-xs text-gray-600">שני אפשרויות • הבחר המתאים לך</p>
       </motion.div>
 
-      <div className="space-y-2.5 pt-2">
-        {plans.map((plan, idx) => (
-          <motion.div
-            key={plan.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.15 }}
-            onClick={() => onSelectPlan(plan)}
-            className={`relative transition-all cursor-pointer ${
-              plan.recommended
-                ? 'border-0 rounded-2xl p-5 bg-gradient-to-br from-[#27AE60] via-green-500 to-[#2ECC71] shadow-xl scale-100'
-                : 'border-2 border-gray-200 rounded-xl p-4 bg-white hover:border-[#3498DB]/50'
-            }`}
-          >
-            {plan.recommended && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <div className="bg-white text-[#27AE60] px-4 py-1 rounded-full text-xs font-black shadow-lg border-2 border-[#27AE60]">
-                  ⭐⭐⭐ הבחירה המושלמת ⭐⭐⭐
-                </div>
-              </div>
-            )}
-
-            <div className={`${plan.recommended ? 'pt-4' : ''}`}>
-              <div className="flex items-baseline gap-2 mb-2">
-                <span className={`font-black ${
-                  plan.recommended ? 'text-5xl text-white' : 'text-4xl text-[#27AE60]'
-                }`}>
-                  ₪{plan.price}
-                </span>
-                <span className={`text-xs ${
-                  plan.recommended ? 'text-white/90' : 'text-gray-500'
-                }`}>לפתיחה</span>
-              </div>
-              <h3 className={`font-bold mb-1 ${
-                plan.recommended ? 'text-2xl text-white' : 'text-xl text-[#1E3A5F]'
-              }`}>
-                {plan.name}
-              </h3>
-              <p className={`text-xs mb-3 ${
-                plan.recommended ? 'text-white/90' : 'text-gray-600'
-              }`}>{plan.description}</p>
-            </div>
-
-            {/* Features Mini */}
-            <div className={`mb-4 space-y-1.5 ${plan.recommended ? 'bg-white/15 rounded-lg p-3' : ''}`}>
-              {plan.features.slice(0, 3).map((feature, i) => (
-                <div key={i} className={`flex items-start gap-2 text-xs ${
-                  plan.recommended ? 'text-white' : 'text-gray-700'
-                }`}>
-                  <span className={`font-bold flex-shrink-0 ${
-                    plan.recommended ? 'text-white' : 'text-[#27AE60]'
-                  }`}>✓</span>
-                  <span>{feature}</span>
-                </div>
-              ))}
-            </div>
-
-            <Button
-              onClick={() => onSelectPlan(plan)}
-              className={`w-full rounded-xl font-black transition-all ${
-                plan.recommended
-                  ? 'h-14 bg-white text-[#27AE60] hover:bg-white/95 text-lg shadow-lg'
-                  : 'h-11 bg-[#3498DB] hover:bg-[#2980B9] text-white text-sm'
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {plans.map((plan, idx) => {
+          const isSelected = selectedId === plan.id;
+          return (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              onClick={() => handleSelect(plan)}
+              className={`relative cursor-pointer rounded-xl p-4 border-2 transition-all ${
+                isSelected
+                  ? 'bg-[#27AE60]/10 border-[#27AE60] shadow-lg'
+                  : 'bg-white border-gray-200 hover:border-gray-300'
               }`}
             >
-              {plan.recommended ? '🎯 בחר כרגע' : 'בחר'}
-            </Button>
-          </motion.div>
-        ))}
+              {/* Recommended Badge */}
+              {plan.recommended && (
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-[#27AE60] text-white px-3 py-0.5 rounded-full text-xs font-black shadow-lg">
+                    מומלץ
+                  </span>
+                </div>
+              )}
+
+              {/* Checkmark */}
+              {isSelected && (
+                <div className="absolute top-2 left-2">
+                  <div className="w-5 h-5 rounded-full bg-[#27AE60] flex items-center justify-center">
+                    <span className="text-white font-black">✓</span>
+                  </div>
+                </div>
+              )}
+
+              <div className={plan.recommended ? 'pt-3' : ''}>
+                {/* Price */}
+                <div className="mb-2">
+                  <span className="font-black text-3xl text-[#27AE60]">₪{plan.price}</span>
+                  <span className="text-xs text-gray-500 mr-1">לפתיחה</span>
+                </div>
+
+                {/* Name */}
+                <h3 className="font-bold text-sm text-[#1E3A5F] mb-1">
+                  {plan.name}
+                </h3>
+
+                {/* Short Description */}
+                <p className="text-xs text-gray-600 mb-3 leading-relaxed">
+                  {plan.description}
+                </p>
+
+                {/* Features */}
+                <div className="space-y-1">
+                  {plan.features.slice(0, 2).map((feature, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs text-gray-700">
+                      <span className="text-[#27AE60] font-bold">•</span>
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* Back Button */}
+      {/* Continue Button */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="space-y-2 pt-2"
       >
+        <Button
+          onClick={handleContinue}
+          disabled={!selectedId}
+          className="w-full h-12 font-black text-base rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          המשך בתהליך
+        </Button>
         <button
           onClick={onBack}
-          className="text-sm text-[#3498DB] hover:text-[#2980B9] font-medium transition-colors"
+          className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-xs text-gray-600 font-medium transition-colors"
         >
           ← חזור
         </button>
