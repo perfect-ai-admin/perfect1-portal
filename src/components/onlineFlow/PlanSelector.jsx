@@ -32,7 +32,7 @@ const plans = [
     features: [
       'ליווי מול רשויות המס',
       'מחשבון תכנון מס',
-      'ליווי מקצועי בכל שלב',
+      'ליווי מקצועי בכל בפתיחה',
       'תמיכה בוואטסאפ',
       'התאמה למוסד הבנקאי'
     ],
@@ -73,8 +73,8 @@ export default function PlanSelector({ onSelectPlan, onBack, formData }) {
           >
             {/* Recommended Badge with Crown */}
             {plan.recommended && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white px-4 py-1 rounded-full text-xs font-black shadow-lg flex items-center gap-1">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <span className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white px-5 py-1.5 rounded-full text-sm font-black shadow-lg flex items-center gap-1.5">
                   👑 {plan.badge}
                 </span>
               </div>
@@ -84,7 +84,7 @@ export default function PlanSelector({ onSelectPlan, onBack, formData }) {
               {/* Price */}
               <div className="mb-2">
                 <span className={`font-black text-3xl ${plan.recommended ? 'text-[#27AE60]' : 'text-gray-800'}`}>₪{plan.price}</span>
-                <span className="text-xs text-gray-500 mr-1">לפתיחה</span>
+                <span className={`font-bold mr-1 ${plan.recommended ? 'text-[#27AE60] text-sm' : 'text-xs text-gray-500'}`}>תשלום חד פעמי!</span>
               </div>
 
               {/* Name */}
