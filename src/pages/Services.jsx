@@ -139,11 +139,11 @@ export default function Services() {
                 transition={{ delay: index * 0.05 }}
               >
                 <Link to={getServiceLink(service)}>
-                  <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all h-full group border border-gray-200">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all h-full group">
                     <div className="flex items-start gap-3">
                       <div 
                         className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: service.color + '20' }}
+                        style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
                       >
                         <div className="w-6 h-6 text-xl" style={{ color: service.color }}>
                           {service.icon === 'FileText' && '📄'}
@@ -157,10 +157,10 @@ export default function Services() {
                         </div>
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-sm font-bold text-[#1E3A5F] group-hover:text-[#D4AF37] transition-colors">
+                        <h3 className="text-sm font-bold text-white group-hover:text-[#D4AF37] transition-colors">
                           {service.title}
                         </h3>
-                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">{service.description}</p>
+                        <p className="text-xs text-white/70 mt-1 line-clamp-2">{service.description}</p>
                       </div>
                     </div>
                   </div>
