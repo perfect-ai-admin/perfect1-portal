@@ -5,7 +5,7 @@
 
 export const LINKING_CONFIG = {
   enabled: true,
-  maxLinksPerPage: 3, // מקסימום קישורים אוטומטיים לדף (הפחתה למניעת ספאם)
+  maxLinksPerPage: 1, // מקסימום 1 קישור אוטומטי בלבד לדף
   maxLinksToSameTarget: 1, // רק קישור אחד לכל דף יעד (מניעת קניבליזציה)
 };
 
