@@ -5,6 +5,12 @@ import { ArrowLeft, Zap, Clock, Shield } from 'lucide-react';
 import UnifiedLeadForm from '../forms/UnifiedLeadForm';
 
 export default function QuickCTASection() {
+  const formRef = React.useRef(null);
+
+  const handleScrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <section className="py-20 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] relative overflow-hidden">
       {/* Background Pattern */}
@@ -61,22 +67,20 @@ export default function QuickCTASection() {
               ))}
             </div>
 
-            {/* Phone CTA for Mobile */}
-            <div className="lg:hidden">
-              <a href="tel:0502277087">
-                <Button 
-                  size="lg"
-                  className="w-full h-14 bg-[#D4AF37] hover:bg-[#F4D03F] text-[#1E3A5F] font-bold text-lg rounded-xl"
-                >
-                  התקשר עכשיו: 0502277087
-                  <ArrowLeft className="w-5 h-5 mr-2" />
-                </Button>
-              </a>
-            </div>
+            {/* CTA Button */}
+            <Button 
+              onClick={handleScrollToForm}
+              size="lg"
+              className="w-full lg:w-auto h-14 bg-[#27AE60] hover:bg-[#2ECC71] text-white font-bold text-lg rounded-xl shadow-lg"
+            >
+              🚀 בואו נתחיל
+              <ArrowLeft className="w-5 h-5 mr-2" />
+            </Button>
           </motion.div>
 
           {/* Left Side - Form */}
           <motion.div
+            ref={formRef}
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
