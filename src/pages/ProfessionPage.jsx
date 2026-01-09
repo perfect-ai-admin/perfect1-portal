@@ -10,6 +10,7 @@ import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { schemaTemplates } from './SEOOptimized';
 import ProfessionContent from '../components/seo/ProfessionContent';
 import { getEnhancedProfessionData } from '../components/seo/professionsData';
+import { getRelatedPosts } from '../components/blog/internalLinksMapping';
 
 const professionsData = {
   'meatzev-grafi': {
@@ -1544,6 +1545,42 @@ export default function ProfessionPage() {
                     variant="inline"
                   />
                 </motion.div>
+
+                {/* Related Professions */}
+                {(() => {
+                  const relatedPosts = getRelatedPosts(slug);
+                  if (relatedPosts.length > 0) {
+                    return (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-[#1E3A5F]/10"
+                      >
+                        <h2 className="text-2xl font-bold text-[#1E3A5F] mb-6 flex items-center gap-2">
+                          <span>📚</span>
+                          מקצועות משלימים
+                        </h2>
+                        <div className="space-y-3">
+                          {relatedPosts.map((post, idx) => (
+                            <a 
+                              key={idx}
+                              href={`${createPageUrl('ProfessionPage')}?slug=${post.slug}`}
+                              className="flex items-start gap-3 bg-white rounded-lg p-4 hover:shadow-md transition-shadow group"
+                            >
+                              <span className="text-xl flex-shrink-0">→</span>
+                              <div>
+                                <h4 className="font-bold text-[#1E3A5F] group-hover:underline">{post.title}</h4>
+                                <p className="text-sm text-gray-600">{post.reason}</p>
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      </motion.div>
+                    );
+                  }
+                  return null;
+                })()}
 
                 {/* Navigation Links */}
                 <motion.div
