@@ -63,9 +63,9 @@ export default function SidePopup() {
             <div className="pt-8 px-4 pb-4">
               <UnifiedLeadForm
                 variant="popup"
-                title="רוצה לפתוח עוסק פטור?"
-                subtitle="השאר פרטים ונחזור אליך"
-                ctaText="בדיקה ללא התחייבות"
+                title="עוסק פטור?"
+                subtitle="השאר פרטים"
+                ctaText="בדיקה"
                 fields={["name", "phone"]}
                 sourcePage={`פופאפ צדדי - ${window.location.pathname}`}
                 onSuccess={handleSuccess}
