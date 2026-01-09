@@ -21,7 +21,10 @@ export default function OsekPaturOnlineLanding() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone) return;
+    if (!formData.name || !formData.phone) {
+      alert('אנא מלא שם וטלפון');
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -156,7 +159,7 @@ export default function OsekPaturOnlineLanding() {
       <main className="pt-20 bg-[#F8F9FA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
           <Breadcrumbs items={[
-            { label: 'דף הבית', url: '/' },
+            { label: 'דף הבית', url: 'Home' },
             { label: 'פתיחת עוסק פטור אונליין' }
           ]} />
         </div>
