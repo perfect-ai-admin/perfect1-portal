@@ -20,12 +20,12 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
 
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
-    setCurrentStep(3); // Jump to form after plan selection
+    setCurrentStep(4); // Jump to payment after plan selection
   };
 
   const handleFormSubmit = (data) => {
     setFormData(data);
-    setCurrentStep(4); // Move to payment
+    setCurrentStep(2); // Move to plan selection after form
   };
 
   const handlePaymentSuccess = () => {
@@ -50,21 +50,21 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
       case 1:
         return (
           <ExplanationStep 
-            onNext={() => setCurrentStep(2)}
+            onNext={() => setCurrentStep(3)}
           />
         );
       case 2:
         return (
           <PlanSelector 
             onSelectPlan={handleSelectPlan}
-            onBack={() => setCurrentStep(1)}
+            onBack={() => setCurrentStep(3)}
           />
         );
       case 3:
         return (
           <RegistrationForm 
             onSubmit={handleFormSubmit}
-            onBack={() => setCurrentStep(2)}
+            onBack={() => setCurrentStep(1)}
             selectedPlan={selectedPlan}
           />
         );
@@ -74,7 +74,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             formData={formData}
             selectedPlan={selectedPlan}
             onSuccess={handlePaymentSuccess}
-            onBack={() => setCurrentStep(3)}
+            onBack={() => setCurrentStep(2)}
           />
         );
       case 5:
@@ -110,7 +110,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
 
             {/* Step Indicator - Compact */}
             {currentStep !== 5 && (
-              <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-4 sm:px-6 py-3 border-b border-gray-200">
+              <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-4 sm:px-6 py-2.5 border-b border-gray-200">
                 <div className="flex items-center gap-2 text-white text-xs sm:text-sm font-bold">
                   <span>{currentStep}/4</span>
                   <div className="flex gap-0.5 mr-auto">
@@ -130,7 +130,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             )}
 
             {/* Content - Compact */}
-            <div className="p-4 sm:p-6">
+            <div className="p-3 sm:p-5 max-h-[calc(100vh-150px)] sm:max-h-[calc(90vh-80px)] overflow-y-auto">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}
