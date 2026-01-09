@@ -3,13 +3,17 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    id: '',
-    phone: '',
-    email: '',
-    profession: ''
+export default function RegistrationForm({ onSubmit, onBack }) {
+  const [formData, setFormData] = useState(() => {
+    // Load from localStorage if available
+    const saved = localStorage.getItem('onlineFlowFormData');
+    return saved ? JSON.parse(saved) : {
+      fullName: '',
+      id: '',
+      phone: '',
+      email: '',
+      profession: ''
+    };
   });
   const [errors, setErrors] = useState({});
 
@@ -19,12 +23,14 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
     if (!formData.id.trim()) newErrors.id = 'ת.ז. חובה';
     if (!formData.phone.trim()) newErrors.phone = 'טלפון חובה';
     if (!formData.email.trim()) newErrors.email = 'אימייל חובה';
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length === 0) {
+      localStorage.setItem('onlineFlowFormData', JSON.stringify(formData));
       onSubmit(formData);
     } else {
       setErrors(newErrors);

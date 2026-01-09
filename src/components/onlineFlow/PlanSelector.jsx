@@ -24,17 +24,17 @@ const plans = [
   },
   {
     id: 'premium',
-    name: 'פתיחה דיגיטלית + בדיקה',
+    name: 'פתיחה + ליווי מלא',
     price: '299',
-    badge: 'מומלץ לרוב העצמאים',
+    badge: '⭐ מומלץ',
     recommended: true,
-    description: 'פתיחה אונליין עם בדיקה והתאמה',
+    description: 'פתיחה אונליין עם ליווי מלא ותמיכה',
     features: [
       'כל התכנים של הבסיסי',
       'בדיקה מפורטת של הפרטים',
-      'התאמה למוסד הבנקאי',
-      'ליווי ראשוני בתהליך',
-      'תמיכה בוואטסאפ'
+      'ליווי מקצועי בכל שלב',
+      'תמיכה בוואטסאפ',
+      'התאמה למוסד הבנקאי'
     ],
     notIncluded: []
   }
@@ -76,11 +76,11 @@ export default function PlanSelector({ onSelectPlan, onBack, formData }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               onClick={() => handleSelect(plan)}
-              className={`relative cursor-pointer rounded-xl p-4 border-2 transition-all ${
+              className={`relative cursor-pointer rounded-xl p-4 border-2 transition-all transform ${
                 isSelected
-                  ? 'bg-[#27AE60]/10 border-[#27AE60] shadow-lg'
-                  : 'bg-white border-gray-200 hover:border-gray-300'
-              }`}
+                  ? 'bg-[#27AE60]/10 border-[#27AE60] shadow-lg scale-105'
+                  : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-md'
+              } ${plan.recommended ? 'sm:col-span-2 lg:col-span-1' : ''}`}
             >
               {/* Recommended Badge */}
               {plan.recommended && (

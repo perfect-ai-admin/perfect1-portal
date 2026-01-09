@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import ExplanationStep from './ExplanationStep';
+import RegistrationForm from './RegistrationForm';
 import PlanSelector from './PlanSelector';
 import PaymentStep from './PaymentStep';
 import SuccessStep from './SuccessStep';
@@ -27,18 +28,22 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
     return () => document.body.classList.remove('flow-active');
   }, [isOpen]);
 
-  const handleFirstFormSubmit = (data) => {
+  const handleFirstFormSubmit = () => {
+    setCurrentStep(2); // Move to registration form
+  };
+
+  const handleFormSubmit = (data) => {
     setFormData(data);
-    setCurrentStep(2); // Move to plan selector
+    setCurrentStep(3); // Move to plan selector
   };
 
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
-    setCurrentStep(3); // Move to payment
+    setCurrentStep(4); // Move to payment
   };
 
   const handlePaymentSuccess = () => {
-    setCurrentStep(4); // Move to success
+    setCurrentStep(5); // Move to success
   };
 
   const handleClose = () => {
@@ -64,22 +69,29 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
         );
       case 2:
         return (
-          <PlanSelector 
-            onSelectPlan={handleSelectPlan}
+          <RegistrationForm 
+            onSubmit={handleFormSubmit}
             onBack={() => setCurrentStep(1)}
-            formData={formData}
           />
         );
       case 3:
+        return (
+          <PlanSelector 
+            onSelectPlan={handleSelectPlan}
+            onBack={() => setCurrentStep(2)}
+            formData={formData}
+          />
+        );
+      case 4:
         return (
           <PaymentStep 
             formData={formData}
             selectedPlan={selectedPlan}
             onSuccess={handlePaymentSuccess}
-            onBack={() => setCurrentStep(2)}
+            onBack={() => setCurrentStep(3)}
           />
         );
-      case 4:
+      case 5:
         return (
           <SuccessStep 
             formData={formData}
@@ -111,12 +123,12 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             </button>
 
             {/* Step Indicator - Compact */}
-            {currentStep !== 4 && (
+            {currentStep !== 5 && (
               <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-4 sm:px-6 py-2.5 border-b border-gray-200">
                 <div className="flex items-center gap-2 text-white text-xs sm:text-sm font-bold">
-                  <span>{currentStep}/3</span>
+                  <span>{currentStep}/4</span>
                   <div className="flex gap-0.5 mr-auto">
-                    {[1, 2, 3].map((step) => (
+                    {[1, 2, 3, 4].map((step) => (
                       <div
                         key={step}
                         className={`h-1.5 rounded-full transition-all ${
