@@ -605,8 +605,17 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* Related Content */}
-        <RelatedContent pageType="landing" />
+        {/* Related Content - Scroll to Top */}
+        <section className="py-12 bg-gradient-to-br from-blue-50 to-indigo-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <Button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="h-16 px-10 text-xl font-bold rounded-2xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white"
+            >
+              חזרה לתחילת הדף
+            </Button>
+          </div>
+        </section>
 
         {/* Final CTA */}
         <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
