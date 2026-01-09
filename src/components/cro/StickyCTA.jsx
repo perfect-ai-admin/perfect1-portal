@@ -9,7 +9,9 @@ export default function StickyCTA() {
     const handleScroll = () => {
       // Show after 20% scroll on mobile only
       const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-      setIsVisible(scrollPercent > 20 && window.innerWidth < 768);
+      // Hide if flow is active (modal open)
+      const flowActive = document.body.classList.contains('flow-active');
+      setIsVisible(scrollPercent > 20 && window.innerWidth < 768 && !flowActive);
     };
 
     handleScroll(); // Check on mount
