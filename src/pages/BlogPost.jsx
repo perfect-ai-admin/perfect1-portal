@@ -218,10 +218,15 @@ export default function BlogPost() {
                 <figure className="mb-12">
                   <img
                     src={post.featured_image}
-                    alt={`${post.title} - מדריך Perfect One לעוסקים פטורים`}
+                    alt={`${post.title} | מדריך מקצועי לפתיחת עוסק פטור בישראל - Perfect One`}
                     loading="lazy"
+                    width="1200"
+                    height="630"
                     className="w-full h-[400px] md:h-[500px] object-cover rounded-3xl shadow-2xl"
                   />
+                  <figcaption className="text-sm text-gray-500 text-center mt-3">
+                    {post.title} - Perfect One
+                  </figcaption>
                 </figure>
               )}
 
@@ -251,12 +256,19 @@ export default function BlogPost() {
                 </div>
               </div>
 
-              {/* Lead Form */}
-              <div className="mb-12">
+              {/* Lead Form - News Style */}
+              <div className="mb-12 bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl p-8 border-2 border-gray-200">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-2">
+                    רוצה לפתוח עוסק פטור?
+                  </h3>
+                  <p className="text-gray-600 text-lg">השאר פרטים ונחזור אליך תוך שעות</p>
+                </div>
                 <LeadForm 
-                  title="מעוניין לפתוח עוסק פטור?"
-                  subtitle="נשמח לעזור לך להתחיל"
+                  title=""
+                  subtitle=""
                   sourcePage={`מאמר: ${post.title}`}
+                  variant="inline"
                 />
               </div>
 
