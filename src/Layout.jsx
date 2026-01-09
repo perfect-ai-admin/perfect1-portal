@@ -74,14 +74,6 @@ export default function Layout({ children, currentPageName }) {
       <WebVitalsMonitor />
       <QAChecker />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
-        <noscript>
-          <iframe 
-            src="https://www.googletagmanager.com/ns.html?id=GTM-PNK9CCRQ"
-            height="0" 
-            width="0" 
-            style={{display: 'none', visibility: 'hidden'}}
-          />
-        </noscript>
         <Header />
         <main>
           {children}
