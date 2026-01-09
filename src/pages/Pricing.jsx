@@ -90,7 +90,7 @@ export default function Pricing() {
             </h1>
             <div className="text-xl text-white/80 max-w-2xl mx-auto">
               <InternalLinker 
-                content="מחיר פתיחת עוסק פטור שקוף וברור - בלי אותיות קטנות, בלי עמלות נסתרות"
+                content="מחיר <span className='text-[#D4AF37] font-bold'>פתיחת עוסק פטור</span> שקוף וברור - בלי אותיות קטנות, בלי עמלות נסתרות"
                 currentPage="Pricing"
               />
             </div>
