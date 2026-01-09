@@ -23,19 +23,19 @@ export default function RelatedContent({
   const getAutoLinks = () => {
     const baseLinks = {
       guide: [
-        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'התחל את התהליך היום' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('OsekPaturLanding'), desc: 'התחל את התהליך היום' }
       ],
       comparison: [
-        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'התחל את התהליך עכשיו' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('OsekPaturLanding'), desc: 'התחל את התהליך עכשיו' }
       ],
       action: [
-        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'קרא את המדריך המלא' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('OsekPaturLanding'), desc: 'קרא את המדריך המלא' }
       ],
       support: [
-        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'חזרה לדף הבית' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('OsekPaturLanding'), desc: 'חזרה לדף הבית' }
       ],
       landing: [
-        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'למדריך המלא' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('OsekPaturLanding'), desc: 'למדריך המלא' }
       ]
     };
 
