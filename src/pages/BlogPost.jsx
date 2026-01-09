@@ -147,72 +147,107 @@ export default function BlogPost() {
         </section>
 
         {/* Article */}
-        <article className="py-12">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <article className="py-12 bg-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
               {/* Header */}
-              <header className="mb-8">
+              <header className="mb-12">
                 <Link to={createPageUrl('Blog')}>
-                  <Button variant="ghost" className="mb-6">
+                  <Button variant="ghost" className="mb-6 hover:bg-gray-100">
                     <ArrowRight className="w-4 h-4 ml-2" />
                     חזרה לבלוג
                   </Button>
                 </Link>
 
-                <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
+                {/* Category Badge */}
+                <div className="mb-4">
+                  <span className="inline-block px-4 py-1 bg-[#1E3A5F] text-white text-sm font-semibold rounded-full">
+                    {post.category === 'osek-patur' ? 'עוסק פטור' : 
+                     post.category === 'taxes' ? 'מיסים' :
+                     post.category === 'professions' ? 'מקצועות' :
+                     post.category === 'guides' ? 'מדריכים' : 'כללי'}
+                  </span>
+                </div>
+
+                <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 leading-[1.1] tracking-tight">
                   {post.title}
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    <span>{post.author}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>{new Date(post.created_date).toLocaleDateString('he-IL')}</span>
+                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                  {post.excerpt}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-6 pb-6 border-b border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#1E3A5F] flex items-center justify-center">
+                      <User className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">{post.author}</div>
+                      <div className="text-sm text-gray-500">
+                        {new Date(post.created_date).toLocaleDateString('he-IL', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </div>
+                    </div>
                   </div>
                   {post.read_time && (
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      <span>{post.read_time} דקות קריאה</span>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Clock className="w-5 h-5" />
+                      <span className="font-medium">{post.read_time} דקות קריאה</span>
                     </div>
                   )}
                 </div>
 
                 {/* Social Share */}
-                <div className="mb-6">
+                <div className="mt-6">
                   <SocialShare 
                     title={post.title}
                     excerpt={post.excerpt}
                     url={`https://perfect1.co.il/blog/${post.slug}`}
                   />
                 </div>
-
-                {post.featured_image && (
-                  <img
-                    src={post.featured_image}
-                    alt={post.title}
-                    className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg mb-8"
-                  />
-                )}
               </header>
 
-              {/* Content */}
-              <div className="bg-white rounded-2xl shadow-elegant p-8 md:p-12 mb-12 border border-gray-100">
-                <InternalLinker 
-                  content={post.content.replace(/\n/g, '<br />')} 
-                  currentPage="BlogPost" 
-                />
+              {post.featured_image && (
+                <figure className="mb-12">
+                  <img
+                    src={post.featured_image}
+                    alt={`${post.title} - מדריך Perfect One לעוסקים פטורים`}
+                    loading="lazy"
+                    className="w-full h-[400px] md:h-[500px] object-cover rounded-3xl shadow-2xl"
+                  />
+                </figure>
+              )}
+
+              {/* Content - News Style */}
+              <div className="prose prose-lg prose-slate max-w-none mb-12">
+                <div className="leading-[1.8] text-gray-800 text-lg">
+                  <InternalLinker 
+                    content={post.content.replace(/\n/g, '<br />')} 
+                    currentPage="BlogPost" 
+                  />
+                </div>
                 
-                {/* SEO Internal Links */}
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    מעוניינים לפתוח עוסק? קראו את <a href="/OsekPaturLanding" className="text-[#1E3A5F] font-bold hover:underline">המדריך המלא לפתיחת עוסק פטור</a> או למדו על <a href="/OsekPaturOnlineLanding" className="text-[#1E3A5F] font-bold hover:underline">פתיחת עוסק פטור אונליין</a> בלי לצאת מהבית.
-                  </p>
+                {/* SEO Internal Links - More Prominent */}
+                <div className="mt-12 p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-r-4 border-[#1E3A5F]">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">📚 מדריכים נוספים</h3>
+                  <div className="space-y-3 text-lg">
+                    <p className="leading-relaxed">
+                      🎯 <a href="/OsekPaturLanding" className="text-[#1E3A5F] font-bold hover:underline decoration-2">המדריך המלא לפתיחת עוסק פטור</a> - כל מה שצריך לדעת על פתיחת עוסק פטור בישראל
+                    </p>
+                    <p className="leading-relaxed">
+                      💻 <a href="/OsekPaturOnlineLanding" className="text-[#1E3A5F] font-bold hover:underline decoration-2">פתיחת עוסק פטור אונליין</a> - פתחו עוסק מהבית בלי לצאת החוצה
+                    </p>
+                    <p className="leading-relaxed">
+                      👥 <a href="/Professions" className="text-[#1E3A5F] font-bold hover:underline decoration-2">מדריכים לפי מקצוע</a> - מידע ייעודי לכל מקצוע ועיסוק
+                    </p>
+                  </div>
                 </div>
               </div>
 
