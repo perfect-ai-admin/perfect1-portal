@@ -193,8 +193,8 @@ export default function Services() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
               >
-                <Link to={createPageUrl('ServicePage') + `?service=${service.id}`}>
-                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-elegant-hover transition-all h-full group">
+                <Link to={getServiceLink(service)}>
+                   <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-elegant-hover transition-all h-full group">
                     <div 
                       className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
                       style={{ backgroundColor: service.color + '20' }}
