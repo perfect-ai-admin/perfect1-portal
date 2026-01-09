@@ -108,19 +108,19 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
               <X className="w-6 h-6 text-gray-600" />
             </button>
 
-            {/* Step Indicator */}
+            {/* Step Indicator - Compact */}
             {currentStep !== 5 && (
-              <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-8 py-4 border-b border-gray-200">
-                <div className="flex items-center gap-2 text-white text-sm font-bold">
-                  <span>שלב {currentStep} מ-4</span>
-                  <div className="flex gap-1 mr-auto">
+              <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-4 sm:px-6 py-3 border-b border-gray-200">
+                <div className="flex items-center gap-2 text-white text-xs sm:text-sm font-bold">
+                  <span>{currentStep}/4</span>
+                  <div className="flex gap-0.5 mr-auto">
                     {[1, 2, 3, 4].map((step) => (
                       <div
                         key={step}
-                        className={`h-2 rounded-full transition-all ${
+                        className={`h-1.5 rounded-full transition-all ${
                           step <= currentStep
-                            ? 'bg-white w-8'
-                            : 'bg-white/30 w-2'
+                            ? 'bg-white w-6'
+                            : 'bg-white/20 w-1.5'
                         }`}
                       />
                     ))}
@@ -129,8 +129,8 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
               </div>
             )}
 
-            {/* Content */}
-            <div className="p-8">
+            {/* Content - Compact */}
+            <div className="p-4 sm:p-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}
