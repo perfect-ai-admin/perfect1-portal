@@ -6,9 +6,6 @@ import CTASection from '../components/home/CTASection';
 import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import { CheckCircle, Info } from 'lucide-react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 
 export default function Pricing() {
   // Enhanced Pricing Schema with isPartOf and sameAs
@@ -89,11 +86,11 @@ export default function Pricing() {
               💰 מחירון שקוף ללא הפתעות
             </span>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              מחירון עוסק פטור בישראל 2026
+              מחירון עוסק פטור בישראל 2024
             </h1>
             <div className="text-xl text-white/80 max-w-2xl mx-auto">
               <InternalLinker 
-                content="מחיר <span className='text-[#D4AF37] font-bold'>פתיחת עוסק פטור</span> שקוף וברור - בלי אותיות קטנות, בלי עמלות נסתרות"
+                content="מחיר פתיחת עוסק פטור שקוף וברור - בלי אותיות קטנות, בלי עמלות נסתרות"
                 currentPage="Pricing"
               />
             </div>
@@ -189,70 +186,9 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-16 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">
-              שאלות נפוצות על מחיר פתיחת עוסק פטור
-            </h2>
-            <p className="text-gray-600 text-lg">
-              תשובות ברורות לשאלות המרכזיות שלך
-            </p>
-          </motion.div>
-
-          <Accordion type="single" collapsible className="space-y-3">
-            {[
-              {
-                q: 'כמה עולה לפתוח עוסק פטור?',
-                a: '199 שקל בתשלום חד-פעמי. זה כולל רישום במס הכנסה, ביטוח לאומי, ומע"מ בפטור. תשלום ברור וקבוע - בלי עמלות מוסתרות.'
-              },
-              {
-                q: 'מה ההבדל בין פתיחה (199₪) לליווי חודשי (149₪)?',
-                a: 'פתיחה היא תשלום חד-פעמי בלבד - פתיחת התיק. ליווי חודשי הוא שירות מתמשך שכולל אפליקציה, מעקב, דיווחים ויעוץ מס. אתה בוחר למי אתה צריך.'
-              },
-              {
-                q: 'האם יש עלויות נוספות או הפתעות?',
-                a: 'לא, המחיר קבוע מראש וידוע. אם תבחר בליווי, אתה יכול לבטל בכל עת ללא קנסות. דוח שנתי (500₪) הוא אופציונלי לחלוטין.'
-              },
-              {
-                q: 'האם הכל כלול בתשלום?',
-                a: 'כן, בפתיחה (199₪) כל הטיפול מול רשויות כלול. בליווי (149₪/חודש), כל התמיכה כלולה. אתה משלם רק על מה שאתה מקבל.'
-              },
-              {
-                q: 'אפשר לפתוח בלי ליווי?',
-                a: 'כן, פתיחה (199₪) זה סך הכל - הכל. אם אתה בטוח בעצמך, זה מספיק. ליווי חודשי הוא עבור מי שרוצה תמיכה מתמשכת.'
-              },
-              {
-                q: 'כמה זמן לוקח הפתיחה?',
-                a: '24-48 שעות. תהליך דיגיטלי מלא מבלי לצורך פגישה או ריצות. השאר פרטים וזה מוכן.'
-              },
-              {
-                q: 'האם המחיר משתנה לפי סיווג עיסוק?',
-                a: 'לא, המחיר קבוע לכל סוג עיסוק. 199₪ לפתיחה, 149₪ לליווי חודשי - זהו.'
-              }
-            ].map((item, i) => (
-              <AccordionItem key={i} value={`faq-${i}`} className="border border-gray-200 rounded-lg px-4 bg-white">
-                <AccordionTrigger className="hover:no-underline py-4">
-                  <span className="text-right font-medium text-gray-800">{item.q}</span>
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-700 pb-4">
-                  {item.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
-
       <FAQSection />
-       <CTASection />
-       </main>
+      <CTASection />
+      </main>
     </>
   );
 }

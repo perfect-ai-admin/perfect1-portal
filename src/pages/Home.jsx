@@ -4,6 +4,7 @@ import WhatIsSection from '../components/home/WhatIsSection';
 import FeaturesSection from '../components/home/FeaturesSection';
 import ServicesSection from '../components/home/ServicesSection';
 import ProcessSection from '../components/home/ProcessSection';
+import PricingSection from '../components/home/PricingSection';
 import ProfessionsGrid from '../components/home/ProfessionsGrid';
 import FAQSection from '../components/home/FAQSection';
 import CTASection from '../components/home/CTASection';
@@ -80,15 +81,15 @@ export default function Home() {
           }
         }}
       />
-      <main className="overflow-x-hidden">
+      <main>
         <HeroSection />
         <WhatIsSection />
         <MicroCTA text="רוצה לדעת אם עוסק פטור מתאים לך?" cta="בדיקה מהירה ללא עלות" variant="subtle" />
         <FeaturesSection />
         <ServicesSection />
-        <ProcessSection />
         <ProfessionsGrid />
         <QuickCTASection />
+        <ProcessSection />
         <GeoContent />
         <MicroCTA text="מוכנים להתחיל?" cta="שיחה קצרה ללא התחייבות" />
         <FAQSection />

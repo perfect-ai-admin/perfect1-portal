@@ -11,7 +11,6 @@ import FreelancerLanding from './pages/FreelancerLanding';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
 import Home from './pages/Home';
-import HowMuchCost from './pages/HowMuchCost';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
 import MakeupArtistLanding from './pages/MakeupArtistLanding';
@@ -63,7 +62,6 @@ export const PAGES = {
     "GraphicDesignerLanding": GraphicDesignerLanding,
     "HairStylistLanding": HairStylistLanding,
     "Home": Home,
-    "HowMuchCost": HowMuchCost,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
     "MakeupArtistLanding": MakeupArtistLanding,
