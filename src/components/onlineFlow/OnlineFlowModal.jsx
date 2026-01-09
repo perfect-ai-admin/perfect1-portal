@@ -44,7 +44,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
   };
 
   const handlePaymentSuccess = () => {
-    setCurrentStep(5); // Move to success
+    setCurrentStep(4); // Move to success
   };
 
   const handleClose = () => {
@@ -72,18 +72,11 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
         return (
           <PlanSelector 
             onSelectPlan={handleSelectPlan}
-            onBack={() => setCurrentStep(3)}
+            onBack={() => setCurrentStep(1)}
+            formData={formData}
           />
         );
       case 3:
-        return (
-          <RegistrationForm 
-            onSubmit={handleFormSubmit}
-            onBack={() => setCurrentStep(1)}
-            selectedPlan={selectedPlan}
-          />
-        );
-      case 4:
         return (
           <PaymentStep 
             formData={formData}
@@ -92,7 +85,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             onBack={() => setCurrentStep(2)}
           />
         );
-      case 5:
+      case 4:
         return (
           <SuccessStep 
             formData={formData}
@@ -124,12 +117,12 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             </button>
 
             {/* Step Indicator - Compact */}
-            {currentStep !== 5 && (
+            {currentStep !== 4 && (
               <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-4 sm:px-6 py-2.5 border-b border-gray-200">
                 <div className="flex items-center gap-2 text-white text-xs sm:text-sm font-bold">
-                  <span>{currentStep}/4</span>
+                  <span>{currentStep}/3</span>
                   <div className="flex gap-0.5 mr-auto">
-                    {[1, 2, 3, 4].map((step) => (
+                    {[1, 2, 3].map((step) => (
                       <div
                         key={step}
                         className={`h-1.5 rounded-full transition-all ${
