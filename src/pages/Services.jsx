@@ -98,31 +98,6 @@ export default function Services() {
     );
   }
 
-  const servicesSchema = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "שירותים לעוסקים פטורים בישראל",
-    "description": "מגוון שירותים מקיף לעוסקים פטורים - פתיחה, ליווי, דוחות, הנהלת חשבונות",
-    "url": "https://perfect1.co.il/services",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Perfect One",
-      "url": "https://perfect1.co.il"
-    },
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "קטלוג שירותים",
-      "itemListElement": services.map(service => ({
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": service.title,
-          "description": service.description
-        }
-      }))
-    }
-  };
-
   return (
     <>
       <LocalBusinessSchema />
