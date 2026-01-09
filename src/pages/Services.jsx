@@ -116,6 +116,51 @@ export default function Services() {
         ]}
       />
 
+      {/* Services Grid - Top Section */}
+      <section className="py-16 bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {services.map((service, index) => (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Link to={createPageUrl('ServicePage') + `?service=${service.id}`}>
+                  <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all h-full group border border-gray-200">
+                    <div className="flex items-start gap-3">
+                      <div 
+                        className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: service.color + '20' }}
+                      >
+                        <div className="w-6 h-6 text-xl" style={{ color: service.color }}>
+                          {service.icon === 'FileText' && '📄'}
+                          {service.icon === 'Laptop' && '💻'}
+                          {service.icon === 'Calculator' && '🧮'}
+                          {service.icon === 'Receipt' && '🧾'}
+                          {service.icon === 'BarChart3' && '📊'}
+                          {service.icon === 'XCircle' && '❌'}
+                          {service.icon === 'Shield' && '🛡️'}
+                          {service.icon === 'Building2' && '🏢'}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-bold text-[#1E3A5F] group-hover:text-[#D4AF37] transition-colors">
+                          {service.title}
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">{service.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -136,7 +181,7 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Services Grid */}
+      {/* Services Grid - Full Details */}
       <section className="py-20 bg-[#F8F9FA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
