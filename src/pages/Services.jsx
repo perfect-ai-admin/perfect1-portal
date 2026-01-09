@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/button';
 import GeoContent from '../components/seo/GeoContent';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 import { 
-  ArrowLeft, CheckCircle 
+  ArrowLeft, CheckCircle, Home
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
 
 const iconMap = {
   FileText: 'FileText',
@@ -107,6 +108,14 @@ export default function Services() {
         schema={servicesSchema}
       />
       <main className="pt-20">
+      {/* Breadcrumbs */}
+      <Breadcrumbs 
+        items={[
+          { label: "דף הבית", path: createPageUrl('Home') },
+          { label: "שירותים" }
+        ]}
+      />
+
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
