@@ -34,6 +34,14 @@ const stats = [
 ];
 
 export default function About() {
+  // Preload critical resources
+  React.useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = 'https://fonts.googleapis.com';
+    document.head.appendChild(link);
+  }, []);
+
   // Enhanced About Schema with sameAs and about
   const aboutSchema = {
     "@context": "https://schema.org",
@@ -116,7 +124,7 @@ export default function About() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4"
           >
             {stats.map((stat, index) => (
@@ -139,7 +147,7 @@ export default function About() {
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -100px 0px" }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-[#1E3A5F] mb-6">
                 הסיפור שלנו
@@ -163,7 +171,7 @@ export default function About() {
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -100px 0px" }}
               className="relative"
             >
               <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-3xl p-8 text-white">
@@ -202,7 +210,7 @@ export default function About() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-[#1E3A5F] mb-4">
@@ -219,7 +227,7 @@ export default function About() {
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px -100px 0px" }}
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
@@ -240,7 +248,7 @@ export default function About() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
             className="text-center"
           >
             <h2 className="text-2xl font-bold text-[#1E3A5F] mb-6">צרו איתנו קשר</h2>
@@ -275,7 +283,7 @@ export default function About() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               מוכנים להתחיל?
