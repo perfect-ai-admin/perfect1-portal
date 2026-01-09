@@ -288,12 +288,12 @@ export default function ServicePage() {
             >
               {service.price}
             </div>
-          </motion.div>
-        </div>
-      </section>
+            </motion.div>
+            </div>
+            </section>
 
-      {/* Content */}
-      <section className="py-16 bg-white">
+            {/* Content */}
+            <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main Content */}
