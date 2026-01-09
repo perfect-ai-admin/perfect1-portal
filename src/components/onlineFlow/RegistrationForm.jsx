@@ -2,30 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ChevronLeft } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
-const professions = [
-  'צלם',
-  'מעצב גרפי',
-  'מדריך כושר',
-  'מעצב שיער',
-  'מניקור / פדיקור',
-  'קוסמטיקאית',
-  'מורה פרטי',
-  'תורגמן',
-  'ייעוץ עסקי',
-  'תיקייה / ניקיון',
-  'תיקונים וטכנאות',
-  'הנדסה / טכנולוגיה',
-  'אחר'
-];
 
 export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
   const [formData, setFormData] = useState({
@@ -39,11 +15,10 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.fullName.trim()) newErrors.fullName = 'שם מלא חובה';
-    if (!formData.id.trim()) newErrors.id = 'תעודת זהות חובה';
+    if (!formData.fullName.trim()) newErrors.fullName = 'שם חובה';
+    if (!formData.id.trim()) newErrors.id = 'ת.ז. חובה';
     if (!formData.phone.trim()) newErrors.phone = 'טלפון חובה';
     if (!formData.email.trim()) newErrors.email = 'אימייל חובה';
-    if (!formData.profession) newErrors.profession = 'בחר מקצוע';
     return Object.keys(newErrors).length === 0;
   };
 
@@ -57,37 +32,53 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 py-4">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-4xl font-black text-[#1E3A5F] mb-1">
+        <h2 className="text-3xl font-black text-[#1E3A5F]">
           הפרטים שלך
         </h2>
       </motion.div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-2.5">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+        >
+          <Input
+            placeholder="שם מלא"
+            value={formData.fullName}
+            onChange={(e) =>
+              setFormData({ ...formData, fullName: e.target.value })
+            }
+            className={`h-10 rounded-lg border-2 text-sm ${
+              errors.fullName ? 'border-red-500' : 'border-gray-200'
+            }`}
+          />
+          {errors.fullName && (
+            <p className="text-red-500 text-xs mt-0.5">{errors.fullName}</p>
+          )}
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            שם מלא *
-          </label>
           <Input
-            placeholder="למשל: יוסי כהן"
-            value={formData.fullName}
-            onChange={(e) =>
-              setFormData({ ...formData, fullName: e.target.value })
-            }
-            className={`h-12 rounded-lg border-2 ${
-              errors.fullName ? 'border-red-500' : 'border-gray-200'
+            placeholder="תעודת זהות"
+            value={formData.id}
+            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+            className={`h-10 rounded-lg border-2 text-sm ${
+              errors.id ? 'border-red-500' : 'border-gray-200'
             }`}
+            maxLength="9"
           />
-          {errors.fullName && (
-            <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
+          {errors.id && (
+            <p className="text-red-500 text-xs mt-0.5">{errors.id}</p>
           )}
         </motion.div>
 
@@ -96,20 +87,19 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
         >
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            תעודת זהות *
-          </label>
           <Input
-            placeholder="123456789"
-            value={formData.id}
-            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-            className={`h-12 rounded-lg border-2 ${
-              errors.id ? 'border-red-500' : 'border-gray-200'
+            type="tel"
+            placeholder="טלפון"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
+            }
+            className={`h-10 rounded-lg border-2 text-sm ${
+              errors.phone ? 'border-red-500' : 'border-gray-200'
             }`}
-            maxLength="9"
           />
-          {errors.id && (
-            <p className="text-red-500 text-xs mt-1">{errors.id}</p>
+          {errors.phone && (
+            <p className="text-red-500 text-xs mt-0.5">{errors.phone}</p>
           )}
         </motion.div>
 
@@ -118,22 +108,19 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            טלפון *
-          </label>
           <Input
-            type="tel"
-            placeholder="050-1234567"
-            value={formData.phone}
+            type="email"
+            placeholder="אימייל"
+            value={formData.email}
             onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
+              setFormData({ ...formData, email: e.target.value })
             }
-            className={`h-12 rounded-lg border-2 ${
-              errors.phone ? 'border-red-500' : 'border-gray-200'
+            className={`h-10 rounded-lg border-2 text-sm ${
+              errors.email ? 'border-red-500' : 'border-gray-200'
             }`}
           />
-          {errors.phone && (
-            <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-0.5">{errors.email}</p>
           )}
         </motion.div>
 
@@ -142,22 +129,18 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
         >
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            אימייל *
-          </label>
           <Input
-            type="email"
-            placeholder="example@email.com"
-            value={formData.email}
+            placeholder="סוג עיסוק (למשל: צלם, מעצב...)"
+            value={formData.profession}
             onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
+              setFormData({ ...formData, profession: e.target.value })
             }
-            className={`h-12 rounded-lg border-2 ${
-              errors.email ? 'border-red-500' : 'border-gray-200'
+            className={`h-10 rounded-lg border-2 text-sm ${
+              errors.profession ? 'border-red-500' : 'border-gray-200'
             }`}
           />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+          {errors.profession && (
+            <p className="text-red-500 text-xs mt-0.5">{errors.profession}</p>
           )}
         </motion.div>
 
@@ -165,54 +148,20 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-        >
-          <label className="block text-sm font-bold text-gray-700 mb-2">
-            סוג עיסוק *
-          </label>
-          <Select value={formData.profession} onValueChange={(value) => setFormData({ ...formData, profession: value })}>
-            <SelectTrigger className={`h-12 rounded-lg border-2 ${errors.profession ? 'border-red-500' : 'border-gray-200'}`}>
-              <SelectValue placeholder="בחר את סוג העיסוק" />
-            </SelectTrigger>
-            <SelectContent>
-              {professions.map((prof) => (
-                <SelectItem key={prof} value={prof}>
-                  {prof}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.profession && (
-            <p className="text-red-500 text-xs mt-1">{errors.profession}</p>
-          )}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-gray-600"
-        >
-          הפרטים הללו יהיו בטוחים ומאובטחים. אנחנו משתמשים בהצפנה מתקדמת.
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex gap-3 pt-4"
+          className="flex gap-2 pt-2"
         >
           <Button
             type="submit"
-            className="flex-1 h-14 font-bold rounded-lg bg-[#27AE60] hover:bg-[#229954] text-white text-lg"
+            className="flex-1 h-10 font-bold rounded-lg bg-[#27AE60] hover:bg-[#229954] text-white text-sm"
           >
-            אישור והמשך לתשלום
+            המשך לתשלום
           </Button>
           <button
             type="button"
             onClick={onBack}
-            className="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 text-gray-600 font-medium"
+            className="px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600"
           >
-            <ChevronLeft className="w-4 h-4" />
+            חזור
           </button>
         </motion.div>
       </form>

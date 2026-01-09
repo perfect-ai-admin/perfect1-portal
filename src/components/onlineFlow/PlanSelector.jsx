@@ -47,60 +47,51 @@ export default function PlanSelector({ onSelectPlan, onBack }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-4xl font-black text-[#1E3A5F] mb-1">
+        <h2 className="text-3xl font-black text-[#1E3A5F] mb-2">
           בחר מסלול
         </h2>
       </motion.div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="space-y-3">
         {plans.map((plan, idx) => (
           <motion.div
             key={plan.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.2 }}
-            className={`border-2 rounded-2xl p-6 transition-all cursor-pointer ${
+            transition={{ delay: idx * 0.15 }}
+            className={`border-2 rounded-xl p-4 transition-all cursor-pointer ${
               plan.recommended
-                ? 'border-[#27AE60] bg-gradient-to-br from-green-50 to-transparent'
-                : 'border-gray-200 hover:border-[#3498DB]'
+                ? 'border-[#27AE60] bg-green-50'
+                : 'border-gray-200'
             }`}
             onClick={() => onSelectPlan(plan)}
           >
             {plan.recommended && (
-              <div className="inline-block bg-[#27AE60] text-white px-3 py-1 rounded-full text-xs font-bold mb-3">
+              <div className="inline-block bg-[#27AE60] text-white px-2 py-0.5 rounded-full text-xs font-bold mb-2">
                 ⭐ מומלץ
               </div>
             )}
 
-            <div className="mb-6">
-              <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-4xl font-black text-[#27AE60]">
+            <div className="mb-3">
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-3xl font-black text-[#27AE60]">
                   ₪{plan.price}
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-[#1E3A5F]">
+              <h3 className="text-lg font-bold text-[#1E3A5F]">
                 {plan.name}
               </h3>
             </div>
 
-            <ul className="space-y-2 mb-6">
-              {plan.features.slice(0, 3).map((feature, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                  <Check className="w-4 h-4 text-[#27AE60] flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">{feature}</span>
-                </li>
-              ))}
-            </ul>
-
             <Button
               onClick={() => onSelectPlan(plan)}
-              className={`w-full h-12 font-bold rounded-lg transition-all ${
+              className={`w-full h-10 text-sm font-bold rounded-lg transition-all ${
                 plan.recommended
                   ? 'bg-[#27AE60] hover:bg-[#229954] text-white'
                   : 'bg-[#3498DB] hover:bg-[#2980B9] text-white'
               }`}
             >
-              בחר מסלול זה
+              בחר
             </Button>
           </motion.div>
         ))}
@@ -110,14 +101,13 @@ export default function PlanSelector({ onSelectPlan, onBack }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
+        transition={{ delay: 0.3 }}
       >
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-[#3498DB] hover:text-[#2980B9] font-medium transition-colors"
+          className="text-sm text-[#3498DB] hover:text-[#2980B9] font-medium transition-colors"
         >
-          <ChevronLeft className="w-4 h-4" />
-          חזור
+          ← חזור
         </button>
       </motion.div>
     </div>
