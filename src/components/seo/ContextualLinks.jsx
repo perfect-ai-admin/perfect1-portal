@@ -23,44 +23,29 @@ export default function ContextualLinks({
     const linkMap = {
       guide: [
         { 
-          text: 'רוצה לראות את כל האפשרויות?',
-          cta: 'עבור להשוואת שירותים',
-          url: createPageUrl('Services')
-        },
-        { 
           text: 'מוכן להתחיל?',
-          cta: 'פתח עוסק פטור עכשיו',
-          url: createPageUrl('Contact')
+          cta: 'פתיחת עוסק פטור',
+          url: createPageUrl('Home')
         }
       ],
       comparison: [
         { 
-          text: 'רוצה להבין לעומק?',
-          cta: 'קרא את המדריך המלא',
-          url: createPageUrl('Home')
-        },
-        { 
           text: 'מצאת את השירות המתאים?',
-          cta: 'התחל את התהליך',
-          url: createPageUrl('Contact')
+          cta: 'פתיחת עוסק פטור',
+          url: createPageUrl('Home')
         }
       ],
       landing: [
         { 
           text: 'רוצה לדעת יותר על התהליך?',
-          cta: 'ראה את המתודולוגיה שלנו',
-          url: createPageUrl('Methodology')
-        },
-        { 
-          text: 'יש לך שאלות?',
-          cta: 'קרא שאלות נפוצות',
-          url: createPageUrl('Contact')
+          cta: 'פתיחת עוסק פטור',
+          url: createPageUrl('Home')
         }
       ],
       support: [
         { 
           text: 'רוצה להתחיל?',
-          cta: 'פתח עוסק פטור',
+          cta: 'פתיחת עוסק פטור',
           url: createPageUrl('Home')
         }
       ]
