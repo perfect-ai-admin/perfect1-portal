@@ -33,8 +33,8 @@ export default function Breadcrumbs({ items }) {
   }, [items]);
 
   return (
-    <nav className="bg-transparent py-3" dir="rtl">
-      <ol className="flex items-center gap-2 text-sm">
+    <nav className="bg-transparent py-1" dir="rtl">
+      <ol className="flex items-center gap-2 text-xs">
            {items.map((item, index) => (
              <li key={index} className="flex items-center gap-2">
                {item.path ? (
