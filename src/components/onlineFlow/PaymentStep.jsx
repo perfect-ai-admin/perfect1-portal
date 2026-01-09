@@ -145,6 +145,15 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
             </>
           )}
         </button>
+        <p className="text-xs font-bold text-center text-gray-700">תשלום חד־פעמי • ללא חיובים נוספים</p>
+      </motion.div>
+
+      {/* Back Button - Bottom */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
         <button
           onClick={onBack}
           disabled={isProcessing}
@@ -152,17 +161,6 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         >
           ← חזור
         </button>
-        <p className="text-xs font-bold text-center text-gray-700">תשלום חד־פעמי • ללא חיובים נוספים</p>
-      </motion.div>
-
-      {/* Control Info - Subtle */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="text-center text-xs text-gray-500"
-      >
-        ניתן לעצור את התהליך לפני שליחת התיק לרשויות.
       </motion.div>
     </div>
   );
