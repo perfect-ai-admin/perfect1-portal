@@ -98,7 +98,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md sm:max-w-lg max-h-[100vh] sm:max-h-[90vh] overflow-y-auto"
           >
             {/* Close Button */}
             <button
