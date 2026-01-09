@@ -16,16 +16,35 @@ import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 import QAChecker from './components/QAChecker';
 
 export default function Layout({ children, currentPageName }) {
-  const location = useLocation();
+    const location = useLocation();
 
-  // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
-  if (currentPageName === 'SystemLogicMap') {
-    return children;
-  }
+    // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
+    if (currentPageName === 'SystemLogicMap') {
+      return children;
+    }
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [location.pathname, location.search]);
+    useEffect(() => {
+      // Inject GTM script to HEAD if not already there
+      if (!document.getElementById(gtmScriptId)) {
+        const script = document.createElement('script');
+        script.id = gtmScriptId;
+        script.async = true;
+        script.innerHTML = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PNK9CCRQ');`;
+        document.head.appendChild(script);
+      }
+
+      // Inject GTM noscript to BODY if not already there
+      if (!document.getElementById(noscriptId)) {
+        const noscript = document.createElement('noscript');
+        noscript.id = noscriptId;
+        noscript.innerHTML = '<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNK9CCRQ" height="0" width="0" style="display:none;visibility:hidden"></iframe>';
+        document.body.insertBefore(noscript, document.body.firstChild);
+      }
+    }, []);
+
+    useEffect(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [location.pathname, location.search]);
   // Define WhatsApp messages per page
   const getWhatsAppMessage = () => {
     const messages = {
