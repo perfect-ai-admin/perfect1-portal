@@ -47,16 +47,7 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
   const price = planPrices[selectedPlan.id];
 
   return (
-    <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <h2 className="text-4xl font-black text-[#1E3A5F] mb-1">
-          תשלום
-        </h2>
-      </motion.div>
-
+    <div className="space-y-4">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -65,7 +56,7 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
           סיום התשלום
         </h2>
-        <p className="text-sm text-gray-600">כמעט סיימנו - אחרון צעד בלבד</p>
+        <p className="text-sm text-gray-600">צעד אחרון - בואו נסיים</p>
       </motion.div>
 
       {/* Order Summary - Clear */}
@@ -73,21 +64,17 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-4 space-y-3 mb-3"
+        className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-3 space-y-2"
       >
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-sm text-gray-600">מסלול שנבחר:</p>
-            <p className="text-xl font-black text-[#1E3A5F]">{selectedPlan.name}</p>
+            <p className="text-xs text-gray-600">מסלול:</p>
+            <p className="text-lg font-black text-[#1E3A5F]">{selectedPlan.name}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-600">סה"כ:</p>
+            <p className="text-xs text-gray-600">סה"כ:</p>
             <p className="text-3xl font-black text-[#27AE60]">₪{price}</p>
           </div>
-        </div>
-        <div className="border-t border-blue-200 pt-2">
-          <p className="text-xs text-gray-600"><strong>{formData.fullName}</strong></p>
-          <p className="text-xs text-gray-600">{formData.email}</p>
         </div>
       </motion.div>
 
@@ -95,19 +82,11 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-2 mb-3"
+        transition={{ delay: 0.08 }}
+        className="bg-green-50 border border-green-200 rounded-lg p-2.5 text-center text-xs"
       >
-        <p className="text-sm font-bold text-gray-800 text-center">💳 אפשרויות תשלום</p>
-        <div className="grid grid-cols-2 gap-2 text-xs text-center text-gray-700">
-          <div>💳 כרטיס אשראי</div>
-          <div>₪ ביט / פייבוקס</div>
-          <div>🍎 Apple Pay</div>
-          <div>🔵 Google Pay</div>
-        </div>
-        <div className="flex items-center justify-center gap-2 pt-2 border-t border-green-200 text-xs text-green-700">
-          🔒 <strong>תשלום מאובטח 100%</strong>
-        </div>
+        <p className="font-bold text-gray-800 mb-1.5">💳 תשלום מאובטח</p>
+        <p className="text-gray-700">כרטיס אשראי • ביט • Apple Pay • Google Pay</p>
       </motion.div>
 
       {/* Error Message */}
@@ -121,45 +100,35 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         </motion.div>
       )}
 
-      {/* Guarantee */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="text-xs text-center text-gray-600 bg-blue-50 rounded-lg p-2"
-      >
-        ✓ ללא התחייבות למרות התשלום • ניתן לביטול בתוך 7 ימים
-      </motion.div>
-
       {/* Action Buttons */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-2"
+        transition={{ delay: 0.15 }}
+        className="space-y-2 pt-2"
       >
         <Button
           onClick={handlePayment}
           disabled={isProcessing}
-          className="w-full h-14 font-black rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg flex items-center justify-center gap-2"
+          className="w-full h-13 font-black rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg flex items-center justify-center gap-2 text-base"
         >
           {isProcessing ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              מעבד תשלום...
+              <Loader2 className="w-4 h-4 animate-spin" />
+              שולם...
             </>
           ) : (
             <>
-              🔐 שלם בטוח ₪{price}
+              🔐 שלם ₪{price}
             </>
           )}
         </Button>
         <button
           onClick={onBack}
           disabled={isProcessing}
-          className="w-full px-3 h-10 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium disabled:opacity-50 transition-colors"
+          className="w-full px-3 h-10 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium disabled:opacity-50"
         >
-          ← חזור לפרטים
+          ← חזור
         </button>
       </motion.div>
     </div>
