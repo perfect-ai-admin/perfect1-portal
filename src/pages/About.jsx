@@ -122,10 +122,10 @@ export default function About() {
             {stats.map((stat, index) => (
               <div 
                 key={index}
-                className="bg-white rounded-2xl p-6 shadow-elegant text-center"
+                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 text-center"
               >
-                <p className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-1">{stat.number}</p>
-                <p className="text-gray-500 text-sm">{stat.label}</p>
+                <p className="text-3xl md:text-4xl font-black text-white mb-1">{stat.number}</p>
+                <p className="text-white/70 text-sm">{stat.label}</p>
               </div>
             ))}
           </motion.div>
