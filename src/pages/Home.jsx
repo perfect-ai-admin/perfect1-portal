@@ -87,9 +87,9 @@ export default function Home() {
         <MicroCTA text="רוצה לדעת אם עוסק פטור מתאים לך?" cta="בדיקה מהירה ללא עלות" variant="subtle" />
         <FeaturesSection />
         <ServicesSection />
+        <ProcessSection />
         <ProfessionsGrid />
         <QuickCTASection />
-        <ProcessSection />
         <GeoContent />
         <MicroCTA text="מוכנים להתחיל?" cta="שיחה קצרה ללא התחייבות" />
         <FAQSection />
