@@ -259,18 +259,18 @@ export default function ServicePage() {
         schema={enhancedSchema}
       />
       <main className="pt-20">
-        {/* Hero with Breadcrumbs */}
-      <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <Breadcrumbs 
-            items={[
-              { label: 'בית', url: 'Home' },
-              { label: 'שירותים', url: 'Services' },
-              { label: service.title }
-            ]}
-          />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         {/* Hero with Breadcrumbs */}
+         <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-12">
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+             <Breadcrumbs 
+               items={[
+                 { label: 'בית', url: 'Home' },
+                 { label: 'שירותים', url: 'Services' },
+                 { label: service.title }
+               ]}
+             />
+           </div>
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
