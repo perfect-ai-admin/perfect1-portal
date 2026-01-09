@@ -159,20 +159,20 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="flex gap-2 pt-2"
+          className="space-y-2 pt-2"
         >
           <Button
             type="submit"
-            className="flex-1 h-10 font-bold rounded-lg bg-[#27AE60] hover:bg-[#229954] text-white text-sm"
+            className="w-full h-12 font-black rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
           >
-            המשך לתשלום
+            המשך לתשלום 💳
           </Button>
           <button
             type="button"
             onClick={onBack}
-            className="px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600"
+            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium transition-colors"
           >
-            חזור
+            ← חזור
           </button>
         </motion.div>
       </form>

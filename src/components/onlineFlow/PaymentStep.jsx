@@ -57,28 +57,57 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         </h2>
       </motion.div>
 
-      {/* Order Summary - Minimal */}
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
+          סיום התשלום
+        </h2>
+        <p className="text-sm text-gray-600">כמעט סיימנו - אחרון צעד בלבד</p>
+      </motion.div>
+
+      {/* Order Summary - Clear */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="bg-gray-50 rounded-lg p-3 text-sm space-y-1 mb-3"
+        className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-4 space-y-3 mb-3"
       >
-        <div className="flex justify-between font-bold">
-          <span>{selectedPlan.name}</span>
-          <span className="text-[#27AE60]">₪{price}</span>
+        <div className="flex justify-between items-start">
+          <div>
+            <p className="text-sm text-gray-600">מסלול שנבחר:</p>
+            <p className="text-xl font-black text-[#1E3A5F]">{selectedPlan.name}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-gray-600">סה"כ:</p>
+            <p className="text-3xl font-black text-[#27AE60]">₪{price}</p>
+          </div>
         </div>
-        <p className="text-gray-600">{formData.fullName}</p>
+        <div className="border-t border-blue-200 pt-2">
+          <p className="text-xs text-gray-600"><strong>{formData.fullName}</strong></p>
+          <p className="text-xs text-gray-600">{formData.email}</p>
+        </div>
       </motion.div>
 
-      {/* Payment Methods - Simplified */}
+      {/* Payment Security */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-xs text-gray-600 text-center bg-blue-50 rounded-lg p-2 mb-2"
+        className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-2 mb-3"
       >
-        💳 כרטיס אשראי, ביט, Apple Pay, Google Pay
+        <p className="text-sm font-bold text-gray-800 text-center">💳 אפשרויות תשלום</p>
+        <div className="grid grid-cols-2 gap-2 text-xs text-center text-gray-700">
+          <div>💳 כרטיס אשראי</div>
+          <div>₪ ביט / פייבוקס</div>
+          <div>🍎 Apple Pay</div>
+          <div>🔵 Google Pay</div>
+        </div>
+        <div className="flex items-center justify-center gap-2 pt-2 border-t border-green-200 text-xs text-green-700">
+          🔒 <strong>תשלום מאובטח 100%</strong>
+        </div>
       </motion.div>
 
       {/* Error Message */}
@@ -92,33 +121,45 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         </motion.div>
       )}
 
+      {/* Guarantee */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="text-xs text-center text-gray-600 bg-blue-50 rounded-lg p-2"
+      >
+        ✓ ללא התחייבות למרות התשלום • ניתן לביטול בתוך 7 ימים
+      </motion.div>
+
       {/* Action Buttons */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="flex gap-2 pt-2"
+        className="space-y-2"
       >
         <Button
           onClick={handlePayment}
           disabled={isProcessing}
-          className="flex-1 h-10 font-bold rounded-lg bg-[#27AE60] hover:bg-[#229954] text-white text-sm flex items-center justify-center gap-1"
+          className="w-full h-14 font-black rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg flex items-center justify-center gap-2"
         >
           {isProcessing ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              שלם...
+              <Loader2 className="w-5 h-5 animate-spin" />
+              מעבד תשלום...
             </>
           ) : (
-            `שלם ₪${price}`
+            <>
+              🔐 שלם בטוח ₪{price}
+            </>
           )}
         </Button>
         <button
           onClick={onBack}
           disabled={isProcessing}
-          className="px-3 h-10 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 disabled:opacity-50"
+          className="w-full px-3 h-10 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium disabled:opacity-50 transition-colors"
         >
-          חזור
+          ← חזור לפרטים
         </button>
       </motion.div>
     </div>
