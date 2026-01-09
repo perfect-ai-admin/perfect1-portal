@@ -145,10 +145,10 @@ export default function UnifiedLeadForm({
   return (
     <div className={containerClass}>
       {(title || subtitle) && (
-        <div className="text-center mb-5">
+        <div className="text-center mb-4">
           {title && (
             <h3 className={`font-black text-[#1E3A5F] mb-1 ${
-              variant === 'popup' ? 'text-lg' : 'text-2xl md:text-3xl'
+              variant === 'popup' ? 'text-base' : 'text-2xl md:text-3xl'
             }`}>
               {title}
             </h3>
