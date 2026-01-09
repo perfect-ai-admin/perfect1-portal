@@ -16,18 +16,18 @@ export const LINKING_CONFIG = {
 export const KEYWORD_MAPPING = [
   // ============ Primary Keywords ============
   {
-    keywords: ['פתיחת עוסק פטור', 'לפתוח עוסק פטור', 'איך פותחים עוסק פטור'],
+    keywords: ['פתיחת עוסק פטור', 'לפתוח עוסק פטור', 'איך פותחים עוסק פטור', 'תהליך פתיחת עוסק פטור'],
     target: {
-      page: 'Home',
+      page: 'OsekPaturLanding',
       params: null
     },
     priority: 'primary',
     context: ['עצמאי', 'עסק', 'רישום', 'מס הכנסה']
   },
   {
-    keywords: ['מדריך פתיחת עוסק פטור', 'מדריך לפתיחת עוסק'],
+    keywords: ['מדריך פתיחת עוסק פטור', 'מדריך לפתיחת עוסק', 'מדריך עוסק פטור מלא'],
     target: {
-      page: 'Home',
+      page: 'OsekPaturLanding',
       params: null
     },
     priority: 'primary',
