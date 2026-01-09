@@ -38,22 +38,12 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
         animate={{ opacity: 1, y: 0 }}
       >
         <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
-          סיום התהליך
+          מי אתה?
         </h2>
-        <p className="text-sm text-gray-600">עוד דקה וחצי בלבד - אז נתחיל</p>
+        <p className="text-sm text-gray-600">לא ניקח הרבה זמן - בואו נתחיל</p>
       </motion.div>
 
-      {/* Progress Note */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.05 }}
-        className="text-xs text-gray-500 text-center"
-      >
-        הפרטים האלה יהיו בטוחים לחלוטין 🔒
-      </motion.div>
-
-      <form onSubmit={handleSubmit} className="space-y-2.5">
+      <form onSubmit={handleSubmit} className="space-y-2">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -158,19 +148,19 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="space-y-2 pt-2"
+          transition={{ delay: 0.25 }}
+          className="space-y-2 pt-3"
         >
           <Button
             type="submit"
-            className="w-full h-12 font-black rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
+            className="w-full h-12 font-black text-base rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
           >
-            המשך לתשלום 💳
+            בחר מסלול 🚀
           </Button>
           <button
             type="button"
             onClick={onBack}
-            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium transition-colors"
+            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium"
           >
             ← חזור
           </button>
