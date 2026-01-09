@@ -9,6 +9,7 @@ import FAQSchema from '../components/seo/FAQSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
+import OnlineFlowModal from '../components/onlineFlow/OnlineFlowModal';
 
 export default function OsekPaturOnlineLanding() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ export default function OsekPaturOnlineLanding() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isFlowOpen, setIsFlowOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -217,7 +219,7 @@ export default function OsekPaturOnlineLanding() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
+                  <Button onClick={() => setIsFlowOpen(true)} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
                     <Target className="ml-3 w-6 h-6" />
                     פתח עוסק אונליין עכשיו
                   </Button>
@@ -395,7 +397,7 @@ export default function OsekPaturOnlineLanding() {
                 השאר פרטים ונתחיל את התהליך האונליין תוך שעות
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={scrollToForm} size="lg" className="h-20 px-12 text-2xl font-black rounded-3xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
+                <Button onClick={() => setIsFlowOpen(true)} size="lg" className="h-20 px-12 text-2xl font-black rounded-3xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
                   <Target className="ml-3 w-7 h-7" />
                   פתח אונליין עכשיו
                 </Button>
@@ -577,6 +579,9 @@ export default function OsekPaturOnlineLanding() {
         {/* Related Content */}
         <RelatedContent pageType="landing" />
 
+        {/* Online Flow Modal */}
+        <OnlineFlowModal isOpen={isFlowOpen} onClose={() => setIsFlowOpen(false)} />
+
         {/* Final CTA */}
         <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
@@ -597,7 +602,7 @@ export default function OsekPaturOnlineLanding() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
+                <Button onClick={() => setIsFlowOpen(true)} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
                   <Monitor className="ml-3 w-6 h-6" />
                   פתח אונליין עכשיו
                 </Button>
