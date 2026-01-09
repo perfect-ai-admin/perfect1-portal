@@ -26,10 +26,10 @@ const iconMap = {
 };
 
 const getServiceLink = (service) => {
-  if (service.id === 'osek-patur' || service.title === 'פתיחת עוסק פטור') {
+  if (service.id === 'ptihat-osek-patur' || service.title === 'פתיחת עוסק פטור') {
     return createPageUrl('OsekPaturLanding');
   }
-  if (service.id === 'osek-patur-online' || service.title === 'פתיחת עוסק פטור אונליין') {
+  if (service.id === 'ptihat-osek-patur-online' || service.title === 'פתיחת עוסק אונליין') {
     return createPageUrl('OsekPaturOnlineLanding');
   }
   return createPageUrl('ServicePage') + `?service=${service.id}`;
