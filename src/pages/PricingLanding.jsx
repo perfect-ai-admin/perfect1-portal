@@ -163,12 +163,13 @@ export default function PricingLanding() {
                     <p className="text-gray-600">מחיר ידוע מראש - בלי "תלוי"</p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 mb-6 text-center">
-                    <p className="text-white/80 text-sm mb-2">מחיר מיוחד ל-</p>
+                  <div className="bg-gradient-to-br from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-6 text-center">
+                    <p className="text-white text-sm mb-2">מחיר קבוע וברור</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-black text-white">?</span>
+                      <span className="text-6xl font-black text-white">199</span>
+                      <span className="text-3xl font-bold text-white">₪</span>
                     </div>
-                    <p className="text-white/60 text-sm mt-2">השאר פרטים ונגלה לך</p>
+                    <p className="text-white/80 text-sm mt-2">תשלום חד-פעמי בלבד</p>
                   </div>
 
                   <ul className="space-y-3 mb-6">
