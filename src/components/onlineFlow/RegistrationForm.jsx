@@ -37,10 +37,10 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
-          מי אתה?
+        <h2 className="text-2xl font-black text-[#1E3A5F] mb-0.5">
+          <span className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] bg-clip-text text-transparent">מתחילים פתיחת עוסק פטור אונליין</span>
         </h2>
-        <p className="text-sm text-gray-600">לא ניקח הרבה זמן - בואו נתחיל</p>
+        <p className="text-xs text-gray-600">פרטים נוספים בבקשה</p>
       </motion.div>
 
       <form onSubmit={handleSubmit} className="space-y-2">

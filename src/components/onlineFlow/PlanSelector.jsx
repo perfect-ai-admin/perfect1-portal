@@ -47,10 +47,10 @@ export default function PlanSelector({ onSelectPlan, onBack }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
-          בחר מסלול
+        <h2 className="text-2xl font-black text-[#1E3A5F] mb-0.5">
+          <span className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] bg-clip-text text-transparent">המשך בתהליך</span>
         </h2>
-        <p className="text-sm text-gray-600">בחר את המתאים לך ביותר</p>
+        <p className="text-xs text-gray-600">בחר את המסלול המתאים לך</p>
       </motion.div>
 
       <div className="space-y-2.5 pt-2">
