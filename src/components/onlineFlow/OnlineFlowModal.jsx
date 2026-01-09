@@ -18,6 +18,16 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
     profession: ''
   });
 
+  // Hide floating CTAs when modal is open
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('flow-active');
+    } else {
+      document.body.classList.remove('flow-active');
+    }
+    return () => document.body.classList.remove('flow-active');
+  }, [isOpen]);
+
   const handleSelectPlan = (plan) => {
     setSelectedPlan(plan);
     setCurrentStep(4); // Jump to payment after plan selection
