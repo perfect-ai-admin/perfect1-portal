@@ -487,10 +487,87 @@ export default function PricingLanding() {
           </div>
         </section>
 
-        {/* Related Content */}
-        <RelatedContent pageType="landing" />
+        {/* FAQ Section */}
+        <section className="py-16 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">
+                שאלות נפוצות על מחיר פתיחת עוסק פטור
+              </h2>
+              <p className="text-gray-600 text-lg">
+                תשובות ברורות לשאלות המרכזיות שלך
+              </p>
+            </motion.div>
 
-        {/* Final CTA */}
+            <Accordion type="single" collapsible className="space-y-3">
+              {[
+                {
+                  q: 'כמה עולה לפתוח עוסק פטור אונליין?',
+                  a: '199 שקל בתשלום חד-פעמי. זה תשלום ברור וקבוע שאתה יודע עליו מראש - בלי עמלות מוסתרות או תוספות בדיעבד.'
+                },
+                {
+                  q: 'האם יש עלויות נוספות אחרי פתיחה?',
+                  a: 'לא, פתיחת עוסק פטור היא תשלום חד-פעמי. עלויות נוספות עשויות להיות רק אם תבחר בליווי חודשי או דוח שנתי, אך אלה אופציונליים לחלוטין.'
+                },
+                {
+                  q: 'איך המחיר שלכם כל כך זול?',
+                  a: 'אנחנו עובדים דיגיטלי מלא. אין משרדים יקרים, אין ריצות מפורקות, אין בזבוז זמן. זה מאפשר לנו להציע מחיר הוגן לעוסקים חדשים.'
+                },
+                {
+                  q: 'מה כלול במחיר של 199 שקל?',
+                  a: 'הכל: בדיקה של המידע שלך, הגשה למס הכנסה, ביטוח לאומי, מע"מ בפטור, ופתיחה מלאה של התיק. תהליך דיגיטלי סגור ומושלם.'
+                },
+                {
+                  q: 'האם יש הבדל בין המחיר שלכם לרואה חשבון?',
+                  a: 'כן. רואה חשבון בדרך כלל גובה ₪500-1,500 ודורש פגישה אישית. אנחנו: ₪199, דיגיטלי מלא, 24-48 שעות. שחקר מה מתאים לך.'
+                },
+                {
+                  q: 'אפשר לפתוח עוסק פטור לבד בחינם?',
+                  a: 'כן, אך זה דורש ידע וזמן, ויש סיכון לטעויות. ₪199 אצלנו זה ביטוח שלך שהכל נעשה נכון מהתחלה.'
+                },
+                {
+                  q: 'האם המחיר משתנה לפי סיווג עיסוק?',
+                  a: 'לא, המחיר קבוע - ₪199 לכל סוג מקצוע או עיסוק. בלי הנחות, בלי תוספות, זהו המחיר.'
+                }
+              ].map((item, i) => (
+                <AccordionItem key={i} value={`faq-${i}`} className="border border-gray-200 rounded-lg px-4">
+                  <AccordionTrigger className="hover:no-underline py-4">
+                    <span className="text-right font-medium text-gray-800">{item.q}</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-700 pb-4">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
+            >
+              <p className="text-gray-600 mb-6">
+                עדיין יש שאלות? אנחנו כאן לעזור
+              </p>
+              <a href="https://wa.me/972502277087?text=היי, יש לי שאלות על המחיר" target="_blank" rel="noopener noreferrer">
+                <Button className="px-8 py-3 bg-[#27AE60] text-white rounded-lg font-medium hover:bg-[#229954]">
+                  שוחח איתנו בווצאפ
+                </Button>
+              </a>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Related Content */}
+         <RelatedContent pageType="landing" />
+
+         {/* Final CTA */}
         <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
