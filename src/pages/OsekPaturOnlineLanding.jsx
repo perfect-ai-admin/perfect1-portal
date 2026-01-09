@@ -6,6 +6,7 @@ import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, Trending
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
+import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
@@ -138,6 +139,17 @@ export default function OsekPaturOnlineLanding() {
     <>
       <PageTracker pageUrl="/osek-patur-online" pageType="landing" />
       <FAQSchema faqs={faqs} />
+      <LocalBusinessSchema 
+        name="Perfect One - פתיחת עוסק פטור אונליין"
+        description="שירות פתיחת עוסק פטור אונליין 100% דיגיטלי כולל ליווי חודשי ודוח שנתי"
+        address={{
+          street: "",
+          city: "",
+          country: "ישראל"
+        }}
+        phone="+972-50-227-7087"
+        website="https://perfect1.co.il"
+      />
       <SEOOptimized
         title="פתיחת עוסק פטור אונליין | פתיחה מהירה, ליווי מלא"
         description="פתיחת עוסק פטור אונליין בצורה מהירה ומסודרת. בדיקת התאמה, מילוי טפסים, והכוונה מלאה עד פתיחת התיק. השאר פרטים ונחזור אליך."
