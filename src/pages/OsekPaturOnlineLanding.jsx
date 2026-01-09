@@ -185,9 +185,7 @@ export default function OsekPaturOnlineLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור אונליין בישראל
-                  <br />
-                  <span className="text-[#27AE60]">100% דיגיטלי 🌐</span>
+                  פתיחת עוסק פטור אונליין
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">
@@ -288,7 +286,7 @@ export default function OsekPaturOnlineLanding() {
               className="text-center mb-10"
             >
               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                שאלות שחיפשת בגוגל?
+                שאלות שחיפשת בגוגל
               </h2>
               <p className="text-xl text-gray-600">
                 במקום לחפש תשובות – <strong className="text-[#27AE60]">פותחים אונליין עכשיו</strong>
@@ -343,8 +341,8 @@ export default function OsekPaturOnlineLanding() {
               <div className="inline-block bg-[#3498DB]/10 text-[#3498DB] px-6 py-2 rounded-full text-sm font-bold mb-6">
                 🌐 הפתרון האונליין
               </div>
-              <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
-                פותחים עוסק פטור אונליין – איך זה עובד?
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                איך זה עובד?
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 תהליך דיגיטלי מלא, בלי צורך להגיע לשום מקום
@@ -422,7 +420,7 @@ export default function OsekPaturOnlineLanding() {
               className="text-center mb-10"
             >
               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                מה כולל השירות האונליין?
+                מה כולל השירות?
               </h2>
               <p className="text-xl text-gray-600">כל מה שצריך לפתיחת עוסק – דיגיטלי ונוח</p>
             </motion.div>
@@ -465,8 +463,8 @@ export default function OsekPaturOnlineLanding() {
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                למה לפתוח עוסק אונליין?
+              <h2 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-4">
+                למה אונליין?
               </h2>
             </motion.div>
 

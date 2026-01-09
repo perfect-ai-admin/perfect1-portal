@@ -23,6 +23,7 @@ import OsekPaturOnline from './pages/OsekPaturOnline';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import PhotographerLanding from './pages/PhotographerLanding';
 import Pricing from './pages/Pricing';
+import PricingCost from './pages/PricingCost';
 import PricingLanding from './pages/PricingLanding';
 import ProfessionLanding from './pages/ProfessionLanding';
 import ProfessionPage from './pages/ProfessionPage';
@@ -44,7 +45,6 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import PricingCost from './pages/PricingCost';
 import __Layout from './Layout.jsx';
 
 
@@ -74,6 +74,7 @@ export const PAGES = {
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
     "PhotographerLanding": PhotographerLanding,
     "Pricing": Pricing,
+    "PricingCost": PricingCost,
     "PricingLanding": PricingLanding,
     "ProfessionLanding": ProfessionLanding,
     "ProfessionPage": ProfessionPage,
@@ -95,7 +96,6 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "PricingCost": PricingCost,
 }
 
 export const pagesConfig = {
