@@ -37,9 +37,20 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-black text-[#1E3A5F]">
-          הפרטים שלך
+        <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
+          סיום התהליך
         </h2>
+        <p className="text-sm text-gray-600">עוד דקה וחצי בלבד - אז נתחיל</p>
+      </motion.div>
+
+      {/* Progress Note */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.05 }}
+        className="text-xs text-gray-500 text-center"
+      >
+        הפרטים האלה יהיו בטוחים לחלוטין 🔒
       </motion.div>
 
       <form onSubmit={handleSubmit} className="space-y-2.5">
