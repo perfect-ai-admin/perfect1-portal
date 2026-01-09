@@ -48,12 +48,12 @@ export default function PlanSelector({ onSelectPlan, onBack }) {
         animate={{ opacity: 1, y: 0 }}
       >
         <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
-          איזה מסלול מתאים לך?
+          בחר מסלול
         </h2>
-        <p className="text-sm text-gray-600">בחר מה בדיוק אתה צריך - לא יותר, לא פחות</p>
+        <p className="text-sm text-gray-600">בחר את המתאים לך ביותר</p>
       </motion.div>
 
-      <div className="space-y-3 pt-2">
+      <div className="space-y-2.5 pt-2">
         {plans.map((plan, idx) => (
           <motion.div
             key={plan.id}
@@ -61,52 +61,64 @@ export default function PlanSelector({ onSelectPlan, onBack }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.15 }}
             onClick={() => onSelectPlan(plan)}
-            className={`relative border-2 rounded-xl p-4 transition-all cursor-pointer ${
+            className={`relative transition-all cursor-pointer ${
               plan.recommended
-                ? 'border-[#27AE60] bg-gradient-to-br from-green-50 to-emerald-50 ring-2 ring-[#27AE60]/10'
-                : 'border-gray-200 hover:border-[#3498DB] bg-white'
+                ? 'border-0 rounded-2xl p-5 bg-gradient-to-br from-[#27AE60] via-green-500 to-[#2ECC71] shadow-xl scale-100'
+                : 'border-2 border-gray-200 rounded-xl p-4 bg-white hover:border-[#3498DB]/50'
             }`}
           >
             {plan.recommended && (
-              <div className="absolute -top-2 -right-2">
-                <div className="bg-[#27AE60] text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">
-                  ⭐ הבחירה הפופולרית
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <div className="bg-white text-[#27AE60] px-4 py-1 rounded-full text-xs font-black shadow-lg border-2 border-[#27AE60]">
+                  ⭐⭐⭐ הבחירה המושלמת ⭐⭐⭐
                 </div>
               </div>
             )}
 
-            <div className="mb-4 pt-2">
+            <div className={`${plan.recommended ? 'pt-4' : ''}`}>
               <div className="flex items-baseline gap-2 mb-2">
-                <span className="text-4xl font-black text-[#27AE60]">
+                <span className={`font-black ${
+                  plan.recommended ? 'text-5xl text-white' : 'text-4xl text-[#27AE60]'
+                }`}>
                   ₪{plan.price}
                 </span>
-                <span className="text-xs text-gray-500">לפתיחה</span>
+                <span className={`text-xs ${
+                  plan.recommended ? 'text-white/90' : 'text-gray-500'
+                }`}>לפתיחה</span>
               </div>
-              <h3 className="text-xl font-bold text-[#1E3A5F]">
+              <h3 className={`font-bold mb-1 ${
+                plan.recommended ? 'text-2xl text-white' : 'text-xl text-[#1E3A5F]'
+              }`}>
                 {plan.name}
               </h3>
-              <p className="text-xs text-gray-600 mt-1">{plan.description}</p>
+              <p className={`text-xs mb-3 ${
+                plan.recommended ? 'text-white/90' : 'text-gray-600'
+              }`}>{plan.description}</p>
             </div>
 
             {/* Features Mini */}
-            <div className="mb-4 space-y-1">
+            <div className={`mb-4 space-y-1.5 ${plan.recommended ? 'bg-white/15 rounded-lg p-3' : ''}`}>
               {plan.features.slice(0, 3).map((feature, i) => (
-                <div key={i} className="flex items-start gap-2 text-xs">
-                  <span className="text-[#27AE60] font-bold">✓</span>
-                  <span className="text-gray-700">{feature}</span>
+                <div key={i} className={`flex items-start gap-2 text-xs ${
+                  plan.recommended ? 'text-white' : 'text-gray-700'
+                }`}>
+                  <span className={`font-bold flex-shrink-0 ${
+                    plan.recommended ? 'text-white' : 'text-[#27AE60]'
+                  }`}>✓</span>
+                  <span>{feature}</span>
                 </div>
               ))}
             </div>
 
             <Button
               onClick={() => onSelectPlan(plan)}
-              className={`w-full h-11 text-sm font-bold rounded-lg transition-all ${
+              className={`w-full rounded-xl font-black transition-all ${
                 plan.recommended
-                  ? 'bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg'
-                  : 'bg-[#3498DB] hover:bg-[#2980B9] text-white'
+                  ? 'h-14 bg-white text-[#27AE60] hover:bg-white/95 text-lg shadow-lg'
+                  : 'h-11 bg-[#3498DB] hover:bg-[#2980B9] text-white text-sm'
               }`}
             >
-              {plan.recommended ? '🚀 בחר מסלול זה' : 'בחר'}
+              {plan.recommended ? '🎯 בחר כרגע' : 'בחר'}
             </Button>
           </motion.div>
         ))}
