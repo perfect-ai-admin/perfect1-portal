@@ -7,8 +7,7 @@ const gtmScriptId = 'gtm-script';
 const noscriptId = 'gtm-noscript';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
-import WhatsAppButton from './components/layout/WhatsAppButton';
-import SidePopup from './components/cro/SidePopup';
+
 
 import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
@@ -79,8 +78,7 @@ export default function Layout({ children, currentPageName }) {
           {children}
         </main>
         <Footer />
-        <WhatsAppButton message={getWhatsAppMessage()} />
-        <SidePopup />
+
 
       </div>
     </HelmetProvider>
