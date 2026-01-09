@@ -131,7 +131,7 @@ export default function PricingSection() {
                         : 'bg-[#1E3A5F] hover:bg-[#2C5282] text-white'
                     }`}
                   >
-                    התחל עכשיו
+                    השאר פרטים - ונעזור לך לפתוח
                     <ArrowLeft className="mr-2 w-4 h-4" />
                   </Button>
                 </Link>
