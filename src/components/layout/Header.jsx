@@ -130,6 +130,37 @@ export default function Header() {
 
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
+            {/* Mobile CTA Buttons - Show on all screens */}
+            <a
+              href="tel:0502277087"
+              className="sm:hidden"
+              onClick={() => trackPhoneClick('header_mobile')}
+            >
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="border-2 border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white h-10 w-10 rounded-lg"
+              >
+                <Phone className="w-5 h-5" />
+              </Button>
+            </a>
+
+            <a
+              href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="sm:hidden"
+              onClick={() => trackWhatsAppClick('header_mobile', 'היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור')}
+            >
+              <Button 
+                size="icon"
+                className="bg-[#25D366] hover:bg-[#128C7E] text-white h-10 w-10 rounded-lg shadow-lg"
+              >
+                <MessageCircle className="w-5 h-5" />
+              </Button>
+            </a>
+
+            {/* Desktop CTA Buttons */}
             <a
               href="tel:0502277087"
               className="hidden md:flex"
@@ -144,7 +175,7 @@ export default function Header() {
                 <span className="text-base">0502277087</span>
               </Button>
             </a>
-            
+
             <a
               href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
               target="_blank"
