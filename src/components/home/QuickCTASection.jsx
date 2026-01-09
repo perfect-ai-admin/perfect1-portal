@@ -8,15 +8,9 @@ export default function QuickCTASection() {
   const formRef = React.useRef(null);
 
   const handleScrollToForm = () => {
-    // Scroll to form in this component if visible
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      // Otherwise scroll to lead form at bottom of page
-      const leadForm = document.querySelector('[data-lead-form="bottom"]');
-      if (leadForm) {
-        leadForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+    const leadForm = document.querySelector('[data-lead-form="bottom"]');
+    if (leadForm) {
+      leadForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
