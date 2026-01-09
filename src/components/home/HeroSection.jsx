@@ -49,14 +49,14 @@ export default function HeroSection() {
             </motion.div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 px-2">
-              רוצה לפתוח עסק?
+              <span className="text-[#D4AF37]">פתיחת עוסק פטור</span>
               <br />
-              <span className="text-[#D4AF37]">אנחנו נעשה את זה בשבילך!</span>
+              בישראל 2026
             </h1>
 
             <div className="text-lg sm:text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-xl lg:mr-0 lg:ml-auto mx-auto font-medium px-4">
               <InternalLinker 
-                content="פתיחת עוסק פטור עם ליווי מלא מהצעד הראשון - אתה עובד, אנחנו מטפלים בכל השאר. תוך 24-72 שעות תתחיל לעבוד חוקית!"
+                content="מחיר - שקול וברור | <strong>עוסק פטור</strong> עם ליווי מלא מהצעד הראשון. אופציות קטנות, בלי עמלות נפוצות. תוך 24-72 שעות תתחיל לעבוד חוקית!"
                 currentPage="Home"
               />
             </div>
