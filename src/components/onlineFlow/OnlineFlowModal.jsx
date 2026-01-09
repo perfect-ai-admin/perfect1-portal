@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft } from 'lucide-react';
+import { X } from 'lucide-react';
 import ExplanationStep from './ExplanationStep';
 import PlanSelector from './PlanSelector';
-import RegistrationForm from './RegistrationForm';
 import PaymentStep from './PaymentStep';
 import SuccessStep from './SuccessStep';
 
@@ -28,19 +27,14 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
     return () => document.body.classList.remove('flow-active');
   }, [isOpen]);
 
-  const handleSelectPlan = (plan) => {
-    setSelectedPlan(plan);
-    setCurrentStep(4); // Jump to payment after plan selection
-  };
-
   const handleFirstFormSubmit = (data) => {
     setFormData(data);
-    setCurrentStep(3); // Move to registration form
+    setCurrentStep(2); // Move to plan selector
   };
 
-  const handleFormSubmit = (data) => {
-    setFormData(data);
-    setCurrentStep(2); // Move to plan selection after form
+  const handleSelectPlan = (plan) => {
+    setSelectedPlan(plan);
+    setCurrentStep(3); // Move to payment
   };
 
   const handlePaymentSuccess = () => {
