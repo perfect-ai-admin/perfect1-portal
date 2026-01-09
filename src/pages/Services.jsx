@@ -128,7 +128,7 @@ export default function Services() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
               >
-                <Link to={createPageUrl('ServicePage') + `?service=${service.id}`}>
+                <Link to={getServiceLink(service)}>
                   <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 shadow-sm hover:shadow-lg transition-all h-full group border border-gray-200">
                     <div className="flex items-start gap-3">
                       <div 
