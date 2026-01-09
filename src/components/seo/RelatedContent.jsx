@@ -23,20 +23,19 @@ export default function RelatedContent({
   const getAutoLinks = () => {
     const baseLinks = {
       guide: [
-        { icon: FileText, title: 'השוואת שירותים', url: createPageUrl('Services'), desc: 'ראה את כל השירותים שלנו' },
-        { icon: Briefcase, title: 'פתיחת עוסק עכשיו', url: createPageUrl('Contact'), desc: 'התחל את התהליך היום' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'התחל את התהליך היום' }
       ],
       comparison: [
-        { icon: BookOpen, title: 'מדריך מלא', url: createPageUrl('Home'), desc: 'קרא את המדריך המפורט' },
-        { icon: Briefcase, title: 'בחר את השירות המתאים', url: createPageUrl('Services'), desc: 'מצא את הפתרון לך' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'התחל את התהליך עכשיו' }
       ],
       action: [
-        { icon: BookOpen, title: 'מדריך למתחילים', url: createPageUrl('Methodology'), desc: 'הבן את התהליך' },
-        { icon: FileText, title: 'שאלות נפוצות', url: createPageUrl('Contact'), desc: 'קבל תשובות' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'קרא את המדריך המלא' }
       ],
       support: [
-        { icon: BookOpen, title: 'חזרה למדריך הראשי', url: createPageUrl('Home'), desc: 'קרא עוד' },
-        { icon: Briefcase, title: 'דבר עם מומחה', url: createPageUrl('Contact'), desc: 'קבל ייעוץ אישי' }
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'חזרה לדף הבית' }
+      ],
+      landing: [
+        { icon: Briefcase, title: 'פתיחת עוסק פטור', url: createPageUrl('Home'), desc: 'למדריך המלא' }
       ]
     };
 
