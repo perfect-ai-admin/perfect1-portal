@@ -87,7 +87,7 @@ export default function ExplanationStep({ onNext }) {
           onClick={onNext}
           className="w-full h-14 font-black text-lg rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg hover:shadow-xl transition-all"
         >
-          בואו נתחיל ✨
+          בואו נתחיל 🚀
         </Button>
       </motion.div>
     </div>
