@@ -112,17 +112,14 @@ function QuickForm({ onSuccess, onBack }) {
   });
   const [errors, setErrors] = useState({});
 
-  const validateForm = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (!formData.fullName.trim()) newErrors.fullName = 'שם חובה';
     if (!formData.phone.trim()) newErrors.phone = 'טלפון חובה';
     if (!formData.email.trim()) newErrors.email = 'אימייל חובה';
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
+    
+    if (Object.keys(newErrors).length === 0) {
       onSuccess(formData);
     } else {
       setErrors(newErrors);
