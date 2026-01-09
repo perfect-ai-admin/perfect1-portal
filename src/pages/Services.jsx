@@ -25,6 +25,16 @@ const iconMap = {
   Building2: 'Building2'
 };
 
+const getServiceLink = (service) => {
+  if (service.id === 'osek-patur' || service.title === 'פתיחת עוסק פטור') {
+    return createPageUrl('OsekPaturLanding');
+  }
+  if (service.id === 'osek-patur-online' || service.title === 'פתיחת עוסק פטור אונליין') {
+    return createPageUrl('OsekPaturOnlineLanding');
+  }
+  return createPageUrl('ServicePage') + `?service=${service.id}`;
+};
+
 export default function Services() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
