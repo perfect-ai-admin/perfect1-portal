@@ -8,6 +8,9 @@ import SEOOptimized from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { createPageUrl } from '@/utils';
+import { Link } from 'react-router-dom';
 
 export default function PricingLanding() {
   const [formData, setFormData] = useState({
