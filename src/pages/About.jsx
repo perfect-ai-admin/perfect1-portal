@@ -111,7 +111,7 @@ export default function About() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 bg-white -mt-12 relative z-10">
+      <section className="py-12 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] -mt-12 relative z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
