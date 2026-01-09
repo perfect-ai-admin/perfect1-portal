@@ -5,34 +5,9 @@
 
 export async function leadWebhook(req, res) {
   try {
-    const body = req.body;
-    
-    // תמיכה בפורמט Google Ads Lead Form החדש
-    let lead;
-    
-    if (body.user_column_data) {
-      // פורמט חדש מ-Google Ads
-      const fullNameObj = body.user_column_data.find(col => col.column_id === 'FULL_NAME');
-      const phoneObj = body.user_column_data.find(col => col.column_id === 'PHONE_NUMBER');
-      const emailObj = body.user_column_data.find(col => col.column_id === 'EMAIL');
-      
-      lead = {
-        name: fullNameObj?.string_value || 'Unknown',
-        phone: phoneObj?.string_value || '',
-        email: emailObj?.string_value || '',
-        source_page: `Google Ads - Campaign: ${body.campaign_id}`,
-        interaction_type: 'form',
-        status: 'new',
-        consent: true,
-        category: 'osek_patur',
-        notes: `Lead ID: ${body.lead_id}\nForm ID: ${body.form_id}`
-      };
-    } else if (body.lead) {
-      // פורמט ישן (backward compatibility)
-      lead = body.lead;
-    }
+    const { lead } = req.body;
 
-    if (!lead || (!lead.name && !lead.phone)) {
+    if (!lead) {
       return res.status(400).json({ error: 'No lead data provided' });
     }
 
