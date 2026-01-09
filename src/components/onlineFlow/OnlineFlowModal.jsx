@@ -23,6 +23,11 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
     setCurrentStep(4); // Jump to payment after plan selection
   };
 
+  const handleFirstFormSubmit = (data) => {
+    setFormData(data);
+    setCurrentStep(3); // Move to registration form
+  };
+
   const handleFormSubmit = (data) => {
     setFormData(data);
     setCurrentStep(2); // Move to plan selection after form
@@ -50,7 +55,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
       case 1:
         return (
           <ExplanationStep 
-            onNext={() => setCurrentStep(3)}
+            onNext={handleFirstFormSubmit}
           />
         );
       case 2:
