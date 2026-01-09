@@ -47,12 +47,9 @@ export default function PlanSelector({ onSelectPlan, onBack }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-black text-[#1E3A5F] mb-2">
-          בחר מסלול פתיחה
+        <h2 className="text-4xl font-black text-[#1E3A5F] mb-1">
+          בחר מסלול
         </h2>
-        <p className="text-gray-600 text-lg">
-          בחר את המסלול המתאים לך
-        </p>
       </motion.div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -71,50 +68,29 @@ export default function PlanSelector({ onSelectPlan, onBack }) {
           >
             {plan.recommended && (
               <div className="inline-block bg-[#27AE60] text-white px-3 py-1 rounded-full text-xs font-bold mb-3">
-                ⭐ {plan.badge}
+                ⭐ מומלץ
               </div>
             )}
 
-            <h3 className="text-2xl font-bold text-[#1E3A5F] mb-2">
-              {plan.name}
-            </h3>
-
             <div className="mb-6">
-              <div className="flex items-baseline gap-1">
+              <div className="flex items-baseline gap-2 mb-2">
                 <span className="text-4xl font-black text-[#27AE60]">
                   ₪{plan.price}
                 </span>
-                <span className="text-gray-600">לפתיחה</span>
               </div>
-              <p className="text-gray-600 mt-2">{plan.description}</p>
+              <h3 className="text-xl font-bold text-[#1E3A5F]">
+                {plan.name}
+              </h3>
             </div>
 
-            <div className="space-y-4 mb-6">
-              <div>
-                <p className="text-sm font-bold text-gray-700 mb-2">כולל:</p>
-                <ul className="space-y-2">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                      <Check className="w-4 h-4 text-[#27AE60] flex-shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {plan.notIncluded.length > 0 && (
-                <div>
-                  <p className="text-xs font-bold text-gray-500 mb-2">לא כולל:</p>
-                  <ul className="space-y-1">
-                    {plan.notIncluded.map((item, i) => (
-                      <li key={i} className="text-xs text-gray-500">
-                        • {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+            <ul className="space-y-2 mb-6">
+              {plan.features.slice(0, 3).map((feature, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                  <Check className="w-4 h-4 text-[#27AE60] flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">{feature}</span>
+                </li>
+              ))}
+            </ul>
 
             <Button
               onClick={() => onSelectPlan(plan)}

@@ -52,71 +52,37 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-black text-[#1E3A5F] mb-2">
-          סיום התשלום
+        <h2 className="text-4xl font-black text-[#1E3A5F] mb-1">
+          תשלום
         </h2>
-        <p className="text-gray-600 text-lg">
-          בחר אמצעי תשלום נוח לך
-        </p>
       </motion.div>
 
-      {/* Order Summary */}
+      {/* Order Summary - Minimal */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-6"
+        className="bg-gray-50 rounded-xl p-4 mb-4"
       >
-        <h3 className="text-xl font-bold text-[#1E3A5F] mb-4">סיכום הזמנה</h3>
-        
-        <div className="space-y-3 mb-4 pb-4 border-b border-blue-200">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-700">{selectedPlan.name}</span>
-            <span className="font-bold text-[#27AE60]">₪{price}</span>
-          </div>
-          
-          <div className="space-y-2 text-sm">
-            <p className="text-gray-600"><strong>לפרטיך:</strong></p>
-            <p className="text-gray-600">שם: {formData.fullName}</p>
-            <p className="text-gray-600">טלפון: {formData.phone}</p>
-            <p className="text-gray-600">אימייל: {formData.email}</p>
-          </div>
+        <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-200">
+          <span className="text-gray-700 font-bold">{selectedPlan.name}</span>
+          <span className="text-2xl font-black text-[#27AE60]">₪{price}</span>
         </div>
-
-        <div className="flex justify-between items-center">
-          <span className="text-lg font-bold text-[#1E3A5F]">סה"כ לתשלום:</span>
-          <span className="text-3xl font-black text-[#27AE60]">₪{price}</span>
+        
+        <div className="text-sm space-y-1">
+          <p className="text-gray-600"><strong>{formData.fullName}</strong></p>
+          <p className="text-gray-500">{formData.phone}</p>
         </div>
       </motion.div>
 
-      {/* Payment Methods */}
+      {/* Payment Methods - Simplified */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-3"
+        transition={{ delay: 0.15 }}
+        className="text-sm text-gray-600 text-center bg-blue-50 rounded-lg p-3 mb-4"
       >
-        <h3 className="text-lg font-bold text-[#1E3A5F]">אמצעי תשלום:</h3>
-        
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { icon: '💳', name: 'כרטיס אשראי' },
-            { icon: '📱', name: 'Apple Pay' },
-            { icon: '🔵', name: 'Google Pay' },
-            { icon: '⚡', name: 'ביט' }
-          ].map((method, i) => (
-            <motion.button
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.25 + i * 0.05 }}
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-[#3498DB] hover:bg-blue-50 transition-all flex flex-col items-center gap-2 font-bold text-gray-700"
-            >
-              <span className="text-2xl">{method.icon}</span>
-              <span className="text-sm">{method.name}</span>
-            </motion.button>
-          ))}
-        </div>
+        💳 כרטיס אשראי, ביט, Apple Pay, Google Pay
       </motion.div>
 
       {/* Error Message */}

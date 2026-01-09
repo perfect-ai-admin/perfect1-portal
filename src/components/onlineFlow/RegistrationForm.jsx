@@ -62,12 +62,9 @@ export default function RegistrationForm({ onSubmit, onBack, selectedPlan }) {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-black text-[#1E3A5F] mb-2">
-          פרטי פתיחה
+        <h2 className="text-4xl font-black text-[#1E3A5F] mb-1">
+          הפרטים שלך
         </h2>
-        <p className="text-gray-600 text-lg">
-          מלא את הפרטים הדרושים לפתיחת העוסק
-        </p>
       </motion.div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
