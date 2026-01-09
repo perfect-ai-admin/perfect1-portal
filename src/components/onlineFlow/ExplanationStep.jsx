@@ -14,11 +14,11 @@ export default function ExplanationStep({ onNext }) {
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-4xl font-black text-[#1E3A5F] leading-tight mb-2">
-          פתח עוסק פטור בלי לצאת מהבית
+        <h2 className="text-3xl font-black text-[#1E3A5F] leading-tight mb-2">
+          מתחילים פתיחת עוסק פטור אונליין
         </h2>
-        <p className="text-lg text-[#27AE60] font-bold">
-          100% דיגיטלי • תוך 24-48 שעות • מלא ליווי
+        <p className="text-sm text-gray-600 font-medium">
+          תהליך מקוון • חתימה דיגיטלית • בלי ריצות
         </p>
       </motion.div>
 
@@ -27,18 +27,17 @@ export default function ExplanationStep({ onNext }) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-gradient-to-r from-green-50 to-emerald-50 border border-[#27AE60]/20 rounded-xl p-4 flex items-center gap-4"
+        className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-[#3498DB]/20 rounded-xl p-3 flex items-center gap-3"
       >
-        <div className="flex -space-x-2">
-          {['👨‍💼', '👩‍💼', '👨‍🎨', '👩‍⚕️'].map((emoji, i) => (
-            <div key={i} className="w-8 h-8 rounded-full bg-white flex items-center justify-center border-2 border-[#27AE60]/20">
+        <div className="flex -space-x-1.5">
+          {['👨‍💼', '👩‍💼', '👨‍🎨'].map((emoji, i) => (
+            <div key={i} className="w-7 h-7 rounded-full bg-white flex items-center justify-center border-2 border-[#3498DB]/20 text-sm">
               {emoji}
             </div>
           ))}
         </div>
         <div>
-          <p className="text-sm font-black text-[#1E3A5F]">2000+ עצמאיים כבר פתחו</p>
-          <p className="text-xs text-gray-600">בתהליך מקוון זה בחודשים האחרונים</p>
+          <p className="text-xs font-black text-[#1E3A5F]">2000+ עצמאיים כבר התחילו</p>
         </div>
       </motion.div>
 
@@ -72,15 +71,16 @@ export default function ExplanationStep({ onNext }) {
             ))}
           </motion.div>
 
-          {/* Trust Signal - Highlighted */}
+
+
+          {/* Trust Signal - Highlighted (before CTA) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.35 }}
             className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-[#27AE60] rounded-lg p-3 text-center"
           >
-            <p className="text-sm font-black text-[#1E3A5F]">🔒 תהליך מאובטח</p>
-            <p className="text-xs text-gray-700 mt-1.5">חתימה דיגיטלית חוקית • ללא התחייבות</p>
+            <p className="text-xs font-black text-[#1E3A5F]">🔒 תהליך מאובטח • חתימה דיגיטלית חוקית • ללא התחייבות</p>
           </motion.div>
 
           {/* CTA - Strong */}
@@ -93,7 +93,7 @@ export default function ExplanationStep({ onNext }) {
               onClick={() => setShowForm(true)}
               className="w-full h-13 font-black text-base rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
             >
-              בואו נתחיל 🚀
+              יאללה, בואו נתחיל
             </Button>
           </motion.div>
         </>
