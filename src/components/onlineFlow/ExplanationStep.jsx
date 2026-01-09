@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Star, Users, Clock } from 'lucide-react';
 
 export default function ExplanationStep({ onNext }) {
+  const [showForm, setShowForm] = useState(false);
+
   return (
-    <div className="space-y-5 py-6">
+    <div className="space-y-3 py-4">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: -15 }}
@@ -39,57 +42,64 @@ export default function ExplanationStep({ onNext }) {
         </div>
       </motion.div>
 
-      {/* Key Benefits */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-3"
-      >
-        {[
-          { icon: Clock, title: 'בלי לצאת מהבית', desc: 'כל התהליך אונליין - מהנייד שלך' },
-          { icon: Users, title: 'עם ליווי מלא', desc: 'צוות מומחים בוואטסאפ 24/7' },
-          { icon: Star, title: 'מוכל וברור', desc: 'אם"א רואה חשבון + אפליקציה ניהול' }
-        ].map((item, i) => (
+      {!showForm ? (
+        <>
+          {/* Key Benefits */}
           <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.25 + i * 0.08 }}
-            className="flex gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-2"
           >
-            <item.icon className="w-6 h-6 text-[#3498DB] flex-shrink-0" />
-            <div>
-              <p className="font-bold text-gray-900 text-sm">{item.title}</p>
-              <p className="text-xs text-gray-600">{item.desc}</p>
-            </div>
+            {[
+              { icon: Clock, title: 'בלי לצאת מהבית', desc: 'כל התהליך אונליין' },
+              { icon: Users, title: 'עם ליווי מלא', desc: 'צוות מומחים בוואטסאפ' },
+              { icon: Star, title: 'מוכל וברור', desc: 'אם"א + אפליקציה' }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + i * 0.06 }}
+                className="flex gap-3 p-2.5 bg-blue-50 rounded-lg border border-blue-100"
+              >
+                <item.icon className="w-5 h-5 text-[#3498DB] flex-shrink-0" />
+                <div>
+                  <p className="font-bold text-gray-900 text-xs">{item.title}</p>
+                  <p className="text-xs text-gray-600">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
-        ))}
-      </motion.div>
 
-      {/* Trust Signal */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="text-center text-xs text-gray-500 flex items-center justify-center gap-1"
-      >
-        🔒 תהליך מאובטח • חתימה דיגיטלית חוקית • ללא התחייבות
-      </motion.div>
+          {/* Trust Signal - Highlighted */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-[#27AE60] rounded-lg p-3 text-center"
+          >
+            <p className="text-sm font-black text-[#1E3A5F]">🔒 תהליך מאובטח</p>
+            <p className="text-xs text-gray-700 mt-1.5">חתימה דיגיטלית חוקית • ללא התחייבות</p>
+          </motion.div>
 
-      {/* CTA - Strong */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.55 }}
-      >
-        <Button
-          onClick={onNext}
-          className="w-full h-14 font-black text-lg rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg hover:shadow-xl transition-all"
-        >
-          בואו נתחיל 🚀
-        </Button>
-      </motion.div>
+          {/* CTA - Strong */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.45 }}
+          >
+            <Button
+              onClick={() => setShowForm(true)}
+              className="w-full h-13 font-black text-base rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
+            >
+              בואו נתחיל 🚀
+            </Button>
+          </motion.div>
+        </>
+      ) : (
+        <QuickForm onSuccess={onNext} onBack={() => setShowForm(false)} />
+      )}
     </div>
   );
 }
