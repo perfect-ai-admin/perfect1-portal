@@ -294,7 +294,7 @@ export default function HowMuchCost() {
                 onClick={() => setShowForm(!showForm)}
                 className="inline-block px-8 py-3 bg-[#1E3A5F] text-white rounded-lg font-medium hover:bg-[#2C5282] transition"
               >
-                בדוק אם זה מתאים לך
+                השאר פרטים ונבדוק עבורך
               </button>
             </motion.div>
 
