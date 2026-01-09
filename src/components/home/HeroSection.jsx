@@ -62,16 +62,17 @@ export default function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4">
-              <Link to={createPageUrl('Contact')} className="w-full sm:w-auto">
-                <Button 
-                  size="lg" 
-                  className="w-full sm:w-auto h-14 sm:h-16 md:h-20 px-6 sm:px-8 md:px-12 text-base sm:text-lg md:text-2xl font-black rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#27AE60] via-[#2ECC71] to-[#27AE60] hover:from-[#2ECC71] hover:via-[#27AE60] hover:to-[#2ECC71] text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse-glow"
-                >
-                  🚀 בוא נתחיל!
-                  <ArrowLeft className="mr-2 sm:mr-3 w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" />
-                </Button>
-              </Link>
+             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4">
+               <button 
+                 onClick={() => {
+                   const form = document.querySelector('[data-lead-form="bottom"]');
+                   if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                 }}
+                 className="w-full sm:w-auto h-14 sm:h-16 md:h-20 px-6 sm:px-8 md:px-12 text-base sm:text-lg md:text-2xl font-black rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#27AE60] via-[#2ECC71] to-[#27AE60] hover:from-[#2ECC71] hover:via-[#27AE60] hover:to-[#2ECC71] text-white shadow-2xl hover:shadow-3xl transition-all hover:scale-105 animate-pulse-glow flex items-center justify-center gap-2"
+               >
+                 🚀 בוא נתחיל!
+                 <ArrowLeft className="mr-2 sm:mr-3 w-4 sm:w-5 md:w-6 h-4 sm:h-5 md:h-6" />
+               </button>
               <a href="tel:0502277087" className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
