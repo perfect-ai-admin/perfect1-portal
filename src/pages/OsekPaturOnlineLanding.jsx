@@ -286,11 +286,12 @@ export default function OsekPaturOnlineLanding() {
                   <div className="text-center mb-6">
                     <img 
                       src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='none' stroke='%233498DB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='3' width='20' height='14' rx='2' ry='2'/%3E%3Cline x1='8' y1='21' x2='16' y2='21'/%3E%3Cline x1='12' y1='17' x2='12' y2='21'/%3E%3C/svg%3E"
-                      alt="פתיחת עוסק פטור אונליין 100% דיגיטלי - Perfect One"
+                      alt="פתיחת עוסק פטור אונליין 100% דיגיטלי"
                       className="w-16 h-16 mx-auto mb-4"
                       width="64"
                       height="64"
-                      loading="eager"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">תהליך מקוון לחלוטין</h3>
                     <p className="text-gray-600">מהספה שלך, בלי ריצות</p>
