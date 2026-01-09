@@ -86,7 +86,7 @@ export default function Pricing() {
               💰 מחירון שקוף ללא הפתעות
             </span>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              מחירון עוסק פטור בישראל 2024
+              מחירון עוסק פטור בישראל 2026
             </h1>
             <div className="text-xl text-white/80 max-w-2xl mx-auto">
               <InternalLinker 
