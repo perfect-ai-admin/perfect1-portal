@@ -7,12 +7,34 @@ export default function WhatsAppButton({ message = "היי, הגעתי מהאת�
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 2000);
-    const tooltipTimer = setTimeout(() => setShowTooltip(true), 5000);
+    const checkFlowStatus = () => {
+      // Don't show if flow is active (modal open)
+      const flowActive = document.body.classList.contains('flow-active');
+      if (!flowActive) {
+        const timer = setTimeout(() => setIsVisible(true), 2000);
+        const tooltipTimer = setTimeout(() => setShowTooltip(true), 5000);
+        return () => {
+          clearTimeout(timer);
+          clearTimeout(tooltipTimer);
+        };
+      } else {
+        setIsVisible(false);
+        setShowTooltip(false);
+      }
+    };
+
+    const cleanup = checkFlowStatus();
+    
+    // Check on flow status change
+    const observer = new MutationObserver(() => {
+      checkFlowStatus();
+    });
+    
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     
     return () => {
-      clearTimeout(timer);
-      clearTimeout(tooltipTimer);
+      cleanup?.();
+      observer.disconnect();
     };
   }, []);
 
