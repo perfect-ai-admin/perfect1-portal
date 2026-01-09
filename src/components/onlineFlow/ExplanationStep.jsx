@@ -73,21 +73,29 @@ export default function ExplanationStep({ onNext }) {
 
 
 
-          {/* Trust Signal - Highlighted (before CTA) */}
+          {/* Trust Signal - Highlighted (after CTA) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.35 }}
-            className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-[#27AE60] rounded-lg p-3 text-center"
+            transition={{ delay: 0.5 }}
+            className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-[#27AE60] rounded-lg p-3 space-y-1 text-center"
           >
-            <p className="text-xs font-black text-[#1E3A5F]">🔒 תהליך מאובטח • חתימה דיגיטלית חוקית • ללא התחייבות</p>
+            <div className="flex items-center justify-center gap-2 text-[#27AE60] font-black text-xs">
+              <span>🔒 תהליך מאובטח</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-[#1E3A5F] font-bold text-xs">
+              <span>✍️ חתימה דיגיטלית חוקית</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-[#27AE60] font-bold text-xs">
+              <span>✔️ ללא התחייבות</span>
+            </div>
           </motion.div>
 
           {/* CTA - Strong */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.45 }}
+            transition={{ delay: 0.35 }}
           >
             <Button
               onClick={() => setShowForm(true)}
