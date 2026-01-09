@@ -47,46 +47,78 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
   const price = planPrices[selectedPlan.id];
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
+    <div className="space-y-3">
+      {/* Header - ברור ומרגיע */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-3xl font-black text-[#1E3A5F] mb-1">
-          סיום התשלום
+        <h2 className="text-2xl font-black text-[#1E3A5F] mb-0.5">
+          תשלום מאובטח – פתיחת עוסק פטור אונליין
         </h2>
-        <p className="text-sm text-gray-600">צעד אחרון - בואו נסיים</p>
+        <p className="text-xs text-gray-600">עוד רגע מסיימים, אנחנו מטפלים בכל השאר</p>
       </motion.div>
 
-      {/* Order Summary - Clear */}
+      {/* Value Proposition */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-3 space-y-2"
+        className="bg-blue-50 border border-blue-200 rounded-lg p-2.5 text-xs text-gray-700 leading-relaxed"
       >
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-xs text-gray-600">מסלול:</p>
-            <p className="text-lg font-black text-[#1E3A5F]">{selectedPlan.name}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-gray-600">סה"כ:</p>
-            <p className="text-3xl font-black text-[#27AE60]">₪{price}</p>
-          </div>
-        </div>
+        <p className="font-semibold mb-1">אנחנו מטפלים בפתיחת התיק מול הרשויות.</p>
+        <p>אין צורך בטפסים, אין התעסקות מול מס הכנסה או מע״מ.</p>
       </motion.div>
 
-      {/* Payment Security */}
+      {/* Amount - שקיפות מלאה */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.08 }}
-        className="bg-green-50 border border-green-200 rounded-lg p-2.5 text-center text-xs"
+        transition={{ delay: 0.1 }}
+        className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-[#27AE60] rounded-lg p-3 space-y-1.5"
       >
-        <p className="font-bold text-gray-800 mb-1.5">💳 תשלום מאובטח</p>
-        <p className="text-gray-700">כרטיס אשראי • ביט • Apple Pay • Google Pay</p>
+        <p className="text-xs text-gray-600">סכום לתשלום:</p>
+        <p className="text-3xl font-black text-[#27AE60]">₪{price}</p>
+        <p className="text-xs text-gray-600">ללא חיובים נוספים • תשלום חד־פעמי בלבד</p>
+      </motion.div>
+
+      {/* Trust Section - Trust Indicators */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="bg-gray-50 border border-gray-200 rounded-lg p-2.5 space-y-1.5 text-xs"
+      >
+        <p className="font-semibold text-gray-800 mb-1.5">אמון וביטחון:</p>
+        <div className="space-y-1">
+          <p className="flex items-center gap-2">
+            <span>🔒</span>
+            <span>תשלום מאובטח</span>
+          </p>
+          <p className="flex items-center gap-2">
+            <span>💳</span>
+            <span>נתוני אשראי אינם נשמרים באתר</span>
+          </p>
+          <p className="flex items-center gap-2">
+            <span>✔️</span>
+            <span>עומד בתקן אבטחה PCI</span>
+          </p>
+        </div>
+      </motion.div>
+
+      {/* What Happens Next */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-cyan-50 border border-cyan-200 rounded-lg p-2.5 space-y-1.5 text-xs"
+      >
+        <p className="font-semibold text-gray-800">מה קורה לאחר התשלום?</p>
+        <div className="space-y-0.5 text-gray-700">
+          <p>• נשלח אישור מיידי למייל</p>
+          <p>• הפרטים נבדקים</p>
+          <p>• פתיחת התיק מתבצעת תוך עד 48 שעות</p>
+        </div>
       </motion.div>
 
       {/* Error Message */}
@@ -104,32 +136,42 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="space-y-2 pt-2"
+        transition={{ delay: 0.25 }}
+        className="space-y-2 pt-1"
       >
-        <Button
+        <button
           onClick={handlePayment}
           disabled={isProcessing}
-          className="w-full h-13 font-black rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg flex items-center justify-center gap-2 text-base"
+          className="w-full h-12 font-black rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg flex items-center justify-center gap-2 text-base disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isProcessing ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              שולם...
+              עיבוד התשלום...
             </>
           ) : (
             <>
               🔐 שלם ₪{price}
             </>
           )}
-        </Button>
+        </button>
         <button
           onClick={onBack}
           disabled={isProcessing}
-          className="w-full px-3 h-10 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium disabled:opacity-50"
+          className="w-full px-3 h-10 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-xs text-gray-600 font-medium disabled:opacity-50"
         >
           ← חזור
         </button>
+      </motion.div>
+
+      {/* Control Info - Subtle */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="text-center text-xs text-gray-500"
+      >
+        ניתן לעצור את התהליך לפני שליחת התיק לרשויות.
       </motion.div>
     </div>
   );
