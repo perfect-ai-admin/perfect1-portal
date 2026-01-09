@@ -70,17 +70,7 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         <p>אין צורך בטפסים, אין התעסקות מול מס הכנסה או מע״מ.</p>
       </motion.div>
 
-      {/* Amount - שקיפות מלאה */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-[#27AE60] rounded-lg p-3 space-y-1.5"
-      >
-        <p className="text-xs text-gray-600">סכום לתשלום:</p>
-        <p className="text-3xl font-black text-[#27AE60]">₪{price}</p>
-        <p className="text-xs text-gray-600">ללא חיובים נוספים • תשלום חד־פעמי בלבד</p>
-      </motion.div>
+
 
       {/* Trust Section - Trust Indicators */}
       <motion.div
@@ -162,6 +152,7 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         >
           ← חזור
         </button>
+        <p className="text-xs font-bold text-center text-gray-700">תשלום חד־פעמי • ללא חיובים נוספים</p>
       </motion.div>
 
       {/* Control Info - Subtle */}
