@@ -118,16 +118,16 @@ export default function Services() {
         schema={servicesSchema}
       />
       <main className="pt-20">
-      {/* Breadcrumbs */}
-      <Breadcrumbs 
-        items={[
-          { label: "דף הבית", path: createPageUrl('Home') },
-          { label: "שירותים" }
-        ]}
-      />
-
-      {/* Services Grid - Top Section */}
-      <section className="py-16 bg-white border-b border-gray-200">
+            {/* Breadcrumbs + Services Grid - Top Section */}
+            <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-16 border-b border-gray-200">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                <Breadcrumbs 
+                  items={[
+                    { label: "דף הבית", path: createPageUrl('Home') },
+                    { label: "שירותים" }
+                  ]}
+                />
+              </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {services.map((service, index) => (
