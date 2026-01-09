@@ -37,9 +37,9 @@ export default function Breadcrumbs({ items }) {
       <ol className="flex items-center gap-2 text-xs">
            {items.map((item, index) => (
              <li key={index} className="flex items-center gap-2">
-               {item.path ? (
+               {item.url ? (
                  <Link 
-                   to={item.path}
+                   to={createPageUrl(item.url)}
                    className="text-white/70 hover:text-white transition-colors"
                  >
                    {item.label}
