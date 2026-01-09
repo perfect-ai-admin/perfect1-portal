@@ -207,6 +207,13 @@ export default function BlogPost() {
                   content={post.content.replace(/\n/g, '<br />')} 
                   currentPage="BlogPost" 
                 />
+                
+                {/* SEO Internal Links */}
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    מעוניינים לפתוח עוסק? קראו את <a href="/OsekPaturLanding" className="text-[#1E3A5F] font-bold hover:underline">המדריך המלא לפתיחת עוסק פטור</a> או למדו על <a href="/OsekPaturOnlineLanding" className="text-[#1E3A5F] font-bold hover:underline">פתיחת עוסק פטור אונליין</a> בלי לצאת מהבית.
+                  </p>
+                </div>
               </div>
 
               {/* Lead Form */}
