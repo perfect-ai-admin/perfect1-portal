@@ -39,9 +39,9 @@ export default function PricingCost() {
     <>
       <LocalBusinessSchema />
       <SEOOptimized
-        title="כמה עולה לפתוח עוסק פטור? פירוט מחירים ואפשרויות פתיחה 2024"
+        title="כמה עולה לפתוח עוסק פטור? פירוט מחירים ואפשרויות פתיחה"
         description="השוואת עלויות פתיחת עוסק פטור: לבד, דרך רואה חשבון, או אונליין ב-199 ₪. מידע מלא ללא התחייבות."
-        keywords="כמה עולה לפתוח עוסק פטור, עלות פתיחת עוסק פטור, מחיר עוסק פטור, פתיחת עוסק פטור מחיר, עוסק פטור אונליין"
+        keywords="כמה עולה לפתוח עוסק פטור, עלות פתיחת עוסק פטור, מחיר פתיחת עוסק פטור, פתיחת עוסק פטור אונליין מחיר, עוסק פטור אונליין"
         canonical="https://perfect1.co.il/pricing-cost"
         schema={pricingSchema}
       />
@@ -63,7 +63,7 @@ export default function PricingCost() {
               animate={{ opacity: 1, y: 0 }}
             >
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                כמה עולה לפתוח עוסק פטור?
+                כמה עולה לפתוח עוסק פטור? פירוט מחירים ואפשרויות פתיחה
               </h1>
               <p className="text-xl text-white/80">
                 השוואה מלאה של מחירים ואפשרויות פתיחה לעצמאים בישראל
@@ -211,7 +211,7 @@ export default function PricingCost() {
             </motion.div>
 
             <MicroCTA 
-              text="עדיין לא בטוח איזו דרך בחרת?" 
+              text="עדיין בתהליך ההחלטה?" 
               cta="בדוק אם זה מתאים לך" 
               variant="subtle" 
             />
@@ -319,31 +319,63 @@ export default function PricingCost() {
               className="mb-12"
             >
               <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                שאלות נפוצות
+                שאלות נפוצות על פתיחת עוסק פטור ועלויות
               </h2>
               <div className="space-y-4">
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-start gap-3 mb-3">
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם הסכום החוקי לפתיחת עוסק פטור?</h3>
+                    <h3 className="font-bold text-gray-900">כמה עולה לפתוח עוסק פטור בשנת 2025?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">כן. פתיחת עוסק פטור עצמה היא הליך משפטי שממשלתי, ללא עלויות ממשלתיות. כל עלות היא לשירות חיצוני (רואה חשבון, מישהו שמעזור לך)</p>
+                  <p className="text-gray-700 ml-8">עלות פתיחת עוסק פטור משתנה לפי השיטה: לבד ללא עלות כספית (אך עם סיכונים), דרך רואה חשבון 200-500 ₪, ודרך פתרון אונליין 199 ₪ במחיר קבוע.</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-start gap-3 mb-3">
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">מה ההבדל בין הפתרון האונליין ל-199 ₪ לרואה חשבון?</h3>
+                    <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין זולה יותר?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">הפתרון האונליין הוא תהליך דיגיטלי גרידא, מהנייד שלך. רואה חשבון בדרך כלל יציע גם ליווי שוטף, אך זה עלות נוספת. ל-199 ₪ זה רק הפתיחה.</p>
+                  <p className="text-gray-700 ml-8">כן, 199 ₪ היא בדרך כלל זולה משיטות אחרות, ובמיוחד בהשוואה ליווי רובה מלא דרך רואה חשבון. בנוסף, זה מחיר שקוף ללא הפתעות.</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-start gap-3 mb-3">
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם 199 ₪ זה כולל דוח שנתי?</h3>
+                    <h3 className="font-bold text-gray-900">האם אפשר לפתוח עוסק פטור לבד בלי רואה חשבון?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">לא. דוח שנתי (טופס 1301) הוא שירות נוסף שמטופל בנפרד. אך הפתיחה של 199 ₪ היא ממש סגורה ובלי הפתעות.</p>
+                  <p className="text-gray-700 ml-8">כן, אפשר לפתוח לבד בחינם, אך זה דורש ידע במילוי טפסים, בדיקה של זכאות, והבנת דוחות דיווח. רוב העצמאים מעדיפים ליווי כדי להימנע מטעויות.</p>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <div className="flex items-start gap-3 mb-3">
+                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
+                    <h3 className="font-bold text-gray-900">מה ההבדל בין פתיחה אונליין לפתיחה דרך רואה חשבון?</h3>
+                  </div>
+                  <p className="text-gray-700 ml-8">פתיחה אונליין היא תהליך דיגיטלי גרידא, מהנייד שלך. רואה חשבון בדרך כלל מציע גם ליווי שוטף וייעוץ מתמשך, אך זה עלות נוספת. לכל אחת יתרונות משלה בהתאם לצרכים שלך.</p>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <div className="flex items-start gap-3 mb-3">
+                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
+                    <h3 className="font-bold text-gray-900">האם יש עלויות נוספות אחרי פתיחת עוסק פטור?</h3>
+                  </div>
+                  <p className="text-gray-700 ml-8">פתיחת עוסק פטור עצמה אינה כוללת עלויות ממשלתיות. אך יש שירותים נוספים אופציונליים כמו דוח שנתי, רישום למע"מ, או ליווי שוטף - כל אלה בחיובים נפרדים.</p>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <div className="flex items-start gap-3 mb-3">
+                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
+                    <h3 className="font-bold text-gray-900">כמה זמן לוקח לפתוח עוסק פטור?</h3>
+                  </div>
+                  <p className="text-gray-700 ml-8">כאשר פותחים דרך רואה חשבון, בדרך כלל לוקח כמה ימים עד שנה אחת. דרך פתרון אונליין, התהליך בדרך כלל מסתיים תוך 24-72 שעות.</p>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <div className="flex items-start gap-3 mb-3">
+                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
+                    <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה ומע״מ?</h3>
+                  </div>
+                  <p className="text-gray-700 ml-8">כן, הפתיחה כוללת טיפול ממלא ומול מס הכנסה וביטוח לאומי. פטור ממע"מ הוא אוטומטי לעוסקים הזכאים. שירותים נוספים כמו רישום למע"מ מטופלים בנפרד.</p>
                 </div>
               </div>
             </motion.div>
@@ -361,15 +393,13 @@ export default function PricingCost() {
               <p className="text-white/80 mb-6 text-lg">
                 אם אתה עדיין בספקות, אנחנו כאן כדי לעזור
               </p>
-              <Link to={createPageUrl('Contact')}>
-                <Button 
-                  size="lg"
-                  className="h-14 px-8 text-lg font-bold rounded-full bg-white text-[#1E3A5F] hover:bg-gray-100"
-                >
-                  השאר פרטים ונבדוק עבורך
-                  <ArrowLeft className="mr-2 w-5 h-5" />
-                </Button>
-              </Link>
+              <button 
+                onClick={() => document.querySelector('[data-lead-form]')?.scrollIntoView({ behavior: 'smooth' })}
+                className="h-14 px-8 text-lg font-bold rounded-full bg-white text-[#1E3A5F] hover:bg-gray-100 transition-all"
+              >
+                רוצה לדעת אם זה המסלול הנכון?
+                <ArrowLeft className="mr-2 w-5 h-5 inline" />
+              </button>
             </motion.div>
           </div>
         </section>
@@ -387,10 +417,10 @@ export default function PricingCost() {
                 </p>
               </div>
               <div className="lg:col-span-1">
-                <div className="sticky top-28">
+                <div className="sticky top-28" data-lead-form>
                   <LeadForm 
-                    title="רוצה להתחיל?"
-                    subtitle="השאר פרטים ונחזור אליך"
+                    title="רוצה ייעוץ אישי?"
+                    subtitle="השאר פרטים ונבחן מה מתאים לך"
                     sourcePage="עמוד מחיר - כמה עולה לפתוח עוסק פטור"
                     variant="card"
                   />
