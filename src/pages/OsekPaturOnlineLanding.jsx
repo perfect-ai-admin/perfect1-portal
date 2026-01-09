@@ -11,6 +11,41 @@ import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
 import OnlineFlowModal from '../components/onlineFlow/OnlineFlowModal';
 
+function FAQItem({ question, answer }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:border-[#3498DB]/50 transition-all"
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-6 py-4 text-right flex items-center justify-between hover:bg-gray-50 transition-colors"
+      >
+        <p className="text-lg font-bold text-[#1E3A5F]">{question}</p>
+        <div className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+          <svg className="w-5 h-5 text-[#3498DB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </button>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="px-6 py-4 bg-gray-50 border-t border-gray-200"
+        >
+          <p className="text-gray-700 leading-relaxed">{answer}</p>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}
+
 export default function OsekPaturOnlineLanding() {
   const [formData, setFormData] = useState({
     name: '',
@@ -104,9 +139,9 @@ export default function OsekPaturOnlineLanding() {
       <PageTracker pageUrl="/osek-patur-online" pageType="landing" />
       <FAQSchema faqs={faqs} />
       <SEOOptimized
-        title="פתיחת עוסק פטור אונליין - 100% דיגיטלי + ליווי מלא | Perfect One"
-        description="פתיחת עוסק פטור אונליין בלי לצאת מהבית! תהליך מקוון 100% - חתימה דיגיטלית, אפליקציה לניהול העסק, ליווי חודשי מלא והכנת דוח שנתי. ☎ 0502277087"
-        keywords="פתיחת עוסק פטור אונליין, פתיחת עוסק אונליין, פתיחת עוסק פטור דיגיטלי, פתיחת עוסק מהבית, פתיחת עוסק ללא יציאה מהבית, חתימה דיגיטלית עוסק פטור"
+        title="פתיחת עוסק פטור אונליין | פתיחה מהירה, ליווי מלא"
+        description="פתיחת עוסק פטור אונליין בצורה מהירה ומסודרת. בדיקת התאמה, מילוי טפסים, והכוונה מלאה עד פתיחת התיק. השאר פרטים ונחזור אליך."
+        keywords="פתיחת עוסק פטור אונליין, פתיחת עוסק אונליין, פתיחת עוסק פטור דיגיטלי, פתיחת עוסק מהבית"
         canonical="https://perfect1.co.il/osek-patur-online"
         schema={{
           "@context": "https://schema.org",
