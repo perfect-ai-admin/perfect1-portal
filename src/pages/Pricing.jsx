@@ -6,6 +6,9 @@ import CTASection from '../components/home/CTASection';
 import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import { CheckCircle, Info } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function Pricing() {
   // Enhanced Pricing Schema with isPartOf and sameAs

@@ -11,6 +11,7 @@ import FreelancerLanding from './pages/FreelancerLanding';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
 import Home from './pages/Home';
+import HowMuchCost from './pages/HowMuchCost';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
 import MakeupArtistLanding from './pages/MakeupArtistLanding';
@@ -45,7 +46,6 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import HowMuchCost from './pages/HowMuchCost';
 import __Layout from './Layout.jsx';
 
 
@@ -63,6 +63,7 @@ export const PAGES = {
     "GraphicDesignerLanding": GraphicDesignerLanding,
     "HairStylistLanding": HairStylistLanding,
     "Home": Home,
+    "HowMuchCost": HowMuchCost,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
     "MakeupArtistLanding": MakeupArtistLanding,
@@ -97,7 +98,6 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "HowMuchCost": HowMuchCost,
 }
 
 export const pagesConfig = {
