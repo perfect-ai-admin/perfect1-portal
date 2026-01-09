@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import LeadForm from '../forms/LeadForm';
+import UnifiedLeadForm from '../forms/UnifiedLeadForm';
 
 export default function CTASection() {
   return (
@@ -50,16 +50,20 @@ export default function CTASection() {
           </motion.div>
 
           {/* Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <LeadForm 
-              variant="card"
-              sourcePage="דף הבית - CTA"
-            />
-          </motion.div>
+           <motion.div
+             initial={{ opacity: 0, x: 30 }}
+             whileInView={{ opacity: 1, x: 0 }}
+             viewport={{ once: true }}
+           >
+             <UnifiedLeadForm 
+               variant="card"
+               title="🚀 התחל את העסק שלך היום"
+               subtitle="מלא פרטים ונחזור אליך תוך שעות"
+               ctaText="בדיקה ללא התחייבות"
+               fields={["name", "phone", "email"]}
+               sourcePage="דף הבית - CTA"
+             />
+           </motion.div>
         </div>
       </div>
     </section>

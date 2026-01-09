@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Zap, Clock, Shield } from 'lucide-react';
-import LeadForm from '../forms/LeadForm';
+import UnifiedLeadForm from '../forms/UnifiedLeadForm';
 
 export default function QuickCTASection() {
   return (
@@ -89,11 +89,13 @@ export default function QuickCTASection() {
               <p className="text-sm sm:text-base text-gray-600">נחזור אליך תוך שעות ספורות</p>
             </div>
             
-            <LeadForm 
+            <UnifiedLeadForm 
+              variant="default"
               title=""
               subtitle=""
+              ctaText="בדיקה ללא התחייבות"
+              fields={["name", "phone"]}
               sourcePage="דף בית - CTA מהיר אחרי תהליך"
-              variant="inline"
             />
 
             <div className="mt-6 pt-6 border-t border-gray-100 text-center">
