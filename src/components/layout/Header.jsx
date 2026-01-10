@@ -27,7 +27,6 @@ export default function Header() {
   const menuItems = [
     { name: 'פתיחת עוסק פטור', href: createPageUrl('OsekPaturLanding') },
     { name: 'פתיחת עוסק אונליין', href: createPageUrl('OsekPaturOnlineLanding') },
-    { name: 'סגירת עסק בישראל', href: createPageUrl('CloseBusinessLanding') },
     { name: 'ליווי חודשי', href: createPageUrl('ServicePage') + '?service=livui-chodshi' },
     { name: 'דוח שנתי', href: createPageUrl('ServicePage') + '?service=doch-shnati' },
     { name: 'אפליקציה לעצמאים', href: createPageUrl('InvoicesAppLanding') },
@@ -111,6 +110,14 @@ export default function Header() {
               className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
             >
               מחירון
+            </Link>
+
+            <Link
+              to={createPageUrl('CloseBusinessLanding')}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
+            >
+              סגירת עסק
             </Link>
 
             <Link
@@ -267,6 +274,15 @@ export default function Header() {
                           className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
                           מחירון
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to={createPageUrl('CloseBusinessLanding')}
+                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        >
+                          סגירת עסק
                         </Link>
                       </li>
                       <li>
