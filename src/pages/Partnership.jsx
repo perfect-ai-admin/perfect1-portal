@@ -254,19 +254,33 @@ export default function Partnership() {
           <motion.div variants={itemVariants}>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">הניתוח העסקי – דאשבורד</h2>
             
-            {/* KPI קלאסי */}
-            <div className="grid md:grid-cols-4 gap-4 mb-8">
-              {[
-                { label: 'הכנסה לקוח שנתי', value: '2,000 ₪', color: 'blue' },
-                { label: 'עלות טיפול', value: '450 ₪', color: 'red' },
-                { label: 'רווח ברוטו', value: '1,550 ₪', color: 'yellow' },
-                { label: 'עמלת מכירות', value: '450 ₪', color: 'purple' }
-              ].map((kpi, idx) => (
-                <div key={idx} className={`bg-${kpi.color}-50 border border-${kpi.color}-200 p-4 rounded-lg`}>
-                  <p className={`text-sm text-${kpi.color}-900 mb-2`}>{kpi.label}</p>
-                  <p className={`text-2xl font-bold text-${kpi.color}-600`}>{kpi.value}</p>
-                </div>
-              ))}
+            {/* דוח הכנסה והוצאות */}
+            <div className="bg-white border border-gray-300 rounded-lg p-8 mb-8">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">דוח הכנסה וזרם עלויות – לקוח בודד (שנתי)</h3>
+              
+              <table className="w-full text-sm">
+                <tbody>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <td className="py-3 px-4 font-bold text-gray-900">הכנסה ממוצעת</td>
+                    <td className="py-3 px-4 text-right text-gray-700">2,000 ₪</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td colSpan="2" className="py-3 px-4 font-bold text-gray-900 bg-red-50">הוצאות:</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-3 px-4 text-gray-700">&nbsp;&nbsp; פתיחה וטיפול טכני</td>
+                    <td className="py-3 px-4 text-right text-red-600">− 100 ₪</td>
+                  </tr>
+                  <tr className="border-b border-gray-200">
+                    <td className="py-3 px-4 text-gray-700">&nbsp;&nbsp; עלות שיווק</td>
+                    <td className="py-3 px-4 text-right text-red-600">− 350 ₪</td>
+                  </tr>
+                  <tr className="border-b-2 border-gray-400 bg-green-50">
+                    <td className="py-3 px-4 font-bold text-gray-900">רווח ברוטו</td>
+                    <td className="py-3 px-4 text-right font-bold text-green-700">1,550 ₪</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             {/* פוטנציאל מכירות שנתי */}
