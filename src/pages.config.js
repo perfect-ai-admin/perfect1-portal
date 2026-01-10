@@ -10,9 +10,7 @@ import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
-import Home from './pages/Home';
 import LashArtistLanding from './pages/LashArtistLanding';
-import LeadsAdmin from './pages/LeadsAdmin';
 import MakeupArtistLanding from './pages/MakeupArtistLanding';
 import MakeupArtistLandingNew from './pages/MakeupArtistLandingNew';
 import ManicuristLanding from './pages/ManicuristLanding';
@@ -22,9 +20,6 @@ import OsekPaturLanding from './pages/OsekPaturLanding';
 import OsekPaturOnline from './pages/OsekPaturOnline';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import PhotographerLanding from './pages/PhotographerLanding';
-import Pricing from './pages/Pricing';
-import PricingCost from './pages/PricingCost';
-import PricingLanding from './pages/PricingLanding';
 import ProfessionLanding from './pages/ProfessionLanding';
 import ProfessionPage from './pages/ProfessionPage';
 import Professions from './pages/Professions';
@@ -45,6 +40,11 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import LeadsAdmin from './pages/LeadsAdmin';
+import PricingCost from './pages/PricingCost';
+import PricingLanding from './pages/PricingLanding';
+import Pricing from './pages/Pricing';
+import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
@@ -61,9 +61,7 @@ export const PAGES = {
     "FreelancerLanding": FreelancerLanding,
     "GraphicDesignerLanding": GraphicDesignerLanding,
     "HairStylistLanding": HairStylistLanding,
-    "Home": Home,
     "LashArtistLanding": LashArtistLanding,
-    "LeadsAdmin": LeadsAdmin,
     "MakeupArtistLanding": MakeupArtistLanding,
     "MakeupArtistLandingNew": MakeupArtistLandingNew,
     "ManicuristLanding": ManicuristLanding,
@@ -73,9 +71,6 @@ export const PAGES = {
     "OsekPaturOnline": OsekPaturOnline,
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
     "PhotographerLanding": PhotographerLanding,
-    "Pricing": Pricing,
-    "PricingCost": PricingCost,
-    "PricingLanding": PricingLanding,
     "ProfessionLanding": ProfessionLanding,
     "ProfessionPage": ProfessionPage,
     "Professions": Professions,
@@ -96,6 +91,11 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "LeadsAdmin": LeadsAdmin,
+    "PricingCost": PricingCost,
+    "PricingLanding": PricingLanding,
+    "Pricing": Pricing,
+    "Home": Home,
 }
 
 export const pagesConfig = {

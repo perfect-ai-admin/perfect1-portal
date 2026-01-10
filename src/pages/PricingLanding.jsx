@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Phone, MessageCircle, Shield, Clock, TrendingDown, DollarSign, FileText, Users, Sparkles, AlertCircle } from 'lucide-react';
+import { CheckCircle, AlertTriangle, TrendingUp, Clock, Shield, DollarSign, ArrowLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
-import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { createPageUrl } from '@/utils';
+import { Link } from 'react-router-dom';
 
 export default function PricingLanding() {
   const [formData, setFormData] = useState({
@@ -16,7 +23,6 @@ export default function PricingLanding() {
     email: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,10 +32,9 @@ export default function PricingLanding() {
     try {
       await base44.entities.Lead.create({
         ...formData,
-        source_page: 'דף נחיתה - מחיר',
+        source_page: 'כמה עולה לפתוח עוסק פטור',
         status: 'new'
       });
-
       window.location.href = '/ThankYou';
     } catch (err) {
       console.error(err);
@@ -42,39 +47,56 @@ export default function PricingLanding() {
     document.getElementById('pricing-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const faqs = [
+    {
+      question: "כמה עולה לפתוח עוסק פטור בשנת 2026?",
+      answer: "העלות משתנה לפי הדרך שבה אתה פותח: באופן עצמאי - אין עלות ישירה, דרך רואה חשבון - בין 500-1,500 ₪ בממוצע, ודרך שירות אונליין - מחיר קבוע של 199 ₪. כל אפשרות כוללת יתרונות וחסרונות שונים."
+    },
+    {
+      question: "האם פתיחת עוסק פטור אונליין זולה יותר?",
+      answer: "כן, פתיחה אונליין היא בדרך כלל חסכונית יותר מרואה חשבון מסורתי. המחיר הקבוע של 199 ₪ כולל את כל הטיפול מול הרשויות, ללא עלויות נוספות או הפתעות."
+    },
+    {
+      question: "האם אפשר לפתוח עוסק פטור לבד?",
+      answer: "כן, אפשר לפתוח לבד דרך אתרי הרשויות ללא עלות ישירה. אבל חשוב לדעת שטעויות בתהליך עלולות לעלות לך יקר בהמשך - בחירת סיווג שגוי, תיאום מס לא נכון, או הצהרות מוטעות יכולים להסתבך."
+    },
+    {
+      question: "מה שונה בין פתיחה אונליין לפתיחה דרך רואה חשבון?",
+      answer: "פתיחה אונליין היא בדרך כלל מהירה יותר, זולה יותר, ונעשית כולה דיגיטלית ללא פגישות. רואה חשבון מציע ליווי אישי ופגישה פנים אל פנים, אבל במחיר גבוה יותר. שני המסלולים מטפלים במלוא התהליך מול הרשויות."
+    },
+    {
+      question: "האם יש עלויות נוספות אחרי פתיחת עוסק פטור?",
+      answer: "אין עלויות חובה לרשויות, אבל יש להתחשב בליווי חודשי והגשת דוח שנתי. אם אתה עובד עם רואה חשבון או שירות ליווי, יהיו תשלומים חודשיים בהתאם לחבילה שבחרת."
+    },
+    {
+      question: "כמה זמן לוקח לפתוח עוסק פטור?",
+      answer: "התהליך עצמו לוקח בין 24-72 שעות בממוצע, תלוי בדרך הפתיחה. פתיחה אונליין היא בדרך כלל המהירה ביותר - תוך יום עבודה אחד. פתיחה עצמאית יכולה לקחת זמן רב יותר בגלל צורך בהבנת המערכות השונות."
+    },
+    {
+      question: "האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה ומע״מ?",
+      answer: "כן, פתיחה אונליין כוללת טיפול מלא מול כל הרשויות: מס הכנסה, מע״מ (רישום כפטור), וביטוח לאומי. הכל נעשה עבורך ללא צורך לרוץ בין משרדים או למלא טפסים מסובכים."
+    }
+  ];
+
   return (
     <>
       <PageTracker pageUrl="/pricing-landing" pageType="landing" />
       <SEOOptimized
-        title="כמה עולה לפתוח עוסק פטור? מחיר ברור וללא הפתעות | Perfect One"
-        description="מחפש לדעת כמה עולה לפתוח עוסק פטור? מחיר ברור, שקוף וידוע מראש. בלי אותיות קטנות, בלי הפתעות. פתיחה אונליין וליווי מלא. 0502277087"
-        keywords="כמה עולה לפתוח עוסק פטור, מחיר רואה חשבון לעוסק פטור, עלות פתיחת תיק, מחיר חשבונאי לעוסק פטור, מחיר פתיחת עוסק פטור"
+        title="כמה עולה לפתוח עוסק פטור? פירוט מחירים ואפשרויות פתיחה 2026"
+        description="השוואת עלויות פתיחת עוסק פטור: לבד, דרך רואה חשבון, או אונליין ב-199 ₪. מידע מלא ללא התחייבות."
+        keywords="כמה עולה לפתוח עוסק פטור, עלות פתיחת עוסק פטור, מחיר פתיחת עוסק פטור, פתיחת עוסק פטור אונליין מחיר, עוסק פטור אונליין"
         canonical="https://perfect1.co.il/pricing-landing"
         schema={{
           "@context": "https://schema.org",
-          "@type": "WebPage",
-          "name": "כמה עולה לפתוח עוסק פטור - מחירים שקופים",
-          "description": "מחיר ברור ושקוף לפתיחת עוסק פטור בישראל",
-          "url": "https://perfect1.co.il/pricing-landing",
-          "about": {
-            "@type": "Thing",
-            "name": "מחיר פתיחת עוסק פטור",
-            "description": "תמחור שקוף לפתיחת עוסקים פטורים"
-          },
-          "isPartOf": {
-            "@type": "WebSite",
-            "name": "Perfect One",
-            "url": "https://perfect1.co.il"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "Perfect One",
-            "sameAs": [
-              "https://www.facebook.com/perfect1.co.il",
-              "https://www.linkedin.com/company/perfect1",
-              "https://www.instagram.com/perfect1.co.il"
-            ]
-          }
+          "@type": "FAQPage",
+          "mainEntity": faqs.map(faq => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.answer
+            }
+          }))
         }}
       />
       <main className="pt-20 bg-[#F8F9FA]">
@@ -84,340 +106,314 @@ export default function PricingLanding() {
             { label: 'כמה עולה לפתוח עוסק פטור' }
           ]} />
         </div>
+
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847] overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-20 right-20 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
+        <section className="py-12 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <h1 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-6 leading-tight">
+                כמה עולה לפתוח עוסק פטור? פירוט מחירים ואפשרויות פתיחה
+              </h1>
+              <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
+                אם אתה שואל את עצמך כמה עולה לפתוח עוסק פטור, הגעת למקום הנכון. 
+                בעמוד הזה נסביר לך בדיוק מה העלויות האמיתיות, מה כלול בכל אפשרות, 
+                ונעזור לך להבין מה הכי מתאים לך.
+              </p>
+            </motion.div>
           </div>
-          
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-center lg:text-right"
-              >
-                <div className="inline-flex items-center gap-2 bg-[#27AE60]/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#27AE60]/30">
-                  <DollarSign className="w-5 h-5 text-[#27AE60]" />
-                  <span className="text-[#27AE60] text-sm font-bold">מחיר ברור ושקוף</span>
+        </section>
+
+        {/* Option 1: לבד */}
+        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-[#1E3A5F] mb-6">
+                כמה עולה לפתוח עוסק פטור לבד
+              </h2>
+              
+              <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <DollarSign className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">העלות: 0 ₪ (ללא עלות ישירה)</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      פתיחת עוסק פטור באופן עצמאי היא חינמית לחלוטין. אתה יכול להיכנס לאתרי הרשויות 
+                      (מס הכנסה, מע״מ, ביטוח לאומי), למלא את הטפסים ולפתוח את התיק בעצמך.
+                    </p>
+                  </div>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  כמה עולה לפתוח עוסק פטור
-                  <br />
-                  <span className="text-[#D4AF37]">בישראל 2026?</span>
-                </h1>
+                <div className="bg-red-50 border-r-4 border-red-500 rounded-xl p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-bold text-gray-800 mb-2">טעויות נפוצות שעלולות לעלות לך יקר:</h4>
+                      <ul className="space-y-2 text-gray-700">
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-500 font-bold">•</span>
+                          <span><strong>בחירת סיווג שגוי</strong> - קוד עיסוק לא נכון יכול להשפיע על שיעור המס שלך</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-500 font-bold">•</span>
+                          <span><strong>תיאום מס לא נכון</strong> - יכול לגרום לתשלום יותר מדי או פחות מדי במקדמות</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-500 font-bold">•</span>
+                          <span><strong>הצהרות שגויות</strong> - טעויות בטפסים יכולות להסתבך אותך עם הרשויות בהמשך</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-500 font-bold">•</span>
+                          <span><strong>אי הבנת ההשלכות</strong> - בחירות שאתה עושה היום משפיעות על המיסוי שלך לשנים</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
 
-                <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">
-                  אצלנו תקבל מחיר ברור, שקוף וידוע מראש
-                  <br />
-                  <strong className="text-[#27AE60]">בלי הפתעות ובלי אותיות קטנות</strong>
+                <p className="text-gray-700 leading-relaxed">
+                  <strong>חשוב לדעת:</strong> אמנם אין עלות כספית ישירה, אבל טעויות בתהליך יכולות לעלות לך 
+                  הרבה יותר בהמשך. אם אתה לא בטוח במה שאתה עושה, כדאי לשקול ליווי מקצועי.
                 </p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
-                  <div className="grid grid-cols-2 gap-4 text-white">
-                    {[
-                      { icon: CheckCircle, text: 'מחיר קבוע' },
-                      { icon: Shield, text: 'בלי הפתעות' },
-                      { icon: Clock, text: 'שקוף מראש' },
-                      { icon: TrendingDown, text: 'מחיר הוגן' }
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <item.icon className="w-5 h-5 text-[#27AE60]" />
-                        <span className="font-semibold text-sm">{item.text}</span>
-                      </div>
-                    ))}
+        {/* Option 2: רואה חשבון */}
+        <section className="py-12 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-[#1E3A5F] mb-6">
+                כמה עולה לפתוח עוסק פטור דרך רואה חשבון
+              </h2>
+              
+              <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 border-2 border-gray-200">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-6 h-6 text-indigo-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">טווח מחירים: 500-1,500 ₪ בממוצע</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      המחיר משתנה בהתאם למשרד, למיקום הגיאוגרפי, ולרמת השירות. יש רואי חשבון שמציעים 
+                      פתיחה במחיר נמוך כחלק מחבילת ליווי שנתית, ויש כאלה שגובים מחיר נפרד.
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
-                    <DollarSign className="ml-3 w-6 h-6" />
-                    קבל הצעת מחיר עכשיו
-                  </Button>
-                  <a href="https://wa.me/972502277087?text=היי, רוצה לדעת כמה עולה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl border-2 border-white bg-white text-[#1E3A5F] hover:bg-white/90 shadow-2xl">
-                      <MessageCircle className="ml-3 w-5 h-5" />
-                      דבר איתנו בווצאפ
-                    </Button>
-                  </a>
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
+                  <div className="bg-green-50 rounded-xl p-4">
+                    <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                      מה כלול בדרך כלל:
+                    </h4>
+                    <ul className="space-y-1 text-gray-700 text-sm">
+                      <li>• פתיחת תיק במס הכנסה</li>
+                      <li>• רישום כפטור במע״מ</li>
+                      <li>• פתיחת תיק בביטוח לאומי</li>
+                      <li>• ייעוץ ראשוני</li>
+                      <li>• הסבר על חובות דיווח</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5 text-gray-600" />
+                      מה בדרך כלל לא כלול:
+                    </h4>
+                    <ul className="space-y-1 text-gray-700 text-sm">
+                      <li>• ליווי חודשי (תוסף נפרד)</li>
+                      <li>• הגשת דוחות (תוסף נפרד)</li>
+                      <li>• תמיכה שוטפת (תוסף נפרד)</li>
+                      <li>• שירותים נוספים (תוסף נפרד)</li>
+                    </ul>
+                  </div>
                 </div>
-              </motion.div>
 
-              {/* Pricing Card */}
-              <motion.div
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="hidden lg:block"
-              >
-                <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-[#D4AF37]">
-                  <div className="text-center mb-6">
-                    <div className="inline-block bg-[#D4AF37]/10 text-[#D4AF37] px-4 py-2 rounded-full text-sm font-bold mb-4">
-                      ⭐ המחיר הכי שקוף בשוק
-                    </div>
-                    <h3 className="text-3xl font-black text-[#1E3A5F] mb-2">פתיחת עוסק פטור</h3>
-                    <p className="text-gray-600">מחיר ידוע מראש - בלי "תלוי"</p>
+                <div className="bg-blue-50 border-r-4 border-blue-500 rounded-xl p-6">
+                  <h4 className="font-bold text-gray-800 mb-3">מתי זה משתלם?</h4>
+                  <ul className="space-y-2 text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span>אם אתה צריך ייעוץ אישי ופגישה פנים אל פנים</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span>אם המצב שלך מורכב (מספר מקורות הכנסה, שותפים, וכו')</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span>אם אתה מעדיף קשר אישי עם בן אדם שמכיר אותך</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Option 3: אונליין */}
+        <section className="py-12 bg-gradient-to-br from-[#E8F4FD] to-blue-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-2xl md:text-4xl font-bold text-[#1E3A5F] mb-6">
+                כמה עולה לפתוח עוסק פטור אונליין
+              </h2>
+              
+              <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-[#27AE60]">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-[#27AE60]/10 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-6 h-6 text-[#27AE60]" />
                   </div>
-
-                  <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 mb-6 text-center">
-                    <p className="text-white/80 text-sm mb-2">מחיר מיוחד ל-</p>
-                    <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-black text-white">?</span>
-                    </div>
-                    <p className="text-white/60 text-sm mt-2">השאר פרטים ונגלה לך</p>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">מחיר קבוע: 199 ₪ (תשלום חד-פעמי)</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      למי שמעדיף לעשות הכל דיגיטלי וללא פגישות, קיימת אפשרות לפתוח עוסק פטור אונליין 
+                      במחיר קבוע של 199 ₪. זה מחיר שקוף וידוע מראש, ללא תוספות או הפתעות.
+                    </p>
                   </div>
+                </div>
 
-                  <ul className="space-y-3 mb-6">
+                <div className="bg-[#27AE60]/5 rounded-xl p-6 mb-6">
+                  <h4 className="font-bold text-gray-800 mb-3">מה כלול במחיר:</h4>
+                  <ul className="grid md:grid-cols-2 gap-3">
                     {[
-                      'מחיר ברור ללא הפתעות',
-                      'ללא עמלות נסתרות',
-                      'תשלום קבוע וידוע מראש',
-                      'ליווי מלא כלול במחיר',
-                      'בלי תוספות בדיעבד'
+                      'פתיחת תיק עוסק פטור במלואו',
+                      'טיפול מול מס הכנסה',
+                      'רישום במע״מ כפטור',
+                      'פתיחת תיק בביטוח לאומי',
+                      'הדרכה מלאה על השלבים הבאים',
+                      'תמיכה במהלך התהליך'
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3">
+                      <li key={i} className="flex items-center gap-2 text-gray-700">
                         <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
-                        <span className="text-gray-700 font-medium">{item}</span>
+                        <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-
-                  <Button onClick={scrollToForm} className="w-full h-14 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white">
-                    קבל את המחיר המלא
-                  </Button>
                 </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
 
-        {/* Trust Bar */}
-        <section className="py-8 bg-white border-b border-gray-200">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div>
-                <div className="text-4xl font-black text-[#27AE60] mb-2">0₪</div>
-                <p className="text-gray-600 font-medium">עמלות נסתרות</p>
-              </div>
-              <div>
-                <div className="text-4xl font-black text-[#1E3A5F] mb-2">100%</div>
-                <p className="text-gray-600 font-medium">שקיפות מחיר</p>
-              </div>
-              <div>
-                <div className="text-4xl font-black text-[#27AE60] mb-2">2000+</div>
-                <p className="text-gray-600 font-medium">עוסקים פעילים</p>
-              </div>
-            </div>
-          </div>
-        </section>
+                <div className="bg-blue-50 border-r-4 border-blue-500 rounded-xl p-6 mb-6">
+                  <h4 className="font-bold text-gray-800 mb-3">למה זה נוח?</h4>
+                  <ul className="space-y-2 text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <Clock className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>מהיר:</strong> התהליך נעשה תוך 24-48 שעות</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Shield className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>בטוח:</strong> הכל נעשה נכון, מקצועי ומאובטח</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <DollarSign className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>חסכוני:</strong> מחיר נמוך משמעותית מרואה חשבון</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>פשוט:</strong> ללא צורך בפגישות או ריצות</span>
+                    </li>
+                  </ul>
+                </div>
 
-        {/* Main Pricing Section */}
-        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <div className="inline-block bg-[#27AE60]/10 text-[#27AE60] px-6 py-2 rounded-full text-sm font-bold mb-6">
-                💰 בוא נדבר מחיר
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
-                המחיר לפתיחת עוסק פטור – בצורה פשוטה
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                אצלנו לא תמצא <strong className="text-red-600">"תלוי"</strong>, <strong className="text-red-600">"בערך"</strong> או <strong className="text-red-600">"נדבר בטלפון"</strong>
-                <br />
-                אנחנו מאמינים בשקיפות מלאה, כדי שתדע בדיוק למה אתה נכנס.
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-10">
-              {[
-                { icon: CheckCircle, title: 'מחיר פתיחה חד-פעמי', desc: 'ברור מראש - אין עלויות נוספות' },
-                { icon: DollarSign, title: 'תשלום חודשי קבוע', desc: 'ללא הפתעות - סכום קבוע כל חודש' },
-                { icon: Shield, title: 'בלי התחייבויות נסתרות', desc: 'הכל שקוף - מה שאתה רואה זה מה שאתה משלם' },
-                { icon: AlertCircle, title: 'בלי תוספות בדיעבד', desc: 'אין תוספות מפתיעות - המחיר סופי' }
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border-2 border-[#27AE60]/20"
-                >
-                  <div className="w-14 h-14 rounded-xl bg-[#27AE60]/10 flex items-center justify-center mb-4">
-                    <item.icon className="w-7 h-7 text-[#27AE60]" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Why Fair Price */}
-        <section className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                למה המחיר שלנו הוגן?
-              </h2>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {[
-                { icon: TrendingDown, text: 'אתה לא משלם על משרד מפואר - אנחנו עובדים בצורה חכמה' },
-                { icon: Clock, text: 'הכול מתבצע אונליין - חוסך לך זמן ולנו עלויות' },
-                { icon: Sparkles, text: 'תהליך יעיל ומהיר - בלי בזבוז זמן, בלי עלויות מיותרות' },
-                { icon: Users, text: 'שירות ממוקד לעצמאים בתחילת הדרך - אנחנו מבינים אותך' }
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 flex items-start gap-4"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-[#1E3A5F]/10 flex items-center justify-center flex-shrink-0">
-                    <item.icon className="w-6 h-6 text-[#1E3A5F]" />
-                  </div>
-                  <p className="text-gray-700 font-medium text-lg">{item.text}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mt-10 text-center bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-3xl p-8 text-white"
-            >
-              <p className="text-2xl md:text-3xl font-black mb-2">👉 אתה משלם רק על מה שאתה באמת צריך</p>
-              <p className="text-xl">בלי עלויות מיותרות, בלי תוספות מפתיעות</p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Mid-Page Strong CTA */}
-        <section className="py-12 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-block bg-[#D4AF37]/20 backdrop-blur-sm text-[#D4AF37] px-6 py-2 rounded-full text-sm font-bold mb-6 border border-[#D4AF37]/30">
-                ⏰ מוכן לקבל מחיר ברור?
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-                רוצה לדעת בדיוק כמה זה עולה לך?
-              </h2>
-              <p className="text-xl text-white/90 mb-8">
-                השאר פרטים וקבל הצעת מחיר ברורה ומפורטת - ללא התחייבות
-              </p>
-              <Button onClick={scrollToForm} size="lg" className="h-20 px-12 text-2xl font-black rounded-3xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
-                <DollarSign className="ml-3 w-7 h-7" />
-                קבל הצעת מחיר עכשיו
-              </Button>
-              <p className="text-white/80 mt-4">✨ ללא התחייבות • שיחה קצרה • מחיר ברור</p>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* What's Included */}
-        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                מה כלול במחיר?
-              </h2>
-              <p className="text-xl text-gray-600">הכל שקוף - בואו נראה מה אתם מקבלים</p>
-            </motion.div>
-
-            <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border-2 border-[#27AE60]/20">
-              <ul className="grid md:grid-cols-2 gap-6">
-                {[
-                  'פתיחת תיק עוסק פטור',
-                  'טיפול מלא מול מס הכנסה, מע״מ וביטוח לאומי',
-                  'ליווי אישי וזמין',
-                  'התחלה חוקית ושקט נפשי',
-                  'בלי ריצות, בלי בירוקרטיה',
-                  'תמיכה מלאה בכל שלב'
-                ].map((item, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex items-center gap-3"
+                <p className="text-gray-700 text-center">
+                  אם אתה מחפש דרך פשוטה, מהירה וחסכונית לפתוח עוסק פטור, אפשר גם{' '}
+                  <Link 
+                    to={createPageUrl('OsekPaturOnlineLanding')}
+                    className="text-[#1E3A5F] underline font-bold hover:text-[#2C5282]"
                   >
-                    <CheckCircle className="w-6 h-6 text-[#27AE60] flex-shrink-0" />
-                    <span className="text-lg font-medium text-gray-700">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
+                    לפתוח עוסק פטור אונליין
+                  </Link>
+                  {' '}בצורה דיגיטלית מלאה.
+                </p>
+              </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* Who Is This For */}
+        {/* Soft CTA */}
         <section className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-4">
+                עדיין לא בטוח מה מתאים לך?
+              </h3>
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                זה בסדר גמור. כל מצב הוא אישי, וחשוב לבחור את המסלול שמתאים בדיוק לך.
+                <br />
+                אפשר להשאיר פרטים ואנחנו נעזור לך להבין מה הכי נכון בשבילך.
+              </p>
+              <Button 
+                onClick={scrollToForm}
+                className="h-14 px-8 text-lg rounded-xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white"
+              >
+                בדוק אם זה מתאים לך
+                <ArrowLeft className="mr-2 w-5 h-5" />
+              </Button>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                למי זה מתאים?
+              <h2 className="text-2xl md:text-4xl font-bold text-[#1E3A5F] mb-4">
+                שאלות נפוצות על פתיחת עוסק פטור ועלויות
               </h2>
+              <p className="text-lg text-gray-700">
+                כל מה שרצית לדעת על המחירים והתהליך
+              </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {[
-                'מי שמחפש מחיר ברור וללא הפתעות',
-                'מי שרוצה לפתוח עוסק בלי להסתבך',
-                'מי שלא רוצה "ליפול" על עלויות מיותרות',
-                'עצמאים בתחילת הדרך שרוצים להתחיל נכון'
-              ].map((text, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-gradient-to-br from-[#27AE60]/10 to-[#2ECC71]/10 border-r-4 border-[#27AE60] rounded-2xl p-6"
+            <Accordion type="single" collapsible className="space-y-4">
+              {faqs.map((faq, index) => (
+                <AccordionItem 
+                  key={index} 
+                  value={`item-${index}`}
+                  className="bg-white rounded-2xl shadow-md border-2 border-gray-100 px-6 data-[state=open]:border-[#1E3A5F]"
                 >
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-8 h-8 text-[#27AE60] flex-shrink-0" />
-                    <p className="text-lg font-bold text-gray-800">{text}</p>
-                  </div>
-                </motion.div>
+                  <AccordionTrigger className="text-right hover:no-underline py-5">
+                    <span className="text-base md:text-lg font-bold text-gray-800">
+                      {faq.question}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-700 leading-relaxed pb-5 text-base">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
-        </section>
+        section>
 
         {/* Form Section */}
-        <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50" id="pricing-form">
+        <section className="py-16 bg-white" id="pricing-form">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -425,100 +421,54 @@ export default function PricingLanding() {
               viewport={{ once: true }}
               className="text-center mb-8"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                קבל הצעת מחיר מפורטת
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-4">
+                רוצה לדעת מה הכי מתאים לך?
               </h2>
-              <p className="text-xl text-gray-600">מלא פרטים ונחזור אליך עם המחיר המלא והמדויק</p>
+              <p className="text-lg text-gray-700">
+                השאר פרטים ונחזור אליך לעזור לך לבחור את המסלול הנכון
+              </p>
             </motion.div>
 
-            {isSuccess ? (
-              <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle className="w-10 h-10 text-green-500" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
-                <p className="text-gray-600">נחזור אליך בקרוב עם הצעת מחיר מפורטת</p>
-              </div>
-            ) : (
-              <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-[#1E3A5F]/20">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <Input
-                    placeholder="שם מלא *"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="h-12 rounded-xl border-2"
-                    required
-                  />
+            <div className="bg-gradient-to-br from-[#E8F4FD] to-blue-50 rounded-3xl shadow-xl p-8 border-2 border-[#1E3A5F]/20">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <Input
+                  placeholder="שם מלא *"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="h-12 rounded-xl border-2"
+                  required
+                />
 
-                  <Input
-                    type="tel"
-                    placeholder="טלפון *"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="h-12 rounded-xl border-2"
-                    required
-                  />
+                <Input
+                  type="tel"
+                  placeholder="טלפון *"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="h-12 rounded-xl border-2"
+                  required
+                />
 
-                  <Input
-                    type="email"
-                    placeholder="אימייל (אופציונלי)"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="h-12 rounded-xl border-2"
-                  />
+                <Input
+                  type="email"
+                  placeholder="אימייל (אופציונלי)"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="h-12 rounded-xl border-2"
+                />
 
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full h-14 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
-                  >
-                    {isSubmitting ? 'שולח...' : 'קבל הצעת מחיר ברורה'}
-                  </Button>
-
-                  <p className="text-xs text-gray-500 text-center">
-                    שיחה קצרה • בלי התחייבות • הכול ברור מראש
-                  </p>
-                </form>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Related Content */}
-        <RelatedContent pageType="landing" />
-
-        {/* Final CTA */}
-        <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
-            <div className="absolute bottom-10 left-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          </div>
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                רוצה לדעת בדיוק כמה זה עולה לך?
-              </h2>
-              <p className="text-xl text-white/90 mb-8">קבל הצעת מחיר ברורה ומפורטת - ללא התחייבות</p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-                <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
-                  <DollarSign className="ml-3 w-6 h-6" />
-                  השאר פרטים וקבל מחיר ברור
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-14 text-lg font-bold rounded-xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white"
+                >
+                  {isSubmitting ? 'שולח...' : 'השאר פרטים ובדוק עבורך'}
                 </Button>
-                <a href="https://wa.me/972502277087?text=היי, רוצה לדעת כמה עולה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#27AE60] shadow-2xl">
-                    <MessageCircle className="ml-3 w-6 h-6" />
-                    פנייה מיידית בווצאפ
-                  </Button>
-                </a>
-              </div>
 
-              <p className="text-white/80">שיחה קצרה • בלי התחייבות • הכול ברור מראש</p>
-            </motion.div>
+                <p className="text-xs text-gray-600 text-center">
+                  ללא התחייבות • שיחה קצרה • עזרה אמיתית
+                </p>
+              </form>
+            </div>
           </div>
         </section>
       </main>
