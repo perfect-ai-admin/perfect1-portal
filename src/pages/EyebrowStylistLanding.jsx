@@ -157,7 +157,7 @@ export default function EyebrowStylistLanding() {
         </section>
 
         {/* Stats */}
-        <section className="py-10 md:py-12 bg-white">
+        <section className="py-8 md:py-10 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-3 gap-4 md:gap-6">
               {[
