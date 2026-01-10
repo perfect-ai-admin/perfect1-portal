@@ -44,11 +44,11 @@ export default function EyebrowStylistLanding() {
         keywords="פתיחת עוסק פטור מעצבת גבות, מיקרובליידינג עוסק פטור, עיצוב גבות עוסק פטור"
         canonical="https://perfect1.co.il/eyebrow-stylist-osek-patur"
       />
-      <main className="pt-20 bg-[#F8F9FA]">
+      <main className="pt-12 md:pt-16 bg-[#F8F9FA]">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-white via-[#FFF8F0] to-white py-12 md:py-16">
+        <section className="bg-gradient-to-br from-white via-[#FFF8F0] to-white py-10 md:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
