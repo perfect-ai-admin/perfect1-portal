@@ -339,7 +339,7 @@ export default function CloseBusinessLanding() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
+                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all group"
                 >
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center mb-4">
                     <type.icon className="w-7 h-7 text-white" />
