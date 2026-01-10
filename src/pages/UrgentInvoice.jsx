@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
 import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
-import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, User, Lock, Shield, Zap } from 'lucide-react';
+import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, User, Lock, Shield, Zap, AlertCircle } from 'lucide-react';
 
 export default function UrgentInvoice() {
   const [expandedFaq, setExpandedFaq] = useState(0);
