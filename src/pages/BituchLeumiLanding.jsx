@@ -320,7 +320,7 @@ export default function BituchLeumiLanding() {
               <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed space-y-6">
                 <p className="text-xl">
                   בעת <Link to={createPageUrl('OsekPaturLanding')} className="text-[#1E3A5F] font-bold hover:text-[#27AE60] underline">פתיחת עוסק פטור</Link>,
-                  חשוב לבצע רישום מסודר גם בביטוח לאומי כחלק מ<Link to={createPageUrl('Services')} className="text-[#1E3A5F] font-bold hover:text-[#27AE60] underline">תהליך פתיחת עוסק פטור המלא</Link>.
+                  חשוב לבצע רישום מסודר גם בביטוח לאומי כחלק מ<Link to={createPageUrl('OsekPaturLanding')} className="text-[#1E3A5F] font-bold hover:text-[#27AE60] underline">תהליך פתיחת עוסק פטור המלא</Link>.
                 </p>
 
                 <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-blue-100">
