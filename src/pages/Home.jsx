@@ -1,12 +1,17 @@
 import React from 'react';
-import NewHeroSection from '../components/home/NewHeroSection';
-import CategoriesSection from '../components/home/CategoriesSection';
-import TrustSection from '../components/home/TrustSection';
-import HowItWorksSection from '../components/home/HowItWorksSection';
-import KnowledgeSection from '../components/home/KnowledgeSection';
-import FinalCTASection from '../components/home/FinalCTASection';
-import GeoContent from '../components/seo/GeoContent';
+import HeroSection from '../components/home/HeroSection';
+import WhatIsSection from '../components/home/WhatIsSection';
+import FeaturesSection from '../components/home/FeaturesSection';
+import ServicesSection from '../components/home/ServicesSection';
+import ProcessSection from '../components/home/ProcessSection';
+import PricingSection from '../components/home/PricingSection';
+import ProfessionsGrid from '../components/home/ProfessionsGrid';
+import FAQSection from '../components/home/FAQSection';
+import CTASection from '../components/home/CTASection';
+import QuickCTASection from '../components/home/QuickCTASection';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
+import MicroCTA from '../components/cro/MicroCTA';
+import GeoContent from '../components/seo/GeoContent';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 
 export default function Home() {
@@ -19,8 +24,8 @@ export default function Home() {
         schema={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          "name": "Perfect One - בית לעצמאים ולעסקים בישראל",
-          "description": "בית לעצמאים ולעסקים בישראל – מידע מקצועי, תהליכים מסודרים וליווי מול רשויות המס",
+          "name": "Perfect One - פתיחת עוסק פטור בישראל",
+          "description": "המרכז הארצי לפתיחת עוסקים פטורים בישראל. ליווי מקצועי מא' ועד ת'",
           "url": "https://perfect1.co.il",
           "telephone": "+972-50-227-7087",
           "priceRange": "₪₪",
@@ -77,13 +82,18 @@ export default function Home() {
         }}
       />
       <main>
-        <NewHeroSection />
-        <CategoriesSection />
-        <TrustSection />
-        <HowItWorksSection />
-        <KnowledgeSection />
+        <HeroSection />
+        <WhatIsSection />
+        <MicroCTA text="רוצה לדעת אם עוסק פטור מתאים לך?" cta="בדיקה מהירה ללא עלות" variant="subtle" />
+        <FeaturesSection />
+        <ServicesSection />
+        <ProfessionsGrid />
+        <QuickCTASection />
+        <ProcessSection />
         <GeoContent />
-        <FinalCTASection />
+        <MicroCTA text="מוכנים להתחיל?" cta="שיחה קצרה ללא התחייבות" />
+        <FAQSection />
+        <CTASection />
       </main>
     </>
   );
