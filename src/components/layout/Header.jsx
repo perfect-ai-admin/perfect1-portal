@@ -33,7 +33,7 @@ export default function Header() {
     {
       name: '🔹 ניהול שוטף לעוסק פטור',
       items: [
-        { name: 'דיווח חודשי לעוסק פטור', href: createPageUrl('MonthlyReportOsekPatur') },
+        { name: 'ליווי חודשי לעוסק פטור', href: createPageUrl('MonthlyReportOsekPatur') },
         { name: 'דוח שנתי לעוסק פטור', href: createPageUrl('AnnualReportOsekPatur') },
         { name: 'קבלות והכנסות', href: createPageUrl('ReceiptsIncome') },
         { name: 'אפליקציה לעצמאים', href: createPageUrl('InvoicesAppLanding') }
