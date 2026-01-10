@@ -375,7 +375,15 @@ export default function PricingCost() {
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
                     <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה ומע״מ?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">כן, הפתיחה כוללת טיפול ממלא ומול מס הכנסה וביטוח לאומי. פטור ממע"מ הוא אוטומטי לעוסקים הזכאים. שירותים נוספים כמו רישום למע"מ מטופלים בנפרד.</p>
+                  <p className="text-gray-700 ml-8">כן, הפתיחה כוללת טיפול ממלא מול מס הכנסה וביטוח לאומי. פטור ממע"מ הוא אוטומטי לעוסקים הזכאים. שירותים נוספים כמו רישום למע"מ מטופלים בנפרד.</p>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <div className="flex items-start gap-3 mb-3">
+                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
+                    <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה ומע״מ?</h3>
+                  </div>
+                  <p className="text-gray-700 ml-8">כן, בדיוק. הטיפול מול מס הכנסה וביטוח לאומי כלול במלואו. הרישום כפטור ממע"מ הוא אוטומטי ונעשה עבורך. אם תצטרך משהו נוסף (כמו רישום למע"מ עתידי) - זה בנפרד.</p>
                 </div>
               </div>
             </motion.div>
