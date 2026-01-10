@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Phone, MessageCircle, AlertCircle, Clock, Shield, Zap, FileText } from 'lucide-react';
 import LeadForm from '../components/forms/LeadForm';
@@ -214,7 +216,24 @@ export default function UrgentInvoice() {
               <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
                 פתיחת עוסק להוצאת חשבונית
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות</p>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות.
+                תוכל לבחור{' '}
+                <Link 
+                  to={createPageUrl('OsekPaturOnlineLanding')}
+                  className="text-[#1E3A5F] underline font-bold hover:text-[#2C5282]"
+                >
+                  פתיחת עוסק פטור אונליין
+                </Link>
+                {' '}או{' '}
+                <Link 
+                  to={createPageUrl('OsekPaturLanding')}
+                  className="text-[#1E3A5F] underline font-bold hover:text-[#2C5282]"
+                >
+                  פתיחת עוסק פטור מסורתית
+                </Link>
+                {' '}בהתאם למה שמתאים לך.
+              </p>
             </motion.div>
 
             {/* Process Steps */}
