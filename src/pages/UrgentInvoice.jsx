@@ -408,41 +408,26 @@ export default function UrgentInvoice() {
               </div>
             </motion.div>
 
-            {/* CTA Section */}
-            <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-2xl mb-12 md:mb-20">
-              <h2 className="text-2xl md:text-3xl font-black mb-2 text-center">
-                צריך עזרה בחשבוניות?
-              </h2>
-              <p className="text-center text-white/90 mb-8">השאר פרטים ויועץ שלנו יעזור לך בהוצאת חשבוניות נכונות</p>
+            {/* Strong CTA - Mid Page */}
+            <section className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white rounded-2xl p-8 md:p-12 mb-16 shadow-2xl">
+              <h2 className="text-2xl md:text-4xl font-black mb-4 text-center">עדיין לא בטוח בדרישות?</h2>
+              <p className="text-center text-white/95 mb-8 text-lg">אנחנו כאן לעזור - התקשר או דבר בווצאפ</p>
               
-              <div className="max-w-md mx-auto">
-                <UnifiedLeadForm
-                  variant="default"
-                  title=""
-                  ctaText="קבל עזרה בחשבוניות"
-                  successTitle="קיבלנו את הפרטים! ✓"
-                  successMessage="נציג יצור איתך קשר ויעזור לך בנושא החשבוניות"
-                  sourcePage="חשבוניות לעוסק פטור"
-                  fields={["name", "phone"]}
-                  invertColors={true}
-                />
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                <a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
-                    <MessageCircle className="ml-2 w-5 h-5" />
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer">
+                  <Button className="h-14 px-8 text-lg font-black bg-white text-[#27AE60] hover:bg-white/90 rounded-full">
+                    <MessageCircle className="ml-3 w-6 h-6" />
                     דבר בווצאפ
                   </Button>
                 </a>
-                <a href="tel:+972502277087" className="flex-1">
-                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
-                    <Phone className="ml-2 w-5 h-5" />
-                    התקשר עכשיו
+                <a href="tel:+972502277087">
+                  <Button className="h-14 px-8 text-lg font-black bg-white/20 hover:bg-white/30 text-white border-2 border-white rounded-full">
+                    <Phone className="ml-3 w-6 h-6" />
+                    התקשר: 050-227-7087
                   </Button>
                 </a>
               </div>
-            </div>
+            </section>
 
             {/* FAQ Section */}
             <div className="mb-12 md:mb-20">
