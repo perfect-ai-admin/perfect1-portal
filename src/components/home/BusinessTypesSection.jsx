@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
-import { Building2, TrendingUp, Users, ArrowLeft } from 'lucide-react';
+import { Building2, TrendingUp, Users, ArrowRight } from 'lucide-react';
 
 export default function BusinessTypesSection() {
   const businessTypes = [
@@ -13,10 +13,11 @@ export default function BusinessTypesSection() {
       details: 'מידע, עלויות, פתיחה אונליין והשלבים הראשונים לעצמאים בתחילת הדרך.',
       cta: 'מידע ופתיחה לעוסק פטור',
       link: 'OsekPaturLanding',
-      color: 'from-blue-50 to-cyan-50',
-      borderColor: 'border-blue-200',
-      accentColor: 'text-blue-600',
-      bgColor: 'bg-blue-100'
+      bgGradient: 'from-blue-600 to-cyan-600',
+      lightBg: 'from-blue-50 to-cyan-50',
+      borderColor: 'border-blue-400',
+      accentColor: 'bg-blue-600',
+      lightAccent: 'bg-blue-100'
     },
     {
       title: 'עוסק מורשה',
@@ -25,10 +26,11 @@ export default function BusinessTypesSection() {
       details: 'מתי צריך לעבור למורשה, חובות מע״מ וליווי מקצועי.',
       cta: 'בדיקה אם אני צריך להיות מורשה',
       link: 'Services',
-      color: 'from-green-50 to-emerald-50',
-      borderColor: 'border-green-200',
-      accentColor: 'text-green-600',
-      bgColor: 'bg-green-100'
+      bgGradient: 'from-green-600 to-emerald-600',
+      lightBg: 'from-green-50 to-emerald-50',
+      borderColor: 'border-green-400',
+      accentColor: 'bg-green-600',
+      lightAccent: 'bg-green-100'
     },
     {
       title: 'חברה בע״מ',
@@ -37,66 +39,75 @@ export default function BusinessTypesSection() {
       details: 'הקמת חברה, תהליך פתיחה, עלויות וליווי שוטף לעסקים מתקדמים.',
       cta: 'מידע על פתיחת חברה בע״מ',
       link: 'Services',
-      color: 'from-purple-50 to-pink-50',
-      borderColor: 'border-purple-200',
-      accentColor: 'text-purple-600',
-      bgColor: 'bg-purple-100'
+      bgGradient: 'from-purple-600 to-pink-600',
+      lightBg: 'from-purple-50 to-pink-50',
+      borderColor: 'border-purple-400',
+      accentColor: 'bg-purple-600',
+      lightAccent: 'bg-purple-100'
     }
   ];
 
   return (
-    <section className="py-16 bg-white" id="business-types">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-white" id="business-types">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-[#1E3A5F] mb-4">
             איך אתה מתכנן לפתוח את העסק שלך?
           </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">בחר את סוג העסק שמתאים לך וקבל מידע ברור</p>
         </motion.div>
 
-        {/* Business Type Cards */}
+        {/* Business Type Cards - Premium Design */}
         <div className="grid md:grid-cols-3 gap-8">
           {businessTypes.map((type, index) => {
             const Icon = type.icon;
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.15 }}
+                whileHover={{ y: -10 }}
               >
-                <Link to={createPageUrl(type.link)}>
-                  <div className={`bg-gradient-to-br ${type.color} rounded-3xl p-8 border-2 ${type.borderColor} hover:shadow-xl transition-all h-full hover:scale-105 cursor-pointer`}>
-                    {/* Icon */}
-                    <div className={`w-16 h-16 rounded-2xl ${type.bgColor} flex items-center justify-center mb-6`}>
-                      <Icon className={`w-8 h-8 ${type.accentColor}`} />
-                    </div>
+                <Link to={createPageUrl(type.link)} className="group block h-full">
+                  <div className="relative h-full bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-gray-200">
+                    {/* Top Gradient Bar */}
+                    <div className={`h-2 bg-gradient-to-r ${type.bgGradient}`}></div>
 
-                    {/* Title */}
-                    <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">
-                      {type.title}
-                    </h3>
+                    {/* Card Content */}
+                    <div className="p-10">
+                      {/* Icon */}
+                      <div className={`w-20 h-20 rounded-2xl ${type.lightAccent} flex items-center justify-center mb-8 group-hover:scale-110 transition-transform`}>
+                        <Icon className={`w-10 h-10 text-[${type.accentColor}]`} style={{ color: type.accentColor === 'bg-blue-600' ? '#2563eb' : type.accentColor === 'bg-green-600' ? '#16a34a' : '#9333ea' }} />
+                      </div>
 
-                    {/* Subtitle */}
-                    <p className="text-sm font-bold text-gray-600 mb-4">
-                      {type.description}
-                    </p>
+                      {/* Title */}
+                      <h3 className="text-3xl font-black text-[#1E3A5F] mb-3">
+                        {type.title}
+                      </h3>
 
-                    {/* Description */}
-                    <p className="text-gray-700 mb-6 leading-relaxed">
-                      {type.details}
-                    </p>
+                      {/* Subtitle */}
+                      <p className="text-sm font-bold text-gray-500 mb-6 uppercase tracking-wide">
+                        {type.description}
+                      </p>
 
-                    {/* CTA */}
-                    <div className={`inline-flex items-center gap-2 font-bold ${type.accentColor} hover:gap-3 transition-all`}>
-                      {type.cta}
-                      <ArrowLeft className="w-4 h-4" />
+                      {/* Description */}
+                      <p className="text-gray-700 mb-8 leading-relaxed text-lg">
+                        {type.details}
+                      </p>
+
+                      {/* CTA - Interactive */}
+                      <div className="inline-flex items-center gap-3 font-black text-lg group-hover:gap-5 transition-all" style={{ color: type.accentColor === 'bg-blue-600' ? '#2563eb' : type.accentColor === 'bg-green-600' ? '#16a34a' : '#9333ea' }}>
+                        {type.cta}
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </div>
                 </Link>
