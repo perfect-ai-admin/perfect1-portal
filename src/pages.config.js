@@ -86,6 +86,7 @@ import OsekMorshaRights from './pages/OsekMorshaRights';
 import CostsOsekMorsha from './pages/CostsOsekMorsha';
 import HowMuchToManageOsekMorsha from './pages/HowMuchToManageOsekMorsha';
 import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
+import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import __Layout from './Layout.jsx';
 
 
@@ -178,6 +179,7 @@ export const PAGES = {
     "CostsOsekMorsha": CostsOsekMorsha,
     "HowMuchToManageOsekMorsha": HowMuchToManageOsekMorsha,
     "AccountantForOsekMorsha": AccountantForOsekMorsha,
+    "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
 }
 
 export const pagesConfig = {
