@@ -111,15 +111,18 @@ export default function EyebrowStylistLanding() {
                   </div>
                 ) : (
                   <div className="bg-white rounded-3xl shadow-2xl p-8">
-                    <h3 className="text-2xl font-bold text-[#1E3A5F] mb-6 text-center">
-                      השאירי פרטים 🎁
+                    <h3 className="text-2xl font-bold text-[#1E3A5F] mb-4 text-center">
+                      רוצה שנפתח עבורך את העוסק הפטור?
                     </h3>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <p className="text-gray-700 mb-6 text-center text-sm">
+                      תשאירי את הטופס לידים, אחרה יש לך גם אפשרות <a href={createPageUrl('OsekPaturOnlineLanding')} className="text-[#D4843F] font-bold hover:underline">לפתיחה דיגיטלית מהבית שלך</a>.
+                    </p>
+                    <form onSubmit={handleSubmit} className="space-y-3">
                       <Input
                         placeholder="שם מלא"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="h-14 text-lg rounded-xl border-2"
+                        className="h-12 text-base rounded-xl border-2"
                         required
                       />
                       <Input
@@ -127,16 +130,24 @@ export default function EyebrowStylistLanding() {
                         placeholder="טלפון"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="h-14 text-lg rounded-xl border-2"
+                        className="h-12 text-base rounded-xl border-2"
                         required
                       />
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full h-14 text-xl font-bold bg-gradient-to-r from-[#CD853F] to-[#DEB887] rounded-xl shadow-lg"
+                        className="w-full h-12 text-lg font-bold bg-gradient-to-r from-[#CD853F] to-[#DEB887] rounded-xl shadow-lg"
                       >
                         {isSubmitting ? <Loader2 className="animate-spin" /> : 'קבלי ייעוץ חינם'}
                       </Button>
+                      <a href={createPageUrl('OsekPaturOnlineLanding')} className="block">
+                        <Button
+                          type="button"
+                          className="w-full h-12 text-lg font-bold bg-[#27AE60] hover:bg-[#229954] text-white rounded-xl"
+                        >
+                          דברו על פתיחה אונליין
+                        </Button>
+                      </a>
                     </form>
                   </div>
                 )}
