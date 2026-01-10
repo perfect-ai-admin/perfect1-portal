@@ -252,7 +252,13 @@ export default function Header() {
                         </Link>
                       </li>
                       <li>
-                        <div className="px-4 py-2 text-gray-400 text-sm font-semibold">שירותים</div>
+                        <Link
+                          to={createPageUrl('Services')}
+                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        >
+                          שירותים
+                        </Link>
                         <ul className="mr-4 space-y-1">
                           {menuItems.map((item) => (
                             <li key={item.name}>
