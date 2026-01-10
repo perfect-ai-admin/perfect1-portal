@@ -95,7 +95,7 @@ export default function UrgentInvoice() {
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="lg:order-2"
+                className="order-2 lg:order-2"
               >
                 <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-md">
                   <div className="text-center mb-4">
