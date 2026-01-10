@@ -10,6 +10,41 @@ import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
 
+function FAQItem({ question, answer }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:border-[#1E3A5F]/30 transition-all"
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-6 py-4 text-right flex items-center justify-between hover:bg-gray-50 transition-colors"
+      >
+        <h3 className="text-lg font-bold text-[#1E3A5F]">{question}</h3>
+        <div className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+          <svg className="w-5 h-5 text-[#1E3A5F]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </button>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="px-6 py-4 bg-gray-50 border-t border-gray-200"
+        >
+          <p className="text-gray-700 leading-relaxed">{answer}</p>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}
+
 export default function OsekPaturLanding() {
   const [formData, setFormData] = useState({
     name: '',
@@ -505,7 +540,7 @@ export default function OsekPaturLanding() {
               </h2>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {[
                 { icon: Award, title: 'ניסיון בליווי אלפי עצמאיים', desc: 'עזרנו ל-2000+ עצמאיים להתחיל נכון' },
                 { icon: Target, title: 'התמחות בעוסקים קטנים', desc: 'אנחנו מתמחים בפתיחת עוסקים קטנים ובינוניים' },
@@ -518,13 +553,13 @@ export default function OsekPaturLanding() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6"
+                  className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 md:p-4"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[#1E3A5F]/10 flex items-center justify-center mb-4">
-                    <item.icon className="w-6 h-6 text-[#1E3A5F]" />
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#1E3A5F]/10 flex items-center justify-center mb-2 md:mb-3">
+                    <item.icon className="w-4 h-4 md:w-5 md:h-5 text-[#1E3A5F]" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">{item.title}</h3>
-                  <p className="text-gray-600">{item.desc}</p>
+                  <h3 className="text-sm md:text-base font-bold text-[#1E3A5F] mb-1 leading-tight">{item.title}</h3>
+                  <p className="text-xs md:text-sm text-gray-600 leading-snug">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -623,21 +658,7 @@ export default function OsekPaturLanding() {
 
             <div className="space-y-4">
               {faqs.map((faq, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-[#1E3A5F]/10"
-                >
-                  <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">
-                    {faq.question}
-                  </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {faq.answer}
-                  </p>
-                </motion.div>
+                <FAQItem key={i} question={faq.question} answer={faq.answer} />
               ))}
             </div>
           </div>
