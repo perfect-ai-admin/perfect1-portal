@@ -403,70 +403,14 @@ export default function PricingCost() {
               <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
                 שאלות נפוצות על פתיחת עוסק פטור ועלויות
               </h2>
-              <div className="space-y-4">
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">כמה עולה לפתוח עוסק פטור בשנת 2026?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">עלות פתיחת עוסק פטור משתנה לפי השיטה: לבד ללא עלות כספית (אך עם סיכונים), דרך רואה חשבון 500-1,500 ₪, ודרך פתרון אונליין 199 ₪ במחיר קבוע.</p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין זולה יותר?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">כן, 199 ₪ היא בדרך כלל זולה משמעותית משיטות אחרות, ובמיוחד בהשוואה ליווי מלא דרך רואה חשבון. בנוסף, זה מחיר שקוף ללא הפתעות.</p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם אפשר לפתוח עוסק פטור לבד?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">כן, אפשר לפתוח לבד בחינם, אך זה דורש ידע במילוי טפסים, בדיקה של זכאות, והבנת דוחות דיווח. רוב העצמאים מעדיפים ליווי כדי להימנע מטעויות יקרות.</p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">מה שונה בין פתיחה אונליין לפתיחה דרך רואה חשבון?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">פתיחה אונליין היא תהליך דיגיטלי מלא, מהנייד שלך. רואה חשבון בדרך כלל מציע גם ליווי שוטף וייעוץ מתמשך, אך זה עלות נוספת. לכל אחת יתרונות משלה בהתאם לצרכים שלך.</p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם יש עלויות נוספות אחרי פתיחת עוסק פטור?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">פתיחת עוסק פטור עצמה אינה כוללת עלויות ממשלתיות. אך יש שירותים נוספים אופציונליים כמו דוח שנתי, רישום למע"מ, או ליווי שוטף - כל אלה בחיובים נפרדים.</p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">כמה זמן לוקח לפתוח עוסק פטור?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">כאשר פותחים דרך רואה חשבון, בדרך כלל לוקח כמה ימים. דרך פתרון אונליין, התהליך בדרך כלל מסתיים תוך 24-48 שעות.</p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה ומע״מ?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">כן, הפתיחה כוללת טיפול ממלא מול מס הכנסה וביטוח לאומי. פטור ממע"מ הוא אוטומטי לעוסקים הזכאים. שירותים נוספים כמו רישום למע"מ מטופלים בנפרד.</p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה ומע״מ?</h3>
-                  </div>
-                  <p className="text-gray-700 ml-8">כן, בדיוק. הטיפול מול מס הכנסה וביטוח לאומי כלול במלואו. הרישום כפטור ממע"מ הוא אוטומטי ונעשה עבורך. אם תצטרך משהו נוסף (כמו רישום למע"מ עתידי) - זה בנפרד.</p>
-                </div>
+              <div className="space-y-3">
+                <FAQAccordion question="כמה עולה לפתוח עוסק פטור בשנת 2026?" answer="עלות פתיחת עוסק פטור משתנה לפי השיטה: לבד ללא עלות כספית (אך עם סיכונים), דרך רואה חשבון 500-1,500 ₪, ודרך פתרון אונליין 199 ₪ במחיר קבוע." />
+                <FAQAccordion question="האם פתיחת עוסק פטור אונליין זולה יותר?" answer="כן, 199 ₪ היא בדרך כלל זולה משמעותית משיטות אחרות, ובמיוחד בהשוואה ליווי מלא דרך רואה חשבון. בנוסף, זה מחיר שקוף ללא הפתעות." />
+                <FAQAccordion question="האם אפשר לפתוח עוסק פטור לבד?" answer="כן, אפשר לפתוח לבד בחינם, אך זה דורש ידע במילוי טפסים, בדיקה של זכאות, והבנת דוחות דיווח. רוב העצמאים מעדיפים ליווי כדי להימנע מטעויות יקרות." />
+                <FAQAccordion question="מה שונה בין פתיחה אונליין לפתיחה דרך רואה חשבון?" answer="פתיחה אונליין היא תהליך דיגיטלי מלא, מהנייד שלך. רואה חשבון בדרך כלל מציע גם ליווי שוטף וייעוץ מתמשך, אך זה עלות נוספת. לכל אחת יתרונות משלה בהתאם לצרכים שלך." />
+                <FAQAccordion question="האם יש עלויות נוספות אחרי פתיחת עוסק פטור?" answer="פתיחת עוסק פטור עצמה אינה כוללת עלויות ממשלתיות. אך יש שירותים נוספים אופציונליים כמו דוח שנתי, רישום למע"מ, או ליווי שוטף - כל אלה בחיובים נפרדים." />
+                <FAQAccordion question="כמה זמן לוקח לפתוח עוסק פטור?" answer="כאשר פותחים דרך רואה חשבון, בדרך כלל לוקח כמה ימים. דרך פתרון אונליין, התהליך בדרך כלל מסתיים תוך 24-48 שעות." />
+                <FAQAccordion question="האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה וביטוח לאומי?" answer="כן, הפתיחה כוללת טיפול ממלא מול מס הכנסה וביטוח לאומי. פטור ממע"מ הוא אוטומטי לעוסקים הזכאים. שירותים נוספים כמו רישום למע"מ מטופלים בנפרד." />
               </div>
             </motion.div>
 
