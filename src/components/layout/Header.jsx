@@ -29,6 +29,7 @@ export default function Header() {
     { name: 'פתיחת עוסק אונליין', href: createPageUrl('OsekPaturOnlineLanding') },
     { name: 'ליווי חודשי', href: createPageUrl('ServicePage') + '?service=livui-chodshi' },
     { name: 'דוח שנתי', href: createPageUrl('ServicePage') + '?service=doch-shnati' },
+    { name: 'סגירת עוסק פטור', href: createPageUrl('CloseBusinessLanding') },
     { name: 'אפליקציה לעצמאים', href: createPageUrl('InvoicesAppLanding') },
     { name: '💰 כמה עולה לפתוח עוסק?', href: createPageUrl('PricingLanding') },
     { name: '🚨 צריך חשבונית עכשיו?', href: createPageUrl('UrgentInvoice') },
