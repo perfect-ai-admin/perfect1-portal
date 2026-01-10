@@ -1,17 +1,13 @@
 import React from 'react';
-import HeroSection from '../components/home/HeroSection';
-import WhatIsSection from '../components/home/WhatIsSection';
-import FeaturesSection from '../components/home/FeaturesSection';
-import ServicesSection from '../components/home/ServicesSection';
-import ProcessSection from '../components/home/ProcessSection';
-import PricingSection from '../components/home/PricingSection';
-import ProfessionsGrid from '../components/home/ProfessionsGrid';
-import FAQSection from '../components/home/FAQSection';
-import CTASection from '../components/home/CTASection';
-import QuickCTASection from '../components/home/QuickCTASection';
-import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
-import MicroCTA from '../components/cro/MicroCTA';
+import HeroNewSection from '../components/home/HeroNewSection';
+import BusinessTypesSection from '../components/home/BusinessTypesSection';
+import TrustSection from '../components/home/TrustSection';
+import ProcessSimpleSection from '../components/home/ProcessSimpleSection';
+import KnowledgeSection from '../components/home/KnowledgeSection';
+import CTAGentleSection from '../components/home/CTAGentleSection';
 import GeoContent from '../components/seo/GeoContent';
+import CTASection from '../components/home/CTASection';
+import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 
 export default function Home() {
@@ -82,17 +78,13 @@ export default function Home() {
         }}
       />
       <main>
-        <HeroSection />
-        <WhatIsSection />
-        <MicroCTA text="רוצה לדעת אם עוסק פטור מתאים לך?" cta="בדיקה מהירה ללא עלות" variant="subtle" />
-        <FeaturesSection />
-        <ServicesSection />
-        <ProfessionsGrid />
-        <QuickCTASection />
-        <ProcessSection />
+        <HeroNewSection />
+        <BusinessTypesSection />
+        <TrustSection />
+        <ProcessSimpleSection />
+        <KnowledgeSection />
+        <CTAGentleSection />
         <GeoContent />
-        <MicroCTA text="מוכנים להתחיל?" cta="שיחה קצרה ללא התחייבות" />
-        <FAQSection />
         <CTASection />
       </main>
     </>
