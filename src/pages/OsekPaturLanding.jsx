@@ -264,39 +264,38 @@ export default function OsekPaturLanding() {
                 animate={{ opacity: 1, x: 0 }}
                 className="hidden lg:block"
               >
-                <div className="bg-white rounded-3xl shadow-2xl p-8">
-                  <div className="text-center mb-6">
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <div className="text-center mb-4">
                     <img 
-                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='7'/%3E%3Cpolyline points='8.21 13.89 7 23 12 20 17 23 15.79 13.88'/%3E%3C/svg%3E"
-                      alt="פתיחת עוסק פטור מקצועי - Perfect One"
-                      className="w-16 h-16 mx-auto mb-4"
-                      width="64"
-                      height="64"
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='7'/%3E%3Cpolyline points='8.21 13.89 7 23 12 20 17 23 15.79 13.88'/%3E%3C/svg%3E"
+                      alt="פתיחת עוסק פטור מקצועי"
+                      className="w-12 h-12 mx-auto mb-3"
+                      width="48"
+                      height="48"
                       loading="eager"
                     />
-                    <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">מתחילים נכון</h3>
-                    <p className="text-gray-600">אנחנו עושים את זה בשבילך</p>
+                    <h3 className="text-xl font-black text-[#1E3A5F] mb-1">מתחילים נכון</h3>
+                    <p className="text-sm text-gray-600">אנחנו עושים את זה בשבילך</p>
                   </div>
 
-                  <ul className="space-y-3">
+                  <ul className="space-y-2">
                     {[
                       'פתיחת תיק עוסק פטור',
                       'טיפול מול כל הרשויות',
                       'אפליקציה לניהול העסק',
-                      'ליווי שוטף + הכנת דוח שנתי',
-                      'תמיכה אישית וזמינה'
+                      'ליווי שוטף + דוח שנתי',
+                      'תמיכה אישית'
                     ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
-                        <span className="text-gray-700 font-medium">{item}</span>
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-[#27AE60] flex-shrink-0" />
+                        <span className="text-sm text-gray-700 font-medium">{item}</span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-                    <p className="text-sm text-gray-500 mb-3">כבר עזרנו ל-</p>
-                    <p className="text-4xl font-black text-[#1E3A5F]">2000+</p>
-                    <p className="text-gray-600 font-medium">עצמאיים להתחיל נכון</p>
+                  <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+                    <p className="text-xs text-gray-500 mb-2">כבר עזרנו ל-</p>
+                    <p className="text-3xl font-black text-[#1E3A5F]">2000+</p>
                   </div>
                 </div>
               </motion.div>
