@@ -11,7 +11,7 @@ export default function HowMuchOsekMorshaPayNI() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold text-white"
           >
-            כמה משלם עוסק מורשה
+            כמה משלם עוסק מורשה ביטוח לאומי
           </motion.h1>
         </div>
       </section>
