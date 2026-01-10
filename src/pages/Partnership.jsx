@@ -283,9 +283,56 @@ export default function Partnership() {
               </table>
             </div>
 
+            {/* טבלת סיכום תרחישים */}
+            <div className="bg-white border border-gray-300 rounded-lg p-8 mb-8 overflow-x-auto">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">סיכום פוטנציאל (שנתי) – כל התרחישים</h3>
+              
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-900 text-white border-b border-gray-400">
+                    <th className="py-3 px-4 text-right">תרחיש</th>
+                    <th className="py-3 px-4 text-right">לידים/חודש</th>
+                    <th className="py-3 px-4 text-right">סגירות/חודש</th>
+                    <th className="py-3 px-4 text-right">סגירות/שנה</th>
+                    <th className="py-3 px-4 text-right">הכנסה שנתית</th>
+                    <th className="py-3 px-4 text-right">הוצאות</th>
+                    <th className="py-3 px-4 text-right">רווח טהור</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { name: 'שמרני', leads: 30, conv: 0.30 },
+                    { name: 'ממוצע ✓', leads: 50, conv: 0.35, highlight: true },
+                    { name: 'אגרסיבי', leads: 80, conv: 0.40 }
+                  ].map((scenario, idx) => {
+                    const closures_month = Math.floor(scenario.leads * scenario.conv);
+                    const closures_year = closures_month * 12;
+                    const revenue = closures_year * 2000;
+                    const costs = closures_year * 450;
+                    const profit = revenue - costs;
+                    
+                    return (
+                      <tr 
+                        key={idx} 
+                        className={`border-b border-gray-200 ${scenario.highlight ? 'bg-blue-50' : 'bg-white'}`}
+                      >
+                        <td className={`py-3 px-4 font-bold ${scenario.highlight ? 'text-blue-900' : 'text-gray-900'}`}>{scenario.name}</td>
+                        <td className="py-3 px-4 text-gray-700">{scenario.leads}</td>
+                        <td className="py-3 px-4 text-gray-700">{closures_month}</td>
+                        <td className="py-3 px-4 font-bold text-gray-900">{closures_year}</td>
+                        <td className="py-3 px-4 font-bold text-green-600">{(revenue / 1000).toFixed(0)}k ₪</td>
+                        <td className="py-3 px-4 text-red-600">{(costs / 1000).toFixed(0)}k ₪</td>
+                        <td className={`py-3 px-4 font-bold ${scenario.highlight ? 'text-blue-600' : 'text-green-600'}`}>{(profit / 1000).toFixed(0)}k ₪</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
             {/* פוטנציאל מכירות שנתי */}
             <div className="bg-white border border-gray-200 rounded-lg p-8 mb-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">פוטנציאל מכירות (שנתי)</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-6">פירוט מפורט – פוטנציאל מכירות (שנתי)</h3>
               
               <div className="space-y-6">
                 {/* תרחישים */}
