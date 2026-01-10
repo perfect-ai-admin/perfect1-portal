@@ -287,10 +287,7 @@ export default function UrgentInvoice() {
             </motion.div>
 
             <div className="relative">
-              {/* Connection Lines */}
-              <div className="absolute top-8 right-0 left-0 h-1 bg-gradient-to-l from-[#27AE60] via-[#2ECC71] to-transparent hidden md:block" style={{ zIndex: 0 }} />
-
-              <div className="grid md:grid-cols-4 gap-6 relative" style={{ zIndex: 1 }}>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
                 {[
                   { num: 1, title: 'צור קשר', desc: 'דברה קצרה עם המומחה שלנו לתיאור המצב שלך', icon: '☎️' },
                   { num: 2, title: 'בדיקת הצעת חוק', desc: 'אנחנו בודקים אילו דרישות חוקיות חלות עליך במקרה שלך', icon: '📋' },
@@ -303,22 +300,21 @@ export default function UrgentInvoice() {
                    whileInView={{ opacity: 1, y: 0 }}
                    viewport={{ once: true }}
                    transition={{ delay: i * 0.1 }}
-                   className="relative"
                  >
-                   <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 text-center h-full border border-gray-100">
+                   <div className="bg-white rounded-2xl lg:rounded-3xl p-4 md:p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center h-full border border-gray-100">
                      {/* Step Number Badge */}
-                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#27AE60] to-[#2ECC71] text-white font-black flex items-center justify-center mx-auto mb-6 text-2xl shadow-lg">
+                     <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-[#27AE60] to-[#2ECC71] text-white font-black flex items-center justify-center mx-auto mb-3 md:mb-4 lg:mb-6 text-lg md:text-xl lg:text-2xl shadow-lg">
                        {step.num}
                      </div>
 
                      {/* Icon */}
-                     <div className="text-5xl mb-4 transform hover:scale-110 transition-transform">{step.icon}</div>
+                     <div className="text-3xl md:text-4xl lg:text-5xl mb-2 md:mb-3 lg:mb-4">{step.icon}</div>
 
                      {/* Title */}
-                     <h3 className="text-xl font-black text-[#1E3A5F] mb-3">{step.title}</h3>
+                     <h3 className="text-base md:text-lg lg:text-xl font-black text-[#1E3A5F] mb-2 md:mb-3">{step.title}</h3>
 
                      {/* Description */}
-                     <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
+                     <p className="text-xs md:text-sm lg:text-sm text-gray-600 leading-relaxed">{step.desc}</p>
                    </div>
                  </motion.div>
                ))}
