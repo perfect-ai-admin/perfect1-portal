@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import SEOOptimized from './SEOOptimized';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { Phone, MessageCircle } from 'lucide-react';
+import { Phone, MessageCircle, CheckCircle, AlertCircle, FileText } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import FAQSchema from '../components/seo/FAQSchema';
+import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
+import PageTracker from '../components/seo/PageTracker';
 
 export default function HowToCloseOsekPatur() {
   const [formData, setFormData] = useState({
