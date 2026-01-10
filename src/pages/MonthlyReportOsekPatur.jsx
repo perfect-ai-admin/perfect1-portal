@@ -61,9 +61,12 @@ export default function MonthlyReportOsekPatur() {
 
   return (
     <>
+      <LocalBusinessSchema />
+      <FAQSchema faqs={faqs.map(faq => ({ question: faq.question, answer: faq.answer }))} />
       <SEOOptimized
-        title="דיווח חודשי לעוסק פטור - איך עושים זאת נכון | Perfect One"
-        description="מדריך מלא לדיווח חודשי לעוסק פטור. קבלות, הוצאות, דיווחים ופה עלויות."
+        title="דיווח חודשי לעוסק פטור | ליווי חודשי 199₪ | Perfect One"
+        description="ליווי חודשי לעוסק פטור: אפליקציה, דיווחים לרשויות, וגישה לרואה חשבון. 199₪ בחודש, בלי התחייבות."
+        keywords="דיווח חודשי עוסק פטור, ליווי חודשי, רו"ח עוסק פטור, מעקב הכנסות הוצאות"
         canonical="https://perfect1.co.il/monthly-report-osek-patur"
       />
 
