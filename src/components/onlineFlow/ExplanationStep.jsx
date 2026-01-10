@@ -6,7 +6,7 @@ import { Star, Users, Clock } from 'lucide-react';
 
 export default function ExplanationStep({ onNext }) {
   return (
-    <div className="space-y-5 py-4">
+    <div className="space-y-4 h-full flex flex-col justify-between">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: -15 }}
@@ -49,7 +49,7 @@ export default function ExplanationStep({ onNext }) {
         {[
           { icon: Clock, title: 'בלי לצאת מהבית', desc: 'כל התהליך אונליין' },
           { icon: Users, title: 'עם ליווי מלא', desc: 'צוות מומחים בוואטסאפ' },
-          { icon: Star, title: 'מוכל וברור', desc: 'אם"א + אפליקציה' }
+          { icon: Star, title: 'מוכן לדבור', desc: 'אם"א + אפליקציה' }
         ].map((item, i) => (
           <motion.div
             key={i}
