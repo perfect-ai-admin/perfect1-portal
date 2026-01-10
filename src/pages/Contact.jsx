@@ -9,6 +9,7 @@ import LeadForm from '../components/forms/LeadForm';
 import GoogleMapEmbed from '../components/maps/GoogleMapEmbed';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
+import ContactCategories from '../components/contact/ContactCategories';
 
 export default function Contact() {
   const breadcrumbs = [
@@ -123,7 +124,7 @@ export default function Contact() {
               </div>
 
               <MicroCTA text="מעדיפים להתחיל ישירות?" cta="השאירו פרטים ונחזור אליכם" variant="subtle" />
-            </motion.div>
+              </motion.div>
 
             {/* Form */}
             <motion.div
@@ -139,6 +140,19 @@ export default function Contact() {
               />
             </motion.div>
           </div>
+
+          {/* Categories Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 pb-12"
+          >
+            <h2 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-6">
+              שאלות נפוצות
+            </h2>
+            <ContactCategories />
+          </motion.div>
 
           {/* Google Map */}
           <motion.div
