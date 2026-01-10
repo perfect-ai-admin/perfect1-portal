@@ -86,9 +86,9 @@ export default function PricingCost() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
-                  <h2 className="text-lg font-bold text-blue-900 mb-2">תשובה מהירה</h2>
-                  <p className="text-gray-800">
-                    עלות פתיחת עוסק פטור משתנה בין אפס שקלים (אם תפתח לבד) ועד כמה מאות שקלים דרך מקצוע. ישנה אופציה אונליין בעלות קבועה של 199 ₪ שמכסה את כל התהליך מ-ה-א עד ה-ת.
+                  <h2 className="text-lg font-bold text-blue-900 mb-2">כמה עולה לפתוח עוסק פטור? פירוט מחירים ואפשרויות פתיחה</h2>
+                  <p className="text-gray-800 mb-4">
+                    אם אתה שואל את עצמך כמה עולה לפתוח עוסק פטור, הגעת למקום הנכון. בעמוד הזה נסביר לך בדיוק מה העלויות האמיתיות, מה כלול בכל אפשרות, ונעזור לך להבין מה הכי מתאים לך.
                   </p>
                 </div>
               </div>
