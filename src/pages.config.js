@@ -1,24 +1,38 @@
 import About from './pages/About';
+import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
+import AnnualReportOsekMorshaPage from './pages/AnnualReportOsekMorshaPage';
 import AnnualReportOsekPatur from './pages/AnnualReportOsekPatur';
 import BituchLeumiLanding from './pages/BituchLeumiLanding';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
+import CloseOsekMorsha from './pages/CloseOsekMorsha';
+import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
+import CloseOsekMorshaVat from './pages/CloseOsekMorshaVat';
 import CloseOsekPaturBituachLeumi from './pages/CloseOsekPaturBituachLeumi';
 import CloseOsekPaturComprehensive from './pages/CloseOsekPaturComprehensive';
 import CloseOsekPaturTaxAuthority from './pages/CloseOsekPaturTaxAuthority';
+import CommonMistakesOsekMorsha from './pages/CommonMistakesOsekMorsha';
+import CompanyLanding from './pages/CompanyLanding';
 import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
 import Contact from './pages/Contact';
 import CosmeticianLanding from './pages/CosmeticianLanding';
 import CosmeticianLandingNew from './pages/CosmeticianLandingNew';
+import CostsOsekMorsha from './pages/CostsOsekMorsha';
 import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
 import Home from './pages/Home';
+import HowMuchOsekMorshaPayNI from './pages/HowMuchOsekMorshaPayNI';
+import HowMuchToManageOsekMorsha from './pages/HowMuchToManageOsekMorsha';
+import HowToCloseOsekMorsha from './pages/HowToCloseOsekMorsha';
 import HowToCloseOsekPatur from './pages/HowToCloseOsekPatur';
 import HowToOpenOsekPatur from './pages/HowToOpenOsekPatur';
+import IncomeTaxOsekMorsha from './pages/IncomeTaxOsekMorsha';
+import IncomeTaxPayment from './pages/IncomeTaxPayment';
 import InvoicesAppLanding from './pages/InvoicesAppLanding';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
@@ -30,12 +44,21 @@ import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
 import Methodology from './pages/Methodology';
 import MonthlyMonitoringLanding from './pages/MonthlyMonitoringLanding';
 import MonthlyReportOsekPatur from './pages/MonthlyReportOsekPatur';
+import NationalInsuranceAdvances from './pages/NationalInsuranceAdvances';
+import NationalInsuranceOsekMorsha from './pages/NationalInsuranceOsekMorsha';
 import NeedAccountantOsekPatur from './pages/NeedAccountantOsekPatur';
+import OsekMorshaLanding from './pages/OsekMorshaLanding';
+import OsekMorshaMainLanding from './pages/OsekMorshaMainLanding';
+import OsekMorshaOnline from './pages/OsekMorshaOnline';
+import OsekMorshaRights from './pages/OsekMorshaRights';
+import OsekMorshaSteps from './pages/OsekMorshaSteps';
+import OsekMorshaTime from './pages/OsekMorshaTime';
 import OsekPatur from './pages/OsekPatur';
 import OsekPaturLanding from './pages/OsekPaturLanding';
 import OsekPaturOnline from './pages/OsekPaturOnline';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import OsekPaturSteps from './pages/OsekPaturSteps';
+import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransition';
 import OsekPaturVsMorasha from './pages/OsekPaturVsMorasha';
 import PhotographerLanding from './pages/PhotographerLanding';
 import Pricing from './pages/Pricing';
@@ -57,69 +80,61 @@ import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
 import SystemLogicMap from './pages/SystemLogicMap';
 import TakratOsekPatur from './pages/TakratOsekPatur';
+import TaxAdvances from './pages/TaxAdvances';
+import TaxDebts from './pages/TaxDebts';
 import Team from './pages/Team';
 import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
-import UrgentInvoice from './pages/UrgentInvoice';
-import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import OsekMorshaLanding from './pages/OsekMorshaLanding';
-import CompanyLanding from './pages/CompanyLanding';
-import OsekMorshaOnline from './pages/OsekMorshaOnline';
-import OsekMorshaSteps from './pages/OsekMorshaSteps';
-import OsekMorshaTime from './pages/OsekMorshaTime';
-import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import TransitionOsekPaturToMorsha from './pages/TransitionOsekPaturToMorsha';
-import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransition';
-import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
+import UrgentInvoice from './pages/UrgentInvoice';
 import VatOsekMorsha from './pages/VatOsekMorsha';
-import VatReportingOsekMorsha from './pages/VatReportingOsekMorsha';
 import VatPaymentCalculation from './pages/VatPaymentCalculation';
-import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
-import IncomeTaxOsekMorsha from './pages/IncomeTaxOsekMorsha';
-import IncomeTaxPayment from './pages/IncomeTaxPayment';
-import TaxAdvances from './pages/TaxAdvances';
-import AnnualReportOsekMorshaPage from './pages/AnnualReportOsekMorshaPage';
-import NationalInsuranceOsekMorsha from './pages/NationalInsuranceOsekMorsha';
-import HowMuchOsekMorshaPayNI from './pages/HowMuchOsekMorshaPayNI';
-import NationalInsuranceAdvances from './pages/NationalInsuranceAdvances';
-import OsekMorshaRights from './pages/OsekMorshaRights';
-import CostsOsekMorsha from './pages/CostsOsekMorsha';
-import HowMuchToManageOsekMorsha from './pages/HowMuchToManageOsekMorsha';
-import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
-import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
-import CommonMistakesOsekMorsha from './pages/CommonMistakesOsekMorsha';
 import VatPenalties from './pages/VatPenalties';
-import TaxDebts from './pages/TaxDebts';
-import OsekMorshaMainLanding from './pages/OsekMorshaMainLanding';
-import CloseOsekMorsha from './pages/CloseOsekMorsha';
-import HowToCloseOsekMorsha from './pages/HowToCloseOsekMorsha';
-import CloseOsekMorshaVat from './pages/CloseOsekMorshaVat';
-import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
+import VatReportingOsekMorsha from './pages/VatReportingOsekMorsha';
+import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
+import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
+import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
+import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import Partnership from './pages/Partnership';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
+    "AccountantForOsekMorsha": AccountantForOsekMorsha,
+    "AnnualReportOsekMorshaPage": AnnualReportOsekMorshaPage,
     "AnnualReportOsekPatur": AnnualReportOsekPatur,
     "BituchLeumiLanding": BituchLeumiLanding,
     "Blog": Blog,
     "BlogPost": BlogPost,
+    "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
     "CloseBusinessLanding": CloseBusinessLanding,
+    "CloseOsekMorsha": CloseOsekMorsha,
+    "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
+    "CloseOsekMorshaVat": CloseOsekMorshaVat,
     "CloseOsekPaturBituachLeumi": CloseOsekPaturBituachLeumi,
     "CloseOsekPaturComprehensive": CloseOsekPaturComprehensive,
     "CloseOsekPaturTaxAuthority": CloseOsekPaturTaxAuthority,
+    "CommonMistakesOsekMorsha": CommonMistakesOsekMorsha,
+    "CompanyLanding": CompanyLanding,
     "ComputerTechnicianLanding": ComputerTechnicianLanding,
     "Contact": Contact,
     "CosmeticianLanding": CosmeticianLanding,
     "CosmeticianLandingNew": CosmeticianLandingNew,
+    "CostsOsekMorsha": CostsOsekMorsha,
     "EyebrowStylistLanding": EyebrowStylistLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
     "FreelancerLanding": FreelancerLanding,
     "GraphicDesignerLanding": GraphicDesignerLanding,
     "HairStylistLanding": HairStylistLanding,
     "Home": Home,
+    "HowMuchOsekMorshaPayNI": HowMuchOsekMorshaPayNI,
+    "HowMuchToManageOsekMorsha": HowMuchToManageOsekMorsha,
+    "HowToCloseOsekMorsha": HowToCloseOsekMorsha,
     "HowToCloseOsekPatur": HowToCloseOsekPatur,
     "HowToOpenOsekPatur": HowToOpenOsekPatur,
+    "IncomeTaxOsekMorsha": IncomeTaxOsekMorsha,
+    "IncomeTaxPayment": IncomeTaxPayment,
     "InvoicesAppLanding": InvoicesAppLanding,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
@@ -131,12 +146,21 @@ export const PAGES = {
     "Methodology": Methodology,
     "MonthlyMonitoringLanding": MonthlyMonitoringLanding,
     "MonthlyReportOsekPatur": MonthlyReportOsekPatur,
+    "NationalInsuranceAdvances": NationalInsuranceAdvances,
+    "NationalInsuranceOsekMorsha": NationalInsuranceOsekMorsha,
     "NeedAccountantOsekPatur": NeedAccountantOsekPatur,
+    "OsekMorshaLanding": OsekMorshaLanding,
+    "OsekMorshaMainLanding": OsekMorshaMainLanding,
+    "OsekMorshaOnline": OsekMorshaOnline,
+    "OsekMorshaRights": OsekMorshaRights,
+    "OsekMorshaSteps": OsekMorshaSteps,
+    "OsekMorshaTime": OsekMorshaTime,
     "OsekPatur": OsekPatur,
     "OsekPaturLanding": OsekPaturLanding,
     "OsekPaturOnline": OsekPaturOnline,
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
     "OsekPaturSteps": OsekPaturSteps,
+    "OsekPaturThresholdAndTransition": OsekPaturThresholdAndTransition,
     "OsekPaturVsMorasha": OsekPaturVsMorasha,
     "PhotographerLanding": PhotographerLanding,
     "Pricing": Pricing,
@@ -158,44 +182,22 @@ export const PAGES = {
     "SitemapPages": SitemapPages,
     "SystemLogicMap": SystemLogicMap,
     "TakratOsekPatur": TakratOsekPatur,
+    "TaxAdvances": TaxAdvances,
+    "TaxDebts": TaxDebts,
     "Team": Team,
     "TechnicianLanding": TechnicianLanding,
     "ThankYou": ThankYou,
-    "UrgentInvoice": UrgentInvoice,
-    "WoltDeliveryLanding": WoltDeliveryLanding,
-    "OsekMorshaLanding": OsekMorshaLanding,
-    "CompanyLanding": CompanyLanding,
-    "OsekMorshaOnline": OsekMorshaOnline,
-    "OsekMorshaSteps": OsekMorshaSteps,
-    "OsekMorshaTime": OsekMorshaTime,
-    "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "TransitionOsekPaturToMorsha": TransitionOsekPaturToMorsha,
-    "OsekPaturThresholdAndTransition": OsekPaturThresholdAndTransition,
-    "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
+    "UrgentInvoice": UrgentInvoice,
     "VatOsekMorsha": VatOsekMorsha,
-    "VatReportingOsekMorsha": VatReportingOsekMorsha,
     "VatPaymentCalculation": VatPaymentCalculation,
-    "VatReturnOsekMorsha": VatReturnOsekMorsha,
-    "IncomeTaxOsekMorsha": IncomeTaxOsekMorsha,
-    "IncomeTaxPayment": IncomeTaxPayment,
-    "TaxAdvances": TaxAdvances,
-    "AnnualReportOsekMorshaPage": AnnualReportOsekMorshaPage,
-    "NationalInsuranceOsekMorsha": NationalInsuranceOsekMorsha,
-    "HowMuchOsekMorshaPayNI": HowMuchOsekMorshaPayNI,
-    "NationalInsuranceAdvances": NationalInsuranceAdvances,
-    "OsekMorshaRights": OsekMorshaRights,
-    "CostsOsekMorsha": CostsOsekMorsha,
-    "HowMuchToManageOsekMorsha": HowMuchToManageOsekMorsha,
-    "AccountantForOsekMorsha": AccountantForOsekMorsha,
-    "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
-    "CommonMistakesOsekMorsha": CommonMistakesOsekMorsha,
     "VatPenalties": VatPenalties,
-    "TaxDebts": TaxDebts,
-    "OsekMorshaMainLanding": OsekMorshaMainLanding,
-    "CloseOsekMorsha": CloseOsekMorsha,
-    "HowToCloseOsekMorsha": HowToCloseOsekMorsha,
-    "CloseOsekMorshaVat": CloseOsekMorshaVat,
-    "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
+    "VatReportingOsekMorsha": VatReportingOsekMorsha,
+    "VatReturnOsekMorsha": VatReturnOsekMorsha,
+    "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
+    "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
+    "WoltDeliveryLanding": WoltDeliveryLanding,
+    "Partnership": Partnership,
 }
 
 export const pagesConfig = {
