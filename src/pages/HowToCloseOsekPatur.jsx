@@ -82,39 +82,196 @@ export default function HowToCloseOsekPatur() {
       />
 
       <main className="pt-20 bg-[#F8F9FA]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h1 className="text-5xl font-black text-[#1E3A5F] mb-6 text-center">
-              איך סוגרים עוסק פטור?
-            </h1>
-            <p className="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">
-              מדריך שלב אחר שלב לסגירת עוסק פטור בצורה חוקית וברורה
-            </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          <Breadcrumbs items={[
+            { label: 'דף הבית', url: 'Home' },
+            { label: 'שירותים', url: 'Services' },
+            { label: 'סגירת עוסק פטור', url: 'CloseOsekPaturComprehensive' },
+            { label: 'איך סוגרים עוסק פטור' }
+          ]} />
+        </div>
 
-            <div className="space-y-6 mb-16">
-              <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border-r-4 border-gray-600">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">1. התראה למס הכנסה</h3>
-                <p className="text-gray-700">הודעה על סגירת העסק למס הכנסה</p>
-              </div>
+        <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-16">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
+            >
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-6">
+                איך סוגרים עוסק פטור?
+              </h1>
+              <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
+                מדריך שלב אחר שלב לסגירה בטוחה וחוקית של עוסק פטור
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-6 border-r-4 border-blue-600">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">2. דוח סיום לביטוח לאומי</h3>
-                <p className="text-gray-700">התראה לביטוח לאומי על סיום העסק</p>
-              </div>
+        <section className="py-16 bg-white">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-12 text-center">
+                6 שלבים לסגירה בטוחה
+              </h2>
 
-              <div className="bg-gradient-to-r from-cyan-50 to-green-50 rounded-2xl p-6 border-r-4 border-green-600">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">3. דוח סגירה שנתי</h3>
-                <p className="text-gray-700">דיווח הכנסות סופי עד לתאריך הסגירה</p>
+              <div className="space-y-6">
+                {[
+                  {
+                    step: 1,
+                    title: 'דוח שנתי סופי',
+                    time: '1-2 שבועות',
+                    desc: 'הגשת דוח שנתי סופי למס הכנסה עד לתאריך הסגירה. זה צעד חובה שלא אפשר לדלג עליו.',
+                    authority: '📋 מס הכנסה'
+                  },
+                  {
+                    step: 2,
+                    title: 'הודעה למס הכנסה',
+                    time: '1-2 שבועות',
+                    desc: 'מלא טופס הודעה על סיום עסקות ושלח למס הכנסה. זה אפשר לעשות אונליין דרך אתר הרשות.',
+                    authority: '📋 מס הכנסה'
+                  },
+                  {
+                    step: 3,
+                    title: 'סגירה של מע״מ (אם קיים)',
+                    time: '1-3 שבועות',
+                    desc: 'אם הרשמת עוסק למע״מ - צריך להגיש דוח מע״מ אחרון ולשלם או לקבל החזר.',
+                    authority: '💰 מע״מ'
+                  },
+                  {
+                    step: 4,
+                    title: 'הודעה לביטוח לאומי',
+                    time: '2-3 שבועות',
+                    desc: 'שלח הודעה על סיום עסקות לביטוח לאומי. חייב לתקן כל חוקים שנותרו לפני הסגירה.',
+                    authority: '🛡️ ביטוח לאומי'
+                  },
+                  {
+                    step: 5,
+                    title: 'סגירה סופית',
+                    time: '1-2 שבועות',
+                    desc: 'קבל אישורים סופיים מכל הרשויות. כשכל הרשויות מאשרות - הסגירה הושלמה.',
+                    authority: '✅ סגירה'
+                  }
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-gradient-to-r from-gray-50 to-blue-50/30 rounded-2xl p-8 border-r-4 border-[#1E3A5F]"
+                  >
+                    <div className="flex items-start gap-6">
+                      <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-[#1E3A5F] text-white font-black text-2xl">
+                          {item.step}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-2xl font-bold text-[#1E3A5F]">{item.title}</h3>
+                          <span className="text-sm font-bold text-gray-500 bg-gray-200 px-3 py-1 rounded-full">⏱️ {item.time}</span>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed mb-3">{item.desc}</p>
+                        <p className="text-sm font-bold text-gray-600">{item.authority}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
+            </motion.div>
+          </div>
+        </section>
 
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-r-4 border-emerald-600">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">4. סגירה סופית</h3>
-                <p className="text-gray-700">סיום כל התחייבויות פיננסיות</p>
+        <section className="py-16 bg-orange-50">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-12 text-center">
+                מה קורה אם מדלגים על שלב?
+              </h2>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  { issue: 'דוח שנתי לא הוגש', consequence: 'קנסות, ריבית, וסגירה לא סופית' },
+                  { issue: 'לא הודעת למס הכנסה', consequence: 'עוסק יישאר רשום - יכול להשפיע על עסק חדש' },
+                  { issue: 'חוק לביטוח לאומי לא תוקן', consequence: 'קנסות וריבית - זה יכול להיות יקר' },
+                  { issue: 'מע״מ לא סוגר כראוי', consequence: 'בעיות עם פיקוח מע״מ וקנסות' }
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-white rounded-xl p-6 border-2 border-red-300 shadow-md"
+                  >
+                    <div className="flex items-start gap-3 mb-2">
+                      <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
+                      <h3 className="text-lg font-bold text-[#1E3A5F]">{item.issue}</h3>
+                    </div>
+                    <p className="text-gray-700 text-sm">→ {item.consequence}</p>
+                  </motion.div>
+                ))}
               </div>
-            </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-blue-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-6 text-center">
+                שאלות נפוצות
+              </h2>
+
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqs.map((faq, i) => (
+                  <AccordionItem 
+                    key={i} 
+                    value={`item-${i}`}
+                    className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden px-6"
+                  >
+                    <AccordionTrigger className="text-right hover:no-underline py-4">
+                      <span className="text-lg font-bold text-[#1E3A5F]">{faq.question}</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-700 leading-relaxed pb-4">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                תהליך מורכב?
+              </h2>
+              <p className="text-xl text-gray-700 mb-6 max-w-2xl mx-auto">
+                במקרים מורכבים ניתן לבצע את הסגירה <Link to={createPageUrl('CloseBusinessLanding')} className="text-[#2C5282] font-bold hover:underline">בליווי מלא ומסודר</Link> שדואג שכל שלב נעשה כמו שצריך.
+              </p>
+            </motion.div>
+          </div>
+        </section>
 
             <div className="bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
               <h2 className="text-3xl font-black mb-8 text-center">
