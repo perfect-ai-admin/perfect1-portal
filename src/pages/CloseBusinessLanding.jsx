@@ -356,15 +356,23 @@ export default function CloseBusinessLanding() {
                     ))}
                   </ul>
 
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="flex items-start gap-2">
+                  <div className="pt-4 border-t border-gray-200 flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2 flex-1">
                       <AlertCircle className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
                       <p className="text-xs text-gray-600">{type.errors}</p>
                     </div>
+                    {type.link && (
+                      <Link 
+                        to={createPageUrl(type.link)}
+                        className="text-[#2C5282] hover:text-[#1E3A5F] font-bold text-xs whitespace-nowrap flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        עוד <ArrowLeft className="w-3 h-3" />
+                      </Link>
+                    )}
                   </div>
-                </motion.div>
-              ))}
-            </div>
+                  </motion.div>
+                  ))}
+                  </div>
           </div>
         </section>
 
