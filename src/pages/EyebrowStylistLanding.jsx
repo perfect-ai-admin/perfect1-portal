@@ -44,21 +44,21 @@ export default function EyebrowStylistLanding() {
         keywords="פתיחת עוסק פטור מעצבת גבות, מיקרובליידינג עוסק פטור, עיצוב גבות עוסק פטור"
         canonical="https://perfect1.co.il/eyebrow-stylist-osek-patur"
       />
-      <main className="pt-20">
+      <main className="pt-20 bg-[#F8F9FA]">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-[#CD853F]/10 via-white to-[#DEB887]/10 py-16 md:py-24">
+        <section className="bg-gradient-to-br from-white via-[#FFF8F0] to-white py-16 md:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
               >
-                <h1 className="text-4xl md:text-6xl font-black text-[#1E3A5F] mb-6 leading-tight">
-                  פתחי עוסק פטור והתחילי לעבוד באופן חוקי כמעצבת גבות 👁️
+                <h1 className="text-5xl md:text-7xl font-black text-[#1E3A5F] mb-6 leading-tight">
+                   פתחי עוסק פטור והתחילי לעבוד באופן חוקי כמעצבת גבות 👁️
                 </h1>
 
-                <p className="text-xl text-gray-600 mb-8">
-                  <strong className="text-[#CD853F]">249₪</strong> - פתיחה מהירה + אפליקציה + ליווי שוטף
+                <p className="text-2xl text-gray-700 mb-8">
+                  <strong className="text-[#D4843F]">249₪</strong> - פתיחה מהירה + אפליקציה + ליווי שוטף
                 </p>
 
                 <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
@@ -83,13 +83,13 @@ export default function EyebrowStylistLanding() {
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <a href="https://wa.me/972502277087?text=היי, אני מעצבת גבות ואשמח לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-1">
-                    <Button className="w-full h-16 text-xl font-bold bg-[#25D366] hover:bg-[#128C7E] rounded-2xl shadow-xl">
+                    <Button className="w-full h-16 text-lg font-bold bg-gradient-to-r from-[#D4843F] to-[#E8956D] hover:from-[#C87130] hover:to-[#D97A55] text-white rounded-2xl shadow-lg transition-all">
                       <MessageCircle className="w-6 h-6 ml-2" />
                       וואטסאפ עכשיו
                     </Button>
                   </a>
                   <a href="tel:0502277087" className="flex-1">
-                    <Button variant="outline" className="w-full h-16 text-xl font-bold border-2 border-[#1E3A5F] rounded-2xl">
+                    <Button className="w-full h-16 text-lg font-bold border-2 border-[#D4843F] text-[#D4843F] bg-white hover:bg-[#FFF8F0] rounded-2xl transition-all">
                       <Phone className="w-6 h-6 ml-2" />
                       0502277087
                     </Button>
@@ -145,12 +145,12 @@ export default function EyebrowStylistLanding() {
         </section>
 
         {/* Stats */}
-        <section className="py-12 bg-white">
+        <section className="py-16 md:py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { icon: Users, number: '200+', label: 'מעצבות גבות איתנו', color: '#CD853F' },
-                { icon: TrendingUp, number: '48h', label: 'פתיחה מהירה', color: '#27AE60' },
+                { icon: Users, number: '200+', label: 'מעצבות גבות איתנו', color: '#D4843F' },
+                { icon: TrendingUp, number: '48h', label: 'פתיחה מהירה', color: '#8B7355' },
                 { icon: Award, number: '100%', label: 'שביעות רצון', color: '#1E3A5F' }
               ].map((stat, i) => (
                 <motion.div
@@ -158,13 +158,13 @@ export default function EyebrowStylistLanding() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg text-center"
+                  className="bg-white rounded-3xl p-8 md:p-10 shadow-md hover:shadow-lg transition-all border border-gray-100"
                 >
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: stat.color + '20' }}>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: stat.color + '15' }}>
                     <stat.icon className="w-8 h-8" style={{ color: stat.color }} />
                   </div>
-                  <div className="text-4xl font-black mb-2" style={{ color: stat.color }}>{stat.number}</div>
-                  <div className="text-gray-600 font-medium">{stat.label}</div>
+                  <div className="text-4xl md:text-5xl font-black mb-3" style={{ color: stat.color }}>{stat.number}</div>
+                  <div className="text-gray-700 font-bold text-lg">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -172,23 +172,23 @@ export default function EyebrowStylistLanding() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282]">
+        <section className="py-20 md:py-28 bg-gradient-to-br from-[#D4843F] via-[#C87130] to-[#B8663B]">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
+            <h2 className="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">
               התחילי לעבוד באופן חוקי עוד היום 👁️✨
             </h2>
-            <p className="text-xl text-white/90 mb-8">
+            <p className="text-2xl text-white/95 mb-10 leading-relaxed">
               הצטרפי למאות מעצבות גבות שכבר עובדות איתנו
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="https://wa.me/972502277087?text=היי, אני מעצבת גבות ואשמח לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
-                <Button className="h-16 px-10 text-xl font-bold bg-[#25D366] hover:bg-[#128C7E] rounded-2xl shadow-xl">
+                <Button className="h-16 px-12 text-xl font-bold bg-white hover:bg-[#FFF8F0] text-[#D4843F] rounded-2xl shadow-lg transition-all">
                   <MessageCircle className="w-6 h-6 ml-2" />
                   וואטסאפ עכשיו
                 </Button>
               </a>
               <a href="tel:0502277087">
-                <Button variant="outline" className="h-16 px-10 text-xl font-bold border-2 border-white text-white hover:bg-white hover:text-[#1E3A5F] rounded-2xl">
+                <Button className="h-16 px-12 text-xl font-bold border-2 border-white text-white bg-transparent hover:bg-white/20 rounded-2xl transition-all">
                   <Phone className="w-6 h-6 ml-2" />
                   0502277087
                 </Button>

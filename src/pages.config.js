@@ -1,6 +1,8 @@
 import About from './pages/About';
+import BituchLeumiLanding from './pages/BituchLeumiLanding';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
 import Contact from './pages/Contact';
 import CosmeticianLanding from './pages/CosmeticianLanding';
@@ -10,12 +12,14 @@ import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
+import Home from './pages/Home';
 import InvoicesAppLanding from './pages/InvoicesAppLanding';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
 import MakeupArtistLanding from './pages/MakeupArtistLanding';
 import MakeupArtistLandingNew from './pages/MakeupArtistLandingNew';
 import ManicuristLanding from './pages/ManicuristLanding';
+import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
 import Methodology from './pages/Methodology';
 import OsekPatur from './pages/OsekPatur';
 import OsekPaturLanding from './pages/OsekPaturLanding';
@@ -45,17 +49,15 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import CloseBusinessLanding from './pages/CloseBusinessLanding';
-import BituchLeumiLanding from './pages/BituchLeumiLanding';
-import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
-import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
+    "BituchLeumiLanding": BituchLeumiLanding,
     "Blog": Blog,
     "BlogPost": BlogPost,
+    "CloseBusinessLanding": CloseBusinessLanding,
     "ComputerTechnicianLanding": ComputerTechnicianLanding,
     "Contact": Contact,
     "CosmeticianLanding": CosmeticianLanding,
@@ -65,12 +67,14 @@ export const PAGES = {
     "FreelancerLanding": FreelancerLanding,
     "GraphicDesignerLanding": GraphicDesignerLanding,
     "HairStylistLanding": HairStylistLanding,
+    "Home": Home,
     "InvoicesAppLanding": InvoicesAppLanding,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
     "MakeupArtistLanding": MakeupArtistLanding,
     "MakeupArtistLandingNew": MakeupArtistLandingNew,
     "ManicuristLanding": ManicuristLanding,
+    "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
     "Methodology": Methodology,
     "OsekPatur": OsekPatur,
     "OsekPaturLanding": OsekPaturLanding,
@@ -100,10 +104,6 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "CloseBusinessLanding": CloseBusinessLanding,
-    "BituchLeumiLanding": BituchLeumiLanding,
-    "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
-    "Home": Home,
 }
 
 export const pagesConfig = {
