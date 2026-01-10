@@ -175,12 +175,29 @@ export default function UrgentInvoice() {
           </div>
         </section>
 
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            
+        {/* Trust Stats */}
+        <section className="bg-[#1E3A5F] text-white py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-3 gap-8 text-center">
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+                <h3 className="text-4xl md:text-5xl font-black text-[#27AE60] mb-2">100%</h3>
+                <p className="text-white/90 font-medium">תשובות משפטיות נכונות</p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
+                <h3 className="text-4xl md:text-5xl font-black text-[#D4AF37] mb-2">24h</h3>
+                <p className="text-white/90 font-medium">זמן תجابה מדיגום קבלת הפנייה</p>
+              </motion.div>
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+                <h3 className="text-4xl md:text-5xl font-black text-[#27AE60] mb-2">87%</h3>
+                <p className="text-white/90 font-medium">ממשתמשים מרוצים לחלוטין</p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          {/* Main Content */}
+          
             {/* Quick Answer */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
