@@ -274,7 +274,15 @@ export default function UrgentInvoice() {
                 פתיחת עוסק להוצאת חשבונית
               </h2>
               <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-                פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות. תוכל לבחור פתיחת עוסק פטור אונליין או פתיחת עוסק פטור מסורתית בהתאם למה שמתאים לך.
+                פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות. תוכל לבחור{' '}
+                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-[#27AE60] font-black hover:underline">
+                  פתיחת עוסק פטור אונליין
+                </Link>
+                {' '}או{' '}
+                <Link to={createPageUrl('OsekPaturOnline')} className="text-[#27AE60] font-black hover:underline">
+                  פתיחת עוסק פטור מסורתית
+                </Link>
+                {' '}בהתאם למה שמתאים לך.
               </p>
             </motion.div>
 
