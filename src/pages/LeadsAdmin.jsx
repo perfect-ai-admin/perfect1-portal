@@ -19,6 +19,7 @@ export default function LeadsAdmin() {
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
   const [sortBy, setSortBy] = useState(null); // 'status' or 'priority'
+  const [selectedLeadIds, setSelectedLeadIds] = useState([]); // לבחירה מרובה
   const queryClient = useQueryClient();
 
   const { data: leads, isLoading } = useQuery({
@@ -77,6 +78,48 @@ export default function LeadsAdmin() {
       id: lead.id,
       data: { ...lead, status: newStatus, last_contact_date: new Date().toISOString().split('T')[0] }
     });
+  };
+
+  const toggleLeadSelection = (leadId) => {
+    setSelectedLeadIds(prev => 
+      prev.includes(leadId) 
+        ? prev.filter(id => id !== leadId)
+        : [...prev, leadId]
+    );
+  };
+
+  const toggleAllLeads = () => {
+    if (selectedLeadIds.length === sortedLeads.length) {
+      setSelectedLeadIds([]);
+    } else {
+      setSelectedLeadIds(sortedLeads.map(lead => lead.id));
+    }
+  };
+
+  const handleBulkStatusUpdate = async (newStatus) => {
+    if (selectedLeadIds.length === 0) {
+      alert('נא לבחור לפחות ליד אחד');
+      return;
+    }
+    
+    if (window.confirm(`האם לעדכן ${selectedLeadIds.length} לידים לסטטוס "${statusLabels[newStatus]}"?`)) {
+      try {
+        for (const leadId of selectedLeadIds) {
+          const lead = leads.find(l => l.id === leadId);
+          if (lead) {
+            await base44.entities.Lead.update(leadId, {
+              ...lead,
+              status: newStatus,
+              last_contact_date: new Date().toISOString().split('T')[0]
+            });
+          }
+        }
+        queryClient.invalidateQueries({ queryKey: ['leads'] });
+        setSelectedLeadIds([]);
+      } catch (error) {
+        alert('שגיאה בעדכון הלידים');
+      }
+    }
   };
 
   const exportToCSV = () => {
@@ -236,6 +279,54 @@ export default function LeadsAdmin() {
           </div>
         </div>
 
+        {/* Bulk Actions */}
+        {selectedLeadIds.length > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg shadow p-4 mb-6">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="font-bold text-[#1E3A5F]">
+                נבחרו {selectedLeadIds.length} לידים
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <Button 
+                  onClick={() => handleBulkStatusUpdate('contacted')}
+                  className="bg-yellow-600 hover:bg-yellow-700"
+                  size="sm"
+                >
+                  סמן כ"יצרנו קשר"
+                </Button>
+                <Button 
+                  onClick={() => handleBulkStatusUpdate('in_progress')}
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                  size="sm"
+                >
+                  סמן כ"בתהליך"
+                </Button>
+                <Button 
+                  onClick={() => handleBulkStatusUpdate('not_interested')}
+                  className="bg-red-600 hover:bg-red-700"
+                  size="sm"
+                >
+                  סמן כ"לא מעוניין"
+                </Button>
+                <Button 
+                  onClick={() => handleBulkStatusUpdate('converted')}
+                  className="bg-green-600 hover:bg-green-700"
+                  size="sm"
+                >
+                  סמן כ"נסגר"
+                </Button>
+                <Button 
+                  onClick={() => setSelectedLeadIds([])}
+                  variant="outline"
+                  size="sm"
+                >
+                  בטל בחירה
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -301,6 +392,15 @@ export default function LeadsAdmin() {
             <table className="w-full">
               <thead className="bg-[#1E3A5F] text-white">
                 <tr>
+                  <th className="px-4 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedLeadIds.length === sortedLeads.length && sortedLeads.length > 0}
+                      onChange={toggleAllLeads}
+                      className="w-4 h-4 cursor-pointer"
+                      title="בחר הכל"
+                    />
+                  </th>
                   <th className="px-4 py-3 text-right">שם</th>
                   <th className="px-4 py-3 text-right">טלפון</th>
                   <th className="px-4 py-3 text-right">מקצוע</th>
@@ -335,6 +435,14 @@ export default function LeadsAdmin() {
               <tbody>
                 {sortedLeads.map((lead, index) => (
                   <tr key={lead.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                    <td className="px-4 py-3 text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedLeadIds.includes(lead.id)}
+                        onChange={() => toggleLeadSelection(lead.id)}
+                        className="w-4 h-4 cursor-pointer"
+                      />
+                    </td>
                     <td className="px-4 py-3">
                       <div className="font-medium">{lead.name}</div>
                       {lead.email && <div className="text-xs text-gray-500">{lead.email}</div>}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { base44 } from '@/api/base44Client';
 
 export default function RegistrationForm({ onSubmit, onBack }) {
   const [formData, setFormData] = useState(() => {
@@ -26,11 +27,29 @@ export default function RegistrationForm({ onSubmit, onBack }) {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
       localStorage.setItem('onlineFlowFormData', JSON.stringify(formData));
+      
+      // שמירת ליד ב-CRM
+      try {
+        await base44.entities.Lead.create({
+          name: formData.fullName,
+          phone: formData.phone,
+          email: formData.email,
+          profession: formData.profession,
+          source_page: 'תהליך רכישה אונליין',
+          category: 'osek_patur',
+          interaction_type: 'form',
+          status: 'new',
+          notes: 'השאיר פרטים בתהליך הרכישה - טרם השלים רכישה'
+        });
+      } catch (error) {
+        console.error('Failed to save lead:', error);
+      }
+      
       onSubmit(formData);
     } else {
       setErrors(newErrors);

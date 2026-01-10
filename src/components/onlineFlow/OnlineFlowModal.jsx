@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 import ExplanationStep from './ExplanationStep';
 import RegistrationForm from './RegistrationForm';
 import PlanSelector from './PlanSelector';
@@ -42,7 +43,27 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
     setCurrentStep(4); // Move to payment
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = async () => {
+    // עדכון הליד שרכש
+    try {
+      const leads = await base44.entities.Lead.filter({
+        phone: formData.phone,
+        source_page: 'תהליך רכישה אונליין'
+      }, '-created_date', 1);
+      
+      if (leads.length > 0) {
+        const lead = leads[0];
+        await base44.entities.Lead.update(lead.id, {
+          ...lead,
+          status: 'converted',
+          notes: `השאיר פרטים בתהליך הרכישה ורכש את המסלול: ${selectedPlan?.title || 'לא ידוע'}`,
+          priority: 'high'
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update lead after purchase:', error);
+    }
+    
     setCurrentStep(5); // Move to success
   };
 
