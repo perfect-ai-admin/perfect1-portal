@@ -49,7 +49,7 @@ export default function ExplanationStep({ onNext }) {
         {[
           { icon: Clock, title: 'בלי לצאת מהבית', desc: 'כל התהליך אונליין' },
           { icon: Users, title: 'עם ליווי מלא', desc: 'צוות מומחים בוואטסאפ' },
-          { icon: Star, title: 'הכל כלול במחיר', desc: 'ביטוח לאומי + אפליקציה + רישום' }
+          { icon: Star, title: 'פתיחת תיק מלאה!', desc: 'ביטוח לאומי, מס הכנסה, מע״מ' }
         ].map((item, i) => (
           <motion.div
             key={i}
