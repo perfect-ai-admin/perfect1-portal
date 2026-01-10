@@ -118,7 +118,8 @@ export default function OsekPaturVsMorasha() {
           <Breadcrumbs items={[
             { label: 'דף הבית', url: 'Home' },
             { label: 'שירותים', url: 'Services' },
-            { label: 'עוסק פטור או מורשה' }
+            { label: 'עוסק פטור או מורשה' },
+            { label: 'סגירת עוסק פטור', url: 'CloseOsekPaturComprehensive' }
           ]} />
         </div>
 
