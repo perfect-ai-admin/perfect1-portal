@@ -157,53 +157,79 @@ export default function PricingCost() {
                 כמה עולה לפתוח עוסק פטור דרך רואה חשבון?
               </h2>
               <div className="space-y-4">
+                <div className="bg-green-50 rounded-xl p-6 mb-4">
+                  <p className="text-green-900 font-bold text-lg">טווח מחירים: 500-1,500 ₪ בממוצע</p>
+                </div>
+
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  טווח המחירים הריאלי: <strong>200 עד 500 שקל</strong> (וחלקם אפילו יותר בקצה הגבוה של השוק). זה תלוי בעיר שלך, בשם המשרד, ובמצב של פתיחה מול ליווי שוטף.
+                  המחיר משתנה בהתאם למשרד, למיקום הגיאוגרפי, ולרמת השירות. יש רואי חשבון שמציעים פתיחה במחיר נמוך כחלק מחבילת ליווי שנתית, ויש כאלה שגובים מחיר נפרד.
                 </p>
 
                 <div className="bg-green-50 border-r-4 border-green-600 rounded-xl p-6">
-                  <h3 className="font-bold text-green-900 mb-4">מה בדרך כלל כלול:</h3>
+                  <h3 className="font-bold text-green-900 mb-4">מה כלול בדרך כלל:</h3>
                   <ul className="space-y-2 text-gray-800">
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                      <span>איסוף מסמכים (תעודת זהות, אישור בנק)</span>
+                      <span>פתיחת תיק במס הכנסה</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                      <span>מילוי בקשות למס הכנסה וביטוח לאומי</span>
+                      <span>רישום כפטור במע״מ</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                      <span>הגשת הבקשות לרשויות</span>
+                      <span>פתיחת תיק בביטוח לאומי</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                      <span>קבלת אישורים מהרשויות</span>
+                      <span>ייעוץ ראשוני</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      <span>הסבר על חובות דיווח</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-red-50 border-r-4 border-red-500 rounded-xl p-6 mt-4">
-                  <h3 className="font-bold text-red-900 mb-4">מה בדרך כלל לא כלול (וחשוב לשאול):</h3>
+                  <h3 className="font-bold text-red-900 mb-4">מה בדרך כלל לא כלול:</h3>
                   <ul className="space-y-2 text-gray-800">
                     <li className="flex items-center gap-2">
                       <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                      <span>ליווי חודשי או שנתי (לעיתים זה תוספת נוספת)</span>
+                      <span>ליווי חודשי (תוסף נפרד)</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                      <span>הגשת דוח שנתי (שירות נפרד, לעיתים 1000-1500 ₪)</span>
+                      <span>הגשת דוחות (תוסף נפרד)</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                      <span>יועצי מס לשאלות מתמשכות</span>
+                      <span>תמיכה שוטפת (תוסף נפרד)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                      <span>שירותים נוספים (תוסף נפרד)</span>
                     </li>
                   </ul>
                 </div>
 
-                <p className="text-gray-700 leading-relaxed text-lg pt-4">
-                  <strong>תשלום בודד וסגור</strong> - הרוב של רואי חשבון נוטים להציע מחיר כולל לפתיחה בלבד, ולא כחלק מחוזה שוטף.
-                </p>
+                <div className="bg-blue-50 border-r-4 border-blue-600 rounded-xl p-6 mt-4">
+                  <h3 className="font-bold text-blue-900 mb-3">מתי זה משתלם?</h3>
+                  <ul className="space-y-2 text-gray-800">
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 font-bold">•</span>
+                      <span>אם אתה צריך ייעוץ אישי ופגישה פנים אל פנים</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 font-bold">•</span>
+                      <span>אם המצב שלך מורכב (מספר מקורות הכנסה, שותפים, וכו')</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 font-bold">•</span>
+                      <span>אם אתה מעדיף קשר אישי עם בן אדם שמכיר אותך</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </motion.div>
 
