@@ -255,6 +255,53 @@ export default function UrgentInvoice() {
           </div>
         </section>
 
+        {/* Process Section - 4 Steps */}
+        <section className="bg-white py-16 md:py-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <div className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold mb-4">
+                ✓ פתיחת סעיף לחשבוניות
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                פתרון צעד לצעד לחשבוניות משפטיות
+              </h2>
+              <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+                פתרון קטן בעצמאית, בל"י קריאות, בל"י בירוקרטיה - ישר לעניין
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-4 gap-6">
+              {[
+                { num: 1, title: 'צור קשר', desc: 'שדברה קצרה לתיאור הצורך שלך', icon: '☎️' },
+                { num: 2, title: 'מילוי טפסים', desc: 'אתנו מעדכנים את כל הפרטים בעיניים', icon: '📋' },
+                { num: 3, title: 'אישור משפטי', desc: 'עוקב 24 שעות - מקבל תשובה משפטית', icon: '✓' },
+                { num: 4, title: 'חשבוניות זוכרות', desc: 'הכל מוכן - חשבוניות משפטיות לקוחות', icon: '💬' }
+              ].map((step, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white rounded-2xl p-6 shadow-lg border-t-4 border-[#27AE60] text-center"
+                >
+                  <div className="w-12 h-12 rounded-full bg-[#27AE60] text-white font-black flex items-center justify-center mx-auto mb-4">
+                    {step.num}
+                  </div>
+                  <div className="text-3xl mb-3">{step.icon}</div>
+                  <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">{step.title}</h3>
+                  <p className="text-sm text-gray-600">{step.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {/* Main Content */}
           
