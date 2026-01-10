@@ -287,6 +287,7 @@ export default function MonthlyReportOsekPatur() {
                   successMessage="נציג יצור איתך קשר בהקדם ונסביר איך זה עובד"
                   sourcePage="ליווי חודשי לעוסק פטור"
                   fields={["name", "phone"]}
+                  invertColors={true}
                 />
               </div>
 
