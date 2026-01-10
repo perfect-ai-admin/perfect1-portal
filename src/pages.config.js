@@ -49,6 +49,18 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import HowToOpenOsekPatur from './pages/HowToOpenOsekPatur';
+import OsekPaturSteps from './pages/OsekPaturSteps';
+import MonthlyReportOsekPatur from './pages/MonthlyReportOsekPatur';
+import AnnualReportOsekPatur from './pages/AnnualReportOsekPatur';
+import ReceiptsIncome from './pages/ReceiptsIncome';
+import MaamatOsekPatur from './pages/MaamatOsekPatur';
+import HowToCloseOsekPatur from './pages/HowToCloseOsekPatur';
+import CloseOsekPaturTaxAuthority from './pages/CloseOsekPaturTaxAuthority';
+import CloseOsekPaturBituachLeumi from './pages/CloseOsekPaturBituachLeumi';
+import TakratOsekPatur from './pages/TakratOsekPatur';
+import NeedAccountantOsekPatur from './pages/NeedAccountantOsekPatur';
+import OsekPaturVsMorasha from './pages/OsekPaturVsMorasha';
 import __Layout from './Layout.jsx';
 
 
@@ -104,6 +116,18 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "HowToOpenOsekPatur": HowToOpenOsekPatur,
+    "OsekPaturSteps": OsekPaturSteps,
+    "MonthlyReportOsekPatur": MonthlyReportOsekPatur,
+    "AnnualReportOsekPatur": AnnualReportOsekPatur,
+    "ReceiptsIncome": ReceiptsIncome,
+    "MaamatOsekPatur": MaamatOsekPatur,
+    "HowToCloseOsekPatur": HowToCloseOsekPatur,
+    "CloseOsekPaturTaxAuthority": CloseOsekPaturTaxAuthority,
+    "CloseOsekPaturBituachLeumi": CloseOsekPaturBituachLeumi,
+    "TakratOsekPatur": TakratOsekPatur,
+    "NeedAccountantOsekPatur": NeedAccountantOsekPatur,
+    "OsekPaturVsMorasha": OsekPaturVsMorasha,
 }
 
 export const pagesConfig = {
