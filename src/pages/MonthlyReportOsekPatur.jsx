@@ -5,10 +5,13 @@ import { motion } from 'framer-motion';
 import SEOOptimized from './SEOOptimized';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 import FAQSchema from '../components/seo/FAQSchema';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
+import PageTracker from '../components/seo/PageTracker';
+import RelatedContent from '../components/seo/RelatedContent';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle } from 'lucide-react';
+import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, TrendingUp, BarChart3, Shield } from 'lucide-react';
 
 export default function MonthlyReportOsekPatur() {
   const [formData, setFormData] = useState({
