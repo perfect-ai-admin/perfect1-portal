@@ -238,8 +238,8 @@ export default function UrgentInvoice() {
                 <p className="text-white/90 font-medium">זמן תגובה מתשובה עד פתרון</p>
               </motion.div>
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-                <h3 className="text-5xl md:text-6xl font-black text-[#27AE60] mb-2">87%</h3>
-                <p className="text-white/90 font-medium">מלקוחות מרוצים לחלוטין</p>
+                <h3 className="text-5xl md:text-6xl font-black text-[#D4AF37] mb-2">2,800+</h3>
+                <p className="text-white/90 font-medium">תיקים פתוחים השנה</p>
               </motion.div>
             </div>
           </div>
