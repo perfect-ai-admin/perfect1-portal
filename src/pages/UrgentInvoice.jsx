@@ -107,8 +107,8 @@ export default function UrgentInvoice() {
                   </div>
 
                   <div className="mb-6 text-center">
-                    <p className="text-gray-800 font-bold text-sm mb-2">תחזקו את העסק שלכם היום</p>
-                    <p className="text-xs text-gray-600">הלל פרטים להיות מהליח שוק שוב</p>
+                    <p className="text-gray-800 font-bold text-sm mb-2">צריך חשבונית עכשיו?</p>
+                    <p className="text-xs text-gray-600">השאר פרטים ונחזור תוך 24 שעות</p>
                   </div>
                   
                   <form className="space-y-3">
