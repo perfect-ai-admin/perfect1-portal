@@ -11,7 +11,7 @@ export default function OsekMorshaTime() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold text-white"
           >
-            פתיחת עוסק מורשה – כמה זמן לוקח
+            פתיחת עוסק מורשה - כמה זמן לוקח
           </motion.h1>
         </div>
       </section>
