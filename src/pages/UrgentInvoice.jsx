@@ -330,103 +330,102 @@ export default function UrgentInvoice() {
               </div>
             </motion.div>
 
-            {/* FAQ */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                שאלות נפוצות
+            {/* CTA Section */}
+            <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-2xl mb-12 md:mb-20">
+              <h2 className="text-2xl md:text-3xl font-black mb-2 text-center">
+                צריך עזרה בחשבוניות?
               </h2>
-              <div className="space-y-4">
-                {[
-                  {
-                    q: "האם אפשר להוציא חשבונית בעכשיו דיגיטלית?",
-                    a: "כן, חשבוניות דיגיטליות מוכרות לחלוטין. אפשר להשתמש בתוכנות כמו Wix, Square, או אפליקציות ניהול עסק. כל עוד יש בהן את כל הפרטים הדרושים - זה חוקי."
-                  },
-                  {
-                    q: "מה קורה אם לא הוצאתי חשבונית וביקשו?",
-                    a: "אם לא יש רישום של העסקה - זה בעיה. אם יש לך רישום אחר (מחברת, סכום בנק) אתה יכול לתמחות שקרה עסקה וגם להוציא חשבונית בדיעבד. אך זה לא אידיאלי."
-                  },
-                  {
-                    q: "האם צריך להדפיס חשבוניות או אפשר דיגיטלי?",
-                    a: "דיגיטלי זה בסדר. אבל אם אתה משדר לרשויות - יש צורך בחתימה דיגיטלית או בחותמת."
-                  },
-                  {
-                    q: "האם עוסק פטור יכול להוציא חשבונית בדיעבד?",
-                    a: "לא מומלץ. אבל אם יש לך רישום של העסקה (מחברת, עדות, הוכחת תשלום) - אתה יכול להצדיק אותה."
-                  },
-                  {
-                    q: "מה אם הלקוח לא רוצה חשבונית?",
-                    a: "אתה עדיין צריך לרשום את העסקה בתיעוד שלך (גם אם הלקוח לא רוצה חשבונית רשמית). זה עבור שמירה על תיעוד חוקי שלך."
-                  },
-                  {
-                    q: "האם צריך מספר חשבון בנק עבור חשבוניות?",
-                    a: "לא חובה, אבל זה עוזר. לקוחות עסקיים בדרך כלל רוצים מספר חשבון בשביל להעביר כסף ישירות."
-                  }
-                ].map((faq, i) => (
-                  <div key={i} className="bg-gray-50 rounded-xl p-6">
-                    <div className="flex items-start gap-3 mb-3">
-                      <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                      <h3 className="font-bold text-gray-900">{faq.q}</h3>
-                    </div>
-                    <p className="text-gray-700 ml-8">{faq.a}</p>
-                  </div>
-                ))}
+              <p className="text-center text-white/90 mb-8">השאר פרטים ויועץ שלנו יעזור לך בהוצאת חשבוניות נכונות</p>
+              
+              <div className="max-w-md mx-auto">
+                <UnifiedLeadForm
+                  variant="default"
+                  title=""
+                  ctaText="קבל עזרה בחשבוניות"
+                  successTitle="קיבלנו את הפרטים! ✓"
+                  successMessage="נציג יצור איתך קשר ויעזור לך בנושא החשבוניות"
+                  sourcePage="חשבוניות לעוסק פטור"
+                  fields={["name", "phone"]}
+                  invertColors={true}
+                />
               </div>
-            </motion.div>
 
-            {/* Final CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-8 text-white text-center"
-            >
-              <h2 className="text-2xl font-bold mb-4">
-                עדיין לא בטוח בדרישות לעוסק שלך?
-              </h2>
-              <p className="text-white/80 mb-6 text-lg">
-                אנחנו כאן כדי לעזור
-              </p>
-              <button 
-                onClick={() => document.querySelector('[data-lead-form]')?.scrollIntoView({ behavior: 'smooth' })}
-                className="h-14 px-8 text-lg font-bold rounded-full bg-white text-[#1E3A5F] hover:bg-gray-100 transition-all"
-              >
-                קבל ייעוץ מומחה
-                <ArrowLeft className="mr-2 w-5 h-5 inline" />
-              </button>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Side Form */}
-        <section className="py-16 bg-[#F8F9FA]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                  אתה עוסק פטור וזקוק להכוונה בנושא חשבוניות?
-                </h2>
-                <p className="text-gray-600 text-lg mb-6">
-                  החוקים עלול להיות מבלבלים, אך זה חשוב. השאר פרטים ואנחנו נעזור לך להבין בדיוק מה צריך לעשות במצבך.
-                </p>
-              </div>
-              <div className="lg:col-span-1">
-                <div className="sticky top-28" data-lead-form>
-                  <LeadForm 
-                    title="רוצה הבהרה?"
-                    subtitle="השאר פרטים ונחזור אליך"
-                    sourcePage="עמוד חשבוניות - האם עוסק פטור צריך חשבונית"
-                    variant="card"
-                  />
-                </div>
+              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                <a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-1">
+                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
+                    <MessageCircle className="ml-2 w-5 h-5" />
+                    דבר בווצאפ
+                  </Button>
+                </a>
+                <a href="tel:+972502277087" className="flex-1">
+                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
+                    <Phone className="ml-2 w-5 h-5" />
+                    התקשר עכשיו
+                  </Button>
+                </a>
               </div>
             </div>
-          </div>
-        </section>
+
+            {/* FAQ Section */}
+            <div className="mb-12 md:mb-20">
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-8 md:mb-12 text-center">
+                שאלות נפוצות על חשבוניות
+              </h2>
+              <div className="space-y-3 md:space-y-4">
+                {faqs.map((faq, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-gray-200"
+                  >
+                    <button
+                      onClick={() => setExpandedFaq(expandedFaq === idx ? -1 : idx)}
+                      className="w-full px-5 md:px-6 py-4 md:py-5 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    >
+                      <h3 className="font-bold text-[#1E3A5F] text-sm md:text-lg text-right">
+                        {faq.question}
+                      </h3>
+                      <ChevronDown
+                        className={`w-5 h-5 md:w-6 md:h-6 text-[#1E3A5F] transition-transform ${
+                          expandedFaq === idx ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {expandedFaq === idx && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="px-5 md:px-6 py-4 md:py-5 bg-gradient-to-r from-blue-50 to-cyan-50 border-t border-gray-200"
+                      >
+                        <p className="text-gray-700 text-sm md:text-base leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA - Open Osek Patur */}
+            <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl p-8 md:p-10 mb-12 md:mb-20">
+              <h2 className="text-2xl md:text-3xl font-black mb-4">עדיין לא פתחת עוסק פטור?</h2>
+              <p className="text-white/90 mb-6">תחילה צריך לפתוח עוסק פטור, ואז נוכל לעזור לך בנושא החשבוניות</p>
+              <Link to={createPageUrl('OsekPaturOnlineLanding')} className="inline-block">
+                <Button className="h-12 px-8 bg-white text-green-600 hover:bg-gray-100 font-bold">
+                  פתח עוסק פטור אונליין עכשיו
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+            </section>
+
+            {/* Related Content */}
+            <RelatedContent pageType="guide" />
+          </motion.div>
+        </div>
       </main>
     </>
   );
