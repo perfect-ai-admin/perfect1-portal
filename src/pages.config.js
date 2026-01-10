@@ -85,6 +85,7 @@ import NationalInsuranceAdvances from './pages/NationalInsuranceAdvances';
 import OsekMorshaRights from './pages/OsekMorshaRights';
 import CostsOsekMorsha from './pages/CostsOsekMorsha';
 import HowMuchToManageOsekMorsha from './pages/HowMuchToManageOsekMorsha';
+import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
 import __Layout from './Layout.jsx';
 
 
@@ -176,6 +177,7 @@ export const PAGES = {
     "OsekMorshaRights": OsekMorshaRights,
     "CostsOsekMorsha": CostsOsekMorsha,
     "HowMuchToManageOsekMorsha": HowMuchToManageOsekMorsha,
+    "AccountantForOsekMorsha": AccountantForOsekMorsha,
 }
 
 export const pagesConfig = {
