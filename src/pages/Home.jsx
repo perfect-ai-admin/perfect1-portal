@@ -19,8 +19,8 @@ export default function Home() {
         schema={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
-          "name": "Perfect One - פתיחת עוסק פטור בישראל",
-          "description": "המרכז הארצי לפתיחת עוסקים פטורים בישראל. ליווי מקצועי מא' ועד ת'",
+          "name": "Perfect One - בית לעצמאים ולעסקים בישראל",
+          "description": "בית לעצמאים ולעסקים בישראל – מידע מקצועי, תהליכים מסודרים וליווי מול רשויות המס",
           "url": "https://perfect1.co.il",
           "telephone": "+972-50-227-7087",
           "priceRange": "₪₪",
