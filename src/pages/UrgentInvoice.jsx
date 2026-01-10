@@ -98,7 +98,7 @@ export default function UrgentInvoice() {
                 className="lg:order-2"
               >
                 <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-md">
-                  <div className="text-center mb-6">
+                  <div className="text-center mb-4">
                     <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-2 flex items-center justify-center gap-2">
                       <span>צריך הבהרה?</span>
                       <span className="text-3xl">⚡</span>
@@ -106,12 +106,12 @@ export default function UrgentInvoice() {
                     <p className="text-sm text-gray-600 font-medium">משפטי - פטור מיידי</p>
                   </div>
 
-                  <div className="mb-6 text-center">
+                  <div className="mb-4 text-center">
                     <p className="text-gray-800 font-bold text-sm mb-2">צריך חשבונית עכשיו?</p>
                     <p className="text-xs text-gray-600">השאר פרטים ונחזור תוך 24 שעות</p>
                   </div>
-                  
-                  <form className="space-y-3">
+
+                  <form className="space-y-2.5">
                     <div className="relative">
                       <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <Input
@@ -119,7 +119,7 @@ export default function UrgentInvoice() {
                         className="pr-10 h-11 border-2 border-gray-200 rounded-xl focus:border-[#1E3A5F] text-sm"
                       />
                     </div>
-                    
+
                     <div className="relative">
                       <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <Input
@@ -128,13 +128,13 @@ export default function UrgentInvoice() {
                         className="pr-10 h-11 border-2 border-gray-200 rounded-xl focus:border-[#1E3A5F] text-sm"
                       />
                     </div>
-                    
+
                     <Button className="w-full h-12 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-black rounded-xl text-base shadow-lg">
                       בדיקה ללא התחייבות ✈️
                     </Button>
                   </form>
 
-                  <p className="text-xs text-gray-500 text-center mt-3 font-bold">
+                  <p className="text-xs text-gray-500 text-center mt-2.5 font-bold">
                     🔓 בלי ספאם • ליווי אנושי
                   </p>
                 </div>
