@@ -84,7 +84,7 @@ export default function UrgentInvoice() {
 
       <main className="min-h-screen bg-white">
         {/* Hero Section - Match Reference Design */}
-        <section className="bg-gradient-to-br from-[#2C5282] via-[#3B6BA8] to-[#1E3A5F] text-white py-16 md:py-24 relative overflow-hidden">
+        <section className="bg-gradient-to-br from-[#2C5282] via-[#3B6BA8] to-[#1E3A5F] text-white py-16 md:py-24 relative overflow-hidden pt-8">
           <div className="absolute inset-0 opacity-5">
             <div className="absolute top-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
           </div>
