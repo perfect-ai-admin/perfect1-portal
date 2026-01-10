@@ -68,13 +68,20 @@ export default function HowToCloseOsekPatur() {
 
   return (
     <>
+      <PageTracker pageUrl="/how-to-close-osek-patur" pageType="guide" />
+      <FAQSchema faqs={faqs} />
+      <LocalBusinessSchema 
+        name="Perfect One - מדריך סגירת עוסק פטור"
+        description="מדריך שלב אחר שלב לסגירת עוסק פטור בישראל"
+      />
       <SEOOptimized
-        title="איך סוגרים עוסק פטור - מדריך סגירה | Perfect One"
-        description="מדריך מלא לסגירת עוסק פטור - שלבים, מסמכים וכיצד לסיים כל דבר כראוי."
+        title="איך סוגרים עוסק פטור - מדריך שלב אחר שלב | Perfect One"
+        description="מדריך מלא לסגירת עוסק פטור: שלבים, מסמכים, זמנים, ומה קורה במול הרשויות."
+        keywords="סגירת עוסק פטור, איך סוגרים עוסק, סגירה ממס הכנסה, סגירה מביטוח לאומי"
         canonical="https://perfect1.co.il/how-to-close-osek-patur"
       />
 
-      <main className="min-h-screen bg-white">
+      <main className="pt-20 bg-[#F8F9FA]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
