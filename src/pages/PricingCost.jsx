@@ -11,6 +11,29 @@ import MicroCTA from '../components/cro/MicroCTA';
 import LeadForm from '../components/forms/LeadForm';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 
+function FAQAccordion({ question, answer }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-gray-50 rounded-xl p-6 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => setIsOpen(!isOpen)}>
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-gray-900 text-right flex-1">{question}</h3>
+        <ChevronDown className={`w-5 h-5 text-[#1E3A5F] transition-transform ml-4 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
+      </div>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mt-4 pt-4 border-t border-gray-200"
+        >
+          <p className="text-gray-700">{answer}</p>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 export default function PricingCost() {
   const pricingSchema = {
     "@context": "https://schema.org",
