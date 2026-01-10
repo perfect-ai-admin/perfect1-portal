@@ -250,42 +250,68 @@ export default function PricingCost() {
                 כמה עולה לפתוח עוסק פטור אונליין?
               </h2>
               <div className="space-y-4">
+                <div className="bg-green-50 rounded-xl p-6 mb-4">
+                  <p className="text-green-900 font-bold text-lg">מחיר קבוע: 199 ₪ (תשלום חד-פעמי)</p>
+                </div>
+
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  <strong>199 שקל - מחיר קבוע ללא הפתעות</strong>. למי שמעדיף תהליך דיגיטלי מלא ללא צורך להגיע למשרדים, קיימת אפשרות של <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-[#1E3A5F] font-bold hover:underline">פתיחת עוסק פטור אונליין</Link> שמכסה את כל התהליך במחיר קבוע.
+                  למי שמעדיף לעשות הכל דיגיטלי וללא פגישות, קיימת אפשרות לפתוח עוסק פטור אונליין במחיר קבוע של 199 ₪. זה מחיר שקוף וידוע מראש, ללא תוספות או הפתעות.
                 </p>
 
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-r-4 border-indigo-600 rounded-xl p-6">
-                  <h3 className="font-bold text-indigo-900 mb-4">מה כלול ב-199 ₪:</h3>
+                  <h3 className="font-bold text-indigo-900 mb-4">מה כלול במחיר:</h3>
                   <ul className="space-y-2 text-gray-800">
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <span>תהליך מקוון מלא - ללא יציאה מהבית</span>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                      <span>פתיחת תיק עוסק פטור במלואו</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <span>העלאת מסמכים מהנייד (תעודת זהות, אישור בנק)</span>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                      <span>טיפול מול מס הכנסה</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <span>חתימה דיגיטלית מאובטחת</span>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                      <span>רישום במע״מ כפטור</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <span>הגשת בקשות לרשויות בשמך</span>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                      <span>פתיחת תיק בביטוח לאומי</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <span>מעקב סטטוס בזמן אמת</span>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                      <span>הדרכה מלאה על השלבים הבאים</span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                      <span>תמיכה בוואטסאפ לשאלות</span>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                      <span>תמיכה במהלך התהליך</span>
                     </li>
                   </ul>
                 </div>
 
-                <p className="text-gray-700 leading-relaxed text-lg pt-4">
-                  <strong>מחיר שקוף</strong> - אין עמלות נוספות, אין הפתעות, אין בדיקות שקר.
+                <div className="bg-purple-50 border-r-4 border-purple-600 rounded-xl p-6 mt-4">
+                  <h3 className="font-bold text-purple-900 mb-3">למה זה נוח?</h3>
+                  <ul className="space-y-2 text-gray-800">
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-600 font-bold">✓</span>
+                      <span><strong>מהיר:</strong> התהליך נעשה תוך 24-48 שעות</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-600 font-bold">✓</span>
+                      <span><strong>בטוח:</strong> הכל נעשה נכון, מקצועי ומאובטח</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-600 font-bold">✓</span>
+                      <span><strong>חסכוני:</strong> מחיר נמוך משמעותית מרואה חשבון</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-600 font-bold">✓</span>
+                      <span><strong>פשוט:</strong> ללא צורך בפגישות או ריצות</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <p className="text-gray-700 leading-relaxed text-lg pt-4 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6">
+                  אם אתה מחפש דרך פשוטה, מהירה וחסכונית לפתוח עוסק פטור, אפשר גם לפתוח עוסק פטור אונליין בצורה דיגיטלית מלאה.
                 </p>
               </div>
             </motion.div>
