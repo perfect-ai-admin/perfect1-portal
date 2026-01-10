@@ -71,31 +71,49 @@ export default function MonthlyReportOsekPatur() {
       />
 
       <main className="min-h-screen bg-gradient-to-br from-green-50 to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-5xl font-black text-[#1E3A5F] mb-6 text-center">
-              דיווח חודשי לעוסק פטור
+            <h1 className="text-4xl md:text-5xl font-black text-[#1E3A5F] mb-4 md:mb-6 text-center">
+              ליווי חודשי לעוסק פטור
             </h1>
-            <p className="text-xl text-gray-600 text-center mb-16 max-w-2xl mx-auto">
-              כל מה שצריך לדווח כל חודש כדי להישאר מסודר מול הרשויות
+            <p className="text-lg md:text-xl text-gray-600 text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+              <strong>199₪ בחודש</strong> לניהול שוטף שלם עם רואה חשבון זמין לכל שאלה
             </p>
 
-            <div className="grid md:grid-cols-3 gap-6 mb-16">
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-3">קבלות</h3>
-                <p className="text-gray-600">הכנסות חודשיות מלקוחות - כל זה צריך להתא לדוח</p>
-              </div>
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-3">הוצאות</h3>
-                <p className="text-gray-600">כל הוצאות עסקיות שניתן להפחית מהרווח</p>
-              </div>
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-3">ניהול חשבונות</h3>
-                <p className="text-gray-600">ניהול נכון של כל הדוקומנטציה חודשית</p>
-              </div>
+            {/* Services Grid */}
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 mb-12 md:mb-20">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-xl p-5 md:p-6 shadow-md hover:shadow-lg transition-all border-l-4 border-green-500"
+              >
+                <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">📱 קבלות דיגיטליות</h3>
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed">הפקת קבלות בשניה דרך האפליקציה, הכל מעוקב באופן אוטומטי</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-xl p-5 md:p-6 shadow-md hover:shadow-lg transition-all border-l-4 border-blue-500"
+              >
+                <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">📊 מעקב הכנסות-הוצאות</h3>
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed">ניהול שוקף של כל העסק שלך - בדיוק לאן הולך כל שקל</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="bg-white rounded-xl p-5 md:p-6 shadow-md hover:shadow-lg transition-all border-l-4 border-purple-500"
+              >
+                <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">🏛️ דיווחים לרשויות</h3>
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed">כל הדיווחים למס הכנסה וביטוח לאומי מטופלים בידיים מקצועיות</p>
+              </motion.div>
             </div>
 
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
