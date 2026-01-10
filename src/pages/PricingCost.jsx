@@ -361,10 +361,10 @@ export default function PricingCost() {
                 </p>
                 <Link
                   to={createPageUrl('OsekPaturOnlineLanding')}
-                  className="inline-block"
+                  className="w-full md:w-auto inline-block"
                 >
                   <Button
-                    className="h-16 px-10 text-lg font-black bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                    className="w-full md:w-auto h-12 md:h-16 px-6 md:px-10 text-sm md:text-lg font-black bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                   >
                     ✅ פתח עוסק פטור אונליין עכשיו
                   </Button>
