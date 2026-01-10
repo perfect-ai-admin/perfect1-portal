@@ -138,7 +138,7 @@ export default function Header() {
         { name: 'סגירת עוסק מורשה', href: createPageUrl('CloseOsekMorsha') },
         { name: 'איך סוגרים עוסק מורשה', href: createPageUrl('HowToCloseOsekMorsha') },
         { name: 'סגירת עוסק מורשה במע״מ', href: createPageUrl('CloseOsekMorshaVat') },
-        { name: 'סגירת תיק במס הכנסה', href: createPageUrl('CloseTaxFile') }
+        { name: 'סגירת תיק במס הכנסה', href: createPageUrl('CloseOsekMorshaIncomeTax') }
       ]
     }
   ];
