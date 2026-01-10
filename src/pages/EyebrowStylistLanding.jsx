@@ -145,9 +145,9 @@ export default function EyebrowStylistLanding() {
         </section>
 
         {/* Stats */}
-        <section className="py-12 md:py-16 bg-white">
+        <section className="py-10 md:py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-4 md:gap-6">
               {[
                 { icon: Users, number: '200+', label: 'מעצבות גבות איתנו', color: '#D4843F' },
                 { icon: TrendingUp, number: '48h', label: 'פתיחה מהירה', color: '#8B7355' },
