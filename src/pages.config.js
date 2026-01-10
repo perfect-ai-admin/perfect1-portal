@@ -94,6 +94,7 @@ import OsekMorshaMainLanding from './pages/OsekMorshaMainLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import HowToCloseOsekMorsha from './pages/HowToCloseOsekMorsha';
 import CloseOsekMorshaVat from './pages/CloseOsekMorshaVat';
+import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
 import __Layout from './Layout.jsx';
 
 
@@ -194,6 +195,7 @@ export const PAGES = {
     "CloseOsekMorsha": CloseOsekMorsha,
     "HowToCloseOsekMorsha": HowToCloseOsekMorsha,
     "CloseOsekMorshaVat": CloseOsekMorshaVat,
+    "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
 }
 
 export const pagesConfig = {
