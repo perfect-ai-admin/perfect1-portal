@@ -160,7 +160,7 @@ export default function UrgentInvoice() {
                 </h2>
 
                 <p className="text-white/90 mb-8 text-lg font-medium max-w-lg">
-                  לקוחות מחכים לחשבונית? אתה לא בטוח מה דרוש בחוק?
+                  לקוחות חוסמים עד לחשבונית? זה דחוף - אתה צריך פתרון עכשיו!
                 </p>
 
                 {/* Benefits Grid - 2x2 */}
