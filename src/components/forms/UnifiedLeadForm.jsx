@@ -29,6 +29,7 @@ export default function UnifiedLeadForm({
   onSuccess, // callback אחרי שליחה מוצלחת
   showProfession = false,
   compact = false,
+  invertColors = false, // עבור שימוש על רקע ירוק
   
   // דוגמה של profession
   professions = [
