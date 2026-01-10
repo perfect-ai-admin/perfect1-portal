@@ -82,16 +82,16 @@ export default function EyebrowStylistLanding() {
                   </table>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <a href="https://wa.me/972502277087?text=היי, אני מעצבת גבות ואשמח לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-1">
-                    <Button className="w-full h-16 text-lg font-bold bg-gradient-to-r from-[#D4843F] to-[#E8956D] hover:from-[#C87130] hover:to-[#D97A55] text-white rounded-2xl shadow-lg transition-all">
-                      <MessageCircle className="w-6 h-6 ml-2" />
+                    <Button className="w-full h-14 sm:h-16 text-base sm:text-lg font-bold bg-gradient-to-r from-[#D4843F] to-[#E8956D] hover:from-[#C87130] hover:to-[#D97A55] text-white rounded-2xl shadow-lg transition-all">
+                      <MessageCircle className="w-5 sm:w-6 h-5 sm:h-6 ml-2" />
                       וואטסאפ עכשיו
                     </Button>
                   </a>
                   <a href="tel:0502277087" className="flex-1">
-                    <Button className="w-full h-16 text-lg font-bold border-2 border-[#D4843F] text-[#D4843F] bg-white hover:bg-[#FFF8F0] rounded-2xl transition-all">
-                      <Phone className="w-6 h-6 ml-2" />
+                    <Button className="w-full h-14 sm:h-16 text-base sm:text-lg font-bold border-2 border-[#D4843F] text-[#D4843F] bg-white hover:bg-[#FFF8F0] rounded-2xl transition-all">
+                      <Phone className="w-5 sm:w-6 h-5 sm:h-6 ml-2" />
                       0502277087
                     </Button>
                   </a>
