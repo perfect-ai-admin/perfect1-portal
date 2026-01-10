@@ -378,34 +378,24 @@ export default function Header() {
 
                       {/* עוסק מורשה */}
                       <li>
-                        <button
-                          onClick={() => setIsOsekMurashOpen(!isOsekMurashOpen)}
-                          className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        <Link
+                          to={createPageUrl('OsekMorshaLanding')}
+                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
-                          <span>עוסק מורשה</span>
-                          <ChevronDown className={`w-4 h-4 transition-transform ${isOsekMurashOpen ? 'rotate-180' : ''}`} />
-                        </button>
-                        {isOsekMurashOpen && (
-                          <ul className="mr-4 space-y-1 mt-2">
-                            <li className="py-2 px-4 text-gray-400 text-sm">בקרוב...</li>
-                          </ul>
-                        )}
+                          עוסק מורשה
+                        </Link>
                       </li>
 
                       {/* חברה בע"מ */}
                       <li>
-                        <button
-                          onClick={() => setIsCompanyOpen(!isCompanyOpen)}
-                          className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        <Link
+                          to={createPageUrl('CompanyLanding')}
+                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
-                          <span>חברה בע״מ</span>
-                          <ChevronDown className={`w-4 h-4 transition-transform ${isCompanyOpen ? 'rotate-180' : ''}`} />
-                        </button>
-                        {isCompanyOpen && (
-                          <ul className="mr-4 space-y-1 mt-2">
-                            <li className="py-2 px-4 text-gray-400 text-sm">בקרוב...</li>
-                          </ul>
-                        )}
+                          חברה בע״מ
+                        </Link>
                       </li>
 
                       <li>
