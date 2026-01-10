@@ -279,7 +279,7 @@ export default function UrgentInvoice() {
                    פתיחת עוסק פטור אונליין
                 </Link>
                 {' '}או{' '}
-                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-[#27AE60] font-black hover:underline">
+                <Link to={createPageUrl('OsekPaturLanding')} className="text-[#27AE60] font-black hover:underline">
                    פתיחת עוסק פטור מסורתית
                 </Link>
                 {' '}בהתאם למה שמתאים לך.
