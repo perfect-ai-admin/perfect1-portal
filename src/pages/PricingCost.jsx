@@ -392,9 +392,9 @@ export default function PricingCost() {
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-start gap-3 mb-3">
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">כמה עולה לפתוח עוסק פטור בשנת 2025?</h3>
+                    <h3 className="font-bold text-gray-900">כמה עולה לפתוח עוסק פטור בשנת 2026?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">עלות פתיחת עוסק פטור משתנה לפי השיטה: לבד ללא עלות כספית (אך עם סיכונים), דרך רואה חשבון 200-500 ₪, ודרך פתרון אונליין 199 ₪ במחיר קבוע.</p>
+                  <p className="text-gray-700 ml-8">עלות פתיחת עוסק פטור משתנה לפי השיטה: לבד ללא עלות כספית (אך עם סיכונים), דרך רואה חשבון 500-1,500 ₪, ודרך פתרון אונליין 199 ₪ במחיר קבוע.</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
@@ -402,23 +402,23 @@ export default function PricingCost() {
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
                     <h3 className="font-bold text-gray-900">האם פתיחת עוסק פטור אונליין זולה יותר?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">כן, 199 ₪ היא בדרך כלל זולה משיטות אחרות, ובמיוחד בהשוואה ליווי רובה מלא דרך רואה חשבון. בנוסף, זה מחיר שקוף ללא הפתעות.</p>
+                  <p className="text-gray-700 ml-8">כן, 199 ₪ היא בדרך כלל זולה משמעותית משיטות אחרות, ובמיוחד בהשוואה ליווי מלא דרך רואה חשבון. בנוסף, זה מחיר שקוף ללא הפתעות.</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-start gap-3 mb-3">
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">האם אפשר לפתוח עוסק פטור לבד בלי רואה חשבון?</h3>
+                    <h3 className="font-bold text-gray-900">האם אפשר לפתוח עוסק פטור לבד?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">כן, אפשר לפתוח לבד בחינם, אך זה דורש ידע במילוי טפסים, בדיקה של זכאות, והבנת דוחות דיווח. רוב העצמאים מעדיפים ליווי כדי להימנע מטעויות.</p>
+                  <p className="text-gray-700 ml-8">כן, אפשר לפתוח לבד בחינם, אך זה דורש ידע במילוי טפסים, בדיקה של זכאות, והבנת דוחות דיווח. רוב העצמאים מעדיפים ליווי כדי להימנע מטעויות יקרות.</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-start gap-3 mb-3">
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">מה ההבדל בין פתיחה אונליין לפתיחה דרך רואה חשבון?</h3>
+                    <h3 className="font-bold text-gray-900">מה שונה בין פתיחה אונליין לפתיחה דרך רואה חשבון?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">פתיחה אונליין היא תהליך דיגיטלי גרידא, מהנייד שלך. רואה חשבון בדרך כלל מציע גם ליווי שוטף וייעוץ מתמשך, אך זה עלות נוספת. לכל אחת יתרונות משלה בהתאם לצרכים שלך.</p>
+                  <p className="text-gray-700 ml-8">פתיחה אונליין היא תהליך דיגיטלי מלא, מהנייד שלך. רואה חשבון בדרך כלל מציע גם ליווי שוטף וייעוץ מתמשך, אך זה עלות נוספת. לכל אחת יתרונות משלה בהתאם לצרכים שלך.</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
@@ -434,7 +434,7 @@ export default function PricingCost() {
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
                     <h3 className="font-bold text-gray-900">כמה זמן לוקח לפתוח עוסק פטור?</h3>
                   </div>
-                  <p className="text-gray-700 ml-8">כאשר פותחים דרך רואה חשבון, בדרך כלל לוקח כמה ימים עד שנה אחת. דרך פתרון אונליין, התהליך בדרך כלל מסתיים תוך 24-72 שעות.</p>
+                  <p className="text-gray-700 ml-8">כאשר פותחים דרך רואה חשבון, בדרך כלל לוקח כמה ימים. דרך פתרון אונליין, התהליך בדרך כלל מסתיים תוך 24-48 שעות.</p>
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
