@@ -83,93 +83,114 @@ export default function UrgentInvoice() {
       />
 
       <main className="min-h-screen bg-white">
-        {/* Hero Section - Conversion Focused */}
-        <section className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white py-12 md:py-20 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 right-10 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
+        {/* Hero Section - Match Reference Design */}
+        <section className="bg-gradient-to-br from-[#2C5282] via-[#3B6BA8] to-[#1E3A5F] text-white py-16 md:py-24 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
           </div>
           
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
-              {/* Right: Headline */}
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              {/* Left: Form Card */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-right"
+                className="lg:order-2"
               >
-                <div className="inline-block bg-[#27AE60]/20 text-[#27AE60] px-4 py-2 rounded-full text-sm font-bold mb-6 border border-[#27AE60]/30">
-                  ✓ ליווי משפטי מלא
+                <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-md">
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-2 flex items-center justify-center gap-2">
+                      <span>צריך הבהרה?</span>
+                      <span className="text-3xl">⚡</span>
+                    </h3>
+                    <p className="text-sm text-gray-600 font-medium">משפטי - פטור מיידי</p>
+                  </div>
+
+                  <div className="mb-6 text-center">
+                    <p className="text-gray-800 font-bold text-sm mb-2">תחזקו את העסק שלכם היום</p>
+                    <p className="text-xs text-gray-600">הלל פרטים להיות מהליח שוק שוב</p>
+                  </div>
+                  
+                  <form className="space-y-3">
+                    <div className="relative">
+                      <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Input
+                        placeholder="שם מלא *"
+                        className="pr-10 h-11 border-2 border-gray-200 rounded-xl focus:border-[#1E3A5F] text-sm"
+                      />
+                    </div>
+                    
+                    <div className="relative">
+                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Input
+                        type="tel"
+                        placeholder="טלפון *"
+                        className="pr-10 h-11 border-2 border-gray-200 rounded-xl focus:border-[#1E3A5F] text-sm"
+                      />
+                    </div>
+                    
+                    <Button className="w-full h-12 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-black rounded-xl text-base shadow-lg">
+                      בדיקה ללא התחייבות ✈️
+                    </Button>
+                  </form>
+
+                  <p className="text-xs text-gray-500 text-center mt-3 font-bold">
+                    🔓 בלי ספאם • ליווי אנושי
+                  </p>
                 </div>
-                
-                <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
-                  חשבוניות לעוסק פטור בישראל?
+              </motion.div>
+
+              {/* Right: Content */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-right lg:order-1"
+              >
+                <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-xs font-bold mb-6 border border-red-500/30">
+                  <span>⚠️</span>
+                  <span>פתרון מידי</span>
+                </div>
+
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-2 leading-tight text-white">
+                  צריך חשבונית עכשיו בישראל?
                 </h1>
-                
-                <p className="text-xl text-white/90 mb-8">
-                  <strong className="text-[#27AE60]">פתרון מדויק</strong> לכל השאלות שלך על חשבוניות, קבלות ודרישות חוקיות
+
+                <h2 className="text-2xl md:text-3xl font-black text-[#27AE60] mb-6">
+                  פתרון מידי!
+                </h2>
+
+                <p className="text-white/90 mb-8 text-lg font-medium max-w-lg">
+                  לקוחות מחכים לך שלך?
                 </p>
 
-                {/* Key Benefits */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 mb-6">
-                  <div className="space-y-2">
+                {/* Benefits Grid - 2x2 */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 mb-8 max-w-lg">
+                  <div className="grid grid-cols-2 gap-4">
                     {[
-                      '100% תשובות משפטיות מדויקות',
-                      'ליווי אישי מ-24 שעות',
-                      'הבהרה מלאה של כל צעד'
-                    ].map((benefit, i) => (
-                      <div key={i} className="flex items-center gap-2 text-white/90">
-                        <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
-                        <span className="font-medium">{benefit}</span>
+                      { label: 'פתרון משפטי', icon: '✓' },
+                      { label: '100% זמן', icon: '⏱️' },
+                      { label: 'הסל אונליין', icon: '✓' },
+                      { label: 'בלי תאונות', icon: '✓' }
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 text-white/95">
+                        <span className="text-lg">{item.icon}</span>
+                        <span className="text-sm font-bold">{item.label}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
+                {/* Phone Number - Big */}
+                <div className="bg-white rounded-full py-3 px-6 inline-block shadow-lg mb-6 max-w-lg">
+                  <p className="text-[#1E3A5F] text-2xl md:text-3xl font-black">050227 7087</p>
+                </div>
+
                 <a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer">
                   <Button className="h-14 px-8 text-lg font-black rounded-full bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl w-full md:w-auto">
                     <MessageCircle className="ml-3 w-6 h-6" />
-                    דבר בווצאפ עכשיו
+                    פתרון מידי בווצאפ
                   </Button>
                 </a>
-              </motion.div>
-
-              {/* Left: Form */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="hidden lg:block"
-              >
-                <div className="bg-white rounded-3xl shadow-2xl p-8">
-                  <h3 className="text-2xl font-black text-[#1E3A5F] mb-2 text-center">צריך הבהרה משפטית?</h3>
-                  <p className="text-center text-gray-600 font-medium mb-6">השאר פרטים ונחזור תוך 24 שעות</p>
-                  
-                  <form className="space-y-4">
-                    <div className="relative">
-                      <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A5F]/40" />
-                      <Input
-                        placeholder="שם מלא *"
-                        className="pr-11 h-12 border-2 border-gray-300 rounded-xl focus:border-[#1E3A5F]"
-                      />
-                    </div>
-                    
-                    <div className="relative">
-                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A5F]/40" />
-                      <Input
-                        type="tel"
-                        placeholder="טלפון *"
-                        className="pr-11 h-12 border-2 border-gray-300 rounded-xl focus:border-[#1E3A5F]"
-                      />
-                    </div>
-                    
-                    <Button className="w-full h-12 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-black rounded-xl text-lg">
-                      בדיקה ללא התחייבות
-                    </Button>
-                  </form>
-
-                  <p className="text-xs text-gray-500 text-center mt-4 font-bold">
-                    🔒 בלי ספאם • ליווי אנושי מלא
-                  </p>
-                </div>
               </motion.div>
             </div>
           </div>
