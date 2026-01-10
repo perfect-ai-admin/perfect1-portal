@@ -412,34 +412,34 @@ export default function UrgentInvoice() {
                   </div>
                   </div>
 
-                  {/* Lead Form - Requirement */}
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-r-4 border-blue-600 rounded-2xl p-6 shadow-md h-fit sticky top-4">
-                  <h3 className="text-lg font-black text-blue-900 mb-1 flex items-center gap-2">
-                    <span>⚡</span>
-                    <span>לא בטוח מה דרוש?</span>
-                  </h3>
-                  <p className="text-sm text-gray-700 mb-4 font-medium">אנחנו נעזור לך להבין בדיוק מה החוק דורש לפעילות שלך</p>
-                  <form className="space-y-2.5">
-                    <div className="relative">
-                      <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <Input
-                        placeholder="שם מלא *"
-                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-blue-600 text-sm bg-white"
-                      />
+                  {/* Smart Help Card - Design from Image */}
+                  <div className="bg-blue-600 rounded-3xl p-8 shadow-2xl h-fit sticky top-4 text-center text-white">
+                    <div className="text-5xl mb-3">⚡</div>
+                    <h3 className="text-2xl font-black mb-1">צריך הסבר הנהלה?</h3>
+                    <p className="text-sm text-blue-100 mb-5 font-medium">משפחי - פסוק מיידי</p>
+
+                    <div className="mb-6 space-y-3 text-sm">
+                      <p className="font-bold">צריך חשבונית עסקית?</p>
+                      <p className="text-blue-50 text-xs">השאר פרטים וזמן תוך 24 שעות</p>
                     </div>
-                    <div className="relative">
-                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <Input
+
+                    <form className="space-y-3 mb-6">
+                      <input
+                        type="text"
+                        placeholder="שם מלא *"
+                        className="w-full px-4 py-3 rounded-xl text-gray-800 placeholder-gray-500 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      />
+                      <input
                         type="tel"
                         placeholder="טלפון *"
-                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-blue-600 text-sm bg-white"
+                        className="w-full px-4 py-3 rounded-xl text-gray-800 placeholder-gray-500 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
                       />
-                    </div>
-                    <Button className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm">
-                      בדיקה בחינם ✓
-                    </Button>
-                  </form>
-                  <p className="text-xs text-gray-600 text-center mt-2.5 font-bold">🔒 סודי • תגובה תוך 24 שעות</p>
+                      <Button className="w-full h-12 bg-[#27AE60] hover:bg-[#229954] text-white font-black rounded-xl text-sm">
+                        בדיקה לאא התחייבות ✓
+                      </Button>
+                    </form>
+
+                    <p className="text-xs text-blue-100 font-bold">🔒 ליווי אנושי • ספאם</p>
                   </div>
                   </div>
                   </motion.div>
