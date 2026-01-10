@@ -410,7 +410,7 @@ export default function PricingLanding() {
               ))}
             </Accordion>
           </div>
-        section>
+        </section>
 
         {/* Form Section */}
         <section className="py-16 bg-white" id="pricing-form">
