@@ -53,11 +53,11 @@ export default function EyebrowStylistLanding() {
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
               >
-                <h1 className="text-4xl md:text-6xl font-black text-[#1E3A5F] mb-4 md:mb-6 leading-tight">
+                <h1 className="text-4xl md:text-6xl font-black text-[#1E3A5F] mb-3 md:mb-4 leading-tight">
                    פתחי עוסק פטור והתחילי לעבוד באופן חוקי כמעצבת גבות 👁️
                 </h1>
 
-                <p className="text-xl md:text-2xl text-gray-700 mb-6 md:mb-8">
+                <p className="text-xl md:text-2xl text-gray-700 mb-4 md:mb-6">
                   <strong className="text-[#D4843F]">249₪</strong> - פתיחה מהירה + אפליקציה + ליווי שוטף
                 </p>
 
