@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
-  CheckCircle, Phone, MessageCircle, AlertCircle, 
+  CheckCircle, Phone, MessageCircle, AlertCircle, Clock,
   FileText, Users, Calculator, AlertTriangle,
   CheckSquare, HelpCircle, TrendingUp, Building2, Receipt
 } from 'lucide-react';
