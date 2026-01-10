@@ -337,31 +337,7 @@ export default function UrgentInvoice() {
                    </div>
                  </div>
 
-                 {/* Lead Form Card */}
-                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-r-4 border-[#27AE60] rounded-xl p-6 shadow-md">
-                   <h3 className="text-lg font-bold text-[#27AE60] mb-4">בדיקה משפטית בחינם?</h3>
-                   <form className="space-y-3">
-                     <div className="relative">
-                       <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                       <Input
-                         placeholder="שם מלא *"
-                         className="pr-10 h-10 border-2 border-gray-200 rounded-lg focus:border-[#27AE60] text-sm"
-                       />
-                     </div>
-                     <div className="relative">
-                       <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                       <Input
-                         type="tel"
-                         placeholder="טלפון *"
-                         className="pr-10 h-10 border-2 border-gray-200 rounded-lg focus:border-[#27AE60] text-sm"
-                       />
-                     </div>
-                     <Button className="w-full h-10 bg-[#27AE60] hover:bg-[#229954] text-white font-bold rounded-lg text-sm">
-                       בדיקה ללא התחייבות ✓
-                     </Button>
-                   </form>
-                   <p className="text-xs text-gray-600 text-center mt-3">🔒 סודי • בלי ספאם</p>
-                 </div>
+
                </div>
              </motion.div>
 
