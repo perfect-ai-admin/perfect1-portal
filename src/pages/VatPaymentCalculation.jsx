@@ -11,7 +11,7 @@ export default function VatPaymentCalculation() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold text-white"
           >
-            תשלום מע״מ – איך מחשבים
+            תשלום מע״מ - איך מחשבים
           </motion.h1>
         </div>
       </section>
