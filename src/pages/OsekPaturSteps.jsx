@@ -332,12 +332,12 @@ export default function OsekPaturSteps() {
               <p className="text-gray-700 mb-6">
                 אפשר גם לבצע <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-green-600 font-bold hover:text-green-800 underline">פתיחת עוסק פטור אונליין</Link> בתהליך סדור ודיגיטלי לחלוטין - בלי ללכת למשרדים, בלי טלטול.
               </p>
-              <a href="https://wa.me/972502277087?text=היי, מעוניין בפתיחת עוסק פטור אונליין" target="_blank" rel="noopener noreferrer">
+              <Link to={createPageUrl('OsekPaturOnlineLanding')}>
                 <Button className="h-12 px-6 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl flex items-center gap-2">
-                  <MessageCircle className="w-5 h-5" />
-                  בואו נדבר על אונליין
+                  <ArrowRight className="w-5 h-5" />
+                  פתיחה אונליין
                 </Button>
-              </a>
+              </Link>
             </motion.div>
           </div>
         </section>
