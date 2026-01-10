@@ -398,6 +398,18 @@ export default function MonthlyReportOsekPatur() {
               </div>
               </div>
 
+              {/* CTA - Open Osek Patur if needed */}
+              <section className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white rounded-2xl p-8 md:p-10 mb-12 md:mb-20">
+                <h2 className="text-2xl md:text-3xl font-black mb-4">עדיין לא פתחת עוסק פטור?</h2>
+                <p className="text-white/90 mb-6">תחילה צריך לפתוח עוסק פטור, ואז נוכל להתחיל עם הליווי החודשי</p>
+                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="inline-block">
+                  <Button className="h-12 px-8 bg-white text-[#1E3A5F] hover:bg-gray-100 font-bold">
+                    פתח עוסק פטור אונליין עכשיו
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+              </section>
+
               {/* Related Content */}
               <RelatedContent pageType="support" />
               </motion.div>
