@@ -47,6 +47,7 @@ import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
+import BituchLeumiLanding from './pages/BituchLeumiLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +101,7 @@ export const PAGES = {
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "CloseBusinessLanding": CloseBusinessLanding,
+    "BituchLeumiLanding": BituchLeumiLanding,
 }
 
 export const pagesConfig = {
