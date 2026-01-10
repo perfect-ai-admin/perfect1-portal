@@ -442,20 +442,20 @@ export default function PricingCost() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-8 text-white text-center"
+              className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 md:p-8 text-white text-center"
             >
-              <h2 className="text-2xl font-bold mb-4">
+              <h2 className="text-2xl md:text-3xl font-black mb-4 text-white">
                 אתה כבר יודע איזו דרך מתאימה לך?
               </h2>
-              <p className="text-white/80 mb-6 text-lg">
+              <p className="text-white/90 mb-6 md:mb-8 text-base md:text-lg">
                 אם אתה עדיין בספקות, אנחנו כאן כדי לעזור
               </p>
               <button 
                 onClick={() => document.querySelector('[data-lead-form]')?.scrollIntoView({ behavior: 'smooth' })}
-                className="h-14 px-8 text-lg font-bold rounded-full bg-white text-[#1E3A5F] hover:bg-gray-100 transition-all"
+                className="w-full md:w-auto h-14 px-6 md:px-10 text-base md:text-lg font-black rounded-full bg-white text-[#1E3A5F] hover:bg-gray-100 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 רוצה לדעת אם זה המסלול הנכון?
-                <ArrowLeft className="mr-2 w-5 h-5 inline" />
+                <ArrowLeft className="w-5 h-5" />
               </button>
             </motion.div>
           </div>
