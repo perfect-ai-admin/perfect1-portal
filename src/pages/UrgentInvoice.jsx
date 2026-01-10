@@ -250,8 +250,8 @@ export default function UrgentInvoice() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-black mb-3">אתה לא לבד בזה 👇</h2>
             <p className="text-lg text-white/95 mb-6">
-              ישראלים שומרים בחשבוניות ודרישות משפטיות - בלי שמיסור יומי פשפשי בילויים
-            </p>
+                   הרבה עוסקים פטורים מבולבלים בדרישות החוקיות - אנחנו כאן לעזור לך להבין את כל הנושא
+                 </p>
             <div className="bg-white text-[#27AE60] rounded-2xl p-6 max-w-2xl mx-auto">
               <p className="font-black text-sm mb-2">🔒 ליווי משפטי מלא • בלי הפתעות • בלי ספאם</p>
             </div>
