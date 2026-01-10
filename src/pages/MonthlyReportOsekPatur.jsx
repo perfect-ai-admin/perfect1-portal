@@ -77,7 +77,15 @@ export default function MonthlyReportOsekPatur() {
         canonical="https://perfect1.co.il/monthly-report-osek-patur"
       />
 
+      <PageTracker pageUrl="/monthly-report-osek-patur" pageType="landing" />
       <main className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-6">
+          <Breadcrumbs items={[
+            { label: 'דף הבית', url: 'Home' },
+            { label: 'ליווי חודשי לעוסק פטור' }
+          ]} />
+        </div>
+        
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
