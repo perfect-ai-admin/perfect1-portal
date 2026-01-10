@@ -279,12 +279,12 @@ export default function UrgentInvoice() {
             </motion.div>
 
             <div className="grid md:grid-cols-4 gap-6">
-              {[
-                { num: 1, title: 'צור קשר', desc: 'שדברה קצרה לתיאור הצורך שלך', icon: '☎️' },
-                { num: 2, title: 'מילוי טפסים', desc: 'אתנו מעדכנים את כל הפרטים בעיניים', icon: '📋' },
-                { num: 3, title: 'אישור משפטי', desc: 'עוקב 24 שעות - מקבל תשובה משפטית', icon: '✓' },
-                { num: 4, title: 'חשבוניות זוכרות', desc: 'הכל מוכן - חשבוניות משפטיות לקוחות', icon: '💬' }
-              ].map((step, i) => (
+               {[
+                 { num: 1, title: 'צור קשר', desc: 'דברה קצרה עם המומחה שלנו לתיאור המצב שלך', icon: '☎️' },
+                 { num: 2, title: 'בדיקת הצעת חוק', desc: 'אנחנו בודקים אילו דרישות חוקיות חלות עליך במקרה שלך', icon: '📋' },
+                 { num: 3, title: 'פתרון ממוקד', desc: 'קבלת תשובה משפטית ברורה על מה בדיוק לעשות', icon: '✓' },
+                 { num: 4, title: 'יישום והשגה', desc: 'הכל מוכן - חשבוניות משפטיות וליווי כלל דרכך', icon: '✅' }
+               ].map((step, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
