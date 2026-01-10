@@ -243,18 +243,33 @@ export default function Header() {
             </DropdownMenu>
 
             <DropdownMenu>
-               <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
-                 עוסק מורשה
-                 <ChevronDown className="w-4 h-4" />
-               </DropdownMenuTrigger>
-               <DropdownMenuContent align="end" className="w-64">
-                 <DropdownMenuItem asChild>
-                   <Link to={createPageUrl('OsekMorshaLanding')} className="cursor-pointer text-base">
-                     פתיחת עוסק מורשה
-                   </Link>
-                 </DropdownMenuItem>
-               </DropdownMenuContent>
-             </DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
+                עוסק מורשה
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-72">
+                {osekMorshaCategories.map((category, idx) => (
+                  <DropdownMenu key={idx}>
+                    <DropdownMenuTrigger className="w-full flex items-center justify-between px-2 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded-md">
+                      <span className="font-semibold text-gray-700">{category.name}</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="left" className="w-64">
+                      {category.items.map((item) => (
+                        <DropdownMenuItem key={item.name} asChild>
+                          <Link 
+                            to={item.href}
+                            className="cursor-pointer text-sm py-2"
+                          >
+                            {item.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
              <DropdownMenu>
                <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
