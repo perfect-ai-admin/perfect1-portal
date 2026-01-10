@@ -20,6 +20,44 @@ export default function Header() {
   const [isOsekMurashOpen, setIsOsekMurashOpen] = useState(false);
   const [isCompanyOpen, setIsCompanyOpen] = useState(false);
 
+  const osekPaturCategories = [
+    {
+      name: 'פתיחת עוסק פטור',
+      items: [
+        { name: 'פתיחת עוסק פטור רגיל', href: createPageUrl('OsekPaturLanding') },
+        { name: 'פתיחת עוסק אונליין', href: createPageUrl('OsekPaturOnlineLanding') }
+      ]
+    },
+    {
+      name: 'ניהול שוטף',
+      items: [
+        { name: 'ליווי חודשי', href: createPageUrl('ServicePage') + '?service=livui-chodshi' },
+        { name: 'דוח שנתי', href: createPageUrl('ServicePage') + '?service=doch-shnati' },
+        { name: 'אפליקציה לעצמאים', href: createPageUrl('InvoicesAppLanding') }
+      ]
+    },
+    {
+      name: 'חובות מול רשויות',
+      items: [
+        { name: 'ביטוח לאומי לעוסק פטור', href: createPageUrl('BituchLeumiLanding') },
+        { name: 'מס הכנסה לעוסק פטור', href: createPageUrl('MasHaKnasaOsekPatur') }
+      ]
+    },
+    {
+      name: 'עלויות והחלטות',
+      items: [
+        { name: 'כמה עולה לפתוח עוסק?', href: createPageUrl('PricingLanding') },
+        { name: 'צריך חשבונית עכשיו?', href: createPageUrl('UrgentInvoice') }
+      ]
+    },
+    {
+      name: 'סגירת עוסק',
+      items: [
+        { name: 'סגירת עוסק פטור', href: createPageUrl('CloseBusinessLanding') }
+      ]
+    }
+  ];
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
