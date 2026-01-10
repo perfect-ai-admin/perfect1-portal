@@ -66,7 +66,7 @@ export default function MonthlyReportOsekPatur() {
       <SEOOptimized
         title="דיווח חודשי לעוסק פטור | ליווי חודשי 199₪ | Perfect One"
         description="ליווי חודשי לעוסק פטור: אפליקציה, דיווחים לרשויות, וגישה לרואה חשבון. 199₪ בחודש, בלי התחייבות."
-        keywords="דיווח חודשי עוסק פטור, ליווי חודשי, רו"ח עוסק פטור, מעקב הכנסות הוצאות"
+        keywords="דיווח חודשי עוסק פטור, ליווי חודשי, רואה חשבון עוסק פטור, מעקב הכנסות הוצאות"
         canonical="https://perfect1.co.il/monthly-report-osek-patur"
       />
 
