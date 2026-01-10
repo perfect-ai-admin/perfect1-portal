@@ -247,7 +247,7 @@ export default function UnifiedLeadForm({
         </Button>
 
         {/* Footer Trust Text */}
-        <p className="text-xs text-center text-gray-500">
+        <p className={`text-xs text-center font-bold ${invertColors ? 'text-white' : 'text-gray-500'}`}>
           🔒 ליווי אנושי • בלי ספאם
         </p>
       </form>
