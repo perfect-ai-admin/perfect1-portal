@@ -194,14 +194,14 @@ export default function EyebrowStylistLanding() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a href="https://wa.me/972502277087?text=היי, אני מעצבת גבות ואשמח לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
-                <Button className="h-16 px-12 text-xl font-bold bg-white hover:bg-[#FFF8F0] text-[#D4843F] rounded-2xl shadow-lg transition-all">
-                  <MessageCircle className="w-6 h-6 ml-2" />
+                <Button className="h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-xl font-bold bg-white hover:bg-[#FFF8F0] text-[#D4843F] rounded-2xl shadow-lg transition-all">
+                  <MessageCircle className="w-5 sm:w-6 h-5 sm:h-6 ml-2" />
                   וואטסאפ עכשיו
                 </Button>
               </a>
               <a href="tel:0502277087">
-                <Button className="h-16 px-12 text-xl font-bold border-2 border-white text-white bg-transparent hover:bg-white/20 rounded-2xl transition-all">
-                  <Phone className="w-6 h-6 ml-2" />
+                <Button className="h-14 sm:h-16 px-8 sm:px-12 text-base sm:text-xl font-bold border-2 border-white text-white bg-transparent hover:bg-white/20 rounded-2xl transition-all">
+                  <Phone className="w-5 sm:w-6 h-5 sm:h-6 ml-2" />
                   0502277087
                 </Button>
               </a>
