@@ -90,6 +90,7 @@ import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import CommonMistakesOsekMorsha from './pages/CommonMistakesOsekMorsha';
 import VatPenalties from './pages/VatPenalties';
 import TaxDebts from './pages/TaxDebts';
+import OsekMorshaMainLanding from './pages/OsekMorshaMainLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -186,6 +187,7 @@ export const PAGES = {
     "CommonMistakesOsekMorsha": CommonMistakesOsekMorsha,
     "VatPenalties": VatPenalties,
     "TaxDebts": TaxDebts,
+    "OsekMorshaMainLanding": OsekMorshaMainLanding,
 }
 
 export const pagesConfig = {
