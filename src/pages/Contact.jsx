@@ -34,13 +34,13 @@ export default function Contact() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-             צור קשר עם Perfect One
+             צור קשר - פתיחת עסק בישראל
             </h1>
             <div className="text-xl text-white/80 max-w-2xl mx-auto">
-              <InternalLinker
-                content="צוות מומחים לפתיחת עוסקים פטורים. אנחנו כאן לענות על כל שאלה וללוות אותך בכל צעד."
-                currentPage="Contact"
-              />
+             <InternalLinker
+               content="מידע מקצועי, תהליכים מסודרים וליווי מול רשויות המס. אנחנו כאן לתמוך בך בכל סוג עסק - עוסק פטור, עוסק מורשה או חברה בע״מ."
+               currentPage="Contact"
+             />
             </div>
           </motion.div>
         </div>
@@ -63,7 +63,7 @@ export default function Contact() {
                 </h2>
                 <div className="text-gray-600 text-lg">
                   <InternalLinker
-                    content="הצוות שלנו זמין לענות על כל שאלה לגבי פתיחת עוסק פטור. בחרו את הדרך הנוחה לכם ליצור קשר."
+                    content="הצוות שלנו זמין לענות על כל שאלה לגבי פתיחת עסק בישראל. בחרו את הדרך הנוחה לכם ליצור קשר."
                     currentPage="Contact"
                   />
                 </div>

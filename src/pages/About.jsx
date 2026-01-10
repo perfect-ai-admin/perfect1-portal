@@ -105,13 +105,13 @@ export default function About() {
           >
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <Award className="w-4 h-4 text-[#D4AF37]" />
-              <span className="text-white/90 text-sm font-medium">המרכז הארצי לעוסקים פטורים</span>
+              <span className="text-white/90 text-sm font-medium">המרכז הארצי לפתיחת עוסקים בישראל</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              אודות Perfect One - המומחים לפתיחת עוסקים פטורים בישראל
+              אודות Perfect One - המרכז הארצי לפתיחת עוסקים בישראל
             </h1>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
-             המרכז הארצי לפתיחת עוסקים פטורים בישראל. ליווי מקצועי מא' ועד ת'.
+              כל מה שצריך כדי לפתוח ולנהל עסק בישראל – עוסק פטור, עוסק מורשה וחברה בע״מ
             </p>
           </motion.div>
         </div>
@@ -153,7 +153,7 @@ export default function About() {
               </h2>
               <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
                 <InternalLinker 
-                  content="פרפקט וואן נוסדה מתוך הבנה עמוקה שפתיחת עוסק פטור לא צריכה להיות מסובכת. ראינו אנשים מוכשרים שמפחדים לקחת את הצעד הראשון בגלל הבירוקרטיה והחששות מהרשויות. החלטנו לשנות את זה."
+                  content="פרפקט וואן נוסדה מתוך הבנה עמוקה שפתיחת עסק בישראל לא צריכה להיות מסובכת. ראינו אנשים מוכשרים שמפחדים לקחת את הצעד הראשון בגלל הבירוקרטיה והחששות מהרשויות. החלטנו לשנות את זה."
                   currentPage="About"
                 />
                 <p className="text-gray-600">
@@ -161,7 +161,7 @@ export default function About() {
                   עברנו את כל התהליכים בעצמנו, הכרנו את הקשיים מקרוב, ויצרנו פתרון שממש עובד.
                 </p>
                 <InternalLinker 
-                  content="יצרנו שירות שמלווה עצמאים מהרגע הראשון - מפתיחת תיק עוסק פטור ועד ניהול העסק השוטף. הכל במחיר הוגן ושקוף. היום אנחנו גאים לומר שעזרנו לאלפי עצמאים לפתוח עוסק ולהגשים את החלום שלהם."
+                  content="יצרנו שירות שמלווה עצמאים מהרגע הראשון - מפתיחת תיק בכל סוג עסק ועד ניהול העסק השוטף. מידע מקצועי, תהליכים מסודרים וליווי מול רשויות המס. הכל במחיר הוגן ושקוף. היום אנחנו גאים לומר שעזרנו לאלפי מעסיקים לפתוח עסק ולהגשים את החלום שלהם."
                   currentPage="About"
                 />
               </div>
