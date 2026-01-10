@@ -1,11 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import PricingSection from '../components/home/PricingSection';
 import FAQSection from '../components/home/FAQSection';
 import CTASection from '../components/home/CTASection';
 import InternalLinker from '../components/seo/InternalLinker';
 import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
-import { CheckCircle, Info } from 'lucide-react';
+import { CheckCircle, Info, ArrowLeft } from 'lucide-react';
 
 export default function Pricing() {
   // Enhanced Pricing Schema with isPartOf and sameAs
@@ -182,6 +184,24 @@ export default function Pricing() {
                 />
               </div>
             </div>
+          </motion.div>
+
+          {/* Urgent Invoice Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 border-2 border-red-200"
+          >
+            <Link to={createPageUrl('UrgentInvoice')} className="flex items-center justify-between hover:opacity-80 transition-opacity">
+              <div>
+                <h4 className="font-bold text-[#1E3A5F] mb-2 flex items-center gap-2">
+                  <span>⚠️ חשבונית לעוסק פטור</span>
+                </h4>
+                <p className="text-gray-700">לקוחות חוסמים עד לחשבונית? קבל הבהרה משפטית מיידית על דרישות חוקיות</p>
+              </div>
+              <ArrowLeft className="w-5 h-5 text-red-600 flex-shrink-0" />
+            </Link>
           </motion.div>
         </div>
       </section>
