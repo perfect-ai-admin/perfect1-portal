@@ -152,15 +152,15 @@ export default function UrgentInvoice() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-2 leading-tight text-white">
-                  צריך חשבונית עכשיו בישראל?
+                  חשבוניות לעוסק פטור בישראל?
                 </h1>
 
                 <h2 className="text-2xl md:text-3xl font-black text-[#27AE60] mb-6">
-                  פתרון מידי!
+                  פתרון משפטי מיידי!
                 </h2>
 
                 <p className="text-white/90 mb-8 text-lg font-medium max-w-lg">
-                  לקוחות מחכים לך שלך?
+                  לקוחות מחכים לחשבונית? אתה לא בטוח מה דרוש בחוק?
                 </p>
 
                 {/* Benefits Grid - 2x2 */}
