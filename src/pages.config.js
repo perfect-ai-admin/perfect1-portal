@@ -1,5 +1,4 @@
 import About from './pages/About';
-import AnnualReportOsekPatur from './pages/AnnualReportOsekPatur';
 import BituchLeumiLanding from './pages/BituchLeumiLanding';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
@@ -38,7 +37,6 @@ import OsekPaturVsMorasha from './pages/OsekPaturVsMorasha';
 import PhotographerLanding from './pages/PhotographerLanding';
 import Pricing from './pages/Pricing';
 import PricingCost from './pages/PricingCost';
-import PricingLanding from './pages/PricingLanding';
 import ProfessionLanding from './pages/ProfessionLanding';
 import ProfessionPage from './pages/ProfessionPage';
 import Professions from './pages/Professions';
@@ -66,7 +64,6 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "About": About,
-    "AnnualReportOsekPatur": AnnualReportOsekPatur,
     "BituchLeumiLanding": BituchLeumiLanding,
     "Blog": Blog,
     "BlogPost": BlogPost,
@@ -105,7 +102,6 @@ export const PAGES = {
     "PhotographerLanding": PhotographerLanding,
     "Pricing": Pricing,
     "PricingCost": PricingCost,
-    "PricingLanding": PricingLanding,
     "ProfessionLanding": ProfessionLanding,
     "ProfessionPage": ProfessionPage,
     "Professions": Professions,
