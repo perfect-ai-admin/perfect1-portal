@@ -65,6 +65,7 @@ import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import OsekMorshaLanding from './pages/OsekMorshaLanding';
 import CompanyLanding from './pages/CompanyLanding';
 import OsekMorshaOnline from './pages/OsekMorshaOnline';
+import OsekMorshaSteps from './pages/OsekMorshaSteps';
 import __Layout from './Layout.jsx';
 
 
@@ -136,6 +137,7 @@ export const PAGES = {
     "OsekMorshaLanding": OsekMorshaLanding,
     "CompanyLanding": CompanyLanding,
     "OsekMorshaOnline": OsekMorshaOnline,
+    "OsekMorshaSteps": OsekMorshaSteps,
 }
 
 export const pagesConfig = {
