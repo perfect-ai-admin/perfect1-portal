@@ -180,15 +180,7 @@ export default function UrgentInvoice() {
                   </div>
                 </div>
 
-                {/* Phone Number - Big */}
-                <div className="bg-white rounded-full py-3 px-6 inline-block shadow-lg mb-6">
-                  <a href="tel:+972502277087" className="text-[#1E3A5F] text-2xl md:text-3xl font-black hover:opacity-80 flex items-center gap-2">
-                    <Phone className="w-7 h-7" />
-                    050-227-7087
-                  </a>
-                </div>
-
-                <a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer">
+<a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer">
                   <Button className="h-14 px-8 text-lg font-black rounded-full bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl w-full md:w-auto">
                     <MessageCircle className="ml-3 w-6 h-6" />
                     דבר בווצאפ עכשיו
