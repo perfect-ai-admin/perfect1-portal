@@ -6,13 +6,13 @@ import { Star, Users, Clock } from 'lucide-react';
 
 export default function ExplanationStep({ onNext }) {
   return (
-    <div className="space-y-4 h-full flex flex-col justify-between">
+    <div className="space-y-3 h-full flex flex-col justify-between py-1">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-2xl font-bold text-[#1E3A5F] leading-tight mb-2">
+        <h2 className="text-2xl font-bold text-[#1E3A5F] leading-tight mb-1.5">
           מתחילים פתיחת עוסק פטור אונליין
         </h2>
         <p className="text-sm text-gray-600">
@@ -25,11 +25,11 @@ export default function ExplanationStep({ onNext }) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-gray-50 border border-gray-200 rounded-lg p-3.5 flex items-center gap-3"
+        className="bg-gray-50 border border-gray-200 rounded-lg p-2.5 flex items-center gap-3"
       >
         <div className="flex -space-x-2">
           {['👨‍💼', '👩‍💼', '👨‍🎨'].map((emoji, i) => (
-            <div key={i} className="w-8 h-8 rounded-full bg-white flex items-center justify-center border-2 border-gray-200 text-base">
+            <div key={i} className="w-7 h-7 rounded-full bg-white flex items-center justify-center border-2 border-gray-200 text-sm">
               {emoji}
             </div>
           ))}
@@ -44,7 +44,7 @@ export default function ExplanationStep({ onNext }) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="space-y-2.5"
+        className="space-y-2"
       >
         {[
           { icon: Clock, title: 'בלי לצאת מהבית', desc: 'כל התהליך אונליין' },
@@ -56,7 +56,7 @@ export default function ExplanationStep({ onNext }) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 + i * 0.06 }}
-            className="flex gap-3 p-3 bg-white rounded-lg border border-gray-200"
+            className="flex gap-2.5 p-2.5 bg-white rounded-lg border border-gray-200"
           >
             <item.icon className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-0.5" />
             <div>
@@ -75,7 +75,7 @@ export default function ExplanationStep({ onNext }) {
       >
         <Button
           onClick={onNext}
-          className="w-full h-12 font-semibold text-base rounded-lg bg-[#27AE60] hover:bg-[#229954] text-white shadow-md"
+          className="w-full h-11 font-semibold text-base rounded-lg bg-[#27AE60] hover:bg-[#229954] text-white shadow-md"
         >
           יאללה, בואו נתחיל
         </Button>
@@ -86,7 +86,7 @@ export default function ExplanationStep({ onNext }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-1.5"
+        className="bg-green-50 border border-green-200 rounded-lg p-2.5 space-y-1"
       >
         <div className="flex items-center gap-2 text-[#27AE60] font-semibold text-xs">
           <span>🔒</span>

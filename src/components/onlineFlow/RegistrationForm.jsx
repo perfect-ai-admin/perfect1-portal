@@ -38,18 +38,18 @@ export default function RegistrationForm({ onSubmit, onBack }) {
   };
 
   return (
-    <div className="space-y-3 py-4">
+    <div className="space-y-3 h-full flex flex-col justify-between py-1">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-2xl font-black text-[#1E3A5F] mb-0.5">
-          <span className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] bg-clip-text text-transparent">מתחילים פתיחת עוסק פטור אונליין</span>
+        <h2 className="text-xl font-bold text-[#27AE60] mb-1">
+          מתחילים פתיחת עוסק פטור אונליין
         </h2>
         <p className="text-xs text-gray-600">פרטים נוספים בבקשה</p>
       </motion.div>
 
-      <form onSubmit={handleSubmit} className="space-y-2">
+      <form onSubmit={handleSubmit} className="space-y-2 flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,8 +61,8 @@ export default function RegistrationForm({ onSubmit, onBack }) {
             onChange={(e) =>
               setFormData({ ...formData, fullName: e.target.value })
             }
-            className={`h-10 rounded-lg border-2 text-sm ${
-              errors.fullName ? 'border-red-500' : 'border-gray-200'
+            className={`h-11 rounded-lg border text-sm ${
+              errors.fullName ? 'border-red-500' : 'border-gray-300'
             }`}
           />
           {errors.fullName && (
@@ -73,14 +73,14 @@ export default function RegistrationForm({ onSubmit, onBack }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.08 }}
         >
           <Input
             placeholder="תעודת זהות"
             value={formData.id}
             onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-            className={`h-10 rounded-lg border-2 text-sm ${
-              errors.id ? 'border-red-500' : 'border-gray-200'
+            className={`h-11 rounded-lg border text-sm ${
+              errors.id ? 'border-red-500' : 'border-gray-300'
             }`}
             maxLength="9"
           />
@@ -92,7 +92,7 @@ export default function RegistrationForm({ onSubmit, onBack }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
+          transition={{ delay: 0.11 }}
         >
           <Input
             type="tel"
@@ -101,8 +101,8 @@ export default function RegistrationForm({ onSubmit, onBack }) {
             onChange={(e) =>
               setFormData({ ...formData, phone: e.target.value })
             }
-            className={`h-10 rounded-lg border-2 text-sm ${
-              errors.phone ? 'border-red-500' : 'border-gray-200'
+            className={`h-11 rounded-lg border text-sm ${
+              errors.phone ? 'border-red-500' : 'border-gray-300'
             }`}
           />
           {errors.phone && (
@@ -113,7 +113,7 @@ export default function RegistrationForm({ onSubmit, onBack }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.14 }}
         >
           <Input
             type="email"
@@ -122,8 +122,8 @@ export default function RegistrationForm({ onSubmit, onBack }) {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
-            className={`h-10 rounded-lg border-2 text-sm ${
-              errors.email ? 'border-red-500' : 'border-gray-200'
+            className={`h-11 rounded-lg border text-sm ${
+              errors.email ? 'border-red-500' : 'border-gray-300'
             }`}
           />
           {errors.email && (
@@ -134,7 +134,7 @@ export default function RegistrationForm({ onSubmit, onBack }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
+          transition={{ delay: 0.17 }}
         >
           <Input
             placeholder="סוג עיסוק (למשל: צלם, מעצב...)"
@@ -142,31 +142,28 @@ export default function RegistrationForm({ onSubmit, onBack }) {
             onChange={(e) =>
               setFormData({ ...formData, profession: e.target.value })
             }
-            className={`h-10 rounded-lg border-2 text-sm ${
-              errors.profession ? 'border-red-500' : 'border-gray-200'
+            className={`h-11 rounded-lg border text-sm ${
+              errors.profession ? 'border-red-500' : 'border-gray-300'
             }`}
           />
-          {errors.profession && (
-            <p className="text-red-500 text-xs mt-0.5">{errors.profession}</p>
-          )}
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="space-y-2 pt-3"
+          transition={{ delay: 0.2 }}
+          className="space-y-2 pt-2"
         >
           <Button
             type="submit"
-            className="w-full h-12 font-black text-base rounded-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
+            className="w-full h-11 font-semibold text-base rounded-lg bg-[#27AE60] hover:bg-[#229954] text-white shadow-md"
           >
-            בחר מסלול 🚀
+            בחר מסלול ✨
           </Button>
           <button
             type="button"
             onClick={onBack}
-            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium"
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm text-gray-600 font-medium"
           >
             ← חזור
           </button>
