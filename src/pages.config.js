@@ -34,6 +34,7 @@ import OsekPatur from './pages/OsekPatur';
 import OsekPaturLanding from './pages/OsekPaturLanding';
 import OsekPaturOnline from './pages/OsekPaturOnline';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
+import OsekPaturSteps from './pages/OsekPaturSteps';
 import OsekPaturVsMorasha from './pages/OsekPaturVsMorasha';
 import PhotographerLanding from './pages/PhotographerLanding';
 import Pricing from './pages/Pricing';
@@ -60,7 +61,6 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import OsekPaturSteps from './pages/OsekPaturSteps';
 import __Layout from './Layout.jsx';
 
 
@@ -101,6 +101,7 @@ export const PAGES = {
     "OsekPaturLanding": OsekPaturLanding,
     "OsekPaturOnline": OsekPaturOnline,
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
+    "OsekPaturSteps": OsekPaturSteps,
     "OsekPaturVsMorasha": OsekPaturVsMorasha,
     "PhotographerLanding": PhotographerLanding,
     "Pricing": Pricing,
@@ -127,7 +128,6 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "OsekPaturSteps": OsekPaturSteps,
 }
 
 export const pagesConfig = {
