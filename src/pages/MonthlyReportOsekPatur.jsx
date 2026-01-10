@@ -302,10 +302,13 @@ export default function MonthlyReportOsekPatur() {
                   </motion.div>
                 ))}
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </main>
-    </>
-  );
-}
+              </div>
+
+              {/* Related Content */}
+              <RelatedContent pageType="support" />
+              </motion.div>
+              </div>
+              </main>
+              </>
+              );
+              }
