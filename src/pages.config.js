@@ -77,6 +77,7 @@ import VatPaymentCalculation from './pages/VatPaymentCalculation';
 import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
 import IncomeTaxOsekMorsha from './pages/IncomeTaxOsekMorsha';
 import IncomeTaxPayment from './pages/IncomeTaxPayment';
+import TaxAdvances from './pages/TaxAdvances';
 import __Layout from './Layout.jsx';
 
 
@@ -160,6 +161,7 @@ export const PAGES = {
     "VatReturnOsekMorsha": VatReturnOsekMorsha,
     "IncomeTaxOsekMorsha": IncomeTaxOsekMorsha,
     "IncomeTaxPayment": IncomeTaxPayment,
+    "TaxAdvances": TaxAdvances,
 }
 
 export const pagesConfig = {
