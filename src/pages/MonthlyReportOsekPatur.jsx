@@ -306,6 +306,54 @@ export default function MonthlyReportOsekPatur() {
               </div>
             </div>
 
+            {/* Benefits Section */}
+            <div className="bg-white rounded-2xl p-8 md:p-10 shadow-lg mb-12 md:mb-20">
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-8 text-center">
+                מה בדיוק אנחנו עושים בעבורך כל חודש?
+              </h2>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  { 
+                    title: "📱 ניהול קבלות דיגיטליות",
+                    desc: "אנחנו מנהלים את המערכת שלך לקבלות ודוחות, הכל מעוקב וארגוני"
+                  },
+                  {
+                    title: "📊 עקבות הכנסות והוצאות",
+                    desc: "מעקב מדויק של כל שקל שנכנס ויוצא, בדוק בכל עת"
+                  },
+                  {
+                    title: "🏛️ דיווחים לרשויות",
+                    desc: "דיווחים חודשיים למס הכנסה וביטוח לאומי — אנחנו מטפלים בהכל"
+                  },
+                  {
+                    title: "💰 עד 30% עלויות מס פחות",
+                    desc: "אנחנו מוודאים שאתה מקבל את כל הקיזוזים החוקיים והעלויות המקצועיות"
+                  },
+                  {
+                    title: "❓ ייעוץ מס שוטף",
+                    desc: "שאלות על מס, קיזוזים, הכנסות? אנחנו כאן לעזור בוואטסאפ"
+                  },
+                  {
+                    title: "📄 דוח שנתי מוכן",
+                    desc: "בסוף השנה אנחנו מכינים ומגישים את הדוח השנתי שלך"
+                  }
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05 }}
+                    className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-5 border-r-4 border-green-600"
+                  >
+                    <h3 className="font-bold text-[#1E3A5F] mb-2">{item.title}</h3>
+                    <p className="text-sm text-gray-600">{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
             {/* FAQ Section */}
             <div className="mb-12 md:mb-20">
               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-8 md:mb-12 text-center">
