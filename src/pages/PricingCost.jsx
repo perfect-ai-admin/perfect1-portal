@@ -151,7 +151,7 @@ export default function PricingCost() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-12"
+              className="mb-12 border-4 border-orange-200 rounded-2xl p-8 bg-white"
             >
               <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
                 כמה עולה לפתוח עוסק פטור דרך רואה חשבון?
