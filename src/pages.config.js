@@ -48,6 +48,7 @@ import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import BituchLeumiLanding from './pages/BituchLeumiLanding';
+import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
 import __Layout from './Layout.jsx';
 
 
@@ -102,6 +103,7 @@ export const PAGES = {
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "CloseBusinessLanding": CloseBusinessLanding,
     "BituchLeumiLanding": BituchLeumiLanding,
+    "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
 }
 
 export const pagesConfig = {
