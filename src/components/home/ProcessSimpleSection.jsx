@@ -51,8 +51,8 @@ export default function ProcessSimpleSection() {
                 <div className="w-20 h-20 rounded-full bg-[#27AE60] text-white font-black text-3xl flex items-center justify-center mx-auto mb-6">
                   {step.number}
                 </div>
-                <h3 className="text-2xl font-black mb-3">{step.title}</h3>
-                <p className="text-white/80 text-base leading-relaxed">{step.description}</p>
+                <h3 className="text-2xl font-black mb-3 text-white">{step.title}</h3>
+                <p className="text-white text-base leading-relaxed font-semibold">{step.description}</p>
               </motion.div>
 
               {index < steps.length - 1 && (
@@ -77,8 +77,8 @@ export default function ProcessSimpleSection() {
                 {step.number}
               </div>
               <div className="text-right flex-1">
-                <h3 className="text-lg font-black mb-1">{step.title}</h3>
-                <p className="text-white/80 text-sm">{step.description}</p>
+                <h3 className="text-lg font-black mb-1 text-white">{step.title}</h3>
+                <p className="text-white text-base font-semibold">{step.description}</p>
               </div>
             </motion.div>
           ))}
