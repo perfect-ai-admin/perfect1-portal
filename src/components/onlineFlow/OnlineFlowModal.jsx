@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import ExplanationStep from './ExplanationStep';
 import RegistrationForm from './RegistrationForm';
 import PlanSelector from './PlanSelector';
@@ -43,27 +42,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
     setCurrentStep(4); // Move to payment
   };
 
-  const handlePaymentSuccess = async () => {
-    // עדכון הליד שרכש
-    try {
-      const leads = await base44.entities.Lead.filter({
-        phone: formData.phone,
-        source_page: 'תהליך רכישה אונליין'
-      }, '-created_date', 1);
-      
-      if (leads.length > 0) {
-        const lead = leads[0];
-        await base44.entities.Lead.update(lead.id, {
-          ...lead,
-          status: 'converted',
-          notes: `השאיר פרטים בתהליך הרכישה ורכש את המסלול: ${selectedPlan?.title || 'לא ידוע'}`,
-          priority: 'high'
-        });
-      }
-    } catch (error) {
-      console.error('Failed to update lead after purchase:', error);
-    }
-    
+  const handlePaymentSuccess = () => {
     setCurrentStep(5); // Move to success
   };
 
@@ -133,7 +112,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md sm:max-w-lg max-h-[100vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md sm:max-w-lg max-h-[100vh] sm:max-h-[90vh] overflow-y-auto"
           >
             {/* Close Button */}
             <button
@@ -145,17 +124,17 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
 
             {/* Step Indicator - Compact */}
             {currentStep !== 5 && (
-              <div className="sticky top-0 bg-[#1E3A5F] px-4 sm:px-6 py-3 border-b border-gray-200">
-                <div className="flex items-center gap-3 text-white text-sm font-semibold">
-                  <span className="text-white/70">{currentStep}/4</span>
-                  <div className="flex gap-1.5 mr-auto">
+              <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-4 sm:px-6 py-2.5 border-b border-gray-200">
+                <div className="flex items-center gap-2 text-white text-xs sm:text-sm font-bold">
+                  <span>{currentStep}/4</span>
+                  <div className="flex gap-0.5 mr-auto">
                     {[1, 2, 3, 4].map((step) => (
                       <div
                         key={step}
-                        className={`h-1 rounded-full transition-all ${
+                        className={`h-1.5 rounded-full transition-all ${
                           step <= currentStep
-                            ? 'bg-white w-8'
-                            : 'bg-white/20 w-8'
+                            ? 'bg-white w-6'
+                            : 'bg-white/20 w-1.5'
                         }`}
                       />
                     ))}
@@ -165,7 +144,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             )}
 
             {/* Content - Compact */}
-            <div className="overflow-y-auto px-4 pt-3 pb-3 sm:px-5 sm:pt-4 sm:pb-4">
+            <div className="p-3 sm:p-5 max-h-[calc(100vh-150px)] sm:max-h-[calc(90vh-80px)] overflow-y-auto">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}
