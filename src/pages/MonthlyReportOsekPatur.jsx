@@ -19,7 +19,7 @@ export default function MonthlyReportOsekPatur() {
   const faqs = [
     {
       question: 'כמה עולה ליווי חודשי?',
-      answer: 'ליווי חודשי עולה 199₪ בלבד. זו השקעה קטנה שמחסכת לך הרבה עבודה וטעויות. כשאתה לא צריך לדאוג לליווי חודשי - אתה יכול להתמקד בגדל העסק.'
+      answer: 'ליווי חודשי עולה 149₪ בלבד. זו השקעה קטנה שמחסכת לך הרבה עבודה וטעויות. כשאתה לא צריך לדאוג לליווי חודשי - אתה יכול להתמקד בגדל העסק.'
     },
     {
       question: 'מה בדיוק כולל הליווי החודשי?',
@@ -49,7 +49,7 @@ export default function MonthlyReportOsekPatur() {
       <FAQSchema faqs={faqs.map(faq => ({ question: faq.question, answer: faq.answer }))} />
       <PageTracker pageUrl="/monthly-report-osek-patur" pageType="landing" />
       <SEOOptimized
-        title="ליווי חודשי לעוסק פטור | 199₪/חודש | ניהול שוטף + רואה חשבון | Perfect One"
+        title="ליווי חודשי לעוסק פטור | 149₪/חודש | ניהול שוטף + רואה חשבון | Perfect One"
         description="ליווי חודשי מלא לעוסק פטור: ניהול הכנסות, דיווחים למס הכנסה וביטוח לאומי, קבלות דיגיטליות, ייעוץ מס + דוח שנתי. תחזוקה שוטפת של העסק בלי אחריות."
         keywords="ליווי חודשי עוסק פטור, ניהול חודשי, דיווח חודשי, רואה חשבון מנויים, ליווי עוסק פטור, דיווחים לרשויות, ניהול הוצאות הכנסות"
         canonical="https://perfect1.co.il/monthly-report-osek-patur"
@@ -66,7 +66,7 @@ export default function MonthlyReportOsekPatur() {
           },
           "offers": {
             "@type": "Offer",
-            "price": "199",
+            "price": "149",
             "priceCurrency": "ILS",
             "priceValidUntil": "2026-12-31",
             "availability": "https://schema.org/InStock",
@@ -101,7 +101,7 @@ export default function MonthlyReportOsekPatur() {
                 ליווי חודשי לעוסק פטור
               </h1>
               <p className="text-xl text-white/90 mb-6 max-w-2xl mx-auto md:mx-0">
-                <strong>199₪ בחודש</strong> — רואה חשבון שדואג לכל דבר בעבורך
+                <strong>149₪ בחודש</strong> — רואה חשבון שדואג לכל דבר בעבורך
               </p>
               <p className="text-lg text-white/80 max-w-3xl mx-auto md:mx-0">
                 ניהול הכנסות, דיווחים שוטפים, קבלות דיגיטליות, ייעוץ מס, וגם דוח שנתי בסוף השנה
@@ -271,7 +271,7 @@ export default function MonthlyReportOsekPatur() {
                   <Zap className="w-6 h-6 text-yellow-600" />
                 </div>
                 <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">מחיר שקוף וברור</h3>
-                <p className="text-gray-600">199₪ בחודש בלבד, בלי הוצאות נוספות או הפתעות</p>
+                <p className="text-gray-600">149₪ בחודש בלבד, בלי הוצאות נוספות או הפתעות</p>
               </motion.div>
             </div>
 
