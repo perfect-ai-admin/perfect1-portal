@@ -32,6 +32,12 @@ const getServiceLink = (service) => {
   if (service.id === 'ptihat-osek-patur-online' || service.title === 'פתיחת עוסק אונליין') {
     return createPageUrl('OsekPaturOnlineLanding');
   }
+  if (service.id === 'livui-chodshi' || service.title === 'ליווי חודשי') {
+    return createPageUrl('ServicePage') + '?service=livui-chodshi';
+  }
+  if (service.id === 'doch-shnati' || service.title === 'דוח שנתי' || service.title === 'הגשת דוח שנתי') {
+    return createPageUrl('ServicePage') + '?service=doch-shnati';
+  }
   return createPageUrl('ServicePage') + `?service=${service.id}`;
 };
 
