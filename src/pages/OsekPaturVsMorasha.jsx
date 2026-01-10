@@ -615,6 +615,30 @@ export default function OsekPaturVsMorasha() {
           </div>
         </section>
 
+        {/* סגירת עוסק פטור */}
+        <section className="py-16 bg-gradient-to-br from-red-50 to-orange-50 border-t-4 border-red-500">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                רוצים לסגור את העוסק שלכם?
+              </h2>
+              <p className="text-xl text-gray-700 mb-8">
+                מדריך מלא לסגירת עוסק פטור בצורה מסודרת ובטוחה
+              </p>
+              <Link to={createPageUrl('CloseOsekPaturComprehensive')}>
+                <Button className="h-16 px-12 text-xl font-black rounded-2xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white shadow-2xl">
+                  <FileText className="ml-3 w-6 h-6" />
+                  סגירת עוסק פטור
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Related Content */}
         <RelatedContent pageType="landing" />
       </main>
