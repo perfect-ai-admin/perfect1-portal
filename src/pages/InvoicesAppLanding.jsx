@@ -217,7 +217,7 @@ export default function InvoicesAppLanding() {
                       to={createPageUrl('OsekPaturOnlineLanding')}
                       className="text-[#D4AF37] underline font-bold hover:text-[#F4D03F]"
                     >
-                      פתח עוסק אונליין עכשיו
+                      פתח עוסק פטור אונליין עכשיו
                     </Link>
                     {' '}ותקבל גישה מיידית לאפליקציה
                   </p>
@@ -440,7 +440,7 @@ export default function InvoicesAppLanding() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
                   <h4 className="font-bold text-xl mb-4">השירות החודשי:</h4>
                   <div className="mb-4">
-                    <div className="text-4xl font-black text-[#27AE60] mb-2">₪199/חודש</div>
+                    <div className="text-4xl font-black text-[#27AE60] mb-2">₪149/חודש</div>
                     <p className="text-white/80">כולל הכל - פתיחת עוסק + אפליקציה + ליווי</p>
                   </div>
                   <ul className="space-y-2 text-sm">
@@ -591,7 +591,7 @@ export default function InvoicesAppLanding() {
                   to={createPageUrl('OsekPaturOnlineLanding')}
                   className="underline font-bold hover:text-white"
                 >
-                  פתח אונליין עכשיו
+                  פתח עוסק פטור אונליין עכשיו
                 </Link>
                 {' '}וקבל גישה לאפליקציה
               </p>
