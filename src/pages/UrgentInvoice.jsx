@@ -286,29 +286,43 @@ export default function UrgentInvoice() {
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-4 gap-6">
-               {[
-                 { num: 1, title: 'צור קשר', desc: 'דברה קצרה עם המומחה שלנו לתיאור המצב שלך', icon: '☎️' },
-                 { num: 2, title: 'בדיקת הצעת חוק', desc: 'אנחנו בודקים אילו דרישות חוקיות חלות עליך במקרה שלך', icon: '📋' },
-                 { num: 3, title: 'פתרון ממוקד', desc: 'קבלת תשובה משפטית ברורה על מה בדיוק לעשות', icon: '✓' },
-                 { num: 4, title: 'יישום והשגה', desc: 'הכל מוכן - חשבוניות משפטיות וליווי כלל דרכך', icon: '✅' }
-               ].map((step, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border-t-4 border-[#27AE60] text-center"
-                >
-                  <div className="w-12 h-12 rounded-full bg-[#27AE60] text-white font-black flex items-center justify-center mx-auto mb-4">
-                    {step.num}
-                  </div>
-                  <div className="text-3xl mb-3">{step.icon}</div>
-                  <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">{step.title}</h3>
-                  <p className="text-sm text-gray-600">{step.desc}</p>
-                </motion.div>
-              ))}
+            <div className="relative">
+              {/* Connection Lines */}
+              <div className="absolute top-8 right-0 left-0 h-1 bg-gradient-to-l from-[#27AE60] via-[#2ECC71] to-transparent hidden md:block" style={{ zIndex: 0 }} />
+
+              <div className="grid md:grid-cols-4 gap-6 relative" style={{ zIndex: 1 }}>
+                {[
+                  { num: 1, title: 'צור קשר', desc: 'דברה קצרה עם המומחה שלנו לתיאור המצב שלך', icon: '☎️' },
+                  { num: 2, title: 'בדיקת הצעת חוק', desc: 'אנחנו בודקים אילו דרישות חוקיות חלות עליך במקרה שלך', icon: '📋' },
+                  { num: 3, title: 'פתרון ממוקד', desc: 'קבלת תשובה משפטית ברורה על מה בדיוק לעשות', icon: '✓' },
+                  { num: 4, title: 'יישום והשגה', desc: 'הכל מוכן - חשבוניות משפטיות וליווי כלל דרכך', icon: '✅' }
+                ].map((step, i) => (
+                 <motion.div
+                   key={i}
+                   initial={{ opacity: 0, y: 20 }}
+                   whileInView={{ opacity: 1, y: 0 }}
+                   viewport={{ once: true }}
+                   transition={{ delay: i * 0.1 }}
+                   className="relative"
+                 >
+                   <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 text-center h-full border border-gray-100">
+                     {/* Step Number Badge */}
+                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#27AE60] to-[#2ECC71] text-white font-black flex items-center justify-center mx-auto mb-6 text-2xl shadow-lg">
+                       {step.num}
+                     </div>
+
+                     {/* Icon */}
+                     <div className="text-5xl mb-4 transform hover:scale-110 transition-transform">{step.icon}</div>
+
+                     {/* Title */}
+                     <h3 className="text-xl font-black text-[#1E3A5F] mb-3">{step.title}</h3>
+
+                     {/* Description */}
+                     <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
+                   </div>
+                 </motion.div>
+               ))}
+              </div>
             </div>
           </div>
         </section>
