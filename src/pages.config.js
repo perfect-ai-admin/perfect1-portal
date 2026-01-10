@@ -64,6 +64,7 @@ import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import OsekMorshaLanding from './pages/OsekMorshaLanding';
 import CompanyLanding from './pages/CompanyLanding';
+import OsekMorshaOnline from './pages/OsekMorshaOnline';
 import __Layout from './Layout.jsx';
 
 
@@ -134,6 +135,7 @@ export const PAGES = {
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "OsekMorshaLanding": OsekMorshaLanding,
     "CompanyLanding": CompanyLanding,
+    "OsekMorshaOnline": OsekMorshaOnline,
 }
 
 export const pagesConfig = {
