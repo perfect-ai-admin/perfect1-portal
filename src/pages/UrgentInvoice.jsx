@@ -358,15 +358,17 @@ export default function UrgentInvoice() {
              </motion.div>
 
             {/* Section 1: What's Required */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                מה הדרישה החוקית?
-              </h2>
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="mb-12"
+             >
+               <div className="grid lg:grid-cols-3 gap-6 items-start">
+                 <div className="lg:col-span-2">
+                   <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                     מה הדרישה החוקית?
+                   </h2>
               <div className="space-y-4">
                 <p className="text-gray-700 leading-relaxed text-lg">
                   לעוסק פטור יש חובה <strong>תיעוד של כל עסקה</strong> - זה יכול להיות חשבונית מלאה, קבלה פשוטה, או אפילו רשומה בגיליון אלקטרוני - בתנאי שיש בה את כל הפרטים הדרושים.
