@@ -27,22 +27,9 @@ export default function OsekPaturSteps() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await base44.entities.Lead.create({
-        ...formData,
-        source_page: 'פתיחת עוסק פטור – שלבים',
-        category: 'osek_patur',
-        status: 'new'
-      });
-      window.location.href = '/ThankYou';
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
-    }
+    window.location.href = createPageUrl('OsekPaturOnlineLanding');
   };
 
   const steps = [
