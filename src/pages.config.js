@@ -96,6 +96,7 @@ import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import SalesAgentHandbook from './pages/SalesAgentHandbook';
 import __Layout from './Layout.jsx';
 
 
@@ -198,6 +199,7 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "SalesAgentHandbook": SalesAgentHandbook,
 }
 
 export const pagesConfig = {
