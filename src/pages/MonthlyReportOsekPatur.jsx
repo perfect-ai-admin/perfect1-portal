@@ -116,17 +116,18 @@ export default function MonthlyReportOsekPatur() {
               </motion.div>
             </div>
 
-            <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
-              <h2 className="text-3xl font-black mb-8 text-center">
-                אל תדאג מהדיווחים החודשיים
+            {/* CTA Section */}
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-2xl mb-12 md:mb-20">
+              <h2 className="text-2xl md:text-3xl font-black mb-6 md:mb-8 text-center">
+                עוסק שקר בראש. אנחנו דואגים לשאר.
               </h2>
               
-              <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+              <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                 <Input
                   placeholder="שם מלא *"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="h-12 bg-white/20 border-white/30 text-white placeholder-white/70"
+                  className="h-11 md:h-12 bg-white/20 border-white/30 text-white placeholder-white/70 text-sm md:text-base"
                   required
                 />
                 <Input
@@ -134,31 +135,86 @@ export default function MonthlyReportOsekPatur() {
                   placeholder="טלפון *"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="h-12 bg-white/20 border-white/30 text-white placeholder-white/70"
+                  className="h-11 md:h-12 bg-white/20 border-white/30 text-white placeholder-white/70 text-sm md:text-base"
                   required
                 />
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-white text-green-600 hover:bg-gray-100 font-bold"
+                  className="w-full h-11 md:h-12 bg-white text-green-600 hover:bg-gray-100 font-bold text-sm md:text-base"
                 >
-                  {isSubmitting ? 'שולח...' : 'קבל עזרה בניהול חשבונות'}
+                  {isSubmitting ? 'שולח...' : 'בדיקה ללא התחייבות'}
                 </Button>
               </form>
 
-              <div className="flex gap-4 pt-6 border-t border-white/20">
-                <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button className="w-full h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
-                    <MessageCircle className="ml-2 w-5 h-5" />
+              <div className="grid grid-cols-2 md:flex md:gap-4 gap-3 mb-6 md:mb-8">
+                <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer" className="col-span-1 md:flex-1">
+                  <Button className="w-full h-10 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30 text-xs md:text-base">
+                    <MessageCircle className="ml-1 md:ml-2 w-4 h-4 md:w-5 md:h-5" />
                     WhatsApp
                   </Button>
                 </a>
-                <a href="tel:+972502277087" className="flex-1">
-                  <Button className="w-full h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
-                    <Phone className="ml-2 w-5 h-5" />
+                <a href="tel:+972502277087" className="col-span-1 md:flex-1">
+                  <Button className="w-full h-10 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30 text-xs md:text-base">
+                    <Phone className="ml-1 md:ml-2 w-4 h-4 md:w-5 md:h-5" />
                     טלפון
                   </Button>
                 </a>
+              </div>
+
+              {/* Open Osek Patur Button */}
+              <div className="border-t border-white/20 pt-6 md:pt-8">
+                <p className="text-white/90 text-xs md:text-sm mb-3 text-center">עדיין לא פתחת עוסק פטור?</p>
+                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="block">
+                  <Button className="w-full h-11 md:h-12 bg-white text-green-600 hover:bg-gray-100 font-black text-sm md:text-base">
+                    ✓ פתח עוסק פטור אונליין עכשיו
+                    <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* FAQ Section */}
+            <div className="mb-12 md:mb-20">
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-8 md:mb-12 text-center">
+                שאלות נפוצות
+              </h2>
+              <div className="space-y-3 md:space-y-4">
+                {faqs.map((faq, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-gray-200"
+                  >
+                    <button
+                      onClick={() => setExpandedFaq(expandedFaq === idx ? -1 : idx)}
+                      className="w-full px-5 md:px-6 py-4 md:py-5 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    >
+                      <h3 className="font-bold text-[#1E3A5F] text-sm md:text-lg text-right">
+                        {faq.question}
+                      </h3>
+                      <ChevronDown
+                        className={`w-5 h-5 md:w-6 md:h-6 text-green-600 transition-transform ${
+                          expandedFaq === idx ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    {expandedFaq === idx && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="px-5 md:px-6 py-4 md:py-5 bg-gradient-to-r from-green-50 to-emerald-50 border-t border-gray-200"
+                      >
+                        <p className="text-gray-700 text-sm md:text-base leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
               </div>
             </div>
           </motion.div>
