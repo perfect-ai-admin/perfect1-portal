@@ -158,6 +158,57 @@ export default function OsekPaturSteps() {
           </div>
         </section>
 
+        {/* CTA - Lead Form */}
+         <section className="py-16 bg-gradient-to-br from-blue-50 to-white">
+           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border-2 border-blue-200"
+             >
+               <h2 className="text-3xl font-black text-[#1E3A5F] text-center mb-2">
+                 בדיקה - האם עוסק פטור מתאים לך?
+               </h2>
+               <p className="text-gray-700 text-center mb-8">
+                 לפני שמתחילים, בואנו נבדוק ביחד אם עוסק פטור הוא הצורה הנכונה בשבילך
+               </p>
+               <form onSubmit={handleSubmit} className="space-y-3">
+                 <Input
+                   placeholder="שם מלא"
+                   value={formData.name}
+                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                   required
+                 />
+                 <Input
+                   type="tel"
+                   placeholder="טלפון"
+                   value={formData.phone}
+                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                   required
+                 />
+                 <Input
+                   placeholder="מקצוע (לא חובה)"
+                   value={formData.profession}
+                   onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                 />
+                 <Button
+                   type="submit"
+                   className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
+                 >
+                   בדיקה בחינם - 5 דקות
+                 </Button>
+               </form>
+               <p className="text-xs text-gray-500 text-center mt-4">
+                 נחזור אליך תוך 24 שעות • ללא התחייבות
+               </p>
+             </motion.div>
+           </div>
+         </section>
+
         {/* 5 Steps */}
         <section id="steps" className="py-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
