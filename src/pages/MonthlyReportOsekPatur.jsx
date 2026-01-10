@@ -43,24 +43,6 @@ export default function MonthlyReportOsekPatur() {
     }
   ];
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await base44.entities.Lead.create({
-        ...formData,
-        source_page: 'דיווח חודשי לעוסק פטור',
-        category: 'osek_patur',
-        status: 'new'
-      });
-      window.location.href = '/ThankYou';
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <>
       <LocalBusinessSchema />
