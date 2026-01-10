@@ -25,7 +25,6 @@ export default function OsekPaturSteps() {
     phone: '',
     profession: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
