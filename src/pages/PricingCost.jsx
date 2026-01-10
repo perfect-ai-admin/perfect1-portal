@@ -105,35 +105,35 @@ export default function PricingCost() {
                 כמה עולה לפתוח עוסק פטור לבד?
               </h2>
               <div className="space-y-4">
+                <div className="bg-green-50 rounded-xl p-6 mb-4">
+                  <p className="text-green-900 font-bold text-lg">העלות: 0 ₪ (ללא עלות ישירה)</p>
+                </div>
+
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  מבחינת עלות כספית - <strong>אפס שקלים</strong>. פתיחת עוסק פטור למס הכנסה, רישום בביטוח לאומי, והגדרת פטור ממע"מ הם שירותים ממשלתיים שלא כוללים עמלות רשמיות.
+                  פתיחת עוסק פטור באופן עצמאי היא חינמית לחלוטין. אתה יכול להגיע למשרדי הרשויות (מס הכנסה, מע״מ, ביטוח לאומי), למלא את הטפסים ולפתוח את התיק בעצמך.
                 </p>
 
                 <div className="bg-yellow-50 border-r-4 border-yellow-500 rounded-xl p-6">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1" />
                     <div>
-                      <h3 className="font-bold text-yellow-900 mb-3">אך יש סיכונים משמעותיים:</h3>
+                      <h3 className="font-bold text-yellow-900 mb-3">טעויות נפוצות שעלולות לעלות לך יקר:</h3>
                       <ul className="space-y-2 text-gray-800">
                         <li className="flex items-start gap-2">
                           <span className="text-yellow-600 font-bold">•</span>
-                          <span><strong>טעויות בטפסים</strong> - מילוי לא נכון של בקשות למס הכנסה או ביטוח לאומי</span>
+                          <span><strong>בחירת סיווג שגוי</strong> - קוד עיסוק לא נכון יכול להשפיע על שיעור המס שלך</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-yellow-600 font-bold">•</span>
-                          <span><strong>חוסר ידע בחובות</strong> - לא לדעת מה צריך להדווח בדוחות שנתיים או חודשיים</span>
+                          <span><strong>תיאום מס לא נכון</strong> - יכול לגרום לתשלום יותר מדי או פחות מדי במקדמות</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-yellow-600 font-bold">•</span>
-                          <span><strong>בדיקה לא מעמיקה של זכאות</strong> - הנחת כל זכאותך בטעות בגלל אי-בדיקה</span>
+                          <span><strong>הצהרות שגויות</strong> - טעויות בטפסים יכולות להסתבך אותך עם הרשויות בהמשך</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-yellow-600 font-bold">•</span>
-                          <span><strong>בעיות עם הרשויות</strong> - פניות ממס הכנסה או ביטוח לאומי בגלל אי-התאמות</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-yellow-600 font-bold">•</span>
-                          <span><strong>זמן רב וקשה</strong> - חיפוש מידע, הבנת טפסים, וטיפול בבירוקרטיה</span>
+                          <span><strong>אי הבנת ההשלכות</strong> - בחירות שאתה עושה היום משפיעות על המיסוי שלך לשנים</span>
                         </li>
                       </ul>
                     </div>
@@ -141,10 +141,7 @@ export default function PricingCost() {
                 </div>
 
                 <p className="text-gray-700 leading-relaxed text-lg pt-4">
-                  <InternalLinker 
-                    content="לכן, אם אתה בחירים בלא לקחת סיכונים - זה לא המסלול המומלץ לרוב העצמאים."
-                    currentPage="PricingCost"
-                  />
+                  <strong>חשוב לדעת:</strong> אמנם אין עלות כספית ישירה, אבל טעויות בתהליך יכולות לעלות לך הרבה יותר בהמשך. אם אתה לא בטוח במה שאתה עושה, כדאי לשקול ליווי מקצועי.
                 </p>
               </div>
             </motion.div>
