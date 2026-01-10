@@ -339,10 +339,14 @@ export default function UrgentInvoice() {
                    <div className="flex items-start gap-3">
                      <CheckCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                      <div>
-                       <h2 className="text-lg font-bold text-blue-900 mb-2">תשובה קצרה</h2>
-                       <p className="text-gray-800">
-                         זה תלוי בסוג הפעילות שלך. אם אתה רשום למע״מ - כן, חובה להוציא חשבונית. אם אתה פטור ממע״מ - זה תלוי בתנאים, בסוג הלקוח (פרטי או עסקי), והחוקים החלים על ענפך.
+                       <h2 className="text-lg font-bold text-blue-900 mb-2">האם חובה להוציא חשבונית או קבלה?</h2>
+                       <p className="text-gray-800 mb-3">
+                         זה תלוי בסוג העוסק ובאופי הפעילות.
                        </p>
+                       <ul className="text-gray-800 space-y-2 text-sm">
+                         <li><strong>מי שרשום למע״מ</strong> (עוסק מורשה) – חייב להוציא חשבונית מס.</li>
+                         <li><strong>עוסק פטור ממע״מ</strong> – אינו גובה מע״מ, אך כן חייב בתיעוד מלא של כל עסקה.</li>
+                       </ul>
                      </div>
                    </div>
                  </div>
@@ -363,43 +367,57 @@ export default function UrgentInvoice() {
                    <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
                      מה הדרישה החוקית?
                    </h2>
-                   <div className="space-y-2">
+                   <div className="space-y-4">
                        <p className="text-gray-700 leading-relaxed text-lg">
-                         לעוסק פטור יש חובה <strong>תיעוד של כל עסקה</strong> - זה יכול להיות חשבונית מלאה, קבלה פשוטה, או אפילו רשומה בגיליון אלקטרוני - בתנאי שיש בה את כל הפרטים הדרושים.
+                         לפי החוק, כל עצמאי מחויב בתיעוד של כל הכנסה. התיעוד יכול להיות:
                        </p>
+                       <ul className="text-gray-800 space-y-1 text-base list-disc list-inside">
+                         <li>חשבונית</li>
+                         <li>קבלה</li>
+                         <li>או מסמך תיעוד מסודר אחר</li>
+                       </ul>
+                       <p className="text-gray-700 text-base">ובלבד שהוא כולל את כל הפרטים הנדרשים בחוק.</p>
 
-                <div className="bg-green-50 border-r-4 border-green-600 rounded-xl p-6">
-                  <h3 className="font-bold text-green-900 mb-4">אם אתה רשום למע״מ:</h3>
+                 <div className="bg-green-50 border-r-4 border-green-600 rounded-xl p-6">
+                  <h3 className="font-bold text-green-900 mb-4">אם אתה עוסק מורשה (רשום למע״מ)</h3>
                   <ul className="space-y-2 text-gray-800">
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span><strong>חובה מלאה</strong> להוציא חשבונית עבור כל עסקה</span>
+                      <span>חובה להוציא חשבונית מס על כל עסקה</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span>החשבונית חייבת לכלול מע״מ</span>
+                      <span>החשבונית חייבת לכלול מע״מ כחוק</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span>יש לשמור על כל החשבוניות 3-4 שנים</span>
+                      <span>יש לשמור את המסמכים לצורכי ביקורת (לפחות 7 שנים)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>זהו תנאי חוקי ברור וללא חריגים</span>
                     </li>
                   </ul>
-                </div>
+                 </div>
 
-                <div className="bg-yellow-50 border-r-4 border-yellow-500 rounded-xl p-6">
-                  <h3 className="font-bold text-yellow-900 mb-4">אם אתה פטור ממע״מ:</h3>
+                 <div className="bg-yellow-50 border-r-4 border-yellow-500 rounded-xl p-6">
+                  <h3 className="font-bold text-yellow-900 mb-4">אם אתה עוסק פטור (פטור ממע״מ)</h3>
                   <ul className="space-y-2 text-gray-800">
                     <li className="flex items-start gap-2">
                       <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                      <span><strong>זה מורכב יותר</strong> - תלוי בסוג הלקוח (פרטי או עסקי)</span>
+                      <span>אינך גובה מע״מ</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                      <span>עדיין צריך <strong>תיעוד של כל עסקה</strong> - קבלה או חשבונית</span>
+                      <span>עדיין קיימת חובת תיעוד של כל עסקה</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-                      <span>אם הלקוח עסקי - הוא כנראה יצפה לחשבונית</span>
+                      <span><strong>ניתן להוציא:</strong> קבלה או חשבונית ללא מע״מ</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>הבחירה תלויה:</strong> בסוג הלקוח (פרטי או עסקי) ובאופי העסקה</span>
                     </li>
                   </ul>
                   </div>
@@ -420,29 +438,29 @@ export default function UrgentInvoice() {
                     <div className="grid lg:grid-cols-3 gap-6 items-start">
                       <div className="lg:col-span-2">
                         <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                          ההבדל בין חשבונית וקבלה
+                          ההבדל בין חשבונית לקבלה
                         </h2>
-                        <div className="space-y-4">
-                <div className="bg-blue-50 rounded-xl p-6 border-r-4 border-blue-600">
-                  <h3 className="font-bold text-blue-900 mb-3">חשבונית:</h3>
-                  <ul className="space-y-1 text-gray-800">
-                    <li>• מסמך רשמי המייצג עסקה עסקית</li>
-                    <li>• מכילה את כל פרטי הספק והלקוח</li>
-                    <li>• עבור עסקים בחוזה עם מע״מ - חובה</li>
-                    <li>• אפשר להוציא לעצמך או ללקוח</li>
-                  </ul>
-                </div>
+                         <div className="space-y-4">
+                        <div className="bg-blue-50 rounded-xl p-6 border-r-4 border-blue-600">
+                        <h3 className="font-bold text-blue-900 mb-3">חשבונית</h3>
+                        <ul className="space-y-1 text-gray-800">
+                        <li>• מסמך רשמי המייצג עסקה עסקית</li>
+                        <li>• כוללת פרטי ספק ולקוח</li>
+                        <li>• עוסק פטור יכול להוציא חשבונית ללא מע״מ</li>
+                        <li>• לקוחות עסקיים לרוב מצפים לקבל חשבונית</li>
+                        </ul>
+                        </div>
 
-                <div className="bg-green-50 rounded-xl p-6 border-r-4 border-green-600">
-                  <h3 className="font-bold text-green-900 mb-3">קבלה פשוטה:</h3>
-                  <ul className="space-y-1 text-gray-800">
-                    <li>• מסמך קל ופשוט של תשלום</li>
-                    <li>• יכולה להיות גם בעלמא או דיגיטלית</li>
-                    <li>• מתאימה לעסקאות קטנות עם לקוחות פרטיים</li>
-                    <li>• צריכה לעזור לשמירה על תיעוד</li>
-                  </ul>
-                  </div>
-                  </div>
+                        <div className="bg-green-50 rounded-xl p-6 border-r-4 border-green-600">
+                        <h3 className="font-bold text-green-900 mb-3">קבלה</h3>
+                        <ul className="space-y-1 text-gray-800">
+                        <li>• מסמך המאשר קבלת תשלום</li>
+                        <li>• יכולה להיות ידנית או דיגיטלית</li>
+                        <li>• מתאימה בעיקר ללקוחות פרטיים</li>
+                        <li>• עדיין חייבת לכלול פרטים מלאים</li>
+                        </ul>
+                        </div>
+                        </div>
                   </div>
 
 
@@ -459,40 +477,40 @@ export default function UrgentInvoice() {
                     <div className="grid lg:grid-cols-3 gap-6 items-start">
                       <div className="lg:col-span-2">
                         <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                          מה צריך להיות בחשבונית/קבלה?
+                          מה חייב להופיע בכל חשבונית או קבלה?
                         </h2>
-                        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 border-r-4 border-indigo-600">
-                <ul className="space-y-2 text-gray-800">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <span><strong>שם וכתובת הספק</strong> (אתה)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <span><strong>מספר ארגון עוסק פטור</strong> שלך</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <span><strong>שם וכתובת הלקוח</strong> (אם זה עסקי)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <span><strong>תיאור השירות או המוצר</strong></span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <span><strong>סכום התשלום</strong> (עם או בלי מע״מ)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <span><strong>תאריך</strong> של העסקה</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-                    <span><strong>מספר סידור</strong> (עוקבות)</span>
-                  </li>
-                </ul>
-                 </div>
+                         <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 border-r-4 border-indigo-600">
+                        <ul className="space-y-2 text-gray-800">
+                        <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>שם מלא וכתובת</strong> של העסק</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>מספר עוסק</strong> (פטור / מורשה)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>שם וכתובת הלקוח</strong> (כאשר מדובר בלקוח עסקי)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>תיאור השירות או המוצר</strong></span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>סכום העסקה</strong> (עם או בלי מע״מ, בהתאם לסוג העוסק)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>תאריך</strong> העסקה</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+                        <span><strong>מספר מסמך עוקב</strong></span>
+                        </li>
+                        </ul>
+                        </div>
                 </div>
 
 
@@ -509,29 +527,33 @@ export default function UrgentInvoice() {
                   <div className="grid lg:grid-cols-3 gap-6 items-start">
                     <div className="lg:col-span-2">
                       <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                        תרחישים נפוצים - מה לעשות?
+                        תרחישים נפוצים – מה נכון לעשות?
                       </h2>
                       <div className="space-y-4">
-                <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-3">עוסק פטור לקוח פרטי (למשל, צילום לחתונה)</h3>
-                  <p className="text-gray-700">קבלה פשוטה עם הפרטים הבסיסיים מספיקה. חיוב להוציא אם הסכום גדול (חוקי).</p>
-                </div>
+                      <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
+                      <h3 className="font-bold text-gray-900 mb-3">עוסק פטור מול לקוח פרטי</h3>
+                      <p className="text-gray-700 text-sm mb-2">לדוגמה: צילום אירוע, שיעור פרטי, שירות חד־פעמי</p>
+                      <p className="text-gray-700">➡️ קבלה מסודרת מספיקה, כל עוד יש תיעוד מלא.</p>
+                      </div>
 
-                <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-3">עוסק פטור לקוח עסקי (B2B)</h3>
-                  <p className="text-gray-700">הלקוח כנראה ידרוש חשבונית רשמית. גם אם אתה פטור ממע״מ - תוציא חשבונית בלי מע״מ.</p>
-                </div>
+                      <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
+                      <h3 className="font-bold text-gray-900 mb-3">עוסק פטור מול לקוח עסקי (B2B)</h3>
+                      <p className="text-gray-700">➡️ לרוב הלקוח יבקש חשבונית.</p>
+                      <p className="text-gray-700">➡️ יש להוציא חשבונית ללא מע״מ.</p>
+                      </div>
 
-                <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-3">עוסק פטור רשום למע״מ</h3>
-                  <p className="text-gray-700">חובה חד משמעית להוציא חשבונית עם מע״מ בכל עסקה. זה חוק.</p>
-                </div>
+                      <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
+                      <h3 className="font-bold text-gray-900 mb-3">עוסק מורשה (רשום למע״מ)</h3>
+                      <p className="text-gray-700">➡️ חובה להוציא חשבונית מס עם מע״מ – ללא יוצא מן הכלל.</p>
+                      </div>
 
-                <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
-                  <h3 className="font-bold text-gray-900 mb-3">עוסק פטור בעבודה בחו״ל</h3>
-                  <p className="text-gray-700">תלוי במדינה. באופן כללי, יש להוציא חשבונית בשפה המקומית ובמטבע המקומי.</p>
-                </div>
-                   </div>
+                      <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
+                      <h3 className="font-bold text-gray-900 mb-3">עוסק פטור העובד מול לקוחות בחו״ל</h3>
+                      <p className="text-gray-700">➡️ בדרך כלל נדרשת חשבונית ללא מע״מ</p>
+                      <p className="text-gray-700">➡️ לעיתים בשפה או במטבע אחר</p>
+                      <p className="text-gray-700">➡️ מומלץ לבדוק כל מקרה לגופו בהתאם למדינה ולסוג השירות</p>
+                      </div>
+                      </div>
                  </div>
 
 
