@@ -359,6 +359,18 @@ export default function ServicePage() {
                      {' '}והליווי החודשי יתחיל מיד לאחר מכן.
                    </p>
                  )}
+                 {serviceId === 'doch-shnati' && (
+                   <p className="mt-4">
+                     אם אתה עדיין לא פתחת עוסק פטור, תוכל לעשות זאת בקלות דרך{' '}
+                     <Link 
+                       to={createPageUrl('OsekPaturOnlineLanding')}
+                       className="text-[#1E3A5F] underline font-bold hover:text-[#2C5282]"
+                     >
+                       פתיחת עוסק פטור אונליין
+                     </Link>
+                     {' '}ולאחר מכן נוכל לטפל בדוח השנתי עבורך.
+                   </p>
+                 )}
                </div>
               </motion.div>
 
