@@ -25,6 +25,29 @@ export default function HowToCloseOsekPatur() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const faqs = [
+    {
+      question: "כמה זמן לוקח לסגור עוסק פטור?",
+      answer: "בדרך כלל 2-4 שבועות. התלוי בהיקף העסק וכמה מהר משיבות הרשויות."
+    },
+    {
+      question: "צריך להגיש דוח שנתי לפני הסגירה?",
+      answer: "כן, חובה. דוח שנתי סופי חייב להגיע למס הכנסה לפני הסגירה הסופית."
+    },
+    {
+      question: "מה קורה אם לא אגיש דוח שנתי?",
+      answer: "יכולות להיות עיכובים בסגירה, קנסות וריבית. זה חשוב מאד לא לדלג על זה."
+    },
+    {
+      question: "אני צריך רואה חשבון לסגור עוסק?",
+      answer: "לא חובה, אבל אם הביזנס היה בעל הכנסה משמעותית - עדיף שרואה חשבון יטפל בזה."
+    },
+    {
+      question: "מה אם יש לי חוב לביטוח לאומי או למס הכנסה?",
+      answer: "צריך לתקן את החוב לפני הסגירה או התקבול יוקזז מהחזרים אחרים."
+    }
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -35,7 +58,7 @@ export default function HowToCloseOsekPatur() {
         category: 'osek_patur',
         status: 'new'
       });
-      window.location.href = '/ThankYou';
+      window.location.href = createPageUrl('ThankYou');
     } catch (err) {
       console.error(err);
     } finally {
