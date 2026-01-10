@@ -108,11 +108,10 @@ export default function About() {
               <span className="text-white/90 text-sm font-medium">המרכז הארצי לעוסקים פטורים</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              אודות Perfect One - המרכז לעוסקים פטורים בישראל
+              אודות Perfect One - המומחים לפתיחת עוסקים פטורים בישראל
             </h1>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              אנחנו מאמינים שכל אחד יכול להיות עצמאי מצליח. 
-              המשימה שלנו היא להפוך את התהליך לפשוט, נגיש ומשתלם.
+             המרכז הארצי לפתיחת עוסקים פטורים בישראל. ליווי מקצועי מא' ועד ת'.
             </p>
           </motion.div>
         </div>

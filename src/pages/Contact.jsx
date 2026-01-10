@@ -34,11 +34,11 @@ export default function Contact() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              צור קשר
+             צור קשר עם Perfect One
             </h1>
             <div className="text-xl text-white/80 max-w-2xl mx-auto">
               <InternalLinker
-                content="נשמח לענות על כל שאלה ולעזור לך לפתוח עוסק פטור ולהתחיל את הדרך כעצמאי"
+                content="צוות מומחים לפתיחת עוסקים פטורים. אנחנו כאן לענות על כל שאלה וללוות אותך בכל צעד."
                 currentPage="Contact"
               />
             </div>
