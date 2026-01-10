@@ -11,7 +11,7 @@ export default function OsekMorshaSteps() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold text-white"
           >
-            פתיחת עוסק מורשה – שלבים
+            פתיחת עוסק מורשה - שלבים
           </motion.h1>
         </div>
       </section>
