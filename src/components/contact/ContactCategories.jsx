@@ -11,14 +11,14 @@ export default function ContactCategories() {
       link: createPageUrl('Pricing')
     },
     {
-      title: 'הפרש בין עוסק פטור למוזר',
-      icon: '⚖️',
-      link: createPageUrl('OsekPaturVsMorasha')
+      title: 'חשבונית לעוסק פטור',
+      icon: '⚠️',
+      link: createPageUrl('UrgentInvoice')
     },
     {
-      title: 'איך להוציא חשבונית לעוסק פטור?',
-      icon: '📄',
-      link: createPageUrl('UrgentInvoice')
+      title: 'הפרש בין עוסק פטור למורשה',
+      icon: '⚖️',
+      link: createPageUrl('OsekPaturVsMorasha')
     },
     {
       title: 'עוסק פטור או מורשה?',
