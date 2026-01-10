@@ -47,31 +47,35 @@ export default function MonthlyReportOsekPatur() {
     <>
       <LocalBusinessSchema />
       <FAQSchema faqs={faqs.map(faq => ({ question: faq.question, answer: faq.answer }))} />
-      <SEOOptimized
-        title="דיווח חודשי לעוסק פטור | ליווי חודשי 199₪ | Perfect One"
-        description="ליווי חודשי לעוסק פטור: אפליקציה, דיווחים לרשויות, וגישה לרואה חשבון. 199₪ בחודש, בלי התחייבות."
-        keywords="דיווח חודשי עוסק פטור, ליווי חודשי, רואה חשבון עוסק פטור, מעקב הכנסות הוצאות"
-        canonical="https://perfect1.co.il/monthly-report-osek-patur"
-      />
-
       <PageTracker pageUrl="/monthly-report-osek-patur" pageType="landing" />
       <SEOOptimized
         title="ליווי חודשי לעוסק פטור | 199₪/חודש | ניהול שוטף + רואה חשבון | Perfect One"
         description="ליווי חודשי מלא לעוסק פטור: ניהול הכנסות, דיווחים למס הכנסה וביטוח לאומי, קבלות דיגיטליות, ייעוץ מס + דוח שנתי. תחזוקה שוטפת של העסק בלי אחריות."
-        keywords="ליווי חודשי עוסק פטור, ניהול חודשי, דיווח חודשי, רואה חשבון מנויים, ליווי עוסק פטור"
+        keywords="ליווי חודשי עוסק פטור, ניהול חודשי, דיווח חודשי, רואה חשבון מנויים, ליווי עוסק פטור, דיווחים לרשויות, ניהול הוצאות הכנסות"
         canonical="https://perfect1.co.il/monthly-report-osek-patur"
         schema={{
           "@context": "https://schema.org",
           "@type": "Service",
           "name": "ליווי חודשי לעוסק פטור",
           "description": "שירות ליווי חודשי מלא לעוסקים פטורים הכולל ניהול בחשבונות, דיווחים ודוח שנתי",
+          "url": "https://perfect1.co.il/monthly-report-osek-patur",
           "provider": {
             "@type": "Organization",
-            "name": "Perfect One"
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
           },
-          "price": "199",
-          "priceCurrency": "ILS",
-          "priceValidUntil": "2026-12-31"
+          "offers": {
+            "@type": "Offer",
+            "price": "199",
+            "priceCurrency": "ILS",
+            "priceValidUntil": "2026-12-31",
+            "availability": "https://schema.org/InStock",
+            "description": "ליווי חודשי עם קבלות דיגיטליות, מעקב הוצאות, דיווחים, וייעוץ"
+          },
+          "areaServed": {
+            "@type": "Country",
+            "name": "IL"
+          }
         }}
       />
       
