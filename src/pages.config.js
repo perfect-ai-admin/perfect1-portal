@@ -89,6 +89,7 @@ import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
 import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import CommonMistakesOsekMorsha from './pages/CommonMistakesOsekMorsha';
 import VatPenalties from './pages/VatPenalties';
+import TaxDebts from './pages/TaxDebts';
 import __Layout from './Layout.jsx';
 
 
@@ -184,6 +185,7 @@ export const PAGES = {
     "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
     "CommonMistakesOsekMorsha": CommonMistakesOsekMorsha,
     "VatPenalties": VatPenalties,
+    "TaxDebts": TaxDebts,
 }
 
 export const pagesConfig = {
