@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import SEOOptimized from './SEOOptimized';
+import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
+import FAQSchema from '../components/seo/FAQSchema';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { Phone, MessageCircle } from 'lucide-react';
+import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle } from 'lucide-react';
 
 export default function MonthlyReportOsekPatur() {
   const [formData, setFormData] = useState({

@@ -26,6 +26,7 @@ import MakeupArtistLandingNew from './pages/MakeupArtistLandingNew';
 import ManicuristLanding from './pages/ManicuristLanding';
 import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
 import Methodology from './pages/Methodology';
+import MonthlyMonitoringLanding from './pages/MonthlyMonitoringLanding';
 import MonthlyReportOsekPatur from './pages/MonthlyReportOsekPatur';
 import NeedAccountantOsekPatur from './pages/NeedAccountantOsekPatur';
 import OsekPatur from './pages/OsekPatur';
@@ -59,7 +60,6 @@ import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import MonthlyMonitoringLanding from './pages/MonthlyMonitoringLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -92,6 +92,7 @@ export const PAGES = {
     "ManicuristLanding": ManicuristLanding,
     "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
     "Methodology": Methodology,
+    "MonthlyMonitoringLanding": MonthlyMonitoringLanding,
     "MonthlyReportOsekPatur": MonthlyReportOsekPatur,
     "NeedAccountantOsekPatur": NeedAccountantOsekPatur,
     "OsekPatur": OsekPatur,
@@ -125,7 +126,6 @@ export const PAGES = {
     "ThankYou": ThankYou,
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "MonthlyMonitoringLanding": MonthlyMonitoringLanding,
 }
 
 export const pagesConfig = {
