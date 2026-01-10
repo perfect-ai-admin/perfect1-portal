@@ -98,17 +98,11 @@ export default function UrgentInvoice() {
                 className="order-2 lg:order-2"
               >
                 <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-md">
-                  <div className="text-center mb-4">
-                    <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-2 flex items-center justify-center gap-2">
-                      <span>צריך הבהרה?</span>
-                      <span className="text-3xl">⚡</span>
+                  <div className="text-center mb-6">
+                    <h3 className="text-3xl md:text-4xl font-black text-[#1E3A5F] flex items-center justify-center gap-2">
+                      <span>צריך חשבונית עכשיו?</span>
+                      <span className="text-4xl">⚡</span>
                     </h3>
-                    <p className="text-sm text-gray-600 font-medium">משפטי - פטור מיידי</p>
-                  </div>
-
-                  <div className="mb-4 text-center">
-                    <p className="text-gray-800 font-bold text-sm mb-2">צריך חשבונית עכשיו?</p>
-                    <p className="text-xs text-gray-600">השאר פרטים ונחזור תוך 24 שעות</p>
                   </div>
 
                   <form className="space-y-2.5">
