@@ -32,7 +32,7 @@ export default function TrustSection() {
         </motion.div>
 
         {/* Trust Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {trustPoints.map((item, index) => {
             const Icon = item.icon;
             return (
@@ -43,19 +43,22 @@ export default function TrustSection() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl border-2 border-gray-100 hover:border-[#1E3A5F]/30 transition-all group"
+                className="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl border-2 border-gray-100 hover:border-[#1E3A5F]/30 transition-all group"
               >
                 {/* Icon */}
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <Icon className="w-8 h-8 text-white" />
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
+                  <Icon className="w-6 h-6 md:w-8 md:h-8 text-white" />
                 </div>
 
                 {/* Text */}
-                <h3 className="text-xl font-black text-[#1E3A5F] mb-3">
+                <h3 className="text-lg md:text-xl font-black text-[#1E3A5F] mb-3">
                   {item.text}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed text-sm md:text-base">
                   {item.detail}
+                </p>
+                <p className="text-gray-500 text-xs md:text-sm mt-4 pt-4 border-t border-gray-200">
+                  ידע מקצועי, תהליכים מסודרים וליווי מול רשויות המס
                 </p>
               </motion.div>
             );
