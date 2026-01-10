@@ -214,33 +214,11 @@ export default function OsekPaturSteps() {
                 אם חשוב לך לעשות את זה מסודר ולחסוך זמן, אתה יכול להשאיר פרטים ונחזור אליך עם הכוונה לפתיחה בצורה מובילה.
               </p>
               <form onSubmit={handleSubmit} className="space-y-3 mb-4">
-                <Input
-                  placeholder="שם מלא *"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="h-12 rounded-xl border-2"
-                  required
-                />
-                <Input
-                  type="tel"
-                  placeholder="טלפון *"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="h-12 rounded-xl border-2"
-                  required
-                />
-                <Input
-                  placeholder="תחום עיסוק (לא חובה)"
-                  value={formData.profession}
-                  onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                  className="h-12 rounded-xl border-2"
-                />
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
                   className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
                 >
-                  {isSubmitting ? 'שולח...' : 'בדיקה ופתיחה מסודרת'}
+                  בדיקה ופתיחה מסודרת
                 </Button>
               </form>
               <p className="text-xs text-gray-500 text-center">
