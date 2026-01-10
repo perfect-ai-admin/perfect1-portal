@@ -168,28 +168,32 @@ export default function Header() {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
-                עוסק מורשה
-                <ChevronDown className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem disabled className="text-gray-400">
-                  בקרוב...
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+               <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
+                 עוסק מורשה
+                 <ChevronDown className="w-4 h-4" />
+               </DropdownMenuTrigger>
+               <DropdownMenuContent align="end" className="w-64">
+                 <DropdownMenuItem asChild>
+                   <Link to={createPageUrl('OsekMorshaLanding')} className="cursor-pointer text-base">
+                     פתיחת עוסק מורשה
+                   </Link>
+                 </DropdownMenuItem>
+               </DropdownMenuContent>
+             </DropdownMenu>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
-                חברה בע״מ
-                <ChevronDown className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem disabled className="text-gray-400">
-                  בקרוב...
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+             <DropdownMenu>
+               <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
+                 חברה בע״מ
+                 <ChevronDown className="w-4 h-4" />
+               </DropdownMenuTrigger>
+               <DropdownMenuContent align="end" className="w-64">
+                 <DropdownMenuItem asChild>
+                   <Link to={createPageUrl('CompanyLanding')} className="cursor-pointer text-base">
+                     פתיחת חברה בע״מ
+                   </Link>
+                 </DropdownMenuItem>
+               </DropdownMenuContent>
+             </DropdownMenu>
 
             <Link
               to={createPageUrl('CloseBusinessLanding')}
