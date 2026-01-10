@@ -81,6 +81,7 @@ import TaxAdvances from './pages/TaxAdvances';
 import AnnualReportOsekMorshaPage from './pages/AnnualReportOsekMorshaPage';
 import NationalInsuranceOsekMorsha from './pages/NationalInsuranceOsekMorsha';
 import HowMuchOsekMorshaPayNI from './pages/HowMuchOsekMorshaPayNI';
+import NationalInsuranceAdvances from './pages/NationalInsuranceAdvances';
 import __Layout from './Layout.jsx';
 
 
@@ -168,6 +169,7 @@ export const PAGES = {
     "AnnualReportOsekMorshaPage": AnnualReportOsekMorshaPage,
     "NationalInsuranceOsekMorsha": NationalInsuranceOsekMorsha,
     "HowMuchOsekMorshaPayNI": HowMuchOsekMorshaPayNI,
+    "NationalInsuranceAdvances": NationalInsuranceAdvances,
 }
 
 export const pagesConfig = {
