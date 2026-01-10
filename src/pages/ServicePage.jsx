@@ -338,16 +338,28 @@ export default function ServicePage() {
 
               {/* Description */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
               >
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                  על השירות
-                </h2>
-                <div className="text-gray-600 leading-relaxed text-lg">
-                  <InternalLinker content={service.description} currentPage="ServicePage" />
-                </div>
+               <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
+                 על השירות
+               </h2>
+               <div className="text-gray-600 leading-relaxed text-lg">
+                 <InternalLinker content={service.description} currentPage="ServicePage" />
+                 {serviceId === 'livui-chodshi' && (
+                   <p className="mt-4">
+                     אם אתה עדיין לא פתחת עוסק פטור, תוכל לעשות זאת בקלות דרך{' '}
+                     <Link 
+                       to={createPageUrl('OsekPaturOnlineLanding')}
+                       className="text-[#1E3A5F] underline font-bold hover:text-[#2C5282]"
+                     >
+                       פתיחת עוסק פטור אונליין
+                     </Link>
+                     {' '}והליווי החודשי יתחיל מיד לאחר מכן.
+                   </p>
+                 )}
+               </div>
               </motion.div>
 
               <MicroCTA text="רוצה להבין אם זה מתאים לך?" cta="בדיקה מהירה ללא עלות" variant="subtle" />
