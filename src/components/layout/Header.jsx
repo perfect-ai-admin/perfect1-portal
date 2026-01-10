@@ -22,38 +22,47 @@ export default function Header() {
 
   const osekPaturCategories = [
     {
-      name: 'פתיחת עוסק פטור',
+      name: '🔹 פתיחת עוסק פטור',
       items: [
-        { name: 'פתיחת עוסק פטור רגיל', href: createPageUrl('OsekPaturLanding') },
-        { name: 'פתיחת עוסק אונליין', href: createPageUrl('OsekPaturOnlineLanding') }
+        { name: 'פתיחת עוסק פטור', href: createPageUrl('OsekPaturLanding') },
+        { name: 'פתיחת עוסק פטור אונליין', href: createPageUrl('OsekPaturOnlineLanding') },
+        { name: 'איך פותחים עוסק פטור', href: createPageUrl('HowToOpenOsekPatur') },
+        { name: 'פתיחת עוסק פטור – שלבים', href: createPageUrl('OsekPaturSteps') }
       ]
     },
     {
-      name: 'ניהול שוטף',
+      name: '🔹 ניהול שוטף לעוסק פטור',
       items: [
-        { name: 'ליווי חודשי', href: createPageUrl('ServicePage') + '?service=livui-chodshi' },
-        { name: 'דוח שנתי', href: createPageUrl('ServicePage') + '?service=doch-shnati' },
+        { name: 'דיווח חודשי לעוסק פטור', href: createPageUrl('MonthlyReportOsekPatur') },
+        { name: 'דוח שנתי לעוסק פטור', href: createPageUrl('AnnualReportOsekPatur') },
+        { name: 'קבלות והכנסות', href: createPageUrl('ReceiptsIncome') },
         { name: 'אפליקציה לעצמאים', href: createPageUrl('InvoicesAppLanding') }
       ]
     },
     {
-      name: 'חובות מול רשויות',
+      name: '🔹 חובות מול רשויות',
       items: [
         { name: 'ביטוח לאומי לעוסק פטור', href: createPageUrl('BituchLeumiLanding') },
-        { name: 'מס הכנסה לעוסק פטור', href: createPageUrl('MasHaKnasaOsekPatur') }
+        { name: 'מס הכנסה לעוסק פטור', href: createPageUrl('MasHaKnasaOsekPatur') },
+        { name: 'מע״מ לעוסק פטור', href: createPageUrl('MaamatOsekPatur') }
       ]
     },
     {
-      name: 'עלויות והחלטות',
+      name: '🔹 עלויות והחלטות',
       items: [
-        { name: 'כמה עולה לפתוח עוסק?', href: createPageUrl('PricingLanding') },
-        { name: 'צריך חשבונית עכשיו?', href: createPageUrl('UrgentInvoice') }
+        { name: 'כמה עולה לפתוח עוסק פטור', href: createPageUrl('PricingCost') },
+        { name: 'תקרת עוסק פטור', href: createPageUrl('TakratOsekPatur') },
+        { name: 'צריך רואה חשבון לעוסק?', href: createPageUrl('NeedAccountantOsekPatur') },
+        { name: 'עוסק פטור או מורשה', href: createPageUrl('OsekPaturVsMorasha') }
       ]
     },
     {
-      name: 'סגירת עוסק',
+      name: '🔹 סגירת עוסק פטור',
       items: [
-        { name: 'סגירת עוסק פטור', href: createPageUrl('CloseBusinessLanding') }
+        { name: 'סגירת עוסק פטור', href: createPageUrl('CloseBusinessLanding') },
+        { name: 'איך סוגרים עוסק פטור', href: createPageUrl('HowToCloseOsekPatur') },
+        { name: 'סגירת עוסק פטור מס הכנסה', href: createPageUrl('CloseOsekPaturTaxAuthority') },
+        { name: 'סגירת עוסק פטור ביטוח לאומי', href: createPageUrl('CloseOsekPaturBituachLeumi') }
       ]
     }
   ];
@@ -134,8 +143,8 @@ export default function Header() {
 
                 <div className="border-t border-gray-100 my-2" />
 
-                {osekPaturCategories.map((category) => (
-                  <DropdownMenu key={category.name}>
+                {osekPaturCategories.map((category, idx) => (
+                  <DropdownMenu key={idx}>
                     <DropdownMenuTrigger className="w-full flex items-center justify-between px-2 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded-md">
                       <span className="font-semibold text-gray-700">{category.name}</span>
                       <ChevronDown className="w-3 h-3" />
@@ -332,23 +341,23 @@ export default function Header() {
                                 מקצועות
                               </Link>
                             </li>
-                            {osekPaturCategories.map((category) => (
-                              <li key={category.name}>
+                            {osekPaturCategories.map((category, idx) => (
+                              <li key={idx}>
                                 <button
-                                  onClick={() => setIsOsekPaturServicesOpen(!isOsekPaturServicesOpen)}
-                                  className="w-full flex items-center justify-between py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
+                                  onClick={() => setExpandedCategory(expandedCategory === idx ? null : idx)}
+                                  className="w-full flex items-center justify-between py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] transition-all font-bold"
                                 >
-                                  <span className="font-medium">{category.name}</span>
-                                  <ChevronDown className={`w-4 h-4 transition-transform ${isOsekPaturServicesOpen ? 'rotate-180' : ''}`} />
+                                  <span>{category.name}</span>
+                                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedCategory === idx ? 'rotate-180' : ''}`} />
                                 </button>
-                                {isOsekPaturServicesOpen && (
+                                {expandedCategory === idx && (
                                   <ul className="mr-4 space-y-1 mt-1">
                                     {category.items.map((item) => (
                                       <li key={item.name}>
                                         <Link
                                           to={item.href}
                                           onClick={() => setIsMobileMenuOpen(false)}
-                                          className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-500 hover:text-[#1E3A5F] transition-all text-sm"
+                                          className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all text-sm"
                                         >
                                           {item.name}
                                         </Link>
