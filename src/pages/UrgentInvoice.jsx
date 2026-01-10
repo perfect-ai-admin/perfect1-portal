@@ -445,16 +445,18 @@ export default function UrgentInvoice() {
                   </motion.div>
 
                   {/* Section 2: Invoice vs Receipt */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                ההבדל בין חשבונית וקבלה
-              </h2>
-              <div className="space-y-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-12"
+                  >
+                    <div className="grid lg:grid-cols-3 gap-6 items-start">
+                      <div className="lg:col-span-2">
+                        <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                          ההבדל בין חשבונית וקבלה
+                        </h2>
+                        <div className="space-y-4">
                 <div className="bg-blue-50 rounded-xl p-6 border-r-4 border-blue-600">
                   <h3 className="font-bold text-blue-900 mb-3">חשבונית:</h3>
                   <ul className="space-y-1 text-gray-800">
