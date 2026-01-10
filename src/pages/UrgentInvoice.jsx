@@ -512,16 +512,18 @@ export default function UrgentInvoice() {
                   </motion.div>
 
                   {/* Section 3: What Makes a Valid Document */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                מה צריך להיות בחשבונית/קבלה?
-              </h2>
-              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 border-r-4 border-indigo-600">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-12"
+                  >
+                    <div className="grid lg:grid-cols-3 gap-6 items-start">
+                      <div className="lg:col-span-2">
+                        <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                          מה צריך להיות בחשבונית/קבלה?
+                        </h2>
+                        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 border-r-4 border-indigo-600">
                 <ul className="space-y-2 text-gray-800">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
