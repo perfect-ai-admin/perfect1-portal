@@ -468,13 +468,43 @@ export default function Header() {
 
                       {/* עוסק מורשה */}
                       <li>
-                        <Link
-                          to={createPageUrl('OsekMorshaLanding')}
-                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        <button
+                          onClick={() => setIsOsekMurashOpen(!isOsekMurashOpen)}
+                          className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
-                          עוסק מורשה
-                        </Link>
+                          <span>עוסק מורשה</span>
+                          <ChevronDown className={`w-4 h-4 transition-transform ${isOsekMurashOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        {isOsekMurashOpen && (
+                          <ul className="mr-4 space-y-1 mt-2">
+                            {osekMorshaCategories.map((category, idx) => (
+                              <li key={idx}>
+                                <button
+                                  onClick={() => setExpandedCategory(expandedCategory === idx + 100 ? null : idx + 100)}
+                                  className="w-full flex items-center justify-between py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] transition-all font-bold text-sm"
+                                >
+                                  <span>{category.name}</span>
+                                  <ChevronDown className={`w-3 h-3 transition-transform ${expandedCategory === idx + 100 ? 'rotate-180' : ''}`} />
+                                </button>
+                                {expandedCategory === idx + 100 && (
+                                  <ul className="mr-4 space-y-1 mt-1">
+                                    {category.items.map((item) => (
+                                      <li key={item.name}>
+                                        <Link
+                                          to={item.href}
+                                          onClick={() => setIsMobileMenuOpen(false)}
+                                          className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all text-xs"
+                                        >
+                                          {item.name}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </li>
 
                       {/* חברה בע"מ */}
