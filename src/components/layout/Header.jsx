@@ -16,7 +16,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOsekPaturOpen, setIsOsekPaturOpen] = useState(false);
-  const [isOsekPaturServicesOpen, setIsOsekPaturServicesOpen] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState(null);
   const [isOsekMurashOpen, setIsOsekMurashOpen] = useState(false);
   const [isCompanyOpen, setIsCompanyOpen] = useState(false);
 
