@@ -74,6 +74,7 @@ import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import VatOsekMorsha from './pages/VatOsekMorsha';
 import VatReportingOsekMorsha from './pages/VatReportingOsekMorsha';
 import VatPaymentCalculation from './pages/VatPaymentCalculation';
+import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
 import __Layout from './Layout.jsx';
 
 
@@ -154,6 +155,7 @@ export const PAGES = {
     "VatOsekMorsha": VatOsekMorsha,
     "VatReportingOsekMorsha": VatReportingOsekMorsha,
     "VatPaymentCalculation": VatPaymentCalculation,
+    "VatReturnOsekMorsha": VatReturnOsekMorsha,
 }
 
 export const pagesConfig = {
