@@ -363,10 +363,10 @@ export default function UrgentInvoice() {
                    <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
                      מה הדרישה החוקית?
                    </h2>
-                   <div className="space-y-4">
-                <p className="text-gray-700 leading-relaxed text-lg">
-                  לעוסק פטור יש חובה <strong>תיעוד של כל עסקה</strong> - זה יכול להיות חשבונית מלאה, קבלה פשוטה, או אפילו רשומה בגיליון אלקטרוני - בתנאי שיש בה את כל הפרטים הדרושים.
-                </p>
+                   <div className="space-y-2">
+                       <p className="text-gray-700 leading-relaxed text-lg">
+                         לעוסק פטור יש חובה <strong>תיעוד של כל עסקה</strong> - זה יכול להיות חשבונית מלאה, קבלה פשוטה, או אפילו רשומה בגיליון אלקטרוני - בתנאי שיש בה את כל הפרטים הדרושים.
+                       </p>
 
                 <div className="bg-green-50 border-r-4 border-green-600 rounded-xl p-6">
                   <h3 className="font-bold text-green-900 mb-4">אם אתה רשום למע״מ:</h3>
