@@ -642,7 +642,7 @@ export default function UrgentInvoice() {
                 פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות. 
                 <Link to={createPageUrl('OsekPaturOnlineLanding')} className="underline hover:opacity-80 font-black mx-1">בחר פתרון מקוון</Link>
                 או 
-                <Link to={createPageUrl('OsekPaturOnline')} className="underline hover:opacity-80 font-black mx-1">קבל ליווי מלא</Link>
+                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="underline hover:opacity-80 font-black mx-1">קבל ליווי מלא</Link>
                 - בדיוק מה שצריך לך.
               </p>
               <Link to={createPageUrl('OsekPaturOnlineLanding')} className="inline-block">
