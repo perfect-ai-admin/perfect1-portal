@@ -68,6 +68,7 @@ import OsekMorshaOnline from './pages/OsekMorshaOnline';
 import OsekMorshaSteps from './pages/OsekMorshaSteps';
 import OsekMorshaTime from './pages/OsekMorshaTime';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
+import TransitionOsekPaturToMorsha from './pages/TransitionOsekPaturToMorsha';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +143,7 @@ export const PAGES = {
     "OsekMorshaSteps": OsekMorshaSteps,
     "OsekMorshaTime": OsekMorshaTime,
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
+    "TransitionOsekPaturToMorsha": TransitionOsekPaturToMorsha,
 }
 
 export const pagesConfig = {
