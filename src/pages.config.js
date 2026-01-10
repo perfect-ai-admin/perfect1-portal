@@ -71,6 +71,7 @@ import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import TransitionOsekPaturToMorsha from './pages/TransitionOsekPaturToMorsha';
 import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransition';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
+import VatOsekMorsha from './pages/VatOsekMorsha';
 import __Layout from './Layout.jsx';
 
 
@@ -148,6 +149,7 @@ export const PAGES = {
     "TransitionOsekPaturToMorsha": TransitionOsekPaturToMorsha,
     "OsekPaturThresholdAndTransition": OsekPaturThresholdAndTransition,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
+    "VatOsekMorsha": VatOsekMorsha,
 }
 
 export const pagesConfig = {
