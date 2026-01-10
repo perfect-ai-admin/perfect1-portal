@@ -191,7 +191,7 @@ export default function UrgentInvoice() {
                 <a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer">
                   <Button className="h-14 px-8 text-lg font-black rounded-full bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl w-full md:w-auto">
                     <MessageCircle className="ml-3 w-6 h-6" />
-                    פתרון מידי בווצאפ
+                    דבר בווצאפ עכשיו
                   </Button>
                 </a>
               </motion.div>
