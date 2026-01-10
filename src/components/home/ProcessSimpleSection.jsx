@@ -23,41 +23,64 @@ export default function ProcessSimpleSection() {
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 md:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-6">
+          <h2 className="text-4xl md:text-5xl font-black text-[#1E3A5F] mb-4">
             כך מתחילים בצורה נכונה
           </h2>
+          <p className="text-lg text-gray-600">שלושה שלבים פשוטים לפתיחת העסק שלך</p>
         </motion.div>
 
-        {/* Steps */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-12">
+        {/* Desktop - Horizontal */}
+        <div className="hidden md:flex items-center justify-center gap-8 mb-12">
           {steps.map((step, index) => (
             <React.Fragment key={index}>
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex-1 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 text-white text-center min-w-[200px]"
+                transition={{ delay: index * 0.15 }}
+                className="flex-1 max-w-xs bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-3xl p-8 text-white text-center hover:shadow-xl transition-all"
               >
-                <div className="w-16 h-16 rounded-full bg-[#27AE60] text-white font-black text-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 rounded-full bg-[#27AE60] text-white font-black text-3xl flex items-center justify-center mx-auto mb-6">
                   {step.number}
                 </div>
-                <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                <p className="text-white/80 text-sm">{step.description}</p>
+                <h3 className="text-2xl font-black mb-3">{step.title}</h3>
+                <p className="text-white/80 text-base leading-relaxed">{step.description}</p>
               </motion.div>
 
               {index < steps.length - 1 && (
-                <ArrowRight className="w-6 h-6 text-[#27AE60] hidden md:block" />
+                <ArrowRight className="w-8 h-8 text-[#27AE60] flex-shrink-0" />
               )}
             </React.Fragment>
+          ))}
+        </div>
+
+        {/* Mobile - Stacked */}
+        <div className="md:hidden space-y-4 mb-12">
+          {steps.map((step, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-2xl p-6 text-white flex items-center gap-4"
+            >
+              <div className="w-16 h-16 rounded-full bg-[#27AE60] text-white font-black text-2xl flex items-center justify-center flex-shrink-0">
+                {step.number}
+              </div>
+              <div className="text-right flex-1">
+                <h3 className="text-lg font-black mb-1">{step.title}</h3>
+                <p className="text-white/80 text-sm">{step.description}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
 
@@ -75,7 +98,7 @@ export default function ProcessSimpleSection() {
                 element.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="bg-[#1E3A5F] hover:bg-[#2C5282] text-white px-12 py-6 text-lg font-bold rounded-xl"
+            className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:shadow-lg text-white px-14 py-6 text-lg font-bold rounded-2xl w-full md:w-auto transition-all"
           >
             רוצה להבין מה מתאים לך?
           </Button>
