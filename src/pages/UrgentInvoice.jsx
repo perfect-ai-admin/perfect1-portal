@@ -82,34 +82,96 @@ export default function UrgentInvoice() {
         }}
       />
 
-      <main className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-6">
-          <Breadcrumbs items={[
-            { label: 'דף הבית', url: 'Home' },
-            { label: 'חשבוניות לעוסק פטור' }
-          ]} />
-        </div>
-        
-        {/* Hero Section */}
-        <section className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white py-16 md:py-20">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-right">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <div className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
-                ✓ מדריך משפטי מלא
-              </div>
-              <h1 className="text-4xl md:text-5xl font-black mb-4">
-                חשבוניות לעוסק פטור
-              </h1>
-              <p className="text-xl text-white/90 mb-6 max-w-2xl mx-auto md:mx-0">
-                האם צריך להוציא חשבונית? מה צריך להיות בה? איך לעמוד בדרישות משפטיות?
-              </p>
-              <p className="text-lg text-white/80 max-w-3xl mx-auto md:mx-0">
-                מדריך מלא לעוסקים פטורים בישראל על חשבוניות, קבלות, ודרישות חוקיות
-              </p>
-            </motion.div>
+      <main className="min-h-screen bg-white">
+        {/* Hero Section - Conversion Focused */}
+        <section className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white py-12 md:py-20 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 right-10 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
+          </div>
+          
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              {/* Right: Headline */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-right"
+              >
+                <div className="inline-block bg-[#27AE60]/20 text-[#27AE60] px-4 py-2 rounded-full text-sm font-bold mb-6 border border-[#27AE60]/30">
+                  ✓ ליווי משפטי מלא
+                </div>
+                
+                <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
+                  חשבוניות לעוסק פטור בישראל?
+                </h1>
+                
+                <p className="text-xl text-white/90 mb-8">
+                  <strong className="text-[#27AE60]">פתרון מדויק</strong> לכל השאלות שלך על חשבוניות, קבלות ודרישות חוקיות
+                </p>
+
+                {/* Key Benefits */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 mb-6">
+                  <div className="space-y-2">
+                    {[
+                      '100% תשובות משפטיות מדויקות',
+                      'ליווי אישי מ-24 שעות',
+                      'הבהרה מלאה של כל צעד'
+                    ].map((benefit, i) => (
+                      <div key={i} className="flex items-center gap-2 text-white/90">
+                        <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
+                        <span className="font-medium">{benefit}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <a href="https://wa.me/972502277087?text=היי, צריך עזרה בנושא חשבוניות לעוסק פטור" target="_blank" rel="noopener noreferrer">
+                  <Button className="h-14 px-8 text-lg font-black rounded-full bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl w-full md:w-auto">
+                    <MessageCircle className="ml-3 w-6 h-6" />
+                    דבר בווצאפ עכשיו
+                  </Button>
+                </a>
+              </motion.div>
+
+              {/* Left: Form */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="hidden lg:block"
+              >
+                <div className="bg-white rounded-3xl shadow-2xl p-8">
+                  <h3 className="text-2xl font-black text-[#1E3A5F] mb-2 text-center">צריך הבהרה משפטית?</h3>
+                  <p className="text-center text-gray-600 font-medium mb-6">השאר פרטים ונחזור תוך 24 שעות</p>
+                  
+                  <form className="space-y-4">
+                    <div className="relative">
+                      <User className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A5F]/40" />
+                      <Input
+                        placeholder="שם מלא *"
+                        className="pr-11 h-12 border-2 border-gray-300 rounded-xl focus:border-[#1E3A5F]"
+                      />
+                    </div>
+                    
+                    <div className="relative">
+                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A5F]/40" />
+                      <Input
+                        type="tel"
+                        placeholder="טלפון *"
+                        className="pr-11 h-12 border-2 border-gray-300 rounded-xl focus:border-[#1E3A5F]"
+                      />
+                    </div>
+                    
+                    <Button className="w-full h-12 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-black rounded-xl text-lg">
+                      בדיקה ללא התחייבות
+                    </Button>
+                  </form>
+
+                  <p className="text-xs text-gray-500 text-center mt-4 font-bold">
+                    🔒 בלי ספאם • ליווי אנושי מלא
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </section>
 
