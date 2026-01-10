@@ -68,6 +68,81 @@ export default function Header() {
     }
   ];
 
+  const osekMorshaCategories = [
+    {
+      name: '🔹 פתיחת עוסק מורשה',
+      items: [
+        { name: 'פתיחת עוסק מורשה', href: createPageUrl('OsekMorshaLanding') },
+        { name: 'פתיחת עוסק מורשה אונליין', href: createPageUrl('OsekMorshaOnline') },
+        { name: 'פתיחת עוסק מורשה – שלבים', href: createPageUrl('OsekMorshaSteps') },
+        { name: 'פתיחת עוסק מורשה – כמה זמן לוקח', href: createPageUrl('OsekMorshaTime') }
+      ]
+    },
+    {
+      name: '🔹 מתי צריך להיות עוסק מורשה',
+      items: [
+        { name: 'מתי חייבים להיות עוסק מורשה', href: createPageUrl('WhenNeedOsekMorsha') },
+        { name: 'מעבר מעוסק פטור למורשה', href: createPageUrl('TransitionOsekPaturToMorsha') },
+        { name: 'תקרת עוסק פטור ומעבר למורשה', href: createPageUrl('OsekPaturThresholdAndTransition') },
+        { name: 'מי לא יכול להיות עוסק פטור', href: createPageUrl('WhoCannotBeOsekPatur') }
+      ]
+    },
+    {
+      name: '🔹 מע״מ לעוסק מורשה',
+      items: [
+        { name: 'מע״מ לעוסק מורשה', href: createPageUrl('VatOsekMorsha') },
+        { name: 'דיווח מע״מ לעוסק מורשה', href: createPageUrl('VatReportingOsekMorsha') },
+        { name: 'תשלום מע״מ – איך מחשבים', href: createPageUrl('VatPaymentCalculation') },
+        { name: 'החזר מע״מ לעוסק מורשה', href: createPageUrl('VatReturnOsekMorsha') }
+      ]
+    },
+    {
+      name: '🔹 מס הכנסה לעוסק מורשה',
+      items: [
+        { name: 'מס הכנסה לעוסק מורשה', href: createPageUrl('IncomeTaxOsekMorsha') },
+        { name: 'תשלום מס הכנסה', href: createPageUrl('IncomeTaxPayment') },
+        { name: 'מקדמות מס', href: createPageUrl('TaxAdvances') },
+        { name: 'דוח שנתי לעוסק מורשה', href: createPageUrl('AnnualReportOsekMorshaPage') }
+      ]
+    },
+    {
+      name: '🔹 ביטוח לאומי לעוסק מורשה',
+      items: [
+        { name: 'ביטוח לאומי לעוסק מורשה', href: createPageUrl('NationalInsuranceOsekMorsha') },
+        { name: 'כמה משלם עוסק מורשה', href: createPageUrl('HowMuchOsekMorshaPayNI') },
+        { name: 'מקדמות ביטוח לאומי', href: createPageUrl('NationalInsuranceAdvances') },
+        { name: 'זכויות עוסק מורשה', href: createPageUrl('OsekMorshaRights') }
+      ]
+    },
+    {
+      name: '🔹 עלויות וניהול שוטף',
+      items: [
+        { name: 'עלויות עוסק מורשה', href: createPageUrl('CostsOsekMorsha') },
+        { name: 'כמה עולה לנהל עוסק מורשה', href: createPageUrl('HowMuchToManageOsekMorsha') },
+        { name: 'רואה חשבון לעוסק מורשה', href: createPageUrl('AccountantForOsekMorsha') },
+        { name: 'הנהלת חשבונות לעוסק מורשה', href: createPageUrl('BookkeepingOsekMorsha') }
+      ]
+    },
+    {
+      name: '🔹 טעויות ובעיות נפוצות',
+      items: [
+        { name: 'טעויות נפוצות בעוסק מורשה', href: createPageUrl('CommonMistakesOsekMorsha') },
+        { name: 'קנסות מע״מ', href: createPageUrl('VatPenalties') },
+        { name: 'חובות מס', href: createPageUrl('TaxDebts') },
+        { name: 'אי דיווח הכנסות', href: createPageUrl('FailureToReportIncome') }
+      ]
+    },
+    {
+      name: '🔹 סגירת עוסק מורשה',
+      items: [
+        { name: 'סגירת עוסק מורשה', href: createPageUrl('CloseOsekMorsha') },
+        { name: 'איך סוגרים עוסק מורשה', href: createPageUrl('HowToCloseOsekMorsha') },
+        { name: 'סגירת עוסק מורשה במע״מ', href: createPageUrl('CloseOsekMorshaVat') },
+        { name: 'סגירת תיק במס הכנסה', href: createPageUrl('CloseTaxFile') }
+      ]
+    }
+  ];
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
