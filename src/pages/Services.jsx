@@ -41,7 +41,7 @@ const getServiceLink = (service) => {
   if (service.id === 'invoices-app' || service.title === 'אפליקציה לעצמאים') {
     return createPageUrl('InvoicesAppLanding');
   }
-  if (service.id === 'sgirat-osek-patur' || service.title === 'סגירת עוסק פטור' || service.title.includes('סגירת עוסק')) {
+  if (service.id === 'sgirat-osek' || service.title === 'סגירת עסק בישראל' || service.title.includes('סגירת עסק')) {
     return createPageUrl('CloseBusinessLanding');
   }
   return createPageUrl('ServicePage') + `?service=${service.id}`;
