@@ -186,15 +186,17 @@ export default function UnifiedLeadForm({
         {/* Phone */}
         {fields.includes('phone') && (
           <div className="relative">
-            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A5F]/40" />
+            <Phone className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 ${invertColors ? 'text-white/40' : 'text-[#1E3A5F]/40'}`} />
             <Input
               type="tel"
               placeholder="טלפון *"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className={`pr-11 border-2 border-gray-200 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20 rounded-xl font-medium ${
-                variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'
-              }`}
+              className={`pr-11 border-2 rounded-xl font-medium ${
+                invertColors 
+                  ? 'border-white/30 bg-white/20 text-white placeholder-white/70 focus:border-white focus:ring-2 focus:ring-white/30'
+                  : 'border-gray-200 bg-white text-gray-900 placeholder-gray-500 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20'
+              } ${variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'}`}
               required
             />
           </div>
