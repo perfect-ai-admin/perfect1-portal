@@ -172,12 +172,12 @@ export default function EyebrowStylistLanding() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 md:py-20 bg-gradient-to-br from-[#D4843F] via-[#C87130] to-[#B8663B]">
+        <section className="py-12 md:py-16 bg-gradient-to-br from-[#D4843F] via-[#C87130] to-[#B8663B]">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 md:mb-6 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-3 md:mb-4 leading-tight">
               התחילי לעבוד באופן חוקי עוד היום 👁️✨
             </h2>
-            <p className="text-lg md:text-2xl text-white/95 mb-8 md:mb-10 leading-relaxed">
+            <p className="text-lg md:text-2xl text-white/95 mb-6 md:mb-8 leading-relaxed">
               הצטרפי למאות מעצבות גבות שכבר עובדות איתנו
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
