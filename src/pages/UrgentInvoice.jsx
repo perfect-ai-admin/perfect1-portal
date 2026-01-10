@@ -590,16 +590,18 @@ export default function UrgentInvoice() {
                 </motion.div>
 
                 {/* Section 4: Common Scenarios */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                תרחישים נפוצים - מה לעשות?
-              </h2>
-              <div className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="mb-12"
+                >
+                  <div className="grid lg:grid-cols-3 gap-6 items-start">
+                    <div className="lg:col-span-2">
+                      <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                        תרחישים נפוצים - מה לעשות?
+                      </h2>
+                      <div className="space-y-4">
                 <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
                   <h3 className="font-bold text-gray-900 mb-3">עוסק פטור לקוח פרטי (למשל, צילום לחתונה)</h3>
                   <p className="text-gray-700">קבלה פשוטה עם הפרטים הבסיסיים מספיקה. חיוב להוציא אם הסכום גדול (חוקי).</p>
