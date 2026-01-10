@@ -6,7 +6,7 @@ import { Star, Users, Clock } from 'lucide-react';
 
 export default function ExplanationStep({ onNext }) {
   return (
-    <div className="space-y-3 flex flex-col py-1">
+    <div className="space-y-3 flex flex-col pb-0">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: -15 }}

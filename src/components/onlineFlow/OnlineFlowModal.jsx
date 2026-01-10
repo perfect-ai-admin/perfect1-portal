@@ -144,7 +144,7 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
             )}
 
             {/* Content - Compact */}
-            <div className="flex-1 overflow-y-auto p-3 sm:p-5">
+            <div className="flex-1 overflow-y-auto px-4 pt-3 pb-2 sm:px-5 sm:pt-4 sm:pb-3">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}

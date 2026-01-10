@@ -38,7 +38,7 @@ export default function RegistrationForm({ onSubmit, onBack }) {
   };
 
   return (
-    <div className="space-y-3 h-full flex flex-col justify-between py-1">
+    <div className="space-y-3 h-full flex flex-col justify-between pb-0">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
