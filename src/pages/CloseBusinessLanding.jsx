@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Phone, MessageCircle, FileText, AlertCircle, Shield, Clock, XCircle, Building2 } from 'lucide-react';
+import { CheckCircle, Phone, MessageCircle, FileText, AlertCircle, Shield, Clock, XCircle, Building2, ArrowLeft } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
