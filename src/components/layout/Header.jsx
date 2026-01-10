@@ -332,30 +332,32 @@ export default function Header() {
                                 מקצועות
                               </Link>
                             </li>
-                            <li>
-                              <button
-                                onClick={() => setIsOsekPaturServicesOpen(!isOsekPaturServicesOpen)}
-                                className="w-full flex items-center justify-between py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
-                              >
-                                <span>שירותים</span>
-                                <ChevronDown className={`w-4 h-4 transition-transform ${isOsekPaturServicesOpen ? 'rotate-180' : ''}`} />
-                              </button>
-                              {isOsekPaturServicesOpen && (
-                                <ul className="mr-4 space-y-1 mt-1">
-                                  {menuItems.map((item) => (
-                                    <li key={item.name}>
-                                      <Link
-                                        to={item.href}
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-500 hover:text-[#1E3A5F] transition-all text-sm"
-                                      >
-                                        {item.name}
-                                      </Link>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </li>
+                            {osekPaturCategories.map((category) => (
+                              <li key={category.name}>
+                                <button
+                                  onClick={() => setIsOsekPaturServicesOpen(!isOsekPaturServicesOpen)}
+                                  className="w-full flex items-center justify-between py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
+                                >
+                                  <span className="font-medium">{category.name}</span>
+                                  <ChevronDown className={`w-4 h-4 transition-transform ${isOsekPaturServicesOpen ? 'rotate-180' : ''}`} />
+                                </button>
+                                {isOsekPaturServicesOpen && (
+                                  <ul className="mr-4 space-y-1 mt-1">
+                                    {category.items.map((item) => (
+                                      <li key={item.name}>
+                                        <Link
+                                          to={item.href}
+                                          onClick={() => setIsMobileMenuOpen(false)}
+                                          className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-500 hover:text-[#1E3A5F] transition-all text-sm"
+                                        >
+                                          {item.name}
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </li>
+                            ))}
                           </ul>
                         )}
                       </li>
