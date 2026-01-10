@@ -63,6 +63,7 @@ import ThankYou from './pages/ThankYou';
 import UrgentInvoice from './pages/UrgentInvoice';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import OsekMorshaLanding from './pages/OsekMorshaLanding';
+import CompanyLanding from './pages/CompanyLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -132,6 +133,7 @@ export const PAGES = {
     "UrgentInvoice": UrgentInvoice,
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "OsekMorshaLanding": OsekMorshaLanding,
+    "CompanyLanding": CompanyLanding,
 }
 
 export const pagesConfig = {
