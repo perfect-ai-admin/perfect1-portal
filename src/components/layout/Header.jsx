@@ -15,7 +15,9 @@ import { trackPhoneClick, trackWhatsAppClick } from '../tracking/EventTracker';
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isOsekPaturOpen, setIsOsekPaturOpen] = useState(false);
+  const [isOsekMurashOpen, setIsOsekMurashOpen] = useState(false);
+  const [isCompanyOpen, setIsCompanyOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,41 +79,54 @@ export default function Header() {
             >
               בלוג
             </Link>
-            
-            <Link
-              to={createPageUrl('Professions')}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
-            >
-              מקצועות
-            </Link>
 
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
-                שירותים
+                עוסק פטור
                 <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                {menuItems.map((item) => (
-                  <DropdownMenuItem key={item.name} asChild>
-                    <Link 
-                      to={item.href}
-                      className="cursor-pointer text-base"
-                    >
-                      {item.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl('Professions')} className="cursor-pointer text-base">
+                    מקצועות
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl('Services')} className="cursor-pointer text-base">
+                    שירותים
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl('Pricing')} className="cursor-pointer text-base">
+                    מחירון עוסק פטור
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link
-              to={createPageUrl('Pricing')}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
-            >
-              מחירון
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
+                עוסק מורשה
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem disabled className="text-gray-400">
+                  בקרוב...
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
+                חברה בע״מ
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem disabled className="text-gray-400">
+                  בקרוב...
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <Link
               to={createPageUrl('CloseBusinessLanding')}
@@ -243,48 +258,81 @@ export default function Header() {
                           בלוג
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to={createPageUrl('Professions')}
-                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
-                        >
-                          מקצועות
-                        </Link>
-                      </li>
+
+                      {/* עוסק פטור */}
                       <li>
                         <button
-                          onClick={() => setIsServicesOpen(!isServicesOpen)}
+                          onClick={() => setIsOsekPaturOpen(!isOsekPaturOpen)}
                           className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
-                          <span>שירותים</span>
-                          <ChevronDown className={`w-4 h-4 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
+                          <span>עוסק פטור</span>
+                          <ChevronDown className={`w-4 h-4 transition-transform ${isOsekPaturOpen ? 'rotate-180' : ''}`} />
                         </button>
-                        {isServicesOpen && (
+                        {isOsekPaturOpen && (
                           <ul className="mr-4 space-y-1 mt-2">
-                            {menuItems.map((item) => (
-                              <li key={item.name}>
-                                <Link
-                                  to={item.href}
-                                  onClick={() => setIsMobileMenuOpen(false)}
-                                  className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
-                                >
-                                  {item.name}
-                                </Link>
-                              </li>
-                            ))}
+                            <li>
+                              <Link
+                                to={createPageUrl('Professions')}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
+                              >
+                                מקצועות
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                to={createPageUrl('Services')}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
+                              >
+                                שירותים
+                              </Link>
+                            </li>
+                            <li>
+                              <Link
+                                to={createPageUrl('Pricing')}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
+                              >
+                                מחירון עוסק פטור
+                              </Link>
+                            </li>
                           </ul>
                         )}
                       </li>
+
+                      {/* עוסק מורשה */}
                       <li>
-                        <Link
-                          to={createPageUrl('Pricing')}
-                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        <button
+                          onClick={() => setIsOsekMurashOpen(!isOsekMurashOpen)}
+                          className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
-                          מחירון
-                        </Link>
+                          <span>עוסק מורשה</span>
+                          <ChevronDown className={`w-4 h-4 transition-transform ${isOsekMurashOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        {isOsekMurashOpen && (
+                          <ul className="mr-4 space-y-1 mt-2">
+                            <li className="py-2 px-4 text-gray-400 text-sm">בקרוב...</li>
+                          </ul>
+                        )}
                       </li>
+
+                      {/* חברה בע"מ */}
+                      <li>
+                        <button
+                          onClick={() => setIsCompanyOpen(!isCompanyOpen)}
+                          className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        >
+                          <span>חברה בע״מ</span>
+                          <ChevronDown className={`w-4 h-4 transition-transform ${isCompanyOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        {isCompanyOpen && (
+                          <ul className="mr-4 space-y-1 mt-2">
+                            <li className="py-2 px-4 text-gray-400 text-sm">בקרוב...</li>
+                          </ul>
+                        )}
+                      </li>
+
                       <li>
                         <Link
                           to={createPageUrl('CloseBusinessLanding')}
