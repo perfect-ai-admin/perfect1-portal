@@ -244,7 +244,7 @@ export default function PricingCost() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-12"
+              className="mb-12 border-4 border-green-500 rounded-2xl p-8 bg-gradient-to-br from-white to-green-50"
             >
               <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
                 כמה עולה לפתוח עוסק פטור אונליין?
