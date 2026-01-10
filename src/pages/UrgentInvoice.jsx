@@ -144,7 +144,7 @@ export default function UrgentInvoice() {
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-right lg:order-1"
+                className="order-1 text-right lg:order-1"
               >
                 <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-xs font-bold mb-6 border border-red-500/30">
                   <span>⚠️</span>
