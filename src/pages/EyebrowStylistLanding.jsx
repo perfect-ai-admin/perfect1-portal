@@ -184,15 +184,15 @@ export default function EyebrowStylistLanding() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-12 md:py-16 bg-gradient-to-br from-[#D4843F] via-[#C87130] to-[#B8663B]">
+        <section className="py-10 md:py-12 bg-gradient-to-br from-[#D4843F] via-[#C87130] to-[#B8663B]">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-3 md:mb-4 leading-tight">
               התחילי לעבוד באופן חוקי עוד היום 👁️✨
             </h2>
-            <p className="text-lg md:text-2xl text-white/95 mb-6 md:mb-8 leading-relaxed">
+            <p className="text-lg md:text-2xl text-white/95 mb-6 leading-relaxed">
               הצטרפי למאות מעצבות גבות שכבר עובדות איתנו
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a href="https://wa.me/972502277087?text=היי, אני מעצבת גבות ואשמח לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
                 <Button className="h-16 px-12 text-xl font-bold bg-white hover:bg-[#FFF8F0] text-[#D4843F] rounded-2xl shadow-lg transition-all">
                   <MessageCircle className="w-6 h-6 ml-2" />
