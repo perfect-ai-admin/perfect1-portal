@@ -11,7 +11,7 @@ export default function AnnualReportOsekMorshaPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-bold text-white"
           >
-            דוח שנתי לעוסק מורשה
+            דו״ח שנתי לעוסק מורשה
           </motion.h1>
         </div>
       </section>
