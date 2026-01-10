@@ -316,22 +316,37 @@ export default function PricingCost() {
               </div>
             </motion.div>
 
-            {/* CTA Section */}
+            {/* CTA Section - Aggressive Online CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-12 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-8 border-r-4 border-indigo-600"
+              className="mb-12 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-2xl p-8 border-4 border-green-500 shadow-lg"
             >
-              <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
-                עדיין לא בטוח מה מתאים לך?
-              </h2>
-              <p className="text-gray-700 mb-6">
-                זה בסדר גמור. כל מצב הוא אישי, וחשוב לבחור את המסלול שמתאים בדיוק לך.
-              </p>
-              <p className="text-gray-700 font-bold">
-                אפשר להשאיר פרטים ואנחנו נעזור לך להבין מה הכי נכון בשבילך.
-              </p>
+              <div className="text-center">
+                <div className="mb-4 inline-block bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold">
+                  הצעה מיוחדת 🎁
+                </div>
+                <h2 className="text-3xl font-black text-green-900 mb-4">
+                  הדרך הכי פשוטה ומהירה? 
+                </h2>
+                <p className="text-xl text-green-800 mb-6 font-bold">
+                  תפתח עוסק פטור אונליין ב-199 ₪ בלבד - וההכל מסתיים תוך 24-48 שעות!
+                </p>
+                <p className="text-gray-700 mb-8 leading-relaxed max-w-2xl mx-auto">
+                  אל תבזבז זמן על טפסים מורכבים או פגישות. אנחנו נטפל בהכל עבורך: מס הכנסה, ביטוח לאומי, מע"מ - הכל כלול במחיר קבוע של 199 ₪.
+                </p>
+                <Link
+                  to={createPageUrl('OsekPaturOnlineLanding')}
+                  className="inline-block"
+                >
+                  <Button
+                    className="h-16 px-10 text-lg font-black bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                  >
+                    ✅ פתח עוסק פטור אונליין עכשיו
+                  </Button>
+                </Link>
+              </div>
             </motion.div>
 
             {/* Comparison Table */}
