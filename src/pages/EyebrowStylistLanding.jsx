@@ -62,8 +62,8 @@ export default function EyebrowStylistLanding() {
                   <strong className="text-[#D4843F]">249₪</strong> - פתיחה מהירה + אפליקציה + ליווי שוטף
                 </p>
 
-                <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-4 md:mb-6">
-                  <h3 className="text-lg md:text-xl font-bold text-[#1E3A5F] mb-3 md:mb-3 text-center">תמחור ממוצע (2026)</h3>
+                <div className="bg-white rounded-2xl shadow-xl p-4 md:p-6 mb-3 md:mb-4">
+                  <h3 className="text-lg md:text-xl font-bold text-[#1E3A5F] mb-3 text-center">תמחור ממוצע (2026)</h3>
                   <table className="w-full">
                     <tbody className="divide-y divide-gray-100">
                       {[
