@@ -273,47 +273,36 @@ export default function HowToCloseOsekPatur() {
           </div>
         </section>
 
-            <div className="bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-3xl p-8 md:p-12 shadow-2xl">
-              <h2 className="text-3xl font-black mb-8 text-center">
-                בואו נעשה את הסגירה בנכון ובלי בעיות
+        <section className="py-16 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282]">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-6">
+                צריך עזרה בסגירה?
               </h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-                <Input
-                  placeholder="שם מלא *"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="h-12 bg-white/20 border-white/30 text-white placeholder-white/70"
-                  required
-                />
-                <Input
-                  type="tel"
-                  placeholder="טלפון *"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="h-12 bg-white/20 border-white/30 text-white placeholder-white/70"
-                  required
-                />
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full h-12 bg-white text-gray-800 hover:bg-gray-100 font-bold"
-                >
-                  {isSubmitting ? 'שולח...' : 'קבל הכוונה לסגירה'}
-                </Button>
-              </form>
-
-              <div className="flex gap-4 pt-6 border-t border-white/20">
-                <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button className="w-full h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
+              <p className="text-xl text-white/90 mb-8">
+                אנחנו מטפלים בכל הפרטים - אתה רק צריך להחתום על מסמכים.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
+                  <Button className="h-14 px-8 text-lg font-black rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
                     <MessageCircle className="ml-2 w-5 h-5" />
-                    WhatsApp
+                    דבר בווטסאפ
+                  </Button>
+                </a>
+                <a href="tel:0502277087">
+                  <Button variant="outline" className="h-14 px-8 text-lg font-black rounded-xl border-2 border-white bg-white/10 text-white hover:bg-white/20">
+                    <Phone className="ml-2 w-5 h-5" />
+                    התקשר
                   </Button>
                 </a>
               </div>
-            </div>
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        </section>
       </main>
     </>
   );
