@@ -86,7 +86,7 @@ export default function ExplanationStep({ onNext }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="bg-green-50 border border-green-200 rounded-lg p-2.5 space-y-1"
+        className="bg-green-50 border border-green-200 rounded-lg p-2 space-y-0.5 mb-0"
       >
         <div className="flex items-center gap-2 text-[#27AE60] font-semibold text-xs">
           <span>🔒</span>
