@@ -276,11 +276,11 @@ export default function UrgentInvoice() {
               <p className="text-gray-600 text-lg max-w-3xl mx-auto">
                 פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות. תוכל לבחור{' '}
                 <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-[#27AE60] font-black hover:underline">
-                  פתיחת עוסק פטור אונליין
+                   פתיחת עוסק פטור אונליין
                 </Link>
                 {' '}או{' '}
-                <Link to={createPageUrl('OsekPaturOnline')} className="text-[#27AE60] font-black hover:underline">
-                  פתיחת עוסק פטור מסורתית
+                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-[#27AE60] font-black hover:underline">
+                   פתיחת עוסק פטור מסורתית
                 </Link>
                 {' '}בהתאם למה שמתאים לך.
               </p>
