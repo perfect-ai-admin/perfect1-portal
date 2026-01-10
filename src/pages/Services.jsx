@@ -38,6 +38,9 @@ const getServiceLink = (service) => {
   if (service.id === 'doch-shnati' || service.title === 'דוח שנתי' || service.title === 'הגשת דוח שנתי') {
     return createPageUrl('ServicePage') + '?service=doch-shnati';
   }
+  if (service.id === 'invoices-app' || service.title === 'חשבוניות וקבלות' || service.title.includes('חשבוניות')) {
+    return createPageUrl('InvoicesAppLanding');
+  }
   return createPageUrl('ServicePage') + `?service=${service.id}`;
 };
 
