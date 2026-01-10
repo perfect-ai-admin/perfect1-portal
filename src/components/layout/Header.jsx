@@ -51,6 +51,7 @@ export default function Header() {
       name: '🔹 עלויות והחלטות',
       items: [
         { name: 'כמה עולה לפתוח עוסק פטור', href: createPageUrl('PricingCost') },
+        { name: 'חשבונית לעוסק פטור', href: createPageUrl('UrgentInvoice') },
         { name: 'תקרת עוסק פטור', href: createPageUrl('TakratOsekPatur') },
         { name: 'צריך רואה חשבון לעוסק?', href: createPageUrl('NeedAccountantOsekPatur') },
         { name: 'עוסק פטור או מורשה', href: createPageUrl('OsekPaturVsMorasha') }
