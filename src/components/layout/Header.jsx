@@ -86,21 +86,16 @@ export default function Header() {
                 <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link to={createPageUrl('Professions')} className="cursor-pointer text-base">
-                    מקצועות
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={createPageUrl('Services')} className="cursor-pointer text-base">
-                    שירותים
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to={createPageUrl('Pricing')} className="cursor-pointer text-base">
-                    מחירון עוסק פטור
-                  </Link>
-                </DropdownMenuItem>
+                {menuItems.map((item) => (
+                  <DropdownMenuItem key={item.name} asChild>
+                    <Link 
+                      to={item.href}
+                      className="cursor-pointer text-base"
+                    >
+                      {item.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -270,33 +265,17 @@ export default function Header() {
                         </button>
                         {isOsekPaturOpen && (
                           <ul className="mr-4 space-y-1 mt-2">
-                            <li>
-                              <Link
-                                to={createPageUrl('Professions')}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
-                              >
-                                מקצועות
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to={createPageUrl('Services')}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
-                              >
-                                שירותים
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to={createPageUrl('Pricing')}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
-                              >
-                                מחירון עוסק פטור
-                              </Link>
-                            </li>
+                            {menuItems.map((item) => (
+                              <li key={item.name}>
+                                <Link
+                                  to={item.href}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
+                                >
+                                  {item.name}
+                                </Link>
+                              </li>
+                            ))}
                           </ul>
                         )}
                       </li>
