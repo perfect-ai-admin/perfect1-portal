@@ -60,6 +60,7 @@ export default function Header() {
     {
       name: '🔹 סגירת עוסק פטור',
       items: [
+        { name: 'סגירת עוסק פטור', href: createPageUrl('CloseOsekPaturComprehensive') },
         { name: 'סגירת עוסק פטור', href: createPageUrl('CloseBusinessLanding') },
         { name: 'איך סוגרים עוסק פטור', href: createPageUrl('HowToCloseOsekPatur') },
         { name: 'סגירת עוסק פטור מס הכנסה', href: createPageUrl('CloseOsekPaturTaxAuthority') },
