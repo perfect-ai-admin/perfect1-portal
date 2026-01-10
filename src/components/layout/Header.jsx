@@ -15,6 +15,7 @@ import { trackPhoneClick, trackWhatsAppClick } from '../tracking/EventTracker';
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -252,26 +253,28 @@ export default function Header() {
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          to={createPageUrl('Services')}
-                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        <button
+                          onClick={() => setIsServicesOpen(!isServicesOpen)}
+                          className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
-                          שירותים
-                        </Link>
-                        <ul className="mr-4 space-y-1">
-                          {menuItems.map((item) => (
-                            <li key={item.name}>
-                              <Link
-                                to={item.href}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
-                              >
-                                {item.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
+                          <span>שירותים</span>
+                          <ChevronDown className={`w-4 h-4 transition-transform ${isServicesOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        {isServicesOpen && (
+                          <ul className="mr-4 space-y-1 mt-2">
+                            {menuItems.map((item) => (
+                              <li key={item.name}>
+                                <Link
+                                  to={item.href}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className="flex items-center py-2 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1E3A5F] transition-all"
+                                >
+                                  {item.name}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </li>
                       <li>
                         <Link
