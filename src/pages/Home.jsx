@@ -1,17 +1,12 @@
 import React from 'react';
-import HeroSection from '../components/home/HeroSection';
-import WhatIsSection from '../components/home/WhatIsSection';
-import FeaturesSection from '../components/home/FeaturesSection';
-import ServicesSection from '../components/home/ServicesSection';
-import ProcessSection from '../components/home/ProcessSection';
-import PricingSection from '../components/home/PricingSection';
-import ProfessionsGrid from '../components/home/ProfessionsGrid';
-import FAQSection from '../components/home/FAQSection';
-import CTASection from '../components/home/CTASection';
-import QuickCTASection from '../components/home/QuickCTASection';
-import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
-import MicroCTA from '../components/cro/MicroCTA';
+import NewHeroSection from '../components/home/NewHeroSection';
+import CategoriesSection from '../components/home/CategoriesSection';
+import TrustSection from '../components/home/TrustSection';
+import HowItWorksSection from '../components/home/HowItWorksSection';
+import KnowledgeSection from '../components/home/KnowledgeSection';
+import FinalCTASection from '../components/home/FinalCTASection';
 import GeoContent from '../components/seo/GeoContent';
+import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 
 export default function Home() {
