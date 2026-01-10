@@ -98,37 +98,108 @@ export default function MonthlyReportOsekPatur() {
               <strong>199₪ בחודש</strong> לניהול שוטף שלם עם רואה חשבון זמין לכל שאלה
             </p>
 
-            {/* Services Grid */}
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 mb-12 md:mb-20">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-white rounded-xl p-5 md:p-6 shadow-md hover:shadow-lg transition-all border-l-4 border-green-500"
-              >
-                <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">📱 קבלות דיגיטליות</h3>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed">הפקת קבלות בשניה דרך האפליקציה, הכל מעוקב באופן אוטומטי</p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="bg-white rounded-xl p-5 md:p-6 shadow-md hover:shadow-lg transition-all border-l-4 border-blue-500"
-              >
-                <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">📊 מעקב הכנסות-הוצאות</h3>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed">ניהול שוקף של כל העסק שלך - בדיוק לאן הולך כל שקל</p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="bg-white rounded-xl p-5 md:p-6 shadow-md hover:shadow-lg transition-all border-l-4 border-purple-500"
-              >
-                <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">🏛️ דיווחים לרשויות</h3>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed">כל הדיווחים למס הכנסה וביטוח לאומי מטופלים בידיים מקצועיות</p>
-              </motion.div>
+            {/* What's Included Section */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg mb-12 md:mb-20 border-t-4 border-green-600">
+              <h2 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-8 text-center">
+                מה כולל הליווי החודשי?
+              </h2>
+              
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 md:p-5 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-green-500 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-[#1E3A5F] text-base">קבלות דיגיטליות</h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">הפקת קבלות בשניה מהאפליקציה, הכל נשמר אוטומטית בעננים עם גיבוי מלא.</p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.05 }}
+                  className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-4 md:p-5 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center flex-shrink-0">
+                      <BarChart3 className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-[#1E3A5F] text-base">מעקב הכנסות-הוצאות</h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">ניהול שוקף של כל העסק - דוחות בזמן אמת, ניתוח רווחיות, וזיהוי הוצאות לקיזוז.</p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 md:p-5 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-[#1E3A5F] text-base">דיווחים לרשויות</h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">דיווחים חודשיים למס הכנסה וביטוח לאומי, הכל מטופל בידיים של רואה חשבון מוסמך.</p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.15 }}
+                  className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg p-4 md:p-5 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-yellow-500 flex items-center justify-center flex-shrink-0">
+                      <Shield className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-[#1E3A5F] text-base">ייעוץ מס שוטף</h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">ייעוץ למס, חוקים וכללי הדיווח - כל זה כלול בחבילה. בלי תוספות נוספות.</p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 md:p-5 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
+                      <MessageCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-[#1E3A5F] text-base">תמיכה זמינה תמיד</h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">רואה חשבון זמין לשאלות בוואטסאפ וטלפון. בלי המתנה, בלי דלקות משרדים.</p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.25 }}
+                  className="bg-gradient-to-br from-red-50 to-rose-50 rounded-lg p-4 md:p-5 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-lg bg-red-500 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-[#1E3A5F] text-base">בלי התחייבות ארוכה</h3>
+                  </div>
+                  <p className="text-gray-600 text-sm leading-relaxed">חודש לחודש, בלי חוזה ארוך. אתה יכול לבטל בכל עת - אם השירות טוב, תרצה להישאר.</p>
+                </motion.div>
+              </div>
             </div>
 
             {/* CTA Section */}
