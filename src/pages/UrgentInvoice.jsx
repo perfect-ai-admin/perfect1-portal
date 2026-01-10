@@ -490,8 +490,6 @@ export default function UrgentInvoice() {
               </Link>
             </section>
         </div>
-          </motion.div>
-        </div>
       </main>
     </>
   );
