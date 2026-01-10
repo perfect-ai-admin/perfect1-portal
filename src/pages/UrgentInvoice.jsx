@@ -753,15 +753,19 @@ export default function UrgentInvoice() {
             {/* Final CTA - Open Osek Patur */}
             <section className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white rounded-2xl p-8 md:p-12 text-center">
               <div className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
-                ✓ רוצה לפתוח עוסק פטור?
+                ✓ פתיחת עוסק טבעי לשחרור
               </div>
-              <h2 className="text-3xl md:text-4xl font-black mb-4">צריך לפתוח עוסק פטור קודם?</h2>
-              <p className="text-white/95 mb-8 text-lg max-w-2xl mx-auto">
-                אנחנו מעזרים לעצמאיים בישראל לפתוח עוסק פטור באופן מקוון - בלי צורך להגיע משום מקום
+              <h2 className="text-3xl md:text-4xl font-black mb-4">פתיחת עוסק להוצאת חשבונית</h2>
+              <p className="text-white/95 mb-8 text-lg max-w-3xl mx-auto">
+                פתרון חוקי, מיידי ומקצועי - בלי בירוקרטיה, בלי ריצות, בלי הסתבכויות. 
+                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="underline hover:opacity-80 font-black mx-1">בחר פתרון מקוון</Link>
+                או 
+                <Link to={createPageUrl('OsekPaturOnline')} className="underline hover:opacity-80 font-black mx-1">קבל ליווי מלא</Link>
+                - בדיוק מה שצריך לך.
               </p>
               <Link to={createPageUrl('OsekPaturOnlineLanding')} className="inline-block">
                 <Button className="h-14 px-10 text-lg font-black bg-white text-[#27AE60] hover:bg-white/90 rounded-full">
-                  פתח עוסק פטור אונליין עכשיו
+                  בדוק עכשיו בחינם
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
