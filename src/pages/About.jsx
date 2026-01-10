@@ -175,25 +175,29 @@ export default function About() {
             >
               <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-3xl p-8 text-white">
                 <h3 className="text-2xl font-bold mb-6">במי אנחנו?</h3>
-                 <p className="text-white mb-6 leading-relaxed text-lg">
-                   צוות של מומחים המתמחים בשלוש סוגי עסקים בישראל:
-                 </p>
-                 <ul className="space-y-3">
-                   <li className="flex items-center gap-3">
-                     <CheckCircle className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
-                     <Link to={createPageUrl('OsekPaturLanding')} className="hover:text-[#D4AF37] transition-colors underline">
-                       לפתיחת עוסק פטור
-                     </Link>
-                   </li>
-                   <li className="flex items-center gap-3">
-                     <CheckCircle className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
-                     <span>חברה בע״מ</span>
-                   </li>
-                   <li className="flex items-center gap-3">
-                     <CheckCircle className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
-                     <span>עוסק מורשה</span>
-                   </li>
-                 </ul>
+                   <p className="text-white mb-6 leading-relaxed text-lg">
+                     צוות של מומחים המתמחים בשלוש סוגי עסקים בישראל:
+                   </p>
+                   <ul className="space-y-4">
+                     <li className="flex items-start gap-3">
+                       <CheckCircle className="w-6 h-6 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                       <Link to={createPageUrl('OsekPaturLanding')} className="text-white hover:text-[#D4AF37] transition-colors font-medium text-lg">
+                         פתיחת עוסק פטור
+                       </Link>
+                     </li>
+                     <li className="flex items-start gap-3">
+                       <CheckCircle className="w-6 h-6 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                       <Link to={createPageUrl('OsekMorshaLanding')} className="text-white hover:text-[#D4AF37] transition-colors font-medium text-lg">
+                         פתיחת עוסק מורשה
+                       </Link>
+                     </li>
+                     <li className="flex items-start gap-3">
+                       <CheckCircle className="w-6 h-6 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                       <Link to={createPageUrl('CompanyLanding')} className="text-white hover:text-[#D4AF37] transition-colors font-medium text-lg">
+                         פתיחת חברה בע״מ
+                       </Link>
+                     </li>
+                   </ul>
               </div>
               <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-[#D4AF37] rounded-2xl flex items-center justify-center">
                 <Users className="w-10 h-10 text-white" />
