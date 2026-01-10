@@ -228,7 +228,7 @@ export default function PricingCost() {
               </h2>
               <div className="space-y-4">
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  למי שמעדיף תהליך דיגיטלי מלא ללא צורך להגיע למשרדים או לתאם פגישות, קיימת אפשרות של <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-[#1E3A5F] font-medium hover:underline">פתיחת עוסק פטור אונליין</Link> שמכסה את כל התהליך. השירות הזה פועל במחיר קבוע של 199 שקל, ללא עלויות נוספות או הפתעות.
+                  <strong>199 שקל - מחיר קבוע ללא הפתעות</strong>. למי שמעדיף תהליך דיגיטלי מלא ללא צורך להגיע למשרדים, קיימת אפשרות של <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-[#1E3A5F] font-bold hover:underline">פתיחת עוסק פטור אונליין</Link> שמכסה את כל התהליך במחיר קבוע.
                 </p>
 
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-r-4 border-indigo-600 rounded-xl p-6">
@@ -325,7 +325,7 @@ export default function PricingCost() {
                 <div className="bg-gray-50 rounded-xl p-6">
                   <div className="flex items-start gap-3 mb-3">
                     <HelpCircle className="w-5 h-5 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                    <h3 className="font-bold text-gray-900">כמה עולה לפתוח עוסק פטור בשנת 2026?</h3>
+                    <h3 className="font-bold text-gray-900">כמה עולה לפתוח עוסק פטור בשנת 2025?</h3>
                   </div>
                   <p className="text-gray-700 ml-8">עלות פתיחת עוסק פטור משתנה לפי השיטה: לבד ללא עלות כספית (אך עם סיכונים), דרך רואה חשבון 200-500 ₪, ודרך פתרון אונליין 199 ₪ במחיר קבוע.</p>
                 </div>
@@ -397,7 +397,7 @@ export default function PricingCost() {
                 onClick={() => document.querySelector('[data-lead-form]')?.scrollIntoView({ behavior: 'smooth' })}
                 className="h-14 px-8 text-lg font-bold rounded-full bg-white text-[#1E3A5F] hover:bg-gray-100 transition-all"
               >
-                בדוק אם זה מתאים לך
+                רוצה לדעת אם זה המסלול הנכון?
                 <ArrowLeft className="mr-2 w-5 h-5 inline" />
               </button>
             </motion.div>
@@ -417,14 +417,14 @@ export default function PricingCost() {
                 </p>
               </div>
               <div className="lg:col-span-1">
-              <div className="sticky top-28" data-lead-form>
-                <LeadForm 
-                  title="רוצה להבין מה מתאים לך?"
-                  subtitle="השאר פרטים ונחזור אליך"
-                  sourcePage="עמוד מחיר - כמה עולה לפתוח עוסק פטור"
-                  variant="card"
-                />
-              </div>
+                <div className="sticky top-28" data-lead-form>
+                  <LeadForm 
+                    title="רוצה ייעוץ אישי?"
+                    subtitle="השאר פרטים ונבחן מה מתאים לך"
+                    sourcePage="עמוד מחיר - כמה עולה לפתוח עוסק פטור"
+                    variant="card"
+                  />
+                </div>
               </div>
             </div>
           </div>
