@@ -198,35 +198,56 @@ export default function OsekPaturSteps() {
           </div>
         </section>
 
-        {/* CTA - רך */}
-        <section className="py-16 bg-gradient-to-br from-blue-50 to-white">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border-2 border-blue-200"
-            >
-              <h2 className="text-3xl font-black text-[#1E3A5F] mb-4">
-                רוצה שנפתח עבורך את העוסק הפטור?
-              </h2>
-              <p className="text-gray-700 mb-6">
-                אם חשוב לך לעשות את זה מסודר ולחסוך זמן, אתה יכול להשאיר פרטים ונחזור אליך עם הכוונה לפתיחה בצורה מובילה.
-              </p>
-              <form onSubmit={handleSubmit} className="space-y-3 mb-4">
-                <Button
-                  type="submit"
-                  className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
-                >
-                  בדיקה ופתיחה מסודרת
-                </Button>
-              </form>
-              <p className="text-xs text-gray-500 text-center">
-                נחזור אליך תוך 24 שעות • ללא התחייבות
-              </p>
-            </motion.div>
-          </div>
-        </section>
+        {/* CTA - Lead Form */}
+         <section className="py-16 bg-gradient-to-br from-blue-50 to-white">
+           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border-2 border-blue-200"
+             >
+               <h2 className="text-3xl font-black text-[#1E3A5F] text-center mb-2">
+                 רוצה שנפתח עבורך את העוסק הפטור?
+               </h2>
+               <p className="text-gray-700 text-center mb-8">
+                 אם חשוב לך לעשות את זה מסודר ולחסוך זמן, השאר פרטים ונחזור אליך עם הכוונה מלאה
+               </p>
+               <form onSubmit={handleSubmit} className="space-y-3">
+                 <Input
+                   placeholder="שם מלא"
+                   value={formData.name}
+                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                   required
+                 />
+                 <Input
+                   type="tel"
+                   placeholder="טלפון"
+                   value={formData.phone}
+                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                   required
+                 />
+                 <Input
+                   placeholder="מקצוע (לא חובה)"
+                   value={formData.profession}
+                   onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                 />
+                 <Button
+                   type="submit"
+                   className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
+                 >
+                   בדיקה ופתיחה מסודרת
+                 </Button>
+               </form>
+               <p className="text-xs text-gray-500 text-center mt-4">
+                 נחזור אליך תוך 24 שעות • ללא התחייבות
+               </p>
+             </motion.div>
+           </div>
+         </section>
 
         {/* טעויות נפוצות */}
         <section className="py-20 bg-gradient-to-br from-red-50 to-orange-50">
