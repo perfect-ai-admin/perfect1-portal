@@ -93,6 +93,7 @@ import TaxDebts from './pages/TaxDebts';
 import OsekMorshaMainLanding from './pages/OsekMorshaMainLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import HowToCloseOsekMorsha from './pages/HowToCloseOsekMorsha';
+import CloseOsekMorshaVat from './pages/CloseOsekMorshaVat';
 import __Layout from './Layout.jsx';
 
 
@@ -192,6 +193,7 @@ export const PAGES = {
     "OsekMorshaMainLanding": OsekMorshaMainLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
     "HowToCloseOsekMorsha": HowToCloseOsekMorsha,
+    "CloseOsekMorshaVat": CloseOsekMorshaVat,
 }
 
 export const pagesConfig = {
