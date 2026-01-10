@@ -87,31 +87,35 @@ export default function Header() {
                 עוסק פטור
                 <ChevronDown className="w-4 h-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-72">
                 <DropdownMenuItem asChild>
                   <Link to={createPageUrl('Professions')} className="cursor-pointer text-base">
                     מקצועות
                   </Link>
                 </DropdownMenuItem>
-                
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="w-full flex items-center justify-between px-2 py-1.5 text-sm cursor-pointer hover:bg-gray-100 rounded-md">
-                    <span>שירותים</span>
-                    <ChevronDown className="w-4 h-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent side="left" className="w-56">
-                    {menuItems.map((item) => (
-                      <DropdownMenuItem key={item.name} asChild>
-                        <Link 
-                          to={item.href}
-                          className="cursor-pointer text-base"
-                        >
-                          {item.name}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+
+                <div className="border-t border-gray-100 my-2" />
+
+                {osekPaturCategories.map((category) => (
+                  <DropdownMenu key={category.name}>
+                    <DropdownMenuTrigger className="w-full flex items-center justify-between px-2 py-2 text-sm cursor-pointer hover:bg-gray-100 rounded-md">
+                      <span className="font-semibold text-gray-700">{category.name}</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="left" className="w-64">
+                      {category.items.map((item) => (
+                        <DropdownMenuItem key={item.name} asChild>
+                          <Link 
+                            to={item.href}
+                            className="cursor-pointer text-sm py-2"
+                          >
+                            {item.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
