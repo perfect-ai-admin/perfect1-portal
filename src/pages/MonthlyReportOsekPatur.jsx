@@ -55,6 +55,26 @@ export default function MonthlyReportOsekPatur() {
       />
 
       <PageTracker pageUrl="/monthly-report-osek-patur" pageType="landing" />
+      <SEOOptimized
+        title="ליווי חודשי לעוסק פטור | 199₪/חודש | ניהול שוטף + רואה חשבון | Perfect One"
+        description="ליווי חודשי מלא לעוסק פטור: ניהול הכנסות, דיווחים למס הכנסה וביטוח לאומי, קבלות דיגיטליות, ייעוץ מס + דוח שנתי. תחזוקה שוטפת של העסק בלי אחריות."
+        keywords="ליווי חודשי עוסק פטור, ניהול חודשי, דיווח חודשי, רואה חשבון מנויים, ליווי עוסק פטור"
+        canonical="https://perfect1.co.il/monthly-report-osek-patur"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "ליווי חודשי לעוסק פטור",
+          "description": "שירות ליווי חודשי מלא לעוסקים פטורים הכולל ניהול בחשבונות, דיווחים ודוח שנתי",
+          "provider": {
+            "@type": "Organization",
+            "name": "Perfect One"
+          },
+          "price": "199",
+          "priceCurrency": "ILS",
+          "priceValidUntil": "2026-12-31"
+        }}
+      />
+      
       <main className="min-h-screen bg-gradient-to-br from-green-50 to-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-6">
           <Breadcrumbs items={[
@@ -62,6 +82,29 @@ export default function MonthlyReportOsekPatur() {
             { label: 'ליווי חודשי לעוסק פטור' }
           ]} />
         </div>
+        
+        {/* Hero Section */}
+        <section className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-16 md:py-20">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-right">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
+                ✨ כל התהליך מנוהל כחול תמיד
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black mb-4">
+                ליווי חודשי לעוסק פטור
+              </h1>
+              <p className="text-xl text-white/90 mb-6 max-w-2xl mx-auto md:mx-0">
+                <strong>199₪ בחודש</strong> — רואה חשבון שדואג לכל דבר בעבורך
+              </p>
+              <p className="text-lg text-white/80 max-w-3xl mx-auto md:mx-0">
+                ניהול הכנסות, דיווחים שוטפים, קבלות דיגיטליות, ייעוץ מס, וגם דוח שנתי בסוף השנה
+              </p>
+            </motion.div>
+          </div>
+        </section>
         
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <motion.div
