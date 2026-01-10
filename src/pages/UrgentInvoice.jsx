@@ -554,10 +554,42 @@ export default function UrgentInvoice() {
                     <span><strong>מספר סידור</strong> (עוקבות)</span>
                   </li>
                 </ul>
-              </div>
-            </motion.div>
+                 </div>
+                </div>
 
-            {/* Section 4: Common Scenarios */}
+                {/* Lead Form - Details */}
+                <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border-r-4 border-indigo-600 rounded-2xl p-6 shadow-md h-fit sticky top-4">
+                 <h3 className="text-lg font-black text-indigo-900 mb-1 flex items-center gap-2">
+                   <span>📋</span>
+                   <span>תיעוד נכון?</span>
+                 </h3>
+                 <p className="text-sm text-gray-700 mb-4 font-medium">אנחנו נוודא שהחשבונית/קבלה שלך מכילה כל מה שהחוק דורש</p>
+                 <form className="space-y-2.5">
+                   <div className="relative">
+                     <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                     <Input
+                       placeholder="שם מלא *"
+                       className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-indigo-600 text-sm bg-white"
+                     />
+                   </div>
+                   <div className="relative">
+                     <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                     <Input
+                       type="tel"
+                       placeholder="טלפון *"
+                       className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-indigo-600 text-sm bg-white"
+                     />
+                   </div>
+                   <Button className="w-full h-10 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-sm">
+                     בדיקה בחינם ✓
+                   </Button>
+                 </form>
+                 <p className="text-xs text-gray-600 text-center mt-2.5 font-bold">🔒 סודי • תגובה תוך 24 שעות</p>
+                </div>
+                </div>
+                </motion.div>
+
+                {/* Section 4: Common Scenarios */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
