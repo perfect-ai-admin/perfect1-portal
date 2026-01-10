@@ -290,30 +290,19 @@ export default function MonthlyReportOsekPatur() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 md:flex md:gap-4 gap-3 mb-6 md:mb-8">
-                <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer" className="col-span-1 md:flex-1">
-                  <Button className="w-full h-10 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30 text-xs md:text-base">
-                    <MessageCircle className="ml-1 md:ml-2 w-4 h-4 md:w-5 md:h-5" />
-                    WhatsApp
+              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                <a href="https://wa.me/972502277087?text=היי, אני מעוניין בליווי חודשי לעוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-1">
+                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
+                    <MessageCircle className="ml-2 w-5 h-5" />
+                    דבר בווצאפ
                   </Button>
                 </a>
-                <a href="tel:+972502277087" className="col-span-1 md:flex-1">
-                  <Button className="w-full h-10 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30 text-xs md:text-base">
-                    <Phone className="ml-1 md:ml-2 w-4 h-4 md:w-5 md:h-5" />
-                    טלפון
+                <a href="tel:+972502277087" className="flex-1">
+                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
+                    <Phone className="ml-2 w-5 h-5" />
+                    התקשר עכשיו
                   </Button>
                 </a>
-              </div>
-
-              {/* Open Osek Patur Button */}
-              <div className="border-t border-white/20 pt-6 md:pt-8">
-                <p className="text-white/90 text-xs md:text-sm mb-3 text-center">עדיין לא פתחת עוסק פטור?</p>
-                <Link to={createPageUrl('OsekPaturOnlineLanding')} className="block">
-                  <Button className="w-full h-11 md:h-12 bg-white text-green-600 hover:bg-gray-100 font-black text-sm md:text-base">
-                    ✓ פתח עוסק פטור אונליין עכשיו
-                    <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
-                  </Button>
-                </Link>
               </div>
             </div>
 
