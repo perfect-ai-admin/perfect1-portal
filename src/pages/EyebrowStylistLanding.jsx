@@ -14,6 +14,7 @@ import {
   Award
 } from 'lucide-react';
 import SEOOptimized from './SEOOptimized';
+import { createPageUrl } from '@/utils';
 
 export default function EyebrowStylistLanding() {
   const [formData, setFormData] = useState({ name: '', phone: '' });
