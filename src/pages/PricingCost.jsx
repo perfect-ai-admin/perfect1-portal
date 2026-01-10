@@ -316,6 +316,24 @@ export default function PricingCost() {
               </div>
             </motion.div>
 
+            {/* CTA Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-12 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-8 border-r-4 border-indigo-600"
+            >
+              <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">
+                עדיין לא בטוח מה מתאים לך?
+              </h2>
+              <p className="text-gray-700 mb-6">
+                זה בסדר גמור. כל מצב הוא אישי, וחשוב לבחור את המסלול שמתאים בדיוק לך.
+              </p>
+              <p className="text-gray-700 font-bold">
+                אפשר להשאיר פרטים ואנחנו נעזור לך להבין מה הכי נכון בשבילך.
+              </p>
+            </motion.div>
+
             {/* Comparison Table */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
