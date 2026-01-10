@@ -381,6 +381,22 @@ export default function CloseOsekPaturComprehensive() {
                   <strong className="text-[#1E3A5F]">לכן זה כדאי לעשות זה נכון מהפעם הראשונה.</strong> מי שמעדיף ליווי מסודר יכול להיעזר <Link to={createPageUrl('CloseBusinessLanding')} className="text-[#2C5282] font-bold hover:underline">בתהליך סגירה מקצועי ומלא</Link> שדואג שכל שלב נעשה כמו שצריך.
                 </p>
               </div>
+
+              {/* קישור לCloseBusinessLanding */}
+              <div className="mt-8 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-8 border-2 border-orange-300 text-center">
+                <h3 className="text-2xl font-black text-[#1E3A5F] mb-3">
+                  רוצים עזרה בכל תהליך הסגירה?
+                </h3>
+                <p className="text-lg text-gray-700 mb-6">
+                  מדריך שלם לסגירת כל סוגי העסקים
+                </p>
+                <Link to={createPageUrl('CloseBusinessLanding')}>
+                  <Button className="h-14 px-8 text-lg font-black rounded-xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white shadow-lg">
+                    <FileText className="ml-2 w-5 h-5" />
+                    עבור למדריך הסגירה המלא
+                  </Button>
+                </Link>
+              </div>
             </motion.div>
           </div>
         </section>
