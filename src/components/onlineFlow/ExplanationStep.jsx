@@ -35,7 +35,7 @@ export default function ExplanationStep({ onNext }) {
           ))}
         </div>
         <div>
-          <p className="text-xs font-black text-[#1E3A5F]">2000+ עצמאיים כבר התחילו</p>
+          <p className="text-xs font-black text-[#1E3A5F]">2,800+ תיקים פתוחים השנה</p>
         </div>
       </motion.div>
 
@@ -49,7 +49,7 @@ export default function ExplanationStep({ onNext }) {
         {[
           { icon: Clock, title: 'בלי לצאת מהבית', desc: 'כל התהליך אונליין' },
           { icon: Users, title: 'עם ליווי מלא', desc: 'צוות מומחים בוואטסאפ' },
-          { icon: Star, title: 'מוכל וברור', desc: 'אם"א + אפליקציה' }
+          { icon: Star, title: 'הכל כלול במחיר', desc: 'ביטוח לאומי + אפליקציה + רישום' }
         ].map((item, i) => (
           <motion.div
             key={i}
