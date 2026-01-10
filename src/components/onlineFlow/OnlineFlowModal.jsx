@@ -124,17 +124,17 @@ export default function OnlineFlowModal({ isOpen, onClose }) {
 
             {/* Step Indicator - Compact */}
             {currentStep !== 5 && (
-              <div className="sticky top-0 bg-gradient-to-r from-[#3498DB] to-[#2980B9] px-4 sm:px-6 py-2.5 border-b border-gray-200">
-                <div className="flex items-center gap-2 text-white text-xs sm:text-sm font-bold">
-                  <span>{currentStep}/4</span>
-                  <div className="flex gap-0.5 mr-auto">
+              <div className="sticky top-0 bg-[#1E3A5F] px-4 sm:px-6 py-3 border-b border-gray-200">
+                <div className="flex items-center gap-3 text-white text-sm font-semibold">
+                  <span className="text-white/70">{currentStep}/4</span>
+                  <div className="flex gap-1.5 mr-auto">
                     {[1, 2, 3, 4].map((step) => (
                       <div
                         key={step}
-                        className={`h-1.5 rounded-full transition-all ${
+                        className={`h-1 rounded-full transition-all ${
                           step <= currentStep
-                            ? 'bg-white w-6'
-                            : 'bg-white/20 w-1.5'
+                            ? 'bg-white w-8'
+                            : 'bg-white/20 w-8'
                         }`}
                       />
                     ))}
