@@ -9,9 +9,9 @@ import Breadcrumbs from '../components/seo/Breadcrumbs';
 import PageTracker from '../components/seo/PageTracker';
 import RelatedContent from '../components/seo/RelatedContent';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, TrendingUp, BarChart3, Shield } from 'lucide-react';
+import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
+import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, TrendingUp, BarChart3, Shield, Zap, Target, Clock, Users, Award } from 'lucide-react';
 
 export default function MonthlyReportOsekPatur() {
   const [formData, setFormData] = useState({
