@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, AlertCircle, ArrowLeft, HelpCircle } from 'lucide-react';
+import { CheckCircle, AlertCircle, ArrowLeft, HelpCircle, ChevronDown } from 'lucide-react';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import InternalLinker from '../components/seo/InternalLinker';
