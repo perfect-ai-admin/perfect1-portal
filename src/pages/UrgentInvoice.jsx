@@ -358,16 +358,18 @@ export default function UrgentInvoice() {
              </motion.div>
 
             {/* Section 1: What's Required */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                מה הדרישה החוקית?
-              </h2>
-              <div className="space-y-4">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="mb-12"
+             >
+               <div className="grid lg:grid-cols-3 gap-6 items-start">
+                 <div className="lg:col-span-2">
+                   <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                     מה הדרישה החוקית?
+                   </h2>
+                   <div className="space-y-4">
                 <p className="text-gray-700 leading-relaxed text-lg">
                   לעוסק פטור יש חובה <strong>תיעוד של כל עסקה</strong> - זה יכול להיות חשבונית מלאה, קבלה פשוטה, או אפילו רשומה בגיליון אלקטרוני - בתנאי שיש בה את כל הפרטים הדרושים.
                 </p>
@@ -406,21 +408,55 @@ export default function UrgentInvoice() {
                       <span>אם הלקוח עסקי - הוא כנראה יצפה לחשבונית</span>
                     </li>
                   </ul>
-                </div>
-              </div>
-            </motion.div>
+                  </div>
+                  </div>
+                  </div>
 
-            {/* Section 2: Invoice vs Receipt */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                ההבדל בין חשבונית וקבלה
-              </h2>
-              <div className="space-y-4">
+                  {/* Lead Form - Requirement */}
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-r-4 border-blue-600 rounded-2xl p-6 shadow-md h-fit sticky top-4">
+                  <h3 className="text-lg font-black text-blue-900 mb-1 flex items-center gap-2">
+                    <span>⚡</span>
+                    <span>לא בטוח מה דרוש?</span>
+                  </h3>
+                  <p className="text-sm text-gray-700 mb-4 font-medium">אנחנו נעזור לך להבין בדיוק מה החוק דורש לפעילות שלך</p>
+                  <form className="space-y-2.5">
+                    <div className="relative">
+                      <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        placeholder="שם מלא *"
+                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-blue-600 text-sm bg-white"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        type="tel"
+                        placeholder="טלפון *"
+                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-blue-600 text-sm bg-white"
+                      />
+                    </div>
+                    <Button className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm">
+                      בדיקה בחינם ✓
+                    </Button>
+                  </form>
+                  <p className="text-xs text-gray-600 text-center mt-2.5 font-bold">🔒 סודי • תגובה תוך 24 שעות</p>
+                  </div>
+                  </div>
+                  </motion.div>
+
+                  {/* Section 2: Invoice vs Receipt */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-12"
+                  >
+                    <div className="grid lg:grid-cols-3 gap-6 items-start">
+                      <div className="lg:col-span-2">
+                        <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                          ההבדל בין חשבונית וקבלה
+                        </h2>
+                        <div className="space-y-4">
                 <div className="bg-blue-50 rounded-xl p-6 border-r-4 border-blue-600">
                   <h3 className="font-bold text-blue-900 mb-3">חשבונית:</h3>
                   <ul className="space-y-1 text-gray-800">
@@ -439,21 +475,55 @@ export default function UrgentInvoice() {
                     <li>• מתאימה לעסקאות קטנות עם לקוחות פרטיים</li>
                     <li>• צריכה לעזור לשמירה על תיעוד</li>
                   </ul>
-                </div>
-              </div>
-            </motion.div>
+                  </div>
+                  </div>
+                  </div>
 
-            {/* Section 3: What Makes a Valid Document */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                מה צריך להיות בחשבונית/קבלה?
-              </h2>
-              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 border-r-4 border-indigo-600">
+                  {/* Lead Form - Difference */}
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-r-4 border-green-600 rounded-2xl p-6 shadow-md h-fit sticky top-4">
+                  <h3 className="text-lg font-black text-green-900 mb-1 flex items-center gap-2">
+                    <span>✨</span>
+                    <span>בחור המתאים לך?</span>
+                  </h3>
+                  <p className="text-sm text-gray-700 mb-4 font-medium">אנחנו נעזור לך לבחור בין חשבונית וקבלה בהתאם למצב המדויק שלך</p>
+                  <form className="space-y-2.5">
+                    <div className="relative">
+                      <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        placeholder="שם מלא *"
+                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-green-600 text-sm bg-white"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        type="tel"
+                        placeholder="טלפון *"
+                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-green-600 text-sm bg-white"
+                      />
+                    </div>
+                    <Button className="w-full h-10 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-sm">
+                      בדיקה בחינם ✓
+                    </Button>
+                  </form>
+                  <p className="text-xs text-gray-600 text-center mt-2.5 font-bold">🔒 סודי • תגובה תוך 24 שעות</p>
+                  </div>
+                  </div>
+                  </motion.div>
+
+                  {/* Section 3: What Makes a Valid Document */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-12"
+                  >
+                    <div className="grid lg:grid-cols-3 gap-6 items-start">
+                      <div className="lg:col-span-2">
+                        <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                          מה צריך להיות בחשבונית/קבלה?
+                        </h2>
+                        <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-6 border-r-4 border-indigo-600">
                 <ul className="space-y-2 text-gray-800">
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
@@ -484,20 +554,54 @@ export default function UrgentInvoice() {
                     <span><strong>מספר סידור</strong> (עוקבות)</span>
                   </li>
                 </ul>
-              </div>
-            </motion.div>
+                 </div>
+                </div>
 
-            {/* Section 4: Common Scenarios */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
-                תרחישים נפוצים - מה לעשות?
-              </h2>
-              <div className="space-y-4">
+                {/* Lead Form - Details */}
+                <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border-r-4 border-indigo-600 rounded-2xl p-6 shadow-md h-fit sticky top-4">
+                 <h3 className="text-lg font-black text-indigo-900 mb-1 flex items-center gap-2">
+                   <span>📋</span>
+                   <span>תיעוד נכון?</span>
+                 </h3>
+                 <p className="text-sm text-gray-700 mb-4 font-medium">אנחנו נוודא שהחשבונית/קבלה שלך מכילה כל מה שהחוק דורש</p>
+                 <form className="space-y-2.5">
+                   <div className="relative">
+                     <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                     <Input
+                       placeholder="שם מלא *"
+                       className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-indigo-600 text-sm bg-white"
+                     />
+                   </div>
+                   <div className="relative">
+                     <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                     <Input
+                       type="tel"
+                       placeholder="טלפון *"
+                       className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-indigo-600 text-sm bg-white"
+                     />
+                   </div>
+                   <Button className="w-full h-10 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-sm">
+                     בדיקה בחינם ✓
+                   </Button>
+                 </form>
+                 <p className="text-xs text-gray-600 text-center mt-2.5 font-bold">🔒 סודי • תגובה תוך 24 שעות</p>
+                </div>
+                </div>
+                </motion.div>
+
+                {/* Section 4: Common Scenarios */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="mb-12"
+                >
+                  <div className="grid lg:grid-cols-3 gap-6 items-start">
+                    <div className="lg:col-span-2">
+                      <h2 className="text-3xl font-bold text-[#1E3A5F] mb-6">
+                        תרחישים נפוצים - מה לעשות?
+                      </h2>
+                      <div className="space-y-4">
                 <div className="bg-white rounded-xl border-r-4 border-gray-300 p-6 shadow-sm">
                   <h3 className="font-bold text-gray-900 mb-3">עוסק פטור לקוח פרטי (למשל, צילום לחתונה)</h3>
                   <p className="text-gray-700">קבלה פשוטה עם הפרטים הבסיסיים מספיקה. חיוב להוציא אם הסכום גדול (חוקי).</p>
@@ -517,10 +621,42 @@ export default function UrgentInvoice() {
                   <h3 className="font-bold text-gray-900 mb-3">עוסק פטור בעבודה בחו״ל</h3>
                   <p className="text-gray-700">תלוי במדינה. באופן כללי, יש להוציא חשבונית בשפה המקומית ובמטבע המקומי.</p>
                 </div>
-              </div>
-            </motion.div>
+                   </div>
+                 </div>
 
-            {/* Section 5: Record Keeping */}
+                 {/* Lead Form - Scenarios */}
+                 <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-r-4 border-orange-600 rounded-2xl p-6 shadow-md h-fit sticky top-4">
+                   <h3 className="text-lg font-black text-orange-900 mb-1 flex items-center gap-2">
+                     <span>🎯</span>
+                     <span>את בחזקת איזה?</span>
+                   </h3>
+                   <p className="text-sm text-gray-700 mb-4 font-medium">בחר את המצב שלך - אנחנו נתן לך בדיוק מה צריך לעשות</p>
+                   <form className="space-y-2.5">
+                     <div className="relative">
+                       <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                       <Input
+                         placeholder="שם מלא *"
+                         className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-orange-600 text-sm bg-white"
+                       />
+                     </div>
+                     <div className="relative">
+                       <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                       <Input
+                         type="tel"
+                         placeholder="טלפון *"
+                         className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-orange-600 text-sm bg-white"
+                       />
+                     </div>
+                     <Button className="w-full h-10 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-sm">
+                       בדיקה בחינם ✓
+                     </Button>
+                   </form>
+                   <p className="text-xs text-gray-600 text-center mt-2.5 font-bold">🔒 סודי • תגובה תוך 24 שעות</p>
+                 </div>
+                </div>
+                </motion.div>
+
+                {/* Section 5: Record Keeping */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
