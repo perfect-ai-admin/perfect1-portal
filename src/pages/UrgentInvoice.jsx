@@ -435,35 +435,7 @@ export default function UrgentInvoice() {
                   </div>
                   </div>
 
-                  {/* Lead Form - Difference */}
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-r-4 border-green-600 rounded-2xl p-6 shadow-md h-fit sticky top-4">
-                  <h3 className="text-lg font-black text-green-900 mb-1 flex items-center gap-2">
-                    <span>✨</span>
-                    <span>בחור המתאים לך?</span>
-                  </h3>
-                  <p className="text-sm text-gray-700 mb-4 font-medium">אנחנו נעזור לך לבחור בין חשבונית וקבלה בהתאם למצב המדויק שלך</p>
-                  <form className="space-y-2.5">
-                    <div className="relative">
-                      <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <Input
-                        placeholder="שם מלא *"
-                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-green-600 text-sm bg-white"
-                      />
-                    </div>
-                    <div className="relative">
-                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <Input
-                        type="tel"
-                        placeholder="טלפון *"
-                        className="pr-9 h-10 border-2 border-gray-300 rounded-lg focus:border-green-600 text-sm bg-white"
-                      />
-                    </div>
-                    <Button className="w-full h-10 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-sm">
-                      בדיקה בחינם ✓
-                    </Button>
-                  </form>
-                  <p className="text-xs text-gray-600 text-center mt-2.5 font-bold">🔒 סודי • תגובה תוך 24 שעות</p>
-                  </div>
+
                   </div>
                   </motion.div>
 
