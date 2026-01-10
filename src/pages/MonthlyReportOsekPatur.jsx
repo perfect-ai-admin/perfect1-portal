@@ -14,11 +14,6 @@ import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
 import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, TrendingUp, BarChart3, Shield, Zap, Target, Clock, Users, Award } from 'lucide-react';
 
 export default function MonthlyReportOsekPatur() {
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(0);
 
   const faqs = [
