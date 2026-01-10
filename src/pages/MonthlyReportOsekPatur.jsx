@@ -216,36 +216,79 @@ export default function MonthlyReportOsekPatur() {
               </div>
             </div>
 
-            {/* CTA Section */}
+            {/* Why Monthly Monitoring */}
+            <div className="grid md:grid-cols-2 gap-6 mb-12 md:mb-20">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-xl p-6 shadow-md border-l-4 border-green-600"
+              >
+                <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-4">
+                  <Clock className="w-6 h-6 text-green-600" />
+                </div>
+                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">חוסך לך זמן יקר</h3>
+                <p className="text-gray-600">אתה יכול להתמקד בעסק שלך, אנחנו דואגים לכל הדיווחים וההנהלה</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-600"
+              >
+                <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
+                  <Shield className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">שקט נפשי מלא</h3>
+                <p className="text-gray-600">כל הדיווחים בזמן, בלי קנסות, בלי בעיות עם הרשויות</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-xl p-6 shadow-md border-l-4 border-purple-600"
+              >
+                <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">רואה חשבון זמין לך</h3>
+                <p className="text-gray-600">שאלה על מס? בעיה עם הכנסה? אנחנו כאן בוואטסאפ וטלפון</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-xl p-6 shadow-md border-l-4 border-yellow-600"
+              >
+                <div className="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-4">
+                  <Zap className="w-6 h-6 text-yellow-600" />
+                </div>
+                <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">מחיר שקוף וברור</h3>
+                <p className="text-gray-600">199₪ בחודש בלבד, בלי הוצאות נוספות או הפתעות</p>
+              </motion.div>
+            </div>
+
+            {/* CTA Section - Using Unified Form */}
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-2xl mb-12 md:mb-20">
-              <h2 className="text-2xl md:text-3xl font-black mb-6 md:mb-8 text-center">
-                עוסק שקר בראש. אנחנו דואגים לשאר.
+              <h2 className="text-2xl md:text-3xl font-black mb-2 text-center">
+                התחיל עם ליווי חודשי
               </h2>
+              <p className="text-center text-white/90 mb-8">אנחנו נדאג לכל הדיווחים וההנהלה בעבורך</p>
               
-              <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-                <Input
-                  placeholder="שם מלא *"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="h-11 md:h-12 bg-white/20 border-white/30 text-white placeholder-white/70 text-sm md:text-base"
-                  required
+              <div className="max-w-md mx-auto">
+                <UnifiedLeadForm
+                  variant="default"
+                  title=""
+                  ctaText="התחל ליווי חודשי עכשיו"
+                  successTitle="קיבלנו את הפרטים! ✓"
+                  successMessage="נציג יצור איתך קשר בהקדם ונסביר איך זה עובד"
+                  sourcePage="ליווי חודשי לעוסק פטור"
+                  fields={["name", "phone"]}
                 />
-                <Input
-                  type="tel"
-                  placeholder="טלפון *"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="h-11 md:h-12 bg-white/20 border-white/30 text-white placeholder-white/70 text-sm md:text-base"
-                  required
-                />
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full h-11 md:h-12 bg-white text-green-600 hover:bg-gray-100 font-bold text-sm md:text-base"
-                >
-                  {isSubmitting ? 'שולח...' : 'בדיקה ללא התחייבות'}
-                </Button>
-              </form>
+              </div>
 
               <div className="grid grid-cols-2 md:flex md:gap-4 gap-3 mb-6 md:mb-8">
                 <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer" className="col-span-1 md:flex-1">
