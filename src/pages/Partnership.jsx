@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { CheckCircle, Users, TrendingUp, Zap, AlertCircle } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 import PartnershipForm from '../components/partnership/PartnershipForm';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 
