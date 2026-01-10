@@ -168,9 +168,9 @@ export default function UrgentInvoice() {
                   <div className="grid grid-cols-2 gap-4">
                     {[
                       { label: 'פתרון משפטי', icon: '✓' },
-                      { label: '100% זמן', icon: '⏱️' },
-                      { label: 'הסל אונליין', icon: '✓' },
-                      { label: 'בלי תאונות', icon: '✓' }
+                      { label: '100% מהיר', icon: '⚡' },
+                      { label: 'בלי ביורוקרטיה', icon: '✓' },
+                      { label: 'ליווי אישי', icon: '💬' }
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 text-white/95">
                         <span className="text-lg">{item.icon}</span>
