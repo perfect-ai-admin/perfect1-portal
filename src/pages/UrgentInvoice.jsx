@@ -14,54 +14,101 @@ import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
 import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, TrendingUp, BarChart3, Shield, Zap, Clock, FileText, AlertCircle } from 'lucide-react';
 
 export default function UrgentInvoice() {
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "האם עוסק פטור צריך להוציא חשבונית?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "זה תלוי בסוג הפעילות. אם אתה קוף עם מע״מ - כן. אם אתה פטור ממע״מ - זה תלוי בתנאים ובסוג הלקוח."
-        }
-      }
-    ]
-  };
+  const [expandedFaq, setExpandedFaq] = useState(0);
+
+  const faqs = [
+    {
+      question: 'האם עוסק פטור חייב להוציא חשבונית?',
+      answer: 'זה תלוי בתנאים: אם אתה רשום למע״מ - כן, חובה מלאה. אם אתה פטור ממע״מ - זה תלוי בסוג הלקוח (עסקי או פרטי) ובנושא הפעילות. עם לקוח עסקי - הם כנראה יצפו לחשבונית.'
+    },
+    {
+      question: 'מה ההבדל בין חשבונית וקבלה?',
+      answer: 'חשבונית היא מסמך רשמי עם כל הפרטים (שם, כתובת, מע״מ). קבלה היא אישור פשוט של קבלת כסף. לעוסק פטור בעסקאות קטנות - קבלה מספיקה. בעסקאות עם מע״מ - צריך חשבונית.'
+    },
+    {
+      question: 'אני עוסק פטור - מה בדיוק צריך להיות בחשבונית שלי?',
+      answer: 'שם וכתובת הספק (אתה), מספר עוסק פטור, שם הלקוח (אם עסקי), תיאור השירות/מוצר, סכום התשלום, תאריך, ומספר סידור (עוקבות). אם אתה רשום למע״מ - גם צריך להוסיף מע״מ.'
+    },
+    {
+      question: 'צריך להדפיס חשבוניות או אפשר דיגיטלי?',
+      answer: 'דיגיטלי בהחלט בסדר. חשבוניות דיגיטליות חוקיות לחלוטין - אפליקציות, Wix, Square, או תוכנות אחרות. כל עוד יש בהן את כל הפרטים הנדרשים - זה חוקי.'
+    },
+    {
+      question: 'כמה זמן צריך לשמור על חשבוניות?',
+      answer: 'לפחות 3 שנים מתאריך ההנפקה (דרישה של מס הכנסה). עבור מע״מ - 4-5 שנים. אם נבדקת בבדיקה - תצטרך להציג את כל הרישומים.'
+    },
+    {
+      question: 'מה אם לא הוצאתי חשבונית וביקשו אחת?',
+      answer: 'אתה יכול להוציא בדיעבד אם יש לך רישום של העסקה (הוכחה בנק, מחברת, עדות). אך זה לא אידיאלי - עדיף להוציא חשבונית מיד בעת העסקה.'
+    },
+    {
+      question: 'עוסק פטור לקוח עסקי - מה עושים?',
+      answer: 'הלקוח העסקי כנראה ידרוש חשבונית רשמית. גם אם אתה פטור ממע״מ - תוציא חשבונית בלי מע״מ עם כל הפרטים הנדרשים.'
+    },
+    {
+      question: 'מה אם הלקוח לא רוצה חשבונית?',
+      answer: 'אתה עדיין צריך לרשום את העסקה בתיעוד שלך כדי להישאר בחוק - גם אם הלקוח לא רוצה חשבונית רשמית. זה עבור שמירה על תיעוד משפטי שלך.'
+    },
+    {
+      question: 'האם צריך מספר חשבון בנק בחשבונית?',
+      answer: 'לא חובה חוקית, אבל זה עוזר. לקוחות עסקיים בדרך כלל רוצים מספר חשבון כדי להעביר כסף ישירות. זה מאיץ את התהליך.'
+    },
+    {
+      question: 'אני עובד בחו״ל - צריך חשבונית?',
+      answer: 'תלוי במדינה. באופן כללי - כן, צריך להוציא חשבונית בשפה המקומית ובמטבע המקומי. בדוק עם רשויות המס של המדינה בה אתה עובד.'
+    }
+  ];
 
   return (
     <>
       <LocalBusinessSchema />
+      <FAQSchema faqs={faqs.map(faq => ({ question: faq.question, answer: faq.answer }))} />
+      <PageTracker pageUrl="/urgent-invoice" pageType="landing" />
       <SEOOptimized
-        title="האם עוסק פטור צריך להוציא חשבונית? מדריך מלא 2026"
-        description="האם עוסק פטור חייב להוציא חשבונית? כל התשובות על חשבוניות, קבלות, דרישות חוקיות ודוחות."
-        keywords="עוסק פטור חשבונית, האם צריך להוציא חשבונית, דרישות חשבוניות עוסק פטור"
+        title="חשבוניות לעוסק פטור | דרישות משפטיות וצעדים | Perfect One"
+        description="האם עוסק פטור צריך להוציא חשבונית? מדריך מלא על דרישות חשבוניות, ההבדל בין חשבונית וקבלה, והצעדים הנכונים."
+        keywords="חשבונית עוסק פטור, דרישות חשבוניות, הבדל חשבונית קבלה, איך להוציא חשבונית"
         canonical="https://perfect1.co.il/urgent-invoice"
-        schema={faqSchema}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "חשבוניות לעוסק פטור",
+          "description": "מדריך מלא על דרישות חשבוניות לעוסקים פטורים בישראל",
+          "author": {
+            "@type": "Organization",
+            "name": "Perfect One"
+          },
+          "datePublished": "2024-01-01",
+          "articleSection": "חוקים ודרישות עוסק פטור"
+        }}
       />
 
-      <main className="pt-20">
-        {/* Hero */}
-        <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-            <Breadcrumbs 
-              items={[
-                { label: 'דף הבית', url: 'Home' },
-                { label: 'עלויות והחלטות' },
-                { label: 'האם עוסק פטור צריך להוציא חשבונית?' }
-              ]}
-            />
-          </div>
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <main className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-6">
+          <Breadcrumbs items={[
+            { label: 'דף הבית', url: 'Home' },
+            { label: 'חשבוניות לעוסק פטור' }
+          ]} />
+        </div>
+        
+        {/* Hero Section */}
+        <section className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white py-16 md:py-20">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-right">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                האם עוסק פטור צריך להוציא חשבונית?
+              <div className="inline-block bg-white/20 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">
+                ✓ מדריך משפטי מלא
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black mb-4">
+                חשבוניות לעוסק פטור
               </h1>
-              <p className="text-xl text-white/80">
-                מדריך מלא על דרישות חשבוניות, קבלות, ודוחות עבור עוסקים פטורים
+              <p className="text-xl text-white/90 mb-6 max-w-2xl mx-auto md:mx-0">
+                האם צריך להוציא חשבונית? מה צריך להיות בה? איך לעמוד בדרישות משפטיות?
+              </p>
+              <p className="text-lg text-white/80 max-w-3xl mx-auto md:mx-0">
+                מדריך מלא לעוסקים פטורים בישראל על חשבוניות, קבלות, ודרישות חוקיות
               </p>
             </motion.div>
           </div>
