@@ -106,17 +106,11 @@ export default function MonthlyReportOsekPatur() {
           </div>
         </section>
         
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-4xl md:text-5xl font-black text-[#1E3A5F] mb-4 md:mb-6 text-center">
-              ליווי חודשי לעוסק פטור
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 text-center mb-12 md:mb-16 max-w-3xl mx-auto">
-              <strong>199₪ בחודש</strong> לניהול שוטף שלם עם רואה חשבון זמין לכל שאלה
-            </p>
 
             {/* What's Included Section */}
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg mb-12 md:mb-20 border-t-4 border-green-600">
