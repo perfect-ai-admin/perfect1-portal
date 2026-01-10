@@ -148,7 +148,7 @@ export default function UrgentInvoice() {
               >
                 <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-xs font-bold mb-6 border border-red-500/30">
                   <span>⚠️</span>
-                  <span>פתרון מידי</span>
+                  <span>דחוף - צריך חשבונית!</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-2 leading-tight text-white">
