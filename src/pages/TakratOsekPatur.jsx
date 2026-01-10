@@ -66,7 +66,7 @@ export default function TakratOsekPatur() {
     },
     {
       question: "מה הסכום המדויק של התקרה ב-2026?",
-      answer: "תקרת ההכנסה לעוסק פטור בשנת 2026 היא 170,000 ₪. זהו סכום המבוסס על הצמדת מדד ודורש עדכון מדי שנה."
+      answer: "תקרת ההכנסה לעוסק פטור בשנת 2026 היא 122,833 ₪. זהו סכום המבוסס על הצמדת מדד ודורש עדכון מדי שנה."
     },
     {
       question: "מה קורה כשאני חוצה את התקרה?",
@@ -155,7 +155,7 @@ export default function TakratOsekPatur() {
 
                 <div className="bg-gradient-to-r from-[#D4AF37] to-amber-400 rounded-3xl p-6 border-2 border-amber-300 mb-8 text-center">
                   <p className="text-sm text-amber-900 mb-2">תקרת ההכנסה לשנת 2026</p>
-                  <p className="text-4xl md:text-5xl font-black text-amber-900">₪170,000</p>
+                  <p className="text-4xl md:text-5xl font-black text-amber-900">₪122,833</p>
                   <p className="text-sm text-amber-800 mt-2">זהו הסכום השנתי המקסימלי להישאר כעוסק פטור</p>
                 </div>
 
