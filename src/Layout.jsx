@@ -42,7 +42,7 @@ export default function Layout({ children, currentPageName }) {
     }, []);
 
     useEffect(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }, [location.pathname, location.search]);
   // Define WhatsApp messages per page
   const getWhatsAppMessage = () => {
