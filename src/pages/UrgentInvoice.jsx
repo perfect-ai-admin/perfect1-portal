@@ -196,22 +196,61 @@ export default function UrgentInvoice() {
           </div>
         </section>
 
-        {/* Trust Stats */}
+        {/* Three Cards Section */}
+        <section className="bg-[#F8F9FA] py-12 md:py-16">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { title: 'לקוחות לא משלמים בלי חשבונית', desc: 'הסתברות משפטית - חלוקים - הקלפים ודרישות משפטיות', icon: '⏰' },
+                { title: 'צריך סעיף בשביב חשבונית', desc: 'לא אפשר להוציא חשבונית חדשה - זו חובה חוקית - זה חברה', icon: '😵' },
+                { title: 'אתה לא מסודר בחשבוניות', desc: 'הסתברות משפטית - חלוקים - הקלפים - ודרישות משפטיות', icon: '📋' }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-red-50 rounded-2xl p-6 border-r-4 border-red-400 shadow-md"
+                >
+                  <div className="text-4xl mb-3">{item.icon}</div>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section */}
         <section className="bg-[#1E3A5F] text-white py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-3 gap-8 text-center">
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-                <h3 className="text-4xl md:text-5xl font-black text-[#27AE60] mb-2">100%</h3>
-                <p className="text-white/90 font-medium">תשובות משפטיות נכונות</p>
+                <h3 className="text-5xl md:text-6xl font-black text-[#27AE60] mb-2">100%</h3>
+                <p className="text-white/90 font-medium">תשובות משפטיות מדויקות</p>
               </motion.div>
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-                <h3 className="text-4xl md:text-5xl font-black text-[#D4AF37] mb-2">24h</h3>
-                <p className="text-white/90 font-medium">זמן תجابה מדיגום קבלת הפנייה</p>
+                <h3 className="text-5xl md:text-6xl font-black text-[#D4AF37] mb-2">24h</h3>
+                <p className="text-white/90 font-medium">זמן תגובה מתשובה עד פתרון</p>
               </motion.div>
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-                <h3 className="text-4xl md:text-5xl font-black text-[#27AE60] mb-2">87%</h3>
-                <p className="text-white/90 font-medium">ממשתמשים מרוצים לחלוטין</p>
+                <h3 className="text-5xl md:text-6xl font-black text-[#27AE60] mb-2">87%</h3>
+                <p className="text-white/90 font-medium">מלקוחות מרוצים לחלוטין</p>
               </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="bg-[#27AE60] text-white py-12 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-black mb-3">אתה לא לבד בזה 👇</h2>
+            <p className="text-lg text-white/95 mb-6">
+              ישראלים שומרים בחשבוניות ודרישות משפטיות - בלי שמיסור יומי פשפשי בילויים
+            </p>
+            <div className="bg-white text-[#27AE60] rounded-2xl p-6 max-w-2xl mx-auto">
+              <p className="font-black text-sm mb-2">🔒 ליווי משפטי מלא • בלי הפתעות • בלי ספאם</p>
             </div>
           </div>
         </section>
