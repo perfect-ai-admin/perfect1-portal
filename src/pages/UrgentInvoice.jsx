@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { CheckCircle, AlertCircle, HelpCircle, ArrowLeft } from 'lucide-react';
 import SEOOptimized from './SEOOptimized';
-import Breadcrumbs from '../components/seo/Breadcrumbs';
-import LeadForm from '../components/forms/LeadForm';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
+import FAQSchema from '../components/seo/FAQSchema';
+import Breadcrumbs from '../components/seo/Breadcrumbs';
+import PageTracker from '../components/seo/PageTracker';
+import RelatedContent from '../components/seo/RelatedContent';
+import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
+import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
+import { Phone, MessageCircle, ChevronDown, ArrowRight, CheckCircle, TrendingUp, BarChart3, Shield, Zap, Clock, FileText, AlertCircle } from 'lucide-react';
 
 export default function UrgentInvoice() {
   const faqSchema = {
