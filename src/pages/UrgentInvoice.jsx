@@ -396,35 +396,7 @@ export default function UrgentInvoice() {
                   </div>
                   </div>
 
-                  {/* Smart Help Card - Design from Image */}
-                  <div className="bg-blue-600 rounded-3xl p-8 shadow-2xl h-fit sticky top-4 text-center text-white">
-                    <div className="text-5xl mb-3">⚡</div>
-                    <h3 className="text-2xl font-black mb-1">צריך הסבר הנהלה?</h3>
-                    <p className="text-sm text-blue-100 mb-5 font-medium">משפחי - פסוק מיידי</p>
 
-                    <div className="mb-6 space-y-3 text-sm">
-                      <p className="font-bold">צריך חשבונית עסקית?</p>
-                      <p className="text-blue-50 text-xs">השאר פרטים וזמן תוך 24 שעות</p>
-                    </div>
-
-                    <form className="space-y-3 mb-6">
-                      <input
-                        type="text"
-                        placeholder="שם מלא *"
-                        className="w-full px-4 py-3 rounded-xl text-gray-800 placeholder-gray-500 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      />
-                      <input
-                        type="tel"
-                        placeholder="טלפון *"
-                        className="w-full px-4 py-3 rounded-xl text-gray-800 placeholder-gray-500 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      />
-                      <Button className="w-full h-12 bg-[#27AE60] hover:bg-[#229954] text-white font-black rounded-xl text-sm">
-                        בדיקה לאא התחייבות ✓
-                      </Button>
-                    </form>
-
-                    <p className="text-xs text-blue-100 font-bold">🔒 ליווי אנושי • ספאם</p>
-                  </div>
                   </div>
                   </motion.div>
 
