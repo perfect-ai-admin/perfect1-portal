@@ -48,72 +48,72 @@ export default function BusinessTypesSection() {
   ];
 
   return (
-    <section className="py-20 bg-white" id="business-types">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <h2 className="text-4xl md:text-5xl font-black text-[#1E3A5F] mb-4">
-            איך אתה מתכנן לפתוח את העסק שלך?
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">בחר את סוג העסק שמתאים לך וקבל מידע ברור</p>
+    <section className="py-16 md:py-20 bg-white" id="business-types">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         {/* Section Header */}
+         <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           viewport={{ once: true }}
+           className="text-center mb-12 md:mb-16"
+         >
+          <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-3 md:mb-4">
+             איך אתה מתכנן לפתוח את העסק שלך?
+           </h2>
+           <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">בחר את סוג העסק שמתאים לך וקבל מידע ברור</p>
         </motion.div>
 
         {/* Business Type Cards - Premium Design */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {businessTypes.map((type, index) => {
-            const Icon = type.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                whileHover={{ y: -10 }}
-              >
-                <Link to={createPageUrl(type.link)} className="group block h-full">
-                  <div className="relative h-full bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-gray-200">
-                    {/* Top Gradient Bar */}
-                    <div className={`h-2 bg-gradient-to-r ${type.bgGradient}`}></div>
+        <div className="grid md:grid-cols-3 gap-6">
+           {businessTypes.map((type, index) => {
+             const Icon = type.icon;
+             return (
+               <motion.div
+                 key={index}
+                 initial={{ opacity: 0, y: 30 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: true }}
+                 transition={{ delay: index * 0.15 }}
+                 whileHover={{ y: -10 }}
+               >
+                 <Link to={createPageUrl(type.link)} className="group block h-full">
+                   <div className="relative h-full bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-gray-200">
+                     {/* Top Gradient Bar */}
+                     <div className={`h-2 bg-gradient-to-r ${type.bgGradient}`}></div>
 
-                    {/* Card Content */}
-                    <div className="p-10">
-                      {/* Icon */}
-                      <div className={`w-20 h-20 rounded-2xl ${type.lightAccent} flex items-center justify-center mb-8 group-hover:scale-110 transition-transform`}>
-                        <Icon className={`w-10 h-10 text-[${type.accentColor}]`} style={{ color: type.accentColor === 'bg-blue-600' ? '#2563eb' : type.accentColor === 'bg-green-600' ? '#16a34a' : '#9333ea' }} />
-                      </div>
+                     {/* Card Content */}
+                     <div className="p-6 md:p-8">
+                       {/* Icon */}
+                       <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl ${type.lightAccent} flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform`}>
+                         <Icon className={`w-8 h-8 md:w-10 md:h-10 text-[${type.accentColor}]`} style={{ color: type.accentColor === 'bg-blue-600' ? '#2563eb' : type.accentColor === 'bg-green-600' ? '#16a34a' : '#9333ea' }} />
+                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-3xl font-black text-[#1E3A5F] mb-3">
-                        {type.title}
-                      </h3>
+                       {/* Title */}
+                       <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-2 md:mb-3">
+                         {type.title}
+                       </h3>
 
-                      {/* Subtitle */}
-                      <p className="text-sm font-bold text-gray-500 mb-6 uppercase tracking-wide">
-                        {type.description}
-                      </p>
+                       {/* Subtitle */}
+                       <p className="text-xs md:text-sm font-bold text-gray-500 mb-4 md:mb-6 uppercase tracking-wide">
+                         {type.description}
+                       </p>
 
-                      {/* Description */}
-                      <p className="text-gray-700 mb-8 leading-relaxed text-lg">
-                        {type.details}
-                      </p>
+                       {/* Description */}
+                       <p className="text-sm md:text-base text-gray-700 mb-6 md:mb-8 leading-relaxed">
+                         {type.details}
+                       </p>
 
-                      {/* CTA - Interactive */}
-                      <div className="inline-flex items-center gap-3 font-black text-lg group-hover:gap-5 transition-all" style={{ color: type.accentColor === 'bg-blue-600' ? '#2563eb' : type.accentColor === 'bg-green-600' ? '#16a34a' : '#9333ea' }}>
-                        {type.cta}
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })}
+                       {/* CTA - Interactive */}
+                       <div className="inline-flex items-center gap-2 md:gap-3 font-black text-sm md:text-base group-hover:gap-4 md:group-hover:gap-5 transition-all" style={{ color: type.accentColor === 'bg-blue-600' ? '#2563eb' : type.accentColor === 'bg-green-600' ? '#16a34a' : '#9333ea' }}>
+                         {type.cta}
+                         <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
+                       </div>
+                     </div>
+                   </div>
+                 </Link>
+               </motion.div>
+             );
+           })}
         </div>
       </div>
     </section>
