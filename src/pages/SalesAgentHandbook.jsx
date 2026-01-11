@@ -423,20 +423,53 @@ export default function SalesAgentHandbook() {
             {/* אפליקציה */}
             <div className="mb-8 bg-white border-2 border-orange-300 rounded-lg overflow-hidden">
               <div className="bg-orange-600 text-white p-4">
-                <h4 className="text-xl font-bold">4. אפליקציה עם מלווה חכם</h4>
+                <h4 className="text-xl font-bold">4. אפליקציה עם מנהל עסקים חכם</h4>
               </div>
               <div className="p-6 space-y-4">
                 <p className="text-gray-700 leading-relaxed">
-                  <strong>הערך המוסף הגדול שלנו:</strong> זה לא רק אפליקציה – זה "חבר עסקי" שזמין תמיד
+                  <strong>הערך המוסף הגדול שלנו:</strong> זה לא רק אפליקציה – זה "מנהל עסקים אישי" שלוקח אותך צעד אחר צעד
                 </p>
                 
+                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border-2 border-orange-300 p-6 rounded-lg mb-4">
+                  <p className="font-bold text-orange-900 mb-3 text-lg">🚀 המנהל עסקים החכם שלנו:</p>
+                  <ul className="space-y-3 text-orange-900">
+                    <li className="flex items-start gap-3">
+                      <span className="text-xl">📊</span>
+                      <div>
+                        <strong>בונה לך תכנית עבודה מותאמת אישית</strong>
+                        <p className="text-sm text-orange-800">לפי השיח שלך איתו, הוא מכין לך תכנית פעולה ברורה לצמיחת העסק</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-xl">💪</span>
+                      <div>
+                        <strong>מחזק אותך ודוחף אותך קדימה</strong>
+                        <p className="text-sm text-orange-800">לא רק עונה על שאלות – הוא מלווה אותך בכל צעד ועוזר לך לקבל החלטות</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-xl">📈</span>
+                      <div>
+                        <strong>מראה לך דוחות ברורים</strong>
+                        <p className="text-sm text-orange-800">הכנסות, הוצאות, מצב כלכלי – הכול בתצוגה פשוטה וברורה</p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-xl">🎯</span>
+                      <div>
+                        <strong>לוקח אותך צעד אחר צעד</strong>
+                        <p className="text-sm text-orange-800">מה לעשות עכשיו, מה הבא, איך להגיע ליעדים שלך</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
                 <div className="bg-orange-50 p-4 rounded">
-                  <p className="font-bold text-orange-900 mb-3">מה המלווה החכם עושה:</p>
+                  <p className="font-bold text-orange-900 mb-3">עוד יכולות שהוא נותן לך:</p>
                   <ul className="space-y-2 text-orange-800">
                     <li>• עונה על שאלות על מסים בשפה פשוטה</li>
                     <li>• נותן טיפים לחיסכון במס</li>
                     <li>• מסביר מה לעשות בכל מצב</li>
-                    <li>• עוזר לתכנן צעדים קדימה בעסק</li>
                     <li>• זמין 24/7 – אפילו בשבת בלילה</li>
                   </ul>
                 </div>
