@@ -165,14 +165,14 @@ export default function LeadsAdmin() {
   });
 
   const statusColors = {
-    new: 'bg-blue-100 text-blue-800',
-    contacted: 'bg-yellow-100 text-yellow-800',
-    no_answer: 'bg-orange-100 text-orange-800',
-    in_progress: 'bg-cyan-100 text-cyan-800',
-    qualified: 'bg-purple-100 text-purple-800',
-    not_interested: 'bg-red-100 text-red-800',
-    converted: 'bg-green-100 text-green-800',
-    closed: 'bg-gray-100 text-gray-800'
+    new: 'bg-blue-500 text-white shadow-lg shadow-blue-500/50',
+    contacted: 'bg-yellow-500 text-white shadow-lg shadow-yellow-500/50',
+    no_answer: 'bg-orange-500 text-white shadow-lg shadow-orange-500/50',
+    in_progress: 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50',
+    qualified: 'bg-purple-500 text-white shadow-lg shadow-purple-500/50',
+    not_interested: 'bg-red-600 text-white shadow-lg shadow-red-600/50 animate-pulse',
+    converted: 'bg-green-600 text-white shadow-lg shadow-green-600/50 animate-pulse',
+    closed: 'bg-gray-600 text-white shadow-lg shadow-gray-600/50'
   };
 
   const statusLabels = {
@@ -187,9 +187,9 @@ export default function LeadsAdmin() {
   };
 
   const priorityColors = {
-    low: 'bg-gray-100 text-gray-700',
-    medium: 'bg-blue-100 text-blue-700',
-    high: 'bg-red-100 text-red-700'
+    low: 'bg-gray-400 text-white shadow-md shadow-gray-400/40',
+    medium: 'bg-blue-500 text-white shadow-md shadow-blue-500/40',
+    high: 'bg-red-600 text-white shadow-lg shadow-red-600/50 font-bold'
   };
 
   const priorityLabels = {
@@ -199,11 +199,11 @@ export default function LeadsAdmin() {
   };
 
   const categoryColors = {
-    osek_patur: 'bg-indigo-100 text-indigo-800',
-    monthly_support: 'bg-teal-100 text-teal-800',
-    invoice: 'bg-amber-100 text-amber-800',
-    consultation: 'bg-pink-100 text-pink-800',
-    other: 'bg-slate-100 text-slate-800'
+    osek_patur: 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-md shadow-indigo-500/40',
+    monthly_support: 'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/40',
+    invoice: 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-500/40',
+    consultation: 'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-md shadow-pink-500/40',
+    other: 'bg-gradient-to-r from-slate-400 to-slate-500 text-white shadow-md shadow-slate-400/40'
   };
 
   const categoryLabels = {
@@ -231,10 +231,10 @@ export default function LeadsAdmin() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 sm:p-4" dir="rtl">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-[#1E3A5F] mb-2">ניהול לידים - CRM</h1>
             <p className="text-gray-600">כל הלידים שמגיעים מהאתר + מעקב אחר לחיצות</p>
@@ -260,26 +260,26 @@ export default function LeadsAdmin() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-          <div className="bg-white rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-[#1E3A5F]">{stats.total}</div>
-            <div className="text-sm text-gray-600">סך הכל לידים</div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-4 shadow-lg shadow-[#1E3A5F]/30">
+            <div className="text-3xl font-black text-white">{stats.total}</div>
+            <div className="text-sm text-white/80 font-semibold">סך הכל לידים</div>
           </div>
-          <div className="bg-blue-50 rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-blue-600">{stats.new}</div>
-            <div className="text-sm text-gray-600">לידים חדשים</div>
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 shadow-lg shadow-blue-500/40">
+            <div className="text-3xl font-black text-white">{stats.new}</div>
+            <div className="text-sm text-white/90 font-semibold">לידים חדשים</div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-yellow-600">{stats.contacted}</div>
-            <div className="text-sm text-gray-600">יצרנו קשר</div>
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-4 shadow-lg shadow-yellow-500/40">
+            <div className="text-3xl font-black text-white">{stats.contacted}</div>
+            <div className="text-sm text-white/90 font-semibold">יצרנו קשר</div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-green-600">{stats.converted}</div>
-            <div className="text-sm text-gray-600">נסגרו</div>
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 shadow-lg shadow-green-500/50 animate-pulse">
+            <div className="text-3xl font-black text-white">{stats.converted}</div>
+            <div className="text-sm text-white/90 font-semibold">נסגרו ✨</div>
           </div>
-          <div className="bg-red-50 rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-red-600">{stats.followUpToday}</div>
-            <div className="text-sm text-gray-600">חזרה היום</div>
+          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-4 shadow-lg shadow-red-500/50">
+            <div className="text-3xl font-black text-white">{stats.followUpToday}</div>
+            <div className="text-sm text-white/90 font-semibold">חזרה היום</div>
           </div>
         </div>
 
@@ -310,7 +310,7 @@ export default function LeadsAdmin() {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="bg-white rounded-lg shadow p-3 mb-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -449,17 +449,17 @@ export default function LeadsAdmin() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-xs">
-                      <span className={`inline-block px-2 py-1 rounded ${
-                        lead.interaction_type === 'phone_click' ? 'bg-blue-100 text-blue-700' :
-                        lead.interaction_type === 'whatsapp_click' ? 'bg-green-100 text-green-700' :
-                        lead.interaction_type === 'manual' ? 'bg-purple-100 text-purple-700' :
-                        'bg-gray-100 text-gray-700'
-                      }`}>
-                        {lead.interaction_type === 'phone_click' ? '📞 חייג' :
-                         lead.interaction_type === 'whatsapp_click' ? '💬 וואטסאפ' :
-                         lead.interaction_type === 'manual' ? '✋ ידני' :
-                         '📝 טופס'}
-                      </span>
+                     <span className={`inline-block px-2 py-1 rounded font-semibold shadow-md ${
+                       lead.interaction_type === 'phone_click' ? 'bg-blue-500 text-white shadow-blue-500/40' :
+                       lead.interaction_type === 'whatsapp_click' ? 'bg-green-500 text-white shadow-green-500/40' :
+                       lead.interaction_type === 'manual' ? 'bg-purple-500 text-white shadow-purple-500/40' :
+                       'bg-gray-500 text-white shadow-gray-500/40'
+                     }`}>
+                       {lead.interaction_type === 'phone_click' ? '📞 חייג' :
+                        lead.interaction_type === 'whatsapp_click' ? '💬 וואטסאפ' :
+                        lead.interaction_type === 'manual' ? '✋ ידני' :
+                        '📝 טופס'}
+                     </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <Select 
