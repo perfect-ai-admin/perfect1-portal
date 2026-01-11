@@ -1,5 +1,7 @@
 import About from './pages/About';
 import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
+import AgentCRM from './pages/AgentCRM';
+import AgentLogin from './pages/AgentLogin';
 import AnnualReportOsekMorshaPage from './pages/AnnualReportOsekMorshaPage';
 import AnnualReportOsekPatur from './pages/AnnualReportOsekPatur';
 import BituchLeumiLanding from './pages/BituchLeumiLanding';
@@ -97,14 +99,15 @@ import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import AgentLogin from './pages/AgentLogin';
-import AgentCRM from './pages/AgentCRM';
+import AgentsManager from './pages/AgentsManager';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
     "AccountantForOsekMorsha": AccountantForOsekMorsha,
+    "AgentCRM": AgentCRM,
+    "AgentLogin": AgentLogin,
     "AnnualReportOsekMorshaPage": AnnualReportOsekMorshaPage,
     "AnnualReportOsekPatur": AnnualReportOsekPatur,
     "BituchLeumiLanding": BituchLeumiLanding,
@@ -202,8 +205,7 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "AgentLogin": AgentLogin,
-    "AgentCRM": AgentCRM,
+    "AgentsManager": AgentsManager,
 }
 
 export const pagesConfig = {

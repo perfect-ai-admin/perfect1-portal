@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus } from 'lucide-react';
+import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 
 export default function LeadsAdmin() {
@@ -24,6 +26,12 @@ export default function LeadsAdmin() {
   const { data: leads, isLoading } = useQuery({
     queryKey: ['leads'],
     queryFn: () => base44.entities.Lead.list('-created_date', 1000),
+    initialData: []
+  });
+
+  const { data: agents } = useQuery({
+    queryKey: ['agents'],
+    queryFn: () => base44.entities.Agent.filter({ active: true }),
     initialData: []
   });
 
@@ -203,13 +211,24 @@ export default function LeadsAdmin() {
             <h1 className="text-3xl font-bold text-[#1E3A5F] mb-2">ניהול לידים - CRM</h1>
             <p className="text-gray-600">כל הלידים שמגיעים מהאתר + מעקב אחר לחיצות</p>
           </div>
-          <Button 
-            onClick={() => setShowAddLeadDialog(true)}
-            className="bg-[#27AE60] hover:bg-[#2ECC71]"
-          >
-            <UserPlus className="w-5 h-5 ml-2" />
-            הוסף ליד ידנית
-          </Button>
+          <div className="flex gap-3">
+            <Link to={createPageUrl('AgentsManager')}>
+              <Button 
+                variant="outline"
+                className="border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white"
+              >
+                <Users className="w-5 h-5 ml-2" />
+                ניהול נציגים
+              </Button>
+            </Link>
+            <Button 
+              onClick={() => setShowAddLeadDialog(true)}
+              className="bg-[#27AE60] hover:bg-[#2ECC71]"
+            >
+              <UserPlus className="w-5 h-5 ml-2" />
+              הוסף ליד ידנית
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}
@@ -371,13 +390,27 @@ export default function LeadsAdmin() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      {lead.agent_name ? (
-                        <span className="inline-block px-2 py-1 rounded bg-indigo-100 text-indigo-800 text-xs font-medium">
-                          {lead.agent_name}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400 text-xs">ללא נציג</span>
-                      )}
+                      <Select 
+                        value={lead.agent_name || 'none'} 
+                        onValueChange={(value) => {
+                          updateLeadMutation.mutate({
+                            id: lead.id,
+                            data: { ...lead, agent_name: value === 'none' ? null : value }
+                          });
+                        }}
+                      >
+                        <SelectTrigger className="w-40 h-8 text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">ללא נציג</SelectItem>
+                          {agents.map(agent => (
+                            <SelectItem key={agent.id} value={agent.full_name}>
+                              {agent.full_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </td>
                     <td className="px-4 py-3 text-center">
                       <Select 
