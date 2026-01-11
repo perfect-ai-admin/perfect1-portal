@@ -461,7 +461,7 @@ export default function LeadsAdmin() {
                         '📝 טופס'}
                      </span>
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-3 py-2 text-sm">
                       <Select 
                         value={lead.agent_name || 'none'} 
                         onValueChange={(value) => {
@@ -484,7 +484,7 @@ export default function LeadsAdmin() {
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-3 py-2 text-center">
                       <Select 
                         value={lead.status || 'new'} 
                         onValueChange={(value) => handleQuickStatusUpdate(lead, value)}
@@ -499,12 +499,12 @@ export default function LeadsAdmin() {
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-3 py-2 text-center">
                       <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${priorityColors[lead.priority || 'medium']}`}>
                         {priorityLabels[lead.priority || 'medium']}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-3 py-2 text-sm">
                       {editingFollowUp[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
@@ -545,7 +545,7 @@ export default function LeadsAdmin() {
                         </button>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-sm max-w-xs">
+                    <td className="px-3 py-2 text-sm max-w-xs">
                       {editingNotes[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
