@@ -5,15 +5,17 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const baseUrl = 'https://perfect1.co.il';
     
-    const services = await base44.entities.Service.list();
+    const blogPosts = await base44.entities.BlogPost.filter({ published: true }, '-updated_date');
     
     const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${services.map(service => `  <url>
-    <loc>${baseUrl}/service/${service.id}</loc>
-    <lastmod>${new Date(service.updated_date || service.created_date).toISOString().split('T')[0]}</lastmod>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${blogPosts.map(post => `  <url>
+    <loc>${baseUrl}/blog-post?slug=${post.slug}</loc>
+    <lastmod>${new Date(post.updated_date || post.created_date).toISOString().split('T')[0]}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+    ${post.featured_image ? `<image:image><image:loc>${post.featured_image}</image:loc><image:title>${post.title}</image:title></image:image>` : ''}
   </url>`).join('\n')}
 </urlset>`;
 

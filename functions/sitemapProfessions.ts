@@ -1,50 +1,30 @@
-/**
- * Sitemap Professions - כל דפי המקצועות
- */
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-import { base44 } from '@/api/base44Client';
-
-export default async function handler(req, res) {
+Deno.serve(async (req) => {
   try {
-    const siteUrl = 'https://perfect1.co.il';
+    const base44 = createClientFromRequest(req);
+    const baseUrl = 'https://perfect1.co.il';
     
-    // שליפת כל המקצועות
-    const professions = await base44.asServiceRole.entities.Profession.list('-updated_date', 1000);
-
-    // דף הקטגוריה הראשי
-    const categoryPage = {
-      url: '/Professions',
-      lastmod: new Date().toISOString().split('T')[0],
-      priority: 0.9,
-      changefreq: 'weekly'
-    };
-
-    const allUrls = [
-      categoryPage,
-      ...professions.map(prof => ({
-        url: `/ProfessionPage?slug=${prof.slug}`,
-        lastmod: prof.updated_date?.split('T')[0] || new Date().toISOString().split('T')[0],
-        priority: 0.8,
-        changefreq: 'monthly'
-      }))
-    ];
-
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    const professions = await base44.entities.Profession.list();
+    
+    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allUrls.map(page => `  <url>
-    <loc>${siteUrl}${page.url}</loc>
-    <lastmod>${page.lastmod}</lastmod>
-    <changefreq>${page.changefreq}</changefreq>
-    <priority>${page.priority}</priority>
+${professions.map(prof => `  <url>
+    <loc>${baseUrl}/profession/${prof.slug}</loc>
+    <lastmod>${new Date(prof.updated_date || prof.created_date).toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>`).join('\n')}
 </urlset>`;
 
-    res.setHeader('Content-Type', 'application/xml');
-    res.setHeader('Cache-Control', 'public, max-age=3600');
-    res.status(200).send(sitemap);
-
+    return new Response(xmlContent, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/xml; charset=UTF-8',
+        'Cache-Control': 'public, max-age=3600'
+      }
+    });
   } catch (error) {
-    console.error('Error generating professions sitemap:', error);
-    res.status(500).send('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+    return Response.json({ error: error.message }, { status: 500 });
   }
-}
+});

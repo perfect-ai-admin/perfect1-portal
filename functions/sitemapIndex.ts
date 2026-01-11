@@ -1,38 +1,38 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-/**
- * Sitemap Index - מפת אינדקס ראשית
- * מפנה לכל ה-sitemaps המשניים
- */
-
-export default async function handler(req, res) {
-  const siteUrl = 'https://perfect1.co.il';
-  const today = new Date().toISOString().split('T')[0];
-
-  const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+Deno.serve(async (req) => {
+  try {
+    const baseUrl = 'https://perfect1.co.il';
+    
+    // Sitemap Index - מצביע לכל הסיטמפים
+    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${siteUrl}/sitemap-pages</loc>
-    <lastmod>${today}</lastmod>
+    <loc>${baseUrl}/sitemap-pages.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${siteUrl}/sitemap-articles</loc>
-    <lastmod>${today}</lastmod>
+    <loc>${baseUrl}/sitemap-articles.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${siteUrl}/sitemap-professions</loc>
-    <lastmod>${today}</lastmod>
+    <loc>${baseUrl}/sitemap-professions.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${siteUrl}/sitemap-services</loc>
-    <lastmod>${today}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${siteUrl}/sitemap-faq</loc>
-    <lastmod>${today}</lastmod>
+    <loc>${baseUrl}/sitemap-services.xml</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
   </sitemap>
 </sitemapindex>`;
 
-  res.setHeader('Content-Type', 'application/xml');
-  res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache ל-1 שעה
-  res.status(200).send(sitemapIndex);
-}
+    return new Response(xmlContent, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/xml; charset=UTF-8',
+        'Cache-Control': 'public, max-age=3600'
+      }
+    });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});

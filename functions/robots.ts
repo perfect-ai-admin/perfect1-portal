@@ -1,80 +1,33 @@
-
-/**
- * Robots.txt דינמי - מותאם לקידום SEO ותמיכה ב-AI Bots
- * מאפשר סריקה מלאה לכל הבוטים כולל GPTBot, Claude-Web וכו'
- */
-export default async function robots(event, context) {
-  const robotsTxt = `# Robots.txt - Perfect One
-# מעודכן לתמיכה ב-SEO, GEO, AEO ו-LLM-readiness
-
-# הרשאה כללית לכל הבוטים
-User-agent: *
+Deno.serve(async (req) => {
+  try {
+    const robotsTxt = `User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /api/
-Disallow: /*.json$
+Disallow: /client-login
+Disallow: /agent-login
+Disallow: /system-logic-map
+Disallow: /seo-admin
+Disallow: /seo-analytics
+Disallow: /leads-admin
 
-# הרשאות מיוחדות לבוטים של AI/LLM
-# OpenAI GPTBot - ChatGPT
-User-agent: GPTBot
-Allow: /
+# Crawl delay
+Crawl-delay: 1
 
-# OpenAI SearchBot - ChatGPT Search
-User-agent: OAI-SearchBot
-Allow: /
+# Sitemaps
+Sitemap: https://perfect1.co.il/sitemap.xml
+Sitemap: https://perfect1.co.il/sitemap-pages.xml
+Sitemap: https://perfect1.co.il/sitemap-articles.xml
+Sitemap: https://perfect1.co.il/sitemap-professions.xml
+Sitemap: https://perfect1.co.il/sitemap-services.xml`;
 
-# Anthropic Claude
-User-agent: Claude-Web
-Allow: /
-
-# Google Bard/Gemini
-User-agent: Google-Extended
-Allow: /
-
-# Common Crawl (used by many AI models)
-User-agent: CCBot
-Allow: /
-
-# Perplexity AI
-User-agent: PerplexityBot
-Allow: /
-
-# Bing AI
-User-agent: Bingbot
-Allow: /
-
-# הרשאות למנועי חיפוש עיקריים
-User-agent: Googlebot
-Allow: /
-
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Googlebot-Mobile
-Allow: /
-
-# Sitemap locations
-Sitemap: https://perfect1.co.il/sitemap-index
-Sitemap: https://perfect1.co.il/sitemap-pages
-Sitemap: https://perfect1.co.il/sitemap-articles
-Sitemap: https://perfect1.co.il/sitemap-faq
-
-# Crawl-delay (אופציונלי - רק אם יש בעיות עומס)
-# User-agent: *
-# Crawl-delay: 1
-
-# הערות:
-# - כל התוכן הציבורי פתוח לסריקה
-# - תמיכה מלאה ב-AI bots לשיפור נראות ב-LLMs
-# - API ודפי אדמין חסומים
-`;
-
-  return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=86400'
-    },
-    body: robotsTxt
-  };
-}
+    return new Response(robotsTxt, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain; charset=UTF-8',
+        'Cache-Control': 'public, max-age=86400'
+      }
+    });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+});
