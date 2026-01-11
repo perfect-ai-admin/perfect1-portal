@@ -301,12 +301,14 @@ export default function LeadsAdmin() {
             <table className="w-full">
               <thead className="bg-[#1E3A5F] text-white">
                 <tr>
+                  <th className="px-4 py-3 text-right">תאריך כניסה</th>
                   <th className="px-4 py-3 text-right">שם</th>
                   <th className="px-4 py-3 text-right">טלפון</th>
                   <th className="px-4 py-3 text-right">מקצוע</th>
                   <th className="px-4 py-3 text-right">מקור</th>
                   <th className="px-4 py-3 text-right">קטגוריה</th>
                   <th className="px-4 py-3 text-right">סוג</th>
+                  <th className="px-4 py-3 text-right">נציג</th>
                   <th 
                     className="px-4 py-3 text-center cursor-pointer hover:bg-[#2C5282] transition-colors"
                     onClick={() => setSortBy(sortBy === 'status' ? null : 'status')}
@@ -335,6 +337,9 @@ export default function LeadsAdmin() {
               <tbody>
                 {sortedLeads.map((lead, index) => (
                   <tr key={lead.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="font-medium">{lead.name}</div>
                       {lead.email && <div className="text-xs text-gray-500">{lead.email}</div>}
@@ -364,6 +369,15 @@ export default function LeadsAdmin() {
                          lead.interaction_type === 'manual' ? '✋ ידני' :
                          '📝 טופס'}
                       </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {lead.agent_name ? (
+                        <span className="inline-block px-2 py-1 rounded bg-indigo-100 text-indigo-800 text-xs font-medium">
+                          {lead.agent_name}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-xs">ללא נציג</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <Select 
