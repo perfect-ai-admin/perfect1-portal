@@ -27,6 +27,13 @@ export default function ClientLogin() {
       return;
     }
 
+    // Check password first
+    if (password !== '123456') {
+      setError('סיסמה שגויה');
+      setIsLoading(false);
+      return;
+    }
+
     const leads = await base44.entities.Lead.filter({ phone: cleanPhone });
     
     if (leads.length === 0) {
@@ -36,13 +43,6 @@ export default function ClientLogin() {
     }
 
     const client = leads[0];
-    
-    // Simple password check (in production, use proper hashing)
-    if (client.client_password !== password) {
-      setError('סיסמה שגויה');
-      setIsLoading(false);
-      return;
-    }
 
     // Store client data in localStorage
     localStorage.setItem('client', JSON.stringify(client));
