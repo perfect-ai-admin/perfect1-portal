@@ -422,15 +422,6 @@ export default function Header() {
                           דף הבית
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to={createPageUrl('Blog')}
-                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
-                        >
-                          בלוג
-                        </Link>
-                      </li>
 
                       {/* עוסק פטור */}
                       <li>
@@ -541,6 +532,15 @@ export default function Header() {
                           className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
                           סגירת עסק
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to={createPageUrl('Blog')}
+                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        >
+                          בלוג
                         </Link>
                       </li>
                       <li>
