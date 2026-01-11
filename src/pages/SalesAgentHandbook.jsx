@@ -377,14 +377,139 @@ export default function SalesAgentHandbook() {
                     <li>• דיווחים לביטוח לאומי</li>
                     <li>• מלווה חכם זמין 24/7</li>
                     <li>• ייעוץ והכוונה לצמיחה</li>
+                    <li>• ניהול כל הדיווחים השוטפים</li>
+                    <li>• מעקב אחר מקדמות מס וביטוח לאומי</li>
+                    <li>• התראות חכמות לפני מועדי תשלום</li>
+                    <li>• ייעוץ מס שוטף לחיסכון מירבי</li>
                   </ul>
+                </div>
+
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-300 p-5 rounded-lg mb-4">
+                  <p className="font-bold text-blue-900 mb-3 text-lg">💡 למה הליווי החודשי זה הכי חשוב?</p>
+                  <p className="text-blue-800 mb-3">כי רוב הבעיות והטעויות קורות במהלך השנה – לא בסוף!</p>
+                  
+                  <div className="space-y-3">
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-red-900 mb-1">❌ בלי ליווי:</p>
+                      <p className="text-red-800 text-sm">• מפספסים ניכויים<br/>• שוכחים לדווח בזמן<br/>• לא יודעים שחרגו מתקרה<br/>• מגלים בעיות רק בדוח השנתי – ואז מאוחר</p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-green-900 mb-1">✅ עם ליווי:</p>
+                      <p className="text-green-800 text-sm">• כל דבר מטופל בזמן אמת<br/>• אין הפתעות לא נעימות<br/>• תמיד יודעים מה המצב<br/>• חוסכים אלפי שקלים בשנה</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50 border-2 border-yellow-400 p-5 rounded-lg mb-4">
+                  <p className="font-bold text-yellow-900 mb-3 text-lg">🎯 איך זה עובד בפועל?</p>
+                  
+                  <div className="space-y-3">
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-gray-900 mb-2">בתחילת כל חודש:</p>
+                      <ul className="text-gray-800 text-sm space-y-1">
+                        <li>✓ מקבלים סיכום של המצב הכספי</li>
+                        <li>✓ רואים כמה רחוקים מהתקרה</li>
+                        <li>✓ יודעים מה צריך לשלם החודש</li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-gray-900 mb-2">במהלך החודש:</p>
+                      <ul className="text-gray-800 text-sm space-y-1">
+                        <li>✓ מקבלים תזכורות לפני תשלומים</li>
+                        <li>✓ יכולים לשאול שאלות דרך המלווה החכם</li>
+                        <li>✓ מקבלים התראות אם יש משהו דחוף</li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-gray-900 mb-2">בסוף החודש:</p>
+                      <ul className="text-gray-800 text-sm space-y-1">
+                        <li>✓ מסכמים את ההכנסות וההוצאות</li>
+                        <li>✓ מעדכנים את המערכת</li>
+                        <li>✓ מתכננים את החודש הבא</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-400 p-5 rounded-lg mb-4">
+                  <p className="font-bold text-orange-900 mb-3 text-lg">💰 כמה זה באמת שווה?</p>
+                  
+                  <div className="bg-white p-4 rounded mb-3">
+                    <p className="font-bold text-orange-900 mb-2">דוגמה אמיתית:</p>
+                    <p className="text-orange-800 text-sm mb-2">
+                      לקוח שלנו לא ידע שהוא חרג מתקרת 105k. ברגע שגילה – כבר היה מאוחר.
+                    </p>
+                    <p className="text-red-800 font-bold text-sm">
+                      העלות: 12,000 ש״ח קנס + מעבר למע״מ + דיווחים למפרע
+                    </p>
+                    <p className="text-green-800 font-bold text-sm mt-2">
+                      עם ליווי: היינו מזהים את זה בזמן ומונעים את כל הבעיה
+                    </p>
+                  </div>
+
+                  <div className="bg-white p-4 rounded">
+                    <p className="font-bold text-orange-900 mb-2">עוד דוגמה:</p>
+                    <p className="text-orange-800 text-sm mb-2">
+                      לקוחה שכחה לשלם ביטוח לאומי 6 חודשים. הצטברו קנסות והיא לא הייתה מבוטחת.
+                    </p>
+                    <p className="text-red-800 font-bold text-sm">
+                      העלות: 4,500 ש״ח קנסות + אובדן זכויות
+                    </p>
+                    <p className="text-green-800 font-bold text-sm mt-2">
+                      עם ליווי: הייתה מקבלת תזכורת אוטומטית כל חודש
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-400 p-5 rounded-lg">
+                  <p className="font-bold text-purple-900 mb-3 text-lg">🔥 נקודות מכירה חזקות:</p>
+                  
+                  <div className="space-y-2">
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-purple-900 text-sm mb-1">💎 "זה לא סתם ליווי..."</p>
+                      <p className="text-purple-800 text-sm italic">
+                        "זה כמו שיש לך רואה חשבון + מלווה עסקי + מערכת חכמה – הכול ביחד. 
+                        אתה עובד בשקט, ואנחנו דואגים שהכול יהיה מסודר."
+                      </p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-purple-900 text-sm mb-1">🎯 "טעות אחת עולה יותר..."</p>
+                      <p className="text-purple-800 text-sm italic">
+                        "קנס אחד על דיווח באיחור עולה יותר מהליווי של שנה שלמה. 
+                        כאן אתה לא משלם על שירות – אתה משקיע בשקט שלך."
+                      </p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-purple-900 text-sm mb-1">⏰ "כל הזמן איתך"</p>
+                      <p className="text-purple-800 text-sm italic">
+                        "יש לך שאלה בשבת בלילה? המלווה החכם זמין לך. 
+                        לא צריך לחכות לשיחה עם רואה חשבון – יש לך תשובות מיידיות."
+                      </p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-purple-900 text-sm mb-1">📊 "רואה הכול בזמן אמת"</p>
+                      <p className="text-purple-800 text-sm italic">
+                        "אתה תמיד יודע איפה אתה עומד: כמה הרווחת, כמה צריך לשלם, 
+                        וכמה רחוק אתה מהתקרה. אין הפתעות."
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="bg-green-50 p-4 rounded">
                   <p className="font-bold text-green-900 mb-2">איך להציג את זה:</p>
-                  <p className="text-green-800 italic">
-                    "זה כמו שיש לך צוות שלם שדואג לך. אתה עובד, ואנחנו דואגים שכל הדיווחים יהיו בזמן, 
-                    שלא תחרוג מתקרה, ושתמיד תדע מה המצב שלך. ויש לך גם מלווה חכם שתוכל לשאול אותו כל דבר, בכל זמן."
+                  <p className="text-green-800 italic leading-relaxed">
+                    "תראה, רוב האנשים חושבים שמספיק לעשות דוח פעם בשנה. אבל האמת היא שהבעיות קורות במהלך השנה – 
+                    כשלא שמים לב לתקרה, כשלא משלמים בזמן, כשמפספסים ניכויים. 
+                    עם הליווי החודשי שלנו, אתה עובד בשקט ואנחנו דואגים שהכול יהיה מסודר כל הזמן. 
+                    יש לך גם מלווה חכם שזמין לך 24/7 לכל שאלה, ואנחנו דואגים שלא תהיה לך אף פעם הפתעה לא נעימה. 
+                    <strong>זה לא הוצאה – זה ההשקעה הכי חכמה שעצמאי יכול לעשות.</strong>"
                   </p>
                 </div>
               </div>
