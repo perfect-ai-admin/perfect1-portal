@@ -623,6 +623,10 @@ export default function OsekPaturOnlineLanding() {
                       <strong className="text-yellow-800">חשוב:</strong> השירות ניתן על ידי גורם פרטי לצורך ייעוץ וליווי בלבד. 
                       אתה תבצע את פתיחת התיק בעצמך מול הרשויות - אנחנו נדריך אותך לאורך הדרך.
                     </p>
+                    <p className="text-xs text-gray-600 mt-2">
+                      הוראות פרטיות: <a href="/privacy" className="text-blue-600 hover:underline font-bold">קרא את מדיניות הפרטיות</a> • 
+                      <a href="/terms" className="text-blue-600 hover:underline font-bold">תנאי שימוש</a>
+                    </p>
                   </div>
 
                   <p className="text-xs text-gray-500 text-center mt-4">
