@@ -632,10 +632,18 @@ export default function OsekPaturLanding() {
                     {isSubmitting ? 'שולח...' : 'השאר פרטים ונחזור אליך'}
                   </Button>
 
-                  <p className="text-xs text-gray-500 text-center">
+                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mt-6">
+                    <p className="text-xs text-gray-700 leading-relaxed">
+                      <strong className="text-yellow-800">חשוב:</strong> השירות ניתן על ידי גורם פרטי לצורך ייעוץ וליווי בלבד. 
+                      האתר <strong>אינו אתר ממשלתי</strong> ואינו מהווה ייעוץ חשבונאי או משפטי רשמי. 
+                      פתיחת התיק עצמה תבוצע על ידיך מול הרשויות (מס הכנסה, ביטוח לאומי, מע"מ).
+                    </p>
+                  </div>
+
+                  <p className="text-xs text-gray-500 text-center mt-4">
                     ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום
                   </p>
-                </form>
+                  </form>
               </div>
             )}
           </div>
