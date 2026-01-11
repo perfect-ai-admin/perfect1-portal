@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,14 @@ import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 
 export default function LeadsAdmin() {
+  // Hide footer for this page
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (footer) footer.style.display = 'none';
+    return () => {
+      if (footer) footer.style.display = '';
+    };
+  }, []);
   const [selectedLead, setSelectedLead] = useState(null);
   const [showAddLeadDialog, setShowAddLeadDialog] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -371,7 +379,7 @@ export default function LeadsAdmin() {
         </div>
 
         {/* Mobile Cards View */}
-        <div className="md:hidden flex-1 overflow-auto space-y-2 px-1">
+        <div className="md:hidden flex-1 overflow-y-auto overflow-x-hidden space-y-2 pb-4">
           {sortedLeads.map((lead) => (
             <div key={lead.id} className="bg-white rounded-lg shadow-md p-3 border-r-4" style={{
               borderColor: lead.status === 'converted' ? '#16a34a' : 
