@@ -173,18 +173,26 @@ export default function CloseBusinessLanding() {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-center lg:text-right"
               >
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/20">
-                  <Shield className="w-5 h-5 text-white" />
-                  <span className="text-white text-sm font-bold">סגירה מסודרת ובטוחה</span>
+                <div className="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-yellow-400/40">
+                  <Shield className="w-5 h-5 text-yellow-400" />
+                  <span className="text-yellow-400 text-sm font-bold">ייעוץ פרטי - לא שירות ממשלתי</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  איך סוגרים עוסק פטור, עוסק מורשה או חברה בע״מ
+                  ייעוץ וליווי לסגירת עוסק
+                  <br />
+                  <span className="text-[#D4AF37]">אתה מבצע, אנחנו מדריכים</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  סגירת עסק בישראל דורשת טיפול מסודר מול מס הכנסה, מע״מ, ביטוח לאומי ולעיתים גם רשם החברות
+                  שירות ייעוץ פרטי - אנחנו מדריכים ומסייעים לך בטיפול מסודר מול מס הכנסה, מע״מ, ביטוח לאומי ורשם החברות
                 </p>
+
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
+                  <p className="text-sm text-white font-medium">
+                    ⚠️ אתה מבצע את סגירת התיק בעצמך מול הרשויות - אנחנו כאן כדי להדריך אותך לאורך הדרך
+                  </p>
+                </div>
 
                 <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-2xl p-6 mb-8 border-2 border-red-300/30 backdrop-blur-sm">
                   <div className="flex items-start gap-3">
@@ -520,7 +528,14 @@ export default function CloseBusinessLanding() {
                     {isSubmitting ? 'שולח...' : 'בדיקת מצב וסגירת תיק'}
                   </Button>
 
-                  <p className="text-xs text-gray-500 text-center">
+                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mt-6">
+                    <p className="text-xs text-gray-700 leading-relaxed">
+                      <strong className="text-yellow-800">חשוב:</strong> השירות ניתן על ידי גורם פרטי לצורך ייעוץ וליווי בלבד. 
+                      אתה תבצע את סגירת התיק בעצמך מול הרשויות - אנחנו נדריך אותך לאורך הדרך.
+                    </p>
+                  </div>
+
+                  <p className="text-xs text-gray-500 text-center mt-4">
                     ללא התחייבות • טיפול מסודר • ליווי מקצועי
                   </p>
                 </form>
