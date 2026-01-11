@@ -285,24 +285,7 @@ export default function BlogPost() {
                 </div>
               </div>
 
-              {/* Lead Form - Compact */}
-              <div className="my-8 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
-                <div className="text-center mb-4">
-                  <h3 className="text-xl font-bold text-[#1E3A5F] mb-1">
-                    רוצה לפתוח עוסק פטור?
-                  </h3>
-                  <p className="text-gray-600 text-sm">השאר פרטים ונחזור אליך תוך שעות</p>
-                </div>
-                <LeadForm 
-                  title=""
-                  subtitle=""
-                  sourcePage={`מאמר: ${post.title}`}
-                  variant="inline"
-                  compact={true}
-                />
-              </div>
-
-              {/* CTA - Compact */}
+              {/* CTA Section */}
               <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-5 text-center text-white my-8">
                 <h3 className="text-lg font-bold mb-2">מעוניין לפתוח עוסק פטור?</h3>
                 <p className="text-white/90 text-sm mb-4">נשמח לעזור לך להתחיל</p>
