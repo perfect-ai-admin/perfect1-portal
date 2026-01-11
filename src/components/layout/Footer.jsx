@@ -70,8 +70,18 @@ export default function Footer() {
                   צור קשר
                 </Link>
               </li>
-            </ul>
-          </div>
+              <li>
+                <Link to={createPageUrl('Terms')} className="text-gray-300 hover:text-white transition-colors">
+                  תנאי שימוש
+                </Link>
+              </li>
+              <li>
+                <Link to={createPageUrl('Privacy')} className="text-gray-300 hover:text-white transition-colors">
+                  פרטיות
+                </Link>
+              </li>
+              </ul>
+              </div>
 
           {/* Services */}
           <div>
