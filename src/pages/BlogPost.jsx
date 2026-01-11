@@ -285,25 +285,7 @@ export default function BlogPost() {
                 </div>
               </div>
 
-              {/* CTA Section */}
-              <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-5 text-center text-white my-8">
-                <h3 className="text-lg font-bold mb-2">מעוניין לפתוח עוסק פטור?</h3>
-                <p className="text-white/90 text-sm mb-4">נשמח לעזור לך להתחיל</p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <a href="https://wa.me/972502277087?text=היי, קראתי את המאמר ואשמח לקבל ייעוץ" target="_blank" rel="noopener noreferrer">
-                    <Button size="sm" className="w-full sm:w-auto bg-[#25D366] hover:bg-[#128C7E] text-white">
-                      <MessageCircle className="w-4 h-4 ml-2" />
-                      דבר איתנו בווצאפ
-                    </Button>
-                  </a>
-                  <a href="tel:0502277087">
-                    <Button size="sm" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-[#1E3A5F]">
-                      <Phone className="w-4 h-4 ml-2" />
-                      0502277087
-                    </Button>
-                  </a>
-                </div>
-              </div>
+
             </motion.div>
           </div>
         </article>
