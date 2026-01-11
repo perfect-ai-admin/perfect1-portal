@@ -32,19 +32,24 @@ export default function OsekPaturOnline() {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-center lg:text-right"
               >
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-                  <Laptop className="w-5 h-5 text-[#D4AF37]" />
-                  <span className="text-white font-bold">100% דיגיטלי</span>
+                <div className="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-yellow-400/40">
+                  <Shield className="w-5 h-5 text-yellow-400" />
+                  <span className="text-yellow-400 font-bold">שירות פרטי לייעוץ וליווי - לא שירות ממשלתי</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור
+                  ליווי וייעוץ מרחוק
                   <br />
-                  <span className="text-[#D4AF37]">אונליין מהבית</span>
+                  <span className="text-[#D4AF37]">לפתיחת עוסק פטור</span>
                 </h1>
-                <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                  ללא יציאה מהבית! חתימה דיגיטלית, העלאת מסמכים מהנייד, ומעקב סטטוס בזמן אמת
+                <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed">
+                  תהליך ליווי נוח מהבית - אנחנו מכוונים, אתם מבצעים את הפתיחה מול הרשויות
                 </p>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 mb-8 border border-white/20">
+                  <p className="text-white/90 text-lg font-medium">
+                    <strong className="text-yellow-400">שימו לב:</strong> הליווי שלנו מקוון - אנחנו עוזרים ומכוונים, אבל את הפתיחה תבצעו אתם מול הרשויות
+                  </p>
+                </div>
 
                 {/* Trust Badges */}
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-10">
@@ -87,12 +92,15 @@ export default function OsekPaturOnline() {
                 <div className="text-center mb-6">
                   <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-600 px-4 py-2 rounded-full mb-4">
                     <Zap className="w-5 h-5" />
-                    <span className="font-bold">תהליך מהיר ופשוט</span>
+                    <span className="font-bold">ייעוץ ראשוני ללא התחייבות</span>
                   </div>
                   <h2 className="text-2xl font-black text-[#1E3A5F] mb-2">
-                    מלא פרטים ונתחיל
+                    השאר פרטים לייעוץ ראשוני
                   </h2>
-                  <p className="text-gray-600">הכל מהנייד או מהמחשב</p>
+                  <p className="text-gray-600 mb-4">נסביר לך את התהליך ואיך אנחנו יכולים לעזור</p>
+                  <p className="text-xs text-gray-500">
+                    * השארת הפרטים מיועדת לייעוץ בלבד. האתר אינו אתר ממשלתי.
+                  </p>
                 </div>
                 <LeadForm 
                   title=""
@@ -122,12 +130,12 @@ export default function OsekPaturOnline() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { icon: Smartphone, title: 'מהנייד או המחשב', desc: 'פותחים את התיק מכל מקום, בכל זמן', color: '#3498DB' },
-                { icon: Lock, title: 'חתימה דיגיטלית', desc: 'חתימה מאובטחת ללא צורך בהדפסה', color: '#27AE60' },
-                { icon: Globe, title: 'העלאת מסמכים', desc: 'צלם מהנייד והעלה ישירות למערכת', color: '#9B59B6' },
-                { icon: Clock, title: 'מעקב בזמן אמת', desc: 'עדכונים לגבי סטטוס הפתיחה בזמן אמת', color: '#E67E22' },
-                { icon: Shield, title: 'אבטחת מידע', desc: 'המסמכים שלך מאובטחים ומוצפנים', color: '#1E3A5F' },
-                { icon: Zap, title: 'תהליך מהיר', desc: 'פחות זמן המתנה, יותר יעילות', color: '#D4AF37' }
+                { icon: Smartphone, title: 'ייעוץ מרחוק', desc: 'קבלת הכוונה מקצועית מהבית, ללא פגישות פרונטליות', color: '#3498DB' },
+                { icon: Lock, title: 'העברת מסמכים מאובטחת', desc: 'שליחת מסמכים דרך ערוצים מוצפנים', color: '#27AE60' },
+                { icon: Globe, title: 'ליווי אונליין', desc: 'תמיכה בוואטסאפ וטלפון לאורך התהליך', color: '#9B59B6' },
+                { icon: Clock, title: 'חיסכון בזמן', desc: 'ללא נסיעות למשרדים ופגישות פיזיות', color: '#E67E22' },
+                { icon: Shield, title: 'הכוונה מקצועית', desc: 'מדריכים אתכם שלב אחר שלב', color: '#1E3A5F' },
+                { icon: Zap, title: 'תהליך מסודר', desc: 'כל המידע והשלבים בצורה מסודרת', color: '#D4AF37' }
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -168,9 +176,9 @@ export default function OsekPaturOnline() {
 
             <div className="space-y-6">
               {[
-                { num: '1', title: 'מלא טופס אונליין', desc: 'מילוי טופס קצר עם הפרטים האישיים שלך' },
-                { num: '2', title: 'העלה מסמכים', desc: 'צלם והעלה: תעודת זהות + אישור בנק' },
-                { num: '3', title: 'חתום דיגיטלית', desc: 'חתימה דיגיטלית מאובטחת ואנחנו מטפלים בשאר' }
+                { num: '1', title: 'השארת פרטים לייעוץ', desc: 'ממלאים טופס קצר ואנחנו חוזרים אליכם לייעוץ ראשוני' },
+                { num: '2', title: 'הכנת מסמכים', desc: 'אנחנו מסבירים אילו מסמכים צריך ועוזרים בהכנה' },
+                { num: '3', title: 'פתיחה מול הרשויות', desc: 'אתם פותחים את התיק מול הרשויות עם ההכוונה שלנו' }
               ].map((step, index) => (
                 <motion.div
                   key={index}

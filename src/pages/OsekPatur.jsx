@@ -33,19 +33,24 @@ export default function OsekPatur() {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-center lg:text-right"
               >
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-                  <Award className="w-5 h-5 text-[#D4AF37]" />
-                  <span className="text-white font-bold">המרכז הארצי לעוסקים פטורים</span>
+                <div className="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-yellow-400/40">
+                  <Shield className="w-5 h-5 text-yellow-400" />
+                  <span className="text-yellow-400 font-bold">שירות פרטי לייעוץ וליווי - לא שירות ממשלתי</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור
+                  ליווי וייעוץ פרטי
                   <br />
-                  <span className="text-[#D4AF37]">תוך 24-72 שעות</span>
+                  <span className="text-[#D4AF37]">לפתיחת עוסק פטור</span>
                 </h1>
-                <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-                  כל מה שצריך כדי להתחיל לעבוד חוקית - רישום במס הכנסה, מע״מ, ביטוח לאומי + ליווי מלא
+                <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed">
+                  אנו מלווים אותך בהבנת התהליך, הכנת המסמכים והכוונה לפתיחת התיק מול הרשויות הרלוונטיות
                 </p>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 mb-8 border border-white/20">
+                  <p className="text-white/90 text-lg font-medium">
+                    <strong className="text-yellow-400">שימו לב:</strong> את פתיחת התיק עצמו תבצעו מול הרשויות (מס הכנסה, ביטוח לאומי) - אנחנו כאן כדי להכין אתכם ולהדריך אתכם לאורך הדרך
+                  </p>
+                </div>
 
                 {/* Trust Badges */}
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-10">
@@ -89,12 +94,15 @@ export default function OsekPatur() {
                 <div className="text-center mb-6">
                   <div className="inline-flex items-center gap-2 bg-[#27AE60]/10 text-[#27AE60] px-4 py-2 rounded-full mb-4">
                     <Zap className="w-5 h-5" />
-                    <span className="font-bold">תגובה תוך שעות</span>
+                    <span className="font-bold">ייעוץ ראשוני ללא התחייבות</span>
                   </div>
                   <h2 className="text-2xl font-black text-[#1E3A5F] mb-2">
-                    פתח עוסק פטור היום
+                    השאר פרטים לייעוץ ראשוני
                   </h2>
-                  <p className="text-gray-600">מלא פרטים ונחזור אליך מיד</p>
+                  <p className="text-gray-600 mb-4">נסביר לך בדיוק מה התהליך ואיך אנחנו יכולים לעזור</p>
+                  <p className="text-xs text-gray-500">
+                    * השארת הפרטים מיועדת לייעוץ בלבד. האתר אינו אתר ממשלתי.
+                  </p>
                 </div>
                 <LeadForm 
                   title=""
@@ -124,12 +132,12 @@ export default function OsekPatur() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { icon: FileText, title: 'פתיחת תיק במס הכנסה', desc: 'רישום רשמי במס הכנסה כעוסק פטור', color: '#1E3A5F' },
-                { icon: Shield, title: 'רישום במע"מ כפטור', desc: 'פטור מגביית מע"מ עד 120,000₪', color: '#27AE60' },
-                { icon: Users, title: 'פתיחת תיק בביטוח לאומי', desc: 'רישום וקבלת זכויות בביטוח לאומי', color: '#D4AF37' },
-                { icon: CheckCircle, title: 'הדרכה מלאה', desc: 'הסבר על כל החובות והזכויות', color: '#3498DB' },
-                { icon: Phone, title: 'תמיכה טלפונית', desc: 'זמינים לכל שאלה לאורך הדרך', color: '#9B59B6' },
-                { icon: Zap, title: 'תהליך מהיר', desc: 'פתיחת התיק תוך 24-72 שעות', color: '#E67E22' }
+                { icon: FileText, title: 'הכנת מסמכים', desc: 'עוזרים לכם להכין את כל המסמכים הנדרשים לפתיחה', color: '#1E3A5F' },
+                { icon: Shield, title: 'הכוונה מקצועית', desc: 'מדריכים אתכם לאורך כל התהליך מול הרשויות', color: '#27AE60' },
+                { icon: Users, title: 'ליווי צמוד', desc: 'זמינים לכל שאלה לאורך הדרך', color: '#D4AF37' },
+                { icon: CheckCircle, title: 'הסבר על חובות וזכויות', desc: 'מסבירים מה חשוב לדעת כעוסק פטור', color: '#3498DB' },
+                { icon: Phone, title: 'תמיכה מלאה', desc: 'תמיכה טלפונית ובוואטסאפ', color: '#9B59B6' },
+                { icon: Zap, title: 'תהליך מסודר', desc: 'כל השלבים בצורה מסודרת וברורה', color: '#E67E22' }
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -163,17 +171,17 @@ export default function OsekPatur() {
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                איך זה עובד?
+                איך התהליך עובד?
               </h2>
-              <p className="text-xl text-gray-600">4 צעדים פשוטים להתחלת עסק</p>
+              <p className="text-xl text-gray-600">מה אנחנו עושים ומה אתם עושים</p>
             </motion.div>
 
             <div className="space-y-6">
               {[
-                { num: '1', title: 'יצירת קשר', desc: 'שולחים לנו וואטסאפ או מתקשרים - נענה מיד' },
-                { num: '2', title: 'מסירת מסמכים', desc: 'שולחים תעודת זהות + אישור ניהול חשבון בנק' },
-                { num: '3', title: 'הגשת בקשות', desc: 'אנחנו מגישים את הבקשות לכל הרשויות' },
-                { num: '4', title: 'קבלת אישורים', desc: 'מקבלים את כל האישורים תוך 24-72 שעות' }
+                { num: '1', title: 'יצירת קשר והכוונה', desc: 'אתם פונים אלינו - אנחנו מסבירים מה צריך ומכינים אתכם לתהליך' },
+                { num: '2', title: 'הכנת מסמכים', desc: 'עוזרים לכם להכין את המסמכים הנדרשים (ת.ז., אישור בנק וכו׳)' },
+                { num: '3', title: 'פתיחה מול הרשויות', desc: 'אתם פותחים את התיק מול הרשויות (מס הכנסה, ביטוח לאומי) - אנחנו מדריכים' },
+                { num: '4', title: 'קבלת אישורים', desc: 'אתם מקבלים את האישורים מהרשויות וניתן להתחיל לעבוד חוקית' }
               ].map((step, index) => (
                 <motion.div
                   key={index}
