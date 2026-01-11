@@ -22,11 +22,14 @@ export default function Footer() {
               </div>
               <div>
                 <h3 className="font-bold text-lg">פרפקט וואן</h3>
-                <p className="text-sm text-gray-300">המרכז לעוסקים פטורים</p>
+                <p className="text-sm text-gray-300">ח.פ: 516309747</p>
               </div>
             </div>
-            <p className="text-gray-300 leading-relaxed">
-              המרכז הארצי לעוסקים פטורים בישראל. פותחים כ-2,000 עוסקים פטורים בשנה עם ליווי מקצועי מא' ועד ת'.
+            <p className="text-gray-300 leading-relaxed mb-3">
+              פרפקט וואן היא חברה פרטית המספקת ייעוץ וליווי בפתיחת עסקים בישראל.
+            </p>
+            <p className="text-xs text-gray-400">
+              ⚠️ אנחנו אינו אתר ממשלתי. אנחנו מדריכים וליווים - אתה מבצע את הפתיחה בעצמך מול הרשויות.
             </p>
           </div>
 
