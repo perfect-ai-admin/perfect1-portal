@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus, Users } from 'lucide-react';
+import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus, Users, CheckSquare, Square } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
@@ -20,7 +20,9 @@ export default function LeadsAdmin() {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
-  const [sortBy, setSortBy] = useState(null); // 'status' or 'priority'
+  const [sortBy, setSortBy] = useState(null);
+  const [selectedLeads, setSelectedLeads] = useState([]);
+  const [showBulkAssignDialog, setShowBulkAssignDialog] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: leads, isLoading } = useQuery({
@@ -85,6 +87,32 @@ export default function LeadsAdmin() {
       id: lead.id,
       data: { ...lead, status: newStatus, last_contact_date: new Date().toISOString().split('T')[0] }
     });
+  };
+
+  const toggleSelectLead = (leadId) => {
+    setSelectedLeads(prev => 
+      prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedLeads.length === sortedLeads.length) {
+      setSelectedLeads([]);
+    } else {
+      setSelectedLeads(sortedLeads.map(lead => lead.id));
+    }
+  };
+
+  const handleBulkAssignToAgent = async (agentName) => {
+    for (const leadId of selectedLeads) {
+      const lead = leads.find(l => l.id === leadId);
+      if (lead) {
+        await base44.entities.Lead.update(leadId, { ...lead, agent_name: agentName === 'none' ? null : agentName });
+      }
+    }
+    queryClient.invalidateQueries({ queryKey: ['leads'] });
+    setSelectedLeads([]);
+    setShowBulkAssignDialog(false);
   };
 
   const exportToCSV = () => {
@@ -255,6 +283,32 @@ export default function LeadsAdmin() {
           </div>
         </div>
 
+        {/* Bulk Actions */}
+        {selectedLeads.length > 0 && (
+          <div className="bg-indigo-100 border-2 border-indigo-300 rounded-lg shadow p-4 mb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="font-bold text-indigo-900">{selectedLeads.length} לידים נבחרו</span>
+                <Button 
+                  onClick={() => setShowBulkAssignDialog(true)}
+                  size="sm"
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  <Users className="w-4 h-4 ml-2" />
+                  העבר לנציג
+                </Button>
+              </div>
+              <Button 
+                onClick={() => setSelectedLeads([])}
+                variant="outline"
+                size="sm"
+              >
+                בטל סימון
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Filters */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -320,6 +374,15 @@ export default function LeadsAdmin() {
             <table className="w-full">
               <thead className="bg-[#1E3A5F] text-white">
                 <tr>
+                  <th className="px-4 py-3 text-center">
+                    <button onClick={toggleSelectAll} className="hover:bg-[#2C5282] p-1 rounded">
+                      {selectedLeads.length === sortedLeads.length && sortedLeads.length > 0 ? (
+                        <CheckSquare className="w-5 h-5" />
+                      ) : (
+                        <Square className="w-5 h-5" />
+                      )}
+                    </button>
+                  </th>
                   <th className="px-4 py-3 text-right">תאריך כניסה</th>
                   <th className="px-4 py-3 text-right">שם</th>
                   <th className="px-4 py-3 text-right">טלפון</th>
@@ -356,6 +419,15 @@ export default function LeadsAdmin() {
               <tbody>
                 {sortedLeads.map((lead, index) => (
                   <tr key={lead.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                    <td className="px-4 py-3 text-center">
+                      <button onClick={() => toggleSelectLead(lead.id)} className="hover:bg-gray-200 p-1 rounded">
+                        {selectedLeads.includes(lead.id) ? (
+                          <CheckSquare className="w-5 h-5 text-indigo-600" />
+                        ) : (
+                          <Square className="w-5 h-5 text-gray-400" />
+                        )}
+                      </button>
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
                     </td>
@@ -581,6 +653,44 @@ export default function LeadsAdmin() {
             onCancel={() => setShowAddLeadDialog(false)}
             isLoading={createLeadMutation.isPending}
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Assign Dialog */}
+      <Dialog open={showBulkAssignDialog} onOpenChange={setShowBulkAssignDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>העברת {selectedLeads.length} לידים לנציג</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4" dir="rtl">
+            <p className="text-gray-600">בחר נציג להעברה:</p>
+            <div className="space-y-2">
+              <Button
+                onClick={() => handleBulkAssignToAgent('none')}
+                variant="outline"
+                className="w-full justify-start"
+              >
+                ללא נציג
+              </Button>
+              {agents.map(agent => (
+                <Button
+                  key={agent.id}
+                  onClick={() => handleBulkAssignToAgent(agent.full_name)}
+                  variant="outline"
+                  className="w-full justify-start hover:bg-indigo-50"
+                >
+                  {agent.full_name}
+                </Button>
+              ))}
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowBulkAssignDialog(false)}
+              className="w-full"
+            >
+              ביטול
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
