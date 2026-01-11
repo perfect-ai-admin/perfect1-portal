@@ -19,9 +19,32 @@ export default function Partnership() {
           <section>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">סקירת השוק בישראל</h3>
             <div className="bg-blue-50 border-r-4 border-blue-600 p-6 rounded mb-6">
-              <p className="text-lg text-blue-900 leading-relaxed">
+              <p className="text-lg text-blue-900 leading-relaxed mb-4">
                 בישראל יש <strong>כ-550,000 עצמאים ועסקים קטנים</strong> (עוסקים פטורים, מורשים, חברות בע"מ) שצריכים שירותי הנהלת חשבונות וייעוץ מס.
               </p>
+              <div className="bg-white p-4 rounded-lg border-2 border-blue-300 mt-4">
+                <p className="font-bold text-blue-900 mb-3">📊 הפוטנציאל השנתי האמיתי - עסקים חדשים:</p>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">עוסקים פטורים</p>
+                    <p className="text-3xl font-bold text-indigo-600">~80,000</p>
+                    <p className="text-xs text-gray-500">נפתחים מדי שנה</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">עוסקים מורשים</p>
+                    <p className="text-3xl font-bold text-teal-600">~15,000</p>
+                    <p className="text-xs text-gray-500">נפתחים מדי שנה</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">חברות בע"מ</p>
+                    <p className="text-3xl font-bold text-purple-600">~8,000</p>
+                    <p className="text-xs text-gray-500">נפתחות מדי שנה</p>
+                  </div>
+                </div>
+                <p className="text-blue-800 font-semibold mt-4 text-center">
+                  סה"כ פוטנציאל שנתי: <strong>~103,000 עסקים חדשים!</strong>
+                </p>
+              </div>
             </div>
           </section>
 
@@ -140,14 +163,7 @@ export default function Partnership() {
                   <div className="bg-white p-3 rounded">
                     <p className="text-sm text-gray-600">ליווי חודשי</p>
                     <p className="text-2xl font-bold text-indigo-600">180 ₪</p>
-                  </div>
-                  <div className="bg-white p-3 rounded">
-                    <p className="text-sm text-gray-600">דוח שנתי</p>
-                    <p className="text-2xl font-bold text-indigo-600">1,200 ₪</p>
-                  </div>
-                  <div className="bg-white p-3 rounded">
-                    <p className="text-sm text-gray-600">פתיחת תיק</p>
-                    <p className="text-2xl font-bold text-indigo-600">500 ₪</p>
+                    <p className="text-xs text-gray-500 mt-1">ללא דוח שנתי</p>
                   </div>
                 </div>
               </div>
@@ -157,15 +173,11 @@ export default function Partnership() {
                 <div className="space-y-3">
                   <div className="bg-white p-3 rounded">
                     <p className="text-sm text-gray-600">ליווי חודשי</p>
-                    <p className="text-2xl font-bold text-teal-600">650 ₪</p>
+                    <p className="text-2xl font-bold text-teal-600">350 ₪</p>
                   </div>
                   <div className="bg-white p-3 rounded">
                     <p className="text-sm text-gray-600">דוח שנתי</p>
-                    <p className="text-2xl font-bold text-teal-600">3,000 ₪</p>
-                  </div>
-                  <div className="bg-white p-3 rounded">
-                    <p className="text-sm text-gray-600">פתיחת תיק</p>
-                    <p className="text-2xl font-bold text-teal-600">1,500 ₪</p>
+                    <p className="text-2xl font-bold text-teal-600">1,200 ₪</p>
                   </div>
                 </div>
               </div>
@@ -243,48 +255,58 @@ export default function Partnership() {
               <div className="bg-white border-2 border-gray-300 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-semibold text-gray-800">שכר רואי חשבון (2 משרות מלאות)</p>
-                    <p className="text-sm text-gray-600">20,000 ₪ × 2 × 12 חודשים</p>
+                    <p className="font-semibold text-gray-800">פתיחת תיקים</p>
+                    <p className="text-sm text-gray-600">500 תיקים × 70 ₪</p>
                   </div>
-                  <span className="text-xl font-bold text-red-600">480,000 ₪</span>
+                  <span className="text-xl font-bold text-red-600">35,000 ₪</span>
                 </div>
               </div>
 
               <div className="bg-white border-2 border-gray-300 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-semibold text-gray-800">שכר נציגי מכירות (3 משרות)</p>
-                    <p className="text-sm text-gray-600">15,000 ₪ × 3 × 12 חודשים</p>
+                    <p className="font-semibold text-gray-800">אפליקציה (שנה ראשונה)</p>
+                    <p className="text-sm text-gray-600">500 משתמשים × 18 ₪ × 12 חודשים</p>
                   </div>
-                  <span className="text-xl font-bold text-red-600">540,000 ₪</span>
+                  <span className="text-xl font-bold text-red-600">108,000 ₪</span>
                 </div>
               </div>
 
               <div className="bg-white border-2 border-gray-300 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-semibold text-gray-800">פיתוח ותחזוקת מערכת</p>
-                    <p className="text-sm text-gray-600">שרתים, אחסון, בוט AI, עדכונים</p>
+                    <p className="font-semibold text-gray-800">בוט וואטסאפ (שנה ראשונה)</p>
+                    <p className="text-sm text-gray-600">500 משתמשים × 8 ₪ × 12 חודשים</p>
                   </div>
-                  <span className="text-xl font-bold text-red-600">120,000 ₪</span>
+                  <span className="text-xl font-bold text-red-600">48,000 ₪</span>
                 </div>
               </div>
 
               <div className="bg-white border-2 border-gray-300 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-semibold text-gray-800">שיווק ופרסום</p>
-                    <p className="text-sm text-gray-600">גוגל, פייסבוק, קמפיינים דיגיטליים</p>
+                    <p className="font-semibold text-gray-800">הנהלת חשבונות</p>
+                    <p className="text-sm text-gray-600">7,000 ₪ × 12 חודשים</p>
                   </div>
-                  <span className="text-xl font-bold text-red-600">180,000 ₪</span>
+                  <span className="text-xl font-bold text-red-600">84,000 ₪</span>
                 </div>
               </div>
 
               <div className="bg-white border-2 border-gray-300 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-semibold text-gray-800">משרד, ציוד, הוצאות שוטפות</p>
-                    <p className="text-sm text-gray-600">שכירות, חשמל, אינטרנט, ביטוחים</p>
+                    <p className="font-semibold text-gray-800">מוקד מענה שאלות</p>
+                    <p className="text-sm text-gray-600">8,000 ₪ × 12 חודשים</p>
+                  </div>
+                  <span className="text-xl font-bold text-red-600">96,000 ₪</span>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-gray-300 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-gray-800">מנהל עבודה</p>
+                    <p className="text-sm text-gray-600">8,000 ₪ × 12 חודשים</p>
                   </div>
                   <span className="text-xl font-bold text-red-600">96,000 ₪</span>
                 </div>
@@ -293,7 +315,7 @@ export default function Partnership() {
               <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-lg text-red-900">סה"כ עלויות שנתיות:</span>
-                  <span className="text-2xl font-bold text-red-600">1,416,000 ₪</span>
+                  <span className="text-2xl font-bold text-red-600">467,000 ₪</span>
                 </div>
               </div>
 
@@ -301,11 +323,11 @@ export default function Partnership() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-xl">רווח תפעולי שנתי:</span>
-                    <span className="text-3xl font-bold">~300,000 ₪</span>
+                    <span className="text-3xl font-bold">~1,249,000 ₪</span>
                   </div>
                   <div className="flex justify-between items-center border-t border-white/30 pt-3">
                     <span className="font-semibold">רווח לשותף (50/50):</span>
-                    <span className="text-2xl font-bold">~150,000 ₪</span>
+                    <span className="text-2xl font-bold">~624,500 ₪</span>
                   </div>
                   <p className="text-sm opacity-90 pt-2">* זה רק משנה ראשונה עם 500 עוסקים פטורים בלבד</p>
                 </div>
@@ -531,192 +553,109 @@ export default function Partnership() {
     {
       number: 4,
       icon: <TrendingUp className="w-6 h-6" />,
-      title: "מודל רכישת לקוחות והמרה",
+      title: "פוטנציאל לידים חודשי לפי תחום",
       color: "from-orange-600 to-orange-700",
       content: (
         <div className="space-y-8">
           <section>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">ערוצי שיווק והשגת לידים</h3>
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
-                <h4 className="font-bold text-lg text-blue-900 mb-4">🎯 שיווק דיגיטלי</h4>
-                <div className="space-y-3">
-                  <div className="bg-white p-3 rounded">
-                    <p className="font-semibold text-blue-900">גוגל פרסום (Google Ads)</p>
-                    <p className="text-sm text-gray-600">מילות מפתח: "עוסק פטור", "רואה חשבון"</p>
-                    <p className="text-blue-700 font-bold mt-1">עלות לליד: 50-80 ₪</p>
-                  </div>
-                  <div className="bg-white p-3 rounded">
-                    <p className="font-semibold text-blue-900">פייסבוק ואינסטגרם</p>
-                    <p className="text-sm text-gray-600">מיקוד עצמאים, פרילנסרים</p>
-                    <p className="text-blue-700 font-bold mt-1">עלות לליד: 30-50 ₪</p>
-                  </div>
-                  <div className="bg-white p-3 rounded">
-                    <p className="font-semibold text-blue-900">SEO אורגני</p>
-                    <p className="text-sm text-gray-600">תוכן איכותי, מאמרים, מדריכים</p>
-                    <p className="text-blue-700 font-bold mt-1">עלות לליד: 10-20 ₪</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-green-50 border-2 border-green-300 rounded-lg p-6">
-                <h4 className="font-bold text-lg text-green-900 mb-4">🤝 שיתופי פעולה</h4>
-                <div className="space-y-3">
-                  <div className="bg-white p-3 rounded">
-                    <p className="font-semibold text-green-900">רשתות חברתיות מקצועיות</p>
-                    <p className="text-sm text-gray-600">קבוצות פרילנסרים, קהילות</p>
-                    <p className="text-green-700 font-bold mt-1">עלות לליד: 20-40 ₪</p>
-                  </div>
-                  <div className="bg-white p-3 rounded">
-                    <p className="font-semibold text-green-900">שיתופי פעולה עם רו"ח</p>
-                    <p className="text-sm text-gray-600">הפניות מרואי חשבון מקצועיים</p>
-                    <p className="text-green-700 font-bold mt-1">עלות לליד: 0-30 ₪</p>
-                  </div>
-                  <div className="bg-white p-3 rounded">
-                    <p className="font-semibold text-green-900">הפניות מלקוחות קיימים</p>
-                    <p className="text-sm text-gray-600">תוכנית הפניות עם תמריצים</p>
-                    <p className="text-green-700 font-bold mt-1">עלות לליד: 0-20 ₪</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">משפך המכירה והמרת לידים</h3>
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-300 rounded-lg p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">פוטנציאל לידים חודשי</h3>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg p-6 mb-6">
+              <p className="text-lg text-blue-900 mb-6 leading-relaxed">
+                על בסיס הפוטנציאל השנתי של עסקים חדשים, הנה הערכת לידים חודשיים אפשריים לפי תחום:
+              </p>
+              
               <div className="space-y-6">
-                <div className="bg-white p-5 rounded-lg border-r-4 border-blue-500">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-bold text-lg">שלב 1: לידים (חודש ממוצע)</span>
-                    <span className="text-3xl font-bold text-blue-600">500</span>
+                <div className="bg-white border-2 border-indigo-300 rounded-lg p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="font-bold text-xl text-indigo-900">עוסקים פטורים</h4>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">פוטנציאל שנתי</p>
+                      <p className="text-2xl font-bold text-indigo-600">~80,000</p>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">פניות מהאתר, מודעות, רשתות חברתיות</p>
-                  <p className="text-blue-700 font-semibold mt-2">עלות ממוצעת: 40 ₪ × 500 = 20,000 ₪</p>
-                </div>
-
-                <div className="mr-8">
-                  <div className="h-12 border-r-4 border-purple-400"></div>
-                  <p className="text-center text-purple-700 font-semibold">שיחור: 60%</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-lg border-r-4 border-purple-500">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-bold text-lg">שלב 2: שיחות מכירה</span>
-                    <span className="text-3xl font-bold text-purple-600">300</span>
+                  <div className="bg-indigo-50 p-4 rounded">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-indigo-900">פוטנציאל לידים חודשי:</span>
+                      <span className="text-3xl font-bold text-indigo-600">6,600</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">80,000 / 12 חודשים</p>
+                    <div className="mt-4 pt-4 border-t border-indigo-200">
+                      <p className="text-indigo-800 font-semibold">יעד ריאלי לכיסוי: <span className="text-2xl">500-800</span> לידים/חודש</p>
+                      <p className="text-xs text-gray-600 mt-1">כיסוי של 7-12% מהשוק החודשי</p>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">לידים שענו לטלפון ושוחחו עם נציג</p>
                 </div>
 
-                <div className="mr-8">
-                  <div className="h-12 border-r-4 border-green-400"></div>
-                  <p className="text-center text-green-700 font-semibold">המרה: 40%</p>
-                </div>
-
-                <div className="bg-white p-5 rounded-lg border-r-4 border-green-500">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-bold text-lg">שלב 3: לקוחות שנרשמו</span>
-                    <span className="text-3xl font-bold text-green-600">120</span>
+                <div className="bg-white border-2 border-teal-300 rounded-lg p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="font-bold text-xl text-teal-900">עוסקים מורשים</h4>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">פוטנציאל שנתי</p>
+                      <p className="text-2xl font-bold text-teal-600">~15,000</p>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">רכישת שירות ותחילת טיפול</p>
-                </div>
-
-                <div className="mr-8">
-                  <div className="h-12 border-r-4 border-yellow-400"></div>
-                  <p className="text-center text-yellow-700 font-semibold">שימור: 80%</p>
-                </div>
-
-                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-5 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-bold text-lg">שלב 4: לקוחות פעילים (אחרי 6 חודשים)</span>
-                    <span className="text-3xl font-bold">96</span>
+                  <div className="bg-teal-50 p-4 rounded">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-teal-900">פוטנציאל לידים חודשי:</span>
+                      <span className="text-3xl font-bold text-teal-600">1,250</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">15,000 / 12 חודשים</p>
+                    <div className="mt-4 pt-4 border-t border-teal-200">
+                      <p className="text-teal-800 font-semibold">יעד ריאלי לכיסוי: <span className="text-2xl">100-150</span> לידים/חודש</p>
+                      <p className="text-xs text-gray-600 mt-1">כיסוי של 8-12% מהשוק החודשי</p>
+                    </div>
                   </div>
-                  <p className="text-sm">לקוחות שממשיכים את השירות החודשי</p>
+                </div>
+
+                <div className="bg-white border-2 border-purple-300 rounded-lg p-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="font-bold text-xl text-purple-900">חברות בע"מ</h4>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-600">פוטנציאל שנתי</p>
+                      <p className="text-2xl font-bold text-purple-600">~8,000</p>
+                    </div>
+                  </div>
+                  <div className="bg-purple-50 p-4 rounded">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-purple-900">פוטנציאל לידים חודשי:</span>
+                      <span className="text-3xl font-bold text-purple-600">667</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">8,000 / 12 חודשים</p>
+                    <div className="mt-4 pt-4 border-t border-purple-200">
+                      <p className="text-purple-800 font-semibold">יעד ריאלי לכיסוי: <span className="text-2xl">40-80</span> לידים/חודש</p>
+                      <p className="text-xs text-gray-600 mt-1">כיסוי של 6-12% מהשוק החודשי</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
           <section className="mt-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">חישוב עלות רכישת לקוח (CAC)</h3>
-            <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">סיכום פוטנציאל</h3>
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-400 rounded-lg p-6">
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">עלות שיווק חודשית ממוצעת:</span>
-                  <span className="text-xl font-bold text-blue-600">20,000 ₪</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">עלות נציגי מכירות (חלקי):</span>
-                  <span className="text-xl font-bold text-blue-600">15,000 ₪</span>
-                </div>
-                <div className="flex justify-between items-center border-t-2 border-blue-300 pt-3">
-                  <span className="font-semibold">סה"כ עלות רכישה:</span>
-                  <span className="text-xl font-bold text-blue-600">35,000 ₪</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">מספר לקוחות חדשים בחודש:</span>
-                  <span className="text-xl font-bold text-blue-600">120</span>
-                </div>
-                <div className="bg-green-500 text-white p-4 rounded-lg">
+                <div className="bg-white p-5 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">CAC (עלות רכישת לקוח):</span>
-                    <span className="text-3xl font-bold">~292 ₪</span>
+                    <span className="font-bold text-lg">סה"כ פוטנציאל לידים חודשי בשוק:</span>
+                    <span className="text-3xl font-bold text-orange-600">~8,500</span>
                   </div>
                 </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="mt-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">ערך לקוח לכל חייו (LTV)</h3>
-            <div className="bg-green-50 border-2 border-green-300 rounded-lg p-6">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">הכנסה חודשית ממוצעת מלקוח:</span>
-                  <span className="text-xl font-bold text-green-600">180 ₪</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">משך חיים ממוצע (שנים):</span>
-                  <span className="text-xl font-bold text-green-600">3 שנים</span>
-                </div>
-                <div className="flex justify-between items-center border-t-2 border-green-300 pt-3">
-                  <span className="font-semibold">סה"כ הכנסות:</span>
-                  <span className="text-xl font-bold text-green-600">180 × 36 = 6,480 ₪</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">מינוס עלויות תפעול (50%):</span>
-                  <span className="text-xl font-bold text-red-600">-3,240 ₪</span>
-                </div>
-                <div className="bg-green-600 text-white p-4 rounded-lg">
+                <div className="bg-white p-5 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">LTV (ערך לקוח):</span>
-                    <span className="text-3xl font-bold">~3,240 ₪</span>
+                    <span className="font-bold text-lg">יעד ריאלי לכיסוי (כל התחומים):</span>
+                    <span className="text-3xl font-bold text-green-600">640-1,030</span>
                   </div>
+                  <p className="text-sm text-gray-600 mt-2">כיסוי של 7-12% מהשוק</p>
+                </div>
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-5 rounded-lg">
+                  <p className="font-bold text-xl mb-3">💡 משמעות:</p>
+                  <p className="text-lg leading-relaxed">
+                    השוק גדול מספיק כדי לתמוך בצמיחה משמעותית. גם כיסוי של 10% בלבד מהווה 
+                    מאות לקוחות חדשים מדי חודש!
+                  </p>
                 </div>
               </div>
-            </div>
-          </section>
-
-          <section className="mt-8">
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4">🎯 יחס LTV/CAC</h3>
-              <div className="flex items-center justify-center gap-8">
-                <div className="text-center">
-                  <p className="text-sm opacity-90">LTV</p>
-                  <p className="text-4xl font-bold">3,240 ₪</p>
-                </div>
-                <div className="text-5xl font-bold">/</div>
-                <div className="text-center">
-                  <p className="text-sm opacity-90">CAC</p>
-                  <p className="text-4xl font-bold">292 ₪</p>
-                </div>
-                <div className="text-5xl font-bold">=</div>
-                <div className="text-center">
-                  <p className="text-sm opacity-90">יחס</p>
-                  <p className="text-5xl font-bold">11:1</p>
-                </div>
-              </div>
-              <p className="text-center mt-6 text-lg">יחס מעולה! (מומלץ מעל 3:1)</p>
             </div>
           </section>
         </div>
@@ -803,33 +742,78 @@ export default function Partnership() {
           </section>
 
           <section className="mt-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">השקעה ראשונית נדרשת</h3>
-            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">מודל ההשקעה והמימון</h3>
+            <div className="bg-blue-50 border-r-4 border-blue-600 p-6 rounded mb-6">
+              <p className="text-lg text-blue-900 leading-relaxed">
+                <strong>מודל המימון:</strong> ההשקעה היא בעובדים שינהלו את הלקוחות, יפתחו תיקים, ויטפלו בשירות השוטף. 
+                אנחנו ממנים אותם ביחד בשותפות 50/50.
+              </p>
+            </div>
+
+            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6 mb-6">
+              <h4 className="font-bold text-xl text-yellow-900 mb-4">💰 איך זה עובד?</h4>
               <div className="space-y-4">
-                <div className="flex justify-between items-center pb-3 border-b-2 border-yellow-200">
-                  <span className="font-semibold">פיתוח פלטפורמה וטכנולוגיה:</span>
-                  <span className="text-xl font-bold text-yellow-700">100,000 ₪</span>
+                <div className="bg-white p-4 rounded-lg border-r-4 border-green-500">
+                  <p className="font-bold text-green-900 mb-2">הכנסות שנה ראשונה</p>
+                  <p className="text-gray-700 text-sm mb-3">
+                    500 לקוחות × 180 ₪ חודשי × 12 חודשים = <strong className="text-green-600">1,080,000 ₪</strong>
+                  </p>
+                  <p className="text-green-800 font-semibold">
+                    ✓ ההכנסה השנתית הזו הולכת לשותף A (הטכנולוגיה/שיווק)
+                  </p>
                 </div>
-                <div className="flex justify-between items-center pb-3 border-b-2 border-yellow-200">
-                  <span className="font-semibold">שיווק והשקה (6 חודשים ראשונים):</span>
-                  <span className="text-xl font-bold text-yellow-700">120,000 ₪</span>
+
+                <div className="bg-white p-4 rounded-lg border-r-4 border-orange-500">
+                  <p className="font-bold text-orange-900 mb-2">עלויות תפעול שנה ראשונה</p>
+                  <p className="text-gray-700 text-sm mb-3">
+                    הנהלת חשבונות + מוקד + מנהל + אפליקציה + בוט + פתיחות = <strong className="text-red-600">467,000 ₪</strong>
+                  </p>
+                  <p className="text-orange-800 font-semibold">
+                    ⚖️ ההוצאות האלה מתחלקות 50/50 בין השותפים
+                  </p>
                 </div>
-                <div className="flex justify-between items-center pb-3 border-b-2 border-yellow-200">
-                  <span className="font-semibold">הקמת משרד וציוד:</span>
-                  <span className="text-xl font-bold text-yellow-700">50,000 ₪</span>
-                </div>
-                <div className="flex justify-between items-center pb-3 border-b-2 border-yellow-200">
-                  <span className="font-semibold">הון חוזר (שכר, הוצאות שוטפות):</span>
-                  <span className="text-xl font-bold text-yellow-700">80,000 ₪</span>
-                </div>
-                <div className="bg-orange-500 text-white p-4 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">סה"כ השקעה:</span>
-                    <span className="text-3xl font-bold">350,000 ₪</span>
+
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-5 rounded-lg">
+                  <p className="font-bold text-xl mb-3">חישוב השקעה לשותף:</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>חלק בעלויות שנה ראשונה (50%):</span>
+                      <span className="font-bold">233,500 ₪</span>
+                    </div>
+                    <div className="flex justify-between border-t border-white/30 pt-2">
+                      <span className="font-bold text-lg">סה"כ השקעה נדרשת לשותף:</span>
+                      <span className="text-3xl font-bold">~234,000 ₪</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-white/30">
-                    <span>השקעה לשותף (50%):</span>
-                    <span className="text-2xl font-bold">175,000 ₪</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-green-50 border-2 border-green-300 rounded-lg p-6">
+              <h4 className="font-bold text-xl text-green-900 mb-4">📊 התמונה הכוללת - שנה ראשונה</h4>
+              <div className="space-y-3">
+                <div className="bg-white p-4 rounded">
+                  <div className="flex justify-between">
+                    <span className="font-semibold">שותף A מקבל הכנסות:</span>
+                    <span className="font-bold text-green-600">1,080,000 ₪</span>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded">
+                  <div className="flex justify-between">
+                    <span className="font-semibold">שותף B משקיע:</span>
+                    <span className="font-bold text-orange-600">234,000 ₪</span>
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded">
+                  <div className="flex justify-between">
+                    <span className="font-semibold">רווח לחלוקה:</span>
+                    <span className="font-bold text-blue-600">613,000 ₪</span>
+                  </div>
+                </div>
+                <div className="bg-green-600 text-white p-4 rounded">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-lg">רווח לכל שותף (50/50):</span>
+                    <span className="text-3xl font-bold">~306,500 ₪</span>
                   </div>
                 </div>
               </div>
@@ -843,30 +827,19 @@ export default function Partnership() {
                 <div className="bg-white p-4 rounded-lg">
                   <p className="font-semibold text-gray-800 mb-2">שנה ראשונה</p>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">רווח לשותף:</span>
-                    <span className="font-bold text-green-600">150,000 ₪</span>
+                    <span className="text-gray-600">רווח לשותף B:</span>
+                    <span className="font-bold text-green-600">306,500 ₪</span>
                   </div>
                   <div className="flex justify-between mt-1">
                     <span className="text-gray-600">החזר מצטבר:</span>
-                    <span className="font-bold text-green-600">85.7%</span>
+                    <span className="font-bold text-green-600">131%</span>
                   </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg">
-                  <p className="font-semibold text-gray-800 mb-2">שנה שנייה</p>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">רווח לשותף:</span>
-                    <span className="font-bold text-green-600">357,000 ₪</span>
-                  </div>
-                  <div className="flex justify-between mt-1">
-                    <span className="text-gray-600">החזר מצטבר:</span>
-                    <span className="font-bold text-green-600">289%</span>
-                  </div>
+                  <p className="text-sm text-green-700 mt-2">✓ החזר מלא של ההשקעה + רווח כבר בשנה הראשונה!</p>
                 </div>
 
                 <div className="bg-green-600 text-white p-5 rounded-lg">
-                  <p className="font-bold text-xl mb-3">תוך פחות משנתיים - החזר מלא + רווח!</p>
-                  <p className="text-sm opacity-90">אחרי שנתיים, כל שותף מרוויח מעל 400,000 ₪ לשנה</p>
+                  <p className="font-bold text-xl mb-3">🎯 תוך שנה אחת - החזר מלא + רווח נקי!</p>
+                  <p className="text-sm opacity-90">שותף B מחזיר את כל ההשקעה ועוד רווח של 72,500 ₪ בשנה הראשונה בלבד</p>
                 </div>
               </div>
             </div>
