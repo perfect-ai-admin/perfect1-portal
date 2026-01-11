@@ -84,8 +84,8 @@ export default function CloseOsekPaturComprehensive() {
         canonical="https://perfect1.co.il/close-osek-patur"
       />
 
-      <main className="pt-20 bg-[#F8F9FA]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <main className="bg-[#F8F9FA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-4">
           <Breadcrumbs items={[
             { label: 'דף הבית', url: 'Home' },
             { label: 'שירותים', url: 'Services' },
@@ -100,28 +100,28 @@ export default function CloseOsekPaturComprehensive() {
             <div className="absolute bottom-20 left-20 w-96 h-96 bg-orange-500 rounded-full blur-3xl"></div>
           </div>
           
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center"
             >
-              <div className="inline-flex items-center gap-2 bg-red-500/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-red-500/30">
-                <AlertCircle className="w-5 h-5 text-red-400" />
-                <span className="text-red-300 text-sm font-bold">תהליך שידרוש קצת קפדנות</span>
+              <div className="inline-flex items-center gap-2 bg-red-500/20 backdrop-blur-sm rounded-full px-5 py-2.5 mb-8 border border-red-500/30">
+                <AlertCircle className="w-5 h-5 text-red-300" />
+                <span className="text-red-200 text-base font-bold">תהליך שידרוש קצת קפדנות</span>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-8">
                 סגירת עוסק פטור – מדריך מלא
               </h1>
 
-              <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-                סגירת עוסק פטור כורכת טיפול במספר רשויות בבו-זמנית. מדריך זה יעזור לך להבין בדיוק מה צריך לעשות ואיזה טעויות להימנע.
+              <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+                סגירת עוסק פטור כוללת טיפול במספר רשויות במקביל. מדריך זה יעזור לך להבין בדיוק מה צריך לעשות ומאילו טעויות להימנע.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-red-600 hover:bg-red-700 text-white shadow-2xl">
+                  <Button className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-2xl hover:shadow-3xl transition-all">
                     <MessageCircle className="ml-3 w-6 h-6" />
                     דבר בווטסאפ
                   </Button>
@@ -145,10 +145,10 @@ export default function CloseOsekPaturComprehensive() {
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { icon: '📍', title: 'סיום עסקות', desc: 'החלטת לסגור את הביזנס בגמרי' },
-                  { icon: '📈', title: 'עבור למורשה', desc: 'החלטת להרשם כעוסק מורשה' },
-                  { icon: '🏢', title: 'מעבר לחברה', desc: 'הקמת חברה וסגירת העוסק' },
-                  { icon: '⏸️', title: 'הפסקה זמנית', desc: 'לא תעבוד זמן מה - עדיף לסגור' }
+                  { icon: '📍', title: 'סיום פעילות', desc: 'החלטת לסגור את העסק לצמיתות' },
+                  { icon: '📈', title: 'מעבר למורשה', desc: 'החלטת להתקדם לעוסק מורשה' },
+                  { icon: '🏢', title: 'מעבר לחברה', desc: 'הקמת חברה וסגירת העוסק הפרטי' },
+                  { icon: '⏸️', title: 'הפסקה זמנית', desc: 'לא תפעל לתקופה - עדיף לסגור' }
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -156,11 +156,11 @@ export default function CloseOsekPaturComprehensive() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-6 border-l-4 border-[#1E3A5F]"
+                    className="bg-gradient-to-br from-white to-blue-50/40 rounded-2xl p-6 border-r-4 border-[#1E3A5F] hover:shadow-lg transition-all"
                   >
-                    <div className="text-4xl mb-3">{item.icon}</div>
-                    <h3 className="text-lg font-bold text-[#1E3A5F] mb-2">{item.title}</h3>
-                    <p className="text-gray-700">{item.desc}</p>
+                    <div className="text-5xl mb-4">{item.icon}</div>
+                    <h3 className="text-xl font-bold text-[#1E3A5F] mb-2">{item.title}</h3>
+                    <p className="text-gray-700 leading-relaxed">{item.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -449,13 +449,13 @@ export default function CloseOsekPaturComprehensive() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full sm:w-auto h-16 px-12 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
+                  <Button className="w-full sm:w-auto h-16 px-12 text-xl font-black rounded-2xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-2xl hover:shadow-3xl transition-all">
                     <MessageCircle className="ml-3 w-6 h-6" />
                     דבר בווטסאפ
                   </Button>
                 </a>
                 <a href="tel:0502277087">
-                  <Button variant="outline" className="w-full sm:w-auto h-16 px-12 text-xl font-black rounded-2xl border-2 border-white bg-white/10 text-white hover:bg-white/20">
+                  <Button variant="outline" className="w-full sm:w-auto h-16 px-12 text-xl font-black rounded-2xl border-3 border-white bg-white/10 text-white hover:bg-white hover:text-[#1E3A5F] transition-all">
                     <Phone className="ml-3 w-6 h-6" />
                     התקשר: 0502277087
                   </Button>
