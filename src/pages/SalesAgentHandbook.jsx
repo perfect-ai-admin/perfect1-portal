@@ -1718,7 +1718,7 @@ export default function SalesAgentHandbook() {
             className="text-center"
           >
             <h1 className="text-4xl font-bold mb-3">חוברת הדרכה לסוכן מכירות</h1>
-            <p className="text-3xl font-bold text-yellow-400 mb-4">מדריך מקיף ב-8 שלבים</p>
+            <p className="text-3xl font-bold text-yellow-400 mb-4">מדריך מקיף ב-8 שלבים ליועץ מכירות של פתיחת עוסק פטור</p>
             <p className="text-base text-gray-300 max-w-3xl mx-auto">
               כל מה שאתה צריך כדי למכור נכון, לבנות אמון, ולעזור ללקוחות להרגיש רגועים ומוגנים
             </p>
