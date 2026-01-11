@@ -36,7 +36,7 @@ export default function FreelancerLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">
-                  פתיחת עוסק לפרילנסרים בליווי מלא, בלי בירוקרטיה ובלי התעסקות.
+                  שירות ייעוץ וליווי פרטי בלבד - אנחנו מדריכים, אתה מבצע את הפתיחה בעצמך.
                   <br />
                   <strong className="text-[#D4AF37]">התחל לעבוד חוקי כבר השבוע!</strong>
                 </p>

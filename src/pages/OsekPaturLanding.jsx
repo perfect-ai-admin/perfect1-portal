@@ -223,7 +223,7 @@ export default function OsekPaturLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  שירות ייעוץ פרטי - אנחנו מדריכים ומסייעים לך בתהליך פתיחת עוסק פטור מול הרשויות
+                  שירות ייעוץ וליווי פרטי בלבד - אנחנו מדריכים, אתה מבצע את הפתיחה בעצמך מול הרשויות
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
