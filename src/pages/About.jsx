@@ -49,11 +49,12 @@ export default function About() {
     "mainEntity": {
       "@type": "Organization",
       "name": "Perfect One - פרפקט וואן",
-      "alternateName": "המרכז הארצי לעוסקים פטורים",
+      "alternateName": "שירות ייעוץ וליווי לפתיחת עסקים",
+      "taxID": "516309747",
       "url": "https://perfect1.co.il",
       "logo": "https://perfect1.co.il/logo.png",
       "description": "המרכז המוביל בישראל לפתיחת עוסקים פטורים. מעל 2,000 עוסקים פטורים בשנה.",
-      "foundingDate": "2014",
+      "foundingDate": "2016",
       "telephone": "+972-50-227-7087",
       "email": "info@perfect1.co.il",
       "sameAs": [
@@ -122,14 +123,43 @@ export default function About() {
             viewport={{ once: true }}
             className="bg-white rounded-3xl shadow-lg p-8 md:p-12 space-y-8"
           >
-            {/* מי עומד מאחורי האתר */}
+            {/* פרטי החברה */}
+            <div className="bg-blue-50 border-2 border-[#1E3A5F] rounded-lg p-6 mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-4">
+                פרטי החברה
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-gray-600 text-sm mb-1">שם החברה:</p>
+                  <p className="text-xl font-bold text-gray-800">פרפקט וואן</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm mb-1">מספר חברה:</p>
+                  <p className="text-xl font-bold text-gray-800">516309747</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm mb-1">טלפון:</p>
+                  <p className="text-xl font-bold text-gray-800">0502277087</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 text-sm mb-1">אימייל:</p>
+                  <p className="text-xl font-bold text-gray-800">info@perfect1.co.il</p>
+                </div>
+              </div>
+            </div>
+
+            {/* מי אנחנו */}
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-4">
                 מי אנחנו
               </h2>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                האתר הוקם כדי לסייע לעצמאים בתחילת הדרך להבין את תהליך פתיחת עוסק פטור, עוסק מורשה וחברה בע״מ בישראל.
+              <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                <strong>פרפקט וואן</strong> היא חברה פרטית המספקת ייעוץ וליווי בפתיחת עסקים בישראל.
                 אנחנו צוות מקצועי עם ניסיון רב בתחום, שמבין את הקשיים והאתגרים של פתיחת עסק בישראל.
+              </p>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                <strong>⚠️ חשוב:</strong> אנחנו אינו אתר ממשלתי ואינו מייצגים אף רשות.
+                אנחנו חברה פרטית המספקת ייעוץ וליווי בלבד - אתה מבצע את הפעולות בעצמך מול הרשויות.
               </p>
             </div>
 
