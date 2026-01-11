@@ -187,14 +187,6 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Client Area Button - Next to Logo */}
-          <Link
-            to={createPageUrl('ClientLogin')}
-            className="hidden lg:flex items-center gap-2 px-5 py-2.5 text-white bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] rounded-xl font-bold transition-all shadow-md hover:shadow-lg"
-          >
-            🔐 אזור אישי ללקוחות
-          </Link>
-
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
 
@@ -321,6 +313,19 @@ export default function Header() {
 
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
+            {/* Client Area Button - Desktop */}
+            <Link
+              to={createPageUrl('ClientLogin')}
+              className="hidden lg:flex"
+            >
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold rounded-xl px-5 h-12 shadow-md hover:shadow-lg transition-all"
+              >
+                🔐 אזור אישי
+              </Button>
+            </Link>
+
             {/* Mobile CTA Buttons - Show on all screens */}
             <a
               href="tel:0502277087"
