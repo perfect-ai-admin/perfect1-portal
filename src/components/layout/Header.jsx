@@ -190,6 +190,13 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
             <Link
+              to={createPageUrl('ClientLogin')}
+              className="px-4 py-2 text-white bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] rounded-xl font-bold transition-all shadow-md hover:shadow-lg"
+            >
+              🔐 אזור אישי
+            </Link>
+
+            <Link
               to={createPageUrl('Home')}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
@@ -308,13 +315,6 @@ export default function Header() {
             >
               צור קשר
             </Link>
-
-            <Link
-              to={createPageUrl('ClientLogin')}
-              className="px-4 py-2 text-white bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:from-[#2C5282] hover:to-[#1E3A5F] rounded-xl font-bold transition-all shadow-md hover:shadow-lg"
-            >
-              אזור אישי
-            </Link>
           </nav>
 
           {/* CTA Buttons */}
@@ -404,6 +404,15 @@ export default function Header() {
                   
                   <nav className="flex-1 p-6 overflow-y-auto">
                     <ul className="space-y-2">
+                      <li>
+                        <Link
+                          to={createPageUrl('ClientLogin')}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
+                        >
+                          🔐 אזור אישי ללקוחות
+                        </Link>
+                      </li>
                       <li>
                         <Link
                           to={createPageUrl('Home')}
@@ -550,15 +559,6 @@ export default function Header() {
                           className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
                           צור קשר
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to={createPageUrl('ClientLogin')}
-                          onClick={() => { setIsMobileMenuOpen(false); }}
-                          className="flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white font-bold transition-all text-lg"
-                        >
-                          🔐 אזור אישי ללקוחות
                         </Link>
                       </li>
                     </ul>
