@@ -95,7 +95,7 @@ export default function HeroNewSection() {
           onClick={scrollToCategories}
           className="h-20 px-16 text-2xl font-black rounded-3xl bg-gradient-to-r from-[#27AE60] via-[#2ECC71] to-[#27AE60] hover:from-[#2ECC71] hover:via-[#27AE60] hover:to-[#2ECC71] text-white shadow-2xl hover:shadow-3xl transition-all inline-flex items-center justify-center gap-3 animate-pulse-glow"
         >
-          בחר את סוג העסק שלך
+          בחירת מסלול פתיחה
           <ArrowLeft className="w-6 h-6" />
         </motion.button>
       </div>
