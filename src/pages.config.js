@@ -72,6 +72,7 @@ import Regulation from './pages/Regulation';
 import SEOAdmin from './pages/SEOAdmin';
 import SEOAnalytics from './pages/SEOAnalytics';
 import SEOOptimized from './pages/SEOOptimized';
+import SalesAgentHandbook from './pages/SalesAgentHandbook';
 import ServicePage from './pages/ServicePage';
 import Services from './pages/Services';
 import Sitemap from './pages/Sitemap';
@@ -96,7 +97,6 @@ import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import SalesAgentHandbook from './pages/SalesAgentHandbook';
 import __Layout from './Layout.jsx';
 
 
@@ -175,6 +175,7 @@ export const PAGES = {
     "SEOAdmin": SEOAdmin,
     "SEOAnalytics": SEOAnalytics,
     "SEOOptimized": SEOOptimized,
+    "SalesAgentHandbook": SalesAgentHandbook,
     "ServicePage": ServicePage,
     "Services": Services,
     "Sitemap": Sitemap,
@@ -199,7 +200,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "SalesAgentHandbook": SalesAgentHandbook,
 }
 
 export const pagesConfig = {
