@@ -108,11 +108,16 @@ export default function CompanyLanding() {
               className="text-center mt-8"
             >
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                פתיחת חברה בע״מ בישראל
+                ייעוץ וליווי לפתיחת חברה בע״מ
               </h1>
               <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">
-                כל מה שצריך לדעת על פתיחת חברה בע״מ - מרישום ברשם החברות ועד דוחות פיננסיים שנתיים
+                שירות פרטי לייעוץ בפתיחת חברה בע״מ - מרישום ברשם החברות ועד ניהול שוטף
               </p>
+              <div className="bg-white/10 rounded-lg px-4 py-3 border border-white/20 inline-block">
+                <p className="text-sm text-white font-medium">
+                  ⚠️ שירות ייעוץ פרטי - לא ממשלתי
+                </p>
+              </div>
               <Button 
                 size="lg" 
                 className="h-14 px-8 text-lg font-bold rounded-full bg-[#D4AF37] hover:bg-[#c9a432] text-[#1E3A5F]"

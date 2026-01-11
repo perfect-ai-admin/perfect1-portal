@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone } from 'lucide-react';
+import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
@@ -212,22 +212,25 @@ export default function OsekPaturLanding() {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-center lg:text-right"
               >
-                <div className="inline-flex items-center gap-2 bg-[#27AE60]/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#27AE60]/30">
-                  <Zap className="w-5 h-5 text-[#27AE60]" />
-                  <span className="text-[#27AE60] text-sm font-bold">מתחילים לעבוד חוקי עכשיו</span>
+                <div className="bg-yellow-400/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-yellow-400/40 inline-flex items-center gap-2">
+                  <span className="text-yellow-400 text-sm font-bold">⚠️ שירות פרטי - לא ממשלתי</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור בישראל 2026
+                  ליווי וייעוץ לפתיחת עוסק פטור
                   <br />
-                  <span className="text-[#27AE60]">פשוט, מהיר וחוקי</span>
+                  <span className="text-[#D4AF37]">אנחנו מלווים, אתה מבצע</span>
                 </h1>
 
-                <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">
-                  שירות ארצי לכל רחבי ישראל - פותחים עוסק פטור בליווי מלא
-                  <br />
-                  <strong className="text-[#D4AF37]">בלי בירוקרטיה ובלי התעסקות</strong>
+                <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
+                  שירות ייעוץ פרטי - אנחנו מדריכים ומסייעים לך בתהליך פתיחת עוסק פטור מול הרשויות
                 </p>
+
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
+                  <p className="text-sm text-white/90">
+                    <strong>הבהרה חשובה:</strong> אנחנו מסייעים וממלאים אתכם - אתם מבצעים את הפתיחה בעצמכם מול הרשויות
+                  </p>
+                </div>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
                   <div className="grid grid-cols-2 gap-4 text-white">
