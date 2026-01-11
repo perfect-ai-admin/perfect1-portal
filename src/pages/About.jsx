@@ -215,22 +215,7 @@ export default function About() {
               </ul>
             </div>
 
-            {/* הבהרה חשובה */}
-            <div className="border-t-2 border-[#D4AF37] pt-6">
-              <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-3 flex items-center gap-2">
-                  <Shield className="w-6 h-6 text-yellow-600" />
-                  הבהרה חשובה
-                </h3>
-                <p className="text-gray-800 text-base leading-relaxed font-medium">
-                  השירות ניתן על ידי גורם פרטי לצורכי ייעוץ וליווי בלבד.
-                  <br />
-                  <strong>האתר אינו אתר ממשלתי</strong> ואינו מהווה ייעוץ חשבונאי או משפטי.
-                  <br />
-                  לשאלות משפטיות או חשבונאיות מורכבות, מומלץ לפנות לגורם מוסמך.
-                </p>
-              </div>
-            </div>
+
           </motion.div>
         </div>
       </section>
