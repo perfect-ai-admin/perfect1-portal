@@ -376,6 +376,43 @@ export default function OsekPaturOnlineLanding() {
           </div>
         </section>
 
+        {/* Highlights - Speed & Support */}
+        <section className="py-12 bg-gradient-to-r from-[#27AE60]/10 to-[#3498DB]/10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Speed */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="bg-gradient-to-br from-[#27AE60] to-[#2ECC71] rounded-3xl shadow-xl p-8 text-white"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <Clock className="w-10 h-10" />
+                  <h3 className="text-3xl font-black">24-48 שעות</h3>
+                </div>
+                <p className="text-lg text-white/90 font-bold mb-3">רישום מקוון לחלוטין</p>
+                <p className="text-white/80">מילוי טופס, העלאת מסמכים וחתימה דיגיטלית – כל התהליך מהבית שלך, בלי לצאת לשום מקום</p>
+              </motion.div>
+
+              {/* Support */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="bg-gradient-to-br from-[#3498DB] to-[#2980B9] rounded-3xl shadow-xl p-8 text-white"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <Users className="w-10 h-10" />
+                  <h3 className="text-3xl font-black">סיוע אישי</h3>
+                </div>
+                <p className="text-lg text-white/90 font-bold mb-3">ליווי מלא מ-יום 1</p>
+                <p className="text-white/80">יועץ אישי זמין בוואטסאפ וטלפון לכל שאלה, בדיקת פרטים, עזרה בחתימה וליווי במהלך התהליך</p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
         {/* The Solution */}
         <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
