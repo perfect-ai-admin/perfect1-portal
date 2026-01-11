@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import InternalLinker from '../components/seo/InternalLinker';
 import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
-import { Phone, MessageCircle, Mail, Clock, MapPin } from 'lucide-react';
+import { Phone, MessageCircle, Mail, Clock, MapPin, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LeadForm from '../components/forms/LeadForm';
 import GoogleMapEmbed from '../components/maps/GoogleMapEmbed';
@@ -71,6 +71,17 @@ export default function Contact() {
 
               {/* Contact Cards */}
               <div className="space-y-4">
+                <div className="bg-white rounded-2xl p-6 shadow-sm flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-[#1E3A5F] flex items-center justify-center">
+                    <Building2 className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#1E3A5F]">שם העסק</h3>
+                    <p className="text-xl font-bold text-gray-800">פרפקט וואן</p>
+                    <p className="text-gray-500 text-sm">ע.מ. 123456789</p>
+                  </div>
+                </div>
+
                 <a href="tel:0502277087" className="block">
                   <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-elegant transition-all flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-[#1E3A5F] flex items-center justify-center">
@@ -79,6 +90,18 @@ export default function Contact() {
                     <div>
                       <h3 className="font-bold text-[#1E3A5F]">טלפון</h3>
                       <p className="text-2xl font-bold text-gray-800">0502277087</p>
+                    </div>
+                  </div>
+                </a>
+
+                <a href="mailto:info@perfect1.co.il" className="block">
+                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-elegant transition-all flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-[#1E3A5F] flex items-center justify-center">
+                      <Mail className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#1E3A5F]">אימייל</h3>
+                      <p className="text-xl font-bold text-gray-800">info@perfect1.co.il</p>
                     </div>
                   </div>
                 </a>
