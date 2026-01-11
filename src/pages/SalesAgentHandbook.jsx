@@ -1717,8 +1717,11 @@ export default function SalesAgentHandbook() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-3xl font-bold mb-2">חוברת הדרכה לסוכן מכירות</h1>
-            <p className="text-lg text-gray-200">מדריך מקיף ב-8 שלבים</p>
+            <h1 className="text-4xl font-bold mb-3">חוברת הדרכה לסוכן מכירות</h1>
+            <p className="text-xl text-gray-200 mb-4">מדריך מקיף ב-8 שלבים</p>
+            <p className="text-base text-gray-300 max-w-3xl mx-auto">
+              כל מה שאתה צריך כדי למכור נכון, לבנות אמון, ולעזור ללקוחות להרגיש רגועים ומוגנים
+            </p>
           </motion.div>
         </div>
       </section>
