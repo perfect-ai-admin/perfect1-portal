@@ -12,7 +12,7 @@ const values = [
   {
     icon: Target,
     title: 'מקצועיות',
-    description: 'צוות מקצועי של רואי חשבון ויועצי מס עם ניסיון רב'
+    description: 'צוות מקצועי עם ניסיון רב בליווי עצמאים ועסקים'
   },
   {
     icon: Heart,
@@ -157,7 +157,7 @@ export default function About() {
                   currentPage="About"
                 />
                 <p className="text-gray-600">
-                  <strong>המייסדים שלנו</strong> - רואי חשבון ויועצי מס מוסמכים עם למעלה מעשור ניסיון בתחום. 
+                  <strong>המייסדים שלנו</strong> - צוות מקצועי עם למעלה מעשור ניסיון בתחום. 
                   עברנו את כל התהליכים בעצמנו, הכרנו את הקשיים מקרוב, ויצרנו פתרון שממש עובד.
                 </p>
                 <InternalLinker 

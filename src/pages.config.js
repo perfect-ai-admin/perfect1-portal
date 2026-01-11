@@ -89,7 +89,6 @@ import SystemLogicMap from './pages/SystemLogicMap';
 import TakratOsekPatur from './pages/TakratOsekPatur';
 import TaxAdvances from './pages/TaxAdvances';
 import TaxDebts from './pages/TaxDebts';
-import Team from './pages/Team';
 import TechnicianLanding from './pages/TechnicianLanding';
 import ThankYou from './pages/ThankYou';
 import TransitionOsekPaturToMorsha from './pages/TransitionOsekPaturToMorsha';
@@ -197,7 +196,6 @@ export const PAGES = {
     "TakratOsekPatur": TakratOsekPatur,
     "TaxAdvances": TaxAdvances,
     "TaxDebts": TaxDebts,
-    "Team": Team,
     "TechnicianLanding": TechnicianLanding,
     "ThankYou": ThankYou,
     "TransitionOsekPaturToMorsha": TransitionOsekPaturToMorsha,
