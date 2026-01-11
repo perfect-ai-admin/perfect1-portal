@@ -28,6 +28,15 @@ export default function AgentCRM() {
     setAgent(JSON.parse(storedAgent));
   }, [navigate]);
 
+  // Hide footer for this page
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (footer) footer.style.display = 'none';
+    return () => {
+      if (footer) footer.style.display = '';
+    };
+  }, []);
+
   const { data: allLeads, isLoading } = useQuery({
     queryKey: ['agent-leads'],
     queryFn: () => base44.entities.Lead.list('-created_date', 1000),
@@ -128,7 +137,7 @@ export default function AgentCRM() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6" dir="rtl">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 pb-8" dir="rtl">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
