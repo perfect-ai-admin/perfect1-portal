@@ -420,61 +420,195 @@ export default function SalesAgentHandbook() {
               </div>
             </div>
 
-            {/* אפליקציה */}
+            {/* הבוט העסקי */}
             <div className="mb-8 bg-white border-2 border-orange-300 rounded-lg overflow-hidden">
               <div className="bg-orange-600 text-white p-4">
-                <h4 className="text-xl font-bold">4. אפליקציה עם מנהל עסקים חכם</h4>
+                <h4 className="text-xl font-bold">4. הבוט העסקי שלנו – ליווי שמייצר עסק יציב, רווחי ומתוכנן</h4>
               </div>
               <div className="p-6 space-y-4">
-                <p className="text-gray-700 leading-relaxed">
-                  <strong>הערך המוסף הגדול שלנו:</strong> זה לא רק אפליקציה – זה "מנהל עסקים אישי" שלוקח אותך צעד אחר צעד
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-400 p-6 rounded-lg mb-4">
+                  <p className="text-xl font-bold text-orange-900 mb-3">🎁 במתנה ל-6 חודשים לכל לקוח חדש!</p>
+                  <p className="text-orange-800 text-lg">
+                    כל לקוח מקבל גישה מלאה לבוט העסקי החכם למשך חצי שנה – בחינם!
+                  </p>
+                </div>
+
+                <p className="text-gray-700 leading-relaxed text-lg">
+                  <strong>הבוט שלנו הוא שותף חכם לעסק</strong> – לא רק כלי טכני ולא רק מענה לשאלות.
                 </p>
-                
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border-2 border-orange-300 p-6 rounded-lg mb-4">
-                  <p className="font-bold text-orange-900 mb-3 text-lg">🚀 המנהל עסקים החכם שלנו:</p>
-                  <ul className="space-y-3 text-orange-900">
-                    <li className="flex items-start gap-3">
-                      <span className="text-xl">📊</span>
-                      <div>
-                        <strong>בונה לך תכנית עבודה מותאמת אישית</strong>
-                        <p className="text-sm text-orange-800">לפי השיח שלך איתו, הוא מכין לך תכנית פעולה ברורה לצמיחת העסק</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-xl">💪</span>
-                      <div>
-                        <strong>מחזק אותך ודוחף אותך קדימה</strong>
-                        <p className="text-sm text-orange-800">לא רק עונה על שאלות – הוא מלווה אותך בכל צעד ועוזר לך לקבל החלטות</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-xl">📈</span>
-                      <div>
-                        <strong>מראה לך דוחות ברורים</strong>
-                        <p className="text-sm text-orange-800">הכנסות, הוצאות, מצב כלכלי – הכול בתצוגה פשוטה וברורה</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-xl">🎯</span>
-                      <div>
-                        <strong>לוקח אותך צעד אחר צעד</strong>
-                        <p className="text-sm text-orange-800">מה לעשות עכשיו, מה הבא, איך להגיע ליעדים שלך</p>
-                      </div>
-                    </li>
+
+                <p className="text-gray-700 leading-relaxed">
+                  הוא נבנה כדי לעזור לעצמאים:<br/>
+                  <strong>• לנהל את העסק נכון</strong><br/>
+                  <strong>• להבין את המספרים</strong><br/>
+                  <strong>• להימנע מטעויות</strong><br/>
+                  <strong>• ולצמוח בצורה יציבה ובריאה</strong>
+                </p>
+
+                <div className="bg-blue-50 border-r-4 border-blue-500 p-5 rounded">
+                  <p className="font-bold text-blue-900 mb-2 text-lg">🎯 המטרה:</p>
+                  <p className="text-blue-800 text-base">
+                    להגדיל את היציבות והרווחיות של העסק ב־<strong>30%–50%</strong> לאורך זמן, 
+                    באמצעות ניהול נכון, תכנון, ושקט מנטלי.
+                  </p>
+                </div>
+
+                <h5 className="font-bold text-gray-900 text-xl mt-6 mb-3">מה הבוט עושה בפועל (ולא בתיאוריה)</h5>
+
+                {/* יועץ מס חכם */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 p-5 rounded-lg">
+                  <p className="font-bold text-green-900 mb-3 text-lg">🔹 יועץ מס חכם – בגובה העיניים</p>
+                  <p className="text-green-800 mb-3">הבוט מתפקד כ־יועץ מס זמין לעסק:</p>
+
+                  <div className="space-y-3">
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-green-900 mb-1">מסביר בצורה פשוטה:</p>
+                      <p className="text-green-800 text-sm">• מס הכנסה<br/>• מע״מ<br/>• ביטוח לאומי</p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-green-900 mb-1">עוזר להבין:</p>
+                      <p className="text-green-800 text-sm">• מה מותר ומה אסור<br/>• מה כדאי לעשות עכשיו<br/>• איך להימנע מטעויות יקרות</p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-green-900 mb-1">מלווה בהחלטות שוטפות:</p>
+                      <p className="text-green-800 text-sm">• הוצאות<br/>• הכנסות<br/>• תמחור<br/>• תזרים</p>
+                    </div>
+                  </div>
+
+                  <p className="text-green-900 font-bold mt-3 text-sm italic">
+                    לא במקום רואה חשבון – אלא כקו ראשון חכם שמונע בעיות מראש.
+                  </p>
+                </div>
+
+                {/* סדר ושליטה */}
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-300 p-5 rounded-lg">
+                  <p className="font-bold text-purple-900 mb-3 text-lg">🔹 סדר, שליטה ושקט מול הרשויות</p>
+                  <p className="text-purple-800 mb-3">הבוט בונה לעסק שגרה ברורה ויציבה:</p>
+
+                  <ul className="space-y-2 text-purple-800">
+                    <li>• תזכורות חכמות לדיווחים ותשלומים</li>
+                    <li>• התראות לפני קנסות, לא אחרי</li>
+                    <li>• הסברים מה צריך לעשות – בזמן אמת</li>
+                    <li>• הפחתת לחץ ובלבול</li>
+                  </ul>
+
+                  <div className="bg-white p-3 rounded mt-3">
+                    <p className="font-bold text-purple-900 mb-1">התוצאה:</p>
+                    <p className="text-purple-800 text-sm">✔️ פחות פחד ממכתבים<br/>✔️ פחות טעויות<br/>✔️ יותר ביטחון</p>
+                  </div>
+                </div>
+
+                {/* ליווי עסקי */}
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-300 p-5 rounded-lg">
+                  <p className="font-bold text-blue-900 mb-3 text-lg">🔹 ליווי עסקי אמיתי – לא רק חשבונאי</p>
+                  <p className="text-blue-800 mb-3">הבוט לא עוסק רק במסים. הוא עוזר לבנות עסק שעובד נכון:</p>
+
+                  <div className="space-y-3">
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-blue-900 mb-1">עוזר להבין:</p>
+                      <p className="text-blue-800 text-sm">• האם העסק רווחי באמת<br/>• איפה הכסף "נוזל"<br/>• מתי נכון לגדול ומתי לעצור</p>
+                    </div>
+
+                    <div className="bg-white p-3 rounded">
+                      <p className="font-bold text-blue-900 mb-1">מציע כיוונים:</p>
+                      <p className="text-blue-800 text-sm">• שיפור תמחור<br/>• סדר בהוצאות<br/>• התנהלות חכמה לאורך זמן</p>
+                    </div>
+                  </div>
+
+                  <p className="text-blue-900 font-bold mt-3 text-sm italic">
+                    הוא לא מחליף יועץ עסקי, אבל כן נותן ליווי יומיומי חכם שרוב העסקים לא מקבלים בכלל.
+                  </p>
+                </div>
+
+                {/* למה זה עובד */}
+                <div className="bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-400 p-5 rounded-lg">
+                  <p className="font-bold text-yellow-900 mb-3 text-lg">💡 למה זה מגדיל הצלחה ב־30%–50%?</p>
+                  <p className="text-yellow-800 mb-3">לא בגלל קסם. בגלל ניהול נכון לאורך זמן.</p>
+
+                  <p className="font-bold text-yellow-900 mb-2">הבוט:</p>
+                  <ul className="space-y-1 text-yellow-800">
+                    <li>✓ מונע טעויות</li>
+                    <li>✓ מצמצם קנסות</li>
+                    <li>✓ מייצר סדר</li>
+                    <li>✓ משפר קבלת החלטות</li>
+                    <li>✓ שומר על עקביות</li>
+                  </ul>
+
+                  <p className="text-yellow-900 font-bold mt-3 text-sm italic">
+                    עסקים לא נופלים בגלל רעיון גרוע – הם נופלים בגלל חוסר סדר, חוסר ידע וחוסר שליטה.
+                  </p>
+                </div>
+
+                {/* למי זה מתאים */}
+                <div className="bg-gray-50 border-2 border-gray-300 p-5 rounded-lg">
+                  <p className="font-bold text-gray-900 mb-3 text-lg">👥 למי זה מתאים במיוחד?</p>
+                  <ul className="space-y-2 text-gray-700">
+                    <li>• עצמאים בתחילת הדרך</li>
+                    <li>• עוסקים פטורים ומורשים</li>
+                    <li>• בעלי עסק שרוצים שקט</li>
+                    <li>• מי שלא אוהב בירוקרטיה</li>
+                    <li>• מי שרוצה להתמקד בעסק – לא במסים</li>
                   </ul>
                 </div>
 
-                <div className="bg-orange-50 p-4 rounded">
-                  <p className="font-bold text-orange-900 mb-3">עוד יכולות שהוא נותן לך:</p>
-                  <ul className="space-y-2 text-orange-800">
-                    <li>• עונה על שאלות על מסים בשפה פשוטה</li>
-                    <li>• נותן טיפים לחיסכון במס</li>
-                    <li>• מסביר מה לעשות בכל מצב</li>
-                    <li>• זמין 24/7 – אפילו בשבת בלילה</li>
-                  </ul>
+                {/* מה הבוט בונה */}
+                <div className="bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-400 p-5 rounded-lg">
+                  <p className="font-bold text-green-900 mb-3 text-lg">🏗️ מה הבוט בונה לעסק לאורך זמן</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white p-2 rounded text-center">
+                      <p className="text-green-700 font-bold">✔️ יציבות</p>
+                    </div>
+                    <div className="bg-white p-2 rounded text-center">
+                      <p className="text-green-700 font-bold">✔️ ביטחון</p>
+                    </div>
+                    <div className="bg-white p-2 rounded text-center">
+                      <p className="text-green-700 font-bold">✔️ סדר</p>
+                    </div>
+                    <div className="bg-white p-2 rounded text-center">
+                      <p className="text-green-700 font-bold">✔️ שליטה</p>
+                    </div>
+                    <div className="bg-white p-2 rounded text-center">
+                      <p className="text-green-700 font-bold">✔️ רווחיות בריאה</p>
+                    </div>
+                    <div className="bg-white p-2 rounded text-center">
+                      <p className="text-green-700 font-bold">✔️ שקט מנטלי</p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="bg-red-50 border-r-4 border-red-500 p-4 rounded mb-4">
+                {/* למה משלמים */}
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-400 p-5 rounded-lg">
+                  <p className="font-bold text-orange-900 mb-3 text-lg">💰 למה משלמים על זה?</p>
+
+                  <div className="bg-white p-4 rounded mb-3">
+                    <p className="font-bold text-orange-900 mb-2">כי:</p>
+                    <ul className="space-y-1 text-orange-800 text-sm">
+                      <li>• אין למי לפנות ביום־יום</li>
+                      <li>• רואה חשבון לא זמין 24/7</li>
+                      <li>• גוגל לא מכיר את העסק שלך</li>
+                      <li>• טעויות עולות כסף אמיתי</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-white p-4 rounded">
+                    <p className="font-bold text-orange-900 mb-2">והבוט נותן:</p>
+                    <p className="text-orange-800 text-sm font-bold">ליווי חכם, רציף ואישי – במחיר נגיש</p>
+                  </div>
+                </div>
+
+                {/* משפט סיכום */}
+                <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-6 rounded-lg text-center">
+                  <p className="text-xl font-bold mb-2">💎 משפט הזהב</p>
+                  <p className="text-lg italic">
+                    זה לא בוט של שאלות ותשובות.<br/>
+                    זה מלווה עסקי חכם שמחזיק לך את העסק יציב ורווחי.
+                  </p>
+                </div>
+
+                {/* הנחיות למוכר */}
+                <div className="bg-red-50 border-r-4 border-red-500 p-4 rounded mb-4 mt-6">
                   <p className="font-bold text-red-900 mb-2">❌ לעולם אל תגיד:</p>
                   <ul className="space-y-1 text-red-800">
                     <li>• "יש לנו ChatBot"</li>
@@ -486,16 +620,8 @@ export default function SalesAgentHandbook() {
                 <div className="bg-green-50 border-r-4 border-green-500 p-4 rounded">
                   <p className="font-bold text-green-900 mb-2">✅ תמיד תגיד:</p>
                   <p className="text-green-800 italic">
-                    "יש לך מלווה חכם שמכיר עצמאים, מכיר את החוקים, ויכול לעזור לך בכל שאלה – בכל זמן. 
-                    זה כמו שיש לך יועץ פרטי שזמין לך גם בשבת בלילה."
-                  </p>
-                </div>
-
-                <div className="bg-purple-50 p-4 rounded mt-4">
-                  <p className="font-bold text-purple-900 mb-2">💡 למה זה חזק במיוחד?</p>
-                  <p className="text-purple-800">
-                    כי רוב העצמאים עובדים לבד. אין להם עם מי להתייעץ. הם לא יודעים אם הם עושים נכון. 
-                    המלווה החכם פותר את הבדידות הזו – הוא שם בשבילם תמיד.
+                    "יש לך בוט עסקי חכם שמכיר עצמאים, מכיר את החוקים, ויכול לעזור לך בכל שאלה – בכל זמן. 
+                    זה כמו שיש לך יועץ פרטי ומנהל עסקים שזמין לך תמיד. <strong>ובחצי שנה הראשונה – זה במתנה!</strong>"
                   </p>
                 </div>
               </div>
