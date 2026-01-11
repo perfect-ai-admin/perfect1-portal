@@ -370,8 +370,123 @@ export default function LeadsAdmin() {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden flex-1 flex flex-col min-h-0">
+        {/* Mobile Cards View */}
+        <div className="md:hidden flex-1 overflow-auto space-y-2 px-1">
+          {sortedLeads.map((lead) => (
+            <div key={lead.id} className="bg-white rounded-lg shadow-md p-3 border-r-4" style={{
+              borderColor: lead.status === 'converted' ? '#16a34a' : 
+                          lead.status === 'new' ? '#3b82f6' : 
+                          lead.status === 'not_interested' ? '#dc2626' : '#6b7280'
+            }}>
+              {/* Header */}
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex-1">
+                  <h3 className="font-bold text-base text-[#1E3A5F]">{lead.name}</h3>
+                  <div className="flex items-center gap-1 mt-1 flex-wrap">
+                    <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${statusColors[lead.status || 'new']}`}>
+                      {statusLabels[lead.status || 'new']}
+                    </span>
+                    <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium ${priorityColors[lead.priority || 'medium']}`}>
+                      {priorityLabels[lead.priority || 'medium']}
+                    </span>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => toggleSelectLead(lead.id)} 
+                  className="p-1"
+                >
+                  {selectedLeads.includes(lead.id) ? (
+                    <CheckSquare className="w-5 h-5 text-indigo-600" />
+                  ) : (
+                    <Square className="w-5 h-5 text-gray-400" />
+                  )}
+                </button>
+              </div>
+
+              {/* Contact Info */}
+              <div className="space-y-1.5 mb-3">
+                <a href={`tel:${lead.phone}`} className="flex items-center gap-2 text-[#1E3A5F] font-semibold text-sm">
+                  <Phone className="w-4 h-4" />
+                  {lead.phone}
+                </a>
+                {lead.email && (
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-3 h-3 text-gray-500" />
+                    <span className="text-xs text-gray-600 truncate">{lead.email}</span>
+                  </div>
+                )}
+                {lead.profession && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-semibold">מקצוע:</span> {lead.profession}
+                  </div>
+                )}
+              </div>
+
+              {/* Meta Info */}
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium ${categoryColors[lead.category || 'osek_patur']}`}>
+                  {categoryLabels[lead.category || 'osek_patur']}
+                </span>
+                {lead.agent_name && (
+                  <span className="inline-block px-2 py-0.5 rounded text-[10px] bg-purple-100 text-purple-700 font-medium">
+                    {lead.agent_name}
+                  </span>
+                )}
+                {lead.follow_up_date && (
+                  <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium flex items-center gap-1 ${
+                    lead.follow_up_date === new Date().toISOString().split('T')[0] 
+                      ? 'bg-red-500 text-white animate-pulse' 
+                      : 'bg-gray-100 text-gray-700'
+                  }`}>
+                    <Calendar className="w-3 h-3" />
+                    {format(new Date(lead.follow_up_date), 'dd/MM')}
+                  </span>
+                )}
+              </div>
+
+              {/* Notes */}
+              {lead.notes && (
+                <div className="text-xs text-gray-600 bg-gray-50 rounded p-2 mb-2">
+                  {lead.notes}
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <a
+                  href={`tel:${lead.phone}`}
+                  className="flex-1 bg-[#1E3A5F] text-white rounded-lg py-2.5 flex items-center justify-center gap-2 font-bold text-sm shadow-md active:scale-95 transition-transform"
+                >
+                  <Phone className="w-4 h-4" />
+                  התקשר
+                </a>
+                <a
+                  href={`https://wa.me/972${(lead.phone || '').replace(/^0/, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-[#25D366] text-white rounded-lg py-2.5 flex items-center justify-center gap-2 font-bold text-sm shadow-md active:scale-95 transition-transform"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  וואטסאפ
+                </a>
+                <button
+                  onClick={() => setSelectedLead(lead)}
+                  className="bg-gray-100 text-gray-700 rounded-lg px-4 py-2.5 flex items-center justify-center shadow-sm active:scale-95 transition-transform"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Timestamp */}
+              <div className="text-[10px] text-gray-400 text-center mt-2 border-t pt-2">
+                {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')} | {lead.source_page || 'לא ידוע'}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden md:flex bg-white rounded-lg shadow overflow-hidden flex-1 flex-col min-h-0">
           <div className="overflow-auto flex-1">
             <table className="w-full min-w-[1200px]">
               <thead className="bg-[#1E3A5F] text-white">
