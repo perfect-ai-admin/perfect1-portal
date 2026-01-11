@@ -178,12 +178,12 @@ export default function Header() {
             to={createPageUrl('Home')} 
             className="flex items-center gap-3 hover:opacity-80 transition-opacity group"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#27AE60] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all group-hover:scale-105">
-              <span className="text-white font-black text-2xl">P1</span>
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#27AE60] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all group-hover:scale-105">
+              <span className="text-white font-black text-xl">P1</span>
             </div>
             <div>
-              <h1 className="font-black text-2xl text-[#1E3A5F] leading-tight">פרפקט וואן</h1>
-              <p className="text-sm text-[#27AE60] font-bold">הבית לעצמאים</p>
+              <h1 className="font-black text-xl text-[#1E3A5F] leading-tight">פרפקט וואן</h1>
+              <p className="text-xs text-[#27AE60] font-bold">הבית לעצמאים</p>
             </div>
           </Link>
 
@@ -364,11 +364,10 @@ export default function Header() {
             >
               <Button 
                 variant="outline" 
-                size="lg"
-                className="border-2 border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white font-bold rounded-xl px-6 h-12 shadow-sm"
+                size="icon"
+                className="border-2 border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white rounded-xl w-12 h-12 shadow-sm"
               >
-                <Phone className="w-5 h-5 ml-2" />
-                <span className="text-base">0502277087</span>
+                <Phone className="w-5 h-5" />
               </Button>
             </a>
 
@@ -380,11 +379,10 @@ export default function Header() {
               onClick={() => trackWhatsAppClick('header', 'היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור')}
             >
               <Button 
-                size="lg"
-                className="bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white font-bold rounded-xl px-6 h-12 shadow-lg hover:shadow-xl transition-all"
+                size="icon"
+                className="bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white rounded-xl w-12 h-12 shadow-lg hover:shadow-xl transition-all"
               >
-                <MessageCircle className="w-5 h-5 ml-2" />
-                <span className="text-base">וואטסאפ</span>
+                <MessageCircle className="w-5 h-5" />
               </Button>
             </a>
 
