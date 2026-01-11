@@ -223,14 +223,8 @@ export default function OsekPaturLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  שירות ייעוץ וליווי פרטי בלבד - אנחנו מדריכים, אתה מבצע את הפתיחה בעצמך מול הרשויות
+                  שירות ייעוץ וליווי פרטי עד לפתיחת העוסק בהצלחה
                 </p>
-
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                  <p className="text-sm text-white/90">
-                    <strong>הבהרה חשובה:</strong> אנחנו מסייעים וממלאים אתכם - אתם מבצעים את הפתיחה בעצמכם מול הרשויות
-                  </p>
-                </div>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
                   <div className="grid grid-cols-2 gap-4 text-white">
@@ -635,13 +629,7 @@ export default function OsekPaturLanding() {
                     {isSubmitting ? 'שולח...' : 'השאר פרטים ונחזור אליך'}
                   </Button>
 
-                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mt-6">
-                    <p className="text-xs text-gray-700 leading-relaxed">
-                      <strong className="text-yellow-800">חשוב:</strong> השירות ניתן על ידי גורם פרטי לצורך ייעוץ וליווי בלבד. 
-                      האתר <strong>אינו אתר ממשלתי</strong> ואינו מהווה ייעוץ חשבונאי או משפטי רשמי. 
-                      פתיחת התיק עצמה תבוצע על ידיך מול הרשויות (מס הכנסה, ביטוח לאומי, מע"מ).
-                    </p>
-                  </div>
+
 
                   <p className="text-xs text-gray-500 text-center mt-4">
                     ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום

@@ -237,14 +237,8 @@ export default function OsekPaturOnlineLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  שירות ייעוץ פרטי - תהליך דיגיטלי שאתה מבצע בעצמך, ואנחנו מדריכים אותך לאורך הדרך
+                  שירות ייעוץ וליווי פרטי עד לפתיחת העוסק בהצלחה
                 </p>
-
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                  <p className="text-sm text-white font-medium">
-                    ⚠️ אתה מבצע את פתיחת התיק בעצמך מול הרשויות - אנחנו כאן כדי להדריך אותך
-                  </p>
-                </div>
 
                 <div className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-8 border-2 border-white/40 shadow-2xl">
                   <div className="text-center mb-4">
