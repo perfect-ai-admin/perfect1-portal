@@ -967,6 +967,523 @@ export default function SalesAgentHandbook() {
     {
       number: 7,
       icon: <Award className="w-6 h-6" />,
+      title: "מילון מקצועי – שאלות ותשובות לעוסק פטור",
+      color: "from-indigo-600 to-indigo-700",
+      content: (
+        <div className="space-y-8">
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">מילון מקצועי לנציג מכירות</h3>
+            <div className="bg-indigo-50 border-r-4 border-indigo-600 p-6 rounded mb-6">
+              <p className="text-lg text-indigo-900 leading-relaxed">
+                <strong>למה אתה צריך את זה?</strong> כשלקוח שואל שאלה מקצועית – אתה צריך לדעת לענות בצורה פשוטה וברורה. 
+                כאן תמצא 40+ שאלות נפוצות עם תשובות מדויקות שאתה יכול להשתמש בהן.
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">📋 מס הכנסה – שאלות ותשובות</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ מה זה עוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> עוסק פטור זה עצמאי שמחזור ההכנסות שלו עד 105,280 ש״ח (2025) בשנה, 
+                    והוא פטור מלשלם מע״מ. הוא משלם רק מס הכנסה וביטוח לאומי.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ כמה מס משלם עוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> עוסק פטור משלם מס הכנסה לפי מדרגות – בין 10% ל-50% בהתאם להכנסה. 
+                    בנוסף, הוא משלם ביטוח לאומי – בערך 17% על ההכנסה.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ מתי צריך להגיש דוח שנתי?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> הדוח השנתי צריך להיות מוגש עד 30 באפריל של השנה שאחרי. 
+                    למשל, דוח על 2024 צריך להיות מוגש עד 30.4.2025.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ מה קורה אם לא מגישים דוח בזמן?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> מקבלים קנס של 1,290 ש״ח לחודש איחור (עד 3 חודשים), 
+                    ואחר כך 2,580 ש״ח לחודש. זה יכול להגיע לעשרות אלפי שקלים.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ האם עוסק פטור יכול לנכות הוצאות?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן! עוסק פטור יכול לנכות הוצאות עסקיות כמו ציוד, נסיעות, דלק, משרד, 
+                    טלפון, מחשב ועוד. ההוצאות מורידות את הרווח החייב במס.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ מה זה נקודות זיכוי?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> נקודות זיכוי זה זכויות שמורידות את המס ששילמים. כל נקודה שווה 2,652 ש״ח (2025). 
+                    למשל: 2.25 נקודות ליחיד, נקודות נוספות להורים, חיילים משוחררים ועוד.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ מה קורה אם חורגים מתקרת 105k?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> צריך לעבור לעוסק מורשה ולהירשם במע״מ. החריגה צריכה להיות מדווחת בתוך 30 יום. 
+                    אם לא מדווחים – יש קנסות כבדים.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-blue-200 rounded-lg overflow-hidden">
+                <div className="bg-blue-100 p-4 border-b-2 border-blue-200">
+                  <p className="font-bold text-blue-900">❓ האם צריך להוציא חשבוניות?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, עוסק פטור צריך להוציא חשבונית מס / קבלה על כל הכנסה. 
+                    אם לא – זה עבירה ויכול להוביל לקנסות ובעיות עם מס הכנסה.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">🏥 ביטוח לאומי – שאלות ותשובות</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-white border-2 border-green-200 rounded-lg overflow-hidden">
+                <div className="bg-green-100 p-4 border-b-2 border-green-200">
+                  <p className="font-bold text-green-900">❓ כמה משלמים לביטוח לאומי?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> עוסק פטור משלם בסביבות 17% מההכנסה לביטוח לאומי. 
+                    זה כולל דמי ביטוח לאומי ודמי בריאות. התשלום מחושב לפי ההכנסה השנתית.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-green-200 rounded-lg overflow-hidden">
+                <div className="bg-green-100 p-4 border-b-2 border-green-200">
+                  <p className="font-bold text-green-900">❓ מתי צריך לשלם לביטוח לאומי?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> משלמים על בסיס חודשי או דו-חודשי. הביטוח לאומי שולח חיוב, 
+                    ואפשר גם לשלם דרך האתר שלהם או בהוראת קבע.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-green-200 rounded-lg overflow-hidden">
+                <div className="bg-green-100 p-4 border-b-2 border-green-200">
+                  <p className="font-bold text-green-900">❓ מה קורה אם לא משלמים לביטוח לאומי?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> הביטוח לאומי גובה חובות בכוח – עיקול חשבון בנק, חסימת כרטיס אשראי, 
+                    או תביעה משפטית. בנוסף – פיגור בתשלום משפיע על זכויות (גמלאות, פיצויים).
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-green-200 rounded-lg overflow-hidden">
+                <div className="bg-green-100 p-4 border-b-2 border-green-200">
+                  <p className="font-bold text-green-900">❓ האם עוסק פטור זכאי לדמי אבטלה?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> לא. עצמאים לא זכאים לדמי אבטלה. אבל הם זכאים למענקים אחרים 
+                    כמו דמי לידה, פגיעה בעבודה, אובדן כושר עבודה ועוד.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-green-200 rounded-lg overflow-hidden">
+                <div className="bg-green-100 p-4 border-b-2 border-green-200">
+                  <p className="font-bold text-green-900">❓ מה זה הכנסה מינימלית לביטוח לאומי?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> גם אם עוסק פטור מרוויח פחות מהמינימום, הביטוח לאומי גובה תשלום מינימלי 
+                    שמחושב לפי שכר מינימום (כ-700-800 ש״ח בחודש).
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-green-200 rounded-lg overflow-hidden">
+                <div className="bg-green-100 p-4 border-b-2 border-green-200">
+                  <p className="font-bold text-green-900">❓ האם אפשר לבקש הפחתה בתשלומים?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן. אם ההכנסה נמוכה, אפשר לפנות לביטוח לאומי ולבקש הפחתה בתשלומים 
+                    על סמך הצהרת הכנסה. זה חוסך המון כסף במהלך השנה.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-green-200 rounded-lg overflow-hidden">
+                <div className="bg-green-100 p-4 border-b-2 border-green-200">
+                  <p className="font-bold text-green-900">❓ מה קורה אם עובדים גם בשכר וגם כעוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> יש תקרת הכנסה שעליה לא משלמים ביטוח לאומי. אם מגיעים לתקרה דרך העבודה בשכר, 
+                    לא משלמים על ההכנסה כעוסק פטור. צריך לדווח לביטוח לאומי.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">💰 מע״מ – שאלות ותשובות</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-white border-2 border-purple-200 rounded-lg overflow-hidden">
+                <div className="bg-purple-100 p-4 border-b-2 border-purple-200">
+                  <p className="font-bold text-purple-900">❓ האם עוסק פטור צריך לשלם מע״מ?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> לא. עוסק פטור פטור ממע״מ – הוא לא גובה מע״מ מהלקוחות, 
+                    ולא משלם מע״מ למדינה. זה אחד היתרונות הגדולים שלו.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-purple-200 rounded-lg overflow-hidden">
+                <div className="bg-purple-100 p-4 border-b-2 border-purple-200">
+                  <p className="font-bold text-purple-900">❓ מתי צריך להירשם למע״מ?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כשחורגים מתקרת 105k בשנה, או כשעוסקים בפעילות שמחייבת מע״מ 
+                    (למשל: יבוא, מכירת טובין מסוימים). צריך להירשם תוך 30 יום מהחריגה.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-purple-200 rounded-lg overflow-hidden">
+                <div className="bg-purple-100 p-4 border-b-2 border-purple-200">
+                  <p className="font-bold text-purple-900">❓ האם אפשר להירשם למע״מ מרצון?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, אפשר להירשם מרצון גם מתחת לתקרה. זה כדאי אם יש הרבה הוצאות עסקיות 
+                    שכוללות מע״מ – כך אפשר לקבל החזר מע״מ.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-purple-200 rounded-lg overflow-hidden">
+                <div className="bg-purple-100 p-4 border-b-2 border-purple-200">
+                  <p className="font-bold text-purple-900">❓ מה זה עוסק מורשה?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תshובה:</strong> עוסק מורשה זה מי שרשום במע״מ. הוא גובה מע״מ (17%) מהלקוחות, 
+                    ומקבל החזר על מע״מ שהוא שילם על הוצאות. צריך להגיש דוח מע״מ כל חודשיים.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-purple-200 rounded-lg overflow-hidden">
+                <div className="bg-purple-100 p-4 border-b-2 border-purple-200">
+                  <p className="font-bold text-purple-900">❓ האם עוסק פטור יכול לעבוד עם חברות גדולות?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, אבל חלק מהחברות מעדיפות לעבוד עם עוסקים מורשים (בגלל ניכוי מע״מ). 
+                    אם זה חשוב ללקוח – אפשר לעבור לעוסק מורשה.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-purple-200 rounded-lg overflow-hidden">
+                <div className="bg-purple-100 p-4 border-b-2 border-purple-200">
+                  <p className="font-bold text-purple-900">❓ האם אפשר לחזור מעוסק מורשה לעוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> לא תמיד. אם נרשמת למע״מ מרצון – אפשר לבקש ביטול אחרי 3 שנים. 
+                    אם נרשמת בגלל חריגה מהתקרה – אי אפשר לחזור.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">✅ מה מותר / ❌ מה אסור</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם מותר לעבוד עם קופה רושמת?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> עוסק פטור לא חייב בקופה רושמת, אבל מותר לו להשתמש בה אם הוא רוצה. 
+                    קופה רושמת חובה רק לעוסק מורשה במסחר קמעונאי.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם מותר לעבוד מהבית?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, לגמרי מותר. אפשר אפילו לנכות חלק מדמי השכירות / ארנונה / חשמל 
+                    כהוצאה עסקית (לפי שטח העבודה בבית).
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם מותר לעבוד בשכר ובמקביל כעוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, זה לגמרי חוקי. צריך רק לדווח נכון על שתי ההכנסות, 
+                    ולהקפיד שההכנסה כעוסק פטור לא תחרוג מ-105k.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם אסור לעבוד ללא חשבוניות?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, זה אסור! כל הכנסה חייבת להיות מדווחת עם חשבונית מס. 
+                    עבודה בלי חשבוניות זה עבירה – קנסות כבדים ובעיות פליליות.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם מותר לתת הנחה ללקוח?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, אבל צריך לציין את זה בחשבונית. הדיווח למס הכנסה צריך להיות 
+                    על הסכום אחרי הנחה (הסכום שבאמת קיבלת).
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם מותר לנכות הוצאות פרטיות?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תshובה:</strong> לא! רק הוצאות עסקיות מוכרות. למשל: ארוחה פרטית – לא מותר. 
+                    ארוחה עם לקוח – מותר (עד 2.5% מהמחזור). רכב פרטי – רק אם יש יומן נסיעות.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם מותר להעסיק עובדים?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, עוסק פטור יכול להעסיק עובדים. צריך לדווח עליהם לביטוח לאומי, 
+                    לשלם עבורם משכורת ומיסים, ולנהל תלושים.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-red-200 rounded-lg overflow-hidden">
+                <div className="bg-red-100 p-4 border-b-2 border-red-200">
+                  <p className="font-bold text-red-900">❓ האם אסור למכור מוצרים מיובאים?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> תלוי. אם אתה מייבא בעצמך – אתה חייב להירשם למע״מ. 
+                    אם אתה קונה מספק ישראלי – אין בעיה, אתה יכול להישאר עוסק פטור.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">🔧 שאלות טכניות נוספות</h3>
+            
+            <div className="space-y-4">
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ איך פותחים תיק עוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> צריך למלא טופס במס הכנסה (טופס 2481) ולהירשם בביטוח לאומי. 
+                    אפשר לעשות את זה דרך האינטרנט או דרך שירות כמו שלנו שעושה את זה בשבילך.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ כמה זמן לוקח לפתוח תיק?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> התהליך לוקח בדרך כלל 3-7 ימי עסקים. 
+                    אחרי זה אפשר כבר להתחיל לעבוד ולהוציא חשבוניות.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ האם צריך רואה חשבון?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> לא חובה, אבל מומלץ מאוד. רואה חשבון / שירות ליווי דואג שהכול יהיה נכון, 
+                    חוסך טעויות יקרות, ועוזר למקסם חיסכון במס.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ איך סוגרים תיק עוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> צריך להגיש טופס סגירה למס הכנסה ולביטוח לאומי, 
+                    להגיש דוח אחרון, ולשלם חובות אם יש. התהליך לוקח כמה חודשים.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ מה קורה אם יש חוב למס הכנסה?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> מס הכנסה גובה את החוב בכוח – עיקול חשבון, עיקול רכוש, או חסימת יציאה מהארץ. 
+                    כדאי לפנות ולבקש הסדר תשלומים לפני שזה מגיע לשם.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ האם יש הגנה על הבית בגלל חובות?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, יש "הגנת הבית" – מס הכנסה לא יכול לעקל את הבית היחיד שלך. 
+                    אבל הם כן יכולים לעקל חשבון בנק, רכב, ורכוש אחר.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ מה זה תיק משותף (בני זוג)?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> אם שני בני זוג עוסקים פטורים, אפשר לבחור להיות ממוסים ביחד (תיק משותף) 
+                    או בנפרד. לפעמים זה חוסך במס, תלוי בהכנסות.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-orange-200 rounded-lg overflow-hidden">
+                <div className="bg-orange-100 p-4 border-b-2 border-orange-200">
+                  <p className="font-bold text-orange-900">❓ האם אפשר לקבל הלוואה כעוסק פטור?</p>
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800">
+                    <strong>תשובה:</strong> כן, אבל זה יותר קשה מאשר לשכיר. הבנקים דורשים הוכחת הכנסה (דוחות שנתיים) 
+                    וערבויות. עדיף להציג דוחות טובים וליווי חשבונאי מסודר.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-lg">
+              <h3 className="text-2xl font-bold mb-4">💡 איך להשתמש במילון הזה?</h3>
+              <ul className="space-y-3 text-lg">
+                <li className="flex items-start gap-3">
+                  <span>✓</span>
+                  <span>כשלקוח שואל שאלה מקצועית – חפש אותה כאן</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span>✓</span>
+                  <span>תן תשובה פשוטה וברורה, בלי ז'רגון מקצועי</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span>✓</span>
+                  <span>אם אתה לא יודע – אל תמציא! תגיד שתבדוק ותחזור אליו</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span>✓</span>
+                  <span>אחרי התשובה, הזכר לו שאנחנו דואגים לכל זה בשבילו</span>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      )
+    },
+    {
+      number: 8,
+      icon: <Award className="w-6 h-6" />,
       title: "סיכום ועקרונות זהב",
       color: "from-yellow-600 to-yellow-700",
       content: (
