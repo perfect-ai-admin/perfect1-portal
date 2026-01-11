@@ -187,14 +187,16 @@ export default function Header() {
             </div>
           </Link>
 
+          {/* Client Area Button - Next to Logo */}
+          <Link
+            to={createPageUrl('ClientLogin')}
+            className="hidden lg:flex items-center gap-2 px-5 py-2.5 text-white bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] rounded-xl font-bold transition-all shadow-md hover:shadow-lg"
+          >
+            🔐 אזור אישי ללקוחות
+          </Link>
+
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
-            <Link
-              to={createPageUrl('ClientLogin')}
-              className="px-4 py-2 text-white bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] rounded-xl font-bold transition-all shadow-md hover:shadow-lg"
-            >
-              🔐 אזור אישי
-            </Link>
 
             <Link
               to={createPageUrl('Home')}
