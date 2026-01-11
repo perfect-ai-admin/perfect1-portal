@@ -7,22 +7,22 @@ export default function Terms() {
   return (
     <>
       <SEOOptimized 
-        title="תנאי השימוש - Perfect One"
-        description="תנאי השימוש באתר Perfect One - הבהרה על טבע השירות, אחריויות וחוקים"
+        title="תנאי שימוש - פרפקט וואן"
+        description="תנאי השימוש באתר פרפקט וואן - הבהרה על טבע השירות, אחריויות וחוקים"
         canonical="https://perfect1.co.il/terms"
       />
       <main className="pt-20 bg-[#F8F9FA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
           <Breadcrumbs items={[
             { label: 'דף הבית', url: 'Home' },
-            { label: 'תנאי השימוש' }
+            { label: 'תנאי שימוש' }
           ]} />
         </div>
 
         <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-16 text-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">תנאי השימוש</h1>
-            <p className="text-xl text-white/80">הבהרה על טבע השירות וההתחייבויות</p>
+            <p className="text-xl text-white/80">הבהרה על טבע השירות, אחריויות וחוקים</p>
           </div>
         </section>
 
@@ -34,13 +34,25 @@ export default function Terms() {
               className="space-y-8"
             >
               {/* Important Notice */}
-              <div className="bg-yellow-50 border-4 border-yellow-400 rounded-lg p-8">
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">⚠️ הבהרה חיוני</h2>
-                <p className="text-lg text-gray-800 leading-relaxed font-medium">
-                  <strong>Perfect One</strong> היא חברה פרטית המספקת ייעוץ וליווי בתחום פתיחת עסקים בישראל.
-                  <br />
-                  <strong>האתר אינו אתר ממשלתי, אינו אתר רשמי של משרד או רשות כלשהי, וזה לא ייעוץ משפטי או חשבונאי רשמי.</strong>
-                </p>
+              <div className="bg-red-50 border-4 border-red-400 rounded-lg p-8">
+                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">⚠️ הבהרה חשובה ביותר</h2>
+                <div className="space-y-3 text-lg text-gray-800">
+                  <p>
+                    <strong>פרפקט וואן</strong> (ח.פ: 516309747) היא חברה פרטית.
+                  </p>
+                  <p>
+                    <strong>👉 האתר אינו אתר ממשלתי</strong>
+                  </p>
+                  <p>
+                    <strong>👉 אנחנו אינם מייצגים רשות כלשהי</strong>
+                  </p>
+                  <p>
+                    <strong>👉 זה ייעוץ וליווי פרטי בלבד - אתה מבצע את הפעולות בעצמך מול הרשויות</strong>
+                  </p>
+                  <p>
+                    <strong>👉 אנחנו לא נותנים ייעוץ משפטי או חשבונאי רשמי</strong>
+                  </p>
+                </div>
               </div>
 
               {/* Section 1 */}
@@ -49,12 +61,12 @@ export default function Terms() {
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   השירותים שאנחנו מספקים הם:
                 </p>
-                <ul className="space-y-3 ml-6">
+                <ul className="space-y-2 ml-6">
                   {[
-                    'ייעוץ פרטי בנושא פתיחת עוסקים בישראל',
-                    'הדרכה וליווי בתהליך פתיחה',
-                    'עזרה בהבנת הדרישות של הרשויות',
-                    'אשור במילוי טפסים ובהכנת מסמכים'
+                    'ייעוץ פרטי בנושא פתיחת עסקים בישראל',
+                    'הדרכה וליווי בתהליך הפתיחה',
+                    'עזרה בהבנת דרישות הרשויות',
+                    'אישור בהכנת מסמכים'
                   ].map((item, i) => (
                     <li key={i} className="text-gray-700 flex gap-3">
                       <span>•</span>
@@ -62,23 +74,23 @@ export default function Terms() {
                     </li>
                   ))}
                 </ul>
-                <p className="text-gray-700 mt-6 font-medium">
-                  <strong>השירותים אינם כוללים:</strong> ביצוע פעולות בשם הלקוח, ייעוץ חשבונאי רשמי, או ייעוץ משפטי רשמי.
+                <p className="text-gray-700 mt-6 font-bold bg-yellow-50 p-4 rounded-lg">
+                  ❌ השירותים אינם כוללים: ביצוע פעולות משפטיות, ייעוץ חשבונאי רשמי, או כל התחייבות להשלים תהליכים בשם הלקוח.
                 </p>
               </div>
 
               {/* Section 2 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">2. אחריויות הלקוח</h2>
+                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">2. אחריות הלקוח</h2>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   הלקוח אחראי אישית:
                 </p>
-                <ul className="space-y-3 ml-6">
+                <ul className="space-y-2 ml-6">
                   {[
-                    'לביצוע הנתונים עם הרשויות (מס הכנסה, ביטוח לאומי, מע"מ)',
-                    'לוידוא כי כל המידע שסופק הוא נכון ותקין',
-                    'להקפדה על דרישות חוקיות בתחום עוסקים',
-                    'לייעוץ משפטי או חשבונאי במקומות בהם נדרוש'
+                    'ביצוע כל הפעולות מול הרשויות (מס הכנסה, ביטוח לאומי וכו\')',
+                    'לוידוא שהמידע שסיפק הוא נכון ותקין',
+                    'להקפדה על כל החוקים הרלוונטיים',
+                    'לביצוע פעולות משפטיות או חשבונאיות בהנחיית אנשי מקצוע רשמיים'
                   ].map((item, i) => (
                     <li key={i} className="text-gray-700 flex gap-3">
                       <span>•</span>
@@ -90,25 +102,25 @@ export default function Terms() {
 
               {/* Section 3 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">3. חוקים והסדרים</h2>
+                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">3. חוקים וחוקיות</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  כל החוקים החלים על פתיחת עוסקים בישראל חלים על הלקוח. ייעוצנו מבוסס על חוקים שנכונים כפי שידוע לנו, 
-                  אך חוקים עשויים להשתנות. אנחנו אחראים להידע שלנו אבל לא מבטיחים דיוק מלא בכל מקרה.
+                  כל החוקים של מדינת ישראל חלים על פתיחת עסק. אנחנו מספקים ייעוץ על סמך ידע שלנו, אך <strong>אנחנו אינו מבטיחים דיוק מלא בכל מקרה</strong> ו<strong>אנחנו אינו אחראים לטעויות משלנו או לשינויים בחוקים</strong>.
                 </p>
               </div>
 
               {/* Section 4 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">4. אי אחריות מוגבלת</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  Perfect One לא אחראית לכל נזק או הפסד שנוצר מ:
+                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">4. אי-אחריות מוגבלת</h2>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  פרפקט וואן לא אחראית לנזקים או הפסדים הנוצרים מ:
                 </p>
-                <ul className="space-y-3 ml-6 mt-4">
+                <ul className="space-y-2 ml-6">
                   {[
                     'שגיאות או השמטות בהנחיות שלנו',
-                    'שינויים בחוקים לאחר תאריך השירות',
+                    'שינויים בחוקים לאחר קבלת השירות',
                     'החלטות אישיות של הלקוח',
-                    'אי ציות של הרשויות'
+                    'אי-ציות של הרשויות לבקשות',
+                    'השימוש באתר או השירותים שלנו בדרך כלשהי'
                   ].map((item, i) => (
                     <li key={i} className="text-gray-700 flex gap-3">
                       <span>•</span>
@@ -122,8 +134,7 @@ export default function Terms() {
               <div>
                 <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">5. מידע אישי וחוקיות</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  בעת שימוש בשירותים שלנו, אתה מספק מידע אישי. מידע זה משומר בהתאם לחוקי הגנת הנתונים בישראל.
-                  אנחנו לא משתפים מידע עם צדדים שלישיים, אלא אם נדרוש על פי דין.
+                  כשאתה משתמש בשירותים שלנו, אתה מספק מידע אישי. מידע זה משומר בהתאם לחוקי הגנת הנתונים בישראל ולמדיניות הפרטיות שלנו.
                 </p>
               </div>
 
@@ -131,8 +142,7 @@ export default function Terms() {
               <div>
                 <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">6. זכויות יוצרים</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  כל התוכן באתר, כולל טקסטים, עיצובים ותמונות, הוא זכות יוצרים של Perfect One. 
-                  אינך רשאי להעתיק או להפיץ תוכן ללא הסכמה בכתב.
+                  כל התוכן באתר (טקסטים, עיצובים, תמונות וכו') הוא בעלות פרפקט וואן. אתה לא רשאי להעתיק, להפיץ או להשתמש בתוכן ללא הסכמה בכתב.
                 </p>
               </div>
 
@@ -140,26 +150,33 @@ export default function Terms() {
               <div>
                 <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">7. שינויים לתנאים</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  Perfect One שומרת לעצמה את הזכות לשנות תנאים אלו בכל זמן. שינויים יהיו בתוקף מיד לאחר פרסום באתר.
+                  פרפקט וואן שומרת לעצמה את הזכות לשנות תנאים אלו בכל עת. שינויים יהיו בתוקף מיד לאחר פרסום באתר.
                 </p>
               </div>
 
-              {/* Contact */}
-              <div className="bg-blue-50 border-l-4 border-[#1E3A5F] rounded-lg p-6 mt-12">
-                <h3 className="text-2xl font-bold text-[#1E3A5F] mb-2">יצירת קשר לשאלות</h3>
-                <p className="text-gray-700">
-                  לכל שאלה או הערה בנוגע לתנאים אלו:
-                </p>
-                <p className="text-gray-800 font-medium mt-3">
-                  📧 <a href="mailto:info@perfect1.co.il" className="text-[#1E3A5F] hover:underline">info@perfect1.co.il</a>
-                  <br />
-                  📱 <a href="tel:0502277087" className="text-[#1E3A5F] hover:underline">0502277087</a>
-                </p>
+              {/* Section 8 - Contact */}
+              <div>
+                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">8. פרטי החברה</h2>
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border-l-4 border-[#1E3A5F]">
+                  <p className="text-gray-800 font-bold mb-3">פרפקט וואן</p>
+                  <p className="text-gray-700 mb-2">
+                    <strong>מספר חברה:</strong> 516309747
+                  </p>
+                  <p className="text-gray-700 mb-2">
+                    <strong>טלפון:</strong> <a href="tel:0502277087" className="text-[#1E3A5F] hover:underline">0502277087</a>
+                  </p>
+                  <p className="text-gray-700 mb-2">
+                    <strong>וואטסאפ:</strong> <a href="https://wa.me/972502277087" className="text-[#1E3A5F] hover:underline">צור קשר</a>
+                  </p>
+                  <p className="text-gray-700">
+                    <strong>שעות פעילות:</strong> א'-ה' 9:00-18:00
+                  </p>
+                </div>
               </div>
 
               {/* Last Updated */}
               <p className="text-sm text-gray-500 text-center mt-8">
-                עדכון אחרון: 2026-01-11
+                עדכון אחרון: 11 בינואר 2026
               </p>
             </motion.div>
           </div>
