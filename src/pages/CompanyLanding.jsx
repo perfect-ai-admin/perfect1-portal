@@ -111,7 +111,7 @@ export default function CompanyLanding() {
                 ייעוץ וליווי לפתיחת חברה בע״מ
               </h1>
               <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">
-                שירות פרטי לייעוץ בפתיחת חברה בע״מ - מרישום ברשם החברות ועד ניהול שוטף
+                שירות ייעוץ וליווי פרטי בלבד - אנחנו מדריכים, אתה מבצע את הפתיחה בעצמך מול הרשויות
               </p>
               <div className="bg-white/10 rounded-lg px-4 py-3 border border-white/20 inline-block">
                 <p className="text-sm text-white font-medium">

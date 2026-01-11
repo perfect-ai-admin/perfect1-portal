@@ -44,7 +44,7 @@ export default function OsekPatur() {
                   <span className="text-[#D4AF37]">לפתיחת עוסק פטור</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed">
-                  אנו מלווים אותך בהבנת התהליך, הכנת המסמכים והכוונה לפתיחת התיק מול הרשויות הרלוונטיות
+                   שירות ייעוץ וליווי פרטי בלבד - אנחנו מדריכים, אתה מבצע את פתיחת התיק מול הרשויות
                 </p>
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 mb-8 border border-white/20">
                   <p className="text-white/90 text-lg font-medium">
