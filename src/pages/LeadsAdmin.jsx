@@ -12,14 +12,6 @@ import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 
 export default function LeadsAdmin() {
-  // Hide footer for this page
-  useEffect(() => {
-    const footer = document.querySelector('footer');
-    if (footer) footer.style.display = 'none';
-    return () => {
-      if (footer) footer.style.display = '';
-    };
-  }, []);
   const [selectedLead, setSelectedLead] = useState(null);
   const [showAddLeadDialog, setShowAddLeadDialog] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -239,8 +231,8 @@ export default function LeadsAdmin() {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 md:p-3 flex flex-col overflow-hidden md:pt-24" dir="rtl">
-      <div className="max-w-7xl mx-auto w-full flex flex-col h-full">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 md:p-3 md:pt-24 pb-8" dir="rtl">
+      <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
         <div className="mb-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 flex-shrink-0">
           <div>
@@ -379,7 +371,7 @@ export default function LeadsAdmin() {
         </div>
 
         {/* Mobile Cards View */}
-        <div className="md:hidden flex-1 overflow-y-auto overflow-x-hidden space-y-2 pb-4">
+        <div className="md:hidden space-y-2">
           {sortedLeads.map((lead) => (
             <div key={lead.id} className="bg-white rounded-lg shadow-md p-3 border-r-4" style={{
               borderColor: lead.status === 'converted' ? '#16a34a' : 
@@ -494,8 +486,8 @@ export default function LeadsAdmin() {
         </div>
 
         {/* Desktop Table */}
-        <div className="hidden md:flex bg-white rounded-lg shadow overflow-hidden flex-1 flex-col min-h-0">
-          <div className="overflow-auto flex-1">
+        <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
             <table className="w-full min-w-[1200px]">
               <thead className="bg-[#1E3A5F] text-white">
                 <tr>
