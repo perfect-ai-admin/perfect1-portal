@@ -154,7 +154,8 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="text-center">
             <p className="text-yellow-400 font-semibold text-sm md:text-base">
-              ⚠️ המידע והשירות ניתנים על ידי גורם פרטי. האתר אינו אתר ממשלתי.
+              ⚠️ השירות ניתן על ידי גורם פרטי לצורכי ייעוץ וליווי בלבד.<br />
+              האתר אינו אתר ממשלתי!
             </p>
           </div>
         </div>
