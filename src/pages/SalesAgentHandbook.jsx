@@ -304,6 +304,24 @@ export default function SalesAgentHandbook() {
                 זה לא סתם "דוח שנתי" – זה מערכת שלמה שדואגת שהלקוח יהיה מסודר, מוגן, ויתקדם.
               </p>
             </div>
+
+            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6 mb-6">
+              <h4 className="font-bold text-lg text-yellow-900 mb-3">💡 למה עצמאי בכלל צריך משרד רואה חשבון?</h4>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                  <p className="font-bold text-blue-900 mb-2">👔 כשאתה שכיר:</p>
+                  <p className="text-gray-700">
+                    חובת הדיווח והתשלום היא על המעסיק. הוא מוציא תלוש ומשלם לרשויות (מס הכנסה, ביטוח לאומי).
+                  </p>
+                </div>
+                <div className="bg-white p-4 rounded-lg border border-yellow-400">
+                  <p className="font-bold text-yellow-900 mb-2">💼 כשאתה עצמאי:</p>
+                  <p className="text-gray-700">
+                    <strong>חובת הדיווח והתשלום היא עליך!</strong> ולכן אתה משתמש במשרד רואה חשבון שדואג לכל זה בשבילך.
+                  </p>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section>
