@@ -177,7 +177,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <p className="text-gray-400 text-sm">
-                © {new Date().getFullYear()} פרפקט וואן - המרכז לעוסקים פטורים. כל הזכויות שמורות.
+                © {new Date().getFullYear()} פרפקט וואן (ח.פ: 516309747) - שירות ייעוץ וליווי לפתיחת עסקים. כל הזכויות שמורות.
               </p>
               <a 
                 href="https://g.page/r/YOUR_GOOGLE_BUSINESS_ID/review"

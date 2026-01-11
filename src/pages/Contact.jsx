@@ -76,9 +76,9 @@ export default function Contact() {
                     <Building2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#1E3A5F]">שם העסק</h3>
+                    <h3 className="font-bold text-[#1E3A5F]">שם החברה</h3>
                     <p className="text-xl font-bold text-gray-800">פרפקט וואן</p>
-                    <p className="text-gray-500 text-sm">ע.מ. 123456789</p>
+                    <p className="text-gray-500 text-sm">מספר חברה: 516309747</p>
                   </div>
                 </div>
 
