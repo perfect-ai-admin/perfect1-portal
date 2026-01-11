@@ -103,183 +103,104 @@ export default function About() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-              <Award className="w-4 h-4 text-[#D4AF37]" />
-              <span className="text-white/90 text-sm font-medium">המרכז הארצי לפתיחת עוסקים בישראל</span>
-            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              אודות Perfect One - המרכז הארצי לפתיחת עוסקים בישראל
+              אודות
             </h1>
             <p className="text-xl text-white/80 max-w-2xl mx-auto">
-              כל מה שצריך כדי לפתוח ולנהל עסק בישראל – עוסק פטור, עוסק מורשה וחברה בע״מ
+              מי אנחנו ומה אנחנו עושים
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-12 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] relative z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4"
-          >
-            {stats.map((stat, index) => (
-              <div 
-                key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 text-center"
-              >
-                <p className="text-3xl md:text-4xl font-black text-white mb-1">{stat.number}</p>
-                <p className="text-white/70 text-sm">{stat.label}</p>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Story */}
+      {/* Main Content */}
       <section className="py-16 bg-[#F8F9FA]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1E3A5F] mb-6">
-                הסיפור שלנו
-              </h2>
-              <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
-                <InternalLinker 
-                  content="פרפקט וואן נוסדה מתוך הבנה עמוקה שפתיחת עסק בישראל לא צריכה להיות מסובכת. ראינו אנשים מוכשרים שמפחדים לקחת את הצעד הראשון בגלל הבירוקרטיה והחששות מהרשויות. החלטנו לשנות את זה."
-                  currentPage="About"
-                />
-                <p className="text-gray-600">
-                  <strong>המייסדים שלנו</strong> - צוות מקצועי עם למעלה מעשור ניסיון בתחום. 
-                  עברנו את כל התהליכים בעצמנו, הכרנו את הקשיים מקרוב, ויצרנו פתרון שממש עובד.
-                </p>
-                <InternalLinker 
-                  content="יצרנו שירות שמלווה עצמאים מהרגע הראשון - מפתיחת תיק בכל סוג עסק ועד ניהול העסק השוטף. מידע מקצועי, תהליכים מסודרים וליווי מול רשויות המס. הכל במחיר הוגן ושקוף. היום אנחנו גאים לומר שעזרנו לאלפי מעסיקים לפתוח עסק ולהגשים את החלום שלהם."
-                  currentPage="About"
-                />
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-              className="relative"
-            >
-              <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-3xl p-8 text-white">
-                <h3 className="text-2xl font-bold mb-6">במי אנחנו?</h3>
-                   <p className="text-white mb-6 leading-relaxed text-lg">
-                     צוות של מומחים המתמחים בשלוש סוגי עסקים בישראל:
-                   </p>
-                   <ul className="space-y-4">
-                     <li className="flex items-start gap-3">
-                       <CheckCircle className="w-6 h-6 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                       <Link to={createPageUrl('OsekPaturLanding')} className="text-white hover:text-[#D4AF37] transition-colors font-medium text-lg">
-                         פתיחת עוסק פטור
-                       </Link>
-                     </li>
-                     <li className="flex items-start gap-3">
-                       <CheckCircle className="w-6 h-6 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                       <Link to={createPageUrl('OsekMorshaLanding')} className="text-white hover:text-[#D4AF37] transition-colors font-medium text-lg">
-                         פתיחת עוסק מורשה
-                       </Link>
-                     </li>
-                     <li className="flex items-start gap-3">
-                       <CheckCircle className="w-6 h-6 text-[#D4AF37] flex-shrink-0 mt-0.5" />
-                       <Link to={createPageUrl('CompanyLanding')} className="text-white hover:text-[#D4AF37] transition-colors font-medium text-lg">
-                         פתיחת חברה בע״מ
-                       </Link>
-                     </li>
-                   </ul>
-              </div>
-              <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-[#D4AF37] rounded-2xl flex items-center justify-center">
-                <Users className="w-10 h-10 text-white" />
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <MicroCTA text="רוצים להצטרף לאלפי העצמאים שבחרו בנו?" cta="בדיקה ללא התחייבות" />
-      </div>
-
-      {/* Values */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1E3A5F] mb-4">
-              הערכים שלנו
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              הערכים האלה מנחים אותנו בכל יום ובכל אינטראקציה עם לקוחותינו
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {values.map((value, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center mb-6">
-                  <value.icon className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-[#1E3A5F] mb-3">{value.title}</h3>
-                <p className="text-gray-600">{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact & Trust Section */}
-      <section className="py-16 bg-white border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-            className="text-center"
+            viewport={{ once: true }}
+            className="bg-white rounded-3xl shadow-lg p-8 md:p-12 space-y-8"
           >
-            <h2 className="text-2xl font-bold text-[#1E3A5F] mb-6">צרו איתנו קשר</h2>
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="p-4">
-                <p className="text-gray-500 text-sm mb-1">טלפון</p>
-                <a href="tel:0502277087" className="text-[#1E3A5F] font-bold text-lg hover:text-[#27AE60]">
-                  050-227-7087
-                </a>
-              </div>
-              <div className="p-4">
-                <p className="text-gray-500 text-sm mb-1">אימייל</p>
-                <a href="mailto:info@perfect1.co.il" className="text-[#1E3A5F] font-bold text-lg hover:text-[#27AE60]">
-                  info@perfect1.co.il
-                </a>
-              </div>
-              <div className="p-4">
-                <p className="text-gray-500 text-sm mb-1">שעות פעילות</p>
-                <p className="text-gray-700 font-medium">ראשון-חמישי 9:00-18:00</p>
+            {/* מי עומד מאחורי האתר */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-4">
+                מי אנחנו
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                האתר הוקם כדי לסייע לעצמאים בתחילת הדרך להבין את תהליך פתיחת עוסק פטור, עוסק מורשה וחברה בע״מ בישראל.
+                אנחנו צוות מקצועי עם ניסיון רב בתחום, שמבין את הקשיים והאתגרים של פתיחת עסק בישראל.
+              </p>
+            </div>
+
+            {/* למה האתר קיים */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-4">
+                למה האתר קיים
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                פתיחת עסק בישראל יכולה להיות מסובכת ומלאה בשאלות. יצרנו את האתר הזה כדי לספק מידע ברור ונגיש,
+                ולהציע ליווי מסודר לכל מי שרוצה להתחיל לעבוד כעצמאי או לפתוח עסק.
+                השירות שלנו מיועד למי שמחפש הדרכה וליווי ראשוני בתהליך.
+              </p>
+            </div>
+
+            {/* איך השירות עובד */}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1E3A5F] mb-4">
+                איך השירות עובד
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                אנחנו מספקים ליווי מקצועי לאורך כל התהליך – מההסברים הראשוניים ועד להגשת הטפסים הנדרשים.
+                השירות כולל הדרכה, מענה לשאלות, וסיוע בהבנת הדרישות השונות של הרשויות.
+              </p>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                <strong>השירותים שלנו כוללים:</strong>
+              </p>
+              <ul className="mt-4 space-y-3">
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-6 h-6 text-[#27AE60] flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700 text-lg">
+                    <Link to={createPageUrl('OsekPaturLanding')} className="text-[#1E3A5F] hover:text-[#27AE60] font-semibold">
+                      פתיחת עוסק פטור
+                    </Link> - ליווי מלא בתהליך הפתיחה
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-6 h-6 text-[#27AE60] flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700 text-lg">
+                    <Link to={createPageUrl('OsekMorshaLanding')} className="text-[#1E3A5F] hover:text-[#27AE60] font-semibold">
+                      פתיחת עוסק מורשה
+                    </Link> - הכוונה וסיוע בהליך
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-6 h-6 text-[#27AE60] flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700 text-lg">
+                    <Link to={createPageUrl('CompanyLanding')} className="text-[#1E3A5F] hover:text-[#27AE60] font-semibold">
+                      פתיחת חברה בע״מ
+                    </Link> - ליווי מקצועי
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* הבהרה חשובה */}
+            <div className="border-t-2 border-[#D4AF37] pt-6">
+              <div className="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-[#1E3A5F] mb-3 flex items-center gap-2">
+                  <Shield className="w-6 h-6 text-yellow-600" />
+                  הבהרה חשובה
+                </h3>
+                <p className="text-gray-800 text-base leading-relaxed font-medium">
+                  השירות ניתן על ידי גורם פרטי לצורכי ייעוץ וליווי בלבד.
+                  <br />
+                  <strong>האתר אינו אתר ממשלתי</strong> ואינו מהווה ייעוץ חשבונאי או משפטי.
+                  <br />
+                  לשאלות משפטיות או חשבונאיות מורכבות, מומלץ לפנות לגורם מוסמך.
+                </p>
               </div>
             </div>
-            <p className="text-gray-500 text-sm">
-              פרפקט וואן | ח.פ. מוסמך | רישום עוסקים פטורים ברחבי הארץ | כל הזכויות שמורות © 2024
-            </p>
           </motion.div>
         </div>
       </section>
