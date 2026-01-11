@@ -8,11 +8,11 @@ export default function KnowledgeSection() {
   const faqLinks = [
     {
       question: 'כמה עולה לפתוח עוסק פטור',
-      link: 'OsekPaturLanding'
+      link: 'PricingCost'
     },
     {
       question: 'מתי צריך לעבור מעוסק פטור למורשה',
-      link: 'OsekPaturLanding'
+      link: 'TransitionOsekPaturToMorsha'
     },
     {
       question: 'פתיחת חברה בע״מ – כמה זמן זה לוקח',
