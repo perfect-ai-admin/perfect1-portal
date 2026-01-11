@@ -9,6 +9,8 @@ import BituchLeumiLanding from './pages/BituchLeumiLanding';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
+import ClientDashboard from './pages/ClientDashboard';
+import ClientLogin from './pages/ClientLogin';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
@@ -100,8 +102,6 @@ import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import ClientLogin from './pages/ClientLogin';
-import ClientDashboard from './pages/ClientDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -117,6 +117,8 @@ export const PAGES = {
     "Blog": Blog,
     "BlogPost": BlogPost,
     "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
+    "ClientDashboard": ClientDashboard,
+    "ClientLogin": ClientLogin,
     "CloseBusinessLanding": CloseBusinessLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
     "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
@@ -208,8 +210,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "ClientLogin": ClientLogin,
-    "ClientDashboard": ClientDashboard,
 }
 
 export const pagesConfig = {

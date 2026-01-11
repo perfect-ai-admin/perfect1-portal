@@ -8,8 +8,9 @@ import {
   TrendingUp, CheckCircle, Clock, AlertCircle, LogOut, Target, BookOpen, 
   MessageCircle, ChevronLeft, Briefcase, FileText, Users, Zap, 
   DollarSign, Calendar, BarChart3, Shield, Lightbulb, TrendingDown,
-  Activity, ArrowUpRight, Award
+  Activity, ArrowUpRight, Award, Bot
 } from 'lucide-react';
+import SmartChat from '../components/client/SmartChat';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -73,6 +74,12 @@ export default function ClientDashboard() {
   const healthStatus = getHealthStatus(currentData);
 
   const categories = [
+    { 
+      id: 'chat', 
+      label: '💬 שיחה חכמה', 
+      icon: <Bot className="w-5 h-5" />,
+      color: 'from-green-600 to-green-700'
+    },
     { 
       id: 'dashboard', 
       label: 'סקירה כללית', 
@@ -159,6 +166,13 @@ export default function ClientDashboard() {
 
         <div className="max-w-7xl mx-auto px-6 py-8">
           <AnimatePresence mode="wait">
+            {activeCategory === 'chat' && (
+              <ChatView 
+                key="chat" 
+                data={currentData}
+                onUpdate={() => queryClient.invalidateQueries({ queryKey: ['client', client?.id] })}
+              />
+            )}
             {activeCategory === 'dashboard' && (
               <DashboardView 
                 key="dashboard" 
@@ -208,6 +222,22 @@ export default function ClientDashboard() {
         </div>
       </div>
     </>
+  );
+}
+
+// Chat View
+function ChatView({ data, onUpdate }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="h-[calc(100vh-280px)]"
+    >
+      <div className="bg-white rounded-2xl shadow-xl h-full overflow-hidden">
+        <SmartChat clientData={data} onUpdate={onUpdate} />
+      </div>
+    </motion.div>
   );
 }
 
