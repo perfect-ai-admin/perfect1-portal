@@ -190,22 +190,6 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
 
-            <Link
-              to={createPageUrl('Home')}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
-            >
-              דף הבית
-            </Link>
-
-            <Link
-              to={createPageUrl('Blog')}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
-            >
-              בלוג
-            </Link>
-
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
                 עוסק פטור
@@ -285,6 +269,14 @@ export default function Header() {
                  </DropdownMenuItem>
                </DropdownMenuContent>
              </DropdownMenu>
+
+            <Link
+              to={createPageUrl('Blog')}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
+            >
+              בלוג
+            </Link>
 
             <Link
               to={createPageUrl('CloseBusinessLanding')}
