@@ -226,20 +226,25 @@ export default function OsekPaturOnlineLanding() {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-center lg:text-right"
               >
-                <div className="inline-flex items-center gap-2 bg-[#27AE60]/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-[#27AE60]/30">
-                  <Wifi className="w-5 h-5 text-[#27AE60]" />
-                  <span className="text-[#27AE60] text-sm font-bold">100% דיגיטלי - בלי לצאת מהבית</span>
+                <div className="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-yellow-400/40">
+                  <span className="text-yellow-400 text-sm font-bold">⚠️ שירות פרטי - לא ממשלתי</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  פתיחת עוסק פטור אונליין
+                  ייעוץ וליווי אונליין
+                  <br />
+                  <span className="text-[#D4AF37]">לפתיחת עוסק פטור</span>
                 </h1>
 
-                <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed font-medium">
-                  שירות ארצי לכל ישראל - פותחים עוסק פטור בלי לצאת מהבית
-                  <br />
-                  <strong className="text-[#D4AF37]">תהליך מקוון לחלוטין - פשוט, מהיר וחוקי</strong>
+                <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
+                  שירות ייעוץ פרטי - תהליך דיגיטלי שאתה מבצע בעצמך, ואנחנו מדריכים אותך לאורך הדרך
                 </p>
+
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
+                  <p className="text-sm text-white font-medium">
+                    ⚠️ אתה מבצע את פתיחת התיק בעצמך מול הרשויות - אנחנו כאן כדי להדריך אותך
+                  </p>
+                </div>
 
                 <div className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-8 border-2 border-white/40 shadow-2xl">
                   <div className="text-center mb-4">
@@ -613,8 +618,15 @@ export default function OsekPaturOnlineLanding() {
                     {isSubmitting ? 'שולח...' : 'פתח עוסק אונליין עכשיו'}
                   </Button>
 
-                  <p className="text-xs text-gray-500 text-center">
-                    ללא התחייבות • תהליך מקוון מלא • תמיכה 24/7
+                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mt-6">
+                    <p className="text-xs text-gray-700 leading-relaxed">
+                      <strong className="text-yellow-800">חשוב:</strong> השירות ניתן על ידי גורם פרטי לצורך ייעוץ וליווי בלבד. 
+                      אתה תבצע את פתיחת התיק בעצמך מול הרשויות - אנחנו נדריך אותך לאורך הדרך.
+                    </p>
+                  </div>
+
+                  <p className="text-xs text-gray-500 text-center mt-4">
+                    ללא התחייבות • ליווי אונליין • תמיכה 24/7
                   </p>
                 </form>
               </div>
