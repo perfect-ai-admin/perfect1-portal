@@ -1710,18 +1710,15 @@ export default function SalesAgentHandbook() {
       </Helmet>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16" dir="rtl">
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-8" dir="rtl">
         <div className="max-w-6xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h1 className="text-5xl font-bold mb-4">חוברת הדרכה לסוכן מכירות</h1>
-            <p className="text-2xl text-gray-200 mb-6">מדריך מקיף ב-7 שלבים</p>
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
-              כל מה שאתה צריך כדי למכור נכון, לבנות אמון, ולעזור ללקוחות להרגיש רגועים ומוגנים
-            </p>
+            <h1 className="text-3xl font-bold mb-2">חוברת הדרכה לסוכן מכירות</h1>
+            <p className="text-lg text-gray-200">מדריך מקיף ב-8 שלבים</p>
           </motion.div>
         </div>
       </section>
