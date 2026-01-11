@@ -1864,9 +1864,16 @@ export default function SalesAgentHandbook() {
             >
               <div className="border-2 border-gray-300 rounded-xl overflow-hidden shadow-lg">
                 <button
-                  onClick={() => setOpenStep(openStep === step.number ? null : step.number)}
-                  className={`w-full bg-gradient-to-r ${step.color} text-white p-6 flex items-center justify-between hover:opacity-90 transition`}
-                >
+                    onClick={(e) => {
+                      setOpenStep(openStep === step.number ? null : step.number);
+                      if (openStep !== step.number) {
+                        setTimeout(() => {
+                          e.target.closest('.border-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+                      }
+                    }}
+                    className={`w-full bg-gradient-to-r ${step.color} text-white p-6 flex items-center justify-between hover:opacity-90 transition`}
+                  >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                       {step.icon}
