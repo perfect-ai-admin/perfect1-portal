@@ -231,55 +231,57 @@ export default function LeadsAdmin() {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 flex flex-col overflow-hidden" dir="rtl">
+    <div className="h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 md:p-3 flex flex-col overflow-hidden md:pt-24" dir="rtl">
       <div className="max-w-7xl mx-auto w-full flex flex-col h-full">
         {/* Header */}
-        <div className="mb-3 flex items-center justify-between flex-shrink-0">
+        <div className="mb-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 flex-shrink-0">
           <div>
-            <h1 className="text-2xl font-bold text-[#1E3A5F] mb-1">ניהול לידים - CRM</h1>
-            <p className="text-sm text-gray-600">כל הלידים שמגיעים מהאתר + מעקב אחר לחיצות</p>
+            <h1 className="text-xl md:text-2xl font-bold text-[#1E3A5F] mb-1">ניהול לידים - CRM</h1>
+            <p className="text-xs md:text-sm text-gray-600 hidden md:block">כל הלידים שמגיעים מהאתר + מעקב אחר לחיצות</p>
           </div>
-          <div className="flex gap-3">
-            <Link to={createPageUrl('AgentsManager')}>
+          <div className="flex gap-2 w-full md:w-auto">
+            <Link to={createPageUrl('AgentsManager')} className="flex-1 md:flex-none">
               <Button 
                 variant="outline"
-                className="border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white"
+                size="sm"
+                className="border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white w-full md:w-auto"
               >
-                <Users className="w-5 h-5 ml-2" />
-                ניהול נציגים
+                <Users className="w-4 h-4 md:w-5 md:h-5 ml-1" />
+                <span className="text-xs md:text-sm">נציגים</span>
               </Button>
             </Link>
             <Button 
               onClick={() => setShowAddLeadDialog(true)}
-              className="bg-[#27AE60] hover:bg-[#2ECC71]"
+              size="sm"
+              className="bg-[#27AE60] hover:bg-[#2ECC71] flex-1 md:flex-none"
             >
-              <UserPlus className="w-5 h-5 ml-2" />
-              הוסף ליד ידנית
+              <UserPlus className="w-4 h-4 md:w-5 md:h-5 ml-1" />
+              <span className="text-xs md:text-sm">הוסף ליד</span>
             </Button>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3 flex-shrink-0">
-          <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-lg p-2 shadow-lg shadow-[#1E3A5F]/30">
-            <div className="text-2xl font-black text-white">{stats.total}</div>
-            <div className="text-xs text-white/80 font-semibold">סך הכל</div>
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-1.5 md:gap-2 mb-2 flex-shrink-0">
+          <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-lg p-1.5 md:p-2 shadow-lg shadow-[#1E3A5F]/30">
+            <div className="text-xl md:text-2xl font-black text-white">{stats.total}</div>
+            <div className="text-[10px] md:text-xs text-white/80 font-semibold">סך הכל</div>
           </div>
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-2 shadow-lg shadow-blue-500/40">
-            <div className="text-2xl font-black text-white">{stats.new}</div>
-            <div className="text-xs text-white/90 font-semibold">חדשים</div>
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-1.5 md:p-2 shadow-lg shadow-blue-500/40">
+            <div className="text-xl md:text-2xl font-black text-white">{stats.new}</div>
+            <div className="text-[10px] md:text-xs text-white/90 font-semibold">חדשים</div>
           </div>
-          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg p-2 shadow-lg shadow-yellow-500/40">
-            <div className="text-2xl font-black text-white">{stats.contacted}</div>
-            <div className="text-xs text-white/90 font-semibold">יצרנו קשר</div>
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg p-1.5 md:p-2 shadow-lg shadow-yellow-500/40">
+            <div className="text-xl md:text-2xl font-black text-white">{stats.contacted}</div>
+            <div className="text-[10px] md:text-xs text-white/90 font-semibold">קשר</div>
           </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-2 shadow-lg shadow-green-500/50 animate-pulse">
-            <div className="text-2xl font-black text-white">{stats.converted}</div>
-            <div className="text-xs text-white/90 font-semibold">נסגרו ✨</div>
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-1.5 md:p-2 shadow-lg shadow-green-500/50 animate-pulse">
+            <div className="text-xl md:text-2xl font-black text-white">{stats.converted}</div>
+            <div className="text-[10px] md:text-xs text-white/90 font-semibold">נסגרו ✨</div>
           </div>
-          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-2 shadow-lg shadow-red-500/50">
-            <div className="text-2xl font-black text-white">{stats.followUpToday}</div>
-            <div className="text-xs text-white/90 font-semibold">היום</div>
+          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-1.5 md:p-2 shadow-lg shadow-red-500/50 col-span-3 md:col-span-1">
+            <div className="text-xl md:text-2xl font-black text-white">{stats.followUpToday}</div>
+            <div className="text-[10px] md:text-xs text-white/90 font-semibold">חזרה היום</div>
           </div>
         </div>
 
@@ -311,18 +313,18 @@ export default function LeadsAdmin() {
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow p-2 mb-2 flex-shrink-0">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-2">
             <div className="flex-1 relative">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
-                placeholder="חיפוש לפי שם, טלפון או מייל..."
+                placeholder="חיפוש..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-10"
+                className="pr-8 h-9 text-sm"
               />
             </div>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-32 h-9 text-sm">
                 <SelectValue placeholder="סטטוס" />
               </SelectTrigger>
               <SelectContent>
@@ -338,7 +340,7 @@ export default function LeadsAdmin() {
               </SelectContent>
             </Select>
             <Select value={filterPriority} onValueChange={setFilterPriority}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-32 h-9 text-sm">
                 <SelectValue placeholder="עדיפות" />
               </SelectTrigger>
               <SelectContent>
@@ -349,7 +351,7 @@ export default function LeadsAdmin() {
               </SelectContent>
             </Select>
             <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-full md:w-48">
+              <SelectTrigger className="w-full md:w-32 h-9 text-sm">
                 <SelectValue placeholder="קטגוריה" />
               </SelectTrigger>
               <SelectContent>
@@ -361,9 +363,9 @@ export default function LeadsAdmin() {
                 <SelectItem value="other">אחר</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={exportToCSV} className="bg-[#27AE60] hover:bg-[#2ECC71]">
-              <Download className="w-5 h-5 ml-2" />
-              ייצא
+            <Button onClick={exportToCSV} size="sm" className="bg-[#27AE60] hover:bg-[#2ECC71] h-9">
+              <Download className="w-4 h-4 ml-1" />
+              <span className="hidden md:inline">ייצא</span>
             </Button>
           </div>
         </div>
@@ -371,7 +373,7 @@ export default function LeadsAdmin() {
         {/* Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden flex-1 flex flex-col min-h-0">
           <div className="overflow-auto flex-1">
-            <table className="w-full">
+            <table className="w-full min-w-[1200px]">
               <thead className="bg-[#1E3A5F] text-white">
                 <tr>
                   <th className="px-3 py-2 text-center sticky top-0 bg-[#1E3A5F]">
@@ -383,97 +385,97 @@ export default function LeadsAdmin() {
                       )}
                     </button>
                   </th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">תאריך</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">שם</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">טלפון</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">מקצוע</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">מקור</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">קטגוריה</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">סוג</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">נציג</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">תאריך</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">שם</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">טלפון</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקצוע</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקור</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">קטגוריה</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">סוג</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">נציג</th>
                   <th 
-                    className="px-3 py-2 text-center cursor-pointer hover:bg-[#2C5282] transition-colors sticky top-0 bg-[#1E3A5F]"
+                    className="px-2 py-2 text-center text-xs cursor-pointer hover:bg-[#2C5282] transition-colors sticky top-0 bg-[#1E3A5F]"
                     onClick={() => setSortBy(sortBy === 'status' ? null : 'status')}
-                    title="לחץ למיון לפי סטטוס"
+                    title="למיון"
                   >
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-1">
                       סטטוס
                       {sortBy === 'status' && <span className="text-yellow-300">▼</span>}
                     </div>
                   </th>
                   <th 
-                    className="px-3 py-2 text-center cursor-pointer hover:bg-[#2C5282] transition-colors sticky top-0 bg-[#1E3A5F]"
+                    className="px-2 py-2 text-center text-xs cursor-pointer hover:bg-[#2C5282] transition-colors sticky top-0 bg-[#1E3A5F]"
                     onClick={() => setSortBy(sortBy === 'priority' ? null : 'priority')}
-                    title="לחץ למיון לפי עדיפות"
+                    title="למיון"
                   >
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-1">
                       עדיפות
                       {sortBy === 'priority' && <span className="text-yellow-300">▼</span>}
                     </div>
                   </th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">חזרה</th>
-                  <th className="px-3 py-2 text-right sticky top-0 bg-[#1E3A5F]">הערות</th>
-                  <th className="px-3 py-2 text-center sticky top-0 bg-[#1E3A5F]">פעולות</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">חזרה</th>
+                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">הערות</th>
+                  <th className="px-2 py-2 text-center text-xs sticky top-0 bg-[#1E3A5F]">פעולות</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedLeads.map((lead, index) => (
                   <tr key={lead.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-2 py-1.5 text-center">
                       <button onClick={() => toggleSelectLead(lead.id)} className="hover:bg-gray-200 p-1 rounded">
                         {selectedLeads.includes(lead.id) ? (
-                          <CheckSquare className="w-5 h-5 text-indigo-600" />
+                          <CheckSquare className="w-4 h-4 text-indigo-600" />
                         ) : (
-                          <Square className="w-5 h-5 text-gray-400" />
+                          <Square className="w-4 h-4 text-gray-400" />
                         )}
                       </button>
                     </td>
-                    <td className="px-3 py-2 text-xs text-gray-600">
+                    <td className="px-2 py-1.5 text-xs text-gray-600 whitespace-nowrap">
                       {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
                     </td>
-                    <td className="px-3 py-2">
-                      <div className="font-medium text-sm">{lead.name}</div>
-                      {lead.email && <div className="text-xs text-gray-500">{lead.email}</div>}
+                    <td className="px-2 py-1.5">
+                      <div className="font-medium text-xs">{lead.name}</div>
+                      {lead.email && <div className="text-[10px] text-gray-500 truncate max-w-[120px]">{lead.email}</div>}
                     </td>
-                    <td className="px-3 py-2">
-                      <a href={`tel:${lead.phone}`} className="text-[#1E3A5F] hover:underline flex items-center gap-1 text-sm">
+                    <td className="px-2 py-1.5">
+                      <a href={`tel:${lead.phone}`} className="text-[#1E3A5F] hover:underline flex items-center gap-1 text-xs whitespace-nowrap">
                         <Phone className="w-3 h-3" />
                         {lead.phone}
                       </a>
                     </td>
-                    <td className="px-3 py-2 text-xs">{lead.profession || '-'}</td>
-                    <td className="px-3 py-2 text-xs text-gray-500">{lead.source_page || '-'}</td>
-                    <td className="px-3 py-2 text-xs">
-                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${categoryColors[lead.category || 'osek_patur']}`}>
+                    <td className="px-2 py-1.5 text-xs">{lead.profession || '-'}</td>
+                    <td className="px-2 py-1.5 text-[10px] text-gray-500 max-w-[100px] truncate">{lead.source_page || '-'}</td>
+                    <td className="px-2 py-1.5 text-xs">
+                      <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${categoryColors[lead.category || 'osek_patur']}`}>
                         {categoryLabels[lead.category || 'osek_patur']}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-xs">
-                     <span className={`inline-block px-2 py-1 rounded font-semibold shadow-md ${
-                       lead.interaction_type === 'phone_click' ? 'bg-blue-500 text-white shadow-blue-500/40' :
-                       lead.interaction_type === 'whatsapp_click' ? 'bg-green-500 text-white shadow-green-500/40' :
-                       lead.interaction_type === 'manual' ? 'bg-purple-500 text-white shadow-purple-500/40' :
-                       'bg-gray-500 text-white shadow-gray-500/40'
+                     <td className="px-2 py-1.5 text-xs">
+                     <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold shadow-sm ${
+                       lead.interaction_type === 'phone_click' ? 'bg-blue-500 text-white' :
+                       lead.interaction_type === 'whatsapp_click' ? 'bg-green-500 text-white' :
+                       lead.interaction_type === 'manual' ? 'bg-purple-500 text-white' :
+                       'bg-gray-500 text-white'
                      }`}>
-                       {lead.interaction_type === 'phone_click' ? '📞 חייג' :
-                        lead.interaction_type === 'whatsapp_click' ? '💬 וואטסאפ' :
-                        lead.interaction_type === 'manual' ? '✋ ידני' :
-                        '📝 טופס'}
+                       {lead.interaction_type === 'phone_click' ? '📞' :
+                        lead.interaction_type === 'whatsapp_click' ? '💬' :
+                        lead.interaction_type === 'manual' ? '✋' :
+                        '📝'}
                      </span>
-                    </td>
-                    <td className="px-3 py-2 text-sm">
-                      <Select 
-                        value={lead.agent_name || 'none'} 
-                        onValueChange={(value) => {
-                          updateLeadMutation.mutate({
-                            id: lead.id,
-                            data: { ...lead, agent_name: value === 'none' ? null : value }
-                          });
-                        }}
-                      >
-                        <SelectTrigger className="w-40 h-8 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
+                     </td>
+                     <td className="px-2 py-1.5 text-sm">
+                     <Select 
+                       value={lead.agent_name || 'none'} 
+                       onValueChange={(value) => {
+                         updateLeadMutation.mutate({
+                           id: lead.id,
+                           data: { ...lead, agent_name: value === 'none' ? null : value }
+                         });
+                       }}
+                     >
+                       <SelectTrigger className="w-28 h-7 text-[10px]">
+                         <SelectValue />
+                       </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">ללא נציג</SelectItem>
                           {agents.map(agent => (
@@ -484,12 +486,12 @@ export default function LeadsAdmin() {
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-2 py-1.5 text-center">
                       <Select 
                         value={lead.status || 'new'} 
                         onValueChange={(value) => handleQuickStatusUpdate(lead, value)}
                       >
-                        <SelectTrigger className={`w-32 h-8 text-xs ${statusColors[lead.status || 'new']}`}>
+                        <SelectTrigger className={`w-24 h-7 text-[10px] ${statusColors[lead.status || 'new']}`}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -499,25 +501,25 @@ export default function LeadsAdmin() {
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="px-3 py-2 text-center">
-                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${priorityColors[lead.priority || 'medium']}`}>
+                    <td className="px-2 py-1.5 text-center">
+                      <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${priorityColors[lead.priority || 'medium']}`}>
                         {priorityLabels[lead.priority || 'medium']}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-sm">
+                    <td className="px-2 py-1.5 text-sm">
                       {editingFollowUp[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
                             type="date"
                             value={editingFollowUp[lead.id]}
                             onChange={(e) => setEditingFollowUp({ ...editingFollowUp, [lead.id]: e.target.value })}
-                            className="h-8 text-xs w-32"
+                            className="h-6 text-[10px] w-24"
                           />
                           <button
                             onClick={() => handleSaveFollowUp(lead)}
                             className="text-green-600 hover:text-green-700"
                           >
-                            <Save className="w-4 h-4" />
+                            <Save className="w-3 h-3" />
                           </button>
                           <button
                             onClick={() => {
@@ -526,39 +528,39 @@ export default function LeadsAdmin() {
                             }}
                             className="text-gray-400 hover:text-gray-600"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-3 h-3" />
                           </button>
                         </div>
                       ) : (
                         <button
                           onClick={() => setEditingFollowUp({ ...editingFollowUp, [lead.id]: lead.follow_up_date || new Date().toISOString().split('T')[0] })}
-                          className="text-right w-full hover:bg-gray-100 rounded px-2 py-1"
+                          className="text-right w-full hover:bg-gray-100 rounded px-1 py-0.5"
                         >
                           {lead.follow_up_date ? (
-                            <div className={`flex items-center gap-1 ${lead.follow_up_date === new Date().toISOString().split('T')[0] ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
+                            <div className={`flex items-center gap-1 text-[10px] ${lead.follow_up_date === new Date().toISOString().split('T')[0] ? 'text-red-600 font-bold' : 'text-gray-600'}`}>
                               <Calendar className="w-3 h-3" />
-                              {format(new Date(lead.follow_up_date), 'dd/MM/yy')}
+                              {format(new Date(lead.follow_up_date), 'dd/MM')}
                             </div>
                           ) : (
-                            <span className="text-gray-400">הוסף תאריך</span>
+                            <span className="text-gray-400 text-[10px]">+</span>
                           )}
                         </button>
                       )}
                     </td>
-                    <td className="px-3 py-2 text-sm max-w-xs">
+                    <td className="px-2 py-1.5 text-sm max-w-[150px]">
                       {editingNotes[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
                             value={editingNotes[lead.id]}
                             onChange={(e) => setEditingNotes({ ...editingNotes, [lead.id]: e.target.value })}
                             placeholder="הערות..."
-                            className="h-8 text-xs"
+                            className="h-6 text-[10px]"
                           />
                           <button
                             onClick={() => handleSaveNotes(lead)}
                             className="text-green-600 hover:text-green-700 flex-shrink-0"
                           >
-                            <Save className="w-4 h-4" />
+                            <Save className="w-3 h-3" />
                           </button>
                           <button
                             onClick={() => {
@@ -567,43 +569,43 @@ export default function LeadsAdmin() {
                             }}
                             className="text-gray-400 hover:text-gray-600 flex-shrink-0"
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-3 h-3" />
                           </button>
                         </div>
                       ) : (
                         <button
                           onClick={() => setEditingNotes({ ...editingNotes, [lead.id]: lead.notes || '' })}
-                          className="text-right w-full hover:bg-gray-100 rounded px-2 py-1 truncate"
+                          className="text-right w-full hover:bg-gray-100 rounded px-1 py-0.5 truncate text-[10px]"
                           title={lead.notes}
                         >
-                          {lead.notes || <span className="text-gray-400">הוסף הערה</span>}
+                          {lead.notes || <span className="text-gray-400">+</span>}
                         </button>
                       )}
                     </td>
-                    <td className="px-3 py-2">
-                      <div className="flex items-center justify-center gap-2">
+                    <td className="px-2 py-1.5">
+                      <div className="flex items-center justify-center gap-1">
                         <a
                           href={`https://wa.me/972${(lead.phone || '').replace(/^0/, '')}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[#25D366] hover:text-[#128C7E]"
-                          title="פתח בוואטסאפ"
+                          title="וואטסאפ"
                         >
-                          <MessageCircle className="w-5 h-5" />
+                          <MessageCircle className="w-4 h-4" />
                         </a>
                         <button
                           onClick={() => setSelectedLead(lead)}
                           className="text-[#1E3A5F] hover:text-[#2C5282]"
-                          title="ערוך מלא"
+                          title="ערוך"
                         >
-                          <Edit2 className="w-5 h-5" />
+                          <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteLead(lead)}
                           className="text-red-500 hover:text-red-700"
                           title="מחק"
                         >
-                          <Trash2 className="w-5 h-5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
