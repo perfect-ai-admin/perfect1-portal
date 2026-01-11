@@ -54,11 +54,7 @@ export default function Footer() {
                   אודות
                 </Link>
               </li>
-              <li>
-                <Link to={createPageUrl('Team')} className="text-gray-300 hover:text-white transition-colors">
-                  הצוות שלנו
-                </Link>
-              </li>
+
               <li>
                 <Link to={createPageUrl('Methodology')} className="text-gray-300 hover:text-white transition-colors">
                   המתודולוגיה
@@ -149,6 +145,17 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="border-t border-white/10 bg-[#152842]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="text-center">
+            <p className="text-yellow-400 font-semibold text-sm md:text-base">
+              ⚠️ המידע והשירות ניתנים על ידי גורם פרטי. האתר אינו אתר ממשלתי.
+            </p>
           </div>
         </div>
       </div>
