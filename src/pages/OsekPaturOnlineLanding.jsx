@@ -95,8 +95,8 @@ export default function OsekPaturOnlineLanding() {
       answer: "כן, חתימה דיגיטלית מוכרת במלואה על פי חוק החתימה האלקטרונית בישראל ומקובלת על ידי כל הרשויות - מס הכנסה, מע\"מ וביטוח לאומי."
     },
     {
-      question: "כמה זמן לוקח לפתוח עוסק פטור אונליין?",
-      answer: "עם הסיוע האישי שלנו, התהליך מהיר ויעיל. יועץ אישי יעזור לך בכל שלב מילוי, העלאת מסמכים וחתימה דיגיטלית. הזמן תלוי בעיבוד הרשויות, אך אנו מטפלים בהכל מעבורך."
+      question: "כמה זמן לוקח לפתוח עוסק פטור?",
+      answer: "זמן הפתיחה תלוי בעיבוד הרשויות הממשלתיות (מס הכנסה, ביטוח לאומי) ועלול להשתנות. אנחנו מלווים אותך בכל התהליך - מילוי נכון, הכנת מסמכים ושליחה מסודרת לרשויות."
     },
     {
       question: "האם צריך להגיע למשרד או למוסד ממשלתי?",
@@ -232,14 +232,20 @@ export default function OsekPaturOnlineLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  ייעוץ וליווי אונליין
+                  ייעוץ וליווי מקצועי
                   <br />
                   <span className="text-[#D4AF37]">לפתיחת עוסק פטור</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  שירות ייעוץ וליווי פרטי עד לפתיחת העוסק בהצלחה
+                  שירות פרטי בתשלום - ליווי מלא עד לפתיחת העוסק מול הרשויות
                 </p>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-4 border border-white/20">
+                  <p className="text-white/90 text-base">
+                    <strong className="text-white">מחיר שקוף:</strong> פתיחה + שנה ראשונה מלאה - החל מ-₪399 (כולל ליווי, דוח שנתי ואפליקציה)
+                  </p>
+                </div>
 
                 <div className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-8 border-2 border-white/40 shadow-2xl">
                   <div className="text-center mb-4">
@@ -266,7 +272,7 @@ export default function OsekPaturOnlineLanding() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Button onClick={() => setIsFlowOpen(true)} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
                     <Target className="ml-3 w-6 h-6" />
-                    פתח עוסק אונליין עכשיו
+                    קבל ייעוץ וליווי
                   </Button>
                   <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור אונליין" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl border-2 border-white bg-white text-[#3498DB] hover:bg-white/90 shadow-2xl">
@@ -390,10 +396,10 @@ export default function OsekPaturOnlineLanding() {
               >
                 <div className="flex items-center gap-4 mb-4">
                   <Clock className="w-10 h-10" />
-                  <h3 className="text-3xl font-black">24-48 שעות</h3>
+                  <h3 className="text-3xl font-black">ליווי מלא</h3>
                 </div>
-                <p className="text-lg text-white/90 font-bold mb-3">רישום מקוון לחלוטין</p>
-                <p className="text-white/80">מילוי טופס, העלאת מסמכים וחתימה דיגיטלית – כל התהליך מהבית שלך, בלי לצאת לשום מקום</p>
+                <p className="text-lg text-white/90 font-bold mb-3">תהליך מקצועי ומסודר</p>
+                <p className="text-white/80">מלווים אותך בכל שלב - מילוי טפסים, הכנת מסמכים ושליחה לרשויות. זמן העיבוד תלוי ברשויות הממשלתיות</p>
               </motion.div>
 
               {/* Support */}
@@ -659,7 +665,7 @@ export default function OsekPaturOnlineLanding() {
                     disabled={isSubmitting}
                     className="w-full h-14 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
                   >
-                    {isSubmitting ? 'שולח...' : 'פתח עוסק אונליין עכשיו'}
+                    {isSubmitting ? 'שולח...' : 'קבל ייעוץ וליווי'}
                   </Button>
 
                   <p className="text-xs text-gray-500 text-center mt-4">
@@ -667,9 +673,12 @@ export default function OsekPaturOnlineLanding() {
                     <a href="/terms" className="text-blue-600 hover:underline">תנאי שימוש</a>
                   </p>
 
-                  <p className="text-xs text-gray-500 text-center mt-4">
-                    ללא התחייבות • ליווי אונליין • תמיכה 24/7
-                  </p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      <strong className="text-blue-800">הבהרה חשובה:</strong> זהו שירות פרטי בתשלום לייעוץ וליווי בפתיחת עוסק פטור. 
+                      השירות אינו ממשלתי ואינו מהווה ייעוץ משפטי או חשבונאי רשמי. זמן הפתיחה תלוי בעיבוד הרשויות.
+                    </p>
+                  </div>
                 </form>
               </div>
             )}
@@ -710,8 +719,8 @@ export default function OsekPaturOnlineLanding() {
                   a: 'לא חובה, אבל זה משמעותי. אנחנו מעזרים בניהול הכנסות והוצאות דרך האפליקציה ומכינים את הדוח השנתי שלך.'
                 },
                 {
-                  q: 'מה העלויות - לפתיחה ולניהול חודשי?',
-                  a: 'פתיחה אונליין: ₪199-299 בלבד. אחרי זה: ₪0 לניהול עצמי, או ₪199/חודש עם ליווי מלא ודוח שנתי.'
+                  q: 'מה העלויות של השירות?',
+                  a: 'החבילה השנתית (פתיחה + שנה ראשונה כולל ליווי חודשי ודוח שנתי) - החל מ-₪399. מחיר מדויק לפי חבילה שתבחר. זהו שירות פרטי בתשלום, לא שירות ממשלתי.'
                 },
                 {
                   q: 'מה תקרת ההכנסות לעוסק פטור?',
