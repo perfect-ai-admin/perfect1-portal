@@ -12,28 +12,28 @@ export default function Footer() {
   return (
     <footer className="bg-[#1E3A5F] text-white">
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
           {/* About */}
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-                <span className="text-[#D4AF37] font-bold text-xl">P1</span>
+            <div className="flex items-center gap-3 mb-4 md:mb-6">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                <span className="text-[#D4AF37] font-bold text-lg md:text-xl">P1</span>
               </div>
               <div>
-                <h3 className="font-bold text-lg">פרפקט וואן</h3>
-                <p className="text-sm text-gray-300">ח.פ: 516309747</p>
+                <h3 className="font-bold text-base md:text-lg">פרפקט וואן</h3>
+                <p className="text-xs md:text-sm text-gray-300">ח.פ: 516309747</p>
               </div>
             </div>
-            <p className="text-gray-300 leading-relaxed">
+            <p className="text-gray-300 leading-relaxed text-sm md:text-base">
               פרפקט וואן היא חברה פרטית המספקת ייעוץ וליווי בפתיחת עסקים בישראל.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-bold text-lg mb-6 text-[#D4AF37]">קישורים מהירים</h4>
-            <ul className="space-y-3">
+            <h4 className="font-bold text-base md:text-lg mb-4 md:mb-6 text-[#D4AF37]">קישורים מהירים</h4>
+            <ul className="space-y-2 md:space-y-3">
               <li>
                 <Link to={createPageUrl('Home')} className="text-gray-300 hover:text-white transition-colors">
                   דף הבית
