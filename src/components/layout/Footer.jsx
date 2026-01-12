@@ -84,26 +84,26 @@ export default function Footer() {
               </div>
 
           {/* Services */}
-          <div>
-            <h4 className="font-bold text-lg mb-6 text-[#D4AF37]">שירותים</h4>
-            <ul className="space-y-3">
+          <div className="hidden md:block">
+            <h4 className="font-bold text-base md:text-lg mb-4 md:mb-6 text-[#D4AF37]">שירותים</h4>
+            <ul className="space-y-2 md:space-y-3">
               <li>
-                <Link to={createPageUrl('ServicePage') + '?service=ptihat-osek-patur'} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('ServicePage') + '?service=ptihat-osek-patur'} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   פתיחת עוסק פטור
                 </Link>
               </li>
               <li>
-                <Link to={createPageUrl('ServicePage') + '?service=ptihat-osek-patur-online'} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('ServicePage') + '?service=ptihat-osek-patur-online'} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   פתיחת עוסק אונליין
                 </Link>
               </li>
               <li>
-                <Link to={createPageUrl('ServicePage') + '?service=doch-shnati'} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('ServicePage') + '?service=doch-shnati'} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   דוח שנתי
                 </Link>
               </li>
               <li>
-                <Link to={createPageUrl('ServicePage') + '?service=livui-chodshi'} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('ServicePage') + '?service=livui-chodshi'} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   ליווי חודשי
                 </Link>
               </li>
