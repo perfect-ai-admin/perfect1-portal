@@ -975,18 +975,18 @@ export default function Partnership() {
                        <span>(500 פטורים בלבד - אותו תיק כשנה שניה)</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
-                       <span className="text-gray-600">עלויות (ללא גיוס):</span>
-                       <span className="font-bold">330,000 ₪</span>
+                       <span className="text-gray-600">הוצאות שנתיות:</span>
+                       <span className="font-bold">467,000 ₪</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
                        <span className="font-semibold">רווח:</span>
-                       <span className="font-bold text-blue-600">750,000 ₪</span>
+                       <span className="font-bold text-blue-600">613,000 ₪</span>
                      </div>
                      <div className="flex justify-between">
                        <span className="font-semibold">לכל שותף (50%):</span>
-                       <span className="font-bold text-blue-600">375,000 ₪</span>
+                       <span className="font-bold text-blue-600">306,500 ₪</span>
                      </div>
-                     <p className="text-xs text-blue-700 mt-2">רווחיות: 69% (עלויות נמוכות - ללא גיוס חדש)</p>
+                     <p className="text-xs text-blue-700 mt-2">רווחיות: 57% (ללא גיוס חדש)</p>
                    </div>
                  </div>
 
