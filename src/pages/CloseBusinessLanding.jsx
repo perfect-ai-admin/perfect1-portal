@@ -52,6 +52,7 @@ export default function CloseBusinessLanding() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: '',
     profession: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -505,6 +506,18 @@ export default function CloseBusinessLanding() {
                       placeholder="050-1234567"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="h-12 rounded-xl border-2"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">מייל *</label>
+                    <Input
+                      type="email"
+                      placeholder="example@gmail.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="h-12 rounded-xl border-2"
                       required
                     />

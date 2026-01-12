@@ -11,6 +11,7 @@ export default function ThankYou() {
   const [marketingForm, setMarketingForm] = useState({
     name: '',
     phone: '',
+    email: '',
     business_type: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -212,6 +213,14 @@ export default function ThankYou() {
                       placeholder="טלפון *"
                       value={marketingForm.phone}
                       onChange={(e) => setMarketingForm({ ...marketingForm, phone: e.target.value })}
+                      className="h-12"
+                      required
+                    />
+                    <Input
+                      type="email"
+                      placeholder="מייל *"
+                      value={marketingForm.email}
+                      onChange={(e) => setMarketingForm({ ...marketingForm, email: e.target.value })}
                       className="h-12"
                       required
                     />
