@@ -1580,7 +1580,7 @@ export default function Partnership() {
                     setOpenStep(openStep === step.number ? null : step.number);
                     if (openStep !== step.number) {
                       setTimeout(() => {
-                        e.target.closest('.rounded-2xl').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        e.target.closest('.rounded-2xl').scrollIntoView({ behavior: 'smooth', block: 'start' });
                       }, 100);
                     }
                   }}
