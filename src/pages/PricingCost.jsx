@@ -275,11 +275,12 @@ export default function PricingCost() {
               </h2>
               <div className="space-y-4">
                 <div className="bg-green-50 rounded-xl p-6 mb-4">
-                  <p className="text-green-900 font-bold text-lg">מחיר קבוע: 199 ₪ (תשלום חד-פעמי)</p>
+                  <p className="text-green-900 font-bold text-lg">מחיר קבוע: 249 ₪ (תשלום חד-פעמי)*</p>
+                  <p className="text-green-800 text-sm mt-2">*המחיר כולל את כל הדרוש לפתיחה וללא הפתעות נוספות</p>
                 </div>
 
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  למי שמעדיף לעשות הכל דיגיטלי וללא פגישות, קיימת אפשרות לפתוח עוסק פטור אונליין במחיר קבוע של 199 ₪. זה מחיר שקוף וידוע מראש, ללא תוספות או הפתעות.
+                  למי שמעדיף לעשות הכל דיגיטלי וללא פגישות, קיימת אפשרות לפתוח עוסק פטור אונליין במחיר קבוע של 249 ₪. זה מחיר שקוף וידוע מראש, ללא תוספות או הפתעות נוספות בהמשך.
                 </p>
 
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-r-4 border-indigo-600 rounded-xl p-6">
