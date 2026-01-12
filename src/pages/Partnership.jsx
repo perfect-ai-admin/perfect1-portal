@@ -530,15 +530,15 @@ export default function Partnership() {
                <div className="space-y-3">
                  <div className="flex justify-between items-center">
                    <span className="font-bold text-xl">רווח תפעולי חודשי:</span>
-                   <span className="text-3xl font-bold">~181,141 ₪</span>
+                   <span className="text-3xl font-bold">~134,474 ₪</span>
                  </div>
                  <div className="flex justify-between items-center">
-                   <span className="font-bold text-xl">רווח תפעולי שנתי:</span>
-                   <span className="text-3xl font-bold">~2,185,688 ₪</span>
+                   <span className="font-bold text-xl">רווח תפעולי שנתי (35% רווחיות):</span>
+                   <span className="text-3xl font-bold">~1,625,684 ₪</span>
                  </div>
                  <div className="flex justify-between items-center border-t border-white/30 pt-3">
                    <span className="font-semibold text-xl">רווח לשותף (50/50):</span>
-                   <span className="text-3xl font-bold">~1,092,844 ₪</span>
+                   <span className="text-3xl font-bold">~812,842 ₪</span>
                  </div>
                </div>
              </div>
