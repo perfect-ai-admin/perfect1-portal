@@ -1112,24 +1112,30 @@ export default function Partnership() {
               </div>
 
               <div className="bg-gradient-to-r from-teal-50 to-cyan-50 border-2 border-teal-300 rounded-lg p-6">
-                <h4 className="font-bold text-xl text-teal-900 mb-4">📊 סוף שנה 2 - 500 פטורים + 100 מורשים</h4>
+                <h4 className="font-bold text-xl text-teal-900 mb-4">📊 סוף שנה 2 - 500 פטורים + 200 מורשים + 70 חברות</h4>
                 <div className="space-y-3">
                   <div className="bg-white p-4 rounded">
                     <div className="flex justify-between items-center">
+                      <span className="font-semibold">הכנסות שנתיות:</span>
+                      <span className="text-xl font-bold text-teal-600">4,460,000 ₪</span>
+                    </div>
+                  </div>
+                  <div className="bg-white p-4 rounded">
+                    <div className="flex justify-between items-center">
                       <span className="font-semibold">רווח תפעולי שנתי:</span>
-                      <span className="text-xl font-bold text-teal-600">714,000 ₪</span>
+                      <span className="text-xl font-bold text-teal-600">1,561,000 ₪</span>
                     </div>
                   </div>
                   <div className="bg-white p-4 rounded">
                     <div className="flex justify-between items-center">
                       <span className="font-semibold">כפולת שווי (×5):</span>
-                      <span className="text-2xl font-bold text-teal-600">3,570,000 ₪</span>
+                      <span className="text-2xl font-bold text-teal-600">7,805,000 ₪</span>
                     </div>
                   </div>
                   <div className="bg-teal-600 text-white p-4 rounded">
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-lg">שווי לשותף (50%):</span>
-                      <span className="text-3xl font-bold">1,785,000 ₪</span>
+                      <span className="text-3xl font-bold">3,902,500 ₪</span>
                     </div>
                   </div>
                 </div>
