@@ -104,8 +104,8 @@ export default function Partnership() {
                 <div className="bg-white p-4 rounded-lg border border-purple-200">
                    <p className="font-bold text-purple-900 mb-2">3️⃣ חברות בע"מ - הפרימיום</p>
                    <p className="text-gray-700 text-sm">רווחיות הכי גבוהה, שירות מקיף, נאמנות לקוח גבוהה</p>
-                   <p className="text-purple-700 font-semibold mt-2">יעד: 70 לקוחות בשנה השלישית</p>
-                 </div>
+                   <p className="text-purple-700 font-semibold mt-2">יעד: 70 לקוחות בשנה השניה</p>
+                </div>
               </div>
             </div>
           </section>
