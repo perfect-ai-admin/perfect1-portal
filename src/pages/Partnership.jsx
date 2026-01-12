@@ -1574,36 +1574,43 @@ export default function Partnership() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: step.number * 0.1 }}
             >
-              <div className="border-2 border-gray-300 rounded-xl overflow-hidden shadow-lg">
+              <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white">
                 <button
                   onClick={(e) => {
                     setOpenStep(openStep === step.number ? null : step.number);
                     if (openStep !== step.number) {
                       setTimeout(() => {
-                        e.target.closest('.border-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        e.target.closest('.rounded-2xl').scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }, 100);
                     }
                   }}
-                  className={`w-full bg-gradient-to-r ${step.color} text-white p-6 flex items-center justify-between hover:opacity-90 transition`}
+                  className={`w-full bg-gradient-to-r ${step.color} text-white p-6 md:p-8 flex items-start md:items-center justify-between hover:shadow-lg transition-all duration-300`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <div className="flex items-start md:items-center gap-3 md:gap-4 flex-1">
+                    <div className="w-10 md:w-12 h-10 md:h-12 bg-white/25 rounded-full flex items-center justify-center flex-shrink-0">
                       {step.icon}
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold opacity-90">שלב {step.number}</p>
-                      <p className="text-xl font-bold">{step.title}</p>
+                      <p className="text-xs md:text-sm font-semibold opacity-90">שלב {step.number}</p>
+                      <p className="text-sm md:text-lg font-bold leading-tight">{step.title}</p>
                     </div>
                   </div>
                   <ChevronDown 
-                    className={`w-6 h-6 transition-transform ${openStep === step.number ? 'rotate-180' : ''}`}
+                    className={`w-5 md:w-6 h-5 md:h-6 transition-transform duration-300 flex-shrink-0 ml-2`}
+                    style={{ transform: openStep === step.number ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   />
                 </button>
                 
                 {openStep === step.number && (
-                  <div className="p-8 bg-gray-50">
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-6 md:p-8 bg-gradient-to-b from-gray-50 to-white border-t border-gray-100"
+                  >
                     {step.content}
-                  </div>
+                  </motion.div>
                 )}
               </div>
             </motion.div>
