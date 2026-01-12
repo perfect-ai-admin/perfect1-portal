@@ -83,6 +83,18 @@ export default function UnifiedLeadForm({
       // Tracking
       trackLeadSubmit(newLead);
 
+      // Push to dataLayer for GTM
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
+          event: 'lead_submit',
+          lead_name: newLead.name,
+          lead_phone: newLead.phone,
+          lead_email: newLead.email || '',
+          lead_profession: newLead.profession || '',
+          lead_source: sourcePage
+        });
+      }
+
       // Email notification
       try {
         await base44.integrations.Core.SendEmail({
