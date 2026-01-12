@@ -155,12 +155,21 @@ export default function Contact() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <LeadForm 
-                title="💼 השאר פרטים ונחזור אליך"
-                subtitle="נציג יצור איתך קשר תוך 24 שעות"
-                sourcePage="דף צור קשר"
-                variant="card"
-              />
+              <div className="space-y-6">
+                <LeadForm 
+                  title="💼 השאר פרטים ונחזור אליך"
+                  subtitle="נציג יצור איתך קשר תוך 24 שעות"
+                  sourcePage="דף צור קשר"
+                  variant="card"
+                />
+                
+                <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
+                  <p className="text-xs text-gray-700 leading-relaxed">
+                    <strong className="text-yellow-800">הבהרה:</strong> Perfect One הוא שירות פרטי לייעוץ וליווי. 
+                    האתר אינו אתר ממשלתי ואינו מהווה תחליף לייעוץ משפטי או חשבונאי רשמי.
+                  </p>
+                </div>
+              </div>
             </motion.div>
           </div>
 
