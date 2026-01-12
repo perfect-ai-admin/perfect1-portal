@@ -84,16 +84,19 @@ export default function UnifiedLeadForm({
       trackLeadSubmit(newLead);
 
       // Push to dataLayer for GTM
-      if (typeof window !== 'undefined' && window.dataLayer) {
-        window.dataLayer.push({
-          event: 'lead_submit',
-          lead_name: newLead.name,
-          lead_phone: newLead.phone,
-          lead_email: newLead.email || '',
-          lead_profession: newLead.profession || '',
-          lead_source: sourcePage
-        });
-      }
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'lead_submit',
+        lead_name: newLead.name,
+        lead_phone: newLead.phone,
+        lead_email: newLead.email || '',
+        lead_profession: newLead.profession || '',
+        lead_source: sourcePage
+      });
+      console.log('Lead submitted to dataLayer:', {
+        event: 'lead_submit',
+        lead_email: newLead.email
+      });
 
       // Email notification
       try {
