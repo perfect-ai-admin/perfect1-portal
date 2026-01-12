@@ -965,28 +965,28 @@ export default function Partnership() {
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border-r-4 border-blue-400">
-                   <p className="font-semibold text-gray-800 mb-3">שנה שלישית - כפול לקוחות</p>
+                   <p className="font-semibold text-gray-800 mb-3">שנה שלישית - תיק קיים (500 פטורים)</p>
                    <div className="space-y-2 text-sm">
                      <div className="flex justify-between">
                        <span className="text-gray-600">הכנסות מתיק קיים:</span>
-                       <span className="font-bold">8,800,000 ₪</span>
+                       <span className="font-bold">1,080,000 ₪</span>
                      </div>
                      <div className="flex justify-between text-xs text-gray-500">
-                       <span>(1,000 פטורים | 400 מורשים | 140 חברות)</span>
+                       <span>(500 פטורים בלבד - אותו תיק כשנה שניה)</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
-                       <span className="text-gray-600">עלויות:</span>
-                       <span className="font-bold">3,150,000 ₪</span>
+                       <span className="text-gray-600">עלויות (ללא גיוס):</span>
+                       <span className="font-bold">330,000 ₪</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
                        <span className="font-semibold">רווח:</span>
-                       <span className="font-bold text-blue-600">5,650,000 ₪</span>
+                       <span className="font-bold text-blue-600">750,000 ₪</span>
                      </div>
                      <div className="flex justify-between">
                        <span className="font-semibold">לכל שותף (50%):</span>
-                       <span className="font-bold text-blue-600">2,825,000 ₪</span>
+                       <span className="font-bold text-blue-600">375,000 ₪</span>
                      </div>
-                     <p className="text-xs text-blue-700 mt-2">רווחיות: 64% (כל הלקוחות מתיק בנוי, ללא עלויות גיוס)</p>
+                     <p className="text-xs text-blue-700 mt-2">רווחיות: 69% (עלויות נמוכות - ללא גיוס חדש)</p>
                    </div>
                  </div>
 
