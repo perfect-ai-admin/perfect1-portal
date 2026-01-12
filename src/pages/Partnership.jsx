@@ -835,6 +835,68 @@ export default function Partnership() {
 
             <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6 mb-6">
               <h4 className="font-bold text-xl text-yellow-900 mb-4">💰 איך זה עובד?</h4>
+
+              <div className="bg-white border-2 border-yellow-300 rounded-lg p-6 mb-6">
+                <h5 className="font-bold text-lg text-yellow-900 mb-4">מודל הכנסה לשותף A (שיווק) - עבור גיוס לקוח</h5>
+                <p className="text-gray-700 text-sm mb-6">כל לקוח שגויס על ידי שותף A מייצר הכנסות למשך תקופת גבייה ראשונה שונה לפי סוג הישות:</p>
+
+                <div className="space-y-4">
+                  <div className="bg-indigo-50 p-4 rounded-lg border-r-4 border-indigo-400">
+                    <h6 className="font-bold text-indigo-900 mb-3">🟢 עוסק פטור</h6>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">חודשי ישיר:</span>
+                        <span className="font-bold text-indigo-600">180 ₪</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">תקופת גבייה ראשונה:</span>
+                        <span className="font-bold text-indigo-600">12 חודשים</span>
+                      </div>
+                      <div className="bg-white p-2 rounded mt-2 flex justify-between border-t-2 border-indigo-200 pt-2">
+                        <span className="font-semibold text-indigo-900">הכנסה לשותף A לכל לקוח:</span>
+                        <span className="text-2xl font-bold text-indigo-600">2,160 ₪</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-teal-50 p-4 rounded-lg border-r-4 border-teal-400">
+                    <h6 className="font-bold text-teal-900 mb-3">🔵 עוסק מורשה</h6>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">חודשי ישיר:</span>
+                        <span className="font-bold text-teal-600">350 ₪</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">תקופת גבייה ראשונה:</span>
+                        <span className="font-bold text-teal-600">9 חודשים</span>
+                      </div>
+                      <div className="bg-white p-2 rounded mt-2 flex justify-between border-t-2 border-teal-200 pt-2">
+                        <span className="font-semibold text-teal-900">הכנסה לשותף A לכל לקוח:</span>
+                        <span className="text-2xl font-bold text-teal-600">3,150 ₪</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-purple-50 p-4 rounded-lg border-r-4 border-purple-400">
+                    <h6 className="font-bold text-purple-900 mb-3">🟣 חברה בע"מ</h6>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">חודשי ישיר:</span>
+                        <span className="font-bold text-purple-600">2,000 ₪</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-700">תקופת גבייה ראשונה:</span>
+                        <span className="font-bold text-purple-600">6 חודשים</span>
+                      </div>
+                      <div className="bg-white p-2 rounded mt-2 flex justify-between border-t-2 border-purple-200 pt-2">
+                        <span className="font-semibold text-purple-900">הכנסה לשותף A לכל לקוח:</span>
+                        <span className="text-2xl font-bold text-purple-600">12,000 ₪</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-4">
                 <div className="bg-white p-4 rounded-lg border-r-4 border-green-500">
                   <p className="font-bold text-green-900 mb-2">הכנסות שנה ראשונה</p>
