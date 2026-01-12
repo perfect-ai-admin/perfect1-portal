@@ -69,6 +69,7 @@ import Partnership from './pages/Partnership';
 import PhotographerLanding from './pages/PhotographerLanding';
 import Pricing from './pages/Pricing';
 import PricingCost from './pages/PricingCost';
+import Privacy from './pages/Privacy';
 import ProfessionLanding from './pages/ProfessionLanding';
 import ProfessionPage from './pages/ProfessionPage';
 import Professions from './pages/Professions';
@@ -90,6 +91,7 @@ import TakratOsekPatur from './pages/TakratOsekPatur';
 import TaxAdvances from './pages/TaxAdvances';
 import TaxDebts from './pages/TaxDebts';
 import TechnicianLanding from './pages/TechnicianLanding';
+import Terms from './pages/Terms';
 import ThankYou from './pages/ThankYou';
 import TransitionOsekPaturToMorsha from './pages/TransitionOsekPaturToMorsha';
 import UrgentInvoice from './pages/UrgentInvoice';
@@ -98,12 +100,10 @@ import VatPaymentCalculation from './pages/VatPaymentCalculation';
 import VatPenalties from './pages/VatPenalties';
 import VatReportingOsekMorsha from './pages/VatReportingOsekMorsha';
 import VatReturnOsekMorsha from './pages/VatReturnOsekMorsha';
+import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
 import __Layout from './Layout.jsx';
 
 
@@ -179,6 +179,7 @@ export const PAGES = {
     "PhotographerLanding": PhotographerLanding,
     "Pricing": Pricing,
     "PricingCost": PricingCost,
+    "Privacy": Privacy,
     "ProfessionLanding": ProfessionLanding,
     "ProfessionPage": ProfessionPage,
     "Professions": Professions,
@@ -200,6 +201,7 @@ export const PAGES = {
     "TaxAdvances": TaxAdvances,
     "TaxDebts": TaxDebts,
     "TechnicianLanding": TechnicianLanding,
+    "Terms": Terms,
     "ThankYou": ThankYou,
     "TransitionOsekPaturToMorsha": TransitionOsekPaturToMorsha,
     "UrgentInvoice": UrgentInvoice,
@@ -208,12 +210,10 @@ export const PAGES = {
     "VatPenalties": VatPenalties,
     "VatReportingOsekMorsha": VatReportingOsekMorsha,
     "VatReturnOsekMorsha": VatReturnOsekMorsha,
+    "WhatIsOsekPatur": WhatIsOsekPatur,
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "WhatIsOsekPatur": WhatIsOsekPatur,
-    "Terms": Terms,
-    "Privacy": Privacy,
 }
 
 export const pagesConfig = {

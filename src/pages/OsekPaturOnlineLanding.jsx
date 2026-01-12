@@ -51,6 +51,7 @@ export default function OsekPaturOnlineLanding() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    email: '',
     profession: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,8 +60,8 @@ export default function OsekPaturOnlineLanding() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone) {
-      alert('אנא מלא שם וטלפון');
+    if (!formData.name || !formData.phone || !formData.email) {
+      alert('אנא מלא שם, טלפון ומייל');
       return;
     }
 
@@ -626,6 +627,18 @@ export default function OsekPaturOnlineLanding() {
                       placeholder="050-1234567"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="h-12 rounded-xl border-2"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">מייל *</label>
+                    <Input
+                      type="email"
+                      placeholder="example@gmail.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="h-12 rounded-xl border-2"
                       required
                     />
