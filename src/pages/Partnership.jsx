@@ -547,171 +547,98 @@ export default function Partnership() {
           <section className="mt-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">צפי לשנים הבאות - גידול המערכת</h3>
             <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-300 rounded-lg p-6">
-              <div className="space-y-6">
-                <div className="bg-white p-4 rounded-lg border-r-4 border-indigo-400">
-                   <h5 className="font-bold text-indigo-900 mb-3">שנה שלישית</h5>
-                   <div className="space-y-2">
-                     <div className="flex justify-between">
-                       <span>עוסקים פטורים:</span>
-                       <span className="font-bold text-indigo-600">500</span>
-                     </div>
-                     <div className="flex justify-between">
-                       <span>עוסקים מורשים:</span>
-                       <span className="font-bold text-teal-600">200</span>
-                     </div>
-                     <div className="flex justify-between">
-                       <span>חברות בע"מ:</span>
-                       <span className="font-bold text-purple-600">70</span>
-                     </div>
-                   </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg border-r-4 border-teal-400">
-                   <h5 className="font-bold text-teal-900 mb-3">שנה רביעית - צמיחה</h5>
-                   <div className="space-y-2">
-                     <div className="flex justify-between">
-                       <span>עוסקים פטורים:</span>
-                       <span className="font-bold text-indigo-600">500</span>
-                     </div>
-                     <div className="flex justify-between">
-                       <span>עוסקים מורשים:</span>
-                       <span className="font-bold text-teal-600">200</span>
-                     </div>
-                     <div className="flex justify-between">
-                       <span>חברות בע"מ:</span>
-                       <span className="font-bold text-purple-600">140 (+70)</span>
-                     </div>
-                   </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg border-r-4 border-purple-400">
-                   <h5 className="font-bold text-purple-900 mb-3">שנה חמישית - הרחבה</h5>
-                   <div className="space-y-2">
-                     <div className="flex justify-between">
-                       <span>עוסקים פטורים:</span>
-                       <span className="font-bold text-indigo-600">500</span>
-                     </div>
-                     <div className="flex justify-between">
-                       <span>עוסקים מורשים:</span>
-                       <span className="font-bold text-teal-600">200</span>
-                     </div>
-                     <div className="flex justify-between">
-                       <span>חברות בע"מ:</span>
-                       <span className="font-bold text-purple-600">500 (+360)</span>
-                     </div>
-                   </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="mt-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">סיכום התחזית ל-3 שנים</h3>
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-300 rounded-lg p-6 mb-6">
-              <h4 className="font-bold text-xl text-purple-900 mb-4">הכנסות חודשיות משולבות</h4>
-              
               <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg border-r-4 border-indigo-400">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-800">עוסקים פטורים (500)</span>
-                    <span className="text-xl font-bold text-indigo-600">143,000 ₪</span>
-                  </div>
+                <div className="bg-white p-5 rounded-lg border-l-4 border-indigo-400">
+                   <div className="flex justify-between items-center">
+                     <h5 className="font-bold text-indigo-900">שנה שלישית</h5>
+                     <span className="text-sm text-gray-600">הוספה יחסית: <strong>ללא שינוי משנה שניה</strong></span>
+                   </div>
                 </div>
 
-                <div className="bg-white p-4 rounded-lg border-r-4 border-teal-400">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-800">עוסקים מורשים (100)</span>
-                    <span className="text-xl font-bold text-teal-600">69,500 ₪</span>
-                  </div>
+                <div className="bg-white p-5 rounded-lg border-l-4 border-teal-400">
+                   <div className="flex justify-between items-center">
+                     <h5 className="font-bold text-teal-900">שנה רביעית</h5>
+                     <span className="text-sm text-gray-600">הוספה: <strong>+70 חברות בע"מ</strong></span>
+                   </div>
                 </div>
 
-                <div className="bg-white p-4 rounded-lg border-r-4 border-purple-400">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-800">חברות בע"מ - ליווי חודשי (25 × 1,500 ₪)</span>
-                    <span className="text-xl font-bold text-purple-600">37,500 ₪</span>
-                  </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg border-r-4 border-purple-400">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-800">חברות - דוחות שנתיים (5 × 8,000 / 12)</span>
-                    <span className="text-xl font-bold text-purple-600">3,333 ₪</span>
-                  </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg border-r-4 border-purple-400">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-800">פתיחות חברות (30 × 3,500 / 12)</span>
-                    <span className="text-xl font-bold text-purple-600">8,750 ₪</span>
-                  </div>
-                </div>
-
-                <div className="bg-purple-600 text-white p-4 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">סה"כ הכנסות חודשיות:</span>
-                    <span className="text-3xl font-bold">~262,000 ₪</span>
-                  </div>
-                </div>
-
-                <div className="bg-green-600 text-white p-4 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">סה"כ הכנסות שנתיות:</span>
-                    <span className="text-3xl font-bold">~3,144,000 ₪</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
-              <h4 className="font-bold text-lg text-yellow-900 mb-3">עלויות נוספות לשנה שלישית:</h4>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span>רו"ח בכיר לחברות</span>
-                  <span className="font-bold">+300,000 ₪</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>מנהל פעילות</span>
-                  <span className="font-bold">+200,000 ₪</span>
-                </div>
-                <div className="flex justify-between border-t-2 border-yellow-300 pt-3">
-                  <span className="font-bold">סה"כ עלויות שנתיות:</span>
-                  <span className="font-bold text-red-600">~2,336,000 ₪</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6 rounded-lg mt-4">
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-xl">רווח תפעולי שנתי:</span>
-                  <span className="text-3xl font-bold">~808,000 ₪</span>
-                </div>
-                <div className="flex justify-between items-center border-t border-white/30 pt-3">
-                  <span className="font-semibold text-xl">רווח לשותף (50/50):</span>
-                  <span className="text-3xl font-bold">~404,000 ₪</span>
+                <div className="bg-white p-5 rounded-lg border-l-4 border-purple-400">
+                   <div className="flex justify-between items-center">
+                     <h5 className="font-bold text-purple-900">שנה חמישית</h5>
+                     <span className="text-sm text-gray-600">הוספה: <strong>+70 חברות בע"מ נוסף (סה"כ 210)</strong></span>
+                   </div>
                 </div>
               </div>
             </div>
           </section>
 
           <section className="mt-8">
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-8 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4">📈 סיכום התחזית ל-3 שנים</h3>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="bg-white/20 p-4 rounded">
-                  <p className="text-sm opacity-90">שנה 1</p>
-                  <p className="text-2xl font-bold">150K ₪</p>
-                  <p className="text-xs opacity-75">לשותף</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">סיכום התחזית - שנה שניה עד רביעית</h3>
+
+            <div className="space-y-6">
+              <div className="bg-gradient-to-br from-teal-50 to-cyan-50 border-2 border-teal-300 rounded-lg p-6">
+                <h4 className="font-bold text-2xl text-teal-900 mb-4">שנה שניה (בפועל)</h4>
+                <div className="space-y-3">
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הרכב לקוחות:</p>
+                    <p className="font-bold text-lg text-teal-700">500 פטורים + 200 מורשים + 70 חברות</p>
+                  </div>
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הכנסות חודשיות:</p>
+                    <p className="font-bold text-2xl text-teal-600">~371,667 ₪</p>
+                  </div>
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הכנסות שנתיות:</p>
+                    <p className="font-bold text-2xl text-teal-600">~4,460,000 ₪</p>
+                  </div>
+                  <div className="bg-teal-600 text-white p-4 rounded">
+                    <p className="text-sm opacity-90 mb-1">רווח לשותף (50/50):</p>
+                    <p className="font-bold text-3xl">~780,500 ₪</p>
+                  </div>
                 </div>
-                <div className="bg-white/20 p-4 rounded">
-                  <p className="text-sm opacity-90">שנה 2</p>
-                  <p className="text-2xl font-bold">357K ₪</p>
-                  <p className="text-xs opacity-75">לשותף</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg p-6">
+                <h4 className="font-bold text-2xl text-blue-900 mb-4">שנה שלישית (יציבות)</h4>
+                <div className="space-y-3">
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הרכב לקוחות:</p>
+                    <p className="font-bold text-lg text-blue-700">500 פטורים + 200 מורשים + 70 חברות (ללא שינוי)</p>
+                  </div>
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הכנסות חודשיות:</p>
+                    <p className="font-bold text-2xl text-blue-600">~371,667 ₪</p>
+                  </div>
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הכנסות שנתיות:</p>
+                    <p className="font-bold text-2xl text-blue-600">~4,460,000 ₪</p>
+                  </div>
+                  <div className="bg-blue-600 text-white p-4 rounded">
+                    <p className="text-sm opacity-90 mb-1">רווח לשותף (50/50):</p>
+                    <p className="font-bold text-3xl">~780,500 ₪</p>
+                  </div>
                 </div>
-                <div className="bg-white/20 p-4 rounded">
-                  <p className="text-sm opacity-90">שנה 3</p>
-                  <p className="text-2xl font-bold">404K ₪</p>
-                  <p className="text-xs opacity-75">לשותף</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-lg p-6">
+                <h4 className="font-bold text-2xl text-purple-900 mb-4">שנה רביעית (צמיחה חברות בע"מ)</h4>
+                <div className="space-y-3">
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הרכב לקוחות:</p>
+                    <p className="font-bold text-lg text-purple-700">500 פטורים + 200 מורשים + 140 חברות</p>
+                  </div>
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הכנסות חודשיות:</p>
+                    <p className="font-bold text-2xl text-purple-600">~511,667 ₪</p>
+                  </div>
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-gray-600 mb-1">הכנסות שנתיות:</p>
+                    <p className="font-bold text-2xl text-purple-600">~6,140,000 ₪</p>
+                  </div>
+                  <div className="bg-purple-600 text-white p-4 rounded">
+                    <p className="text-sm opacity-90 mb-1">רווח לשותף (50/50) בהנחת 35% רווח:</p>
+                    <p className="font-bold text-3xl">~1,074,500 ₪</p>
+                  </div>
                 </div>
               </div>
             </div>
