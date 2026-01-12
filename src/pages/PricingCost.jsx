@@ -181,11 +181,12 @@ export default function PricingCost() {
               </h2>
               <div className="space-y-4">
                 <div className="bg-green-50 rounded-xl p-6 mb-4">
-                  <p className="text-green-900 font-bold text-lg">טווח מחירים: 500-1,500 ₪ בממוצע</p>
+                  <p className="text-green-900 font-bold text-lg">טווח מחירים: 500-1,500 ₪ בממוצע*</p>
+                  <p className="text-green-800 text-sm mt-2">*המחיר משתנה בהתאם לרואה החשבון הנבחר ולטווח השירותים</p>
                 </div>
 
                 <p className="text-gray-700 leading-relaxed text-lg">
-                  המחיר משתנה בהתאם למשרד, למיקום הגיאוגרפי, ולרמת השירות. יש רואי חשבון שמציעים פתיחה במחיר נמוך כחלק מחבילת ליווי שנתית, ויש כאלה שגובים מחיר נפרד.
+                  המחיר משתנה בהתאם למשרד, למיקום הגיאוגרפי, ולרמת השירות. יש רואי חשבון שמציעים פתיחה במחיר נמוך כחלק מחבילת ליווי שנתית, ויש כאלה שגובים מחיר נפרד. כדאי לברר מראש מה בדיוק כלול במחיר ולא לאחריו.
                 </p>
 
                 <div className="bg-green-50 border-r-4 border-green-600 rounded-xl p-6">
