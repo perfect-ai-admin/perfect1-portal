@@ -1278,8 +1278,8 @@ export default function Partnership() {
                 <strong>שנה 2:</strong> שווי לשותף ~3.9 מיליון ₪ | רווח שנתי: 1.56 מיליון ₪
               </p>
               <p className="text-lg">
-                <strong>שנה 3:</strong> שווי לשותף ~16.9 מיליון ₪ | רווח שנתי: 2.82 מיליון ₪
-              </p>
+                  <strong>שנה 3:</strong> שווי לשותף ~945K ₪ | רווח שנתי: 189K ₪ (תיק קיים של 500 פטורים בלבד)
+                </p>
               <p className="text-lg">
                 <strong>שנה 4:</strong> שווי לשותף ~31.5 מיליון ₪ | רווח שנתי: 4.5 מיליון ₪
               </p>
