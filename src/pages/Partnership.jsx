@@ -1619,23 +1619,32 @@ export default function Partnership() {
       </section>
 
       {/* Contact Form */}
-      <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-16" dir="rtl">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 py-16 md:py-24" dir="rtl">
+        <div className="max-w-5xl mx-auto px-4 md:px-6">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 space-y-4"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              מעוניין בשותפות?
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white">
+              מוכנים להתחיל? 🚀
             </h2>
-            <p className="text-xl text-gray-200">
-              מלא את הטופס ונחזור אליך בהקדם
+            <div className="h-1 w-16 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto rounded-full"></div>
+            <p className="text-lg md:text-xl text-gray-300">
+              מלאו את הטופס ונקבע פגישה לדיון בעומק
             </p>
           </motion.div>
-          <div className="bg-white rounded-lg p-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="bg-white/5 backdrop-blur-lg rounded-3xl p-6 md:p-10 border border-white/10 shadow-2xl"
+          >
             <PartnershipForm />
-          </div>
+          </motion.div>
         </div>
       </section>
     </>
