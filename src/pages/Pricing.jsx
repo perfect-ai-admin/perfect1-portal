@@ -207,6 +207,19 @@ export default function Pricing() {
       </section>
 
       <FAQSection />
+      
+      {/* Disclaimer */}
+      <section className="py-8 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
+            <p className="text-xs text-gray-700 leading-relaxed text-center">
+              <strong className="text-yellow-800">הבהרה חשובה:</strong> Perfect One הוא שירות פרטי לייעוץ וליווי. 
+              האתר אינו אתר ממשלתי ואינו מהווה תחליף לייעוץ משפטי או חשבונאי רשמי.
+            </p>
+          </div>
+        </div>
+      </section>
+      
       <CTASection />
       </main>
     </>
