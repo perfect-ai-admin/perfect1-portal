@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -231,7 +232,11 @@ export default function LeadsAdmin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 md:p-3 md:pt-24 pb-8" dir="rtl">
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 md:p-3 md:pt-24 pb-8" dir="rtl">
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
         <div className="mb-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 flex-shrink-0">
@@ -810,7 +815,8 @@ export default function LeadsAdmin() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </>
   );
 }
 
