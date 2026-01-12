@@ -549,23 +549,20 @@ export default function Partnership() {
             <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-300 rounded-lg p-6">
               <div className="space-y-4">
                 <div className="bg-white p-5 rounded-lg border-l-4 border-indigo-400">
-                   <div className="flex justify-between items-center">
-                     <h5 className="font-bold text-indigo-900">שנה שלישית</h5>
-                     <span className="text-sm text-gray-600">הוספה יחסית: <strong>ללא שינוי משנה שניה</strong></span>
+                   <div className="flex justify-between items-center mb-2">
+                     <h5 className="font-bold text-indigo-900">שנה שלישית - כפול לקוחות</h5>
+                   </div>
+                   <div className="flex justify-between text-sm">
+                     <span className="text-gray-700">גידול: <strong>500 → 1,000 פטורים | 200 → 400 מורשים | 70 → 140 חברות</strong></span>
                    </div>
                 </div>
 
                 <div className="bg-white p-5 rounded-lg border-l-4 border-teal-400">
-                   <div className="flex justify-between items-center">
-                     <h5 className="font-bold text-teal-900">שנה רביעית</h5>
-                     <span className="text-sm text-gray-600">הוספה: <strong>+70 חברות בע"מ</strong></span>
+                   <div className="flex justify-between items-center mb-2">
+                     <h5 className="font-bold text-teal-900">שנה רביעית - כפול 3 לקוחות</h5>
                    </div>
-                </div>
-
-                <div className="bg-white p-5 rounded-lg border-l-4 border-purple-400">
-                   <div className="flex justify-between items-center">
-                     <h5 className="font-bold text-purple-900">שנה חמישית</h5>
-                     <span className="text-sm text-gray-600">הוספה: <strong>+70 חברות בע"מ נוסף (סה"כ 210)</strong></span>
+                   <div className="flex justify-between text-sm">
+                     <span className="text-gray-700">גידול: <strong>500 → 1,500 פטורים | 200 → 600 מורשים | 70 → 210 חברות</strong></span>
                    </div>
                 </div>
               </div>
