@@ -18,30 +18,30 @@ export default function Partnership() {
         <div className="space-y-8">
           <section>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">סקירת השוק בישראל</h3>
-            <div className="bg-blue-50 border-r-4 border-blue-600 p-6 rounded mb-6">
-              <p className="text-lg text-blue-900 leading-relaxed mb-4">
+            <div className="bg-blue-50 border-r-4 border-blue-600 p-4 md:p-6 rounded mb-6">
+              <p className="text-base md:text-lg text-blue-900 leading-relaxed mb-4">
                 בישראל יש <strong>כ-550,000 עצמאים ועסקים קטנים</strong> (עוסקים פטורים, מורשים, חברות בע"מ) שצריכים שירותי הנהלת חשבונות וייעוץ מס.
               </p>
-              <div className="bg-white p-4 rounded-lg border-2 border-blue-300 mt-4">
-                <p className="font-bold text-blue-900 mb-3">📊 הפוטנציאל השנתי האמיתי - עסקים חדשים:</p>
-                <div className="grid grid-cols-3 gap-4">
+              <div className="bg-white p-3 md:p-4 rounded-lg border-2 border-blue-300 mt-4">
+                <p className="font-bold text-sm md:text-base text-blue-900 mb-3">📊 הפוטנציאל השנתי האמיתי - עסקים חדשים:</p>
+                <div className="grid grid-cols-3 gap-2 md:gap-4">
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">עוסקים פטורים</p>
-                    <p className="text-3xl font-bold text-indigo-600">~80,000</p>
+                    <p className="text-xs md:text-sm text-gray-600">עוסקים פטורים</p>
+                    <p className="text-xl md:text-3xl font-bold text-indigo-600">~80,000</p>
                     <p className="text-xs text-gray-500">נפתחים מדי שנה</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">עוסקים מורשים</p>
-                    <p className="text-3xl font-bold text-teal-600">~15,000</p>
+                    <p className="text-xs md:text-sm text-gray-600">עוסקים מורשים</p>
+                    <p className="text-xl md:text-3xl font-bold text-teal-600">~15,000</p>
                     <p className="text-xs text-gray-500">נפתחים מדי שנה</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">חברות בע"מ</p>
-                    <p className="text-3xl font-bold text-purple-600">~8,000</p>
+                    <p className="text-xs md:text-sm text-gray-600">חברות בע"מ</p>
+                    <p className="text-xl md:text-3xl font-bold text-purple-600">~8,000</p>
                     <p className="text-xs text-gray-500">נפתחות מדי שנה</p>
                   </div>
                 </div>
-                <p className="text-blue-800 font-semibold mt-4 text-center">
+                <p className="text-blue-800 font-semibold mt-4 text-center text-sm md:text-base">
                   סה"כ פוטנציאל שנתי: <strong>~103,000 עסקים חדשים!</strong>
                 </p>
               </div>
