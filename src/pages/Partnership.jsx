@@ -492,17 +492,35 @@ export default function Partnership() {
                    </div>
                  </div>
 
-                 <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4">
-                   <div className="flex justify-between items-center">
-                     <span className="font-bold text-lg text-red-900">סה"כ עלויות חודשיות:</span>
-                     <span className="text-2xl font-bold text-red-600">139,543 ₪</span>
+                 <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4 mt-2">
+                   <div className="space-y-2">
+                     <div className="flex justify-between text-sm">
+                       <span>עלויות קבועות:</span>
+                       <span className="font-bold">17,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between text-sm">
+                       <span>עלויות טכנולוגיה:</span>
+                       <span className="font-bold">25,710 ₪</span>
+                     </div>
+                     <div className="flex justify-between text-sm">
+                       <span>הנהלה (35%):</span>
+                       <span className="font-bold">96,833 ₪</span>
+                     </div>
+                     <div className="flex justify-between text-sm">
+                       <span>קול קנטר:</span>
+                       <span className="font-bold">92,167 ₪</span>
+                     </div>
+                     <div className="flex justify-between border-t pt-2">
+                       <span className="font-bold text-lg text-red-900">סה"כ עלויות חודשיות:</span>
+                       <span className="text-2xl font-bold text-red-600">231,710 ₪</span>
+                     </div>
                    </div>
                  </div>
 
                  <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4">
                    <div className="flex justify-between items-center">
                      <span className="font-bold text-lg text-red-900">סה"כ עלויות שנתיות:</span>
-                     <span className="text-2xl font-bold text-red-600">~1,674,516 ₪</span>
+                     <span className="text-2xl font-bold text-red-600">2,898,920 ₪</span>
                    </div>
                  </div>
                </div>
