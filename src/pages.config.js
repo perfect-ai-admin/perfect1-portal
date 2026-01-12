@@ -56,6 +56,7 @@ import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import OsekPaturSteps from './pages/OsekPaturSteps';
 import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransition';
 import OsekPaturVsMorasha from './pages/OsekPaturVsMorasha';
+import Partnership from './pages/Partnership';
 import PhotographerLanding from './pages/PhotographerLanding';
 import Pricing from './pages/Pricing';
 import PricingCost from './pages/PricingCost';
@@ -94,7 +95,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import Partnership from './pages/Partnership';
 import __Layout from './Layout.jsx';
 
 
@@ -157,6 +157,7 @@ export const PAGES = {
     "OsekPaturSteps": OsekPaturSteps,
     "OsekPaturThresholdAndTransition": OsekPaturThresholdAndTransition,
     "OsekPaturVsMorasha": OsekPaturVsMorasha,
+    "Partnership": Partnership,
     "PhotographerLanding": PhotographerLanding,
     "Pricing": Pricing,
     "PricingCost": PricingCost,
@@ -195,7 +196,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "Partnership": Partnership,
 }
 
 export const pagesConfig = {

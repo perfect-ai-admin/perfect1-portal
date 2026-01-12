@@ -837,22 +837,22 @@ export default function Partnership() {
               <h4 className="font-bold text-xl text-yellow-900 mb-4">💰 איך זה עובד?</h4>
 
               <div className="bg-white border-2 border-yellow-300 rounded-lg p-6 mb-6">
-                <h5 className="font-bold text-lg text-yellow-900 mb-4">תקופות גבייה ראשונה לשותף A (שיווק)</h5>
+              <h5 className="font-bold text-lg text-yellow-900 mb-4">תקופות גבייה ראשונה לשותף A (שיווק)</h5>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-indigo-50 rounded border-r-4 border-indigo-400">
-                    <span className="font-semibold text-indigo-900">עוסק פטור:</span>
-                    <span className="text-2xl font-bold text-indigo-600">12 חודשים</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-teal-50 rounded border-r-4 border-teal-400">
-                    <span className="font-semibold text-teal-900">עוסק מורשה:</span>
-                    <span className="text-2xl font-bold text-teal-600">9 חודשים</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded border-r-4 border-purple-400">
-                    <span className="font-semibold text-purple-900">חברה בע"מ:</span>
-                    <span className="text-2xl font-bold text-purple-600">6 חודשים</span>
-                  </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center p-3 bg-indigo-50 rounded border-r-4 border-indigo-400">
+                  <span className="font-semibold text-indigo-900">עוסק פטור:</span>
+                  <span className="text-2xl font-bold text-indigo-600">12 חודשים</span>
                 </div>
+                <div className="flex justify-between items-center p-3 bg-teal-50 rounded border-r-4 border-teal-400">
+                  <span className="font-semibold text-teal-900">עוסק מורשה:</span>
+                  <span className="text-2xl font-bold text-teal-600">9 חודשים + דוח שנתי ראשון</span>
+                </div>
+                <div className="flex justify-between items-center p-3 bg-purple-50 rounded border-r-4 border-purple-400">
+                  <span className="font-semibold text-purple-900">חברה בע"מ:</span>
+                  <span className="text-2xl font-bold text-purple-600">6 חודשים</span>
+                </div>
+              </div>
               </div>
 
               <div className="space-y-4">
