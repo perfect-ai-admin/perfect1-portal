@@ -219,8 +219,6 @@ export default function OsekPaturLanding() {
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
                   ליווי וייעוץ לפתיחת עוסק פטור
-                  <br />
-                  <span className="text-[#D4AF37]">אנחנו מלווים, אתה מבצע</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
