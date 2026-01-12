@@ -991,28 +991,28 @@ export default function Partnership() {
                  </div>
 
                  <div className="bg-white p-4 rounded-lg border-r-4 border-purple-400">
-                   <p className="font-semibold text-gray-800 mb-3">שנה רביעית - כפול 3 לקוחות</p>
+                   <p className="font-semibold text-gray-800 mb-3">שנה רביעית - תיק קיים (500 פטורים)</p>
                    <div className="space-y-2 text-sm">
                      <div className="flex justify-between">
                        <span className="text-gray-600">הכנסות מתיק קיים:</span>
-                       <span className="font-bold">13,200,000 ₪</span>
+                       <span className="font-bold">1,080,000 ₪</span>
                      </div>
                      <div className="flex justify-between text-xs text-gray-500">
-                       <span>(1,500 פטורים | 600 מורשים | 210 חברות)</span>
+                       <span>(500 פטורים בלבד - אותו תיק כשנים קודמות)</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
-                       <span className="text-gray-600">עלויות:</span>
-                       <span className="font-bold">4,200,000 ₪</span>
+                       <span className="text-gray-600">הוצאות שנתיות:</span>
+                       <span className="font-bold">467,000 ₪</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
                        <span className="font-semibold">רווח:</span>
-                       <span className="font-bold text-purple-600">9,000,000 ₪</span>
+                       <span className="font-bold text-purple-600">613,000 ₪</span>
                      </div>
                      <div className="flex justify-between">
                        <span className="font-semibold">לכל שותף (50%):</span>
-                       <span className="font-bold text-purple-600">4,500,000 ₪</span>
+                       <span className="font-bold text-purple-600">306,500 ₪</span>
                      </div>
-                     <p className="text-xs text-purple-700 mt-2">רווחיות: 68% (כל הלקוחות מתיק בנוי, ללא עלויות גיוס)</p>
+                     <p className="text-xs text-purple-700 mt-2">רווחיות: 57% (ללא גיוס חדש)</p>
                    </div>
                  </div>
 
