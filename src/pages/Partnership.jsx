@@ -401,7 +401,7 @@ export default function Partnership() {
                
                <div className="space-y-4">
                  <div className="bg-white p-4 rounded-lg">
-                   <h5 className="font-bold text-gray-900 mb-3">עלויות קבועות חודשיות:</h5>
+                   <h5 className="font-bold text-gray-900 mb-3">1️⃣ עלויות קבועות חודשיות:</h5>
                    <div className="space-y-2 pl-4">
                      <div className="flex justify-between">
                        <span>משרה: שכירות + תשתיות</span>
@@ -419,27 +419,12 @@ export default function Partnership() {
                        <span className="font-semibold">סה"כ קבועות:</span>
                        <span className="font-bold">17,000 ₪</span>
                      </div>
+                     <p className="text-xs text-gray-500 mt-2">שנתי: 204,000 ₪</p>
                    </div>
                  </div>
 
                  <div className="bg-white p-4 rounded-lg">
-                   <h5 className="font-bold text-gray-900 mb-3">הנהלת חשבונות למורשים וחברות (35% מהכנסה):</h5>
-                   <div className="space-y-2 pl-4">
-                     <div className="flex justify-between text-sm text-gray-600 mb-2">
-                       <span>מורשים: 70,000 + 20,000 = 90,000 × 35% = 31,500</span>
-                     </div>
-                     <div className="flex justify-between text-sm text-gray-600 mb-2">
-                       <span>חברות: 140,000 + 46,667 = 186,667 × 35% = 65,333</span>
-                     </div>
-                     <div className="flex justify-between border-t pt-2">
-                       <span className="font-semibold">סה"כ הנהלה (משתנה):</span>
-                       <span className="font-bold">96,833 ₪</span>
-                     </div>
-                   </div>
-                 </div>
-
-                 <div className="bg-white p-4 rounded-lg">
-                   <h5 className="font-bold text-gray-900 mb-3">עלויות טכנולוגיה וניהול:</h5>
+                   <h5 className="font-bold text-gray-900 mb-3">2️⃣ עלויות טכנולוגיה חודשיות:</h5>
                    <div className="space-y-2 pl-4">
                      <div className="flex justify-between">
                        <span>אפליקציה (770 משתמשים × 15 ₪)</span>
@@ -450,13 +435,60 @@ export default function Partnership() {
                        <span className="font-bold">6,160 ₪</span>
                      </div>
                      <div className="flex justify-between">
-                       <span>מנהל עבודה (אחד למערכת)</span>
+                       <span>מנהל עבודה</span>
                        <span className="font-bold">8,000 ₪</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
                        <span className="font-semibold">סה"כ טכנולוגיה:</span>
                        <span className="font-bold">25,710 ₪</span>
                      </div>
+                     <p className="text-xs text-gray-500 mt-2">שנתי: 308,520 ₪</p>
+                   </div>
+                 </div>
+
+                 <div className="bg-white p-4 rounded-lg">
+                   <h5 className="font-bold text-gray-900 mb-3">3️⃣ הנהלת חשבונות (35% מהכנסה מורשים וחברות):</h5>
+                   <div className="space-y-2 pl-4">
+                     <div className="flex justify-between text-sm text-gray-600">
+                       <span>הכנסה מורשים (ליווי + דוחות):</span>
+                       <span className="font-bold">1,080,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between text-sm text-gray-600">
+                       <span>הכנסה חברות (ליווי + דוחות):</span>
+                       <span className="font-bold">2,240,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between text-sm text-gray-600 border-t pt-2">
+                       <span className="font-semibold">סה"כ להנהלה:</span>
+                       <span className="font-bold">3,320,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between border-t pt-2 mt-2">
+                       <span className="font-semibold">הנהלה 35%:</span>
+                       <span className="font-bold text-orange-600">1,162,000 ₪ שנתי</span>
+                     </div>
+                     <p className="text-xs text-gray-500 mt-2">חודשי: 96,833 ₪</p>
+                   </div>
+                 </div>
+
+                 <div className="bg-white p-4 rounded-lg">
+                   <h5 className="font-bold text-gray-900 mb-3">4️⃣ קול קנטר ותמיכה טלפונית:</h5>
+                   <div className="space-y-2 pl-4">
+                     <div className="flex justify-between text-sm text-gray-600">
+                       <span>500 פטורים × 1,380 ₪ שנתי</span>
+                       <span className="font-bold">690,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between text-sm text-gray-600">
+                       <span>200 מורשים × 1,380 ₪ שנתי</span>
+                       <span className="font-bold">276,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between text-sm text-gray-600">
+                       <span>70 חברות × 2,000 ₪ שנתי</span>
+                       <span className="font-bold">140,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between border-t pt-2 mt-2">
+                       <span className="font-semibold">סה"כ קול קנטר:</span>
+                       <span className="font-bold">1,106,000 ₪ שנתי</span>
+                     </div>
+                     <p className="text-xs text-gray-500 mt-2">חודשי: 92,167 ₪</p>
                    </div>
                  </div>
 
