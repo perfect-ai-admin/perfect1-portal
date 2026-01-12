@@ -646,78 +646,64 @@ export default function Partnership() {
     {
       number: 4,
       icon: <TrendingUp className="w-6 h-6" />,
-      title: "פוטנציאל לידים חודשי לפי תחום",
+      title: "ביקוש שוק והערכת לידים חודשית",
       color: "from-orange-600 to-orange-700",
       content: (
         <div className="space-y-8">
           <section>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">פוטנציאל לידים חודשי</h3>
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg p-6 mb-6">
-              <p className="text-lg text-blue-900 mb-6 leading-relaxed">
-                על בסיס הפוטנציאל השנתי של עסקים חדשים, הנה הערכת לידים חודשיים אפשריים לפי תחום:
-              </p>
-              
-              <div className="space-y-6">
-                <div className="bg-white border-2 border-indigo-300 rounded-lg p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-bold text-xl text-indigo-900">עוסקים פטורים</h4>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600">פוטנציאל שנתי</p>
-                      <p className="text-2xl font-bold text-indigo-600">~80,000</p>
-                    </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">ביקוש שוק והערכת לידים חודשית</h3>
+            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+              הערכת ביקוש ריאלית מלידים אורגניים (SEO בלבד) לשלושה שירותים עיקריים בתחום הקמת עסקים בישראל:
+            </p>
+
+            <div className="space-y-6">
+              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-300 rounded-lg p-6">
+                <h4 className="font-bold text-xl text-indigo-900 mb-4">פתיחת עוסק פטור</h4>
+                <div className="space-y-3">
+                  <div className="bg-white p-3 rounded">
+                    <p className="text-sm text-gray-600">נפח חיפושים חודשי מוערך:</p>
+                    <p className="text-2xl font-bold text-indigo-600">3,500 – 5,500</p>
                   </div>
-                  <div className="bg-indigo-50 p-4 rounded">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-indigo-900">פוטנציאל לידים חודשי:</span>
-                      <span className="text-3xl font-bold text-indigo-600">6,600</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">80,000 / 12 חודשים</p>
-                    <div className="mt-4 pt-4 border-t border-indigo-200">
-                      <p className="text-indigo-800 font-semibold">יעד ריאלי לכיסוי: <span className="text-2xl">500-800</span> לידים/חודש</p>
-                      <p className="text-xs text-gray-600 mt-1">כיסוי של 7-12% מהשוק החודשי</p>
-                    </div>
+                  <div className="bg-white p-3 rounded">
+                    <p className="text-sm text-gray-600">לידים אורגניים בחודש (SEO):</p>
+                    <p className="text-2xl font-bold text-indigo-600">180 – 450</p>
+                  </div>
+                  <div className="bg-indigo-100 border-r-4 border-indigo-600 p-3 rounded">
+                    <p className="text-sm text-indigo-900"><strong>הערה:</strong> נפח גבוה, יזמים בתחילת הדרך, מנוע כניסה חזק לפאנל</p>
                   </div>
                 </div>
+              </div>
 
-                <div className="bg-white border-2 border-teal-300 rounded-lg p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-bold text-xl text-teal-900">עוסקים מורשים</h4>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600">פוטנציאל שנתי</p>
-                      <p className="text-2xl font-bold text-teal-600">~15,000</p>
-                    </div>
+              <div className="bg-gradient-to-br from-teal-50 to-cyan-50 border-2 border-teal-300 rounded-lg p-6">
+                <h4 className="font-bold text-xl text-teal-900 mb-4">פתיחת עוסק מורשה</h4>
+                <div className="space-y-3">
+                  <div className="bg-white p-3 rounded">
+                    <p className="text-sm text-gray-600">נפח חיפושים חודשי מוערך:</p>
+                    <p className="text-2xl font-bold text-teal-600">1,200 – 2,000</p>
                   </div>
-                  <div className="bg-teal-50 p-4 rounded">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-teal-900">פוטנציאל לידים חודשי:</span>
-                      <span className="text-3xl font-bold text-teal-600">1,250</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">15,000 / 12 חודשים</p>
-                    <div className="mt-4 pt-4 border-t border-teal-200">
-                      <p className="text-teal-800 font-semibold">יעד ריאלי לכיסוי: <span className="text-2xl">100-150</span> לידים/חודש</p>
-                      <p className="text-xs text-gray-600 mt-1">כיסוי של 8-12% מהשוק החודשי</p>
-                    </div>
+                  <div className="bg-white p-3 rounded">
+                    <p className="text-sm text-gray-600">לידים אורגניים בחודש (SEO):</p>
+                    <p className="text-2xl font-bold text-teal-600">70 – 200</p>
+                  </div>
+                  <div className="bg-teal-100 border-r-4 border-teal-600 p-3 rounded">
+                    <p className="text-sm text-teal-900"><strong>הערה:</strong> כוונת רכישה גבוהה יותר, ערך לקוח מתמשך</p>
                   </div>
                 </div>
+              </div>
 
-                <div className="bg-white border-2 border-purple-300 rounded-lg p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-bold text-xl text-purple-900">חברות בע"מ</h4>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600">פוטנציאל שנתי</p>
-                      <p className="text-2xl font-bold text-purple-600">~8,000</p>
-                    </div>
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-lg p-6">
+                <h4 className="font-bold text-xl text-purple-900 mb-4">פתיחת חברה בע״מ</h4>
+                <div className="space-y-3">
+                  <div className="bg-white p-3 rounded">
+                    <p className="text-sm text-gray-600">נפח חיפושים חודשי מוערך:</p>
+                    <p className="text-2xl font-bold text-purple-600">800 – 1,500</p>
                   </div>
-                  <div className="bg-purple-50 p-4 rounded">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-purple-900">פוטנציאל לידים חודשי:</span>
-                      <span className="text-3xl font-bold text-purple-600">667</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">8,000 / 12 חודשים</p>
-                    <div className="mt-4 pt-4 border-t border-purple-200">
-                      <p className="text-purple-800 font-semibold">יעד ריאלי לכיסוי: <span className="text-2xl">40-80</span> לידים/חודש</p>
-                      <p className="text-xs text-gray-600 mt-1">כיסוי של 6-12% מהשוק החודשי</p>
-                    </div>
+                  <div className="bg-white p-3 rounded">
+                    <p className="text-sm text-gray-600">לידים אורגניים בחודש (SEO):</p>
+                    <p className="text-2xl font-bold text-purple-600">60 – 180</p>
+                  </div>
+                  <div className="bg-purple-100 border-r-4 border-purple-600 p-3 rounded">
+                    <p className="text-sm text-purple-900"><strong>הערה:</strong> נפח נמוך יותר, לקוחות פרימיום, ערך חיי לקוח גבוה</p>
                   </div>
                 </div>
               </div>
@@ -725,30 +711,34 @@ export default function Partnership() {
           </section>
 
           <section className="mt-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">סיכום פוטנציאל</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">סיכום אורגני חודשי</h3>
             <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-400 rounded-lg p-6">
               <div className="space-y-4">
                 <div className="bg-white p-5 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">סה"כ פוטנציאל לידים חודשי בשוק:</span>
-                    <span className="text-3xl font-bold text-orange-600">~8,500</span>
+                    <span className="font-bold text-lg">סך חיפושים חודשיים:</span>
+                    <span className="text-3xl font-bold text-orange-600">5,500 – 9,000</span>
                   </div>
                 </div>
                 <div className="bg-white p-5 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">יעד ריאלי לכיסוי (כל התחומים):</span>
-                    <span className="text-3xl font-bold text-green-600">640-1,030</span>
+                    <span className="font-bold text-lg">סך לידים אורגניים פוטנציאליים:</span>
+                    <span className="text-3xl font-bold text-green-600">310 – 830</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">כיסוי של 7-12% מהשוק</p>
-                </div>
-                <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-5 rounded-lg">
-                  <p className="font-bold text-xl mb-3">💡 משמעות:</p>
-                  <p className="text-lg leading-relaxed">
-                    השוק גדול מספיק כדי לתמוך בצמיחה משמעותית. גם כיסוי של 10% בלבד מהווה 
-                    מאות לקוחות חדשים מדי חודש!
-                  </p>
+                  <p className="text-sm text-gray-600 mt-2">לקוחות אורגניים בחודש ללא פרסום ממומן</p>
                 </div>
               </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-lg">
+              <h3 className="text-2xl font-bold mb-4">🚀 תובנה למשקיעים</h3>
+              <p className="text-lg leading-relaxed">
+                באמצעות אסטרטגיית SEO ממוקדת ודפי נחיתה ייעודיים לכל סוג ישות, המערכת יכולה לייצר 
+                <strong> מאות לידים איכותיים בחודש</strong> ללא תלות בפרסום ממומן, ולבנות <strong>מנוע צמיחה אורגני</strong>, 
+                סקיילבילי ובעל יתרון תחרותי ארוך טווח. זו צמיחה בעלת עלות הזדמנות נמוכה וגרוע רווחיות גבוהה.
+              </p>
             </div>
           </section>
         </div>
