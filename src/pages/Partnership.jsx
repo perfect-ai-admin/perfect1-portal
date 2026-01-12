@@ -1565,8 +1565,8 @@ export default function Partnership() {
       </section>
 
       {/* Steps */}
-      <section className="max-w-6xl mx-auto px-6 py-16" dir="rtl">
-        <div className="space-y-6">
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-24 bg-gradient-to-b from-white via-gray-50 to-white" dir="rtl">
+        <div className="space-y-4 md:space-y-6">
           {steps.map((step) => (
             <motion.div
               key={step.number}
