@@ -318,7 +318,7 @@ export default function PricingCost() {
                   <ul className="space-y-2 text-gray-800">
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
-                      <span><strong>מהיר:</strong> התהליך נעשה תוך 24-48 שעות</span>
+                      <span><strong>מהיר:</strong> התהליך בדרך כלל מסתיים תוך עד 48 שעות*</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
