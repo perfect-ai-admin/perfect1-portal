@@ -4,11 +4,14 @@ Deno.serve(async (req) => {
   try {
     const baseUrl = 'https://perfect1.co.il';
     
-    // דפים שלא כוללים ב-sitemap (דפי ניהול פנימיים, תודה, וכו')
+    // דפים שלא כוללים ב-sitemap (דפי ניהול פנימיים, תודה, דפים כפולים)
     const excludedPages = [
       'LeadsAdmin', 'AgentCRM', 'AgentsManager', 'AgentLogin',
       'ClientDashboard', 'ClientLogin', 'SEOAdmin', 'SEOAnalytics',
-      'SystemLogicMap', 'ThankYou', 'Partnership'
+      'SystemLogicMap', 'ThankYou', 'Partnership',
+      'MakeupArtistLanding', 'MakeupArtistLandingNew',
+      'CosmeticianLanding', 'CosmeticianLandingNew',
+      'OsekPatur'
     ];
     
     const pages = [

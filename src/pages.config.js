@@ -58,7 +58,6 @@ import OsekMorshaOnline from './pages/OsekMorshaOnline';
 import OsekMorshaRights from './pages/OsekMorshaRights';
 import OsekMorshaSteps from './pages/OsekMorshaSteps';
 import OsekMorshaTime from './pages/OsekMorshaTime';
-import OsekPatur from './pages/OsekPatur';
 import OsekPaturLanding from './pages/OsekPaturLanding';
 import OsekPaturOnline from './pages/OsekPaturOnline';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
@@ -168,7 +167,6 @@ export const PAGES = {
     "OsekMorshaRights": OsekMorshaRights,
     "OsekMorshaSteps": OsekMorshaSteps,
     "OsekMorshaTime": OsekMorshaTime,
-    "OsekPatur": OsekPatur,
     "OsekPaturLanding": OsekPaturLanding,
     "OsekPaturOnline": OsekPaturOnline,
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
