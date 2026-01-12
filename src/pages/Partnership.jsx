@@ -473,22 +473,22 @@ export default function Partnership() {
                    <h5 className="font-bold text-gray-900 mb-3">4️⃣ קול קנטר ותמיכה טלפונית:</h5>
                    <div className="space-y-2 pl-4">
                      <div className="flex justify-between text-sm text-gray-600">
-                       <span>500 פטורים × 660 ₪ שנתי</span>
-                       <span className="font-bold">330,000 ₪</span>
+                       <span>500 פטורים × 300 ₪ שנתי</span>
+                       <span className="font-bold">150,000 ₪</span>
                      </div>
                      <div className="flex justify-between text-sm text-gray-600">
-                       <span>200 מורשים × 660 ₪ שנתי</span>
-                       <span className="font-bold">132,000 ₪</span>
+                       <span>200 מורשים × 1,000 ₪ שנתי</span>
+                       <span className="font-bold">200,000 ₪</span>
                      </div>
                      <div className="flex justify-between text-sm text-gray-600">
-                       <span>70 חברות × 660 ₪ שנתי</span>
-                       <span className="font-bold">46,200 ₪</span>
+                       <span>70 חברות × 3,000 ₪ שנתי</span>
+                       <span className="font-bold">210,000 ₪</span>
                      </div>
                      <div className="flex justify-between border-t pt-2 mt-2">
                        <span className="font-semibold">סה"כ קול קנטר:</span>
-                       <span className="font-bold">508,200 ₪ שנתי</span>
+                       <span className="font-bold">560,000 ₪ שנתי</span>
                      </div>
-                     <p className="text-xs text-gray-500 mt-2">חודשי: 42,350 ₪</p>
+                     <p className="text-xs text-gray-500 mt-2">חודשי: 46,667 ₪</p>
                    </div>
                  </div>
 
