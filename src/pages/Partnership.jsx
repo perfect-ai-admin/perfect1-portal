@@ -499,20 +499,16 @@ export default function Partnership() {
                        <span className="font-bold">17,000 ₪</span>
                      </div>
                      <div className="flex justify-between text-sm">
-                       <span>עלויות טכנולוגיה:</span>
-                       <span className="font-bold">25,710 ₪</span>
+                       <span>עלויות טכנולוגיה וניהול:</span>
+                       <span className="font-bold">75,693 ₪</span>
                      </div>
                      <div className="flex justify-between text-sm">
                        <span>הנהלה (35%):</span>
                        <span className="font-bold">96,833 ₪</span>
                      </div>
-                     <div className="flex justify-between text-sm">
-                       <span>קול קנטר:</span>
-                       <span className="font-bold">92,167 ₪</span>
-                     </div>
                      <div className="flex justify-between border-t pt-2">
                        <span className="font-bold text-lg text-red-900">סה"כ עלויות חודשיות:</span>
-                       <span className="text-2xl font-bold text-red-600">231,710 ₪</span>
+                       <span className="text-2xl font-bold text-red-600">189,526 ₪</span>
                      </div>
                    </div>
                  </div>
