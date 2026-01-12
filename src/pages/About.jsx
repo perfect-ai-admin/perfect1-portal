@@ -29,7 +29,7 @@ const values = [
 const stats = [
   { number: '2,000+', label: 'עוסקים פטורים בשנה' },
   { number: '98%', label: 'שביעות רצון' },
-  { number: '24h', label: 'זמן תגובה מקסימלי' },
+  { number: 'מהיר', label: 'זמן תגובה' },
   { number: '10+', label: 'שנות ניסיון' }
 ];
 
