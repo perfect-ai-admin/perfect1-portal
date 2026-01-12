@@ -424,7 +424,7 @@ export default function Partnership() {
                  </div>
 
                  <div className="bg-white p-4 rounded-lg">
-                   <h5 className="font-bold text-gray-900 mb-3">2️⃣ עלויות טכנולוגיה חודשיות:</h5>
+                   <h5 className="font-bold text-gray-900 mb-3">2️⃣ עלויות טכנולוגיה וניהול:</h5>
                    <div className="space-y-2 pl-4">
                      <div className="flex justify-between">
                        <span>אפליקציה (770 משתמשים × 15 ₪)</span>
@@ -435,14 +435,14 @@ export default function Partnership() {
                        <span className="font-bold">6,160 ₪</span>
                      </div>
                      <div className="flex justify-between">
-                       <span>מנהל עבודה</span>
-                       <span className="font-bold">8,000 ₪</span>
+                       <span>מנהל עבודה + קול קנטר</span>
+                       <span className="font-bold">57,983 ₪</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
-                       <span className="font-semibold">סה"כ טכנולוגיה:</span>
-                       <span className="font-bold">25,710 ₪</span>
+                       <span className="font-semibold">סה"כ טכנולוגיה וניהול:</span>
+                       <span className="font-bold">75,693 ₪</span>
                      </div>
-                     <p className="text-xs text-gray-500 mt-2">שנתי: 308,520 ₪</p>
+                     <p className="text-xs text-gray-500 mt-2">שנתי: 908,316 ₪</p>
                    </div>
                  </div>
 
