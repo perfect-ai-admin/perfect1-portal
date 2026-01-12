@@ -90,10 +90,11 @@ export default function Partnership() {
               
               <div className="space-y-4">
                 <div className="bg-white p-4 rounded-lg border border-green-200">
-                  <p className="font-bold text-green-900 mb-2">1️⃣ עוסקים פטורים - הבסיס</p>
-                  <p className="text-gray-700 text-sm">השוק הגדול ביותר (350k), נקודת כניסה נמוכה, צורך גבוה בשירות נגיש</p>
-                  <p className="text-green-700 font-semibold mt-2">יעד: 500 לקוחות בשנה הראשונה</p>
-                </div>
+                   <p className="font-bold text-green-900 mb-2">1️⃣ עוסקים פטורים - הבסיס</p>
+                   <p className="text-gray-700 text-sm">השוק הגדול ביותר (350k), נקודת כניסה נמוכה, צורך גבוה בשירות נגיש</p>
+                   <p className="text-green-700 font-semibold mt-2">יעד: 500 לקוחות בשנה הראשונה</p>
+                   <p className="text-green-600 text-sm mt-1">גידול של 500 לקוחות בכל שנה</p>
+                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-teal-200">
                    <p className="font-bold text-teal-900 mb-2">2️⃣ עוסקים מורשים - הצמיחה</p>
