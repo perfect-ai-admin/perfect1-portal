@@ -409,8 +409,8 @@ export default function PricingCost() {
                     </tr>
                     <tr>
                       <td className="border border-gray-300 px-4 py-3 font-bold text-[#1E3A5F]">אונליין</td>
-                      <td className="border border-gray-300 px-4 py-3 text-indigo-600 font-bold">₪ 199</td>
-                      <td className="border border-gray-300 px-4 py-3">24-72 שעות</td>
+                      <td className="border border-gray-300 px-4 py-3 text-indigo-600 font-bold">₪ 249</td>
+                      <td className="border border-gray-300 px-4 py-3">24-48 שעות</td>
                       <td className="border border-gray-300 px-4 py-3 text-green-600">נמוכים</td>
                     </tr>
                   </tbody>
