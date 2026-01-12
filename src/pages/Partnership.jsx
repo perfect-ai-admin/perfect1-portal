@@ -66,9 +66,9 @@ export default function Partnership() {
                 <div className="text-3xl font-bold text-teal-600 mb-2">~150,000</div>
                 <p className="text-gray-700 mb-4">מחזור מעל 105k ₪</p>
                 <div className="bg-teal-50 p-3 rounded">
-                  <p className="text-sm font-semibold text-teal-900">מחיר שירות ממוצע:</p>
-                  <p className="text-2xl font-bold text-teal-600">500-800 ₪/חודש</p>
-                </div>
+                   <p className="text-sm font-semibold text-teal-900">מחיר שירות ממוצע:</p>
+                   <p className="text-2xl font-bold text-teal-600">350-500 ₪/חודש</p>
+                 </div>
               </div>
 
               <div className="bg-white border-2 border-purple-200 rounded-lg p-6">
@@ -96,16 +96,16 @@ export default function Partnership() {
                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-teal-200">
-                  <p className="font-bold text-teal-900 mb-2">2️⃣ עוסקים מורשים - הצמיחה</p>
-                  <p className="text-gray-700 text-sm">רווחיות גבוהה יותר, לקוחות יציבים, צורך במקצועיות</p>
-                  <p className="text-teal-700 font-semibold mt-2">יעד: 100 לקוחות בשנה השנייה</p>
-                </div>
+                   <p className="font-bold text-teal-900 mb-2">2️⃣ עוסקים מורשים - הצמיחה</p>
+                   <p className="text-gray-700 text-sm">רווחיות גבוהה יותר, לקוחות יציבים, צורך במקצועיות</p>
+                   <p className="text-teal-700 font-semibold mt-2">יעד: 300 לקוחות בשנה השנייה</p>
+                 </div>
 
                 <div className="bg-white p-4 rounded-lg border border-purple-200">
-                  <p className="font-bold text-purple-900 mb-2">3️⃣ חברות בע"מ - הפרימיום</p>
-                  <p className="text-gray-700 text-sm">רווחיות הכי גבוהה, שירות מקיף, נאמנות לקוח גבוהה</p>
-                  <p className="text-purple-700 font-semibold mt-2">יעד: 30 לקוחות בשנה השלישית</p>
-                </div>
+                   <p className="font-bold text-purple-900 mb-2">3️⃣ חברות בע"מ - הפרימיום</p>
+                   <p className="text-gray-700 text-sm">רווחיות הכי גבוהה, שירות מקיף, נאמנות לקוח גבוהה</p>
+                   <p className="text-purple-700 font-semibold mt-2">יעד: 70 לקוחות בשנה השלישית</p>
+                 </div>
               </div>
             </div>
           </section>
