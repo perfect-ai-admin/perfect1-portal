@@ -10,7 +10,7 @@ import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
-import OnlineFlowModal from '../components/onlineFlow/OnlineFlowModal';
+
 
 function FAQItem({ question, answer }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -56,7 +56,7 @@ export default function OsekPaturOnlineLanding() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isFlowOpen, setIsFlowOpen] = useState(false);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -141,8 +141,8 @@ export default function OsekPaturOnlineLanding() {
       <PageTracker pageUrl="/osek-patur-online" pageType="landing" />
       <FAQSchema faqs={faqs} />
       <LocalBusinessSchema 
-        name="Perfect One - פתיחת עוסק פטור אונליין"
-        description="שירות פתיחת עוסק פטור אונליין 100% דיגיטלי כולל ליווי חודשי ודוח שנתי"
+        name="Perfect One - ייעוץ וליווי לפתיחת עוסק פטור"
+        description="שירות פרטי בתשלום לייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור אונליין"
         address={{
           street: "",
           city: "",
@@ -152,58 +152,31 @@ export default function OsekPaturOnlineLanding() {
         website="https://perfect1.co.il"
       />
       <SEOOptimized
-        title="פתיחת עוסק פטור אונליין | פתיחה מהירה, ליווי מלא"
-        description="פתיחת עוסק פטור אונליין בצורה מהירה ומסודרת. בדיקת התאמה, מילוי טפסים, והכוונה מלאה עד פתיחת התיק. השאר פרטים ונחזור אליך."
-        keywords="פתיחת עוסק פטור אונליין, פתיחת עוסק אונליין, פתיחת עוסק פטור דיגיטלי, פתיחת עוסק מהבית"
+        title="ייעוץ וליווי לפתיחת עוסק פטור אונליין | Perfect One"
+        description="שירות פרטי בתשלום לייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור. ליווי צמוד, מילוי טפסים והכוונה מלאה. השאר פרטים ונחזור אליך."
+        keywords="ייעוץ פתיחת עוסק פטור, ליווי פתיחת עוסק, פתיחת עוסק פטור אונליין, ייעוץ עוסק פטור"
         canonical="https://perfect1.co.il/osek-patur-online"
         schema={{
           "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          "name": "Perfect One - פתיחת עוסק פטור אונליין בישראל",
-          "description": "שירות פתיחת עוסק פטור אונליין 100% דיגיטלי כולל ליווי חודשי ודוח שנתי",
+          "@type": "Service",
+          "name": "ייעוץ וליווי לפתיחת עוסק פטור אונליין",
+          "description": "שירות פרטי בתשלום לייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור",
           "url": "https://perfect1.co.il/osek-patur-online",
-          "telephone": "+972-50-227-7087",
-          "priceRange": "₪₪",
-          "address": {
-            "@type": "PostalAddress",
-            "addressCountry": "IL",
-            "addressRegion": "ישראל"
-          },
-          "areaServed": {
-            "@type": "Country",
-            "name": "ישראל"
-          },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "31.0461",
-            "longitude": "34.8516"
-          },
-          "serviceType": "פתיחת עוסק פטור אונליין",
           "provider": {
             "@type": "Organization",
             "name": "Perfect One",
+            "telephone": "+972-50-227-7087",
             "sameAs": [
               "https://www.facebook.com/perfect1.co.il",
               "https://www.linkedin.com/company/perfect1",
               "https://www.instagram.com/perfect1.co.il"
             ]
           },
-          "offers": {
-            "@type": "Offer",
-            "price": "249",
-            "priceCurrency": "ILS",
-            "availability": "https://schema.org/InStock"
+          "areaServed": {
+            "@type": "Country",
+            "name": "ישראל"
           },
-          "about": {
-            "@type": "Thing",
-            "name": "פתיחת עוסק פטור אונליין בישראל",
-            "description": "פתיחה דיגיטלית 100% של עוסק פטור"
-          },
-          "isPartOf": {
-            "@type": "WebSite",
-            "name": "Perfect One",
-            "url": "https://perfect1.co.il"
-          }
+          "serviceType": "ייעוץ וליווי עסקי"
         }}
       />
       <main className="pt-20 bg-[#F8F9FA]">
@@ -264,7 +237,7 @@ export default function OsekPaturOnlineLanding() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Button onClick={() => setIsFlowOpen(true)} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
+                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
                     <Target className="ml-3 w-6 h-6" />
                     קבל ייעוץ וליווי
                   </Button>
@@ -480,7 +453,7 @@ export default function OsekPaturOnlineLanding() {
                 השאר פרטים ונתחיל את התהליך האונליין תוך שעות
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={() => setIsFlowOpen(true)} size="lg" className="h-20 px-12 text-2xl font-black rounded-3xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
+                <Button onClick={scrollToForm} size="lg" className="h-20 px-12 text-2xl font-black rounded-3xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
                   <Target className="ml-3 w-7 h-7" />
                   פתח אונליין עכשיו
                 </Button>
@@ -714,7 +687,7 @@ export default function OsekPaturOnlineLanding() {
                 },
                 {
                   q: 'מה העלויות של השירות?',
-                  a: 'החבילה השנתית (פתיחה + שנה ראשונה כולל ליווי חודשי ודוח שנתי) - החל מ-₪399. מחיר מדויק לפי חבילה שתבחר. זהו שירות פרטי בתשלום, לא שירות ממשלתי.'
+                  a: 'זהו שירות פרטי בתשלום לייעוץ וליווי בפתיחת עוסק פטור. למידע מפורט על עלויות, אנא השאר פרטים ונחזור אליך עם הצעת מחיר מותאמת אישית.'
                 },
                 {
                   q: 'מה תקרת ההכנסות לעוסק פטור?',
@@ -730,8 +703,7 @@ export default function OsekPaturOnlineLanding() {
         {/* Related Content */}
         <RelatedContent pageType="landing" />
 
-        {/* Online Flow Modal */}
-        <OnlineFlowModal isOpen={isFlowOpen} onClose={() => setIsFlowOpen(false)} />
+
 
         {/* Final CTA */}
         <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
@@ -753,7 +725,7 @@ export default function OsekPaturOnlineLanding() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={() => setIsFlowOpen(true)} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
+                <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
                   <Monitor className="ml-3 w-6 h-6" />
                   פתח אונליין עכשיו
                 </Button>
