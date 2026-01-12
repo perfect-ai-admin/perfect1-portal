@@ -11,7 +11,16 @@ Deno.serve(async (req) => {
       'SystemLogicMap', 'ThankYou', 'Partnership',
       'MakeupArtistLanding', 'MakeupArtistLandingNew',
       'CosmeticianLanding', 'CosmeticianLandingNew',
-      'OsekPatur'
+      'OsekPatur',
+      // דפי Sitemap טכניים
+      'Sitemap', 'SitemapPages', 'SitemapArticles', 'SitemapGeo', 'SitemapFAQ',
+      // דפי Landing כפולים/ישנים
+      'FreelancerLanding', 'TechnicianLanding', 'ComputerTechnicianLanding', 'WoltDeliveryLanding',
+      // דפי מקצועות ספציפיים (כפולים ל-ProfessionPage)
+      'GraphicDesignerLanding', 'PhotographerLanding', 'FitnessTrainerLanding',
+      'HairStylistLanding', 'EyebrowStylistLanding', 'LashArtistLanding', 'ManicuristLanding',
+      // דפים פנימיים
+      'SalesAgentHandbook', 'InvoicesAppLanding'
     ];
     
     const pages = [
