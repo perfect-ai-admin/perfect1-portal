@@ -112,12 +112,12 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-bold text-lg mb-6 text-[#D4AF37]">צור קשר</h4>
-            <ul className="space-y-4">
+            <h4 className="font-bold text-base md:text-lg mb-4 md:mb-6 text-[#D4AF37]">צור קשר</h4>
+            <ul className="space-y-3 md:space-y-4">
               <li>
-                <a href="tel:0502277087" className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                    <Phone className="w-4 h-4" />
+                <a href="tel:0502277087" className="flex items-center gap-2 md:gap-3 text-gray-300 hover:text-white transition-colors text-sm md:text-base">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-3 h-3 md:w-4 md:h-4" />
                   </div>
                   <span>0502277087</span>
                 </a>
@@ -127,29 +127,29 @@ export default function Footer() {
                   href="https://wa.me/972502277087"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-2 md:gap-3 text-gray-300 hover:text-white transition-colors text-sm md:text-base"
                 >
-                  <div className="w-10 h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center">
-                    <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-[#25D366]" />
                   </div>
                   <span>וואטסאפ</span>
                 </a>
               </li>
-              <li className="flex items-center gap-3 text-gray-300">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                  <Clock className="w-4 h-4" />
+              <li className="flex items-center gap-2 md:gap-3 text-gray-300 text-sm md:text-base">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-3 h-3 md:w-4 md:h-4" />
                 </div>
                 <span>א'-ה' 9:00-18:00</span>
               </li>
-              <li>
+              <li className="hidden md:block">
                 <a 
                   href="https://maps.google.com/?q=Perfect+One+Israel"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-2 md:gap-3 text-gray-300 hover:text-white transition-colors text-sm md:text-base"
                 >
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                    <MapPin className="w-4 h-4" />
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-3 h-3 md:w-4 md:h-4" />
                   </div>
                   <span>גוגל מפות</span>
                 </a>
