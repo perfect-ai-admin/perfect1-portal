@@ -22,8 +22,6 @@ import CommonMistakesOsekMorsha from './pages/CommonMistakesOsekMorsha';
 import CompanyLanding from './pages/CompanyLanding';
 import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
 import Contact from './pages/Contact';
-import CosmeticianLanding from './pages/CosmeticianLanding';
-import CosmeticianLandingNew from './pages/CosmeticianLandingNew';
 import CostsOsekMorsha from './pages/CostsOsekMorsha';
 import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
@@ -42,8 +40,6 @@ import InvoicesAppLanding from './pages/InvoicesAppLanding';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
 import MaamatOsekPatur from './pages/MaamatOsekPatur';
-import MakeupArtistLanding from './pages/MakeupArtistLanding';
-import MakeupArtistLandingNew from './pages/MakeupArtistLandingNew';
 import ManicuristLanding from './pages/ManicuristLanding';
 import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
 import Methodology from './pages/Methodology';
@@ -131,8 +127,6 @@ export const PAGES = {
     "CompanyLanding": CompanyLanding,
     "ComputerTechnicianLanding": ComputerTechnicianLanding,
     "Contact": Contact,
-    "CosmeticianLanding": CosmeticianLanding,
-    "CosmeticianLandingNew": CosmeticianLandingNew,
     "CostsOsekMorsha": CostsOsekMorsha,
     "EyebrowStylistLanding": EyebrowStylistLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
@@ -151,8 +145,6 @@ export const PAGES = {
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
     "MaamatOsekPatur": MaamatOsekPatur,
-    "MakeupArtistLanding": MakeupArtistLanding,
-    "MakeupArtistLandingNew": MakeupArtistLandingNew,
     "ManicuristLanding": ManicuristLanding,
     "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
     "Methodology": Methodology,
