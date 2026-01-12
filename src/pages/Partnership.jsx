@@ -935,24 +935,61 @@ export default function Partnership() {
 
           <section className="mt-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">החזר השקעה (ROI)</h3>
+            <p className="text-gray-700 mb-6 leading-relaxed">
+              בשנה הראשונה אנחנו משקיעים בגיוס לקוחות. החזר ההשקעה מתחיל בשנה השניה כאשר לקוחות מתחילים להתחייב לתקופות ארוכות יותר.
+            </p>
+
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg p-6">
               <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg">
-                  <p className="font-semibold text-gray-800 mb-2">שנה ראשונה</p>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">רווח לשותף B:</span>
-                    <span className="font-bold text-green-600">306,500 ₪</span>
+                <div className="bg-white p-4 rounded-lg border-r-4 border-teal-400">
+                  <p className="font-semibold text-gray-800 mb-3">שנה שניה - החזר מלא</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">הכנסות מלקוחות מתמשכים:</span>
+                      <span className="font-bold">1,080,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">עלויות:</span>
+                      <span className="font-bold">563,500 ₪</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-2">
+                      <span className="font-semibold">רווח:</span>
+                      <span className="font-bold text-green-600">516,500 ₪</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-2">
+                      <span className="font-semibold">לכל שותף (50%):</span>
+                      <span className="font-bold text-green-600">258,250 ₪</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between mt-1">
-                    <span className="text-gray-600">החזר מצטבר:</span>
-                    <span className="font-bold text-green-600">131%</span>
-                  </div>
-                  <p className="text-sm text-green-700 mt-2">✓ החזר מלא של ההשקעה + רווח כבר בשנה הראשונה!</p>
+                  <p className="text-sm text-green-700 mt-3">✓ החזר השקעה + רווח משמעותי</p>
                 </div>
 
-                <div className="bg-green-600 text-white p-5 rounded-lg">
-                  <p className="font-bold text-xl mb-3">🎯 תוך שנה אחת - החזר מלא + רווח נקי!</p>
-                  <p className="text-sm opacity-90">שותף B מחזיר את כל ההשקעה ועוד רווח של 72,500 ₪ בשנה הראשונה בלבד</p>
+                <div className="bg-white p-4 rounded-lg border-r-4 border-blue-400">
+                  <p className="font-semibold text-gray-800 mb-3">שנה שלישית - צמיחה</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">הכנסות:</span>
+                      <span className="font-bold">2,160,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-2">
+                      <span className="font-semibold">רווח משוער:</span>
+                      <span className="font-bold text-blue-600">1,000,000 ₪+</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg border-r-4 border-purple-400">
+                  <p className="font-semibold text-gray-800 mb-3">שנה רביעית - סקייל</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">הכנסות:</span>
+                      <span className="font-bold">3,240,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-2">
+                      <span className="font-semibold">רווח משוער:</span>
+                      <span className="font-bold text-purple-600">1,500,000 ₪+</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
