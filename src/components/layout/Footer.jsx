@@ -35,48 +35,48 @@ export default function Footer() {
             <h4 className="font-bold text-base md:text-lg mb-4 md:mb-6 text-[#D4AF37]">קישורים מהירים</h4>
             <ul className="space-y-2 md:space-y-3">
               <li>
-                <Link to={createPageUrl('Home')} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('Home')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   דף הבית
                 </Link>
               </li>
               <li>
-                <Link to={createPageUrl('Professions')} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('Professions')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   מקצועות
                 </Link>
               </li>
               <li>
-                <Link to={createPageUrl('Pricing')} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('Pricing')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   מחירון
                 </Link>
               </li>
-              <li>
-                <Link to={createPageUrl('About')} className="text-gray-300 hover:text-white transition-colors">
+              <li className="hidden md:block">
+                <Link to={createPageUrl('About')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   אודות
                 </Link>
               </li>
 
-              <li>
-                <Link to={createPageUrl('Methodology')} className="text-gray-300 hover:text-white transition-colors">
+              <li className="hidden md:block">
+                <Link to={createPageUrl('Methodology')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   המתודולוגיה
                 </Link>
               </li>
-              <li>
-                <Link to={createPageUrl('Regulation')} className="text-gray-300 hover:text-white transition-colors">
+              <li className="hidden lg:block">
+                <Link to={createPageUrl('Regulation')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   רגולציה
                 </Link>
               </li>
               <li>
-                <Link to={createPageUrl('Contact')} className="text-gray-300 hover:text-white transition-colors">
+                <Link to={createPageUrl('Contact')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   צור קשר
                 </Link>
               </li>
-              <li>
-                <Link to={createPageUrl('Terms')} className="text-gray-300 hover:text-white transition-colors">
+              <li className="hidden md:block">
+                <Link to={createPageUrl('Terms')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   תנאי שימוש
                 </Link>
               </li>
-              <li>
-                <Link to={createPageUrl('Privacy')} className="text-gray-300 hover:text-white transition-colors">
+              <li className="hidden md:block">
+                <Link to={createPageUrl('Privacy')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   פרטיות
                 </Link>
               </li>
