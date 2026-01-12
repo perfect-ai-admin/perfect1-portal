@@ -968,20 +968,25 @@ export default function Partnership() {
                    <p className="font-semibold text-gray-800 mb-3">שנה שלישית - כפול לקוחות</p>
                    <div className="space-y-2 text-sm">
                      <div className="flex justify-between">
-                       <span className="text-gray-600">הכנסות:</span>
+                       <span className="text-gray-600">הכנסות מתיק קיים:</span>
                        <span className="font-bold">8,800,000 ₪</span>
                      </div>
                      <div className="flex justify-between text-xs text-gray-500">
                        <span>(1,000 פטורים | 400 מורשים | 140 חברות)</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
-                       <span className="font-semibold">רווח 35%:</span>
-                       <span className="font-bold text-blue-600">3,080,000 ₪</span>
+                       <span className="text-gray-600">עלויות:</span>
+                       <span className="font-bold">3,150,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between border-t pt-2">
+                       <span className="font-semibold">רווח:</span>
+                       <span className="font-bold text-blue-600">5,650,000 ₪</span>
                      </div>
                      <div className="flex justify-between">
                        <span className="font-semibold">לכל שותף (50%):</span>
-                       <span className="font-bold text-blue-600">1,540,000 ₪</span>
+                       <span className="font-bold text-blue-600">2,825,000 ₪</span>
                      </div>
+                     <p className="text-xs text-blue-700 mt-2">רווחיות: 64% (כל הלקוחות מתיק בנוי, ללא עלויות גיוס)</p>
                    </div>
                  </div>
 
@@ -989,27 +994,32 @@ export default function Partnership() {
                    <p className="font-semibold text-gray-800 mb-3">שנה רביעית - כפול 3 לקוחות</p>
                    <div className="space-y-2 text-sm">
                      <div className="flex justify-between">
-                       <span className="text-gray-600">הכנסות:</span>
+                       <span className="text-gray-600">הכנסות מתיק קיים:</span>
                        <span className="font-bold">13,200,000 ₪</span>
                      </div>
                      <div className="flex justify-between text-xs text-gray-500">
                        <span>(1,500 פטורים | 600 מורשים | 210 חברות)</span>
                      </div>
                      <div className="flex justify-between border-t pt-2">
-                       <span className="font-semibold">רווח 35%:</span>
-                       <span className="font-bold text-purple-600">4,620,000 ₪</span>
+                       <span className="text-gray-600">עלויות:</span>
+                       <span className="font-bold">4,200,000 ₪</span>
+                     </div>
+                     <div className="flex justify-between border-t pt-2">
+                       <span className="font-semibold">רווח:</span>
+                       <span className="font-bold text-purple-600">9,000,000 ₪</span>
                      </div>
                      <div className="flex justify-between">
                        <span className="font-semibold">לכל שותף (50%):</span>
-                       <span className="font-bold text-purple-600">2,310,000 ₪</span>
+                       <span className="font-bold text-purple-600">4,500,000 ₪</span>
                      </div>
+                     <p className="text-xs text-purple-700 mt-2">רווחיות: 68% (כל הלקוחות מתיק בנוי, ללא עלויות גיוס)</p>
                    </div>
                  </div>
 
-                 <div className="bg-orange-100 border-r-4 border-orange-500 p-4 rounded-lg mt-4">
-                   <p className="text-sm text-orange-900 leading-relaxed">
-                     <strong>הערה:</strong> החישוב מבוסס על תיק לקוחות שנבנה בשנה הראשונה (ללא עלויות גיוס חדשות). 
-                     הלקוחות ממשיכים להניב הכנסות בתקופות הגבייה שלהם (12 חודשים לפטורים, 9 למורשים, 6 לחברות).
+                 <div className="bg-green-100 border-r-4 border-green-600 p-4 rounded-lg mt-4">
+                   <p className="text-sm text-green-900 font-semibold mb-2">✓ מודל בר-קיימא</p>
+                   <p className="text-sm text-green-900 leading-relaxed">
+                     כל שנה מתיק הלקוחות שנבנה בשנה הראשונה ממשיך להניב הכנסות. העלויות נשארות נמוכות יחסית כיוון שאין גיוס לקוחות חדש. הרווחיות עולה עם סקיילוג התיק.
                    </p>
                  </div>
               </div>
