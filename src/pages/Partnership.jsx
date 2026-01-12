@@ -520,7 +520,7 @@ export default function Partnership() {
                  <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4">
                    <div className="flex justify-between items-center">
                      <span className="font-bold text-lg text-red-900">סה"כ עלויות שנתיות:</span>
-                     <span className="text-2xl font-bold text-red-600">2,274,312 ₪</span>
+                     <span className="text-2xl font-bold text-red-600">2,834,316 ₪</span>
                    </div>
                  </div>
                </div>
