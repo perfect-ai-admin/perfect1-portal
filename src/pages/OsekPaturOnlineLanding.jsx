@@ -211,7 +211,7 @@ export default function OsekPaturOnlineLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  שירות פרטי בתשלום - ליווי מלא עד לפתיחת העוסק מול הרשויות
+                  שירות פרטי - ליווי מלא עד לפתיחת העוסק מול הרשויות
                 </p>
 
                 <div className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-8 border-2 border-white/40 shadow-2xl">
