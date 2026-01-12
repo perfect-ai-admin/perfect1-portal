@@ -1176,48 +1176,48 @@ export default function Partnership() {
           <section className="mt-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-4">תרחיש אופטימי - 5 שנים</h3>
             <div className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-400 rounded-lg p-6">
-              <h4 className="font-bold text-xl text-orange-900 mb-4">🚀 צמיחה מואצת</h4>
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white p-4 rounded text-center">
-                  <p className="text-sm text-gray-600 mb-1">עוסקים פטורים</p>
-                  <p className="text-3xl font-bold text-indigo-600">1,000</p>
-                </div>
-                <div className="bg-white p-4 rounded text-center">
-                  <p className="text-sm text-gray-600 mb-1">עוסקים מורשים</p>
-                  <p className="text-3xl font-bold text-teal-600">300</p>
-                </div>
-                <div className="bg-white p-4 rounded text-center">
-                  <p className="text-sm text-gray-600 mb-1">חברות בע"מ</p>
-                  <p className="text-3xl font-bold text-purple-600">100</p>
-                </div>
+            <h4 className="font-bold text-xl text-orange-900 mb-4">🚀 צמיחה מואצת - שנה 4 (כפול 3 לקוחות)</h4>
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-white p-4 rounded text-center">
+                <p className="text-sm text-gray-600 mb-1">עוסקים פטורים</p>
+                <p className="text-3xl font-bold text-indigo-600">1,500</p>
               </div>
+              <div className="bg-white p-4 rounded text-center">
+                <p className="text-sm text-gray-600 mb-1">עוסקים מורשים</p>
+                <p className="text-3xl font-bold text-teal-600">600</p>
+              </div>
+              <div className="bg-white p-4 rounded text-center">
+                <p className="text-sm text-gray-600 mb-1">חברות בע"מ</p>
+                <p className="text-3xl font-bold text-purple-600">210</p>
+              </div>
+            </div>
 
-              <div className="space-y-3">
-                <div className="bg-white p-4 rounded">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">הכנסות שנתיות צפויות:</span>
-                    <span className="text-2xl font-bold text-orange-600">~8,000,000 ₪</span>
-                  </div>
-                </div>
-                <div className="bg-white p-4 rounded">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">רווח תפעולי (25% מרווח):</span>
-                    <span className="text-2xl font-bold text-orange-600">~2,000,000 ₪</span>
-                  </div>
-                </div>
-                <div className="bg-white p-4 rounded">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">כפולת שווי (×7 - חברה מבוססת):</span>
-                    <span className="text-2xl font-bold text-orange-600">14,000,000 ₪</span>
-                  </div>
-                </div>
-                <div className="bg-orange-600 text-white p-5 rounded">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-xl">שווי לשותף (50%):</span>
-                    <span className="text-4xl font-bold">7,000,000 ₪</span>
-                  </div>
+            <div className="space-y-3">
+              <div className="bg-white p-4 rounded">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">הכנסות שנתיות:</span>
+                  <span className="text-2xl font-bold text-orange-600">13,200,000 ₪</span>
                 </div>
               </div>
+              <div className="bg-white p-4 rounded">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">רווח תפעולי שנתי:</span>
+                  <span className="text-2xl font-bold text-orange-600">9,000,000 ₪</span>
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">כפולת שווי (×7 - חברה מבוססת):</span>
+                  <span className="text-2xl font-bold text-orange-600">63,000,000 ₪</span>
+                </div>
+              </div>
+              <div className="bg-orange-600 text-white p-5 rounded">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-xl">שווי לשותף (50%):</span>
+                  <span className="text-4xl font-bold">31,500,000 ₪</span>
+                </div>
+              </div>
+            </div>
             </div>
           </section>
 
