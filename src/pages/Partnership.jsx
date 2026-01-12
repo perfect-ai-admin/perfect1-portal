@@ -51,33 +51,33 @@ export default function Partnership() {
           <section>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">פילוח שוק היעד</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
-              <div className="bg-white border-2 border-indigo-200 rounded-lg p-6">
-                <h4 className="font-bold text-lg text-indigo-900 mb-3">עוסקים פטורים</h4>
-                <div className="text-3xl font-bold text-indigo-600 mb-2">~350,000</div>
-                <p className="text-gray-700 mb-4">מחזור עד 105k ₪ בשנה</p>
+              <div className="bg-white border-2 border-indigo-200 rounded-lg p-4 md:p-6">
+                <h4 className="font-bold text-base md:text-lg text-indigo-900 mb-3">עוסקים פטורים</h4>
+                <div className="text-2xl md:text-3xl font-bold text-indigo-600 mb-2">~350,000</div>
+                <p className="text-sm md:text-base text-gray-700 mb-4">מחזור עד 105k ₪ בשנה</p>
                 <div className="bg-indigo-50 p-3 rounded">
-                  <p className="text-sm font-semibold text-indigo-900">מחיר שירות ממוצע:</p>
-                  <p className="text-2xl font-bold text-indigo-600">150-250 ₪/חודש</p>
+                  <p className="text-xs md:text-sm font-semibold text-indigo-900">מחיר שירות ממוצע:</p>
+                  <p className="text-xl md:text-2xl font-bold text-indigo-600">150-250 ₪/חודש</p>
                 </div>
               </div>
 
-              <div className="bg-white border-2 border-teal-200 rounded-lg p-6">
-                <h4 className="font-bold text-lg text-teal-900 mb-3">עוסקים מורשים</h4>
-                <div className="text-3xl font-bold text-teal-600 mb-2">~150,000</div>
-                <p className="text-gray-700 mb-4">מחזור מעל 105k ₪</p>
+              <div className="bg-white border-2 border-teal-200 rounded-lg p-4 md:p-6">
+                <h4 className="font-bold text-base md:text-lg text-teal-900 mb-3">עוסקים מורשים</h4>
+                <div className="text-2xl md:text-3xl font-bold text-teal-600 mb-2">~150,000</div>
+                <p className="text-sm md:text-base text-gray-700 mb-4">מחזור מעל 105k ₪</p>
                 <div className="bg-teal-50 p-3 rounded">
-                   <p className="text-sm font-semibold text-teal-900">מחיר שירות ממוצע:</p>
-                   <p className="text-2xl font-bold text-teal-600">350-500 ₪/חודש</p>
+                   <p className="text-xs md:text-sm font-semibold text-teal-900">מחיר שירות ממוצע:</p>
+                   <p className="text-xl md:text-2xl font-bold text-teal-600">350-500 ₪/חודש</p>
                  </div>
               </div>
 
-              <div className="bg-white border-2 border-purple-200 rounded-lg p-6">
-                <h4 className="font-bold text-lg text-purple-900 mb-3">חברות בע"מ</h4>
-                <div className="text-3xl font-bold text-purple-600 mb-2">~50,000</div>
-                <p className="text-gray-700 mb-4">עסקים קטנים ובינוניים</p>
+              <div className="bg-white border-2 border-purple-200 rounded-lg p-4 md:p-6">
+                <h4 className="font-bold text-base md:text-lg text-purple-900 mb-3">חברות בע"מ</h4>
+                <div className="text-2xl md:text-3xl font-bold text-purple-600 mb-2">~50,000</div>
+                <p className="text-sm md:text-base text-gray-700 mb-4">עסקים קטנים ובינוניים</p>
                 <div className="bg-purple-50 p-3 rounded">
-                   <p className="text-sm font-semibold text-purple-900">מחיר שירות ממוצע:</p>
-                   <p className="text-2xl font-bold text-purple-600">1,200-3,000 ₪/חודש</p>
+                   <p className="text-xs md:text-sm font-semibold text-purple-900">מחיר שירות ממוצע:</p>
+                   <p className="text-xl md:text-2xl font-bold text-purple-600">1,200-3,000 ₪/חודש</p>
                  </div>
               </div>
             </div>
