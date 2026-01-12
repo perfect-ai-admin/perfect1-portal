@@ -1957,7 +1957,7 @@ export default function SalesAgentHandbook() {
     <>
       <Helmet>
         <title>חוברת הדרכה מפורטת לסוכן מכירות | Perfect One</title>
-        <meta name="robots" content="noindex, follow" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       {/* Hero */}

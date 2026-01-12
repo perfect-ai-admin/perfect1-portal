@@ -1341,7 +1341,7 @@ export default function Partnership() {
       <Helmet>
         <title>שותפות עסקית 50/50 במיזם פיננסי | Perfect One</title>
         <meta name="description" content="הצעת שותפות אסטרטגית 50/50 במיזם פיננסי מבוסס טכנולוגיה. 500 עוסקים פטורים בשנה ראשונה, הכנסות של מיליוני שקלים ופוטנציאל יציאה משמעותי" />
-        <meta name="robots" content="noindex, follow" />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       {/* Hero */}

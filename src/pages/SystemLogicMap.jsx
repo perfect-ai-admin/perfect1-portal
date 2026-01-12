@@ -44,6 +44,17 @@ function Card({ title, children, highlight = false }) {
 export default function SystemLogicMap() {
   const [activeTab, setActiveTab] = React.useState('overview');
 
+  React.useEffect(() => {
+    const metaRobots = document.createElement('meta');
+    metaRobots.name = 'robots';
+    metaRobots.content = 'noindex, nofollow';
+    document.head.appendChild(metaRobots);
+    
+    return () => {
+      document.head.removeChild(metaRobots);
+    };
+  }, []);
+
   const categories = [
     { id: 'overview', label: '🎯 Overview', icon: Rocket },
     { id: 'entities', label: '🗄️ Database', icon: Database },
