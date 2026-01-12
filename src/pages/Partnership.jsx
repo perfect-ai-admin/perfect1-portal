@@ -837,85 +837,60 @@ export default function Partnership() {
               <h4 className="font-bold text-xl text-yellow-900 mb-4">💰 איך זה עובד?</h4>
 
               <div className="bg-white border-2 border-yellow-300 rounded-lg p-6 mb-6">
-                <h5 className="font-bold text-lg text-yellow-900 mb-4">מודל הכנסה לשותף A (שיווק) - עבור גיוס לקוח</h5>
-                <p className="text-gray-700 text-sm mb-6">כל לקוח שגויס על ידי שותף A מייצר הכנסות למשך תקופת גבייה ראשונה שונה לפי סוג הישות:</p>
+                <h5 className="font-bold text-lg text-yellow-900 mb-4">תקופות גבייה ראשונה לשותף A (שיווק)</h5>
 
-                <div className="space-y-4">
-                  <div className="bg-indigo-50 p-4 rounded-lg border-r-4 border-indigo-400">
-                    <h6 className="font-bold text-indigo-900 mb-3">🟢 עוסק פטור</h6>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-700">חודשי ישיר:</span>
-                        <span className="font-bold text-indigo-600">180 ₪</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-700">תקופת גבייה ראשונה:</span>
-                        <span className="font-bold text-indigo-600">12 חודשים</span>
-                      </div>
-                      <div className="bg-white p-2 rounded mt-2 flex justify-between border-t-2 border-indigo-200 pt-2">
-                        <span className="font-semibold text-indigo-900">הכנסה לשותף A לכל לקוח:</span>
-                        <span className="text-2xl font-bold text-indigo-600">2,160 ₪</span>
-                      </div>
-                    </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-indigo-50 rounded border-r-4 border-indigo-400">
+                    <span className="font-semibold text-indigo-900">עוסק פטור:</span>
+                    <span className="text-2xl font-bold text-indigo-600">12 חודשים</span>
                   </div>
-
-                  <div className="bg-teal-50 p-4 rounded-lg border-r-4 border-teal-400">
-                    <h6 className="font-bold text-teal-900 mb-3">🔵 עוסק מורשה</h6>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-700">חודשי ישיר:</span>
-                        <span className="font-bold text-teal-600">350 ₪</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-700">תקופת גבייה ראשונה:</span>
-                        <span className="font-bold text-teal-600">9 חודשים</span>
-                      </div>
-                      <div className="bg-white p-2 rounded mt-2 flex justify-between border-t-2 border-teal-200 pt-2">
-                        <span className="font-semibold text-teal-900">הכנסה לשותף A לכל לקוח:</span>
-                        <span className="text-2xl font-bold text-teal-600">3,150 ₪</span>
-                      </div>
-                    </div>
+                  <div className="flex justify-between items-center p-3 bg-teal-50 rounded border-r-4 border-teal-400">
+                    <span className="font-semibold text-teal-900">עוסק מורשה:</span>
+                    <span className="text-2xl font-bold text-teal-600">9 חודשים</span>
                   </div>
-
-                  <div className="bg-purple-50 p-4 rounded-lg border-r-4 border-purple-400">
-                    <h6 className="font-bold text-purple-900 mb-3">🟣 חברה בע"מ</h6>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-700">חודשי ישיר:</span>
-                        <span className="font-bold text-purple-600">2,000 ₪</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-700">תקופת גבייה ראשונה:</span>
-                        <span className="font-bold text-purple-600">6 חודשים</span>
-                      </div>
-                      <div className="bg-white p-2 rounded mt-2 flex justify-between border-t-2 border-purple-200 pt-2">
-                        <span className="font-semibold text-purple-900">הכנסה לשותף A לכל לקוח:</span>
-                        <span className="text-2xl font-bold text-purple-600">12,000 ₪</span>
-                      </div>
-                    </div>
+                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded border-r-4 border-purple-400">
+                    <span className="font-semibold text-purple-900">חברה בע"מ:</span>
+                    <span className="text-2xl font-bold text-purple-600">6 חודשים</span>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg border-r-4 border-green-500">
-                  <p className="font-bold text-green-900 mb-2">הכנסות שנה ראשונה</p>
-                  <p className="text-gray-700 text-sm mb-3">
-                    500 לקוחות × 180 ₪ חודשי × 12 חודשים = <strong className="text-green-600">1,080,000 ₪</strong>
-                  </p>
-                  <p className="text-green-800 font-semibold">
-                    ✓ ההכנסה השנתית הזו הולכת לשותף A (הטכנולוגיה/שיווק)
-                  </p>
-                </div>
-
                 <div className="bg-white p-4 rounded-lg border-r-4 border-orange-500">
                   <p className="font-bold text-orange-900 mb-2">עלויות תפעול שנה ראשונה</p>
-                  <p className="text-gray-700 text-sm mb-3">
-                    הנהלת חשבונות + מוקד + מנהל + אפליקציה + בוט + פתיחות = <strong className="text-red-600">467,000 ₪</strong>
-                  </p>
-                  <p className="text-orange-800 font-semibold">
-                    ⚖️ ההוצאות האלה מתחלקות 50/50 בין השותפים
-                  </p>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <div className="flex justify-between">
+                      <span>הנהלת חשבונות:</span>
+                      <span className="font-bold">84,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>מוקד מענה:</span>
+                      <span className="font-bold">96,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>מנהל עבודה:</span>
+                      <span className="font-bold">96,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>אפליקציה:</span>
+                      <span className="font-bold">108,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>בוט וואטסאפ:</span>
+                      <span className="font-bold">48,000 ₪</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>פתיחת תיקים:</span>
+                      <span className="font-bold">35,000 ₪</span>
+                    </div>
+                    <div className="border-t pt-2 flex justify-between font-semibold">
+                      <span>סה"כ:</span>
+                      <span className="text-red-600">467,000 ₪</span>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t-2 border-orange-200">
+                    <p className="font-semibold text-orange-800">דמי ניהול לשותף B (פיקוח): 8,000 ₪ / חודש = 96,000 ₪ שנתי</p>
+                  </div>
                 </div>
 
                 <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-5 rounded-lg">
