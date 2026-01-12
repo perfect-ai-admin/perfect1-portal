@@ -1538,8 +1538,8 @@ export default function Partnership() {
       </Helmet>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-8" dir="rtl">
-        <div className="max-w-6xl mx-auto px-6">
+      <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white py-12 md:py-20 min-h-screen flex items-center" dir="rtl">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 w-full">
           <Breadcrumbs 
             items={[
               { label: 'בית', url: 'Home' },
@@ -1547,14 +1547,18 @@ export default function Partnership() {
             ]}
           />
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mt-8"
+            transition={{ duration: 0.8 }}
+            className="text-center mt-16 space-y-6"
           >
-            <h1 className="text-4xl font-bold mb-3">שותפות עסקית 50/50 במיזם פיננסי</h1>
-            <p className="text-3xl font-bold text-yellow-400 mb-4">מדריך מקיף ב-7 שלבים לבניית מיזם פיננסי מוביל</p>
-            <p className="text-base text-gray-300 max-w-3xl mx-auto">
-              תוכנית מפורטת עם חישובים, תחזיות, מודל לידים, ופוטנציאל יציאה למשקיע פוטנציאלי
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black leading-tight bg-gradient-to-r from-white via-blue-200 to-cyan-300 bg-clip-text text-transparent">
+              שותפות עסקית 50/50
+            </h1>
+            <p className="text-xl md:text-3xl font-bold text-cyan-300">במיזם פיננסי מוביל בישראל</p>
+            <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full"></div>
+            <p className="text-sm md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              מדריך מקיף ב-7 שלבים | חישובים מפורטים | תחזיות ריאליות | פוטנציאל יציאה משמעותי
             </p>
           </motion.div>
         </div>
