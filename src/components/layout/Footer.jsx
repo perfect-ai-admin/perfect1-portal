@@ -163,28 +163,28 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <p className="text-gray-400 text-sm">
-                © {new Date().getFullYear()} פרפקט וואן (ח.פ: 516309747) - שירות ייעוץ וליווי לפתיחת עסקים. כל הזכויות שמורות.
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-center md:text-left">
+              <p className="text-gray-400 text-xs md:text-sm">
+                © {new Date().getFullYear()} פרפקט וואן - כל הזכויות שמורות.
               </p>
               <a 
                 href="https://g.page/r/CfGNIjNs_YVeEBM/review"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#D4AF37] hover:text-white text-sm font-medium transition-colors"
+                className="text-[#D4AF37] hover:text-white text-xs md:text-sm font-medium transition-colors"
               >
-                ⭐ דרגו אותנו בגוגל
+                ⭐ דרגו אותנו
               </a>
             </div>
             <Button
               onClick={scrollToTop}
               variant="ghost"
               size="icon"
-              className="rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className="rounded-full bg-white/10 hover:bg-white/20 text-white h-8 w-8 md:h-10 md:w-10"
             >
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3 h-3 md:w-4 md:h-4" />
             </Button>
           </div>
         </div>
