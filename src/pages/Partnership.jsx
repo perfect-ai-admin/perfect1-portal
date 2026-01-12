@@ -113,7 +113,7 @@ export default function Partnership() {
 
           <section>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">היתרון התחרותי שלנו</h3>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
               <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
                 <h4 className="font-bold text-lg text-blue-900 mb-3">💻 טכנולוגיה מתקדמת</h4>
                 <ul className="space-y-2 text-blue-800">
