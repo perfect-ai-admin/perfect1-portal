@@ -1142,30 +1142,30 @@ export default function Partnership() {
               </div>
 
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-300 rounded-lg p-6">
-                <h4 className="font-bold text-xl text-purple-900 mb-4">📊 סוף שנה 3 - תיק קיים (500 פטורים)</h4>
+                <h4 className="font-bold text-xl text-purple-900 mb-4">📊 סוף שנה 3 - כפול לקוחות (1,000 פטורים + 400 מורשים + 140 חברות)</h4>
                 <div className="space-y-3">
                   <div className="bg-white p-4 rounded">
                     <div className="flex justify-between items-center">
                       <span className="font-semibold">הכנסות שנתיות:</span>
-                      <span className="text-xl font-bold text-purple-600">1,080,000 ₪</span>
+                      <span className="text-xl font-bold text-purple-600">8,800,000 ₪</span>
                     </div>
                   </div>
                   <div className="bg-white p-4 rounded">
                     <div className="flex justify-between items-center">
-                      <span className="font-semibold">רווח תפעולי (35% מהכנסה):</span>
-                      <span className="text-xl font-bold text-purple-600">378,000 ₪</span>
+                      <span className="font-semibold">רווח תפעולי שנתי:</span>
+                      <span className="text-xl font-bold text-purple-600">5,650,000 ₪</span>
                     </div>
                   </div>
                   <div className="bg-white p-4 rounded">
                     <div className="flex justify-between items-center">
-                      <span className="font-semibold">כפולת שווי (×5):</span>
-                      <span className="text-2xl font-bold text-purple-600">1,890,000 ₪</span>
+                      <span className="font-semibold">כפולת שווי (×6 - עליה בגלל יציבות):</span>
+                      <span className="text-2xl font-bold text-purple-600">33,900,000 ₪</span>
                     </div>
                   </div>
                   <div className="bg-purple-600 text-white p-4 rounded">
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-lg">שווי לשותף (50%):</span>
-                      <span className="text-3xl font-bold">945,000 ₪</span>
+                      <span className="text-3xl font-bold">16,950,000 ₪</span>
                     </div>
                   </div>
                 </div>
@@ -1278,11 +1278,11 @@ export default function Partnership() {
                 <strong>שנה 2:</strong> שווי לשותף ~3.9 מיליון ₪ | רווח שנתי: 1.56 מיליון ₪
               </p>
               <p className="text-lg">
-                  <strong>שנה 3:</strong> שווי לשותף ~945K ₪ | רווח שנתי: 189K ₪ (תיק קיים של 500 פטורים בלבד)
-                </p>
+                <strong>שנה 3:</strong> שווי לשותף ~16.9 מיליון ₪ | רווח שנתי: 2.82 מיליון ₪
+              </p>
               <p className="text-lg">
-                  <strong>שנה 4:</strong> שווי לשותף ~945K ₪ | רווח שנתי: 189K ₪ (אותו תיק קיים של 500 פטורים, 35% רווח)
-                </p>
+                <strong>שנה 4:</strong> שווי לשותף ~31.5 מיליון ₪ | רווח שנתי: 4.5 מיליון ₪
+              </p>
             </div>
             </div>
           </section>
