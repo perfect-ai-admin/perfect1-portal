@@ -43,19 +43,15 @@ import MaamatOsekPatur from './pages/MaamatOsekPatur';
 import ManicuristLanding from './pages/ManicuristLanding';
 import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
 import Methodology from './pages/Methodology';
-import MonthlyMonitoringLanding from './pages/MonthlyMonitoringLanding';
 import MonthlyReportOsekPatur from './pages/MonthlyReportOsekPatur';
 import NationalInsuranceAdvances from './pages/NationalInsuranceAdvances';
 import NationalInsuranceOsekMorsha from './pages/NationalInsuranceOsekMorsha';
 import NeedAccountantOsekPatur from './pages/NeedAccountantOsekPatur';
 import OsekMorshaLanding from './pages/OsekMorshaLanding';
-import OsekMorshaMainLanding from './pages/OsekMorshaMainLanding';
-import OsekMorshaOnline from './pages/OsekMorshaOnline';
 import OsekMorshaRights from './pages/OsekMorshaRights';
 import OsekMorshaSteps from './pages/OsekMorshaSteps';
 import OsekMorshaTime from './pages/OsekMorshaTime';
 import OsekPaturLanding from './pages/OsekPaturLanding';
-import OsekPaturOnline from './pages/OsekPaturOnline';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import OsekPaturSteps from './pages/OsekPaturSteps';
 import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransition';
@@ -148,19 +144,15 @@ export const PAGES = {
     "ManicuristLanding": ManicuristLanding,
     "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
     "Methodology": Methodology,
-    "MonthlyMonitoringLanding": MonthlyMonitoringLanding,
     "MonthlyReportOsekPatur": MonthlyReportOsekPatur,
     "NationalInsuranceAdvances": NationalInsuranceAdvances,
     "NationalInsuranceOsekMorsha": NationalInsuranceOsekMorsha,
     "NeedAccountantOsekPatur": NeedAccountantOsekPatur,
     "OsekMorshaLanding": OsekMorshaLanding,
-    "OsekMorshaMainLanding": OsekMorshaMainLanding,
-    "OsekMorshaOnline": OsekMorshaOnline,
     "OsekMorshaRights": OsekMorshaRights,
     "OsekMorshaSteps": OsekMorshaSteps,
     "OsekMorshaTime": OsekMorshaTime,
     "OsekPaturLanding": OsekPaturLanding,
-    "OsekPaturOnline": OsekPaturOnline,
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
     "OsekPaturSteps": OsekPaturSteps,
     "OsekPaturThresholdAndTransition": OsekPaturThresholdAndTransition,

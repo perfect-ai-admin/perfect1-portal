@@ -20,7 +20,9 @@ Deno.serve(async (req) => {
       'GraphicDesignerLanding', 'PhotographerLanding', 'FitnessTrainerLanding',
       'HairStylistLanding', 'EyebrowStylistLanding', 'LashArtistLanding', 'ManicuristLanding',
       // דפים פנימיים
-      'SalesAgentHandbook', 'InvoicesAppLanding'
+      'SalesAgentHandbook', 'InvoicesAppLanding',
+      // דפים ריקים/מיותרים
+      'OsekPaturOnline', 'MonthlyMonitoringLanding', 'OsekMorshaMainLanding', 'OsekMorshaOnline'
     ];
     
     const pages = [
