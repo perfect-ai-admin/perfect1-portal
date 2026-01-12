@@ -170,7 +170,7 @@ export default function Footer() {
                 © {new Date().getFullYear()} פרפקט וואן (ח.פ: 516309747) - שירות ייעוץ וליווי לפתיחת עסקים. כל הזכויות שמורות.
               </p>
               <a 
-                href="https://g.page/r/YOUR_GOOGLE_BUSINESS_ID/review"
+                href="https://g.page/r/CfGNIjNs_YVeEBM/review"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#D4AF37] hover:text-white text-sm font-medium transition-colors"
