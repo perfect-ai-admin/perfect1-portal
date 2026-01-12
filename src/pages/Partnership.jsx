@@ -911,30 +911,23 @@ export default function Partnership() {
 
             <div className="bg-green-50 border-2 border-green-300 rounded-lg p-6">
               <h4 className="font-bold text-xl text-green-900 mb-4">📊 התמונה הכוללת - שנה ראשונה</h4>
+              <p className="text-gray-700 text-sm mb-4">בשנה הראשונה עולויות גיוס הלקוחות גבוהות. כל שותף משקיע בשנה הראשונה:</p>
               <div className="space-y-3">
-                <div className="bg-white p-4 rounded">
+                <div className="bg-white p-4 rounded border-r-4 border-red-400">
                   <div className="flex justify-between">
-                    <span className="font-semibold">שותף A מקבל הכנסות:</span>
-                    <span className="font-bold text-green-600">1,080,000 ₪</span>
+                    <span className="font-semibold">השקעה של כל שותף:</span>
+                    <span className="font-bold text-red-600">250,000 ₪</span>
                   </div>
+                  <p className="text-xs text-gray-600 mt-1">כיסוי 50% מעלויות גיוס הלקוחות</p>
                 </div>
                 <div className="bg-white p-4 rounded">
                   <div className="flex justify-between">
-                    <span className="font-semibold">שותף B משקיע:</span>
-                    <span className="font-bold text-orange-600">234,000 ₪</span>
+                    <span className="font-semibold">סה"כ השקעה לחברה:</span>
+                    <span className="font-bold text-orange-600">500,000 ₪</span>
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded">
-                  <div className="flex justify-between">
-                    <span className="font-semibold">רווח לחלוקה:</span>
-                    <span className="font-bold text-blue-600">613,000 ₪</span>
-                  </div>
-                </div>
-                <div className="bg-green-600 text-white p-4 rounded">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg">רווח לכל שותף (50/50):</span>
-                    <span className="text-3xl font-bold">~306,500 ₪</span>
-                  </div>
+                <div className="bg-orange-100 border-r-4 border-orange-500 p-4 rounded">
+                  <p className="text-orange-900 font-semibold">⚠️ בשנה הראשונה אין רווח - כל ההכנסות הולכות לעלויות גיוס הלקוחות</p>
                 </div>
               </div>
             </div>
