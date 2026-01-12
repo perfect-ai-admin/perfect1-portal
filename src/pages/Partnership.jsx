@@ -1272,18 +1272,18 @@ export default function Partnership() {
 
           <section className="mt-8">
             <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white p-8 rounded-lg">
-              <h3 className="text-2xl font-bold mb-4">💰 סיכום פוטנציאל יציאה</h3>
-              <div className="space-y-3">
-                <p className="text-lg">
-                  <strong>שנה 3:</strong> שווי לשותף ~2.4 מיליון ₪
-                </p>
-                <p className="text-lg">
-                  <strong>שנה 5:</strong> שווי לשותף ~7 מיליון ₪
-                </p>
-                <p className="text-xl font-bold mt-4 pt-4 border-t border-white/30">
-                  תוספת הכנסה שנתית מהרווחים השוטפים: 400k+ ₪ לשנה
-                </p>
-              </div>
+            <h3 className="text-2xl font-bold mb-4">💰 סיכום פוטנציאל יציאה</h3>
+            <div className="space-y-3">
+              <p className="text-lg">
+                <strong>שנה 2:</strong> שווי לשותף ~3.9 מיליון ₪ | רווח שנתי: 1.56 מיליון ₪
+              </p>
+              <p className="text-lg">
+                <strong>שנה 3:</strong> שווי לשותף ~16.9 מיליון ₪ | רווח שנתי: 2.82 מיליון ₪
+              </p>
+              <p className="text-lg">
+                <strong>שנה 4:</strong> שווי לשותף ~31.5 מיליון ₪ | רווח שנתי: 4.5 מיליון ₪
+              </p>
+            </div>
             </div>
           </section>
         </div>
