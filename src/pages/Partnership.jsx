@@ -389,35 +389,47 @@ export default function Partnership() {
              </div>
 
             <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
-               <h4 className="font-bold text-lg text-yellow-900 mb-3">עלויות נוספות לשנה שנייה:</h4>
+               <h4 className="font-bold text-lg text-yellow-900 mb-3">עלויות שנה שנייה (עם 500 פטורים בלבד):</h4>
                <div className="space-y-3">
                  <div className="flex justify-between">
-                   <span>רואי חשבון נוספים (מורשים)</span>
-                   <span className="font-bold">+720,000 ₪</span>
+                   <span>הנהלת חשבונות</span>
+                   <span className="font-bold">84,000 ₪</span>
                  </div>
                  <div className="flex justify-between">
-                   <span>2 נציגי מכירות נוספים</span>
-                   <span className="font-bold">+360,000 ₪</span>
+                   <span>מוקד מענה שאלות</span>
+                   <span className="font-bold">96,000 ₪</span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span>מנהל עבודה</span>
+                   <span className="font-bold">96,000 ₪</span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span>אפליקציה</span>
+                   <span className="font-bold">108,000 ₪</span>
+                 </div>
+                 <div className="flex justify-between">
+                   <span>בוט וואטסאפ</span>
+                   <span className="font-bold">48,000 ₪</span>
                  </div>
                  <div className="flex justify-between border-t-2 border-yellow-300 pt-3">
                    <span className="font-bold">סה"כ עלויות שנתיות:</span>
-                   <span className="font-bold text-red-600">~2,387,000 ₪</span>
+                   <span className="font-bold text-red-600">~432,000 ₪</span>
                  </div>
                </div>
-             </div>
+              </div>
 
-             <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6 rounded-lg mt-4">
-               <div className="space-y-3">
-                 <div className="flex justify-between items-center">
-                   <span className="font-bold text-xl">רווח תפעולי שנתי:</span>
-                   <span className="text-3xl font-bold">~763,000 ₪</span>
-                 </div>
-                 <div className="flex justify-between items-center border-t border-white/30 pt-3">
-                   <span className="font-semibold text-xl">רווח לשותף (50/50):</span>
-                   <span className="text-3xl font-bold">~381,500 ₪</span>
-                 </div>
-               </div>
-             </div>
+              <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-6 rounded-lg mt-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-xl">רווח תפעולי שנתי:</span>
+                    <span className="text-3xl font-bold">~648,000 ₪</span>
+                  </div>
+                  <div className="flex justify-between items-center border-t border-white/30 pt-3">
+                    <span className="font-semibold text-xl">רווח לשותף (50/50):</span>
+                    <span className="text-3xl font-bold">~324,000 ₪</span>
+                  </div>
+                </div>
+              </div>
           </section>
 
           <section className="mt-8">
