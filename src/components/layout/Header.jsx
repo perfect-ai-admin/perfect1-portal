@@ -73,7 +73,6 @@ export default function Header() {
       name: '🔹 פתיחת עוסק מורשה',
       items: [
         { name: 'פתיחת עוסק מורשה', href: createPageUrl('OsekMorshaLanding') },
-        { name: 'פתיחת עוסק מורשה אונליין', href: createPageUrl('OsekMorshaOnline') },
         { name: 'פתיחת עוסק מורשה – שלבים', href: createPageUrl('OsekMorshaSteps') },
         { name: 'פתיחת עוסק מורשה – כמה זמן לוקח', href: createPageUrl('OsekMorshaTime') }
       ]
