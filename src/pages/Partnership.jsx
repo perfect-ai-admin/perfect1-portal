@@ -76,9 +76,9 @@ export default function Partnership() {
                 <div className="text-3xl font-bold text-purple-600 mb-2">~50,000</div>
                 <p className="text-gray-700 mb-4">עסקים קטנים ובינוניים</p>
                 <div className="bg-purple-50 p-3 rounded">
-                  <p className="text-sm font-semibold text-purple-900">מחיר שירות ממוצע:</p>
-                  <p className="text-2xl font-bold text-purple-600">1,200-2,000 ₪/חודש</p>
-                </div>
+                   <p className="text-sm font-semibold text-purple-900">מחיר שירות ממוצע:</p>
+                   <p className="text-2xl font-bold text-purple-600">1,200-3,000 ₪/חודש</p>
+                 </div>
               </div>
             </div>
           </section>
