@@ -599,45 +599,45 @@ export default function Partnership() {
               </div>
 
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-300 rounded-lg p-6">
-                <h4 className="font-bold text-2xl text-blue-900 mb-4">שנה שלישית (יציבות)</h4>
+                <h4 className="font-bold text-2xl text-blue-900 mb-4">שנה שלישית (כפול לקוחות)</h4>
                 <div className="space-y-3">
                   <div className="bg-white p-4 rounded">
                     <p className="text-sm text-gray-600 mb-1">הרכב לקוחות:</p>
-                    <p className="font-bold text-lg text-blue-700">500 פטורים + 200 מורשים + 70 חברות (ללא שינוי)</p>
+                    <p className="font-bold text-lg text-blue-700">1,000 פטורים + 400 מורשים + 140 חברות</p>
                   </div>
                   <div className="bg-white p-4 rounded">
                     <p className="text-sm text-gray-600 mb-1">הכנסות חודשיות:</p>
-                    <p className="font-bold text-2xl text-blue-600">~371,667 ₪</p>
+                    <p className="font-bold text-2xl text-blue-600">~743,334 ₪</p>
                   </div>
                   <div className="bg-white p-4 rounded">
                     <p className="text-sm text-gray-600 mb-1">הכנסות שנתיות:</p>
-                    <p className="font-bold text-2xl text-blue-600">~4,460,000 ₪</p>
+                    <p className="font-bold text-2xl text-blue-600">~8,920,000 ₪</p>
                   </div>
                   <div className="bg-blue-600 text-white p-4 rounded">
-                    <p className="text-sm opacity-90 mb-1">רווח לשותף (50/50):</p>
-                    <p className="font-bold text-3xl">~780,500 ₪</p>
+                    <p className="text-sm opacity-90 mb-1">רווח לשותף (50/50) בהנחת 35% רווח:</p>
+                    <p className="font-bold text-3xl">~1,561,000 ₪</p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-lg p-6">
-                <h4 className="font-bold text-2xl text-purple-900 mb-4">שנה רביעית (צמיחה חברות בע"מ)</h4>
+                <h4 className="font-bold text-2xl text-purple-900 mb-4">שנה רביעית (כפול 3 לקוחות)</h4>
                 <div className="space-y-3">
                   <div className="bg-white p-4 rounded">
                     <p className="text-sm text-gray-600 mb-1">הרכב לקוחות:</p>
-                    <p className="font-bold text-lg text-purple-700">500 פטורים + 200 מורשים + 140 חברות</p>
+                    <p className="font-bold text-lg text-purple-700">1,500 פטורים + 600 מורשים + 210 חברות</p>
                   </div>
                   <div className="bg-white p-4 rounded">
                     <p className="text-sm text-gray-600 mb-1">הכנסות חודשיות:</p>
-                    <p className="font-bold text-2xl text-purple-600">~511,667 ₪</p>
+                    <p className="font-bold text-2xl text-purple-600">~1,115,001 ₪</p>
                   </div>
                   <div className="bg-white p-4 rounded">
                     <p className="text-sm text-gray-600 mb-1">הכנסות שנתיות:</p>
-                    <p className="font-bold text-2xl text-purple-600">~6,140,000 ₪</p>
+                    <p className="font-bold text-2xl text-purple-600">~13,380,000 ₪</p>
                   </div>
                   <div className="bg-purple-600 text-white p-4 rounded">
                     <p className="text-sm opacity-90 mb-1">רווח לשותף (50/50) בהנחת 35% רווח:</p>
-                    <p className="font-bold text-3xl">~1,074,500 ₪</p>
+                    <p className="font-bold text-3xl">~2,341,500 ₪</p>
                   </div>
                 </div>
               </div>
