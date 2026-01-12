@@ -50,7 +50,7 @@ export default function Partnership() {
 
           <section>
             <h3 className="text-2xl font-bold text-gray-900 mb-4">פילוח שוק היעד</h3>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
               <div className="bg-white border-2 border-indigo-200 rounded-lg p-6">
                 <h4 className="font-bold text-lg text-indigo-900 mb-3">עוסקים פטורים</h4>
                 <div className="text-3xl font-bold text-indigo-600 mb-2">~350,000</div>
