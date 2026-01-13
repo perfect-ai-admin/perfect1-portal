@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus, Users, CheckSquare, Square } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
@@ -107,6 +108,9 @@ export default function LeadsAdmin() {
   const handleBulkAssignToAgent = async (agentName) => {
     const selectedAgent = agents.find(a => a.full_name === agentName);
     
+    let emailsSent = 0;
+    let emailsFailed = 0;
+    
     for (const leadId of selectedLeads) {
       const lead = leads.find(l => l.id === leadId);
       if (lead) {
@@ -122,12 +126,25 @@ export default function LeadsAdmin() {
               leadPhone: lead.phone,
               leadProfession: lead.profession
             });
+            emailsSent++;
           } catch (error) {
             console.error('Failed to send email:', error);
+            emailsFailed++;
           }
         }
       }
     }
+    
+    if (emailsSent > 0) {
+      toast.success(`נשלחו ${emailsSent} מיילים לנציג`);
+    }
+    if (emailsFailed > 0) {
+      toast.error(`${emailsFailed} מיילים נכשלו`);
+    }
+    if (selectedAgent && !selectedAgent.email) {
+      toast.warning(`לנציג ${selectedAgent.full_name} אין כתובת מייל`);
+    }
+    
     queryClient.invalidateQueries({ queryKey: ['leads'] });
     setSelectedLeads([]);
     setShowBulkAssignDialog(false);
@@ -254,6 +271,7 @@ export default function LeadsAdmin() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 md:p-3 md:pt-24 pb-8" dir="rtl">
+      <Toaster position="top-center" richColors />
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
         <div className="mb-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 flex-shrink-0">
@@ -613,17 +631,24 @@ export default function LeadsAdmin() {
 
                          // שליחת מייל לסוכן אם נבחר סוכן
                          if (selectedAgent && selectedAgent.email) {
+                           console.log('שולח מייל לנציג:', selectedAgent.email);
                            try {
-                             await base44.functions.invoke('sendAgentLeadNotification', {
+                             const response = await base44.functions.invoke('sendAgentLeadNotification', {
                                agentEmail: selectedAgent.email,
                                agentName: selectedAgent.full_name,
                                leadName: lead.name,
                                leadPhone: lead.phone,
                                leadProfession: lead.profession
                              });
+                             console.log('תגובת שליחת מייל:', response);
+                             toast.success(`מייל נשלח לנציג ${selectedAgent.full_name}`);
                            } catch (error) {
-                             console.error('Failed to send email:', error);
+                             console.error('שגיאה בשליחת מייל:', error);
+                             toast.error(`שגיאה בשליחת מייל: ${error.message}`);
                            }
+                         } else if (selectedAgent && !selectedAgent.email) {
+                           toast.warning(`לנציג ${selectedAgent.full_name} אין כתובת מייל`);
+                           console.warn('אין מייל לנציג:', selectedAgent);
                          }
                        }}
                      >
