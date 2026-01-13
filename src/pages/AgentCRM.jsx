@@ -181,7 +181,7 @@ export default function AgentCRM() {
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-gray-50 p-1 pt-16 md:p-6 md:pt-24 pb-8" dir="rtl">
+      <div className="min-h-screen bg-gray-50 p-1 pt-12 md:p-6 md:pt-24 pb-8" dir="rtl">
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
         <div className="mb-2 md:mb-6 flex items-center justify-between">
