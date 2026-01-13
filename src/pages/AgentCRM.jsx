@@ -689,13 +689,15 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading, onStatusChange }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (formData.status === 'not_interested') {
-      onStatusChange('not_interested');
-      return;
-    }
-    
     onSave({ ...lead, ...formData });
+  };
+
+  const handleStatusChange = (newStatus) => {
+    if (newStatus === 'not_interested') {
+      onStatusChange('not_interested');
+    } else {
+      setFormData({ ...formData, status: newStatus });
+    }
   };
 
   const statusLabels = {
@@ -714,7 +716,7 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading, onStatusChange }) {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-2">סטטוס</label>
-          <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+          <Select value={formData.status} onValueChange={handleStatusChange}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
