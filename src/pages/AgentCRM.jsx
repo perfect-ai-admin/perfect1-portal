@@ -181,21 +181,22 @@ export default function AgentCRM() {
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-gray-50 p-1 pt-2 md:p-6 md:pt-24 pb-8" dir="rtl">
+      <div className="min-h-screen bg-gray-50 p-1.5 pt-14 md:p-6 md:pt-24 pb-8" dir="rtl">
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-2 md:mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl md:text-3xl font-bold text-[#1E3A5F] mb-1">הלידים שלי</h1>
-            <p className="text-sm md:text-base text-gray-600">שלום {agent.full_name}</p>
+        <div className="mb-2 md:mb-6 flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <h1 className="text-lg md:text-3xl font-bold text-[#1E3A5F] mb-0.5 md:mb-1">הלידים שלי</h1>
+            <p className="text-xs md:text-base text-gray-600 truncate">שלום {agent.full_name}</p>
           </div>
           <Button 
             onClick={handleLogout}
             variant="outline"
-            className="border-red-300 text-red-600 hover:bg-red-50"
+            size="sm"
+            className="border-red-300 text-red-600 hover:bg-red-50 flex-shrink-0 text-xs md:text-sm px-2 md:px-4"
           >
-            <LogOut className="w-5 h-5 ml-2" />
-            התנתק
+            <LogOut className="w-3 h-3 md:w-5 md:h-5 md:ml-2" />
+            <span className="hidden md:inline">התנתק</span>
           </Button>
         </div>
 

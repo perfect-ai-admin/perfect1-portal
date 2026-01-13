@@ -299,14 +299,14 @@ export default function LeadsAdmin() {
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-1 pt-2 md:p-3 md:pt-24 pb-8" dir="rtl">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-1.5 pt-14 md:p-3 md:pt-24 pb-8" dir="rtl">
       <Toaster position="top-center" richColors />
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-1 flex flex-col md:flex-row items-start md:items-center justify-between gap-1.5 flex-shrink-0">
+        <div className="mb-2 flex flex-col md:flex-row items-start md:items-center justify-between gap-1.5 flex-shrink-0">
           <div>
-            <h1 className="text-lg md:text-2xl font-bold text-[#1E3A5F] mb-0.5">ניהול לידים - CRM</h1>
-            <p className="text-xs md:text-sm text-gray-600 hidden md:block">כל הלידים שמגיעים מהאתר + מעקב אחר לחיצות</p>
+            <h1 className="text-base md:text-2xl font-bold text-[#1E3A5F] mb-0.5">ניהול לידים - CRM</h1>
+            <p className="text-[10px] md:text-sm text-gray-600">כל הלידים שמגיעים מהאתר</p>
           </div>
           <div className="flex gap-2 w-full md:w-auto">
             <Button 
