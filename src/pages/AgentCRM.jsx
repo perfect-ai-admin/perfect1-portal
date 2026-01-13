@@ -269,8 +269,85 @@ export default function AgentCRM() {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        {/* Mobile Cards View */}
+        <div className="md:hidden space-y-3">
+          {filteredLeads.map((lead) => (
+            <div key={lead.id} className="bg-white rounded-xl shadow-lg p-4 border-r-4" style={{
+              borderColor: lead.status === 'converted' ? '#16a34a' : 
+                          lead.status === 'new' ? '#3b82f6' : 
+                          lead.status === 'not_interested' ? '#dc2626' : '#6b7280'
+            }}>
+              {/* Header */}
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg text-[#1E3A5F] mb-2">{lead.name}</h3>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${statusColors[lead.status || 'new']}`}>
+                      {statusLabels[lead.status || 'new']}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2 text-[#1E3A5F] font-semibold">
+                  <Phone className="w-4 h-4" />
+                  <a href={`tel:${lead.phone}`}>{lead.phone}</a>
+                </div>
+                {lead.email && (
+                  <div className="text-sm text-gray-600 truncate">{lead.email}</div>
+                )}
+                {lead.profession && (
+                  <div className="text-sm text-gray-600">
+                    <span className="font-semibold">מקצוע:</span> {lead.profession}
+                  </div>
+                )}
+              </div>
+
+              {/* Notes */}
+              {lead.notes && (
+                <div className="text-xs text-gray-600 bg-gray-50 rounded-lg p-3 mb-3">
+                  {lead.notes}
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <a
+                  href={`tel:${lead.phone}`}
+                  className="flex-1 bg-[#1E3A5F] text-white rounded-lg py-3 flex items-center justify-center gap-2 font-bold shadow-md active:scale-95 transition-transform"
+                >
+                  <Phone className="w-5 h-5" />
+                  התקשר
+                </a>
+                <a
+                  href={`https://wa.me/972${(lead.phone || '').replace(/^0/, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-[#25D366] text-white rounded-lg py-3 flex items-center justify-center gap-2 font-bold shadow-md active:scale-95 transition-transform"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  וואטסאפ
+                </a>
+                <button
+                  onClick={() => setSelectedLead(lead)}
+                  className="bg-gray-100 text-gray-700 rounded-lg px-4 py-3 flex items-center justify-center shadow-sm active:scale-95 transition-transform"
+                >
+                  <Edit2 className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Timestamp */}
+              <div className="text-xs text-gray-400 text-center mt-3 pt-3 border-t">
+                {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="hidden md:block bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-[#1E3A5F] text-white">
