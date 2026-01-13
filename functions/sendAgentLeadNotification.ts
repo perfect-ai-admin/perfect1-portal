@@ -1,14 +1,23 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
+  console.log('🚀 הפונקציה sendAgentLeadNotification התחילה');
+  
   try {
     const base44 = createClientFromRequest(req);
-    const { agentEmail, agentName, leadName, leadPhone, leadProfession } = await req.json();
+    const body = await req.json();
+    console.log('📦 Body שהתקבל:', body);
     
-    console.log('📧 מנסה לשלוח מייל:', { agentEmail, agentName, leadName });
+    const { agentEmail, agentName, leadName, leadPhone, leadProfession } = body;
+    
+    console.log('📧 פרטים:', { agentEmail, agentName, leadName, leadPhone, leadProfession });
 
     if (!agentEmail || !leadName) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 });
+      console.error('❌ חסרים שדות חובה');
+      return Response.json({ 
+        success: false,
+        error: 'Missing required fields: agentEmail or leadName' 
+      }, { status: 400 });
     }
 
     // שליחת מייל לנציג עם service role

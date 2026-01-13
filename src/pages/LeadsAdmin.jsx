@@ -48,35 +48,38 @@ export default function LeadsAdmin() {
   });
 
   const updateLeadMutation = useMutation({
-    mutationFn: ({ id, data, agentEmail, agentName, leadData }) => {
-      return base44.entities.Lead.update(id, data).then(() => ({
-        agentEmail, agentName, leadData
-      }));
-    },
-    onSuccess: async (result) => {
-      // שליחת מייל רק אחרי שהעדכון הצליח
-      if (result?.agentEmail && result?.agentName && result?.leadData) {
-        console.log('🔄 שולח מייל לנציג לאחר עדכון מוצלח');
+    mutationFn: async ({ id, data, agentEmail, agentName, leadData }) => {
+      await base44.entities.Lead.update(id, data);
+      
+      // שליחת מייל מיד אחרי העדכון
+      if (agentEmail && agentName && leadData) {
+        console.log('🔄 שולח מייל:', { agentEmail, agentName, lead: leadData.name });
         try {
           const response = await base44.functions.invoke('sendAgentLeadNotification', {
-            agentEmail: result.agentEmail,
-            agentName: result.agentName,
-            leadName: result.leadData.name,
-            leadPhone: result.leadData.phone,
-            leadProfession: result.leadData.profession
+            agentEmail: agentEmail,
+            agentName: agentName,
+            leadName: leadData.name,
+            leadPhone: leadData.phone,
+            leadProfession: leadData.profession || 'לא צוין'
           });
-          console.log('✅ תגובת שליחת מייל:', response);
-          if (response.data?.success) {
-            toast.success(`מייל נשלח לנציג ${result.agentName}`);
+          
+          console.log('📧 תגובה מלאה:', response);
+          console.log('📧 Status:', response.status);
+          console.log('📧 Data:', response.data);
+          
+          if (response.status === 200 && response.data?.success) {
+            toast.success(`✅ מייל נשלח ל-${agentName}`);
           } else {
-            toast.error('שגיאה בשליחת מייל: ' + (response.data?.error || 'לא ידוע'));
+            toast.error(`❌ כשל: ${response.data?.error || 'תגובה לא תקינה'}`);
+            console.error('Response error:', response);
           }
         } catch (error) {
-          console.error('❌ שגיאה בשליחת מייל:', error);
-          toast.error(`שגיאה בשליחת מייל: ${error.message}`);
+          console.error('❌ Exception:', error);
+          toast.error(`❌ שגיאה: ${error.message}`);
         }
       }
-      
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setSelectedLead(null);
       setEditingNotes({});
