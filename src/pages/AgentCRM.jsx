@@ -20,6 +20,8 @@ export default function AgentCRM() {
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
   const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [showNotInterestedDialog, setShowNotInterestedDialog] = useState(false);
+  const [pendingStatusChange, setPendingStatusChange] = useState(null);
   const [visibleColumns, setVisibleColumns] = useState({
     date: true,
     name: true,
@@ -73,10 +75,32 @@ export default function AgentCRM() {
   };
 
   const handleQuickStatusUpdate = (lead, newStatus) => {
+    if (newStatus === 'not_interested') {
+      setPendingStatusChange({ lead, status: newStatus });
+      setShowNotInterestedDialog(true);
+    } else {
+      updateLeadMutation.mutate({
+        id: lead.id,
+        data: { ...lead, status: newStatus, not_interested_reason: null, last_contact_date: new Date().toISOString().split('T')[0] }
+      });
+    }
+  };
+
+  const handleNotInterestedWithReason = (reason) => {
+    if (!pendingStatusChange) return;
+    
     updateLeadMutation.mutate({
-      id: lead.id,
-      data: { ...lead, status: newStatus, last_contact_date: new Date().toISOString().split('T')[0] }
+      id: pendingStatusChange.lead.id,
+      data: { 
+        ...pendingStatusChange.lead, 
+        status: 'not_interested',
+        not_interested_reason: reason,
+        last_contact_date: new Date().toISOString().split('T')[0] 
+      }
     });
+    
+    setShowNotInterestedDialog(false);
+    setPendingStatusChange(null);
   };
 
   const handleSaveNotes = (lead) => {
@@ -563,6 +587,89 @@ export default function AgentCRM() {
               </Button>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Not Interested Reason Dialog */}
+      <Dialog open={showNotInterestedDialog} onOpenChange={(open) => {
+        if (!open) {
+          setShowNotInterestedDialog(false);
+          setPendingStatusChange(null);
+        }
+      }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>למה הליד לא רלוונטי?</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3" dir="rtl">
+            <p className="text-sm text-gray-600 mb-4">בחר סיבה מהרשימה:</p>
+            
+            <Button
+              onClick={() => handleNotInterestedWithReason('already_has_osek')}
+              variant="outline"
+              className="w-full justify-start text-right h-auto py-3 hover:bg-red-50 hover:border-red-300"
+            >
+              <div>
+                <div className="font-semibold">כבר פתח עוסק פטור</div>
+                <div className="text-xs text-gray-500">הלקוח כבר בעל עוסק פטור פעיל</div>
+              </div>
+            </Button>
+
+            <Button
+              onClick={() => handleNotInterestedWithReason('not_now')}
+              variant="outline"
+              className="w-full justify-start text-right h-auto py-3 hover:bg-red-50 hover:border-red-300"
+            >
+              <div>
+                <div className="font-semibold">לא מעוניין כרגע</div>
+                <div className="text-xs text-gray-500">רוצה לפתוח בעתיד אבל לא עכשיו</div>
+              </div>
+            </Button>
+
+            <Button
+              onClick={() => handleNotInterestedWithReason('looking_for_different_service')}
+              variant="outline"
+              className="w-full justify-start text-right h-auto py-3 hover:bg-red-50 hover:border-red-300"
+            >
+              <div>
+                <div className="font-semibold">מחפש שירות אחר</div>
+                <div className="text-xs text-gray-500">לא פתיחת עוסק - מעוניין בשירות אחר</div>
+              </div>
+            </Button>
+
+            <Button
+              onClick={() => handleNotInterestedWithReason('price_too_high')}
+              variant="outline"
+              className="w-full justify-start text-right h-auto py-3 hover:bg-red-50 hover:border-red-300"
+            >
+              <div>
+                <div className="font-semibold">מחיר גבוה מדי</div>
+                <div className="text-xs text-gray-500">המחיר לא מתאים ללקוח</div>
+              </div>
+            </Button>
+
+            <Button
+              onClick={() => handleNotInterestedWithReason('prefers_other_accountant')}
+              variant="outline"
+              className="w-full justify-start text-right h-auto py-3 hover:bg-red-50 hover:border-red-300"
+            >
+              <div>
+                <div className="font-semibold">מעדיף רואה חשבון אחר</div>
+                <div className="text-xs text-gray-500">יש לו רו"ח אחר או מעדיף לעבוד עם מישהו אחר</div>
+              </div>
+            </Button>
+
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowNotInterestedDialog(false);
+                setPendingStatusChange(null);
+              }}
+              className="w-full mt-4"
+            >
+              ביטול
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
       </div>
