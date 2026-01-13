@@ -21,7 +21,10 @@ Deno.serve(async (req) => {
     }
 
     // הכנת ההודעה
-    const message = `היי ${agentName},\n\nליד חדש נכנס למערכת! 🎯\n\nשם: ${leadName}\nטלפון: ${leadPhone || 'לא צוין'}\n${leadProfession ? `מקצוע: ${leadProfession}` : ''}\n\nכנס למערכת ה-CRM לטיפול 💼`;
+    const appUrl = Deno.env.get('BASE44_APP_URL') || 'https://perfect-one-d42e6.base44.com';
+    const crmLink = `${appUrl}/LeadsAdmin`;
+    
+    const message = `היי ${agentName},\n\nליד חדש נכנס למערכת! 🎯\n\nשם: ${leadName}\nטלפון: ${leadPhone || 'לא צוין'}\n${leadProfession ? `מקצוע: ${leadProfession}` : ''}\n\n👉 כנס לטיפול: ${crmLink}\n\n💼 Perfect One CRM`;
     
     // יצירת קישור WhatsApp
     const phoneFormatted = agentPhone.replace(/^0/, '972').replace(/\+/g, '').replace(/\D/g, '');
