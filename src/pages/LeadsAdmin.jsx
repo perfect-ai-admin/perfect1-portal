@@ -119,21 +119,21 @@ export default function LeadsAdmin() {
         console.log('🔵 מעדכן ליד:', lead.name);
         await base44.entities.Lead.update(leadId, { ...lead, agent_name: agentName === 'none' ? null : agentName });
         
-        // שליחת מייל לסוכן עבור כל ליד
-        if (selectedAgent && selectedAgent.email) {
-          console.log('📧 שולח מייל עבור:', lead.name);
+        // שליחת הודעה לסוכן (SMS + WhatsApp)
+        if (selectedAgent && selectedAgent.phone) {
+          console.log('📱 שולח הודעה עבור:', lead.name);
           try {
-            const response = await base44.functions.invoke('sendAgentLeadNotification', {
-              agentEmail: selectedAgent.email,
+            const response = await base44.functions.invoke('sendAgentNotification', {
+              agentPhone: selectedAgent.phone,
               agentName: selectedAgent.full_name,
               leadName: lead.name,
               leadPhone: lead.phone,
               leadProfession: lead.profession || 'לא צוין'
             });
-            console.log('📧 תגובה:', response);
+            console.log('📱 תגובה:', response);
             emailsSent++;
           } catch (error) {
-            console.error('❌ שגיאה בשליחת מייל:', error);
+            console.error('❌ שגיאה בשליחת הודעה:', error);
             emailsFailed++;
           }
         }
@@ -141,13 +141,13 @@ export default function LeadsAdmin() {
     }
     
     if (emailsSent > 0) {
-      toast.success(`נשלחו ${emailsSent} מיילים לנציג`);
+      toast.success(`נשלחו ${emailsSent} הודעות SMS לנציג`);
     }
     if (emailsFailed > 0) {
-      toast.error(`${emailsFailed} מיילים נכשלו`);
+      toast.error(`${emailsFailed} הודעות נכשלו`);
     }
-    if (selectedAgent && !selectedAgent.email) {
-      toast.warning(`לנציג ${selectedAgent.full_name} אין כתובת מייל`);
+    if (selectedAgent && !selectedAgent.phone) {
+      toast.warning(`לנציג ${selectedAgent.full_name} אין מספר טלפון`);
     }
     
     queryClient.invalidateQueries({ queryKey: ['leads'] });
@@ -289,19 +289,19 @@ export default function LeadsAdmin() {
               variant="outline"
               size="sm"
               onClick={async () => {
-                const testEmail = prompt('הכנס מייל לבדיקה:');
-                if (!testEmail) return;
+                const testPhone = prompt('הכנס טלפון לבדיקה (05X-XXXXXXX):');
+                if (!testPhone) return;
 
                 try {
-                  const res = await base44.functions.invoke('sendAgentLeadNotification', {
-                    agentEmail: testEmail,
+                  const res = await base44.functions.invoke('sendAgentNotification', {
+                    agentPhone: testPhone,
                     agentName: 'בדיקה',
                     leadName: 'ליד בדיקה',
                     leadPhone: '0501234567',
                     leadProfession: 'בדיקה'
                   });
                   console.log('תגובה:', res);
-                  toast.success('נשלח - בדוק קונסול');
+                  toast.success('הודעה נשלחה - בדוק SMS');
                 } catch (e) {
                   console.error(e);
                   toast.error(e.message);
@@ -309,8 +309,8 @@ export default function LeadsAdmin() {
               }}
               className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
             >
-              <Mail className="w-4 h-4 ml-1" />
-              בדיקת מייל
+              <MessageCircle className="w-4 h-4 ml-1" />
+              בדיקת SMS
             </Button>
             <Link to={createPageUrl('AgentsManager')} className="flex-1 md:flex-none">
               <Button 
@@ -666,35 +666,35 @@ export default function LeadsAdmin() {
                            return;
                          }
                          
-                         if (!selectedAgent.email) {
-                           toast.warning(`לנציג ${selectedAgent.full_name} אין כתובת מייל`);
-                           console.warn('⚠️ אין מייל לנציג:', selectedAgent);
+                         if (!selectedAgent.phone) {
+                           toast.warning(`לנציג ${selectedAgent.full_name} אין מספר טלפון`);
+                           console.warn('⚠️ אין טלפון לנציג:', selectedAgent);
                          }
-                         
-                         console.log('🔵 מעדכן ליד ושולח מייל...');
-                         
+
+                         console.log('🔵 מעדכן ליד ושולח הודעה...');
+
                          // עדכון הליד
                          await base44.entities.Lead.update(lead.id, { 
                            ...lead, 
                            agent_name: selectedAgent.full_name 
                          });
-                         
+
                          // רענון הלידים
                          queryClient.invalidateQueries({ queryKey: ['leads'] });
-                         
-                         // שליחת מייל
-                         if (selectedAgent.email) {
-                           console.log('📧 שולח מייל ל:', selectedAgent.email);
+
+                         // שליחת הודעה
+                         if (selectedAgent.phone) {
+                           console.log('📱 שולח הודעה ל:', selectedAgent.phone);
                            try {
-                             const response = await base44.functions.invoke('sendAgentLeadNotification', {
-                               agentEmail: selectedAgent.email,
+                             const response = await base44.functions.invoke('sendAgentNotification', {
+                               agentPhone: selectedAgent.phone,
                                agentName: selectedAgent.full_name,
                                leadName: lead.name,
                                leadPhone: lead.phone,
                                leadProfession: lead.profession || 'לא צוין'
                              });
-                             console.log('📧 תגובה:', response);
-                             toast.success(`מייל נשלח ל-${selectedAgent.full_name}`);
+                             console.log('📱 תגובה:', response);
+                             toast.success(`הודעה נשלחה ל-${selectedAgent.full_name}`);
                            } catch (error) {
                              console.error('❌ שגיאה:', error);
                              toast.error(`שגיאה: ${error.message}`);

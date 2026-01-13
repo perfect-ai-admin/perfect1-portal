@@ -97,6 +97,9 @@ export default function AgentsManager() {
                   {agent.email && (
                     <p className="text-sm text-gray-600">אימייל: {agent.email}</p>
                   )}
+                  {agent.phone && (
+                    <p className="text-sm text-gray-600">טלפון: {agent.phone}</p>
+                  )}
                   <p className="text-xs text-gray-500 mt-1">
                     {agent.active ? (
                       <span className="text-green-600">✓ פעיל</span>
@@ -179,6 +182,7 @@ function AgentForm({ agent, onSave, onCancel, isLoading }) {
   const [formData, setFormData] = useState({
     full_name: agent?.full_name || '',
     email: agent?.email || '',
+    phone: agent?.phone || '',
     username: agent?.username || '',
     password: agent?.password || '',
     active: agent?.active !== false
@@ -187,7 +191,7 @@ function AgentForm({ agent, onSave, onCancel, isLoading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.full_name || !formData.email || !formData.username || !formData.password) {
+    if (!formData.full_name || !formData.email || !formData.phone || !formData.username || !formData.password) {
       alert('נא למלא את כל השדות');
       return;
     }
