@@ -48,37 +48,7 @@ export default function LeadsAdmin() {
   });
 
   const updateLeadMutation = useMutation({
-    mutationFn: async ({ id, data, agentEmail, agentName, leadData }) => {
-      await base44.entities.Lead.update(id, data);
-      
-      // שליחת מייל מיד אחרי העדכון
-      if (agentEmail && agentName && leadData) {
-        console.log('🔄 שולח מייל:', { agentEmail, agentName, lead: leadData.name });
-        try {
-          const response = await base44.functions.invoke('sendAgentLeadNotification', {
-            agentEmail: agentEmail,
-            agentName: agentName,
-            leadName: leadData.name,
-            leadPhone: leadData.phone,
-            leadProfession: leadData.profession || 'לא צוין'
-          });
-          
-          console.log('📧 תגובה מלאה:', response);
-          console.log('📧 Status:', response.status);
-          console.log('📧 Data:', response.data);
-          
-          if (response.status === 200 && response.data?.success) {
-            toast.success(`✅ מייל נשלח ל-${agentName}`);
-          } else {
-            toast.error(`❌ כשל: ${response.data?.error || 'תגובה לא תקינה'}`);
-            console.error('Response error:', response);
-          }
-        } catch (error) {
-          console.error('❌ Exception:', error);
-          toast.error(`❌ שגיאה: ${error.message}`);
-        }
-      }
-    },
+    mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setSelectedLead(null);
@@ -136,7 +106,9 @@ export default function LeadsAdmin() {
   };
 
   const handleBulkAssignToAgent = async (agentName) => {
+    console.log('🔵 Bulk assign התחיל, נציג:', agentName);
     const selectedAgent = agents.find(a => a.full_name === agentName);
+    console.log('🔵 נמצא נציג:', selectedAgent);
     
     let emailsSent = 0;
     let emailsFailed = 0;
@@ -144,21 +116,24 @@ export default function LeadsAdmin() {
     for (const leadId of selectedLeads) {
       const lead = leads.find(l => l.id === leadId);
       if (lead) {
+        console.log('🔵 מעדכן ליד:', lead.name);
         await base44.entities.Lead.update(leadId, { ...lead, agent_name: agentName === 'none' ? null : agentName });
         
         // שליחת מייל לסוכן עבור כל ליד
         if (selectedAgent && selectedAgent.email) {
+          console.log('📧 שולח מייל עבור:', lead.name);
           try {
-            await base44.functions.invoke('sendAgentLeadNotification', {
+            const response = await base44.functions.invoke('sendAgentLeadNotification', {
               agentEmail: selectedAgent.email,
               agentName: selectedAgent.full_name,
               leadName: lead.name,
               leadPhone: lead.phone,
-              leadProfession: lead.profession
+              leadProfession: lead.profession || 'לא צוין'
             });
+            console.log('📧 תגובה:', response);
             emailsSent++;
           } catch (error) {
-            console.error('Failed to send email:', error);
+            console.error('❌ שגיאה בשליחת מייל:', error);
             emailsFailed++;
           }
         }
@@ -651,21 +626,53 @@ export default function LeadsAdmin() {
                      <td className="px-2 py-1.5 text-sm">
                      <Select 
                        value={lead.agent_name || 'none'} 
-                       onValueChange={(value) => {
+                       onValueChange={async (value) => {
+                         console.log('🔵 נבחר נציג:', value);
                          const selectedAgent = agents.find(a => a.full_name === value);
+                         console.log('🔵 נמצא נציג:', selectedAgent);
                          
-                         if (selectedAgent && !selectedAgent.email) {
+                         if (value === 'none' || !selectedAgent) {
+                           updateLeadMutation.mutate({
+                             id: lead.id,
+                             data: { ...lead, agent_name: null }
+                           });
+                           return;
+                         }
+                         
+                         if (!selectedAgent.email) {
                            toast.warning(`לנציג ${selectedAgent.full_name} אין כתובת מייל`);
                            console.warn('⚠️ אין מייל לנציג:', selectedAgent);
                          }
                          
-                         updateLeadMutation.mutate({
-                           id: lead.id,
-                           data: { ...lead, agent_name: value === 'none' ? null : value },
-                           agentEmail: selectedAgent?.email,
-                           agentName: selectedAgent?.full_name,
-                           leadData: lead
+                         console.log('🔵 מעדכן ליד ושולח מייל...');
+                         
+                         // עדכון הליד
+                         await base44.entities.Lead.update(lead.id, { 
+                           ...lead, 
+                           agent_name: selectedAgent.full_name 
                          });
+                         
+                         // רענון הלידים
+                         queryClient.invalidateQueries({ queryKey: ['leads'] });
+                         
+                         // שליחת מייל
+                         if (selectedAgent.email) {
+                           console.log('📧 שולח מייל ל:', selectedAgent.email);
+                           try {
+                             const response = await base44.functions.invoke('sendAgentLeadNotification', {
+                               agentEmail: selectedAgent.email,
+                               agentName: selectedAgent.full_name,
+                               leadName: lead.name,
+                               leadPhone: lead.phone,
+                               leadProfession: lead.profession || 'לא צוין'
+                             });
+                             console.log('📧 תגובה:', response);
+                             toast.success(`מייל נשלח ל-${selectedAgent.full_name}`);
+                           } catch (error) {
+                             console.error('❌ שגיאה:', error);
+                             toast.error(`שגיאה: ${error.message}`);
+                           }
+                         }
                        }}
                      >
                        <SelectTrigger className="w-28 h-7 text-[10px]">
