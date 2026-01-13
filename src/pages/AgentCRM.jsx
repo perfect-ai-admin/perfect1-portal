@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Loader2, Phone, MessageCircle, Calendar, Search, LogOut, Save, X, Edit2, Columns3 } from 'lucide-react';
+import { Loader2, Phone, MessageCircle, Calendar, Search, LogOut, Save, X, Edit2, Columns3, Filter } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AgentCRM() {
@@ -19,6 +19,7 @@ export default function AgentCRM() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [visibleColumns, setVisibleColumns] = useState({
     date: true,
     name: true,
@@ -109,7 +110,8 @@ export default function AgentCRM() {
     const matchSearch = !searchTerm || 
       (lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
        lead.phone?.includes(searchTerm));
-    return matchStatus && matchCategory && matchSearch;
+    const matchSelectedStatuses = selectedStatuses.length === 0 || selectedStatuses.includes(lead.status || 'new');
+    return matchStatus && matchCategory && matchSearch && matchSelectedStatuses;
   });
 
   const statusColors = {
@@ -277,7 +279,49 @@ export default function AgentCRM() {
                   {visibleColumns.name && <th className="px-4 py-3 text-right">שם</th>}
                   {visibleColumns.phone && <th className="px-4 py-3 text-right">טלפון</th>}
                   {visibleColumns.profession && <th className="px-4 py-3 text-right">מקצוע</th>}
-                  {visibleColumns.status && <th className="px-4 py-3 text-center">סטטוס</th>}
+                  {visibleColumns.status && <th className="px-4 py-3 text-center">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="flex items-center gap-1 hover:bg-[#2C5282] px-2 py-1 rounded transition-colors mx-auto">
+                          סטטוס
+                          {selectedStatuses.length > 0 && <span className="bg-yellow-400 text-[#1E3A5F] rounded-full px-1.5 text-[10px] font-bold">{selectedStatuses.length}</span>}
+                          <Filter className="w-3 h-3" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-56" align="center">
+                        <div className="space-y-2">
+                          <div className="font-semibold text-sm mb-2">בחר סטטוסים להצגה</div>
+                          {Object.entries(statusLabels).map(([key, label]) => (
+                            <label key={key} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
+                              <input
+                                type="checkbox"
+                                checked={selectedStatuses.includes(key)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedStatuses([...selectedStatuses, key]);
+                                  } else {
+                                    setSelectedStatuses(selectedStatuses.filter(s => s !== key));
+                                  }
+                                }}
+                                className="rounded"
+                              />
+                              {label}
+                            </label>
+                          ))}
+                          {selectedStatuses.length > 0 && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => setSelectedStatuses([])}
+                              className="w-full mt-2"
+                            >
+                              נקה הכל
+                            </Button>
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </th>}
                   {visibleColumns.followUp && <th className="px-4 py-3 text-right">חזרה</th>}
                   {visibleColumns.notes && <th className="px-4 py-3 text-right">הערות</th>}
                   <th className="px-4 py-3 text-center">פעולות</th>
