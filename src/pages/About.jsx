@@ -157,10 +157,28 @@ export default function About() {
                 <strong>פרפקט וואן</strong> היא חברה פרטית המספקת ייעוץ וליווי בפתיחת עסקים בישראל.
                 אנחנו צוות מקצועי עם ניסיון רב בתחום, שמבין את הקשיים והאתגרים של פתיחת עסק בישראל.
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                <strong>⚠️ חשוב:</strong> אנחנו אינו אתר ממשלתי ואינו מייצגים אף רשות.
-                אנחנו חברה פרטית המספקת ייעוץ וליווי בלבד - אתה מבצע את הפעולות בעצמך מול הרשויות.
-              </p>
+              
+              {/* הבהרה חשובה */}
+              <div className="bg-amber-50 border-r-4 border-amber-500 p-5 rounded-lg mb-4">
+                <h3 className="font-bold text-amber-900 text-xl mb-3 flex items-start gap-2">
+                  <span>⚠️</span>
+                  <span>הבהרה חשובה</span>
+                </h3>
+                <ul className="space-y-2 text-gray-800 text-base">
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 mt-1">•</span>
+                    <span><strong>השירות ניתן על ידי גורם פרטי</strong> - פרפקט וואן היא חברה פרטית עצמאית.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 mt-1">•</span>
+                    <span><strong>האתר אינו אתר ממשלתי</strong> - איננו פועלים מטעם רשות ממשלתית כלשהי.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-600 mt-1">•</span>
+                    <span><strong>פתיחת התיק מתבצעת על ידך או רו״ח מטעמך</strong> - הליך הפתיחה מול רשות המסים והביטוח הלאומי מתבצע ישירות על ידי הלקוח או רואה חשבון מטעמו.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             {/* למה האתר קיים */}
