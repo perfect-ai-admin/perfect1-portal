@@ -181,61 +181,60 @@ export default function AgentCRM() {
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-gray-50 p-1 pt-8 md:p-6 md:pt-24 pb-8" dir="rtl">
+      <div className="min-h-screen bg-gray-50 p-1 pt-12 md:p-6 md:pt-24 pb-8" dir="rtl">
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-1 md:mb-6 flex items-center justify-between">
+        <div className="mb-2 md:mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-lg md:text-3xl font-bold text-[#1E3A5F] mb-0.5">הלידים שלי</h1>
-            <p className="text-xs md:text-base text-gray-600">שלום {agent.full_name}</p>
+            <h1 className="text-xl md:text-3xl font-bold text-[#1E3A5F] mb-1">הלידים שלי</h1>
+            <p className="text-sm md:text-base text-gray-600">שלום {agent.full_name}</p>
           </div>
           <Button 
             onClick={handleLogout}
             variant="outline"
-            size="sm"
-            className="border-red-300 text-red-600 hover:bg-red-50 text-xs md:text-sm"
+            className="border-red-300 text-red-600 hover:bg-red-50"
           >
-            <LogOut className="w-4 h-4 md:w-5 md:h-5 ml-1" />
+            <LogOut className="w-5 h-5 ml-2" />
             התנתק
           </Button>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-4 mb-2 md:mb-6">
-          <div className="bg-white rounded-lg p-1.5 md:p-4 shadow">
-            <div className="text-lg md:text-2xl font-bold text-[#1E3A5F]">{stats.total}</div>
-            <div className="text-[9px] md:text-sm text-gray-600">סך הכל</div>
+          <div className="bg-white rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-[#1E3A5F]">{stats.total}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">סך הכל</div>
           </div>
-          <div className="bg-blue-50 rounded-lg p-1.5 md:p-4 shadow">
-            <div className="text-lg md:text-2xl font-bold text-blue-600">{stats.new}</div>
-            <div className="text-[9px] md:text-sm text-gray-600">חדשים</div>
+          <div className="bg-blue-50 rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-blue-600">{stats.new}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">חדשים</div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-1.5 md:p-4 shadow">
-            <div className="text-lg md:text-2xl font-bold text-yellow-600">{stats.contacted}</div>
-            <div className="text-[9px] md:text-sm text-gray-600">קשר</div>
+          <div className="bg-yellow-50 rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-yellow-600">{stats.contacted}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">קשר</div>
           </div>
-          <div className="bg-green-50 rounded-lg p-1.5 md:p-4 shadow">
-            <div className="text-lg md:text-2xl font-bold text-green-600">{stats.converted}</div>
-            <div className="text-[9px] md:text-sm text-gray-600">נסגרו</div>
+          <div className="bg-green-50 rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-green-600">{stats.converted}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">נסגרו</div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-1.5 md:p-4 mb-1.5 md:mb-6">
-          <div className="flex flex-col md:flex-row gap-2 md:gap-4">
+        <div className="bg-white rounded-lg shadow p-2 md:p-4 mb-2 md:mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
-                placeholder="חיפוש..."
+                placeholder="חיפוש לפי שם או טלפון..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pr-8 h-9 text-sm"
+                className="pr-10"
               />
             </div>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-9 text-xs md:text-sm">
-                  <Columns3 className="w-4 h-4 ml-1" />
+                <Button variant="outline">
+                  <Columns3 className="w-4 h-4 ml-2" />
                   עמודות
                 </Button>
               </PopoverTrigger>
@@ -265,7 +264,7 @@ export default function AgentCRM() {
               </PopoverContent>
             </Popover>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full md:w-48 h-9 text-sm">
+              <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="סטטוס" />
               </SelectTrigger>
               <SelectContent>
@@ -280,7 +279,7 @@ export default function AgentCRM() {
               </SelectContent>
             </Select>
             <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-full md:w-48 h-9 text-sm">
+              <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="קטגוריה" />
               </SelectTrigger>
               <SelectContent>
