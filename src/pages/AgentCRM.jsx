@@ -181,13 +181,13 @@ export default function AgentCRM() {
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-gray-50 p-3 md:p-6 md:pt-24 pb-8" dir="rtl">
+      <div className="min-h-screen bg-gray-50 p-1 pt-16 md:p-6 md:pt-24 pb-8" dir="rtl">
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-2 md:mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[#1E3A5F] mb-2">הלידים שלי</h1>
-            <p className="text-gray-600">שלום {agent.full_name}</p>
+            <h1 className="text-xl md:text-3xl font-bold text-[#1E3A5F] mb-1">הלידים שלי</h1>
+            <p className="text-sm md:text-base text-gray-600">שלום {agent.full_name}</p>
           </div>
           <Button 
             onClick={handleLogout}
@@ -200,27 +200,27 @@ export default function AgentCRM() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-[#1E3A5F]">{stats.total}</div>
-            <div className="text-sm text-gray-600">סך הכל לידים</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-4 mb-2 md:mb-6">
+          <div className="bg-white rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-[#1E3A5F]">{stats.total}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">סך הכל</div>
           </div>
-          <div className="bg-blue-50 rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-blue-600">{stats.new}</div>
-            <div className="text-sm text-gray-600">חדשים</div>
+          <div className="bg-blue-50 rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-blue-600">{stats.new}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">חדשים</div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-yellow-600">{stats.contacted}</div>
-            <div className="text-sm text-gray-600">יצרנו קשר</div>
+          <div className="bg-yellow-50 rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-yellow-600">{stats.contacted}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">קשר</div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4 shadow">
-            <div className="text-2xl font-bold text-green-600">{stats.converted}</div>
-            <div className="text-sm text-gray-600">נסגרו</div>
+          <div className="bg-green-50 rounded-lg p-2 md:p-4 shadow">
+            <div className="text-xl md:text-2xl font-bold text-green-600">{stats.converted}</div>
+            <div className="text-[10px] md:text-sm text-gray-600">נסגרו</div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="bg-white rounded-lg shadow p-2 md:p-4 mb-2 md:mb-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
