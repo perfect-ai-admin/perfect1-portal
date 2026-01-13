@@ -105,10 +105,27 @@ export default function LeadsAdmin() {
   };
 
   const handleBulkAssignToAgent = async (agentName) => {
+    const selectedAgent = agents.find(a => a.full_name === agentName);
+    
     for (const leadId of selectedLeads) {
       const lead = leads.find(l => l.id === leadId);
       if (lead) {
         await base44.entities.Lead.update(leadId, { ...lead, agent_name: agentName === 'none' ? null : agentName });
+        
+        // שליחת מייל לסוכן עבור כל ליד
+        if (selectedAgent && selectedAgent.email) {
+          try {
+            await base44.functions.invoke('sendAgentLeadNotification', {
+              agentEmail: selectedAgent.email,
+              agentName: selectedAgent.full_name,
+              leadName: lead.name,
+              leadPhone: lead.phone,
+              leadProfession: lead.profession
+            });
+          } catch (error) {
+            console.error('Failed to send email:', error);
+          }
+        }
       }
     }
     queryClient.invalidateQueries({ queryKey: ['leads'] });
@@ -586,11 +603,28 @@ export default function LeadsAdmin() {
                      <td className="px-2 py-1.5 text-sm">
                      <Select 
                        value={lead.agent_name || 'none'} 
-                       onValueChange={(value) => {
+                       onValueChange={async (value) => {
+                         const selectedAgent = agents.find(a => a.full_name === value);
+                         
                          updateLeadMutation.mutate({
                            id: lead.id,
                            data: { ...lead, agent_name: value === 'none' ? null : value }
                          });
+
+                         // שליחת מייל לסוכן אם נבחר סוכן
+                         if (selectedAgent && selectedAgent.email) {
+                           try {
+                             await base44.functions.invoke('sendAgentLeadNotification', {
+                               agentEmail: selectedAgent.email,
+                               agentName: selectedAgent.full_name,
+                               leadName: lead.name,
+                               leadPhone: lead.phone,
+                               leadProfession: lead.profession
+                             });
+                           } catch (error) {
+                             console.error('Failed to send email:', error);
+                           }
+                         }
                        }}
                      >
                        <SelectTrigger className="w-28 h-7 text-[10px]">
