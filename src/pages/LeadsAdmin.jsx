@@ -119,9 +119,9 @@ export default function LeadsAdmin() {
         console.log('🔵 מעדכן ליד:', lead.name);
         await base44.entities.Lead.update(leadId, { ...lead, agent_name: agentName === 'none' ? null : agentName });
         
-        // שליחת הודעה לסוכן (SMS + WhatsApp)
+        // שליחת הודעה לסוכן דרך WhatsApp
         if (selectedAgent && selectedAgent.phone) {
-          console.log('📱 שולח הודעה עבור:', lead.name);
+          console.log('📱 יוצר קישור WhatsApp עבור:', lead.name);
           try {
             const response = await base44.functions.invoke('sendAgentNotification', {
               agentPhone: selectedAgent.phone,
@@ -131,9 +131,12 @@ export default function LeadsAdmin() {
               leadProfession: lead.profession || 'לא צוין'
             });
             console.log('📱 תגובה:', response);
+            if (response.data?.whatsapp?.url) {
+              window.open(response.data.whatsapp.url, '_blank');
+            }
             emailsSent++;
           } catch (error) {
-            console.error('❌ שגיאה בשליחת הודעה:', error);
+            console.error('❌ שגיאה:', error);
             emailsFailed++;
           }
         }
@@ -141,7 +144,7 @@ export default function LeadsAdmin() {
     }
     
     if (emailsSent > 0) {
-      toast.success(`נשלחו ${emailsSent} הודעות SMS לנציג`);
+      toast.success(`נפתחו ${emailsSent} חלונות WhatsApp לנציג`);
     }
     if (emailsFailed > 0) {
       toast.error(`${emailsFailed} הודעות נכשלו`);
@@ -301,7 +304,10 @@ export default function LeadsAdmin() {
                     leadProfession: 'בדיקה'
                   });
                   console.log('תגובה:', res);
-                  toast.success('הודעה נשלחה - בדוק SMS');
+                  if (res.data?.whatsapp?.url) {
+                    window.open(res.data.whatsapp.url, '_blank');
+                    toast.success('נפתח WhatsApp');
+                  }
                 } catch (e) {
                   console.error(e);
                   toast.error(e.message);
@@ -310,7 +316,7 @@ export default function LeadsAdmin() {
               className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
             >
               <MessageCircle className="w-4 h-4 ml-1" />
-              בדיקת SMS
+              בדיקת WhatsApp
             </Button>
             <Link to={createPageUrl('AgentsManager')} className="flex-1 md:flex-none">
               <Button 
@@ -682,9 +688,9 @@ export default function LeadsAdmin() {
                          // רענון הלידים
                          queryClient.invalidateQueries({ queryKey: ['leads'] });
 
-                         // שליחת הודעה
+                         // שליחת הודעה דרך WhatsApp
                          if (selectedAgent.phone) {
-                           console.log('📱 שולח הודעה ל:', selectedAgent.phone);
+                           console.log('📱 פותח WhatsApp ל:', selectedAgent.phone);
                            try {
                              const response = await base44.functions.invoke('sendAgentNotification', {
                                agentPhone: selectedAgent.phone,
@@ -694,7 +700,10 @@ export default function LeadsAdmin() {
                                leadProfession: lead.profession || 'לא צוין'
                              });
                              console.log('📱 תגובה:', response);
-                             toast.success(`הודעה נשלחה ל-${selectedAgent.full_name}`);
+                             if (response.data?.whatsapp?.url) {
+                               window.open(response.data.whatsapp.url, '_blank');
+                               toast.success(`נפתח WhatsApp ל-${selectedAgent.full_name}`);
+                             }
                            } catch (error) {
                              console.error('❌ שגיאה:', error);
                              toast.error(`שגיאה: ${error.message}`);
