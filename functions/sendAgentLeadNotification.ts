@@ -47,7 +47,12 @@ Deno.serve(async (req) => {
     });
     
     console.log('✅ מייל נשלח בהצלחה:', emailResult);
-    return Response.json({ success: true, message: 'Email sent successfully', result: emailResult });
+    return Response.json({ 
+      success: true, 
+      message: 'Email sent successfully', 
+      result: emailResult,
+      timestamp: new Date().toISOString()
+    }, { status: 200 });
   } catch (error) {
     console.error('❌ שגיאה בשליחת מייל לנציג:', error);
     console.error('Error details:', error.stack);
