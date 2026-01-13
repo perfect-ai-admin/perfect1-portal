@@ -48,8 +48,35 @@ export default function LeadsAdmin() {
   });
 
   const updateLeadMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
-    onSuccess: () => {
+    mutationFn: ({ id, data, agentEmail, agentName, leadData }) => {
+      return base44.entities.Lead.update(id, data).then(() => ({
+        agentEmail, agentName, leadData
+      }));
+    },
+    onSuccess: async (result) => {
+      // שליחת מייל רק אחרי שהעדכון הצליח
+      if (result?.agentEmail && result?.agentName && result?.leadData) {
+        console.log('🔄 שולח מייל לנציג לאחר עדכון מוצלח');
+        try {
+          const response = await base44.functions.invoke('sendAgentLeadNotification', {
+            agentEmail: result.agentEmail,
+            agentName: result.agentName,
+            leadName: result.leadData.name,
+            leadPhone: result.leadData.phone,
+            leadProfession: result.leadData.profession
+          });
+          console.log('✅ תגובת שליחת מייל:', response);
+          if (response.data?.success) {
+            toast.success(`מייל נשלח לנציג ${result.agentName}`);
+          } else {
+            toast.error('שגיאה בשליחת מייל: ' + (response.data?.error || 'לא ידוע'));
+          }
+        } catch (error) {
+          console.error('❌ שגיאה בשליחת מייל:', error);
+          toast.error(`שגיאה בשליחת מייל: ${error.message}`);
+        }
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setSelectedLead(null);
       setEditingNotes({});
@@ -621,35 +648,21 @@ export default function LeadsAdmin() {
                      <td className="px-2 py-1.5 text-sm">
                      <Select 
                        value={lead.agent_name || 'none'} 
-                       onValueChange={async (value) => {
+                       onValueChange={(value) => {
                          const selectedAgent = agents.find(a => a.full_name === value);
+                         
+                         if (selectedAgent && !selectedAgent.email) {
+                           toast.warning(`לנציג ${selectedAgent.full_name} אין כתובת מייל`);
+                           console.warn('⚠️ אין מייל לנציג:', selectedAgent);
+                         }
                          
                          updateLeadMutation.mutate({
                            id: lead.id,
-                           data: { ...lead, agent_name: value === 'none' ? null : value }
+                           data: { ...lead, agent_name: value === 'none' ? null : value },
+                           agentEmail: selectedAgent?.email,
+                           agentName: selectedAgent?.full_name,
+                           leadData: lead
                          });
-
-                         // שליחת מייל לסוכן אם נבחר סוכן
-                         if (selectedAgent && selectedAgent.email) {
-                           console.log('שולח מייל לנציג:', selectedAgent.email);
-                           try {
-                             const response = await base44.functions.invoke('sendAgentLeadNotification', {
-                               agentEmail: selectedAgent.email,
-                               agentName: selectedAgent.full_name,
-                               leadName: lead.name,
-                               leadPhone: lead.phone,
-                               leadProfession: lead.profession
-                             });
-                             console.log('תגובת שליחת מייל:', response);
-                             toast.success(`מייל נשלח לנציג ${selectedAgent.full_name}`);
-                           } catch (error) {
-                             console.error('שגיאה בשליחת מייל:', error);
-                             toast.error(`שגיאה בשליחת מייל: ${error.message}`);
-                           }
-                         } else if (selectedAgent && !selectedAgent.email) {
-                           toast.warning(`לנציג ${selectedAgent.full_name} אין כתובת מייל`);
-                           console.warn('אין מייל לנציג:', selectedAgent);
-                         }
                        }}
                      >
                        <SelectTrigger className="w-28 h-7 text-[10px]">

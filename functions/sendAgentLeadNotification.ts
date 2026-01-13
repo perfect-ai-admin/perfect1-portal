@@ -3,20 +3,16 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { agentEmail, agentName, leadName, leadPhone, leadProfession } = await req.json();
+    
+    console.log('📧 מנסה לשלוח מייל:', { agentEmail, agentName, leadName });
 
     if (!agentEmail || !leadName) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // שליחת מייל לנציג
-    await base44.integrations.Core.SendEmail({
+    // שליחת מייל לנציג עם service role
+    const emailResult = await base44.asServiceRole.integrations.Core.SendEmail({
       to: agentEmail,
       subject: `ליד חדש נכנס למערכת - ${leadName}`,
       body: `
@@ -40,10 +36,16 @@ Deno.serve(async (req) => {
         </div>
       `
     });
-
-    return Response.json({ success: true, message: 'Email sent successfully' });
+    
+    console.log('✅ מייל נשלח בהצלחה:', emailResult);
+    return Response.json({ success: true, message: 'Email sent successfully', result: emailResult });
   } catch (error) {
-    console.error('Error sending agent notification:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('❌ שגיאה בשליחת מייל לנציג:', error);
+    console.error('Error details:', error.stack);
+    return Response.json({ 
+      error: error.message, 
+      details: error.stack,
+      success: false 
+    }, { status: 500 });
   }
 });
