@@ -218,6 +218,17 @@ function AgentForm({ agent, onSave, onCancel, isLoading }) {
       </div>
 
       <div>
+        <label className="block text-sm font-medium mb-2">טלפון *</label>
+        <Input
+          type="tel"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          placeholder="05X-XXXXXXX"
+          required
+        />
+      </div>
+
+      <div>
         <label className="block text-sm font-medium mb-2">שם משתמש *</label>
         <Input
           value={formData.username}
