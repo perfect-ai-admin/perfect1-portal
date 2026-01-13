@@ -6,11 +6,11 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
-    console.log('📦 Body שהתקבל:', body);
+    console.log('📦 Body שהתקבל:', JSON.stringify(body));
     
     const { agentEmail, agentName, leadName, leadPhone, leadProfession } = body;
     
-    console.log('📧 פרטים:', { agentEmail, agentName, leadName, leadPhone, leadProfession });
+    console.log('📧 פרטים:', JSON.stringify({ agentEmail, agentName, leadName, leadPhone, leadProfession }));
 
     if (!agentEmail || !leadName) {
       console.error('❌ חסרים שדות חובה');
@@ -20,6 +20,7 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
+    console.log('📧 מתחיל לשלוח מייל...');
     // שליחת מייל לנציג עם service role
     const emailResult = await base44.asServiceRole.integrations.Core.SendEmail({
       to: agentEmail,
@@ -46,7 +47,7 @@ Deno.serve(async (req) => {
       `
     });
     
-    console.log('✅ מייל נשלח בהצלחה:', emailResult);
+    console.log('✅ מייל נשלח בהצלחה:', JSON.stringify(emailResult));
     return Response.json({ 
       success: true, 
       message: 'Email sent successfully', 
