@@ -295,7 +295,7 @@ export default function AgentCRM() {
         </div>
 
         {/* Mobile Cards View */}
-        <div className="md:hidden space-y-3">
+        <div className="md:hidden space-y-2">
           {filteredLeads.map((lead) => (
             <div key={lead.id} className="bg-white rounded-xl shadow-lg p-4 border-r-4" style={{
               borderColor: lead.status === 'converted' ? '#16a34a' : 
