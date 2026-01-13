@@ -15,6 +15,7 @@ export default function AgentCRM() {
   const [selectedLead, setSelectedLead] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
   const navigate = useNavigate();
@@ -94,10 +95,11 @@ export default function AgentCRM() {
 
   const filteredLeads = myLeads.filter(lead => {
     const matchStatus = filterStatus === 'all' || lead.status === filterStatus;
+    const matchCategory = filterCategory === 'all' || lead.category === filterCategory;
     const matchSearch = !searchTerm || 
       (lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
        lead.phone?.includes(searchTerm));
-    return matchStatus && matchSearch;
+    return matchStatus && matchCategory && matchSearch;
   });
 
   const statusColors = {
@@ -205,6 +207,19 @@ export default function AgentCRM() {
                 <SelectItem value="qualified">מתאים</SelectItem>
                 <SelectItem value="not_interested">לא מעוניין</SelectItem>
                 <SelectItem value="converted">נסגר</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterCategory} onValueChange={setFilterCategory}>
+              <SelectTrigger className="w-full md:w-48">
+                <SelectValue placeholder="קטגוריה" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">כל הקטגוריות</SelectItem>
+                <SelectItem value="osek_patur">פתיחת עוסק</SelectItem>
+                <SelectItem value="monthly_support">ליווי חודשי</SelectItem>
+                <SelectItem value="invoice">חשבונית</SelectItem>
+                <SelectItem value="consultation">ייעוץ</SelectItem>
+                <SelectItem value="other">אחר</SelectItem>
               </SelectContent>
             </Select>
           </div>
