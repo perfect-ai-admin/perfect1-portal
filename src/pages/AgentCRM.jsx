@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, Phone, MessageCircle, Calendar, Search, LogOut, Save, X, Edit2 } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Loader2, Phone, MessageCircle, Calendar, Search, LogOut, Save, X, Edit2, Columns3 } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function AgentCRM() {
@@ -18,6 +19,15 @@ export default function AgentCRM() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [editingNotes, setEditingNotes] = useState({});
   const [editingFollowUp, setEditingFollowUp] = useState({});
+  const [visibleColumns, setVisibleColumns] = useState({
+    date: true,
+    name: true,
+    phone: true,
+    profession: true,
+    status: true,
+    followUp: true,
+    notes: true
+  });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -194,6 +204,38 @@ export default function AgentCRM() {
                 className="pr-10"
               />
             </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">
+                  <Columns3 className="w-4 h-4 ml-2" />
+                  עמודות
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56" align="end">
+                <div className="space-y-2">
+                  <div className="font-semibold text-sm mb-3">בחר עמודות להצגה</div>
+                  {[
+                    { key: 'date', label: 'תאריך כניסה' },
+                    { key: 'name', label: 'שם' },
+                    { key: 'phone', label: 'טלפון' },
+                    { key: 'profession', label: 'מקצוע' },
+                    { key: 'status', label: 'סטטוס' },
+                    { key: 'followUp', label: 'חזרה' },
+                    { key: 'notes', label: 'הערות' }
+                  ].map(col => (
+                    <label key={col.key} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      <input
+                        type="checkbox"
+                        checked={visibleColumns[col.key]}
+                        onChange={(e) => setVisibleColumns({ ...visibleColumns, [col.key]: e.target.checked })}
+                        className="rounded"
+                      />
+                      {col.label}
+                    </label>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="סטטוס" />
@@ -231,34 +273,34 @@ export default function AgentCRM() {
             <table className="w-full">
               <thead className="bg-[#1E3A5F] text-white">
                 <tr>
-                  <th className="px-4 py-3 text-right">תאריך כניסה</th>
-                  <th className="px-4 py-3 text-right">שם</th>
-                  <th className="px-4 py-3 text-right">טלפון</th>
-                  <th className="px-4 py-3 text-right">מקצוע</th>
-                  <th className="px-4 py-3 text-center">סטטוס</th>
-                  <th className="px-4 py-3 text-right">חזרה</th>
-                  <th className="px-4 py-3 text-right">הערות</th>
+                  {visibleColumns.date && <th className="px-4 py-3 text-right">תאריך כניסה</th>}
+                  {visibleColumns.name && <th className="px-4 py-3 text-right">שם</th>}
+                  {visibleColumns.phone && <th className="px-4 py-3 text-right">טלפון</th>}
+                  {visibleColumns.profession && <th className="px-4 py-3 text-right">מקצוע</th>}
+                  {visibleColumns.status && <th className="px-4 py-3 text-center">סטטוס</th>}
+                  {visibleColumns.followUp && <th className="px-4 py-3 text-right">חזרה</th>}
+                  {visibleColumns.notes && <th className="px-4 py-3 text-right">הערות</th>}
                   <th className="px-4 py-3 text-center">פעולות</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredLeads.map((lead, index) => (
                   <tr key={lead.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
-                    <td className="px-4 py-3 text-sm text-gray-600">
+                    {visibleColumns.date && <td className="px-4 py-3 text-sm text-gray-600">
                       {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
-                    </td>
-                    <td className="px-4 py-3">
+                    </td>}
+                    {visibleColumns.name && <td className="px-4 py-3">
                       <div className="font-medium">{lead.name}</div>
                       {lead.email && <div className="text-xs text-gray-500">{lead.email}</div>}
-                    </td>
-                    <td className="px-4 py-3">
+                    </td>}
+                    {visibleColumns.phone && <td className="px-4 py-3">
                       <a href={`tel:${lead.phone}`} className="text-[#1E3A5F] hover:underline flex items-center gap-1">
                         <Phone className="w-3 h-3" />
                         {lead.phone}
                       </a>
-                    </td>
-                    <td className="px-4 py-3 text-sm">{lead.profession || '-'}</td>
-                    <td className="px-4 py-3 text-center">
+                    </td>}
+                    {visibleColumns.profession && <td className="px-4 py-3 text-sm">{lead.profession || '-'}</td>}
+                    {visibleColumns.status && <td className="px-4 py-3 text-center">
                       <Select 
                         value={lead.status || 'new'} 
                         onValueChange={(value) => handleQuickStatusUpdate(lead, value)}
@@ -272,8 +314,8 @@ export default function AgentCRM() {
                           ))}
                         </SelectContent>
                       </Select>
-                    </td>
-                    <td className="px-4 py-3 text-sm">
+                    </td>}
+                    {visibleColumns.followUp && <td className="px-4 py-3 text-sm">
                       {editingFollowUp[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
@@ -310,8 +352,8 @@ export default function AgentCRM() {
                           )}
                         </button>
                       )}
-                    </td>
-                    <td className="px-4 py-3 text-sm max-w-xs">
+                    </td>}
+                    {visibleColumns.notes && <td className="px-4 py-3 text-sm max-w-xs">
                       {editingNotes[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
@@ -340,10 +382,10 @@ export default function AgentCRM() {
                           title={lead.notes}
                         >
                           {lead.notes || <span className="text-gray-400">הוסף</span>}
-                        </button>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
+                          </button>
+                          )}
+                          </td>}
+                          <td className="px-4 py-3">
                       <div className="flex items-center justify-center gap-2">
                         <a
                           href={`https://wa.me/972${(lead.phone || '').replace(/^0/, '')}`}

@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus, Users, CheckSquare, Square } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Download, ExternalLink, Loader2, Phone, Mail, MessageCircle, Calendar, Search, Filter, Edit2, X, Trash2, Save, Plus, UserPlus, Users, CheckSquare, Square, Columns3 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -25,6 +26,20 @@ export default function LeadsAdmin() {
   const [sortBy, setSortBy] = useState(null);
   const [selectedLeads, setSelectedLeads] = useState([]);
   const [showBulkAssignDialog, setShowBulkAssignDialog] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState({
+    date: true,
+    name: true,
+    phone: true,
+    profession: true,
+    source: true,
+    category: true,
+    type: true,
+    agent: true,
+    status: true,
+    priority: true,
+    followUp: true,
+    notes: true
+  });
   const queryClient = useQueryClient();
 
   const { data: leads, isLoading } = useQuery({
@@ -413,6 +428,43 @@ export default function LeadsAdmin() {
                 className="pr-8 h-9 text-sm"
               />
             </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9">
+                  <Columns3 className="w-4 h-4 ml-1" />
+                  עמודות
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56" align="end">
+                <div className="space-y-2">
+                  <div className="font-semibold text-sm mb-3">בחר עמודות להצגה</div>
+                  {[
+                    { key: 'date', label: 'תאריך' },
+                    { key: 'name', label: 'שם' },
+                    { key: 'phone', label: 'טלפון' },
+                    { key: 'profession', label: 'מקצוע' },
+                    { key: 'source', label: 'מקור' },
+                    { key: 'category', label: 'קטגוריה' },
+                    { key: 'type', label: 'סוג' },
+                    { key: 'agent', label: 'נציג' },
+                    { key: 'status', label: 'סטטוס' },
+                    { key: 'priority', label: 'עדיפות' },
+                    { key: 'followUp', label: 'חזרה' },
+                    { key: 'notes', label: 'הערות' }
+                  ].map(col => (
+                    <label key={col.key} className="flex items-center gap-2 text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      <input
+                        type="checkbox"
+                        checked={visibleColumns[col.key]}
+                        onChange={(e) => setVisibleColumns({ ...visibleColumns, [col.key]: e.target.checked })}
+                        className="rounded"
+                      />
+                      {col.label}
+                    </label>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-full md:w-32 h-9 text-sm">
                 <SelectValue placeholder="סטטוס" />
@@ -590,15 +642,15 @@ export default function LeadsAdmin() {
                       )}
                     </button>
                   </th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">תאריך</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">שם</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">טלפון</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקצוע</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקור</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">קטגוריה</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">סוג</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">נציג</th>
-                  <th 
+                  {visibleColumns.date && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">תאריך</th>}
+                  {visibleColumns.name && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">שם</th>}
+                  {visibleColumns.phone && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">טלפון</th>}
+                  {visibleColumns.profession && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקצוע</th>}
+                  {visibleColumns.source && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקור</th>}
+                  {visibleColumns.category && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">קטגוריה</th>}
+                  {visibleColumns.type && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">סוג</th>}
+                  {visibleColumns.agent && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">נציג</th>}
+                  {visibleColumns.status && <th 
                     className="px-2 py-2 text-center text-xs cursor-pointer hover:bg-[#2C5282] transition-colors sticky top-0 bg-[#1E3A5F]"
                     onClick={() => setSortBy(sortBy === 'status' ? null : 'status')}
                     title="למיון"
@@ -607,8 +659,8 @@ export default function LeadsAdmin() {
                       סטטוס
                       {sortBy === 'status' && <span className="text-yellow-300">▼</span>}
                     </div>
-                  </th>
-                  <th 
+                  </th>}
+                  {visibleColumns.priority && <th 
                     className="px-2 py-2 text-center text-xs cursor-pointer hover:bg-[#2C5282] transition-colors sticky top-0 bg-[#1E3A5F]"
                     onClick={() => setSortBy(sortBy === 'priority' ? null : 'priority')}
                     title="למיון"
@@ -617,9 +669,9 @@ export default function LeadsAdmin() {
                       עדיפות
                       {sortBy === 'priority' && <span className="text-yellow-300">▼</span>}
                     </div>
-                  </th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">חזרה</th>
-                  <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">הערות</th>
+                  </th>}
+                  {visibleColumns.followUp && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">חזרה</th>}
+                  {visibleColumns.notes && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">הערות</th>}
                   <th className="px-2 py-2 text-center text-xs sticky top-0 bg-[#1E3A5F]">פעולות</th>
                 </tr>
               </thead>
@@ -635,27 +687,27 @@ export default function LeadsAdmin() {
                         )}
                       </button>
                     </td>
-                    <td className="px-2 py-1.5 text-xs text-gray-600 whitespace-nowrap">
+                    {visibleColumns.date && <td className="px-2 py-1.5 text-xs text-gray-600 whitespace-nowrap">
                       {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
-                    </td>
-                    <td className="px-2 py-1.5">
+                    </td>}
+                    {visibleColumns.name && <td className="px-2 py-1.5">
                       <div className="font-medium text-xs">{lead.name}</div>
                       {lead.email && <div className="text-[10px] text-gray-500 truncate max-w-[120px]">{lead.email}</div>}
-                    </td>
-                    <td className="px-2 py-1.5">
+                    </td>}
+                    {visibleColumns.phone && <td className="px-2 py-1.5">
                       <a href={`tel:${lead.phone}`} className="text-[#1E3A5F] hover:underline flex items-center gap-1 text-xs whitespace-nowrap">
                         <Phone className="w-3 h-3" />
                         {lead.phone}
                       </a>
-                    </td>
-                    <td className="px-2 py-1.5 text-xs">{lead.profession || '-'}</td>
-                    <td className="px-2 py-1.5 text-[10px] text-gray-500 max-w-[100px] truncate">{lead.source_page || '-'}</td>
-                    <td className="px-2 py-1.5 text-xs">
+                    </td>}
+                    {visibleColumns.profession && <td className="px-2 py-1.5 text-xs">{lead.profession || '-'}</td>}
+                    {visibleColumns.source && <td className="px-2 py-1.5 text-[10px] text-gray-500 max-w-[100px] truncate">{lead.source_page || '-'}</td>}
+                    {visibleColumns.category && <td className="px-2 py-1.5 text-xs">
                       <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${categoryColors[lead.category || 'osek_patur']}`}>
                         {categoryLabels[lead.category || 'osek_patur']}
                       </span>
-                    </td>
-                     <td className="px-2 py-1.5 text-xs">
+                    </td>}
+                    {visibleColumns.type && <td className="px-2 py-1.5 text-xs">
                      <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold shadow-sm ${
                        lead.interaction_type === 'phone_click' ? 'bg-blue-500 text-white' :
                        lead.interaction_type === 'whatsapp_click' ? 'bg-green-500 text-white' :
@@ -667,8 +719,8 @@ export default function LeadsAdmin() {
                         lead.interaction_type === 'manual' ? '✋' :
                         '📝'}
                      </span>
-                     </td>
-                     <td className="px-2 py-1.5 text-sm">
+                     </td>}
+                     {visibleColumns.agent && <td className="px-2 py-1.5 text-sm">
                      <Select 
                        value={lead.agent_name || 'none'} 
                        onValueChange={async (value) => {
@@ -737,8 +789,8 @@ export default function LeadsAdmin() {
                           ))}
                         </SelectContent>
                       </Select>
-                    </td>
-                    <td className="px-2 py-1.5 text-center">
+                      </td>}
+                      {visibleColumns.status && <td className="px-2 py-1.5 text-center">
                       <Select 
                         value={lead.status || 'new'} 
                         onValueChange={(value) => handleQuickStatusUpdate(lead, value)}
@@ -752,13 +804,13 @@ export default function LeadsAdmin() {
                           ))}
                         </SelectContent>
                       </Select>
-                    </td>
-                    <td className="px-2 py-1.5 text-center">
+                      </td>}
+                      {visibleColumns.priority && <td className="px-2 py-1.5 text-center">
                       <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${priorityColors[lead.priority || 'medium']}`}>
                         {priorityLabels[lead.priority || 'medium']}
                       </span>
-                    </td>
-                    <td className="px-2 py-1.5 text-sm">
+                      </td>}
+                      {visibleColumns.followUp && <td className="px-2 py-1.5 text-sm">
                       {editingFollowUp[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
@@ -797,9 +849,9 @@ export default function LeadsAdmin() {
                             <span className="text-gray-400 text-[10px]">+</span>
                           )}
                         </button>
-                      )}
-                    </td>
-                    <td className="px-2 py-1.5 text-sm max-w-[150px]">
+                        )}
+                        </td>}
+                        {visibleColumns.notes && <td className="px-2 py-1.5 text-sm max-w-[150px]">
                       {editingNotes[lead.id] !== undefined ? (
                         <div className="flex items-center gap-1">
                           <Input
@@ -831,10 +883,10 @@ export default function LeadsAdmin() {
                           title={lead.notes}
                         >
                           {lead.notes || <span className="text-gray-400">+</span>}
-                        </button>
-                      )}
-                    </td>
-                    <td className="px-2 py-1.5">
+                          </button>
+                          )}
+                          </td>}
+                          <td className="px-2 py-1.5">
                       <div className="flex items-center justify-center gap-1">
                         <a
                           href={`https://wa.me/972${(lead.phone || '').replace(/^0/, '')}`}
