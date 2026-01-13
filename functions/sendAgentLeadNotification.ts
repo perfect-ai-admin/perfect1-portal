@@ -21,8 +21,11 @@ Deno.serve(async (req) => {
     }
 
     console.log('📧 מתחיל לשלוח מייל...');
+    console.log('📧 שולח ל:', agentEmail);
+    
     // שליחת מייל לנציג עם service role
     const emailResult = await base44.asServiceRole.integrations.Core.SendEmail({
+      from_name: 'Perfect One CRM',
       to: agentEmail,
       subject: `ליד חדש נכנס למערכת - ${leadName}`,
       body: `
