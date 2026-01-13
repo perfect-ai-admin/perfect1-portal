@@ -94,6 +94,9 @@ export default function AgentsManager() {
                 <div>
                   <h3 className="text-xl font-bold text-[#1E3A5F]">{agent.full_name}</h3>
                   <p className="text-sm text-gray-600">שם משתמש: {agent.username}</p>
+                  {agent.email && (
+                    <p className="text-sm text-gray-600">אימייל: {agent.email}</p>
+                  )}
                   <p className="text-xs text-gray-500 mt-1">
                     {agent.active ? (
                       <span className="text-green-600">✓ פעיל</span>
@@ -175,6 +178,7 @@ export default function AgentsManager() {
 function AgentForm({ agent, onSave, onCancel, isLoading }) {
   const [formData, setFormData] = useState({
     full_name: agent?.full_name || '',
+    email: agent?.email || '',
     username: agent?.username || '',
     password: agent?.password || '',
     active: agent?.active !== false
@@ -183,7 +187,7 @@ function AgentForm({ agent, onSave, onCancel, isLoading }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.full_name || !formData.username || !formData.password) {
+    if (!formData.full_name || !formData.email || !formData.username || !formData.password) {
       alert('נא למלא את כל השדות');
       return;
     }
@@ -198,6 +202,17 @@ function AgentForm({ agent, onSave, onCancel, isLoading }) {
           value={formData.full_name}
           onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
           placeholder="שם מלא"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">אימייל *</label>
+        <Input
+          type="email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          placeholder="email@example.com"
           required
         />
       </div>
