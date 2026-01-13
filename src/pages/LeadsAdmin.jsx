@@ -119,20 +119,22 @@ export default function LeadsAdmin() {
         console.log('🔵 מעדכן ליד:', lead.name);
         await base44.entities.Lead.update(leadId, { ...lead, agent_name: agentName === 'none' ? null : agentName });
         
-        // שליחת הודעה לסוכן דרך WhatsApp
-        if (selectedAgent && selectedAgent.phone) {
-          console.log('📱 יוצר קישור WhatsApp עבור:', lead.name);
+        // שליחת הודעה לסוכן
+        if (selectedAgent && (selectedAgent.phone || selectedAgent.email)) {
+          console.log('📱 שולח הודעה עבור:', lead.name);
           try {
             const response = await base44.functions.invoke('sendAgentNotification', {
               agentPhone: selectedAgent.phone,
+              agentEmail: selectedAgent.email,
               agentName: selectedAgent.full_name,
               leadName: lead.name,
               leadPhone: lead.phone,
-              leadProfession: lead.profession || 'לא צוין'
+              leadProfession: lead.profession || 'לא צוין',
+              notificationPreferences: selectedAgent.notification_preferences || ['whatsapp']
             });
             console.log('📱 תגובה:', response);
-            if (response.data?.whatsapp?.url) {
-              window.open(response.data.whatsapp.url, '_blank');
+            if (response.data?.results?.whatsapp?.url) {
+              window.open(response.data.results.whatsapp.url, '_blank');
             }
             emailsSent++;
           } catch (error) {
@@ -144,13 +146,13 @@ export default function LeadsAdmin() {
     }
     
     if (emailsSent > 0) {
-      toast.success(`נפתחו ${emailsSent} חלונות WhatsApp לנציג`);
+      toast.success(`נשלחו ${emailsSent} התראות לנציג`);
     }
     if (emailsFailed > 0) {
       toast.error(`${emailsFailed} הודעות נכשלו`);
     }
-    if (selectedAgent && !selectedAgent.phone) {
-      toast.warning(`לנציג ${selectedAgent.full_name} אין מספר טלפון`);
+    if (selectedAgent && !selectedAgent.phone && !selectedAgent.email) {
+      toast.warning(`לנציג ${selectedAgent.full_name} אין פרטי התקשרות`);
     }
     
     queryClient.invalidateQueries({ queryKey: ['leads'] });
@@ -292,22 +294,32 @@ export default function LeadsAdmin() {
               variant="outline"
               size="sm"
               onClick={async () => {
-                const testPhone = prompt('הכנס טלפון לבדיקה (05X-XXXXXXX):');
-                if (!testPhone) return;
+                const testData = prompt('בחר סוג בדיקה:\n1 = WhatsApp\n2 = Email\n3 = SMS\n4 = הכל', '1');
+                if (!testData) return;
+
+                const testPhone = '0501234567';
+                const testEmail = 'test@example.com';
+                let prefs = ['whatsapp'];
+
+                if (testData === '2') prefs = ['email'];
+                else if (testData === '3') prefs = ['sms'];
+                else if (testData === '4') prefs = ['whatsapp', 'email', 'sms'];
 
                 try {
                   const res = await base44.functions.invoke('sendAgentNotification', {
                     agentPhone: testPhone,
+                    agentEmail: testEmail,
                     agentName: 'בדיקה',
                     leadName: 'ליד בדיקה',
                     leadPhone: '0501234567',
-                    leadProfession: 'בדיקה'
+                    leadProfession: 'בדיקה',
+                    notificationPreferences: prefs
                   });
                   console.log('תגובה:', res);
-                  if (res.data?.whatsapp?.url) {
-                    window.open(res.data.whatsapp.url, '_blank');
-                    toast.success('נפתח WhatsApp');
+                  if (res.data?.results?.whatsapp?.url) {
+                    window.open(res.data.results.whatsapp.url, '_blank');
                   }
+                  toast.success('בדיקה הושלמה - בדוק קונסול');
                 } catch (e) {
                   console.error(e);
                   toast.error(e.message);
@@ -316,7 +328,7 @@ export default function LeadsAdmin() {
               className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
             >
               <MessageCircle className="w-4 h-4 ml-1" />
-              בדיקת WhatsApp
+              בדיקת התראות
             </Button>
             <Link to={createPageUrl('AgentsManager')} className="flex-1 md:flex-none">
               <Button 
@@ -688,22 +700,24 @@ export default function LeadsAdmin() {
                          // רענון הלידים
                          queryClient.invalidateQueries({ queryKey: ['leads'] });
 
-                         // שליחת הודעה דרך WhatsApp
-                         if (selectedAgent.phone) {
-                           console.log('📱 פותח WhatsApp ל:', selectedAgent.phone);
+                         // שליחת הודעה
+                         if (selectedAgent.phone || selectedAgent.email) {
+                           console.log('📱 שולח הודעה ל:', selectedAgent.full_name);
                            try {
                              const response = await base44.functions.invoke('sendAgentNotification', {
                                agentPhone: selectedAgent.phone,
+                               agentEmail: selectedAgent.email,
                                agentName: selectedAgent.full_name,
                                leadName: lead.name,
                                leadPhone: lead.phone,
-                               leadProfession: lead.profession || 'לא צוין'
+                               leadProfession: lead.profession || 'לא צוין',
+                               notificationPreferences: selectedAgent.notification_preferences || ['whatsapp']
                              });
                              console.log('📱 תגובה:', response);
-                             if (response.data?.whatsapp?.url) {
-                               window.open(response.data.whatsapp.url, '_blank');
-                               toast.success(`נפתח WhatsApp ל-${selectedAgent.full_name}`);
+                             if (response.data?.results?.whatsapp?.url) {
+                               window.open(response.data.results.whatsapp.url, '_blank');
                              }
+                             toast.success(`התראה נשלחה ל-${selectedAgent.full_name}`);
                            } catch (error) {
                              console.error('❌ שגיאה:', error);
                              toast.error(`שגיאה: ${error.message}`);
