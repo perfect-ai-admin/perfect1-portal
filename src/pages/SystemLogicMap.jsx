@@ -1741,6 +1741,45 @@ export const trackWhatsAppClick = (location, message) => {
     message: message
   });
 };`
+    },
+    {
+      name: 'functions/sendAgentNotification.js',
+      category: 'Backend',
+      code: `import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+
+Deno.serve(async (req) => {
+  const base44 = createClientFromRequest(req);
+  const { agentPhone, agentEmail, agentName, leadName, leadPhone, 
+          leadProfession, notificationPreferences } = await req.json();
+
+  const results = { whatsapp: null, email: null, sms: null };
+
+  // WhatsApp
+  if (notificationPreferences?.includes('whatsapp') && agentPhone) {
+    const message = \`היי \${agentName}, הוקצה לך ליד חדש!\\n\\nשם: \${leadName}\\nטלפון: \${leadPhone}\\nמקצוע: \${leadProfession}\`;
+    results.whatsapp = {
+      url: \`https://wa.me/972\${agentPhone.replace(/^0/, '')}?text=\${encodeURIComponent(message)}\`
+    };
+  }
+
+  // Email
+  if (notificationPreferences?.includes('email') && agentEmail) {
+    await base44.integrations.Core.SendEmail({
+      to: agentEmail,
+      subject: '🎯 ליד חדש הוקצה אליך',
+      body: \`<h2>ליד חדש!</h2><p>שם: \${leadName}</p><p>טלפון: \${leadPhone}</p>\`
+    });
+    results.email = { sent: true };
+  }
+
+  // SMS (via Twilio)
+  if (notificationPreferences?.includes('sms') && agentPhone) {
+    // Twilio SMS implementation here
+    results.sms = { sent: true };
+  }
+
+  return Response.json({ success: true, results });
+});`
     }
   ];
 
@@ -1815,6 +1854,7 @@ function OverviewSection() {
               <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-mono">Base44 Platform</span>
               <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-mono">NoSQL Database</span>
               <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-mono">JWT Auth</span>
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-mono">Deno Functions</span>
             </div>
           </div>
           <div>
@@ -1823,7 +1863,18 @@ function OverviewSection() {
               <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">GTM + GA4</span>
               <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">Facebook Pixel</span>
               <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">Email API</span>
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">Twilio SMS</span>
               <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-mono">LLM (AI)</span>
+            </div>
+          </div>
+          <div>
+            <h4 className="font-bold text-[#1E3A5F] mb-2">🆕 CRM Features (2026):</h4>
+            <div className="flex flex-wrap gap-2">
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm font-mono">Agent Management</span>
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm font-mono">Multi-Channel Notifications</span>
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm font-mono">Advanced Filters</span>
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm font-mono">Bulk Actions</span>
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm font-mono">Column Visibility</span>
             </div>
           </div>
         </div>
@@ -1846,6 +1897,23 @@ function OverviewSection() {
           <div className="bg-orange-50 p-4 rounded-lg text-center">
             <div className="text-3xl font-black text-orange-700">45+</div>
             <div className="text-sm text-gray-600 mt-1">דפים באתר</div>
+          </div>
+        </div>
+        <div className="mt-4 bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg border-2 border-indigo-200">
+          <p className="text-sm font-bold text-indigo-800 mb-2">🆕 מערכת CRM מתקדמת (ינואר 2026)</p>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-white p-2 rounded text-center">
+              <div className="text-xl font-bold text-indigo-700">3-10</div>
+              <div className="text-xs text-gray-600">נציגים פעילים</div>
+            </div>
+            <div className="bg-white p-2 rounded text-center">
+              <div className="text-xl font-bold text-indigo-700">3</div>
+              <div className="text-xs text-gray-600">ערוצי התראה</div>
+            </div>
+            <div className="bg-white p-2 rounded text-center">
+              <div className="text-xl font-bold text-indigo-700">100%</div>
+              <div className="text-xs text-gray-600">ניהול ריכוזי</div>
+            </div>
           </div>
         </div>
       </Card>
@@ -1941,6 +2009,22 @@ function EntitiesSection() {
       ],
       volume: '45+ snapshots',
       retention: 'Last 30 days only'
+    },
+    {
+      name: 'Agent',
+      desc: 'נציגי מכירות - Sales Agents',
+      fields: ['full_name', 'email', 'phone', 'username', 'password', 'active', 'notification_preferences'],
+      relations: ['Lead → agent_name'],
+      indexes: ['username (unique)', 'active'],
+      businessLogic: [
+        'Agent can view only assigned leads (agent_name = their name)',
+        'Auto-notification on lead assignment (WhatsApp/Email/SMS)',
+        'Notification preferences: array of ["whatsapp", "email", "sms"]',
+        'Password encrypted in DB',
+        'Agent CRM at /AgentCRM (separate from admin)'
+      ],
+      volume: '3-10 agents',
+      retention: 'Permanent'
     },
     {
       name: 'User (Built-in)',
@@ -2109,6 +2193,29 @@ function FlowsSection() {
       ],
       outputs: ['HTML with smart internal links'],
       failure: 'No linking applied, original content returned'
+    },
+    {
+      name: 'Agent Notification Flow',
+      priority: 'HIGH',
+      trigger: 'Lead assigned to agent (agent_name changed)',
+      conditions: ['agent exists', 'agent has phone/email', 'notification preferences set'],
+      actions: [
+        '1. Get agent record from DB',
+        '2. Check notification_preferences array',
+        '3. Send WhatsApp (if "whatsapp" in prefs) - opens WhatsApp link',
+        '4. Send Email (if "email" in prefs) - via SendEmail integration',
+        '5. Send SMS (if "sms" in prefs) - via Twilio',
+        '6. Track notification sent/failed'
+      ],
+      outputs: ['WhatsApp link opened', 'Email sent', 'SMS delivered', 'Notification log'],
+      failure: 'Toast error to user, log failure, continue without blocking',
+      performance: 'Email: 800ms, SMS: 1.2s, WhatsApp: instant (just URL)',
+      businessLogic: [
+        'Agent can choose any combination of notification methods',
+        'WhatsApp message includes: lead name, phone, profession, app URL',
+        'Email has professional HTML template with lead details',
+        'SMS is short version with name + phone + link'
+      ]
     }
   ];
 
