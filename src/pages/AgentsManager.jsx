@@ -142,8 +142,20 @@ export default function AgentsManager() {
         </div>
 
         {agents.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            אין נציגים במערכת
+          <div className="text-center py-16">
+            <div className="bg-white rounded-lg shadow-lg p-12 max-w-md mx-auto">
+              <UserPlus className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-700 mb-2">אין נציגים במערכת</h3>
+              <p className="text-gray-500 mb-6">הוסף נציג מכירות ראשון כדי להתחיל</p>
+              <Button 
+                onClick={() => setShowAddDialog(true)}
+                size="lg"
+                className="bg-[#27AE60] hover:bg-[#2ECC71] shadow-lg"
+              >
+                <UserPlus className="w-5 h-5 ml-2" />
+                הוסף נציג מכירות
+              </Button>
+            </div>
           </div>
         )}
       </div>
