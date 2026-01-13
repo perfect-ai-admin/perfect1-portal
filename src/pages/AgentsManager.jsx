@@ -78,10 +78,10 @@ export default function AgentsManager() {
             </Link>
             <Button 
               onClick={() => setShowAddDialog(true)}
-              className="bg-[#27AE60] hover:bg-[#2ECC71]"
+              className="bg-[#27AE60] hover:bg-[#2ECC71] shadow-lg"
             >
               <UserPlus className="w-5 h-5 ml-2" />
-              הוסף נציג
+              נציג מכירות חדש
             </Button>
           </div>
         </div>
