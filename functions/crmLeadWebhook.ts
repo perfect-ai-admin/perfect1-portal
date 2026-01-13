@@ -2,22 +2,40 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   console.log('🚀 CRM Lead Webhook התחיל');
+  console.log('📍 Method:', req.method);
+  console.log('📍 URL:', req.url);
+  
+  // אפשר רק POST requests
+  if (req.method !== 'POST') {
+    console.error('❌ Method לא נתמך:', req.method);
+    return Response.json({ 
+      success: false,
+      error: 'Only POST method is allowed' 
+    }, { status: 405 });
+  }
   
   try {
     const base44 = createClientFromRequest(req);
+    
+    // קריאת הגוף
     const body = await req.json();
-    console.log('📦 Payload התקבל:', body);
+    console.log('📦 Payload התקבל:', JSON.stringify(body, null, 2));
     
     const { full_name, phone, email, source, campaign, page_url, status } = body;
     
     // ולידציה - שדות חובה
     if (!full_name || !phone) {
       console.error('❌ חסרים שדות חובה');
+      console.error('full_name:', full_name);
+      console.error('phone:', phone);
       return Response.json({ 
         success: false,
-        error: 'Missing required fields: full_name and phone are required' 
+        error: 'Missing required fields: full_name and phone are required',
+        received: { full_name, phone }
       }, { status: 400 });
     }
+    
+    console.log('✅ שדות חובה אושרו');
     
     // בדיקה אם הליד כבר קיים לפי טלפון
     console.log('🔍 מחפש ליד קיים עם טלפון:', phone);
@@ -73,11 +91,23 @@ Deno.serve(async (req) => {
     
   } catch (error) {
     console.error('❌ שגיאה בטיפול בליד:', error);
-    console.error('Error details:', error.stack);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    // בדיקה אם השגיאה היא בגלל parsing של JSON
+    if (error instanceof SyntaxError) {
+      return Response.json({ 
+        success: false,
+        error: 'Invalid JSON payload', 
+        details: error.message
+      }, { status: 400 });
+    }
+    
     return Response.json({ 
       success: false,
       error: error.message, 
-      details: error.stack
+      details: error.stack,
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 });
