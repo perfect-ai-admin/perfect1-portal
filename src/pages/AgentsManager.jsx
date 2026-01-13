@@ -107,6 +107,13 @@ export default function AgentsManager() {
                       <span className="text-red-600">✗ לא פעיל</span>
                     )}
                   </p>
+                  {agent.notification_preferences && agent.notification_preferences.length > 0 && (
+                    <p className="text-xs text-gray-600 mt-1">
+                      התראות: {agent.notification_preferences.map(p => 
+                        p === 'whatsapp' ? '📱' : p === 'email' ? '📧' : '💬'
+                      ).join(' ')}
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -185,7 +192,8 @@ function AgentForm({ agent, onSave, onCancel, isLoading }) {
     phone: agent?.phone || '',
     username: agent?.username || '',
     password: agent?.password || '',
-    active: agent?.active !== false
+    active: agent?.active !== false,
+    notification_preferences: agent?.notification_preferences || ['whatsapp']
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -271,6 +279,55 @@ function AgentForm({ agent, onSave, onCancel, isLoading }) {
           className="w-4 h-4"
         />
         <label htmlFor="active" className="text-sm">נציג פעיל</label>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">העדפות התראה</label>
+        <div className="space-y-2 bg-gray-50 p-3 rounded-lg">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={formData.notification_preferences.includes('whatsapp')}
+              onChange={(e) => {
+                const prefs = e.target.checked 
+                  ? [...formData.notification_preferences, 'whatsapp']
+                  : formData.notification_preferences.filter(p => p !== 'whatsapp');
+                setFormData({ ...formData, notification_preferences: prefs });
+              }}
+              className="w-4 h-4 rounded"
+            />
+            📱 WhatsApp
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={formData.notification_preferences.includes('email')}
+              onChange={(e) => {
+                const prefs = e.target.checked 
+                  ? [...formData.notification_preferences, 'email']
+                  : formData.notification_preferences.filter(p => p !== 'email');
+                setFormData({ ...formData, notification_preferences: prefs });
+              }}
+              className="w-4 h-4 rounded"
+            />
+            📧 אימייל
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={formData.notification_preferences.includes('sms')}
+              onChange={(e) => {
+                const prefs = e.target.checked 
+                  ? [...formData.notification_preferences, 'sms']
+                  : formData.notification_preferences.filter(p => p !== 'sms');
+                setFormData({ ...formData, notification_preferences: prefs });
+              }}
+              className="w-4 h-4 rounded"
+            />
+            💬 SMS (דרך Twilio)
+          </label>
+        </div>
+        <p className="text-xs text-gray-500 mt-1">בחר כיצד הנציג יקבל התראות על לידים חדשים</p>
       </div>
 
       <div className="flex gap-3 pt-4">
