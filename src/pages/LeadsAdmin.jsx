@@ -285,6 +285,33 @@ export default function LeadsAdmin() {
             <p className="text-xs md:text-sm text-gray-600 hidden md:block">כל הלידים שמגיעים מהאתר + מעקב אחר לחיצות</p>
           </div>
           <div className="flex gap-2 w-full md:w-auto">
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                const testEmail = prompt('הכנס מייל לבדיקה:');
+                if (!testEmail) return;
+
+                try {
+                  const res = await base44.functions.invoke('sendAgentLeadNotification', {
+                    agentEmail: testEmail,
+                    agentName: 'בדיקה',
+                    leadName: 'ליד בדיקה',
+                    leadPhone: '0501234567',
+                    leadProfession: 'בדיקה'
+                  });
+                  console.log('תגובה:', res);
+                  toast.success('נשלח - בדוק קונסול');
+                } catch (e) {
+                  console.error(e);
+                  toast.error(e.message);
+                }
+              }}
+              className="border-green-500 text-green-600 hover:bg-green-500 hover:text-white"
+            >
+              <Mail className="w-4 h-4 ml-1" />
+              בדיקת מייל
+            </Button>
             <Link to={createPageUrl('AgentsManager')} className="flex-1 md:flex-none">
               <Button 
                 variant="outline"
