@@ -299,7 +299,7 @@ export default function LeadsAdmin() {
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-1 pt-12 md:p-3 md:pt-24 pb-8" dir="rtl">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-1 pt-2 md:p-3 md:pt-24 pb-8" dir="rtl">
       <Toaster position="top-center" richColors />
       <div className="max-w-7xl mx-auto w-full">
         {/* Header */}
