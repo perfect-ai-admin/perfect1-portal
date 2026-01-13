@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Loader2, Phone, MessageCircle, Calendar, Search, LogOut, Save, X, Edit2, Columns3, Filter } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
 
 export default function AgentCRM() {
@@ -564,28 +565,28 @@ export default function AgentCRM() {
         )}
       </div>
 
-      {/* Lead Details Dialog */}
+      {/* Lead Edit Dialog */}
       <Dialog open={!!selectedLead} onOpenChange={() => setSelectedLead(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>פרטי ליד - {selectedLead?.name}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">עריכת ליד - {selectedLead?.name}</DialogTitle>
           </DialogHeader>
           {selectedLead && (
-            <div className="space-y-4" dir="rtl">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="space-y-2 text-sm">
-                  <div><strong>טלפון:</strong> {selectedLead.phone}</div>
-                  {selectedLead.email && <div><strong>מייל:</strong> {selectedLead.email}</div>}
-                  {selectedLead.profession && <div><strong>מקצוע:</strong> {selectedLead.profession}</div>}
-                  {selectedLead.source_page && <div><strong>מקור:</strong> {selectedLead.source_page}</div>}
-                  <div><strong>תאריך כניסה:</strong> {format(new Date(selectedLead.created_date), 'dd/MM/yyyy HH:mm')}</div>
-                  {selectedLead.notes && <div><strong>הערות:</strong> {selectedLead.notes}</div>}
-                </div>
-              </div>
-              <Button onClick={() => setSelectedLead(null)} className="w-full">
-                סגור
-              </Button>
-            </div>
+            <LeadEditForm
+              lead={selectedLead}
+              onSave={(data) => {
+                updateLeadMutation.mutate({ id: selectedLead.id, data });
+              }}
+              onCancel={() => setSelectedLead(null)}
+              isLoading={updateLeadMutation.isPending}
+              onStatusChange={(newStatus) => {
+                if (newStatus === 'not_interested') {
+                  setPendingStatusChange({ lead: selectedLead, status: newStatus });
+                  setShowNotInterestedDialog(true);
+                  setSelectedLead(null);
+                }
+              }}
+            />
           )}
         </DialogContent>
       </Dialog>
@@ -674,5 +675,121 @@ export default function AgentCRM() {
       </Dialog>
       </div>
     </>
+  );
+}
+
+function LeadEditForm({ lead, onSave, onCancel, isLoading, onStatusChange }) {
+  const [formData, setFormData] = useState({
+    status: lead.status || 'new',
+    priority: lead.priority || 'medium',
+    follow_up_date: lead.follow_up_date || '',
+    last_contact_date: lead.last_contact_date || '',
+    notes: lead.notes || ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (formData.status === 'not_interested') {
+      onStatusChange('not_interested');
+      return;
+    }
+    
+    onSave({ ...lead, ...formData });
+  };
+
+  const statusLabels = {
+    new: 'חדש',
+    contacted: 'יצרנו קשר',
+    no_answer: 'אין מענה',
+    in_progress: 'בתהליך',
+    qualified: 'מתאים',
+    not_interested: 'לא מעוניין',
+    converted: 'נסגר',
+    closed: 'סגור'
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4" dir="rtl">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">סטטוס</label>
+          <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(statusLabels).map(([key, label]) => (
+                <SelectItem key={key} value={key}>{label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">עדיפות</label>
+          <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low">נמוך</SelectItem>
+              <SelectItem value="medium">בינוני</SelectItem>
+              <SelectItem value="high">גבוה</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">תאריך חזרה ללקוח</label>
+          <Input
+            type="date"
+            value={formData.follow_up_date}
+            onChange={(e) => setFormData({ ...formData, follow_up_date: e.target.value })}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">תאריך יצירת קשר אחרון</label>
+          <Input
+            type="date"
+            value={formData.last_contact_date}
+            onChange={(e) => setFormData({ ...formData, last_contact_date: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">הערות</label>
+        <Textarea
+          value={formData.notes}
+          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          rows={4}
+          placeholder="הערות נוספות על הליד..."
+        />
+      </div>
+
+      <div className="bg-gray-50 rounded-lg p-4">
+        <h4 className="font-bold mb-2">פרטי הליד:</h4>
+        <div className="space-y-1 text-sm">
+          <div><strong>טלפון:</strong> {lead.phone}</div>
+          {lead.email && <div><strong>מייל:</strong> {lead.email}</div>}
+          {lead.profession && <div><strong>מקצוע:</strong> {lead.profession}</div>}
+          {lead.source_page && <div><strong>מקור:</strong> {lead.source_page}</div>}
+          <div><strong>נוצר:</strong> {format(new Date(lead.created_date), 'dd/MM/yyyy HH:mm')}</div>
+        </div>
+      </div>
+
+      <div className="flex gap-3 pt-4">
+        <Button type="submit" disabled={isLoading} className="flex-1 bg-[#27AE60] hover:bg-[#2ECC71]">
+          {isLoading ? 'שומר...' : 'שמור שינויים'}
+        </Button>
+        <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+          ביטול
+        </Button>
+      </div>
+    </form>
   );
 }
