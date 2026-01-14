@@ -78,6 +78,47 @@ export default function ClientDashboard() {
 
   const currentData = clientData || client;
 
+  // Mock business state for demonstration if doesn't exist
+  const enrichedData = {
+    ...currentData,
+    business_state: currentData?.business_state || {
+      stage: 'early_revenue',
+      primary_challenge: 'no_leads',
+      marketing_state: {
+        current_phase: 'not_ready',
+        active_channels: [],
+        past_experiments: []
+      },
+      sales_state: {
+        pipeline: {},
+        conversion_rates: {},
+        bottleneck: 'lead_gen'
+      },
+      operations_state: {
+        workload_status: 'under_capacity',
+        weekly_capacity: {}
+      },
+      performance_state: {
+        active_goals: [],
+        execution_rate: 0
+      },
+      focus_state: {
+        current_strategic_focus: 'growth',
+        active_initiatives: [],
+        deferred_ideas: []
+      },
+      unified_recommendation: {
+        single_next_action: 'התחל בערוץ שיווק אחד (פייסבוק או Google) למשך 30 יום',
+        why_this_matters: 'אתה בתחילת דרך וצריך ללמוד מה עובד לפני שמרחיבים',
+        what_not_doing_now: [
+          'אתר חדש - זה יבוא אחרי שיש ביקוש',
+          'העלאת מחירים - קודם תדע מה השוק מוכן לשלם',
+          'קורסים נוספים - תתמקד בביצוע לא בלמידה'
+        ]
+      }
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -139,31 +180,31 @@ export default function ClientDashboard() {
           {/* Business State Indicators - Top Level */}
           <div className="mb-6 grid md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
-              <BusinessStateIndicator businessState={currentData?.business_state} />
+              <BusinessStateIndicator businessState={enrichedData?.business_state} />
             </div>
             <div>
-              <StateConflictAlert businessState={currentData?.business_state} />
+              <StateConflictAlert businessState={enrichedData?.business_state} />
             </div>
           </div>
 
           <AnimatePresence mode="wait">
             {activeTab === 'progress' && (
-              <ProgressTab key="progress" data={currentData} onNavigate={setActiveTab} />
+              <ProgressTab key="progress" data={enrichedData} onNavigate={setActiveTab} />
             )}
             {activeTab === 'business' && (
-              <BusinessTab key="business" data={currentData} />
+              <BusinessTab key="business" data={enrichedData} />
             )}
             {activeTab === 'financial' && (
-              <FinancialTab key="financial" data={currentData} />
+              <FinancialTab key="financial" data={enrichedData} />
             )}
             {activeTab === 'goals' && (
-              <GoalsTab key="goals" data={currentData} />
+              <GoalsTab key="goals" data={enrichedData} />
             )}
             {activeTab === 'marketing' && (
-              <MarketingTab key="marketing" data={currentData} />
+              <MarketingTab key="marketing" data={enrichedData} />
             )}
             {activeTab === 'mentor' && (
-              <MentorTab key="mentor" data={currentData} />
+              <MentorTab key="mentor" data={enrichedData} />
             )}
           </AnimatePresence>
         </div>
