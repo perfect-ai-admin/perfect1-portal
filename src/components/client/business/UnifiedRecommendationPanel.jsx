@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Target, AlertCircle, TrendingUp, Clock } from 'lucide-react';
+import { Target, AlertCircle, TrendingUp, Clock, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
