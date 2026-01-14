@@ -29,7 +29,6 @@ import NotificationCenter from '../components/client/NotificationCenter';
 import QuickInvoiceButton from '../components/client/financial/QuickInvoiceButton';
 import BusinessStateIndicator from '../components/client/business/BusinessStateIndicator';
 import StateConflictAlert from '../components/client/business/StateConflictAlert';
-import BusinessStateBanner from '../components/client/BusinessStateBanner';
 
 export default function ClientDashboard() {
   const [client, setClient] = useState(null);
@@ -128,7 +127,6 @@ export default function ClientDashboard() {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl">
-        <BusinessStateBanner />
         {/* Header */}
         <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
