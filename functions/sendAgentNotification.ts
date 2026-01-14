@@ -30,8 +30,9 @@ Deno.serve(async (req) => {
     // הכנת ההודעה
     const appUrl = 'https://perfect-1.one';
     const crmLink = `${appUrl}/AgentCRM`;
+    const businessPhone = '0559244721';
     
-    const message = `היי ${agentName},\n\nליד חדש נכנס למערכת! 🎯\n\nשם: ${leadName}\nטלפון: ${leadPhone || 'לא צוין'}\n${leadProfession ? `מקצוע: ${leadProfession}` : ''}\n\n👉 כנס לטיפול: ${crmLink}\n\n💼 Perfect One CRM`;
+    const message = `היי ${agentName},\n\nליד חדש נכנס למערכת! 🎯\n\nשם: ${leadName}\nטלפון ליצירת קשר: ${businessPhone}\nמקצוע: ${leadProfession || 'לא צוין'}\n\n👉 כנס לטיפול: ${crmLink}\n\n💼 Perfect One CRM`;
     
     const results = {
       whatsapp: null,
