@@ -6,9 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
-  LogOut, Bell, HelpCircle, User, 
-  TrendingUp, DollarSign, FileText, Target,
-  BarChart3, Wallet, Megaphone, Lightbulb, MapPin
+  LogOut, Bell, HelpCircle, User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
