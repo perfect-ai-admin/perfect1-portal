@@ -27,6 +27,8 @@ import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
 import NotificationCenter from '../components/client/NotificationCenter';
 import QuickInvoiceButton from '../components/client/financial/QuickInvoiceButton';
+import BusinessStateIndicator from '../components/client/business/BusinessStateIndicator';
+import StateConflictAlert from '../components/client/business/StateConflictAlert';
 
 export default function ClientDashboard() {
   const [client, setClient] = useState(null);
@@ -134,6 +136,16 @@ export default function ClientDashboard() {
 
         {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+          {/* Business State Indicators - Top Level */}
+          <div className="mb-6 grid md:grid-cols-3 gap-4">
+            <div className="md:col-span-2">
+              <BusinessStateIndicator businessState={currentData?.business_state} />
+            </div>
+            <div>
+              <StateConflictAlert businessState={currentData?.business_state} />
+            </div>
+          </div>
+
           <AnimatePresence mode="wait">
             {activeTab === 'progress' && (
               <ProgressTab key="progress" data={currentData} onNavigate={setActiveTab} />
