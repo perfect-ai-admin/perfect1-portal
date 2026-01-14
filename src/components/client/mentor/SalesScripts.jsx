@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Play, BookMarked, MessageCircle, Phone, VideoIcon } from 'lucide-react';
+import { Copy, Play, BookMarked, MessageCircle, Phone, VideoIcon, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import SalesInteractionForm from '../sales/SalesInteractionForm';
 
 const SALES_SCRIPTS = [
   {
@@ -71,6 +72,7 @@ const SALES_SCRIPTS = [
 
 export default function SalesScripts() {
   const [selectedScript, setSelectedScript] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -84,12 +86,21 @@ export default function SalesScripts() {
         animate={{ opacity: 1 }}
         className="space-y-6"
       >
-        <button
-          onClick={() => setSelectedScript(null)}
-          className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
-        >
-          ← חזור לרשימה
-        </button>
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setSelectedScript(null)}
+            className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
+          >
+            ← חזור לרשימה
+          </button>
+          <Button 
+            onClick={() => setFormOpen(true)} 
+            className="gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            תעד שיחה שעשיתי
+          </Button>
+        </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
           <div>
@@ -146,12 +157,38 @@ export default function SalesScripts() {
             </Button>
           </div>
         </div>
+
+        <SalesInteractionForm 
+          open={formOpen} 
+          onOpenChange={setFormOpen}
+          onSuccess={() => {
+            toast.success('שיחה נתועדה! הנתונים שלך מעודכנים כעת');
+          }}
+        />
       </motion.div>
     );
   }
 
   return (
     <div className="space-y-4">
+      <SalesInteractionForm 
+        open={formOpen} 
+        onOpenChange={setFormOpen}
+        onSuccess={() => {
+          toast.success('שיחה נתועדה! 📊 הנתונים שלך עודכנו');
+        }}
+      />
+
+      <div className="flex justify-end mb-4">
+        <Button 
+          onClick={() => setFormOpen(true)} 
+          className="gap-2 bg-green-600 hover:bg-green-700"
+        >
+          <Plus className="w-4 h-4" />
+          📝 תעד שיחה חדשה
+        </Button>
+      </div>
+
       {SALES_SCRIPTS.map((script, idx) => (
         <motion.div
           key={script.id}
