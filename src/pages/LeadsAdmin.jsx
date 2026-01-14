@@ -151,7 +151,7 @@ export default function LeadsAdmin() {
             });
             console.log('📱 תגובה:', response);
             if (response.data?.results?.whatsapp?.url) {
-              window.open(response.data.results.whatsapp.url, '_blank');
+              window.location.href = response.data.results.whatsapp.url;
             }
             emailsSent++;
           } catch (error) {
@@ -336,7 +336,7 @@ export default function LeadsAdmin() {
                   });
                   console.log('תגובה:', res);
                   if (res.data?.results?.whatsapp?.url) {
-                    window.open(res.data.results.whatsapp.url, '_blank');
+                    window.location.href = res.data.results.whatsapp.url;
                   }
                   toast.success('בדיקה הושלמה - בדוק קונסול');
                 } catch (e) {
@@ -861,7 +861,7 @@ export default function LeadsAdmin() {
                              });
                              console.log('📱 תגובה:', response);
                              if (response.data?.results?.whatsapp?.url) {
-                               window.open(response.data.results.whatsapp.url, '_blank');
+                               window.location.href = response.data.results.whatsapp.url;
                              }
                              toast.success(`התראה נשלחה ל-${selectedAgent.full_name}`);
                            } catch (error) {
