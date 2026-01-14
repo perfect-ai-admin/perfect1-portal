@@ -341,36 +341,38 @@ export default function PricingCost() {
               </div>
             </motion.div>
 
-            {/* CTA Section - Aggressive Online CTA */}
+            {/* Lead Form CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="mb-12 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-2xl p-8 border-4 border-green-500 shadow-lg"
             >
-              <div className="text-center">
+              <div className="text-center mb-6">
                 <div className="mb-4 inline-block bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold">
                   הצעה מיוחדת 🎁
                 </div>
                 <h2 className="text-3xl font-black text-green-900 mb-4">
                   הדרך הכי פשוטה ומהירה? 
                 </h2>
-                <p className="text-xl text-green-800 mb-6 font-bold">
-                תפתח עוסק פטור אונליין ב-249 ₪ בלבד - בדרך כלל תוך עד 48 שעות*
+                <p className="text-xl text-green-800 mb-2 font-bold">
+                  תפתח עוסק פטור אונליין ב-249 ₪ בלבד - בדרך כלל תוך עד 48 שעות*
                 </p>
-                <p className="text-gray-700 mb-8 leading-relaxed max-w-2xl mx-auto">
+                <p className="text-gray-700 leading-relaxed max-w-2xl mx-auto">
                   אל תבזבז זמן על טפסים מורכבים או פגישות. אנחנו נטפל בהכל עבורך: מס הכנסה, ביטוח לאומי, מע"מ - הכל כלול במחיר קבוע של 249 ₪.
                 </p>
-                <Link
-                  to={createPageUrl('OsekPaturOnlineLanding')}
-                  className="w-full md:w-auto inline-block"
-                >
-                  <Button
-                    className="w-full md:w-auto h-12 md:h-16 px-6 md:px-10 text-sm md:text-lg font-black bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-                  >
-                    ✅ פתח עוסק פטור אונליין עכשיו
-                  </Button>
-                </Link>
+              </div>
+              
+              <div className="max-w-md mx-auto">
+                <LeadForm 
+                  title=""
+                  subtitle=""
+                  sourcePage="עמוד מחיר - CTA ירוק"
+                  variant="inline"
+                  showConsent={true}
+                  submitButtonText="✅ פתח עוסק פטור אונליין עכשיו"
+                  submitButtonClass="w-full h-14 text-lg font-black bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                />
               </div>
             </motion.div>
 
