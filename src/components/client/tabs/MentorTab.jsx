@@ -6,14 +6,30 @@ import ActionItems from '../mentor/ActionItems';
 import ResourceLibrary from '../mentor/ResourceLibrary';
 import SalesScripts from '../mentor/SalesScripts';
 import DailyOperations from '../mentor/DailyOperations';
-import { Lightbulb, Database, Lock, Sparkles, MessageSquare, CheckSquare, BookOpen, Zap, Calendar } from 'lucide-react';
+import SalesAnalyticsDashboard from '../sales/SalesAnalyticsDashboard';
+import { Lightbulb, Database, Lock, Sparkles, MessageSquare, CheckSquare, BookOpen, Zap, Calendar, BarChart3 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { base44 } from '@/api/base44Client';
 
 export default function MentorTab({ data }) {
   const [actionItems, setActionItems] = useState([
     { id: '1', title: 'צור חשבונית ראשונה', description: 'התחל לעבוד עם לקוחות', relatedTab: 'ניהול כספים', completed: false },
     { id: '2', title: 'הגדר מטרה חודשית', description: 'קבע יעד הכנסה', relatedTab: 'המטרות שלי', completed: false }
   ]);
+  const [userEmail, setUserEmail] = useState(null);
+
+  // Get current user email
+  React.useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        const user = await base44.auth.me();
+        setUserEmail(user?.email);
+      } catch (error) {
+        console.error('Error getting user:', error);
+      }
+    };
+    getCurrentUser();
+  }, []);
 
   const mockConversations = [
     {
@@ -90,16 +106,20 @@ export default function MentorTab({ data }) {
 
       {/* Main Content with Tabs */}
       <Tabs defaultValue="chat" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-7">
           <TabsTrigger value="chat">
             <MessageSquare className="w-4 h-4 ml-2" />
             שיחה
           </TabsTrigger>
-          <TabsTrigger value="sales">
+          <TabsTrigger value="analytics">
+            <BarChart3 className="w-4 h-4 ml-2" />
+            ניתוח
+          </TabsTrigger>
+          <TabsTrigger value="sales" className="hidden lg:flex">
             <Zap className="w-4 h-4 ml-2" />
             מכירות
           </TabsTrigger>
-          <TabsTrigger value="operations">
+          <TabsTrigger value="operations" className="hidden lg:flex">
             <Calendar className="w-4 h-4 ml-2" />
             יום יום
           </TabsTrigger>
@@ -117,6 +137,13 @@ export default function MentorTab({ data }) {
         <TabsContent value="chat" className="mt-6">
           <div className="h-[600px]">
             <MentorChat clientData={data} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">📊 ניתוח מכירות וביצועים</h3>
+            {userEmail && <SalesAnalyticsDashboard leadId={userEmail} />}
           </div>
         </TabsContent>
 
