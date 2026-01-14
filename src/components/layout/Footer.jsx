@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Phone, MessageCircle, Mail, MapPin, Clock, ArrowUp } from 'lucide-react';
+import { Phone, MessageCircle, Mail, MapPin, Clock, ArrowUp, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Footer() {
@@ -136,6 +136,19 @@ export default function Footer() {
                     <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-[#25D366]" />
                   </div>
                   <span>וואטסאפ</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://t.me/perfectone_is"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 md:gap-3 text-gray-300 hover:text-white transition-colors text-sm md:text-base"
+                >
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#0088cc]/20 flex items-center justify-center flex-shrink-0">
+                    <Send className="w-3 h-3 md:w-4 md:h-4 text-[#0088cc]" />
+                  </div>
+                  <span>ערוץ טלגרם - טיפים וכלים לעצמאים</span>
                 </a>
               </li>
               <li className="flex items-center gap-2 md:gap-3 text-gray-300 text-sm md:text-base">
