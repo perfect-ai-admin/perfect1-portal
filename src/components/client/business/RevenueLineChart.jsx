@@ -1,5 +1,5 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
 export default function RevenueLineChart({ data = [], period = 'month' }) {
   const defaultData = [
@@ -44,14 +44,6 @@ export default function RevenueLineChart({ data = [], period = 'month' }) {
             stroke="#22C55E" 
             strokeWidth={3}
             fill="url(#colorRevenue)"
-          />
-          <Line 
-            type="monotone" 
-            dataKey="previous" 
-            stroke="#9CA3AF" 
-            strokeWidth={2}
-            strokeDasharray="5 5"
-            dot={false}
           />
         </AreaChart>
       </ResponsiveContainer>
