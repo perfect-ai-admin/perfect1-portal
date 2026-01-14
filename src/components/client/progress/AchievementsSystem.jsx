@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Zap, Target, DollarSign, Users, Star, Lock } from 'lucide-react';
+import { Trophy, Zap, Target, DollarSign, Users, Star, Lock, TrendingUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
