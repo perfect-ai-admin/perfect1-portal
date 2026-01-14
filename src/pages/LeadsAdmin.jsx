@@ -1152,6 +1152,27 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading }) {
         </div>
       </div>
 
+      {formData.status === 'not_interested' && (
+        <div>
+          <label className="block text-sm font-medium mb-2">סיבה לאי התאמה</label>
+          <Select 
+            value={formData.not_interested_reason} 
+            onValueChange={(value) => setFormData({ ...formData, not_interested_reason: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="בחר סיבה..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="already_has_osek">כבר יש עוסק פטור</SelectItem>
+              <SelectItem value="not_now">לא כרגע</SelectItem>
+              <SelectItem value="looking_for_different_service">מחפש שירות אחר</SelectItem>
+              <SelectItem value="price_too_high">המחיר יקר מדי</SelectItem>
+              <SelectItem value="prefers_other_accountant">מעדיף רואה חשבון אחר</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-2">תאריך חזרה ללקוח</label>
