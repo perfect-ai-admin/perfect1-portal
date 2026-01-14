@@ -318,7 +318,7 @@ export default function PricingCost() {
                   <ul className="space-y-2 text-gray-800">
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
-                      <span><strong>מהיר:</strong> התהליך בדרך כלל מסתיים תוך עד 48 שעות*</span>
+                      <span><strong>מהיר:</strong> תהליך חלק ומהיר, ללא המתנות מיותרות</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-purple-600 font-bold">✓</span>
@@ -356,7 +356,7 @@ export default function PricingCost() {
                   הדרך הכי פשוטה ומהירה? 
                 </h2>
                 <p className="text-xl text-green-800 mb-2 font-bold">
-                  תפתח עוסק פטור אונליין ב-249 ₪ בלבד - בדרך כלל תוך עד 48 שעות*
+                  תפתח עוסק פטור אונליין ב-249 ₪ בלבד - במהירות וביעילות
                 </p>
                 <p className="text-gray-700 leading-relaxed max-w-2xl mx-auto">
                   אל תבזבז זמן על טפסים מורכבים או פגישות. אנחנו נטפל בהכל עבורך: מס הכנסה, ביטוח לאומי, מע"מ - הכל כלול במחיר קבוע של 249 ₪.
@@ -412,7 +412,7 @@ export default function PricingCost() {
                     <tr>
                       <td className="border border-gray-300 px-4 py-3 font-bold text-[#1E3A5F]">אונליין</td>
                       <td className="border border-gray-300 px-4 py-3 text-indigo-600 font-bold">₪ 249</td>
-                      <td className="border border-gray-300 px-4 py-3">בדרך כלל עד 48 שעות*</td>
+                      <td className="border border-gray-300 px-4 py-3">מהיר במיוחד</td>
                       <td className="border border-gray-300 px-4 py-3 text-green-600">נמוכים</td>
                     </tr>
                   </tbody>
@@ -436,7 +436,7 @@ export default function PricingCost() {
                 <FAQAccordion question="האם אפשר לפתוח עוסק פטור לבד?" answer="כן, אפשר לפתוח לבד בחינם, אך זה דורש ידע במילוי טפסים, בדיקה של זכאות, והבנת דוחות דיווח. רוב העצמאים מעדיפים ליווי כדי להימנע מטעויות יקרות." />
                 <FAQAccordion question="מה שונה בין פתיחה אונליין לפתיחה דרך רואה חשבון?" answer="פתיחה אונליין היא תהליך דיגיטלי מלא, מהנייד שלך. רואה חשבון בדרך כלל מציע גם ליווי שוטף וייעוץ מתמשך, אך זה עלות נוספת. לכל אחת יתרונות משלה בהתאם לצרכים שלך." />
                 <FAQAccordion question="האם יש עלויות נוספות אחרי פתיחת עוסק פטור?" answer="פתיחת עוסק פטור עצמה אינה כוללת עלויות ממשלתיות. אך יש שירותים נוספים אופציונליים כמו דוח שנתי, רישום למע״מ, או ליווי שוטף - כל אלה בחיובים נפרדים." />
-                <FAQAccordion question="כמה זמן לוקח לפתוח עוסק פטור?" answer="כאשר פותחים דרך רואה חשבון, בדרך כלל לוקח כמה ימים. דרך פתרון אונליין, התהליך בדרך כלל מסתיים תוך עד 48 שעות, בהתאם למקרה הספציפי." />
+                <FAQAccordion question="כמה זמן לוקח לפתוח עוסק פטור?" answer="כאשר פותחים דרך רואה חשבון, בדרך כלל לוקח כמה ימים. דרך פתרון אונליין, התהליך מהיר ויעיל משמעותית, בהתאם למקרה הספציפי." />
                 <FAQAccordion question="האם פתיחת עוסק פטור אונליין כוללת טיפול מול מס הכנסה וביטוח לאומי?" answer="כן, הפתיחה כוללת טיפול ממלא מול מס הכנסה וביטוח לאומי. פטור ממע״מ הוא אוטומטי לעוסקים הזכאים. שירותים נוספים כמו רישום למע״מ מטופלים בנפרד." />
               </div>
             </motion.div>
