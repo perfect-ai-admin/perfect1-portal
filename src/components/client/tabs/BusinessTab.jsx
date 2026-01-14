@@ -7,6 +7,9 @@ import RevenueLineChart from '../business/RevenueLineChart';
 import ExportDialog from '../shared/ExportDialog';
 import InsightsEngine from '../business/InsightsEngine';
 import FocusDashboard from '../business/FocusDashboard';
+import StateDataCollector from '../business/StateDataCollector';
+import UnifiedRecommendationPanel from '../business/UnifiedRecommendationPanel';
+import BusinessStateTimeline from '../business/BusinessStateTimeline';
 import { TrendingUp, DollarSign, PieChart } from 'lucide-react';
 import {
   Select,
@@ -46,6 +49,28 @@ export default function BusinessTab({ data }) {
         vision={data.business_vision || ''}
         onSave={handleVisionSave}
       />
+
+      {/* State Data Collector - Unified Panel */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">ההמלצה שלך</h2>
+            <UnifiedRecommendationPanel businessState={data.business_state} />
+          </div>
+        </div>
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">עדכן מצב</h3>
+            <StateDataCollector 
+              businessState={data.business_state}
+              onDataUpdate={(category, formData) => {
+                // Backend integration point - כאן יתחבר ל-analyzeBusinessState function
+                console.log('Data collected:', category, formData);
+              }}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* Period Selector */}
       <div className="flex items-center justify-between">
@@ -118,9 +143,17 @@ export default function BusinessTab({ data }) {
         <FocusDashboard focusState={data.business_state.focus_state} />
       )}
 
+      {/* Business State Timeline */}
+      {data.business_state?.decision_log && (
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">היסטוריית החלטות</h3>
+          <BusinessStateTimeline decisionLog={data.business_state.decision_log} />
+        </div>
+      )}
+
       {/* AI-Powered Insights */}
       <InsightsEngine clientData={data} period={period} />
-      
+
       {/* Additional Stats */}
       <div className="grid md:grid-cols-3 gap-4">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
