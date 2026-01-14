@@ -1,11 +1,11 @@
 import React from 'react';
-import { AlertCircle, TrendingUp, Activity, CheckCircle, AlertTriangle } from 'lucide-react';
+import { AlertCircle, TrendingUp, Zap, CheckCircle, AlertTriangle } from 'lucide-react';
 
 const STAGE_CONFIG = {
   pre_revenue: {
     label: 'טרום הכנסות',
     color: 'bg-gray-100 text-gray-800 border-gray-300',
-    icon: Activity,
+    icon: Zap,
     description: 'בניית יסודות'
   },
   early_revenue: {
