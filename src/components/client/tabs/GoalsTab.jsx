@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import GoalCard from '../goals/GoalCard';
-import { Plus, Target, TrendingUp } from 'lucide-react';
+import GoalTemplates from '../goals/GoalTemplates';
+import { Plus, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const SAMPLE_GOALS = [
@@ -37,6 +38,11 @@ export default function GoalsTab({ data }) {
 
   const handleUpdateGoal = (goalId) => {
     console.log('Update goal:', goalId);
+  };
+
+  const handleCreateGoal = (newGoal) => {
+    setGoals(prev => [...prev, newGoal]);
+    setShowAddGoal(false);
   };
 
   return (
@@ -96,6 +102,14 @@ export default function GoalsTab({ data }) {
             הוסף מטרה ראשונה
           </Button>
         </div>
+      )}
+
+      {/* Goal Creation Dialog */}
+      {showAddGoal && (
+        <GoalTemplates
+          onCreateGoal={handleCreateGoal}
+          onClose={() => setShowAddGoal(false)}
+        />
       )}
     </motion.div>
   );

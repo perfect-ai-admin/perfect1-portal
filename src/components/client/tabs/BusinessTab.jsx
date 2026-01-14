@@ -5,8 +5,8 @@ import MetricQuadrant from '../business/MetricQuadrant';
 import ExpenseDonutChart from '../business/ExpenseDonutChart';
 import RevenueLineChart from '../business/RevenueLineChart';
 import ExportDialog from '../shared/ExportDialog';
-import { TrendingUp, DollarSign, PieChart, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import InsightsEngine from '../business/InsightsEngine';
+import { TrendingUp, DollarSign, PieChart } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -112,40 +112,27 @@ export default function BusinessTab({ data }) {
         </div>
       </div>
 
-      {/* Key Insights */}
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h3 className="text-xl font-bold text-gray-900 mb-4">תובנות מרכזיות</h3>
-        <div className="grid md:grid-cols-3 gap-4">
-          <InsightCard
-            label="לקוח טוב ביותר"
-            value="אבי כהן"
-            detail="₪8,500 החודש"
-            color="bg-blue-50 text-blue-700"
-          />
-          <InsightCard
-            label="מקור הכנסה עיקרי"
-            value="שירותי ייעוץ"
-            detail="65% מהכנסות"
-            color="bg-purple-50 text-purple-700"
-          />
-          <InsightCard
-            label="ממוצע לחשבונית"
-            value="₪2,100"
-            detail="+12% מחודש שעבר"
-            color="bg-green-50 text-green-700"
-          />
+      {/* AI-Powered Insights */}
+      <InsightsEngine clientData={data} period={period} />
+      
+      {/* Additional Stats */}
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+          <p className="text-sm text-blue-700 mb-1">לקוח טוב ביותר</p>
+          <p className="text-2xl font-bold text-blue-900 mb-1">אבי כהן</p>
+          <p className="text-xs text-blue-600">₪8,500 החודש</p>
+        </div>
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+          <p className="text-sm text-purple-700 mb-1">מקור הכנסה עיקרי</p>
+          <p className="text-2xl font-bold text-purple-900 mb-1">שירותי ייעוץ</p>
+          <p className="text-xs text-purple-600">65% מההכנסות</p>
+        </div>
+        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+          <p className="text-sm text-green-700 mb-1">ממוצע לחשבונית</p>
+          <p className="text-2xl font-bold text-green-900 mb-1">₪2,100</p>
+          <p className="text-xs text-green-600">+12% מחודש שעבר</p>
         </div>
       </div>
     </motion.div>
-  );
-}
-
-function InsightCard({ label, value, detail, color }) {
-  return (
-    <div className={`rounded-xl p-4 ${color}`}>
-      <p className="text-sm opacity-75 mb-1">{label}</p>
-      <p className="text-xl font-bold mb-1">{value}</p>
-      <p className="text-xs opacity-75">{detail}</p>
-    </div>
   );
 }

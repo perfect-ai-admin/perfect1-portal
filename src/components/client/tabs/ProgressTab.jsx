@@ -4,9 +4,11 @@ import JourneyTimeline, { MILESTONES } from '../progress/JourneyTimeline';
 import NextStepCard from '../progress/NextStepCard';
 import QuickStatsBar from '../progress/QuickStatsBar';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
-import { Trophy, Sparkles, Target } from 'lucide-react';
+import AchievementsSystem from '../progress/AchievementsSystem';
+import SmartRecommendations from '../SmartRecommendations';
+import { Sparkles, Target } from 'lucide-react';
 
-export default function ProgressTab({ data }) {
+export default function ProgressTab({ data, onNavigate }) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState(null);
   
@@ -92,29 +94,12 @@ export default function ProgressTab({ data }) {
           </div>
         </div>
 
-        {/* Right Sidebar - Achievements 25% */}
+        {/* Right Sidebar - Achievements & Recommendations 25% */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl shadow-lg p-6 text-white">
-            <Trophy className="w-12 h-12 mb-4 mx-auto" />
-            <h3 className="text-2xl font-bold text-center mb-3">ההישגים שלך</h3>
-            <div className="space-y-3">
-              <AchievementBadge 
-                title="מתחיל מוצלח"
-                description="פתחת את התיק"
-                unlocked={true}
-              />
-              <AchievementBadge 
-                title="יזם אמיתי"
-                description="חשבונית ראשונה"
-                unlocked={false}
-              />
-              <AchievementBadge 
-                title="עסק ברווח"
-                description="3 חודשים רצופים"
-                unlocked={false}
-              />
-            </div>
-          </div>
+          <AchievementsSystem compact={true} />
+
+          {/* Smart Recommendations */}
+          <SmartRecommendations compact={true} onNavigate={onNavigate} />
 
           {/* Quick Actions */}
           <div className="bg-white rounded-2xl shadow-lg p-6">
@@ -135,21 +120,5 @@ export default function ProgressTab({ data }) {
       </div>
     </motion.div>
     </>
-  );
-}
-
-function AchievementBadge({ title, description, unlocked }) {
-  return (
-    <div className={`bg-white/10 backdrop-blur rounded-lg p-3 ${!unlocked && 'opacity-50'}`}>
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${unlocked ? 'bg-yellow-300' : 'bg-gray-400'}`}>
-          <Trophy className="w-5 h-5 text-gray-800" />
-        </div>
-        <div className="flex-1">
-          <p className="font-bold text-sm">{title}</p>
-          <p className="text-xs opacity-90">{description}</p>
-        </div>
-      </div>
-    </div>
   );
 }

@@ -4,6 +4,8 @@ import { Send, Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { base44 } from '@/api/base44Client';
+import ContextPanel from './ContextPanel';
+import ReactMarkdown from 'react-markdown';
 
 export default function MentorChat({ clientData }) {
   const [messages, setMessages] = useState([
@@ -70,9 +72,13 @@ ${userMessage}
   };
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-2xl shadow-xl overflow-hidden">
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+    <div className="space-y-4">
+      {/* Context Panel */}
+      <ContextPanel clientData={clientData} />
+      
+      <div className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden" style={{ height: '600px' }}>
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
         <AnimatePresence>
           {messages.map((message, index) => (
             <motion.div
@@ -91,7 +97,13 @@ ${userMessage}
                 {message.role === 'assistant' && (
                   <Sparkles className="w-5 h-5 text-blue-600 mb-2" />
                 )}
-                <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                {message.role === 'user' ? (
+                  <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                ) : (
+                  <ReactMarkdown className="text-base leading-relaxed prose prose-sm max-w-none">
+                    {message.content}
+                  </ReactMarkdown>
+                )}
               </div>
             </motion.div>
           ))}
@@ -155,6 +167,7 @@ ${userMessage}
             <Send className="w-5 h-5" />
           </Button>
         </div>
+      </div>
       </div>
     </div>
   );

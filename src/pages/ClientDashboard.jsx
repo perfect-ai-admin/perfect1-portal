@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
-  LogOut, Bell, HelpCircle, User
+  LogOut, HelpCircle, User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -25,6 +25,8 @@ import FinancialTab from '../components/client/tabs/FinancialTab';
 import GoalsTab from '../components/client/tabs/GoalsTab';
 import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
+import NotificationCenter from '../components/client/NotificationCenter';
+import QuickInvoiceButton from '../components/client/financial/QuickInvoiceButton';
 
 export default function ClientDashboard() {
   const [client, setClient] = useState(null);
@@ -101,10 +103,7 @@ export default function ClientDashboard() {
 
               <div className="flex items-center gap-3">
                 {/* Notifications */}
-                <button className="relative p-2 hover:bg-white/10 rounded-lg transition-all">
-                  <Bell className="w-6 h-6" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                <NotificationCenter />
 
                 {/* Help */}
                 <button className="p-2 hover:bg-white/10 rounded-lg transition-all">
@@ -137,7 +136,7 @@ export default function ClientDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
           <AnimatePresence mode="wait">
             {activeTab === 'progress' && (
-              <ProgressTab key="progress" data={currentData} />
+              <ProgressTab key="progress" data={currentData} onNavigate={setActiveTab} />
             )}
             {activeTab === 'business' && (
               <BusinessTab key="business" data={currentData} />
@@ -156,6 +155,9 @@ export default function ClientDashboard() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Quick Invoice Floating Button */}
+        <QuickInvoiceButton />
       </div>
     </>
   );
