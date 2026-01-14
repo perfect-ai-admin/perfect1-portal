@@ -42,14 +42,7 @@ export default function ResourceHints({ priorityImages = [], prefetchPages = [] 
         rel="preload" 
         href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" 
         as="style"
-        onLoad="this.onload=null;this.rel='stylesheet'"
       />
-      <noscript>
-        <link 
-          rel="stylesheet" 
-          href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" 
-        />
-      </noscript>
     </Helmet>
   );
 }
