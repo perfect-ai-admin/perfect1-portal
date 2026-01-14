@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Sparkles, Phone, MessageCircle, Mail, X } from 'lucide-react';
+import { CheckCircle, Sparkles, Phone, MessageCircle, Mail, X, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
@@ -94,6 +94,34 @@ export default function ThankYou() {
               <p className="text-lg text-gray-500 mb-8">
                 נציג מהצוות שלנו יצור איתך קשר בהקדם האפשרי
               </p>
+            </motion.div>
+
+            {/* Telegram Channel */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mb-8"
+            >
+              <a
+                href="https://t.me/perfectone_is"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <div className="bg-gradient-to-r from-[#0088cc] to-[#00a0e9] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <Send className="w-8 h-8 text-white" />
+                    <h3 className="text-2xl font-bold text-white">טיפים לעצמאים מתחילים</h3>
+                  </div>
+                  <p className="text-white/90 text-center text-lg mb-3">
+                    הצטרפו לערוץ הטלגרם שלנו
+                  </p>
+                  <p className="text-white/80 text-center text-sm">
+                    קבלו טיפים, כלים ועדכונים שימושיים בדרך להצלחה עצמאית
+                  </p>
+                </div>
+              </a>
             </motion.div>
 
             {/* Divider */}
