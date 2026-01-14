@@ -4,7 +4,9 @@ import MentorChat from '../mentor/MentorChat';
 import ConversationHistory from '../mentor/ConversationHistory';
 import ActionItems from '../mentor/ActionItems';
 import ResourceLibrary from '../mentor/ResourceLibrary';
-import { Lightbulb, Database, Lock, Sparkles, MessageSquare, CheckSquare, BookOpen } from 'lucide-react';
+import SalesScripts from '../mentor/SalesScripts';
+import DailyOperations from '../mentor/DailyOperations';
+import { Lightbulb, Database, Lock, Sparkles, MessageSquare, CheckSquare, BookOpen, Zap, Calendar } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function MentorTab({ data }) {
@@ -88,17 +90,25 @@ export default function MentorTab({ data }) {
 
       {/* Main Content with Tabs */}
       <Tabs defaultValue="chat" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
           <TabsTrigger value="chat">
             <MessageSquare className="w-4 h-4 ml-2" />
             שיחה
           </TabsTrigger>
-          <TabsTrigger value="history">היסטוריה</TabsTrigger>
-          <TabsTrigger value="actions">
+          <TabsTrigger value="sales">
+            <Zap className="w-4 h-4 ml-2" />
+            מכירות
+          </TabsTrigger>
+          <TabsTrigger value="operations">
+            <Calendar className="w-4 h-4 ml-2" />
+            יום יום
+          </TabsTrigger>
+          <TabsTrigger value="history" className="hidden lg:flex">היסטוריה</TabsTrigger>
+          <TabsTrigger value="actions" className="hidden lg:flex">
             <CheckSquare className="w-4 h-4 ml-2" />
             פעולות
           </TabsTrigger>
-          <TabsTrigger value="resources">
+          <TabsTrigger value="resources" className="hidden lg:flex">
             <BookOpen className="w-4 h-4 ml-2" />
             משאבים
           </TabsTrigger>
@@ -107,6 +117,20 @@ export default function MentorTab({ data }) {
         <TabsContent value="chat" className="mt-6">
           <div className="h-[600px]">
             <MentorChat clientData={data} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="sales" className="mt-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">תסרטי מכירות - שפר את הערוצים שלך 📞</h3>
+            <SalesScripts />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="operations" className="mt-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">סדר יום יעיל 📅</h3>
+            <DailyOperations />
           </div>
         </TabsContent>
 
