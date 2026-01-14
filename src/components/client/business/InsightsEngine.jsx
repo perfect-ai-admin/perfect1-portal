@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, TrendingUp, TrendingDown, AlertCircle, CheckCircle } from 'lucide-react';
+import { Sparkles, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function InsightsEngine({ clientData, period = 'month' }) {
   // Mock insights - replace with real AI-generated insights
