@@ -285,13 +285,24 @@ export default function Header() {
               סגירת עסק
             </Link>
 
-            <Link
-              to={createPageUrl('About')}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all"
-            >
-              מי אנחנו
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-gray-700 hover:text-[#1E3A5F] hover:bg-gray-50 rounded-xl font-semibold transition-all">
+                מי אנחנו
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl('About')} className="cursor-pointer text-base">
+                    אודות
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl('BizPilot')} className="cursor-pointer text-base">
+                    BizPilot
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <Link
               to={createPageUrl('Contact')}
@@ -545,7 +556,16 @@ export default function Header() {
                           onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                           className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
                         >
-                          מי אנחנו
+                          אודות
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to={createPageUrl('BizPilot')}
+                          onClick={() => { setIsMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="flex items-center py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#1E3A5F] font-semibold transition-all text-lg"
+                        >
+                          BizPilot
                         </Link>
                       </li>
                       <li>
