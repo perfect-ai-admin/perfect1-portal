@@ -1,9 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import MentorChat from '../mentor/MentorChat';
-import { Lightbulb, Database, Lock, Sparkles } from 'lucide-react';
+import ConversationHistory from '../mentor/ConversationHistory';
+import ActionItems from '../mentor/ActionItems';
+import ResourceLibrary from '../mentor/ResourceLibrary';
+import { Lightbulb, Database, Lock, Sparkles, MessageSquare, CheckSquare, BookOpen } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function MentorTab({ data }) {
+  const [actionItems, setActionItems] = useState([
+    { id: '1', title: 'צור חשבונית ראשונה', description: 'התחל לעבוד עם לקוחות', relatedTab: 'ניהול כספים', completed: false },
+    { id: '2', title: 'הגדר מטרה חודשית', description: 'קבע יעד הכנסה', relatedTab: 'המטרות שלי', completed: false }
+  ]);
+
+  const mockConversations = [
+    {
+      id: '1',
+      title: 'האם עכשיו זמן טוב להשקיע בשיווק?',
+      preview: 'שאלה על תזמון השקעה שיווקית...',
+      timestamp: new Date().toISOString()
+    }
+  ];
+
+  const handleToggleAction = (itemId) => {
+    setActionItems(prev => prev.map(item =>
+      item.id === itemId ? { ...item, completed: !item.completed } : item
+    ));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -62,10 +86,59 @@ export default function MentorTab({ data }) {
         </div>
       </div>
 
-      {/* Chat Interface */}
-      <div className="h-[600px]">
-        <MentorChat clientData={data} />
-      </div>
+      {/* Main Content with Tabs */}
+      <Tabs defaultValue="chat" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="chat">
+            <MessageSquare className="w-4 h-4 ml-2" />
+            שיחה
+          </TabsTrigger>
+          <TabsTrigger value="history">היסטוריה</TabsTrigger>
+          <TabsTrigger value="actions">
+            <CheckSquare className="w-4 h-4 ml-2" />
+            פעולות
+          </TabsTrigger>
+          <TabsTrigger value="resources">
+            <BookOpen className="w-4 h-4 ml-2" />
+            משאבים
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="chat" className="mt-6">
+          <div className="h-[600px]">
+            <MentorChat clientData={data} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="history" className="mt-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">שיחות קודמות</h3>
+            <ConversationHistory 
+              conversations={mockConversations}
+              onSelect={(conv) => console.log('Selected:', conv)}
+              onDelete={(id) => console.log('Delete:', id)}
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="actions" className="mt-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">פעולות שהמנטור המליץ</h3>
+            <ActionItems 
+              items={actionItems}
+              onToggle={handleToggleAction}
+              onNavigate={(tab) => console.log('Navigate to:', tab)}
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="resources" className="mt-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">ספריית משאבים</h3>
+            <ResourceLibrary />
+          </div>
+        </TabsContent>
+      </Tabs>
     </motion.div>
   );
 }

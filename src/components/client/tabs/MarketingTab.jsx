@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Megaphone, Palette, TrendingUp, Users, BookOpen, Lightbulb } from 'lucide-react';
+import LogoCreator from '../marketing/LogoCreator';
+import CampaignBuilder from '../marketing/CampaignBuilder';
+import { Megaphone, Palette, TrendingUp, Users, BookOpen, Lightbulb, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -39,14 +41,18 @@ export default function MarketingTab({ data }) {
 
       {/* Marketing Tools Tabs */}
       <Tabs defaultValue="brand" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-6">
+        <TabsList className="grid w-full grid-cols-5 mb-6">
           <TabsTrigger value="brand">
             <Palette className="w-4 h-4 ml-2" />
             מיתוג
           </TabsTrigger>
+          <TabsTrigger value="campaign">
+            <Rocket className="w-4 h-4 ml-2" />
+            קמפיין
+          </TabsTrigger>
           <TabsTrigger value="gbp">
             <Users className="w-4 h-4 ml-2" />
-            Google Business
+            Google
           </TabsTrigger>
           <TabsTrigger value="roi">
             <TrendingUp className="w-4 h-4 ml-2" />
@@ -60,21 +66,15 @@ export default function MarketingTab({ data }) {
 
         <TabsContent value="brand">
           <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">סטודיו למיתוג</h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              <ToolCard
-                title="יצירת לוגו"
-                description="צור לוגו מקצועי עם AI תוך דקות"
-                icon={<Palette className="w-8 h-8" />}
-                color="from-purple-500 to-purple-600"
-              />
-              <ToolCard
-                title="פלטת צבעים"
-                description="בחר צבעים שמתאימים לעסק שלך"
-                icon={<Palette className="w-8 h-8" />}
-                color="from-pink-500 to-pink-600"
-              />
-            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">סטודיו למיתוג - יצירת לוגו</h3>
+            <LogoCreator businessName={data.name} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="campaign">
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">בונה קמפיינים</h3>
+            <CampaignBuilder />
           </div>
         </TabsContent>
 

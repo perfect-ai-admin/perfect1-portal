@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import VisionCard from '../business/VisionCard';
 import MetricQuadrant from '../business/MetricQuadrant';
+import ExpenseDonutChart from '../business/ExpenseDonutChart';
+import RevenueLineChart from '../business/RevenueLineChart';
+import ExportDialog from '../shared/ExportDialog';
 import { TrendingUp, DollarSign, PieChart, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -57,10 +60,7 @@ export default function BusinessTab({ data }) {
               <SelectItem value="year">שנה נוכחית</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm">
-            <Download className="w-4 h-4 ml-2" />
-            ייצוא
-          </Button>
+          <ExportDialog data={revenueData} filename="business-data" />
         </div>
       </div>
 
@@ -98,6 +98,18 @@ export default function BusinessTab({ data }) {
           chartData={revenueData}
           icon={TrendingUp}
         />
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">מגמת הכנסות</h3>
+          <RevenueLineChart data={revenueData} period={period} />
+        </div>
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">פילוח הוצאות</h3>
+          <ExpenseDonutChart />
+        </div>
       </div>
 
       {/* Key Insights */}

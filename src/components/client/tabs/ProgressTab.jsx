@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import JourneyTimeline, { MILESTONES } from '../progress/JourneyTimeline';
 import NextStepCard from '../progress/NextStepCard';
 import QuickStatsBar from '../progress/QuickStatsBar';
+import CelebrationOverlay from '../shared/CelebrationOverlay';
 import { Trophy, Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data }) {
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationData, setCelebrationData] = useState(null);
+  
   // Mock data - יש להחליף בנתונים אמיתיים
   const completedMilestones = ['registration'];
   const currentMilestone = 'first_invoice';
@@ -21,18 +25,35 @@ export default function ProgressTab({ data }) {
     title: 'צור את החשבונית הראשונה שלך',
     why: 'זה הצעד שהופך אותך מעצמאי בתיאוריה לעסק אמיתי. חשבונית ראשונה היא האבן הראשונה בבניין העסק שלך.',
     icon: <Target className="w-10 h-10" />,
-    action: () => {}
+    action: () => {
+      setCelebrationData({
+        title: 'התחלת לעבוד על השלב הבא!',
+        description: 'יצירת חשבונית ראשונה היא צעד משמעותי'
+      });
+      setShowCelebration(true);
+    }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="space-y-8"
-    >
-      {/* Quick Stats */}
-      <QuickStatsBar stats={quickStats} />
+    <>
+      <CelebrationOverlay
+        show={showCelebration}
+        achievement={celebrationData}
+        onClose={() => setShowCelebration(false)}
+        onShare={() => {
+          alert('שיתוף בקרוב!');
+          setShowCelebration(false);
+        }}
+      />
+      
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="space-y-8"
+      >
+        {/* Quick Stats */}
+        <QuickStatsBar stats={quickStats} />
 
       {/* Main Grid - Desktop */}
       <div className="grid lg:grid-cols-12 gap-8">
@@ -113,6 +134,7 @@ export default function ProgressTab({ data }) {
         </div>
       </div>
     </motion.div>
+    </>
   );
 }
 
