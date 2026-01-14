@@ -6,6 +6,7 @@ import ExpenseDonutChart from '../business/ExpenseDonutChart';
 import RevenueLineChart from '../business/RevenueLineChart';
 import ExportDialog from '../shared/ExportDialog';
 import InsightsEngine from '../business/InsightsEngine';
+import FocusDashboard from '../business/FocusDashboard';
 import { TrendingUp, DollarSign, PieChart } from 'lucide-react';
 import {
   Select,
@@ -111,6 +112,11 @@ export default function BusinessTab({ data }) {
           <ExpenseDonutChart />
         </div>
       </div>
+
+      {/* Focus Dashboard */}
+      {data.business_state?.focus_state && (
+        <FocusDashboard focusState={data.business_state.focus_state} />
+      )}
 
       {/* AI-Powered Insights */}
       <InsightsEngine clientData={data} period={period} />
