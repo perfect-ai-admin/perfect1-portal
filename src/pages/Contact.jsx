@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import InternalLinker from '../components/seo/InternalLinker';
 import MicroCTA from '../components/cro/MicroCTA';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
-import { Phone, MessageCircle, Mail, Clock, MapPin, Building2 } from 'lucide-react';
+import { Phone, MessageCircle, Mail, Clock, MapPin, Building2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LeadForm from '../components/forms/LeadForm';
 import GoogleMapEmbed from '../components/maps/GoogleMapEmbed';
@@ -119,6 +119,23 @@ export default function Contact() {
                     <div>
                       <h3 className="font-bold text-[#1E3A5F]">וואטסאפ</h3>
                       <p className="text-gray-600">לשיחה מהירה ונוחה</p>
+                    </div>
+                  </div>
+                </a>
+
+                <a 
+                  href="https://t.me/perfectone_is" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-elegant transition-all flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-[#0088cc] flex items-center justify-center">
+                      <Send className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-[#1E3A5F]">ערוץ טלגרם</h3>
+                      <p className="text-gray-600">טיפים וכלים לעצמאים</p>
                     </div>
                   </div>
                 </a>
