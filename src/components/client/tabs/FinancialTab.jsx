@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import InvoiceGenerator from '../financial/InvoiceGenerator';
-import { FileText, DollarSign, TrendingUp, AlertCircle, ExternalLink } from 'lucide-react';
+import { FileText, DollarSign, TrendingUp, AlertCircle, ExternalLink, TrendingDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -111,7 +111,7 @@ export default function FinancialTab({ data }) {
             <ReportCard
               title="תזרים מזומנים"
               description="תחזית לעומת ביצוע בפועל"
-              icon={Activity}
+              icon={TrendingDown}
               color="from-orange-500 to-orange-600"
             />
           </div>
