@@ -13,6 +13,7 @@ import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
 import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 import QAChecker from './components/QAChecker';
+import BusinessStateBanner from './components/client/BusinessStateBanner';
 
 export default function Layout({ children, currentPageName }) {
     const location = useLocation();
@@ -86,11 +87,12 @@ export default function Layout({ children, currentPageName }) {
       <WebVitalsMonitor />
       <QAChecker />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
-        <Header />
-        <main>
-          {children}
-        </main>
-        <Footer />
+                <Header />
+                <BusinessStateBanner />
+                <main>
+                  {children}
+                </main>
+                <Footer />
       </div>
     </HelmetProvider>
   );
