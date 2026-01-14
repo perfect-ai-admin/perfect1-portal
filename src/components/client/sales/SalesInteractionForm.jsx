@@ -231,10 +231,10 @@ export default function SalesInteractionForm({ open, onOpenChange, onSuccess }) 
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1 - קצר (< 5 דק)</SelectItem>
+                  <SelectItem value="1">1 - קצר (&lt; 5 דק)</SelectItem>
                   <SelectItem value="2">2 - בסיסי (5-10 דק)</SelectItem>
                   <SelectItem value="3">3 - עמוק (10-20 דק)</SelectItem>
-                  <SelectItem value="4">4 - מקיף (> 20 דק)</SelectItem>
+                  <SelectItem value="4">4 - מקיף (&gt; 20 דק)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
