@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Lock, User } from 'lucide-react';
+import { Loader2, Lock, User, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -52,7 +52,7 @@ export default function ClientLogin() {
   return (
     <>
       <Helmet>
-        <title>כניסה לאזור האישי | Perfect One</title>
+        <title>כניסה ל-BizPilot | ניהול העסק במקום אחד</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -62,14 +62,21 @@ export default function ClientLogin() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] p-8 text-center">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-10 h-10 text-white" />
+            <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] p-8 text-center relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                }} />
               </div>
-              <h1 className="text-3xl font-bold text-white mb-2">אזור אישי</h1>
-              <p className="text-gray-200">ברוך הבא למרכז הבקרה העסקי שלך</p>
+              <div className="relative">
+                <div className="w-24 h-24 bg-gradient-to-br from-white/20 to-white/10 rounded-3xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border-2 border-white/30">
+                  <Zap className="w-12 h-12 text-white" />
+                </div>
+                <h1 className="text-4xl font-black text-white mb-2">BizPilot</h1>
+                <p className="text-white/90 text-lg font-medium">ניהול העסק במקום אחד</p>
+              </div>
             </div>
 
             {/* Form */}
@@ -120,12 +127,15 @@ export default function ClientLogin() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-12 text-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold"
+                  className="w-full h-14 text-lg bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 >
                   {isLoading ? (
                     <><Loader2 className="w-5 h-5 animate-spin ml-2" /> מתחבר...</>
                   ) : (
-                    'כניסה לאזור האישי'
+                    <>
+                      <Zap className="w-5 h-5 ml-2" />
+                      כניסה ל-BizPilot
+                    </>
                   )}
                 </Button>
               </form>
@@ -146,10 +156,15 @@ export default function ClientLogin() {
             </div>
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-white text-sm">
-              האזור האישי מאובטח ומוצפן לשמירת הפרטיות שלך
+          <div className="mt-8 text-center space-y-3">
+            <p className="text-white/90 text-sm font-medium">
+              🔒 מאובטח ומוצפן לשמירת הפרטיות שלך
             </p>
+            <div className="flex items-center justify-center gap-6 text-white/70 text-xs">
+              <span>💼 ניהול עסקי</span>
+              <span>📊 דיווחים</span>
+              <span>📈 צמיחה</span>
+            </div>
           </div>
         </motion.div>
       </div>
