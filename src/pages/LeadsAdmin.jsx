@@ -1106,7 +1106,8 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading }) {
     priority: lead.priority || 'medium',
     follow_up_date: lead.follow_up_date || '',
     last_contact_date: lead.last_contact_date || '',
-    notes: lead.notes || ''
+    notes: lead.notes || '',
+    not_interested_reason: lead.not_interested_reason || ''
   });
 
   const handleSubmit = (e) => {
