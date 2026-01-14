@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import VisionCard from '../business/VisionCard';
 import MetricQuadrant from '../business/MetricQuadrant';
-import { TrendingUp, DollarSign, PieChart, Activity, Download } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -96,7 +96,7 @@ export default function BusinessTab({ data }) {
           change="+3%"
           trend={3}
           chartData={revenueData}
-          icon={Activity}
+          icon={TrendingUp}
         />
       </div>
 
