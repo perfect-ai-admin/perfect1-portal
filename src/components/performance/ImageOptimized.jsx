@@ -8,26 +8,40 @@ export default function ImageOptimized({
   width,
   height,
   priority = false,
+  sizes,
   ...props 
 }) {
   const [loaded, setLoaded] = useState(false);
+  const [imageSrc, setImageSrc] = useState(src);
 
   useEffect(() => {
+    // Convert to WebP if browser supports it
+    const supportsWebP = document.createElement('canvas')
+      .toDataURL('image/webp')
+      .indexOf('data:image/webp') === 0;
+    
+    if (supportsWebP && src && !src.includes('.svg') && !src.includes('data:')) {
+      const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+      setImageSrc(webpSrc);
+    }
+
     if (priority) {
       const img = new Image();
-      img.src = src;
+      img.src = imageSrc;
       img.onload = () => setLoaded(true);
     }
-  }, [src, priority]);
+  }, [src, priority, imageSrc]);
 
   return (
     <img
-      src={src}
+      src={imageSrc}
       alt={alt}
       width={width}
       height={height}
+      sizes={sizes}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
+      fetchpriority={priority ? 'high' : 'auto'}
       onLoad={() => setLoaded(true)}
       className={cn(
         'transition-opacity duration-300',

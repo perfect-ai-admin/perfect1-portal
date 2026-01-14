@@ -62,6 +62,11 @@ export default function Layout({ children, currentPageName }) {
   return (
     <HelmetProvider>
         <Helmet>
+          {/* Performance optimizations */}
+          <meta httpEquiv="x-dns-prefetch-control" content="on" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+          
+          {/* Google Ads Conversion Tracking */}
           <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085" />
           <script dangerouslySetInnerHTML={{__html: `
             window.dataLayer = window.dataLayer || [];
@@ -69,13 +74,14 @@ export default function Layout({ children, currentPageName }) {
             gtag('js', new Date());
             gtag('config', 'AW-10811556085');
           `}} />
+          
+          {/* Facebook Pixel */}
           <script async dangerouslySetInnerHTML={{__html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');if(typeof fbq !== 'undefined'){fbq('init','1234567890');fbq('track','PageView');}`}} />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </Helmet>
       <CriticalCSS />
       <ResourceHints 
         priorityImages={['/logo.png']}
-        prefetchPages={['/Services', '/Pricing', '/Contact']}
+        prefetchPages={['/Services', '/Pricing', '/Contact', '/OsekPaturLanding', '/Blog']}
       />
       <WebVitalsMonitor />
       <QAChecker />
@@ -85,8 +91,6 @@ export default function Layout({ children, currentPageName }) {
           {children}
         </main>
         <Footer />
-
-
       </div>
     </HelmetProvider>
   );
