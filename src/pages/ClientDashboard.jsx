@@ -42,12 +42,22 @@ export default function ClientDashboard() {
 
   // Check authentication
   useEffect(() => {
-    const storedClient = localStorage.getItem('client');
-    if (!storedClient) {
+    try {
+      const storedClient = localStorage.getItem('client');
+      if (!storedClient) {
+        navigate(createPageUrl('ClientLogin'));
+        return;
+      }
+      const parsed = JSON.parse(storedClient);
+      if (!parsed?.id || !parsed?.name) {
+        throw new Error('Invalid client data');
+      }
+      setClient(parsed);
+    } catch (error) {
+      console.error('Auth error:', error);
+      localStorage.removeItem('client');
       navigate(createPageUrl('ClientLogin'));
-      return;
     }
-    setClient(JSON.parse(storedClient));
   }, [navigate]);
 
   // Fetch client data
