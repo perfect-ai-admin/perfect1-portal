@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Download, FileText, Table } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +15,46 @@ import { Label } from '@/components/ui/label';
 export default function ExportDialog({ data, filename = 'export' }) {
   const [format, setFormat] = useState('pdf');
   const [isExporting, setIsExporting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const drawerRef = useRef(null);
+  const initialFocusRef = useRef(null);
+
+  // Focus trap implementation
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key !== 'Tab') return;
+
+      const focusableElements = drawerRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ) || [];
+
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    drawerRef.current?.addEventListener('keydown', handleKeyDown);
+    initialFocusRef.current?.focus();
+
+    return () => {
+      drawerRef.current?.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
 
   const handleExport = async () => {
     setIsExporting(true);
@@ -33,16 +73,16 @@ export default function ExportDialog({ data, filename = 'export' }) {
   };
 
   return (
-    <Drawer>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <Button variant="outline" size="sm">
           <Download className="w-4 h-4 ml-2" />
           ייצוא
         </Button>
       </DrawerTrigger>
-      <DrawerContent dir="rtl">
+      <DrawerContent dir="rtl" ref={drawerRef} role="dialog" aria-modal="true" aria-labelledby="export-title">
         <DrawerHeader>
-          <DrawerTitle>ייצוא נתונים</DrawerTitle>
+          <DrawerTitle id="export-title" ref={initialFocusRef} tabIndex="-1">ייצוא נתונים</DrawerTitle>
           <DrawerDescription>
             בחר את הפורמט המועדף עליך
           </DrawerDescription>
