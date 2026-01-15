@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, TrendingDown, FileText, Target, Calendar, X, Sparkles } from 'lucide-react';
+import { AlertTriangle, TrendingDown, FileText, Target, Calendar, X, Sparkles, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
