@@ -7,7 +7,7 @@ import FINBOTAuthButton from '../financial/FINBOTAuthButton';
 import DocumentScanner from '../financial/DocumentScanner';
 import BankSyncComponent from '../financial/BankSyncComponent';
 import VATReportingComponent from '../financial/VATReportingComponent';
-import { FileText, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
+import { FileText, DollarSign, TrendingUp, AlertCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
