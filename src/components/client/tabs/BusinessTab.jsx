@@ -294,24 +294,7 @@ export default function BusinessTab({ data }) {
       {/* AI-Powered Insights */}
       <InsightsEngine clientData={data} period={period} />
 
-      {/* Additional Stats */}
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
-          <p className="text-sm text-blue-700 mb-1">לקוח טוב ביותר</p>
-          <p className="text-2xl font-bold text-blue-900 mb-1">אבי כהן</p>
-          <p className="text-xs text-blue-600">₪8,500 החודש</p>
-        </div>
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
-          <p className="text-sm text-purple-700 mb-1">מקור הכנסה עיקרי</p>
-          <p className="text-2xl font-bold text-purple-900 mb-1">שירותי ייעוץ</p>
-          <p className="text-xs text-purple-600">65% מההכנסות</p>
-        </div>
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
-          <p className="text-sm text-green-700 mb-1">ממוצע לחשבונית</p>
-          <p className="text-2xl font-bold text-green-900 mb-1">₪2,100</p>
-          <p className="text-xs text-green-600">+12% מחודש שעבר</p>
-        </div>
-      </div>
+
     </motion.div>
   );
 }
