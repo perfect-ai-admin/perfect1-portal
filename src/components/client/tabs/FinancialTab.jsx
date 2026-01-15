@@ -29,56 +29,59 @@ export default function FinancialTab({ data }) {
     >
       {/* FINBOT Connection */}
       <FINBOTAuthButton onAuthSuccess={() => console.log('FINBOT connected')} />
-      {/* FINBOT Connection Banner */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl shadow-xl p-8 text-white">
-        <div className="flex items-start justify-between gap-6">
+      {/* FINBOT Connection Banner - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-md p-4 md:p-6 text-white">
+        <div className="flex flex-col gap-4">
           <div className="flex-1">
-            <h2 className="text-3xl font-bold mb-3">ניהול כספים מתקדם עם FINBOT</h2>
-            <p className="text-lg opacity-90 mb-4">
+            <h2 className="text-lg md:text-2xl font-bold mb-2">ניהול כספים עם FINBOT</h2>
+            <p className="text-sm md:text-base opacity-90 mb-3">
               מערכת מקצועית לניהול חשבוניות, הוצאות ודיווחים - עם דיוק של 97%
             </p>
-            <ul className="space-y-2 text-sm opacity-90">
-              <li className="flex items-center gap-2">✓ יצירת חשבוניות מקצועיות</li>
-              <li className="flex items-center gap-2">✓ סריקת קבלות אוטומטית (OCR)</li>
-              <li className="flex items-center gap-2">✓ דיווחי מע"מ אוטומטיים</li>
-              <li className="flex items-center gap-2">✓ סנכרון עם הבנק</li>
+            <ul className="space-y-1 text-xs md:text-sm opacity-90">
+              <li className="flex items-center gap-2">✓ חשבוניות מקצועיות</li>
+              <li className="flex items-center gap-2">✓ סריקת קבלות</li>
+              <li className="flex items-center gap-2">✓ דיווחי מע"מ</li>
+              <li className="flex items-center gap-2">✓ סנכרון בנק</li>
             </ul>
+            <Button 
+              size="sm" 
+              className="bg-white text-blue-600 hover:bg-gray-100 w-full mt-3"
+            >
+              <ExternalLink className="w-4 h-4 ml-2" />
+              התחבר ל-FINBOT
+            </Button>
           </div>
-          <Button 
-            size="lg"
-            className="bg-white text-blue-600 hover:bg-gray-100"
-          >
-            <ExternalLink className="w-5 h-5 ml-2" />
-            התחבר ל-FINBOT
-          </Button>
         </div>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="invoices" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 mb-6">
-          <TabsTrigger value="invoices" className="text-base">
-            <FileText className="w-4 h-4 ml-2" />
-            חשבוניות
+        <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-4 h-auto p-1"
+          <TabsTrigger value="invoices" className="text-xs md:text-base flex-col gap-1 py-2">
+            <FileText className="w-4 h-4" />
+            <span className="hidden md:inline">חשבוניות</span>
+            <span className="md:hidden">חשבוניות</span>
           </TabsTrigger>
-          <TabsTrigger value="documents" className="text-base">
-            <FileText className="w-4 h-4 ml-2" />
-            סריקה
+          <TabsTrigger value="documents" className="text-xs md:text-base flex-col gap-1 py-2">
+            <FileText className="w-4 h-4" />
+            <span className="hidden md:inline">סריקה</span>
+            <span className="md:hidden">סריקה</span>
           </TabsTrigger>
-          <TabsTrigger value="bank" className="text-base">
-            <TrendingUp className="w-4 h-4 ml-2" />
-            בנק
+          <TabsTrigger value="bank" className="text-xs md:text-base flex-col gap-1 py-2">
+            <TrendingUp className="w-4 h-4" />
+            <span className="hidden md:inline">בנק</span>
+            <span className="md:hidden">בנק</span>
           </TabsTrigger>
-          <TabsTrigger value="vat" className="text-base">
-            <FileText className="w-4 h-4 ml-2" />
+          <TabsTrigger value="vat" className="hidden md:flex text-xs md:text-base flex-col gap-1 py-2">
+            <FileText className="w-4 h-4" />
             מע"ם
           </TabsTrigger>
-          <TabsTrigger value="reports" className="text-base">
-            <TrendingUp className="w-4 h-4 ml-2" />
+          <TabsTrigger value="reports" className="hidden md:flex text-xs md:text-base flex-col gap-1 py-2">
+            <TrendingUp className="w-4 h-4" />
             דוחות
           </TabsTrigger>
-          <TabsTrigger value="budget" className="text-base">
-            <DollarSign className="w-4 h-4 ml-2" />
+          <TabsTrigger value="budget" className="hidden md:flex text-xs md:text-base flex-col gap-1 py-2">
+            <DollarSign className="w-4 h-4" />
             תקציב
           </TabsTrigger>
         </TabsList>

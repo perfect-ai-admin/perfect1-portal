@@ -153,8 +153,8 @@ export default function BusinessTab({ data }) {
         </div>
       </div>
 
-      {/* KPI Row - Compact */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* KPI Stack - Mobile Optimized */}
+      <div className="hidden md:grid md:grid-cols-4 gap-3">
         <MetricQuadrant
           title="הכנסות"
           value={42000}
@@ -197,17 +197,40 @@ export default function BusinessTab({ data }) {
         />
       </div>
 
-      {/* Charts Section - Compact */}
-      <div className="space-y-4">
-        <div className="grid lg:grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">מגמת הכנסות</h3>
-            <RevenueLineChart data={revenueData} period={period} />
+      {/* KPI List - Mobile */}
+      <div className="md:hidden space-y-2">
+        <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-600 font-medium">הכנסות</p>
+            <p className="text-lg font-bold text-gray-900">₪42,000</p>
           </div>
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">פילוח הוצאות</h3>
-            <ExpenseDonutChart />
+          <p className="text-xs text-green-600 font-semibold">↑ 15%</p>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-600 font-medium">הוצאות</p>
+            <p className="text-lg font-bold text-gray-900">₪18,500</p>
           </div>
+          <p className="text-xs text-green-600 font-semibold">↑ 5%</p>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-600 font-medium">רווח נקי</p>
+            <p className="text-lg font-bold text-gray-900">₪23,500</p>
+          </div>
+          <p className="text-xs text-green-600 font-semibold">↑ 28%</p>
+        </div>
+      </div>
+
+      {/* Charts Section - Mobile Optimized */}
+      <div className="space-y-3">
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <h3 className="text-sm font-bold text-gray-900 mb-2">מגמת הכנסות</h3>
+          <RevenueLineChart data={revenueData} period={period} />
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-3">
+          <h3 className="text-sm font-bold text-gray-900 mb-2">פילוח הוצאות</h3>
+          <ExpenseDonutChart />
         </div>
       </div>
 

@@ -60,13 +60,13 @@ export default function MentorConversation() {
 
   return (
     <div className="flex flex-col h-full bg-white">
-      {/* Header */}
-      <div className="border-b border-gray-200 p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-            <MessageCircle className="w-5 h-5 text-white" />
+      {/* Header - Mobile Optimized */}
+      <div className="border-b border-gray-200 p-4 md:p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="flex items-center gap-2 md:gap-3 mb-2">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+            <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">שיח עם המנטור החכם</h1>
+          <h1 className="text-lg md:text-2xl font-bold text-gray-900">שיח עם המנטור</h1>
         </div>
         {openInsights > 0 && (
           <p className="text-xs text-amber-600 flex items-center gap-1">
@@ -83,15 +83,15 @@ export default function MentorConversation() {
         </div>
       )}
 
-      {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+      {/* Chat Area - Mobile Optimized */}
+      <div className="flex-1 overflow-y-auto p-3 md:p-6 space-y-3 md:space-y-4 bg-gray-50">
         {messages.map((msg, idx) => (
           <ChatMessage key={msg.id} message={msg} delay={idx * 0.1} />
         ))}
       </div>
 
-      {/* Reply Composer */}
-      <div className="border-t border-gray-200 p-6 bg-white">
+      {/* Reply Composer - Mobile Optimized */}
+      <div className="border-t border-gray-200 p-3 md:p-6 bg-white">
         <ReplyComposer onSend={handleSendMessage} />
       </div>
     </div>

@@ -62,12 +62,12 @@ export default function GoalsTab({ data }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="space-y-6"
+      className="space-y-3"
     >
       {/* Hero Goal */}
       {heroGoal && (
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-3">המטרה הראשית שלך</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">המטרה הראשית שלך</p>
           <HeroGoal 
             goal={heroGoal}
             onStatusChange={handleStatusChange}
