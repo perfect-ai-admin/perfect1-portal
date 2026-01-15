@@ -56,7 +56,7 @@ export default function FinancialTab({ data }) {
 
       {/* Tabs */}
       <Tabs defaultValue="invoices" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-4 h-auto p-1"
+        <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-4 h-auto p-1">
           <TabsTrigger value="invoices" className="text-xs md:text-base flex-col gap-1 py-2">
             <FileText className="w-4 h-4" />
             <span className="hidden md:inline">חשבוניות</span>
