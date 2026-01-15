@@ -9,8 +9,6 @@ import GoalsFloatingButton from '../GoalsFloatingButton';
 import { Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data, onNavigate }) {
-  const [celebratingMilestone, setCelebratingMilestone] = useState(null);
-  
   // Mock data - יש להחליף בנתונים אמיתיים
   const completedMilestones = ['registration'];
   const currentMilestone = 'first_invoice';
