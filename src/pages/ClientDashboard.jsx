@@ -6,8 +6,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
-  LogOut, HelpCircle, User, AlertCircle
+  LogOut, HelpCircle, User, AlertCircle, Globe
 } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -39,6 +45,7 @@ import { SkeletonHeader, SkeletonTabContent } from '../components/client/Skeleto
 export default function ClientDashboard() {
   const [client, setClient] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
+  const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -102,6 +109,13 @@ export default function ClientDashboard() {
       console.error('Refresh error:', error);
       return Promise.resolve();
     }
+  };
+
+  const toggleLanguage = () => {
+    const newLang = language === 'he' ? 'en' : 'he';
+    setLanguage(newLang);
+    document.documentElement.dir = newLang === 'he' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
   };
 
   const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
@@ -200,13 +214,13 @@ export default function ClientDashboard() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl" lang="he">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
          {/* Header with staggered entrance */}
-         <header 
-         className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
-         role="banner"
-         aria-label="כותרת עמוד"
-         >
+          <header 
+            className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
+            role="banner"
+            aria-label={language === 'he' ? 'כותרת עמוד' : 'Page header'}
+          >
            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
              {/* Top Bar */}
              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -226,21 +240,47 @@ export default function ClientDashboard() {
                 {/* Notifications - Safe render */}
                 {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
+                {/* Language Toggle */}
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button 
+                        onClick={toggleLanguage}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
+                        aria-label={language === 'he' ? 'Switch to English' : 'עברית'}
+                      >
+                        <Globe className="w-6 h-6" aria-hidden="true" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="center">
+                      {language === 'he' ? 'English' : 'עברית'}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
                 {/* Help */}
-                 <button 
-                   className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
-                   aria-label="עזרה ותמיכה"
-                   title="עזרה ותמיכה"
-                 >
-                   <HelpCircle className="w-6 h-6" aria-hidden="true" />
-                 </button>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button 
+                        className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
+                        aria-label={language === 'he' ? 'עזרה ותמיכה' : 'Help and Support'}
+                      >
+                        <HelpCircle className="w-6 h-6" aria-hidden="true" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="center">
+                      {language === 'he' ? 'עזרה ותמיכה' : 'Help & Support'}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
 
                 {/* User Menu */}
                  <DropdownMenu>
                    <DropdownMenuTrigger asChild>
                      <button 
                        className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
-                       aria-label="תפריט חשבון משתמש"
+                       aria-label={language === 'he' ? 'תפריט חשבון משתמש' : 'User Menu'}
                        aria-haspopup="true"
                        aria-expanded="false"
                      >
@@ -250,7 +290,7 @@ export default function ClientDashboard() {
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 ml-2" />
-                      יציאה
+                      {language === 'he' ? 'יציאה' : 'Logout'}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -272,11 +312,12 @@ export default function ClientDashboard() {
         </nav>
 
           {/* Main Content */}
+          <PullToRefresh onRefresh={handleRefresh}>
           <main 
             id="main-content" 
             className="md:col-span-3 pb-24 md:pb-8"
             role="main"
-            aria-label="תוכן ראשי"
+            aria-label={language === 'he' ? 'תוכן ראשי' : 'Main content'}
           >
             {/* Breadcrumbs */}
             <Breadcrumbs activeTab={activeTab} onNavigate={setActiveTab} />
@@ -333,6 +374,7 @@ export default function ClientDashboard() {
             )}
             </div>
             </main>
+           </PullToRefresh>
             </div>
 
             {/* Mobile Bottom Tab Bar */}
