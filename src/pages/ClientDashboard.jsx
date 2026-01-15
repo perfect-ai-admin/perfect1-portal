@@ -292,22 +292,14 @@ export default function ClientDashboard() {
                     {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
                   </div>
 
-                  {/* Mobile Swipeable Tabs */}
+                  {/* Mobile Tabs */}
                   <div className="md:hidden">
-                    {typeof SwipeableTabs === 'function' && (
-                      <SwipeableTabs 
-                        activeTab={activeTab} 
-                        onChange={setActiveTab}
-                        tabs={tabOrder}
-                      >
-                        {typeof ProgressTab === 'function' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
-                        {typeof BusinessTab === 'function' && <BusinessTab data={enrichedData} />}
-                        {typeof FinancialTab === 'function' && <FinancialTab data={enrichedData} />}
-                        {typeof GoalsTab === 'function' && <GoalsTab data={enrichedData} />}
-                        {typeof MarketingTab === 'function' && <MarketingTab data={enrichedData} />}
-                        {typeof MentorTab === 'function' && <MentorTab data={enrichedData} />}
-                      </SwipeableTabs>
-                    )}
+                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
+                    {activeTab === 'business' && <BusinessTab data={enrichedData} />}
+                    {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
+                    {activeTab === 'goals' && <GoalsTab data={enrichedData} />}
+                    {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
+                    {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
                   </div>
                 </div>
               </main>
