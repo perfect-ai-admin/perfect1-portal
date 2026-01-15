@@ -211,11 +211,12 @@ export default function ClientDashboard() {
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
         {/* Header - Desktop Only */}
-        <header 
-          className="hidden md:block bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
-          role="banner"
-        >
-          <div className="w-full px-3 sm:px-6 lg:px-8">
+        <div className="hidden md:block">
+          <header 
+            className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
+            role="banner"
+          >
+            <div className="w-full px-3 sm:px-6 lg:px-8">
             {/* Top Bar - 56px fixed height */}
             <div className="flex items-center justify-between h-14">
               <div className="flex items-center gap-2 flex-1 min-w-0">
