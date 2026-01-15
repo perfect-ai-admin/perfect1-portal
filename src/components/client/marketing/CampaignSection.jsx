@@ -39,28 +39,30 @@ export default function CampaignSection() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-6"
+      className="space-y-4 md:space-y-6"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">אזור עבודה על קמפיינים</h3>
+          <h3 className="text-xl md:text-lg font-bold text-gray-900">קמפיינים שלך</h3>
           <p className="text-sm text-gray-600 mt-1">צור וניהול קמפיינים בערוצים שונים</p>
         </div>
         <Button 
           onClick={() => setIsCreating(true)}
-          className="gap-2"
+          className="gap-2 w-full md:w-auto h-12 md:h-10 text-base md:text-sm rounded-lg bg-blue-600 hover:bg-blue-700"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5 md:w-4 md:h-4" />
           קמפיין חדש
         </Button>
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="bg-gray-50 border border-dashed border-gray-300 rounded-lg p-8 text-center">
-          <p className="text-gray-600 mb-4">אין קמפיינים פעילים</p>
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-dashed border-blue-300 rounded-xl p-8 md:p-10 text-center">
+          <Rocket className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+          <p className="text-gray-700 font-medium mb-4">עדיין אין קמפיינים</p>
+          <p className="text-sm text-gray-600 mb-6">התחל עם קמפיין ראשון להגביר את הנראות שלך</p>
           <Button 
-            variant="outline"
             onClick={() => setIsCreating(true)}
+            className="w-full md:w-auto h-12 md:h-10 text-base md:text-sm rounded-lg bg-blue-600 hover:bg-blue-700"
           >
             צור קמפיין ראשון
           </Button>
@@ -68,41 +70,46 @@ export default function CampaignSection() {
       ) : (
         <div className="space-y-3">
           {campaigns.map(campaign => (
-            <div key={campaign.id} className="border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-semibold text-gray-900">{campaign.name}</h4>
-                  <p className="text-sm text-gray-600">{campaign.channel}</p>
+            <motion.div 
+              key={campaign.id} 
+              whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+              className="border border-gray-200 rounded-xl p-4 md:p-5 hover:border-gray-300 transition-all"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg truncate">{campaign.name}</h4>
+                  <p className="text-xs md:text-sm text-gray-600 mt-0.5">{campaign.channel}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     campaign.status === 'active' 
                       ? 'bg-green-100 text-green-700'
                       : 'bg-gray-100 text-gray-700'
                   }`}>
                     {campaign.status === 'active' ? 'פעיל' : 'כבוי'}
                   </span>
-                  <button className="p-2 hover:bg-gray-100 rounded transition-colors">
-                    <Settings className="w-4 h-4 text-gray-600" />
+                  <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0">
+                    <Settings className="w-5 h-5 md:w-4 md:h-4 text-gray-600" />
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
 
-      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <h4 className="font-semibold text-gray-900 mb-3">ערוצים זמינים</h4>
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 md:p-6 border border-gray-200">
+        <h4 className="font-bold text-gray-900 mb-4 text-base">ערוצים לשימוש</h4>
         <div className="space-y-2">
           {channels.map(channel => (
-            <div 
+            <motion.div 
               key={channel.id}
-              className={`p-3 border rounded-lg ${channel.color} flex items-center justify-between`}
+              whileHover={{ x: 4 }}
+              className={`p-4 md:p-3 border rounded-lg ${channel.color} flex items-center justify-between hover:shadow-sm transition-all cursor-pointer`}
             >
-              <span className="text-sm font-medium text-gray-900">{channel.name}</span>
-              <span className="text-xs text-gray-500">לא פעיל</span>
-            </div>
+              <span className="text-sm md:text-base font-semibold text-gray-900">{channel.name}</span>
+              <span className="text-xs bg-white bg-opacity-60 px-3 py-1 rounded-full text-gray-600">לא פעיל</span>
+            </motion.div>
           ))}
         </div>
       </div>
