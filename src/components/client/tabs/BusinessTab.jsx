@@ -10,7 +10,9 @@ import FocusDashboard from '../business/FocusDashboard';
 import StateDataCollector from '../business/StateDataCollector';
 import UnifiedRecommendationPanel from '../business/UnifiedRecommendationPanel';
 import BusinessStateTimeline from '../business/BusinessStateTimeline';
-import { TrendingUp, DollarSign, PieChart } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { formatCurrency } from '@/utils/formatters';
 import {
   Select,
   SelectContent,
@@ -21,6 +23,7 @@ import {
 
 export default function BusinessTab({ data }) {
   const [period, setPeriod] = useState('month');
+  const [isExporting, setIsExporting] = useState(false);
   
   // Mock data - replace with real data
   const revenueData = [
@@ -35,6 +38,67 @@ export default function BusinessTab({ data }) {
   const handleVisionSave = async (newVision) => {
     // Save vision to database
     console.log('Saving vision:', newVision);
+  };
+
+  const handleExport = async (format) => {
+    setIsExporting(true);
+    try {
+      // Prepare export data
+      const exportData = {
+        period,
+        revenue: revenueData,
+        metrics: {
+          totalRevenue: 42000,
+          totalExpenses: 18500,
+          netProfit: 23500,
+          performance: 85
+        },
+        vision: data.business_vision,
+        businessState: data.business_state
+      };
+
+      if (format === 'pdf') {
+        // Generate PDF
+        const { jsPDF } = await import('jspdf');
+        const doc = new jsPDF();
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.text('דוח עסקי', 105, 20, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`תקופה: ${period === 'month' ? 'חודש נוכחי' : period === 'quarter' ? 'רבעון נוכחי' : 'שנה נוכחית'}`, 20, 35);
+        doc.text(`תאריך: ${new Date().toLocaleDateString('he-IL')}`, 20, 42);
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text('סיכום פיננסי:', 20, 55);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`הכנסות: ${formatCurrency(exportData.metrics.totalRevenue)}`, 20, 65);
+        doc.text(`הוצאות: ${formatCurrency(exportData.metrics.totalExpenses)}`, 20, 72);
+        doc.text(`רווח נקי: ${formatCurrency(exportData.metrics.netProfit)}`, 20, 79);
+        
+        doc.save('business-report.pdf');
+      } else if (format === 'csv') {
+        // Generate CSV
+        const csvRows = [
+          ['חודש', 'הכנסות'],
+          ...revenueData.map(item => [item.month, item.value])
+        ];
+        const csvContent = csvRows.map(row => row.join(',')).join('\n');
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'business-data.csv';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Export failed:', error);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -72,7 +136,7 @@ export default function BusinessTab({ data }) {
         </div>
       </div>
 
-      {/* Period Selector */}
+      {/* Period Selector & Export */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">נתונים כספיים</h2>
         <div className="flex items-center gap-3">
@@ -86,7 +150,26 @@ export default function BusinessTab({ data }) {
               <SelectItem value="year">שנה נוכחית</SelectItem>
             </SelectContent>
           </Select>
-          <ExportDialog data={revenueData} filename="business-data" />
+          <Button
+            variant="outline"
+            onClick={() => handleExport('pdf')}
+            disabled={isExporting}
+            className="gap-2"
+            aria-label="ייצא דוח כ-PDF"
+          >
+            <Download className="w-4 h-4" aria-hidden="true" />
+            PDF
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleExport('csv')}
+            disabled={isExporting}
+            className="gap-2"
+            aria-label="ייצא נתונים כ-CSV"
+          >
+            <Download className="w-4 h-4" aria-hidden="true" />
+            CSV
+          </Button>
         </div>
       </div>
 
@@ -94,35 +177,39 @@ export default function BusinessTab({ data }) {
       <div className="grid md:grid-cols-2 gap-6">
         <MetricQuadrant
           title="הכנסות"
-          value="₪42,000"
+          value={42000}
           change="+15%"
           trend={15}
           chartData={revenueData}
           icon={TrendingUp}
+          isCurrency={true}
         />
         <MetricQuadrant
           title="הוצאות"
-          value="₪18,500"
+          value={18500}
           change="+5%"
           trend={5}
           chartData={revenueData}
           icon={DollarSign}
+          isCurrency={true}
         />
         <MetricQuadrant
           title="רווח נקי"
-          value="₪23,500"
+          value={23500}
           change="+28%"
           trend={28}
           chartData={revenueData}
           icon={PieChart}
+          isCurrency={true}
         />
         <MetricQuadrant
           title="מדדי ביצוע"
-          value="85%"
+          value={85}
           change="+3%"
           trend={3}
           chartData={revenueData}
           icon={TrendingUp}
+          isPercentage={true}
         />
       </div>
 
