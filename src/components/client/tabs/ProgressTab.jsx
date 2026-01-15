@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import JourneyTimeline, { MILESTONES } from '../progress/JourneyTimeline';
 import NextStepCard from '../progress/NextStepCard';
+import StepImportancePanel from '../progress/StepImportancePanel';
 import QuickStatsBar from '../progress/QuickStatsBar';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import { ProgressTabHelp } from '../help/ContextualHelp';
