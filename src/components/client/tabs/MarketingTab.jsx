@@ -7,6 +7,10 @@ import CampaignSection from '../marketing/CampaignSection';
 import GoogleSection from '../marketing/GoogleSection';
 import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
+import LogoCreator from '../marketing/LogoCreator';
+import CampaignBuilder from '../marketing/CampaignBuilder';
+import BarChart from '../business/BarChart';
+import Sparkline from '../business/Sparkline';
 
 export default function MarketingTab({ data }) {
   return (
@@ -19,126 +23,49 @@ export default function MarketingTab({ data }) {
 
 
       {/* Marketing Tools Tabs */}
-      <Tabs defaultValue="brand" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-6">
-          <TabsTrigger value="brand">
-            <Palette className="w-4 h-4 ml-2" />
-            מיתוג
+      <Tabs defaultValue="branding" className="w-full">
+        <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-gray-200">
+          <TabsTrigger value="branding" className="flex gap-2">
+            <Palette className="w-4 h-4" />
+            <span className="hidden sm:inline">מיתוג</span>
           </TabsTrigger>
-          <TabsTrigger value="campaign">
-            <Rocket className="w-4 h-4 ml-2" />
-            קמפיין
+          <TabsTrigger value="campaigns" className="flex gap-2">
+            <Rocket className="w-4 h-4" />
+            <span className="hidden sm:inline">קמפיינים</span>
           </TabsTrigger>
-          <TabsTrigger value="gbp">
-            <Users className="w-4 h-4 ml-2" />
-            Google
+          <TabsTrigger value="google" className="flex gap-2">
+            <Users className="w-4 h-4" />
+            <span className="hidden sm:inline">Google</span>
           </TabsTrigger>
-          <TabsTrigger value="roi">
-            <TrendingUp className="w-4 h-4 ml-2" />
-            ROI
+          <TabsTrigger value="roi" className="flex gap-2">
+            <TrendingUp className="w-4 h-4" />
+            <span className="hidden sm:inline">ROI</span>
           </TabsTrigger>
-          <TabsTrigger value="education">
-            <BookOpen className="w-4 h-4 ml-2" />
-            לימוד
+          <TabsTrigger value="learn" className="flex gap-2">
+            <BookOpen className="w-4 h-4" />
+            <span className="hidden sm:inline">לימוד</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="brand">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">סטודיו למיתוג - יצירת לוגו</h3>
-            <LogoCreator businessName={data.name} />
-          </div>
+        <TabsContent value="branding" className="bg-white rounded-lg border border-gray-200 p-6">
+          <BrandingSection businessName={data.name} onActionStart={() => {}} />
         </TabsContent>
 
-        <TabsContent value="campaign">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">בונה קמפיינים</h3>
-            <CampaignBuilder />
-          </div>
+        <TabsContent value="campaigns" className="bg-white rounded-lg border border-gray-200 p-6">
+          <CampaignSection />
         </TabsContent>
 
-        <TabsContent value="gbp">
-          <GoogleBusinessProfile />
+        <TabsContent value="google" className="bg-white rounded-lg border border-gray-200 p-6">
+          <GoogleSection />
         </TabsContent>
 
-        <TabsContent value="roi">
-           <div className="space-y-6">
-             <MarketingROITracker data={data} />
-             {/* ROI Chart Visualization */}
-             <div className="bg-white rounded-2xl shadow-lg p-8">
-               <h3 className="text-2xl font-bold text-gray-900 mb-6">ביצוע ערוצי השיווק</h3>
-               <BarChart 
-                 data={[
-                   { name: 'Google Ads', ROI: 285, Cost: 1200 },
-                   { name: 'Facebook', ROI: 215, Cost: 800 },
-                   { name: 'Instagram', ROI: 165, Cost: 600 },
-                   { name: 'טלפון', ROI: 320, Cost: 0 }
-                 ]}
-                 dataKeys={['ROI', 'Cost']}
-                 colors={['#22C55E', '#F59E0B']}
-               />
-             </div>
-
-             {/* Channel Performance Trends */}
-             <div className="grid md:grid-cols-2 gap-6">
-               <div className="bg-white rounded-2xl shadow-lg p-6">
-                 <h3 className="text-lg font-bold text-gray-900 mb-4">מגמת Google Ads</h3>
-                 <Sparkline 
-                   data={[
-                     { value: 25 },
-                     { value: 35 },
-                     { value: 42 },
-                     { value: 38 },
-                     { value: 52 },
-                     { value: 48 }
-                   ]}
-                   color="#3B82F6"
-                   width={200}
-                   height={60}
-                 />
-               </div>
-               <div className="bg-white rounded-2xl shadow-lg p-6">
-                 <h3 className="text-lg font-bold text-gray-900 mb-4">מגמת Facebook</h3>
-                 <Sparkline 
-                   data={[
-                     { value: 18 },
-                     { value: 24 },
-                     { value: 28 },
-                     { value: 22 },
-                     { value: 32 },
-                     { value: 35 }
-                   ]}
-                   color="#3B82F6"
-                   width={200}
-                   height={60}
-                 />
-               </div>
-             </div>
-           </div>
-         </TabsContent>
+        <TabsContent value="roi" className="bg-white rounded-lg border border-gray-200 p-6">
+          <ROISection />
+        </TabsContent>
 
         <TabsContent value="education">
-          <div className="grid md:grid-cols-2 gap-6">
-            <EducationCard
-              title="שיווק לעצמאים 101"
-              description="המדריך המלא לשיווק עסק קטן"
-              duration="15 דקות"
-            />
-            <EducationCard
-              title="רשתות חברתיות ביעילות"
-              description="איך לנהל רשתות בלי לבזבז זמן"
-              duration="10 דקות"
-            />
-            <EducationCard
-              title="המלצות שמביאות לקוחות"
-              description="איך לבקש המלצות ולהשתמש בהן"
-              duration="8 דקות"
-            />
-            <EducationCard
-              title="מדידת ROI"
-              description="איך לדעת אם השיווק שלך עובד"
-              duration="12 דקות"
-            />
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <LearnSection />
           </div>
         </TabsContent>
       </Tabs>
