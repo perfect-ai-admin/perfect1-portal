@@ -82,24 +82,9 @@ export default function ProgressTab({ data, onNavigate }) {
         </div>
 
         {/* Right Column - Next Step & Actions 50% */}
-        <div className="lg:col-span-6 space-y-4">
-          <NextStepCard step={nextStep} onAction={nextStep.action} />
-          <StepImportancePanel step={nextStep} />
-
-          {/* Quick Actions */}
-          <div className="bg-white rounded-lg border border-gray-100 p-4 space-y-2">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">פעולות מהירות</h3>
-            <button className="w-full text-right px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all text-blue-700 text-sm font-medium">
-              צור חשבונית
-            </button>
-            <button className="w-full text-right px-3 py-2 bg-purple-50 hover:bg-purple-100 rounded-lg transition-all text-purple-700 text-sm font-medium">
-              הוסף מטרה
-            </button>
-            <button className="w-full text-right px-3 py-2 bg-green-50 hover:bg-green-100 rounded-lg transition-all text-green-700 text-sm font-medium">
-              שאל את המנטור
-            </button>
-          </div>
-        </div>
+         <div className="lg:col-span-6 space-y-4">
+           {/* Placeholder for future content */}
+         </div>
       </div>
     </motion.div>
     </>
