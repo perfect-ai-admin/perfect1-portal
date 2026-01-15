@@ -29,37 +29,47 @@ export default function DashboardSidebar({ activeTab, onChange }) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all"
-          aria-label="תפריט ניווט"
+          aria-label={isOpen ? 'סגור תפריט ניווט' : 'פתח תפריט ניווט'}
+          aria-expanded={isOpen}
+          aria-haspopup="true"
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
         </button>
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-white rounded-xl shadow-lg p-6 h-fit sticky top-24 space-y-2">
+      <aside 
+        className="hidden md:flex flex-col w-64 bg-white rounded-xl shadow-lg p-6 h-fit sticky top-24 space-y-2" 
+        role="complementary"
+        aria-label="תפריט צד ניווט"
+      >
         <h3 className="text-sm font-bold text-gray-700 text-right mb-4 px-3">תפריטים</h3>
-        {TABS.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          
-          return (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id)}
-              className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-all duration-200 text-right ${
-                isActive
-                  ? `bg-gradient-to-r ${tab.color} text-white shadow-md`
-                  : 'text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <ChevronRight className={`w-4 h-4 ${isActive ? 'visible' : 'invisible'}`} />
-              <div className="flex items-center gap-3">
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{tab.label}</span>
-              </div>
-            </button>
-          );
-        })}
+        <nav className="space-y-2">
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            
+            return (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-all duration-200 text-right ${
+                  isActive
+                    ? `bg-gradient-to-r ${tab.color} text-white shadow-md`
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+                aria-current={isActive ? 'page' : undefined}
+                aria-label={tab.label}
+              >
+                <ChevronRight className={`w-4 h-4 ${isActive ? 'visible' : 'invisible'}`} aria-hidden="true" />
+                <div className="flex items-center gap-3">
+                  <Icon className="w-5 h-5" aria-hidden="true" />
+                  <span className="font-medium">{tab.label}</span>
+                </div>
+              </button>
+            );
+          })}
+        </nav>
       </aside>
 
       {/* Mobile Sidebar Menu */}
@@ -76,21 +86,23 @@ export default function DashboardSidebar({ activeTab, onChange }) {
             />
             
             {/* Sidebar */}
-            <motion.div
+            <motion.aside
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="fixed right-0 top-0 bottom-0 w-64 bg-white shadow-xl z-40 md:hidden flex flex-col p-6"
+              role="complementary"
+              aria-label="תפריט צד ניווט (נייד)"
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-bold text-gray-900">תפריטים</h3>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1 hover:bg-gray-100 rounded-lg"
-                  aria-label="סגור תפריט"
+                  aria-label="סגור תפריט ניווט"
                 >
-                  <X className="w-6 h-6 text-gray-600" />
+                  <X className="w-6 h-6 text-gray-600" aria-hidden="true" />
                 </button>
               </div>
 
@@ -110,8 +122,10 @@ export default function DashboardSidebar({ activeTab, onChange }) {
                           ? `bg-gradient-to-r ${tab.color} text-white shadow-md`
                           : 'text-gray-700 hover:bg-gray-50'
                       }`}
+                      aria-current={isActive ? 'page' : undefined}
+                      aria-label={tab.label}
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-5 h-5" aria-hidden="true" />
                       <span className="font-medium">{tab.label}</span>
                     </motion.button>
                   );
@@ -122,7 +136,7 @@ export default function DashboardSidebar({ activeTab, onChange }) {
               <div className="border-t pt-4 text-xs text-gray-500 text-center">
                 מרכז הניהול שלך
               </div>
-            </motion.div>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>
