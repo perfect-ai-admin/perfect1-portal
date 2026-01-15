@@ -62,8 +62,23 @@ export function HelpProvider({ children }) {
 }
 
 export function useHelp() {
-  return useContext(HelpContext);
-}
+   const context = useContext(HelpContext);
+   if (!context) {
+     // Return a default context when provider is not present
+     return {
+       activeTooltip: null,
+       setActiveTooltip: () => {},
+       seenHints: {},
+       markHintSeen: () => {},
+       showHelpCenter: false,
+       setShowHelpCenter: () => {},
+       showOnboarding: false,
+       setShowOnboarding: () => {},
+       completeOnboarding: () => {}
+     };
+   }
+   return context;
+ }
 
 // Contextual Tooltip
 export function HelpTooltip({ id, content, position = 'top', children }) {
