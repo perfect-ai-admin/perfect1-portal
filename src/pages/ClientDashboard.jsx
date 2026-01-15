@@ -258,10 +258,11 @@ export default function ClientDashboard() {
               </div>
             </div>
 
-            {/* Tab Navigation - Desktop Only */}
-            {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} />}
-          </div>
-        </header>
+              {/* Tab Navigation - Desktop Only */}
+              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} />}
+            </div>
+          </header>
+        </div>
 
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
