@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Download, FileText, Table } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 
@@ -33,20 +33,21 @@ export default function ExportDialog({ data, filename = 'export' }) {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Drawer>
+      <DrawerTrigger asChild>
         <Button variant="outline" size="sm">
           <Download className="w-4 h-4 ml-2" />
           ייצוא
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md" dir="rtl">
-        <DialogHeader>
-          <DialogTitle>ייצוא נתונים</DialogTitle>
-          <DialogDescription>
+      </DrawerTrigger>
+      <DrawerContent dir="rtl">
+        <DrawerHeader>
+          <DrawerTitle>ייצוא נתונים</DrawerTitle>
+          <DrawerDescription>
             בחר את הפורמט המועדף עליך
-          </DialogDescription>
-        </DialogHeader>
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4 py-4">
         
         <RadioGroup value={format} onValueChange={setFormat} className="space-y-3">
           <div className="flex items-center space-x-2 space-x-reverse p-4 border-2 border-gray-200 rounded-lg hover:border-blue-300 transition-all cursor-pointer">
@@ -83,8 +84,9 @@ export default function ExportDialog({ data, filename = 'export' }) {
         >
           {isExporting ? 'מייצא...' : 'ייצא עכשיו'}
         </Button>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
