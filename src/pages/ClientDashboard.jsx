@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
@@ -73,7 +73,7 @@ export default function ClientDashboard() {
           console.warn('No leads found, using stored client data');
           return client; // Fallback to stored client
         }
-        return leads[0];
+        return leads[0] || client;
       } catch (err) {
         console.error('Error fetching client data:', err);
         // Return stored client instead of throwing
@@ -83,7 +83,8 @@ export default function ClientDashboard() {
     enabled: !!client?.id,
     refetchInterval: 60000,
     retry: 1,
-    staleTime: 10000
+    staleTime: 10000,
+    gcTime: 1000 * 60 * 5
   });
 
   const handleLogout = () => {
@@ -93,11 +94,11 @@ export default function ClientDashboard() {
 
   const handleRefresh = async () => {
     try {
-      await queryClient.invalidateQueries(['client', client?.id]);
+      await queryClient.invalidateQueries({ queryKey: ['client', client?.id] });
       return new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
       console.error('Refresh error:', error);
-      throw error;
+      return Promise.resolve();
     }
   };
 
@@ -123,10 +124,12 @@ export default function ClientDashboard() {
   }
 
   // Use clientData if available, otherwise fallback to stored client
-  const currentData = clientData || client;
+  const currentData = React.useMemo(() => {
+    return clientData || client;
+  }, [clientData, client]);
 
   // Validate essential data
-  if (!currentData?.id || !currentData?.name) {
+  if (!currentData?.id || !currentData?.name || typeof currentData !== 'object') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
         <Alert variant="destructive" className="max-w-md">
@@ -147,7 +150,7 @@ export default function ClientDashboard() {
   }
 
   // Mock business state for demonstration if doesn't exist
-  const enrichedData = {
+  const enrichedData = React.useMemo(() => ({
     ...currentData,
     business_state: currentData?.business_state || {
       stage: 'early_revenue',
@@ -185,7 +188,8 @@ export default function ClientDashboard() {
         ]
       }
     }
-  };
+  }
+  }), [currentData]);
 
   return (
     <>
@@ -203,16 +207,16 @@ export default function ClientDashboard() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Top Bar */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-              <div className="flex items-center gap-4 w-full sm:w-auto">
-                <Avatar className="w-14 h-14 border-2 border-white/30 ring-2 ring-white/20">
-                  <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
-                    {currentData?.name?.charAt(0) || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h1 className="text-2xl sm:text-3xl font-bold">שלום, {currentData?.name || 'משתמש'} 👋</h1>
-                  <p className="text-white/80 text-sm">מרכז הניהול העסקי שלך</p>
-                </div>
+              <div className="flex items-center gap-4 w-full sm:w-auto flex-shrink-0">
+                 <Avatar className="w-14 h-14 border-2 border-white/30 ring-2 ring-white/20 flex-shrink-0">
+                   <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
+                     {currentData?.name?.charAt(0)?.toUpperCase() || 'U'}
+                   </AvatarFallback>
+                 </Avatar>
+                <div className="flex-1 min-w-0">
+                    <h1 className="text-2xl sm:text-3xl font-bold truncate">שלום, {currentData?.name || 'משתמש'} 👋</h1>
+                    <p className="text-white/80 text-sm">מרכז הניהול העסקי שלך</p>
+                  </div>
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3">
