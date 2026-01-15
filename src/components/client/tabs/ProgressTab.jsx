@@ -7,6 +7,8 @@ import MilestoneCelebration from '../progress/MilestoneCelebration';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import SmartRecommendations from '../SmartRecommendations';
 import WhyThisMattersPanel from '../progress/WhyThisMattersPanel';
+import ProgressRing from '../business/ProgressRing';
+import Sparkline from '../business/Sparkline';
 import { ProgressTabHelp } from '../help/ContextualHelp';
 import { Sparkles, Target } from 'lucide-react';
 
@@ -82,8 +84,8 @@ export default function ProgressTab({ data, onNavigate }) {
           {/* Smart Recommendations */}
           <SmartRecommendations compact={true} onNavigate={onNavigate} />
 
-          {/* Quick Actions */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
+          {/* Quick Actions - with Sparklines */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4">
             <h3 className="text-lg font-bold text-gray-900 mb-4">פעולות מהירות</h3>
             <div className="space-y-2">
               <button className="w-full text-right px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all text-blue-700 font-medium">
@@ -95,6 +97,24 @@ export default function ProgressTab({ data, onNavigate }) {
               <button className="w-full text-right px-4 py-3 bg-green-50 hover:bg-green-100 rounded-lg transition-all text-green-700 font-medium">
                 דבר עם המנטור
               </button>
+            </div>
+
+            {/* Performance Sparkline */}
+            <div className="mt-4 pt-4 border-t">
+              <p className="text-xs text-gray-600 mb-2">ביצוע השבועות האחרונות</p>
+              <Sparkline 
+                data={[
+                  { value: 45 },
+                  { value: 52 },
+                  { value: 48 },
+                  { value: 61 },
+                  { value: 58 },
+                  { value: 67 }
+                ]}
+                color="#8B5CF6"
+                width={180}
+                height={50}
+              />
             </div>
           </div>
         </div>
