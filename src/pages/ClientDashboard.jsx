@@ -5,27 +5,11 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { 
-  LogOut, HelpCircle, User, AlertCircle, Globe
-} from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 // Import Tab Components
-import TabNavigation from '../components/client/TabNavigation';
+import BizPilotHeader from '../components/client/BizPilotHeader';
 import MobileTabBar from '../components/client/MobileTabBar';
 import SwipeableTabs from '../components/client/SwipeableTabs';
 import PullToRefresh from '../components/client/PullToRefresh';
@@ -35,9 +19,7 @@ import FinancialTab from '../components/client/tabs/FinancialTab';
 import GoalsTab from '../components/client/tabs/GoalsTab';
 import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
-import NotificationCenter from '../components/client/NotificationCenter';
 import FloatingActionButton from '../components/client/FloatingActionButton';
-import DashboardSidebar from '../components/client/DashboardSidebar';
 import Breadcrumbs from '../components/client/Breadcrumbs';
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
