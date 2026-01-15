@@ -4,6 +4,9 @@ import VisionCard from '../business/VisionCard';
 import MetricQuadrant from '../business/MetricQuadrant';
 import ExpenseDonutChart from '../business/ExpenseDonutChart';
 import RevenueLineChart from '../business/RevenueLineChart';
+import BarChart from '../business/BarChart';
+import HeatmapCalendar from '../business/HeatmapCalendar';
+import Sparkline from '../business/Sparkline';
 import ExportDialog from '../shared/ExportDialog';
 import InsightsEngine from '../business/InsightsEngine';
 import FocusDashboard from '../business/FocusDashboard';
@@ -222,6 +225,60 @@ export default function BusinessTab({ data }) {
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <h3 className="text-xl font-bold text-gray-900 mb-4">פילוח הוצאות</h3>
           <ExpenseDonutChart />
+        </div>
+      </div>
+
+      {/* Advanced Charts */}
+      <div className="grid md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">השוואת הכנסות והוצאות</h3>
+          <BarChart 
+            data={revenueData.map(item => ({
+              name: item.month,
+              הכנסות: item.value,
+              הוצאות: Math.round(item.value * 0.4)
+            }))}
+            dataKeys={['הכנסות', 'הוצאות']}
+            colors={['#22C55E', '#EF4444']}
+          />
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">תעדוף פעילות</h3>
+          <div className="flex items-center justify-center">
+            <HeatmapCalendar 
+              data={Array.from({length: 85}, (_, i) => ({
+                date: new Date(new Date().setDate(new Date().getDate() - (84 - i))).toISOString().split('T')[0],
+                value: Math.floor(Math.random() * 5)
+              }))}
+              cellSize={14}
+              cellGap={2}
+            />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">תרends מנתונים</h3>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-600 mb-2">מגמת הכנסות</p>
+              <Sparkline 
+                data={revenueData.map(d => ({value: d.value}))}
+                color="#3B82F6"
+                width={200}
+                height={60}
+              />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-2">מגמת הוצאות</p>
+              <Sparkline 
+                data={revenueData.map(d => ({value: Math.round(d.value * 0.4)}))}
+                color="#EF4444"
+                width={200}
+                height={60}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
