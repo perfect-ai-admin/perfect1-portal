@@ -182,7 +182,8 @@ export default function ClientDashboard() {
             <p className="text-sm mb-4">לא ניתן לטעון את מרכז הניהול. אנא התחבר מחדש.</p>
             <button 
               onClick={handleLogout}
-              className="text-sm font-medium underline hover:no-underline"
+              className="text-sm font-medium underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 px-2 py-1 rounded"
+              aria-label="חזור לעמוד הכניסה"
             >
               חזור לעמוד הכניסה
             </button>
@@ -202,8 +203,9 @@ export default function ClientDashboard() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl" lang="he">
          {/* Header with staggered entrance */}
          <header 
-           className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
-           role="banner"
+         className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
+         role="banner"
+         aria-label="כותרת עמוד"
          >
            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
              {/* Top Bar */}
@@ -226,7 +228,7 @@ export default function ClientDashboard() {
 
                 {/* Help */}
                  <button 
-                   className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                   className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
                    aria-label="עזרה ותמיכה"
                    title="עזרה ותמיכה"
                  >
@@ -237,9 +239,10 @@ export default function ClientDashboard() {
                  <DropdownMenu>
                    <DropdownMenuTrigger asChild>
                      <button 
-                       className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                       className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
                        aria-label="תפריט חשבון משתמש"
                        aria-haspopup="true"
+                       aria-expanded="false"
                      >
                        <User className="w-6 h-6" aria-hidden="true" />
                      </button>
@@ -263,10 +266,10 @@ export default function ClientDashboard() {
 
         {/* Main Content with Sidebar */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Sidebar - Desktop Only */}
-          <div className="hidden md:block md:col-span-1">
-            <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
-          </div>
+        {/* Sidebar - Desktop Only */}
+        <nav className="hidden md:block md:col-span-1" aria-label="ניווט צד">
+          <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
+        </nav>
 
           {/* Main Content */}
           <main 
