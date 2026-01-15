@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import LogoCreator from '../marketing/LogoCreator';
-import CampaignBuilder from '../marketing/CampaignBuilder';
-import MarketingInvestmentAdvisor from '../marketing/MarketingInvestmentAdvisor';
-import GoogleBusinessProfile from '../marketing/GoogleBusinessProfile';
-import MarketingROITracker from '../marketing/MarketingROITracker';
-import BarChart from '../business/BarChart';
-import Sparkline from '../business/Sparkline';
-import { Megaphone, Palette, TrendingUp, Users, BookOpen, Rocket } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Palette, Rocket, Users, TrendingUp, BookOpen } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import BrandingSection from '../marketing/BrandingSection';
+import CampaignSection from '../marketing/CampaignSection';
+import GoogleSection from '../marketing/GoogleSection';
+import ROISection from '../marketing/ROISection';
+import LearnSection from '../marketing/LearnSection';
 
 export default function MarketingTab({ data }) {
   return (
@@ -146,34 +143,5 @@ export default function MarketingTab({ data }) {
         </TabsContent>
       </Tabs>
     </motion.div>
-  );
-}
-
-function ToolCard({ title, description, icon, color }) {
-  return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer">
-      <div className={`bg-gradient-to-r ${color} p-6 text-white`}>
-        {icon}
-        <h3 className="text-xl font-bold mt-3">{title}</h3>
-      </div>
-      <div className="p-6">
-        <p className="text-gray-600 mb-4">{description}</p>
-        <Button className="w-full">התחל</Button>
-      </div>
-    </div>
-  );
-}
-
-function EducationCard({ title, description, duration }) {
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all cursor-pointer">
-      <BookOpen className="w-10 h-10 text-blue-600 mb-3" />
-      <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-600 mb-4">{description}</p>
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-500">⏱️ {duration}</span>
-        <Button variant="ghost" size="sm">קרא עכשיו</Button>
-      </div>
-    </div>
   );
 }
