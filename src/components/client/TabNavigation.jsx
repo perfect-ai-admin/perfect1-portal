@@ -1,44 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Wallet, Target, Megaphone, Lightbulb, MapPin } from 'lucide-react';
+import { BarChart3, Wallet, Target, Lightbulb, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
   {
-    id: 'progress',
-    label: 'המסע העסקי שלי',
-    icon: MapPin,
-    color: 'from-blue-600 to-blue-700'
-  },
-  {
     id: 'business',
-    label: 'נתוני העסק שלי',
-    icon: BarChart3,
-    color: 'from-purple-600 to-purple-700'
-  },
-  {
-    id: 'financial',
-    label: 'ניהול כספים',
-    icon: Wallet,
-    color: 'from-emerald-600 to-emerald-700'
+    label: 'נתוני העסק',
+    icon: BarChart3
   },
   {
     id: 'goals',
-    label: 'המטרות שלי',
-    icon: Target,
-    color: 'from-orange-600 to-orange-700'
+    label: 'מטרות',
+    icon: Target
   },
   {
-    id: 'marketing',
-    label: 'לגדל את העסק',
-    icon: Megaphone,
-    color: 'from-pink-600 to-pink-700'
+    id: 'financial',
+    label: 'כספים',
+    icon: Wallet
+  },
+  {
+    id: 'progress',
+    label: 'מסע העסק',
+    icon: MapPin
   },
   {
     id: 'mentor',
-    label: 'שאל את המנטור',
-    icon: Lightbulb,
-    color: 'from-indigo-600 to-indigo-700'
+    label: 'מנטור',
+    icon: Lightbulb
   }
 ];
 
@@ -47,32 +36,34 @@ export default function TabNavigation({ activeTab, onChange }) {
     <>
       {/* Desktop Navigation */}
       <nav 
-        className="hidden md:flex gap-3 overflow-x-auto pb-2" 
+        className="hidden md:flex gap-1 border-t border-white/10" 
         role="tablist"
         aria-label="ניווט תפריטים ראשי"
       >
-        {TABS.map(tab => {
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onChange(tab.id)}
-              className={cn(
-                "flex items-center gap-2 px-6 py-3 rounded-xl font-semibold whitespace-nowrap transition-all",
-                activeTab === tab.id
-                  ? "bg-white text-[#1E3A5F] shadow-lg scale-105"
-                  : "bg-white/10 text-white hover:bg-white/20"
-              )}
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              aria-label={tab.label}
-              tabIndex={activeTab === tab.id ? 0 : -1}
-            >
-              <Icon className="w-5 h-5" aria-hidden="true" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => onChange(tab.id)}
+            className={cn(
+              "px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors relative",
+              activeTab === tab.id
+                ? "text-white bg-white/5"
+                : "text-white/70 hover:text-white/90"
+            )}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-label={tab.label}
+            tabIndex={activeTab === tab.id ? 0 : -1}
+          >
+            {tab.label}
+            {activeTab === tab.id && (
+              <motion.div 
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-white"
+                layoutId="activeTab"
+              />
+            )}
+          </button>
+        ))}
       </nav>
 
       {/* Mobile Navigation */}
