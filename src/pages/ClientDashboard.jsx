@@ -210,35 +210,12 @@ export default function ClientDashboard() {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
-        {/* Header */}
+        {/* Header - Desktop Only */}
         <header 
-          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
+          className="hidden md:block bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
           role="banner"
         >
-          {/* Mobile Header - Compact */}
-          <div className="md:hidden flex items-center justify-between h-12 px-3">
-            <p className="text-sm font-medium truncate">{currentData?.name || 'משתמש'}</p>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="p-1.5 hover:bg-white/10 rounded transition-colors" aria-label="תפריט">
-                  <User className="w-4 h-4" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onClick={toggleLanguage} className="text-xs">
-                  <Globe className="w-3 h-3 ml-2" />
-                  {language === 'he' ? 'English' : 'עברית'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className="text-xs text-red-600">
-                  <LogOut className="w-3 h-3 ml-2" />
-                  יציאה
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Desktop Header */}
-          <div className="hidden md:block w-full px-3 sm:px-6 lg:px-8">
+          <div className="w-full px-3 sm:px-6 lg:px-8">
             {/* Top Bar - 56px fixed height */}
             <div className="flex items-center justify-between h-14">
               <div className="flex items-center gap-2 flex-1 min-w-0">

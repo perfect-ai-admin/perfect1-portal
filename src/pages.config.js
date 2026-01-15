@@ -10,7 +10,6 @@ import BizPilot from './pages/BizPilot';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
-import ClientDashboard from './pages/ClientDashboard';
 import ClientLogin from './pages/ClientLogin';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
@@ -96,6 +95,7 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import ClientDashboard from './pages/ClientDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -112,7 +112,6 @@ export const PAGES = {
     "Blog": Blog,
     "BlogPost": BlogPost,
     "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
-    "ClientDashboard": ClientDashboard,
     "ClientLogin": ClientLogin,
     "CloseBusinessLanding": CloseBusinessLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
@@ -198,6 +197,7 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "ClientDashboard": ClientDashboard,
 }
 
 export const pagesConfig = {
