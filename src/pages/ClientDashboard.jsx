@@ -95,7 +95,7 @@ export default function ClientDashboard() {
     document.documentElement.lang = newLang;
   };
 
-  const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
+
 
   const currentData = React.useMemo(() => {
     return clientData || client;
