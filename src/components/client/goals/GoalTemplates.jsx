@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { DollarSign, Users, Clock, BookOpen, Heart, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -123,6 +123,43 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
   const [targetValue, setTargetValue] = useState('');
   const [deadline, setDeadline] = useState('');
   const [timeframe, setTimeframe] = useState('month');
+  const drawerRef = useRef(null);
+  const initialFocusRef = useRef(null);
+
+  // Focus trap implementation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key !== 'Tab') return;
+
+      const focusableElements = drawerRef.current?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      ) || [];
+
+      if (focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    drawerRef.current?.addEventListener('keydown', handleKeyDown);
+    initialFocusRef.current?.focus();
+
+    return () => {
+      drawerRef.current?.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -170,12 +207,18 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
 
   return (
     <Drawer open={true} onOpenChange={onClose}>
-      <DrawerContent className="max-h-[90vh] overflow-y-auto">
+      <DrawerContent 
+        className="max-h-[90vh] overflow-y-auto" 
+        ref={drawerRef}
+        role="dialog" 
+        aria-modal="true" 
+        aria-labelledby="goal-title"
+      >
         <DrawerHeader className="hidden md:block">
-          <DrawerTitle className="text-2xl">הוסף מטרה חדשה 🎯</DrawerTitle>
+          <DrawerTitle id="goal-title" className="text-2xl" ref={initialFocusRef} tabIndex="-1">הוסף מטרה חדשה 🎯</DrawerTitle>
         </DrawerHeader>
         <div className="md:hidden px-4 py-3 border-b">
-          <h2 className="text-xl font-bold text-gray-900">הוסף מטרה חדשה 🎯</h2>
+          <h2 id="goal-title" className="text-xl font-bold text-gray-900" ref={initialFocusRef} tabIndex="-1">הוסף מטרה חדשה 🎯</h2>
         </div>
         <div className="px-4 md:px-6 py-4">
 
