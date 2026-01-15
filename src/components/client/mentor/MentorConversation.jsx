@@ -61,12 +61,12 @@ export default function MentorConversation() {
   return (
     <div className="flex flex-col h-full bg-white">
       {/* Header */}
-      <div className="border-b border-gray-100 p-4">
+      <div className="border-b border-gray-200 p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-            <MessageCircle className="w-4 h-4 text-white" />
+          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+            <MessageCircle className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-lg font-bold text-gray-900">שיח עם המנטור</h1>
+          <h1 className="text-2xl font-bold text-gray-900">שיח עם המנטור החכם</h1>
         </div>
         {openInsights > 0 && (
           <p className="text-xs text-amber-600 flex items-center gap-1">
