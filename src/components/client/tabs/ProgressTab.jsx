@@ -83,7 +83,24 @@ export default function ProgressTab({ data, onNavigate }) {
 
         {/* Right Column - Next Step & Actions 50% */}
          <div className="lg:col-span-6 space-y-4">
-           {/* Placeholder for future content */}
+           {/* Stats - Desktop Only */}
+           <div className="hidden lg:block">
+             <QuickStatsBar stats={quickStats} />
+           </div>
+
+           {/* Next Step */}
+           <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+             <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+               <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
+                 <Target className="w-4 h-4 text-white" />
+               </div>
+               השלב הבא
+             </h2>
+             <NextStepCard step={nextStep} />
+           </div>
+
+           {/* Why This Matters */}
+           <StepImportancePanel step={nextStep} />
          </div>
       </div>
     </motion.div>
