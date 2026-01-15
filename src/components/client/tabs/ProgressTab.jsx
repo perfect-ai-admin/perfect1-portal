@@ -11,6 +11,7 @@ import WhyThisMattersPanel from '../progress/WhyThisMattersPanel';
 import ProgressRing from '../business/ProgressRing';
 import Sparkline from '../business/Sparkline';
 import { ProgressTabHelp } from '../help/ContextualHelp';
+import GoalsFloatingButton from '../GoalsFloatingButton';
 import { Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data, onNavigate }) {
@@ -39,6 +40,7 @@ export default function ProgressTab({ data, onNavigate }) {
   return (
     <>
       <ProgressTabHelp />
+      <GoalsFloatingButton onNavigate={onNavigate} />
       <MilestoneCelebration
         completedMilestones={completedMilestones}
         onGoalPrompt={() => onNavigate('goals')}
