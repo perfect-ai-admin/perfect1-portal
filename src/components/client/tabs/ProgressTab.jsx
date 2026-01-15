@@ -3,15 +3,12 @@ import { motion } from 'framer-motion';
 import JourneyTimeline, { MILESTONES } from '../progress/JourneyTimeline';
 import NextStepCard from '../progress/NextStepCard';
 import QuickStatsBar from '../progress/QuickStatsBar';
-import CelebrationOverlay from '../shared/CelebrationOverlay';
+import MilestoneCelebration from '../progress/MilestoneCelebration';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import SmartRecommendations from '../SmartRecommendations';
 import { Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data, onNavigate }) {
-  const [showCelebration, setShowCelebration] = useState(false);
-  const [celebrationData, setCelebrationData] = useState(null);
-  
   // Mock data - יש להחליף בנתונים אמיתיים
   const completedMilestones = ['registration'];
   const currentMilestone = 'first_invoice';
@@ -28,24 +25,16 @@ export default function ProgressTab({ data, onNavigate }) {
     why: 'זה הצעד שהופך אותך מעצמאי בתיאוריה לעסק אמיתי. חשבונית ראשונה היא האבן הראשונה בבניין העסק שלך.',
     icon: <Target className="w-10 h-10" />,
     action: () => {
-      setCelebrationData({
-        title: 'התחלת לעבוד על השלב הבא!',
-        description: 'יצירת חשבונית ראשונה היא צעד משמעותי'
-      });
-      setShowCelebration(true);
+      onNavigate('financial');
     }
   };
 
   return (
     <>
-      <CelebrationOverlay
-        show={showCelebration}
-        achievement={celebrationData}
-        onClose={() => setShowCelebration(false)}
-        onShare={() => {
-          alert('שיתוף בקרוב!');
-          setShowCelebration(false);
-        }}
+      <MilestoneCelebration
+        completedMilestones={completedMilestones}
+        onGoalPrompt={() => onNavigate('goals')}
+        onCelebrationComplete={(milestoneId) => console.log('Celebrated:', milestoneId)}
       />
       
       <motion.div

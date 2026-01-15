@@ -91,23 +91,55 @@ export default function CelebrationOverlay({ show, achievement, onClose, onShare
               </p>
             </div>
 
-            <div className="flex gap-3">
-              <Button
-                onClick={onClose}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+            {/* Achievement Badge */}
+            {achievement?.badge && (
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.3, type: 'spring' }}
+                className="mb-6"
               >
-                מעולה!
+                <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 rounded-full p-4">
+                  <div className="text-4xl">{achievement.badge}</div>
+                </div>
+                <p className="text-sm text-gray-600 mt-2 font-semibold">
+                  {achievement.badgeTitle || 'תג חדש נפתח!'}
+                </p>
+              </motion.div>
+            )}
+
+            <div className="flex flex-col gap-3">
+              {/* Share Button */}
+              <Button
+                onClick={onShare}
+                variant="outline"
+                className="w-full border-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50"
+              >
+                <Share2 className="w-4 h-4 ml-2" />
+                שתף את ההישג ברשתות חברתיות
               </Button>
-              {onShare && (
+
+              {/* Set Next Goal Prompt */}
+              {achievement?.promptNextGoal && (
                 <Button
-                  onClick={onShare}
-                  variant="outline"
-                  className="flex-1"
+                  onClick={() => {
+                    onClose();
+                    achievement.onSetNextGoal?.();
+                  }}
+                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
                 >
-                  <Share2 className="w-4 h-4 ml-2" />
-                  שתף
+                  קבע את המטרה הבאה שלך 🎯
                 </Button>
               )}
+
+              {/* Close Button */}
+              <Button
+                onClick={onClose}
+                variant="ghost"
+                className="w-full"
+              >
+                סגור
+              </Button>
             </div>
           </motion.div>
         </motion.div>
