@@ -84,14 +84,14 @@ export default function MentorConversation() {
       )}
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
         {messages.map((msg, idx) => (
           <ChatMessage key={msg.id} message={msg} delay={idx * 0.1} />
         ))}
       </div>
 
       {/* Reply Composer */}
-      <div className="border-t border-gray-100 p-4">
+      <div className="border-t border-gray-200 p-6 bg-white">
         <ReplyComposer onSend={handleSendMessage} />
       </div>
     </div>
