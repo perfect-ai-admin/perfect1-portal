@@ -237,7 +237,7 @@ export default function ClientDashboard() {
               <TabNavigation activeTab={activeTab} onChange={setActiveTab} />
             </motion.div>
           </div>
-        </div>
+        </header>
 
         {/* Main Content */}
         <PullToRefresh onRefresh={handleRefresh}>
