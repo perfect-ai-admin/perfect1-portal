@@ -3,7 +3,11 @@ import { motion } from 'framer-motion';
 import InvoiceGenerator from '../financial/InvoiceGenerator';
 import BudgetRecommendationEngine from '../financial/BudgetRecommendationEngine';
 import ReportsSection from '../financial/ReportsSection';
-import { FileText, DollarSign, TrendingUp, AlertCircle, ExternalLink } from 'lucide-react';
+import FINBOTAuthButton from '../financial/FINBOTAuthButton';
+import DocumentScanner from '../financial/DocumentScanner';
+import BankSyncComponent from '../financial/BankSyncComponent';
+import VATReportingComponent from '../financial/VATReportingComponent';
+import { FileText, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -50,10 +54,22 @@ export default function FinancialTab({ data }) {
 
       {/* Tabs */}
       <Tabs defaultValue="invoices" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 mb-6">
           <TabsTrigger value="invoices" className="text-base">
             <FileText className="w-4 h-4 ml-2" />
             חשבוניות
+          </TabsTrigger>
+          <TabsTrigger value="documents" className="text-base">
+            <FileText className="w-4 h-4 ml-2" />
+            סריקה
+          </TabsTrigger>
+          <TabsTrigger value="bank" className="text-base">
+            <TrendingUp className="w-4 h-4 ml-2" />
+            בנק
+          </TabsTrigger>
+          <TabsTrigger value="vat" className="text-base">
+            <FileText className="w-4 h-4 ml-2" />
+            מע"ם
           </TabsTrigger>
           <TabsTrigger value="reports" className="text-base">
             <TrendingUp className="w-4 h-4 ml-2" />
@@ -64,6 +80,18 @@ export default function FinancialTab({ data }) {
             תקציב
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="documents" className="space-y-6">
+          <DocumentScanner onScanComplete={(result) => console.log('Scan complete:', result)} />
+        </TabsContent>
+
+        <TabsContent value="bank" className="space-y-6">
+          <BankSyncComponent />
+        </TabsContent>
+
+        <TabsContent value="vat" className="space-y-6">
+          <VATReportingComponent />
+        </TabsContent>
 
         <TabsContent value="invoices" className="space-y-6">
           {!showInvoiceForm ? (
