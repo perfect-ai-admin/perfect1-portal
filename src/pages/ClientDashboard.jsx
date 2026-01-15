@@ -51,15 +51,25 @@ export default function ClientDashboard() {
   }, [navigate]);
 
   // Fetch client data
-  const { data: clientData, isLoading } = useQuery({
+  const { data: clientData, isLoading, error: fetchError } = useQuery({
     queryKey: ['client', client?.id],
     queryFn: async () => {
       if (!client?.id) return null;
-      const leads = await base44.entities.Lead.filter({ id: client.id });
-      return leads[0] || null;
+      try {
+        const leads = await base44.entities.Lead.filter({ id: client.id });
+        if (!leads || leads.length === 0) {
+          throw new Error('לא נמצאו נתוני לקוח');
+        }
+        return leads[0];
+      } catch (err) {
+        console.error('Error fetching client data:', err);
+        throw err;
+      }
     },
     enabled: !!client?.id,
-    refetchInterval: 30000
+    refetchInterval: 30000,
+    retry: 2,
+    staleTime: 5000
   });
 
   const handleLogout = () => {
