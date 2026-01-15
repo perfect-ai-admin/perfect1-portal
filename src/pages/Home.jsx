@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import HeroNewSection from '../components/home/HeroNewSection';
 import BusinessTypesSection from '../components/home/BusinessTypesSection';
 import TrustSection from '../components/home/TrustSection';
@@ -13,6 +14,9 @@ import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 export default function Home() {
   return (
     <>
+      <Helmet>
+        <meta name="google-site-verification" content="bLaptZTTD_btTGoFrlW9uYdfP6oYBsoLSXdM3HDyWJg" />
+      </Helmet>
       <LocalBusinessSchema />
       <SEOOptimized 
         {...seoPresets.home}
