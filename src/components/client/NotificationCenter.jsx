@@ -72,11 +72,16 @@ export default function NotificationCenter() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <button className="relative p-2 hover:bg-white/10 rounded-lg transition-all">
-          <Bell className="w-6 h-6" />
+        <button 
+          className="relative p-2 hover:bg-white/10 rounded-lg transition-all"
+          aria-label={`התראות${unreadCount > 0 ? ` - ${unreadCount} התראות חדשות` : ''}`}
+          aria-haspopup="true"
+        >
+          <Bell className="w-6 h-6" aria-hidden="true" />
           {unreadCount > 0 && (
             <Badge 
               className="absolute -top-1 -left-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs"
+              aria-label={`${unreadCount} התראות חדשות`}
             >
               {unreadCount}
             </Badge>
@@ -93,6 +98,7 @@ export default function NotificationCenter() {
                 <button
                   onClick={markAllAsRead}
                   className="text-xs hover:underline opacity-90"
+                  aria-label="סמן את כל ההתראות כנקראות"
                 >
                   סמן הכל כנקרא
                 </button>
@@ -105,7 +111,7 @@ export default function NotificationCenter() {
             <AnimatePresence>
               {notifications.length === 0 ? (
                 <div className="p-8 text-center text-gray-500">
-                  <Bell className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <Bell className="w-12 h-12 mx-auto mb-3 opacity-30" aria-hidden="true" />
                   <p>אין התראות חדשות</p>
                 </div>
               ) : (
@@ -135,8 +141,9 @@ export default function NotificationCenter() {
                               removeNotification(notification.id);
                             }}
                             className="text-gray-400 hover:text-gray-600"
+                            aria-label={`הסר התראה: ${notification.title}`}
                           >
-                            <X className="w-4 h-4" />
+                            <X className="w-4 h-4" aria-hidden="true" />
                           </button>
                         </div>
                         <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
@@ -153,13 +160,16 @@ export default function NotificationCenter() {
           </div>
 
           {/* Footer */}
-          {notifications.length > 0 && (
-            <div className="bg-gray-50 p-3 text-center">
-              <button className="text-sm text-blue-600 hover:underline font-medium">
-                צפה בכל ההתראות
-              </button>
-            </div>
-          )}
+           {notifications.length > 0 && (
+             <div className="bg-gray-50 p-3 text-center">
+               <button 
+                 className="text-sm text-blue-600 hover:underline font-medium"
+                 aria-label="צפה בכל ההתראות"
+               >
+                 צפה בכל ההתראות
+               </button>
+             </div>
+           )}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

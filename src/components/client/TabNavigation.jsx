@@ -46,7 +46,11 @@ export default function TabNavigation({ activeTab, onChange }) {
   return (
     <>
       {/* Desktop Navigation */}
-      <div className="hidden md:flex gap-3 overflow-x-auto pb-2">
+      <nav 
+        className="hidden md:flex gap-3 overflow-x-auto pb-2" 
+        role="tablist"
+        aria-label="ניווט תפריטים ראשי"
+      >
         {TABS.map(tab => {
           const Icon = tab.icon;
           return (
@@ -59,16 +63,24 @@ export default function TabNavigation({ activeTab, onChange }) {
                   ? "bg-white text-[#1E3A5F] shadow-lg scale-105"
                   : "bg-white/10 text-white hover:bg-white/20"
               )}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              aria-label={tab.label}
+              tabIndex={activeTab === tab.id ? 0 : -1}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="w-5 h-5" aria-hidden="true" />
               <span>{tab.label}</span>
             </button>
           );
         })}
-      </div>
+      </nav>
 
       {/* Mobile Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+      <nav 
+        className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50" 
+        role="tablist"
+        aria-label="ניווט תפריטים ראשי (נייד)"
+      >
         <div className="grid grid-cols-6 gap-1 p-2">
           {TABS.map(tab => {
             const Icon = tab.icon;
@@ -82,8 +94,12 @@ export default function TabNavigation({ activeTab, onChange }) {
                     ? "bg-[#1E3A5F] text-white"
                     : "text-gray-600 hover:bg-gray-100"
                 )}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-label={tab.label}
+                tabIndex={activeTab === tab.id ? 0 : -1}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-5 h-5" aria-hidden="true" />
                 <span className="text-[10px] font-medium leading-tight text-center">
                   {tab.label.split(' ')[0]}
                 </span>
@@ -91,7 +107,7 @@ export default function TabNavigation({ activeTab, onChange }) {
             );
           })}
         </div>
-      </div>
+      </nav>
     </>
   );
 }
