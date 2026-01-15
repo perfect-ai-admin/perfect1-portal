@@ -37,7 +37,6 @@ import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
 import NotificationCenter from '../components/client/NotificationCenter';
 import FloatingActionButton from '../components/client/FloatingActionButton';
-import DashboardSidebar from '../components/client/DashboardSidebar';
 import Breadcrumbs from '../components/client/Breadcrumbs';
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
