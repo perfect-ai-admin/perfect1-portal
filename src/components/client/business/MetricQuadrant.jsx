@@ -1,9 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, HelpCircle } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { cn } from '@/lib/utils';
 import { formatCurrency, formatPercentage, getTrendColor, getTrendColorClass, getTrendBgClass } from './formatters';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 export default function MetricQuadrant({ title, value, change, trend, chartData, icon: Icon, isCurrency = false, isPercentage = false }) {
   // Format value based on type
@@ -22,6 +28,13 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
 
 
 
+  const tooltipTexts = {
+    'הכנסות': 'סה"כ הכנסותיך מחודש קודם מכל המקורות',
+    'הוצאות': 'כל הוצאותיך: שכרה, חשמל, חומרים וכו׳',
+    'רווח נקי': 'הכנסות פחות הוצאות - מה שנשאר לך',
+    'מדדי ביצוע': 'דירוג כללי של ביצועך העסקי'
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -35,8 +48,20 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
               <Icon className="w-6 h-6 text-white" />
             </div>
           )}
-          <div>
-            <p className="text-sm text-gray-600">{title}</p>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-gray-600">{title}</p>
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p className="text-xs">{tooltipTexts[title] || 'עוד מידע'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <p className="text-3xl font-bold text-gray-900">{formattedValue}</p>
           </div>
         </div>
