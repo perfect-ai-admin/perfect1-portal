@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import GoalCard from '../goals/GoalCard';
 import GoalTemplates from '../goals/GoalTemplates';
+import ProgressRing from '../business/ProgressRing';
 import { Plus, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -83,11 +84,25 @@ export default function GoalsTab({ data }) {
       {/* Goals Grid */}
       <div className="grid md:grid-cols-2 gap-6">
         {goals.map(goal => (
-          <GoalCard 
-            key={goal.id}
-            goal={goal}
-            onUpdate={handleUpdateGoal}
-          />
+          <motion.div key={goal.id} className="space-y-4">
+            {/* Visual Progress Ring */}
+            <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
+              <ProgressRing 
+                progress={Math.round((goal.current / goal.target) * 100)}
+                size={150}
+                color="auto"
+                label={goal.category === 'revenue' ? '₪' : '%'}
+                className="mb-4"
+              />
+              <h3 className="text-center text-lg font-bold text-gray-900">{goal.title}</h3>
+              <p className="text-center text-sm text-gray-600 mt-2">{goal.currentDisplay} מתוך {goal.targetDisplay}</p>
+            </div>
+            {/* Goal Card */}
+            <GoalCard 
+              goal={goal}
+              onUpdate={handleUpdateGoal}
+            />
+          </motion.div>
         ))}
       </div>
 
