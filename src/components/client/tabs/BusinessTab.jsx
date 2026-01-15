@@ -232,27 +232,17 @@ export default function BusinessTab({ data }) {
         />
       </div>
 
-      {/* Charts Section - Collapsible on Mobile */}
-      <div className="space-y-6">
-        <div className="hidden md:block">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">מגמת הכנסות</h3>
-              <RevenueLineChart data={revenueData} period={period} />
-            </div>
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">פילוח הוצאות</h3>
-              <ExpenseDonutChart />
-            </div>
-          </div>
-        </div>
-        <div className="md:hidden space-y-4">
-          <CollapsibleSection title="מגמת הכנסות" defaultOpen={true}>
+      {/* Charts Section - Compact */}
+      <div className="space-y-4">
+        <div className="grid lg:grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg shadow p-4">
+            <h3 className="text-sm font-bold text-gray-900 mb-3">מגמת הכנסות</h3>
             <RevenueLineChart data={revenueData} period={period} />
-          </CollapsibleSection>
-          <CollapsibleSection title="פילוח הוצאות">
+          </div>
+          <div className="bg-white rounded-lg shadow p-4">
+            <h3 className="text-sm font-bold text-gray-900 mb-3">פילוח הוצאות</h3>
             <ExpenseDonutChart />
-          </CollapsibleSection>
+          </div>
         </div>
       </div>
 
