@@ -336,9 +336,7 @@ export default function ClientDashboard() {
 
         {/* Mobile Bottom Tab Bar */}
         <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />
-          </div>
-        </HelpProvider>
-      </AccessibilityProvider>
+      </div>
     </>
   );
 }
