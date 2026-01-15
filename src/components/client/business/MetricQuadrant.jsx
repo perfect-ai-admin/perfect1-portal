@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-export default function MetricQuadrant({ title, value, change, trend, chartData, icon: Icon, isCurrency = false, isPercentage = false }) {
+export default function MetricQuadrant({ title, value, change, trend, chartData, icon: Icon, isCurrency = false, isPercentage = false, compact = false }) {
   // Format value based on type
   const formattedValue = isCurrency 
     ? (typeof value === 'string' ? value : formatCurrency(value))
@@ -19,13 +19,36 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
       ? (typeof value === 'string' ? value : formatPercentage(value, 0))
       : value;
   const getTrendIcon = () => {
-    if (trend > 0) return <TrendingUp className="w-4 h-4" />;
-    if (trend < 0) return <TrendingDown className="w-4 h-4" />;
-    return <Minus className="w-4 h-4" />;
+    if (trend > 0) return <TrendingUp className="w-3 h-3" />;
+    if (trend < 0) return <TrendingDown className="w-3 h-3" />;
+    return <Minus className="w-3 h-3" />;
   };
 
-
-
+  if (compact) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-lg p-3 shadow border border-gray-100 hover:shadow-md transition-all"
+      >
+        <div className="flex items-start gap-2">
+          {Icon && (
+            <div className="w-8 h-8 bg-blue-50 rounded flex items-center justify-center flex-shrink-0">
+              <Icon className="w-4 h-4 text-blue-600" />
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-gray-600 truncate">{title}</p>
+            <p className="text-lg font-bold text-gray-900 leading-tight mt-0.5">{formattedValue}</p>
+            <div className={cn("flex items-center gap-1 text-xs font-medium mt-1", getTrendColorClass(trend))}>
+              {getTrendIcon()}
+              <span>{change}</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
 
   const tooltipTexts = {
