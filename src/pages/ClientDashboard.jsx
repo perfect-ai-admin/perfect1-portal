@@ -74,14 +74,6 @@ export default function ClientDashboard() {
 
   const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
 
-  // Keyboard shortcuts (section 9.1)
-  useKeyboardShortcut('1', () => setActiveTab('progress'));
-  useKeyboardShortcut('2', () => setActiveTab('business'));
-  useKeyboardShortcut('3', () => setActiveTab('financial'));
-  useKeyboardShortcut('4', () => setActiveTab('goals'));
-  useKeyboardShortcut('5', () => setActiveTab('marketing'));
-  useKeyboardShortcut('6', () => setActiveTab('mentor'));
-
   // Loading State - Skeleton
   if (!client || isLoading) {
     return (
