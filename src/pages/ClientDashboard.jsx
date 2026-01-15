@@ -5,11 +5,27 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { AlertCircle } from 'lucide-react';
+import { 
+  LogOut, HelpCircle, User, AlertCircle, Globe
+} from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 // Import Tab Components
-import BizPilotHeader from '../components/client/BizPilotHeader';
+import TabNavigation from '../components/client/TabNavigation';
 import MobileTabBar from '../components/client/MobileTabBar';
 import SwipeableTabs from '../components/client/SwipeableTabs';
 import PullToRefresh from '../components/client/PullToRefresh';
@@ -19,7 +35,9 @@ import FinancialTab from '../components/client/tabs/FinancialTab';
 import GoalsTab from '../components/client/tabs/GoalsTab';
 import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
+import NotificationCenter from '../components/client/NotificationCenter';
 import FloatingActionButton from '../components/client/FloatingActionButton';
+import DashboardSidebar from '../components/client/DashboardSidebar';
 import Breadcrumbs from '../components/client/Breadcrumbs';
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
@@ -147,9 +165,16 @@ export default function ClientDashboard() {
 
   if (!client) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        <BizPilotHeader activeTab="" onTabChange={() => {}} />
-        <div className="flex-1 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="mb-6">
+              <SkeletonHeader />
+            </div>
+            <div className="h-12 bg-white/10 rounded-lg" />
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <SkeletonTabContent />
         </div>
       </div>
@@ -184,14 +209,91 @@ export default function ClientDashboard() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 flex flex-col" dir="rtl" lang="he">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
         {/* Header */}
-        <BizPilotHeader activeTab={activeTab} onTabChange={setActiveTab} />
+        <header 
+          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-lg sticky top-0 z-50"
+          role="banner"
+        >
+          <div className="w-full px-3 sm:px-6 lg:px-8 py-4">
+            {/* Top Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <Avatar className="w-12 h-12 border-2 border-white/30 flex-shrink-0">
+                  <AvatarFallback className="bg-white/20 text-white font-bold">
+                    {currentData?.name?.charAt(0)?.toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-lg sm:text-xl font-bold truncate">שלום, {currentData?.name || 'משתמש'}</h1>
+                  <p className="text-white/80 text-xs">מרכז הניהול העסקי</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 flex-shrink-0">
+                {typeof NotificationCenter === 'function' && <NotificationCenter />}
+
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button 
+                        onClick={toggleLanguage}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                        aria-label="שינוי שפה"
+                      >
+                        <Globe className="w-5 h-5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>{language === 'he' ? 'English' : 'עברית'}</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button 
+                        className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                        aria-label="עזרה"
+                      >
+                        <HelpCircle className="w-5 h-5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>עזרה ותמיכה</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2 hover:bg-white/10 rounded-lg transition-all" aria-label="תפריט">
+                      <User className="w-5 h-5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="w-4 h-4 ml-2" />
+                      יציאה
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+
+            {/* Tab Navigation - Desktop Only */}
+            <div className="hidden md:block">
+              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} />}
+            </div>
+          </div>
+        </header>
 
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
+          {/* Sidebar - Desktop Only */}
+          <nav className="hidden md:block w-64 bg-white border-l border-gray-200 overflow-y-auto">
+            <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
+          </nav>
+
           {/* Main Area */}
-          <div className="flex-1 flex flex-col overflow-hidden w-full">
+          <div className="flex-1 flex flex-col overflow-hidden">
             <PullToRefresh onRefresh={handleRefresh}>
               <main 
                 className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6"
