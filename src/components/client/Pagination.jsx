@@ -34,7 +34,10 @@ export default function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 px-4 bg-white rounded-lg border border-gray-200">
+    <nav 
+      className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 px-4 bg-white rounded-lg border border-gray-200"
+      aria-label="עמודיות"
+    >
       {/* Info Text */}
       <div className="text-sm text-gray-600 text-center sm:text-right">
         {totalItems > 0 ? (
@@ -45,7 +48,7 @@ export default function Pagination({
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2" role="toolbar" aria-label="בקרות עמודיות">
         {/* Previous Button */}
         <Button
           variant="outline"
@@ -53,8 +56,10 @@ export default function Pagination({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className="gap-1"
+          aria-label={`עמוד קודם (עמוד ${currentPage - 1})`}
+          aria-disabled={currentPage === 1}
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-4 h-4" aria-hidden="true" />
           <span className="hidden sm:inline">הקודם</span>
         </Button>
 
@@ -99,12 +104,14 @@ export default function Pagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="gap-1"
+          aria-label={`עמוד הבא (עמוד ${currentPage + 1})`}
+          aria-disabled={currentPage === totalPages}
         >
           <span className="hidden sm:inline">הבא</span>
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-4 h-4" aria-hidden="true" />
         </Button>
       </div>
-    </div>
+    </nav>
   );
 }
 
@@ -117,6 +124,9 @@ function PageButton({ page, isActive, onClick }) {
           ? 'bg-blue-600 text-white shadow-md'
           : 'text-gray-700 hover:bg-gray-100'
       }`}
+      aria-label={`עמוד ${page}`}
+      aria-current={isActive ? 'page' : undefined}
+      disabled={isActive}
     >
       {page}
     </button>
