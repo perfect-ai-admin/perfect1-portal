@@ -4,6 +4,7 @@ import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
 import MarketingInvestmentAdvisor from '../marketing/MarketingInvestmentAdvisor';
 import GoogleBusinessProfile from '../marketing/GoogleBusinessProfile';
+import MarketingROITracker from '../marketing/MarketingROITracker';
 import { Megaphone, Palette, TrendingUp, Users, BookOpen, Lightbulb, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -85,7 +86,7 @@ export default function MarketingTab({ data }) {
         </TabsContent>
 
         <TabsContent value="roi">
-          <MarketingInvestmentAdvisor data={data} />
+          <MarketingROITracker data={data} />
         </TabsContent>
 
         <TabsContent value="education">
