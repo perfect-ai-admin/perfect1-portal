@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
 import MarketingInvestmentAdvisor from '../marketing/MarketingInvestmentAdvisor';
+import GoogleBusinessProfile from '../marketing/GoogleBusinessProfile';
 import { Megaphone, Palette, TrendingUp, Users, BookOpen, Lightbulb, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -80,12 +81,7 @@ export default function MarketingTab({ data }) {
         </TabsContent>
 
         <TabsContent value="gbp">
-          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-            <Users className="w-20 h-20 mx-auto text-gray-300 mb-4" />
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Google Business Profile</h3>
-            <p className="text-gray-600 mb-6">נהל את הנוכחות שלך ב-Google Maps ובתוצאות חיפוש</p>
-            <Button size="lg">התחבר ל-Google Business</Button>
-          </div>
+          <GoogleBusinessProfile />
         </TabsContent>
 
         <TabsContent value="roi">
