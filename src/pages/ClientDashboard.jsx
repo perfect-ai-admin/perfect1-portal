@@ -78,8 +78,13 @@ export default function ClientDashboard() {
   };
 
   const handleRefresh = async () => {
-    await queryClient.invalidateQueries(['client', client?.id]);
-    return new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      await queryClient.invalidateQueries(['client', client?.id]);
+      return new Promise(resolve => setTimeout(resolve, 1000));
+    } catch (error) {
+      console.error('Refresh error:', error);
+      throw error;
+    }
   };
 
   const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
