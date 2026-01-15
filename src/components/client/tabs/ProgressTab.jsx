@@ -96,8 +96,10 @@ export default function ProgressTab({ data, onNavigate }) {
         <div className="lg:col-span-3 space-y-6">
           <AchievementsSystem compact={true} />
 
-          {/* Smart Recommendations */}
-          <SmartRecommendations compact={true} onNavigate={onNavigate} />
+          {/* Smart Recommendations - Hidden on Desktop */}
+          <div className="hidden">
+            <SmartRecommendations compact={true} onNavigate={onNavigate} />
+          </div>
 
           {/* Quick Actions - with Sparklines */}
           <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4">
