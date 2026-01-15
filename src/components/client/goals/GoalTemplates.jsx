@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+// Goal Templates (section 4.4.2)
 const GOAL_TEMPLATES = [
   {
     id: 'revenue',
@@ -26,7 +27,17 @@ const GOAL_TEMPLATES = [
     color: 'from-green-400 to-green-600',
     defaultTarget: 15000,
     unit: '₪',
-    description: 'הגדר יעד הכנסה חודשי או שנתי'
+    description: 'הגדר יעד הכנסה חודשי או שנתי',
+    examples: [
+      { title: 'הכנסה חודשית של ₪15,000', target: 15000, timeframe: 'month' },
+      { title: 'הכנסה שנתית של ₪180,000', target: 180000, timeframe: 'year' },
+      { title: 'הכפל הכנסה תוך רבעון', target: 30000, timeframe: 'quarter' }
+    ],
+    tips: [
+      'מטרות הכנסה צריכות להיות מבוססות על נתונים היסטוריים',
+      'התחל עם יעד שאתגר אבל ריאלי - 20-30% צמיחה',
+      'עקוב אחרי ההתקדמות שבועית כדי לזהות מגמות'
+    ]
   },
   {
     id: 'clients',
@@ -35,7 +46,17 @@ const GOAL_TEMPLATES = [
     color: 'from-blue-400 to-blue-600',
     defaultTarget: 10,
     unit: 'לקוחות',
-    description: 'כמה לקוחות אתה רוצה להגיע?'
+    description: 'כמה לקוחות אתה רוצה להגיע?',
+    examples: [
+      { title: '10 לקוחות פעילים', target: 10, timeframe: 'month' },
+      { title: '5 לקוחות חדשים החודש', target: 5, timeframe: 'month' },
+      { title: '50 לקוחות עד סוף השנה', target: 50, timeframe: 'year' }
+    ],
+    tips: [
+      'לקוחות איכותיים עדיפים על כמות גדולה',
+      'הגדר מה "לקוח פעיל" אצלך - רכישה בחודש? בחצי שנה?',
+      'עקוב אחרי שיעור הנטישה - לקוח שעזב = צריך 2 חדשים'
+    ]
   },
   {
     id: 'worklife',
@@ -44,7 +65,17 @@ const GOAL_TEMPLATES = [
     color: 'from-purple-400 to-purple-600',
     defaultTarget: 40,
     unit: 'שעות/שבוע',
-    description: 'הגבל את שעות העבודה השבועיות'
+    description: 'הגבל את שעות העבודה השבועיות',
+    examples: [
+      { title: 'עבודה של 40 שעות בשבוע', target: 40, timeframe: 'week' },
+      { title: 'סיום עבודה ב-18:00 כל יום', target: 45, timeframe: 'week' },
+      { title: 'יום אחד ללא עבודה בשבוע', target: 35, timeframe: 'week' }
+    ],
+    tips: [
+      'עצמאים נוטים לעבוד יותר מדי - הגדר גבולות ברורים',
+      'שעות פחות לא אומר הכנסה פחות - דווקא להיפך לפעמים',
+      'תזמן זמן למשפחה, תחביבים ומנוחה - זה חלק מההצלחה'
+    ]
   },
   {
     id: 'skill',
@@ -53,16 +84,36 @@ const GOAL_TEMPLATES = [
     color: 'from-orange-400 to-orange-600',
     defaultTarget: 100,
     unit: '% השלמה',
-    description: 'למד מיומנות חדשה או קורס'
+    description: 'למד מיומנות חדשה או קורס',
+    examples: [
+      { title: 'קורס שיווק דיגיטלי', target: 100, timeframe: 'quarter' },
+      { title: 'קריאת 12 ספרים עסקיים', target: 12, timeframe: 'year' },
+      { title: 'למידת כלי עבודה חדש', target: 100, timeframe: 'month' }
+    ],
+    tips: [
+      'השקע 5% מזמנך בלמידה - זה משתלם לטווח ארוך',
+      'למד מיומנויות שישפרו את השירות/המוצר שלך',
+      'בחר קורסים עם תעודה - זה יוסיף אמינות'
+    ]
   },
   {
-    id: 'savings',
-    name: 'חיסכון',
+    id: 'financial',
+    name: 'בריאות פיננסית',
     icon: Heart,
     color: 'from-pink-400 to-pink-600',
     defaultTarget: 20000,
     unit: '₪',
-    description: 'חסוך סכום מסוים לציוד או השקעה'
+    description: 'שפר את המצב הפיננסי של העסק',
+    examples: [
+      { title: 'חסכון של ₪20,000 למקרי חירום', target: 20000, timeframe: 'year' },
+      { title: 'צמצום הוצאות ב-15%', target: 15, timeframe: 'quarter' },
+      { title: 'שיפור רווחיות ל-40%', target: 40, timeframe: 'quarter' }
+    ],
+    tips: [
+      'קרן חירום עסקית = 3-6 חודשי הוצאות',
+      'צמצום הוצאות לא אומר להפסיק להשקיע - להיות יעיל',
+      'רווחיות גבוהה > מחזור גבוה - תמיד'
+    ]
   }
 ];
 
@@ -77,14 +128,23 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
     setSelectedTemplate(template);
     setTargetValue(template.defaultTarget.toString());
     
-    // Auto-generate title
-    if (template.id === 'revenue') {
+    // Auto-generate title based on first example
+    if (template.examples && template.examples.length > 0) {
+      setGoalTitle(template.examples[0].title);
+      setTimeframe(template.examples[0].timeframe);
+    } else if (template.id === 'revenue') {
       setGoalTitle(`הכנסה חודשית של ${template.unit}${template.defaultTarget.toLocaleString()}`);
     } else if (template.id === 'clients') {
       setGoalTitle(`${template.defaultTarget} לקוחות פעילים`);
     } else {
       setGoalTitle(template.name);
     }
+  };
+
+  const handleExampleSelect = (example) => {
+    setGoalTitle(example.title);
+    setTargetValue(example.target.toString());
+    setTimeframe(example.timeframe);
   };
 
   const handleCreate = () => {
@@ -158,6 +218,24 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
             </Button>
 
             <div className="space-y-4">
+              {/* Examples from Template */}
+              {selectedTemplate.examples && (
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <Label className="text-sm font-semibold text-gray-700 mb-2 block">דוגמאות מוכנות:</Label>
+                  <div className="space-y-2">
+                    {selectedTemplate.examples.map((example, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleExampleSelect(example)}
+                        className="w-full text-right px-3 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg transition-all text-sm"
+                      >
+                        {example.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <Label htmlFor="goalTitle">שם המטרה</Label>
                 <Input
@@ -214,12 +292,20 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 />
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-900">
-                  💡 <strong>טיפ:</strong> מטרות ספציפיות וניתנות למדידה נוטות להצליח יותר. 
-                  המערכת תעקוב אחרי ההתקדמות ותספק המלצות.
-                </p>
-              </div>
+              {/* Tips from Template */}
+              {selectedTemplate.tips && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm font-semibold text-blue-900 mb-2">💡 טיפים להצלחה:</p>
+                  <ul className="space-y-1 text-sm text-blue-800">
+                    {selectedTemplate.tips.map((tip, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-blue-600 mt-0.5">•</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <div className="flex gap-3 pt-4">
                 <Button onClick={handleCreate} className="flex-1" disabled={!goalTitle || !targetValue}>
