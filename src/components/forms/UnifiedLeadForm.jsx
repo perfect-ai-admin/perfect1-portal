@@ -193,60 +193,78 @@ export default function UnifiedLeadForm({
         </div>
 
         {/* Name */}
-        {fields.includes('name') && (
-          <div className="relative">
-            <User className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 ${invertColors ? 'text-white/40' : 'text-[#1E3A5F]/40'}`} />
-            <Input
-              placeholder="שם מלא *"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className={`pr-11 border-2 rounded-xl font-medium ${
-                invertColors 
-                  ? 'border-white/30 bg-white/20 text-white placeholder-white/70 focus:border-white focus:ring-2 focus:ring-white/30'
-                  : 'border-gray-200 bg-white text-gray-900 placeholder-gray-500 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20'
-              } ${variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'}`}
-              required
-            />
-          </div>
-        )}
+         {fields.includes('name') && (
+           <div>
+             <label htmlFor="form-name" className="text-sm font-semibold text-gray-700 mb-2 block">שם מלא *</label>
+             <div className="relative">
+               <User className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 ${invertColors ? 'text-white/40' : 'text-[#1E3A5F]/40'}`} aria-hidden="true" />
+               <Input
+                 id="form-name"
+                 placeholder="הקלד שם מלא"
+                 value={formData.name}
+                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                 className={`pr-11 border-2 rounded-xl font-medium ${
+                   invertColors 
+                     ? 'border-white/30 bg-white/20 text-white placeholder-white/70 focus:border-white focus:ring-2 focus:ring-white/30'
+                     : 'border-gray-200 bg-white text-gray-900 placeholder-gray-500 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20'
+                 } ${variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'}`}
+                 required
+                 aria-required="true"
+                 aria-describedby="form-name-error"
+               />
+             </div>
+           </div>
+         )}
 
         {/* Phone */}
-        {fields.includes('phone') && (
-          <div className="relative">
-            <Phone className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 ${invertColors ? 'text-white/40' : 'text-[#1E3A5F]/40'}`} />
-            <Input
-              type="tel"
-              placeholder="טלפון *"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className={`pr-11 border-2 rounded-xl font-medium ${
-                invertColors 
-                  ? 'border-white/30 bg-white/20 text-white placeholder-white/70 focus:border-white focus:ring-2 focus:ring-white/30'
-                  : 'border-gray-200 bg-white text-gray-900 placeholder-gray-500 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20'
-              } ${variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'}`}
-              required
-            />
-          </div>
-        )}
+         {fields.includes('phone') && (
+           <div>
+             <label htmlFor="form-phone" className="text-sm font-semibold text-gray-700 mb-2 block">טלפון *</label>
+             <div className="relative">
+               <Phone className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 ${invertColors ? 'text-white/40' : 'text-[#1E3A5F]/40'}`} aria-hidden="true" />
+               <Input
+                 id="form-phone"
+                 type="tel"
+                 placeholder="הקלד מספר טלפון"
+                 value={formData.phone}
+                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                 className={`pr-11 border-2 rounded-xl font-medium ${
+                   invertColors 
+                     ? 'border-white/30 bg-white/20 text-white placeholder-white/70 focus:border-white focus:ring-2 focus:ring-white/30'
+                     : 'border-gray-200 bg-white text-gray-900 placeholder-gray-500 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20'
+                 } ${variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'}`}
+                 required
+                 aria-required="true"
+                 aria-describedby="form-phone-error"
+               />
+             </div>
+           </div>
+         )}
 
         {/* Email */}
-        {fields.includes('email') && (
-          <div className="relative">
-            <Mail className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 ${invertColors ? 'text-white/40' : 'text-[#1E3A5F]/40'}`} />
-            <Input
-              type="email"
-              placeholder="מייל *"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className={`pr-11 border-2 rounded-xl font-medium ${
-                invertColors 
-                  ? 'border-white/30 bg-white/20 text-white placeholder-white/70 focus:border-white focus:ring-2 focus:ring-white/30'
-                  : 'border-gray-200 bg-white text-gray-900 placeholder-gray-500 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20'
-              } ${variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'}`}
-              required
-            />
-          </div>
-        )}
+         {fields.includes('email') && (
+           <div>
+             <label htmlFor="form-email" className="text-sm font-semibold text-gray-700 mb-2 block">מייל *</label>
+             <div className="relative">
+               <Mail className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 ${invertColors ? 'text-white/40' : 'text-[#1E3A5F]/40'}`} aria-hidden="true" />
+               <Input
+                 id="form-email"
+                 type="email"
+                 placeholder="הקלד כתובת מייל"
+                 value={formData.email}
+                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                 className={`pr-11 border-2 rounded-xl font-medium ${
+                   invertColors 
+                     ? 'border-white/30 bg-white/20 text-white placeholder-white/70 focus:border-white focus:ring-2 focus:ring-white/30'
+                     : 'border-gray-200 bg-white text-gray-900 placeholder-gray-500 focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/20'
+                 } ${variant === 'compact' ? 'h-11 text-base' : 'h-14 text-base sm:text-lg'}`}
+                 required
+                 aria-required="true"
+                 aria-describedby="form-email-error"
+               />
+             </div>
+           </div>
+         )}
 
         {/* Error */}
         {error && (
