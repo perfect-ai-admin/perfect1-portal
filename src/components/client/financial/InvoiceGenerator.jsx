@@ -267,43 +267,59 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
           <h3 className="text-lg font-bold text-gray-900">פרטי לקוח</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="relative">
+              <label htmlFor="clientName" className="text-sm font-semibold text-gray-700 mb-2 block">שם הלקוח *</label>
               <Input
-                placeholder="שם הלקוח * (התחל להקליד...)"
-                value={formData.clientName}
-                onChange={(e) => handleClientNameChange(e.target.value)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-              />
+                  id="clientName"
+                  placeholder="שם הלקוח * (התחל להקליד...)"
+                  value={formData.clientName}
+                  onChange={(e) => handleClientNameChange(e.target.value)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  aria-required="true"
+                  aria-autocomplete="list"
+                  aria-controls="client-suggestions"
+                />
               {/* Autocomplete Suggestions */}
               {showSuggestions && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+                <ul id="client-suggestions" className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto" role="listbox">
                   {clientSuggestions.map((client) => (
-                    <button
-                      key={client.id}
-                      onClick={() => selectClient(client)}
-                      className="w-full text-right px-4 py-3 hover:bg-gray-50 transition-colors border-b last:border-b-0"
-                    >
-                      <div className="font-medium text-gray-900">{client.name}</div>
-                      {client.email && (
-                        <div className="text-sm text-gray-600">{client.email}</div>
-                      )}
-                    </button>
+                    <li key={client.id} role="option">
+                      <button
+                        onClick={() => selectClient(client)}
+                        className="w-full text-right px-4 py-3 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                        aria-label={`בחר ${client.name}${client.email ? ` - ${client.email}` : ''}`}
+                      >
+                        <div className="font-medium text-gray-900">{client.name}</div>
+                        {client.email && (
+                          <div className="text-sm text-gray-600">{client.email}</div>
+                        )}
+                      </button>
+                    </li>
                   ))}
-                </div>
+                  </ul>
               )}
             </div>
-            <Input
-              type="email"
-              placeholder="אימייל לקוח *"
-              value={formData.clientEmail}
-              onChange={(e) => setFormData(prev => ({ ...prev, clientEmail: e.target.value }))}
+            <div>
+              <label htmlFor="clientEmail" className="text-sm font-semibold text-gray-700 mb-2 block">אימייל לקוח *</label>
+              <Input
+                id="clientEmail"
+                type="email"
+                placeholder="אימייל לקוח *"
+                value={formData.clientEmail}
+                onChange={(e) => setFormData(prev => ({ ...prev, clientEmail: e.target.value }))}
+                aria-required="true"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="clientAddress" className="text-sm font-semibold text-gray-700 mb-2 block">כתובת לקוח (אופציונלי)</label>
+            <Textarea
+              id="clientAddress"
+              placeholder="כתובת לקוח (אופציונלי)"
+              value={formData.clientAddress}
+              onChange={(e) => setFormData(prev => ({ ...prev, clientAddress: e.target.value }))}
+              rows={2}
             />
           </div>
-          <Textarea
-            placeholder="כתובת לקוח (אופציונלי)"
-            value={formData.clientAddress}
-            onChange={(e) => setFormData(prev => ({ ...prev, clientAddress: e.target.value }))}
-            rows={2}
-          />
         </div>
 
         {/* Invoice Dates */}
@@ -311,16 +327,18 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
           <h3 className="text-lg font-bold text-gray-900">תאריכים</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-gray-600 block mb-2">תאריך חשבונית</label>
+              <label htmlFor="invoiceDate" className="text-sm font-semibold text-gray-700 block mb-2">תאריך חשבונית</label>
               <Input
+                id="invoiceDate"
                 type="date"
                 value={formData.invoiceDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, invoiceDate: e.target.value }))}
               />
             </div>
             <div>
-              <label className="text-sm text-gray-600 block mb-2">תאריך לתשלום</label>
+              <label htmlFor="dueDate" className="text-sm font-semibold text-gray-700 block mb-2">תאריך לתשלום</label>
               <Input
+                id="dueDate"
                 type="date"
                 value={formData.dueDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
@@ -342,14 +360,19 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
           {formData.items.map((item, index) => (
             <div key={index} className="grid md:grid-cols-12 gap-3 items-end">
               <div className="md:col-span-6">
+                <label htmlFor={`item-desc-${index}`} className="text-sm font-semibold text-gray-700 mb-1 block">תיאור *</label>
                 <Input
+                  id={`item-desc-${index}`}
                   placeholder="תיאור *"
                   value={item.description}
                   onChange={(e) => updateLineItem(index, 'description', e.target.value)}
+                  aria-required="true"
                 />
               </div>
               <div className="md:col-span-2">
+                <label htmlFor={`item-qty-${index}`} className="text-sm font-semibold text-gray-700 mb-1 block">כמות</label>
                 <Input
+                  id={`item-qty-${index}`}
                   type="number"
                   placeholder="כמות"
                   value={item.quantity}
@@ -358,7 +381,9 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
                 />
               </div>
               <div className="md:col-span-3">
+                <label htmlFor={`item-price-${index}`} className="text-sm font-semibold text-gray-700 mb-1 block">מחיר ליחידה</label>
                 <Input
+                  id={`item-price-${index}`}
                   type="number"
                   placeholder="מחיר ליחידה"
                   value={item.unitPrice}
@@ -392,8 +417,9 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
 
         {/* Notes */}
         <div className="space-y-2">
-          <label className="text-sm text-gray-600">הערות (אופציונלי)</label>
+          <label htmlFor="invoiceNotes" className="text-sm font-semibold text-gray-700">הערות (אופציונלי)</label>
           <Textarea
+            id="invoiceNotes"
             placeholder="הערות נוספות לחשבונית..."
             value={formData.notes}
             onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
@@ -403,23 +429,25 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
         </div>
 
         {/* Auto Reminder Setting */}
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 flex items-start gap-3">
-          <input
-            type="checkbox"
-            id="autoReminder"
-            checked={autoReminder}
-            onChange={(e) => setAutoReminder(e.target.checked)}
-            className="mt-1 w-5 h-5 text-purple-600"
-          />
-          <div className="flex-1">
-            <label htmlFor="autoReminder" className="font-semibold text-gray-900 cursor-pointer">
-              הפעל תזכורת אוטומטית
-            </label>
-            <p className="text-sm text-gray-700 mt-1">
-              אם הלקוח לא ישלם תוך 7 ימים, תישלח תזכורת באימייל אוטומטית
-            </p>
+        <fieldset className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="autoReminder"
+              checked={autoReminder}
+              onChange={(e) => setAutoReminder(e.target.checked)}
+              className="mt-1 w-5 h-5 text-purple-600"
+            />
+            <div className="flex-1">
+              <label htmlFor="autoReminder" className="font-semibold text-gray-900 cursor-pointer">
+                הפעל תזכורת אוטומטית
+              </label>
+              <p className="text-sm text-gray-700 mt-1">
+                אם הלקוח לא ישלם תוך 7 ימים, תישלח תזכורת באימייל אוטומטית
+              </p>
+            </div>
           </div>
-        </div>
+        </fieldset>
 
         {/* Actions */}
         <div className="flex gap-3">
