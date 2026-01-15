@@ -5,6 +5,8 @@ import CampaignBuilder from '../marketing/CampaignBuilder';
 import MarketingInvestmentAdvisor from '../marketing/MarketingInvestmentAdvisor';
 import GoogleBusinessProfile from '../marketing/GoogleBusinessProfile';
 import MarketingROITracker from '../marketing/MarketingROITracker';
+import BarChart from '../business/BarChart';
+import Sparkline from '../business/Sparkline';
 import { Megaphone, Palette, TrendingUp, Users, BookOpen, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -86,8 +88,60 @@ export default function MarketingTab({ data }) {
         </TabsContent>
 
         <TabsContent value="roi">
-          <MarketingROITracker data={data} />
-        </TabsContent>
+           <div className="space-y-6">
+             <MarketingROITracker data={data} />
+             {/* ROI Chart Visualization */}
+             <div className="bg-white rounded-2xl shadow-lg p-8">
+               <h3 className="text-2xl font-bold text-gray-900 mb-6">ביצוע ערוצי השיווק</h3>
+               <BarChart 
+                 data={[
+                   { name: 'Google Ads', ROI: 285, Cost: 1200 },
+                   { name: 'Facebook', ROI: 215, Cost: 800 },
+                   { name: 'Instagram', ROI: 165, Cost: 600 },
+                   { name: 'טלפון', ROI: 320, Cost: 0 }
+                 ]}
+                 dataKeys={['ROI', 'Cost']}
+                 colors={['#22C55E', '#F59E0B']}
+               />
+             </div>
+
+             {/* Channel Performance Trends */}
+             <div className="grid md:grid-cols-2 gap-6">
+               <div className="bg-white rounded-2xl shadow-lg p-6">
+                 <h3 className="text-lg font-bold text-gray-900 mb-4">מגמת Google Ads</h3>
+                 <Sparkline 
+                   data={[
+                     { value: 25 },
+                     { value: 35 },
+                     { value: 42 },
+                     { value: 38 },
+                     { value: 52 },
+                     { value: 48 }
+                   ]}
+                   color="#3B82F6"
+                   width={200}
+                   height={60}
+                 />
+               </div>
+               <div className="bg-white rounded-2xl shadow-lg p-6">
+                 <h3 className="text-lg font-bold text-gray-900 mb-4">מגמת Facebook</h3>
+                 <Sparkline 
+                   data={[
+                     { value: 18 },
+                     { value: 24 },
+                     { value: 28 },
+                     { value: 22 },
+                     { value: 32 },
+                     { value: 35 }
+                   ]}
+                   color="#3B82F6"
+                   width={200}
+                   height={60}
+                 />
+               </div>
+             </div>
+           </div>
+         </TabsContent>
 
         <TabsContent value="education">
           <div className="grid md:grid-cols-2 gap-6">
