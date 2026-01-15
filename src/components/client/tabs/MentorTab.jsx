@@ -59,8 +59,8 @@ export default function MentorTab({ data }) {
         </TabsList>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden">
-          <TabsContent value="conversations" className="h-full">
+        <div className="flex-1 overflow-hidden flex items-center justify-center px-4">
+          <TabsContent value="conversations" className="h-full w-full max-w-2xl">
             <div className="bg-white rounded-lg border border-gray-100 h-full overflow-hidden">
               <MentorConversation />
             </div>
