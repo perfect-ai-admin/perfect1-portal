@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Wallet, Target, Lightbulb, MapPin } from 'lucide-react';
+import { BarChart3, Wallet, Target, Lightbulb, MapPin, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
@@ -18,6 +18,11 @@ const TABS = [
     id: 'financial',
     label: 'כספים',
     icon: Wallet
+  },
+  {
+    id: 'marketing',
+    label: 'שיווק',
+    icon: Megaphone
   },
   {
     id: 'progress',
