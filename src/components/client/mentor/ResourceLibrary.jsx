@@ -197,13 +197,12 @@ export default function ResourceLibrary() {
                     </div>
                     <p className="text-sm text-gray-600">{resource.description}</p>
                   </div>
-                  {/* External link icon */}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </Tabs>
-    </div>
-  );
-}
+                  </div>
+                  </div>
+                  ))
+                  )}
+                  </div>
+                  </Tabs>
+                  </div>
+                  );
+                  }
