@@ -256,11 +256,11 @@ export default function ClientDashboard() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </div>
+              </div>
 
               {/* Tab Navigation - Desktop Only */}
               {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} />}
-            </div>
+              </div>
           </header>
         </div>
 
