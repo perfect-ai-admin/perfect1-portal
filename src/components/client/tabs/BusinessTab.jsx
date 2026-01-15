@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import VisionCard from '../business/VisionCard';
+
 import MetricQuadrant from '../business/MetricQuadrant';
 import ExpenseDonutChart from '../business/ExpenseDonutChart';
 import RevenueLineChart from '../business/RevenueLineChart';
