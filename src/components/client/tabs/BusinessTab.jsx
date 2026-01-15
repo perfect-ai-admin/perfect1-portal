@@ -246,59 +246,37 @@ export default function BusinessTab({ data }) {
         </div>
       </div>
 
-      {/* Advanced Charts */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">השוואת הכנסות והוצאות</h3>
-          <BarChart 
-            data={revenueData.map(item => ({
-              name: item.month,
-              הכנסות: item.value,
-              הוצאות: Math.round(item.value * 0.4)
-            }))}
-            dataKeys={['הכנסות', 'הוצאות']}
-            colors={['#22C55E', '#EF4444']}
-          />
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">תעדוף פעילות</h3>
-          <div className="flex items-center justify-center">
-            <HeatmapCalendar 
-              data={Array.from({length: 85}, (_, i) => ({
-                date: new Date(new Date().setDate(new Date().getDate() - (84 - i))).toISOString().split('T')[0],
-                value: Math.floor(Math.random() * 5)
+      {/* Additional Insights - Collapsible on Mobile */}
+      <CollapsibleSection title="ניתוח מפורט" defaultOpen={false}>
+        <div className="grid lg:grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg shadow p-4">
+            <h3 className="text-sm font-bold text-gray-900 mb-3">השוואת הכנסות והוצאות</h3>
+            <BarChart 
+              data={revenueData.map(item => ({
+                name: item.month,
+                הכנסות: item.value,
+                הוצאות: Math.round(item.value * 0.4)
               }))}
-              cellSize={14}
-              cellGap={2}
+              dataKeys={['הכנסות', 'הוצאות']}
+              colors={['#22C55E', '#EF4444']}
             />
           </div>
-        </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">תרends מנתונים</h3>
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-gray-600 mb-2">מגמת הכנסות</p>
-              <Sparkline 
-                data={revenueData.map(d => ({value: d.value}))}
-                color="#3B82F6"
-                width={200}
-                height={60}
-              />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 mb-2">מגמת הוצאות</p>
-              <Sparkline 
-                data={revenueData.map(d => ({value: Math.round(d.value * 0.4)}))}
-                color="#EF4444"
-                width={200}
-                height={60}
+          <div className="bg-white rounded-lg shadow p-4">
+            <h3 className="text-sm font-bold text-gray-900 mb-3">תעדוף פעילות</h3>
+            <div className="flex items-center justify-center">
+              <HeatmapCalendar 
+                data={Array.from({length: 85}, (_, i) => ({
+                  date: new Date(new Date().setDate(new Date().getDate() - (84 - i))).toISOString().split('T')[0],
+                  value: Math.floor(Math.random() * 5)
+                }))}
+                cellSize={12}
+                cellGap={1}
               />
             </div>
           </div>
         </div>
-      </div>
+      </CollapsibleSection>
 
       {/* Focus Dashboard */}
       {data.business_state?.focus_state && (
