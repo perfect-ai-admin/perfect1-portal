@@ -202,58 +202,40 @@ export default function ClientDashboard() {
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Top Bar */}
-            <motion.div 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4"
-            >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
               <div className="flex items-center gap-4 w-full sm:w-auto">
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <Avatar className="w-14 h-14 border-2 border-white/30 ring-2 ring-white/20">
-                    <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
-                      {currentData.name?.charAt(0) || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex-1"
-                >
-                  <h1 className="text-2xl sm:text-3xl font-bold">שלום, {currentData.name} 👋</h1>
+                <Avatar className="w-14 h-14 border-2 border-white/30 ring-2 ring-white/20">
+                  <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
+                    {currentData?.name?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold">שלום, {currentData?.name || 'משתמש'} 👋</h1>
                   <p className="text-white/80 text-sm">מרכז הניהול העסקי שלך</p>
-                </motion.div>
+                </div>
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3">
-                {/* Notifications */}
-                <NotificationCenter />
+                {/* Notifications - Safe render */}
+                {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
                 {/* Help */}
-                <motion.button 
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
+                <button 
                   className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                  aria-label="עזרה"
                 >
                   <HelpCircle className="w-6 h-6" />
-                </motion.button>
+                </button>
 
                 {/* User Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <motion.button 
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
+                    <button 
                       className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                      aria-label="תפריט משתמש"
                     >
                       <User className="w-6 h-6" />
-                    </motion.button>
+                    </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem onClick={handleLogout}>
@@ -263,17 +245,12 @@ export default function ClientDashboard() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </motion.div>
+            </div>
 
             {/* Tab Navigation - Desktop Only */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="hidden md:block"
-            >
-              <TabNavigation activeTab={activeTab} onChange={setActiveTab} />
-            </motion.div>
+            <div className="hidden md:block">
+              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} />}
+            </div>
           </div>
         </header>
 
