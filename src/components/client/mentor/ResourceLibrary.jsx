@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Video, Search, ExternalLink as LinkIcon } from 'lucide-react';
+import { FileText, Video, Search, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -197,7 +197,7 @@ export default function ResourceLibrary() {
                     </div>
                     <p className="text-sm text-gray-600">{resource.description}</p>
                   </div>
-                  <LinkIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <ExternalLink className="w-4 h-4 text-gray-400 flex-shrink-0" />
                 </div>
               </div>
             ))
