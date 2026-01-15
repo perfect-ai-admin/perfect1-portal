@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
+import MarketingInvestmentAdvisor from '../marketing/MarketingInvestmentAdvisor';
 import { Megaphone, Palette, TrendingUp, Users, BookOpen, Lightbulb, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
