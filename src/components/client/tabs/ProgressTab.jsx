@@ -7,6 +7,7 @@ import MilestoneCelebration from '../progress/MilestoneCelebration';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import SmartRecommendations from '../SmartRecommendations';
 import WhyThisMattersPanel from '../progress/WhyThisMattersPanel';
+import { ProgressTabHelp } from '../help/ContextualHelp';
 import { Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data, onNavigate }) {
@@ -32,6 +33,7 @@ export default function ProgressTab({ data, onNavigate }) {
 
   return (
     <>
+      <ProgressTabHelp />
       <MilestoneCelebration
         completedMilestones={completedMilestones}
         onGoalPrompt={() => onNavigate('goals')}
