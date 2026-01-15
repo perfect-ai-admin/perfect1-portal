@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
-  LogOut, HelpCircle, User, AlertCircle, Globe
+  LogOut, HelpCircle, User, AlertCircle, Globe, Megaphone
 } from 'lucide-react';
 import {
   Tooltip,
@@ -218,6 +218,16 @@ export default function ClientDashboard() {
           <div className="w-full px-3 sm:px-6 lg:px-8">
             {/* Top Bar - 56px fixed height */}
             <div className="flex items-center justify-between h-14">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <button
+                  onClick={() => setActiveTab('marketing')}
+                  className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded transition-colors text-sm font-medium whitespace-nowrap flex-shrink-0"
+                >
+                  <Megaphone className="w-4 h-4" />
+                  שיווק
+                </button>
+              </div>
+
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Avatar className="w-9 h-9 border border-white/20 flex-shrink-0">
                   <AvatarFallback className="bg-white/10 text-white text-sm font-semibold">
