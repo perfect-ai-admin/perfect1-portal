@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import {
   Select,
   SelectContent,
@@ -169,11 +169,15 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">הוסף מטרה חדשה 🎯</DialogTitle>
-        </DialogHeader>
+    <Drawer open={true} onOpenChange={onClose}>
+      <DrawerContent className="max-h-[90vh] overflow-y-auto">
+        <DrawerHeader className="hidden md:block">
+          <DrawerTitle className="text-2xl">הוסף מטרה חדשה 🎯</DrawerTitle>
+        </DrawerHeader>
+        <div className="md:hidden px-4 py-3 border-b">
+          <h2 className="text-xl font-bold text-gray-900">הוסף מטרה חדשה 🎯</h2>
+        </div>
+        <div className="px-4 md:px-6 py-4">
 
         {!selectedTemplate ? (
           <div className="space-y-4">
@@ -318,7 +322,8 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
             </div>
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 }
