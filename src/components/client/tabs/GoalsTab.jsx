@@ -1,44 +1,55 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import GoalCard from '../goals/GoalCard';
+import HeroGoal from '../goals/HeroGoal';
+import SecondaryGoals from '../goals/SecondaryGoals';
 import GoalTemplates from '../goals/GoalTemplates';
-import ProgressRing from '../business/ProgressRing';
-import { Plus, Target } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const SAMPLE_GOALS = [
   {
     id: '1',
-    category: 'revenue',
     title: 'הכנסה חודשית של ₪15,000',
     description: 'להגיע להכנסה יציבה ועקבית',
-    current: 12500,
-    target: 15000,
     currentDisplay: '₪12,500',
     targetDisplay: '₪15,000',
     deadline: '2026-03-31',
-    aiInsight: 'אתה במסלול מצוין! עוד ₪2,500 ותגיע ליעד. המלצה: התמקד בלקוחות קיימים.'
+    status: 'active',
+    actionHint: 'התמקד בלקוחות קיימים - זה יביא לך למטרה ב-3 שבועות.'
   },
   {
     id: '2',
-    category: 'clients',
     title: '10 לקוחות פעילים',
-    description: 'בסיס לקוחות יציב',
-    current: 7,
-    target: 10,
-    currentDisplay: '7 לקוחות',
-    targetDisplay: '10 לקוחות',
     deadline: '2026-06-30',
-    aiInsight: 'התקדמות טובה. צריך עוד 3 לקוחות - שקול לבקש המלצות מלקוחות קיימים.'
+    status: 'active'
+  },
+  {
+    id: '3',
+    title: 'מערכת ניהול חשבונות',
+    deadline: '2026-04-30',
+    status: 'active'
   }
 ];
 
 export default function GoalsTab({ data }) {
   const [goals, setGoals] = useState(SAMPLE_GOALS);
   const [showAddGoal, setShowAddGoal] = useState(false);
+  const [editingGoal, setEditingGoal] = useState(null);
 
-  const handleUpdateGoal = (goalId) => {
-    console.log('Update goal:', goalId);
+  const heroGoal = goals[0];
+  const secondaryGoals = goals.slice(1, 4);
+
+  const handleStatusChange = (goalId) => {
+    setGoals(prev => prev.map(g => 
+      g.id === goalId 
+        ? { ...g, status: g.status === 'active' ? 'achieved' : 'active' }
+        : g
+    ));
+  };
+
+  const handleEditGoal = (goal) => {
+    setEditingGoal(goal);
+    // ניתן להוסיף דיאלוג עריכה אם נדרש
   };
 
   const handleCreateGoal = (newGoal) => {
@@ -51,70 +62,48 @@ export default function GoalsTab({ data }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="space-y-8"
+      className="space-y-6"
     >
-      {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-xl p-8 text-white">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-3">המטרות שלי 🎯</h1>
-            <p className="text-xl opacity-90">
-              הגדר מה הצלחה אומרת עבורך - ונעזור לך להגיע לשם
-            </p>
-          </div>
-          <Button 
-            size="lg"
-            className="bg-white text-orange-600 hover:bg-gray-100"
-            onClick={() => setShowAddGoal(true)}
-          >
-            <Plus className="w-5 h-5 ml-2" />
-            מטרה חדשה
-          </Button>
+      {/* Hero Goal */}
+      {heroGoal && (
+        <div>
+          <p className="text-xs font-semibold text-gray-500 uppercase mb-3">המטרה הראשית שלך</p>
+          <HeroGoal 
+            goal={heroGoal}
+            onStatusChange={handleStatusChange}
+            onEdit={handleEditGoal}
+          />
         </div>
-      </div>
+      )}
 
-      {/* Goals Summary */}
-      <div className="grid md:grid-cols-4 gap-4">
-        <SummaryCard label="מטרות פעילות" value={goals.length} color="bg-blue-50 text-blue-700" />
-        <SummaryCard label="הושגו החודש" value="1" color="bg-green-50 text-green-700" />
-        <SummaryCard label="במסלול" value={goals.filter(g => (g.current / g.target) >= 0.7).length} color="bg-purple-50 text-purple-700" />
-        <SummaryCard label="צריכות תשומת לב" value={goals.filter(g => (g.current / g.target) < 0.4).length} color="bg-orange-50 text-orange-700" />
-      </div>
+      {/* Secondary Goals */}
+      {secondaryGoals.length > 0 && (
+        <SecondaryGoals 
+          goals={secondaryGoals}
+          onStatusChange={handleStatusChange}
+          onEdit={handleEditGoal}
+        />
+      )}
 
-      {/* Goals Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {goals.map(goal => (
-          <motion.div key={goal.id} className="space-y-4">
-            {/* Visual Progress Ring */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center">
-              <ProgressRing 
-                progress={Math.round((goal.current / goal.target) * 100)}
-                size={150}
-                color="auto"
-                label={goal.category === 'revenue' ? '₪' : '%'}
-                className="mb-4"
-              />
-              <h3 className="text-center text-lg font-bold text-gray-900">{goal.title}</h3>
-              <p className="text-center text-sm text-gray-600 mt-2">{goal.currentDisplay} מתוך {goal.targetDisplay}</p>
-            </div>
-            {/* Goal Card */}
-            <GoalCard 
-              goal={goal}
-              onUpdate={handleUpdateGoal}
-            />
-          </motion.div>
-        ))}
+      {/* Add Goal Button */}
+      <div className="pt-4">
+        <Button 
+          variant="outline" 
+          className="w-full gap-2"
+          onClick={() => setShowAddGoal(true)}
+        >
+          <Plus className="w-4 h-4" />
+          מטרה חדשה
+        </Button>
       </div>
 
       {/* Empty State */}
       {goals.length === 0 && (
-        <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-          <Target className="w-20 h-20 mx-auto text-gray-300 mb-4" />
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">טרם הוגדרו מטרות</h3>
-          <p className="text-gray-600 mb-6">התחל להגדיר מטרות כדי לעקוב אחרי ההתקדמות שלך</p>
-          <Button size="lg" onClick={() => setShowAddGoal(true)}>
-            <Plus className="w-5 h-5 ml-2" />
-            הוסף מטרה ראשונה
+        <div className="bg-white rounded-lg border-2 border-dashed border-gray-200 p-8 text-center">
+          <p className="text-gray-600 mb-4">אין מטרות עדיין</p>
+          <Button onClick={() => setShowAddGoal(true)}>
+            <Plus className="w-4 h-4 ml-2" />
+            צור מטרה ראשונה
           </Button>
         </div>
       )}
@@ -127,14 +116,5 @@ export default function GoalsTab({ data }) {
         />
       )}
     </motion.div>
-  );
-}
-
-function SummaryCard({ label, value, color }) {
-  return (
-    <div className={`rounded-xl p-4 ${color}`}>
-      <p className="text-sm opacity-75 mb-1">{label}</p>
-      <p className="text-3xl font-bold">{value}</p>
-    </div>
   );
 }
