@@ -59,50 +59,49 @@ export default function BrandingSection({ businessName, onActionStart }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-4 md:space-y-6"
+      className="space-y-6"
     >
       <div>
-        <h3 className="text-xl md:text-lg font-bold text-gray-900 mb-2">בנה את הזהות שלך</h3>
-        <p className="text-sm text-gray-600 mb-6">כל כלי בעמוד זה עוזר לך ליצור מראה עקבי בכל הערוצים</p>
+        <h3 className="text-lg font-bold text-gray-900 mb-4">אזור עבודה על מיתוג</h3>
+        <p className="text-sm text-gray-600 mb-6">בנה את הזהות החזותית של העסק שלך</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           {tools.map(tool => {
             const Icon = tool.icon;
             return (
               <motion.button
                 key={tool.id}
-                whileHover={{ y: -2, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ y: -2 }}
                 onClick={() => {
                   if (tool.id === 'logo') setSelectedTool('logo');
                   else onActionStart(tool.id);
                 }}
-                className="p-4 md:p-5 bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all text-left active:scale-95"
+                className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50 transition-all text-left"
               >
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center mb-3">
-                  <Icon className="w-6 h-6 md:w-7 md:h-7 text-blue-600" />
-                </div>
-                <h4 className="font-bold text-gray-900 text-base md:text-lg">{tool.title}</h4>
-                <p className="text-xs md:text-sm text-gray-600 mt-1.5">{tool.description}</p>
+                <Icon className="w-6 h-6 text-gray-600 mb-3" />
+                <h4 className="font-semibold text-gray-900">{tool.title}</h4>
+                <p className="text-sm text-gray-600 mt-1">{tool.description}</p>
               </motion.button>
             );
           })}
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 md:p-6 border border-gray-200">
-        <h4 className="font-bold text-gray-900 mb-4 text-base">נכסים שלי</h4>
-        <div className="space-y-2">
-          {[
-            { name: 'לוגו', status: 'לא הוגדר' },
-            { name: 'צבעים', status: 'לא הוגדר' },
-            { name: 'פונטים', status: 'לא הוגדר' }
-          ].map((asset, i) => (
-            <div key={i} className="flex items-center justify-between p-3 md:p-4 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
-              <span className="text-sm md:text-base font-medium text-gray-900">{asset.name}</span>
-              <span className="text-xs md:text-sm text-gray-400 bg-gray-100 px-3 py-1 rounded-full">{asset.status}</span>
-            </div>
-          ))}
+      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+        <h4 className="font-semibold text-gray-900 mb-3">נכסי מיתוג שלי</h4>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <span className="text-gray-700">לוגו</span>
+            <span className="text-gray-400">-</span>
+          </div>
+          <div className="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <span className="text-gray-700">צבעים</span>
+            <span className="text-gray-400">-</span>
+          </div>
+          <div className="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <span className="text-gray-700">פונטים</span>
+            <span className="text-gray-400">-</span>
+          </div>
         </div>
       </div>
     </motion.div>
