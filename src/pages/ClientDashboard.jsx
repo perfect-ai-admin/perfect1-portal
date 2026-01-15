@@ -25,9 +25,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 // Import Tab Components
-import TabNavigation from '../components/client/TabNavigation';
-import MobileTabBar from '../components/client/MobileTabBar';
-import SwipeableTabs from '../components/client/SwipeableTabs';
+import DashboardHeader from '../components/client/DashboardHeader';
 import PullToRefresh from '../components/client/PullToRefresh';
 import ProgressTab from '../components/client/tabs/ProgressTab';
 import BusinessTab from '../components/client/tabs/BusinessTab';
@@ -35,10 +33,6 @@ import FinancialTab from '../components/client/tabs/FinancialTab';
 import GoalsTab from '../components/client/tabs/GoalsTab';
 import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
-import NotificationCenter from '../components/client/NotificationCenter';
-import FloatingActionButton from '../components/client/FloatingActionButton';
-import DashboardSidebar from '../components/client/DashboardSidebar';
-import Breadcrumbs from '../components/client/Breadcrumbs';
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
 
