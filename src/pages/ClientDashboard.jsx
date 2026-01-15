@@ -31,6 +31,8 @@ import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
 import NotificationCenter from '../components/client/NotificationCenter';
 import FloatingActionButton from '../components/client/FloatingActionButton';
+import DashboardSidebar from '../components/client/DashboardSidebar';
+import Breadcrumbs from '../components/client/Breadcrumbs';
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
 
@@ -257,15 +259,25 @@ export default function ClientDashboard() {
           </div>
         </header>
 
-        {/* Main Content */}
-        <main 
-          id="main-content" 
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8"
-          role="main"
-          aria-label="תוכן ראשי"
-        >
-          {/* Desktop: Regular tabs */}
-          <div className="hidden md:block">
+        {/* Main Content with Sidebar */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Sidebar - Desktop Only */}
+          <div className="hidden md:block md:col-span-1">
+            <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
+          </div>
+
+          {/* Main Content */}
+          <main 
+            id="main-content" 
+            className="md:col-span-3 pb-24 md:pb-8"
+            role="main"
+            aria-label="תוכן ראשי"
+          >
+            {/* Breadcrumbs */}
+            <Breadcrumbs activeTab={activeTab} onNavigate={setActiveTab} />
+
+            {/* Desktop: Regular tabs */}
+            <div className="hidden md:block">
             {activeTab === 'progress' && (
               <div key="progress">
                 {typeof ProgressTab === 'function' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
@@ -314,12 +326,16 @@ export default function ClientDashboard() {
                 {typeof MentorTab === 'function' && <MentorTab data={enrichedData} />}
               </SwipeableTabs>
             )}
-          </div>
-        </main>
+            </div>
+            </main>
+            </div>
 
-        {/* Mobile Bottom Tab Bar */}
-        {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
-      </div>
-    </>
-  );
-}
+            {/* Mobile Bottom Tab Bar */}
+            {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
+
+            {/* Mobile Sidebar */}
+            <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
+            </div>
+            </>
+            );
+            }
