@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { HelpProvider } from '../components/client/help/HelpSystem';
 import { 
   LogOut, HelpCircle, User
 } from 'lucide-react';
@@ -132,7 +133,8 @@ export default function ClientDashboard() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl">
+      <HelpProvider>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl">
         {/* Header with staggered entrance */}
         <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -292,6 +294,7 @@ export default function ClientDashboard() {
           }}
         />
       </div>
+      </HelpProvider>
     </>
   );
 }
