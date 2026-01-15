@@ -6,8 +6,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { HelpProvider } from '../components/client/help/HelpSystem';
-import { AccessibilityProvider, SkipToMain } from '../components/accessibility/AccessibilityProvider';
-import { useKeyboardShortcut } from '../components/accessibility/KeyboardNav';
 import { 
   LogOut, HelpCircle, User
 } from 'lucide-react';
