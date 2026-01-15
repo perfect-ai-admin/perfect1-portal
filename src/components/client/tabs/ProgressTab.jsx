@@ -63,9 +63,6 @@ export default function ProgressTab({ data, onNavigate }) {
         {/* Goals Button - Mobile Only */}
         <GoalsFloatingButton onNavigate={onNavigate} />
 
-        {/* Quick Stats Bar - Always Visible */}
-        <QuickStatsBar stats={quickStats} className="mb-2" />
-
       {/* Main Grid - Desktop */}
       <div className="grid lg:grid-cols-12 gap-6">
         {/* Journey Timeline - Left 50% */}
