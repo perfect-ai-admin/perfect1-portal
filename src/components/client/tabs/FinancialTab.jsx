@@ -27,6 +27,8 @@ export default function FinancialTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
+      {/* FINBOT Connection */}
+      <FINBOTAuthButton onAuthSuccess={() => console.log('FINBOT connected')} />
       {/* FINBOT Connection Banner */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl shadow-xl p-8 text-white">
         <div className="flex items-start justify-between gap-6">
