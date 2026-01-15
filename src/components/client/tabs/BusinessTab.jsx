@@ -188,64 +188,48 @@ export default function BusinessTab({ data }) {
         </div>
       </div>
 
-      {/* Four Quadrants with Tooltips */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <MetricTooltip 
-          title="הכנסות כוללות" 
-          description="סה״כ הכנסותיך מחודש קודם. כוללת מכל מקורות."
-        >
-          <MetricQuadrant
-            title="הכנסות"
-            value={42000}
-            change="+15%"
-            trend={15}
-            chartData={revenueData}
-            icon={TrendingUp}
-            isCurrency={true}
-          />
-        </MetricTooltip>
-        <MetricTooltip 
-          title="הוצאות כוללות" 
-          description="כל הוצאותיך בחודש: שכרה, חשמל, חומרים וכו׳."
-        >
-          <MetricQuadrant
-            title="הוצאות"
-            value={18500}
-            change="+5%"
-            trend={5}
-            chartData={revenueData}
-            icon={DollarSign}
-            isCurrency={true}
-          />
-        </MetricTooltip>
-        <MetricTooltip 
-          title="רווח נקי" 
-          description="הכנסות פחות הוצאות. זה מה שנשאר לך בכיס."
-        >
-          <MetricQuadrant
-            title="רווח נקי"
-            value={23500}
-            change="+28%"
-            trend={28}
-            chartData={revenueData}
-            icon={PieChart}
-            isCurrency={true}
-          />
-        </MetricTooltip>
-        <MetricTooltip 
-          title="ביצוע עסקי" 
-          description="דירוג כללי של ביצועך: כמה טוב אתה מנהל את העסק."
-        >
-          <MetricQuadrant
-            title="מדדי ביצוע"
-            value={85}
-            change="+3%"
-            trend={3}
-            chartData={revenueData}
-            icon={TrendingUp}
-            isPercentage={true}
-          />
-        </MetricTooltip>
+      {/* KPI Row - Compact */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <MetricQuadrant
+          title="הכנסות"
+          value={42000}
+          change="+15%"
+          trend={15}
+          chartData={revenueData}
+          icon={TrendingUp}
+          isCurrency={true}
+          compact={true}
+        />
+        <MetricQuadrant
+          title="הוצאות"
+          value={18500}
+          change="+5%"
+          trend={5}
+          chartData={revenueData}
+          icon={DollarSign}
+          isCurrency={true}
+          compact={true}
+        />
+        <MetricQuadrant
+          title="רווח נקי"
+          value={23500}
+          change="+28%"
+          trend={28}
+          chartData={revenueData}
+          icon={PieChart}
+          isCurrency={true}
+          compact={true}
+        />
+        <MetricQuadrant
+          title="ביצוע"
+          value={85}
+          change="+3%"
+          trend={3}
+          chartData={revenueData}
+          icon={BarChart3}
+          isPercentage={true}
+          compact={true}
+        />
       </div>
 
       {/* Charts Section - Collapsible on Mobile */}
