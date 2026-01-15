@@ -52,9 +52,9 @@ export default function ProgressTab({ data, onNavigate }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="space-y-8"
+        className="space-y-6"
       >
-        {/* Quick Stats */}
+        {/* Quick Stats Bar - Always at Top */}
         <QuickStatsBar stats={quickStats} />
 
       {/* Main Grid - Desktop */}

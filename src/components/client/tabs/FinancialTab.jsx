@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import InvoiceGenerator from '../financial/InvoiceGenerator';
-import { FileText, DollarSign, TrendingUp, AlertCircle, ExternalLink, TrendingDown } from 'lucide-react';
+import BudgetRecommendationEngine from '../financial/BudgetRecommendationEngine';
+import ReportsSection from '../financial/ReportsSection';
+import { FileText, DollarSign, TrendingUp, AlertCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -89,69 +91,34 @@ export default function FinancialTab({ data }) {
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <ReportCard
-              title="דוח הכנסות"
-              description="פירוט הכנסות לפי לקוחות ושירותים"
-              icon={TrendingUp}
-              color="from-green-500 to-green-600"
-            />
-            <ReportCard
-              title="דוח הוצאות"
-              description="ניתוח הוצאות לפי קטגוריות"
-              icon={DollarSign}
-              color="from-blue-500 to-blue-600"
-            />
-            <ReportCard
-              title="רווח והפסד"
-              description="P&L חודשי עם השוואה שנתית"
-              icon={TrendingUp}
-              color="from-purple-500 to-purple-600"
-            />
-            <ReportCard
-              title="תזרים מזומנים"
-              description="תחזית לעומת ביצוע בפועל"
-              icon={TrendingDown}
-              color="from-orange-500 to-orange-600"
-            />
-          </div>
+          <ReportsSection />
         </TabsContent>
 
         <TabsContent value="budget" className="space-y-6">
-          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-8">
-            <div className="flex items-start gap-4">
-              <AlertCircle className="w-8 h-8 text-yellow-600 flex-shrink-0" />
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">המלצת תקציב חכמה</h3>
-                <p className="text-gray-700 leading-relaxed mb-4">
-                  על סמך הנתונים העסקיים שלך, אנחנו ממליצים להקצות עד <strong>₪3,000</strong> החודש להוצאות שיווק.
-                  זה יהווה 10% מהכנסותיך - יחס בריא לעסק בשלב שלך.
-                </p>
-                <Button size="sm" variant="outline">
-                  קרא עוד על התקציב המומלץ
-                </Button>
-              </div>
-            </div>
-          </div>
+          <BudgetRecommendationEngine
+            recommendations={[
+              {
+                id: '1',
+                type: 'savings_opportunity',
+                title: 'הזדמנות לחיסכון בהוצאות',
+                description: 'זיהינו שאתה מוציא 20% יותר על ציוד השנה. שקול לעבור לספק אחר או לנהל מלאי טוב יותר.',
+                primaryActionLabel: 'הצג חלופות',
+                primaryAction: 'view_alternatives'
+              },
+              {
+                id: '2',
+                type: 'tax_optimization',
+                title: 'הטבות מס לפני סוף השנה',
+                description: 'יש לך הזדמנות לנצל הטבות מס על הוצאות ציוד עד ₪5,000 לפני סוף דצמבר.',
+                primaryActionLabel: 'ראה פירוט',
+                primaryAction: 'view_tax_details'
+              }
+            ]}
+            onDismiss={(id) => console.log('Dismissed:', id)}
+            onAction={(id, action) => console.log('Action:', id, action)}
+          />
         </TabsContent>
       </Tabs>
     </motion.div>
-  );
-}
-
-function ReportCard({ title, description, icon: Icon, color }) {
-  return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer">
-      <div className={`bg-gradient-to-r ${color} p-6 text-white`}>
-        <Icon className="w-10 h-10 mb-3" />
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-sm opacity-90">{description}</p>
-      </div>
-      <div className="p-4 text-center">
-        <Button variant="ghost" className="w-full">
-          צפה בדוח
-        </Button>
-      </div>
-    </div>
   );
 }

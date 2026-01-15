@@ -26,7 +26,7 @@ import GoalsTab from '../components/client/tabs/GoalsTab';
 import MarketingTab from '../components/client/tabs/MarketingTab';
 import MentorTab from '../components/client/tabs/MentorTab';
 import NotificationCenter from '../components/client/NotificationCenter';
-import QuickInvoiceButton from '../components/client/financial/QuickInvoiceButton';
+import FloatingActionButton from '../components/client/FloatingActionButton';
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
 
@@ -283,8 +283,14 @@ export default function ClientDashboard() {
           </AnimatePresence>
         </div>
 
-        {/* Quick Invoice Floating Button */}
-        <QuickInvoiceButton />
+        {/* Floating Action Button - Mobile Only */}
+        <FloatingActionButton 
+          onAction={(type) => {
+            if (type === 'invoice') setActiveTab('financial');
+            if (type === 'goal') setActiveTab('goals');
+            if (type === 'mentor') setActiveTab('mentor');
+          }}
+        />
       </div>
     </>
   );
