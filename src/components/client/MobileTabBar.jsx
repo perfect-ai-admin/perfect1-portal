@@ -1,17 +1,26 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, 
   BarChart3, 
   Wallet, 
   Target, 
   Megaphone, 
-  MessageSquare 
+  MessageSquare,
+  MoreHorizontal
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 // Mobile Bottom Tab Bar (section 8)
 // Minimum touch targets: 44px
 export default function MobileTabBar({ activeTab, onChange }) {
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  
   const tabs = [
     { id: 'progress', label: 'התקדמות', icon: TrendingUp },
     { id: 'business', label: 'עסק', icon: BarChart3 },
@@ -21,6 +30,9 @@ export default function MobileTabBar({ activeTab, onChange }) {
     { id: 'mentor', label: 'מנטור', icon: MessageSquare }
   ];
 
+  const visibleTabs = tabs.slice(0, 5);
+  const hiddenTabs = tabs.slice(5);
+
   return (
     <nav 
       className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-50 pb-safe"
@@ -28,7 +40,7 @@ export default function MobileTabBar({ activeTab, onChange }) {
       aria-label="ניווט ראשי"
     >
       <div className="grid grid-cols-6 h-16">
-        {tabs.map((tab) => {
+        {visibleTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           
@@ -36,7 +48,7 @@ export default function MobileTabBar({ activeTab, onChange }) {
             <button
               key={tab.id}
               onClick={() => onChange(tab.id)}
-              className="relative flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:bg-gray-50 transition-colors"
+              className="relative flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
               aria-label={tab.label}
               aria-current={isActive ? 'page' : undefined}
               role="tab"
@@ -73,6 +85,42 @@ export default function MobileTabBar({ activeTab, onChange }) {
             </button>
           );
         })}
+
+        {/* More Menu for additional tabs */}
+        {hiddenTabs.length > 0 && (
+          <DropdownMenu open={isMoreOpen} onOpenChange={setIsMoreOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="relative flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                aria-label="עוד אפשרויות"
+                aria-haspopup="true"
+                aria-expanded={isMoreOpen}
+              >
+                <MoreHorizontal className={`w-5 h-5 ${isMoreOpen ? 'text-blue-600' : 'text-gray-500'}`} aria-hidden="true" />
+                <span className="text-[10px] font-medium text-gray-500">עוד</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="top" className="mb-16">
+              {hiddenTabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <DropdownMenuItem 
+                    key={tab.id}
+                    onClick={() => {
+                      onChange(tab.id);
+                      setIsMoreOpen(false);
+                    }}
+                    className={isActive ? 'bg-blue-50 text-blue-600' : ''}
+                  >
+                    <Icon className="w-4 h-4 mr-2" aria-hidden="true" />
+                    {tab.label}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </nav>
   );
