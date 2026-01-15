@@ -4,6 +4,7 @@ import JourneyTimeline, { MILESTONES } from '../progress/JourneyTimeline';
 import NextStepCard from '../progress/NextStepCard';
 import QuickStatsBar from '../progress/QuickStatsBar';
 import MilestoneCelebration from '../progress/MilestoneCelebration';
+import MilestoneAnimation from '../progress/MilestoneAnimation';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import SmartRecommendations from '../SmartRecommendations';
 import WhyThisMattersPanel from '../progress/WhyThisMattersPanel';
@@ -13,6 +14,8 @@ import { ProgressTabHelp } from '../help/ContextualHelp';
 import { Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data, onNavigate }) {
+  const [celebratingMilestone, setCelebratingMilestone] = useState(null);
+  
   // Mock data - יש להחליף בנתונים אמיתיים
   const completedMilestones = ['registration'];
   const currentMilestone = 'first_invoice';
@@ -39,8 +42,20 @@ export default function ProgressTab({ data, onNavigate }) {
       <MilestoneCelebration
         completedMilestones={completedMilestones}
         onGoalPrompt={() => onNavigate('goals')}
-        onCelebrationComplete={(milestoneId) => console.log('Celebrated:', milestoneId)}
+        onCelebrationComplete={(milestoneId) => {
+          console.log('Celebrated:', milestoneId);
+          if (completedMilestones.includes(milestoneId)) {
+            setCelebratingMilestone(milestoneId);
+          }
+        }}
       />
+
+      {celebratingMilestone && (
+        <MilestoneAnimation 
+          milestoneId={celebratingMilestone}
+          onComplete={() => setCelebratingMilestone(null)}
+        />
+      )}
       
       <motion.div
         initial={{ opacity: 0 }}
