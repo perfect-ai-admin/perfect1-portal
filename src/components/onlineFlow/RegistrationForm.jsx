@@ -18,13 +18,33 @@ export default function RegistrationForm({ onSubmit, onBack }) {
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
-    const newErrors = {};
-    if (!formData.fullName.trim()) newErrors.fullName = 'שם חובה';
-    if (!formData.id.trim()) newErrors.id = 'ת.ז. חובה';
-    if (!formData.phone.trim()) newErrors.phone = 'טלפון חובה';
-    if (!formData.email.trim()) newErrors.email = 'אימייל חובה';
-    return newErrors;
-  };
+     const newErrors = {};
+     if (!formData.fullName.trim()) {
+       newErrors.fullName = 'אנא הכנס שם מלא (לפחות 2 תווים)';
+     } else if (formData.fullName.trim().length < 2) {
+       newErrors.fullName = 'שם חייב להיות לפחות 2 תווים';
+     }
+
+     if (!formData.id.trim()) {
+       newErrors.id = 'אנא הכנס מספר תעודת זהות';
+     } else if (!/^\d{9}$/.test(formData.id.trim())) {
+       newErrors.id = 'תעודת זהות חייבת להיות 9 ספרות';
+     }
+
+     if (!formData.phone.trim()) {
+       newErrors.phone = 'אנא הכנס מספר טלפון';
+     } else if (!/^0[0-9]{8,9}$/.test(formData.phone.trim())) {
+       newErrors.phone = 'טלפון חייב להיות בפורמט: 05XXXXXXXX';
+     }
+
+     if (!formData.email.trim()) {
+       newErrors.email = 'אנא הכנס כתובת מייל';
+     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+       newErrors.email = 'אנא הכנס מייל תקין (דוגמה: name@example.com)';
+     }
+
+     return newErrors;
+   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,17 +76,22 @@ export default function RegistrationForm({ onSubmit, onBack }) {
           transition={{ delay: 0.05 }}
         >
           <Input
+            id="fullName"
             placeholder="שם מלא"
             value={formData.fullName}
             onChange={(e) =>
               setFormData({ ...formData, fullName: e.target.value })
             }
+            aria-invalid={!!errors.fullName}
+            aria-describedby={errors.fullName ? 'error-fullName' : undefined}
             className={`h-10 rounded-lg border-2 text-sm ${
-              errors.fullName ? 'border-red-500' : 'border-gray-200'
+              errors.fullName ? 'border-red-500 focus:ring-red-200' : 'border-gray-200'
             }`}
           />
           {errors.fullName && (
-            <p className="text-red-500 text-xs mt-0.5">{errors.fullName}</p>
+            <p id="error-fullName" className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+              <span>⚠️</span>{errors.fullName}
+            </p>
           )}
         </motion.div>
 
@@ -76,16 +101,22 @@ export default function RegistrationForm({ onSubmit, onBack }) {
           transition={{ delay: 0.1 }}
         >
           <Input
-            placeholder="תעודת זהות"
+            id="id"
+            placeholder="תעודת זהות (9 ספרות)"
             value={formData.id}
             onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+            aria-invalid={!!errors.id}
+            aria-describedby={errors.id ? 'error-id' : undefined}
             className={`h-10 rounded-lg border-2 text-sm ${
-              errors.id ? 'border-red-500' : 'border-gray-200'
+              errors.id ? 'border-red-500 focus:ring-red-200' : 'border-gray-200'
             }`}
             maxLength="9"
+            inputMode="numeric"
           />
           {errors.id && (
-            <p className="text-red-500 text-xs mt-0.5">{errors.id}</p>
+            <p id="error-id" className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+              <span>⚠️</span>{errors.id}
+            </p>
           )}
         </motion.div>
 
@@ -95,18 +126,23 @@ export default function RegistrationForm({ onSubmit, onBack }) {
           transition={{ delay: 0.15 }}
         >
           <Input
+            id="phone"
             type="tel"
-            placeholder="טלפון"
+            placeholder="טלפון (05XXXXXXXX)"
             value={formData.phone}
             onChange={(e) =>
               setFormData({ ...formData, phone: e.target.value })
             }
+            aria-invalid={!!errors.phone}
+            aria-describedby={errors.phone ? 'error-phone' : undefined}
             className={`h-10 rounded-lg border-2 text-sm ${
-              errors.phone ? 'border-red-500' : 'border-gray-200'
+              errors.phone ? 'border-red-500 focus:ring-red-200' : 'border-gray-200'
             }`}
           />
           {errors.phone && (
-            <p className="text-red-500 text-xs mt-0.5">{errors.phone}</p>
+            <p id="error-phone" className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+              <span>☎️</span>{errors.phone}
+            </p>
           )}
         </motion.div>
 
@@ -116,18 +152,23 @@ export default function RegistrationForm({ onSubmit, onBack }) {
           transition={{ delay: 0.2 }}
         >
           <Input
+            id="email"
             type="email"
-            placeholder="אימייל"
+            placeholder="אימייל (name@example.com)"
             value={formData.email}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? 'error-email' : undefined}
             className={`h-10 rounded-lg border-2 text-sm ${
-              errors.email ? 'border-red-500' : 'border-gray-200'
+              errors.email ? 'border-red-500 focus:ring-red-200' : 'border-gray-200'
             }`}
           />
           {errors.email && (
-            <p className="text-red-500 text-xs mt-0.5">{errors.email}</p>
+            <p id="error-email" className="text-red-500 text-xs mt-1 flex items-center gap-1" role="alert">
+              <span>✉️</span>{errors.email}
+            </p>
           )}
         </motion.div>
 
