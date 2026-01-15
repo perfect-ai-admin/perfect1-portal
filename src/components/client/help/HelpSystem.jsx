@@ -136,24 +136,25 @@ export function FeatureHint({ id, title, message, action }) {
 
   if (seenHints[id] || !show) return null;
 
+  // Desktop: compact card, Mobile: hidden (use floating button instead)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="fixed bottom-6 left-6 max-w-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-2xl p-6 z-50"
+      className="hidden md:flex fixed bottom-6 left-6 w-96 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-2xl p-5 z-50 flex-col gap-3"
     >
       <button
         onClick={handleDismiss}
-        className="absolute top-3 left-3 text-white/80 hover:text-white"
+        className="absolute top-2 left-2 text-white/80 hover:text-white p-1"
       >
-        <X className="w-5 h-5" />
+        <X className="w-4 h-4" />
       </button>
-      <div className="flex items-start gap-3 mb-4">
-        <Lightbulb className="w-8 h-8 flex-shrink-0" />
-        <div>
-          <h4 className="font-bold text-lg mb-1">{title}</h4>
-          <p className="text-sm opacity-90">{message}</p>
+      <div className="flex items-start gap-2">
+        <Lightbulb className="w-5 h-5 flex-shrink-0 mt-0.5" />
+        <div className="flex-1 pr-6">
+          <h4 className="font-semibold text-sm mb-0.5">{title}</h4>
+          <p className="text-xs opacity-90 leading-relaxed">{message}</p>
         </div>
       </div>
       {action && (
@@ -162,7 +163,8 @@ export function FeatureHint({ id, title, message, action }) {
             action.onClick();
             handleDismiss();
           }}
-          className="bg-white text-blue-600 hover:bg-gray-100 w-full"
+          size="sm"
+          className="bg-white text-blue-600 hover:bg-gray-100 w-full text-xs h-8"
         >
           {action.label}
         </Button>
