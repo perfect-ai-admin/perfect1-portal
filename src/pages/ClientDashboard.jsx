@@ -200,25 +200,25 @@ export default function ClientDashboard() {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl" lang="he">
-        {/* Header with staggered entrance */}
-        <header 
-          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
-          role="banner"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            {/* Top Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-              <div className="flex items-center gap-4 w-full sm:w-auto flex-shrink-0">
-                 <Avatar className="w-14 h-14 border-2 border-white/30 ring-2 ring-white/20 flex-shrink-0">
-                   <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
-                     {currentData?.name?.charAt(0)?.toUpperCase() || 'U'}
-                   </AvatarFallback>
-                 </Avatar>
-                <div className="flex-1 min-w-0">
-                    <h1 className="text-2xl sm:text-3xl font-bold truncate">שלום, {currentData?.name || 'משתמש'} 👋</h1>
-                    <p className="text-white/80 text-sm">מרכז הניהול העסקי שלך</p>
-                  </div>
-              </div>
+         {/* Header with staggered entrance */}
+         <header 
+           className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
+           role="banner"
+         >
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+             {/* Top Bar */}
+             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+               <div className="flex items-center gap-4 w-full sm:w-auto flex-shrink-0">
+                  <Avatar className="w-14 h-14 border-2 border-white/30 ring-2 ring-white/20 flex-shrink-0" aria-hidden="true">
+                    <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
+                      {currentData?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                 <div className="flex-1 min-w-0">
+                     <h1 className="text-2xl sm:text-3xl font-bold truncate">שלום, {currentData?.name || 'משתמש'} 👋</h1>
+                     <p className="text-white/80 text-sm">מרכז הניהול העסקי שלך</p>
+                   </div>
+               </div>
 
               <div className="flex items-center gap-2 sm:gap-3">
                 {/* Notifications - Safe render */}
