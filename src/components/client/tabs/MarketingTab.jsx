@@ -89,17 +89,7 @@ export default function MarketingTab({ data }) {
         </TabsContent>
 
         <TabsContent value="roi">
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">ייעוץ השקעות שיווקיות</h3>
-            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 mb-6">
-              <Lightbulb className="w-8 h-8 text-green-600 mb-3" />
-              <h4 className="text-lg font-bold text-gray-900 mb-2">המלצה מותאמת אישית</h4>
-              <p className="text-gray-700 leading-relaxed">
-                בשלב הנוכחי שלך, עדיף להשקיע בשיווק אורגני (תוכן, רשתות חברתיות) לפני שמשקיעים בפרסום בתשלום.
-                כשתגיע להכנסה של ₪20,000 בחודש, אפשר לשקול השקעה של 5-10% בפרסום.
-              </p>
-            </div>
-          </div>
+          <MarketingInvestmentAdvisor data={data} />
         </TabsContent>
 
         <TabsContent value="education">
