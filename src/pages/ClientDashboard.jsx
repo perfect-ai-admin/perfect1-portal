@@ -131,6 +131,27 @@ export default function ClientDashboard() {
 
   const currentData = clientData || client;
 
+  // Validate that essential data exists
+  if (!currentData?.id || !currentData?.name) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
+        <Alert variant="destructive" className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <p className="font-bold mb-2">נתונים חסרים</p>
+            <p className="text-sm mb-4">לא ניתן לטעון את מרכז הניהול. אנא התחבר מחדש.</p>
+            <button 
+              onClick={handleLogout}
+              className="text-sm font-medium underline hover:no-underline"
+            >
+              חזור לעמוד הכניסה
+            </button>
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   // Mock business state for demonstration if doesn't exist
   const enrichedData = {
     ...currentData,
