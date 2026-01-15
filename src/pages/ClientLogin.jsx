@@ -54,7 +54,6 @@ export default function ClientLogin() {
       <Helmet>
         <title>כניסה ל-BizPilot | ניהול העסק במקום אחד</title>
         <meta name="robots" content="noindex, nofollow" />
-        <meta name="google-site-verification" content="bLaptZTTD_btTGoFrlW9uYdfP6oYBsoLSXdM3HDyWJg" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] flex items-center justify-center p-6" dir="rtl">
