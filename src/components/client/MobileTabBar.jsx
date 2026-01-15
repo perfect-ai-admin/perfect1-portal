@@ -22,7 +22,11 @@ export default function MobileTabBar({ activeTab, onChange }) {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-50 pb-safe">
+    <nav 
+      className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-50 pb-safe"
+      role="navigation"
+      aria-label="ניווט ראשי"
+    >
       <div className="grid grid-cols-6 h-16">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -33,6 +37,9 @@ export default function MobileTabBar({ activeTab, onChange }) {
               key={tab.id}
               onClick={() => onChange(tab.id)}
               className="relative flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:bg-gray-50 transition-colors"
+              aria-label={tab.label}
+              aria-current={isActive ? 'page' : undefined}
+              role="tab"
             >
               <motion.div
                 initial={false}
@@ -46,6 +53,7 @@ export default function MobileTabBar({ activeTab, onChange }) {
                   className={`w-5 h-5 ${
                     isActive ? 'text-blue-600' : 'text-gray-500'
                   }`}
+                  aria-hidden="true"
                 />
               </motion.div>
               <span 
@@ -66,6 +74,6 @@ export default function MobileTabBar({ activeTab, onChange }) {
           );
         })}
       </div>
-    </div>
+    </nav>
   );
 }

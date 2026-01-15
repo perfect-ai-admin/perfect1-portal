@@ -113,6 +113,73 @@ img {
   height: auto;
 }
 
+/* Accessibility (section 9.1) */
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Focus indicators - only show when using keyboard */
+body:not(.keyboard-nav) *:focus {
+  outline: none;
+}
+
+body.keyboard-nav *:focus {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+body.keyboard-nav button:focus,
+body.keyboard-nav a:focus,
+body.keyboard-nav input:focus,
+body.keyboard-nav select:focus,
+body.keyboard-nav textarea:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  * {
+    border-color: currentColor !important;
+  }
+  
+  button, a {
+    text-decoration: underline;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Mobile optimizations (section 8) */
 @supports (padding: env(safe-area-inset-bottom)) {
   .pb-safe {

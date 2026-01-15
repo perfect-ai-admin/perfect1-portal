@@ -6,6 +6,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { HelpProvider } from '../components/client/help/HelpSystem';
+import { AccessibilityProvider, SkipToMain } from '../components/accessibility/AccessibilityProvider';
+import { useKeyboardShortcut } from '../components/accessibility/KeyboardNav';
 import { 
   LogOut, HelpCircle, User
 } from 'lucide-react';
@@ -73,6 +75,14 @@ export default function ClientDashboard() {
   };
 
   const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
+
+  // Keyboard shortcuts (section 9.1)
+  useKeyboardShortcut('1', () => setActiveTab('progress'));
+  useKeyboardShortcut('2', () => setActiveTab('business'));
+  useKeyboardShortcut('3', () => setActiveTab('financial'));
+  useKeyboardShortcut('4', () => setActiveTab('goals'));
+  useKeyboardShortcut('5', () => setActiveTab('marketing'));
+  useKeyboardShortcut('6', () => setActiveTab('mentor'));
 
   // Loading State - Skeleton
   if (!client || isLoading) {
@@ -143,10 +153,15 @@ export default function ClientDashboard() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <HelpProvider>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl">
+      <AccessibilityProvider>
+        <HelpProvider>
+          <SkipToMain />
+          <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir="rtl" lang="he">
         {/* Header with staggered entrance */}
-        <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50">
+        <header 
+          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
+          role="banner"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Top Bar */}
             <motion.div 
@@ -226,7 +241,12 @@ export default function ClientDashboard() {
 
         {/* Main Content */}
         <PullToRefresh onRefresh={handleRefresh}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+          <main 
+            id="main-content" 
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8"
+            role="main"
+            aria-label="תוכן ראשי"
+          >
             {/* Desktop: Regular tabs with fade animation */}
             <div className="hidden md:block">
               <AnimatePresence mode="wait">
@@ -314,13 +334,14 @@ export default function ClientDashboard() {
                 <MentorTab data={enrichedData} />
               </SwipeableTabs>
             </div>
-          </div>
+          </main>
         </PullToRefresh>
 
         {/* Mobile Bottom Tab Bar */}
         <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />
       </div>
-      </HelpProvider>
+        </HelpProvider>
+      </AccessibilityProvider>
     </>
   );
 }
