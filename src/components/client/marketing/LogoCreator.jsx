@@ -16,10 +16,20 @@ const COLOR_SCHEMES = [
 ];
 
 const STYLES = [
-  { id: 'abstract', label: 'מופשט', description: 'צורות גיאומטריות' },
-  { id: 'literal', label: 'ליטרלי', description: 'ייצוג ישיר של העסק' },
-  { id: 'text', label: 'טקסט בלבד', description: 'פונט מעוצב' },
-  { id: 'minimal', label: 'מינימליסטי', description: 'פשוט ונקי' }
+  { id: 'minimal', label: 'מינימליסטי', description: 'פשוט ונקי', icon: '⬜' },
+  { id: 'modern', label: 'מודרני', description: 'טרנדי ועכשווי', icon: '✨' },
+  { id: 'abstract', label: 'מופשט', description: 'צורות גיאומטריות', icon: '◆' },
+  { id: 'playful', label: 'שובב', description: 'צעיר ומהנה', icon: '🎨' },
+  { id: 'elegant', label: 'אלגנטי', description: 'מתוחכם ויוקרתי', icon: '👑' },
+  { id: 'bold', label: 'נועז', description: 'חזק ובולט', icon: '⚡' }
+];
+
+const ICON_STYLES = [
+  { id: 'geometric', label: 'גיאומטרי', example: '⬡⬢⬣' },
+  { id: 'organic', label: 'אורגני', example: '🌿🍃' },
+  { id: 'letter', label: 'אות ראשונה', example: 'A B C' },
+  { id: 'symbol', label: 'סמל', example: '★ ● ■' },
+  { id: 'illustration', label: 'איור', example: '🎨 ✏️' }
 ];
 
 export default function LogoCreator({ businessName }) {
@@ -28,8 +38,10 @@ export default function LogoCreator({ businessName }) {
     businessName: businessName || '',
     tagline: '',
     industry: '',
+    vibe: '',
     colorScheme: COLOR_SCHEMES[0],
-    style: 'minimal'
+    style: 'minimal',
+    iconStyle: 'geometric'
   });
   const [logos, setLogos] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -38,18 +50,20 @@ export default function LogoCreator({ businessName }) {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `Professional business logo for "${formData.businessName}". 
-Style: ${formData.style}. 
-Industry: ${formData.industry}.
-Colors: ${formData.colorScheme.colors.join(', ')}.
-Modern, clean, suitable for business cards and website.`;
+      const prompt = `Professional business logo design. 
+Business: "${formData.businessName}"
+Industry: ${formData.industry}
+Style: ${formData.style} ${formData.vibe ? `with ${formData.vibe} vibe` : ''}
+Icon style: ${formData.iconStyle}
+Color palette: ${formData.colorScheme.colors.join(', ')}
+Requirements: Clean, scalable, modern, suitable for business cards and digital use. White or transparent background. Vector-style appearance.`;
 
       const result = await base44.integrations.Core.GenerateImage({
         prompt: prompt
       });
 
-      setLogos([result.url]);
-      setStep(3);
+      setLogos(prev => [...prev, result.url]);
+      setStep(4);
     } catch (error) {
       console.error('Logo generation failed:', error);
       alert('שגיאה ביצירת הלוגו. נסה שוב.');
@@ -95,12 +109,21 @@ Modern, clean, suitable for business cards and website.`;
             />
           </div>
 
+          <div>
+            <Label>האווירה שאתה רוצה להעביר (אופציונלי)</Label>
+            <Input
+              value={formData.vibe}
+              onChange={(e) => setFormData(prev => ({ ...prev, vibe: e.target.value }))}
+              placeholder="למשל: מקצועי, צעיר, יוקרתי, ידידותי"
+            />
+          </div>
+
           <Button 
             onClick={() => setStep(2)} 
             className="w-full"
             disabled={!formData.businessName || !formData.industry}
           >
-            המשך
+            המשך לבחירת צבעים
           </Button>
         </div>
       </div>
@@ -115,7 +138,11 @@ Modern, clean, suitable for business cards and website.`;
         </Button>
 
         <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
-          {/* Color Scheme */}
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">שלב 2: בחר צבעים</h3>
+            <p className="text-gray-600 text-sm">צבעים יוצרים את ההרגשה הראשונית</p>
+          </div>
+
           <div>
             <Label className="text-lg font-bold mb-4 block">בחר ערכת צבעים</Label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -133,7 +160,7 @@ Modern, clean, suitable for business cards and website.`;
                     {scheme.colors.map((color, i) => (
                       <div
                         key={i}
-                        className="w-8 h-8 rounded-full"
+                        className="w-8 h-8 rounded-full border-2 border-gray-200"
                         style={{ backgroundColor: color }}
                       />
                     ))}
@@ -144,22 +171,69 @@ Modern, clean, suitable for business cards and website.`;
             </div>
           </div>
 
-          {/* Style */}
+          <Button 
+            onClick={() => setStep(3)} 
+            className="w-full"
+          >
+            המשך לבחירת סגנון
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 3) {
+    return (
+      <div className="space-y-6">
+        <Button variant="ghost" onClick={() => setStep(2)}>
+          ← חזור
+        </Button>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">שלב 3: בחר סגנון</h3>
+            <p className="text-gray-600 text-sm">איזה אופי מתאים לעסק שלך?</p>
+          </div>
+
           <div>
-            <Label className="text-lg font-bold mb-4 block">סגנון הלוגו</Label>
-            <RadioGroup value={formData.style} onValueChange={(val) => setFormData(prev => ({ ...prev, style: val }))}>
-              <div className="space-y-3">
-                {STYLES.map(style => (
-                  <div key={style.id} className="flex items-center space-x-2 space-x-reverse p-4 border-2 border-gray-200 rounded-lg hover:border-blue-300 transition-all cursor-pointer">
-                    <RadioGroupItem value={style.id} id={style.id} />
-                    <Label htmlFor={style.id} className="flex-1 cursor-pointer">
-                      <p className="font-semibold">{style.label}</p>
-                      <p className="text-sm text-gray-600">{style.description}</p>
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </RadioGroup>
+            <Label className="text-lg font-bold mb-4 block">סגנון כללי</Label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {STYLES.map(style => (
+                <button
+                  key={style.id}
+                  onClick={() => setFormData(prev => ({ ...prev, style: style.id }))}
+                  className={`p-4 border-2 rounded-lg transition-all ${
+                    formData.style === style.id
+                      ? 'border-blue-500 ring-2 ring-blue-200 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="text-3xl mb-2">{style.icon}</div>
+                  <p className="font-semibold text-sm">{style.label}</p>
+                  <p className="text-xs text-gray-600">{style.description}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-lg font-bold mb-4 block">סגנון אייקון</Label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {ICON_STYLES.map(iconStyle => (
+                <button
+                  key={iconStyle.id}
+                  onClick={() => setFormData(prev => ({ ...prev, iconStyle: iconStyle.id }))}
+                  className={`p-4 border-2 rounded-lg transition-all ${
+                    formData.iconStyle === iconStyle.id
+                      ? 'border-purple-500 ring-2 ring-purple-200 bg-purple-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="text-2xl mb-2">{iconStyle.example}</div>
+                  <p className="font-semibold text-sm">{iconStyle.label}</p>
+                </button>
+              ))}
+            </div>
           </div>
 
           <Button 
@@ -184,57 +258,113 @@ Modern, clean, suitable for business cards and website.`;
     );
   }
 
-  if (step === 3) {
+  if (step === 4) {
+    const downloadLogo = (format) => {
+      const logo = selectedLogo || logos[0];
+      const link = document.createElement('a');
+      link.href = logo;
+      link.download = `${formData.businessName}-logo.${format}`;
+      link.click();
+    };
+
     return (
       <div className="space-y-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">הלוגו שלך מוכן! 🎨</h2>
-          <p className="text-gray-600">בחר את הגרסה המועדפת עליך</p>
+          <p className="text-gray-600">בחר את הגרסה המועדפת עליך והורד בפורמטים שונים</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {logos.map((logo, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
               onClick={() => setSelectedLogo(logo)}
               className={`bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transition-all ${
-                selectedLogo === logo ? 'ring-4 ring-blue-500' : 'hover:shadow-xl'
+                selectedLogo === logo ? 'ring-4 ring-blue-500 scale-105' : 'hover:shadow-xl hover:scale-102'
               }`}
             >
-              <div className="aspect-square bg-gray-100 flex items-center justify-center p-8">
+              <div className="aspect-square bg-gray-50 flex items-center justify-center p-8">
                 <img src={logo} alt="Generated logo" className="max-w-full max-h-full object-contain" />
               </div>
               <div className="p-4 text-center">
                 {selectedLogo === logo && (
-                  <p className="text-sm text-blue-600 font-semibold">נבחר ✓</p>
+                  <p className="text-sm text-blue-600 font-semibold">✓ נבחר</p>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* Download Options */}
+        {(selectedLogo || logos.length > 0) && (
+          <div className="bg-white rounded-xl shadow-lg p-6 space-y-4">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">הורד בפורמטים שונים</h3>
+            <div className="grid grid-cols-3 gap-3">
+              <Button 
+                variant="outline"
+                onClick={() => downloadLogo('png')}
+                className="flex-col h-auto py-4"
+              >
+                <Download className="w-6 h-6 mb-2" />
+                <span className="font-bold">PNG</span>
+                <span className="text-xs text-gray-500">לרשתות חברתיות</span>
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => downloadLogo('svg')}
+                className="flex-col h-auto py-4"
+              >
+                <Download className="w-6 h-6 mb-2" />
+                <span className="font-bold">SVG</span>
+                <span className="text-xs text-gray-500">לאתרים (וקטור)</span>
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => downloadLogo('pdf')}
+                className="flex-col h-auto py-4"
+              >
+                <Download className="w-6 h-6 mb-2" />
+                <span className="font-bold">PDF</span>
+                <span className="text-xs text-gray-500">להדפסה</span>
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-3">
           <Button 
             variant="outline" 
-            onClick={handleGenerate}
+            onClick={() => {
+              handleGenerate();
+            }}
             disabled={isGenerating}
             className="flex-1"
           >
-            <RefreshCw className="w-4 h-4 ml-2" />
-            צור וריאציות
+            {isGenerating ? (
+              <>
+                <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
+                יוצר...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-4 h-4 ml-2" />
+                צור עוד וריאציות
+              </>
+            )}
           </Button>
           <Button 
             onClick={() => {
-              const link = document.createElement('a');
-              link.href = selectedLogo || logos[0];
-              link.download = `${formData.businessName}-logo.png`;
-              link.click();
+              setStep(1);
+              setLogos([]);
+              setSelectedLogo(null);
             }}
-            disabled={!selectedLogo && logos.length === 0}
-            className="flex-1 bg-green-600 hover:bg-green-700"
+            variant="outline"
+            className="flex-1"
           >
-            <Download className="w-4 h-4 ml-2" />
-            הורד לוגו
+            התחל מחדש
           </Button>
         </div>
       </div>
