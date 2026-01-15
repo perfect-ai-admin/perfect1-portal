@@ -212,6 +212,9 @@ export default function UnifiedLeadForm({
                  aria-required="true"
                  aria-describedby="form-name-error"
                />
+               {formData.name === '' && (
+                 <p id="form-name-error" className="text-red-500 text-xs mt-1">📝 אנא הכנס שם מלא</p>
+               )}
              </div>
            </div>
          )}
@@ -237,6 +240,9 @@ export default function UnifiedLeadForm({
                  aria-required="true"
                  aria-describedby="form-phone-error"
                />
+               {formData.phone === '' && (
+                 <p id="form-phone-error" className="text-red-500 text-xs mt-1">📞 אנא הכנס מספר טלפון</p>
+               )}
              </div>
            </div>
          )}
@@ -262,16 +268,19 @@ export default function UnifiedLeadForm({
                  aria-required="true"
                  aria-describedby="form-email-error"
                />
+               {formData.email === '' && (
+                 <p id="form-email-error" className="text-red-500 text-xs mt-1">📧 אנא הכנס כתובת מייל</p>
+               )}
              </div>
            </div>
          )}
 
-        {/* Error */}
-        {error && (
-          <p className="text-red-500 text-xs sm:text-sm text-center bg-red-50 p-2 rounded-lg">
-            {error}
-          </p>
-        )}
+        {/* General Error - Only shown if not field-specific */}
+         {error && !error.includes('שם') && !error.includes('טלפון') && !error.includes('מייל') && (
+           <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded" role="alert">
+             <p className="text-red-700 text-sm font-medium">⚠️ {error}</p>
+           </div>
+         )}
 
         {/* Submit Button */}
         <Button
