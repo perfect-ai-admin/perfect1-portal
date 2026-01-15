@@ -64,6 +64,9 @@ export default function ProgressTab({ data, onNavigate }) {
         exit={{ opacity: 0 }}
         className="space-y-6"
       >
+        {/* Goals Button - Mobile Only */}
+        <GoalsFloatingButton onNavigate={onNavigate} />
+
         {/* Quick Stats Bar - Always at Top */}
         <QuickStatsBar stats={quickStats} />
 
