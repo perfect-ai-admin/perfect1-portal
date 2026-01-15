@@ -19,30 +19,7 @@ export default function MarketingTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
-      {/* Header */}
-      <div className="bg-gradient-to-r from-pink-500 to-pink-600 rounded-2xl shadow-xl p-8 text-white">
-        <Megaphone className="w-16 h-16 mb-4" />
-        <h1 className="text-4xl font-bold mb-3">לגדל את העסק 📈</h1>
-        <p className="text-xl opacity-90">
-          כלים ואסטרטגיות שיווק נגישים - גם ללא תקציב גדול
-        </p>
-      </div>
 
-      {/* Marketing Readiness Check */}
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">האם אתה מוכן לשיווק?</h2>
-        <div className="space-y-3 mb-6">
-          <ReadinessItem label="בסיס לקוחות קיים" status="yes" />
-          <ReadinessItem label="הכנסה חודשית יציבה" status="yes" />
-          <ReadinessItem label="תקציב זמין לשיווק" status="partial" />
-          <ReadinessItem label="זמן להשקיע בשיווק" status="no" />
-        </div>
-        <div className="bg-blue-50 border-r-4 border-blue-500 p-4 rounded">
-          <p className="text-sm text-blue-900">
-            <strong>המלצה:</strong> אתה כמעט מוכן! התמקד קודם בבניית תקציב קטן ובהקצאת זמן קבוע לשיווק.
-          </p>
-        </div>
-      </div>
 
       {/* Marketing Tools Tabs */}
       <Tabs defaultValue="brand" className="w-full">
@@ -169,28 +146,6 @@ export default function MarketingTab({ data }) {
         </TabsContent>
       </Tabs>
     </motion.div>
-  );
-}
-
-function ReadinessItem({ label, status }) {
-  const icons = {
-    yes: '✓',
-    no: '✗',
-    partial: '~'
-  };
-  const colors = {
-    yes: 'text-green-600 bg-green-50',
-    no: 'text-red-600 bg-red-50',
-    partial: 'text-yellow-600 bg-yellow-50'
-  };
-
-  return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-      <span className="text-gray-700">{label}</span>
-      <span className={`px-3 py-1 rounded-full font-semibold ${colors[status]}`}>
-        {icons[status]}
-      </span>
-    </div>
   );
 }
 
