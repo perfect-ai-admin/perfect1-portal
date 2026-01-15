@@ -197,7 +197,7 @@ export default function ResourceLibrary() {
                     </div>
                     <p className="text-sm text-gray-600">{resource.description}</p>
                   </div>
-                  <ExternalLink className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <LinkIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
                 </div>
               </div>
             ))
