@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, TrendingDown, FileText, Target, Calendar, X } from 'lucide-react';
+import { AlertTriangle, TrendingDown, FileText, Target, Calendar, X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -99,9 +99,58 @@ export function checkProactiveTriggers(data) {
     }
   });
 
+  // 5. New feature announcement
+  const newFeatures = checkForNewFeatures(data);
+  if (newFeatures.length > 0) {
+    newFeatures.forEach(feature => {
+      suggestions.push({
+        id: `feature_${feature.id}`,
+        type: 'new_feature',
+        severity: 'low',
+        icon: Sparkles,
+        title: `תכונה חדשה: ${feature.name}`,
+        description: feature.description,
+        action: 'explore_feature',
+        actionLabel: 'גלה עכשיו',
+        metadata: { feature_id: feature.id }
+      });
+    });
+  }
+
   return suggestions.sort((a, b) => {
     const severityOrder = { high: 0, medium: 1, low: 2 };
     return severityOrder[a.severity] - severityOrder[b.severity];
+  });
+}
+
+// Check for new features that user hasn't seen
+function checkForNewFeatures(data) {
+  const features = [
+    {
+      id: 'marketing_roi_tracker',
+      name: 'מעקב ROI שיווקי',
+      description: 'כלי חדש למעקב אחר ביצועי קמפיינים שיווקיים והמלצות מבוססות נתונים',
+      releaseDate: '2026-01-15',
+      category: 'marketing'
+    },
+    {
+      id: 'celebration_sharing',
+      name: 'שיתוף הישגים',
+      description: 'עכשיו אפשר לשתף הישגים ואבני דרך ברשתות חברתיות ישירות מהמערכת',
+      releaseDate: '2026-01-15',
+      category: 'progress'
+    }
+  ];
+
+  const seenFeatures = JSON.parse(localStorage.getItem('seen_features') || '[]');
+  const now = new Date();
+
+  return features.filter(feature => {
+    const releaseDate = new Date(feature.releaseDate);
+    const daysSinceRelease = Math.floor((now - releaseDate) / (1000 * 60 * 60 * 24));
+    
+    // Show features released in the last 30 days that user hasn't seen
+    return daysSinceRelease <= 30 && daysSinceRelease >= 0 && !seenFeatures.includes(feature.id);
   });
 }
 
@@ -118,6 +167,16 @@ export default function ProactiveSuggestionsEngine({ data, onAction }) {
   const handleDismiss = (id) => {
     setDismissed(prev => [...prev, id]);
     localStorage.setItem('dismissed_suggestions', JSON.stringify([...dismissed, id]));
+    
+    // Mark new feature as seen
+    if (id.startsWith('feature_')) {
+      const seenFeatures = JSON.parse(localStorage.getItem('seen_features') || '[]');
+      const featureId = id.replace('feature_', '');
+      if (!seenFeatures.includes(featureId)) {
+        seenFeatures.push(featureId);
+        localStorage.setItem('seen_features', JSON.stringify(seenFeatures));
+      }
+    }
   };
 
   if (suggestions.length === 0) return null;
@@ -162,7 +221,12 @@ export default function ProactiveSuggestionsEngine({ data, onAction }) {
                   </div>
                   <p className="text-sm text-gray-700 mb-3">{suggestion.description}</p>
                   <Button
-                    onClick={() => onAction(suggestion.action, suggestion.metadata)}
+                    onClick={() => {
+                      onAction(suggestion.action, suggestion.metadata);
+                      if (suggestion.type === 'new_feature') {
+                        handleDismiss(suggestion.id);
+                      }
+                    }}
                     size="sm"
                     className={
                       suggestion.severity === 'high' ? 'bg-red-600 hover:bg-red-700' :
