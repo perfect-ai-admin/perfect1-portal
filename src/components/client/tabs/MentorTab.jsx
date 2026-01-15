@@ -7,6 +7,8 @@ import ResourceLibrary from '../mentor/ResourceLibrary';
 import SalesScripts from '../mentor/SalesScripts';
 import DailyOperations from '../mentor/DailyOperations';
 import SalesAnalyticsDashboard from '../sales/SalesAnalyticsDashboard';
+import ProactiveSuggestionsEngine from '../mentor/ProactiveSuggestionsEngine';
+import ActionItemsExtractor from '../mentor/ActionItemsExtractor';
 import { Lightbulb, Database, Lock, Sparkles, MessageSquare, CheckSquare, BookOpen, Zap, Calendar, BarChart3 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { base44 } from '@/api/base44Client';
@@ -17,6 +19,7 @@ export default function MentorTab({ data }) {
     { id: '2', title: 'הגדר מטרה חודשית', description: 'קבע יעד הכנסה', relatedTab: 'המטרות שלי', completed: false }
   ]);
   const [userEmail, setUserEmail] = useState(null);
+  const [conversationHistory, setConversationHistory] = useState([]);
 
   // Get current user email
   React.useEffect(() => {
@@ -44,6 +47,11 @@ export default function MentorTab({ data }) {
     setActionItems(prev => prev.map(item =>
       item.id === itemId ? { ...item, completed: !item.completed } : item
     ));
+  };
+
+  const handleProactiveAction = (action, metadata) => {
+    console.log('Proactive action triggered:', action, metadata);
+    // Navigate or perform action based on type
   };
 
   return (
@@ -81,6 +89,12 @@ export default function MentorTab({ data }) {
           </div>
         </div>
       </div>
+
+      {/* Proactive Suggestions */}
+      <ProactiveSuggestionsEngine 
+        data={data} 
+        onAction={handleProactiveAction}
+      />
 
       {/* Context Panel */}
       <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
@@ -135,8 +149,12 @@ export default function MentorTab({ data }) {
         </TabsList>
 
         <TabsContent value="chat" className="mt-6">
-          <div className="h-[600px]">
-            <MentorChat clientData={data} />
+          <ActionItemsExtractor conversationHistory={conversationHistory} />
+          <div className="h-[600px] mt-6">
+            <MentorChat 
+              clientData={data}
+              onConversationUpdate={setConversationHistory}
+            />
           </div>
         </TabsContent>
 
