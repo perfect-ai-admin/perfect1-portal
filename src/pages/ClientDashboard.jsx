@@ -190,13 +190,8 @@ export default function ClientDashboard() {
 
         {/* Main Content */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Sidebar - Desktop Only */}
-          <nav className="hidden md:block w-64 bg-white border-l border-gray-200 overflow-y-auto">
-            <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
-          </nav>
-
           {/* Main Area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden w-full">
             <PullToRefresh onRefresh={handleRefresh}>
               <main 
                 className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6"
