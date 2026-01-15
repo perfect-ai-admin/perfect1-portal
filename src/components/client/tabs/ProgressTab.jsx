@@ -31,25 +31,6 @@ export default function ProgressTab({ data, onNavigate }) {
 
   return (
     <>
-      <ProgressTabHelp />
-      <MilestoneCelebration
-        completedMilestones={completedMilestones}
-        onGoalPrompt={() => onNavigate('goals')}
-        onCelebrationComplete={(milestoneId) => {
-          console.log('Celebrated:', milestoneId);
-          if (completedMilestones.includes(milestoneId)) {
-            setCelebratingMilestone(milestoneId);
-          }
-        }}
-      />
-
-      {celebratingMilestone && (
-        <MilestoneAnimation 
-          milestoneId={celebratingMilestone}
-          onComplete={() => setCelebratingMilestone(null)}
-        />
-      )}
-      
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
