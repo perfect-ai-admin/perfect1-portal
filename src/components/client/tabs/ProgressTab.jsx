@@ -6,6 +6,7 @@ import QuickStatsBar from '../progress/QuickStatsBar';
 import MilestoneCelebration from '../progress/MilestoneCelebration';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import SmartRecommendations from '../SmartRecommendations';
+import WhyThisMattersPanel from '../progress/WhyThisMattersPanel';
 import { Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data, onNavigate }) {
@@ -67,20 +68,9 @@ export default function ProgressTab({ data, onNavigate }) {
         {/* Center Column - Next Steps 35% */}
         <div className="lg:col-span-4 space-y-6">
           <NextStepCard step={nextStep} onAction={nextStep.action} />
-          
-          {/* Why This Matters */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">💡 למה זה חשוב?</h3>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              כל שלב במסע העסקי שלך בנוי על הקודם. ההתקדמות המסודרת מבטיחה שלא תפספס שום דבר חשוב 
-              ושהעסק שלך יהיה על בסיס יציב.
-            </p>
-            <div className="bg-blue-50 border-r-4 border-blue-500 p-4 rounded">
-              <p className="text-sm text-blue-900">
-                <strong>טיפ:</strong> אל תדלג על שלבים כדי לזרז - כל שלב חשוב להצלחה ארוכת טווח
-              </p>
-            </div>
-          </div>
+
+          {/* Why This Matters - Educational Panel */}
+          <WhyThisMattersPanel currentMilestone={currentMilestone} />
         </div>
 
         {/* Right Sidebar - Achievements & Recommendations 25% */}
