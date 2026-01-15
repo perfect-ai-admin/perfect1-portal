@@ -142,19 +142,19 @@ export function FeatureHint({ id, title, message, action }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="hidden md:flex fixed bottom-6 left-6 w-96 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-2xl p-5 z-50 flex-col gap-3"
+      className="hidden md:flex fixed bottom-6 left-6 w-72 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg shadow-lg p-4 z-50 flex-col gap-2"
     >
       <button
         onClick={handleDismiss}
-        className="absolute top-2 left-2 text-white/80 hover:text-white p-1"
+        className="absolute top-1 left-1 text-white/80 hover:text-white p-0.5"
       >
-        <X className="w-4 h-4" />
+        <X className="w-3.5 h-3.5" />
       </button>
-      <div className="flex items-start gap-2">
-        <Lightbulb className="w-5 h-5 flex-shrink-0 mt-0.5" />
-        <div className="flex-1 pr-6">
-          <h4 className="font-semibold text-sm mb-0.5">{title}</h4>
-          <p className="text-xs opacity-90 leading-relaxed">{message}</p>
+      <div className="flex items-start gap-2 pr-5">
+        <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
+        <div className="flex-1">
+          <h4 className="font-semibold text-xs mb-0.5">{title}</h4>
+          <p className="text-xs opacity-90 leading-tight">{message}</p>
         </div>
       </div>
       {action && (
@@ -164,7 +164,7 @@ export function FeatureHint({ id, title, message, action }) {
             handleDismiss();
           }}
           size="sm"
-          className="bg-white text-blue-600 hover:bg-gray-100 w-full text-xs h-8"
+          className="bg-white text-blue-600 hover:bg-gray-100 w-full text-xs h-7"
         >
           {action.label}
         </Button>
