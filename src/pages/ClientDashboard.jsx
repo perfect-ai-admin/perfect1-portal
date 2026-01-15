@@ -74,18 +74,17 @@ export default function ClientDashboard() {
     queryKey: ['client', client?.id],
     queryFn: async () => {
       if (!client?.id) {
-        return client; // Return stored client as fallback
+        return client;
       }
       try {
         const leads = await base44.entities.Lead.filter({ id: client.id });
         if (!leads || leads.length === 0) {
           console.warn('No leads found, using stored client data');
-          return client; // Fallback to stored client
+          return client;
         }
         return leads[0] || client;
       } catch (err) {
         console.error('Error fetching client data:', err);
-        // Return stored client instead of throwing
         return client;
       }
     },
@@ -120,12 +119,10 @@ export default function ClientDashboard() {
 
   const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
 
-  // Use clientData if available, otherwise fallback to stored client
   const currentData = React.useMemo(() => {
     return clientData || client;
   }, [clientData, client]);
 
-  // Mock business state for demonstration if doesn't exist
   const enrichedData = React.useMemo(() => ({
     ...currentData,
     business_state: currentData?.business_state || {
@@ -166,7 +163,6 @@ export default function ClientDashboard() {
     }
   }), [currentData]);
 
-  // Loading State - Skeleton (only show while waiting for initial data)
   if (!client) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -185,7 +181,6 @@ export default function ClientDashboard() {
     );
   }
 
-  // Validate essential data
   if (!currentData?.id || !currentData?.name || typeof currentData !== 'object') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
@@ -214,83 +209,69 @@ export default function ClientDashboard() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
-         {/* Header with staggered entrance */}
-          <header 
-            className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl sticky top-0 z-50"
-            role="banner"
-            aria-label={language === 'he' ? 'כותרת עמוד' : 'Page header'}
-          >
-           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-             {/* Top Bar */}
-             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-               <div className="flex items-center gap-4 w-full sm:w-auto flex-shrink-0">
-                  <Avatar className="w-14 h-14 border-2 border-white/30 ring-2 ring-white/20 flex-shrink-0" aria-hidden="true">
-                    <AvatarFallback className="bg-white/20 text-white text-xl font-bold">
-                      {currentData?.name?.charAt(0)?.toUpperCase() || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                 <div className="flex-1 min-w-0">
-                     <h1 className="text-2xl sm:text-3xl font-bold truncate">שלום, {currentData?.name || 'משתמש'} 👋</h1>
-                     <p className="text-white/80 text-sm">מרכז הניהול העסקי שלך</p>
-                   </div>
-               </div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
+        {/* Header */}
+        <header 
+          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-lg sticky top-0 z-50"
+          role="banner"
+        >
+          <div className="w-full px-3 sm:px-6 lg:px-8 py-4">
+            {/* Top Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <Avatar className="w-12 h-12 border-2 border-white/30 flex-shrink-0">
+                  <AvatarFallback className="bg-white/20 text-white font-bold">
+                    {currentData?.name?.charAt(0)?.toUpperCase() || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-lg sm:text-xl font-bold truncate">שלום, {currentData?.name || 'משתמש'}</h1>
+                  <p className="text-white/80 text-xs">מרכז הניהול העסקי</p>
+                </div>
+              </div>
 
-              <div className="flex items-center gap-2 sm:gap-3">
-                {/* Notifications - Safe render */}
+              <div className="flex items-center gap-1 flex-shrink-0">
                 {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
-                {/* Language Toggle */}
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button 
                         onClick={toggleLanguage}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
-                        aria-label={language === 'he' ? 'Switch to English' : 'עברית'}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                        aria-label="שינוי שפה"
                       >
-                        <Globe className="w-6 h-6" aria-hidden="true" />
+                        <Globe className="w-5 h-5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" align="center">
-                      {language === 'he' ? 'English' : 'עברית'}
-                    </TooltipContent>
+                    <TooltipContent>{language === 'he' ? 'English' : 'עברית'}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
 
-                {/* Help */}
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button 
-                        className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
-                        aria-label={language === 'he' ? 'עזרה ותמיכה' : 'Help and Support'}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                        aria-label="עזרה"
                       >
-                        <HelpCircle className="w-6 h-6" aria-hidden="true" />
+                        <HelpCircle className="w-5 h-5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" align="center">
-                      {language === 'he' ? 'עזרה ותמיכה' : 'Help & Support'}
-                    </TooltipContent>
+                    <TooltipContent>עזרה ותמיכה</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
 
-                {/* User Menu */}
-                 <DropdownMenu>
-                   <DropdownMenuTrigger asChild>
-                     <button 
-                       className="p-2 hover:bg-white/10 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-[#1E3A5F]"
-                       aria-label={language === 'he' ? 'תפריט חשבון משתמש' : 'User Menu'}
-                       aria-haspopup="true"
-                       aria-expanded="false"
-                     >
-                       <User className="w-6 h-6" aria-hidden="true" />
-                     </button>
-                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-2 hover:bg-white/10 rounded-lg transition-all" aria-label="תפריט">
+                      <User className="w-5 h-5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 ml-2" />
-                      {language === 'he' ? 'יציאה' : 'Logout'}
+                      יציאה
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -304,85 +285,62 @@ export default function ClientDashboard() {
           </div>
         </header>
 
-        {/* Main Content with Sidebar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Sidebar - Desktop Only */}
-        <nav className="hidden md:block md:col-span-1" aria-label="ניווט צד">
-          <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
-        </nav>
-
-          {/* Main Content */}
-          <PullToRefresh onRefresh={handleRefresh}>
-          <main 
-            id="main-content" 
-            className="md:col-span-3 pb-24 md:pb-8"
-            role="main"
-            aria-label={language === 'he' ? 'תוכן ראשי' : 'Main content'}
-          >
-            {/* Breadcrumbs */}
-            <Breadcrumbs activeTab={activeTab} onNavigate={setActiveTab} />
-
-            {/* Desktop: Regular tabs */}
-            <div className="hidden md:block">
-            {activeTab === 'progress' && (
-              <div key="progress">
-                {typeof ProgressTab === 'function' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
-              </div>
-            )}
-            {activeTab === 'business' && (
-              <div key="business">
-                {typeof BusinessTab === 'function' && <BusinessTab data={enrichedData} />}
-              </div>
-            )}
-            {activeTab === 'financial' && (
-              <div key="financial">
-                {typeof FinancialTab === 'function' && <FinancialTab data={enrichedData} />}
-              </div>
-            )}
-            {activeTab === 'goals' && (
-              <div key="goals">
-                {typeof GoalsTab === 'function' && <GoalsTab data={enrichedData} />}
-              </div>
-            )}
-            {activeTab === 'marketing' && (
-              <div key="marketing">
-                {typeof MarketingTab === 'function' && <MarketingTab data={enrichedData} />}
-              </div>
-            )}
-            {activeTab === 'mentor' && (
-              <div key="mentor">
-                {typeof MentorTab === 'function' && <MentorTab data={enrichedData} />}
-              </div>
-            )}
-          </div>
-
-          {/* Mobile: Swipeable tabs */}
-          <div className="md:hidden">
-            {typeof SwipeableTabs === 'function' && (
-              <SwipeableTabs 
-                activeTab={activeTab} 
-                onChange={setActiveTab}
-                tabs={tabOrder}
-              >
-                {typeof ProgressTab === 'function' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
-                {typeof BusinessTab === 'function' && <BusinessTab data={enrichedData} />}
-                {typeof FinancialTab === 'function' && <FinancialTab data={enrichedData} />}
-                {typeof GoalsTab === 'function' && <GoalsTab data={enrichedData} />}
-                {typeof MarketingTab === 'function' && <MarketingTab data={enrichedData} />}
-                {typeof MentorTab === 'function' && <MentorTab data={enrichedData} />}
-              </SwipeableTabs>
-            )}
-            </div>
-            </main>
-           </PullToRefresh>
-            </div>
-
-            {/* Mobile Bottom Tab Bar */}
-            {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
-
-            {/* Mobile Sidebar */}
+        {/* Main Content */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Sidebar - Desktop Only */}
+          <nav className="hidden md:block w-64 bg-white border-l border-gray-200 overflow-y-auto">
             <DashboardSidebar activeTab={activeTab} onChange={setActiveTab} />
-            </div>
-            </>
-            );
-            }
+          </nav>
+
+          {/* Main Area */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <PullToRefresh onRefresh={handleRefresh}>
+              <main 
+                className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6"
+                role="main"
+              >
+                <div className="max-w-7xl mx-auto w-full">
+                  {/* Breadcrumbs - Desktop */}
+                  <div className="hidden md:block mb-6">
+                    <Breadcrumbs activeTab={activeTab} onNavigate={setActiveTab} />
+                  </div>
+
+                  {/* Desktop Tabs */}
+                  <div className="hidden md:block">
+                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
+                    {activeTab === 'business' && <BusinessTab data={enrichedData} />}
+                    {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
+                    {activeTab === 'goals' && <GoalsTab data={enrichedData} />}
+                    {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
+                    {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
+                  </div>
+
+                  {/* Mobile Swipeable Tabs */}
+                  <div className="md:hidden">
+                    {typeof SwipeableTabs === 'function' && (
+                      <SwipeableTabs 
+                        activeTab={activeTab} 
+                        onChange={setActiveTab}
+                        tabs={tabOrder}
+                      >
+                        {typeof ProgressTab === 'function' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
+                        {typeof BusinessTab === 'function' && <BusinessTab data={enrichedData} />}
+                        {typeof FinancialTab === 'function' && <FinancialTab data={enrichedData} />}
+                        {typeof GoalsTab === 'function' && <GoalsTab data={enrichedData} />}
+                        {typeof MarketingTab === 'function' && <MarketingTab data={enrichedData} />}
+                        {typeof MentorTab === 'function' && <MentorTab data={enrichedData} />}
+                      </SwipeableTabs>
+                    )}
+                  </div>
+                </div>
+              </main>
+            </PullToRefresh>
+          </div>
+        </div>
+
+        {/* Mobile Bottom Tab Bar */}
+        {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
+      </div>
+    </>
+  );
+}
