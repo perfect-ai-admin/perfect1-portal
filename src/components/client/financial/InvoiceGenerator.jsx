@@ -249,7 +249,7 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">פרטי החשבונית</h2>
+        <h1 className="text-2xl font-bold text-gray-900">פרטי החשבונית</h1>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setStep('templates')}>
             ביטול
@@ -263,8 +263,8 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
 
       <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
         {/* Client Details with Autocomplete */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-gray-900">פרטי לקוח</h3>
+        <fieldset className="space-y-4">
+          <legend className="text-lg font-bold text-gray-900">פרטי לקוח</legend>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="relative">
               <label htmlFor="clientName" className="text-sm font-semibold text-gray-700 mb-2 block">שם הלקוח *</label>
@@ -319,12 +319,12 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
               onChange={(e) => setFormData(prev => ({ ...prev, clientAddress: e.target.value }))}
               rows={2}
             />
-          </div>
-        </div>
+            </div>
+            </fieldset>
 
-        {/* Invoice Dates */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-gray-900">תאריכים</h3>
+            {/* Invoice Dates */}
+            <fieldset className="space-y-4">
+            <legend className="text-lg font-bold text-gray-900">תאריכים</legend>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="invoiceDate" className="text-sm font-semibold text-gray-700 block mb-2">תאריך חשבונית</label>
@@ -343,14 +343,14 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
                 value={formData.dueDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
               />
-            </div>
-          </div>
-        </div>
+              </div>
+              </div>
+              </fieldset>
 
-        {/* Line Items */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-gray-900">פריטים</h3>
+              {/* Line Items */}
+              <fieldset className="space-y-4">
+              <div className="flex items-center justify-between">
+              <legend className="text-lg font-bold text-gray-900">פריטים</legend>
             <Button size="sm" variant="outline" onClick={addLineItem}>
               <Plus className="w-4 h-4 ml-2" />
               הוסף פריט
@@ -401,11 +401,11 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
                   ✕
                 </Button>
               )}
-            </div>
-          ))}
-        </div>
+              </div>
+              ))}
+              </fieldset>
 
-        {/* Total */}
+              {/* Total */}
         <div className="bg-gray-50 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <span className="text-lg font-semibold text-gray-700">סה"כ לתשלום:</span>
