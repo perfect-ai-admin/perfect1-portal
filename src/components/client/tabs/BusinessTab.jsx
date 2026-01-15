@@ -13,7 +13,9 @@ import FocusDashboard from '../business/FocusDashboard';
 import StateDataCollector from '../business/StateDataCollector';
 import UnifiedRecommendationPanel from '../business/UnifiedRecommendationPanel';
 import BusinessStateTimeline from '../business/BusinessStateTimeline';
-import { TrendingUp, DollarSign, PieChart, Download } from 'lucide-react';
+import CollapsibleSection from '../../components/common/CollapsibleSection';
+import MetricTooltip from '../../components/common/MetricTooltip';
+import { TrendingUp, DollarSign, PieChart, Download, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '../business/formatters';
 import {
@@ -111,11 +113,21 @@ export default function BusinessTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
-      {/* Vision Statement */}
-      <VisionCard 
-        vision={data.business_vision || ''}
-        onSave={handleVisionSave}
-      />
+      {/* Vision Statement - Collapsible on Mobile */}
+            <div className="md:block hidden">
+              <VisionCard 
+                vision={data.business_vision || ''}
+                onSave={handleVisionSave}
+              />
+            </div>
+            <div className="md:hidden">
+              <CollapsibleSection title="תיאור חזון העסק" defaultOpen={true}>
+                <VisionCard 
+                  vision={data.business_vision || ''}
+                  onSave={handleVisionSave}
+                />
+              </CollapsibleSection>
+            </div>
 
       {/* State Data Collector - Unified Panel */}
       <div className="grid lg:grid-cols-3 gap-6">
@@ -176,55 +188,87 @@ export default function BusinessTab({ data }) {
         </div>
       </div>
 
-      {/* Four Quadrants */}
+      {/* Four Quadrants with Tooltips */}
       <div className="grid md:grid-cols-2 gap-6">
-        <MetricQuadrant
-          title="הכנסות"
-          value={42000}
-          change="+15%"
-          trend={15}
-          chartData={revenueData}
-          icon={TrendingUp}
-          isCurrency={true}
-        />
-        <MetricQuadrant
-          title="הוצאות"
-          value={18500}
-          change="+5%"
-          trend={5}
-          chartData={revenueData}
-          icon={DollarSign}
-          isCurrency={true}
-        />
-        <MetricQuadrant
-          title="רווח נקי"
-          value={23500}
-          change="+28%"
-          trend={28}
-          chartData={revenueData}
-          icon={PieChart}
-          isCurrency={true}
-        />
-        <MetricQuadrant
-          title="מדדי ביצוע"
-          value={85}
-          change="+3%"
-          trend={3}
-          chartData={revenueData}
-          icon={TrendingUp}
-          isPercentage={true}
-        />
+        <MetricTooltip 
+          title="הכנסות כוללות" 
+          description="סה״כ הכנסותיך מחודש קודם. כוללת מכל מקורות."
+        >
+          <MetricQuadrant
+            title="הכנסות"
+            value={42000}
+            change="+15%"
+            trend={15}
+            chartData={revenueData}
+            icon={TrendingUp}
+            isCurrency={true}
+          />
+        </MetricTooltip>
+        <MetricTooltip 
+          title="הוצאות כוללות" 
+          description="כל הוצאותיך בחודש: שכרה, חשמל, חומרים וכו׳."
+        >
+          <MetricQuadrant
+            title="הוצאות"
+            value={18500}
+            change="+5%"
+            trend={5}
+            chartData={revenueData}
+            icon={DollarSign}
+            isCurrency={true}
+          />
+        </MetricTooltip>
+        <MetricTooltip 
+          title="רווח נקי" 
+          description="הכנסות פחות הוצאות. זה מה שנשאר לך בכיס."
+        >
+          <MetricQuadrant
+            title="רווח נקי"
+            value={23500}
+            change="+28%"
+            trend={28}
+            chartData={revenueData}
+            icon={PieChart}
+            isCurrency={true}
+          />
+        </MetricTooltip>
+        <MetricTooltip 
+          title="ביצוע עסקי" 
+          description="דירוג כללי של ביצועך: כמה טוב אתה מנהל את העסק."
+        >
+          <MetricQuadrant
+            title="מדדי ביצוע"
+            value={85}
+            change="+3%"
+            trend={3}
+            chartData={revenueData}
+            icon={TrendingUp}
+            isPercentage={true}
+          />
+        </MetricTooltip>
       </div>
 
-      {/* Charts Section */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">מגמת הכנסות</h3>
-          <RevenueLineChart data={revenueData} period={period} />
+      {/* Charts Section - Collapsible on Mobile */}
+      <div className="space-y-6">
+        <div className="hidden md:block">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">מגמת הכנסות</h3>
+              <RevenueLineChart data={revenueData} period={period} />
+            </div>
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">פילוח הוצאות</h3>
+              <ExpenseDonutChart />
+            </div>
+          </div>
         </div>
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">פילוח הוצאות</h3>
-          <ExpenseDonutChart />
+        <div className="md:hidden space-y-4">
+          <CollapsibleSection title="מגמת הכנסות" defaultOpen={true}>
+            <RevenueLineChart data={revenueData} period={period} />
+          </CollapsibleSection>
+          <CollapsibleSection title="פילוח הוצאות">
+            <ExpenseDonutChart />
+          </CollapsibleSection>
         </div>
       </div>
 
