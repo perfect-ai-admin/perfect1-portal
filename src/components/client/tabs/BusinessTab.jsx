@@ -113,21 +113,7 @@ export default function BusinessTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
-      {/* Vision Statement - Collapsible on Mobile */}
-            <div className="md:block hidden">
-              <VisionCard 
-                vision={data.business_vision || ''}
-                onSave={handleVisionSave}
-              />
-            </div>
-            <div className="md:hidden">
-              <CollapsibleSection title="תיאור חזון העסק" defaultOpen={true}>
-                <VisionCard 
-                  vision={data.business_vision || ''}
-                  onSave={handleVisionSave}
-                />
-              </CollapsibleSection>
-            </div>
+
 
 
 
