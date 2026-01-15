@@ -20,6 +20,9 @@ import {
 
 // Import Tab Components
 import TabNavigation from '../components/client/TabNavigation';
+import MobileTabBar from '../components/client/MobileTabBar';
+import SwipeableTabs from '../components/client/SwipeableTabs';
+import PullToRefresh from '../components/client/PullToRefresh';
 import ProgressTab from '../components/client/tabs/ProgressTab';
 import BusinessTab from '../components/client/tabs/BusinessTab';
 import FinancialTab from '../components/client/tabs/FinancialTab';
@@ -63,6 +66,13 @@ export default function ClientDashboard() {
     localStorage.removeItem('client');
     navigate(createPageUrl('ClientLogin'));
   };
+
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries(['client', client?.id]);
+    return new Promise(resolve => setTimeout(resolve, 1000));
+  };
+
+  const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
 
   // Loading State - Skeleton
   if (!client || isLoading) {
@@ -202,11 +212,12 @@ export default function ClientDashboard() {
               </div>
             </motion.div>
 
-            {/* Tab Navigation */}
+            {/* Tab Navigation - Desktop Only */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
+              className="hidden md:block"
             >
               <TabNavigation activeTab={activeTab} onChange={setActiveTab} />
             </motion.div>
@@ -214,85 +225,100 @@ export default function ClientDashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-          <AnimatePresence mode="wait">
-            {activeTab === 'progress' && (
-              <motion.div
-                key="progress"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+        <PullToRefresh onRefresh={handleRefresh}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+            {/* Desktop: Regular tabs with fade animation */}
+            <div className="hidden md:block">
+              <AnimatePresence mode="wait">
+                {activeTab === 'progress' && (
+                  <motion.div
+                    key="progress"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ProgressTab data={enrichedData} onNavigate={setActiveTab} />
+                  </motion.div>
+                )}
+                {activeTab === 'business' && (
+                  <motion.div
+                    key="business"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <BusinessTab data={enrichedData} />
+                  </motion.div>
+                )}
+                {activeTab === 'financial' && (
+                  <motion.div
+                    key="financial"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <FinancialTab data={enrichedData} />
+                  </motion.div>
+                )}
+                {activeTab === 'goals' && (
+                  <motion.div
+                    key="goals"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <GoalsTab data={enrichedData} />
+                  </motion.div>
+                )}
+                {activeTab === 'marketing' && (
+                  <motion.div
+                    key="marketing"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <MarketingTab data={enrichedData} />
+                  </motion.div>
+                )}
+                {activeTab === 'mentor' && (
+                  <motion.div
+                    key="mentor"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <MentorTab data={enrichedData} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Mobile: Swipeable tabs */}
+            <div className="md:hidden">
+              <SwipeableTabs 
+                activeTab={activeTab} 
+                onChange={setActiveTab}
+                tabs={tabOrder}
               >
                 <ProgressTab data={enrichedData} onNavigate={setActiveTab} />
-              </motion.div>
-            )}
-            {activeTab === 'business' && (
-              <motion.div
-                key="business"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
                 <BusinessTab data={enrichedData} />
-              </motion.div>
-            )}
-            {activeTab === 'financial' && (
-              <motion.div
-                key="financial"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
                 <FinancialTab data={enrichedData} />
-              </motion.div>
-            )}
-            {activeTab === 'goals' && (
-              <motion.div
-                key="goals"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
                 <GoalsTab data={enrichedData} />
-              </motion.div>
-            )}
-            {activeTab === 'marketing' && (
-              <motion.div
-                key="marketing"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
                 <MarketingTab data={enrichedData} />
-              </motion.div>
-            )}
-            {activeTab === 'mentor' && (
-              <motion.div
-                key="mentor"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
                 <MentorTab data={enrichedData} />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              </SwipeableTabs>
+            </div>
+          </div>
+        </PullToRefresh>
 
-        {/* Floating Action Button - Mobile Only */}
-        <FloatingActionButton 
-          onAction={(type) => {
-            if (type === 'invoice') setActiveTab('financial');
-            if (type === 'goal') setActiveTab('goals');
-            if (type === 'mentor') setActiveTab('mentor');
-          }}
-        />
+        {/* Mobile Bottom Tab Bar */}
+        <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />
       </div>
       </HelpProvider>
     </>
