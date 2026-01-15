@@ -225,23 +225,25 @@ export default function ClientDashboard() {
                 {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
                 {/* Help */}
-                <button 
-                  className="p-2 hover:bg-white/10 rounded-lg transition-all"
-                  aria-label="עזרה"
-                >
-                  <HelpCircle className="w-6 h-6" />
-                </button>
+                 <button 
+                   className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                   aria-label="עזרה ותמיכה"
+                   title="עזרה ותמיכה"
+                 >
+                   <HelpCircle className="w-6 h-6" aria-hidden="true" />
+                 </button>
 
                 {/* User Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button 
-                      className="p-2 hover:bg-white/10 rounded-lg transition-all"
-                      aria-label="תפריט משתמש"
-                    >
-                      <User className="w-6 h-6" />
-                    </button>
-                  </DropdownMenuTrigger>
+                 <DropdownMenu>
+                   <DropdownMenuTrigger asChild>
+                     <button 
+                       className="p-2 hover:bg-white/10 rounded-lg transition-all"
+                       aria-label="תפריט חשבון משתמש"
+                       aria-haspopup="true"
+                     >
+                       <User className="w-6 h-6" aria-hidden="true" />
+                     </button>
+                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 ml-2" />
