@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Plus, Send, Eye, Download } from 'lucide-react';
+import { FileText, Plus, Send, Eye, Download, CheckCircle, Link as LinkIcon, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
+import { base44 } from '@/api/base44Client';
+import { finbotService } from './FINBOTService';
 
 export default function InvoiceGenerator({ onCreateInvoice }) {
   const [step, setStep] = useState('templates'); // templates, form, preview, sending, sent
@@ -18,6 +20,27 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
     notes: '',
     paymentTerms: 'שוטף + 30'
   });
+  
+  const [previousClients, setPreviousClients] = useState([]);
+  const [clientSuggestions, setClientSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [createdInvoice, setCreatedInvoice] = useState(null);
+  const [paymentLink, setPaymentLink] = useState(null);
+  const [autoReminder, setAutoReminder] = useState(true);
+
+  // Load previous clients for autocomplete
+  useEffect(() => {
+    loadPreviousClients();
+  }, []);
+
+  const loadPreviousClients = async () => {
+    try {
+      const leads = await base44.entities.Lead.list('-created_date', 50);
+      setPreviousClients(leads || []);
+    } catch (error) {
+      console.error('Failed to load clients:', error);
+    }
+  };
 
   const addLineItem = () => {
     setFormData(prev => ({
@@ -48,9 +71,51 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
     );
   };
 
+  // Autocomplete handler
+  const handleClientNameChange = (value) => {
+    setFormData(prev => ({ ...prev, clientName: value }));
+    
+    if (value.length >= 2) {
+      const matches = previousClients.filter(client => 
+        client.name?.toLowerCase().includes(value.toLowerCase())
+      );
+      setClientSuggestions(matches);
+      setShowSuggestions(matches.length > 0);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  // Pre-fill from client record
+  const selectClient = (client) => {
+    setFormData(prev => ({
+      ...prev,
+      clientName: client.name,
+      clientEmail: client.email || '',
+      clientAddress: client.address || '',
+    }));
+    setShowSuggestions(false);
+  };
+
   const handleSubmit = async () => {
     setStep('sending');
     try {
+      // Create invoice via FINBOT
+      const invoice = await finbotService.createInvoice({
+        ...formData,
+        total: calculateTotal(),
+        auto_reminder: autoReminder
+      });
+      
+      setCreatedInvoice(invoice);
+      
+      // Generate payment link
+      const linkData = await finbotService.createPaymentLink(
+        invoice.id,
+        calculateTotal()
+      );
+      setPaymentLink(linkData.payment_url);
+      
       await onCreateInvoice(formData);
       setStep('sent');
     } catch (error) {
@@ -89,15 +154,86 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center py-12"
+        className="space-y-6 py-12"
       >
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-12 h-12 text-green-600" />
+        <div className="text-center">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-12 h-12 text-green-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">החשבונית נשלחה בהצלחה! 🎉</h2>
+          <p className="text-gray-600 mb-8">הלקוח קיבל את החשבונית באימייל</p>
         </div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-3">החשבונית נשלחה בהצלחה! 🎉</h2>
-        <p className="text-gray-600 mb-8">הלקוח קיבל את החשבונית באימייל</p>
+
+        {/* Invoice Tracking */}
+        {createdInvoice && (
+          <div className="bg-white rounded-xl shadow-lg p-6 max-w-2xl mx-auto">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">מעקב חשבונית</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <span className="text-gray-700">מספר חשבונית:</span>
+                <span className="font-bold text-gray-900">#{createdInvoice.id}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <span className="text-gray-700">סטטוס:</span>
+                <span className="font-semibold text-blue-700">נשלח</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <span className="text-gray-700">תאריך שליחה:</span>
+                <span className="font-medium text-gray-900">
+                  {new Date(createdInvoice.sent_date).toLocaleDateString('he-IL')}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Link */}
+        {paymentLink && (
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 max-w-2xl mx-auto">
+            <div className="flex items-start gap-3 mb-4">
+              <LinkIcon className="w-6 h-6 text-blue-600 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">קישור לתשלום</h3>
+                <p className="text-sm text-gray-700 mb-3">שלח ללקוח להקלת התשלום:</p>
+                <div className="bg-white rounded-lg p-3 border border-blue-200 break-all text-sm">
+                  {paymentLink}
+                </div>
+              </div>
+            </div>
+            <Button 
+              onClick={() => {
+                navigator.clipboard.writeText(paymentLink);
+                alert('הקישור הועתק ללוח!');
+              }}
+              variant="outline"
+              className="w-full"
+            >
+              העתק קישור
+            </Button>
+          </div>
+        )}
+
+        {/* Auto Reminder Status */}
+        {autoReminder && (
+          <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 max-w-2xl mx-auto">
+            <div className="flex items-center gap-3">
+              <Clock className="w-6 h-6 text-purple-600" />
+              <div>
+                <h3 className="font-bold text-gray-900">תזכורת אוטומטית מופעלת</h3>
+                <p className="text-sm text-gray-700">
+                  אם הלקוח לא ישלם תוך 7 ימים, תישלח תזכורת אוטומטית באימייל
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-4 justify-center">
-          <Button onClick={() => setStep('templates')}>
+          <Button onClick={() => {
+            setStep('templates');
+            setCreatedInvoice(null);
+            setPaymentLink(null);
+          }}>
             <Plus className="w-5 h-5 ml-2" />
             חשבונית נוספת
           </Button>
@@ -126,15 +262,35 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
       </div>
 
       <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
-        {/* Client Details */}
+        {/* Client Details with Autocomplete */}
         <div className="space-y-4">
           <h3 className="text-lg font-bold text-gray-900">פרטי לקוח</h3>
           <div className="grid md:grid-cols-2 gap-4">
-            <Input
-              placeholder="שם הלקוח *"
-              value={formData.clientName}
-              onChange={(e) => setFormData(prev => ({ ...prev, clientName: e.target.value }))}
-            />
+            <div className="relative">
+              <Input
+                placeholder="שם הלקוח * (התחל להקליד...)"
+                value={formData.clientName}
+                onChange={(e) => handleClientNameChange(e.target.value)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              />
+              {/* Autocomplete Suggestions */}
+              {showSuggestions && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+                  {clientSuggestions.map((client) => (
+                    <button
+                      key={client.id}
+                      onClick={() => selectClient(client)}
+                      className="w-full text-right px-4 py-3 hover:bg-gray-50 transition-colors border-b last:border-b-0"
+                    >
+                      <div className="font-medium text-gray-900">{client.name}</div>
+                      {client.email && (
+                        <div className="text-sm text-gray-600">{client.email}</div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <Input
               type="email"
               placeholder="אימייל לקוח *"
@@ -244,6 +400,25 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
             maxLength={500}
             rows={3}
           />
+        </div>
+
+        {/* Auto Reminder Setting */}
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 flex items-start gap-3">
+          <input
+            type="checkbox"
+            id="autoReminder"
+            checked={autoReminder}
+            onChange={(e) => setAutoReminder(e.target.checked)}
+            className="mt-1 w-5 h-5 text-purple-600"
+          />
+          <div className="flex-1">
+            <label htmlFor="autoReminder" className="font-semibold text-gray-900 cursor-pointer">
+              הפעל תזכורת אוטומטית
+            </label>
+            <p className="text-sm text-gray-700 mt-1">
+              אם הלקוח לא ישלם תוך 7 ימים, תישלח תזכורת באימייל אוטומטית
+            </p>
+          </div>
         </div>
 
         {/* Actions */}
