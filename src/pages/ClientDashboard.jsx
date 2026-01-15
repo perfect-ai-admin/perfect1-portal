@@ -103,29 +103,8 @@ export default function ClientDashboard() {
 
   const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
 
-  // Error State
-  if (fetchError) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            <p className="font-bold mb-2">שגיאה בטעינת הנתונים</p>
-            <p className="text-sm mb-4">{fetchError.message}</p>
-            <button 
-              onClick={() => queryClient.invalidateQueries(['client', client?.id])}
-              className="text-sm font-medium underline hover:no-underline"
-            >
-              נסה שוב
-            </button>
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
-  // Loading State - Skeleton
-  if (!client || isLoading) {
+  // Loading State - Skeleton (only show while waiting for initial data)
+  if (!client) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl">
@@ -143,9 +122,10 @@ export default function ClientDashboard() {
     );
   }
 
+  // Use clientData if available, otherwise fallback to stored client
   const currentData = clientData || client;
 
-  // Validate that essential data exists
+  // Validate essential data
   if (!currentData?.id || !currentData?.name) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
