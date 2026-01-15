@@ -71,13 +71,13 @@ export default function ProgressTab({ data, onNavigate }) {
         <QuickStatsBar stats={quickStats} />
 
       {/* Main Grid - Desktop */}
-      <div className="grid lg:grid-cols-12 gap-8">
-        {/* Journey Timeline - Left 40% */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+      <div className="grid lg:grid-cols-12 gap-6">
+        {/* Journey Timeline - Left 50% */}
+        <div className="lg:col-span-6">
+          <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
               המסע שלך
             </h2>
@@ -88,55 +88,22 @@ export default function ProgressTab({ data, onNavigate }) {
           </div>
         </div>
 
-        {/* Center Column - Next Steps 35% */}
-        <div className="lg:col-span-4 space-y-6">
+        {/* Right Column - Next Step & Actions 50% */}
+        <div className="lg:col-span-6 space-y-4">
           <NextStepCard step={nextStep} onAction={nextStep.action} />
 
-          {/* Why This Matters - Educational Panel */}
-          <WhyThisMattersPanel currentMilestone={currentMilestone} />
-        </div>
-
-        {/* Right Sidebar - Achievements & Recommendations 25% */}
-        <div className="lg:col-span-3 space-y-6">
-          <AchievementsSystem compact={true} />
-
-          {/* Smart Recommendations - Hidden on Desktop */}
-          <div className="hidden">
-            <SmartRecommendations compact={true} onNavigate={onNavigate} />
-          </div>
-
-          {/* Quick Actions - with Sparklines */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">פעולות מהירות</h3>
-            <div className="space-y-2">
-              <button className="w-full text-right px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all text-blue-700 font-medium">
-                צור חשבונית חדשה
-              </button>
-              <button className="w-full text-right px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-all text-purple-700 font-medium">
-                הוסף מטרה חדשה
-              </button>
-              <button className="w-full text-right px-4 py-3 bg-green-50 hover:bg-green-100 rounded-lg transition-all text-green-700 font-medium">
-                דבר עם המנטור
-              </button>
-            </div>
-
-            {/* Performance Sparkline */}
-            <div className="mt-4 pt-4 border-t">
-              <p className="text-xs text-gray-600 mb-2">ביצוע השבועות האחרונות</p>
-              <Sparkline 
-                data={[
-                  { value: 45 },
-                  { value: 52 },
-                  { value: 48 },
-                  { value: 61 },
-                  { value: 58 },
-                  { value: 67 }
-                ]}
-                color="#8B5CF6"
-                width={180}
-                height={50}
-              />
-            </div>
+          {/* Quick Actions */}
+          <div className="bg-white rounded-lg border border-gray-100 p-4 space-y-2">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">פעולות מהירות</h3>
+            <button className="w-full text-right px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all text-blue-700 text-sm font-medium">
+              צור חשבונית
+            </button>
+            <button className="w-full text-right px-3 py-2 bg-purple-50 hover:bg-purple-100 rounded-lg transition-all text-purple-700 text-sm font-medium">
+              הוסף מטרה
+            </button>
+            <button className="w-full text-right px-3 py-2 bg-green-50 hover:bg-green-100 rounded-lg transition-all text-green-700 text-sm font-medium">
+              שאל את המנטור
+            </button>
           </div>
         </div>
       </div>
