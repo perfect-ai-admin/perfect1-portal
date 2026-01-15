@@ -39,7 +39,6 @@ export default function ProgressTab({ data, onNavigate }) {
   return (
     <>
       <ProgressTabHelp />
-      <GoalsFloatingButton onNavigate={onNavigate} />
       <MilestoneCelebration
         completedMilestones={completedMilestones}
         onGoalPrompt={() => onNavigate('goals')}
