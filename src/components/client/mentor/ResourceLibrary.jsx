@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Video, Search, ExternalLink } from 'lucide-react';
+import { FileText, Video, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
