@@ -4,6 +4,7 @@ import { Megaphone, Target, DollarSign, Calendar, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const TEMPLATES = [
@@ -178,8 +179,4 @@ export default function CampaignBuilder() {
       </Button>
     </div>
   );
-}
-
-function Label({ children }) {
-  return <label className="text-sm font-semibold text-gray-700 block mb-2">{children}</label>;
 }
