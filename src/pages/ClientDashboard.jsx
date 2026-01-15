@@ -255,105 +255,67 @@ export default function ClientDashboard() {
         </header>
 
         {/* Main Content */}
-        <PullToRefresh onRefresh={handleRefresh}>
-          <main 
-            id="main-content" 
-            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8"
-            role="main"
-            aria-label="תוכן ראשי"
-          >
-            {/* Desktop: Regular tabs with fade animation */}
-            <div className="hidden md:block">
-              <AnimatePresence mode="wait">
-                {activeTab === 'progress' && (
-                  <motion.div
-                    key="progress"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ProgressTab data={enrichedData} onNavigate={setActiveTab} />
-                  </motion.div>
-                )}
-                {activeTab === 'business' && (
-                  <motion.div
-                    key="business"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <BusinessTab data={enrichedData} />
-                  </motion.div>
-                )}
-                {activeTab === 'financial' && (
-                  <motion.div
-                    key="financial"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <FinancialTab data={enrichedData} />
-                  </motion.div>
-                )}
-                {activeTab === 'goals' && (
-                  <motion.div
-                    key="goals"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <GoalsTab data={enrichedData} />
-                  </motion.div>
-                )}
-                {activeTab === 'marketing' && (
-                  <motion.div
-                    key="marketing"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <MarketingTab data={enrichedData} />
-                  </motion.div>
-                )}
-                {activeTab === 'mentor' && (
-                  <motion.div
-                    key="mentor"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <MentorTab data={enrichedData} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+        <main 
+          id="main-content" 
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8"
+          role="main"
+          aria-label="תוכן ראשי"
+        >
+          {/* Desktop: Regular tabs */}
+          <div className="hidden md:block">
+            {activeTab === 'progress' && (
+              <div key="progress">
+                {typeof ProgressTab === 'function' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
+              </div>
+            )}
+            {activeTab === 'business' && (
+              <div key="business">
+                {typeof BusinessTab === 'function' && <BusinessTab data={enrichedData} />}
+              </div>
+            )}
+            {activeTab === 'financial' && (
+              <div key="financial">
+                {typeof FinancialTab === 'function' && <FinancialTab data={enrichedData} />}
+              </div>
+            )}
+            {activeTab === 'goals' && (
+              <div key="goals">
+                {typeof GoalsTab === 'function' && <GoalsTab data={enrichedData} />}
+              </div>
+            )}
+            {activeTab === 'marketing' && (
+              <div key="marketing">
+                {typeof MarketingTab === 'function' && <MarketingTab data={enrichedData} />}
+              </div>
+            )}
+            {activeTab === 'mentor' && (
+              <div key="mentor">
+                {typeof MentorTab === 'function' && <MentorTab data={enrichedData} />}
+              </div>
+            )}
+          </div>
 
-            {/* Mobile: Swipeable tabs */}
-            <div className="md:hidden">
+          {/* Mobile: Swipeable tabs */}
+          <div className="md:hidden">
+            {typeof SwipeableTabs === 'function' && (
               <SwipeableTabs 
                 activeTab={activeTab} 
                 onChange={setActiveTab}
                 tabs={tabOrder}
               >
-                <ProgressTab data={enrichedData} onNavigate={setActiveTab} />
-                <BusinessTab data={enrichedData} />
-                <FinancialTab data={enrichedData} />
-                <GoalsTab data={enrichedData} />
-                <MarketingTab data={enrichedData} />
-                <MentorTab data={enrichedData} />
+                {typeof ProgressTab === 'function' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
+                {typeof BusinessTab === 'function' && <BusinessTab data={enrichedData} />}
+                {typeof FinancialTab === 'function' && <FinancialTab data={enrichedData} />}
+                {typeof GoalsTab === 'function' && <GoalsTab data={enrichedData} />}
+                {typeof MarketingTab === 'function' && <MarketingTab data={enrichedData} />}
+                {typeof MentorTab === 'function' && <MentorTab data={enrichedData} />}
               </SwipeableTabs>
-            </div>
-          </main>
-        </PullToRefresh>
+            )}
+          </div>
+        </main>
 
         {/* Mobile Bottom Tab Bar */}
-        <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />
+        {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
       </div>
     </>
   );
