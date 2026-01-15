@@ -3,8 +3,15 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { cn } from '@/lib/utils';
+import { formatCurrency, formatPercentage, getTrendColor, getTrendColorClass } from '../utils/formatters';
 
-export default function MetricQuadrant({ title, value, change, trend, chartData, icon: Icon }) {
+export default function MetricQuadrant({ title, value, change, trend, chartData, icon: Icon, isCurrency = false, isPercentage = false }) {
+  // Format value based on type
+  const formattedValue = isCurrency 
+    ? (typeof value === 'string' ? value : formatCurrency(value))
+    : isPercentage 
+      ? (typeof value === 'string' ? value : formatPercentage(value, 0))
+      : value;
   const getTrendIcon = () => {
     if (trend > 0) return <TrendingUp className="w-4 h-4" />;
     if (trend < 0) return <TrendingDown className="w-4 h-4" />;
@@ -17,11 +24,7 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
     return 'text-gray-600 bg-gray-50';
   };
 
-  const getChartColor = () => {
-    if (trend > 0) return '#22C55E';
-    if (trend < 0) return '#EF4444';
-    return '#6B7280';
-  };
+
 
   return (
     <motion.div
@@ -38,10 +41,10 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
           )}
           <div>
             <p className="text-sm text-gray-600">{title}</p>
-            <p className="text-3xl font-bold text-gray-900">{value}</p>
+            <p className="text-3xl font-bold text-gray-900">{formattedValue}</p>
           </div>
         </div>
-        <div className={cn("flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold", getTrendColor())}>
+        <div className={cn("flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold", getTrendColor() + ' bg-opacity-20')}>
           {getTrendIcon()}
           <span>{change}</span>
         </div>
@@ -54,7 +57,7 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
             <Line 
               type="monotone" 
               dataKey="value" 
-              stroke={getChartColor()} 
+              stroke={getTrendColor(trend)} 
               strokeWidth={2}
               dot={false}
             />
