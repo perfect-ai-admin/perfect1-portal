@@ -151,12 +151,12 @@ export default function BusinessTab({ data }) {
         </div>
       </div>
 
-      {/* Period Selector & Export */}
+      {/* Controls */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">נתונים כספיים</h2>
-        <div className="flex items-center gap-3">
+        <h2 className="text-lg font-bold text-gray-900">סקירת ביצועים</h2>
+        <div className="flex items-center gap-2">
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-32 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -167,23 +167,25 @@ export default function BusinessTab({ data }) {
           </Select>
           <Button
             variant="outline"
+            size="sm"
             onClick={() => handleExport('pdf')}
             disabled={isExporting}
-            className="gap-2"
+            className="gap-1"
             aria-label="ייצא דוח כ-PDF"
           >
-            <Download className="w-4 h-4" aria-hidden="true" />
-            PDF
+            <Download className="w-3 h-3" aria-hidden="true" />
+            <span className="hidden md:inline">PDF</span>
           </Button>
           <Button
             variant="outline"
+            size="sm"
             onClick={() => handleExport('csv')}
             disabled={isExporting}
-            className="gap-2"
+            className="gap-1"
             aria-label="ייצא נתונים כ-CSV"
           >
-            <Download className="w-4 h-4" aria-hidden="true" />
-            CSV
+            <Download className="w-3 h-3" aria-hidden="true" />
+            <span className="hidden md:inline">CSV</span>
           </Button>
         </div>
       </div>
