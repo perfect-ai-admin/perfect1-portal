@@ -64,22 +64,26 @@ export default function ClientDashboard() {
   const { data: clientData, isLoading, error: fetchError } = useQuery({
     queryKey: ['client', client?.id],
     queryFn: async () => {
-      if (!client?.id) return null;
+      if (!client?.id) {
+        return client; // Return stored client as fallback
+      }
       try {
         const leads = await base44.entities.Lead.filter({ id: client.id });
         if (!leads || leads.length === 0) {
-          throw new Error('לא נמצאו נתוני לקוח');
+          console.warn('No leads found, using stored client data');
+          return client; // Fallback to stored client
         }
         return leads[0];
       } catch (err) {
         console.error('Error fetching client data:', err);
-        throw err;
+        // Return stored client instead of throwing
+        return client;
       }
     },
     enabled: !!client?.id,
-    refetchInterval: 30000,
-    retry: 2,
-    staleTime: 5000
+    refetchInterval: 60000,
+    retry: 1,
+    staleTime: 10000
   });
 
   const handleLogout = () => {
