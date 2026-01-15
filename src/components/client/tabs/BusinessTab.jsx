@@ -129,27 +129,7 @@ export default function BusinessTab({ data }) {
               </CollapsibleSection>
             </div>
 
-      {/* State Data Collector - Unified Panel */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">ההמלצה שלך</h2>
-            <UnifiedRecommendationPanel businessState={data.business_state} />
-          </div>
-        </div>
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">עדכן מצב</h3>
-            <StateDataCollector 
-              businessState={data.business_state}
-              onDataUpdate={(category, formData) => {
-                // Backend integration point - כאן יתחבר ל-analyzeBusinessState function
-                console.log('Data collected:', category, formData);
-              }}
-            />
-          </div>
-        </div>
-      </div>
+
 
       {/* Controls */}
       <div className="flex items-center justify-between">
