@@ -65,6 +65,7 @@ export default function ProgressTab({ data, onNavigate }) {
         {/* Right Column - Next Step & Actions 50% */}
         <div className="lg:col-span-6 space-y-4">
           <NextStepCard step={nextStep} onAction={nextStep.action} />
+          <StepImportancePanel step={nextStep} />
 
           {/* Quick Actions */}
           <div className="bg-white rounded-lg border border-gray-100 p-4 space-y-2">
