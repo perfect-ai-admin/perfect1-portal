@@ -40,10 +40,7 @@ export default function BusinessTab({ data }) {
     { month: 'יוני', value: 15500 }
   ];
 
-  const handleVisionSave = async (newVision) => {
-    // Save vision to database
-    console.log('Saving vision:', newVision);
-  };
+
 
   const handleExport = async (format) => {
     setIsExporting(true);
