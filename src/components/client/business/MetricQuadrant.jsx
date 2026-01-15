@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { cn } from '@/lib/utils';
-import { formatCurrency, formatPercentage, getTrendColor, getTrendColorClass } from '../utils/formatters';
+import { formatCurrency, formatPercentage, getTrendColor, getTrendColorClass, getTrendBgClass } from './formatters';
 
 export default function MetricQuadrant({ title, value, change, trend, chartData, icon: Icon, isCurrency = false, isPercentage = false }) {
   // Format value based on type
@@ -18,11 +18,7 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
     return <Minus className="w-4 h-4" />;
   };
 
-  const getTrendColor = () => {
-    if (trend > 0) return 'text-green-600 bg-green-50';
-    if (trend < 0) return 'text-red-600 bg-red-50';
-    return 'text-gray-600 bg-gray-50';
-  };
+
 
 
 
@@ -44,7 +40,7 @@ export default function MetricQuadrant({ title, value, change, trend, chartData,
             <p className="text-3xl font-bold text-gray-900">{formattedValue}</p>
           </div>
         </div>
-        <div className={cn("flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold", getTrendColor() + ' bg-opacity-20')}>
+        <div className={cn("flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold", getTrendColorClass(trend), getTrendBgClass(trend))}>
           {getTrendIcon()}
           <span>{change}</span>
         </div>

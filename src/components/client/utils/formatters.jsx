@@ -93,3 +93,14 @@ export function getTrendColorClass(trend) {
   if (trend < 0) return 'text-red-600';
   return 'text-gray-600';
 }
+
+/**
+ * Get background color class for Tailwind based on trend
+ * @param {number} trend - The trend value
+ * @returns {string} Tailwind background color class
+ */
+export function getTrendBgClass(trend) {
+  if (trend > 0) return 'bg-green-50';
+  if (trend < 0) return 'bg-red-50';
+  return 'bg-gray-50';
+}

@@ -12,7 +12,7 @@ import UnifiedRecommendationPanel from '../business/UnifiedRecommendationPanel';
 import BusinessStateTimeline from '../business/BusinessStateTimeline';
 import { TrendingUp, DollarSign, PieChart, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency } from '../business/formatters';
 import {
   Select,
   SelectContent,
