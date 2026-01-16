@@ -49,17 +49,17 @@ export default function FinancialWorkbench({ data }) {
         {/* Tab Navigation */}
         <div className="mb-6">
           {/* Desktop Tabs */}
-          <div className="hidden md:flex gap-2">
+          <div className="hidden md:grid grid-cols-6 gap-2">
             {tabs.map(tab => {
               const Icon = tab.icon;
               return (
                 <TabsTrigger 
                   key={tab.value}
                   value={tab.value}
-                  className="text-sm flex items-center gap-2 py-2 px-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:border-blue-600 data-[state=active]:text-white transition-all"
+                  className="text-xs flex flex-col items-center gap-1.5 py-3 px-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:border-blue-600 data-[state=active]:text-white transition-all"
                 >
-                  <Icon className="w-4 h-4" />
-                  {tab.label}
+                  <Icon className="w-5 h-5" />
+                  <span className="text-center font-semibold">{tab.label}</span>
                 </TabsTrigger>
               );
             })}
