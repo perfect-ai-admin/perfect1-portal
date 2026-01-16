@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Plus, BarChart3, DollarSign } from 'lucide-react';
+import { FileText, Plus, BarChart3, DollarSign, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
