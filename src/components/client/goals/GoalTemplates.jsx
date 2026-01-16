@@ -321,27 +321,28 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
       <Sheet open={true} onOpenChange={onClose}>
         <SheetContent 
            side="bottom"
-           className="p-0 border-0 overflow-hidden h-screen max-h-[95vh] flex flex-col rounded-t-2xl"
+           className="p-0 border-0 overflow-x-hidden w-full max-w-full flex flex-col rounded-t-2xl"
+           style={{ height: '100dvh', maxHeight: '100dvh' }}
            ref={drawerRef}
          >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full w-full min-w-0 overflow-x-hidden">
            {/* Header */}
-           <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20">
-             <div className="flex items-center justify-between mb-2">
-               <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
-                 <X className="w-5 h-5 text-gray-500" />
-               </button>
-               <h2 id="goal-title" className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2" ref={initialFocusRef} tabIndex="-1">
-                 <Target className="w-5 h-5 text-purple-600" />
-                 {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
-               </h2>
-               <div className="w-5" />
-             </div>
-             {!selectedTemplate && <p className="text-center text-xs md:text-sm text-gray-600 font-medium">בחר מטרה שמשפיעה על העסק שלך</p>}
-           </div>
+           <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20 overflow-x-hidden">
+              <div className="flex items-center justify-between mb-2 min-w-0">
+                <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors flex-shrink-0">
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+                <h2 id="goal-title" className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2 text-center" ref={initialFocusRef} tabIndex="-1">
+                  <Target className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                  {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
+                </h2>
+                <div className="w-5 flex-shrink-0" />
+              </div>
+              {!selectedTemplate && <p className="text-center text-xs md:text-sm text-gray-600 font-medium overflow-x-hidden">בחר מטרה שמשפיעה על העסק שלך</p>}
+            </div>
 
-           {/* Content */}
-           <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto -webkit-overflow-scrolling-touch">
+            {/* Content */}
+            <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0">
             {!selectedTemplate ? (
               <motion.div 
                 className="space-y-2.5"
@@ -349,7 +350,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                 animate={{ opacity: 1 }}
               >
               {/* Templates Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2 auto-rows-max">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2 auto-rows-max min-w-0">
                 {GOAL_TEMPLATES.map((template, idx) => (
                   <motion.button
                     key={template.id}
@@ -359,14 +360,14 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                     whileHover={{ scale: 1.03, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleTemplateSelect(template)}
-                    className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2 md:p-2.5 transition-all group active:scale-95"
+                    className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2 md:p-2.5 transition-all group active:scale-95 min-w-0"
                     >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
                        <div className={`w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
                          <template.icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                        </div>
-                       <div className="flex-1 text-right min-w-0">
-                         <h3 className="font-semibold text-gray-900 text-xs leading-tight">{template.name}</h3>
+                       <div className="flex-1 text-right min-w-0 overflow-hidden">
+                         <h3 className="font-semibold text-gray-900 text-xs leading-tight truncate">{template.name}</h3>
                        </div>
                      </div>
                   </motion.button>
@@ -538,27 +539,27 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
           return (
           <Dialog open={true} onOpenChange={onClose}>
           <DialogContent 
-          className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+          className="p-0 border-0 rounded-2xl shadow-2xl overflow-x-hidden max-h-[90vh] flex flex-col"
           ref={drawerRef}
           >
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full w-full min-w-0 overflow-x-hidden">
           {/* Header */}
-          <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20">
-           <div className="flex items-center justify-between mb-2">
-             <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
+          <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20 overflow-x-hidden">
+           <div className="flex items-center justify-between mb-2 min-w-0">
+             <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors flex-shrink-0">
                <X className="w-5 h-5 text-gray-500" />
              </button>
-             <h2 id="goal-title" className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2" ref={initialFocusRef} tabIndex="-1">
-               <Target className="w-5 h-5 text-purple-600" />
+             <h2 id="goal-title" className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2 text-center" ref={initialFocusRef} tabIndex="-1">
+               <Target className="w-5 h-5 text-purple-600 flex-shrink-0" />
                {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
              </h2>
-             <div className="w-5" />
+             <div className="w-5 flex-shrink-0" />
            </div>
-           {!selectedTemplate && <p className="text-center text-xs md:text-sm text-gray-600 font-medium">בחר מטרה שמשפיעה על העסק שלך</p>}
+           {!selectedTemplate && <p className="text-center text-xs md:text-sm text-gray-600 font-medium overflow-x-hidden">בחר מטרה שמשפיעה על העסק שלך</p>}
           </div>
 
           {/* Content */}
-          <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto -webkit-overflow-scrolling-touch">
+          <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0">
            {!selectedTemplate ? (
              <motion.div 
                className="space-y-2.5"
@@ -566,7 +567,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                animate={{ opacity: 1 }}
              >
              {/* Templates Grid */}
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2 auto-rows-max">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2 auto-rows-max min-w-0">
                {GOAL_TEMPLATES.map((template, idx) => (
                  <motion.button
                    key={template.id}
@@ -576,14 +577,14 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                    whileHover={{ scale: 1.03, y: -2 }}
                    whileTap={{ scale: 0.98 }}
                    onClick={() => handleTemplateSelect(template)}
-                   className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2 md:p-2.5 transition-all group active:scale-95"
+                   className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2 md:p-2.5 transition-all group active:scale-95 min-w-0"
                    >
-                   <div className="flex items-center gap-2">
+                   <div className="flex items-center gap-2 min-w-0">
                       <div className={`w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
                         <template.icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                       </div>
-                      <div className="flex-1 text-right min-w-0">
-                        <h3 className="font-semibold text-gray-900 text-xs leading-tight">{template.name}</h3>
+                      <div className="flex-1 text-right min-w-0 overflow-hidden">
+                        <h3 className="font-semibold text-gray-900 text-xs leading-tight truncate">{template.name}</h3>
                       </div>
                     </div>
                  </motion.button>

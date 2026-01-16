@@ -19,7 +19,15 @@
   font-family: 'Heebo', sans-serif;
 }
 
+html, body {
+  overflow-x: hidden;
+  direction: rtl;
+  background-color: var(--background);
+  color: var(--text);
+}
+
 body {
+  overflow-x: hidden;
   direction: rtl;
   background-color: var(--background);
   color: var(--text);
