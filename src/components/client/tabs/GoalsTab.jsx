@@ -37,10 +37,22 @@ const SAMPLE_GOALS = [
 // Utility: Scroll with retry logic
 const scrollToGoalsTop = (retries = 0) => {
   const anchor = document.getElementById('goals-top-anchor');
-  const main = document.querySelector('main');
   
-  if (anchor && main) {
-    main.scrollTop = 0;
+  // Try main first
+  let scrollContainer = document.querySelector('main[data-scroll-container="dashboard"]');
+  
+  // If main not found, try closest scrollable parent
+  if (!scrollContainer) {
+    scrollContainer = document.querySelector('[data-scroll-container="dashboard"]');
+  }
+  
+  // Fallback to first main element
+  if (!scrollContainer) {
+    scrollContainer = document.querySelector('main');
+  }
+  
+  if (anchor && scrollContainer) {
+    scrollContainer.scrollTop = 0;
     return true;
   }
   
