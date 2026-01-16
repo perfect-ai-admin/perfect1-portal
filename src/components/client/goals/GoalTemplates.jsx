@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { DollarSign, Users, Clock, BookOpen, Heart, Plus, X } from 'lucide-react';
+import { DollarSign, Users, Clock, BookOpen, Heart, Plus, X, TrendingUp, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,98 +21,171 @@ import {
 // Goal Templates (section 4.4.2)
 const GOAL_TEMPLATES = [
   {
-    id: 'revenue',
-    name: 'מטרת הכנסה',
-    icon: DollarSign,
-    color: 'from-green-400 to-green-600',
-    defaultTarget: 15000,
-    unit: '₪',
-    description: 'הגדר יעד הכנסה חודשי או שנתי',
-    examples: [
-      { title: 'הכנסה חודשית של ₪15,000', target: 15000, timeframe: 'month' },
-      { title: 'הכנסה שנתית של ₪180,000', target: 180000, timeframe: 'year' },
-      { title: 'הכפל הכנסה תוך רבעון', target: 30000, timeframe: 'quarter' }
-    ],
-    tips: [
-      'מטרות הכנסה צריכות להיות מבוססות על נתונים היסטוריים',
-      'התחל עם יעד שאתגר אבל ריאלי - 20-30% צמיחה',
-      'עקוב אחרי ההתקדמות שבועית כדי לזהות מגמות'
-    ]
-  },
-  {
-    id: 'clients',
-    name: 'מטרת לקוחות',
+    id: 'active_customers',
+    name: 'הגדלת כמות לקוחות פעילים',
     icon: Users,
     color: 'from-blue-400 to-blue-600',
-    defaultTarget: 10,
+    defaultTarget: 20,
     unit: 'לקוחות',
-    description: 'כמה לקוחות אתה רוצה להגיע?',
+    description: 'הגדל את מספר הלקוחות הפעילים שלך',
     examples: [
-      { title: '10 לקוחות פעילים', target: 10, timeframe: 'month' },
-      { title: '5 לקוחות חדשים החודש', target: 5, timeframe: 'month' },
-      { title: '50 לקוחות עד סוף השנה', target: 50, timeframe: 'year' }
-    ],
-    tips: [
-      'לקוחות איכותיים עדיפים על כמות גדולה',
-      'הגדר מה "לקוח פעיל" אצלך - רכישה בחודש? בחצי שנה?',
-      'עקוב אחרי שיעור הנטישה - לקוח שעזב = צריך 2 חדשים'
+      { title: 'להגיע ל־5 לקוחות פעילים', target: 5, timeframe: 'quarter' },
+      { title: 'להגיע ל־20 לקוחות פעילים', target: 20, timeframe: 'quarter' },
+      { title: 'להגיע ל־50 לקוחות פעילים', target: 50, timeframe: 'year' }
     ]
   },
   {
-    id: 'worklife',
-    name: 'איזון עבודה-חיים',
-    icon: Clock,
-    color: 'from-purple-400 to-purple-600',
-    defaultTarget: 40,
-    unit: 'שעות/שבוע',
-    description: 'הגבל את שעות העבודה השבועיות',
+    id: 'monthly_income',
+    name: 'הגדלת הכנסה חודשית',
+    icon: DollarSign,
+    color: 'from-green-400 to-green-600',
+    defaultTarget: 30000,
+    unit: '₪',
+    description: 'הגדל את ההכנסה החודשית שלך',
     examples: [
-      { title: 'עבודה של 40 שעות בשבוע', target: 40, timeframe: 'week' },
-      { title: 'סיום עבודה ב-18:00 כל יום', target: 45, timeframe: 'week' },
-      { title: 'יום אחד ללא עבודה בשבוע', target: 35, timeframe: 'week' }
-    ],
-    tips: [
-      'עצמאים נוטים לעבוד יותר מדי - הגדר גבולות ברורים',
-      'שעות פחות לא אומר הכנסה פחות - דווקא להיפך לפעמים',
-      'תזמן זמן למשפחה, תחביבים ומנוחה - זה חלק מההצלחה'
+      { title: 'הכנסה חודשית של 10,000 ₪', target: 10000, timeframe: 'month' },
+      { title: 'הכנסה חודשית של 30,000 ₪', target: 30000, timeframe: 'month' },
+      { title: 'הכנסה חודשית של 70,000 ₪', target: 70000, timeframe: 'month' }
     ]
   },
   {
-    id: 'skill',
-    name: 'פיתוח מיומנויות',
-    icon: BookOpen,
-    color: 'from-orange-400 to-orange-600',
-    defaultTarget: 100,
-    unit: '% השלמה',
-    description: 'למד מיומנות חדשה או קורס',
-    examples: [
-      { title: 'קורס שיווק דיגיטלי', target: 100, timeframe: 'quarter' },
-      { title: 'קריאת 12 ספרים עסקיים', target: 12, timeframe: 'year' },
-      { title: 'למידת כלי עבודה חדש', target: 100, timeframe: 'month' }
-    ],
-    tips: [
-      'השקע 5% מזמנך בלמידה - זה משתלם לטווח ארוך',
-      'למד מיומנויות שישפרו את השירות/המוצר שלך',
-      'בחר קורסים עם תעודה - זה יוסיף אמינות'
-    ]
-  },
-  {
-    id: 'financial',
-    name: 'בריאות פיננסית',
+    id: 'cashflow_stability',
+    name: 'יציבות בתזרים מזומנים',
     icon: Heart,
     color: 'from-pink-400 to-pink-600',
-    defaultTarget: 20000,
-    unit: '₪',
-    description: 'שפר את המצב הפיננסי של העסק',
+    defaultTarget: 3,
+    unit: 'חודשים',
+    description: 'שפר את היציבות הפיננסית',
     examples: [
-      { title: 'חסכון של ₪20,000 למקרי חירום', target: 20000, timeframe: 'year' },
-      { title: 'צמצום הוצאות ב-15%', target: 15, timeframe: 'quarter' },
-      { title: 'שיפור רווחיות ל-40%', target: 40, timeframe: 'quarter' }
-    ],
-    tips: [
-      'קרן חירום עסקית = 3-6 חודשי הוצאות',
-      'צמצום הוצאות לא אומר להפסיק להשקיע - להיות יעיל',
-      'רווחיות גבוהה > מחזור גבוה - תמיד'
+      { title: 'לדעת שכל ההוצאות החודשיות מכוסות', target: 1, timeframe: 'month' },
+      { title: 'להישאר חיובי כל חודש בלי מינוס', target: 3, timeframe: 'quarter' },
+      { title: 'כרית ביטחון של 2–3 חודשי פעילות', target: 3, timeframe: 'quarter' }
+    ]
+  },
+  {
+    id: 'quality_leads',
+    name: 'יותר פניות / לידים איכותיים',
+    icon: Users,
+    color: 'from-cyan-400 to-cyan-600',
+    defaultTarget: 20,
+    unit: 'פניות',
+    description: 'הגדל את כמות הפניות האיכותיות',
+    examples: [
+      { title: '5 פניות איכותיות בחודש', target: 5, timeframe: 'month' },
+      { title: '20 פניות איכותיות בחודש', target: 20, timeframe: 'month' },
+      { title: '50 פניות איכותיות בחודש', target: 50, timeframe: 'month' }
+    ]
+  },
+  {
+    id: 'conversion_rate',
+    name: 'שיפור אחוזי סגירה',
+    icon: TrendingUp,
+    color: 'from-purple-400 to-purple-600',
+    defaultTarget: 33,
+    unit: '%',
+    description: 'שפר את אחוז הסגירה מפניות',
+    examples: [
+      { title: 'לסגור 1 מכל 5 פניות', target: 20, timeframe: 'quarter' },
+      { title: 'לסגור 1 מכל 3 פניות', target: 33, timeframe: 'quarter' },
+      { title: 'לסגור 50% מהפניות', target: 50, timeframe: 'quarter' }
+    ]
+  },
+  {
+    id: 'deal_value',
+    name: 'העלאת מחיר / ערך עסקה',
+    icon: TrendingUp,
+    color: 'from-amber-400 to-amber-600',
+    defaultTarget: 10,
+    unit: '%',
+    description: 'הגדל את הערך הממוצע של עסקה',
+    examples: [
+      { title: 'העלאת מחיר ב־10%', target: 10, timeframe: 'quarter' },
+      { title: 'מכירה של חבילה/שירות יקר יותר', target: 25, timeframe: 'quarter' },
+      { title: 'מעבר ללקוחות פרימיום בלבד', target: 50, timeframe: 'year' }
+    ]
+  },
+  {
+    id: 'time_saving',
+    name: 'חיסכון בזמן עבודה',
+    icon: Clock,
+    color: 'from-indigo-400 to-indigo-600',
+    defaultTarget: 40,
+    unit: 'שעות/שבוע',
+    description: 'עבוד פחות ובצורה חכמה יותר',
+    examples: [
+      { title: 'לחסוך 5 שעות עבודה בשבוע', target: 45, timeframe: 'month' },
+      { title: 'לעבוד עד 40 שעות בשבוע', target: 40, timeframe: 'quarter' },
+      { title: 'לעבוד פחות מ־30 שעות בשבוע', target: 30, timeframe: 'quarter' }
+    ]
+  },
+  {
+    id: 'business_control',
+    name: 'סדר ושליטה בעסק',
+    icon: BookOpen,
+    color: 'from-teal-400 to-teal-600',
+    defaultTarget: 100,
+    unit: '% השלמה',
+    description: 'שלוט במה שקורה בעסק',
+    examples: [
+      { title: 'לדעת בכל רגע מה צריך לעשות השבוע', target: 100, timeframe: 'month' },
+      { title: 'לסיים שבוע בלי משימות פתוחות', target: 100, timeframe: 'quarter' },
+      { title: 'לעבוד לפי סדר יום קבוע וברור', target: 100, timeframe: 'quarter' }
+    ]
+  },
+  {
+    id: 'marketing_engine',
+    name: 'בניית מנגנון שיווק קבוע',
+    icon: TrendingUp,
+    color: 'from-rose-400 to-rose-600',
+    defaultTarget: 1,
+    unit: 'ערוצים',
+    description: 'בנה מנגנון שיווק שעובד בעצמו',
+    examples: [
+      { title: 'ערוץ שיווק אחד שעובד קבוע', target: 1, timeframe: 'quarter' },
+      { title: 'מערכת שמביאה פניות כל חודש', target: 1, timeframe: 'quarter' },
+      { title: 'שיווק שעובד גם כשלא עובדים', target: 1, timeframe: 'year' }
+    ]
+  },
+  {
+    id: 'retention',
+    name: 'שימור והחזרת לקוחות',
+    icon: Heart,
+    color: 'from-fuchsia-400 to-fuchsia-600',
+    defaultTarget: 5,
+    unit: 'לקוחות',
+    description: 'החזר לקוחות ומכור להם שוב',
+    examples: [
+      { title: 'להחזיר לקוחות עבר', target: 5, timeframe: 'quarter' },
+      { title: 'למכור שוב ללקוחות קיימים', target: 10, timeframe: 'quarter' },
+      { title: 'לייצר הכנסה חוזרת מאותו לקוח', target: 15, timeframe: 'quarter' }
+    ]
+  },
+  {
+    id: 'reduce_stress',
+    name: 'פחות לחץ ושחיקה',
+    icon: Heart,
+    color: 'from-emerald-400 to-emerald-600',
+    defaultTarget: 100,
+    unit: '% שיפור',
+    description: 'הפחת לחץ ושחיקה עסקית',
+    examples: [
+      { title: 'לסיים חודש בלי תחושת רדיפה', target: 100, timeframe: 'quarter' },
+      { title: 'להרגיש שליטה ולא כיבוי שריפות', target: 100, timeframe: 'quarter' },
+      { title: 'לשמור על אנרגיה לאורך זמן', target: 100, timeframe: 'quarter' }
+    ]
+  },
+  {
+    id: 'focus_direction',
+    name: 'מיקוד וכיוון עסקי ברור',
+    icon: Target,
+    color: 'from-violet-400 to-violet-600',
+    defaultTarget: 1,
+    unit: 'שירות',
+    description: 'התמקד במה שחשוב',
+    examples: [
+      { title: 'לבחור שירות אחד מרכזי', target: 1, timeframe: 'quarter' },
+      { title: 'לוותר על לקוחות לא מתאימים', target: 100, timeframe: 'quarter' },
+      { title: 'לדעת על מה אומרים "לא"', target: 100, timeframe: 'quarter' }
     ]
   }
 ];
