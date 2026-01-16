@@ -168,7 +168,8 @@ export default function GoalsTab({ data, openAddGoal = false }) {
            editingGoal={editingGoal}
          />
        )}
-       </motion.div>
-       </div>
-       );
+      </div>
+      </motion.div>
+      </div>
+      );
        }
