@@ -63,14 +63,14 @@ export default function DocumentsTab({ data }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-gray-900">מסמכים</h2>
+      <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-3 mb-4">
+        <h2 className="text-lg font-bold text-blue-900">מסמכים</h2>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="gap-2 hidden md:flex">
+          <Button size="sm" className="gap-2 hidden md:flex border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold" variant="outline">
             <Filter className="w-4 h-4" />
             סינון
           </Button>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold">
             <Upload className="w-4 h-4" />
             <span className="hidden md:inline">ייצא</span>
           </Button>
@@ -151,27 +151,27 @@ function DocumentActions({ docId }) {
           <MoreVertical className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem className="cursor-pointer">
-          <FileText className="w-4 h-4 ml-2" />
-          צפייה
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Send className="w-4 h-4 ml-2" />
-          שליחה
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Download className="w-4 h-4 ml-2" />
-          הורדה
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <Copy className="w-4 h-4 ml-2" />
-          שכפול
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer text-red-600">
-          <Trash2 className="w-4 h-4 ml-2" />
-          ביטול
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" className="bg-white border-2 border-gray-300 rounded-lg shadow-lg">
+      <DropdownMenuItem className="cursor-pointer hover:bg-blue-50 text-gray-700 font-medium">
+        <FileText className="w-4 h-4 ml-2" />
+        צפייה
+      </DropdownMenuItem>
+      <DropdownMenuItem className="cursor-pointer hover:bg-blue-50 text-gray-700 font-medium">
+        <Send className="w-4 h-4 ml-2" />
+        שליחה
+      </DropdownMenuItem>
+      <DropdownMenuItem className="cursor-pointer hover:bg-blue-50 text-gray-700 font-medium">
+        <Download className="w-4 h-4 ml-2" />
+        הורדה
+      </DropdownMenuItem>
+      <DropdownMenuItem className="cursor-pointer hover:bg-blue-50 text-gray-700 font-medium">
+        <Copy className="w-4 h-4 ml-2" />
+        שכפול
+      </DropdownMenuItem>
+      <DropdownMenuItem className="cursor-pointer hover:bg-red-50 text-red-600 font-medium">
+        <Trash2 className="w-4 h-4 ml-2" />
+        ביטול
+      </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
