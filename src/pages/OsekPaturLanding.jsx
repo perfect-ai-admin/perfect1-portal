@@ -506,29 +506,29 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* Why Perfect One */}
-        <section className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <div className="inline-block bg-[#D4AF37]/10 text-[#D4AF37] px-6 py-2 rounded-full text-sm font-bold mb-6">
-                ⭐ למה Perfect One
-              </div>
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                Perfect One – הבית לעצמאיים
-              </h2>
-            </motion.div>
+        {/* Why Different */}
+         <section className="py-12 bg-white">
+           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <div className="inline-block bg-purple-100 text-purple-700 px-6 py-2 rounded-full text-sm font-bold mb-6">
+                 🎯 מה שונה בנו
+               </div>
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                 הסיבה בחרו בנו על כל השאר
+               </h2>
+             </motion.div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {[
-                { icon: Award, title: 'ניסיון בליווי אלפי עצמאיים', desc: 'עזרנו ל-2000+ עצמאיים להתחיל נכון' },
-                { icon: Target, title: 'התמחות בעוסקים קטנים', desc: 'אנחנו מתמחים בפתיחת עוסקים קטנים ובינוניים' },
-                { icon: MessageCircle, title: 'שירות אישי וברור', desc: 'ללא חאפרות, בשפה פשוטה ונגישה' },
-                { icon: Shield, title: 'שקיפות ושקט נפשי', desc: 'מחיר ברור, ליווי מלא, בלי הפתעות' }
+                { icon: Users, title: 'אנחנו עצמאיים גם', desc: 'חברים בעצמנו את זה - אנחנו מבינים כל כאב ראש' },
+                { icon: Zap, title: '24-48 שעות בלבד', desc: 'קדימות לטלפונים הממשלתיים, ללא בירוקרטיה מיותרת' },
+                { icon: Briefcase, title: 'אפליקציה משלנו', desc: 'לא צריך אפליקציות מרובות - הכל במקום אחד' },
+                { icon: Award, title: 'ודאות מלאה', desc: 'אנחנו ניתנים בעוד שנה אם משהו לא עובד כשלם' }
               ].map((item, i) => (
                 <motion.div
                   key={i}
