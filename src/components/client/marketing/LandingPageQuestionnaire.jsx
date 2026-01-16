@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,11 +6,46 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  ChevronLeft, ChevronRight, X, Sparkles, Building2, 
+  Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
+  Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check
+} from 'lucide-react';
+import { cn } from "@/lib/utils";
 
-export default function LandingPageQuestionnaire({ onComplete }) {
+// Custom specialized card selector component for better UX
+const SelectionCard = ({ selected, onClick, icon: Icon, title, description }) => (
+  <div 
+    onClick={onClick}
+    className={cn(
+      "cursor-pointer relative flex items-start gap-3 p-4 rounded-xl border-2 transition-all duration-200",
+      selected 
+        ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500/20" 
+        : "border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50"
+    )}
+  >
+    {selected && (
+      <div className="absolute top-3 left-3 bg-blue-500 rounded-full p-0.5">
+        <Check className="w-3 h-3 text-white" />
+      </div>
+    )}
+    <div className={cn(
+      "p-2.5 rounded-lg flex-shrink-0",
+      selected ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"
+    )}>
+      <Icon className="w-5 h-5" />
+    </div>
+    <div>
+      <div className={cn("font-bold text-sm mb-0.5", selected ? "text-blue-900" : "text-gray-900")}>{title}</div>
+      {description && <div className="text-xs text-gray-500 leading-relaxed">{description}</div>}
+    </div>
+  </div>
+);
+
+export default function LandingPageQuestionnaire({ onComplete, onClose }) {
   const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 7;
+  
   const [formData, setFormData] = useState({
     businessName: '',
     mainField: '',
@@ -30,11 +65,17 @@ export default function LandingPageQuestionnaire({ onComplete }) {
     pageStyle: '',
     preferredColors: '',
     logoStatus: '',
-    formFields: [],
+    formFields: ['name', 'phone'],
     leadDestination: '',
   });
 
   const [errors, setErrors] = useState({});
+
+  // Scroll to top on step change for mobile
+  useEffect(() => {
+    const scrollArea = document.getElementById('questionnaire-scroll-area');
+    if (scrollArea) scrollArea.scrollTop = 0;
+  }, [currentStep]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -50,36 +91,37 @@ export default function LandingPageQuestionnaire({ onComplete }) {
         ? [...prev[group], value]
         : prev[group].filter(item => item !== value)
     }));
+    if (errors[group]) setErrors(prev => ({ ...prev, [group]: '' }));
   };
 
   const validateStep = (step) => {
     const newErrors = {};
     switch(step) {
       case 1:
-        if (!formData.businessName.trim()) newErrors.businessName = 'שדה חובה';
-        if (!formData.mainField.trim()) newErrors.mainField = 'שדה חובה';
-        if (formData.targetAudience.length === 0) newErrors.targetAudience = 'בחר לפחות אפשרות אחת';
+        if (!formData.businessName.trim()) newErrors.businessName = 'נא להזין שם עסק';
+        if (!formData.mainField.trim()) newErrors.mainField = 'נא להזין תחום עיסוק';
+        if (formData.targetAudience.length === 0 && !formData.targetAudienceOther) newErrors.targetAudience = 'יש לבחור לפחות קהל יעד אחד';
         break;
       case 2:
-        if (!formData.painPoints.trim()) newErrors.painPoints = 'שדה חובה';
-        if (!formData.consequences.trim()) newErrors.consequences = 'שדה חובה';
+        if (!formData.painPoints.trim()) newErrors.painPoints = 'זהו שדה קריטי להצלחת הדף';
+        if (!formData.consequences.trim()) newErrors.consequences = 'חשוב להבין את הכאב של הלקוח';
         break;
       case 3:
-        if (!formData.serviceOffered.trim()) newErrors.serviceOffered = 'שדה חובה';
-        if (formData.whyChooseYou.length === 0) newErrors.whyChooseYou = 'בחר לפחות אפשרות אחת';
-        if (!formData.processSteps.trim()) newErrors.processSteps = 'שדה חובה';
+        if (!formData.serviceOffered.trim()) newErrors.serviceOffered = 'נא לתאר את השירות';
+        if (formData.whyChooseYou.length === 0 && !formData.whyChooseYouOther) newErrors.whyChooseYou = 'מה היתרון שלך?';
+        if (!formData.processSteps.trim()) newErrors.processSteps = 'איך זה עובד?';
         break;
       case 5:
-        if (!formData.ctaType) newErrors.ctaType = 'בחר אפשרות';
-        if (!formData.ctaText) newErrors.ctaText = 'בחר אפשרות';
+        if (!formData.ctaType) newErrors.ctaType = 'איך יפנו אליך?';
+        if (!formData.ctaText) newErrors.ctaText = 'מה כתוב על הכפתור?';
         break;
       case 6:
-        if (!formData.pageStyle) newErrors.pageStyle = 'בחר אפשרות';
-        if (!formData.logoStatus) newErrors.logoStatus = 'בחר אפשרות';
+        if (!formData.pageStyle) newErrors.pageStyle = 'בחר סגנון עיצובי';
+        if (!formData.logoStatus) newErrors.logoStatus = 'האם יש לוגו?';
         break;
       case 7:
-        if (formData.formFields.length === 0) newErrors.formFields = 'בחר לפחות שדה אחד';
-        if (!formData.leadDestination) newErrors.leadDestination = 'בחר אפשרות';
+        if (formData.formFields.length === 0) newErrors.formFields = 'איזה פרטים לקלוט?';
+        if (!formData.leadDestination) newErrors.leadDestination = 'לאן לשלוח את הליד?';
         break;
     }
     setErrors(newErrors);
@@ -88,14 +130,12 @@ export default function LandingPageQuestionnaire({ onComplete }) {
 
   const handleNext = () => {
     if (validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(prev + 1, 7));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setCurrentStep(prev => Math.min(prev + 1, totalSteps));
     }
   };
 
   const handlePrev = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSubmit = (e) => {
@@ -105,242 +145,435 @@ export default function LandingPageQuestionnaire({ onComplete }) {
     }
   };
 
-  const progressPercent = (currentStep / 7) * 100;
+  const progressPercent = (currentStep / totalSteps) * 100;
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (
-          <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-            <div>
-              <Label htmlFor="businessName" className="font-semibold">שם העסק / שם מותג *</Label>
-              <Input id="businessName" value={formData.businessName} onChange={(e) => handleInputChange('businessName', e.target.value)} placeholder="לדוגמה: Perfect One" className={errors.businessName ? 'border-red-500' : ''} />
-              {errors.businessName && <p className="text-red-500 text-xs mt-1">{errors.businessName}</p>}
-            </div>
-            <div>
-              <Label htmlFor="mainField" className="font-semibold">תחום עיסוק עיקרי *</Label>
-              <Input id="mainField" value={formData.mainField} onChange={(e) => handleInputChange('mainField', e.target.value)} placeholder="לדוגמה: פתיחת עוסק פטור" className={errors.mainField ? 'border-red-500' : ''} />
-              {errors.mainField && <p className="text-red-500 text-xs mt-1">{errors.mainField}</p>}
-            </div>
-            <div>
-              <Label className="font-semibold mb-2 block">קהל יעד עיקרי *</Label>
-              <div className="space-y-2">
-                {['freelancers', 'smallBusinesses', 'privateClients'].map(option => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <Checkbox checked={formData.targetAudience.includes(option)} onCheckedChange={(checked) => handleCheckboxChange('targetAudience', option, checked)} />
-                    <Label className="cursor-pointer">
-                      {option === 'freelancers' && 'עצמאים'}
-                      {option === 'smallBusinesses' && 'עסקים קטנים'}
-                      {option === 'privateClients' && 'לקוחות פרטיים'}
-                    </Label>
-                  </div>
-                ))}
-                <div>
-                  <Input placeholder="אחר (תיאור)" value={formData.targetAudienceOther} onChange={(e) => handleInputChange('targetAudienceOther', e.target.value)} />
-                </div>
+          <div className="space-y-6">
+            <div className="text-center space-y-2 mb-6">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Building2 className="w-6 h-6 text-blue-600" />
               </div>
-              {errors.targetAudience && <p className="text-red-500 text-xs mt-1">{errors.targetAudience}</p>}
+              <h3 className="text-xl font-bold text-gray-900">נתחיל מהבסיס</h3>
+              <p className="text-gray-500 text-sm">מי אתה ומי הקהל שלך?</p>
             </div>
-          </motion.div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="businessName">שם העסק / מותג</Label>
+                <Input 
+                  id="businessName" 
+                  value={formData.businessName} 
+                  onChange={(e) => handleInputChange('businessName', e.target.value)} 
+                  placeholder="לדוגמה: דיגיטל פרו" 
+                  className={cn("h-11", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
+                  autoFocus
+                />
+                {errors.businessName && <p className="text-red-500 text-xs flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.businessName}</p>}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="mainField">תחום עיסוק</Label>
+                <Input 
+                  id="mainField" 
+                  value={formData.mainField} 
+                  onChange={(e) => handleInputChange('mainField', e.target.value)} 
+                  placeholder="לדוגמה: שיווק דיגיטלי לעסקים קטנים" 
+                  className={cn("h-11", errors.mainField && 'border-red-500 focus-visible:ring-red-500')} 
+                />
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <Label className="block text-base">מי הקהל העיקרי שלך?</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <SelectionCard 
+                    selected={formData.targetAudience.includes('freelancers')}
+                    onClick={() => handleCheckboxChange('targetAudience', 'freelancers', !formData.targetAudience.includes('freelancers'))}
+                    icon={Users}
+                    title="עצמאים ופרילנסרים"
+                    description="בעלי עסק של אדם אחד"
+                  />
+                  <SelectionCard 
+                    selected={formData.targetAudience.includes('smallBusinesses')}
+                    onClick={() => handleCheckboxChange('targetAudience', 'smallBusinesses', !formData.targetAudience.includes('smallBusinesses'))}
+                    icon={Building2}
+                    title="עסקים קטנים"
+                    description="חברות עם 2-10 עובדים"
+                  />
+                  <SelectionCard 
+                    selected={formData.targetAudience.includes('privateClients')}
+                    onClick={() => handleCheckboxChange('targetAudience', 'privateClients', !formData.targetAudience.includes('privateClients'))}
+                    icon={Target}
+                    title="לקוחות פרטיים"
+                    description="אנשים פרטיים (B2C)"
+                  />
+                  <div className="flex items-center px-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50">
+                     <Input 
+                        placeholder="קהל אחר..." 
+                        value={formData.targetAudienceOther} 
+                        onChange={(e) => handleInputChange('targetAudienceOther', e.target.value)} 
+                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full"
+                      />
+                  </div>
+                </div>
+                {errors.targetAudience && <p className="text-red-500 text-xs mt-1">{errors.targetAudience}</p>}
+              </div>
+            </div>
+          </div>
         );
 
       case 2:
         return (
-          <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-            <div>
-              <Label htmlFor="painPoints" className="font-semibold">איזה בעיה/כאב הלקוח חווה? *</Label>
-              <Textarea id="painPoints" value={formData.painPoints} onChange={(e) => handleInputChange('painPoints', e.target.value)} placeholder="לדוגמה: אין לו זמן, לא מבין, מפחד לטעות" rows={3} className={errors.painPoints ? 'border-red-500' : ''} />
-              {errors.painPoints && <p className="text-red-500 text-xs mt-1">{errors.painPoints}</p>}
+          <div className="space-y-6">
+            <div className="text-center space-y-2 mb-6">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <AlertCircle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">הכאב של הלקוח</h3>
+              <p className="text-gray-500 text-sm">הבנת הבעיה היא המפתח למכירה</p>
             </div>
-            <div>
-              <Label htmlFor="consequences" className="font-semibold">מה קורה אם הוא לא פותר את הבעיה? *</Label>
-              <Textarea id="consequences" value={formData.consequences} onChange={(e) => handleInputChange('consequences', e.target.value)} placeholder="השלכות: כסף, זמן, תסכול, לחץ" rows={3} className={errors.consequences ? 'border-red-500' : ''} />
-              {errors.consequences && <p className="text-red-500 text-xs mt-1">{errors.consequences}</p>}
+
+            <div className="space-y-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="painPoints" className="text-base">מה הבעיה או הכאב שהלקוח חווה?</Label>
+                <Textarea 
+                  id="painPoints" 
+                  value={formData.painPoints} 
+                  onChange={(e) => handleInputChange('painPoints', e.target.value)} 
+                  placeholder="לדוגמה: הוא מבזבז המון זמן על בירוקרטיה במקום לעבוד..." 
+                  className={cn("min-h-[100px] text-base resize-none", errors.painPoints && 'border-red-500')} 
+                  autoFocus
+                />
+                <p className="text-xs text-gray-500">תאר את הבעיה מהעיניים של הלקוח</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="consequences" className="text-base">מה קורה אם הוא לא פותר את זה?</Label>
+                <Textarea 
+                  id="consequences" 
+                  value={formData.consequences} 
+                  onChange={(e) => handleInputChange('consequences', e.target.value)} 
+                  placeholder="לדוגמה: מפסיד כסף, נכנס ללחץ, מאבד לקוחות..." 
+                  className={cn("min-h-[100px] text-base resize-none", errors.consequences && 'border-red-500')} 
+                />
+              </div>
             </div>
-          </motion.div>
+          </div>
         );
 
       case 3:
         return (
-          <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-            <div>
-              <Label htmlFor="serviceOffered" className="font-semibold">מה השירות שאתה מציע? *</Label>
-              <Textarea id="serviceOffered" value={formData.serviceOffered} onChange={(e) => handleInputChange('serviceOffered', e.target.value)} placeholder="תאר בקצרה את השירות" rows={3} className={errors.serviceOffered ? 'border-red-500' : ''} />
-              {errors.serviceOffered && <p className="text-red-500 text-xs mt-1">{errors.serviceOffered}</p>}
-            </div>
-            <div>
-              <Label className="font-semibold mb-2 block">למה לבחור בך? *</Label>
-              <div className="space-y-2">
-                {['price', 'experience', 'personalService', 'speed', 'simplicity'].map(option => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <Checkbox checked={formData.whyChooseYou.includes(option)} onCheckedChange={(checked) => handleCheckboxChange('whyChooseYou', option, checked)} />
-                    <Label className="cursor-pointer">
-                      {option === 'price' && 'מחיר'}
-                      {option === 'experience' && 'ניסיון'}
-                      {option === 'personalService' && 'שירות אישי'}
-                      {option === 'speed' && 'מהירות'}
-                      {option === 'simplicity' && 'פשטות'}
-                    </Label>
-                  </div>
-                ))}
-                <Input placeholder="אחר" value={formData.whyChooseYouOther} onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} />
+          <div className="space-y-6">
+            <div className="text-center space-y-2 mb-6">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Zap className="w-6 h-6 text-green-600" />
               </div>
-              {errors.whyChooseYou && <p className="text-red-500 text-xs mt-1">{errors.whyChooseYou}</p>}
+              <h3 className="text-xl font-bold text-gray-900">הפתרון שלך</h3>
+              <p className="text-gray-500 text-sm">איך אתה עוזר לו?</p>
             </div>
-            <div>
-              <Label htmlFor="processSteps" className="font-semibold">איך נראה התהליך? *</Label>
-              <Textarea id="processSteps" value={formData.processSteps} onChange={(e) => handleInputChange('processSteps', e.target.value)} placeholder="שלב 1 → שלב 2 → שלב 3" rows={2} className={errors.processSteps ? 'border-red-500' : ''} />
-              {errors.processSteps && <p className="text-red-500 text-xs mt-1">{errors.processSteps}</p>}
+
+            <div className="space-y-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="serviceOffered">מה השירות במשפט אחד?</Label>
+                <Textarea 
+                  id="serviceOffered" 
+                  value={formData.serviceOffered} 
+                  onChange={(e) => handleInputChange('serviceOffered', e.target.value)} 
+                  placeholder="אני עוזר ל... לעשות... כדי ש..." 
+                  className={cn("h-20 resize-none", errors.serviceOffered && 'border-red-500')} 
+                />
+              </div>
+
+              <div className="space-y-3">
+                <Label className="block">למה שיבחר דווקא בך?</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { id: 'price', label: 'מחיר משתלם', icon: Wallet },
+                    { id: 'experience', label: 'ניסיון ומקצועיות', icon: Briefcase },
+                    { id: 'personalService', label: 'יחס אישי', icon: Users },
+                    { id: 'speed', label: 'מהירות', icon: Clock },
+                  ].map(item => (
+                    <SelectionCard
+                      key={item.id}
+                      selected={formData.whyChooseYou.includes(item.id)}
+                      onClick={() => handleCheckboxChange('whyChooseYou', item.id, !formData.whyChooseYou.includes(item.id))}
+                      icon={item.icon}
+                      title={item.label}
+                    />
+                  ))}
+                  <div className="col-span-2">
+                    <Input 
+                      placeholder="סיבה אחרת..." 
+                      value={formData.whyChooseYouOther} 
+                      onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} 
+                      className="bg-gray-50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="processSteps">איך זה עובד? (בקצרה)</Label>
+                <Input 
+                  id="processSteps" 
+                  value={formData.processSteps} 
+                  onChange={(e) => handleInputChange('processSteps', e.target.value)} 
+                  placeholder="שלב 1 -> שלב 2 -> שלב 3" 
+                  className={cn(errors.processSteps && 'border-red-500')} 
+                />
+              </div>
             </div>
-          </motion.div>
+          </div>
         );
 
       case 4:
         return (
-          <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-            <Label className="font-semibold">הוכחות ואמון</Label>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Checkbox checked={formData.proofs.includes('experience')} onCheckedChange={(checked) => handleCheckboxChange('proofs', 'experience', checked)} />
-                <Label className="cursor-pointer">ניסיון / ותק</Label>
+          <div className="space-y-6">
+             <div className="text-center space-y-2 mb-6">
+              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <ThumbsUp className="w-6 h-6 text-amber-600" />
               </div>
-              {formData.proofs.includes('experience') && (
-                <Input type="number" placeholder="כמה שנים?" value={formData.experienceYears} onChange={(e) => handleInputChange('experienceYears', e.target.value)} />
-              )}
-              <div className="flex items-center space-x-2">
-                <Checkbox checked={formData.proofs.includes('clients')} onCheckedChange={(checked) => handleCheckboxChange('proofs', 'clients', checked)} />
-                <Label className="cursor-pointer">לקוחות קיימים</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox checked={formData.proofs.includes('testimonial')} onCheckedChange={(checked) => handleCheckboxChange('proofs', 'testimonial', checked)} />
-                <Label className="cursor-pointer">המלצה / ציטוט</Label>
-              </div>
-              {formData.proofs.includes('testimonial') && (
-                <Textarea placeholder="כתוב הצעה או ציטוט" value={formData.testimonialText} onChange={(e) => handleInputChange('testimonialText', e.target.value)} rows={2} />
-              )}
-              <div className="flex items-center space-x-2">
-                <Checkbox checked={formData.proofs.includes('guarantee')} onCheckedChange={(checked) => handleCheckboxChange('proofs', 'guarantee', checked)} />
-                <Label className="cursor-pointer">אחריות / התחייבות</Label>
-              </div>
+              <h3 className="text-xl font-bold text-gray-900">הוכחות ואמון</h3>
+              <p className="text-gray-500 text-sm">למה שיסמכו עליך?</p>
             </div>
-          </motion.div>
+
+            <div className="grid grid-cols-1 gap-3">
+              <SelectionCard
+                selected={formData.proofs.includes('experience')}
+                onClick={() => handleCheckboxChange('proofs', 'experience', !formData.proofs.includes('experience'))}
+                icon={Briefcase}
+                title="ותק וניסיון בשטח"
+                description="שנות פעילות, פרויקטים קודמים"
+              />
+              {formData.proofs.includes('experience') && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                  <Input 
+                    type="number" 
+                    placeholder="כמה שנות ניסיון?" 
+                    value={formData.experienceYears} 
+                    onChange={(e) => handleInputChange('experienceYears', e.target.value)} 
+                    className="mr-12 w-[calc(100%-3rem)]"
+                  />
+                </motion.div>
+              )}
+
+              <SelectionCard
+                selected={formData.proofs.includes('clients')}
+                onClick={() => handleCheckboxChange('proofs', 'clients', !formData.proofs.includes('clients'))}
+                icon={Users}
+                title="רשימת לקוחות ממליצים"
+              />
+
+              <SelectionCard
+                selected={formData.proofs.includes('testimonial')}
+                onClick={() => handleCheckboxChange('proofs', 'testimonial', !formData.proofs.includes('testimonial'))}
+                icon={MessageSquare}
+                title="ציטוט של לקוח מרוצה"
+              />
+              {formData.proofs.includes('testimonial') && (
+                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                  <Textarea 
+                    placeholder="כתוב כאן את ההמלצה..." 
+                    value={formData.testimonialText} 
+                    onChange={(e) => handleInputChange('testimonialText', e.target.value)} 
+                    className="mr-12 w-[calc(100%-3rem)]"
+                    rows={2}
+                  />
+                </motion.div>
+              )}
+            </div>
+          </div>
         );
 
       case 5:
         return (
-          <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-            <div>
-              <Label className="font-semibold mb-2 block">מה הפעולה שרוצה מהגולש? *</Label>
-              <RadioGroup value={formData.ctaType} onValueChange={(value) => handleInputChange('ctaType', value)} className={`space-y-2 ${errors.ctaType ? 'border border-red-500 p-3 rounded' : ''}`}>
-                {[
-                  { value: 'details', label: 'השארת פרטים' },
-                  { value: 'whatsapp', label: 'פנייה לוואטסאפ' },
-                  { value: 'phone', label: 'שיחה טלפונית' },
-                  { value: 'meeting', label: 'קביעת פגישה' }
-                ].map(option => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={option.value} />
-                    <Label htmlFor={option.value}>{option.label}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              {errors.ctaType && <p className="text-red-500 text-xs mt-1">{errors.ctaType}</p>}
+          <div className="space-y-6">
+            <div className="text-center space-y-2 mb-6">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Send className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">הנעה לפעולה</h3>
+              <p className="text-gray-500 text-sm">מה אנחנו רוצים שיקרה עכשיו?</p>
             </div>
-            <div>
-              <Label className="font-semibold mb-2 block">ניסוח הכפתור *</Label>
-              <RadioGroup value={formData.ctaText} onValueChange={(value) => handleInputChange('ctaText', value)} className={`space-y-2 ${errors.ctaText ? 'border border-red-500 p-3 rounded' : ''}`}>
-                {[
-                  { value: 'check', label: '"בדיקה ללא התחייבות"' },
-                  { value: 'consultation', label: '"שיחה ראשונית חינם"' },
-                  { value: 'offer', label: '"קבל הצעה עכשיו"' }
-                ].map(option => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`cta-${option.value}`} />
-                    <Label htmlFor={`cta-${option.value}`}>{option.label}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              {errors.ctaText && <p className="text-red-500 text-xs mt-1">{errors.ctaText}</p>}
+
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label className="block font-bold">מה הפעולה הרצויה?</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    { value: 'details', label: 'השארת פרטים', desc: 'טופס לידים קלאסי' },
+                    { value: 'whatsapp', label: 'וואטסאפ', desc: 'פנייה ישירה ומהירה' },
+                    { value: 'phone', label: 'שיחה טלפונית', desc: 'חיוג מיידי מהנייד' },
+                    { value: 'meeting', label: 'קביעת פגישה', desc: 'יומן דיגיטלי' }
+                  ].map(option => (
+                    <SelectionCard
+                      key={option.value}
+                      selected={formData.ctaType === option.value}
+                      onClick={() => handleInputChange('ctaType', option.value)}
+                      icon={Send}
+                      title={option.label}
+                      description={option.desc}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="block font-bold">מה יהיה כתוב על הכפתור?</Label>
+                <div className="space-y-2">
+                  {[
+                    { value: 'check', label: 'בדיקה ללא התחייבות' },
+                    { value: 'consultation', label: 'אני רוצה שיחת ייעוץ' },
+                    { value: 'offer', label: 'קבלת הצעת מחיר' }
+                  ].map(option => (
+                     <div 
+                      key={option.value}
+                      onClick={() => handleInputChange('ctaText', option.value)}
+                      className={cn(
+                        "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all",
+                        formData.ctaText === option.value ? "border-purple-500 bg-purple-50 text-purple-900" : "border-gray-200 hover:bg-gray-50"
+                      )}
+                    >
+                      <div className={cn("w-4 h-4 rounded-full border flex items-center justify-center", formData.ctaText === option.value ? "border-purple-500" : "border-gray-300")}>
+                        {formData.ctaText === option.value && <div className="w-2 h-2 rounded-full bg-purple-500" />}
+                      </div>
+                      <span className="font-medium text-sm">{option.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         );
 
       case 6:
         return (
-          <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-            <div>
-              <Label className="font-semibold mb-2 block">סגנון הדף *</Label>
-              <RadioGroup value={formData.pageStyle} onValueChange={(value) => handleInputChange('pageStyle', value)} className="space-y-2">
-                {[
-                  { value: 'professional', label: 'רציני / מקצועי' },
-                  { value: 'simple', label: 'פשוט / בגובה העיניים' },
-                  { value: 'energetic', label: 'צעיר / אנרגטי' },
-                  { value: 'luxury', label: 'יוקרתי / פרימיום' }
-                ].map(option => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`style-${option.value}`} />
-                    <Label htmlFor={`style-${option.value}`}>{option.label}</Label>
+          <div className="space-y-6">
+            <div className="text-center space-y-2 mb-6">
+              <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Paintbrush className="w-6 h-6 text-pink-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">עיצוב וסגנון</h3>
+              <p className="text-gray-500 text-sm">איך הדף יראה?</p>
+            </div>
+
+            <div className="space-y-5">
+              <div className="space-y-3">
+                <Label className="block">סגנון כללי</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { value: 'professional', label: 'מקצועי ורציני', color: 'bg-slate-100' },
+                    { value: 'simple', label: 'נקי ופשוט', color: 'bg-white border' },
+                    { value: 'energetic', label: 'צעיר ואנרגטי', color: 'bg-yellow-50' },
+                    { value: 'luxury', label: 'יוקרתי ופרימיום', color: 'bg-zinc-900 text-white' }
+                  ].map(option => (
+                    <div 
+                      key={option.value}
+                      onClick={() => handleInputChange('pageStyle', option.value)}
+                      className={cn(
+                        "cursor-pointer p-4 rounded-xl border-2 text-center transition-all",
+                        formData.pageStyle === option.value 
+                          ? "border-pink-500 ring-1 ring-pink-500/20" 
+                          : "border-gray-100 hover:border-pink-200"
+                      )}
+                    >
+                      <div className={cn("w-full h-8 rounded-md mb-2 mx-auto", option.color)} />
+                      <span className="text-sm font-bold">{option.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>האם יש לך לוגו?</Label>
+                <div className="flex gap-4">
+                  <div 
+                    onClick={() => handleInputChange('logoStatus', 'yes')}
+                    className={cn(
+                      "flex-1 cursor-pointer p-3 rounded-xl border text-center",
+                      formData.logoStatus === 'yes' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200"
+                    )}
+                  >
+                    יש לי לוגו
                   </div>
-                ))}
-              </RadioGroup>
-            </div>
-            <div>
-              <Label htmlFor="colors">צבעים מועדפים (אם יש)</Label>
-              <Input id="colors" value={formData.preferredColors} onChange={(e) => handleInputChange('preferredColors', e.target.value)} placeholder="לדוגמה: כחול, לבן, זהב" />
-            </div>
-            <div>
-              <Label className="font-semibold mb-2 block">לוגו *</Label>
-              <RadioGroup value={formData.logoStatus} onValueChange={(value) => handleInputChange('logoStatus', value)} className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="yes" id="logo-yes" />
-                  <Label htmlFor="logo-yes">כן, יש לי לוגו</Label>
+                  <div 
+                    onClick={() => handleInputChange('logoStatus', 'no')}
+                    className={cn(
+                      "flex-1 cursor-pointer p-3 rounded-xl border text-center",
+                      formData.logoStatus === 'no' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200"
+                    )}
+                  >
+                    צריך לעצב לי
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="no" id="logo-no" />
-                  <Label htmlFor="logo-no">לא, צריך ליצור</Label>
-                </div>
-              </RadioGroup>
+              </div>
             </div>
-          </motion.div>
+          </div>
         );
 
       case 7:
         return (
-          <motion.div key="step7" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
-            <div>
-              <Label className="font-semibold mb-2 block">שדות בטופס *</Label>
-              <div className="space-y-2">
-                {['name', 'phone', 'email', 'message'].map(field => (
-                  <div key={field} className="flex items-center space-x-2">
-                    <Checkbox checked={formData.formFields.includes(field)} onCheckedChange={(checked) => handleCheckboxChange('formFields', field, checked)} />
-                    <Label className="cursor-pointer">
-                      {field === 'name' && 'שם'}
-                      {field === 'phone' && 'טלפון'}
-                      {field === 'email' && 'אימייל'}
-                      {field === 'message' && 'הודעה חופשית'}
-                    </Label>
-                  </div>
-                ))}
+          <div className="space-y-6">
+            <div className="text-center space-y-2 mb-6">
+              <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Sparkles className="w-6 h-6 text-teal-600" />
               </div>
-              {errors.formFields && <p className="text-red-500 text-xs mt-1">{errors.formFields}</p>}
+              <h3 className="text-xl font-bold text-gray-900">טאצ'ים אחרונים</h3>
+              <p className="text-gray-500 text-sm">הגדרות טכניות</p>
             </div>
-            <div>
-              <Label className="font-semibold mb-2 block">היעד של הליד *</Label>
-              <RadioGroup value={formData.leadDestination} onValueChange={(value) => handleInputChange('leadDestination', value)} className="space-y-2">
-                {[
-                  { value: 'whatsapp', label: 'וואטסאפ' },
-                  { value: 'email', label: 'מייל' },
-                  { value: 'crm', label: 'מערכת CRM' }
-                ].map(option => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={`dest-${option.value}`} />
-                    <Label htmlFor={`dest-${option.value}`}>{option.label}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-              {errors.leadDestination && <p className="text-red-500 text-xs mt-1">{errors.leadDestination}</p>}
+
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <Label className="block font-bold">איזה שדות יהיו בטופס?</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {['name', 'phone', 'email', 'message'].map(field => (
+                    <div 
+                      key={field} 
+                      onClick={() => handleCheckboxChange('formFields', field, !formData.formFields.includes(field))}
+                      className={cn(
+                        "cursor-pointer flex items-center gap-3 p-3 rounded-xl border transition-all",
+                        formData.formFields.includes(field) ? "border-teal-500 bg-teal-50" : "border-gray-200"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-5 h-5 rounded border flex items-center justify-center bg-white",
+                        formData.formFields.includes(field) ? "border-teal-500" : "border-gray-300"
+                      )}>
+                        {formData.formFields.includes(field) && <Check className="w-3 h-3 text-teal-600" />}
+                      </div>
+                      <span className="text-sm">
+                        {field === 'name' && 'שם מלא'}
+                        {field === 'phone' && 'טלפון'}
+                        {field === 'email' && 'אימייל'}
+                        {field === 'message' && 'הערות'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="block font-bold">לאן הליד יגיע?</Label>
+                <div className="space-y-2">
+                  {[
+                    { value: 'whatsapp', label: 'ישירות לוואטסאפ שלי' },
+                    { value: 'email', label: 'למייל שלי' },
+                    { value: 'crm', label: 'למערכת ה-CRM' }
+                  ].map(option => (
+                     <SelectionCard
+                      key={option.value}
+                      selected={formData.leadDestination === option.value}
+                      onClick={() => handleInputChange('leadDestination', option.value)}
+                      icon={Send}
+                      title={option.label}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         );
 
       default:
@@ -349,47 +582,94 @@ export default function LandingPageQuestionnaire({ onComplete }) {
   };
 
   return (
-    <Card className="w-full border-0 shadow-none">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-2xl text-[#1E3A5F]">בניית דף נחיתה ממותג</CardTitle>
-        <CardDescription>
-          שלב {currentStep} מתוך 7
-        </CardDescription>
-        <div className="w-full bg-gray-200 rounded-full h-2 mt-4 overflow-hidden">
-          <div 
-            className="bg-blue-500 h-full transition-all duration-300"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </CardHeader>
-
-      <CardContent className="pt-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <AnimatePresence mode="wait">
-            {renderStep()}
-          </AnimatePresence>
-
-          <div className="flex justify-between pt-6 border-t">
-            {currentStep > 1 && (
-              <Button type="button" onClick={handlePrev} variant="outline" className="flex items-center gap-2">
-                <ChevronLeft className="w-4 h-4" />
-                הקודם
-              </Button>
-            )}
-            <div className="flex-1" />
-            {currentStep < 7 ? (
-              <Button type="button" onClick={handleNext} className="flex items-center gap-2">
-                הבא
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            ) : (
-              <Button type="submit" className="bg-green-500 hover:bg-green-600 text-white">
-                בנה את דף הנחיתה
-              </Button>
-            )}
+    <div className="flex flex-col h-full bg-white relative">
+      {/* Header */}
+      <div className="flex-none px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-10">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={onClose}
+            className="p-2 -mr-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-blue-600">אשף בניית דף נחיתה</span>
+            <div className="flex gap-1">
+              {Array.from({ length: totalSteps }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className={cn(
+                    "w-1.5 h-1.5 rounded-full transition-all duration-300", 
+                    i + 1 <= currentStep ? "bg-blue-600" : "bg-gray-200",
+                    i + 1 === currentStep && "w-4"
+                  )} 
+                />
+              ))}
+            </div>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+        <div className="text-xs font-medium text-gray-500">
+          {currentStep} / {totalSteps}
+        </div>
+      </div>
+
+      {/* Main Content - Scrollable */}
+      <div 
+        id="questionnaire-scroll-area"
+        className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8"
+      >
+        <div className="max-w-2xl mx-auto min-h-full flex flex-col justify-center">
+          <form onSubmit={handleSubmit}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+                className="py-2"
+              >
+                {renderStep()}
+              </motion.div>
+            </AnimatePresence>
+          </form>
+        </div>
+      </div>
+
+      {/* Footer Navigation */}
+      <div className="flex-none p-4 border-t border-gray-100 bg-white z-10 safe-area-bottom">
+        <div className="max-w-2xl mx-auto flex justify-between gap-4">
+          <Button
+            type="button"
+            onClick={handlePrev}
+            variant="ghost"
+            disabled={currentStep === 1}
+            className={cn("transition-opacity", currentStep === 1 ? "opacity-0 pointer-events-none" : "opacity-100")}
+          >
+            <ChevronRight className="w-4 h-4 ml-2" />
+            הקודם
+          </Button>
+
+          {currentStep < totalSteps ? (
+            <Button 
+              type="button" 
+              onClick={handleNext}
+              className="bg-blue-600 hover:bg-blue-700 text-white min-w-[120px] shadow-lg shadow-blue-100"
+            >
+              הבא
+              <ChevronLeft className="w-4 h-4 mr-2" />
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleSubmit}
+              className="bg-green-600 hover:bg-green-700 text-white min-w-[120px] shadow-lg shadow-green-100"
+            >
+              סיים ובנה
+              <Sparkles className="w-4 h-4 mr-2" />
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

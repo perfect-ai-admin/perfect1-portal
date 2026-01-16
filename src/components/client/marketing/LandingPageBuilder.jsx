@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, ChevronRight } from 'lucide-react';
+import { Layers, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 
@@ -22,15 +22,9 @@ export default function LandingPageBuilder() {
   return (
     <>
       {showQuestionnaire && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-2xl w-full my-8">
-            <button 
-              onClick={() => setShowQuestionnaire(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ×
-            </button>
-            <LandingPageQuestionnaire onComplete={handleComplete} />
+        <div className="fixed inset-0 z-[60] flex items-center justify-center md:bg-black/60 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
+          <div className="bg-white md:rounded-2xl w-full h-full md:h-auto md:max-h-[90vh] md:max-w-3xl overflow-hidden shadow-2xl flex flex-col">
+            <LandingPageQuestionnaire onComplete={handleComplete} onClose={() => setShowQuestionnaire(false)} />
           </div>
         </div>
       )}
