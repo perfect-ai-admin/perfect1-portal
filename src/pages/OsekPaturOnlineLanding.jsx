@@ -529,9 +529,9 @@ export default function OsekPaturOnlineLanding() {
             <div className="grid md:grid-cols-2 gap-6">
               {[
                 { icon: Clock, title: 'חוסך זמן', desc: 'בלי לבזבז זמן על נסיעות והמתנות' },
-                { icon: Smartphone, title: 'נוח ופשוט', desc: 'הכל מהטלפון או מהמחשב שלך' },
+                { icon: Smartphone, title: 'שירות אישי ומקצועי', desc: 'כל קליינט משיג תשומת לב הייעודית - לא מחסום טלפוני' },
                 { icon: Shield, title: 'מאובטח וחוקי', desc: 'חתימה דיגיטלית מוכרת על פי חוק' },
-                { icon: Zap, title: 'מהיר יותר', desc: 'תהליך מואץ ללא עיכובים' }
+                { icon: Zap, title: 'אחריות מלאה', desc: 'אנחנו עומדים מאחוריך - יעילות מובטחת ותמיכה מקצועית' }
               ].map((item, i) => (
                 <motion.div
                   key={i}
