@@ -336,18 +336,18 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
             </motion.div>
           ) : (
             <motion.div 
-              className="space-y-3.5"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => { setSelectedTemplate(null); setGoalTitle(''); setTargetValue(''); setDeadline(''); }}
-                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 mb-1 h-8"
-              >
-                ← חזור
-              </Button>
+               className="space-y-2.5"
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+             >
+               <Button
+                 variant="ghost"
+                 size="sm"
+                 onClick={() => { setSelectedTemplate(null); setGoalTitle(''); setTargetValue(''); setDeadline(''); }}
+                 className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 mb-0 h-8 text-xs"
+               >
+                 ← חזור
+               </Button>
 
               {/* Examples - Quick Selection */}
               {selectedTemplate.examples && (
