@@ -609,7 +609,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
   // Checkout page - Integrated Component
   if (step === 5) {
     return (
-      <div className="h-full w-full bg-white overflow-hidden">
+      <div className="h-full w-full bg-white overflow-hidden md:h-[650px] lg:h-[700px] flex flex-col">
         <LogoCheckout 
           businessName={formData.businessName}
           onBack={() => setStep(4)}
