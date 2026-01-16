@@ -312,13 +312,16 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
     };
 
     const saveLogo = (logoUrl, variant) => {
-      const savedLogos = JSON.parse(localStorage.getItem(`saved_logos_${formData.businessName}`) || '[]');
-      savedLogos.push({
+      const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
+      if (!allSaved[formData.businessName]) {
+        allSaved[formData.businessName] = [];
+      }
+      allSaved[formData.businessName].push({
         url: logoUrl,
         variant: variant,
         savedAt: new Date().toISOString()
       });
-      localStorage.setItem(`saved_logos_${formData.businessName}`, JSON.stringify(savedLogos));
+      localStorage.setItem('saved_logos', JSON.stringify(allSaved));
       alert(`הלוגו נשמר בהצלחה! ✓`);
     };
 
