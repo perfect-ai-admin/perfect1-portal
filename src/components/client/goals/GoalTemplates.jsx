@@ -326,7 +326,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
                 <Button
                   variant="outline"
-                  className="w-full py-5 text-sm md:text-base font-semibold border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50 text-gray-700"
+                  className="w-full py-3 text-xs md:text-sm font-semibold border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50 text-gray-700"
                   onClick={() => setSelectedTemplate({ id: 'custom', name: 'מטרה מותאמת', unit: '' })}
                 >
                   <Plus className="w-4 h-4 ml-2" />
