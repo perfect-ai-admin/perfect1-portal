@@ -366,7 +366,7 @@ export default function AgentCRM() {
 
               {/* Timestamp */}
               <div className="text-xs text-gray-400 text-center mt-3 pt-3 border-t">
-                {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
+                {lead.created_date ? format(new Date(lead.created_date), 'dd/MM/yy HH:mm') : '-'}
               </div>
             </div>
           ))}
@@ -434,8 +434,8 @@ export default function AgentCRM() {
                 {filteredLeads.map((lead, index) => (
                   <tr key={lead.id} className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
                     {visibleColumns.date && <td className="px-4 py-3 text-sm text-gray-600">
-                      {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')}
-                    </td>}
+                       {lead.created_date ? format(new Date(lead.created_date), 'dd/MM/yy HH:mm') : '-'}
+                     </td>}
                     {visibleColumns.name && <td className="px-4 py-3">
                       <div className="font-medium">{lead.name}</div>
                       {lead.email && <div className="text-xs text-gray-500">{lead.email}</div>}
@@ -781,7 +781,7 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading, onStatusChange }) {
           {lead.email && <div><strong>מייל:</strong> {lead.email}</div>}
           {lead.profession && <div><strong>מקצוע:</strong> {lead.profession}</div>}
           {lead.source_page && <div><strong>מקור:</strong> {lead.source_page}</div>}
-          <div><strong>נוצר:</strong> {format(new Date(lead.created_date), 'dd/MM/yyyy HH:mm')}</div>
+          <div><strong>נוצר:</strong> {lead.created_date ? format(new Date(lead.created_date), 'dd/MM/yyyy HH:mm') : '-'}</div>
         </div>
       </div>
 
