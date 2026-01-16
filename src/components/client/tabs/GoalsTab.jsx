@@ -127,12 +127,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
         <Button 
           variant="outline" 
           className="w-full gap-2"
-          onClick={() => {
-            setShowAddGoal(true);
-            setTimeout(() => {
-              topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 0);
-          }}
+          onClick={() => setShowAddGoal(true)}
         >
           <Plus className="w-4 h-4" />
           מטרה חדשה
