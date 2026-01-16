@@ -281,20 +281,30 @@ export default function ClientDashboard() {
 
                   {/* Desktop Tabs */}
                   <div className="hidden md:block">
-                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
+                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={(tab, config) => {
+                      setActiveTab(tab);
+                      if (tab === 'goals' && config) {
+                        setGoalsTabConfig(config);
+                      }
+                    }} />}
                     {activeTab === 'business' && <BusinessTab data={enrichedData} />}
                     {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
-                    {activeTab === 'goals' && <GoalsTab data={enrichedData} />}
+                    {activeTab === 'goals' && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} />}
                     {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
                     {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
                   </div>
 
                   {/* Mobile Tabs */}
                   <div className="md:hidden">
-                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={setActiveTab} />}
+                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={(tab, config) => {
+                      setActiveTab(tab);
+                      if (tab === 'goals' && config) {
+                        setGoalsTabConfig(config);
+                      }
+                    }} />}
                     {activeTab === 'business' && <BusinessTab data={enrichedData} />}
                     {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
-                    {activeTab === 'goals' && <GoalsTab data={enrichedData} />}
+                    {activeTab === 'goals' && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} />}
                     {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
                     {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
                   </div>
