@@ -365,8 +365,8 @@ export default function OsekPaturOnlineLanding() {
                   <Zap className="w-10 h-10" />
                   <h3 className="text-3xl font-black">תהליך מואץ</h3>
                 </div>
-                <p className="text-lg text-white/90 font-bold mb-3">אנחנו יודעים כל קיצור דרך חוקי</p>
-                <p className="text-white/80">ממש לא ממתינים בתורים. הנתונים שלך עולים במעקב מלא - רמה ערד וברור בכל רגע עד לאישור הסופי</p>
+                <p className="text-lg text-white/90 font-bold mb-3">ליווי יעיל ומקצועי</p>
+                <p className="text-white/80">אנחנו עוזרים לך בכל שלב - מילוי נכון, בדיקה וההכנה של המסמכים. החלק הממשלתי תלוי בעיבוד הרשויות.</p>
               </motion.div>
 
               {/* Support */}
