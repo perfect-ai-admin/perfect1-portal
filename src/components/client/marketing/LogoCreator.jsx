@@ -308,6 +308,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
       link.href = logoUrl;
       link.download = `${formData.businessName}-logo.${format === 'png' ? 'png' : 'svg'}`;
       link.click();
+      setSelectedLogo(null);
     };
 
     const saveLogo = (logoUrl, variant) => {
