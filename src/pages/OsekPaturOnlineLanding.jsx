@@ -223,10 +223,10 @@ export default function OsekPaturOnlineLanding() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-white">
                     {[
-                      { icon: Monitor, text: 'מהמחשב' },
-                      { icon: Smartphone, text: 'או מהנייד' },
-                      { icon: Clock, text: 'כל שעה' },
-                      { icon: Shield, text: 'הצפנה מלאה' }
+                      { icon: Monitor, text: 'מהמחשב או הנייד' },
+                           { icon: Clock, text: 'בקצב שלך' },
+                           { icon: Shield, text: 'הצפנה בנקאית' },
+                           { icon: Users, text: 'ליווי ישיר' }
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 bg-white/10 rounded-xl p-3">
                         <item.icon className="w-5 h-5 text-white" />
