@@ -85,42 +85,45 @@ export default function QuickActionsBar({ onActionComplete }) {
       </div>
 
       {/* Mobile Sticky Bar */}
-      <div className="md:hidden fixed bottom-20 left-0 right-0 bg-gradient-to-r from-blue-50 to-indigo-50 border-t-2 border-blue-200 flex items-center justify-between p-2 gap-2 z-40">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm" className="flex-1 gap-2 h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold">
-              <FileText className="w-4 h-4" />
-              מסמך
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" side="top">
-            {documentTypes.map(type => (
-              <DropdownMenuItem
-                key={type.id}
-                onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">{type.icon}</span>
-                {type.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="md:hidden fixed bottom-20 left-0 right-0 bg-gradient-to-r from-blue-50 to-indigo-50 border-t-2 border-blue-300 flex flex-col items-stretch gap-3 p-4 z-40">
+        <div className="flex gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="lg" className="flex-1 gap-2 h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base rounded-lg shadow-md">
+                <FileText className="w-5 h-5" />
+                מסמך
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="top">
+              {documentTypes.map(type => (
+                <DropdownMenuItem
+                  key={type.id}
+                  onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">{type.icon}</span>
+                  {type.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        <Button
-          size="sm"
-          onClick={() => setShowCreateModal({ type: 'expense' })}
-          className="flex-1 gap-2 h-11 bg-green-600 hover:bg-green-700 text-white font-semibold"
-        >
-          <Plus className="w-4 h-4" />
-          הוצאה
-        </Button>
+          <Button
+            size="lg"
+            onClick={() => setShowCreateModal({ type: 'expense' })}
+            className="flex-1 gap-2 h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-base rounded-lg shadow-md"
+          >
+            <Plus className="w-5 h-5" />
+            הוצאה
+          </Button>
+        </div>
 
         <button
           onClick={() => setShowSearch(true)}
-          className="p-2 hover:bg-gray-100 rounded transition-colors"
+          className="w-full h-12 bg-white border-2 border-gray-300 rounded-lg flex items-center justify-center gap-2 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
         >
-          <Search className="w-5 h-5 text-gray-600" />
+          <Search className="w-5 h-5" />
+          חיפוש
         </button>
       </div>
 
