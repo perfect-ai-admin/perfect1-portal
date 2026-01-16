@@ -30,7 +30,6 @@ export default function LandingPageBuilder() {
   }, [showQuestionnaire]);
 
   const openModal = useCallback(() => {
-    console.log('Opening modal');
     setShowQuestionnaire(true);
   }, []);
 
