@@ -62,9 +62,14 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   };
 
   const handleCreateGoal = (newGoal) => {
-    setGoals(prev => [...prev, newGoal]);
-    setShowAddGoal(false);
-  };
+     if (newGoal.isPrimary) {
+       // הסר את המטרה הראשית הקודמת
+       setGoals(prev => [newGoal, ...prev.filter(g => !g.isPrimary)]);
+     } else {
+       setGoals(prev => [...prev, newGoal]);
+     }
+     setShowAddGoal(false);
+   };
 
   return (
     <motion.div
