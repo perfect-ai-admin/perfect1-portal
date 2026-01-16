@@ -29,7 +29,7 @@ export default function LogoSelectorMobile({ logos, formData }) {
     <div className="lg:hidden w-full h-screen flex flex-col bg-white overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0">
-        <h2 className="text-lg font-bold text-gray-900 text-center">בחר את הלוגו המושלם</h2>
+        <h2 className="text-lg font-bold text-gray-900 text-center">בחר את הלוגו המושלם שלך 🎨</h2>
         <p className="text-xs text-gray-500 text-center mt-0.5">4 וריאציות מעוצבות בעבורך</p>
       </div>
 
