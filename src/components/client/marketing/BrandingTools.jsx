@@ -184,6 +184,13 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
           💡 <strong>טיפ:</strong> התחל עם לוגו חכם וזהות מותג, אחר כך בנה עליהם את שאר הכלים. זה יחסך לך זמן וישמור על עקביות בכל מקום.
         </p>
       </div>
+
+      {/* Modal for Logo Creator */}
+      <Dialog open={activeFlowId === 'logo'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <LogoCreator businessName={businessName} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
