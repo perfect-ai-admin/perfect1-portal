@@ -44,7 +44,7 @@ export default function QuickStatsBar({ stats }) {
           >
             <div className="flex flex-col items-center gap-0.5 text-center">
               <div className={`w-7 h-7 bg-gradient-to-r ${item.color} rounded flex items-center justify-center flex-shrink-0`}>
-                <Icon className="w-3.5 h-3.5 text-white" />
+                <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
               </div>
               <p className="text-sm font-bold text-gray-900 leading-tight">{item.value}</p>
               <p className="text-[8px] leading-tight text-gray-500">{item.label}</p>
