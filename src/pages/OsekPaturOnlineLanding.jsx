@@ -142,7 +142,7 @@ export default function OsekPaturOnlineLanding() {
       <FAQSchema faqs={faqs} />
       <LocalBusinessSchema 
         name="Perfect One - ייעוץ וליווי לפתיחת עוסק פטור"
-        description="שירות פרטי בתשלום לייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור אונליין"
+        description="שירות ייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור אונליין"
         address={{
           street: "",
           city: "",
@@ -160,7 +160,7 @@ export default function OsekPaturOnlineLanding() {
           "@context": "https://schema.org",
           "@type": "Service",
           "name": "ייעוץ וליווי לפתיחת עוסק פטור אונליין",
-          "description": "שירות פרטי בתשלום לייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור",
+          "description": "שירות ייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור",
           "url": "https://perfect1.co.il/osek-patur-online",
           "provider": {
             "@type": "Organization",
@@ -201,7 +201,7 @@ export default function OsekPaturOnlineLanding() {
                 className="text-center lg:text-right"
               >
                 <div className="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-yellow-400/40">
-                  <span className="text-yellow-400 text-sm font-bold">⚠️ שירות ייעוץ וליווי פרטי בתשלום - Perfect One Ltd.</span>
+                  <span className="text-yellow-400 text-sm font-bold">⚠️ שירות ייעוץ וליווי - Perfect One Ltd.</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
@@ -675,7 +675,7 @@ export default function OsekPaturOnlineLanding() {
               },
               {
                 q: 'כמה זה עולה?',
-                a: 'זהו שירות ייעוץ וליווי. על מנת לקבל הצעת מחיר מדויקת, השאר פרטים וידברו אתך ישירות.'
+                a: 'לפרטים על עלויות, השאר פרטים וידברו אתך ישירות על המחיר המתאים לך.'
               },
               {
                 q: 'כמה זמן לוקח הרשויות לאשר?',
