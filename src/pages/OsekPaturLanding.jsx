@@ -421,19 +421,19 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* What's Included */}
-        <section className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                מה כולל השירות?
-              </h2>
-              <p className="text-xl text-gray-600">הכל שקוף - בואו נראה מה אתם מקבלים</p>
-            </motion.div>
+         <section className="py-12 bg-white">
+           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                 ביום הראשון - מה אתם מקבלים?
+               </h2>
+               <p className="text-xl text-gray-600">מחיר יחיד - תוכן מלא. בלי חיסכונים וללא הפתעות בעתיד</p>
+             </motion.div>
 
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl shadow-xl p-8 md:p-10 border-2 border-[#1E3A5F]/10">
               <ul className="grid md:grid-cols-2 gap-6">
@@ -465,18 +465,19 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Who Is This For */}
-        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                למי זה מתאים?
-              </h2>
-            </motion.div>
+         <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                 למי אנחנו כאן?
+               </h2>
+               <p className="text-lg text-gray-600">אם אתה בעמדה הזאת - אנחנו בדיוק מה אתה צריך</p>
+             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-6">
               {[
