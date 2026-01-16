@@ -141,6 +141,11 @@ export default function ProgressTab({ data, onNavigate }) {
         </div>
       </div>
 
+      {/* Why This Matters - Mobile */}
+      <div className="lg:hidden">
+        <StepImportancePanel step={nextStep} />
+      </div>
+
       {/* Desktop Grid */}
       <div className="hidden lg:grid lg:grid-cols-12 gap-6">
         {/* Journey Timeline - Left 50% */}
