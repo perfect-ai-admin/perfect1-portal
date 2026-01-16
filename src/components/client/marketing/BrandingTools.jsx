@@ -192,6 +192,13 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
           <LogoCreator businessName={businessName} />
         </DialogContent>
       </Dialog>
+
+      {/* Modal for Landing Page */}
+      <Dialog open={activeFlowId === 'landing'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <LandingPageQuestionnaire onComplete={() => setActiveFlowId(null)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
