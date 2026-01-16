@@ -325,11 +325,11 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         {/* Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">בחר את הלוגו המושלם שלך 🎨</h2>
-          <p className="text-gray-600">5 וריאציות מעוצבות בעבורך</p>
+          <p className="text-gray-600">4 וריאציות מעוצבות בעבורך</p>
         </div>
 
         {/* Logo Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {logos.map((logo, index) => (
             <motion.div
               key={index}
