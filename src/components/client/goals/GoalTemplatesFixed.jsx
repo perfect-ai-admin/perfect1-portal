@@ -445,7 +445,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             <div className="mobile-sheet-footer">
               <Button 
                 onClick={handleCreate} 
-                disabled={!goalTitle || !targetValue}
+                disabled={!goalTitle || !targetValue ? true : false}
                 className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold h-9 text-sm"
               >
                 <Check className="w-4 h-4 ml-1.5" />
