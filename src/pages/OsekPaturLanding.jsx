@@ -399,7 +399,7 @@ export default function OsekPaturLanding() {
                  📊 הוכחה שזה עובד
                </div>
                <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-                 2,000+ עצמאים בחנו בנו להיות הביטחון שלהם
+                 2,000+ עצמאים בחרו בנו להיות הביטחון שלהם
                </h2>
                <p className="text-xl text-white/90 mb-8">
                  בכל חודש משלוש עצמאיים חדשים בוחרים בנו להיות החברה שלהם בדרך
