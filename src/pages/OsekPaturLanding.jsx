@@ -696,121 +696,93 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Pricing Section */}
-        <section className="py-16 bg-gradient-to-br from-[#F8F9FA] to-white">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                בחרו את החבילה שלכם
-              </h2>
-              <p className="text-lg text-gray-600">מחיר שקוף, ללא הפתעות - הכל כלול</p>
-            </motion.div>
+         <section className="py-16 bg-white">
+           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-12"
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-2">
+                 סיימו את הרכישה
+               </h2>
+               <p className="text-lg text-gray-600">בחרו דרך תשלום וסימנו את המשימה הזאת כסגורה</p>
+             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-              {[
-                {
-                  name: 'חבילה בסיסית',
-                  price: '₪99',
-                  period: 'לחודש',
-                  desc: 'עבור עוסקים שמתחילים',
-                  features: [
-                    'פתיחת תיק עוסק פטור',
-                    'ליווי בוואטסאפ וטלפון',
-                    'דוח שנתי אוטומטי',
-                    'אפליקציית ניהול פשוטה'
-                  ],
-                  highlighted: false
-                },
-                {
-                  name: 'חבילה מלאה',
-                  price: '₪249',
-                  period: 'לחודש',
-                  desc: 'הפתרון המלא',
-                  features: [
-                    'הכל בחבילה הבסיסית',
-                    'ליווי מול כל הרשויות',
-                    'אפליקציה מתקדמת עם דוחות',
-                    'ייעוץ חודשי ישיר',
-                    'טיפול בכל השינויים'
-                  ],
-                  highlighted: true
-                }
-              ].map((plan, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className={`rounded-3xl p-8 transition-all ${
-                    plan.highlighted 
-                      ? 'bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] text-white shadow-2xl border-2 border-[#D4AF37] relative' 
-                      : 'bg-white border-2 border-gray-200 hover:border-[#27AE60]'
-                  }`}
-                >
-                  {plan.highlighted && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#D4AF37] text-[#1E3A5F] px-4 py-1 rounded-full text-sm font-bold">
-                      מומלץ
-                    </div>
-                  )}
+             <motion.div
+               initial={{ opacity: 0, scale: 0.95 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               viewport={{ once: true }}
+               className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-blue-200"
+             >
+               {/* Card Header */}
+               <div className="mb-8">
+                 <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-3xl flex items-center justify-center mb-4">
+                   <FileText className="w-7 h-7 text-white" />
+                 </div>
+                 <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">
+                   דף יישום מומחה
+                 </h3>
+                 <p className="text-sm text-gray-700">
+                   עמוד המרה על מידע <span className="text-gray-500">→</span> פתרון <span className="text-gray-500">→</span> פעולה
+                 </p>
+               </div>
 
-                  <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-white' : 'text-[#1E3A5F]'}`}>
-                    {plan.name}
-                  </h3>
-                  <p className={`text-sm mb-6 ${plan.highlighted ? 'text-white/80' : 'text-gray-600'}`}>
-                    {plan.desc}
-                  </p>
+               {/* Features */}
+               <div className="space-y-3 mb-8 pb-8 border-b-2 border-blue-200">
+                 {[
+                   '✓ כותרות שיווקיות',
+                   '✓ התאמה למומחה',
+                   '✓ טיפול לידים'
+                 ].map((feature, idx) => (
+                   <div key={idx} className="flex items-center gap-3">
+                     <span className="text-lg font-bold text-[#27AE60]">{feature}</span>
+                   </div>
+                 ))}
+               </div>
 
-                  <div className="mb-6">
-                    <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : 'text-[#1E3A5F]'}`}>
-                      {plan.price}
-                    </span>
-                    <span className={`${plan.highlighted ? 'text-white/70' : 'text-gray-600'}`}>
-                      {' '}{plan.period}
-                    </span>
-                  </div>
+               {/* Pricing */}
+               <div className="mb-8">
+                 <p className="text-sm text-gray-600 mb-2">סכום כולל:</p>
+                 <div className="flex items-baseline gap-1">
+                   <span className="text-4xl font-black text-[#1E3A5F]">₪249</span>
+                   <span className="text-gray-600">לחודש</span>
+                 </div>
+                 <p className="text-xs text-gray-500 mt-2">השלום כפוף - לא חיובים נוספים</p>
+               </div>
 
-                  <Button
-                    onClick={scrollToForm}
-                    className={`w-full mb-6 h-12 font-bold rounded-xl ${
-                      plan.highlighted
-                        ? 'bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#1E3A5F]'
-                        : 'bg-[#27AE60] hover:bg-[#229954] text-white'
-                    }`}
-                  >
-                    בואו נתחיל
-                  </Button>
+               {/* Payment Methods */}
+               <div className="space-y-3">
+                 <p className="text-sm font-bold text-gray-700 mb-4">בחר דרך תשלום:</p>
 
-                  <div className="space-y-3 border-t border-opacity-20 border-white pt-6">
-                    {plan.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-3">
-                        <CheckCircle className={`w-5 h-5 flex-shrink-0 ${plan.highlighted ? 'text-[#D4AF37]' : 'text-[#27AE60]'}`} />
-                        <span className={plan.highlighted ? 'text-white/90' : 'text-gray-700'}>
-                          {feature}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                 <Button
+                   onClick={scrollToForm}
+                   className="w-full h-14 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-xl flex items-center justify-between px-4 gap-3"
+                 >
+                   <span>ביצוע בעסקה</span>
+                   <div className="flex items-center gap-1">
+                     <div className="w-6 h-6 rounded-full bg-white/30" />
+                     <div className="w-6 h-6 rounded-full bg-white/30" />
+                   </div>
+                 </Button>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 border-2 border-gray-200 text-center"
-            >
-              <p className="text-gray-700 mb-4">
-                <span className="font-bold">ללא התחייבות</span> • שיחה קצרה וחינם • תעדוף מלא לפני כל תשלום
-              </p>
-            </motion.div>
-          </div>
-        </section>
+                 <Button
+                   onClick={scrollToForm}
+                   variant="outline"
+                   className="w-full h-14 border-2 border-gray-300 text-gray-800 font-bold rounded-xl hover:bg-gray-50 flex items-center justify-between px-4 gap-3"
+                 >
+                   <span>כרטיס אשראי</span>
+                   <div className="text-xl">💳</div>
+                 </Button>
+               </div>
+
+               <p className="text-xs text-gray-600 text-center mt-6">
+                 ללא התחייבות • ביטול בכל עת • תעדוף מלא לפני כל תשלום
+               </p>
+             </motion.div>
+           </div>
+         </section>
 
         {/* FAQ Section */}
          <section className="py-12 bg-white">
