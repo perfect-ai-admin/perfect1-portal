@@ -62,9 +62,6 @@ export default function ProgressTab({ data, onNavigate }) {
         exit={{ opacity: 0 }}
         className="space-y-6"
       >
-        {/* Goals Button - Mobile Only */}
-        <GoalsFloatingButton onNavigate={onNavigate} />
-
       {/* Quick Stats - Mobile First */}
       <div className="lg:hidden">
         <QuickStatsBar stats={quickStats} />
@@ -183,6 +180,11 @@ export default function ProgressTab({ data, onNavigate }) {
            {/* Why This Matters */}
            <StepImportancePanel step={nextStep} />
          </div>
+      </div>
+
+      {/* Goals Button - Mobile Only - Bottom */}
+      <div className="lg:hidden">
+        <GoalsFloatingButton onNavigate={onNavigate} />
       </div>
     </motion.div>
     </>
