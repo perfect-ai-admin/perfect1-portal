@@ -343,9 +343,9 @@ export default function OsekPaturOnlineLanding() {
               className="mt-10 text-center bg-gradient-to-r from-[#3498DB] to-[#2980B9] rounded-2xl p-8 text-white"
             >
               <p className="text-2xl md:text-3xl font-black">
-                💻 תפסיק לחפש – פתח אונליין עכשיו
+                🚀 התחלת העסק שלך צריכה להיות קלה
               </p>
-              <p className="text-xl mt-2">כל התהליך מקוון, בלי לצאת מהבית</p>
+              <p className="text-xl mt-2">זה אמור להיות פשוט, בטוח ומהיר</p>
             </motion.div>
           </div>
         </section>
