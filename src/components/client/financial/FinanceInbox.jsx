@@ -57,7 +57,7 @@ export default function FinanceInbox({ data }) {
             className="bg-white border-2 border-amber-200 rounded-lg md:rounded-lg p-2.5 md:p-4 flex items-start gap-2 md:gap-3 hover:shadow-md transition-all group hover:border-amber-300"
           >
             {/* Icon */}
-            <div className="text-lg md:text-2xl flex-shrink-0 mt-0.5">{item.icon}</div>
+            <div className="text-3xl md:text-2xl flex-shrink-0 flex items-center justify-center w-10 h-10 md:w-auto md:h-auto">{item.icon}</div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
