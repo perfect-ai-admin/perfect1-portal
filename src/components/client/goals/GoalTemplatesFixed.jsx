@@ -298,44 +298,11 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </h2>
               <div className="w-6" />
             </div>
-            {!selectedTemplate && <p className="text-center text-xs text-gray-600 font-medium mt-2">בחר מטרה שמשפיעה על העסק</p>}
           </div>
 
           {/* Body */}
           <div className="mobile-sheet-body">
-            {!selectedTemplate ? (
-              <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <div className="grid grid-cols-2 gap-2 auto-rows-max">
-                  {GOAL_TEMPLATES.map((template, idx) => (
-                    <motion.button
-                      key={template.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.03 }}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleTemplateSelect(template)}
-                      className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2.5 transition-all group"
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 shadow-sm`}>
-                          <template.icon className="w-4 h-4 text-white" />
-                        </div>
-                        <h3 className="font-semibold text-gray-900 text-xs leading-tight text-right">{template.name}</h3>
-                      </div>
-                    </motion.button>
-                  ))}
-                </div>
-                <Button
-                  variant="outline"
-                  className="w-full py-2 text-xs font-semibold border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50"
-                  onClick={() => setSelectedTemplate({ id: 'custom', name: 'מטרה מותאמת', unit: '' })}
-                >
-                  <Plus className="w-4 h-4 ml-2" />
-                  מטרה משלי
-                </Button>
-              </motion.div>
-            ) : (
+            {selectedTemplate && selectedTemplate.id !== 'custom' ? (
               <motion.div className="space-y-2.5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                 <Button
                   variant="ghost"
@@ -351,7 +318,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                   ← חזור
                 </Button>
 
-                {selectedTemplate.examples && (
+                {selectedTemplate?.id !== 'custom' && selectedTemplate?.examples && (
                   <motion.div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-2.5 border border-purple-100" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <p className="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1.5">
                       <Zap className="w-3.5 h-3.5 text-amber-500" />
@@ -369,6 +336,40 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                       ))}
                     </div>
                   </motion.div>
+                )}
+
+                {!selectedTemplate && (
+                  <div className="grid grid-cols-2 gap-2 auto-rows-max">
+                    {GOAL_TEMPLATES.map((template, idx) => (
+                      <motion.button
+                        key={template.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.03 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleTemplateSelect(template)}
+                        className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2.5 transition-all"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0`}>
+                            <template.icon className="w-4 h-4 text-white" />
+                          </div>
+                          <h3 className="font-semibold text-gray-900 text-xs leading-tight text-right">{template.name}</h3>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
+
+                {!selectedTemplate && (
+                  <Button
+                    variant="outline"
+                    className="w-full py-2 text-xs font-semibold border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50"
+                    onClick={() => setSelectedTemplate({ id: 'custom', name: 'מטרה מותאמת', unit: '' })}
+                  >
+                    <Plus className="w-4 h-4 ml-2" />
+                    מטרה משלי
+                  </Button>
                 )}
 
                 <div className="space-y-2">
@@ -449,7 +450,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </div>
 
           {/* Footer */}
-          {selectedTemplate && (
+          {selectedTemplate?.id !== 'custom' && selectedTemplate && (
             <div className="mobile-sheet-footer">
               <Button 
                 onClick={handleCreate} 
