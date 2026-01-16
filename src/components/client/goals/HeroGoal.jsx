@@ -45,7 +45,7 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
            </button>
            <div className="flex-1">
            <div className="flex items-center gap-2 mb-2 flex-wrap">
-             <h2 className="text-base md:text-lg font-bold text-gray-900">{goal.title}</h2>
+             <h2 className="text-sm md:text-base font-bold text-gray-900">{goal.title}</h2>
              <span className={cn("text-xs font-semibold px-2 py-1 rounded-full", config.color, config.bg)}>
                {config.label}
              </span>
