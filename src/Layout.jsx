@@ -22,6 +22,20 @@ export default function Layout({ children, currentPageName }) {
       return children;
     }
 
+    // ClientDashboard במובייל - אל תציג Header רגיל
+    if (currentPageName === 'ClientDashboard') {
+      return (
+        <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
+          <main>
+            {children}
+          </main>
+          <div className="hidden md:block">
+            <Footer />
+          </div>
+        </div>
+      );
+    }
+
     useEffect(() => {
       // Inject GTM script to HEAD if not already there
       if (!document.getElementById(gtmScriptId)) {
