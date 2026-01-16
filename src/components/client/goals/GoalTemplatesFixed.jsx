@@ -240,6 +240,11 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     initialFocusRef.current?.focus();
   }, [selectedTemplate]);
 
+  // Scroll to top when modal opens
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
     setTargetValue(template.defaultTarget.toString());
