@@ -206,7 +206,12 @@ export default function ProgressTab({ data, onNavigate }) {
 
       {/* Goals Button - Mobile Only - Bottom */}
       <div className="lg:hidden">
-        <GoalsFloatingButton onNavigate={onNavigate} />
+        <GoalsFloatingButton 
+          onNavigate={onNavigate}
+          onAddGoal={() => {
+            onNavigate('goals', { openAddGoal: true });
+          }}
+        />
       </div>
     </motion.div>
     </>

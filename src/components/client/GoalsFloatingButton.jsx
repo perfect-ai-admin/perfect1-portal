@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Target, Plus, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function GoalsFloatingButton({ onNavigate, goals = [] }) {
+export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] }) {
   const [isOpen, setIsOpen] = useState(false);
   
   // Mock goals - להחליף בנתונים אמיתיים
@@ -11,6 +11,15 @@ export default function GoalsFloatingButton({ onNavigate, goals = [] }) {
     { id: 1, title: 'להגיע ל-50 לקוחות חדשים', progress: 65 },
     { id: 2, title: 'להגדיל הכנסות ב-30%', progress: 42 }
   ];
+
+  const handleAddGoal = () => {
+    setIsOpen(false);
+    if (onAddGoal) {
+      onAddGoal();
+    } else {
+      onNavigate('goals');
+    }
+  };
 
   return (
     <motion.div
@@ -70,14 +79,11 @@ export default function GoalsFloatingButton({ onNavigate, goals = [] }) {
                 </div>
               )}
               <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onNavigate('goals');
-                }}
+                onClick={handleAddGoal}
                 className="w-full p-3 text-center text-purple-600 font-semibold text-sm hover:bg-purple-50 transition-colors border-t border-gray-200 flex items-center justify-center gap-1.5"
               >
                 <Plus className="w-4 h-4" />
-                להוסיף מטרה
+                מטרה חדשה
               </button>
             </motion.div>
           )}

@@ -31,10 +31,16 @@ const SAMPLE_GOALS = [
   }
 ];
 
-export default function GoalsTab({ data }) {
+export default function GoalsTab({ data, openAddGoal = false }) {
   const [goals, setGoals] = useState(SAMPLE_GOALS);
-  const [showAddGoal, setShowAddGoal] = useState(false);
+  const [showAddGoal, setShowAddGoal] = useState(openAddGoal);
   const [editingGoal, setEditingGoal] = useState(null);
+
+  React.useEffect(() => {
+    if (openAddGoal) {
+      setShowAddGoal(true);
+    }
+  }, [openAddGoal]);
 
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1, 4);

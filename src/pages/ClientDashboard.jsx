@@ -44,6 +44,7 @@ import { SkeletonHeader, SkeletonTabContent } from '../components/client/Skeleto
 export default function ClientDashboard() {
   const [client, setClient] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
+  const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
   const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
