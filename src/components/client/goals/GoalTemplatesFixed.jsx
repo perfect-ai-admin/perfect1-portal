@@ -294,7 +294,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </button>
               <h2 ref={initialFocusRef} tabIndex="-1" className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <Target className="w-5 h-5 text-purple-600" />
-                {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
+                מטרה חדשה
               </h2>
               <div className="w-6" />
             </div>
@@ -303,7 +303,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           {/* Body */}
           <div className="mobile-sheet-body">
             <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              {/* All templates grid */}
+              {/* All templates grid - always visible */}
               <div>
                 <p className="text-xs font-bold text-gray-700 mb-2">בחר מטרה:</p>
                 <div className="grid grid-cols-2 gap-2">
@@ -315,66 +315,61 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                       transition={{ delay: idx * 0.02 }}
                       onClick={() => handleTemplateSelect(template)}
                       className={cn(
-                        "text-right bg-white border-2 rounded-xl p-2 transition-all",
+                        "text-right rounded-lg p-2.5 transition-all border-2 font-medium text-xs",
                         selectedTemplate?.id === template.id
-                          ? 'border-purple-500 bg-purple-50'
-                          : 'border-gray-200 hover:border-purple-300'
+                          ? 'bg-gradient-to-br from-purple-500 to-purple-600 border-purple-600 text-white shadow-lg'
+                          : 'bg-white border-gray-200 text-gray-900 hover:border-purple-300'
                       )}
                     >
                       <div className="flex items-center gap-2">
-                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0`}>
-                          <template.icon className="w-3.5 h-3.5 text-white" />
+                        <div className={cn(
+                          "w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0",
+                          selectedTemplate?.id === template.id
+                            ? 'bg-white/20'
+                            : `bg-gradient-to-br ${template.color}`
+                        )}>
+                          <template.icon className={cn("w-3.5 h-3.5", selectedTemplate?.id === template.id ? 'text-white' : 'text-white')} />
                         </div>
-                        <h3 className="font-semibold text-gray-900 text-xs leading-tight text-right line-clamp-2">{template.name}</h3>
+                        <span className="text-right line-clamp-2 leading-tight">{template.name}</span>
                       </div>
                     </motion.button>
                   ))}
                 </div>
               </div>
 
-              {/* Form section */}
-              {selectedTemplate && selectedTemplate.id !== 'custom' && (
-                <div className="space-y-2 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-2.5 border border-purple-200">
-                  <Label className="text-xs font-bold text-gray-700">דוגמאות מהירות:</Label>
-                  <div className="space-y-1">
-                    {selectedTemplate.examples?.map((example, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleExampleSelect(example)}
-                        className="w-full text-right px-2 py-1 bg-white hover:bg-blue-100 border border-gray-200 rounded text-xs font-medium text-gray-900"
-                      >
-                        {example.title}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* Form section - only when template selected */}
+              {selectedTemplate && (
+                <motion.div className="space-y-2 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-3 border border-purple-200" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                  {selectedTemplate.id !== 'custom' && selectedTemplate.examples && (
+                    <div className="mb-3">
+                      <Label className="text-xs font-bold text-gray-700 block mb-1.5">דוגמאות מהירות:</Label>
+                      <div className="space-y-1">
+                        {selectedTemplate.examples.map((example, i) => (
+                          <button
+                            key={i}
+                            onClick={() => handleExampleSelect(example)}
+                            className="w-full text-right px-2 py-1.5 bg-white hover:bg-blue-100 border border-gray-200 rounded text-xs font-medium text-gray-900"
+                          >
+                            {example.title}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-              {/* Custom goal option */}
-              <Button
-                variant="outline"
-                className="w-full py-2 text-xs font-semibold border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50"
-                onClick={() => setSelectedTemplate({ id: 'custom', name: 'מטרה מותאמת', unit: '' })}
-              >
-                <Plus className="w-4 h-4 ml-2" />
-                מטרה משלי
-              </Button>
+                  {/* Input Fields */}
+                  <div className="space-y-2 border-t border-purple-200 pt-3">
+                    <div>
+                      <Label htmlFor="goalTitle" className="text-xs font-bold text-gray-700 block mb-0.5">מה המטרה?</Label>
+                      <Input
+                        id="goalTitle"
+                        value={goalTitle}
+                        onChange={(e) => setGoalTitle(e.target.value)}
+                        placeholder="למשל: 10 לקוחות חדשים"
+                        className="text-xs h-8"
+                      />
+                    </div>
 
-              {/* Input fields */}
-              <div className="space-y-2">
-                <div>
-                  <Label htmlFor="goalTitle" className="text-xs font-bold text-gray-700 block mb-0.5">מה המטרה?</Label>
-                  <Input
-                    id="goalTitle"
-                    value={goalTitle}
-                    onChange={(e) => setGoalTitle(e.target.value)}
-                    placeholder="למשל: 10 לקוחות חדשים"
-                    className="text-xs h-8"
-                  />
-                </div>
-
-                {selectedTemplate && (
-                  <>
                     <div>
                       <Label htmlFor="targetValue" className="text-xs font-bold text-gray-700 block mb-0.5">כמה?</Label>
                       <div className="flex gap-1.5">
@@ -387,7 +382,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                           className="flex-1 text-xs h-8"
                         />
                         {selectedTemplate.unit && (
-                          <div className="px-2 py-1.5 bg-gray-100 rounded text-gray-700 text-xs font-medium border border-gray-200 whitespace-nowrap">
+                          <div className="px-2 py-1.5 bg-white rounded text-gray-700 text-xs font-medium border border-gray-300 whitespace-nowrap">
                             {selectedTemplate.unit}
                           </div>
                         )}
@@ -421,7 +416,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                     </div>
 
                     {!hasPrimaryGoal && (
-                      <div className="flex items-center gap-2 p-2 bg-amber-50 rounded border border-amber-200">
+                      <div className="flex items-center gap-2 p-2 bg-white rounded border border-amber-300">
                         <input
                           id="isPrimary"
                           type="checkbox"
@@ -434,9 +429,21 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                         </label>
                       </div>
                     )}
-                  </>
-                )}
-              </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Custom goal button */}
+              {!selectedTemplate && (
+                <Button
+                  variant="outline"
+                  className="w-full py-2 text-xs font-semibold border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50"
+                  onClick={() => setSelectedTemplate({ id: 'custom', name: 'מטרה מותאמת', unit: '' })}
+                >
+                  <Plus className="w-4 h-4 ml-2" />
+                  מטרה משלי
+                </Button>
+              )}
             </motion.div>
           </div>
 
