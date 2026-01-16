@@ -15,19 +15,22 @@ const SAMPLE_GOALS = [
     targetDisplay: '₪15,000',
     deadline: '2026-03-31',
     status: 'active',
+    isPrimary: true,
     actionHint: 'התמקד בלקוחות קיימים - זה יביא לך למטרה ב-3 שבועות.'
   },
   {
     id: '2',
     title: '10 לקוחות פעילים',
     deadline: '2026-06-30',
-    status: 'active'
+    status: 'active',
+    isPrimary: false
   },
   {
     id: '3',
     title: 'מערכת ניהול חשבונות',
     deadline: '2026-04-30',
-    status: 'active'
+    status: 'active',
+    isPrimary: false
   }
 ];
 
