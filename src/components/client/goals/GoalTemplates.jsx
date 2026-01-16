@@ -311,7 +311,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
           </div>
 
           {/* Content */}
-          <div className="px-4 md:px-6 py-3 md:py-4">
+          <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto -webkit-overflow-scrolling-touch">
             {!selectedTemplate ? (
               <motion.div 
                 className="space-y-2.5"
