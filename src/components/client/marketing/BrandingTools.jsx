@@ -8,9 +8,15 @@ import {
   Image, 
   Share2, 
   Mail, 
-  FileText 
+  FileText,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+} from '@/components/ui/dialog';
+import LogoCreator from './LogoCreator';
 
 const tools = [
   {
