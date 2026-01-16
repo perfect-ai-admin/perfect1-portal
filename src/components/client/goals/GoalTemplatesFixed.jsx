@@ -230,10 +230,15 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     initialFocusRef.current?.focus();
   }, [selectedTemplate]);
 
-  // Scroll to top of page when component mounts
+  // Scroll to top when component mounts
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll the main content area (not window, since main has overflow-y-auto)
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      mainElement.scrollTop = 0;
+    }
     
+    // Also handle mobile sheet body
     setTimeout(() => {
       const bodyElement = document.querySelector('.mobile-sheet-body');
       if (bodyElement) {
