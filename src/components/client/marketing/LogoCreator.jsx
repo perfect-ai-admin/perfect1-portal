@@ -49,7 +49,6 @@ export default function LogoCreator({ businessName }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedLogo, setSelectedLogo] = useState(null);
   const [selectedPayment, setSelectedPayment] = useState('bit');
-  const [activeLogoIndex, setActiveLogoIndex] = useState(0);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
@@ -327,147 +326,99 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
       alert(`הלוגו נשמר בהצלחה! ✓`);
     };
 
-    const currentLogo = logos[activeLogoIndex];
-
     return (
-      <div className="fixed inset-0 bg-white overflow-y-auto pb-20 md:pb-0 md:static md:space-y-8">
-        {/* Header - Sticky on Mobile */}
-        <div className="sticky top-0 bg-white z-10 md:relative md:bg-transparent px-4 py-4 md:py-0 md:px-0 text-center border-b md:border-0">
+      <div className="space-y-6 md:space-y-8">
+        {/* Header */}
+        <div className="text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900">בחר את הלוגו המושלם שלך 🎨</h2>
-          <p className="text-gray-500 text-sm mt-1">4 וריאציות מעוצבות בעבורך</p>
+          <p className="text-gray-500 text-sm md:text-base mt-2">4 וריאציות מעוצבות בעבורך</p>
         </div>
 
-        {/* Main Carousel - Mobile Optimized */}
-        <div className="md:py-8">
-          {/* Large Preview - Fullscreen on Mobile */}
-          <motion.div
-            key={activeLogoIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="px-4 md:px-0"
-          >
-            <div className="bg-white md:bg-gradient-to-br md:from-gray-50 md:to-gray-100 rounded-none md:rounded-2xl p-6 md:p-12 flex items-center justify-center min-h-64 md:min-h-96 shadow-none md:shadow-lg">
-              <img 
-                src={currentLogo.url} 
-                alt={`Logo variant ${activeLogoIndex + 1}`} 
-                className="h-32 sm:h-40 md:h-56 w-auto object-contain"
-              />
-            </div>
-          </motion.div>
-
-          {/* Variant Name */}
-          <div className="px-4 md:px-0 mt-4 text-center">
-            <p className="text-lg font-semibold text-gray-900">{currentLogo.variant}</p>
-            <p className="text-sm text-gray-500 mt-1">
-              {activeLogoIndex + 1} מתוך {logos.length}
-            </p>
-          </div>
-        </div>
-
-        {/* Thumbnail Carousel - Horizontal Scroll on Mobile */}
-        <div className="px-4 md:px-0">
-          <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide justify-start md:justify-center">
-            {logos.map((logo, index) => (
-              <motion.button
-                key={index}
-                onClick={() => setActiveLogoIndex(index)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-lg border-2 transition-all ${
-                  activeLogoIndex === index
-                    ? 'border-blue-500 ring-2 ring-blue-300 shadow-md'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden rounded-lg">
+        {/* Logo Grid - Desktop 4 cols, Mobile 1 col */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {logos.map((logo, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08 }}
+              className="flex flex-col"
+            >
+              <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden h-full flex flex-col">
+                {/* Logo Display - Smaller */}
+                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-3 sm:p-4">
                   <img 
                     src={logo.url} 
-                    alt={`Thumbnail ${index + 1}`} 
-                    className="h-14 md:h-16 w-auto object-contain"
+                    alt={`Logo variant ${index + 1}`} 
+                    className="h-20 sm:h-24 lg:h-20 w-auto object-contain"
                   />
                 </div>
-              </motion.button>
-            ))}
-          </div>
+
+                {/* Content */}
+                <div className="p-3 sm:p-4 flex flex-col gap-3 flex-1">
+                  <p className="text-xs sm:text-sm font-semibold text-gray-800 text-center">{logo.variant}</p>
+                  
+                  {/* Action Buttons */}
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => {
+                        setSelectedLogo(logo);
+                      }}
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white h-9 text-xs sm:text-sm"
+                    >
+                      <Download className="w-3.5 h-3.5 ml-1" />
+                      הורדת הלוגו
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => saveLogo(logo.url, logo.variant)}
+                      size="sm"
+                      variant="outline"
+                      className="w-full h-9 text-xs sm:text-sm"
+                    >
+                      <Palette className="w-3.5 h-3.5 ml-1" />
+                      שמור
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Action Buttons - Sticky on Mobile */}
-        <div className="fixed bottom-0 left-0 right-0 md:static bg-white border-t md:border-0 px-4 py-3 md:py-0 md:bg-transparent md:py-6 space-y-3 md:space-y-3">
+        {/* Bottom Actions - Compact */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
           <Button 
             onClick={() => {
-              setSelectedLogo(currentLogo);
+              setStep(1);
+              setLogos([]);
+              setSelectedLogo(null);
             }}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white h-12 md:h-11 text-base md:text-sm font-semibold rounded-lg"
-          >
-            <Download className="w-4 h-4 ml-2" />
-            הורדת הלוגו
-          </Button>
-          
-          <Button 
-            onClick={() => saveLogo(currentLogo.url, currentLogo.variant)}
             variant="outline"
-            className="w-full h-12 md:h-11 text-base md:text-sm font-semibold rounded-lg border-2"
+            size="sm"
+            className="border-2 border-gray-300 h-10"
           >
-            <Palette className="w-4 h-4 ml-2" />
-            שמור
+            ⚡ לוגו חדש
           </Button>
-
-          {/* Bottom Navigation */}
-          <div className="flex gap-2 md:hidden">
-            <Button 
-              onClick={() => {
-                setStep(1);
-                setLogos([]);
-                setSelectedLogo(null);
-              }}
-              variant="ghost"
-              size="sm"
-              className="flex-1 text-xs"
-            >
-              ⚡ חדש
-            </Button>
-            <Button 
-              onClick={() => handleGenerate()}
-              disabled={isGenerating}
-              size="sm"
-              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-xs"
-            >
-              {isGenerating ? 'יוצר...' : '+ וריאציות'}
-            </Button>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex gap-3 justify-center pt-4">
-            <Button 
-              onClick={() => {
-                setStep(1);
-                setLogos([]);
-                setSelectedLogo(null);
-              }}
-              variant="outline"
-              className="border-2 border-gray-300"
-            >
-              ⚡ לוגו חדש
-            </Button>
-            <Button 
-              onClick={() => handleGenerate()}
-              disabled={isGenerating}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
-                  יוצר...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="w-4 h-4 ml-2" />
-                  וריאציות נוספות
-                </>
-              )}
-            </Button>
-          </div>
+          <Button 
+            onClick={() => handleGenerate()}
+            disabled={isGenerating}
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white h-10"
+          >
+            {isGenerating ? (
+              <>
+                <RefreshCw className="w-3.5 h-3.5 ml-1.5 animate-spin" />
+                יוצר...
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-3.5 h-3.5 ml-1.5" />
+                וריאציות נוספות
+              </>
+            )}
+          </Button>
         </div>
 
         {/* Download Formats Dialog */}
@@ -509,7 +460,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
               <button
                 onClick={() => {
                   setSelectedLogo(null);
-                  window.location.href = '/checkout';
+                  setStep(5);
                 }}
                 className="w-full mt-3 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all"
               >
@@ -520,6 +471,128 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           </DialogContent>
         </Dialog>
       </div>
+    );
+  }
+
+  // Checkout page
+  if (step === 5) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="h-full flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-gray-100 max-h-screen overflow-hidden"
+      >
+        {/* Header - Minimal */}
+        <div className="text-center mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">סיימו את הרכישה</h2>
+          <p className="text-sm text-gray-600">אנחנו כמעט שם. נשאר רק להשלים את התשלום.</p>
+        </div>
+
+        {/* Main Card - Central */}
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden">
+
+          {/* Product Details */}
+          <div className="p-6 space-y-4 border-b border-gray-100">
+            {/* Brand Trust Anchor - Small Square */}
+            <div className="flex items-start gap-3 mb-4 pb-4 border-b border-gray-100">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Palette className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-xs text-gray-600">
+                <p className="font-medium text-gray-900">חשבון עבור:</p>
+                <p className="text-gray-700 font-semibold">{formData.businessName}</p>
+              </div>
+            </div>
+
+            {/* Service Name & Price */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">חבילת לוגו מלאה</h3>
+            </div>
+
+            {/* What's Included - 3 Items */}
+            <div className="space-y-2">
+              {[
+                'לוגו PNG באיכות גבוהה',
+                'לוגו SVG להדפסה',
+                'ייעוץ עיצוב אישי'
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
+                  <p className="text-sm text-gray-700">{item}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Price - Clear */}
+            <div className="bg-gray-50 rounded-lg p-3 mt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">סכום כולל:</span>
+                <p className="text-2xl font-bold text-gray-900">₪99</p>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">תשלום חד-פעמי, ללא חיובים נוספים</p>
+            </div>
+          </div>
+
+          {/* Payment Methods */}
+          <div className="p-6 space-y-3 border-b border-gray-100">
+            <p className="text-sm font-semibold text-gray-900 mb-3">בחר אמצעי תשלום</p>
+
+            {[
+              { id: 'bit', label: 'ביט', icon: '📱' },
+              { id: 'card', label: 'כרטיס אשראי', icon: '💳' },
+              { id: 'bank', label: 'העברה בנקאית', icon: '🏦' }
+            ].map(method => (
+              <button
+                key={method.id}
+                onClick={() => setSelectedPayment(method.id)}
+                className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                  selectedPayment === method.id
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                }`}
+              >
+                <div className="text-lg">{method.icon}</div>
+                <span className={`text-sm font-medium ${
+                  selectedPayment === method.id ? 'text-blue-900' : 'text-gray-700'
+                }`}>
+                  {method.label}
+                </span>
+                {selectedPayment === method.id && (
+                  <div className="ml-auto w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center bg-blue-500">
+                    <div className="w-2 h-2 rounded-full bg-white"></div>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* CTA Button */}
+          <div className="p-6">
+            <Button 
+              onClick={() => alert('תשלום בהצליחה! 🎉')}
+              className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm transition-all"
+            >
+              המשך לתשלום
+            </Button>
+          </div>
+
+          {/* Micro Trust - Small */}
+          <div className="px-6 pb-6 text-center">
+            <p className="text-xs text-gray-600">
+              🔒 התשלום מאובטח • ניתן לפנות אלינו בכל שלב
+            </p>
+          </div>
+        </div>
+
+        {/* Back Button - Bottom */}
+        <button
+          onClick={() => setStep(4)}
+          className="mt-6 text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
+        >
+          ← חזור לעמוד הקודם
+        </button>
+      </motion.div>
     );
   }
 
