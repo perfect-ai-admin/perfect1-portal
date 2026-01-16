@@ -303,38 +303,36 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           {/* Body */}
           <div className="mobile-sheet-body">
             <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              {/* All templates grid - always visible */}
-              <div>
-                <p className="text-xs font-bold text-gray-700 mb-2">בחר מטרה:</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {GOAL_TEMPLATES.map((template, idx) => (
-                    <motion.button
-                      key={template.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.02 }}
-                      onClick={() => handleTemplateSelect(template)}
-                      className={cn(
-                        "text-right rounded-lg p-2.5 transition-all border-2 font-medium text-xs",
+              {/* All templates list - always visible */}
+              <div className="space-y-2">
+                <p className="text-xs font-bold text-gray-700 mb-3 px-1">בחר מטרה:</p>
+                {GOAL_TEMPLATES.map((template, idx) => (
+                  <motion.button
+                    key={template.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.02 }}
+                    onClick={() => handleTemplateSelect(template)}
+                    className={cn(
+                      "w-full text-right rounded-lg p-3 transition-all border-2 font-medium text-sm",
+                      selectedTemplate?.id === template.id
+                        ? 'bg-gradient-to-r from-purple-500 to-purple-600 border-purple-600 text-white shadow-lg'
+                        : 'bg-white border-gray-200 text-gray-900 hover:border-purple-300 hover:shadow-sm'
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0",
                         selectedTemplate?.id === template.id
-                          ? 'bg-gradient-to-br from-purple-500 to-purple-600 border-purple-600 text-white shadow-lg'
-                          : 'bg-white border-gray-200 text-gray-900 hover:border-purple-300'
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className={cn(
-                          "w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0",
-                          selectedTemplate?.id === template.id
-                            ? 'bg-white/20'
-                            : `bg-gradient-to-br ${template.color}`
-                        )}>
-                          <template.icon className={cn("w-3.5 h-3.5", selectedTemplate?.id === template.id ? 'text-white' : 'text-white')} />
-                        </div>
-                        <span className="text-right line-clamp-2 leading-tight">{template.name}</span>
+                          ? 'bg-white/20'
+                          : `bg-gradient-to-br ${template.color}`
+                      )}>
+                        <template.icon className="w-4 h-4 text-white" />
                       </div>
-                    </motion.button>
-                  ))}
-                </div>
+                      <span className="text-right font-semibold">{template.name}</span>
+                    </div>
+                  </motion.button>
+                ))}
               </div>
 
               {/* Form section - only when template selected */}
