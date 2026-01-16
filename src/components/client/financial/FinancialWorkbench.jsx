@@ -25,6 +25,8 @@ export default function FinancialWorkbench({ data }) {
     { value: 'expenses', label: 'הוצאות', icon: DollarSign },
     { value: 'customers', label: 'לקוחות', icon: Users },
     { value: 'reports', label: 'דוחות', icon: TrendingUp },
+    { value: 'collections', label: 'גבייה', icon: CreditCard },
+    { value: 'connections', label: 'חיבורים', icon: Link2 },
   ];
 
   const mobileMoreTabs = [
