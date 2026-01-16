@@ -48,10 +48,10 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1);
 
-  const handleStatusChange = (goalId) => {
+  const handleStatusChange = (goal, nextStatus) => {
     setGoals(prev => prev.map(g => 
-      g.id === goalId 
-        ? { ...g, status: g.status === 'active' ? 'achieved' : 'active' }
+      g.id === goal.id 
+        ? { ...g, status: nextStatus }
         : g
     ));
   };
