@@ -306,102 +306,129 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
   }
 
   if (step === 4) {
-    const downloadLogo = (format) => {
-      const logo = selectedLogo || logos[0];
+    const downloadLogo = (logoUrl, format) => {
       const link = document.createElement('a');
-      link.href = logo;
-      link.download = `${formData.businessName}-logo.${format}`;
+      link.href = logoUrl;
+      link.download = `${formData.businessName}-logo-${format}.${format === 'png' ? 'png' : format === 'svg' ? 'svg' : 'pdf'}`;
       link.click();
     };
 
-    const saveLogo = () => {
-      const logo = selectedLogo || logos[0];
-      localStorage.setItem(`logo_${formData.businessName}`, logo);
-      alert('הלוגו נשמר בהצלחה!');
+    const saveLogo = (logoUrl, variant) => {
+      const savedLogos = JSON.parse(localStorage.getItem(`saved_logos_${formData.businessName}`) || '[]');
+      savedLogos.push({
+        url: logoUrl,
+        variant: variant,
+        savedAt: new Date().toISOString()
+      });
+      localStorage.setItem(`saved_logos_${formData.businessName}`, JSON.stringify(savedLogos));
+      alert(`הלוגו "${variant}" נשמר בהצלחה! ✓`);
     };
 
     return (
-      <div className="text-center space-y-4">
-        {/* Logo Display - Minimal */}
-        <h2 className="text-2xl font-bold text-gray-900">הלוגו שלך מוכן! 🎨</h2>
-        
-        <div className="flex justify-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-lg p-4 sm:p-6"
-          >
-            <img 
-              src={selectedLogo || logos[0]} 
-              alt="Your logo" 
-              className="h-24 sm:h-32 w-auto object-contain"
-            />
-          </motion.div>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">בחר את הלוגו המושלם שלך 🎨</h2>
+          <p className="text-gray-600">5 וריאציות מעוצבות בעבורך</p>
         </div>
 
-        {/* Action Buttons */}
-        <div className="space-y-2 max-w-xs mx-auto">
-          <Button 
-            onClick={saveLogo}
-            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-          >
-            <Palette className="w-4 h-4 ml-2" />
-            שמור לוגו
-          </Button>
+        {/* Logo Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {logos.map((logo, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="group"
+            >
+              <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden">
+                {/* Logo Display */}
+                <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+                  <img 
+                    src={logo.url} 
+                    alt={`Logo variant ${index + 1}`} 
+                    className="h-full w-full object-contain"
+                  />
+                </div>
 
-          <Button 
-            onClick={() => handleGenerate()}
-            disabled={isGenerating}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-          >
-            {isGenerating ? (
-              <>
-                <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
-                יוצר...
-              </>
-            ) : (
-              <>
-                <Wand2 className="w-4 h-4 ml-2" />
-                עוד וריאציה
-              </>
-            )}
-          </Button>
-
-          <Button 
-            onClick={() => {
-              setStep(1);
-              setLogos([]);
-              setSelectedLogo(null);
-            }}
-            variant="outline"
-            className="w-full"
-          >
-            לוגו חדש
-          </Button>
+                {/* Variant Label */}
+                <div className="p-3 border-t">
+                  <p className="text-xs font-medium text-gray-700 text-center mb-3">{logo.variant}</p>
+                  
+                  {/* Save & Download */}
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => saveLogo(logo.url, logo.variant)}
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 h-8 text-xs"
+                    >
+                      <Palette className="w-3 h-3 ml-1" />
+                      שמור
+                    </Button>
+                    
+                    <div className="flex gap-1">
+                      <button 
+                        onClick={() => downloadLogo(logo.url, 'png')}
+                        className="flex-1 text-xs py-1.5 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                      >
+                        PNG
+                      </button>
+                      <button 
+                        onClick={() => downloadLogo(logo.url, 'svg')}
+                        className="flex-1 text-xs py-1.5 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                      >
+                        SVG
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Download Links */}
-        <div className="flex justify-center gap-2 text-sm">
-          <button 
-            onClick={() => downloadLogo('png')}
-            className="text-blue-600 hover:underline"
-          >
-            PNG
-          </button>
-          <span className="text-gray-300">|</span>
-          <button 
-            onClick={() => downloadLogo('svg')}
-            className="text-blue-600 hover:underline"
-          >
-            SVG
-          </button>
-          <span className="text-gray-300">|</span>
-          <button 
-            onClick={() => downloadLogo('pdf')}
-            className="text-blue-600 hover:underline"
-          >
-            PDF
-          </button>
+        {/* CTA Section */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 sm:p-8 text-white text-center space-y-4">
+          <h3 className="text-xl sm:text-2xl font-bold">מוכן לעולם הלוגו החדש שלך?</h3>
+          <p className="text-sm sm:text-base opacity-90">כל הלוגוים שלך מאוחסנים בעמוד זה. ניתן להוריד אותם בכל עת בפורמטים שונים.</p>
+          
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <Button 
+              onClick={() => {
+                setStep(1);
+                setLogos([]);
+                setSelectedLogo(null);
+              }}
+              className="bg-white text-blue-600 hover:bg-gray-100"
+            >
+              ⚡ לוגו חדש
+            </Button>
+            <Button 
+              onClick={() => handleGenerate()}
+              disabled={isGenerating}
+              className="bg-white/20 hover:bg-white/30 border border-white"
+            >
+              {isGenerating ? (
+                <>
+                  <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
+                  יוצר...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-4 h-4 ml-2" />
+                  וריאציות נוספות
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Info Box */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-900">
+            💾 <strong>טיפ:</strong> כל הלוגוים השמורים שלך נשמרים בטוחים. אתה יכול לחזור אליהם בכל עת מהדף הראשי.
+          </p>
         </div>
       </div>
     );
