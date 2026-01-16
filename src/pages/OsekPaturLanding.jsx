@@ -550,19 +550,19 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Form Section */}
-        <section className="py-16 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]" id="contact-form">
-          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-8"
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                מוכן לפתוח עוסק פטור?
-              </h2>
-              <p className="text-xl text-white/90">מלא פרטים ונחזור אליך תוך שעות</p>
-            </motion.div>
+         <section className="py-16 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]" id="contact-form">
+           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-8"
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+                 בואו נעשה את זה ביחד
+               </h2>
+               <p className="text-xl text-white/90">השאירו פרטים - נתזמן שיחה חינם של 15 דקות כדי לדבר על המצב שלכם</p>
+             </motion.div>
 
             {isSuccess ? (
               <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
