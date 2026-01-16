@@ -377,9 +377,9 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
               </div>
             </motion.div>
           ))}
-        </div>
+          </div>
 
-        {/* Mobile Selector */}
+          {/* Mobile Selector */}
         <LogoSelectorMobile logos={logos} formData={formData} />
 
         {/* Download Formats Dialog */}
