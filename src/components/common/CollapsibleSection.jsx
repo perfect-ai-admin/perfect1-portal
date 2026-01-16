@@ -6,21 +6,25 @@ export default function CollapsibleSection({ title, children, defaultOpen = fals
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 rounded-xl overflow-hidden shadow-md">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+        className="w-full flex items-center justify-between p-4 md:p-5 hover:bg-white/50 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-inset"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3">
-          {Icon && <Icon className="w-5 h-5 text-blue-600" />}
-          <h3 className="font-semibold text-gray-900">{title}</h3>
+          {Icon && (
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+              <Icon className="w-5 h-5 text-white" strokeWidth={2.5} />
+            </div>
+          )}
+          <h3 className="text-base md:text-lg font-bold text-gray-900">{title}</h3>
         </div>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          <ChevronDown className="w-5 h-5 text-gray-600" />
+          <ChevronDown className="w-6 h-6 text-purple-600" strokeWidth={2.5} />
         </motion.div>
       </button>
 

@@ -15,7 +15,7 @@ import UnifiedRecommendationPanel from '../business/UnifiedRecommendationPanel';
 import BusinessStateTimeline from '../business/BusinessStateTimeline';
 import CollapsibleSection from '@/components/common/CollapsibleSection';
 import MetricTooltip from '@/components/common/MetricTooltip';
-import { TrendingUp, DollarSign, PieChart, Download, BarChart3 } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, Download, BarChart3, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '../business/formatters';
 import {
@@ -280,7 +280,7 @@ export default function BusinessTab({ data }) {
       )}
 
       {/* AI-Powered Insights */}
-      <CollapsibleSection title="תובנות חכמות" defaultOpen={false}>
+      <CollapsibleSection title="תובנות חכמות" icon={Sparkles} defaultOpen={false}>
         <InsightsEngine clientData={data} period={period} />
       </CollapsibleSection>
 
