@@ -172,4 +172,4 @@ export default function GoalsTab({ data, openAddGoal = false }) {
       </motion.div>
       </div>
       );
-       }
+      }
