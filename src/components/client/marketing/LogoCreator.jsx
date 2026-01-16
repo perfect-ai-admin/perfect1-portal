@@ -305,8 +305,6 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
   }
 
   if (step === 4) {
-    const [activeLogoIndex, setActiveLogoIndex] = React.useState(0);
-
     const downloadLogo = (logoUrl, format) => {
       const link = document.createElement('a');
       link.href = logoUrl;
