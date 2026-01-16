@@ -332,55 +332,57 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
         <>
           {/* Desktop Grid */}
-          <div className="hidden lg:grid grid-cols-4 gap-4 mb-8">
+          <div className="hidden lg:grid grid-cols-4 gap-4 mb-8 flex-shrink-0">
             {logos.map((logo, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.08 }}
-              className={`flex flex-col rounded-xl overflow-hidden transition-all border-2 ${
-                currentLogoIndex === index
-                  ? 'border-blue-500 ring-2 ring-blue-300 shadow-lg'
-                  : 'border-gray-200 hover:border-gray-300 shadow-sm'
-              }`}
-            >
-              <button
-                onClick={() => setCurrentLogoIndex(index)}
-                className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 hover:bg-gray-100 transition-colors"
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.08 }}
+                className={`flex flex-col rounded-xl overflow-hidden transition-all border-2 ${
+                  currentLogoIndex === index
+                    ? 'border-blue-500 ring-2 ring-blue-300 shadow-lg'
+                    : 'border-gray-200 hover:border-gray-300 shadow-sm'
+                }`}
               >
-                <img 
-                  src={logo.url} 
-                  alt={`Logo variant ${index + 1}`} 
-                  className="h-24 w-auto object-contain"
-                />
-              </button>
-              
-              <div className="p-3 space-y-2">
-                <p className="text-xs font-semibold text-gray-700 text-center">{logo.variant}</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setSelectedLogo(logo)}
-                    className="flex-1 py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    הורדה
-                  </button>
-                  <button
-                    onClick={() => saveLogo(logo.url, logo.variant)}
-                    className="flex-1 py-2 px-2 border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
-                  >
-                    <Palette className="w-3.5 h-3.5" />
-                    שמור
-                  </button>
+                <button
+                  onClick={() => setCurrentLogoIndex(index)}
+                  className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 hover:bg-gray-100 transition-colors"
+                >
+                  <img 
+                    src={logo.url} 
+                    alt={`Logo variant ${index + 1}`} 
+                    className="h-24 w-auto object-contain"
+                  />
+                </button>
+
+                <div className="p-3 space-y-2">
+                  <p className="text-xs font-semibold text-gray-700 text-center">{logo.variant}</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setSelectedLogo(logo)}
+                      className="flex-1 py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      הורדה
+                    </button>
+                    <button
+                      onClick={() => saveLogo(logo.url, logo.variant)}
+                      className="flex-1 py-2 px-2 border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                    >
+                      <Palette className="w-3.5 h-3.5" />
+                      שמור
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
           </div>
 
-          {/* Mobile Selector */}
-          <LogoSelectorMobile logos={logos} formData={formData} />
+          {/* Mobile Selector - Full Responsive */}
+          <div className="lg:hidden flex-1 flex flex-col min-h-0 px-4">
+            <LogoSelectorMobile logos={logos} formData={formData} />
+          </div>
 
           {/* Download Formats Dialog */}
           <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
