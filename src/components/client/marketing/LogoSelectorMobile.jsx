@@ -37,12 +37,9 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
 
   if (!mounted) return null;
 
-  return createPortal(
+  return (
     <div 
-      className="fixed inset-0 z-[9999] lg:hidden w-full bg-white flex flex-col overflow-hidden" 
-      style={{ height: '100dvh' }}
-      onPointerDown={(e) => e.stopPropagation()}
-      onClick={(e) => e.stopPropagation()}
+      className="flex flex-col h-full lg:hidden w-full bg-white overflow-hidden" 
     >
       {/* HEADER - Fixed Height */}
       <div className="flex-none px-4 py-3 border-b border-gray-100 bg-white/95 backdrop-blur-sm z-10 text-center">
@@ -162,7 +159,6 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
           </div>
         </DialogContent>
       </Dialog>
-    </div>,
-    document.body
+    </div>
   );
 }
