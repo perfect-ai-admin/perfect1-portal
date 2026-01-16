@@ -522,7 +522,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
           )}
           </div>
           </div>
-          </DialogContent>
-          </Dialog>
+          </ContentComponent>
+          </RootComponent>
           );
           }
