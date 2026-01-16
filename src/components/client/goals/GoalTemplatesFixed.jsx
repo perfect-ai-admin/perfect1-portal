@@ -230,6 +230,14 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     initialFocusRef.current?.focus();
   }, [selectedTemplate]);
 
+  // Scroll to top when component mounts (mobile)
+  useEffect(() => {
+    const bodyElement = document.querySelector('.mobile-sheet-body');
+    if (bodyElement) {
+      bodyElement.scrollTop = 0;
+    }
+  }, []);
+
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
     setTargetValue(template.defaultTarget.toString());
