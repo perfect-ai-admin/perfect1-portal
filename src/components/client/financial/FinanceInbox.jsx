@@ -74,7 +74,7 @@ export default function FinanceInbox({ data }) {
             <Button
               size="sm"
               onClick={() => console.log('Action:', item.id)}
-              className="flex-shrink-0 h-8 px-3 text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold opacity-0 group-hover:opacity-100 transition-all"
+              className="flex-shrink-0 h-7 px-2.5 text-xs md:text-sm md:h-8 md:px-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all"
             >
               {item.action}
             </Button>
