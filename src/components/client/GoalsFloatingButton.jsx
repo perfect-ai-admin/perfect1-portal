@@ -102,5 +102,9 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
         </AnimatePresence>
       </div>
     </motion.div>
+    
+    {/* ספייסר כדי לאפשר גלילה למעלה */}
+    {isOpen && <div className="h-[60vh]" />}
+  </>
   );
 }
