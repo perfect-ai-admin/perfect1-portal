@@ -420,44 +420,51 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           </Button>
         </div>
 
-        {/* Download Format Dialog */}
+        {/* Download Formats Dialog */}
         <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
           <DialogContent className="sm:max-w-sm">
             <DialogHeader>
-              <DialogTitle className="text-lg">בחור פורמט הורדה</DialogTitle>
+              <DialogTitle className="text-base font-bold">הלוגו שלך מוכן להורדה</DialogTitle>
             </DialogHeader>
 
-            <div className="space-y-2 py-4">
-              {/* PNG Format - Display Only */}
-              <div className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
-                <span className="text-sm font-medium text-gray-900">PNG</span>
-                <Image className="w-5 h-5 text-blue-600" />
+            <div className="space-y-2 py-2">
+              {/* PNG Format */}
+              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <Image className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-gray-900">PNG</span>
+                </div>
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
               </div>
 
-              {/* SVG Format - Display Only */}
-              <div className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
-                <span className="text-sm font-medium text-gray-900">SVG</span>
-                <Code className="w-5 h-5 text-purple-600" />
+              {/* SVG Format */}
+              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <Code className="w-5 h-5 text-purple-600" />
+                  <span className="font-medium text-gray-900">SVG</span>
+                </div>
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
               </div>
 
-              {/* PDF Format - Display Only */}
-              <div className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
-                <span className="text-sm font-medium text-gray-900">PDF</span>
-                <FileJson className="w-5 h-5 text-red-600" />
+              {/* PDF Format */}
+              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <FileJson className="w-5 h-5 text-red-600" />
+                  <span className="font-medium text-gray-900">PDF</span>
+                </div>
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
               </div>
 
-              {/* Purchase CTA - Highlighted */}
+              {/* Purchase CTA */}
               <button
                 onClick={() => {
                   setSelectedLogo(null);
                   setStep(5);
                 }}
-                className="w-full mt-4 pt-4 border-t-2 border-gray-100"
+                className="w-full mt-3 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all"
               >
-                <div className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all">
-                  <span className="text-sm font-bold text-gray-900">המשך לרכישה</span>
-                  <div className="text-lg">✨</div>
-                </div>
+                <span className="font-bold text-gray-900 text-sm">המשך לרכישה</span>
+                <Wand2 className="w-5 h-5 text-green-600" />
               </button>
             </div>
           </DialogContent>
