@@ -339,34 +339,34 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* The Solution */}
-        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <div className="inline-block bg-[#27AE60]/10 text-[#27AE60] px-6 py-2 rounded-full text-sm font-bold mb-6">
-                ✨ הפתרון שלך
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
-                כל פתיחת העוסק – במקום אחד
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                אנחנו מטפלים בכל התהליך מול הרשויות, כדי שתוכל להתמקד במה שאתה עושה הכי טוב
-              </p>
-            </motion.div>
+        {/* How We Solve It */}
+         <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <div className="inline-block bg-green-100 text-green-700 px-6 py-2 rounded-full text-sm font-bold mb-6">
+                 ✅ הפתרון שעבד לאלפים
+               </div>
+               <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
+                 שלוש טעויות שלא תעשו עם אחריותנו
+               </h2>
+               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                 מאז 2018 אנחנו מטפלים בכל סוג של בירוקרטיה - אנחנו יודעים בדיוק מה לעשות
+               </p>
+             </motion.div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { icon: FileText, title: 'פתיחת עוסק פטור', desc: 'כל התהליך מתבצע בליווי מלא - בלי ריצות' },
-                { icon: Users, title: 'טיפול מול כל הרשויות', desc: 'מס הכנסה, מע"מ וביטוח לאומי - אנחנו מטפלים בהכל' },
-                { icon: Smartphone, title: 'אפליקציה לניהול העסק', desc: 'מערכת דיגיטלית לניהול הכנסות, הוצאות והפקת קבלות' },
-                { icon: TrendingUp, title: 'ליווי חודשי מלא', desc: 'ליווי שוטף מול הרשויות ומענה לכל שאלה' },
-                { icon: FileText, title: 'הכנת דוח שנתי', desc: 'אנחנו מכינים ומגישים את הדוח השנתי בשבילך' },
-                { icon: Shield, title: 'שקט נפשי מלא', desc: 'עובדים חוקית ומסודרים מהיום הראשון' }
+                { icon: AlertCircle, title: 'טעות #1: הגשה לא נכונה', desc: 'רבים מגישים טפסים לא מלאים - אנחנו בודקים הכל לפני שנשלח' },
+                { icon: Clock, title: 'טעות #2: הבנייה לאט מדי', desc: 'התהליך הממשלתי יכול לקחת שבועות - אנחנו מזירזים את זה' },
+                { icon: TrendingUp, title: 'טעות #3: ללא ניהול חודשי', desc: 'אחרי הפתיחה צריך לטפל בדוחות - אנחנו עושים את זה' },
+                { icon: Shield, title: 'רפואה נעשית: השקיפות', desc: 'תמיד יודעים בדיוק מה קורה ומה הצעד הבא' },
+                { icon: FileText, title: 'רפואה נעשית: הטכנולוגיה', desc: 'אפליקציה משלנו שעוקבת אחרי כל ההכנסות וההוצאות' },
+                { icon: Award, title: 'רפואה נעשית: ההתמחות', desc: 'עזרנו ל-2000+ עצמאים - אנחנו יודעים את כל הטריקים' }
               ].map((item, i) => (
                 <motion.div
                   key={i}
