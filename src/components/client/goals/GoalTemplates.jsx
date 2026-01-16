@@ -463,8 +463,8 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
             </motion.div>
           )}
           </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
-}
+          </div>
+          </DialogContent>
+          </Dialog>
+          );
+          }
