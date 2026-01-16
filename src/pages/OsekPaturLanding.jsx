@@ -347,7 +347,7 @@ export default function OsekPaturLanding() {
                </div>
 
                <Button 
-                 onClick={() => setShowQuestionnaire(true)}
+                 onClick={() => window.location.href = '/ClientDashboard'}
                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold h-12 rounded-xl"
                >
                  התחל עכשיו
