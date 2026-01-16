@@ -441,6 +441,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                   ביטול
                 </Button>
               </div>
+              </div>
             </div>
           )}
           </div>
