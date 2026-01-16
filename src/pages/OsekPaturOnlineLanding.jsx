@@ -266,19 +266,19 @@ export default function OsekPaturOnlineLanding() {
                       loading="lazy"
                       decoding="async"
                     />
-                    <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">תהליך מקוון לחלוטין</h3>
-                    <p className="text-gray-600">מהספה שלך, בלי ריצות</p>
-                  </div>
+                    <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">מקוון מהחל ועד הסוף</h3>
+                     <p className="text-gray-600">ללא צעדים ממשליים בפיזי</p>
+                    </div>
 
-                  <ul className="space-y-3">
-                    {[
-                      'תהליך פתיחה דיגיטלי 100%',
-                      'חתימה מאובטחת אונליין',
-                      'ליווי צמוד בכל שלב',
-                      'בדיקת נכונות הפרטים',
-                      'הגשה מסודרת לרשויות',
-                      'תמיכה בוואטסאפ וטלפון'
-                    ].map((item, i) => (
+                    <ul className="space-y-3">
+                     {[
+                       'מילוי טופס ספציפי ומדוקדק',
+                       'העלאת ת.ז. ואישור בנק מאובטח',
+                       'חתימה דיגיטלית עם SLA חוקי',
+                       'בדיקה מלאה של כל הנתונים',
+                       'הגשה ישירה למערכות הממשלתיות',
+                       'עדכונים שוטפים במהלך העיבוד'
+                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3">
                         <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
                         <span className="text-gray-700 font-medium">{item}</span>
