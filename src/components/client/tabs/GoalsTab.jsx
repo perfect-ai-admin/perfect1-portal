@@ -42,8 +42,20 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   React.useEffect(() => {
     if (openAddGoal) {
       setShowAddGoal(true);
+      requestAnimationFrame(() => {
+        const main = document.querySelector('main');
+        if (main) main.scrollTop = 0;
+      });
     }
   }, [openAddGoal]);
+
+  const handleShowAddGoal = () => {
+    setShowAddGoal(true);
+    requestAnimationFrame(() => {
+      const main = document.querySelector('main');
+      if (main) main.scrollTop = 0;
+    });
+  };
 
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1);
