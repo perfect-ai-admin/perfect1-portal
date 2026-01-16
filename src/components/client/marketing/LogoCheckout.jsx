@@ -134,6 +134,49 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
           </div>
         </div>
 
+        {/* Personal Details */}
+        <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+          <h3 className="font-bold text-gray-900 text-sm">פרטים לחשבונית</h3>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-700">שם מלא</label>
+              <Input
+                value={cardData.fullName}
+                onChange={(e) => handleCardChange('fullName', e.target.value)}
+                className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
+                placeholder="ישראל ישראלי"
+              />
+            </div>
+            
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-700">תעודת זהות</label>
+              <Input
+                value={cardData.idNumber}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 9);
+                  setCardData({...cardData, idNumber: val});
+                }}
+                className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
+                placeholder="מספר ת.ז (9 ספרות)"
+                maxLength={9}
+                inputMode="numeric"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-700">אימייל לקבלה</label>
+              <Input
+                type="email"
+                value={cardData.email}
+                onChange={(e) => handleCardChange('email', e.target.value)}
+                className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-left"
+                dir="ltr"
+                placeholder="email@example.com"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Payment Methods */}
         <div className="space-y-4">
           <h3 className="font-bold text-gray-900 text-sm px-1">בחר אמצעי תשלום</h3>
@@ -192,45 +235,6 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
               className="bg-white rounded-xl border border-gray-200 p-5 space-y-4 overflow-hidden"
             >
               <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-700">שם מלא על הכרטיס</label>
-                  <Input
-                    value={cardData.fullName}
-                    onChange={(e) => handleCardChange('fullName', e.target.value)}
-                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
-                    placeholder="ישראל ישראלי"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-700">תעודת זהות (עבור חשבונית)</label>
-                  <Input
-                    value={cardData.idNumber}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '').slice(0, 9);
-                      setCardData({...cardData, idNumber: val});
-                    }}
-                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
-                    placeholder="מספר ת.ז (9 ספרות)"
-                    maxLength={9}
-                    inputMode="numeric"
-                  />
-                </div>
-                
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-700">אימייל לקבלה</label>
-                  <Input
-                    type="email"
-                    value={cardData.email}
-                    onChange={(e) => handleCardChange('email', e.target.value)}
-                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-left"
-                    dir="ltr"
-                    placeholder="email@example.com"
-                  />
-                </div>
-
-                <div className="pt-2 border-t border-gray-100"></div>
-
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-gray-700">מספר כרטיס</label>
                   <div className="relative">
