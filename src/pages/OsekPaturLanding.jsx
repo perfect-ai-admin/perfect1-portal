@@ -526,9 +526,9 @@ export default function OsekPaturLanding() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {[
                 { icon: Users, title: 'אנחנו עצמאיים גם', desc: 'חברים בעצמנו את זה - אנחנו מבינים כל כאב ראש' },
-                { icon: Zap, title: '24-48 שעות בלבד', desc: 'קדימות לטלפונים הממשלתיים, ללא בירוקרטיה מיותרת' },
+                { icon: Zap, title: 'בלי התחייבות לזמן', desc: 'קדימות לטלפונים הממשלתיים, ללא בירוקרטיה מיותרת' },
                 { icon: Briefcase, title: 'אפליקציה משלנו', desc: 'לא צריך אפליקציות מרובות - הכל במקום אחד' },
-                { icon: Award, title: 'ודאות מלאה', desc: 'אנחנו ניתנים בעוד שנה אם משהו לא עובד כשלם' }
+                { icon: Award, title: 'ודאות מלאה', desc: 'אנחנו מוחזרים בעוד שנה אם משהו לא עובד כשלם' }
               ].map((item, i) => (
                 <motion.div
                   key={i}
