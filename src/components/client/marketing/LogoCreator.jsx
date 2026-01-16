@@ -424,29 +424,29 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
           <DialogContent className="sm:max-w-sm">
             <DialogHeader>
-              <DialogTitle className="text-lg">בחר פורמט הורדה</DialogTitle>
+              <DialogTitle className="text-lg">בחור פורמט הורדה</DialogTitle>
             </DialogHeader>
 
             <div className="space-y-2 py-4">
-              {/* PNG Option */}
-              <button
-                onClick={() => downloadLogo(selectedLogo.url, 'png')}
-                className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition-all"
-              >
+              {/* PNG Format - Display Only */}
+              <div className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <span className="text-sm font-medium text-gray-900">PNG</span>
                 <Image className="w-5 h-5 text-blue-600" />
-              </button>
+              </div>
 
-              {/* SVG Option */}
-              <button
-                onClick={() => downloadLogo(selectedLogo.url, 'svg')}
-                className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-400 transition-all"
-              >
+              {/* SVG Format - Display Only */}
+              <div className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
                 <span className="text-sm font-medium text-gray-900">SVG</span>
                 <Code className="w-5 h-5 text-purple-600" />
-              </button>
+              </div>
 
-              {/* Purchase Option - Highlighted */}
+              {/* PDF Format - Display Only */}
+              <div className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
+                <span className="text-sm font-medium text-gray-900">PDF</span>
+                <FileJson className="w-5 h-5 text-red-600" />
+              </div>
+
+              {/* Purchase CTA - Highlighted */}
               <button
                 onClick={() => {
                   setSelectedLogo(null);
