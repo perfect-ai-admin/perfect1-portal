@@ -5,11 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
+  Dialog,
+  DialogContent,
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -271,15 +269,12 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
   };
 
   return (
-    <Drawer open={true} onOpenChange={onClose}>
-      <DrawerContent 
-         className="max-h-[95vh]" 
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent 
+         className="w-full max-w-2xl max-h-[85vh] p-0 border-0 rounded-2xl shadow-2xl" 
          ref={drawerRef}
-         role="dialog" 
-         aria-modal="true" 
-         aria-labelledby="goal-title"
        >
-        <div className="flex flex-col h-full max-h-[95vh]">
+        <div className="flex flex-col h-full max-h-[85vh]">
           {/* Header */}
           <div className="flex-shrink-0 px-4 md:px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20">
             <div className="flex items-center justify-between mb-3">
