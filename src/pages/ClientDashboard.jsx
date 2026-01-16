@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import DebugErrorBoundary from '../components/DebugErrorBoundary';
 import { 
-  LogOut, HelpCircle, User, AlertCircle, Globe
+  LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon
 } from 'lucide-react';
 import {
   Tooltip,
