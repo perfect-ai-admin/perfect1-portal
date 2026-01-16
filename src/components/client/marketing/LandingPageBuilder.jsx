@@ -113,6 +113,9 @@ export default function LandingPageBuilder() {
           </div>
         </div>
       </motion.div>
+
+      {/* Portal Modal */}
+      {modal}
     </>
   );
 }
