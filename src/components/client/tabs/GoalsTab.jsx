@@ -138,7 +138,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
       {goals.length === 0 && (
         <div className="bg-white rounded-lg border-2 border-dashed border-gray-200 p-8 text-center">
           <p className="text-gray-600 mb-4">אין מטרות עדיין</p>
-          <Button onClick={() => setShowAddGoal(true)}>
+          <Button onClick={handleShowAddGoal}>
             <Plus className="w-4 h-4 ml-2" />
             צור מטרה ראשונה
           </Button>
