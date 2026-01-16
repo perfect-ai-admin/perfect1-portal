@@ -26,7 +26,7 @@ export default function LogoSelectorMobile({ logos, formData }) {
    const progressPercent = ((currentIndex + 1) / logos.length) * 100;
 
    return (
-     <div className="w-full h-full flex flex-col bg-white overflow-hidden lg:hidden">
+     <div className="w-screen h-screen lg:h-full flex flex-col bg-white overflow-hidden lg:hidden fixed lg:static inset-0 lg:inset-auto">
        {/* Logo Display - Flexible Center */}
        <motion.div
          key={currentIndex}
