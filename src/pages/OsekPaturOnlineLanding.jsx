@@ -217,16 +217,16 @@ export default function OsekPaturOnlineLanding() {
                 <div className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-8 border-2 border-white/40 shadow-2xl">
                   <div className="text-center mb-4">
                     <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-2">
-                      <Monitor className="w-5 h-5 text-white" />
-                      <span className="text-white text-sm font-black">100% דיגיטלי</span>
+                      <Lock className="w-5 h-5 text-white" />
+                      <span className="text-white text-sm font-black">מאובטח ותקני חוק</span>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-white">
                     {[
-                      { icon: Smartphone, text: 'מהנייד שלך' },
-                      { icon: Lock, text: 'חתימה דיגיטלית' },
-                      { icon: Wifi, text: 'בלי לצאת מהבית' },
-                      { icon: Users, text: 'סיוע אישי' }
+                      { icon: Monitor, text: 'מהמחשב' },
+                      { icon: Smartphone, text: 'או מהנייד' },
+                      { icon: Clock, text: 'כל שעה' },
+                      { icon: Shield, text: 'הצפנה מלאה' }
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 bg-white/10 rounded-xl p-3">
                         <item.icon className="w-5 h-5 text-white" />
