@@ -10,6 +10,7 @@ import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
 import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
+import LandingPageBuilder from '../marketing/LandingPageBuilder';
 import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
 
@@ -21,6 +22,8 @@ export default function MarketingTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
+      {/* Landing Page Builder Card */}
+      <LandingPageBuilder />
       {/* Marketing Tools Tabs */}
       <Tabs defaultValue="branding" className="w-full">
         <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-gray-200">
