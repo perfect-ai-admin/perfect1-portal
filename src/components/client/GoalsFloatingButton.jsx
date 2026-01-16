@@ -32,14 +32,15 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
   }, [isOpen]);
 
   return (
-    <motion.div
-      ref={buttonRef}
-      className="md:hidden mb-4"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-    >
-      <div className="relative">
+    <>
+      <motion.div
+        ref={buttonRef}
+        className="md:hidden mb-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className="relative">
         <Button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full h-12 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-md flex items-center justify-center gap-2"
