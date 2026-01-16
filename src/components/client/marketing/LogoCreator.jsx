@@ -51,20 +51,61 @@ export default function LogoCreator({ businessName }) {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `Professional business logo design. 
+      const variations = [
+        {
+          style: 'flat minimalist',
+          description: 'מינימליסטי ונקי'
+        },
+        {
+          style: 'modern gradient',
+          description: 'מודרני עם גרדיאנט'
+        },
+        {
+          style: 'bold and striking',
+          description: 'נועז ובולט'
+        },
+        {
+          style: 'elegant with texture',
+          description: 'אלגנטי עם קוואם'
+        },
+        {
+          style: 'playful and dynamic',
+          description: 'שובב ודינמי'
+        }
+      ];
+
+      const generatedLogos = [];
+
+      for (const variation of variations) {
+        try {
+          const prompt = `Professional business logo design - ${variation.description}. 
 Business: "${formData.businessName}"
 Industry: ${formData.industry}
-Style: ${formData.style} ${formData.vibe ? `with ${formData.vibe} vibe` : ''}
+Vibe: ${formData.vibe ? formData.vibe : 'professional'}
 Icon style: ${formData.iconStyle}
+Style: ${variation.style}
 Color palette: ${formData.colorScheme.colors.join(', ')}
-Requirements: Clean, scalable, modern, suitable for business cards and digital use. White or transparent background. Vector-style appearance.`;
+Requirements: Clean, scalable, modern, suitable for business cards and digital use. White or transparent background. Vector-style appearance. High quality.`;
 
-      const result = await base44.integrations.Core.GenerateImage({
-        prompt: prompt
-      });
+          const result = await base44.integrations.Core.GenerateImage({
+            prompt: prompt
+          });
 
-      setLogos(prev => [...prev, result.url]);
-      setStep(4);
+          generatedLogos.push({
+            url: result.url,
+            variant: variation.description
+          });
+        } catch (err) {
+          console.error(`Failed to generate ${variation.description}:`, err);
+        }
+      }
+
+      if (generatedLogos.length > 0) {
+        setLogos(generatedLogos);
+        setStep(4);
+      } else {
+        alert('שגיאה ביצירת הלוגוים. נסה שוב.');
+      }
     } catch (error) {
       console.error('Logo generation failed:', error);
       alert('שגיאה ביצירת הלוגו. נסה שוב.');
