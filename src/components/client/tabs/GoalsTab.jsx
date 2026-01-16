@@ -158,19 +158,8 @@ export default function GoalsTab({ data, openAddGoal = false }) {
         </div>
       )}
 
-      {/* Goal Creation Dialog */}
-      {showAddGoal && (
-        <GoalTemplates
-          onCreateGoal={handleCreateGoal}
-          onClose={() => {
-            setShowAddGoal(false);
-            setEditingGoal(null);
-          }}
-          hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-          editingGoal={editingGoal}
-        />
-      )}
       </motion.div>
       </div>
+      </>
       );
       }
