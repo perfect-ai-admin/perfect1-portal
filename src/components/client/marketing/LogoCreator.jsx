@@ -320,222 +320,53 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
     };
 
     const currentLogo = logos[currentLogoIndex];
-    const progressPercent = ((currentLogoIndex + 1) / logos.length) * 100;
 
     return (
-      <div className="space-y-6 min-h-screen flex flex-col">
-        {/* Header */}
-        <div className="text-center mb-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">בחר את הלוגו המושלם שלך 🎨</h2>
-          <p className="text-gray-500 text-sm md:text-base mt-1">4 וריאציות מעוצבות בעבורך</p>
-        </div>
-
-        {/* Desktop Grid */}
-        <div className="hidden lg:grid grid-cols-4 gap-4 mb-8">
-          {logos.map((logo, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.08 }}
-              className={`flex flex-col rounded-xl overflow-hidden transition-all border-2 ${
-                currentLogoIndex === index
-                  ? 'border-blue-500 ring-2 ring-blue-300 shadow-lg'
-                  : 'border-gray-200 hover:border-gray-300 shadow-sm'
-              }`}
-            >
-              <button
-                onClick={() => setCurrentLogoIndex(index)}
-                className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 hover:bg-gray-100 transition-colors"
-              >
-                <img 
-                  src={logo.url} 
-                  alt={`Logo variant ${index + 1}`} 
-                  className="h-24 w-auto object-contain"
-                />
-              </button>
-              
-              <div className="p-3 space-y-2">
-                <p className="text-xs font-semibold text-gray-700 text-center">{logo.variant}</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setSelectedLogo(logo)}
-                    className="flex-1 py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    הורדה
-                  </button>
-                  <button
-                    onClick={() => saveLogo(logo.url, logo.variant)}
-                    className="flex-1 py-2 px-2 border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
-                  >
-                    <Palette className="w-3.5 h-3.5" />
-                    שמור
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Mobile Full-Screen Swipeable Card */}
-        <div className="lg:hidden flex flex-col h-full justify-between">
+      <div className="lg:grid lg:grid-cols-4 lg:gap-4 lg:mb-8 hidden">
+        {logos.map((logo, index) => (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            key={currentLogoIndex}
-            className="flex flex-col items-center gap-0 flex-1 justify-center"
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.08 }}
+            className={`flex flex-col rounded-xl overflow-hidden transition-all border-2 ${
+              currentLogoIndex === index
+                ? 'border-blue-500 ring-2 ring-blue-300 shadow-lg'
+                : 'border-gray-200 hover:border-gray-300 shadow-sm'
+            }`}
           >
-            {/* Logo Display - Small Square */}
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center p-2 shadow-sm w-1/2 aspect-square">
+            <button
+              onClick={() => setCurrentLogoIndex(index)}
+              className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 hover:bg-gray-100 transition-colors"
+            >
               <img 
-                src={currentLogo.url} 
-                alt={`Logo variant ${currentLogoIndex + 1}`} 
-                className="max-h-16 w-auto object-contain"
+                src={logo.url} 
+                alt={`Logo variant ${index + 1}`} 
+                className="h-24 w-auto object-contain"
               />
-            </div>
-
-            {/* Variant Name & Progress */}
-            <div className="text-center w-full px-2 py-1">
-              <h3 className="text-xs font-bold text-gray-900 mb-0.5">{currentLogo.variant}</h3>
-              <div className="flex items-center justify-center gap-1 text-xs text-gray-600">
-                <span className="font-semibold text-gray-900 text-xs">{currentLogoIndex + 1}</span>
-                <div className="w-16 h-0.5 bg-gray-200 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progressPercent}%` }}
-                    transition={{ duration: 0.4 }}
-                    className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
-                  />
-                </div>
-                <span className="font-semibold text-gray-900 text-xs">{logos.length}</span>
+            </button>
+            
+            <div className="p-3 space-y-2">
+              <p className="text-xs font-semibold text-gray-700 text-center">{logo.variant}</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setSelectedLogo(logo)}
+                  className="flex-1 py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  הורדה
+                </button>
+                <button
+                  onClick={() => saveLogo(logo.url, logo.variant)}
+                  className="flex-1 py-2 px-2 border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1"
+                >
+                  <Palette className="w-3.5 h-3.5" />
+                  שמור
+                </button>
               </div>
             </div>
           </motion.div>
-
-          {/* Action Section - Bottom */}
-          <div className="space-y-1.5 px-3 pb-2">
-            {/* Small Action Buttons Row */}
-            <div className="flex gap-1.5">
-              <button 
-                onClick={() => setSelectedLogo(currentLogo)}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-1.5 text-xs font-semibold rounded-lg shadow-md flex items-center justify-center gap-1 transition-colors"
-              >
-                <Download className="w-3 h-3" />
-                הורדה
-              </button>
-              
-              <button 
-                onClick={() => saveLogo(currentLogo.url, currentLogo.variant)}
-                className="flex-1 border-2 border-gray-300 text-gray-700 py-1.5 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1"
-              >
-                <Palette className="w-3 h-3" />
-                שמור
-              </button>
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="flex gap-1.5">
-              <button
-                onClick={() => setCurrentLogoIndex(Math.max(0, currentLogoIndex - 1))}
-                disabled={currentLogoIndex === 0}
-                className="flex-1 py-1.5 px-2 rounded-lg border border-gray-300 text-gray-700 text-xs font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-all"
-              >
-                ← הקודם
-              </button>
-              <button
-                onClick={() => setCurrentLogoIndex(Math.min(logos.length - 1, currentLogoIndex + 1))}
-                disabled={currentLogoIndex === logos.length - 1}
-                className="flex-1 py-1.5 px-2 rounded-lg border-2 border-blue-300 text-blue-700 text-xs font-medium disabled:opacity-30 disabled:cursor-not-allowed bg-blue-50 hover:bg-blue-100 transition-all"
-              >
-                הבא →
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop Action Buttons */}
-        <div className="hidden lg:flex gap-3 justify-center pt-6">
-          <Button 
-            onClick={() => {
-              setStep(1);
-              setLogos([]);
-              setSelectedLogo(null);
-            }}
-            variant="outline"
-            className="border-2 border-gray-300 h-11 px-6"
-          >
-            ⚡ לוגו חדש
-          </Button>
-          <Button 
-            onClick={() => handleGenerate()}
-            disabled={isGenerating}
-            className="bg-blue-600 hover:bg-blue-700 text-white h-11 px-6"
-          >
-            {isGenerating ? (
-              <>
-                <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
-                יוצר...
-              </>
-            ) : (
-              <>
-                <Wand2 className="w-4 h-4 ml-2" />
-                וריאציות נוספות
-              </>
-            )}
-          </Button>
-        </div>
-
-        {/* Download Formats Dialog */}
-        <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
-          <DialogContent className="sm:max-w-sm">
-            <DialogHeader>
-              <DialogTitle className="text-base font-bold">הלוגו שלך מוכן להורדה</DialogTitle>
-            </DialogHeader>
-
-            <div className="space-y-2 py-2">
-              {/* PNG Format */}
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <Image className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-gray-900">PNG</span>
-                </div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
-
-              {/* SVG Format */}
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <Code className="w-5 h-5 text-purple-600" />
-                  <span className="font-medium text-gray-900">SVG</span>
-                </div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
-
-              {/* PDF Format */}
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <FileJson className="w-5 h-5 text-red-600" />
-                  <span className="font-medium text-gray-900">PDF</span>
-                </div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
-
-              {/* Purchase CTA */}
-              <button
-                onClick={() => {
-                  setSelectedLogo(null);
-                  setStep(5);
-                }}
-                className="w-full mt-3 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all"
-              >
-                <span className="font-bold text-gray-900 text-sm">המשך לרכישה</span>
-                <Wand2 className="w-5 h-5 text-green-600" />
-              </button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        ))}
       </div>
     );
   }
