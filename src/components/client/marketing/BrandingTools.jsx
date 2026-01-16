@@ -190,7 +190,7 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
       {/* Modal for Logo Creator */}
       <Dialog open={activeFlowId === 'logo'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
         <DialogContent 
-          className="max-w-4xl max-h-[90vh] overflow-y-auto"
+          className="w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-4xl p-0 sm:p-6 overflow-hidden bg-white border-0 sm:border sm:rounded-lg"
           onInteractOutside={(e) => e.preventDefault()}
         >
           <LogoCreator businessName={businessName} onClose={() => setActiveFlowId(null)} />
