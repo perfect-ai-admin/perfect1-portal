@@ -12,8 +12,11 @@ import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
 import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
+import LandingPageBuilder from '../marketing/LandingPageBuilder';
 
 export default function MarketingTab({ data }) {
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
