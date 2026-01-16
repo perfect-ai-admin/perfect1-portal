@@ -36,7 +36,7 @@ export default function FinancialWorkbench({ data }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="space-y-4"
+      className="space-y-4 pb-24 md:pb-0"
     >
       {/* Quick Actions Bar */}
       <QuickActionsBar onActionComplete={handleQuickAction} />
