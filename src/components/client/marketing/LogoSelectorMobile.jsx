@@ -26,30 +26,34 @@ export default function LogoSelectorMobile({ logos, formData }) {
    const progressPercent = ((currentIndex + 1) / logos.length) * 100;
 
    return (
-     <div className="w-screen h-screen lg:h-full flex flex-col bg-white overflow-hidden lg:hidden fixed lg:static inset-0 lg:inset-auto">
-       {/* Logo Display - Flexible Center */}
+     <div className="w-screen lg:hidden fixed lg:static inset-0 lg:inset-auto bg-white flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
+       {/* HEADER - Compact Fixed Height */}
+       <div className="flex-shrink-0 px-4 py-2">
+         <h2 className="text-base font-bold text-gray-900 text-center">בחר את הלוגו המושלם שלך 🎨</h2>
+         <p className="text-xs text-gray-500 text-center mt-0.5">4 וריאציות בעבורך</p>
+       </div>
+
+       {/* LOGO DISPLAY - Flexible, Takes Available Space */}
        <motion.div
          key={currentIndex}
          initial={{ opacity: 0, scale: 0.95 }}
          animate={{ opacity: 1, scale: 1 }}
          transition={{ duration: 0.2 }}
-         className="flex-1 flex flex-col items-center justify-center px-4 min-h-0 py-2"
+         className="flex-1 flex flex-col items-center justify-center px-3 overflow-hidden min-h-0"
        >
-         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center shadow-sm w-48 h-48 sm:w-56 sm:h-56">
+         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl flex items-center justify-center shadow-sm w-40 h-40">
            <img 
              src={currentLogo.url} 
              alt={`Logo variant ${currentIndex + 1}`} 
-             className="max-h-32 w-auto object-contain"
+             className="max-h-28 w-auto object-contain"
            />
          </div>
 
-         {/* Variant Name */}
-         <h3 className="text-xs sm:text-sm font-bold text-gray-900 mt-2 text-center line-clamp-1">{currentLogo.variant}</h3>
+         <h3 className="text-xs font-bold text-gray-900 mt-1.5 text-center line-clamp-1">{currentLogo.variant}</h3>
 
-         {/* Progress Indicator */}
-         <div className="flex items-center justify-center gap-1.5 mt-2">
+         <div className="flex items-center justify-center gap-1 mt-1">
            <span className="text-xs font-semibold text-gray-700">{currentIndex + 1}</span>
-           <div className="w-16 h-0.5 bg-gray-200 rounded-full overflow-hidden">
+           <div className="w-12 h-0.5 bg-gray-200 rounded-full overflow-hidden">
              <motion.div
                initial={{ width: 0 }}
                animate={{ width: `${progressPercent}%` }}
@@ -61,8 +65,8 @@ export default function LogoSelectorMobile({ logos, formData }) {
          </div>
        </motion.div>
 
-       {/* Action Buttons - Bottom Compact */}
-       <div className="px-3 pb-3 space-y-2 flex-shrink-0">
+       {/* ACTION BUTTONS - Compact Fixed Height */}
+       <div className="flex-shrink-0 px-3 pb-2 space-y-1.5">
          {/* Download & Save Row */}
          <div className="grid grid-cols-2 gap-2">
            <button 
