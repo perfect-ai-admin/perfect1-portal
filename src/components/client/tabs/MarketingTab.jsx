@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Palette, Rocket, Users, TrendingUp, BookOpen, Briefcase } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,7 +15,6 @@ import Sparkline from '../business/Sparkline';
 import LandingPageBuilder from '../marketing/LandingPageBuilder';
 
 export default function MarketingTab({ data }) {
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
 
   return (
     <motion.div
