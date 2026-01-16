@@ -9,6 +9,7 @@ import FAQSchema from '../components/seo/FAQSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
+import LandingPageQuestionnaire from '../components/client/marketing/LandingPageQuestionnaire';
 
 function FAQItem({ question, answer }) {
   const [isOpen, setIsOpen] = React.useState(false);
