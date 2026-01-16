@@ -104,20 +104,24 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
           </button>
         </div>
 
-        {/* Nav Arrows */}
-        <div className="flex items-center justify-between px-2">
+        {/* Nav Arrows - Prominent */}
+        <div className="flex items-center justify-between gap-4 px-1 mt-2">
            <button
              onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
              disabled={currentIndex === 0}
-             className="p-2 text-gray-400 disabled:opacity-20 hover:text-gray-900 transition-colors"
+             className="flex-1 flex items-center justify-center py-3 bg-gray-100 text-gray-700 rounded-xl disabled:opacity-30 disabled:bg-gray-50 transition-all active:scale-95"
            >
              <ChevronRight className="w-6 h-6" />
            </button>
-           <span className="text-xs font-medium text-gray-400">דפדף בין האפשרויות</span>
+           
+           <span className="text-xs font-medium text-gray-400 whitespace-nowrap min-w-[60px] text-center">
+             {currentIndex + 1} מתוך {logos.length}
+           </span>
+
            <button
              onClick={() => setCurrentIndex(Math.min(logos.length - 1, currentIndex + 1))}
              disabled={currentIndex === logos.length - 1}
-             className="p-2 text-blue-600 disabled:opacity-20 hover:text-blue-700 transition-colors"
+             className="flex-1 flex items-center justify-center py-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-200 disabled:opacity-30 disabled:bg-gray-200 disabled:text-gray-400 disabled:shadow-none transition-all active:scale-95"
            >
              <ChevronLeft className="w-6 h-6" />
            </button>
