@@ -294,12 +294,12 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
           <div className="px-4 md:px-6 py-3 md:py-4">
             {!selectedTemplate ? (
               <motion.div 
-                className="space-y-3"
+                className="space-y-2.5"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
               {/* Templates Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-2.5 pb-2 auto-rows-max">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2 auto-rows-max">
                 {GOAL_TEMPLATES.map((template, idx) => (
                   <motion.button
                     key={template.id}
