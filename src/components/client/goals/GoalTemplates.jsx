@@ -314,24 +314,24 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
            className="p-0 border-0 overflow-hidden h-[95vh] flex flex-col rounded-t-2xl"
            ref={drawerRef}
          >
-        <div className={cn("flex flex-col", mobileLayout && "max-h-screen overflow-hidden")}>
-          {/* Header */}
-          <div className={cn("flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20")}>
-            <div className="flex items-center justify-between mb-2">
-              <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-              <h2 id="goal-title" className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2" ref={initialFocusRef} tabIndex="-1">
-                <Target className="w-5 h-5 text-purple-600" />
-                {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
-              </h2>
-              <div className="w-5" />
-            </div>
-            {!selectedTemplate && <p className="text-center text-xs md:text-sm text-gray-600 font-medium">בחר מטרה שמשפיעה על העסק שלך</p>}
-          </div>
+        <div className="flex flex-col h-full">
+           {/* Header */}
+           <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20">
+             <div className="flex items-center justify-between mb-2">
+               <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
+                 <X className="w-5 h-5 text-gray-500" />
+               </button>
+               <h2 id="goal-title" className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2" ref={initialFocusRef} tabIndex="-1">
+                 <Target className="w-5 h-5 text-purple-600" />
+                 {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
+               </h2>
+               <div className="w-5" />
+             </div>
+             {!selectedTemplate && <p className="text-center text-xs md:text-sm text-gray-600 font-medium">בחר מטרה שמשפיעה על העסק שלך</p>}
+           </div>
 
-          {/* Content */}
-          <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto -webkit-overflow-scrolling-touch">
+           {/* Content */}
+           <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto -webkit-overflow-scrolling-touch">
             {!selectedTemplate ? (
               <motion.div 
                 className="space-y-2.5"
