@@ -52,6 +52,8 @@ export default function ProgressTab({ data, onNavigate }) {
     }
   };
 
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+
   return (
     <>
       <motion.div
@@ -63,8 +65,69 @@ export default function ProgressTab({ data, onNavigate }) {
         {/* Goals Button - Mobile Only */}
         <GoalsFloatingButton onNavigate={onNavigate} />
 
-      {/* Main Grid - Desktop */}
-      <div className="grid lg:grid-cols-12 gap-6">
+      {/* Mobile Collapsed View */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setIsMobileExpanded(!isMobileExpanded)}
+          className="w-full bg-white rounded-lg shadow-md border border-gray-100 p-4 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-base font-bold text-gray-900">מסע העסק</h2>
+          </div>
+          <motion.div
+            animate={{ rotate: isMobileExpanded ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            ▼
+          </motion.div>
+        </button>
+
+        {isMobileExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="mt-3 space-y-2"
+          >
+            {MILESTONES.map((milestone) => {
+              const status = completedMilestones.includes(milestone.id) ? 'completed' 
+                : milestone.id === currentMilestone ? 'current' : 'locked';
+              const isCompleted = status === 'completed';
+              const isCurrent = status === 'current';
+
+              return (
+                <div
+                  key={milestone.id}
+                  className={`bg-white rounded-lg p-3 border text-sm ${
+                    isCurrent ? 'border-blue-500 bg-blue-50' : 
+                    isCompleted ? 'border-green-500 bg-green-50' : 
+                    'border-gray-200 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      isCompleted ? 'bg-green-500' : 
+                      isCurrent ? 'bg-blue-500' : 
+                      'bg-gray-300'
+                    }`}>
+                      {isCompleted ? '✓' : isCurrent ? '○' : '🔒'}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 text-xs">{milestone.title}</h3>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        )}
+      </div>
+
+      {/* Desktop Grid */}
+      <div className="hidden lg:grid lg:grid-cols-12 gap-6">
         {/* Journey Timeline - Left 50% */}
         <div className="lg:col-span-6">
           <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
