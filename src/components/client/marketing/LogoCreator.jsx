@@ -421,46 +421,39 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
           <DialogContent className="sm:max-w-sm">
             <DialogHeader>
-              <DialogTitle>בחר פורמט הורדה</DialogTitle>
-              <DialogDescription>
-                בחר את סוג הקובץ המתאים ליצירתך
-              </DialogDescription>
+              <DialogTitle className="text-lg">בחר פורמט הורדה</DialogTitle>
             </DialogHeader>
 
-            <div className="space-y-3 py-4">
+            <div className="space-y-2 py-4">
+              {/* PNG Option */}
               <button
                 onClick={() => downloadLogo(selectedLogo.url, 'png')}
-                className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-500 transition-all group"
+                className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition-all"
               >
-                <Image className="w-6 h-6 text-blue-600" />
-                <div className="text-right flex-1">
-                  <p className="font-semibold text-gray-900">PNG</p>
-                  <p className="text-xs text-gray-500">לשימוש בדיגיטל וברשתות</p>
-                </div>
+                <span className="text-sm font-medium text-gray-900">PNG</span>
+                <Image className="w-5 h-5 text-blue-600" />
               </button>
 
+              {/* SVG Option */}
               <button
                 onClick={() => downloadLogo(selectedLogo.url, 'svg')}
-                className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-500 transition-all group"
+                className="w-full flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-400 transition-all"
               >
-                <Code className="w-6 h-6 text-purple-600" />
-                <div className="text-right flex-1">
-                  <p className="font-semibold text-gray-900">SVG</p>
-                  <p className="text-xs text-gray-500">לעריכה וריצוף מושלם</p>
-                </div>
+                <span className="text-sm font-medium text-gray-900">SVG</span>
+                <Code className="w-5 h-5 text-purple-600" />
               </button>
 
+              {/* Purchase Option - Highlighted */}
               <button
                 onClick={() => {
                   setSelectedLogo(null);
-                  setStep(5); // Checkout page
+                  setStep(5);
                 }}
-                className="w-full flex items-center gap-4 p-4 border-2 border-green-200 rounded-lg hover:bg-green-50 hover:border-green-500 transition-all bg-green-50"
+                className="w-full mt-4 pt-4 border-t-2 border-gray-100"
               >
-                <FileJson className="w-6 h-6 text-green-600" />
-                <div className="text-right flex-1">
-                  <p className="font-semibold text-gray-900">קנה חבילה מלאה</p>
-                  <p className="text-xs text-gray-500">כל הפורמטים + ליווי עיצוב</p>
+                <div className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all">
+                  <span className="text-sm font-bold text-gray-900">המשך לרכישה</span>
+                  <div className="text-lg">✨</div>
                 </div>
               </button>
             </div>
