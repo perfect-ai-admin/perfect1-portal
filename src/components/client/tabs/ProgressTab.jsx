@@ -150,8 +150,8 @@ export default function ProgressTab({ data, onNavigate }) {
       </div>
 
       {/* Why This Matters - Mobile */}
-      <div className="lg:hidden" ref={whyMattersRef}>
-        <StepImportancePanel step={nextStep} />
+      <div className="lg:hidden">
+        <StepImportancePanel ref={whyMattersRef} step={nextStep} />
       </div>
 
       {/* Desktop Grid */}

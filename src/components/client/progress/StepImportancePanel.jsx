@@ -9,13 +9,14 @@ const reasonColors = {
   remember: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-900', icon: '✅' }
 };
 
-export default function StepImportancePanel({ step }) {
+export default React.forwardRef(function StepImportancePanel({ step }, ref) {
   const [expanded, setExpanded] = useState(false);
 
   if (!step?.reasons || step.reasons.length === 0) return null;
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white rounded-lg border border-gray-100 overflow-hidden"
@@ -71,4 +72,4 @@ export default function StepImportancePanel({ step }) {
       </AnimatePresence>
     </motion.div>
   );
-}
+});
