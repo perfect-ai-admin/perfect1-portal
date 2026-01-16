@@ -6,17 +6,12 @@ import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 
 export default function LandingPageBuilder() {
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-  const [portalReady, setPortalReady] = useState(false);
 
   const features = [
     'כותרות שיווקיות',
     'התאמה למומחה',
     'טופס לליידים'
   ];
-
-  useEffect(() => {
-    setPortalReady(true);
-  }, []);
 
   useEffect(() => {
     if (showQuestionnaire) {
