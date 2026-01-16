@@ -10,8 +10,7 @@ import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
 import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
-import SavedWorksSection from '../marketing/SavedWorksSection';
-import SavedWorkDetail from '../marketing/SavedWorkDetail';
+
 import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
 
@@ -55,17 +54,6 @@ export default function MarketingTab({ data }) {
             <span className="hidden sm:inline">לימוד</span>
           </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="works" className="bg-white rounded-lg border border-gray-200 p-6">
-          <SavedWorksSection onSelectWork={setSelectedWork} />
-          {selectedWork && (
-            <SavedWorkDetail 
-              work={selectedWork} 
-              onClose={() => setSelectedWork(null)}
-              onUpdate={(updated) => setSelectedWork(updated)}
-            />
-          )}
-        </TabsContent>
 
         <TabsContent value="branding" className="bg-white rounded-lg border border-gray-200 p-6 space-y-8">
           <BrandingTools businessName={data.name} />
