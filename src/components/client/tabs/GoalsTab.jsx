@@ -127,7 +127,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
       <div className="pt-4">
         <Button 
           className="w-full gap-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all"
-          onClick={() => setShowAddGoal(true)}
+          onClick={handleShowAddGoal}
         >
           <Plus className="w-4 h-4" />
           מטרה חדשה
