@@ -527,12 +527,12 @@ export default function OsekPaturOnlineLanding() {
             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              {[
-                { icon: Clock, title: 'חוסך זמן', desc: 'בלי לבזבז זמן על נסיעות והמתנות' },
-                { icon: Smartphone, title: 'שירות אישי ומקצועי', desc: 'כל קליינט משיג תשומת לב הייעודית - לא מחסום טלפוני' },
-                { icon: Shield, title: 'מאובטח וחוקי', desc: 'חתימה דיגיטלית מוכרת על פי חוק' },
-                { icon: Zap, title: 'אחריות מלאה', desc: 'אנחנו עומדים מאחוריך - יעילות מובטחת ותמיכה מקצועית' }
-              ].map((item, i) => (
+               {[
+                 { icon: Zap, title: 'מהיר וקל', desc: 'התהליך הממשלתי אולי מתגרר, אבל שלך מתחיל עכשיו מהנייד' },
+                 { icon: Users, title: 'יועץ ייעודי בכל רגע', desc: 'לא קול רובוט ולא דחיפות - אנשים שמבינים את המצב שלך' },
+                 { icon: CheckCircle, title: 'מתנהל נכון מהתחלה', desc: 'שום טעויות שלא תוקנו, שום מסמכים שחסרים או שגויים' },
+                 { icon: Shield, title: 'בטיחות ברמת בנק', desc: 'כל הנתונים שלך מוצפנים, אין מעבר בגוגל דרייב או אימיל' }
+               ].map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
