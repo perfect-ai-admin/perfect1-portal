@@ -437,7 +437,22 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                     className="text-xs h-8"
                   />
                 </div>
-              </div>
+
+                {!hasPrimaryGoal && (
+                  <div className="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200">
+                    <input
+                      id="isPrimary"
+                      type="checkbox"
+                      checked={isPrimary}
+                      onChange={(e) => setIsPrimary(e.target.checked)}
+                      className="w-4 h-4 rounded cursor-pointer"
+                    />
+                    <label htmlFor="isPrimary" className="text-xs font-semibold text-gray-700 cursor-pointer">
+                      זו המטרה הראשית שלי
+                    </label>
+                  </div>
+                )}
+                </div>
 
               {/* Action Buttons */}
               <motion.div 
