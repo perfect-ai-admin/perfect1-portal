@@ -436,7 +436,7 @@ export default function OsekPaturOnlineLanding() {
         </section>
 
         {/* Mid-Page Strong CTA */}
-        <section className="py-12 bg-gradient-to-br from-[#27AE60] to-[#229954]">
+        <section className="py-12 bg-gradient-to-br from-[#2980B9] to-[#3498DB]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -444,13 +444,13 @@ export default function OsekPaturOnlineLanding() {
               viewport={{ once: true }}
             >
               <div className="inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-bold mb-6 border border-white/30">
-                ⏰ מוכן לפתוח אונליין?
+                💡 בואו נעשה את זה בצורה נכונה
               </div>
               <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-                פותחים עוסק פטור מהבית – עכשיו
+                מהיום, העוסק שלך קיים דיגיטלית
               </h2>
               <p className="text-xl text-white/90 mb-8">
-                השאר פרטים ונתחיל את התהליך האונליין תוך שעות
+                לא צריך לחכות בתורים - התחל בעוד 10 דקות מהנייד שלך
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button onClick={scrollToForm} className="h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
