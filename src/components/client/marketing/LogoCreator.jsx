@@ -355,28 +355,25 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                   {/* Action Buttons */}
                   <div className="space-y-2">
                     <Button 
+                      onClick={() => {
+                        setSelectedLogo(logo);
+                      }}
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white h-9 text-xs sm:text-sm"
+                    >
+                      <Download className="w-3.5 h-3.5 ml-1" />
+                      הורדת הלוגו
+                    </Button>
+                    
+                    <Button 
                       onClick={() => saveLogo(logo.url, logo.variant)}
                       size="sm"
-                      className="w-full bg-green-600 hover:bg-green-700 text-white h-9 text-xs sm:text-sm"
+                      variant="outline"
+                      className="w-full h-9 text-xs sm:text-sm"
                     >
                       <Palette className="w-3.5 h-3.5 ml-1" />
                       שמור
                     </Button>
-                    
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => downloadLogo(logo.url, 'png')}
-                        className="flex-1 text-xs py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                      >
-                        PNG
-                      </button>
-                      <button 
-                        onClick={() => downloadLogo(logo.url, 'svg')}
-                        className="flex-1 text-xs py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                      >
-                        SVG
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
