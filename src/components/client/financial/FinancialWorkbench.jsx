@@ -87,20 +87,7 @@ export default function FinancialWorkbench({ data }) {
             })}
           </div>
 
-          {/* Mobile More Button */}
-          <div className="md:hidden mt-2">
-            <button
-              onClick={() => setActiveTab('more')}
-              className={`w-full flex items-center justify-center gap-2 p-3 rounded-lg transition-all ${
-                activeTab === 'more'
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <span className="text-lg">⋯</span>
-              <span className="text-xs font-semibold">עוד</span>
-            </button>
-          </div>
+
         </div>
 
         {/* Content */}
