@@ -271,13 +271,13 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent 
-         className="w-full max-w-2xl max-h-[85vh] p-0 border-0 rounded-2xl shadow-2xl" 
+         className="w-full max-w-3xl p-0 border-0 rounded-2xl shadow-2xl overflow-y-auto max-h-screen" 
          ref={drawerRef}
        >
-        <div className="flex flex-col h-full max-h-[85vh]">
+        <div className="flex flex-col">
           {/* Header */}
-          <div className="flex-shrink-0 px-4 md:px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20">
-            <div className="flex items-center justify-between mb-3">
+          <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20">
+            <div className="flex items-center justify-between mb-2">
               <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
                 <X className="w-5 h-5 text-gray-500" />
               </button>
@@ -291,7 +291,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4">
+          <div className="px-4 md:px-6 py-3 md:py-4">
             {!selectedTemplate ? (
               <motion.div 
                 className="space-y-3"
