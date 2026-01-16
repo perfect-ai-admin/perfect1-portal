@@ -385,23 +385,23 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
             key={currentLogoIndex}
-            className="flex flex-col items-center gap-4 flex-1 justify-start pt-2"
+            className="flex flex-col items-center gap-2 flex-1 justify-start pt-1"
           >
-            {/* Logo Display - Larger & More Prominent */}
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl flex items-center justify-center p-6 shadow-md w-full aspect-square max-w-sm">
+            {/* Logo Display - Compact */}
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center p-4 shadow-md w-3/4 aspect-square">
               <img 
                 src={currentLogo.url} 
                 alt={`Logo variant ${currentLogoIndex + 1}`} 
-                className="max-h-48 w-auto object-contain"
+                className="max-h-28 w-auto object-contain"
               />
             </div>
 
             {/* Variant Name & Progress */}
             <div className="text-center w-full px-4">
-              <h3 className="text-lg font-bold text-gray-900 mb-3">{currentLogo.variant}</h3>
-              <div className="flex items-center justify-center gap-3 text-xs text-gray-600">
-                <span className="font-semibold text-gray-900">{currentLogoIndex + 1}</span>
-                <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <h3 className="text-sm font-bold text-gray-900 mb-2">{currentLogo.variant}</h3>
+              <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
+                <span className="font-semibold text-gray-900 text-xs">{currentLogoIndex + 1}</span>
+                <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercent}%` }}
@@ -409,7 +409,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                     className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
                   />
                 </div>
-                <span className="font-semibold text-gray-900">{logos.length}</span>
+                <span className="font-semibold text-gray-900 text-xs">{logos.length}</span>
               </div>
             </div>
           </motion.div>
