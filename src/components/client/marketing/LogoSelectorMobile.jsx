@@ -66,43 +66,41 @@ export default function LogoSelectorMobile({ logos, formData }) {
        </motion.div>
 
        {/* ACTION BUTTONS - Compact Fixed Height */}
-       <div className="flex-shrink-0 px-3 pb-2 space-y-1.5">
-         {/* Download & Save Row */}
-         <div className="grid grid-cols-2 gap-2">
+       <div className="flex-shrink-0 px-3 pb-2 space-y-1">
+         <div className="grid grid-cols-2 gap-1.5">
            <button 
              onClick={() => setSelectedLogo(currentLogo)}
-             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 text-xs sm:text-sm font-semibold rounded-lg shadow-md flex items-center justify-center gap-1.5 transition-colors"
+             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 text-xs font-semibold rounded-lg flex items-center justify-center gap-1 transition-colors"
            >
-             <Download className="w-3.5 h-3.5" />
+             <Download className="w-3 h-3" />
              הורדה
            </button>
 
            <button 
              onClick={() => saveLogo(currentLogo.url, currentLogo.variant)}
-             className="w-full border-2 border-gray-300 text-gray-700 py-2.5 text-xs sm:text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5"
+             className="w-full border border-gray-300 text-gray-700 py-2 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1"
            >
-             <Palette className="w-3.5 h-3.5" />
+             <Palette className="w-3 h-3" />
              שמור
            </button>
          </div>
 
-         {/* Navigation Row */}
-         <div className="grid grid-cols-2 gap-2">
+         <div className="grid grid-cols-2 gap-1.5">
            <button
              onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
              disabled={currentIndex === 0}
-             className="w-full py-2.5 px-2 rounded-lg border border-gray-300 text-gray-700 text-xs sm:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-all flex items-center justify-center gap-1"
+             className="w-full py-1.5 px-1 rounded-lg border text-gray-700 text-xs font-semibold disabled:opacity-30 hover:bg-gray-50 flex items-center justify-center gap-0.5"
            >
-             <ChevronRight className="w-3.5 h-3.5" />
+             <ChevronRight className="w-3 h-3" />
              הקודם
            </button>
            <button
              onClick={() => setCurrentIndex(Math.min(logos.length - 1, currentIndex + 1))}
              disabled={currentIndex === logos.length - 1}
-             className="w-full py-2.5 px-2 rounded-lg border-2 border-blue-300 text-blue-700 text-xs sm:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed bg-blue-50 hover:bg-blue-100 transition-all flex items-center justify-center gap-1"
+             className="w-full py-1.5 px-1 rounded-lg border border-blue-300 text-blue-700 text-xs font-semibold disabled:opacity-30 bg-blue-50 hover:bg-blue-100 flex items-center justify-center gap-0.5"
            >
              הבא
-             <ChevronLeft className="w-3.5 h-3.5" />
+             <ChevronLeft className="w-3 h-3" />
            </button>
          </div>
        </div>
