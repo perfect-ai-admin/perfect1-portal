@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Layers, ChevronRight, X } from 'lucide-react';
 import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 
 export default function LandingPageBuilder() {
@@ -16,25 +15,27 @@ export default function LandingPageBuilder() {
   const handleComplete = (formData) => {
     console.log('Landing page data:', formData);
     setShowQuestionnaire(false);
-    // TODO: Send to backend function to generate landing page
   };
 
-  return (
-    <>
-      {showQuestionnaire && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-2xl w-full my-8">
-            <button 
-              onClick={() => setShowQuestionnaire(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ×
-            </button>
+  if (showQuestionnaire) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4 overflow-y-auto" onClick={() => setShowQuestionnaire(false)}>
+        <div className="bg-white rounded-xl w-full max-w-2xl relative" onClick={(e) => e.stopPropagation()}>
+          <button 
+            onClick={() => setShowQuestionnaire(false)}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-[10000]"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="overflow-y-auto max-h-[90vh]">
             <LandingPageQuestionnaire onComplete={handleComplete} />
           </div>
         </div>
-      )}
-      
+      </div>
+    );
+  }
+
+  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -63,13 +64,12 @@ export default function LandingPageBuilder() {
 
           <button 
             onClick={() => setShowQuestionnaire(true)}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors cursor-pointer"
           >
             התחל עכשיו
           </button>
         </div>
       </div>
     </motion.div>
-    </>
   );
 }
