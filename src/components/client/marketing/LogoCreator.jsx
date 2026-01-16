@@ -379,8 +379,8 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
             ))}
           </div>
 
-          {/* Mobile Selector - Full Responsive */}
-          <div className="lg:hidden flex-1 flex flex-col min-h-0 px-4">
+          {/* Mobile Selector - Full Screen */}
+          <div className="lg:hidden fixed inset-0">
             <LogoSelectorMobile logos={logos} formData={formData} />
           </div>
 
