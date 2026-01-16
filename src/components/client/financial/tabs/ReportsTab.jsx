@@ -35,14 +35,16 @@ export default function ReportsTab({ data }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-      <h2 className="text-lg font-bold text-gray-900">דוחות</h2>
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-3 mb-4">
+        <h2 className="text-lg font-bold text-purple-900">דוחות</h2>
+      </div>
 
       {/* Date Range Selector */}
       <div className="flex gap-2">
         <select
           value={selectedDateRange}
           onChange={(e) => setSelectedDateRange(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-3 py-2 border-2 border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-medium"
         >
           <option value="month">חודש נוכחי</option>
           <option value="quarter">רבעון נוכחי</option>
@@ -59,7 +61,7 @@ export default function ReportsTab({ data }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
+            className="bg-white border-2 border-purple-200 rounded-lg p-4 hover:shadow-lg hover:border-purple-300 transition-all"
           >
             <div className="flex items-start gap-3 mb-3">
               <div className="text-2xl">{report.icon}</div>
@@ -69,11 +71,11 @@ export default function ReportsTab({ data }) {
               </div>
             </div>
 
-            <div className="flex gap-2 pt-3 border-t border-gray-100">
+            <div className="flex gap-2 pt-3 border-t-2 border-purple-100">
               <Button
                 size="sm"
+                className="flex-1 gap-2 h-9 text-xs border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-semibold"
                 variant="outline"
-                className="flex-1 gap-2 h-8 text-xs"
                 onClick={() => console.log('View report:', report.id)}
               >
                 <FileText className="w-3 h-3" />
@@ -81,7 +83,7 @@ export default function ReportsTab({ data }) {
               </Button>
               <Button
                 size="sm"
-                className="flex-1 gap-2 h-8 text-xs"
+                className="flex-1 gap-2 h-9 text-xs bg-purple-600 hover:bg-purple-700 text-white font-semibold"
                 onClick={() => console.log('Download PDF:', report.id)}
               >
                 <Download className="w-3 h-3" />
@@ -89,8 +91,7 @@ export default function ReportsTab({ data }) {
               </Button>
               <Button
                 size="sm"
-                variant="outline"
-                className="flex-1 gap-2 h-8 text-xs"
+                className="flex-1 gap-2 h-9 text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
                 onClick={() => console.log('Download CSV:', report.id)}
               >
                 <Download className="w-3 h-3" />
