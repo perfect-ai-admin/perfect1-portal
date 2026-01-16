@@ -305,8 +305,6 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
   }
 
   if (step === 4) {
-    const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
-    
     const saveLogo = (logoUrl, variant) => {
       const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
       if (!allSaved[formData.businessName]) {
