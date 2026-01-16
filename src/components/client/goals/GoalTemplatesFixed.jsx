@@ -230,13 +230,21 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     initialFocusRef.current?.focus();
   }, [selectedTemplate]);
 
-  // Scroll to top when component mounts (mobile)
+  // Scroll to top when component mounts or dialog opens
   useEffect(() => {
-    const bodyElement = document.querySelector('.mobile-sheet-body');
-    if (bodyElement) {
-      bodyElement.scrollTop = 0;
-    }
-  }, []);
+    setTimeout(() => {
+      const bodyElement = document.querySelector('.mobile-sheet-body');
+      if (bodyElement) {
+        bodyElement.scrollTop = 0;
+      }
+      // Also scroll dialog on desktop
+      const dialogContent = document.querySelector('[role="dialog"]');
+      if (dialogContent) {
+        const scrollable = dialogContent.querySelector('[style*="overflow"]') || dialogContent;
+        scrollable.scrollTop = 0;
+      }
+    }, 50);
+  }, [isMobile]);
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
