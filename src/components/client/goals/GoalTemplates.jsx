@@ -309,14 +309,14 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                     whileHover={{ scale: 1.03, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleTemplateSelect(template)}
-                    className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2.5 md:p-3 transition-all group active:scale-95"
-                  >
-                    <div className="flex items-center gap-2.5">
-                       <div className={`w-10 h-10 md:w-11 md:h-11 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
-                         <template.icon className="w-5 h-5 md:w-5.5 md:h-5.5 text-white" />
+                    className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2 md:p-2.5 transition-all group active:scale-95"
+                    >
+                    <div className="flex items-center gap-2">
+                       <div className={`w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
+                         <template.icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                        </div>
                        <div className="flex-1 text-right min-w-0">
-                         <h3 className="font-semibold text-gray-900 text-xs md:text-sm leading-tight">{template.name}</h3>
+                         <h3 className="font-semibold text-gray-900 text-xs leading-tight">{template.name}</h3>
                        </div>
                      </div>
                   </motion.button>
