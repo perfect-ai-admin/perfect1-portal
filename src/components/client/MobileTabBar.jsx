@@ -39,7 +39,7 @@ export default function MobileTabBar({ activeTab, onChange }) {
       role="navigation"
       aria-label="ניווט ראשי"
     >
-      <div className="grid grid-cols-6 h-16">
+      <div className="grid grid-cols-6 h-20">
         {visibleTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
