@@ -323,7 +323,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
     const currentLogo = logos[currentLogoIndex];
 
     return (
-      <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6" style={{ height: '100dvh' }}>
+      <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6 relative">
         {/* Header - Hidden on Mobile (LogoSelectorMobile has it) */}
         <div className="hidden lg:block text-center px-4 py-4 flex-shrink-0">
           <h2 className="text-3xl font-bold text-gray-900">בחר את הלוגו המושלם שלך 🎨</h2>
