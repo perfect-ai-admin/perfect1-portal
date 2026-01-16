@@ -54,6 +54,12 @@ export default function OsekPaturLanding() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+
+  const handleQuestionnaireComplete = (landingPageData) => {
+    console.log('Landing page data:', landingPageData);
+    setShowQuestionnaire(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -135,6 +141,20 @@ export default function OsekPaturLanding() {
 
   return (
     <>
+      {showQuestionnaire && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl max-w-2xl w-full my-8">
+            <button 
+              onClick={() => setShowQuestionnaire(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+            >
+              ×
+            </button>
+            <LandingPageQuestionnaire onComplete={handleQuestionnaireComplete} />
+          </div>
+        </div>
+      )}
+
       <PageTracker pageUrl="/osek-patur" pageType="landing" />
       <FAQSchema faqs={faqs} />
       <SEOOptimized
@@ -296,6 +316,47 @@ export default function OsekPaturLanding() {
                 </div>
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        {/* Landing Page Builder Card */}
+        <section className="py-12 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Layers className="w-8 h-8 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">דף נחיתה ממותג</h3>
+                  <p className="text-sm text-gray-700 mb-4">
+                    עמוד המרה שמונע כאב <ChevronRight className="w-3 h-3 inline mx-1" /> פתרון <ChevronRight className="w-3 h-3 inline mx-1" /> פעולה
+                  </p>
+                  
+                  <div className="space-y-2 mb-6">
+                    {['כותרות שיווקיות', 'התאמה למומחה', 'טופס לליידים'].map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-sm text-gray-800">
+                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </div>
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button 
+                    onClick={() => setShowQuestionnaire(true)}
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+                  >
+                    התחל עכשיו
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
