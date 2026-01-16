@@ -265,37 +265,41 @@ export default function AgentCRM() {
               </PopoverContent>
             </Popover>
             <div className="w-full md:w-48">
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder="סטטוס" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">כל הסטטוסים</SelectItem>
-                  <SelectItem value="new">חדש</SelectItem>
-                  <SelectItem value="contacted">יצרנו קשר</SelectItem>
-                  <SelectItem value="no_answer">אין מענה</SelectItem>
-                  <SelectItem value="in_progress">בתהליך</SelectItem>
-                  <SelectItem value="qualified">מתאים</SelectItem>
-                  <SelectItem value="not_interested">לא מעוניין</SelectItem>
-                  <SelectItem value="converted">נסגר</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="w-full md:w-48">
-              <Select value={filterCategory} onValueChange={setFilterCategory}>
-                <SelectTrigger>
-                  <SelectValue placeholder="קטגוריה" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">כל הקטגוריות</SelectItem>
-                  <SelectItem value="osek_patur">פתיחת עוסק</SelectItem>
-                  <SelectItem value="monthly_support">ליווי חודשי</SelectItem>
-                  <SelectItem value="invoice">חשבונית</SelectItem>
-                  <SelectItem value="consultation">ייעוץ</SelectItem>
-                  <SelectItem value="other">אחר</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+               <div>
+                 <Select value={filterStatus} onValueChange={setFilterStatus}>
+                   <SelectTrigger>
+                     <SelectValue placeholder="סטטוס" />
+                   </SelectTrigger>
+                   <SelectContent>
+                     <SelectItem value="all">כל הסטטוסים</SelectItem>
+                     <SelectItem value="new">חדש</SelectItem>
+                     <SelectItem value="contacted">יצרנו קשר</SelectItem>
+                     <SelectItem value="no_answer">אין מענה</SelectItem>
+                     <SelectItem value="in_progress">בתהליך</SelectItem>
+                     <SelectItem value="qualified">מתאים</SelectItem>
+                     <SelectItem value="not_interested">לא מעוניין</SelectItem>
+                     <SelectItem value="converted">נסגר</SelectItem>
+                   </SelectContent>
+                 </Select>
+               </div>
+             </div>
+             <div className="w-full md:w-48">
+               <div>
+                 <Select value={filterCategory} onValueChange={setFilterCategory}>
+                   <SelectTrigger>
+                     <SelectValue placeholder="קטגוריה" />
+                   </SelectTrigger>
+                   <SelectContent>
+                     <SelectItem value="all">כל הקטגוריות</SelectItem>
+                     <SelectItem value="osek_patur">פתיחת עוסק</SelectItem>
+                     <SelectItem value="monthly_support">ליווי חודשי</SelectItem>
+                     <SelectItem value="invoice">חשבונית</SelectItem>
+                     <SelectItem value="consultation">ייעוץ</SelectItem>
+                     <SelectItem value="other">אחר</SelectItem>
+                   </SelectContent>
+                 </Select>
+               </div>
+             </div>
           </div>
         </div>
 
@@ -452,19 +456,21 @@ export default function AgentCRM() {
                     </td>}
                     {visibleColumns.profession && <td className="px-4 py-3 text-sm">{lead.profession || '-'}</td>}
                     {visibleColumns.status && <td className="px-4 py-3 text-center">
-                      <Select 
-                        value={lead.status || 'new'} 
-                        onValueChange={(value) => handleQuickStatusUpdate(lead, value)}
-                      >
-                        <SelectTrigger className={`w-32 h-8 text-xs ${statusColors[lead.status || 'new']}`}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.entries(statusLabels).map(([key, label]) => (
-                            <SelectItem key={key} value={key}>{label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div>
+                        <Select 
+                          value={lead.status || 'new'} 
+                          onValueChange={(value) => handleQuickStatusUpdate(lead, value)}
+                        >
+                          <SelectTrigger className={`w-32 h-8 text-xs ${statusColors[lead.status || 'new']}`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(statusLabels).map(([key, label]) => (
+                              <SelectItem key={key} value={key}>{label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </td>}
                     {visibleColumns.followUp && <td className="px-4 py-3 text-sm">
                       {editingFollowUp[lead.id] !== undefined ? (
@@ -719,34 +725,38 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading, onStatusChange }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" dir="rtl">
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-2">סטטוס</label>
-          <Select value={formData.status} onValueChange={handleStatusChange}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(statusLabels).map(([key, label]) => (
-                <SelectItem key={key} value={key}>{label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+         <div>
+           <label className="block text-sm font-medium mb-2">סטטוס</label>
+           <div>
+             <Select value={formData.status} onValueChange={handleStatusChange}>
+               <SelectTrigger>
+                 <SelectValue />
+               </SelectTrigger>
+               <SelectContent>
+                 {Object.entries(statusLabels).map(([key, label]) => (
+                   <SelectItem key={key} value={key}>{label}</SelectItem>
+                 ))}
+               </SelectContent>
+             </Select>
+           </div>
+         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">עדיפות</label>
-          <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">נמוך</SelectItem>
-              <SelectItem value="medium">בינוני</SelectItem>
-              <SelectItem value="high">גבוה</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+         <div>
+           <label className="block text-sm font-medium mb-2">עדיפות</label>
+           <div>
+             <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
+               <SelectTrigger>
+                 <SelectValue />
+               </SelectTrigger>
+               <SelectContent>
+                 <SelectItem value="low">נמוך</SelectItem>
+                 <SelectItem value="medium">בינוני</SelectItem>
+                 <SelectItem value="high">גבוה</SelectItem>
+               </SelectContent>
+             </Select>
+           </div>
+         </div>
+       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
