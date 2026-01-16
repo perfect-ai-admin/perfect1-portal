@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Wand2, Download, RefreshCw, FileJson, Image, Code, CheckCircle2, ChevronRight, LayoutGrid, Type } from 'lucide-react';
+import { Palette, Wand2, Download, RefreshCw, FileJson, Image, Code, CheckCircle2, ChevronRight, LayoutGrid, Type, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -36,7 +36,7 @@ const ICON_STYLES = [
   { id: 'illustration', label: 'איור', example: '🎨' }
 ];
 
-const MobileWizardStep = ({ children, title, subtitle, onBack, currentStep, totalSteps }) => {
+const MobileWizardStep = ({ children, title, subtitle, onBack, onClose, currentStep, totalSteps }) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -59,11 +59,15 @@ const MobileWizardStep = ({ children, title, subtitle, onBack, currentStep, tota
       {/* Header */}
       <div className="flex-none px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white">
         <div className="flex items-center gap-3">
-          {onBack && (
+          {onBack ? (
             <button onClick={onBack} className="p-1 -mr-2 text-gray-500 hover:text-gray-900">
               <ChevronRight className="w-6 h-6" />
             </button>
-          )}
+          ) : onClose ? (
+            <button onClick={onClose} className="p-1 -mr-2 text-gray-500 hover:text-gray-900">
+              <X className="w-6 h-6" />
+            </button>
+          ) : null}
           <div>
             <h2 className="text-base font-bold text-gray-900 leading-none">{title}</h2>
             <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
@@ -85,7 +89,7 @@ const MobileWizardStep = ({ children, title, subtitle, onBack, currentStep, tota
   );
 };
 
-export default function LogoCreator({ businessName }) {
+export default function LogoCreator({ businessName, onClose }) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     businessName: businessName || '',
@@ -222,6 +226,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           subtitle="שלב 1 מתוך 3"
           currentStep={1}
           totalSteps={3}
+          onClose={onClose}
         >
           <div className="flex-1 flex flex-col gap-4">
             <div className="space-y-1">
