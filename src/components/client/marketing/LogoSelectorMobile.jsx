@@ -38,7 +38,12 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] lg:hidden w-full bg-white flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
+    <div 
+      className="fixed inset-0 z-[9999] lg:hidden w-full bg-white flex flex-col overflow-hidden" 
+      style={{ height: '100dvh' }}
+      onPointerDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* HEADER - Fixed Height */}
       <div className="flex-none px-4 py-3 border-b border-gray-100 bg-white/95 backdrop-blur-sm z-10 text-center">
         <h2 className="text-base font-bold text-gray-900 leading-tight">בחר את הלוגו המושלם 🎨</h2>

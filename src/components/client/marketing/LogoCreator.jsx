@@ -50,7 +50,12 @@ const MobileWizardStep = ({ children, title, subtitle, onBack, currentStep, tota
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] lg:hidden w-full bg-white flex flex-col" style={{ height: '100dvh' }}>
+    <div 
+      className="fixed inset-0 z-[9999] lg:hidden w-full bg-white flex flex-col" 
+      style={{ height: '100dvh' }}
+      onPointerDown={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* Header */}
       <div className="flex-none px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white">
         <div className="flex items-center gap-3">
