@@ -486,12 +486,12 @@ export default function OsekPaturOnlineLanding() {
             <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl shadow-xl p-8 md:p-10 border-2 border-[#3498DB]/10">
               <ul className="grid md:grid-cols-2 gap-6">
                 {[
-                  'תהליך פתיחה מקוון לחלוטין',
-                  'חתימה דיגיטלית מאובטחת',
-                  'ליווי צמוד בתהליך הפתיחה',
-                  'הכנה והגשה מסודרת לרשויות',
-                  'בדיקת נכונות כל הפרטים',
-                  'תמיכה בוואטסאפ וטלפון'
+                  'ייעוץ מקצועי בכל שלב',
+                  'חתימה דיגיטלית מוכרת חוקית',
+                  'בדיקה מלאה של כל הנתונים',
+                  'הכוונה בתהליך הממשלתי',
+                  'תמיכה בוואטסאפ וטלפון',
+                  'שירות בתשלום'
                 ].map((item, i) => (
                   <motion.li
                     key={i}
