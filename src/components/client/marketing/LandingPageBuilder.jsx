@@ -108,7 +108,7 @@ export default function LandingPageBuilder() {
           </div>
         </div>,
         document.body
-      ) : null}
+      )}
     </>
   );
 }
