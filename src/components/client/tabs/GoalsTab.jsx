@@ -57,16 +57,21 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   };
 
   const handleEditGoal = (goal) => {
-    setEditingGoal(goal);
-    // ניתן להוסיף דיאלוג עריכה אם נדרש
-  };
+     setEditingGoal(goal);
+     setShowAddGoal(true);
+   };
 
-  const handleCreateGoal = (newGoal) => {
-     if (newGoal.isPrimary) {
-       // הסר את המטרה הראשית הקודמת
-       setGoals(prev => [newGoal, ...prev.filter(g => !g.isPrimary)]);
+  const handleCreateGoal = (newGoal, isEditing = false) => {
+     if (isEditing) {
+       // עדכן את המטרה הקיימת
+       setGoals(prev => prev.map(g => g.id === newGoal.id ? newGoal : g));
      } else {
-       setGoals(prev => [...prev, newGoal]);
+       // הוסף מטרה חדשה
+       if (newGoal.isPrimary) {
+         setGoals(prev => [newGoal, ...prev.filter(g => !g.isPrimary)]);
+       } else {
+         setGoals(prev => [...prev, newGoal]);
+       }
      }
      setShowAddGoal(false);
    };
@@ -126,8 +131,12 @@ export default function GoalsTab({ data, openAddGoal = false }) {
        {showAddGoal && (
          <GoalTemplates
            onCreateGoal={handleCreateGoal}
-           onClose={() => setShowAddGoal(false)}
-           hasPrimaryGoal={goals.some(g => g.isPrimary)}
+           onClose={() => {
+             setShowAddGoal(false);
+             setEditingGoal(null);
+           }}
+           hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+           editingGoal={editingGoal}
          />
        )}
     </motion.div>
