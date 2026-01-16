@@ -46,13 +46,19 @@ const scrollToGoalsTop = (retries = 0) => {
     return;
   }
 
-  // Method 1: Direct scroll
-  scrollContainer.scrollTop = 0;
+  // Method 1: Direct scroll to top
+  try {
+    scrollContainer.scrollTop = 0;
+  } catch (e) {
+    console.warn('Direct scroll failed:', e);
+  }
   
-  // Method 2: Fallback - scrollIntoView
-  setTimeout(() => {
+  // Method 2: scrollIntoView as fallback
+  try {
     anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 50);
+  } catch (e) {
+    console.warn('ScrollIntoView failed:', e);
+  }
 };
 
 export default function GoalsTab({ data, openAddGoal = false }) {
