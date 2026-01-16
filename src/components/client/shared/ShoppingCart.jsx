@@ -8,12 +8,13 @@ export default function ShoppingCartButton() {
   const [savedLogos, setSavedLogos] = useState([]);
 
   React.useEffect(() => {
-    // Load saved logos from localStorage
-    const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
-    const flat = Object.entries(allSaved).flatMap(([name, items]) =>
-      items.map(item => ({ ...item, businessName: name }))
-    );
-    setSavedLogos(flat);
+    if (isOpen) {
+      const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
+      const flat = Object.entries(allSaved).flatMap(([name, items]) =>
+        items.map(item => ({ ...item, businessName: name }))
+      );
+      setSavedLogos(flat);
+    }
   }, [isOpen]);
 
   const itemCount = savedLogos.length;
@@ -24,6 +25,7 @@ export default function ShoppingCartButton() {
       <button
         onClick={() => setIsOpen(true)}
         className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        title="העגלה שלך"
       >
         <ShoppingCart className="w-5 h-5 text-gray-700" />
         {itemCount > 0 && (
