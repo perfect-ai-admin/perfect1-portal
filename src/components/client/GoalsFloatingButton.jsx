@@ -23,9 +23,16 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
   };
 
   React.useEffect(() => {
-    if (isOpen && buttonRef.current) {
+    if (isOpen) {
       setTimeout(() => {
-        buttonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // גלילה למעלה של הדף כדי לראות את כל המטרות
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // אם יש קונטיינר ספציפי, גלול אותו גם למעלה
+        const contentContainer = document.querySelector('[data-tab-content]');
+        if (contentContainer) {
+          contentContainer.scrollTop = 0;
+        }
       }, 100);
     }
   }, [isOpen]);
