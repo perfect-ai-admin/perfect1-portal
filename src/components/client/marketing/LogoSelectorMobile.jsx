@@ -68,7 +68,7 @@ export default function LogoSelectorMobile({ logos, formData }) {
       </motion.div>
 
       {/* Action Buttons - Bottom */}
-      <div className="px-4 pb-4 space-y-2 flex-shrink-0">
+      <div className="px-4 pb-4 space-y-3 flex-shrink-0">
         {/* Download & Save Row */}
         <div className="grid grid-cols-2 gap-2">
           <button 
