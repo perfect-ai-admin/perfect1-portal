@@ -323,9 +323,16 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
     const currentLogo = logos[currentLogoIndex];
 
     return (
-      <>
-        {/* Desktop Grid */}
-        <div className="hidden lg:grid grid-cols-4 gap-4 mb-8">
+      <div className="space-y-6 min-h-screen flex flex-col">
+        {/* Header */}
+        <div className="text-center mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">בחר את הלוגו המושלם שלך 🎨</h2>
+          <p className="text-gray-500 text-sm md:text-base mt-1">4 וריאציות מעוצבות בעבורך</p>
+        </div>
+
+        <>
+          {/* Desktop Grid */}
+          <div className="hidden lg:grid grid-cols-4 gap-4 mb-8">
           {logos.map((logo, index) => (
             <motion.div
               key={index}
