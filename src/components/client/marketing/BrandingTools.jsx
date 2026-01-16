@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import LogoCreator from './LogoCreator';
 import LandingPageQuestionnaire from './LandingPageQuestionnaire';
+import PresentationQuestionnaire from './PresentationQuestionnaire';
 
 const tools = [
   {
