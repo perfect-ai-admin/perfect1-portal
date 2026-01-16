@@ -15,14 +15,14 @@ const TABS = [
     icon: BarChart3
   },
   {
-    id: 'goals',
-    label: 'מטרות',
-    icon: Target
-  },
-  {
     id: 'financial',
     label: 'כספים',
     icon: Wallet
+  },
+  {
+    id: 'goals',
+    label: 'מטרות',
+    icon: Target
   },
   {
     id: 'marketing',
