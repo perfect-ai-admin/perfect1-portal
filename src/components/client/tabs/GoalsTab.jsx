@@ -88,10 +88,24 @@ export default function GoalsTab({ data, openAddGoal = false }) {
    };
 
   return (
-    <div className="flex justify-center pt-4 px-4 md:pt-0 md:p-0 md:justify-start">
-      {/* Anchor element - MUST be first and always visible to DOM */}
-      <div id="goals-top-anchor" ref={goalsTopRef} className="invisible h-0 absolute top-0" />
-      
+    <>
+      <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-lg">
+          {showAddGoal && (
+            <GoalTemplates
+              onCreateGoal={handleCreateGoal}
+              onClose={() => {
+                setShowAddGoal(false);
+                setEditingGoal(null);
+              }}
+              hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+              editingGoal={editingGoal}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <div className="flex justify-center pt-4 px-4 md:pt-0 md:p-0 md:justify-start">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
