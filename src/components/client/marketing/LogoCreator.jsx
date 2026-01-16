@@ -475,90 +475,124 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
   // Checkout page
   if (step === 5) {
+    const [selectedPayment, setSelectedPayment] = useState('bit');
+
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="h-full flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-gray-100 max-h-screen overflow-hidden"
       >
-        <Button variant="ghost" onClick={() => setStep(4)}>
-          ← חזור
-        </Button>
+        {/* Header - Minimal */}
+        <div className="text-center mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">סיימו את הרכישה</h2>
+          <p className="text-sm text-gray-600">אנחנו כמעט שם. נשאר רק להשלים את התשלום.</p>
+        </div>
 
-        <div className="max-w-2xl mx-auto space-y-6">
-          {/* Header */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">סיימו את הרכישה 🎉</h2>
-            <p className="text-gray-600">קבלו את הלוגו המושלם + ליווי עיצוב</p>
-          </div>
+        {/* Main Card - Central */}
+        <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden">
 
-          {/* Product Card */}
-          <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 border-2 border-green-500">
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">חבילת לוגו מלאה</h3>
-                <p className="text-gray-600 text-sm mt-1">לעסק {formData.businessName}</p>
+          {/* Product Details */}
+          <div className="p-6 space-y-4 border-b border-gray-100">
+            {/* Brand Trust Anchor - Small Square */}
+            <div className="flex items-start gap-3 mb-4 pb-4 border-b border-gray-100">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Palette className="w-6 h-6 text-white" />
               </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-green-600">₪99</p>
-                <p className="text-xs text-gray-500">חד-פעמי</p>
+              <div className="text-xs text-gray-600">
+                <p className="font-medium text-gray-900">חשבון עבור:</p>
+                <p className="text-gray-700 font-semibold">{formData.businessName}</p>
               </div>
             </div>
 
-            <div className="border-t pt-4 space-y-2">
+            {/* Service Name & Price */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">חבילת לוגו מלאה</h3>
+            </div>
+
+            {/* What's Included - 3 Items */}
+            <div className="space-y-2">
               {[
                 'לוגו PNG באיכות גבוהה',
                 'לוגו SVG להדפסה',
-                'ייעוץ עיצוב אישי',
-                'הנחה 20% על שירותי עיצוב נוספים'
+                'ייעוץ עיצוב אישי'
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-green-600"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
                   <p className="text-sm text-gray-700">{item}</p>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Payment Options */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-gray-900">בחר אמצעי תשלום</h3>
-            
-            <div className="space-y-3">
-              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
-                <div className="w-12 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">Bit</div>
-                <span className="font-semibold text-gray-900">ביט - מעברון תשלומים</span>
-              </button>
-
-              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
-                <div className="w-12 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded flex items-center justify-center text-white text-xs font-bold">💳</div>
-                <span className="font-semibold text-gray-900">כרטיס אשראי / חיוב</span>
-              </button>
-
-              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
-                <div className="w-12 h-8 bg-green-600 rounded flex items-center justify-center text-white text-xs font-bold">₪</div>
-                <span className="font-semibold text-gray-900">העברה בנקאית</span>
-              </button>
-
-              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
-                <div className="w-12 h-8 bg-blue-500 rounded flex items-center justify-center text-white text-xs font-bold">₪</div>
-                <span className="font-semibold text-gray-900">PayPal</span>
-              </button>
+            {/* Price - Clear */}
+            <div className="bg-gray-50 rounded-lg p-3 mt-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">סכום כולל:</span>
+                <p className="text-2xl font-bold text-gray-900">₪99</p>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">תשלום חד-פעמי, ללא חיובים נוספים</p>
             </div>
           </div>
 
-          {/* CTA Button */}
-          <Button className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold text-lg rounded-lg">
-            המשך לתשלום
-          </Button>
+          {/* Payment Methods */}
+          <div className="p-6 space-y-3 border-b border-gray-100">
+            <p className="text-sm font-semibold text-gray-900 mb-3">בחר אמצעי תשלום</p>
 
-          {/* Trust Banner */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-            <p className="text-sm text-blue-900">
-              🔒 התשלום מאובטח ו-100% בטוח. אנחנו משתמשים בטכנולוגיות הצפנה מובילות.
+            {[
+              { id: 'bit', label: 'ביט', icon: '📱' },
+              { id: 'card', label: 'כרטיס אשראי', icon: '💳' },
+              { id: 'bank', label: 'העברה בנקאית', icon: '🏦' }
+            ].map(method => (
+              <button
+                key={method.id}
+                onClick={() => setSelectedPayment(method.id)}
+                className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${
+                  selectedPayment === method.id
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                }`}
+              >
+                <div className="text-lg">{method.icon}</div>
+                <span className={`text-sm font-medium ${
+                  selectedPayment === method.id ? 'text-blue-900' : 'text-gray-700'
+                }`}>
+                  {method.label}
+                </span>
+                {selectedPayment === method.id && (
+                  <div className="ml-auto w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center bg-blue-500">
+                    <div className="w-2 h-2 rounded-full bg-white"></div>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* CTA Button */}
+          <div className="p-6">
+            <Button 
+              onClick={() => alert('תשלום בהצליחה! 🎉')}
+              className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm transition-all"
+            >
+              המשך לתשלום
+            </Button>
+          </div>
+
+          {/* Micro Trust - Small */}
+          <div className="px-6 pb-6 text-center">
+            <p className="text-xs text-gray-600">
+              🔒 התשלום מאובטח • ניתן לפנות אלינו בכל שלב
             </p>
           </div>
         </div>
+
+        {/* Back Button - Bottom */}
+        <button
+          onClick={() => setStep(4)}
+          className="mt-6 text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
+        >
+          ← חזור לעמוד הקודם
+        </button>
       </motion.div>
     );
   }
