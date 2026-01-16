@@ -380,86 +380,87 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           </div>
 
           {/* Mobile Selector */}
-        <LogoSelectorMobile logos={logos} formData={formData} />
+          <LogoSelectorMobile logos={logos} formData={formData} />
 
-        {/* Download Formats Dialog */}
-        <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
-          <DialogContent className="sm:max-w-sm">
-            <DialogHeader>
-              <DialogTitle className="text-base font-bold">הלוגו שלך מוכן להורדה</DialogTitle>
-            </DialogHeader>
+          {/* Download Formats Dialog */}
+          <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
+            <DialogContent className="sm:max-w-sm">
+              <DialogHeader>
+                <DialogTitle className="text-base font-bold">הלוגו שלך מוכן להורדה</DialogTitle>
+              </DialogHeader>
 
-            <div className="space-y-2 py-2">
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <Image className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-gray-900">PNG</span>
+              <div className="space-y-2 py-2">
+                <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <Image className="w-5 h-5 text-blue-600" />
+                    <span className="font-medium text-gray-900">PNG</span>
+                  </div>
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
                 </div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
 
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <Code className="w-5 h-5 text-purple-600" />
-                  <span className="font-medium text-gray-900">SVG</span>
+                <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <Code className="w-5 h-5 text-purple-600" />
+                    <span className="font-medium text-gray-900">SVG</span>
+                  </div>
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
                 </div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
 
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <FileJson className="w-5 h-5 text-red-600" />
-                  <span className="font-medium text-gray-900">PDF</span>
+                <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <FileJson className="w-5 h-5 text-red-600" />
+                    <span className="font-medium text-gray-900">PDF</span>
+                  </div>
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
                 </div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
+
+                <button
+                  onClick={() => {
+                    setSelectedLogo(null);
+                    setStep(5);
+                  }}
+                  className="w-full mt-3 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all"
+                >
+                  <span className="font-bold text-gray-900 text-sm">המשך לרכישה</span>
+                  <Wand2 className="w-5 h-5 text-green-600" />
+                </button>
               </div>
+            </DialogContent>
+          </Dialog>
 
-              <button
-                onClick={() => {
-                  setSelectedLogo(null);
-                  setStep(5);
-                }}
-                className="w-full mt-3 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all"
-              >
-                <span className="font-bold text-gray-900 text-sm">המשך לרכישה</span>
-                <Wand2 className="w-5 h-5 text-green-600" />
-              </button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Desktop Action Buttons */}
-        <div className="hidden lg:flex gap-3 justify-center pt-6">
-          <Button 
-            onClick={() => {
-              setStep(1);
-              setLogos([]);
-              setSelectedLogo(null);
-            }}
-            variant="outline"
-            className="border-2 border-gray-300 h-11 px-6"
-          >
-            ⚡ לוגו חדש
-          </Button>
-          <Button 
-            onClick={() => handleGenerate()}
-            disabled={isGenerating}
-            className="bg-blue-600 hover:bg-blue-700 text-white h-11 px-6"
-          >
-            {isGenerating ? (
-              <>
-                <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
-                יוצר...
-              </>
-            ) : (
-              <>
-                <Wand2 className="w-4 h-4 ml-2" />
-                וריאציות נוספות
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
+          {/* Desktop Action Buttons */}
+          <div className="hidden lg:flex gap-3 justify-center pt-6">
+            <Button 
+              onClick={() => {
+                setStep(1);
+                setLogos([]);
+                setSelectedLogo(null);
+              }}
+              variant="outline"
+              className="border-2 border-gray-300 h-11 px-6"
+            >
+              ⚡ לוגו חדש
+            </Button>
+            <Button 
+              onClick={() => handleGenerate()}
+              disabled={isGenerating}
+              className="bg-blue-600 hover:bg-blue-700 text-white h-11 px-6"
+            >
+              {isGenerating ? (
+                <>
+                  <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
+                  יוצר...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-4 h-4 ml-2" />
+                  וריאציות נוספות
+                </>
+              )}
+            </Button>
+          </div>
+          </>
+          </div>
     );
   }
 
