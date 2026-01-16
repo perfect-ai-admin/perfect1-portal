@@ -42,8 +42,11 @@ export default function FinanceInbox({ data }) {
   }
 
   return (
-    <div className="space-y-2">
-      <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wide">לטיפול עכשיו</h3>
+    <div className="space-y-3 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-4">
+      <h3 className="text-sm font-bold text-amber-900 uppercase tracking-wide flex items-center gap-2">
+        <AlertCircle className="w-4 h-4 text-amber-600" />
+        לטיפול עכשיו
+      </h3>
       <div className="space-y-2">
         {inboxItems.slice(0, 5).map((item, idx) => (
           <motion.div
@@ -51,7 +54,7 @@ export default function FinanceInbox({ data }) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white border border-gray-200 rounded-lg p-3 flex items-start gap-3 hover:shadow-sm transition-shadow group"
+            className="bg-white border-2 border-amber-200 rounded-lg p-3 flex items-start gap-3 hover:shadow-md transition-all group hover:border-amber-300"
           >
             {/* Icon */}
             <div className="text-lg flex-shrink-0 mt-0.5">{item.icon}</div>
@@ -70,12 +73,10 @@ export default function FinanceInbox({ data }) {
             {/* Action */}
             <Button
               size="sm"
-              variant="ghost"
               onClick={() => console.log('Action:', item.id)}
-              className="flex-shrink-0 h-8 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+              className="flex-shrink-0 h-8 px-3 text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold opacity-0 group-hover:opacity-100 transition-all"
             >
               {item.action}
-              <ChevronRight className="w-3 h-3 mr-1" />
             </Button>
           </motion.div>
         ))}
