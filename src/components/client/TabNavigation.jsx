@@ -5,6 +5,11 @@ import { cn } from '@/lib/utils';
 
 const TABS = [
   {
+    id: 'progress',
+    label: 'מסע העסק',
+    icon: MapPin
+  },
+  {
     id: 'business',
     label: 'נתוני העסק',
     icon: BarChart3
@@ -23,11 +28,6 @@ const TABS = [
     id: 'marketing',
     label: 'שיווק',
     icon: Megaphone
-  },
-  {
-    id: 'progress',
-    label: 'מסע העסק',
-    icon: MapPin
   },
   {
     id: 'mentor',
