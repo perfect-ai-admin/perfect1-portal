@@ -58,44 +58,52 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-10"
+              initial={{ opacity: 0, height: 0, y: -10 }}
+              animate={{ opacity: 1, height: 'auto', y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-purple-100 overflow-hidden z-10"
             >
               {activeGoals.length > 0 && (
-                <div className="p-3 space-y-2 max-h-64 overflow-y-auto">
-                  {activeGoals.map((goal) => (
-                    <div
+                <div className="p-4 space-y-2.5 max-h-64 overflow-y-auto">
+                  {activeGoals.map((goal, index) => (
+                    <motion.div
                       key={goal.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
                       onClick={() => {
                         setIsOpen(false);
                         onNavigate('goals');
                       }}
-                      className="p-2.5 bg-purple-50 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors"
+                      className="p-3 bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-200 border border-purple-200/50"
                     >
-                      <p className="text-sm font-medium text-gray-900">{goal.title}</p>
+                      <p className="text-sm font-semibold text-gray-900 mb-2">{goal.title}</p>
                       {goal.progress !== undefined && (
-                        <div className="mt-1.5 flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-purple-500 rounded-full transition-all"
-                              style={{ width: `${goal.progress}%` }}
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex-1 h-2 bg-white/80 rounded-full overflow-hidden shadow-inner">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${goal.progress}%` }}
+                              transition={{ duration: 0.6, delay: index * 0.05 + 0.2 }}
+                              className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"
                             />
                           </div>
-                          <span className="text-xs text-gray-600">{goal.progress}%</span>
+                          <span className="text-xs font-bold text-purple-700">{goal.progress}%</span>
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
               <button
                 onClick={handleAddGoal}
-                className="w-full p-3 text-center text-purple-600 font-semibold text-sm hover:bg-purple-50 transition-colors border-t border-gray-200 flex items-center justify-center gap-1.5"
+                className="w-full p-4 text-center text-purple-600 font-bold text-sm hover:bg-gradient-to-br hover:from-purple-50 hover:to-purple-100 transition-all border-t border-purple-200 flex items-center justify-center gap-2 active:scale-95"
               >
-                <Plus className="w-4 h-4" />
-                מטרה חדשה
+                <div className="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center">
+                  <Plus className="w-3.5 h-3.5" />
+                </div>
+                הוסף מטרה חדשה
               </button>
             </motion.div>
           )}
