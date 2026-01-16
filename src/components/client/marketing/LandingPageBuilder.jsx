@@ -61,12 +61,12 @@ export default function LandingPageBuilder() {
             ))}
           </div>
 
-          <Button 
+          <button 
             onClick={() => setShowQuestionnaire(true)}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
           >
             התחל עכשיו
-          </Button>
+          </button>
         </div>
       </div>
     </motion.div>
