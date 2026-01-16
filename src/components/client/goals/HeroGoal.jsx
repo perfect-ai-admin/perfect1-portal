@@ -92,7 +92,7 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
         {goal.actionHint && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-4 pt-4 border-t border-gray-200 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors w-full"
+            className="mt-2 pt-2 border-t border-gray-200 flex items-center gap-2 text-xs text-gray-600 hover:text-gray-900 transition-colors w-full"
           >
             <span className="flex-1 text-right">מה מקדם את המטרה עכשיו?</span>
             <ChevronDown className={cn("w-4 h-4 transition-transform", expanded && "rotate-180")} />
