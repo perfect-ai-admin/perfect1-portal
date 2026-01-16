@@ -87,12 +87,17 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
   return (
     <div className="flex flex-col h-full bg-gray-50/50" dir="rtl">
       {/* Header */}
-      <div className="flex-none px-6 py-4 bg-white border-b border-gray-100 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">סיום והורדה</h2>
-          <p className="text-sm text-gray-500">השלם את הרכישה לקבלת הקבצים</p>
+      <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm z-10">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="p-1 -mr-2 text-gray-400 hover:text-gray-700 transition-colors">
+            <ChevronRight className="w-6 h-6" />
+          </button>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 leading-none">סיום והורדה</h2>
+            <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
+          </div>
         </div>
-        <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">
+        <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-blue-200 shadow-sm">
           ₪{price}
         </div>
       </div>
