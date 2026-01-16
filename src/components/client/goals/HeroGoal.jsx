@@ -44,14 +44,14 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
              )}
            </button>
            <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <h2 className="text-lg font-bold text-gray-900">{goal.title}</h2>
-              <span className={cn("text-xs font-semibold px-2 py-1 rounded-full", config.color, config.bg)}>
-                {config.label}
-              </span>
-            </div>
-            <p className="text-sm text-gray-600">{goal.description}</p>
-          </div>
+           <div className="flex items-center gap-2 mb-2 flex-wrap">
+             <h2 className="text-base md:text-lg font-bold text-gray-900">{goal.title}</h2>
+             <span className={cn("text-xs font-semibold px-2 py-1 rounded-full", config.color, config.bg)}>
+               {config.label}
+             </span>
+           </div>
+           <p className="text-xs md:text-sm text-gray-600">{goal.description}</p>
+           </div>
           <div className="flex gap-1 flex-shrink-0">
             <button
               onClick={() => onEdit(goal)}
