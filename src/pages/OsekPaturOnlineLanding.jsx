@@ -272,13 +272,13 @@ export default function OsekPaturOnlineLanding() {
 
                     <ul className="space-y-3">
                      {[
-                       'מילוי טופס ספציפי ומדוקדק',
-                       'העלאת ת.ז. ואישור בנק מאובטח',
-                       'חתימה דיגיטלית עם SLA חוקי',
-                       'בדיקה מלאה של כל הנתונים',
-                       'הגשה ישירה למערכות הממשלתיות',
-                       'עדכונים שוטפים במהלך העיבוד'
-                     ].map((item, i) => (
+                        'ייעוץ בכל צעד של התהליך',
+                        'העלאה בטוחה של מסמכים',
+                        'חתימה דיגיטלית מוכרת חוקית',
+                        'בדיקה מלא של כל הנתונים לפני הגשה',
+                        'הכוונה בתהליך הרשויות',
+                        'תמיכה בוואטסאפ וטלפון'
+                      ].map((item, i) => (
                       <li key={i} className="flex items-center gap-3">
                         <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
                         <span className="text-gray-700 font-medium">{item}</span>
