@@ -87,40 +87,42 @@ export default function MobileTabBar({ activeTab, onChange }) {
         })}
 
         {/* More Menu for additional tabs */}
-        {hiddenTabs.length > 0 && (
-          <DropdownMenu open={isMoreOpen} onOpenChange={setIsMoreOpen}>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="relative flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-                aria-label="עוד אפשרויות"
-                aria-haspopup="true"
-                aria-expanded={isMoreOpen}
-              >
-                <MoreHorizontal className={`w-5 h-5 ${isMoreOpen ? 'text-blue-600' : 'text-gray-500'}`} aria-hidden="true" />
-                <span className="text-[10px] font-medium text-gray-500">עוד</span>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="top" className="mb-16">
-              {hiddenTabs.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <DropdownMenuItem 
-                    key={tab.id}
-                    onClick={() => {
-                      onChange(tab.id);
-                      setIsMoreOpen(false);
-                    }}
-                    className={isActive ? 'bg-blue-50 text-blue-600' : ''}
-                  >
-                    <Icon className="w-4 h-4 mr-2" aria-hidden="true" />
-                    {tab.label}
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+         {hiddenTabs.length > 0 && (
+           <div>
+             <DropdownMenu open={isMoreOpen} onOpenChange={setIsMoreOpen}>
+               <DropdownMenuTrigger asChild>
+                 <button
+                   className="relative flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] active:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                   aria-label="עוד אפשרויות"
+                   aria-haspopup="true"
+                   aria-expanded={isMoreOpen}
+                 >
+                   <MoreHorizontal className={`w-5 h-5 ${isMoreOpen ? 'text-blue-600' : 'text-gray-500'}`} aria-hidden="true" />
+                   <span className="text-[10px] font-medium text-gray-500">עוד</span>
+                 </button>
+               </DropdownMenuTrigger>
+               <DropdownMenuContent align="end" side="top" className="mb-16">
+                 {hiddenTabs.map((tab) => {
+                   const Icon = tab.icon;
+                   const isActive = activeTab === tab.id;
+                   return (
+                     <DropdownMenuItem 
+                       key={tab.id}
+                       onClick={() => {
+                         onChange(tab.id);
+                         setIsMoreOpen(false);
+                       }}
+                       className={isActive ? 'bg-blue-50 text-blue-600' : ''}
+                     >
+                       <Icon className="w-4 h-4 mr-2" aria-hidden="true" />
+                       {tab.label}
+                     </DropdownMenuItem>
+                   );
+                 })}
+               </DropdownMenuContent>
+             </DropdownMenu>
+           </div>
+         )}
       </div>
     </nav>
   );
