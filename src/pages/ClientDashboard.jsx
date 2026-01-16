@@ -45,6 +45,13 @@ export default function ClientDashboard() {
   const [client, setClient] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
+
+  // Reset goalsTabConfig when leaving goals tab
+  React.useEffect(() => {
+    if (activeTab !== 'goals') {
+      setGoalsTabConfig({ openAddGoal: false });
+    }
+  }, [activeTab]);
   const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
