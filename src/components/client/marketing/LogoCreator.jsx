@@ -48,6 +48,7 @@ export default function LogoCreator({ businessName }) {
   const [logos, setLogos] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedLogo, setSelectedLogo] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState('bit');
 
   const handleGenerate = async () => {
     setIsGenerating(true);
