@@ -41,7 +41,7 @@ export default function LogoSelectorMobile({ logos, formData }) {
          transition={{ duration: 0.2 }}
          className="flex-1 flex flex-col items-center justify-center px-6 overflow-hidden min-h-0 w-full"
        >
-         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center shadow-sm w-full max-w-[300px] aspect-square relative p-6">
+         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center shadow-sm w-full max-w-[300px] aspect-square max-h-[50vh] relative p-6">
            <img 
              src={currentLogo.url} 
              alt={`Logo variant ${currentIndex + 1}`} 
