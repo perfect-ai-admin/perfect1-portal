@@ -76,6 +76,8 @@ export default function LandingPageBuilder() {
     document.body
   ) : null;
 
+  return (
+    <>
       {/* Card Content */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
