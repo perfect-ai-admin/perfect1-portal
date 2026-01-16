@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Palette, Rocket, Users, TrendingUp, BookOpen } from 'lucide-react';
+import { Palette, Rocket, Users, TrendingUp, BookOpen, Briefcase } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BrandingSection from '../marketing/BrandingSection';
 import BrandingTools from '../marketing/BrandingTools';
@@ -16,6 +16,8 @@ import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
 
 export default function MarketingTab({ data }) {
+  const [selectedWork, setSelectedWork] = useState(null);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
