@@ -50,12 +50,16 @@ export default function MarketingTab({ data }) {
         </TabsList>
 
         <TabsContent value="branding" className="bg-white rounded-lg border border-gray-200 p-6 space-y-8">
-          <BrandingTools businessName={data.name} />
-          <div className="border-t pt-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">תבניות נוספות</h3>
-            <BrandingSection businessName={data.name} onActionStart={() => {}} />
-          </div>
-        </TabsContent>
+           <LandingPageBuilder />
+           <div className="border-t pt-8">
+             <h3 className="text-lg font-bold text-gray-900 mb-4">עוד כלים</h3>
+             <BrandingTools businessName={data.name} />
+           </div>
+           <div className="border-t pt-8">
+             <h3 className="text-lg font-bold text-gray-900 mb-4">תבניות נוספות</h3>
+             <BrandingSection businessName={data.name} onActionStart={() => {}} />
+           </div>
+         </TabsContent>
 
         <TabsContent value="campaigns" className="bg-white rounded-lg border border-gray-200 p-6">
           <CampaignSection />
