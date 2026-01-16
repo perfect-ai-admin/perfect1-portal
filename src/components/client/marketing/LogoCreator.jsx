@@ -567,7 +567,14 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         </div>
 
         {/* Mobile View */}
-        <LogoSelectorMobile logos={logos} formData={formData} onNext={() => setStep(5)} />
+        <LogoSelectorMobile 
+          logos={logos} 
+          formData={formData} 
+          onNext={() => setStep(5)}
+          onReset={() => { setStep(1); setLogos([]); setSelectedLogo(null); }}
+          onGenerateMore={() => handleGenerate()}
+          isGenerating={isGenerating}
+        />
 
         {/* Desktop Dialog (Hidden on mobile inside LogoSelectorMobile but kept here for desktop flow) */}
         <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>

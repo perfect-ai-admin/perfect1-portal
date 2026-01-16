@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Download, Palette, ChevronLeft, ChevronRight, Image, Code, FileJson, CheckCircle2, Wand2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-export default function LogoSelectorMobile({ logos, formData, onNext }) {
+export default function LogoSelectorMobile({ logos, formData, onNext, onReset, onGenerateMore, isGenerating }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -43,8 +43,8 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
     >
       {/* HEADER - Fixed Height */}
       <div className="flex-none px-4 py-3 border-b border-gray-100 bg-white/95 backdrop-blur-sm z-10 text-center">
-        <h2 className="text-base font-bold text-gray-900 leading-tight">בחר את הלוגו המושלם 🎨</h2>
-        <p className="text-xs text-gray-500 mt-0.5">{logos.length} וריאציות עוצבו עבורך</p>
+        <h2 className="text-base font-bold text-gray-900 leading-tight">עיצבנו עבורך {logos.length} לוגואים מדהימים! 🎉</h2>
+        <p className="text-xs text-gray-500 mt-0.5">דפדף כדי לראות את כל האפשרויות</p>
       </div>
 
       {/* MAIN CONTENT - Flexible - Takes all remaining space */}
@@ -114,9 +114,12 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
              <ChevronRight className="w-6 h-6" />
            </button>
            
-           <span className="text-xs font-medium text-gray-400 whitespace-nowrap min-w-[60px] text-center">
-             {currentIndex + 1} מתוך {logos.length}
-           </span>
+           <div className="flex flex-col items-center">
+             <span className="text-sm font-bold text-gray-900 whitespace-nowrap min-w-[60px] text-center">
+               {currentIndex + 1} מתוך {logos.length}
+             </span>
+             <span className="text-[10px] text-gray-400">החלק או לחץ</span>
+           </div>
 
            <button
              onClick={() => setCurrentIndex(Math.min(logos.length - 1, currentIndex + 1))}
@@ -125,6 +128,30 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
            >
              <ChevronLeft className="w-6 h-6" />
            </button>
+        </div>
+        
+        {/* Additional Actions */}
+        <div className="flex items-center justify-center gap-6 pt-2 pb-1 border-t border-gray-50">
+          <button 
+            onClick={onReset}
+            className="text-xs font-medium text-gray-500 hover:text-gray-900 flex items-center gap-1.5 px-2 py-1"
+          >
+            <span>⚡</span>
+            עיצוב חדש לגמרי
+          </button>
+          <div className="w-px h-4 bg-gray-200"></div>
+          <button 
+            onClick={onGenerateMore}
+            disabled={isGenerating}
+            className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 px-2 py-1 disabled:opacity-50"
+          >
+            {isGenerating ? (
+              <span className="animate-spin">⌛</span>
+            ) : (
+              <span>✨</span>
+            )}
+            צור לי עוד וריאציות
+          </button>
         </div>
       </div>
 
