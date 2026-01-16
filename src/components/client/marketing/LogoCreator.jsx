@@ -196,46 +196,51 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
             <p className="text-gray-600 text-sm">איזה אופי מתאים לעסק שלך?</p>
           </div>
 
-          <div>
-            <Label className="text-lg font-bold mb-4 block">סגנון כללי</Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {STYLES.map(style => (
-                <button
-                  key={style.id}
-                  onClick={() => setFormData(prev => ({ ...prev, style: style.id }))}
-                  className={`p-4 border-2 rounded-lg transition-all ${
-                    formData.style === style.id
-                      ? 'border-blue-500 ring-2 ring-blue-200 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="text-3xl mb-2">{style.icon}</div>
-                  <p className="font-semibold text-sm">{style.label}</p>
-                  <p className="text-xs text-gray-600">{style.description}</p>
-                </button>
-              ))}
-            </div>
-          </div>
+          <Tabs defaultValue="style" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+              <TabsTrigger value="style">סגנון כללי</TabsTrigger>
+              <TabsTrigger value="icon">סגנון אייקון</TabsTrigger>
+            </TabsList>
 
-          <div>
-            <Label className="text-lg font-bold mb-4 block">סגנון אייקון</Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {ICON_STYLES.map(iconStyle => (
-                <button
-                  key={iconStyle.id}
-                  onClick={() => setFormData(prev => ({ ...prev, iconStyle: iconStyle.id }))}
-                  className={`p-4 border-2 rounded-lg transition-all ${
-                    formData.iconStyle === iconStyle.id
-                      ? 'border-purple-500 ring-2 ring-purple-200 bg-purple-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="text-2xl mb-2">{iconStyle.example}</div>
-                  <p className="font-semibold text-sm">{iconStyle.label}</p>
-                </button>
-              ))}
-            </div>
-          </div>
+            <TabsContent value="style" className="space-y-4 mt-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {STYLES.map(style => (
+                  <button
+                    key={style.id}
+                    onClick={() => setFormData(prev => ({ ...prev, style: style.id }))}
+                    className={`p-4 border-2 rounded-lg transition-all ${
+                      formData.style === style.id
+                        ? 'border-blue-500 ring-2 ring-blue-200 bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="text-3xl mb-2">{style.icon}</div>
+                    <p className="font-semibold text-sm">{style.label}</p>
+                    <p className="text-xs text-gray-600">{style.description}</p>
+                  </button>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="icon" className="space-y-4 mt-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {ICON_STYLES.map(iconStyle => (
+                  <button
+                    key={iconStyle.id}
+                    onClick={() => setFormData(prev => ({ ...prev, iconStyle: iconStyle.id }))}
+                    className={`p-4 border-2 rounded-lg transition-all ${
+                      formData.iconStyle === iconStyle.id
+                        ? 'border-purple-500 ring-2 ring-purple-200 bg-purple-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="text-2xl mb-2">{iconStyle.example}</div>
+                    <p className="font-semibold text-sm">{iconStyle.label}</p>
+                  </button>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
 
           <Button 
             onClick={handleGenerate} 
