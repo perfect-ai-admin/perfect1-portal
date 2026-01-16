@@ -49,9 +49,15 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   // Scroll to top when opening add goal form
   useEffect(() => {
     if (showAddGoal) {
+      // Find scrollable parent or window
       setTimeout(() => {
-        topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 0);
+        const scrollableParent = topRef.current?.closest('[style*="overflow"]') || window;
+        if (scrollableParent === window) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
     }
   }, [showAddGoal]);
 
