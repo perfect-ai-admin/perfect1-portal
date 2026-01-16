@@ -276,12 +276,12 @@ export default function OsekPaturLanding() {
 
                   <ul className="space-y-2">
                     {[
-                      'פתיחת תיק עוסק פטור',
-                      'טיפול מול כל הרשויות',
-                      'אפליקציה לניהול העסק',
-                      'ליווי שוטף + דוח שנתי',
-                      'תמיכה אישית'
-                    ].map((item, i) => (
+                       'פתיחת תיק עוסק פטור',
+                       'ליווי מול כל הרשויות',
+                       'אפליקציה לניהול העסק',
+                       'ליווי שוטף + דוח שנתי',
+                       'תמיכה אישית'
+                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-[#27AE60] flex-shrink-0" />
                         <span className="text-sm text-gray-700 font-medium">{item}</span>
