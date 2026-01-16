@@ -50,32 +50,6 @@ export default function LandingPageBuilder() {
     }
   }, [closeModal]);
 
-  const modal = showQuestionnaire && portalReady ? createPortal(
-    <div 
-      className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" 
-      onClick={handleOverlayClick}
-      role="presentation"
-    >
-      <div 
-        className="bg-white rounded-xl w-full max-w-2xl relative max-h-[90vh] flex flex-col shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button 
-          type="button"
-          onClick={closeModal}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10 p-1"
-          aria-label="סגור"
-        >
-          <X className="w-6 h-6" />
-        </button>
-        <div className="overflow-y-auto flex-1">
-          <LandingPageQuestionnaire onComplete={handleComplete} />
-        </div>
-      </div>
-    </div>,
-    document.body
-  ) : null;
-
   return (
     <>
       {/* Card Content */}
