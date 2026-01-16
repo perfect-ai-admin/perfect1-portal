@@ -757,7 +757,11 @@ export default function OsekPaturLanding() {
                  <p className="text-sm font-bold text-gray-700 mb-4">בחר דרך תשלום:</p>
 
                  <Button
-                   onClick={scrollToForm}
+                   onClick={() => {
+                     setTimeout(() => {
+                       document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                     }, 100);
+                   }}
                    className="w-full h-14 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-xl flex items-center justify-between px-4 gap-3"
                  >
                    <span>ביצוע בעסקה</span>
@@ -768,7 +772,11 @@ export default function OsekPaturLanding() {
                  </Button>
 
                  <Button
-                   onClick={scrollToForm}
+                   onClick={() => {
+                     setTimeout(() => {
+                       document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+                     }, 100);
+                   }}
                    variant="outline"
                    className="w-full h-14 border-2 border-gray-300 text-gray-800 font-bold rounded-xl hover:bg-gray-50 flex items-center justify-between px-4 gap-3"
                  >
