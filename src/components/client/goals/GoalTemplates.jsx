@@ -294,16 +294,26 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
    };
 
   // Responsive: Sheet on mobile, Dialog on desktop
-  const [mobileLayout, setMobileLayout] = useState(false);
+  const [mobileLayout, setMobileLayout] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
 
   useEffect(() => {
-    const handleResize = () => {
-      setMobileLayout(window.innerWidth < 768);
+    // Use matchMedia for better reliability
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    
+    const handleChange = (e) => {
+      setMobileLayout(e.matches);
     };
-    // Set initial value
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    
+    // Set initial value immediately
+    setMobileLayout(mediaQuery.matches);
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   if (mobileLayout) {
