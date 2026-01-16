@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Wand2, Download, RefreshCw, FileJson, Image, Code } from 'lucide-react';
+import { Palette, Wand2, Download, RefreshCw, FileJson, Image, Code, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
