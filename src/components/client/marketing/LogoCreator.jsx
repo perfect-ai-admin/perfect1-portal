@@ -324,10 +324,10 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
     return (
       <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6" style={{ height: '100dvh' }}>
-        {/* Header - Compact */}
-        <div className="text-center px-4 py-2 lg:py-4 flex-shrink-0">
-          <h2 className="text-lg md:text-3xl font-bold text-gray-900 leading-tight">בחר את הלוגו המושלם שלך 🎨</h2>
-          <p className="text-gray-500 text-xs md:text-base mt-0.5 lg:mt-1">4 וריאציות מעוצבות בעבורך</p>
+        {/* Header - Hidden on Mobile (LogoSelectorMobile has it) */}
+        <div className="hidden lg:block text-center px-4 py-4 flex-shrink-0">
+          <h2 className="text-3xl font-bold text-gray-900">בחר את הלוגו המושלם שלך 🎨</h2>
+          <p className="text-gray-500 text-base mt-1">4 וריאציות מעוצבות בעבורך</p>
         </div>
 
         <>
