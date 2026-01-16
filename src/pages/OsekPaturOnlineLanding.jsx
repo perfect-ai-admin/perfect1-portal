@@ -396,14 +396,14 @@ export default function OsekPaturOnlineLanding() {
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <div className="inline-block bg-[#3498DB]/10 text-[#3498DB] px-6 py-2 rounded-full text-sm font-bold mb-6">
-                🌐 הפתרון האונליין
+              <div className="inline-block bg-[#27AE60]/10 text-[#27AE60] px-6 py-2 rounded-full text-sm font-bold mb-6">
+                ✅ התהליך שלנו - שלב אחרי שלב
               </div>
               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                איך זה עובד?
+                מה קורה בכל שלב?
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                תהליך דיגיטלי מלא, בלי צורך להגיע לשום מקום
+                ארבעה שלבים פשוטים עד שהעוסק שלך מופיע במערכת
               </p>
             </motion.div>
 
