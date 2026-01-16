@@ -161,6 +161,7 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <Button 
+                      onClick={() => setActiveFlowId(tool.id)}
                       className={`
                         w-full text-xs py-1.5 h-auto
                         bg-gradient-to-r ${tool.color} 
