@@ -14,6 +14,7 @@ export default function ProgressTab({ data, onNavigate }) {
   const completedMilestones = ['registration'];
   const currentMilestone = 'first_invoice';
   const whyMattersRef = React.useRef(null);
+  const [whyExpanded, setWhyExpanded] = useState(false);
   
   const quickStats = {
     monthlyRevenue: '₪12,500',
@@ -56,9 +57,12 @@ export default function ProgressTab({ data, onNavigate }) {
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   const scrollToWhyMatters = () => {
-    if (whyMattersRef.current) {
-      whyMattersRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    setWhyExpanded(true);
+    setTimeout(() => {
+      if (whyMattersRef.current) {
+        whyMattersRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   return (
@@ -151,7 +155,12 @@ export default function ProgressTab({ data, onNavigate }) {
 
       {/* Why This Matters - Mobile */}
       <div className="lg:hidden">
-        <StepImportancePanel ref={whyMattersRef} step={nextStep} />
+        <StepImportancePanel 
+          ref={whyMattersRef} 
+          step={nextStep} 
+          isExpanded={whyExpanded}
+          onExpandChange={setWhyExpanded}
+        />
       </div>
 
       {/* Desktop Grid */}
