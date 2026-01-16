@@ -39,29 +39,31 @@ export default function LogoSelectorMobile({ logos, formData }) {
          initial={{ opacity: 0, scale: 0.95 }}
          animate={{ opacity: 1, scale: 1 }}
          transition={{ duration: 0.2 }}
-         className="flex-1 flex flex-col items-center justify-center px-3 overflow-hidden min-h-0"
+         className="flex-1 flex flex-col items-center justify-center px-6 overflow-hidden min-h-0 w-full"
        >
-         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl flex items-center justify-center shadow-sm w-40 h-40">
+         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center shadow-sm w-full max-w-[300px] aspect-square relative p-6">
            <img 
              src={currentLogo.url} 
              alt={`Logo variant ${currentIndex + 1}`} 
-             className="max-h-28 w-auto object-contain"
+             className="w-full h-full object-contain drop-shadow-sm"
            />
          </div>
 
-         <h3 className="text-xs font-bold text-gray-900 mt-1.5 text-center line-clamp-1">{currentLogo.variant}</h3>
+         <div className="mt-4 w-full flex flex-col items-center space-y-2">
+           <h3 className="text-sm font-bold text-gray-900 text-center line-clamp-1 px-4">{currentLogo.variant}</h3>
 
-         <div className="flex items-center justify-center gap-1 mt-1">
-           <span className="text-xs font-semibold text-gray-700">{currentIndex + 1}</span>
-           <div className="w-12 h-0.5 bg-gray-200 rounded-full overflow-hidden">
-             <motion.div
-               initial={{ width: 0 }}
-               animate={{ width: `${progressPercent}%` }}
-               transition={{ duration: 0.3 }}
-               className="h-full bg-gradient-to-r from-blue-600 to-purple-600"
-             />
+           <div className="flex items-center justify-center gap-3 w-full max-w-[120px]">
+             <span className="text-xs font-medium text-gray-400">{currentIndex + 1}</span>
+             <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+               <motion.div
+                 initial={{ width: 0 }}
+                 animate={{ width: `${progressPercent}%` }}
+                 transition={{ duration: 0.3 }}
+                 className="h-full bg-blue-600 rounded-full"
+               />
+             </div>
+             <span className="text-xs font-medium text-gray-400">{logos.length}</span>
            </div>
-           <span className="text-xs font-semibold text-gray-700">{logos.length}</span>
          </div>
        </motion.div>
 
