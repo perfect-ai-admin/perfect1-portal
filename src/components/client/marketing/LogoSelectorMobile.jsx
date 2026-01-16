@@ -143,9 +143,7 @@ export default function LogoSelectorMobile({ logos, formData }) {
             </button>
           </div>
         </DialogContent>
-       </Dialog>
-       </div>
-       <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
-       </Dialog>
-  );
-}
+        </Dialog>
+        </div>
+        );
+        }
