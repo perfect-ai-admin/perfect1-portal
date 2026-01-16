@@ -71,22 +71,22 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
         </div>
 
         {/* Metric & Timeline */}
-         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mt-2 md:mt-3 pt-2 md:pt-3 border-t border-gray-200">
-           <div>
-             <p className="text-xs text-gray-500 mb-0.5">מדד</p>
-             <p className="text-xs md:text-sm font-semibold text-gray-900">{goal.currentDisplay} / {goal.targetDisplay}</p>
-           </div>
-           <div>
-             <p className="text-xs text-gray-500 mb-0.5">יעד</p>
-             <p className="text-xs md:text-sm font-semibold text-gray-900">{new Date(goal.deadline).toLocaleDateString('he-IL')}</p>
-           </div>
-           {daysLeft > 0 && (
-             <div>
-               <p className="text-xs text-gray-500 mb-0.5">נותר</p>
-               <p className="text-xs md:text-sm font-semibold text-gray-900">{daysLeft} ימים</p>
-             </div>
-           )}
-         </div>
+        <div className="flex flex-col md:flex-row md:items-center gap-1.5 md:gap-3 mt-1.5 md:mt-2.5 pt-1.5 md:pt-2.5 border-t border-gray-200">
+          <div>
+            <p className="text-[11px] text-gray-500 mb-0.5">מדד</p>
+            <p className="text-xs font-semibold text-gray-900">{goal.currentDisplay} / {goal.targetDisplay}</p>
+          </div>
+          <div>
+            <p className="text-[11px] text-gray-500 mb-0.5">יעד</p>
+            <p className="text-xs font-semibold text-gray-900">{new Date(goal.deadline).toLocaleDateString('he-IL')}</p>
+          </div>
+          {daysLeft > 0 && (
+            <div>
+              <p className="text-[11px] text-gray-500 mb-0.5">נותר</p>
+              <p className="text-xs font-semibold text-gray-900">{daysLeft} ימים</p>
+            </div>
+          )}
+        </div>
 
         {/* Expansion */}
         {goal.actionHint && (
