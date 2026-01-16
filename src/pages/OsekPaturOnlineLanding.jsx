@@ -718,11 +718,11 @@ export default function OsekPaturOnlineLanding() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                חיפשת פתיחת עוסק פטור אונליין? 🌐
-              </h2>
-              <p className="text-xl text-white/90 mb-8">
-                פותחים אונליין, בלי לצאת מהבית - <strong>עכשיו</strong>
-              </p>
+                 בואו נעזור לך לפתוח עוסק נכון
+               </h2>
+               <p className="text-xl text-white/90 mb-8">
+                 ייעוץ מקצועי וליווי צמוד - מתחיל בשומת התחלה שלך
+               </p>
               
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
