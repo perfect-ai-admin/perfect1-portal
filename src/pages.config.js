@@ -53,7 +53,6 @@ import OsekMorshaLanding from './pages/OsekMorshaLanding';
 import OsekMorshaRights from './pages/OsekMorshaRights';
 import OsekMorshaSteps from './pages/OsekMorshaSteps';
 import OsekMorshaTime from './pages/OsekMorshaTime';
-import OsekPaturLanding from './pages/OsekPaturLanding';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import OsekPaturSteps from './pages/OsekPaturSteps';
 import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransition';
@@ -97,6 +96,8 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import OsekPaturLanding from './pages/OsekPaturLanding';
+import Checkout from './pages/Checkout';
 import __Layout from './Layout.jsx';
 
 
@@ -156,7 +157,6 @@ export const PAGES = {
     "OsekMorshaRights": OsekMorshaRights,
     "OsekMorshaSteps": OsekMorshaSteps,
     "OsekMorshaTime": OsekMorshaTime,
-    "OsekPaturLanding": OsekPaturLanding,
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
     "OsekPaturSteps": OsekPaturSteps,
     "OsekPaturThresholdAndTransition": OsekPaturThresholdAndTransition,
@@ -200,6 +200,8 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "OsekPaturLanding": OsekPaturLanding,
+    "Checkout": Checkout,
 }
 
 export const pagesConfig = {
