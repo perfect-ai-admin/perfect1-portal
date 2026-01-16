@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Circle, AlertCircle, Edit2 } from 'lucide-react';
+import { CheckCircle2, Circle, AlertCircle, Edit2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function SecondaryGoals({ goals, onStatusChange, onEdit }) {
+export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete }) {
   if (!goals || goals.length === 0) return null;
 
   const statusIcons = {
@@ -47,13 +47,22 @@ export default function SecondaryGoals({ goals, onStatusChange, onEdit }) {
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => onEdit(goal)}
-              className="p-1 hover:bg-gray-50 rounded transition-colors flex-shrink-0"
-              aria-label="ערוך מטרה"
-            >
-              <Edit2 className="w-3.5 h-3.5 text-gray-400" />
-            </button>
+            <div className="flex gap-1 flex-shrink-0">
+              <button
+                onClick={() => onEdit(goal)}
+                className="p-1 hover:bg-gray-50 rounded transition-colors"
+                aria-label="ערוך מטרה"
+              >
+                <Edit2 className="w-3.5 h-3.5 text-gray-400" />
+              </button>
+              <button
+                onClick={() => onDelete(goal.id)}
+                className="p-1 hover:bg-red-50 rounded transition-colors"
+                aria-label="מחק מטרה"
+              >
+                <X className="w-3.5 h-3.5 text-gray-400 hover:text-red-600" />
+              </button>
+            </div>
           </motion.div>
         ))}
       </div>
