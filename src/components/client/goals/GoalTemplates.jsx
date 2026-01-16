@@ -249,25 +249,26 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
   };
 
   const handleCreate = () => {
-    if (!selectedTemplate || !goalTitle || !targetValue) return;
+     if (!selectedTemplate || !goalTitle || !targetValue) return;
 
-    const newGoal = {
-      id: Date.now().toString(),
-      category: selectedTemplate.id,
-      title: goalTitle,
-      description: selectedTemplate.description,
-      current: 0,
-      target: parseFloat(targetValue),
-      currentDisplay: `0 ${selectedTemplate.unit}`,
-      targetDisplay: `${targetValue} ${selectedTemplate.unit}`,
-      deadline: deadline || null,
-      timeframe: timeframe,
-      aiInsight: 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
-    };
+     const newGoal = {
+       id: Date.now().toString(),
+       category: selectedTemplate.id,
+       title: goalTitle,
+       description: selectedTemplate.description,
+       current: 0,
+       target: parseFloat(targetValue),
+       currentDisplay: `0 ${selectedTemplate.unit}`,
+       targetDisplay: `${targetValue} ${selectedTemplate.unit}`,
+       deadline: deadline || null,
+       timeframe: timeframe,
+       isPrimary: isPrimary && !hasPrimaryGoal,
+       aiInsight: 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
+     };
 
-    onCreateGoal(newGoal);
-    onClose();
-  };
+     onCreateGoal(newGoal);
+     onClose();
+   };
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
