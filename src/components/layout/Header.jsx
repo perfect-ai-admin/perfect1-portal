@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, Phone, MessageCircle, ChevronDown } from 'lucide-react';
 import { trackPhoneClick, trackWhatsAppClick } from '../tracking/EventTracker';
-import ShoppingCart from '../client/shared/ShoppingCart';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
