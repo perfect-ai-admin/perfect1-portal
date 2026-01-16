@@ -188,15 +188,32 @@ const GOAL_TEMPLATES = [
   }
 ];
 
-export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = false }) {
+export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null }) {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [goalTitle, setGoalTitle] = useState('');
   const [targetValue, setTargetValue] = useState('');
   const [deadline, setDeadline] = useState('');
   const [timeframe, setTimeframe] = useState('month');
-  const [isPrimary, setIsPrimary] = useState(false);
+  const [isPrimary, setIsPrimary] = useState(editingGoal?.isPrimary || false);
   const drawerRef = useRef(null);
   const initialFocusRef = useRef(null);
+
+  // Initialize form with editing goal data
+  React.useEffect(() => {
+    if (editingGoal) {
+      setGoalTitle(editingGoal.title);
+      setTargetValue(editingGoal.target.toString());
+      setDeadline(editingGoal.deadline || '');
+      setTimeframe(editingGoal.timeframe || 'month');
+      setIsPrimary(editingGoal.isPrimary || false);
+      
+      // Find template by category
+      const template = GOAL_TEMPLATES.find(t => t.id === editingGoal.category);
+      if (template) {
+        setSelectedTemplate(template);
+      }
+    }
+  }, [editingGoal]);
 
   // Focus trap implementation
   useEffect(() => {
@@ -251,22 +268,22 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
   const handleCreate = () => {
      if (!selectedTemplate || !goalTitle || !targetValue) return;
 
-     const newGoal = {
-       id: Date.now().toString(),
+     const goalData = {
+       id: editingGoal?.id || Date.now().toString(),
        category: selectedTemplate.id,
        title: goalTitle,
        description: selectedTemplate.description,
-       current: 0,
+       current: editingGoal?.current || 0,
        target: parseFloat(targetValue),
-       currentDisplay: `0 ${selectedTemplate.unit}`,
+       currentDisplay: editingGoal?.currentDisplay || `0 ${selectedTemplate.unit}`,
        targetDisplay: `${targetValue} ${selectedTemplate.unit}`,
        deadline: deadline || null,
        timeframe: timeframe,
        isPrimary: isPrimary && !hasPrimaryGoal,
-       aiInsight: 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
+       aiInsight: editingGoal?.aiInsight || 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
      };
 
-     onCreateGoal(newGoal);
+     onCreateGoal(goalData, !!editingGoal);
      onClose();
    };
 
@@ -285,7 +302,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
               </button>
               <h2 id="goal-title" className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2" ref={initialFocusRef} tabIndex="-1">
                 <Target className="w-5 h-5 text-purple-600" />
-                מטרה חדשה
+                {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
               </h2>
               <div className="w-5" />
             </div>
@@ -467,7 +484,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                   className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-9 rounded-lg text-sm"
                 >
                   <Check className="w-4 h-4 ml-1.5" />
-                  צור מטרה
+                  {editingGoal ? 'שמור שינויים' : 'צור מטרה'}
                 </Button>
                 <Button 
                   variant="outline" 
