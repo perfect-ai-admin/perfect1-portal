@@ -34,7 +34,6 @@ export default function LandingPageBuilder() {
   }, []);
 
   const closeModal = useCallback(() => {
-    console.log('Closing modal');
     setShowQuestionnaire(false);
   }, []);
 
