@@ -524,13 +524,14 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
           );
           }
 
+          // Desktop View
           return (
           <Dialog open={true} onOpenChange={onClose}>
           <DialogContent 
-          className="w-full max-w-3xl p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-screen md:max-h-[90vh] flex flex-col"
+          className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
           ref={drawerRef}
           >
-          <div className="flex flex-col">
+          <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20">
            <div className="flex items-center justify-between mb-2">
