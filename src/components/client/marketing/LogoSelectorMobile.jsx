@@ -107,6 +107,22 @@ export default function LogoSelectorMobile({ logos, formData }) {
             <ChevronLeft className="w-4 h-4" />
           </button>
         </div>
+
+        {/* New Logo & More Variations */}
+        <div className="grid grid-cols-2 gap-2 pt-2">
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full py-3 px-2 rounded-xl border border-gray-300 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition-all"
+          >
+            ⚡ לוגו חדש
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full py-3 px-2 rounded-xl border border-gray-300 text-gray-700 text-xs font-semibold hover:bg-gray-50 transition-all"
+          >
+            ↻ וריאציות נוספות
+          </button>
+        </div>
       </div>
 
       {/* Download Dialog */}
