@@ -98,6 +98,7 @@ import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import OsekPaturLanding from './pages/OsekPaturLanding';
 import Checkout from './pages/Checkout';
+import CheckoutSuccess from './pages/CheckoutSuccess';
 import __Layout from './Layout.jsx';
 
 
@@ -202,6 +203,7 @@ export const PAGES = {
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "OsekPaturLanding": OsekPaturLanding,
     "Checkout": Checkout,
+    "CheckoutSuccess": CheckoutSuccess,
 }
 
 export const pagesConfig = {
