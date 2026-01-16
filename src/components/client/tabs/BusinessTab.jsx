@@ -280,7 +280,9 @@ export default function BusinessTab({ data }) {
       )}
 
       {/* AI-Powered Insights */}
-      <InsightsEngine clientData={data} period={period} />
+      <CollapsibleSection title="תובנות חכמות" defaultOpen={false}>
+        <InsightsEngine clientData={data} period={period} />
+      </CollapsibleSection>
 
 
     </motion.div>
