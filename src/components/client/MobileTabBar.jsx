@@ -62,7 +62,7 @@ export default function MobileTabBar({ activeTab, onChange }) {
                 transition={{ duration: 0.2 }}
               >
                 <Icon 
-                  className={`w-5 h-5 ${
+                  className={`w-6 h-6 ${
                     isActive ? 'text-blue-600' : 'text-gray-500'
                   }`}
                   aria-hidden="true"
