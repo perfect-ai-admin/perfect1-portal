@@ -30,11 +30,14 @@ export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete
           >
             <div className="flex items-start gap-3 flex-1">
               <button
-                onClick={() => onStatusChange(goal.id)}
-                className="mt-0.5 flex-shrink-0 hover:opacity-70 transition-opacity"
-              >
-                {statusIcons[goal.status]}
-              </button>
+                 onClick={() => {
+                   const nextStatus = goal.status === 'active' ? 'achieved' : goal.status === 'achieved' ? 'stuck' : 'active';
+                   onStatusChange(goal, nextStatus);
+                 }}
+                 className="mt-0.5 flex-shrink-0 hover:opacity-70 transition-opacity"
+               >
+                 {statusIcons[goal.status]}
+               </button>
               <div className="flex-1 min-w-0">
                 <p className={cn(
                   "text-sm font-medium",
