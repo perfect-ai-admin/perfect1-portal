@@ -677,7 +677,7 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 bg-gradient-to-br from-[#27AE60] to-[#229954] relative overflow-hidden">
+        <section className="py-16 bg-gradient-to-br from-orange-500 to-red-600 relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
             <div className="absolute bottom-10 left-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -689,10 +689,10 @@ export default function OsekPaturLanding() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                חיפשת פתיחת עוסק פטור – הגעת למקום הנכון
+                די לפורום ודי לחיפוש - בואו לעשות
               </h2>
               <p className="text-xl text-white/90 mb-8">
-                אנחנו עושים את זה בשבילך, <strong>עכשיו</strong>
+                שיחה קצרה וחינם - ואתם תדעו בדיוק איפה אתם עומדים ומה הצעד הבא
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
