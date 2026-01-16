@@ -69,10 +69,10 @@ export default function MobileTabBar({ activeTab, onChange }) {
                 />
               </motion.div>
               <span 
-                className={`text-[10px] font-medium ${
-                  isActive ? 'text-blue-600' : 'text-gray-500'
-                }`}
-              >
+                 className={`text-xs font-semibold ${
+                   isActive ? 'text-blue-600' : 'text-gray-500'
+                 }`}
+               >
                 {tab.label}
               </span>
               {isActive && (
