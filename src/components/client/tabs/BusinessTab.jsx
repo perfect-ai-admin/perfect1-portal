@@ -236,9 +236,9 @@ export default function BusinessTab({ data }) {
 
       {/* Additional Insights - Collapsible on Mobile */}
       <CollapsibleSection title="ניתוח מפורט" defaultOpen={false}>
-        <div className="grid lg:grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">השוואת הכנסות והוצאות</h3>
+        <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
+          <div className="bg-white rounded-lg shadow p-3 md:p-4">
+            <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">השוואת הכנסות והוצאות</h3>
             <BarChart 
               data={revenueData.map(item => ({
                 name: item.month,
@@ -247,18 +247,19 @@ export default function BusinessTab({ data }) {
               }))}
               dataKeys={['הכנסות', 'הוצאות']}
               colors={['#22C55E', '#EF4444']}
+              height={220}
             />
           </div>
 
-          <div className="bg-white rounded-lg shadow p-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">תעדוף פעילות</h3>
-            <div className="flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow p-3 md:p-4">
+            <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">תעדוף פעילות</h3>
+            <div className="flex items-center justify-center overflow-x-auto">
               <HeatmapCalendar 
                 data={Array.from({length: 85}, (_, i) => ({
                   date: new Date(new Date().setDate(new Date().getDate() - (84 - i))).toISOString().split('T')[0],
                   value: Math.floor(Math.random() * 5)
                 }))}
-                cellSize={12}
+                cellSize={8}
                 cellGap={1}
               />
             </div>
