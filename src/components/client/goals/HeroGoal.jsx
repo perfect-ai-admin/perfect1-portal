@@ -28,46 +28,46 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
         config.bg
       )}>
         {/* Header */}
-         <div className="flex items-start justify-between gap-3">
-           <button
-             onClick={() => {
-               const nextStatus = goal.status === 'active' ? 'achieved' : goal.status === 'achieved' ? 'stuck' : 'active';
-               onStatusChange(goal, nextStatus);
-             }}
-             className="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0 mt-0.5"
-             aria-label="שנה סטטוס"
-           >
-             {goal.status === 'achieved' ? (
-               <CheckCircle2 className="w-5 h-5 text-green-600" />
-             ) : (
-               <Circle className="w-5 h-5 text-gray-400" />
-             )}
-           </button>
-           <div className="flex-1">
-           <div className="flex items-center gap-2 mb-2 flex-wrap">
-             <h2 className="text-sm md:text-base font-bold text-gray-900">{goal.title}</h2>
-             <span className={cn("text-xs font-semibold px-2 py-1 rounded-full", config.color, config.bg)}>
-               {config.label}
-             </span>
-           </div>
-           <p className="text-xs md:text-sm text-gray-600">{goal.description}</p>
-           </div>
-          <div className="flex gap-1 flex-shrink-0">
-            <button
-              onClick={() => onEdit(goal)}
-              className="p-1.5 hover:bg-white/50 rounded transition-colors"
-              aria-label="ערוך מטרה"
-            >
-              <Edit2 className="w-4 h-4 text-gray-400" />
-            </button>
-            <button
-              onClick={() => onDelete(goal.id)}
-              className="p-1.5 hover:bg-red-50 rounded transition-colors"
-              aria-label="מחק מטרה"
-            >
-              <X className="w-4 h-4 text-gray-400 hover:text-red-600" />
-            </button>
+        <div className="flex items-start justify-between gap-2">
+          <button
+            onClick={() => {
+              const nextStatus = goal.status === 'active' ? 'achieved' : goal.status === 'achieved' ? 'stuck' : 'active';
+              onStatusChange(goal, nextStatus);
+            }}
+            className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0 mt-0.5"
+            aria-label="שנה סטטוס"
+          >
+            {goal.status === 'achieved' ? (
+              <CheckCircle2 className="w-4 h-4 text-green-600" />
+            ) : (
+              <Circle className="w-4 h-4 text-gray-400" />
+            )}
+          </button>
+          <div className="flex-1">
+          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+            <h2 className="text-xs md:text-sm font-bold text-gray-900">{goal.title}</h2>
+            <span className={cn("text-xs font-semibold px-1.5 py-0.5 rounded-full text-[10px]", config.color, config.bg)}>
+              {config.label}
+            </span>
           </div>
+          <p className="text-xs text-gray-600">{goal.description}</p>
+          </div>
+         <div className="flex gap-0.5 flex-shrink-0">
+           <button
+             onClick={() => onEdit(goal)}
+             className="p-1 hover:bg-white/50 rounded transition-colors"
+             aria-label="ערוך מטרה"
+           >
+             <Edit2 className="w-3 h-3 text-gray-400" />
+           </button>
+           <button
+             onClick={() => onDelete(goal.id)}
+             className="p-1 hover:bg-red-50 rounded transition-colors"
+             aria-label="מחק מטרה"
+           >
+             <X className="w-3 h-3 text-gray-400 hover:text-red-600" />
+           </button>
+         </div>
         </div>
 
         {/* Metric & Timeline */}
