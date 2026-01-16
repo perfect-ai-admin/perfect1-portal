@@ -218,11 +218,11 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                   רוצה עוסק? בואו נעשה את זה נכון מהתחלה
+                   רוצה עוסק פטור? בואו נעשה את זה נכון מהתחלה
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                   קבלו הכל מ-יום אפס - סטטוס חוקי, מערכת ניהול ותמיכה רציפה
+                   שירות ייעוץ וליווי פרטי עד לפתיחת העוסק בהצלחה
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
