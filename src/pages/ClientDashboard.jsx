@@ -275,9 +275,9 @@ export default function ClientDashboard() {
         </header>
 
         {/* Main Content */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-visible">
           {/* Main Area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-visible">
             <PullToRefresh onRefresh={handleRefresh}>
               <main 
                 className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 scroll-smooth"
