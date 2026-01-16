@@ -378,32 +378,32 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
               )}
 
               {/* Form Fields */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div>
-                  <Label htmlFor="goalTitle" className="text-xs font-bold text-gray-700 block mb-1.5">מה המטרה?</Label>
+                  <Label htmlFor="goalTitle" className="text-xs font-bold text-gray-700 block mb-1">מה המטרה?</Label>
                   <Input
                     id="goalTitle"
                     value={goalTitle}
                     onChange={(e) => setGoalTitle(e.target.value)}
                     placeholder="למשל: 10 לקוחות חדשים"
-                    className="text-sm h-9"
+                    className="text-xs h-8"
                     autoFocus
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="targetValue" className="text-xs font-bold text-gray-700 block mb-1.5">כמה בדיוק?</Label>
-                  <div className="flex gap-2">
+                  <Label htmlFor="targetValue" className="text-xs font-bold text-gray-700 block mb-1">כמה בדיוק?</Label>
+                  <div className="flex gap-1.5">
                     <Input
                       id="targetValue"
                       type="number"
                       value={targetValue}
                       onChange={(e) => setTargetValue(e.target.value)}
                       placeholder="0"
-                      className="flex-1 text-sm h-9"
+                      className="flex-1 text-xs h-8"
                     />
                     {selectedTemplate.unit && (
-                      <div className="px-3 py-2 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center text-gray-700 text-xs md:text-sm font-medium border border-gray-200">
+                      <div className="px-2 py-1.5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center text-gray-700 text-xs font-medium border border-gray-200">
                         {selectedTemplate.unit}
                       </div>
                     )}
@@ -411,9 +411,9 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 </div>
 
                 <div>
-                  <Label htmlFor="timeframe" className="text-xs font-bold text-gray-700 block mb-1.5">לתוך כמה זמן?</Label>
+                  <Label htmlFor="timeframe" className="text-xs font-bold text-gray-700 block mb-1">לתוך כמה זמן?</Label>
                   <Select value={timeframe} onValueChange={setTimeframe}>
-                    <SelectTrigger className="h-9 text-sm">
+                    <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -426,13 +426,13 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 </div>
 
                 <div>
-                  <Label htmlFor="deadline" className="text-xs font-semibold text-gray-600 block mb-1.5">תאריך יעד (לא חובה)</Label>
+                  <Label htmlFor="deadline" className="text-xs font-semibold text-gray-600 block mb-1">תאריך יעד (לא חובה)</Label>
                   <Input
                     id="deadline"
                     type="date"
                     value={deadline}
                     onChange={(e) => setDeadline(e.target.value)}
-                    className="text-sm h-9"
+                    className="text-xs h-8"
                   />
                 </div>
               </div>
