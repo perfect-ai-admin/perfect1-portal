@@ -47,33 +47,61 @@ export default function FinancialWorkbench({ data }) {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {/* Tab Navigation - Horizontal scroll on mobile */}
-        <div className="mb-4 -mx-4 md:mx-0">
-          <TabsList className="w-full md:w-auto flex gap-1 h-auto p-2 bg-gray-100 rounded-none md:rounded-lg justify-start md:justify-end overflow-x-auto md:overflow-visible px-4 md:px-0">
+        {/* Tab Navigation */}
+        <div className="mb-6">
+          {/* Desktop Tabs */}
+          <div className="hidden md:flex gap-2">
             {tabs.map(tab => {
               const Icon = tab.icon;
               return (
                 <TabsTrigger 
                   key={tab.value}
                   value={tab.value}
-                  className="text-xs md:text-sm flex-col gap-1 py-2 px-3 md:px-2 whitespace-nowrap flex-shrink-0"
+                  className="text-sm flex items-center gap-2 py-2 px-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:border-blue-600 data-[state=active]:text-white transition-all"
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="hidden md:inline text-[11px]">{tab.label}</span>
-                  <span className="md:hidden text-[10px]">{tab.label.substring(0, 2)}</span>
+                  {tab.label}
                 </TabsTrigger>
               );
             })}
-            
-            {/* Mobile More Menu */}
-            <TabsTrigger 
-              value="more"
-              className="text-xs md:hidden flex-col gap-1 py-2 px-3 flex-shrink-0"
+          </div>
+
+          {/* Mobile Tabs */}
+          <div className="md:hidden grid grid-cols-4 gap-2">
+            {tabs.map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.value;
+              return (
+                <button
+                  key={tab.value}
+                  onClick={() => setActiveTab(tab.value)}
+                  className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg transition-all ${
+                    isActive
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-xs font-semibold text-center">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Mobile More Button */}
+          <div className="md:hidden mt-2">
+            <button
+              onClick={() => setActiveTab('more')}
+              className={`w-full flex items-center justify-center gap-2 p-3 rounded-lg transition-all ${
+                activeTab === 'more'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+              }`}
             >
-              <span>⋯</span>
-              <span className="text-[10px]">עוד</span>
-            </TabsTrigger>
-          </TabsList>
+              <span className="text-lg">⋯</span>
+              <span className="text-xs font-semibold">עוד</span>
+            </button>
+          </div>
         </div>
 
         {/* Content */}
