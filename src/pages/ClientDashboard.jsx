@@ -307,6 +307,11 @@ export default function ClientDashboard() {
           </div>
         </div>
 
+        {/* Quick Actions Bar - Mobile */}
+        <div className="md:hidden">
+          <QuickActionsBar />
+        </div>
+
         {/* Mobile Bottom Tab Bar */}
          {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
         </div>
