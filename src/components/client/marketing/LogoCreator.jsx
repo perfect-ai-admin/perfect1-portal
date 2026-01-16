@@ -476,8 +476,6 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
   // Checkout page
   if (step === 5) {
-    const [selectedPayment, setSelectedPayment] = useState('bit');
-
     return (
       <motion.div
         initial={{ opacity: 0 }}
