@@ -440,9 +440,9 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 <Button variant="outline" onClick={onClose}>
                   ביטול
                 </Button>
-                </div>
               </div>
-            )}
+            </div>
+          )}
           </div>
         </div>
       </DrawerContent>
