@@ -78,17 +78,18 @@ export default function ProgressTab({ data, onNavigate }) {
       <div className="lg:hidden">
         <button
           onClick={() => setIsMobileExpanded(!isMobileExpanded)}
-          className="w-full bg-white rounded-lg shadow-md border border-gray-100 p-4 flex items-center justify-between"
+          className="w-full bg-white rounded-lg shadow-md border border-gray-100 p-3 flex items-center justify-between"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <h2 className="text-base font-bold text-gray-900">מסע העסק</h2>
+            <h2 className="text-sm font-bold text-gray-900">מסע העסק</h2>
           </div>
           <motion.div
             animate={{ rotate: isMobileExpanded ? 180 : 0 }}
             transition={{ duration: 0.2 }}
+            className="text-xs text-gray-500"
           >
             ▼
           </motion.div>
@@ -99,7 +100,7 @@ export default function ProgressTab({ data, onNavigate }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="mt-3 space-y-2"
+            className="mt-2 space-y-1.5"
           >
             {MILESTONES.map((milestone) => {
               const status = completedMilestones.includes(milestone.id) ? 'completed' 
@@ -110,14 +111,14 @@ export default function ProgressTab({ data, onNavigate }) {
               return (
                 <div
                   key={milestone.id}
-                  className={`bg-white rounded-lg p-3 border text-sm ${
+                  className={`bg-white rounded-lg p-2.5 border text-sm ${
                     isCurrent ? 'border-blue-500 bg-blue-50' : 
                     isCompleted ? 'border-green-500 bg-green-50' : 
                     'border-gray-200 opacity-60'
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs ${
                       isCompleted ? 'bg-green-500' : 
                       isCurrent ? 'bg-blue-500' : 
                       'bg-gray-300'
@@ -125,7 +126,7 @@ export default function ProgressTab({ data, onNavigate }) {
                       {isCompleted ? '✓' : isCurrent ? '○' : '🔒'}
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 text-xs">{milestone.title}</h3>
+                      <h3 className="font-semibold text-gray-900 text-[11px]">{milestone.title}</h3>
                     </div>
                   </div>
                 </div>
@@ -137,10 +138,10 @@ export default function ProgressTab({ data, onNavigate }) {
 
       {/* Next Step Card - Mobile */}
       <div className="lg:hidden">
-        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
-              <Target className="w-4 h-4 text-white" />
+        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-3">
+          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <div className="w-7 h-7 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
+              <Target className="w-3.5 h-3.5 text-white" />
             </div>
             השלב הבא שלך
           </h2>
