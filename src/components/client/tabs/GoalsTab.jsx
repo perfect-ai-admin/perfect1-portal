@@ -97,14 +97,14 @@ export default function GoalsTab({ data, openAddGoal = false }) {
    };
 
   return (
-    <div className="flex justify-center pt-4 px-4 md:pt-0 md:p-0 md:justify-start">
+    <div className="w-full" ref={topRef}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="space-y-3 w-full max-w-xs md:max-w-none md:w-full md:bg-transparent md:border-0 md:p-0 md:shadow-none bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
+        className="flex justify-center pt-4 px-4 md:pt-0 md:p-0 md:justify-start"
       >
-      <div ref={topRef} />
+      <div className="space-y-3 w-full max-w-xs md:max-w-none md:w-full md:bg-transparent md:border-0 md:p-0 md:shadow-none bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
       {/* Hero Goal */}
       {heroGoal && (
         <div>
