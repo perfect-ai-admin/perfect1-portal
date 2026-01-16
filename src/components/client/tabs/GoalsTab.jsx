@@ -81,12 +81,13 @@ export default function GoalsTab({ data, openAddGoal = false }) {
    };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="space-y-3"
-    >
+    <div className="flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="space-y-3 w-1/4"
+      >
       {/* Hero Goal */}
       {heroGoal && (
         <div>
@@ -145,6 +146,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
            editingGoal={editingGoal}
          />
        )}
-    </motion.div>
-  );
-}
+       </motion.div>
+       </div>
+       );
+       }
