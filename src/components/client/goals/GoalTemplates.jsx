@@ -322,7 +322,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
         <SheetContent 
            side="bottom"
            className="p-0 border-0 overflow-x-hidden w-full max-w-full flex flex-col rounded-t-2xl"
-           style={{ height: '100dvh', maxHeight: '100dvh' }}
+           style={{ height: '95dvh', maxHeight: '95dvh' }}
            ref={drawerRef}
          >
         <div className="flex flex-col h-full w-full min-w-0 overflow-x-hidden">
