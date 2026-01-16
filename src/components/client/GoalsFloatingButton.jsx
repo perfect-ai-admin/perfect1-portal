@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 
 export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] }) {
   const [isOpen, setIsOpen] = useState(false);
+  const buttonRef = React.useRef(null);
   
   // Mock goals - להחליף בנתונים אמיתיים
   const activeGoals = goals.length > 0 ? goals : [
@@ -21,8 +22,17 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
     }
   };
 
+  React.useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      setTimeout(() => {
+        buttonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [isOpen]);
+
   return (
     <motion.div
+      ref={buttonRef}
       className="md:hidden mb-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
