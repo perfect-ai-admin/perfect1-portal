@@ -323,11 +323,11 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
     const currentLogo = logos[currentLogoIndex];
 
     return (
-      <div className="space-y-6 min-h-screen flex flex-col">
-        {/* Header */}
-        <div className="text-center mb-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">בחר את הלוגו המושלם שלך 🎨</h2>
-          <p className="text-gray-500 text-sm md:text-base mt-1">4 וריאציות מעוצבות בעבורך</p>
+      <div className="w-full h-screen lg:h-auto flex flex-col bg-white lg:space-y-6 lg:min-h-screen lg:py-6">
+        {/* Header - Compact */}
+        <div className="text-center px-4 py-2 lg:py-4 flex-shrink-0">
+          <h2 className="text-lg md:text-3xl font-bold text-gray-900 leading-tight">בחר את הלוגו המושלם שלך 🎨</h2>
+          <p className="text-gray-500 text-xs md:text-base mt-0.5 lg:mt-1">4 וריאציות מעוצבות בעבורך</p>
         </div>
 
         <>
