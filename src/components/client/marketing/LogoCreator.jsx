@@ -280,6 +280,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           <p className="text-gray-600">בחר את הגרסה המועדפת עליך והורד בפורמטים שונים</p>
         </div>
 
+        {/* Logo Preview Grid */}
         <div className="grid md:grid-cols-2 gap-6">
           {logos.map((logo, index) => (
             <motion.div
@@ -289,7 +290,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
               transition={{ delay: index * 0.1 }}
               onClick={() => setSelectedLogo(logo)}
               className={`bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transition-all ${
-                selectedLogo === logo ? 'ring-4 ring-blue-500 scale-105' : 'hover:shadow-xl hover:scale-102'
+                selectedLogo === logo ? 'ring-4 ring-blue-500 scale-105' : 'hover:shadow-xl'
               }`}
             >
               <div className="aspect-square bg-gray-50 flex items-center justify-center p-8">
@@ -304,75 +305,81 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           ))}
         </div>
 
-        {/* Download Options */}
+        {/* Actions Section - All in One */}
         {(selectedLogo || logos.length > 0) && (
-          <div className="bg-white rounded-xl shadow-lg p-6 space-y-4">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">הורד בפורמטים שונים</h3>
-            <div className="grid grid-cols-3 gap-3">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl shadow-lg p-6 space-y-6 border border-blue-100"
+          >
+            {/* Download Section */}
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-4">הורד בפורמטים שונים</h3>
+              <div className="grid grid-cols-3 gap-3">
+                <Button 
+                  variant="outline"
+                  onClick={() => downloadLogo('png')}
+                  className="flex-col h-auto py-3"
+                >
+                  <Download className="w-5 h-5 mb-1" />
+                  <span className="font-semibold text-sm">PNG</span>
+                  <span className="text-xs text-gray-500">חברתית</span>
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => downloadLogo('svg')}
+                  className="flex-col h-auto py-3"
+                >
+                  <Download className="w-5 h-5 mb-1" />
+                  <span className="font-semibold text-sm">SVG</span>
+                  <span className="text-xs text-gray-500">אתר</span>
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => downloadLogo('pdf')}
+                  className="flex-col h-auto py-3"
+                >
+                  <Download className="w-5 h-5 mb-1" />
+                  <span className="font-semibold text-sm">PDF</span>
+                  <span className="text-xs text-gray-500">הדפסה</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Continue Actions */}
+            <div className="border-t pt-4 space-y-3">
               <Button 
-                variant="outline"
-                onClick={() => downloadLogo('png')}
-                className="flex-col h-auto py-4"
+                onClick={() => handleGenerate()}
+                disabled={isGenerating}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
-                <Download className="w-6 h-6 mb-2" />
-                <span className="font-bold">PNG</span>
-                <span className="text-xs text-gray-500">לרשתות חברתיות</span>
+                {isGenerating ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
+                    יוצר וריאציות נוספות...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="w-4 h-4 ml-2" />
+                    צור עוד וריאציות
+                  </>
+                )}
               </Button>
               <Button 
+                onClick={() => {
+                  setStep(1);
+                  setLogos([]);
+                  setSelectedLogo(null);
+                }}
                 variant="outline"
-                onClick={() => downloadLogo('svg')}
-                className="flex-col h-auto py-4"
+                className="w-full"
               >
-                <Download className="w-6 h-6 mb-2" />
-                <span className="font-bold">SVG</span>
-                <span className="text-xs text-gray-500">לאתרים (וקטור)</span>
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => downloadLogo('pdf')}
-                className="flex-col h-auto py-4"
-              >
-                <Download className="w-6 h-6 mb-2" />
-                <span className="font-bold">PDF</span>
-                <span className="text-xs text-gray-500">להדפסה</span>
+                <RefreshCw className="w-4 h-4 ml-2" />
+                התחל מחדש
               </Button>
             </div>
-          </div>
+          </motion.div>
         )}
-
-        <div className="flex gap-3">
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              handleGenerate();
-            }}
-            disabled={isGenerating}
-            className="flex-1"
-          >
-            {isGenerating ? (
-              <>
-                <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
-                יוצר...
-              </>
-            ) : (
-              <>
-                <RefreshCw className="w-4 h-4 ml-2" />
-                צור עוד וריאציות
-              </>
-            )}
-          </Button>
-          <Button 
-            onClick={() => {
-              setStep(1);
-              setLogos([]);
-              setSelectedLogo(null);
-            }}
-            variant="outline"
-            className="flex-1"
-          >
-            התחל מחדש
-          </Button>
-        </div>
       </div>
     );
   }
