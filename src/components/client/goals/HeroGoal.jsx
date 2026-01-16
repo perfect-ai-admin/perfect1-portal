@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Edit2 } from 'lucide-react';
+import { ChevronDown, Edit2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function HeroGoal({ goal, onStatusChange, onEdit }) {
+export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
   const [expanded, setExpanded] = useState(false);
 
   if (!goal) return null;
@@ -38,13 +38,22 @@ export default function HeroGoal({ goal, onStatusChange, onEdit }) {
             </div>
             <p className="text-sm text-gray-600">{goal.description}</p>
           </div>
-          <button
-            onClick={() => onEdit(goal)}
-            className="p-1.5 hover:bg-white/50 rounded transition-colors flex-shrink-0"
-            aria-label="ערוך מטרה"
-          >
-            <Edit2 className="w-4 h-4 text-gray-400" />
-          </button>
+          <div className="flex gap-1 flex-shrink-0">
+            <button
+              onClick={() => onEdit(goal)}
+              className="p-1.5 hover:bg-white/50 rounded transition-colors"
+              aria-label="ערוך מטרה"
+            >
+              <Edit2 className="w-4 h-4 text-gray-400" />
+            </button>
+            <button
+              onClick={() => onDelete(goal.id)}
+              className="p-1.5 hover:bg-red-50 rounded transition-colors"
+              aria-label="מחק מטרה"
+            >
+              <X className="w-4 h-4 text-gray-400 hover:text-red-600" />
+            </button>
+          </div>
         </div>
 
         {/* Metric & Timeline */}
