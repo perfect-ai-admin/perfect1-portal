@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Palette, Rocket, Users, TrendingUp, BookOpen, Briefcase } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,12 +10,11 @@ import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
 import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
+import LandingPageBuilder from '../marketing/LandingPageBuilder';
 import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
-import LandingPageBuilder from '../marketing/LandingPageBuilder';
 
 export default function MarketingTab({ data }) {
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -23,6 +22,8 @@ export default function MarketingTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
+      {/* Landing Page Builder Card */}
+      <LandingPageBuilder />
       {/* Marketing Tools Tabs */}
       <Tabs defaultValue="branding" className="w-full">
         <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-gray-200">
@@ -49,16 +50,12 @@ export default function MarketingTab({ data }) {
         </TabsList>
 
         <TabsContent value="branding" className="bg-white rounded-lg border border-gray-200 p-6 space-y-8">
-           <LandingPageBuilder />
-           <div className="border-t pt-8">
-             <h3 className="text-lg font-bold text-gray-900 mb-4">עוד כלים</h3>
-             <BrandingTools businessName={data.name} />
-           </div>
-           <div className="border-t pt-8">
-             <h3 className="text-lg font-bold text-gray-900 mb-4">תבניות נוספות</h3>
-             <BrandingSection businessName={data.name} onActionStart={() => {}} />
-           </div>
-         </TabsContent>
+          <BrandingTools businessName={data.name} />
+          <div className="border-t pt-8">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">תבניות נוספות</h3>
+            <BrandingSection businessName={data.name} onActionStart={() => {}} />
+          </div>
+        </TabsContent>
 
         <TabsContent value="campaigns" className="bg-white rounded-lg border border-gray-200 p-6">
           <CampaignSection />

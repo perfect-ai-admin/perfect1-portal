@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle, Layers } from 'lucide-react';
+import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
-import LandingPageQuestionnaire from '../components/client/marketing/LandingPageQuestionnaire';
 
 function FAQItem({ question, answer }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -55,12 +54,6 @@ export default function OsekPaturLanding() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-
-  const handleQuestionnaireComplete = (landingPageData) => {
-    console.log('Landing page data:', landingPageData);
-    setShowQuestionnaire(false);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -142,20 +135,6 @@ export default function OsekPaturLanding() {
 
   return (
     <>
-      {showQuestionnaire && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-2xl w-full my-8">
-            <button 
-              onClick={() => setShowQuestionnaire(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ×
-            </button>
-            <LandingPageQuestionnaire onComplete={handleQuestionnaireComplete} />
-          </div>
-        </div>
-      )}
-
       <PageTracker pageUrl="/osek-patur" pageType="landing" />
       <FAQSchema faqs={faqs} />
       <SEOOptimized
@@ -319,42 +298,6 @@ export default function OsekPaturLanding() {
             </div>
           </div>
         </section>
-
-        {/* Landing Page Builder Card */}
-         <section className="py-12 bg-white">
-           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-             <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-blue-200 max-w-md"
-             >
-               <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6">
-                 <Layers className="w-7 h-7 text-white" />
-               </div>
-
-               <h3 className="text-2xl font-black text-[#1E3A5F] mb-1">דף נחיתה ממומחה</h3>
-               <p className="text-sm text-gray-700 mb-6 leading-relaxed">
-                 עמוד המרה על מידע <span className="text-gray-500">→</span> פתרון <span className="text-gray-500">→</span> פעולה
-               </p>
-
-               <div className="space-y-3 mb-6">
-                 {['כותרות שיווקיות', 'התאמה למומחה', 'טופס לליידים'].map((feature, idx) => (
-                   <div key={idx} className="flex items-center gap-3">
-                     <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
-                     <span className="text-sm font-medium text-gray-800">{feature}</span>
-                   </div>
-                 ))}
-               </div>
-
-               <Button 
-                 onClick={() => window.location.href = '/ClientDashboard'}
-                 className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold h-12 rounded-xl"
-               >
-                 התחל עכשיו
-               </Button>
-             </motion.div>
-           </div>
-         </section>
 
         {/* The Challenge Section */}
          <section className="py-12 bg-white border-t-4 border-[#D4AF37]">
@@ -696,106 +639,9 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* Pricing Section */}
-         <section className="py-16 bg-white">
-           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-             <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               className="text-center mb-12"
-             >
-               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-2">
-                 סיימו את הרכישה
-               </h2>
-               <p className="text-lg text-gray-600">בחרו דרך תשלום וסימנו את המשימה הזאת כסגורה</p>
-             </motion.div>
-
-             <motion.div
-               initial={{ opacity: 0, scale: 0.95 }}
-               whileInView={{ opacity: 1, scale: 1 }}
-               viewport={{ once: true }}
-               className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-blue-200"
-             >
-               {/* Card Header */}
-               <div className="mb-8">
-                 <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-3xl flex items-center justify-center mb-4">
-                   <FileText className="w-7 h-7 text-white" />
-                 </div>
-                 <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">
-                   דף יישום מומחה
-                 </h3>
-                 <p className="text-sm text-gray-700">
-                   עמוד המרה על מידע <span className="text-gray-500">→</span> פתרון <span className="text-gray-500">→</span> פעולה
-                 </p>
-               </div>
-
-               {/* Features */}
-               <div className="space-y-3 mb-8 pb-8 border-b-2 border-blue-200">
-                 {[
-                   '✓ כותרות שיווקיות',
-                   '✓ התאמה למומחה',
-                   '✓ טיפול לידים'
-                 ].map((feature, idx) => (
-                   <div key={idx} className="flex items-center gap-3">
-                     <span className="text-lg font-bold text-[#27AE60]">{feature}</span>
-                   </div>
-                 ))}
-               </div>
-
-               {/* Pricing */}
-               <div className="mb-8">
-                 <p className="text-sm text-gray-600 mb-2">סכום כולל:</p>
-                 <div className="flex items-baseline gap-1">
-                   <span className="text-4xl font-black text-[#1E3A5F]">₪249</span>
-                   <span className="text-gray-600">לחודש</span>
-                 </div>
-                 <p className="text-xs text-gray-500 mt-2">השלום כפוף - לא חיובים נוספים</p>
-               </div>
-
-               {/* Payment Methods */}
-               <div className="space-y-3">
-                 <p className="text-sm font-bold text-gray-700 mb-4">בחר דרך תשלום:</p>
-
-                 <Button
-                   onClick={() => {
-                     setTimeout(() => {
-                       document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
-                     }, 100);
-                   }}
-                   className="w-full h-14 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-xl flex items-center justify-between px-4 gap-3"
-                 >
-                   <span>ביצוע בעסקה</span>
-                   <div className="flex items-center gap-1">
-                     <div className="w-6 h-6 rounded-full bg-white/30" />
-                     <div className="w-6 h-6 rounded-full bg-white/30" />
-                   </div>
-                 </Button>
-
-                 <Button
-                   onClick={() => {
-                     setTimeout(() => {
-                       document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
-                     }, 100);
-                   }}
-                   variant="outline"
-                   className="w-full h-14 border-2 border-gray-300 text-gray-800 font-bold rounded-xl hover:bg-gray-50 flex items-center justify-between px-4 gap-3"
-                 >
-                   <span>כרטיס אשראי</span>
-                   <div className="text-xl">💳</div>
-                 </Button>
-               </div>
-
-               <p className="text-xs text-gray-600 text-center mt-6">
-                 ללא התחייבות • ביטול בכל עת • תעדוף מלא לפני כל תשלום
-               </p>
-             </motion.div>
-           </div>
-         </section>
-
         {/* FAQ Section */}
-         <section className="py-12 bg-white">
-           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-12 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
