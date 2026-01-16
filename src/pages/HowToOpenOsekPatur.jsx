@@ -157,18 +157,18 @@ export default function HowToOpenOsekPatur() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור - מעניין בייעוץ" target="_blank" rel="noopener noreferrer">
-                  <Button className="h-16 px-8 text-lg font-bold rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
-                    <MessageCircle className="ml-3 w-6 h-6" />
-                    בואו נפתח את העוסק שלך
+                  <Button className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
+                    <MessageCircle className="ml-2 w-5 h-5" />
+                    ייעוץ בחינם
                   </Button>
                 </a>
                 <button 
                   onClick={() => document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="h-16 px-8"
+                  className="h-12 sm:h-14 px-6 sm:px-10"
                 >
-                  <Button variant="outline" className="w-full h-full text-lg font-bold rounded-2xl border-2 border-white bg-white/10 text-white hover:bg-white/20 shadow-2xl">
-                    <FileText className="ml-3 w-6 h-6" />
-                    קרא את המדריך
+                  <Button variant="outline" className="w-full h-full text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white/10 text-white hover:bg-white/20 shadow-lg">
+                    <FileText className="ml-2 w-5 h-5" />
+                    קרא
                   </Button>
                 </button>
               </div>
@@ -400,9 +400,9 @@ export default function HowToOpenOsekPatur() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-14 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
+                  className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
                 >
-                  {isSubmitting ? 'שולח...' : 'שלח בקשה לייעוץ בחינם'}
+                  {isSubmitting ? 'שולח...' : 'שלח בקשה'}
                 </Button>
               </form>
 

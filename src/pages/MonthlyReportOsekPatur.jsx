@@ -295,17 +295,17 @@ export default function MonthlyReportOsekPatur() {
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+              <div className="flex flex-col sm:flex-row gap-2 mt-6 sm:mt-8">
                 <a href="https://wa.me/972502277087?text=היי, אני מעוניין בליווי חודשי לעוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-1">
-                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
-                    <MessageCircle className="ml-2 w-5 h-5" />
-                    דבר בווצאפ
+                  <Button className="w-full h-10 sm:h-11 text-sm sm:text-base bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30 rounded-lg">
+                    <MessageCircle className="ml-2 w-4 h-4" />
+                    WhatsApp
                   </Button>
                 </a>
                 <a href="tel:+972502277087" className="flex-1">
-                  <Button className="w-full h-11 md:h-12 bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30">
-                    <Phone className="ml-2 w-5 h-5" />
-                    התקשר עכשיו
+                  <Button className="w-full h-10 sm:h-11 text-sm sm:text-base bg-white/20 hover:bg-white/30 text-white font-bold border border-white/30 rounded-lg">
+                    <Phone className="ml-2 w-4 h-4" />
+                    התקשר
                   </Button>
                 </a>
               </div>

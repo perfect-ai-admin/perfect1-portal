@@ -447,19 +447,19 @@ export default function CloseOsekPaturComprehensive() {
               <p className="text-xl text-white/90 mb-8">
                 אנחנו מטפלים בכל הפרטים - אתה רק תצטרך לחתום על מסמכים.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full sm:w-auto h-16 px-12 text-xl font-black rounded-2xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-2xl hover:shadow-3xl transition-all">
-                    <MessageCircle className="ml-3 w-6 h-6" />
-                    דבר בווטסאפ
-                  </Button>
-                </a>
-                <a href="tel:0502277087">
-                  <Button variant="outline" className="w-full sm:w-auto h-16 px-12 text-xl font-black rounded-2xl border-3 border-white bg-white/10 text-white hover:bg-white hover:text-[#1E3A5F] transition-all">
-                    <Phone className="ml-3 w-6 h-6" />
-                    התקשר: 0502277087
-                  </Button>
-                </a>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+               <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
+                 <Button className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg">
+                   <MessageCircle className="ml-2 w-5 h-5" />
+                   WhatsApp
+                 </Button>
+               </a>
+               <a href="tel:0502277087">
+                 <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white/10 text-white hover:bg-white hover:text-[#1E3A5F] transition-all">
+                   <Phone className="ml-2 w-5 h-5" />
+                   התקשר
+                 </Button>
+               </a>
               </div>
               <p className="text-white/60 mt-6">בלי התחייבות • שיחה קצרה • הסבר מלא</p>
             </motion.div>

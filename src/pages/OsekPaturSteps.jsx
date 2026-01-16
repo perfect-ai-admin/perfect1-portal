@@ -237,9 +237,9 @@ export default function OsekPaturSteps() {
                  />
                  <Button
                    type="submit"
-                   className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
+                   className="w-full h-11 sm:h-12 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
                  >
-                   בדיקה ופתיחה מסודרת
+                   בדיקה מסודרת
                  </Button>
                </form>
                <p className="text-xs text-gray-500 text-center mt-4">
@@ -333,9 +333,9 @@ export default function OsekPaturSteps() {
                 אפשר גם לבצע <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-green-600 font-bold hover:text-green-800 underline">פתיחת עוסק פטור אונליין</Link> בתהליך סדור ודיגיטלי לחלוטין - בלי ללכת למשרדים, בלי טלטול.
               </p>
               <Link to={createPageUrl('OsekPaturOnlineLanding')}>
-                <Button className="h-12 px-6 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl flex items-center gap-2">
-                  <ArrowRight className="w-5 h-5" />
-                  פתיחה אונליין
+                <Button className="h-11 sm:h-12 px-4 sm:px-6 text-sm sm:text-base bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl flex items-center gap-2">
+                  <ArrowRight className="w-4 h-4" />
+                  אונליין
                 </Button>
               </Link>
             </motion.div>
@@ -348,17 +348,17 @@ export default function OsekPaturSteps() {
             <h2 className="text-2xl font-black text-[#1E3A5F] mb-4">
               השאלה סיביות? ניתן לתקשר ישירות
             </h2>
-            <div className="flex gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer">
-                <Button className="h-12 px-6 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">
-                  <MessageCircle className="ml-2 w-5 h-5" />
+                <Button className="h-11 sm:h-12 px-4 sm:px-6 text-sm sm:text-base bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">
+                  <MessageCircle className="ml-2 w-4 h-4" />
                   WhatsApp
                 </Button>
               </a>
               <a href="tel:+972502277087">
-                <Button className="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">
-                  <Phone className="ml-2 w-5 h-5" />
-                  0502277087
+                <Button className="h-11 sm:h-12 px-4 sm:px-6 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">
+                  <Phone className="ml-2 w-4 h-4" />
+                  התקשר
                 </Button>
               </a>
             </div>
