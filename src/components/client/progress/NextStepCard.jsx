@@ -40,18 +40,35 @@ export default function NextStepCard({ step, onAction }) {
           
           <p className="text-base mb-3 leading-relaxed font-medium">{step.title}</p>
           
+          {/* Desktop Why */}
           {showWhy && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              className="bg-white/10 backdrop-blur rounded-lg p-3 mb-3"
+              className="hidden md:block bg-white/10 backdrop-blur rounded-lg p-3 mb-3"
             >
               <p className="text-sm leading-relaxed opacity-90">{step.why}</p>
             </motion.div>
           )}
 
+          {/* Mobile Reasons */}
+          {showWhy && step.reasons && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="md:hidden space-y-2 mb-3"
+            >
+              {step.reasons.map((reason, idx) => (
+                <div key={idx} className="bg-white/10 backdrop-blur rounded-lg p-3">
+                  <h4 className="font-semibold text-sm mb-1">{reason.title}</h4>
+                  <p className="text-xs leading-relaxed opacity-90">{reason.description}</p>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
           <Button
-            onClick={onAction}
+            onClick={step.action || onAction}
             size="sm"
             className="bg-white text-blue-600 hover:bg-gray-100 font-semibold h-9 px-4 text-sm"
           >
