@@ -305,19 +305,14 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const ContentComponent = mobileLayout ? SheetContent : DialogContent;
-  const RootComponent = mobileLayout ? Sheet : Dialog;
-
-  return (
-    <RootComponent open={true} onOpenChange={onClose}>
-      <ContentComponent 
-         side="bottom"
-         className={cn(
-           "p-0 border-0 overflow-hidden",
-           !mobileLayout && "w-full max-w-3xl rounded-2xl shadow-2xl max-h-screen md:max-h-[90vh] flex flex-col"
-         )}
-         ref={drawerRef}
-       >
+  if (mobileLayout) {
+    return (
+      <Sheet open={true} onOpenChange={onClose}>
+        <SheetContent 
+           side="bottom"
+           className="p-0 border-0 overflow-hidden max-h-screen flex flex-col"
+           ref={drawerRef}
+         >
         <div className={cn("flex flex-col", mobileLayout && "max-h-screen overflow-hidden")}>
           {/* Header */}
           <div className={cn("flex-shrink-0 px-4 md:px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 sticky top-0 z-20")}>
