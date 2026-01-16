@@ -84,38 +84,40 @@ export default function QuickActionsBar({ onActionComplete }) {
         </div>
       </div>
 
-      {/* Mobile Quick Actions - Top Bar */}
-       <div className="md:hidden flex gap-2 p-3 bg-gradient-to-r from-blue-50 to-emerald-50 rounded-lg border border-gray-200">
-         {/* Hacked Document Button */}
-         <DropdownMenu>
-           <DropdownMenuTrigger asChild>
-             <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-sm transition-all active:scale-95 shadow-sm">
-               <FileText className="w-5 h-5" />
-               הפקת מסמך
-             </button>
-           </DropdownMenuTrigger>
-           <DropdownMenuContent align="start" side="top" className="mb-2">
-             {documentTypes.map(type => (
-               <DropdownMenuItem
-                 key={type.id}
-                 onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
-                 className="cursor-pointer"
-               >
-                 <span className="mr-2">{type.icon}</span>
-                 {type.label}
-               </DropdownMenuItem>
-             ))}
-           </DropdownMenuContent>
-         </DropdownMenu>
+      {/* Mobile Floating Action Bar - Bottom */}
+       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-40 pb-safe">
+         <div className="flex gap-2 p-4 max-w-lg mx-auto">
+           {/* Hacked Document Button */}
+           <DropdownMenu>
+             <DropdownMenuTrigger asChild>
+               <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg font-bold text-sm transition-all active:scale-95 shadow-lg">
+                 <FileText className="w-5 h-5" />
+                 הפקת מסמך
+               </button>
+             </DropdownMenuTrigger>
+             <DropdownMenuContent align="start" side="top" className="mb-2">
+               {documentTypes.map(type => (
+                 <DropdownMenuItem
+                   key={type.id}
+                   onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
+                   className="cursor-pointer"
+                 >
+                   <span className="mr-2">{type.icon}</span>
+                   {type.label}
+                 </DropdownMenuItem>
+               ))}
+             </DropdownMenuContent>
+           </DropdownMenu>
 
-         {/* Add Expense Button */}
-         <button
-           onClick={() => setShowCreateModal({ type: 'expense' })}
-           className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm transition-all active:scale-95 shadow-sm"
-         >
-           <Plus className="w-5 h-5" />
-           קליטת הוצאה
-         </button>
+           {/* Add Expense Button */}
+           <button
+             onClick={() => setShowCreateModal({ type: 'expense' })}
+             className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white rounded-lg font-bold text-sm transition-all active:scale-95 shadow-lg"
+           >
+             <Plus className="w-5 h-5" />
+             קליטת הוצאה
+           </button>
+         </div>
        </div>
 
       {/* Modals */}
