@@ -26,7 +26,7 @@ export default function LogoSelectorMobile({ logos, formData }) {
    const progressPercent = ((currentIndex + 1) / logos.length) * 100;
 
    return (
-     <div className="w-screen lg:hidden fixed lg:static inset-0 lg:inset-auto bg-white flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
+     <div className="lg:hidden w-full flex flex-col bg-white overflow-hidden" style={{ height: '100dvh', maxHeight: '100dvh' }}>
        {/* HEADER - Compact Fixed Height */}
        <div className="flex-shrink-0 px-4 py-2">
          <h2 className="text-base font-bold text-gray-900 text-center">בחר את הלוגו המושלם שלך 🎨</h2>
