@@ -246,6 +246,7 @@ export default function ClientDashboard() {
 
             {/* Right Icons */}
             <div className="flex items-center gap-1 flex-shrink-0">
+              {typeof ShoppingCart === 'function' && <ShoppingCart />}
               {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
               <DropdownMenu>
