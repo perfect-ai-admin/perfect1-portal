@@ -211,7 +211,7 @@ export default function OsekPaturOnlineLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  חתימה דיגיטלית מאובטחת, ליווי צמוד בכל שלב, וטיפול מלא בכל הרשויות - בלי לצאת מהבית
+                  ייעוץ מקצועי וליווי צמוד בתהליך פתיחת עוסק - בטוח ודיגיטלי, כולו מהבית
                 </p>
 
                 <div className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-6 mb-8 border-2 border-white/40 shadow-2xl">
