@@ -18,9 +18,8 @@ export default function NextStepCard({ step, onAction, onWhyClick }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       className="bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 rounded-2xl shadow-xl p-4 md:p-6 text-white relative overflow-hidden"
     >
       {/* Background decoration */}
@@ -29,9 +28,8 @@ export default function NextStepCard({ step, onAction, onWhyClick }) {
       
       <div className="relative flex items-start gap-3 md:gap-4">
         <motion.div 
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
           className="w-12 h-12 md:w-16 md:h-16 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg border border-white/30"
         >
           <div className="w-6 h-6 md:w-10 md:h-10 text-white flex items-center justify-center">

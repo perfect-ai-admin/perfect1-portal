@@ -96,10 +96,10 @@ export default function ClientDashboard() {
       }
     },
     enabled: !!client?.id,
-    refetchInterval: 60000,
+    refetchInterval: false,
     retry: 1,
-    staleTime: 10000,
-    gcTime: 1000 * 60 * 5
+    staleTime: 30000,
+    gcTime: 1000 * 60 * 10
   });
 
   const handleLogout = () => {
@@ -286,35 +286,18 @@ export default function ClientDashboard() {
                     <Breadcrumbs activeTab={activeTab} onNavigate={setActiveTab} />
                   </div>
 
-                  {/* Desktop Tabs */}
-                  <div className="hidden md:block">
-                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={(tab, config) => {
-                      setActiveTab(tab);
-                      if (tab === 'goals' && config) {
-                        setGoalsTabConfig(config);
-                      }
-                    }} />}
-                    {activeTab === 'business' && <BusinessTab data={enrichedData} />}
-                    {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
-                    {activeTab === 'goals' && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} />}
-                    {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
-                    {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
-                  </div>
-
-                  {/* Mobile Tabs */}
-                  <div className="md:hidden">
-                    {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={(tab, config) => {
-                      setActiveTab(tab);
-                      if (tab === 'goals' && config) {
-                        setGoalsTabConfig(config);
-                      }
-                    }} />}
-                    {activeTab === 'business' && <BusinessTab data={enrichedData} />}
-                    {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
-                    {activeTab === 'goals' && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} />}
-                    {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
-                    {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
-                  </div>
+                  {/* Tabs */}
+                  {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={(tab, config) => {
+                    setActiveTab(tab);
+                    if (tab === 'goals' && config) {
+                      setGoalsTabConfig(config);
+                    }
+                  }} />}
+                  {activeTab === 'business' && <BusinessTab data={enrichedData} />}
+                  {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
+                  {activeTab === 'goals' && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} />}
+                  {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
+                  {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
                 </div>
               </main>
             </PullToRefresh>
