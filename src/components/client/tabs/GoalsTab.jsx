@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { motion } from 'framer-motion';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
@@ -34,27 +34,40 @@ const SAMPLE_GOALS = [
   }
 ];
 
+// Utility: Scroll with retry logic
+const scrollToGoalsTop = (retries = 0) => {
+  const anchor = document.getElementById('goals-top-anchor');
+  const main = document.querySelector('main');
+  
+  if (anchor && main) {
+    main.scrollTop = 0;
+    return true;
+  }
+  
+  if (retries < 10) {
+    requestAnimationFrame(() => scrollToGoalsTop(retries + 1));
+  }
+};
+
 export default function GoalsTab({ data, openAddGoal = false }) {
   const [goals, setGoals] = useState(SAMPLE_GOALS);
   const [showAddGoal, setShowAddGoal] = useState(openAddGoal);
   const [editingGoal, setEditingGoal] = useState(null);
+  const goalsTopRef = useRef(null);
 
-  React.useEffect(() => {
-    if (openAddGoal) {
-      setShowAddGoal(true);
+  // Step 4: useLayoutEffect + double rAF for stable scroll
+  useLayoutEffect(() => {
+    if (showAddGoal) {
       requestAnimationFrame(() => {
-        const main = document.querySelector('main');
-        if (main) main.scrollTop = 0;
+        requestAnimationFrame(() => {
+          scrollToGoalsTop();
+        });
       });
     }
-  }, [openAddGoal]);
+  }, [showAddGoal]);
 
   const handleShowAddGoal = () => {
     setShowAddGoal(true);
-    requestAnimationFrame(() => {
-      const main = document.querySelector('main');
-      if (main) main.scrollTop = 0;
-    });
   };
 
   const heroGoal = goals[0];
