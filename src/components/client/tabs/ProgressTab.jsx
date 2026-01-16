@@ -70,7 +70,7 @@ export default function ProgressTab({ data, onNavigate }) {
         className="space-y-6"
       >
       {/* Quick Stats - Mobile First */}
-      <div className="lg:hidden">
+      <div className="lg:hidden -mt-2">
         <QuickStatsBar stats={quickStats} />
       </div>
 

@@ -40,14 +40,14 @@ export default function QuickStatsBar({ stats }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.08 }}
-            className="bg-white rounded-lg border border-gray-100 p-2 hover:shadow-sm transition-shadow"
+            className="bg-white rounded-lg border border-gray-100 p-1.5 hover:shadow-sm transition-shadow"
           >
             <div className="flex flex-col items-center gap-0.5 text-center">
-              <div className={`w-8 h-8 bg-gradient-to-r ${item.color} rounded flex items-center justify-center flex-shrink-0`}>
-                <Icon className="w-4 h-4 text-white" />
+              <div className={`w-7 h-7 bg-gradient-to-r ${item.color} rounded flex items-center justify-center flex-shrink-0`}>
+                <Icon className="w-3.5 h-3.5 text-white" />
               </div>
-              <p className="text-base font-bold text-gray-900 leading-tight">{item.value}</p>
-              <p className="text-[9px] leading-tight text-gray-500">{item.label}</p>
+              <p className="text-sm font-bold text-gray-900 leading-tight">{item.value}</p>
+              <p className="text-[8px] leading-tight text-gray-500">{item.label}</p>
             </div>
           </motion.div>
         );
