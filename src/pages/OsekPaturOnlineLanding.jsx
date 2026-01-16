@@ -450,7 +450,7 @@ export default function OsekPaturOnlineLanding() {
                 מהיום, העוסק שלך קיים דיגיטלית
               </h2>
               <p className="text-xl text-white/90 mb-8">
-                לא צריך לחכות בתורים - התחל בעוד 10 דקות מהנייד שלך
+                בואו נעזור לך לעשות את זה נכון. השאר פרטים עכשיו וניצור קשר.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button onClick={scrollToForm} className="h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
