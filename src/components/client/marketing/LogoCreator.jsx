@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { base44 } from '@/api/base44Client';
 import LogoSelectorMobile from './LogoSelectorMobile';
+import LogoCheckout from './LogoCheckout';
 
 const COLOR_SCHEMES = [
   { name: 'כחול מקצועי', colors: ['#1E3A5F', '#3B82F6', '#FFFFFF'] },
@@ -598,48 +599,19 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
     );
   }
 
-  // Checkout page
+  // Checkout page - Integrated Component
   if (step === 5) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-gray-100 max-h-screen overflow-hidden">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">סיימו את הרכישה</h2>
-          <p className="text-sm text-gray-600">אנחנו כמעט שם. נשאר רק להשלים את התשלום.</p>
-        </div>
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6 space-y-4 border-b border-gray-100">
-            <div className="flex items-start gap-3 mb-4 pb-4 border-b border-gray-100">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-sm"><Palette className="w-6 h-6 text-white" /></div>
-              <div className="text-xs text-gray-600"><p className="font-medium text-gray-900">חשבון עבור:</p><p className="text-gray-700 font-semibold">{formData.businessName}</p></div>
-            </div>
-            <div><h3 className="text-lg font-bold text-gray-900">חבילת לוגו מלאה</h3></div>
-            <div className="space-y-2">
-              {['לוגו PNG באיכות גבוהה', 'לוגו SVG להדפסה', 'ייעוץ עיצוב אישי'].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div><p className="text-sm text-gray-700">{item}</p></div>
-              ))}
-            </div>
-            <div className="bg-gray-50 rounded-lg p-3 mt-4">
-              <div className="flex justify-between items-center"><span className="text-sm text-gray-600">סכום כולל:</span><p className="text-2xl font-bold text-gray-900">₪99</p></div>
-              <p className="text-xs text-gray-500 mt-2">תשלום חד-פעמי, ללא חיובים נוספים</p>
-            </div>
-          </div>
-          <div className="p-6 space-y-3 border-b border-gray-100">
-            <p className="text-sm font-semibold text-gray-900 mb-3">בחר אמצעי תשלום</p>
-            {[{ id: 'bit', label: 'ביט', icon: '📱' }, { id: 'card', label: 'כרטיס אשראי', icon: '💳' }, { id: 'bank', label: 'העברה בנקאית', icon: '🏦' }].map(method => (
-              <button key={method.id} onClick={() => setSelectedPayment(method.id)} className={`w-full flex items-center gap-3 p-3 rounded-lg border-2 transition-all ${selectedPayment === method.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
-                <div className="text-lg">{method.icon}</div>
-                <span className={`text-sm font-medium ${selectedPayment === method.id ? 'text-blue-900' : 'text-gray-700'}`}>{method.label}</span>
-                {selectedPayment === method.id && <div className="ml-auto w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center bg-blue-500"><div className="w-2 h-2 rounded-full bg-white"></div></div>}
-              </button>
-            ))}
-          </div>
-          <div className="p-6">
-            <Button onClick={() => alert('תשלום בהצליחה! 🎉')} className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm transition-all">המשך לתשלום</Button>
-          </div>
-          <div className="px-6 pb-6 text-center"><p className="text-xs text-gray-600">🔒 התשלום מאובטח • ניתן לפנות אלינו בכל שלב</p></div>
-        </div>
-        <button onClick={() => setStep(4)} className="mt-6 text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors">← חזור לעמוד הקודם</button>
-      </motion.div>
+      <div className="h-full w-full bg-white overflow-hidden">
+        <LogoCheckout 
+          businessName={formData.businessName}
+          onBack={() => setStep(4)}
+          onSuccess={() => {
+            alert('תשלום בהצליחה! 🎉 הלוגו בדרך אליך למייל.');
+            onClose();
+          }}
+        />
+      </div>
     );
   }
 
