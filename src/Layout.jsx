@@ -25,14 +25,23 @@ export default function Layout({ children, currentPageName }) {
     // ClientDashboard במובייל - אל תציג Header רגיל
     if (currentPageName === 'ClientDashboard') {
       return (
-        <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
-          <main>
-            {children}
-          </main>
-          <div className="hidden md:block">
-            <Footer />
+        <HelmetProvider>
+          <CriticalCSS />
+          <ResourceHints 
+            priorityImages={['/logo.png']}
+            prefetchPages={['/Services', '/Pricing', '/Contact']}
+          />
+          <WebVitalsMonitor />
+          <QAChecker />
+          <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
+            <main>
+              {children}
+            </main>
+            <div className="hidden md:block">
+              <Footer />
+            </div>
           </div>
-        </div>
+        </HelmetProvider>
       );
     }
 
