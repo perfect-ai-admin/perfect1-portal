@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Palette, Rocket, Users, TrendingUp, BookOpen, Briefcase } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import BrandingSection from '../marketing/BrandingSection';
 import BrandingTools from '../marketing/BrandingTools';
 import CampaignSection from '../marketing/CampaignSection';
 import GoogleSection from '../marketing/GoogleSection';
