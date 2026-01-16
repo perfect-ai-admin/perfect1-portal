@@ -46,7 +46,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   }, [openAddGoal]);
 
   const heroGoal = goals[0];
-  const secondaryGoals = goals.slice(1, 4);
+  const secondaryGoals = goals.slice(1);
 
   const handleStatusChange = (goalId) => {
     setGoals(prev => prev.map(g => 
