@@ -352,15 +352,15 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
               {/* Examples - Quick Selection */}
               {selectedTemplate.examples && (
                 <motion.div 
-                  className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-3 border border-purple-100"
+                  className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-2.5 border border-purple-100"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                  <p className="text-xs font-bold text-gray-700 mb-2.5 flex items-center gap-1.5">
+                  <p className="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 text-amber-500" />
                     דוגמאות מהירות
                   </p>
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     {selectedTemplate.examples.map((example, i) => (
                       <motion.button
                         key={i}
@@ -368,7 +368,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.05 }}
                         onClick={() => handleExampleSelect(example)}
-                        className="w-full text-right px-3 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 hover:shadow-sm rounded-lg transition-all text-xs md:text-sm font-medium text-gray-900 active:scale-95"
+                        className="w-full text-right px-2.5 py-1.5 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 hover:shadow-sm rounded-lg transition-all text-xs font-medium text-gray-900 active:scale-95"
                       >
                         {example.title}
                       </motion.button>
