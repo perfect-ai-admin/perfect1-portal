@@ -427,7 +427,39 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
             </div>
           </DialogContent>
         </Dialog>
-      </>
+
+        {/* Desktop Action Buttons */}
+        <div className="hidden lg:flex gap-3 justify-center pt-6">
+          <Button 
+            onClick={() => {
+              setStep(1);
+              setLogos([]);
+              setSelectedLogo(null);
+            }}
+            variant="outline"
+            className="border-2 border-gray-300 h-11 px-6"
+          >
+            ⚡ לוגו חדש
+          </Button>
+          <Button 
+            onClick={() => handleGenerate()}
+            disabled={isGenerating}
+            className="bg-blue-600 hover:bg-blue-700 text-white h-11 px-6"
+          >
+            {isGenerating ? (
+              <>
+                <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
+                יוצר...
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-4 h-4 ml-2" />
+                וריאציות נוספות
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
     );
   }
 
