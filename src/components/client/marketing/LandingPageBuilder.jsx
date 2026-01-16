@@ -1,40 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Layers, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LandingPageQuestionnaire from './LandingPageQuestionnaire';
+import { createPageUrl } from '@/utils';
 
 export default function LandingPageBuilder() {
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-
   const features = [
     'כותרות שיווקיות',
     'התאמה למומחה',
     'טופס לליידים'
   ];
 
-  const handleComplete = (formData) => {
-    console.log('Landing page data:', formData);
-    setShowQuestionnaire(false);
-    // TODO: Send to backend function to generate landing page
-  };
-
   return (
-    <>
-      {showQuestionnaire && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl max-w-2xl w-full my-8">
-            <button 
-              onClick={() => setShowQuestionnaire(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ×
-            </button>
-            <LandingPageQuestionnaire onComplete={handleComplete} />
-          </div>
-        </div>
-      )}
-      
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -61,15 +38,15 @@ export default function LandingPageBuilder() {
             ))}
           </div>
 
-          <Button 
-            onClick={() => setShowQuestionnaire(true)}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
-          >
-            התחל עכשיו
-          </Button>
+          <a href={createPageUrl('OsekPaturLanding')}>
+            <Button 
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+            >
+              התחל עכשיו
+            </Button>
+          </a>
         </div>
       </div>
     </motion.div>
-    </>
   );
 }
