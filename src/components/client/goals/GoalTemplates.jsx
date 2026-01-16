@@ -439,7 +439,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
 
               {/* Action Buttons */}
               <motion.div 
-                className="flex gap-2.5 pt-2"
+                className="flex gap-2 pt-1.5"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -447,7 +447,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 <Button 
                   onClick={handleCreate} 
                   disabled={!goalTitle || !targetValue}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-10 rounded-lg"
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-9 rounded-lg text-sm"
                 >
                   <Check className="w-4 h-4 ml-1.5" />
                   צור מטרה
@@ -455,7 +455,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 <Button 
                   variant="outline" 
                   onClick={onClose}
-                  className="px-4 h-10 border-gray-300 hover:bg-gray-50"
+                  className="px-3 h-9 border-gray-300 hover:bg-gray-50"
                 >
                   <X className="w-4 h-4" />
                 </Button>
