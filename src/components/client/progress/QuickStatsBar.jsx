@@ -31,23 +31,22 @@ export default function QuickStatsBar({ stats }) {
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-1.5">
+    <div className="grid grid-cols-4 gap-2 md:gap-3">
       {items.map((item, index) => {
         const Icon = item.icon;
         return (
           <motion.div
             key={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.08 }}
-            className="bg-white rounded-lg border border-gray-100 p-1.5 hover:shadow-sm transition-shadow"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white rounded-xl border-2 border-gray-200 p-2.5 md:p-3 shadow-md hover:shadow-lg transition-all"
           >
-            <div className="flex flex-col items-center gap-0.5 text-center">
-              <div className={`w-7 h-7 bg-gradient-to-r ${item.color} rounded flex items-center justify-center flex-shrink-0`}>
-                <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+            <div className="flex flex-col items-center gap-1.5 text-center">
+              <div className={`w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" strokeWidth={2.5} />
               </div>
-              <p className="text-sm font-bold text-gray-900 leading-tight">{item.value}</p>
-              <p className="text-[8px] leading-tight text-gray-500">{item.label}</p>
+              <p className="text-base md:text-lg font-black text-gray-900 leading-tight">{item.value}</p>
+              <p className="text-[9px] md:text-xs leading-tight text-gray-600 font-semibold">{item.label}</p>
             </div>
           </motion.div>
         );
