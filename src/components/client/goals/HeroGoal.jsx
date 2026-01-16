@@ -104,9 +104,9 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-3 pt-3 border-t border-gray-200"
+            className="mt-1.5 pt-1.5 border-t border-gray-200"
           >
-            <p className="text-sm text-gray-700">{goal.actionHint}</p>
+            <p className="text-xs text-gray-700">{goal.actionHint}</p>
           </motion.div>
         )}
       </div>
