@@ -315,9 +315,6 @@ export default function Header() {
 
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
-            {/* Shopping Cart */}
-            <ShoppingCart />
-
             {/* Client Area Button - Desktop */}
             <Link
               to={createPageUrl('ClientLogin')}
