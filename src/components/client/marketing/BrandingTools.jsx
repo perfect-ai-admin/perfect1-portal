@@ -85,8 +85,9 @@ const tools = [
   }
 ];
 
-export default function BrandingTools() {
+export default function BrandingTools({ businessName = 'העסק שלי' }) {
   const [selectedTool, setSelectedTool] = useState(null);
+  const [activeFlowId, setActiveFlowId] = useState(null);
 
   return (
     <div className="space-y-6">
