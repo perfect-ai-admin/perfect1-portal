@@ -232,19 +232,16 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
   // Scroll to top when component mounts
   useEffect(() => {
-    // Scroll the main content area (not window, since main has overflow-y-auto)
-    const mainElement = document.querySelector('main');
-    if (mainElement) {
-      mainElement.scrollTop = 0;
-    }
-    
-    // Also handle mobile sheet body
-    setTimeout(() => {
+    requestAnimationFrame(() => {
+      const mainElement = document.querySelector('main');
+      if (mainElement) {
+        mainElement.scrollTop = 0;
+      }
       const bodyElement = document.querySelector('.mobile-sheet-body');
       if (bodyElement) {
         bodyElement.scrollTop = 0;
       }
-    }, 50);
+    });
   }, []);
 
   const handleTemplateSelect = (template) => {
