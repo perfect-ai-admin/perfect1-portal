@@ -13,6 +13,7 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
     fullName: '',
     email: '',
     cardNumber: '',
+    idNumber: '',
     expiryDate: '',
     cvv: ''
   });
@@ -51,6 +52,10 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
   const validateCardData = () => {
     if (!cardData.fullName.trim()) {
       setError('נא להזין שם מלא');
+      return false;
+    }
+    if (!cardData.idNumber.trim() || cardData.idNumber.length < 9) {
+      setError('נא להזין תעודת זהות תקינה');
       return false;
     }
     if (!cardData.email.trim()) {
@@ -192,8 +197,23 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
                   <Input
                     value={cardData.fullName}
                     onChange={(e) => handleCardChange('fullName', e.target.value)}
-                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
                     placeholder="ישראל ישראלי"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-700">תעודת זהות (עבור חשבונית)</label>
+                  <Input
+                    value={cardData.idNumber}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 9);
+                      setCardData({...cardData, idNumber: val});
+                    }}
+                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
+                    placeholder="מספר ת.ז (9 ספרות)"
+                    maxLength={9}
+                    inputMode="numeric"
                   />
                 </div>
                 
