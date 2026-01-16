@@ -48,10 +48,11 @@ export default function GoalsTab({ data, openAddGoal = false }) {
 
   // Scroll to top when opening add goal form
   useEffect(() => {
-    if (showAddGoal && topRef.current) {
+    if (showAddGoal) {
       setTimeout(() => {
-        topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.documentElement.scrollTop = 0;
+      }, 50);
     }
   }, [showAddGoal]);
 
