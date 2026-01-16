@@ -31,7 +31,7 @@ export default function QuickStatsBar({ stats }) {
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-4 gap-1.5">
       {items.map((item, index) => {
         const Icon = item.icon;
         return (
@@ -40,14 +40,14 @@ export default function QuickStatsBar({ stats }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.08 }}
-            className="bg-white rounded-lg border border-gray-100 p-3 hover:shadow-sm transition-shadow"
+            className="bg-white rounded-lg border border-gray-100 p-2 hover:shadow-sm transition-shadow"
           >
-            <div className="flex flex-col items-center gap-1 text-center">
-              <div className={`w-10 h-10 bg-gradient-to-r ${item.color} rounded flex items-center justify-center flex-shrink-0`}>
-                <Icon className="w-5 h-5 text-white" />
+            <div className="flex flex-col items-center gap-0.5 text-center">
+              <div className={`w-8 h-8 bg-gradient-to-r ${item.color} rounded flex items-center justify-center flex-shrink-0`}>
+                <Icon className="w-4 h-4 text-white" />
               </div>
-              <p className="text-lg font-bold text-gray-900">{item.value}</p>
-              <p className="text-[10px] leading-tight text-gray-500">{item.label}</p>
+              <p className="text-base font-bold text-gray-900 leading-tight">{item.value}</p>
+              <p className="text-[9px] leading-tight text-gray-500">{item.label}</p>
             </div>
           </motion.div>
         );
