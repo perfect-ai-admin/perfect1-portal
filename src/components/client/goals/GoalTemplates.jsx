@@ -188,12 +188,13 @@ const GOAL_TEMPLATES = [
   }
 ];
 
-export default function GoalTemplates({ onCreateGoal, onClose }) {
+export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = false }) {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [goalTitle, setGoalTitle] = useState('');
   const [targetValue, setTargetValue] = useState('');
   const [deadline, setDeadline] = useState('');
   const [timeframe, setTimeframe] = useState('month');
+  const [isPrimary, setIsPrimary] = useState(false);
   const drawerRef = useRef(null);
   const initialFocusRef = useRef(null);
 
