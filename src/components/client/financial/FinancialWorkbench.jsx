@@ -67,7 +67,7 @@ export default function FinancialWorkbench({ data }) {
 
          {/* Mobile Tabs - Plain buttons, no Radix */}
          <div className="md:hidden mb-6">
-           <div className="grid grid-cols-4 gap-2">
+           <div className="grid grid-cols-3 gap-2">
              {tabs.map(tab => {
                const Icon = tab.icon;
                const isActive = activeTab === tab.value;
