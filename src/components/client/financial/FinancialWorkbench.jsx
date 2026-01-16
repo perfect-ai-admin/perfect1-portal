@@ -29,10 +29,7 @@ export default function FinancialWorkbench({ data }) {
     { value: 'connections', label: 'חיבורים', icon: Link2 },
   ];
 
-  const mobileMoreTabs = [
-    { value: 'collections', label: 'גבייה', icon: CreditCard },
-    { value: 'connections', label: 'חיבורים', icon: Link2 },
-  ];
+
 
   return (
     <motion.div
