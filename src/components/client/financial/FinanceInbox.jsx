@@ -61,7 +61,7 @@ export default function FinanceInbox({ data }) {
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <p className="text-xs md:text-base font-semibold text-gray-900">{item.title}</p>
+              <p className="text-sm md:text-base font-bold text-gray-900">{item.title}</p>
               <p className="text-xs text-gray-600 mt-0.5 md:mt-1">{item.description}</p>
             </div>
 
