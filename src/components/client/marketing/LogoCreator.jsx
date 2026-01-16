@@ -385,23 +385,23 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
             key={currentLogoIndex}
-            className="flex flex-col items-center gap-2 flex-1 justify-start pt-1"
+            className="flex flex-col items-center gap-1 flex-1 justify-start py-2"
           >
             {/* Logo Display - Compact */}
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center p-4 shadow-md w-3/4 aspect-square">
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center p-3 shadow-sm w-3/4 aspect-square">
               <img 
                 src={currentLogo.url} 
                 alt={`Logo variant ${currentLogoIndex + 1}`} 
-                className="max-h-28 w-auto object-contain"
+                className="max-h-24 w-auto object-contain"
               />
             </div>
 
             {/* Variant Name & Progress */}
-            <div className="text-center w-full px-4">
-              <h3 className="text-sm font-bold text-gray-900 mb-2">{currentLogo.variant}</h3>
-              <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
+            <div className="text-center w-full px-3 py-1">
+              <h3 className="text-xs font-bold text-gray-900 mb-1">{currentLogo.variant}</h3>
+              <div className="flex items-center justify-center gap-1.5 text-xs text-gray-600">
                 <span className="font-semibold text-gray-900 text-xs">{currentLogoIndex + 1}</span>
-                <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-20 h-1 bg-gray-200 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercent}%` }}
@@ -414,40 +414,40 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
             </div>
           </motion.div>
 
-          {/* Action Section - Bottom Sticky */}
-          <div className="space-y-3 px-4 pb-4">
+          {/* Action Section - Bottom */}
+          <div className="space-y-1.5 px-3 pb-2">
             {/* Small Action Buttons Row */}
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               <button 
                 onClick={() => setSelectedLogo(currentLogo)}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 text-xs font-semibold rounded-lg shadow-md flex items-center justify-center gap-1.5 transition-colors"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-1.5 text-xs font-semibold rounded-lg shadow-md flex items-center justify-center gap-1 transition-colors"
               >
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-3 h-3" />
                 הורדה
               </button>
               
               <button 
                 onClick={() => saveLogo(currentLogo.url, currentLogo.variant)}
-                className="flex-1 border-2 border-gray-300 text-gray-700 py-2 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5"
+                className="flex-1 border-2 border-gray-300 text-gray-700 py-1.5 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-1"
               >
-                <Palette className="w-3.5 h-3.5" />
+                <Palette className="w-3 h-3" />
                 שמור
               </button>
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
               <button
                 onClick={() => setCurrentLogoIndex(Math.max(0, currentLogoIndex - 1))}
                 disabled={currentLogoIndex === 0}
-                className="flex-1 py-2 px-2 rounded-lg border border-gray-300 text-gray-700 text-xs font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-all"
+                className="flex-1 py-1.5 px-2 rounded-lg border border-gray-300 text-gray-700 text-xs font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-all"
               >
                 ← הקודם
               </button>
               <button
                 onClick={() => setCurrentLogoIndex(Math.min(logos.length - 1, currentLogoIndex + 1))}
                 disabled={currentLogoIndex === logos.length - 1}
-                className="flex-1 py-2 px-2 rounded-lg border-2 border-blue-300 text-blue-700 text-xs font-medium disabled:opacity-30 disabled:cursor-not-allowed bg-blue-50 hover:bg-blue-100 transition-all"
+                className="flex-1 py-1.5 px-2 rounded-lg border-2 border-blue-300 text-blue-700 text-xs font-medium disabled:opacity-30 disabled:cursor-not-allowed bg-blue-50 hover:bg-blue-100 transition-all"
               >
                 הבא →
               </button>
