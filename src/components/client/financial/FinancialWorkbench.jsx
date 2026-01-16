@@ -65,26 +65,28 @@ export default function FinancialWorkbench({ data }) {
             })}
           </div>
 
-          {/* Mobile Tabs */}
-          <div className="md:hidden grid grid-cols-4 gap-2 md:grid-cols-6">
-            {tabs.map(tab => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.value;
-              return (
-                <button
-                  key={tab.value}
-                  onClick={() => setActiveTab(tab.value)}
-                  className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg transition-all ${
-                    isActive
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-xs font-semibold text-center">{tab.label}</span>
-                </button>
-              );
-            })}
+          {/* Mobile Tabs - Plain buttons, no Radix */}
+          <div className="md:hidden">
+            <div className="grid grid-cols-4 gap-2 md:grid-cols-6">
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.value;
+                return (
+                  <button
+                    key={tab.value}
+                    onClick={() => setActiveTab(tab.value)}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg transition-all ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="text-xs font-semibold text-center">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
 
