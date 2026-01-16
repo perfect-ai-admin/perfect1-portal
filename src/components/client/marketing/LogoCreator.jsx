@@ -431,7 +431,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           </Dialog>
 
           {/* Desktop Action Buttons */}
-          <div className="hidden lg:flex gap-3 justify-center pt-6">
+          <div className="hidden lg:flex gap-3 justify-center pt-6 flex-shrink-0">
             <Button 
               onClick={() => {
                 setStep(1);
