@@ -218,7 +218,7 @@ export default function OsekPaturOnlineLanding() {
                   <div className="text-center mb-4">
                     <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-2">
                       <Lock className="w-5 h-5 text-white" />
-                      <span className="text-white text-sm font-black">מאובטח ותקני חוק</span>
+                      <span className="text-white text-sm font-black">מאובטח</span>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-white">
@@ -381,7 +381,7 @@ export default function OsekPaturOnlineLanding() {
                   <h3 className="text-3xl font-black">בטיחות מוחלטת</h3>
                 </div>
                 <p className="text-lg text-white/90 font-bold mb-3">הצפנה וגנות מלאה של מידע</p>
-                <p className="text-white/80">כל המסמכים והנתונים שלך מוצפנים בסטנדרט בנקאי. תקשורת ישירה דרך וואטסאפ וטלפון - אין מעבר בשירותי צד שלישי.</p>
+                <p className="text-white/80">כל המסמכים והנתונים שלך מוצפנים. תקשורת ישירה דרך וואטסאפ וטלפון - אין מעבר בשירותי צד שלישי.</p>
               </motion.div>
             </div>
           </div>
