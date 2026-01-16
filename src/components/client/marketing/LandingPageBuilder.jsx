@@ -19,17 +19,22 @@ export default function LandingPageBuilder() {
     // TODO: Send to backend function to generate landing page
   };
 
-  if (showQuestionnaire) {
-    return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <LandingPageQuestionnaire onComplete={handleComplete} />
-        </div>
-      </div>
-    );
-  }
-
   return (
+    <>
+      {showQuestionnaire && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl max-w-2xl w-full my-8">
+            <button 
+              onClick={() => setShowQuestionnaire(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
+            >
+              ×
+            </button>
+            <LandingPageQuestionnaire onComplete={handleComplete} />
+          </div>
+        </div>
+      )}
+      
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -65,5 +70,6 @@ export default function LandingPageBuilder() {
         </div>
       </div>
     </motion.div>
+    </>
   );
 }
