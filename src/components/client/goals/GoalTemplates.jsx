@@ -341,8 +341,8 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
               {!selectedTemplate && <p className="text-center text-xs md:text-sm text-gray-600 font-medium overflow-x-hidden">בחר מטרה שמשפיעה על העסק שלך</p>}
             </div>
 
-            {/* Content */}
-            <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0 h-0">
+            {/* Content - scrollable */}
+            <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0">
             {!selectedTemplate ? (
               <motion.div 
                 className="space-y-2.5"
@@ -502,33 +502,35 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                   </div>
                 )}
                 </div>
-
-              {/* Action Buttons */}
-              <motion.div 
-                className="flex gap-2 pt-1.5"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Button 
-                  onClick={handleCreate} 
-                  disabled={!goalTitle || !targetValue}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-9 rounded-lg text-sm"
-                >
-                  <Check className="w-4 h-4 ml-1.5" />
-                  {editingGoal ? 'שמור שינויים' : 'צור מטרה'}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={onClose}
-                  className="px-3 h-9 border-gray-300 hover:bg-gray-50"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </motion.div>
             </motion.div>
           )}
           </div>
+
+          {/* Fixed Footer - Buttons */}
+          {selectedTemplate && (
+            <motion.div 
+              className="flex-shrink-0 flex gap-2 px-4 md:px-6 py-3 md:py-4 border-t border-gray-200 bg-white"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Button 
+                onClick={handleCreate} 
+                disabled={!goalTitle || !targetValue}
+                className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold h-9 rounded-lg text-sm"
+              >
+                <Check className="w-4 h-4 ml-1.5" />
+                {editingGoal ? 'שמור שינויים' : 'צור מטרה'}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={onClose}
+                className="px-3 h-9 border-gray-300 hover:bg-gray-50"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </motion.div>
+          )}
           </div>
           </SheetContent>
           </Sheet>
