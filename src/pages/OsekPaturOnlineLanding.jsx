@@ -630,9 +630,9 @@ export default function OsekPaturOnlineLanding() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
+                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#3498DB] to-[#2980B9] hover:from-[#2980B9] hover:to-[#3498DB] text-white"
                   >
-                    {isSubmitting ? 'שולח...' : 'קבל ייעוץ'}
+                    {isSubmitting ? 'שולח...' : 'בואו נתחיל'}
                   </Button>
 
                   <p className="text-xs text-gray-500 text-center mt-4">
