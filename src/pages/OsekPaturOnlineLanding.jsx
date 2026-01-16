@@ -266,8 +266,8 @@ export default function OsekPaturOnlineLanding() {
                       loading="lazy"
                       decoding="async"
                     />
-                    <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">מקוון מהחל ועד הסוף</h3>
-                     <p className="text-gray-600">ללא צעדים ממשליים בפיזי</p>
+                    <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">שירות ייעוץ דיגיטלי</h3>
+                     <p className="text-gray-600">מלא עד סוף בממשק קל וידידותי</p>
                     </div>
 
                     <ul className="space-y-3">
