@@ -237,12 +237,12 @@ export default function OsekPaturOnlineLanding() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 px-4 sm:px-8 text-base sm:text-lg font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
+                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
                     <Target className="ml-2 w-5 h-5" />
                     ייעוץ וליווי
                   </Button>
                   <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור אונליין" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-4 sm:px-8 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white text-[#3498DB] hover:bg-white/90 shadow-lg">
+                    <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl border-2 border-white bg-white text-[#3498DB] hover:bg-white/90 shadow-lg">
                       <MessageCircle className="ml-2 w-5 h-5" />
                       WhatsApp
                     </Button>
@@ -453,12 +453,12 @@ export default function OsekPaturOnlineLanding() {
                 השאר פרטים ונתחיל את התהליך האונליין תוך שעות
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button onClick={scrollToForm} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
+                <Button onClick={scrollToForm} className="h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
                   <Target className="ml-2 w-5 h-5" />
                   פתח אונליין
                 </Button>
                 <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור אונליין" target="_blank" rel="noopener noreferrer">
-                  <Button className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#27AE60] shadow-lg">
+                  <Button className="h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#27AE60] shadow-lg">
                     <MessageCircle className="ml-2 w-5 h-5" />
                     WhatsApp
                   </Button>

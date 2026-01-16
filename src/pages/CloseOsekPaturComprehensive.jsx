@@ -449,13 +449,13 @@ export default function CloseOsekPaturComprehensive() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                 <Button className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg">
+                 <Button className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg">
                    <MessageCircle className="ml-2 w-5 h-5" />
                    WhatsApp
                  </Button>
                </a>
                <a href="tel:0502277087">
-                 <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white/10 text-white hover:bg-white hover:text-[#1E3A5F] transition-all">
+                 <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl border-2 border-white bg-white/10 text-white hover:bg-white hover:text-[#1E3A5F] transition-all">
                    <Phone className="ml-2 w-5 h-5" />
                    התקשר
                  </Button>

@@ -157,7 +157,7 @@ export default function HowToOpenOsekPatur() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור - מעניין בייעוץ" target="_blank" rel="noopener noreferrer">
-                  <Button className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
+                  <Button className="h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
                     <MessageCircle className="ml-2 w-5 h-5" />
                     ייעוץ בחינם
                   </Button>
@@ -166,7 +166,7 @@ export default function HowToOpenOsekPatur() {
                   onClick={() => document.getElementById('steps')?.scrollIntoView({ behavior: 'smooth' })}
                   className="h-12 sm:h-14 px-6 sm:px-10"
                 >
-                  <Button variant="outline" className="w-full h-full text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white/10 text-white hover:bg-white/20 shadow-lg">
+                  <Button variant="outline" className="w-full h-full text-base sm:text-lg lg:text-xl font-bold rounded-xl border-2 border-white bg-white/10 text-white hover:bg-white/20 shadow-lg">
                     <FileText className="ml-2 w-5 h-5" />
                     קרא
                   </Button>

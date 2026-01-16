@@ -242,7 +242,7 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 px-4 sm:px-8 text-base sm:text-lg font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
+                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
                     <Target className="ml-2 w-5 h-5" />
                     השאר פרטים
                   </Button>
