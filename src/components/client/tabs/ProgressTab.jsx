@@ -58,11 +58,6 @@ export default function ProgressTab({ data, onNavigate }) {
 
   const scrollToWhyMatters = () => {
     setWhyExpanded(true);
-    setTimeout(() => {
-      if (whyMattersRef.current) {
-        whyMattersRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
   };
 
   return (

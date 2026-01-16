@@ -15,6 +15,14 @@ export default React.forwardRef(function StepImportancePanel({ step, isExpanded,
   const expanded = isExpanded !== undefined ? isExpanded : internalExpanded;
   const setExpanded = onExpandChange || setInternalExpanded;
 
+  React.useEffect(() => {
+    if (expanded && ref && ref.current) {
+      setTimeout(() => {
+        ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }, [expanded, ref]);
+
   if (!step?.reasons || step.reasons.length === 0) return null;
 
   return (
