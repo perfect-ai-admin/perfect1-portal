@@ -387,23 +387,23 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* Mid-Page Strong CTA */}
-        <section className="py-12 bg-gradient-to-br from-[#27AE60] to-[#229954]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-bold mb-6 border border-white/30">
-                ⏰ מוכן להתחיל?
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-                רוצה לפתוח עוסק פטור ולהתחיל לעבוד?
-              </h2>
-              <p className="text-xl text-white/90 mb-8">
-                השאר פרטים ונחזור אליך תוך שעות - ללא התחייבות
-              </p>
+        {/* Proof Section */}
+         <section className="py-12 bg-gradient-to-br from-blue-600 to-blue-700">
+           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+             <motion.div
+               initial={{ opacity: 0, scale: 0.9 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               viewport={{ once: true }}
+             >
+               <div className="inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-bold mb-6 border border-white/30">
+                 📊 הוכחה שזה עובד
+               </div>
+               <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
+                 2,000+ עצמאים בנו אתם את הביטחון שלהם
+               </h2>
+               <p className="text-xl text-white/90 mb-8">
+                 בכל חודש משלוש עצמאיים חדשים בוחרים בנו להיות החברה שלהם בדרך
+               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                <Button onClick={scrollToForm} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
                  <Target className="ml-2 w-5 h-5" />
