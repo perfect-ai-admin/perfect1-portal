@@ -320,45 +320,40 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Landing Page Builder Card */}
-        <section className="py-12 bg-white">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Layers className="w-8 h-8 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">דף נחיתה ממותג</h3>
-                  <p className="text-sm text-gray-700 mb-4">
-                    עמוד המרה שמונע כאב <ChevronRight className="w-3 h-3 inline mx-1" /> פתרון <ChevronRight className="w-3 h-3 inline mx-1" /> פעולה
-                  </p>
-                  
-                  <div className="space-y-2 mb-6">
-                    {['כותרות שיווקיות', 'התאמה למומחה', 'טופס לליידים'].map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-sm text-gray-800">
-                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                          <span className="text-white text-xs">✓</span>
-                        </div>
-                        {feature}
-                      </div>
-                    ))}
-                  </div>
+         <section className="py-12 bg-white">
+           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-blue-200 max-w-md"
+             >
+               <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6">
+                 <Layers className="w-7 h-7 text-white" />
+               </div>
 
-                  <Button 
-                    onClick={() => setShowQuestionnaire(true)}
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold"
-                  >
-                    התחל עכשיו
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+               <h3 className="text-2xl font-black text-[#1E3A5F] mb-1">דף נחיתה ממומחה</h3>
+               <p className="text-sm text-gray-700 mb-6 leading-relaxed">
+                 עמוד המרה על מידע <span className="text-gray-500">→</span> פתרון <span className="text-gray-500">→</span> פעולה
+               </p>
+
+               <div className="space-y-3 mb-6">
+                 {['כותרות שיווקיות', 'התאמה למומחה', 'טופס לליידים'].map((feature, idx) => (
+                   <div key={idx} className="flex items-center gap-3">
+                     <CheckCircle className="w-5 h-5 text-[#27AE60] flex-shrink-0" />
+                     <span className="text-sm font-medium text-gray-800">{feature}</span>
+                   </div>
+                 ))}
+               </div>
+
+               <Button 
+                 onClick={() => setShowQuestionnaire(true)}
+                 className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold h-12 rounded-xl"
+               >
+                 התחל עכשיו
+               </Button>
+             </motion.div>
+           </div>
+         </section>
 
         {/* The Challenge Section */}
          <section className="py-12 bg-white border-t-4 border-[#D4AF37]">
