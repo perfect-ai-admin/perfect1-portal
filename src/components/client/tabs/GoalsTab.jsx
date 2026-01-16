@@ -61,14 +61,19 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   const [editingGoal, setEditingGoal] = useState(null);
   const goalsTopRef = useRef(null);
 
-  // Step 4: useLayoutEffect + double rAF for stable scroll
+  // Step 4: useLayoutEffect + multiple timing attempts for stable scroll
   useLayoutEffect(() => {
     if (showAddGoal) {
+      // Attempt 1: After paint
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          scrollToGoalsTop();
-        });
+        scrollToGoalsTop();
       });
+      
+      // Attempt 2: After 100ms (gives modal time to render)
+      setTimeout(() => scrollToGoalsTop(), 100);
+      
+      // Attempt 3: After 300ms (last resort)
+      setTimeout(() => scrollToGoalsTop(), 300);
     }
   }, [showAddGoal]);
 
