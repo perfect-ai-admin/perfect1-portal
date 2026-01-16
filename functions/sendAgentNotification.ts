@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     }
 
     // הכנת ההודעה
-    const appUrl = 'https://perfect-1.one';
+    const appUrl = 'https://perfect1.co.il';
     const crmLink = `${appUrl}/AgentCRM`;
     
     const message = `היי ${agentName},\n\nליד חדש נכנס למערכת! 🎯\n\nשם: ${leadName}\nמקצוע: ${leadProfession || 'לא צוין'}\n\n👉 כנס לטיפול: ${crmLink}\n\n💼 Perfect One CRM`;
