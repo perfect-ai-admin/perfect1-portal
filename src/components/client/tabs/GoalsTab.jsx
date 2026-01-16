@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
@@ -38,12 +38,22 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   const [goals, setGoals] = useState(SAMPLE_GOALS);
   const [showAddGoal, setShowAddGoal] = useState(openAddGoal);
   const [editingGoal, setEditingGoal] = useState(null);
+  const topRef = useRef(null);
 
   React.useEffect(() => {
     if (openAddGoal) {
       setShowAddGoal(true);
     }
   }, [openAddGoal]);
+
+  // Scroll to top when opening add goal form
+  useEffect(() => {
+    if (showAddGoal) {
+      setTimeout(() => {
+        topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 0);
+    }
+  }, [showAddGoal]);
 
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1);
@@ -88,6 +98,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
         exit={{ opacity: 0 }}
         className="space-y-3 w-full max-w-xs md:max-w-none md:w-full md:bg-transparent md:border-0 md:p-0 md:shadow-none bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
       >
+      <div ref={topRef} />
       {/* Hero Goal */}
       {heroGoal && (
         <div>
@@ -116,7 +127,12 @@ export default function GoalsTab({ data, openAddGoal = false }) {
         <Button 
           variant="outline" 
           className="w-full gap-2"
-          onClick={() => setShowAddGoal(true)}
+          onClick={() => {
+            setShowAddGoal(true);
+            setTimeout(() => {
+              topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 0);
+          }}
         >
           <Plus className="w-4 h-4" />
           מטרה חדשה
