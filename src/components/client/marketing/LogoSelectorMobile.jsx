@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Download, Palette, ChevronLeft, ChevronRight, Image, Code, FileJson, CheckCircle2, Wand2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function LogoSelectorMobile({ logos, formData, onNext }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Prevent scrolling on body when open
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedLogo, setSelectedLogo] = useState(null);
 
@@ -24,8 +35,10 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
   const currentLogo = logos[currentIndex];
   const progressPercent = ((currentIndex + 1) / logos.length) * 100;
 
-  return (
-    <div className="fixed inset-0 z-50 lg:hidden w-full bg-white flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] lg:hidden w-full bg-white flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
       {/* HEADER - Fixed Height */}
       <div className="flex-none px-4 py-3 border-b border-gray-100 bg-white/95 backdrop-blur-sm z-10 text-center">
         <h2 className="text-base font-bold text-gray-900 leading-tight">בחר את הלוגו המושלם 🎨</h2>
@@ -144,6 +157,7 @@ export default function LogoSelectorMobile({ logos, formData, onNext }) {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </div>,
+    document.body
   );
 }
