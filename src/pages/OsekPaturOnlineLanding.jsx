@@ -566,9 +566,9 @@ export default function OsekPaturOnlineLanding() {
               className="text-center mb-8"
             >
               <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                מוכן לפתוח עוסק אונליין?
+                רוצה ייעוץ בתהליך פתיחת עוסק?
               </h2>
-              <p className="text-xl text-white/90">מלא פרטים ונתחיל את התהליך הדיגיטלי</p>
+              <p className="text-xl text-white/90">השאר פרטים ויועץ שלנו יחזור אליך בהקדם</p>
             </motion.div>
 
             {isSuccess ? (
