@@ -65,12 +65,8 @@ export default function LogoCreator({ businessName }) {
           description: 'נועז ובולט'
         },
         {
-          style: 'elegant with texture',
-          description: 'אלגנטי עם קוואם'
-        },
-        {
-          style: 'playful and dynamic',
-          description: 'שובב ודינמי'
+          style: 'elegant and sophisticated',
+          description: 'אלגנטי ומתוחכם'
         }
       ];
 
