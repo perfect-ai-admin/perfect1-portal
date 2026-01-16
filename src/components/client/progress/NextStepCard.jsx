@@ -34,7 +34,7 @@ export default function NextStepCard({ step, onAction, onWhyClick }) {
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           className="w-12 h-12 md:w-16 md:h-16 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg border border-white/30"
         >
-          <div className="w-6 h-6 md:w-10 md:h-10">
+          <div className="w-6 h-6 md:w-10 md:h-10 text-white flex items-center justify-center">
             {step.icon}
           </div>
         </motion.div>
