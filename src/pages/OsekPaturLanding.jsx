@@ -700,9 +700,126 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
+        {/* Pricing Section */}
+        <section className="py-16 bg-gradient-to-br from-[#F8F9FA] to-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                בחרו את החבילה שלכם
+              </h2>
+              <p className="text-lg text-gray-600">מחיר שקוף, ללא הפתעות - הכל כלול</p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              {[
+                {
+                  name: 'חבילה בסיסית',
+                  price: '₪99',
+                  period: 'לחודש',
+                  desc: 'עבור עוסקים שמתחילים',
+                  features: [
+                    'פתיחת תיק עוסק פטור',
+                    'ליווי בוואטסאפ וטלפון',
+                    'דוח שנתי אוטומטי',
+                    'אפליקציית ניהול פשוטה'
+                  ],
+                  highlighted: false
+                },
+                {
+                  name: 'חבילה מלאה',
+                  price: '₪249',
+                  period: 'לחודש',
+                  desc: 'הפתרון המלא',
+                  features: [
+                    'הכל בחבילה הבסיסית',
+                    'ליווי מול כל הרשויות',
+                    'אפליקציה מתקדמת עם דוחות',
+                    'ייעוץ חודשי ישיר',
+                    'טיפול בכל השינויים'
+                  ],
+                  highlighted: true
+                }
+              ].map((plan, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`rounded-3xl p-8 transition-all ${
+                    plan.highlighted 
+                      ? 'bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] text-white shadow-2xl border-2 border-[#D4AF37] relative' 
+                      : 'bg-white border-2 border-gray-200 hover:border-[#27AE60]'
+                  }`}
+                >
+                  {plan.highlighted && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#D4AF37] text-[#1E3A5F] px-4 py-1 rounded-full text-sm font-bold">
+                      מומלץ
+                    </div>
+                  )}
+
+                  <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-white' : 'text-[#1E3A5F]'}`}>
+                    {plan.name}
+                  </h3>
+                  <p className={`text-sm mb-6 ${plan.highlighted ? 'text-white/80' : 'text-gray-600'}`}>
+                    {plan.desc}
+                  </p>
+
+                  <div className="mb-6">
+                    <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : 'text-[#1E3A5F]'}`}>
+                      {plan.price}
+                    </span>
+                    <span className={`${plan.highlighted ? 'text-white/70' : 'text-gray-600'}`}>
+                      {' '}{plan.period}
+                    </span>
+                  </div>
+
+                  <Button
+                    onClick={scrollToForm}
+                    className={`w-full mb-6 h-12 font-bold rounded-xl ${
+                      plan.highlighted
+                        ? 'bg-[#D4AF37] hover:bg-[#E5BE4A] text-[#1E3A5F]'
+                        : 'bg-[#27AE60] hover:bg-[#229954] text-white'
+                    }`}
+                  >
+                    בואו נתחיל
+                  </Button>
+
+                  <div className="space-y-3 border-t border-opacity-20 border-white pt-6">
+                    {plan.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-3">
+                        <CheckCircle className={`w-5 h-5 flex-shrink-0 ${plan.highlighted ? 'text-[#D4AF37]' : 'text-[#27AE60]'}`} />
+                        <span className={plan.highlighted ? 'text-white/90' : 'text-gray-700'}>
+                          {feature}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl p-6 border-2 border-gray-200 text-center"
+            >
+              <p className="text-gray-700 mb-4">
+                <span className="font-bold">ללא התחייבות</span> • שיחה קצרה וחינם • תעדוף מלא לפני כל תשלום
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
         {/* FAQ Section */}
-        <section className="py-12 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+         <section className="py-12 bg-white">
+           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
