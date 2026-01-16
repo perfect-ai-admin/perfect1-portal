@@ -39,7 +39,7 @@ import MentorTab from '../components/client/tabs/MentorTab';
 import NotificationCenter from '../components/client/NotificationCenter';
 import FloatingActionButton from '../components/client/FloatingActionButton';
 import Breadcrumbs from '../components/client/Breadcrumbs';
-import QuickActionsBar from '../components/client/financial/QuickActionsBar';
+
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
 
