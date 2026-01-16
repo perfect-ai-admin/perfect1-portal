@@ -225,6 +225,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  // Prevent page scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, []);
+
   // Focus management
   useEffect(() => {
     initialFocusRef.current?.focus();
