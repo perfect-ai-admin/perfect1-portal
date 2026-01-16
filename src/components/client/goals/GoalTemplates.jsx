@@ -321,7 +321,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
       <Sheet open={true} onOpenChange={onClose}>
         <SheetContent 
            side="bottom"
-           className="p-0 border-0 overflow-hidden h-[95vh] flex flex-col rounded-t-2xl"
+           className="p-0 border-0 overflow-hidden h-screen max-h-[95vh] flex flex-col rounded-t-2xl"
            ref={drawerRef}
          >
         <div className="flex flex-col h-full">
