@@ -34,31 +34,25 @@ const SAMPLE_GOALS = [
   }
 ];
 
-// Utility: Scroll with retry logic
+// Utility: Scroll with retry logic + scrollIntoView fallback
 const scrollToGoalsTop = (retries = 0) => {
   const anchor = document.getElementById('goals-top-anchor');
+  const scrollContainer = document.querySelector('main[data-scroll-container="dashboard"]');
   
-  // Try main first
-  let scrollContainer = document.querySelector('main[data-scroll-container="dashboard"]');
-  
-  // If main not found, try closest scrollable parent
-  if (!scrollContainer) {
-    scrollContainer = document.querySelector('[data-scroll-container="dashboard"]');
+  if (!anchor || !scrollContainer) {
+    if (retries < 15) {
+      requestAnimationFrame(() => scrollToGoalsTop(retries + 1));
+    }
+    return;
   }
+
+  // Method 1: Direct scroll
+  scrollContainer.scrollTop = 0;
   
-  // Fallback to first main element
-  if (!scrollContainer) {
-    scrollContainer = document.querySelector('main');
-  }
-  
-  if (anchor && scrollContainer) {
-    scrollContainer.scrollTop = 0;
-    return true;
-  }
-  
-  if (retries < 10) {
-    requestAnimationFrame(() => scrollToGoalsTop(retries + 1));
-  }
+  // Method 2: Fallback - scrollIntoView
+  setTimeout(() => {
+    anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
 };
 
 export default function GoalsTab({ data, openAddGoal = false }) {
