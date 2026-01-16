@@ -245,10 +245,10 @@ export default function ClientDashboard() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-2 hover:bg-white/10 rounded transition-colors" aria-label="תפריט">
-                    <User className="w-5 h-5" />
-                  </button>
-                </DropdownMenuTrigger>
+                                <button className="p-2 hover:bg-white/10 rounded transition-colors" aria-label="תפריט">
+                                  <User className="w-5 h-5" />
+                                </button>
+                              </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
                   <DropdownMenuItem onClick={toggleLanguage} className="text-sm">
                     <Globe className="w-4 h-4 ml-2" />
