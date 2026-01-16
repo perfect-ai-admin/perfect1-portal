@@ -416,7 +416,147 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
             )}
           </Button>
         </div>
+
+        {/* Download Format Dialog */}
+        <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
+          <DialogContent className="sm:max-w-sm">
+            <DialogHeader>
+              <DialogTitle>בחר פורמט הורדה</DialogTitle>
+              <DialogDescription>
+                בחר את סוג הקובץ המתאים ליצירתך
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3 py-4">
+              <button
+                onClick={() => downloadLogo(selectedLogo.url, 'png')}
+                className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-500 transition-all group"
+              >
+                <Image className="w-6 h-6 text-blue-600" />
+                <div className="text-right flex-1">
+                  <p className="font-semibold text-gray-900">PNG</p>
+                  <p className="text-xs text-gray-500">לשימוש בדיגיטל וברשתות</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => downloadLogo(selectedLogo.url, 'svg')}
+                className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-500 transition-all group"
+              >
+                <Code className="w-6 h-6 text-purple-600" />
+                <div className="text-right flex-1">
+                  <p className="font-semibold text-gray-900">SVG</p>
+                  <p className="text-xs text-gray-500">לעריכה וריצוף מושלם</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => {
+                  setSelectedLogo(null);
+                  setStep(5); // Checkout page
+                }}
+                className="w-full flex items-center gap-4 p-4 border-2 border-green-200 rounded-lg hover:bg-green-50 hover:border-green-500 transition-all bg-green-50"
+              >
+                <FileJson className="w-6 h-6 text-green-600" />
+                <div className="text-right flex-1">
+                  <p className="font-semibold text-gray-900">קנה חבילה מלאה</p>
+                  <p className="text-xs text-gray-500">כל הפורמטים + ליווי עיצוב</p>
+                </div>
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
+    );
+  }
+
+  // Checkout page
+  if (step === 5) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="space-y-6"
+      >
+        <Button variant="ghost" onClick={() => setStep(4)}>
+          ← חזור
+        </Button>
+
+        <div className="max-w-2xl mx-auto space-y-6">
+          {/* Header */}
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">סיימו את הרכישה 🎉</h2>
+            <p className="text-gray-600">קבלו את הלוגו המושלם + ליווי עיצוב</p>
+          </div>
+
+          {/* Product Card */}
+          <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 border-2 border-green-500">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">חבילת לוגו מלאה</h3>
+                <p className="text-gray-600 text-sm mt-1">לעסק {formData.businessName}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-3xl font-bold text-green-600">₪99</p>
+                <p className="text-xs text-gray-500">חד-פעמי</p>
+              </div>
+            </div>
+
+            <div className="border-t pt-4 space-y-2">
+              {[
+                'לוגו PNG באיכות גבוהה',
+                'לוגו SVG להדפסה',
+                'ייעוץ עיצוב אישי',
+                'הנחה 20% על שירותי עיצוב נוספים'
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-600"></div>
+                  <p className="text-sm text-gray-700">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment Options */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-gray-900">בחר אמצעי תשלום</h3>
+            
+            <div className="space-y-3">
+              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                <div className="w-12 h-8 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">Bit</div>
+                <span className="font-semibold text-gray-900">ביט - מעברון תשלומים</span>
+              </button>
+
+              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                <div className="w-12 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded flex items-center justify-center text-white text-xs font-bold">💳</div>
+                <span className="font-semibold text-gray-900">כרטיס אשראי / חיוב</span>
+              </button>
+
+              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                <div className="w-12 h-8 bg-green-600 rounded flex items-center justify-center text-white text-xs font-bold">₪</div>
+                <span className="font-semibold text-gray-900">העברה בנקאית</span>
+              </button>
+
+              <button className="w-full flex items-center gap-4 p-4 border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                <div className="w-12 h-8 bg-blue-500 rounded flex items-center justify-center text-white text-xs font-bold">₪</div>
+                <span className="font-semibold text-gray-900">PayPal</span>
+              </button>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <Button className="w-full h-12 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold text-lg rounded-lg">
+            המשך לתשלום
+          </Button>
+
+          {/* Trust Banner */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+            <p className="text-sm text-blue-900">
+              🔒 התשלום מאובטח ו-100% בטוח. אנחנו משתמשים בטכנולוגיות הצפנה מובילות.
+            </p>
+          </div>
+        </div>
+      </motion.div>
     );
   }
 
