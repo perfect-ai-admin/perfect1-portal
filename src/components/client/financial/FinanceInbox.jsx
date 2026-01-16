@@ -42,31 +42,31 @@ export default function FinanceInbox({ data }) {
   }
 
   return (
-    <div className="space-y-3 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-4">
-      <h3 className="text-sm font-bold text-amber-900 uppercase tracking-wide flex items-center gap-2">
-        <AlertCircle className="w-4 h-4 text-amber-600" />
+    <div className="space-y-3 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-4 md:p-4">
+      <h3 className="text-sm md:text-base font-bold text-amber-900 uppercase tracking-wide flex items-center gap-2">
+        <AlertCircle className="w-5 h-5 text-amber-600" />
         לטיפול עכשיו
       </h3>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {inboxItems.slice(0, 5).map((item, idx) => (
           <motion.div
             key={item.id}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white border-2 border-amber-200 rounded-lg p-3 flex items-start gap-3 hover:shadow-md transition-all group hover:border-amber-300"
+            className="bg-white border-2 border-amber-200 rounded-lg p-4 flex items-start gap-3 hover:shadow-md transition-all group hover:border-amber-300"
           >
             {/* Icon */}
-            <div className="text-lg flex-shrink-0 mt-0.5">{item.icon}</div>
+            <div className="text-2xl flex-shrink-0 mt-0.5">{item.icon}</div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{item.title}</p>
-              <p className="text-xs text-gray-600 truncate">{item.description}</p>
+              <p className="text-sm md:text-base font-semibold text-gray-900">{item.title}</p>
+              <p className="text-xs md:text-sm text-gray-600 mt-1">{item.description}</p>
             </div>
 
             {/* Priority Tag */}
-            <div className={`flex-shrink-0 ${item.priority === 'high' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'} px-2 py-1 rounded text-[10px] font-medium`}>
+            <div className={`flex-shrink-0 ${item.priority === 'high' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'} px-3 py-1.5 rounded-full text-xs font-bold`}>
               {item.priority === 'high' ? 'חשוב' : 'רגיל'}
             </div>
 
