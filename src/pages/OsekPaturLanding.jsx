@@ -218,11 +218,11 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                  ליווי וייעוץ לפתיחת עוסק פטור
+                   רוצה עוסק? בואו נעשה את זה נכון מהתחלה
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                  שירות ייעוץ וליווי פרטי עד לפתיחת העוסק בהצלחה
+                   קבלו הכל מ-יום אפס - סטטוס חוקי, מערכת ניהול ותמיכה רציפה
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
@@ -299,56 +299,43 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* Questions Section */}
-        <section className="py-12 bg-white">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-10"
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                שאלות שחיפשת בגוגל?
-              </h2>
-              <p className="text-xl text-gray-600">
-                במקום לחפש תשובות – <strong className="text-[#27AE60]">אנחנו עושים את זה בשבילך</strong>
-              </p>
-            </motion.div>
+        {/* The Challenge Section */}
+         <section className="py-12 bg-white border-t-4 border-[#D4AF37]">
+           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                 השאלה האמיתית שצריך לשאול
+               </h2>
+               <p className="text-xl text-gray-600">
+                 לא "איך לפתוח עוסק?" אלא <strong className="text-[#D4AF37]">"מי יעזור לי לא לטעות?"</strong>
+               </p>
+             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-2 gap-6">
               {[
-                'איך פותחים עוסק פטור?',
-                'עוסק פטור או מורשה?',
-                'צריך רואה חשבון לפתיחת עוסק?',
-                'כמה זמן לוקח לפתוח עוסק פטור?',
-                'איך מתחילים לעבוד חוקי?',
-                'איך פותחים תיק עוסק פטור?'
-              ].map((q, i) => (
+                { title: 'הבלבול', desc: 'יש המון דרישות, טפסים וגופים - איפה מתחילים?' },
+                { title: 'הסיכון', desc: 'טעות קטנה בהגשה יכולה לעלות בהרבה כסף' },
+                { title: 'הזמן', desc: 'לא מספיק זמן בין העבודה והנדרש ממנהל עסק' },
+                { title: 'השקט הנפשי', desc: 'איך יודעים שעשו נכון ושהם חוקיים באמת?' }
+              ].map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border-r-4 border-[#1E3A5F]"
+                  className="bg-red-50 rounded-xl p-6 border-r-4 border-red-400"
                 >
-                  <p className="text-gray-700 font-bold">{q}</p>
+                  <p className="text-lg font-bold text-red-700 mb-2">{item.title}</p>
+                  <p className="text-gray-700">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mt-10 text-center bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-2xl p-8 text-white"
-            >
-              <p className="text-2xl md:text-3xl font-black">
-                💡 תפסיק לחפש תשובות – תתחיל לעבוד
-              </p>
-              <p className="text-xl mt-2">אנחנו מטפלים בכל הבירוקרטיה עבורך</p>
-            </motion.div>
           </div>
         </section>
 
