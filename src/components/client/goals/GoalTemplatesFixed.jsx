@@ -225,25 +225,10 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  // Prevent page scroll when modal is open (mobile only)
-  useEffect(() => {
-    if (isMobile) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }
-  }, [isMobile]);
-
   // Focus management
   useEffect(() => {
     initialFocusRef.current?.focus();
   }, [selectedTemplate]);
-
-  // Scroll to top when modal opens
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -297,145 +282,38 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </button>
               <h2 ref={initialFocusRef} tabIndex="-1" className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <Target className="w-5 h-5 text-purple-600" />
-                מטרה חדשה
+                {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
               </h2>
               <div className="w-6" />
             </div>
+            {!selectedTemplate && <p className="text-center text-xs text-gray-600 font-medium mt-2">בחר מטרה שמשפיעה על העסק</p>}
           </div>
 
           {/* Body */}
           <div className="mobile-sheet-body">
-            <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              {/* All templates list - always visible */}
-              <div className="space-y-2">
-                <p className="text-xs font-bold text-gray-700 mb-3 px-1">בחר מטרה:</p>
-                {GOAL_TEMPLATES.map((template, idx) => (
-                  <motion.button
-                    key={template.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.02 }}
-                    onClick={() => handleTemplateSelect(template)}
-                    className={cn(
-                      "w-full text-right rounded-lg p-3 transition-all border-2 font-medium text-sm",
-                      selectedTemplate?.id === template.id
-                        ? 'bg-gradient-to-r from-purple-500 to-purple-600 border-purple-600 text-white shadow-lg'
-                        : 'bg-white border-gray-200 text-gray-900 hover:border-purple-300 hover:shadow-sm'
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0",
-                        selectedTemplate?.id === template.id
-                          ? 'bg-white/20'
-                          : `bg-gradient-to-br ${template.color}`
-                      )}>
-                        <template.icon className="w-4 h-4 text-white" />
+            {!selectedTemplate ? (
+              <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="grid grid-cols-2 gap-2 auto-rows-max">
+                  {GOAL_TEMPLATES.map((template, idx) => (
+                    <motion.button
+                      key={template.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.03 }}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleTemplateSelect(template)}
+                      className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2.5 transition-all group"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                          <template.icon className="w-4 h-4 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-gray-900 text-xs leading-tight text-right">{template.name}</h3>
                       </div>
-                      <span className="text-right font-semibold">{template.name}</span>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-
-              {/* Form section - only when template selected */}
-              {selectedTemplate && (
-                <motion.div className="space-y-2 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-3 border border-purple-200" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                  {selectedTemplate.id !== 'custom' && selectedTemplate.examples && (
-                    <div className="mb-3">
-                      <Label className="text-xs font-bold text-gray-700 block mb-1.5">דוגמאות מהירות:</Label>
-                      <div className="space-y-1">
-                        {selectedTemplate.examples.map((example, i) => (
-                          <button
-                            key={i}
-                            onClick={() => handleExampleSelect(example)}
-                            className="w-full text-right px-2 py-1.5 bg-white hover:bg-blue-100 border border-gray-200 rounded text-xs font-medium text-gray-900"
-                          >
-                            {example.title}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Input Fields */}
-                  <div className="space-y-2 border-t border-purple-200 pt-3">
-                    <div>
-                      <Label htmlFor="goalTitle" className="text-xs font-bold text-gray-700 block mb-0.5">מה המטרה?</Label>
-                      <Input
-                        id="goalTitle"
-                        value={goalTitle}
-                        onChange={(e) => setGoalTitle(e.target.value)}
-                        placeholder="למשל: 10 לקוחות חדשים"
-                        className="text-xs h-8"
-                      />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="targetValue" className="text-xs font-bold text-gray-700 block mb-0.5">כמה?</Label>
-                      <div className="flex gap-1.5">
-                        <Input
-                          id="targetValue"
-                          type="number"
-                          value={targetValue}
-                          onChange={(e) => setTargetValue(e.target.value)}
-                          placeholder="0"
-                          className="flex-1 text-xs h-8"
-                        />
-                        {selectedTemplate.unit && (
-                          <div className="px-2 py-1.5 bg-white rounded text-gray-700 text-xs font-medium border border-gray-300 whitespace-nowrap">
-                            {selectedTemplate.unit}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="timeframe" className="text-xs font-bold text-gray-700 block mb-0.5">תוך כמה זמן?</Label>
-                      <Select value={timeframe} onValueChange={setTimeframe}>
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="week">שבוע</SelectItem>
-                          <SelectItem value="month">חודש</SelectItem>
-                          <SelectItem value="quarter">רבעון</SelectItem>
-                          <SelectItem value="year">שנה</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="deadline" className="text-xs font-bold text-gray-700 block mb-0.5">תאריך יעד (לא חובה)</Label>
-                      <Input
-                        id="deadline"
-                        type="date"
-                        value={deadline}
-                        onChange={(e) => setDeadline(e.target.value)}
-                        className="text-xs h-8"
-                      />
-                    </div>
-
-                    {!hasPrimaryGoal && (
-                      <div className="flex items-center gap-2 p-2 bg-white rounded border border-amber-300">
-                        <input
-                          id="isPrimary"
-                          type="checkbox"
-                          checked={isPrimary}
-                          onChange={(e) => setIsPrimary(e.target.checked)}
-                          className="w-4 h-4 rounded"
-                        />
-                        <label htmlFor="isPrimary" className="text-xs font-semibold text-gray-700 cursor-pointer">
-                          זו המטרה הראשית
-                        </label>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Custom goal button */}
-              {!selectedTemplate && (
+                    </motion.button>
+                  ))}
+                </div>
                 <Button
                   variant="outline"
                   className="w-full py-2 text-xs font-semibold border-2 border-dashed border-gray-300 hover:border-purple-400 hover:bg-purple-50"
@@ -444,8 +322,118 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                   <Plus className="w-4 h-4 ml-2" />
                   מטרה משלי
                 </Button>
-              )}
-            </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div className="space-y-2.5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedTemplate(null);
+                    setGoalTitle('');
+                    setTargetValue('');
+                    setDeadline('');
+                  }}
+                  className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 h-8 text-xs"
+                >
+                  ← חזור
+                </Button>
+
+                {selectedTemplate.examples && (
+                  <motion.div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-2.5 border border-purple-100" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <p className="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1.5">
+                      <Zap className="w-3.5 h-3.5 text-amber-500" />
+                      דוגמאות מהירות
+                    </p>
+                    <div className="space-y-1">
+                      {selectedTemplate.examples.map((example, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleExampleSelect(example)}
+                          className="w-full text-right px-2.5 py-1.5 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg text-xs font-medium text-gray-900"
+                        >
+                          {example.title}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                <div className="space-y-2">
+                  <div>
+                    <Label htmlFor="goalTitle" className="text-xs font-bold text-gray-700 block mb-1">מה המטרה?</Label>
+                    <Input
+                      id="goalTitle"
+                      value={goalTitle}
+                      onChange={(e) => setGoalTitle(e.target.value)}
+                      placeholder="למשל: 10 לקוחות חדשים"
+                      className="text-xs h-8"
+                      autoFocus
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="targetValue" className="text-xs font-bold text-gray-700 block mb-1">כמה בדיוק?</Label>
+                    <div className="flex gap-1.5">
+                      <Input
+                        id="targetValue"
+                        type="number"
+                        value={targetValue}
+                        onChange={(e) => setTargetValue(e.target.value)}
+                        placeholder="0"
+                        className="flex-1 text-xs h-8"
+                      />
+                      {selectedTemplate.unit && (
+                        <div className="px-2 py-1.5 bg-gray-100 rounded-lg flex items-center text-gray-700 text-xs font-medium border border-gray-200">
+                          {selectedTemplate.unit}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="timeframe" className="text-xs font-bold text-gray-700 block mb-1">לתוך כמה זמן?</Label>
+                    <Select value={timeframe} onValueChange={setTimeframe}>
+                      <SelectTrigger className="h-8 text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="week">שבוע</SelectItem>
+                        <SelectItem value="month">חודש</SelectItem>
+                        <SelectItem value="quarter">רבעון</SelectItem>
+                        <SelectItem value="year">שנה</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="deadline" className="text-xs font-semibold text-gray-600 block mb-1">תאריך יעד</Label>
+                    <Input
+                      id="deadline"
+                      type="date"
+                      value={deadline}
+                      onChange={(e) => setDeadline(e.target.value)}
+                      className="text-xs h-8"
+                    />
+                  </div>
+
+                  {!hasPrimaryGoal && (
+                    <div className="flex items-center gap-2.5 p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+                      <input
+                        id="isPrimary"
+                        type="checkbox"
+                        checked={isPrimary}
+                        onChange={(e) => setIsPrimary(e.target.checked)}
+                        className="w-4 h-4 rounded cursor-pointer"
+                      />
+                      <label htmlFor="isPrimary" className="text-xs font-semibold text-gray-700 cursor-pointer">
+                        זו המטרה הראשית שלי
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {/* Footer */}
@@ -453,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             <div className="mobile-sheet-footer">
               <Button 
                 onClick={handleCreate} 
-                disabled={!goalTitle || !targetValue ? true : false}
+                disabled={!goalTitle || !targetValue}
                 className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold h-9 text-sm"
               >
                 <Check className="w-4 h-4 ml-1.5" />

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
@@ -38,23 +38,12 @@ export default function GoalsTab({ data, openAddGoal = false }) {
   const [goals, setGoals] = useState(SAMPLE_GOALS);
   const [showAddGoal, setShowAddGoal] = useState(openAddGoal);
   const [editingGoal, setEditingGoal] = useState(null);
-  const topRef = useRef(null);
 
   React.useEffect(() => {
     if (openAddGoal) {
       setShowAddGoal(true);
     }
   }, [openAddGoal]);
-
-  // Scroll to top when opening add goal form
-  useEffect(() => {
-    if (showAddGoal) {
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        document.documentElement.scrollTop = 0;
-      }, 50);
-    }
-  }, [showAddGoal]);
 
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1);
@@ -92,14 +81,13 @@ export default function GoalsTab({ data, openAddGoal = false }) {
    };
 
   return (
-    <div className="w-full" ref={topRef}>
+    <div className="flex justify-center pt-4 px-4 md:pt-0 md:p-0 md:justify-start">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="flex justify-center pt-4 px-4 md:pt-0 md:p-0 md:justify-start"
+        className="space-y-3 w-full max-w-xs md:max-w-none md:w-full md:bg-transparent md:border-0 md:p-0 md:shadow-none bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
       >
-      <div className="space-y-3 w-full max-w-xs md:max-w-none md:w-full md:bg-transparent md:border-0 md:p-0 md:shadow-none bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
       {/* Hero Goal */}
       {heroGoal && (
         <div>
@@ -158,8 +146,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
            editingGoal={editingGoal}
          />
        )}
-      </div>
-      </motion.div>
-      </div>
-      );
-      }
+       </motion.div>
+       </div>
+       );
+       }
