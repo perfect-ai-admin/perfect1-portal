@@ -152,9 +152,9 @@ export default function OsekPaturOnlineLanding() {
         website="https://perfect1.co.il"
       />
       <SEOOptimized
-        title="ייעוץ וליווי לפתיחת עוסק פטור אונליין | Perfect One"
-        description="שירות פרטי בתשלום לייעוץ וליווי מקצועי בתהליך פתיחת עוסק פטור. ליווי צמוד, מילוי טפסים והכוונה מלאה. השאר פרטים ונחזור אליך."
-        keywords="ייעוץ פתיחת עוסק פטור, ליווי פתיחת עוסק, פתיחת עוסק פטור אונליין, ייעוץ עוסק פטור"
+        title="דליווי מרחוק לפתיחת עוסק פטור - שירות דיגיטלי מלא | Perfect One"
+        description="הקים עוסק פטור מהבית בלי צורך לנסוע. חתימה דיגיטלית בטוחה, ליווי מקצועי צמוד וטיפול בכל הרשויות. השאר פרטיך עכשיו."
+        keywords="פתיחת עוסק פטור דיגיטלית, עוסק פטור מהבית, חתימה דיגיטלית לעוסק, הקמת עוסק אונליין"
         canonical="https://perfect1.co.il/osek-patur-online"
         schema={{
           "@context": "https://schema.org",
