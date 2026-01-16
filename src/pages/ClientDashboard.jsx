@@ -279,9 +279,10 @@ export default function ClientDashboard() {
           {/* Main Area */}
            <div className="flex-1 flex flex-col overflow-hidden">
              <main 
-               className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 scroll-smooth"
+               className="flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6"
                data-scroll-container="dashboard"
                role="main"
+               style={{ scrollBehavior: 'smooth' }}
              >
                <div className="max-w-7xl mx-auto w-full">
                  {/* Breadcrumbs - Desktop */}
