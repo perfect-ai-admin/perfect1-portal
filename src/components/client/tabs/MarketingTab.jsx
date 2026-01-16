@@ -22,8 +22,6 @@ export default function MarketingTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
-      {/* Landing Page Builder Card */}
-      <LandingPageBuilder />
       {/* Marketing Tools Tabs */}
       <Tabs defaultValue="branding" className="w-full">
         <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-gray-200">
