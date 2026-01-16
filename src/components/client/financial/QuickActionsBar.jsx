@@ -84,41 +84,43 @@ export default function QuickActionsBar({ onActionComplete }) {
         </div>
       </div>
 
-      {/* Mobile Sticky Bar */}
-      <div className="md:hidden fixed bottom-20 left-0 right-0 bg-gradient-to-r from-blue-50 to-indigo-50 border-t-2 border-blue-300 flex flex-col items-stretch gap-3 p-4 z-40">
-        <div className="flex gap-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="lg" className="flex-1 gap-2 h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base rounded-lg shadow-md">
-                <FileText className="w-5 h-5" />
-                מסמך
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="top">
-              {documentTypes.map(type => (
-                <DropdownMenuItem
-                  key={type.id}
-                  onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
-                  className="cursor-pointer"
-                >
-                  <span className="mr-2">{type.icon}</span>
-                  {type.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+      {/* Mobile Sticky Bottom Action Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 flex items-center justify-around gap-2 p-3 z-40 safe-area-bottom">
+        {/* מסמכים */}
+        <button
+          onClick={() => setShowCreateModal({ type: 'document', subType: 'invoice' })}
+          className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors active:bg-gray-100"
+        >
+          <FileText className="w-6 h-6 text-gray-700" />
+          <span className="text-xs font-medium text-gray-700">מסמכים</span>
+        </button>
 
-          <Button
-            size="lg"
-            onClick={() => setShowCreateModal({ type: 'expense' })}
-            className="flex-1 gap-2 h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-base rounded-lg shadow-md"
-          >
-            <Plus className="w-5 h-5" />
-            הוצאה
-          </Button>
-        </div>
+        {/* הוצאה */}
+        <button
+          onClick={() => setShowCreateModal({ type: 'expense' })}
+          className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors active:bg-gray-100"
+        >
+          <Plus className="w-6 h-6 text-gray-700" />
+          <span className="text-xs font-medium text-gray-700">הוצאה</span>
+        </button>
 
+        {/* הכנסה - Primary */}
+        <button
+          onClick={() => setShowCreateModal({ type: 'document', subType: 'invoice' })}
+          className="flex flex-col items-center gap-1 px-4 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 active:from-green-800 active:to-emerald-800 transition-all shadow-md"
+        >
+          <DollarSign className="w-7 h-7 text-white" />
+          <span className="text-xs font-bold text-white">הכנסה</span>
+        </button>
 
+        {/* דוחות */}
+        <button
+          onClick={() => setShowCreateModal({ type: 'reports' })}
+          className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-gray-50 transition-colors active:bg-gray-100"
+        >
+          <BarChart3 className="w-6 h-6 text-gray-700" />
+          <span className="text-xs font-medium text-gray-700">דוחות</span>
+        </button>
       </div>
 
       {/* Modals */}
