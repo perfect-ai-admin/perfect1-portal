@@ -24,7 +24,7 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
       className="w-full"
     >
       <div className={cn(
-        "bg-white rounded-lg border-2 p-2 md:p-2.5 transition-all",
+        "bg-white rounded-lg border-2 p-1.5 md:p-2.5 transition-all",
         config.bg
       )}>
         {/* Header */}
