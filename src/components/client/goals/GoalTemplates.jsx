@@ -281,13 +281,13 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
   return (
     <Drawer open={true} onOpenChange={onClose}>
       <DrawerContent 
-        className="max-h-[90vh]" 
-        ref={drawerRef}
-        role="dialog" 
-        aria-modal="true" 
-        aria-labelledby="goal-title"
-      >
-        <div className="flex flex-col h-full max-h-[90vh]">
+         className="max-h-[95vh]" 
+         ref={drawerRef}
+         role="dialog" 
+         aria-modal="true" 
+         aria-labelledby="goal-title"
+       >
+        <div className="flex flex-col h-full max-h-[95vh]">
           {/* Header */}
           <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b bg-white sticky top-0 z-20">
             <div className="flex items-center justify-center gap-2 mb-2">
@@ -302,24 +302,24 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
             {!selectedTemplate ? (
               <div className="space-y-4">
               {/* Templates Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 pb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 pb-4 auto-rows-max">
                 {GOAL_TEMPLATES.map((template) => (
                   <motion.button
                     key={template.id}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleTemplateSelect(template)}
-                    className="text-right bg-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg rounded-2xl p-4 md:p-5 transition-all group"
+                    className="text-right bg-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg rounded-2xl p-3 md:p-4 transition-all group"
                   >
-                    <div className="flex items-start gap-3 md:gap-4">
-                      <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                        <template.icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
-                      </div>
-                      <div className="flex-1 text-right min-w-0">
-                        <h3 className="font-bold text-gray-900 mb-1 text-base md:text-lg leading-tight">{template.name}</h3>
-                        <p className="text-xs md:text-sm text-gray-600 leading-relaxed">{template.description}</p>
-                      </div>
-                    </div>
+                    <div className="flex items-start gap-3">
+                       <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                         <template.icon className="w-6 h-6 md:w-7 md:h-7 text-white" />
+                       </div>
+                       <div className="flex-1 text-right min-w-0">
+                         <h3 className="font-bold text-gray-900 mb-0.5 text-sm md:text-base leading-tight">{template.name}</h3>
+                         <p className="text-xs text-gray-600 leading-snug">{template.description}</p>
+                       </div>
+                     </div>
                   </motion.button>
                 ))}
               </div>
