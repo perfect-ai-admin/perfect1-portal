@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, HelpCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function NextStepCard({ step, onAction }) {
+export default function NextStepCard({ step, onAction, onWhyClick }) {
   const [showWhy, setShowWhy] = React.useState(false);
 
   if (!step) {
@@ -30,7 +30,12 @@ export default function NextStepCard({ step, onAction }) {
           <div className="flex items-start justify-between gap-2 mb-2">
             <h2 className="text-base md:text-lg font-bold">השלב הבא שלך</h2>
             <button
-              onClick={() => setShowWhy(!showWhy)}
+              onClick={() => {
+                setShowWhy(!showWhy);
+                if (onWhyClick && !showWhy) {
+                  setTimeout(() => onWhyClick(), 100);
+                }
+              }}
               className="px-2.5 py-1.5 md:px-3 bg-white/20 hover:bg-white/30 rounded-lg transition-all flex items-center gap-1.5 md:gap-2 flex-shrink-0"
             >
               <HelpCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />

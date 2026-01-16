@@ -13,6 +13,7 @@ export default function ProgressTab({ data, onNavigate }) {
   // Mock data - יש להחליף בנתונים אמיתיים
   const completedMilestones = ['registration'];
   const currentMilestone = 'first_invoice';
+  const whyMattersRef = React.useRef(null);
   
   const quickStats = {
     monthlyRevenue: '₪12,500',
@@ -53,6 +54,12 @@ export default function ProgressTab({ data, onNavigate }) {
   };
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+
+  const scrollToWhyMatters = () => {
+    if (whyMattersRef.current) {
+      whyMattersRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <>
@@ -137,12 +144,12 @@ export default function ProgressTab({ data, onNavigate }) {
             </div>
             השלב הבא שלך
           </h2>
-          <NextStepCard step={nextStep} />
+          <NextStepCard step={nextStep} onWhyClick={scrollToWhyMatters} />
         </div>
       </div>
 
       {/* Why This Matters - Mobile */}
-      <div className="lg:hidden">
+      <div className="lg:hidden" ref={whyMattersRef}>
         <StepImportancePanel step={nextStep} />
       </div>
 
