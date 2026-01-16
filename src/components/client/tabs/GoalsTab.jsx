@@ -81,12 +81,12 @@ export default function GoalsTab({ data, openAddGoal = false }) {
    };
 
   return (
-    <div className="flex items-center justify-center p-4">
+    <div className="flex justify-center pt-4 px-4">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="space-y-3 w-full max-w-sm bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+        className="space-y-3 w-full max-w-xs bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
       >
       {/* Hero Goal */}
       {heroGoal && (
