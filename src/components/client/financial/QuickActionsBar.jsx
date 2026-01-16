@@ -118,13 +118,7 @@ export default function QuickActionsBar({ onActionComplete }) {
           </Button>
         </div>
 
-        <button
-          onClick={() => setShowSearch(true)}
-          className="w-full h-12 bg-white border-2 border-gray-300 rounded-lg flex items-center justify-center gap-2 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
-        >
-          <Search className="w-5 h-5" />
-          חיפוש
-        </button>
+
       </div>
 
       {/* Modals */}
