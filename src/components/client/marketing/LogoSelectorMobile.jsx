@@ -103,8 +103,8 @@ export default function LogoSelectorMobile({ logos, formData }) {
          </div>
        </div>
 
-      {/* Download Dialog */}
-      <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
+       {/* Download Dialog */}
+       <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle className="text-base font-bold">הלוגו שלך מוכן להורדה</DialogTitle>
@@ -143,7 +143,9 @@ export default function LogoSelectorMobile({ logos, formData }) {
             </button>
           </div>
         </DialogContent>
-      </Dialog>
-    </div>
+       </Dialog>
+       </div>
+       <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
+       </Dialog>
   );
 }
