@@ -381,7 +381,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
           {/* Mobile Selector - Full Screen Overlay */}
           <div className="fixed inset-0 z-50 lg:hidden bg-white">
-            <LogoSelectorMobile logos={logos} formData={formData} />
+            <LogoSelectorMobile logos={logos} formData={formData} onNext={() => setStep(5)} />
           </div>
 
           {/* Download Formats Dialog */}
