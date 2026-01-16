@@ -281,32 +281,27 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
   return (
     <Drawer open={true} onOpenChange={onClose}>
       <DrawerContent 
-        className="max-h-[90vh] overflow-y-auto" 
+        className="max-h-[90vh]" 
         ref={drawerRef}
         role="dialog" 
         aria-modal="true" 
         aria-labelledby="goal-title"
       >
-        <DrawerHeader className="hidden md:block">
-          <DrawerTitle id="goal-title" className="text-2xl" ref={initialFocusRef} tabIndex="-1">הוסף מטרה חדשה 🎯</DrawerTitle>
-        </DrawerHeader>
-        <div className="md:hidden px-4 py-3 border-b">
-          <h2 id="goal-title" className="text-xl font-bold text-gray-900" ref={initialFocusRef} tabIndex="-1">הוסף מטרה חדשה 🎯</h2>
-        </div>
-        <div className="px-4 md:px-6 py-4">
-
-        {!selectedTemplate ? (
-          <div className="space-y-4">
-            <div className="text-center space-y-2 sticky top-0 bg-white z-10 pb-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Target className="w-6 h-6 text-purple-600" />
-                <h3 className="text-xl font-bold text-gray-900">הוסף מטרה חדשה</h3>
-              </div>
-              <p className="text-gray-600">בחר סוג מטרה או צור מטרה מותאמת אישית:</p>
+        <div className="flex flex-col h-full max-h-[90vh]">
+          {/* Header */}
+          <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b bg-white sticky top-0 z-20">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Target className="w-6 h-6 text-purple-600" />
+              <h2 id="goal-title" className="text-xl md:text-2xl font-bold text-gray-900" ref={initialFocusRef} tabIndex="-1">הוסף מטרה חדשה 🎯</h2>
             </div>
-            
-            {/* Templates Grid - Scrollable */}
-            <div className="max-h-[50vh] overflow-y-auto px-1">
+            <p className="text-center text-sm md:text-base text-gray-600">בחר סוג מטרה או צור מטרה מותאמת אישית:</p>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4">
+            {!selectedTemplate ? (
+              <div className="space-y-4">
+              {/* Templates Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 pb-4">
                 {GOAL_TEMPLATES.map((template) => (
                   <motion.button
@@ -328,9 +323,7 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                   </motion.button>
                 ))}
               </div>
-            </div>
 
-            <div className="sticky bottom-0 bg-white pt-4 border-t">
               <Button
                 variant="outline"
                 className="w-full py-6 text-base font-semibold border-2 hover:border-purple-400 hover:bg-purple-50"
@@ -340,8 +333,8 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 צור מטרה מותאמת אישית
               </Button>
             </div>
-          </div>
-        ) : (
+          ) : (
+            <div className="space-y-4"> : (
           <div className="space-y-4">
             <Button
               variant="ghost"
@@ -450,8 +443,8 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 </Button>
               </div>
             </div>
+          )}
           </div>
-        )}
         </div>
       </DrawerContent>
     </Drawer>
