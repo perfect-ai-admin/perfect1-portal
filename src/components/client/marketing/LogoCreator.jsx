@@ -332,7 +332,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
         <>
           {/* Desktop Grid */}
-          <div className="hidden lg:grid grid-cols-4 gap-4 mb-8 flex-shrink-0">
+          <div className="hidden lg:grid lg:grid-cols-4 gap-4 mb-8 flex-shrink-0">
             {logos.map((logo, index) => (
               <motion.div
                 key={index}
