@@ -296,8 +296,8 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
         <div className="px-4 md:px-6 py-4">
 
         {!selectedTemplate ? (
-          <div className="space-y-6">
-            <div className="text-center space-y-2">
+          <div className="space-y-4">
+            <div className="text-center space-y-2 sticky top-0 bg-white z-10 pb-4">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Target className="w-6 h-6 text-purple-600" />
                 <h3 className="text-xl font-bold text-gray-900">הוסף מטרה חדשה</h3>
@@ -305,37 +305,41 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
               <p className="text-gray-600">בחר סוג מטרה או צור מטרה מותאמת אישית:</p>
             </div>
             
-            {/* Templates Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-              {GOAL_TEMPLATES.map((template) => (
-                <motion.button
-                  key={template.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleTemplateSelect(template)}
-                  className="text-right bg-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg rounded-2xl p-4 md:p-5 transition-all group"
-                >
-                  <div className="flex items-start gap-3 md:gap-4">
-                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                      <template.icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
+            {/* Templates Grid - Scrollable */}
+            <div className="max-h-[50vh] overflow-y-auto px-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 pb-4">
+                {GOAL_TEMPLATES.map((template) => (
+                  <motion.button
+                    key={template.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleTemplateSelect(template)}
+                    className="text-right bg-white border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg rounded-2xl p-4 md:p-5 transition-all group"
+                  >
+                    <div className="flex items-start gap-3 md:gap-4">
+                      <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                        <template.icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
+                      </div>
+                      <div className="flex-1 text-right min-w-0">
+                        <h3 className="font-bold text-gray-900 mb-1 text-base md:text-lg leading-tight">{template.name}</h3>
+                        <p className="text-xs md:text-sm text-gray-600 leading-relaxed">{template.description}</p>
+                      </div>
                     </div>
-                    <div className="flex-1 text-right min-w-0">
-                      <h3 className="font-bold text-gray-900 mb-1 text-base md:text-lg leading-tight">{template.name}</h3>
-                      <p className="text-xs md:text-sm text-gray-600 leading-relaxed">{template.description}</p>
-                    </div>
-                  </div>
-                </motion.button>
-              ))}
+                  </motion.button>
+                ))}
+              </div>
             </div>
 
-            <Button
-              variant="outline"
-              className="w-full py-6 text-base font-semibold border-2 hover:border-purple-400 hover:bg-purple-50"
-              onClick={() => setSelectedTemplate({ id: 'custom', name: 'מטרה מותאמת', unit: '' })}
-            >
-              <Plus className="w-5 h-5 ml-2" />
-              צור מטרה מותאמת אישית
-            </Button>
+            <div className="sticky bottom-0 bg-white pt-4 border-t">
+              <Button
+                variant="outline"
+                className="w-full py-6 text-base font-semibold border-2 hover:border-purple-400 hover:bg-purple-50"
+                onClick={() => setSelectedTemplate({ id: 'custom', name: 'מטרה מותאמת', unit: '' })}
+              >
+                <Plus className="w-5 h-5 ml-2" />
+                צור מטרה מותאמת אישית
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
