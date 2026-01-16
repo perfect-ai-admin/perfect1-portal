@@ -10,13 +10,10 @@ import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
 import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
-
 import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
 
 export default function MarketingTab({ data }) {
-  const [selectedWork, setSelectedWork] = useState(null);
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -24,15 +21,9 @@ export default function MarketingTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
-
-
       {/* Marketing Tools Tabs */}
-      <Tabs defaultValue="works" className="w-full">
-        <TabsList className="grid w-full grid-cols-6 mb-8 bg-white border border-gray-200">
-          <TabsTrigger value="works" className="flex gap-2">
-            <Briefcase className="w-4 h-4" />
-            <span className="hidden sm:inline">עבודות</span>
-          </TabsTrigger>
+      <Tabs defaultValue="branding" className="w-full">
+        <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-gray-200">
           <TabsTrigger value="branding" className="flex gap-2">
             <Palette className="w-4 h-4" />
             <span className="hidden sm:inline">מיתוג</span>
@@ -75,7 +66,7 @@ export default function MarketingTab({ data }) {
           <ROISection />
         </TabsContent>
 
-        <TabsContent value="education">
+        <TabsContent value="learn">
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <LearnSection />
           </div>
