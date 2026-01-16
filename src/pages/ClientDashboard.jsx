@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import DebugErrorBoundary from '../components/DebugErrorBoundary';
 import { 
   LogOut, HelpCircle, User, AlertCircle, Globe
 } from 'lucide-react';
@@ -210,7 +211,8 @@ export default function ClientDashboard() {
   }
 
   return (
-    <>
+    <DebugErrorBoundary>
+      <>
       <Helmet>
         <title>מרכז ניהול עסקי - {currentData.name} | Perfect One</title>
         <meta name="robots" content="noindex, nofollow" />
@@ -305,8 +307,9 @@ export default function ClientDashboard() {
         </div>
 
         {/* Mobile Bottom Tab Bar */}
-        {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
-      </div>
-    </>
-  );
-}
+         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
+        </div>
+        </>
+        </DebugErrorBoundary>
+        );
+        }
