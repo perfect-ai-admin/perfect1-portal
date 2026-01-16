@@ -71,7 +71,7 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
         </div>
 
         {/* Metric & Timeline */}
-         <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 mt-3 md:mt-4 pt-3 md:pt-4 border-t border-gray-200">
+         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mt-2 md:mt-3 pt-2 md:pt-3 border-t border-gray-200">
            <div>
              <p className="text-xs text-gray-500 mb-0.5">מדד</p>
              <p className="text-xs md:text-sm font-semibold text-gray-900">{goal.currentDisplay} / {goal.targetDisplay}</p>
