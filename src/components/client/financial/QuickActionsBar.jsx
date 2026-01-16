@@ -84,30 +84,41 @@ export default function QuickActionsBar({ onActionComplete }) {
         </div>
       </div>
 
-      {/* Mobile Grid - Document Types */}
-      <div className="md:hidden grid grid-cols-5 gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-3">
-        {documentTypes.map(type => (
-          <button
-            key={type.id}
-            onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
-            className="flex flex-col items-center gap-2 py-2 px-1 rounded-lg hover:bg-blue-100 transition-colors"
-          >
-            <span className="text-4xl">{type.icon}</span>
-            <span className="text-xs font-bold text-gray-700 text-center leading-tight">{type.label.split(' ')[0]}</span>
-          </button>
-        ))}
-      </div>
-
       {/* Mobile Sticky Bar */}
-      <div className="md:hidden fixed bottom-20 left-0 right-0 bg-gradient-to-r from-green-50 to-emerald-50 border-t-2 border-green-300 flex flex-col items-stretch gap-3 p-4 z-40">
-        <Button
-          size="lg"
-          onClick={() => setShowCreateModal({ type: 'expense' })}
-          className="w-full gap-2 h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-base rounded-lg shadow-md"
-        >
-          <Plus className="w-6 h-6" />
-          הוצאה
-        </Button>
+      <div className="md:hidden fixed bottom-20 left-0 right-0 bg-gradient-to-r from-blue-50 to-indigo-50 border-t-2 border-blue-300 flex flex-col items-stretch gap-3 p-4 z-40">
+        <div className="flex gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="lg" className="flex-1 gap-2 h-14 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base rounded-lg shadow-md">
+                <FileText className="w-5 h-5" />
+                מסמך
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="top">
+              {documentTypes.map(type => (
+                <DropdownMenuItem
+                  key={type.id}
+                  onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">{type.icon}</span>
+                  {type.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button
+            size="lg"
+            onClick={() => setShowCreateModal({ type: 'expense' })}
+            className="flex-1 gap-2 h-14 bg-green-600 hover:bg-green-700 text-white font-bold text-base rounded-lg shadow-md"
+          >
+            <Plus className="w-5 h-5" />
+            הוצאה
+          </Button>
+        </div>
+
+
       </div>
 
       {/* Modals */}
