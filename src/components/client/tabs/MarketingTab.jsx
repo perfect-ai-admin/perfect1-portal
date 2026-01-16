@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Palette, Rocket, Users, TrendingUp, BookOpen } from 'lucide-react';
+import { Palette, Rocket, Users, TrendingUp, BookOpen, Briefcase } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BrandingSection from '../marketing/BrandingSection';
 import BrandingTools from '../marketing/BrandingTools';
@@ -16,7 +16,7 @@ import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
 
 export default function MarketingTab({ data }) {
-  const [selectedWork, setSelectedWork] = React.useState(null);
+  const [selectedWork, setSelectedWork] = useState(null);
 
   return (
     <motion.div
@@ -25,12 +25,15 @@ export default function MarketingTab({ data }) {
       exit={{ opacity: 0 }}
       className="space-y-8"
     >
-      {/* Saved Works Section */}
-      <SavedWorksSection onSelectWork={setSelectedWork} />
+
 
       {/* Marketing Tools Tabs */}
-      <Tabs defaultValue="branding" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-gray-200">
+      <Tabs defaultValue="works" className="w-full">
+        <TabsList className="grid w-full grid-cols-6 mb-8 bg-white border border-gray-200">
+          <TabsTrigger value="works" className="flex gap-2">
+            <Briefcase className="w-4 h-4" />
+            <span className="hidden sm:inline">עבודות</span>
+          </TabsTrigger>
           <TabsTrigger value="branding" className="flex gap-2">
             <Palette className="w-4 h-4" />
             <span className="hidden sm:inline">מיתוג</span>
@@ -52,6 +55,17 @@ export default function MarketingTab({ data }) {
             <span className="hidden sm:inline">לימוד</span>
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="works" className="bg-white rounded-lg border border-gray-200 p-6">
+          <SavedWorksSection onSelectWork={setSelectedWork} />
+          {selectedWork && (
+            <SavedWorkDetail 
+              work={selectedWork} 
+              onClose={() => setSelectedWork(null)}
+              onUpdate={(updated) => setSelectedWork(updated)}
+            />
+          )}
+        </TabsContent>
 
         <TabsContent value="branding" className="bg-white rounded-lg border border-gray-200 p-6 space-y-8">
           <BrandingTools businessName={data.name} />
@@ -78,16 +92,7 @@ export default function MarketingTab({ data }) {
             <LearnSection />
           </div>
         </TabsContent>
-        </Tabs>
-
-        {/* Selected Work Detail Modal */}
-        {selectedWork && (
-        <SavedWorkDetail 
-          work={selectedWork}
-          onClose={() => setSelectedWork(null)}
-          onUpdate={(updatedWork) => setSelectedWork(updatedWork)}
-        />
-        )}
-        </motion.div>
-        );
-        }
+      </Tabs>
+    </motion.div>
+  );
+}
