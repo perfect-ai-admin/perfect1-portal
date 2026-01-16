@@ -225,17 +225,15 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  // Prevent page scroll when modal is open
+  // Prevent page scroll when modal is open (mobile only)
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-    };
-  }, []);
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isMobile]);
 
   // Focus management
   useEffect(() => {
