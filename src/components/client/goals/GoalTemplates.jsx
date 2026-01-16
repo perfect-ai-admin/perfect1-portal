@@ -322,7 +322,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
         <SheetContent 
            side="bottom"
            className="p-0 border-0 overflow-x-hidden w-full max-w-full flex flex-col rounded-t-2xl"
-           style={{ height: '95dvh', maxHeight: '95dvh' }}
+           style={{ height: '85dvh', maxHeight: '85dvh' }}
            ref={drawerRef}
          >
         <div className="flex flex-col h-full w-full min-w-0 overflow-x-hidden">
@@ -342,7 +342,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
             </div>
 
             {/* Content */}
-            <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0">
+            <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0 h-0">
             {!selectedTemplate ? (
               <motion.div 
                 className="space-y-2.5"
@@ -559,7 +559,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
           </div>
 
           {/* Content */}
-          <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0">
+          <div className="px-4 md:px-6 py-3 md:py-4 flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch min-w-0 h-0">
            {!selectedTemplate ? (
              <motion.div 
                className="space-y-2.5"
