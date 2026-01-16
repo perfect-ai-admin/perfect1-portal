@@ -380,8 +380,8 @@ export default function OsekPaturOnlineLanding() {
                   <Shield className="w-10 h-10" />
                   <h3 className="text-3xl font-black">בטיחות מוחלטת</h3>
                 </div>
-                <p className="text-lg text-white/90 font-bold mb-3">כל הנתונים שלך מוצפנים וממשי</p>
-                <p className="text-white/80">סטנדרט בנקאי של הצפנה, אין שירותי צד שלישי, כל המסמכים כמוגנים בחוק - וואטסאפ וטלפון בשם הדרך</p>
+                <p className="text-lg text-white/90 font-bold mb-3">הצפנה וגנות מלאה של מידע</p>
+                <p className="text-white/80">כל המסמכים והנתונים שלך מוצפנים בסטנדרט בנקאי. תקשורת ישירה דרך וואטסאפ וטלפון - אין מעבר בשירותי צד שלישי.</p>
               </motion.div>
             </div>
           </div>
