@@ -510,7 +510,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
               <button
                 onClick={() => {
                   setSelectedLogo(null);
-                  setStep(5);
+                  window.location.href = '/checkout';
                 }}
                 className="w-full mt-3 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg hover:border-green-400 transition-all"
               >
