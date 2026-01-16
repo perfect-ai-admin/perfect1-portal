@@ -642,7 +642,7 @@ export default function OsekPaturOnlineLanding() {
 
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
                     <p className="text-sm text-gray-700 leading-relaxed">
-                      <strong className="text-blue-800">הבהרה חשובה:</strong> זהו שירות ייעוץ וליווי פרטי בתשלום ממ Perfect One Ltd., חברה עצמאית. 
+                      <strong className="text-blue-800">הבהרה חשובה:</strong> זהו שירות ייעוץ וליווי - Perfect One Ltd., חברה עצמאית. 
                       השירות אינו חלק מהרשויות, אינו ייעוץ משפטי רשמי, ואינו מחליף יועץ משפטי או רואה חשבון. זמן אישור הרשויות (מס הכנסה, ביטוח לאומי) תלוי בעיבוד שלהן ולא בשלנו.
                     </p>
                   </div>
