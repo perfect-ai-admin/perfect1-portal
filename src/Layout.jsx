@@ -86,9 +86,7 @@ export default function Layout({ children, currentPageName }) {
       <WebVitalsMonitor />
       <QAChecker />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
-                <div className="hidden md:block">
-                  <Header />
-                </div>
+                <Header />
                 <main>
                   {children}
                 </main>
