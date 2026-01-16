@@ -61,6 +61,10 @@ export default function GoalsTab({ data, openAddGoal = false }) {
      setShowAddGoal(true);
    };
 
+  const handleDeleteGoal = (goalId) => {
+     setGoals(prev => prev.filter(g => g.id !== goalId));
+   };
+
   const handleCreateGoal = (newGoal, isEditing = false) => {
      if (isEditing) {
        // עדכן את המטרה הקיימת
@@ -91,6 +95,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
             goal={heroGoal}
             onStatusChange={handleStatusChange}
             onEdit={handleEditGoal}
+            onDelete={handleDeleteGoal}
           />
         </div>
       )}
@@ -101,6 +106,7 @@ export default function GoalsTab({ data, openAddGoal = false }) {
           goals={secondaryGoals}
           onStatusChange={handleStatusChange}
           onEdit={handleEditGoal}
+          onDelete={handleDeleteGoal}
         />
       )}
 
