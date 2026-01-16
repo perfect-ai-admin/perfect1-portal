@@ -38,32 +38,7 @@ const SAMPLE_GOALS = [
   }
 ];
 
-// Utility: Scroll with retry logic + scrollIntoView fallback
-const scrollToGoalsTop = (retries = 0) => {
-  const anchor = document.getElementById('goals-top-anchor');
-  const scrollContainer = document.querySelector('main[data-scroll-container="dashboard"]');
-  
-  if (!anchor || !scrollContainer) {
-    if (retries < 15) {
-      requestAnimationFrame(() => scrollToGoalsTop(retries + 1));
-    }
-    return;
-  }
 
-  // Method 1: Direct scroll to top
-  try {
-    scrollContainer.scrollTop = 0;
-  } catch (e) {
-    console.warn('Direct scroll failed:', e);
-  }
-  
-  // Method 2: scrollIntoView as fallback
-  try {
-    anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  } catch (e) {
-    console.warn('ScrollIntoView failed:', e);
-  }
-};
 
 export default function GoalsTab({ data, openAddGoal = false }) {
   const [goals, setGoals] = useState(SAMPLE_GOALS);
