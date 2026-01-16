@@ -22,6 +22,7 @@ import CloseOsekPaturTaxAuthority from './pages/CloseOsekPaturTaxAuthority';
 import CommonMistakesOsekMorsha from './pages/CommonMistakesOsekMorsha';
 import CompanyLanding from './pages/CompanyLanding';
 import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
+import ConsultancyLanding from './pages/ConsultancyLanding';
 import Contact from './pages/Contact';
 import CostsOsekMorsha from './pages/CostsOsekMorsha';
 import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
@@ -96,7 +97,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import ConsultancyLanding from './pages/ConsultancyLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -125,6 +125,7 @@ export const PAGES = {
     "CommonMistakesOsekMorsha": CommonMistakesOsekMorsha,
     "CompanyLanding": CompanyLanding,
     "ComputerTechnicianLanding": ComputerTechnicianLanding,
+    "ConsultancyLanding": ConsultancyLanding,
     "Contact": Contact,
     "CostsOsekMorsha": CostsOsekMorsha,
     "EyebrowStylistLanding": EyebrowStylistLanding,
@@ -199,7 +200,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "ConsultancyLanding": ConsultancyLanding,
 }
 
 export const pagesConfig = {
