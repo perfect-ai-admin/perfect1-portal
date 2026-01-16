@@ -45,52 +45,49 @@ export default function FinancialWorkbench({ data }) {
       <FinanceInbox key={refreshKey} data={data} />
 
       {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {/* Tab Navigation */}
-        <div className="mb-6">
-          {/* Desktop Tabs */}
-          <div className="hidden md:grid grid-cols-6 gap-2">
-            {tabs.map(tab => {
-              const Icon = tab.icon;
-              return (
-                <TabsTrigger 
-                  key={tab.value}
-                  value={tab.value}
-                  className="text-xs flex flex-col items-center gap-1.5 py-3 px-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:border-blue-600 data-[state=active]:text-white transition-all"
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-center font-semibold">{tab.label}</span>
-                </TabsTrigger>
-              );
-            })}
-          </div>
+       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+         {/* Tab Navigation - Desktop Only */}
+         <div className="hidden md:block mb-6">
+           <TabsList className="grid grid-cols-6 gap-2 bg-transparent h-auto p-0">
+             {tabs.map(tab => {
+               const Icon = tab.icon;
+               return (
+                 <TabsTrigger 
+                   key={tab.value}
+                   value={tab.value}
+                   className="text-xs flex flex-col items-center gap-1.5 py-3 px-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 data-[state=active]:bg-blue-600 data-[state=active]:border-blue-600 data-[state=active]:text-white transition-all"
+                 >
+                   <Icon className="w-5 h-5" />
+                   <span className="text-center font-semibold">{tab.label}</span>
+                 </TabsTrigger>
+               );
+             })}
+           </TabsList>
+         </div>
 
-          {/* Mobile Tabs - Plain buttons, no Radix */}
-          <div className="md:hidden">
-            <div className="grid grid-cols-4 gap-2 md:grid-cols-6">
-              {tabs.map(tab => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.value;
-                return (
-                  <button
-                    key={tab.value}
-                    onClick={() => setActiveTab(tab.value)}
-                    className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg transition-all ${
-                      isActive
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="text-xs font-semibold text-center">{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-
-        </div>
+         {/* Mobile Tabs - Plain buttons, no Radix */}
+         <div className="md:hidden mb-6">
+           <div className="grid grid-cols-4 gap-2">
+             {tabs.map(tab => {
+               const Icon = tab.icon;
+               const isActive = activeTab === tab.value;
+               return (
+                 <button
+                   key={tab.value}
+                   onClick={() => setActiveTab(tab.value)}
+                   className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg transition-all ${
+                     isActive
+                       ? 'bg-blue-600 text-white shadow-md'
+                       : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
+                   }`}
+                 >
+                   <Icon className="w-5 h-5" />
+                   <span className="text-xs font-semibold text-center">{tab.label}</span>
+                 </button>
+               );
+             })}
+           </div>
+         </div>
 
         {/* Content */}
         <div className="space-y-6">
