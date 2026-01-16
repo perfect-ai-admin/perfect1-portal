@@ -294,13 +294,14 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
    };
 
   // Responsive: Sheet on mobile, Dialog on desktop
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const [mobileLayout, setMobileLayout] = useState(isMobile);
+  const [mobileLayout, setMobileLayout] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       setMobileLayout(window.innerWidth < 768);
     };
+    // Set initial value
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -310,7 +311,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
       <Sheet open={true} onOpenChange={onClose}>
         <SheetContent 
            side="bottom"
-           className="p-0 border-0 overflow-hidden max-h-screen flex flex-col"
+           className="p-0 border-0 overflow-hidden h-[95vh] flex flex-col rounded-t-2xl"
            ref={drawerRef}
          >
         <div className={cn("flex flex-col", mobileLayout && "max-h-screen overflow-hidden")}>
