@@ -264,34 +264,38 @@ export default function AgentCRM() {
                 </div>
               </PopoverContent>
             </Popover>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="סטטוס" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">כל הסטטוסים</SelectItem>
-                <SelectItem value="new">חדש</SelectItem>
-                <SelectItem value="contacted">יצרנו קשר</SelectItem>
-                <SelectItem value="no_answer">אין מענה</SelectItem>
-                <SelectItem value="in_progress">בתהליך</SelectItem>
-                <SelectItem value="qualified">מתאים</SelectItem>
-                <SelectItem value="not_interested">לא מעוניין</SelectItem>
-                <SelectItem value="converted">נסגר</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="קטגוריה" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">כל הקטגוריות</SelectItem>
-                <SelectItem value="osek_patur">פתיחת עוסק</SelectItem>
-                <SelectItem value="monthly_support">ליווי חודשי</SelectItem>
-                <SelectItem value="invoice">חשבונית</SelectItem>
-                <SelectItem value="consultation">ייעוץ</SelectItem>
-                <SelectItem value="other">אחר</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="w-full md:w-48">
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="סטטוס" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">כל הסטטוסים</SelectItem>
+                  <SelectItem value="new">חדש</SelectItem>
+                  <SelectItem value="contacted">יצרנו קשר</SelectItem>
+                  <SelectItem value="no_answer">אין מענה</SelectItem>
+                  <SelectItem value="in_progress">בתהליך</SelectItem>
+                  <SelectItem value="qualified">מתאים</SelectItem>
+                  <SelectItem value="not_interested">לא מעוניין</SelectItem>
+                  <SelectItem value="converted">נסגר</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="w-full md:w-48">
+              <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="קטגוריה" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">כל הקטגוריות</SelectItem>
+                  <SelectItem value="osek_patur">פתיחת עוסק</SelectItem>
+                  <SelectItem value="monthly_support">ליווי חודשי</SelectItem>
+                  <SelectItem value="invoice">חשבונית</SelectItem>
+                  <SelectItem value="consultation">ייעוץ</SelectItem>
+                  <SelectItem value="other">אחר</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
