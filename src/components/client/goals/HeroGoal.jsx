@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Edit2, X } from 'lucide-react';
+import { ChevronDown, Edit2, X, Circle, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
@@ -28,8 +28,22 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
         config.bg
       )}>
         {/* Header */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1">
+         <div className="flex items-start justify-between gap-3">
+           <button
+             onClick={() => {
+               const nextStatus = goal.status === 'active' ? 'achieved' : goal.status === 'achieved' ? 'stuck' : 'active';
+               onStatusChange(goal, nextStatus);
+             }}
+             className="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0 mt-0.5"
+             aria-label="שנה סטטוס"
+           >
+             {goal.status === 'achieved' ? (
+               <CheckCircle2 className="w-5 h-5 text-green-600" />
+             ) : (
+               <Circle className="w-5 h-5 text-gray-400" />
+             )}
+           </button>
+           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <h2 className="text-lg font-bold text-gray-900">{goal.title}</h2>
               <span className={cn("text-xs font-semibold px-2 py-1 rounded-full", config.color, config.bg)}>
