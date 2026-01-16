@@ -1,10 +1,12 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Layers, ChevronRight, X } from 'lucide-react';
 import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 
 export default function LandingPageBuilder() {
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
 
   const features = [
     'כותרות שיווקיות',
@@ -12,11 +14,28 @@ export default function LandingPageBuilder() {
     'טופס לליידים'
   ];
 
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (showQuestionnaire) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showQuestionnaire]);
+
   const openModal = useCallback(() => {
+    console.log('Opening modal');
     setShowQuestionnaire(true);
   }, []);
 
   const closeModal = useCallback(() => {
+    console.log('Closing modal');
     setShowQuestionnaire(false);
   }, []);
 
@@ -31,32 +50,31 @@ export default function LandingPageBuilder() {
     }
   }, [closeModal]);
 
-  return (
-    <>
-      {/* Modal Portal */}
-      {showQuestionnaire && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" 
-          onClick={handleOverlayClick}
+  const modal = showQuestionnaire && portalReady ? createPortal(
+    <div 
+      className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" 
+      onClick={handleOverlayClick}
+      role="presentation"
+    >
+      <div 
+        className="bg-white rounded-xl w-full max-w-2xl relative max-h-[90vh] flex flex-col shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button 
+          type="button"
+          onClick={closeModal}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10 p-1"
+          aria-label="סגור"
         >
-          <div 
-            className="bg-white rounded-xl w-full max-w-2xl relative max-h-[90vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button 
-              type="button"
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10 p-1"
-              aria-label="סגור"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <div className="overflow-y-auto flex-1">
-              <LandingPageQuestionnaire onComplete={handleComplete} />
-            </div>
-          </div>
+          <X className="w-6 h-6" />
+        </button>
+        <div className="overflow-y-auto flex-1">
+          <LandingPageQuestionnaire onComplete={handleComplete} />
         </div>
-      )}
+      </div>
+    </div>,
+    document.body
+  ) : null;
 
       {/* Card Content */}
       <motion.div
