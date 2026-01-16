@@ -334,17 +334,16 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
               </Button>
             </div>
           ) : (
-            <div className="space-y-4"> : (
-          <div className="space-y-4">
-            <Button
-              variant="ghost"
-              onClick={() => setSelectedTemplate(null)}
-              className="mb-2"
-            >
-              ← חזור לבחירת תבנית
-            </Button>
-
             <div className="space-y-4">
+              <Button
+                variant="ghost"
+                onClick={() => setSelectedTemplate(null)}
+                className="mb-2"
+              >
+                ← חזור לבחירת תבנית
+              </Button>
+
+              <div className="space-y-4">
               {/* Examples from Template */}
               {selectedTemplate.examples && (
                 <div className="bg-gray-50 rounded-lg p-4">
@@ -441,9 +440,9 @@ export default function GoalTemplates({ onCreateGoal, onClose }) {
                 <Button variant="outline" onClick={onClose}>
                   ביטול
                 </Button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
           </div>
         </div>
       </DrawerContent>
