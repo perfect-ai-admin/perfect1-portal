@@ -97,8 +97,8 @@ export default function MobileTabBar({ activeTab, onChange }) {
                    aria-haspopup="true"
                    aria-expanded={isMoreOpen}
                  >
-                   <MoreHorizontal className={`w-5 h-5 ${isMoreOpen ? 'text-blue-600' : 'text-gray-500'}`} aria-hidden="true" />
-                   <span className="text-[10px] font-medium text-gray-500">עוד</span>
+                   <MoreHorizontal className={`w-6 h-6 ${isMoreOpen ? 'text-blue-600' : 'text-gray-500'}`} aria-hidden="true" />
+                   <span className="text-xs font-semibold text-gray-500">עוד</span>
                  </button>
                </DropdownMenuTrigger>
                <DropdownMenuContent align="end" side="top" className="mb-16">
