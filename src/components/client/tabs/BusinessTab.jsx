@@ -30,15 +30,8 @@ export default function BusinessTab({ data }) {
   const [period, setPeriod] = useState('month');
   const [isExporting, setIsExporting] = useState(false);
   
-  // Mock data - replace with real data
-  const revenueData = [
-    { month: 'ינואר', value: 8000 },
-    { month: 'פברואר', value: 9500 },
-    { month: 'מרץ', value: 12000 },
-    { month: 'אפריל', value: 11000 },
-    { month: 'מאי', value: 14000 },
-    { month: 'יוני', value: 15500 }
-  ];
+  // Empty initial data
+  const revenueData = [];
 
 
 
@@ -50,10 +43,10 @@ export default function BusinessTab({ data }) {
         period,
         revenue: revenueData,
         metrics: {
-          totalRevenue: 42000,
-          totalExpenses: 18500,
-          netProfit: 23500,
-          performance: 85
+          totalRevenue: 0,
+          totalExpenses: 0,
+          netProfit: 0,
+          performance: 0
         },
         vision: data.business_vision,
         businessState: data.business_state
@@ -157,9 +150,9 @@ export default function BusinessTab({ data }) {
       <div className="hidden md:grid md:grid-cols-4 gap-3">
         <MetricQuadrant
           title="הכנסות"
-          value={42000}
-          change="+15%"
-          trend={15}
+          value={0}
+          change="0%"
+          trend={0}
           chartData={revenueData}
           icon={TrendingUp}
           isCurrency={true}
@@ -167,9 +160,9 @@ export default function BusinessTab({ data }) {
         />
         <MetricQuadrant
           title="הוצאות"
-          value={18500}
-          change="+5%"
-          trend={5}
+          value={0}
+          change="0%"
+          trend={0}
           chartData={revenueData}
           icon={DollarSign}
           isCurrency={true}
@@ -177,9 +170,9 @@ export default function BusinessTab({ data }) {
         />
         <MetricQuadrant
           title="רווח נקי"
-          value={23500}
-          change="+28%"
-          trend={28}
+          value={0}
+          change="0%"
+          trend={0}
           chartData={revenueData}
           icon={PieChart}
           isCurrency={true}
@@ -187,9 +180,9 @@ export default function BusinessTab({ data }) {
         />
         <MetricQuadrant
           title="ביצוע"
-          value={85}
-          change="+3%"
-          trend={3}
+          value={0}
+          change="0%"
+          trend={0}
           chartData={revenueData}
           icon={BarChart3}
           isPercentage={true}
@@ -202,23 +195,23 @@ export default function BusinessTab({ data }) {
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-600 font-medium">הכנסות</p>
-            <p className="text-lg font-bold text-gray-900">₪42,000</p>
+            <p className="text-lg font-bold text-gray-900">₪0</p>
           </div>
-          <p className="text-xs text-green-600 font-semibold">↑ 15%</p>
+          <p className="text-xs text-gray-400 font-semibold">-</p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-600 font-medium">הוצאות</p>
-            <p className="text-lg font-bold text-gray-900">₪18,500</p>
+            <p className="text-lg font-bold text-gray-900">₪0</p>
           </div>
-          <p className="text-xs text-green-600 font-semibold">↑ 5%</p>
+          <p className="text-xs text-gray-400 font-semibold">-</p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-600 font-medium">רווח נקי</p>
-            <p className="text-lg font-bold text-gray-900">₪23,500</p>
+            <p className="text-lg font-bold text-gray-900">₪0</p>
           </div>
-          <p className="text-xs text-green-600 font-semibold">↑ 28%</p>
+          <p className="text-xs text-gray-400 font-semibold">-</p>
         </div>
       </div>
 
@@ -255,10 +248,7 @@ export default function BusinessTab({ data }) {
             <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">תעדוף פעילות</h3>
             <div className="flex items-center justify-center overflow-x-auto">
               <HeatmapCalendar 
-                data={Array.from({length: 85}, (_, i) => ({
-                  date: new Date(new Date().setDate(new Date().getDate() - (84 - i))).toISOString().split('T')[0],
-                  value: Math.floor(Math.random() * 5)
-                }))}
+                data={[]}
                 cellSize={8}
                 cellGap={1}
               />
