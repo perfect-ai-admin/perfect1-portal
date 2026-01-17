@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 const GOOGLE_CLIENT_ID = Deno.env.get('GOOGLE_CLIENT_ID');
 const GOOGLE_CLIENT_SECRET = Deno.env.get('GOOGLE_CLIENT_SECRET');
 const JWT_SECRET = Deno.env.get('JWT_SECRET');
-const BASE_URL = Deno.env.get('BASE_URL') || 'https://perfect-one.co.il';
+const BASE_URL = Deno.env.get('BASE_URL');
 
 // Simple JWT creation (or use a library like jose)
 async function createJWT(payload) {
@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
                 code: code,
                 client_id: GOOGLE_CLIENT_ID,
                 client_secret: GOOGLE_CLIENT_SECRET,
-                redirect_uri: `${BASE_URL}/api/auth/google/callback`,
+                redirect_uri: `${BASE_URL}/googleAuthCallback`,
                 grant_type: 'authorization_code'
             })
         });

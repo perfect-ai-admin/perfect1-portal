@@ -50,7 +50,8 @@ export default function ClientLogin() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/functions/googleAuthStart';
+    // Redirect to Google OAuth start endpoint
+    window.location.href = `${window.location.origin}/googleAuthStart`;
   };
 
   return (

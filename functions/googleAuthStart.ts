@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const GOOGLE_CLIENT_ID = Deno.env.get('GOOGLE_CLIENT_ID');
-const BASE_URL = Deno.env.get('BASE_URL') || 'https://perfect-one.co.il';
+const BASE_URL = Deno.env.get('BASE_URL');
 
 Deno.serve(async (req) => {
     try {
@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
         // Build Google OAuth URL
         const params = new URLSearchParams({
             client_id: GOOGLE_CLIENT_ID,
-            redirect_uri: `${BASE_URL}/api/auth/google/callback`,
+            redirect_uri: `${BASE_URL}/googleAuthCallback`,
             response_type: 'code',
             scope: 'openid email profile',
             access_type: 'online',
