@@ -15,102 +15,51 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Answers are required' }, { status: 400 });
         }
 
-        // Define the 6 states and their tasks
-        const statesDefinitions = `
-        מצב 1: מגבש כיוון (עוד לא פתח עסק / בתחילת מחשבה)
-        לאן נוביל אותו: עסק פתוח עם בסיס ראשון למכירות
-        משימות:
-        1. בחירת כיוון עסקי
-        2. הגדרת תחום וקהל יעד
-        3. פתיחת עוסק פטור
-        4. מיתוג בסיסי לעסק (שם, לוגו, שפה)
-        5. יצירת לקוחות ראשונים
-        6. הדרכת מכירות בסיסית
-
-        מצב 2: בהקמה (פתח עכשיו / עסק צעיר)
-        לאן נוביל אותו: לקוחות ראשונים בצורה מסודרת
-        משימות:
-        1. חידוד השירות המרכזי
-        2. דיוק הצעת ערך ומסר שיווקי
-        3. מיתוג מסודר
-        4. בניית נכס שיווקי ראשון (דף / פרופיל)
-        5. יצירת פניות ראשונות
-        6. סגירת לקוחות ראשונים
-
-        מצב 3: מחפש לקוחות ראשונים (יש עסק, אין יציבות)
-        לאן נוביל אותו: תהליך שחוזר על עצמו
-        משימות:
-        1. ניתוח למה לקוחות לא מגיעים
-        2. שיפור השירות והתמחור
-        3. בניית משפך שיווקי פשוט
-        4. יצירת תנועה עקבית
-        5. שיפור תהליך מכירה
-        6. לקוחות חוזרים / המלצות
-
-        מצב 4: פעיל אך מבולגן (יש לקוחות, אין שליטה)
-        לאן נוביל אותו: סדר, יציבות, שליטה
-        משימות:
-        1. מיפוי כל ההכנסות וההוצאות
-        2. סידור שירותים ותמחור
-        3. בניית סדר יום ושגרות
-        4. ניהול פיננסי בסיסי
-        5. הפחתת עומס ותקלות
-        6. יציבות חודשית
-
-        מצב 5: יציב ורוצה לגדול (עסק עובד 2–5 שנים)
-        לאן נוביל אותו: צמיחה חכמה
-        משימות:
-        1. זיהוי צוואר בקבוק מרכזי
-        2. בחירת מנוע צמיחה אחד
-        3. שדרוג שיווק ומיתוג
-        4. הגדלת ערך לקוח
-        5. שיפור תהליך חוזר
-        6. צמיחה מדידה
-
-        מצב 6: ותיק וממנף (עסק בוגר 5–10+)
-        לאן נוביל אותו: אופטימיזציה ושקט ניהולי
-        משימות:
-        1. ניתוח עומסים וניהול זמן
-        2. האצלה / אוטומציה
-        3. שליטה פיננסית מלאה
-        4. קבלת החלטות מבוססת נתונים
-        5. הפחתת תלות בבעלים
-        6. עסק שעובד גם בלעדיו
-        `;
-
-        // Call LLM to analyze
+        // Context from the dynamic questionnaire
+        // The 'current_status' answer determines the flow: idea, new, active, stable, scaling
+        
+        // Call LLM to analyze with enhanced context
         const llmResponse = await base44.integrations.Core.InvokeLLM({
             prompt: `
-            You are an expert business consultant. Your goal is to build a *personalized* growth plan for a freelancer/small business owner based on their questionnaire answers.
+            You are "Perfect Biz AI", an elite business strategist and consultant.
+            Your goal is to build a highly **hyper-personalized** growth plan for a business owner based on their specific questionnaire answers.
 
-            User Answers: ${JSON.stringify(answers)}
-            
-            **Guidelines:**
-            1. Analyze the user's answers to understand their specific profession, current situation, and pain points.
-            2. Classify them into one of the following 6 "Business States" (conceptual frameworks):
-            
-            ${statesDefinitions}
+            **User Profile & Answers:**
+            ${JSON.stringify(answers, null, 2)}
 
-            3. **CRITICAL:** Do NOT just copy the generic tasks from the state definitions above. Instead, generate 6 **UNIQUE and PERSONALIZED** steps (milestones) that are specifically tailored to *this specific user* and their profession.
-               - For example, if they are a "Graphic Designer" in "State 1", don't just say "Find direction", say "Define your design niche and portfolio style".
-               - The steps should take them from their *current situation* to the *State Goal*.
-               - The steps must be actionable and concrete.
+            **Context on The Flows:**
+            The user came through one of 5 specific flows based on their 'current_status':
+            1. **Idea Stage** (answers include: field, blocker, commitment, skill_level) -> Needs validation, overcoming fear, and initial setup.
+            2. **New Business** (answers include: bureaucracy_status, first_clients, marketing_method, biggest_challenge_new) -> Needs first paying clients, basic marketing assets, and confidence.
+            3. **Active/Survival** (answers include: revenue_range, lead_source_active, process_status, missing_piece) -> Needs consistency, better sales conversions, and organized processes to stop the chaos.
+            4. **Stable/Plateau** (answers include: team_structure, ceiling, finance_mgmt, next_year_goal) -> Needs optimization, breaking the "glass ceiling" (time/income), and better financial control.
+            5. **Scaling/Growth** (answers include: bottleneck, sops, involvement, vision) -> Needs systems, automation, management, and strategic expansion (exit/franchise).
 
-            4. **Output Requirements:**
-               - STRICTLY in Hebrew (עברית).
-               - Return exactly 6 steps in the 'tasks' array.
+            **Your Mission:**
+            1. **Deep Analysis:** Look at *every* answer. If they said their blocker is "Fear", the first step MUST address mindset/confidence. If they said "Leads" are the challenge, the plan MUST focus on lead gen.
+            2. **Define the State:** Create a custom state name that fits them exactly (e.g., "Graphic Designer - Early Growth" or "Tech Startup - Scaling Phase").
+            3. **Generate 6 Tactical Steps:**
+               - **Step 1:** Must be an "Quick Win" addressing their immediate pain point (e.g. "Overcome the fear of selling").
+               - **Steps 2-5:** Build the foundation and growth engines specific to their flow.
+               - **Step 6:** The "Next Level" milestone (e.g. "Hiring your first employee" or "Reaching 30k revenue").
             
-            Return a JSON object with this structure:
+            **CRITICAL RULES:**
+            - **Do NOT be generic.** "Build a marketing plan" is bad. "Create 3 Instagram Reels showcasing your design process" is good.
+            - **Address the 'Missing Piece':** If they explicitly stated what's missing or challenging, solve it in the plan.
+            - **Tone:** Professional, encouraging, yet tactical and direct.
+            - **Language:** STRICTLY HEBREW (עברית).
+
+            **Output JSON Structure:**
             {
-                "state_id": "string (e.g., state_1, state_2)",
-                "state_name": "string (The name of the state in Hebrew)",
-                "state_description": "string (A short personalized summary of their current situation in Hebrew)",
-                "state_goal": "string (The main goal we are aiming for in Hebrew)",
+                "state_id": "string (one of: idea, new, active, stable, scaling)",
+                "state_name": "string (Creative Hebrew name for their current status)",
+                "state_description": "string (A sharp, 2-sentence diagnosis of where they are and what's holding them back, in Hebrew)",
+                "state_goal": "string (The primary objective for the next 3-6 months in Hebrew)",
                 "tasks": [
                     {
-                        "title": "string (Specific, action-oriented task title in Hebrew)",
-                        "description": "string (Brief explanation of why this step is important for THEM)",
-                        "is_milestone": boolean (true for major steps)
+                        "title": "string (Actionable, specific step title in Hebrew)",
+                        "description": "string (Why this step fixes their specific problem)",
+                        "is_milestone": boolean (true for steps 1, 3, 6)
                     }
                 ]
             }
