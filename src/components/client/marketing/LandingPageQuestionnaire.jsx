@@ -18,26 +18,26 @@ const SelectionCard = ({ selected, onClick, icon: Icon, title, description }) =>
   <div 
     onClick={onClick}
     className={cn(
-      "cursor-pointer relative flex items-start gap-3 p-4 rounded-xl border-2 transition-all duration-200",
+      "cursor-pointer relative flex items-center gap-3 p-3 rounded-xl border-2 transition-all duration-200 h-full",
       selected 
         ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500/20" 
         : "border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50"
     )}
   >
     {selected && (
-      <div className="absolute top-3 left-3 bg-blue-500 rounded-full p-0.5">
-        <Check className="w-3 h-3 text-white" />
+      <div className="absolute top-2 left-2 bg-blue-500 rounded-full p-0.5">
+        <Check className="w-2 h-2 text-white" />
       </div>
     )}
     <div className={cn(
-      "p-2.5 rounded-lg flex-shrink-0",
+      "p-2 rounded-lg flex-shrink-0",
       selected ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"
     )}>
-      <Icon className="w-5 h-5" />
+      <Icon className="w-4 h-4" />
     </div>
-    <div>
-      <div className={cn("font-bold text-sm mb-0.5", selected ? "text-blue-900" : "text-gray-900")}>{title}</div>
-      {description && <div className="text-xs text-gray-500 leading-relaxed">{description}</div>}
+    <div className="flex-1 min-w-0">
+      <div className={cn("font-bold text-sm leading-tight", selected ? "text-blue-900" : "text-gray-900")}>{title}</div>
+      {description && <div className="text-[11px] text-gray-500 leading-tight mt-0.5 line-clamp-2">{description}</div>}
     </div>
   </div>
 );
@@ -151,74 +151,74 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-2 mb-6">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Building2 className="w-6 h-6 text-blue-600" />
+          <div className="space-y-4">
+            <div className="text-center space-y-1 mb-4">
+              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Building2 className="w-5 h-5 text-blue-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">נתחיל מהבסיס</h3>
-              <p className="text-gray-500 text-sm">מי אתה ומי הקהל שלך?</p>
+              <h3 className="text-lg font-bold text-gray-900">נתחיל מהבסיס</h3>
+              <p className="text-gray-500 text-xs">מי אתה ומי הקהל שלך?</p>
             </div>
 
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="businessName">שם העסק / מותג</Label>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label htmlFor="businessName" className="text-xs font-semibold">שם העסק / מותג</Label>
                 <Input 
                   id="businessName" 
                   value={formData.businessName} 
                   onChange={(e) => handleInputChange('businessName', e.target.value)} 
                   placeholder="לדוגמה: דיגיטל פרו" 
-                  className={cn("h-11", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
+                  className={cn("h-10", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
                   autoFocus
                 />
-                {errors.businessName && <p className="text-red-500 text-xs flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.businessName}</p>}
+                {errors.businessName && <p className="text-red-500 text-[10px] flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.businessName}</p>}
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="mainField">תחום עיסוק</Label>
+              <div className="space-y-1">
+                <Label htmlFor="mainField" className="text-xs font-semibold">תחום עיסוק</Label>
                 <Input 
                   id="mainField" 
                   value={formData.mainField} 
                   onChange={(e) => handleInputChange('mainField', e.target.value)} 
                   placeholder="לדוגמה: שיווק דיגיטלי לעסקים קטנים" 
-                  className={cn("h-11", errors.mainField && 'border-red-500 focus-visible:ring-red-500')} 
+                  className={cn("h-10", errors.mainField && 'border-red-500 focus-visible:ring-red-500')} 
                 />
               </div>
 
-              <div className="space-y-3 pt-2">
-                <Label className="block text-base">מי הקהל העיקרי שלך?</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-2 pt-1">
+                <Label className="block text-xs font-semibold">מי הקהל העיקרי שלך?</Label>
+                <div className="grid grid-cols-2 gap-2">
                   <SelectionCard 
                     selected={formData.targetAudience.includes('freelancers')}
                     onClick={() => handleCheckboxChange('targetAudience', 'freelancers', !formData.targetAudience.includes('freelancers'))}
                     icon={Users}
-                    title="עצמאים ופרילנסרים"
-                    description="בעלי עסק של אדם אחד"
+                    title="עצמאים"
+                    description="בעלי עסק יחיד"
                   />
                   <SelectionCard 
                     selected={formData.targetAudience.includes('smallBusinesses')}
                     onClick={() => handleCheckboxChange('targetAudience', 'smallBusinesses', !formData.targetAudience.includes('smallBusinesses'))}
                     icon={Building2}
-                    title="עסקים קטנים"
-                    description="חברות עם 2-10 עובדים"
+                    title="עסקים"
+                    description="חברות קטנות"
                   />
                   <SelectionCard 
                     selected={formData.targetAudience.includes('privateClients')}
                     onClick={() => handleCheckboxChange('targetAudience', 'privateClients', !formData.targetAudience.includes('privateClients'))}
                     icon={Target}
-                    title="לקוחות פרטיים"
-                    description="אנשים פרטיים (B2C)"
+                    title="פרטיים"
+                    description="B2C"
                   />
-                  <div className="flex items-center px-4 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50">
+                  <div className="flex items-center px-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 h-full min-h-[60px]">
                      <Input 
-                        placeholder="קהל אחר..." 
+                        placeholder="אחר..." 
                         value={formData.targetAudienceOther} 
                         onChange={(e) => handleInputChange('targetAudienceOther', e.target.value)} 
-                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full"
+                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full text-sm"
                       />
                   </div>
                 </div>
-                {errors.targetAudience && <p className="text-red-500 text-xs mt-1">{errors.targetAudience}</p>}
+                {errors.targetAudience && <p className="text-red-500 text-[10px] mt-1">{errors.targetAudience}</p>}
               </div>
             </div>
           </div>
@@ -226,37 +226,36 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
 
       case 2:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-2 mb-6">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <AlertCircle className="w-6 h-6 text-red-600" />
+          <div className="space-y-4">
+            <div className="text-center space-y-1 mb-4">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <AlertCircle className="w-5 h-5 text-red-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">הכאב של הלקוח</h3>
-              <p className="text-gray-500 text-sm">הבנת הבעיה היא המפתח למכירה</p>
+              <h3 className="text-lg font-bold text-gray-900">הכאב של הלקוח</h3>
+              <p className="text-gray-500 text-xs">למה הוא צריך אותך?</p>
             </div>
 
-            <div className="space-y-5">
-              <div className="space-y-1.5">
-                <Label htmlFor="painPoints" className="text-base">מה הבעיה או הכאב שהלקוח חווה?</Label>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="painPoints" className="text-sm font-semibold">מה הבעיה או הכאב שהלקוח חווה?</Label>
                 <Textarea 
                   id="painPoints" 
                   value={formData.painPoints} 
                   onChange={(e) => handleInputChange('painPoints', e.target.value)} 
-                  placeholder="לדוגמה: הוא מבזבז המון זמן על בירוקרטיה במקום לעבוד..." 
-                  className={cn("min-h-[100px] text-base resize-none", errors.painPoints && 'border-red-500')} 
+                  placeholder="לדוגמה: מבזבז המון זמן על בירוקרטיה..." 
+                  className={cn("h-24 resize-none", errors.painPoints && 'border-red-500')} 
                   autoFocus
                 />
-                <p className="text-xs text-gray-500">תאר את הבעיה מהעיניים של הלקוח</p>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="consequences" className="text-base">מה קורה אם הוא לא פותר את זה?</Label>
+              <div className="space-y-1">
+                <Label htmlFor="consequences" className="text-sm font-semibold">מה קורה אם הוא לא פותר את זה?</Label>
                 <Textarea 
                   id="consequences" 
                   value={formData.consequences} 
                   onChange={(e) => handleInputChange('consequences', e.target.value)} 
-                  placeholder="לדוגמה: מפסיד כסף, נכנס ללחץ, מאבד לקוחות..." 
-                  className={cn("min-h-[100px] text-base resize-none", errors.consequences && 'border-red-500')} 
+                  placeholder="לדוגמה: מפסיד כסף, לחץ, מאבד לקוחות..." 
+                  className={cn("h-24 resize-none", errors.consequences && 'border-red-500')} 
                 />
               </div>
             </div>
@@ -265,33 +264,33 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
 
       case 3:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-2 mb-6">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Zap className="w-6 h-6 text-green-600" />
+          <div className="space-y-4">
+            <div className="text-center space-y-1 mb-4">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Zap className="w-5 h-5 text-green-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">הפתרון שלך</h3>
-              <p className="text-gray-500 text-sm">איך אתה עוזר לו?</p>
+              <h3 className="text-lg font-bold text-gray-900">הפתרון שלך</h3>
+              <p className="text-gray-500 text-xs">איך אתה עוזר לו?</p>
             </div>
 
-            <div className="space-y-5">
-              <div className="space-y-1.5">
-                <Label htmlFor="serviceOffered">מה השירות במשפט אחד?</Label>
-                <Textarea 
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="serviceOffered" className="text-xs font-semibold">מה השירות במשפט אחד?</Label>
+                <Input 
                   id="serviceOffered" 
                   value={formData.serviceOffered} 
                   onChange={(e) => handleInputChange('serviceOffered', e.target.value)} 
                   placeholder="אני עוזר ל... לעשות... כדי ש..." 
-                  className={cn("h-20 resize-none", errors.serviceOffered && 'border-red-500')} 
+                  className={cn("h-10", errors.serviceOffered && 'border-red-500')} 
                 />
               </div>
 
-              <div className="space-y-3">
-                <Label className="block">למה שיבחר דווקא בך?</Label>
-                <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label className="block text-xs font-semibold">למה שיבחר דווקא בך?</Label>
+                <div className="grid grid-cols-2 gap-2">
                   {[
                     { id: 'price', label: 'מחיר משתלם', icon: Wallet },
-                    { id: 'experience', label: 'ניסיון ומקצועיות', icon: Briefcase },
+                    { id: 'experience', label: 'מקצועיות', icon: Briefcase },
                     { id: 'personalService', label: 'יחס אישי', icon: Users },
                     { id: 'speed', label: 'מהירות', icon: Clock },
                   ].map(item => (
@@ -303,25 +302,23 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
                       title={item.label}
                     />
                   ))}
-                  <div className="col-span-2">
-                    <Input 
-                      placeholder="סיבה אחרת..." 
-                      value={formData.whyChooseYouOther} 
-                      onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} 
-                      className="bg-gray-50"
-                    />
-                  </div>
                 </div>
+                <Input 
+                  placeholder="סיבה אחרת..." 
+                  value={formData.whyChooseYouOther} 
+                  onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} 
+                  className="bg-gray-50 h-9 text-sm"
+                />
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="processSteps">איך זה עובד? (בקצרה)</Label>
+              <div className="space-y-1">
+                <Label htmlFor="processSteps" className="text-xs font-semibold">איך זה עובד? (בקצרה)</Label>
                 <Input 
                   id="processSteps" 
                   value={formData.processSteps} 
                   onChange={(e) => handleInputChange('processSteps', e.target.value)} 
                   placeholder="שלב 1 -> שלב 2 -> שלב 3" 
-                  className={cn(errors.processSteps && 'border-red-500')} 
+                  className={cn("h-10", errors.processSteps && 'border-red-500')} 
                 />
               </div>
             </div>
@@ -613,21 +610,21 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
         </div>
       </div>
 
-      {/* Main Content - Scrollable */}
+      {/* Main Content - Compact & Centered */}
       <div 
         id="questionnaire-scroll-area"
         className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8"
       >
-        <div className="max-w-2xl mx-auto min-h-full flex flex-col justify-center">
-          <form onSubmit={handleSubmit}>
+        <div className="max-w-xl mx-auto min-h-full flex flex-col justify-center py-4">
+          <form onSubmit={handleSubmit} className="w-full">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2 }}
-                className="py-2"
+                initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="w-full"
               >
                 {renderStep()}
               </motion.div>
