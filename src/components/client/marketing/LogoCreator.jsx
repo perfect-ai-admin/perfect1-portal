@@ -235,7 +235,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                 value={formData.businessName}
                 onChange={(e) => setFormData(prev => ({ ...prev, businessName: e.target.value }))}
                 placeholder="שם העסק..."
-                className="h-10 text-sm"
+                className="h-10 text-base"
               />
             </div>
 
@@ -245,7 +245,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                 value={formData.industry}
                 onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
                 placeholder="למשל: יועץ מס, גרפיקאי..."
-                className="h-10 text-sm"
+                className="h-10 text-base"
               />
             </div>
 
@@ -255,7 +255,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                 value={formData.tagline}
                 onChange={(e) => setFormData(prev => ({ ...prev, tagline: e.target.value }))}
                 placeholder="המסר המרכזי שלך..."
-                className="h-10 text-sm"
+                className="h-10 text-base"
               />
             </div>
 
@@ -265,7 +265,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                 value={formData.vibe}
                 onChange={(e) => setFormData(prev => ({ ...prev, vibe: e.target.value }))}
                 placeholder="איזו תחושה הלוגו צריך לשדר?"
-                className="h-10 text-sm"
+                className="h-10 text-base"
               />
             </div>
           </div>

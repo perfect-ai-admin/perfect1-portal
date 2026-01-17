@@ -242,7 +242,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                         placeholder="אחר..." 
                         value={formData.targetAudienceOther} 
                         onChange={(e) => handleInputChange('targetAudienceOther', e.target.value)} 
-                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full text-sm"
+                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full text-base md:text-sm"
                       />
                   </div>
                 </div>
@@ -335,7 +335,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   placeholder="סיבה אחרת..." 
                   value={formData.whyChooseYouOther} 
                   onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} 
-                  className="bg-gray-50 h-9 text-sm"
+                  className="bg-gray-50 h-9 text-base md:text-sm"
                 />
               </div>
 
@@ -379,7 +379,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     placeholder="כמה שנות ניסיון?" 
                     value={formData.experienceYears} 
                     onChange={(e) => handleInputChange('experienceYears', e.target.value)} 
-                    className="mr-10 w-[calc(100%-2.5rem)] h-9 text-sm"
+                    className="mr-10 w-[calc(100%-2.5rem)] h-9 text-base md:text-sm"
                   />
                 </motion.div>
               )}
@@ -405,7 +405,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     placeholder="כתוב כאן את ההמלצה..." 
                     value={formData.testimonialText} 
                     onChange={(e) => handleInputChange('testimonialText', e.target.value)} 
-                    className="mr-10 w-[calc(100%-2.5rem)] min-h-[60px] text-sm"
+                    className="mr-10 w-[calc(100%-2.5rem)] min-h-[60px] text-base md:text-sm"
                   />
                 </motion.div>
               )}
