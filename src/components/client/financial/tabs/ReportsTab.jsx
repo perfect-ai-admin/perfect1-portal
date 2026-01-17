@@ -114,23 +114,23 @@ export default function ReportsTab({ data }) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div>
               <p className="text-xs text-gray-600 mb-1">הכנסות</p>
-              <p className="text-lg font-bold text-gray-900">₪12,450</p>
-              <p className="text-xs text-green-600 mt-1">+15% לעומת חודש שעבר</p>
+              <p className="text-lg font-bold text-gray-900">₪0</p>
+              <p className="text-xs text-gray-400 mt-1">-</p>
             </div>
             <div>
               <p className="text-xs text-gray-600 mb-1">הוצאות</p>
-              <p className="text-lg font-bold text-gray-900">₪5,200</p>
-              <p className="text-xs text-red-600 mt-1">+3% לעומת חודש שעבר</p>
+              <p className="text-lg font-bold text-gray-900">₪0</p>
+              <p className="text-xs text-gray-400 mt-1">-</p>
             </div>
             <div>
               <p className="text-xs text-gray-600 mb-1">רווח נקי</p>
-              <p className="text-lg font-bold text-green-600">₪7,250</p>
-              <p className="text-xs text-green-600 mt-1">+24% לעומת חודש שעבר</p>
+              <p className="text-lg font-bold text-green-600">₪0</p>
+              <p className="text-xs text-gray-400 mt-1">-</p>
             </div>
             <div>
               <p className="text-xs text-gray-600 mb-1">פתוח מלקוחות</p>
-              <p className="text-lg font-bold text-orange-600">₪850</p>
-              <p className="text-xs text-orange-600 mt-1">2 מסמכים</p>
+              <p className="text-lg font-bold text-orange-600">₪0</p>
+              <p className="text-xs text-gray-400 mt-1">0 מסמכים</p>
             </div>
           </div>
         </motion.div>

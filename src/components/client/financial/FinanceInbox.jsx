@@ -4,33 +4,8 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
 export default function FinanceInbox({ data }) {
-  // Mock inbox items - will be replaced with real data
-  const inboxItems = [
-    {
-      id: 1,
-      title: '3 הוצאות מחכות לסיווג',
-      description: 'קלוטות אתמול בערב',
-      priority: 'high',
-      action: 'סווג',
-      icon: '📊',
-    },
-    {
-      id: 2,
-      title: '2 מסמכים פתוחים ללא תשלום',
-      description: 'יקבו קרוב לעשרת הימים',
-      priority: 'high',
-      action: 'צפה',
-      icon: '💰',
-    },
-    {
-      id: 3,
-      title: 'מסמך אחד חסר פרטי לקוח',
-      description: 'חשבונית #1234',
-      priority: 'regular',
-      action: 'השלם',
-      icon: '👤',
-    },
-  ];
+  // Empty initial data
+  const inboxItems = [];
 
   if (inboxItems.length === 0) {
     return (

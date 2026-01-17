@@ -16,36 +16,8 @@ export default function DocumentsTab({ data }) {
     dateRange: 'all',
   });
 
-  // Mock documents
-  const documents = [
-    {
-      id: 1,
-      date: '15.01.2025',
-      type: 'חשבונית מס',
-      number: '001',
-      customer: 'דני כץ',
-      amount: '₪500',
-      status: 'שולם',
-    },
-    {
-      id: 2,
-      date: '14.01.2025',
-      type: 'קבלה',
-      number: '002',
-      customer: 'מיכל לוי',
-      amount: '₪1,200',
-      status: 'פתוח',
-    },
-    {
-      id: 3,
-      date: '13.01.2025',
-      type: 'חשבונית מס',
-      number: '003',
-      customer: 'אברהם כהן',
-      amount: '₪350',
-      status: 'נשלח',
-    },
-  ];
+  // Empty initial data
+  const documents = [];
 
   const getStatusColor = (status) => {
     switch (status) {
