@@ -124,14 +124,14 @@ export default function ShoppingCartButton() {
       {/* Cart Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+        className="relative p-2 hover:bg-white/10 rounded-lg transition-colors group"
         title="העגלה שלך"
       >
         <motion.div
           animate={isBouncing ? { rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] } : {}}
           transition={{ duration: 0.5 }}
         >
-          <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-blue-600 transition-colors" />
+          <ShoppingCart className="w-6 h-6 text-white/90 group-hover:text-white transition-colors" />
         </motion.div>
         
         <AnimatePresence>
