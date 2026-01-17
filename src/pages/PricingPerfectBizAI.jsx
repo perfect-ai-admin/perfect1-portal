@@ -425,9 +425,9 @@ export default function PricingPerfectBizAI() {
              </div>
 
              <div className="relative z-10 max-w-4xl mx-auto space-y-6">
-                 <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight drop-shadow-xl">
-                     בחר את הדרך הנכונה <br className="md:hidden" /> 
-                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-200">
+                 <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-tight drop-shadow-2xl mb-2">
+                     <span className="block text-white">בחר את הדרך הנכונה</span>
+                     <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-[#FFD700] via-[#FFFACD] to-[#FFD700] drop-shadow-sm filter">
                         לקדם את העסק שלך
                      </span>
                  </h1>
