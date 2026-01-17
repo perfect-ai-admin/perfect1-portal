@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
         // Build Google OAuth URL
         const params = new URLSearchParams({
             client_id: GOOGLE_CLIENT_ID,
-            redirect_uri: `${BASE_URL}/googleAuthCallback`,
+            redirect_uri: `${BASE_URL}/functions/googleAuthCallback`,
             response_type: 'code',
             scope: 'openid email profile',
             access_type: 'online',
