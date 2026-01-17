@@ -12,22 +12,15 @@ export default function HeatmapCalendar({
   showWeekdayLabels = true,
   valueFormatter = (value) => value
 }) {
-  // Generate calendar data for the last 12 weeks if no data provided
-  const generateDefaultData = () => {
-    const today = new Date();
-    const data = [];
-    for (let i = 84; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      data.push({
-        date: date.toISOString().split('T')[0],
-        value: Math.floor(Math.random() * 10)
-      });
-    }
-    return data;
-  };
+  const calendarData = data.length > 0 ? data : [];
 
-  const calendarData = data.length > 0 ? data : generateDefaultData();
+  if (calendarData.length === 0) {
+    return (
+      <div className="w-full h-[100px] flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
+        <p className="text-gray-400 text-sm">אין נתונים להצגה</p>
+      </div>
+    );
+  }
 
   // Group data by week
   const getWeekData = () => {

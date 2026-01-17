@@ -10,15 +10,15 @@ const COLORS = {
 };
 
 export default function ExpenseDonutChart({ data = [] }) {
-  const defaultData = [
-    { name: 'שיווק', value: 3500, category: 'marketing' },
-    { name: 'ציוד', value: 2800, category: 'supplies' },
-    { name: 'תוכנות', value: 1200, category: 'software' },
-    { name: 'נסיעות', value: 800, category: 'travel' },
-    { name: 'אחר', value: 700, category: 'other' }
-  ];
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full h-[300px] flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
+        <p className="text-gray-400 text-sm">אין נתונים להצגה</p>
+      </div>
+    );
+  }
 
-  const chartData = data.length > 0 ? data : defaultData;
+  const chartData = data;
 
   return (
     <div className="w-full h-[300px]">

@@ -2,16 +2,15 @@ import React from 'react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
 export default function RevenueLineChart({ data = [], period = 'month' }) {
-  const defaultData = [
-    { period: 'ינואר', value: 8000, previous: 7200 },
-    { period: 'פברואר', value: 9500, previous: 8100 },
-    { period: 'מרץ', value: 12000, previous: 9800 },
-    { period: 'אפריל', value: 11000, previous: 10500 },
-    { period: 'מאי', value: 14000, previous: 11200 },
-    { period: 'יוני', value: 15500, previous: 13000 }
-  ];
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full h-[300px] flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200">
+        <p className="text-gray-400 text-sm">אין נתונים להצגה</p>
+      </div>
+    );
+  }
 
-  const chartData = data.length > 0 ? data : defaultData;
+  const chartData = data;
 
   return (
     <div className="w-full h-[300px]">

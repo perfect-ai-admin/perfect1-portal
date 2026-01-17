@@ -2,19 +2,18 @@ import React from 'react';
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function BarChart({ data = [], dataKeys = [], colors = [], height = 300, valueFormatter }) {
-  const defaultData = [
-    { name: 'ינואר', value1: 8000, value2: 5000 },
-    { name: 'פברואר', value1: 9500, value2: 6200 },
-    { name: 'מרץ', value1: 12000, value2: 7500 },
-    { name: 'אפריל', value1: 11000, value2: 8100 },
-    { name: 'מאי', value1: 14000, value2: 9000 },
-    { name: 'יוני', value1: 15500, value2: 10200 }
-  ];
-
   const defaultColors = ['#3B82F6', '#22C55E', '#F59E0B', '#8B5CF6'];
   const defaultKeys = dataKeys.length > 0 ? dataKeys : ['value1', 'value2'];
 
-  const chartData = data.length > 0 ? data : defaultData;
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-200" style={{ height: `${height}px` }}>
+        <p className="text-gray-400 text-sm">אין נתונים להצגה</p>
+      </div>
+    );
+  }
+
+  const chartData = data;
   const barColors = colors.length > 0 ? colors : defaultColors;
 
   const defaultFormatter = (value) => `₪${value.toLocaleString('he-IL')}`;
