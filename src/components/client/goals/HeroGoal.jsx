@@ -15,7 +15,11 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
   };
 
   const config = statusConfig[goal.status] || statusConfig.active;
-  const daysLeft = Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+  
+  const isValidDate = (d) => d && !isNaN(new Date(d).getTime());
+  const daysLeft = isValidDate(goal.deadline) 
+    ? Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24))
+    : 0;
   
   // Calculate progress percentage
   const parseAmount = (str) => {
@@ -94,7 +98,9 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
           ) : (
              <div className="flex items-center justify-between py-2">
                 <span className="text-sm text-gray-500">תאריך יעד</span>
-                <span className="font-bold text-gray-900">{new Date(goal.deadline).toLocaleDateString('he-IL')}</span>
+                <span className="font-bold text-gray-900">
+                  {isValidDate(goal.deadline) ? new Date(goal.deadline).toLocaleDateString('he-IL') : 'לא הוגדר'}
+                </span>
              </div>
           )}
         </div>

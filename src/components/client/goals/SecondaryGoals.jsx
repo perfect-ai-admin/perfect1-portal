@@ -57,7 +57,7 @@ export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete
                   {goal.title}
                 </p>
                 <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <span>{new Date(goal.deadline).toLocaleDateString('he-IL')}</span>
+                  <span>{goal.deadline && !isNaN(new Date(goal.deadline).getTime()) ? new Date(goal.deadline).toLocaleDateString('he-IL') : ''}</span>
                 </div>
               </div>
             </div>

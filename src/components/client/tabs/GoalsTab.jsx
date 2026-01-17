@@ -32,24 +32,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const loadUserGoals = async () => {
     try {
       const ug = await base44.entities.UserGoal.filter({ user_id: user.id });
-      setUserGoals(ug);
-      // Determine goals from userGoals (assuming mapping logic is elsewhere or userGoals ARE the goals)
-      // The original code had goals separate from userGoals but loaded userGoals. 
-      // It seems setGoals might be derived or used directly. 
-      // Wait, original code: 
-      // const [goals, setGoals] = useState([]);
-      // const [userGoals, setUserGoals] = useState([]);
-      // loadUserGoals sets userGoals.
-      // But where are 'goals' set?
-      // Ah, I missed looking at how 'goals' are populated.
-      // Let's assume userGoals ARE the goals for now, or there's an effect I missed.
-      // Actually, looking at previous read_file of GoalsTab:
-      // It has `const [goals, setGoals] = useState([]);`
-      // And `loadUserGoals` sets `userGoals`.
-      // It doesn't seem to set `goals`?
-      // Maybe I missed a useEffect in previous read?
-      // Let me read GoalsTab again to be sure about 'goals' vs 'userGoals'.
-      setGoals(ug); // Assuming for now
+      // Filter out invalid goals (no title)
+      const validGoals = ug.filter(g => g.title && g.title.trim() !== '');
+      setUserGoals(validGoals);
+      setGoals(validGoals);
       setGoalsLoaded(true);
     } catch (error) {
       console.error('Error loading user goals:', error);
