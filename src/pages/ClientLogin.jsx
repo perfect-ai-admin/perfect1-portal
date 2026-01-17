@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Lock, Phone, Zap, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Loader2, Lock, Phone, ArrowRight, Sparkles, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -116,57 +116,54 @@ export default function ClientLogin() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 flex" dir="rtl">
+      <div className="min-h-screen bg-white flex" dir="rtl">
         {/* Left Side - Login Form */}
-        <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 lg:p-20 bg-white shadow-xl lg:shadow-none z-10">
-          <div className="w-full max-w-md space-y-8">
-            <div className="text-center lg:text-right">
-              <div className="inline-flex items-center gap-2 mb-2 lg:mb-0">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#27AE60] to-[#2ECC71] rounded-xl flex items-center justify-center shadow-lg">
-                  <Sparkles className="w-6 h-6 text-white" />
+        <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
+          <div className="w-full max-w-[380px] space-y-6">
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 mb-4 justify-center">
+                <div className="w-8 h-8 bg-[#1E3A5F] rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
                 </div>
-                <h2 className="text-2xl font-black text-[#1E3A5F]">Perfect Biz AI</h2>
+                <h2 className="text-xl font-bold text-[#1E3A5F]">Perfect Biz AI</h2>
               </div>
-              <h1 className="mt-6 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                ברוכים הבאים לאזור האישי
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                כניסה לאזור האישי
               </h1>
-              <p className="mt-2 text-lg text-gray-600">
-                המקום שלך לניהול, צמיחה וקבלת תובנות עסקיות חכמות.
-              </p>
             </div>
 
-            <div className="mt-8 space-y-6">
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-gray-700">
                     מספר טלפון
                   </label>
                   <div className="relative">
-                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <Input
                       type="tel"
                       placeholder="05X-XXXXXXX"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="pr-10 h-12 text-lg bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                      className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
                       required
                       disabled={isLoading}
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-gray-700">
                     סיסמה
                   </label>
                   <div className="relative">
-                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <Input
                       type="password"
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pr-10 h-12 text-lg bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                      className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
                       required
                       disabled={isLoading}
                     />
@@ -175,39 +172,39 @@ export default function ClientLogin() {
 
                 {error && (
                   <motion.div 
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3"
+                    className="bg-red-50 border border-red-100 rounded-lg p-3 flex items-start gap-2"
                   >
-                    <div className="bg-red-100 p-1 rounded-full shrink-0">
+                    <div className="mt-0.5">
                        <Zap className="w-4 h-4 text-red-600" />
                     </div>
-                    <p className="text-sm text-red-700 font-medium">{error}</p>
+                    <p className="text-sm text-red-600 font-medium">{error}</p>
                   </motion.div>
                 )}
 
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-12 text-lg bg-[#1E3A5F] hover:bg-[#162B47] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 group"
+                  className="w-full h-10 text-base bg-[#1E3A5F] hover:bg-[#162B47] text-white font-medium rounded-lg shadow-sm hover:shadow transition-all flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      כניסה למערכת
-                      <ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                      כניסה
+                      <ArrowRight className="w-4 h-4" />
                     </>
                   )}
                 </Button>
               </form>
 
-              <div className="relative">
+              <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
+                  <div className="w-full border-t border-gray-100"></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-white text-gray-500 font-medium">או</span>
+                <div className="relative flex justify-center text-xs">
+                  <span className="px-2 bg-white text-gray-400">או</span>
                 </div>
               </div>
 
@@ -215,76 +212,49 @@ export default function ClientLogin() {
                 type="button"
                 onClick={handleGoogleLogin}
                 variant="outline"
-                className="w-full h-12 text-base font-semibold border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-xl flex items-center justify-center gap-3 transition-all"
+                className="w-full h-10 text-sm font-medium border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg flex items-center justify-center gap-2 transition-all"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                התחבר באמצעות Google
+                Google
               </Button>
 
-              <div className="text-center pt-4">
-                <p className="text-sm text-gray-500">
-                  צריך עזרה?{' '}
-                  <a 
-                    href={`https://wa.me/972537703603?text=${encodeURIComponent('היי, אני צריך עזרה עם הכניסה לאזור האישי של Perfect Biz AI')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#27AE60] font-semibold hover:underline"
-                  >
-                    דבר איתנו בוואטסאפ
-                  </a>
-                </p>
+              <div className="text-center pt-2">
+                <a 
+                  href={`https://wa.me/972537703603?text=${encodeURIComponent('היי, אני צריך עזרה עם הכניסה לאזור האישי')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-gray-500 hover:text-[#1E3A5F] transition-colors"
+                >
+                  נתקלת בבעיה? פנה לתמיכה
+                </a>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Side - Branding/Image (Hidden on Mobile) */}
-        <div className="hidden lg:flex w-1/2 bg-[#1E3A5F] relative overflow-hidden flex-col justify-between p-20 text-white">
-            {/* Abstract Background Shapes */}
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#27AE60]/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 pointer-events-none"></div>
+        {/* Right Side - Branding (Hidden on Mobile) */}
+        <div className="hidden lg:flex w-1/2 bg-[#F8F9FA] relative items-center justify-center p-20 overflow-hidden">
+            {/* Elegant Abstract Background */}
+            <div className="absolute inset-0 opacity-40">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-green-50 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+            </div>
             
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-sm font-medium mb-8">
-                 <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-                 <span>הבינה המלאכותית שתזניק את העסק שלך</span>
+            <div className="relative z-10 text-center max-w-lg">
+              <div className="w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-8 transform -rotate-6 transition-transform hover:rotate-0 duration-500">
+                  <Sparkles className="w-10 h-10 text-[#1E3A5F]" />
               </div>
-              <h2 className="text-5xl font-bold leading-tight mb-6">
-                ניהול חכם יותר.<br/>
-                פשוט יותר.<br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#D4AF37]">
-                  רווחי יותר.
-                </span>
+              <h2 className="text-4xl font-bold text-[#1E3A5F] mb-4 tracking-tight">
+                Perfect Biz AI
               </h2>
-              <p className="text-xl text-blue-100 max-w-lg leading-relaxed">
-                מערכת Perfect Biz AI מרכזת עבורך את כל הנתונים, המשימות והתובנות במקום אחד, ועוזרת לך לקבל החלטות טובות יותר בכל יום.
+              <p className="text-xl text-gray-500 font-light leading-relaxed">
+                טכנולוגיה חכמה לניהול עסקי פשוט.
               </p>
-            </div>
-
-            <div className="relative z-10 grid grid-cols-2 gap-6 mt-12">
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/10">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-[#D4AF37]" />
-                </div>
-                <h3 className="font-bold text-lg mb-1">אוטומציה חכמה</h3>
-                <p className="text-sm text-blue-100">חסוך זמן יקר עם תהליכים אוטומטיים שמותאמים לעסק שלך</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm p-6 rounded-2xl border border-white/10">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                  <CheckCircle2 className="w-6 h-6 text-[#2ECC71]" />
-                </div>
-                <h3 className="font-bold text-lg mb-1">מעקב מטרות</h3>
-                <p className="text-sm text-blue-100">הגדר יעדים ועקוב אחר ההתקדמות שלך בזמן אמת</p>
-              </div>
-            </div>
-
-            <div className="relative z-10 mt-12 flex items-center gap-4 text-sm text-blue-200">
-               <p>© 2025 Perfect Biz AI. כל הזכויות שמורות.</p>
             </div>
         </div>
       </div>
