@@ -15,6 +15,23 @@ export default function ClientLogin() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Handle Google login callback
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const googleLogin = urlParams.get('google_login');
+    const clientData = urlParams.get('client_data');
+    
+    if (googleLogin === '1' && clientData) {
+      try {
+        const client = JSON.parse(decodeURIComponent(clientData));
+        localStorage.setItem('client', JSON.stringify(client));
+        navigate(createPageUrl('ClientDashboard'));
+      } catch (err) {
+        setError('שגיאה בהתחברות עם Google');
+      }
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
