@@ -23,37 +23,37 @@ export default function MentorTab({ data }) {
       <Tabs defaultValue="conversations" className="w-full h-full flex flex-col">
         <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7 mb-6 bg-white border border-gray-100">
           <TabsTrigger value="conversations" className="flex gap-2">
-            <MessageCircle className="w-4 h-4" />
+            <MessageCircle className="w-5 h-5" />
             <span className="hidden sm:inline">שיחים</span>
           </TabsTrigger>
 
           <TabsTrigger value="insights" className="flex gap-2">
-            <Zap className="w-4 h-4" />
+            <Zap className="w-5 h-5" />
             <span className="hidden sm:inline">ניתוחים</span>
           </TabsTrigger>
 
           <TabsTrigger value="sales" className="flex gap-2 hidden md:flex">
-            <TrendingUp className="w-4 h-4" />
+            <TrendingUp className="w-5 h-5" />
             <span className="hidden lg:inline">מכירות</span>
           </TabsTrigger>
 
           <TabsTrigger value="daily" className="flex gap-2 hidden md:flex">
-            <Calendar className="w-4 h-4" />
+            <Calendar className="w-5 h-5" />
             <span className="hidden lg:inline">יום יום</span>
           </TabsTrigger>
 
           <TabsTrigger value="history" className="hidden lg:flex gap-2">
-            <BarChart3 className="w-4 h-4" />
+            <BarChart3 className="w-5 h-5" />
             היסטוריה
           </TabsTrigger>
 
           <TabsTrigger value="actions" className="hidden lg:flex gap-2">
-            <CheckCircle2 className="w-4 h-4" />
+            <CheckCircle2 className="w-5 h-5" />
             פעולות
           </TabsTrigger>
 
           <TabsTrigger value="resources" className="hidden lg:flex gap-2">
-            <BookOpen className="w-4 h-4" />
+            <BookOpen className="w-5 h-5" />
             משאבים
           </TabsTrigger>
         </TabsList>

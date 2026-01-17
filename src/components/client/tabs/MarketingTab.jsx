@@ -25,23 +25,23 @@ export default function MarketingTab({ data }) {
       <Tabs defaultValue="branding" className="w-full">
         <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-gray-200">
           <TabsTrigger value="branding" className="flex gap-2">
-            <Palette className="w-4 h-4" />
+            <Palette className="w-5 h-5" />
             <span className="hidden sm:inline">מיתוג</span>
           </TabsTrigger>
           <TabsTrigger value="campaigns" className="flex gap-2">
-            <Rocket className="w-4 h-4" />
+            <Rocket className="w-5 h-5" />
             <span className="hidden sm:inline">קמפיינים</span>
           </TabsTrigger>
           <TabsTrigger value="google" className="flex gap-2">
-            <Users className="w-4 h-4" />
+            <Users className="w-5 h-5" />
             <span className="hidden sm:inline">Google</span>
           </TabsTrigger>
           <TabsTrigger value="roi" className="flex gap-2">
-            <TrendingUp className="w-4 h-4" />
+            <TrendingUp className="w-5 h-5" />
             <span className="hidden sm:inline">ROI</span>
           </TabsTrigger>
           <TabsTrigger value="learn" className="flex gap-2">
-            <BookOpen className="w-4 h-4" />
+            <BookOpen className="w-5 h-5" />
             <span className="hidden sm:inline">לימוד</span>
           </TabsTrigger>
         </TabsList>
