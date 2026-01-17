@@ -5,7 +5,7 @@ import { Download, Palette, ChevronLeft, ChevronRight, Image, Code, FileJson, Ch
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
-export default function LogoSelectorMobile({ logos, formData, onNext, onReset, onGenerateMore, isGenerating }) {
+export default function LogoSelectorMobile({ logos, formData, onNext, onReset, onGenerateMore, isGenerating, onClose }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -62,7 +62,16 @@ export default function LogoSelectorMobile({ logos, formData, onNext, onReset, o
       className="flex flex-col h-full lg:hidden w-full bg-white overflow-hidden" 
     >
       {/* HEADER - Fixed Height */}
-      <div className="flex-none px-4 py-3 border-b border-gray-100 bg-white/95 backdrop-blur-sm z-10 text-center">
+      <div className="flex-none px-4 py-3 border-b border-gray-100 bg-white/95 backdrop-blur-sm z-10 text-center relative">
+        {onClose && (
+          <button 
+            onClick={onClose}
+            className="absolute left-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="סגור"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
         <h2 className="text-base font-bold text-gray-900 leading-tight">עיצבנו עבורך {logos.length} לוגואים מדהימים! 🎉</h2>
         <p className="text-xs text-gray-500 mt-0.5">דפדף כדי לראות את כל האפשרויות</p>
       </div>

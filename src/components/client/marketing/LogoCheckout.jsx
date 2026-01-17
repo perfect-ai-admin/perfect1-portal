@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-export default function LogoCheckout({ businessName, onBack, onSuccess, price = 99 }) {
+export default function LogoCheckout({ businessName, onBack, onSuccess, onClose, price = 99 }) {
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -105,8 +105,19 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
             <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
           </div>
         </div>
-        <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-blue-200 shadow-sm">
-          ₪{price}
+        <div className="flex items-center gap-3">
+          <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-blue-200 shadow-sm">
+            ₪{price}
+          </div>
+          {onClose && (
+            <button 
+              onClick={onClose}
+              className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="סגור"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
       </div>
 

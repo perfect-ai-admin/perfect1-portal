@@ -577,6 +577,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
           onReset={() => { setStep(1); setLogos([]); setSelectedLogo(null); }}
           onGenerateMore={() => handleGenerate()}
           isGenerating={isGenerating}
+          onClose={onClose}
         />
 
         {/* Desktop Dialog (Hidden on mobile inside LogoSelectorMobile but kept here for desktop flow) */}
@@ -616,6 +617,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         <LogoCheckout 
           businessName={formData.businessName}
           onBack={() => setStep(4)}
+          onClose={onClose}
           onSuccess={(data) => {
             onClose();
             navigate(createPageUrl('LogoThankYou'), { 
