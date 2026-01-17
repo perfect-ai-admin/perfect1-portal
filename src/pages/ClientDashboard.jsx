@@ -8,7 +8,7 @@ import { createPageUrl } from '@/utils';
 import DebugErrorBoundary from '../components/DebugErrorBoundary';
 import { 
   LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
-  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb
+  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard
 } from 'lucide-react';
 import {
   Tooltip,
@@ -257,6 +257,15 @@ export default function ClientDashboard() {
             {/* Right Icons */}
             <div className="flex items-center gap-1 flex-shrink-0">
               {typeof ShoppingCart === 'function' && <ShoppingCart />}
+              
+              <button
+                onClick={() => navigate(createPageUrl('Pricing'))}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/90 hover:text-white"
+                title="מחירון ומסלולים"
+              >
+                <CreditCard className="w-6 h-6" />
+              </button>
+
               {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
               <DropdownMenu>
