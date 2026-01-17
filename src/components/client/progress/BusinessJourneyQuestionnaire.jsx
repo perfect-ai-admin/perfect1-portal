@@ -4,6 +4,16 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+
+// Profession Question (Free Text)
+const PROFESSION_QUESTION = {
+  id: 'profession_description',
+  question: "מה העסק שלך?",
+  subtext: "ספר לנו מה אתה עושה (לדוגמה: זמר, עורך דין, מאמן כושר, חנות איקומרס...)",
+  type: 'text',
+  placeholder: "רשום כאן את תחום העיסוק..."
+};
 
 // Base Question
 const BASE_QUESTION = {
