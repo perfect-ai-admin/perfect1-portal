@@ -5,6 +5,7 @@ import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import GoalTemplates from '../goals/GoalTemplatesFixed';
 // GoalsCatalog removed
+import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +17,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const [goals, setGoals] = useState([]);
   const [userGoals, setUserGoals] = useState([]);
   const [showAddGoal, setShowAddGoal] = useState(openAddGoal);
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
   const goalsTopRef = useRef(null);
 
@@ -37,6 +39,23 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
 
   const handleShowAddGoal = () => {
+    const limit = user?.goals_limit;
+    // If limit is null/undefined -> Unlimited (Elite plan). If number -> Limit.
+    // However, default logic for Free plan is 1. If user has no plan, we assume Free (1).
+    const effectiveLimit = limit === null || limit === undefined ? 1 : limit;
+    
+    // Allow unlimited if explicitly null/high number, but here we treat null as 1 for safety unless plan says otherwise?
+    // Wait, in ClientLogin: goals_limit: freePlan?.goals_limit || 1.
+    // In Pricing: Elite has "goals_limit: null" (unlimited).
+    // So if limit === null, it allows infinite.
+    
+    const isUnlimited = limit === null; // Based on Elite plan config in Pricing
+    
+    if (!isUnlimited && goals.length >= limit) {
+      setShowUpgradeDialog(true);
+      return;
+    }
+    
     setShowAddGoal(true);
   };
 
@@ -92,6 +111,12 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           )}
         </DialogContent>
       </Dialog>
+
+      <LimitUpgradeDialog 
+        isOpen={showUpgradeDialog} 
+        onClose={() => setShowUpgradeDialog(false)} 
+        limit={user?.goals_limit || 1}
+      />
 
       <div className="container mx-auto max-w-4xl p-0 md:p-4">
         <motion.div
