@@ -36,18 +36,23 @@ export default function ClientLogin() {
       return;
     }
 
-    const leads = await base44.entities.Lead.filter({ phone: cleanPhone });
-    
-    if (leads.length === 0) {
+    const users = await base44.entities.User.filter({ phone: cleanPhone });
+
+    if (users.length === 0) {
       setError('מספר טלפון לא נמצא במערכת');
       setIsLoading(false);
       return;
     }
 
-    const client = leads[0];
+    const user = users[0];
 
-    // Store client data in localStorage
-    localStorage.setItem('client', JSON.stringify(client));
+    // Update last login
+    await base44.entities.User.update(user.id, {
+      last_login_at: new Date().toISOString()
+    });
+
+    // Store user data in localStorage
+    localStorage.setItem('user', JSON.stringify(user));
     navigate(createPageUrl('ClientDashboard'));
   };
 

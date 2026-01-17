@@ -106,7 +106,7 @@ export default function ClientDashboard() {
   });
 
   const handleLogout = () => {
-    localStorage.removeItem('client');
+    localStorage.removeItem('user');
     navigate(createPageUrl('ClientLogin'));
   };
 

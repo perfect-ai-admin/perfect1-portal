@@ -83,29 +83,36 @@ Deno.serve(async (req) => {
             });
         }
         
-        // Find or create lead (client)
-        let client;
+        // Find or create user
+        let user;
         
         // Try to find by email first
-        const leadsByEmail = await base44.asServiceRole.entities.Lead.filter({ email });
+        const usersByEmail = await base44.asServiceRole.entities.User.filter({ email });
         
-        if (leadsByEmail.length > 0) {
-            // Client exists
-            client = leadsByEmail[0];
+        if (usersByEmail.length > 0) {
+            // User exists - update last login
+            user = usersByEmail[0];
+            await base44.asServiceRole.entities.User.update(user.id, {
+                last_login_at: new Date().toISOString()
+            });
         } else {
-            // Create new lead
-            client = await base44.asServiceRole.entities.Lead.create({
-                name: name || 'לקוח Google',
+            // Create new user with default permissions
+            user = await base44.asServiceRole.entities.User.create({
+                full_name: name || 'משתמש Google',
                 email,
-                phone: '000000000', // Required field
-                status: 'new',
-                source_page: 'Google Login',
-                interaction_type: 'manual'
+                login_provider: 'google',
+                status: 'active',
+                last_login_at: new Date().toISOString(),
+                marketing_enabled: false,
+                mentor_enabled: true, // Free tier gets mentor with 1 goal
+                finance_enabled: false,
+                goals_limit: 1,
+                max_active_goals: 1
             });
         }
         
-        // Return HTML page that stores client in localStorage and redirects
-        const clientJson = JSON.stringify(client).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        // Return HTML page that stores user in localStorage and redirects
+        const userJson = JSON.stringify(user).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
         
         const html = `<!DOCTYPE html>
 <html>
@@ -116,8 +123,8 @@ Deno.serve(async (req) => {
 <body>
     <script>
         try {
-            const clientData = '${clientJson}';
-            localStorage.setItem('client', clientData);
+            const userData = '${userJson}';
+            localStorage.setItem('user', userData);
             window.location.href = '${BASE_URL}/ClientDashboard';
         } catch(e) {
             console.error('Error:', e);
