@@ -302,21 +302,7 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
   const totalSteps = questionsList.length > 1 ? questionsList.length : 5; 
   const progress = ((currentStep + 1) / totalSteps) * 100;
 
-  const handleSubmit = async (finalAnswers) => {
-    setIsSubmitting(true);
-    try {
-      // Call the "Brain" function to analyze and update user
-      await base44.functions.invoke('analyzeBusinessJourney', { answers: finalAnswers });
-      
-      onComplete();
-    } catch (error) {
-      console.error("Error saving answers:", error);
-      setIsSubmitting(false);
-    }
-  };
 
-  const currentQuestion = QUESTIONS[currentStep];
-  const progress = ((currentStep + 1) / QUESTIONS.length) * 100;
 
   if (isSubmitting) {
     return (
@@ -341,7 +327,7 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between text-xs text-gray-400 mb-2">
-          <span>שאלה {currentStep + 1} מתוך {QUESTIONS.length}</span>
+          <span>שאלה {currentStep + 1} מתוך {totalSteps}</span>
           <span>{Math.round(progress)}%</span>
         </div>
         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
