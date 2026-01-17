@@ -47,16 +47,22 @@ Deno.serve(async (req) => {
             2. **Define the State:** Create a custom state name that fits them exactly.
             3. **Generate 6 Strategic Steps that SELL the solution:**
                - Every step must guide them to take action **USING THE SYSTEM**.
-               - Instead of "Make a budget", say "Use the Financial Tab to map your expenses and see the full picture".
-               - Instead of "Start marketing", say "Launch your first Campaign using the Marketing Suite to get leads".
-               - Instead of "Consult an expert", say "Consult with the AI Mentor to refine your pricing strategy".
-               - **Step 1:** Must be an immediate "Quick Win" using the system (e.g., "Create your first invoice" or "Design a Logo").
-               - **Steps 2-5:** Build the foundation using the relevant modules (Marketing/Finance/Mentor).
-               - **Step 6:** The "Next Level" milestone.
+               
+               **CRITICAL - STEP 1 LOGIC:**
+               Step 1 is the "Hook". It MUST solve their *burning* pain point immediately.
+               - IF they are in "Idea" stage OR have "Fear" -> Step 1 MUST be **"Consult with the AI Mentor"** to build confidence/strategy. (Do NOT tell them to create an invoice).
+               - IF they are "New" and need "Branding" -> Step 1 MUST be **"Create your Logo"** in the Marketing Suite.
+               - IF they have "No Leads" -> Step 1 MUST be **"Create a Landing Page"** or **"Start a Campaign"** in the Marketing Suite.
+               - IF they have "Sales" issues -> Step 1 MUST be **"Roleplay a Sales Call"** with the AI Mentor.
+               - IF (and ONLY IF) they have "Chaos" or "Cashflow" issues -> Step 1 can be **"Issue a Digital Invoice"** or "Organize Expenses" in the Financial System.
+
+               **Steps 2-6:**
+               - Build the rest of the foundation using the *other* relevant modules (Marketing/Finance/Mentor/Goals) in a logical order.
+               - Ensure a mix of tools is introduced over time.
 
             **CRITICAL RULES:**
             - **Be the Guide:** The steps should feel like a roadmap that says "We have the tools to help you grow".
-            - **Address the 'Missing Piece':** If they lack leads -> Push Marketing Suite. If they lack order -> Push Financial System.
+            - **Context is King:** Do not suggest advanced features (like ROI tracking) to a beginner. Do not suggest basic features (like "open a file") to a veteran.
             - **Tone:** Professional, encouraging, tactical, and platform-oriented.
             - **Language:** STRICTLY HEBREW (עברית).
 
