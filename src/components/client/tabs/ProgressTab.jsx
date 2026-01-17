@@ -7,9 +7,16 @@ import QuickStatsBar from '../progress/QuickStatsBar';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import { ProgressTabHelp } from '../help/ContextualHelp';
 import GoalsFloatingButton from '../GoalsFloatingButton';
-import { Sparkles, Target } from 'lucide-react';
+import { Sparkles, Target, ArrowLeft, Rocket } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ProgressTab({ data, onNavigate }) {
+  const queryClient = useQueryClient();
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  
   // Empty initial data
   const completedMilestones = [];
   const currentMilestone = null;
@@ -24,12 +31,63 @@ export default function ProgressTab({ data, onNavigate }) {
   };
 
   const nextStep = null;
+  const isJourneyCompleted = data?.business_journey_completed;
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   const scrollToWhyMatters = () => {
     setWhyExpanded(true);
   };
+
+  const handleQuestionnaireComplete = () => {
+    setShowQuestionnaire(false);
+    queryClient.invalidateQueries({ queryKey: ['user', data.id] });
+  };
+
+  if (!isJourneyCompleted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-md w-full"
+        >
+          <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+            <Rocket className="w-12 h-12 text-blue-600" />
+          </div>
+          
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            ברוכים הבאים למסע העסקי שלך!
+          </h1>
+          
+          <p className="text-lg text-gray-500 mb-10 leading-relaxed">
+            כדי שנוכל לבנות לך את התוכנית המדויקת ביותר,
+            אנחנו צריכים להכיר את העסק שלך קצת יותר לעומק.
+            זה לוקח פחות מ-2 דקות.
+          </p>
+
+          <Button 
+            size="lg" 
+            onClick={() => setShowQuestionnaire(true)}
+            className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all rounded-xl"
+          >
+            התחל את המסע
+            <ArrowLeft className="w-5 h-5 mr-2" />
+          </Button>
+        </motion.div>
+
+        <Dialog open={showQuestionnaire} onOpenChange={setShowQuestionnaire}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:p-0 bg-white border-0 shadow-2xl rounded-2xl">
+            <BusinessJourneyQuestionnaire 
+              onComplete={handleQuestionnaireComplete}
+              userId={data?.id}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
 
   return (
     <>
