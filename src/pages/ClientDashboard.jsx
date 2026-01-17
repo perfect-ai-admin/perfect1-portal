@@ -259,7 +259,7 @@ export default function ClientDashboard() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate(createPageUrl('Pricing'))}
+                onClick={() => navigate(createPageUrl('ClientPricing'))}
                 className="text-white hover:bg-white/10"
                 title="מחירון"
               >
