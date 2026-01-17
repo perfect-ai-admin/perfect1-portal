@@ -724,20 +724,87 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8"
       >
         <div className="max-w-xl mx-auto min-h-full flex flex-col justify-center py-4">
-          <form onSubmit={handleSubmit} className="w-full">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className="w-full"
-              >
-                {renderStep()}
-              </motion.div>
-            </AnimatePresence>
-          </form>
+          
+          {isBuilding ? (
+            <div className="flex flex-col items-center justify-center text-center space-y-6">
+              <div className="relative w-20 h-20">
+                <div className="absolute inset-0 border-4 border-gray-100 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                <Sparkles className="absolute inset-0 m-auto text-blue-600 animate-pulse" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">בונה את הדף שלך...</h3>
+                <p className="text-gray-500 text-sm">הבינה המלאכותית מחברת את כל החלקים</p>
+              </div>
+            </div>
+          ) : showSuccess ? (
+             <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2 shadow-lg shadow-green-200">
+                <Check className="w-10 h-10 text-green-600" />
+              </div>
+              
+              <div className="space-y-2">
+                <h2 className="text-2xl font-black text-gray-900">הדף שלך מוכן! 🎉</h2>
+                <p className="text-gray-600">הקמנו עבורך דף נחיתה ראשוני על בסיס התשובות שלך</p>
+              </div>
+
+              <div className="w-full bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center gap-3">
+                <Globe className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <div className="flex-1 text-left rtl:text-right overflow-hidden">
+                  <div className="text-[10px] text-gray-400 font-medium">הקישור לדף שלך</div>
+                  <div className="text-sm font-bold text-blue-600 truncate dir-ltr">
+                    landing.bizpilot.co.il/{formData.businessName.replace(/\s+/g, '-').toLowerCase() || 'my-page'}
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                  <Share2 className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="w-full bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl shadow-blue-200 mt-4 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div className="relative z-10">
+                   <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="font-bold text-lg">חבילת השקה מלאה 🚀</h3>
+                        <p className="text-blue-100 text-sm opacity-90">דומיין אישי + אחסון + הסרת פרסומות</p>
+                      </div>
+                      <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-sm font-bold">
+                        ₪499
+                      </div>
+                   </div>
+                   
+                   <Button 
+                    onClick={handlePurchase}
+                    className="w-full bg-white text-blue-700 hover:bg-blue-50 font-bold h-12 shadow-lg"
+                   >
+                     רכוש עכשיו והתחל למכור
+                     <CreditCard className="w-4 h-4 mr-2" />
+                   </Button>
+                   <p className="text-center text-[10px] text-blue-200 mt-2 opacity-70">תשלום חד פעמי • חשבונית מס מיידית</p>
+                </div>
+              </div>
+
+              <Button variant="ghost" onClick={() => onComplete(formData)} className="text-gray-400 hover:text-gray-600">
+                דלג למרכז השליטה
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="w-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="w-full"
+                >
+                  {renderStep()}
+                </motion.div>
+              </AnimatePresence>
+            </form>
+          )}
         </div>
       </div>
 
