@@ -23,6 +23,16 @@ export default function Layout({ children, currentPageName }) {
       return children;
     }
 
+    // ClientLogin - עמוד כניסה עצמאי
+    if (currentPageName === 'ClientLogin') {
+      return (
+        <HelmetProvider>
+          {children}
+          <Toaster />
+        </HelmetProvider>
+      );
+    }
+
     // ClientDashboard במובייל - אל תציג Header רגיל
     if (currentPageName === 'ClientDashboard') {
       return (
