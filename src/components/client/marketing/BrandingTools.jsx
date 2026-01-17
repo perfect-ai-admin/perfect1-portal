@@ -94,7 +94,7 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-8 text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">כלים למיתוג ופיתוח מותג</h2>
         <p className="text-gray-600">בחר בכלי שישמור על זהות מותגך בכל מקום</p>
       </div>
