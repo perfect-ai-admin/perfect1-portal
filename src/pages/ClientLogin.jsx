@@ -22,38 +22,71 @@ export default function ClientLogin() {
     setError('');
     setIsLoading(true);
 
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 9) {
-      setError('מספר טלפון לא תקין');
+    try {
+      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      if (cleanPhone.length < 9) {
+        setError('מספר טלפון לא תקין');
+        setIsLoading(false);
+        return;
+      }
+
+      // Search for Lead by phone
+      const leads = await base44.entities.Lead.filter({ phone: cleanPhone });
+
+      if (leads.length === 0) {
+        setError('מספר טלפון לא נמצא במערכת');
+        setIsLoading(false);
+        return;
+      }
+
+      const lead = leads[0];
+
+      // Verify password
+      if (password !== lead.client_password) {
+        setError('סיסמה שגויה');
+        setIsLoading(false);
+        return;
+      }
+
+      // Find or create User for this Lead
+      let user;
+      const usersByEmail = await base44.entities.User.filter({ email: lead.email });
+
+      if (usersByEmail.length > 0) {
+        // User exists
+        user = usersByEmail[0];
+        await base44.entities.User.update(user.id, {
+          last_login_at: new Date().toISOString()
+        });
+      } else {
+        // Create new User from Lead
+        const freePlans = await base44.entities.Plan.filter({ name: 'חינמי' });
+        const freePlan = freePlans.length > 0 ? freePlans[0] : null;
+
+        user = await base44.entities.User.create({
+          full_name: lead.name || 'משתמש חדש',
+          email: lead.email || `lead_${lead.phone}@bizpilot.local`,
+          phone: cleanPhone,
+          status: 'active',
+          last_login_at: new Date().toISOString(),
+          current_plan_id: freePlan?.id || null,
+          plan_start_date: new Date().toISOString(),
+          marketing_enabled: freePlan?.marketing_enabled || false,
+          mentor_enabled: freePlan?.mentor_enabled || true,
+          finance_enabled: freePlan?.finance_enabled || false,
+          goals_limit: freePlan?.goals_limit || 1,
+          max_active_goals: freePlan?.max_active_goals || 1
+        });
+      }
+
+      // Store user data in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      navigate(createPageUrl('ClientDashboard'));
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('שגיאה בתהליך הכניסה. אנא נסה שוב.');
       setIsLoading(false);
-      return;
     }
-
-    // Check password first
-    if (password !== '123456') {
-      setError('סיסמה שגויה');
-      setIsLoading(false);
-      return;
-    }
-
-    const users = await base44.entities.User.filter({ phone: cleanPhone });
-
-    if (users.length === 0) {
-      setError('מספר טלפון לא נמצא במערכת');
-      setIsLoading(false);
-      return;
-    }
-
-    const user = users[0];
-
-    // Update last login
-    await base44.entities.User.update(user.id, {
-      last_login_at: new Date().toISOString()
-    });
-
-    // Store user data in localStorage
-    localStorage.setItem('user', JSON.stringify(user));
-    navigate(createPageUrl('ClientDashboard'));
   };
 
   const handleGoogleLogin = async () => {
