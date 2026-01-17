@@ -60,15 +60,16 @@ export default function BusinessTab({ data }) {
     };
   });
 
+  // Charts use demo data for visuals
   const revenueData = hasRealData ? [] : demoRevenueData;
   const expenseData = hasRealData ? [] : demoExpenseData;
   const heatmapData = hasRealData ? [] : demoHeatmapData;
 
-  // Calculate Demo Totals
-  const totalRevenue = revenueData.reduce((acc, curr) => acc + curr.value, 0);
-  const totalExpenses = expenseData.reduce((acc, curr) => acc + curr.value, 0);
+  // Metrics stay at 0 until real data exists (per user request)
+  const totalRevenue = hasRealData ? revenueData.reduce((acc, curr) => acc + curr.value, 0) : 0;
+  const totalExpenses = hasRealData ? expenseData.reduce((acc, curr) => acc + curr.value, 0) : 0;
   const netProfit = totalRevenue - totalExpenses;
-  const performance = 85; // Mock percentage
+  const performance = hasRealData ? 85 : 0;
 
 
 
@@ -207,9 +208,9 @@ export default function BusinessTab({ data }) {
         <MetricQuadrant
           title="הכנסות"
           value={totalRevenue}
-          change="+12%"
-          trend={1}
-          chartData={revenueData}
+          change={hasRealData ? "+12%" : "0%"}
+          trend={hasRealData ? 1 : 0}
+          chartData={revenueData} // Keep charts showing demo/real pattern
           icon={TrendingUp}
           isCurrency={true}
           compact={true}
@@ -217,8 +218,8 @@ export default function BusinessTab({ data }) {
         <MetricQuadrant
           title="הוצאות"
           value={totalExpenses}
-          change="-5%"
-          trend={-1}
+          change={hasRealData ? "-5%" : "0%"}
+          trend={hasRealData ? -1 : 0}
           chartData={revenueData}
           icon={DollarSign}
           isCurrency={true}
@@ -227,8 +228,8 @@ export default function BusinessTab({ data }) {
         <MetricQuadrant
           title="רווח נקי"
           value={netProfit}
-          change="+24%"
-          trend={1}
+          change={hasRealData ? "+24%" : "0%"}
+          trend={hasRealData ? 1 : 0}
           chartData={revenueData}
           icon={PieChart}
           isCurrency={true}
@@ -237,8 +238,8 @@ export default function BusinessTab({ data }) {
         <MetricQuadrant
           title="ביצוע"
           value={performance}
-          change="+2%"
-          trend={1}
+          change={hasRealData ? "+2%" : "0%"}
+          trend={hasRealData ? 1 : 0}
           chartData={revenueData}
           icon={BarChart3}
           isPercentage={true}
