@@ -612,17 +612,57 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 <Label className="block font-bold text-xs">לאן הליד יגיע?</Label>
                 <div className="grid grid-cols-1 gap-2">
                   {[
-                    { value: 'whatsapp', label: 'וואטסאפ שלי' },
-                    { value: 'email', label: 'מייל שלי' },
-                    { value: 'crm', label: 'מערכת CRM' }
+                    { value: 'whatsapp', label: 'וואטסאפ שלי', icon: MessageSquare },
+                    { value: 'email', label: 'מייל שלי', icon: Mail },
+                    { value: 'crm', label: 'מערכת CRM', icon: Layers }
                   ].map(option => (
-                     <SelectionCard
-                      key={option.value}
-                      selected={formData.leadDestination === option.value}
-                      onClick={() => handleInputChange('leadDestination', option.value)}
-                      icon={Send}
-                      title={option.label}
-                    />
+                    <div key={option.value} className="space-y-2">
+                       <SelectionCard
+                        selected={formData.leadDestination === option.value}
+                        onClick={() => handleInputChange('leadDestination', option.value)}
+                        icon={option.icon}
+                        title={option.label}
+                      />
+                      
+                      {/* Conditional Inputs */}
+                      {formData.leadDestination === option.value && option.value === 'whatsapp' && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }} 
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="px-1"
+                        >
+                          <Label className="text-[10px] text-gray-500 mb-1 block">לאיזה מספר לשלוח את ההודעות?</Label>
+                          <div className="relative">
+                            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Input 
+                              placeholder="050-0000000"
+                              value={formData.destinationPhone}
+                              onChange={(e) => handleInputChange('destinationPhone', e.target.value)}
+                              className="pr-9 h-10 bg-gray-50 border-teal-200 focus-visible:ring-teal-500"
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {formData.leadDestination === option.value && option.value === 'email' && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }} 
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="px-1"
+                        >
+                           <Label className="text-[10px] text-gray-500 mb-1 block">לאיזה מייל לשלוח את הלידים?</Label>
+                           <div className="relative">
+                            <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Input 
+                              placeholder="your@email.com"
+                              value={formData.destinationEmail}
+                              onChange={(e) => handleInputChange('destinationEmail', e.target.value)}
+                              className="pr-9 h-10 bg-gray-50 border-teal-200 focus-visible:ring-teal-500"
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
