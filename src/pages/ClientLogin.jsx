@@ -50,19 +50,25 @@ export default function ClientLogin() {
   };
 
   const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError('');
+    
     try {
       const response = await base44.functions.invoke('googleAuthStart', {});
+      console.log('Google auth response:', response);
       
       if (response.data && response.data.url) {
-        // Save state for verification
         sessionStorage.setItem('oauth_state', response.data.state);
         window.location.href = response.data.url;
       } else {
-        setError('שגיאה בהתחברות עם Google. אנא נסה שוב.');
+        console.error('Invalid response:', response);
+        setError(`שגיאה בהתחברות עם Google: ${response.data?.error || 'תשובה לא תקינה מהשרת'}`);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Google login error:', error);
-      setError('שגיאה בהתחברות עם Google. אנא נסה שוב.');
+      setError(`שגיאה בהתחברות עם Google: ${error.message || 'שגיאה לא צפויה'}`);
+      setIsLoading(false);
     }
   };
 
