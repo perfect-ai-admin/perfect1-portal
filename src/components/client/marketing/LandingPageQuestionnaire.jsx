@@ -327,22 +327,22 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
 
       case 4:
         return (
-          <div className="space-y-6">
-             <div className="text-center space-y-2 mb-6">
-              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <ThumbsUp className="w-6 h-6 text-amber-600" />
+          <div className="space-y-4">
+             <div className="text-center space-y-1 mb-4">
+              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <ThumbsUp className="w-5 h-5 text-amber-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">הוכחות ואמון</h3>
-              <p className="text-gray-500 text-sm">למה שיסמכו עליך?</p>
+              <h3 className="text-lg font-bold text-gray-900">הוכחות ואמון</h3>
+              <p className="text-gray-500 text-xs">למה שיסמכו עליך?</p>
             </div>
 
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-2">
               <SelectionCard
                 selected={formData.proofs.includes('experience')}
                 onClick={() => handleCheckboxChange('proofs', 'experience', !formData.proofs.includes('experience'))}
                 icon={Briefcase}
-                title="ותק וניסיון בשטח"
-                description="שנות פעילות, פרויקטים קודמים"
+                title="ותק וניסיון"
+                description="שנות פעילות ופרויקטים"
               />
               {formData.proofs.includes('experience') && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
@@ -351,7 +351,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
                     placeholder="כמה שנות ניסיון?" 
                     value={formData.experienceYears} 
                     onChange={(e) => handleInputChange('experienceYears', e.target.value)} 
-                    className="mr-12 w-[calc(100%-3rem)]"
+                    className="mr-10 w-[calc(100%-2.5rem)] h-9 text-sm"
                   />
                 </motion.div>
               )}
@@ -360,14 +360,16 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
                 selected={formData.proofs.includes('clients')}
                 onClick={() => handleCheckboxChange('proofs', 'clients', !formData.proofs.includes('clients'))}
                 icon={Users}
-                title="רשימת לקוחות ממליצים"
+                title="לקוחות ממליצים"
+                description="לוגואים או רשימה"
               />
 
               <SelectionCard
                 selected={formData.proofs.includes('testimonial')}
                 onClick={() => handleCheckboxChange('proofs', 'testimonial', !formData.proofs.includes('testimonial'))}
                 icon={MessageSquare}
-                title="ציטוט של לקוח מרוצה"
+                title="ציטוט לקוח"
+                description="המלצה מלקוח מרוצה"
               />
               {formData.proofs.includes('testimonial') && (
                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
@@ -375,8 +377,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
                     placeholder="כתוב כאן את ההמלצה..." 
                     value={formData.testimonialText} 
                     onChange={(e) => handleInputChange('testimonialText', e.target.value)} 
-                    className="mr-12 w-[calc(100%-3rem)]"
-                    rows={2}
+                    className="mr-10 w-[calc(100%-2.5rem)] min-h-[60px] text-sm"
                   />
                 </motion.div>
               )}
@@ -386,24 +387,24 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
 
       case 5:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-2 mb-6">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Send className="w-6 h-6 text-purple-600" />
+          <div className="space-y-4">
+            <div className="text-center space-y-1 mb-4">
+              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Send className="w-5 h-5 text-purple-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">הנעה לפעולה</h3>
-              <p className="text-gray-500 text-sm">מה אנחנו רוצים שיקרה עכשיו?</p>
+              <h3 className="text-lg font-bold text-gray-900">הנעה לפעולה</h3>
+              <p className="text-gray-500 text-xs">מה אנחנו רוצים שיקרה?</p>
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <Label className="block font-bold">מה הפעולה הרצויה?</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="block font-bold text-xs">מה הפעולה הרצויה?</Label>
+                <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'details', label: 'השארת פרטים', desc: 'טופס לידים קלאסי' },
-                    { value: 'whatsapp', label: 'וואטסאפ', desc: 'פנייה ישירה ומהירה' },
-                    { value: 'phone', label: 'שיחה טלפונית', desc: 'חיוג מיידי מהנייד' },
-                    { value: 'meeting', label: 'קביעת פגישה', desc: 'יומן דיגיטלי' }
+                    { value: 'details', label: 'השארת פרטים', desc: 'טופס לידים' },
+                    { value: 'whatsapp', label: 'וואטסאפ', desc: 'פנייה ישירה' },
+                    { value: 'phone', label: 'שיחה', desc: 'חיוג מיידי' },
+                    { value: 'meeting', label: 'פגישה', desc: 'יומן דיגיטלי' }
                   ].map(option => (
                     <SelectionCard
                       key={option.value}
@@ -417,9 +418,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label className="block font-bold">מה יהיה כתוב על הכפתור?</Label>
-                <div className="space-y-2">
+              <div className="space-y-2">
+                <Label className="block font-bold text-xs">מה כתוב על הכפתור?</Label>
+                <div className="grid grid-cols-1 gap-2">
                   {[
                     { value: 'check', label: 'בדיקה ללא התחייבות' },
                     { value: 'consultation', label: 'אני רוצה שיחת ייעוץ' },
@@ -429,14 +430,14 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
                       key={option.value}
                       onClick={() => handleInputChange('ctaText', option.value)}
                       className={cn(
-                        "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all",
+                        "flex items-center gap-3 p-2.5 rounded-lg border cursor-pointer transition-all",
                         formData.ctaText === option.value ? "border-purple-500 bg-purple-50 text-purple-900" : "border-gray-200 hover:bg-gray-50"
                       )}
                     >
-                      <div className={cn("w-4 h-4 rounded-full border flex items-center justify-center", formData.ctaText === option.value ? "border-purple-500" : "border-gray-300")}>
+                      <div className={cn("w-4 h-4 rounded-full border flex items-center justify-center bg-white", formData.ctaText === option.value ? "border-purple-500" : "border-gray-300")}>
                         {formData.ctaText === option.value && <div className="w-2 h-2 rounded-full bg-purple-500" />}
                       </div>
-                      <span className="font-medium text-sm">{option.label}</span>
+                      <span className="font-medium text-xs">{option.label}</span>
                     </div>
                   ))}
                 </div>
@@ -447,62 +448,62 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
 
       case 6:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-2 mb-6">
-              <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Paintbrush className="w-6 h-6 text-pink-600" />
+          <div className="space-y-4">
+            <div className="text-center space-y-1 mb-4">
+              <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Paintbrush className="w-5 h-5 text-pink-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">עיצוב וסגנון</h3>
-              <p className="text-gray-500 text-sm">איך הדף יראה?</p>
+              <h3 className="text-lg font-bold text-gray-900">עיצוב וסגנון</h3>
+              <p className="text-gray-500 text-xs">איך הדף יראה?</p>
             </div>
 
-            <div className="space-y-5">
-              <div className="space-y-3">
-                <Label className="block">סגנון כללי</Label>
-                <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="block text-xs font-semibold">סגנון כללי</Label>
+                <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'professional', label: 'מקצועי ורציני', color: 'bg-slate-100' },
-                    { value: 'simple', label: 'נקי ופשוט', color: 'bg-white border' },
-                    { value: 'energetic', label: 'צעיר ואנרגטי', color: 'bg-yellow-50' },
-                    { value: 'luxury', label: 'יוקרתי ופרימיום', color: 'bg-zinc-900 text-white' }
+                    { value: 'professional', label: 'מקצועי', color: 'bg-slate-100' },
+                    { value: 'simple', label: 'נקי', color: 'bg-white border' },
+                    { value: 'energetic', label: 'אנרגטי', color: 'bg-yellow-50' },
+                    { value: 'luxury', label: 'יוקרתי', color: 'bg-zinc-900 text-white' }
                   ].map(option => (
                     <div 
                       key={option.value}
                       onClick={() => handleInputChange('pageStyle', option.value)}
                       className={cn(
-                        "cursor-pointer p-4 rounded-xl border-2 text-center transition-all",
+                        "cursor-pointer p-3 rounded-xl border-2 text-center transition-all",
                         formData.pageStyle === option.value 
                           ? "border-pink-500 ring-1 ring-pink-500/20" 
                           : "border-gray-100 hover:border-pink-200"
                       )}
                     >
-                      <div className={cn("w-full h-8 rounded-md mb-2 mx-auto", option.color)} />
-                      <span className="text-sm font-bold">{option.label}</span>
+                      <div className={cn("w-full h-6 rounded-md mb-1.5 mx-auto", option.color)} />
+                      <span className="text-xs font-bold">{option.label}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label>האם יש לך לוגו?</Label>
-                <div className="flex gap-4">
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold">האם יש לך לוגו?</Label>
+                <div className="flex gap-2">
                   <div 
                     onClick={() => handleInputChange('logoStatus', 'yes')}
                     className={cn(
-                      "flex-1 cursor-pointer p-3 rounded-xl border text-center",
-                      formData.logoStatus === 'yes' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200"
+                      "flex-1 cursor-pointer p-2.5 rounded-xl border text-center transition-all",
+                      formData.logoStatus === 'yes' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200 hover:bg-gray-50"
                     )}
                   >
-                    יש לי לוגו
+                    <span className="text-sm font-medium">יש לי לוגו</span>
                   </div>
                   <div 
                     onClick={() => handleInputChange('logoStatus', 'no')}
                     className={cn(
-                      "flex-1 cursor-pointer p-3 rounded-xl border text-center",
-                      formData.logoStatus === 'no' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200"
+                      "flex-1 cursor-pointer p-2.5 rounded-xl border text-center transition-all",
+                      formData.logoStatus === 'no' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200 hover:bg-gray-50"
                     )}
                   >
-                    צריך לעצב לי
+                    <span className="text-sm font-medium">צריך לעצב</span>
                   </div>
                 </div>
               </div>
@@ -512,35 +513,35 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
 
       case 7:
         return (
-          <div className="space-y-6">
-            <div className="text-center space-y-2 mb-6">
-              <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Sparkles className="w-6 h-6 text-teal-600" />
+          <div className="space-y-4">
+            <div className="text-center space-y-1 mb-4">
+              <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                <Sparkles className="w-5 h-5 text-teal-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">טאצ'ים אחרונים</h3>
-              <p className="text-gray-500 text-sm">הגדרות טכניות</p>
+              <h3 className="text-lg font-bold text-gray-900">טאצ'ים אחרונים</h3>
+              <p className="text-gray-500 text-xs">הגדרות טכניות</p>
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <Label className="block font-bold">איזה שדות יהיו בטופס?</Label>
-                <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="block font-bold text-xs">איזה שדות יהיו בטופס?</Label>
+                <div className="grid grid-cols-2 gap-2">
                   {['name', 'phone', 'email', 'message'].map(field => (
                     <div 
                       key={field} 
                       onClick={() => handleCheckboxChange('formFields', field, !formData.formFields.includes(field))}
                       className={cn(
-                        "cursor-pointer flex items-center gap-3 p-3 rounded-xl border transition-all",
+                        "cursor-pointer flex items-center gap-2 p-2.5 rounded-xl border transition-all",
                         formData.formFields.includes(field) ? "border-teal-500 bg-teal-50" : "border-gray-200"
                       )}
                     >
                       <div className={cn(
-                        "w-5 h-5 rounded border flex items-center justify-center bg-white",
+                        "w-4 h-4 rounded border flex items-center justify-center bg-white",
                         formData.formFields.includes(field) ? "border-teal-500" : "border-gray-300"
                       )}>
-                        {formData.formFields.includes(field) && <Check className="w-3 h-3 text-teal-600" />}
+                        {formData.formFields.includes(field) && <Check className="w-2.5 h-2.5 text-teal-600" />}
                       </div>
-                      <span className="text-sm">
+                      <span className="text-xs font-medium">
                         {field === 'name' && 'שם מלא'}
                         {field === 'phone' && 'טלפון'}
                         {field === 'email' && 'אימייל'}
@@ -551,13 +552,13 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label className="block font-bold">לאן הליד יגיע?</Label>
-                <div className="space-y-2">
+              <div className="space-y-2">
+                <Label className="block font-bold text-xs">לאן הליד יגיע?</Label>
+                <div className="grid grid-cols-1 gap-2">
                   {[
-                    { value: 'whatsapp', label: 'ישירות לוואטסאפ שלי' },
-                    { value: 'email', label: 'למייל שלי' },
-                    { value: 'crm', label: 'למערכת ה-CRM' }
+                    { value: 'whatsapp', label: 'וואטסאפ שלי' },
+                    { value: 'email', label: 'מייל שלי' },
+                    { value: 'crm', label: 'מערכת CRM' }
                   ].map(option => (
                      <SelectionCard
                       key={option.value}
