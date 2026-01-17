@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import GoalTemplates from '../goals/GoalTemplatesFixed';
-import GoalsCatalog from '../goals/GoalsCatalog';
+// GoalsCatalog removed
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -131,14 +131,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           className="space-y-8"
         >
           
-          {/* Goals Catalog */}
-          {user && (
-            <GoalsCatalog 
-              user={user} 
-              userGoals={userGoals} 
-              onUpdate={loadUserGoals}
-            />
-          )}
+          {/* Goals Catalog removed */}
 
           {/* Header Section */}
           <div className="flex items-end justify-between px-1">
