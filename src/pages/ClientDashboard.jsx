@@ -259,7 +259,7 @@ export default function ClientDashboard() {
               {typeof ShoppingCart === 'function' && <ShoppingCart />}
               
               <button
-                onClick={() => navigate(createPageUrl('Pricing'))}
+                onClick={() => navigate(createPageUrl('PricingPerfectBizAI'))}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/90 hover:text-white"
                 title="מחירון ומסלולים"
               >

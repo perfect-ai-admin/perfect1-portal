@@ -101,6 +101,7 @@ import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import ClientDashboard from './pages/ClientDashboard';
 import Pricing from './pages/Pricing';
+import PricingPerfectBizAI from './pages/PricingPerfectBizAI';
 import __Layout from './Layout.jsx';
 
 
@@ -208,6 +209,7 @@ export const PAGES = {
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "ClientDashboard": ClientDashboard,
     "Pricing": Pricing,
+    "PricingPerfectBizAI": PricingPerfectBizAI,
 }
 
 export const pagesConfig = {
