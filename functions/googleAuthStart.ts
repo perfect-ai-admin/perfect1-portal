@@ -21,15 +21,10 @@ Deno.serve(async (req) => {
         
         const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
         
-        // Set state in httpOnly cookie
-        const headers = new Headers({
-            'Location': googleAuthUrl,
-            'Set-Cookie': `oauth_state=${state}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=600`
-        });
-        
-        return new Response(null, {
-            status: 302,
-            headers: headers
+        // Return the URL to the client
+        return Response.json({ 
+            url: googleAuthUrl,
+            state: state 
         });
         
     } catch (error) {

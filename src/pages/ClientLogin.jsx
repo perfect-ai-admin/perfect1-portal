@@ -49,8 +49,19 @@ export default function ClientLogin() {
     navigate(createPageUrl('ClientDashboard'));
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = '/googleAuthStart';
+  const handleGoogleLogin = async () => {
+    try {
+      // Call backend function to get Google OAuth URL
+      const response = await base44.functions.invoke('googleAuthStart', {});
+      
+      // The function should return a redirect, so we follow it
+      if (response.data && response.data.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setError('שגיאה בהתחברות עם Google. אנא נסה שוב.');
+    }
   };
 
   return (
