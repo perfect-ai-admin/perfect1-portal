@@ -13,6 +13,7 @@ import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
 import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 import QAChecker from './components/QAChecker';
+import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children, currentPageName }) {
     const location = useLocation();
@@ -41,6 +42,7 @@ export default function Layout({ children, currentPageName }) {
               <Footer />
             </div>
           </div>
+          <Toaster />
         </HelmetProvider>
       );
     }
@@ -117,6 +119,7 @@ export default function Layout({ children, currentPageName }) {
                   <Footer />
                 </div>
       </div>
+      <Toaster />
     </HelmetProvider>
   );
 }
