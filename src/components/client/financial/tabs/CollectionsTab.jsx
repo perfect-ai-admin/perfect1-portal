@@ -7,26 +7,8 @@ export default function CollectionsTab({ data }) {
   const [expanding, setExpanding] = useState(null);
 
   // Mock collection data
-  const collections = [
-    {
-      id: 1,
-      customerName: 'דני כץ',
-      openAmount: '₪500',
-      daysOpen: 5,
-      documents: [
-        { number: '001', amount: '₪500', daysOpen: 5 }
-      ]
-    },
-    {
-      id: 2,
-      customerName: 'אברהם כהן',
-      openAmount: '₪350',
-      daysOpen: 8,
-      documents: [
-        { number: '003', amount: '₪350', daysOpen: 8 }
-      ]
-    },
-  ];
+  // Empty initial data
+  const collections = [];
 
   if (collections.length === 0) {
     return (

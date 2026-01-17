@@ -15,23 +15,11 @@ export default function ExpensesTab({ data }) {
   const [activeSubTab, setActiveSubTab] = useState('pending');
   const [showAddExpense, setShowAddExpense] = useState(false);
 
+  // Empty initial data
   const expenses = {
-    pending: [
-      { id: 1, amount: '₪250', date: '15.01.2025', supplier: 'סופר מרקט X', category: 'ללא סיווג' },
-      { id: 2, amount: '₪180', date: '14.01.2025', supplier: 'תדלוק דלק', category: 'ללא סיווג' },
-      { id: 3, amount: '₪450', date: '13.01.2025', supplier: 'חנות ציוד', category: 'ללא סיווג' },
-    ],
-    classified: [
-      { id: 4, amount: '₪320', date: '12.01.2025', supplier: 'חברת פרסום', category: 'פרסום' },
-      { id: 5, amount: '₪600', date: '11.01.2025', supplier: 'תוכנה SaaS', category: 'תוכנות' },
-    ],
-    all: [
-      { id: 1, amount: '₪250', date: '15.01.2025', supplier: 'סופר מרקט X', category: 'ללא סיווג' },
-      { id: 2, amount: '₪180', date: '14.01.2025', supplier: 'תדלוק דלק', category: 'ללא סיווג' },
-      { id: 3, amount: '₪450', date: '13.01.2025', supplier: 'חנות ציוד', category: 'ללא סיווג' },
-      { id: 4, amount: '₪320', date: '12.01.2025', supplier: 'חברת פרסום', category: 'פרסום' },
-      { id: 5, amount: '₪600', date: '11.01.2025', supplier: 'תוכנה SaaS', category: 'תוכנות' },
-    ],
+    pending: [],
+    classified: [],
+    all: [],
   };
 
   const categories = [

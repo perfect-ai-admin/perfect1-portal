@@ -21,11 +21,8 @@ export default function CustomersTab({ data }) {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showAddCustomer, setShowAddCustomer] = useState(false);
 
-  const customers = [
-    { id: 1, name: 'דני כץ', phone: '050-1234567', email: 'danny@email.com', status: 'עם מסמכים פתוחים' },
-    { id: 2, name: 'מיכל לוי', phone: '052-9876543', email: 'michal@email.com', status: 'עדכני' },
-    { id: 3, name: 'אברהם כהן', phone: '051-5555555', email: 'avraham@email.com', status: 'עם מסמכים פתוחים' },
-  ];
+  // Empty initial data
+  const customers = [];
 
   const filteredCustomers = customers.filter(c =>
     c.name.includes(searchTerm) || c.phone.includes(searchTerm)
