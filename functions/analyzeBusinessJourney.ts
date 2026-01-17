@@ -81,25 +81,35 @@ Deno.serve(async (req) => {
         // Call LLM to analyze
         const llmResponse = await base44.integrations.Core.InvokeLLM({
             prompt: `
-            Analyze the following user questionnaire answers and determine which of the 6 business states fits them best.
-            
+            You are an expert business consultant. Your goal is to build a *personalized* growth plan for a freelancer/small business owner based on their questionnaire answers.
+
             User Answers: ${JSON.stringify(answers)}
             
-            Business States Definitions:
+            **Guidelines:**
+            1. Analyze the user's answers to understand their specific profession, current situation, and pain points.
+            2. Classify them into one of the following 6 "Business States" (conceptual frameworks):
+            
             ${statesDefinitions}
+
+            3. **CRITICAL:** Do NOT just copy the generic tasks from the state definitions above. Instead, generate 6 **UNIQUE and PERSONALIZED** steps (milestones) that are specifically tailored to *this specific user* and their profession.
+               - For example, if they are a "Graphic Designer" in "State 1", don't just say "Find direction", say "Define your design niche and portfolio style".
+               - The steps should take them from their *current situation* to the *State Goal*.
+               - The steps must be actionable and concrete.
+
+            4. **Output Requirements:**
+               - STRICTLY in Hebrew (עברית).
+               - Return exactly 6 steps in the 'tasks' array.
             
-            IMPORTANT: Output must be strictly in Hebrew (עברית). All titles, descriptions, and names must be in Hebrew.
-            
-            Return a JSON object with the following structure:
+            Return a JSON object with this structure:
             {
                 "state_id": "string (e.g., state_1, state_2)",
                 "state_name": "string (The name of the state in Hebrew)",
-                "state_description": "string (The description / subtext in Hebrew)",
-                "state_goal": "string (Where we lead them in Hebrew)",
+                "state_description": "string (A short personalized summary of their current situation in Hebrew)",
+                "state_goal": "string (The main goal we are aiming for in Hebrew)",
                 "tasks": [
                     {
-                        "title": "string (Task title in Hebrew)",
-                        "description": "string (Short description based on the task name in Hebrew)",
+                        "title": "string (Specific, action-oriented task title in Hebrew)",
+                        "description": "string (Brief explanation of why this step is important for THEM)",
                         "is_milestone": boolean (true for major steps)
                     }
                 ]
