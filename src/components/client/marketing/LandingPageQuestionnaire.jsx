@@ -812,37 +812,37 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       {!isBuilding && !showSuccess && (
         <div className="flex-none p-4 border-t border-gray-100 bg-white z-10 safe-area-bottom">
           <div className="max-w-2xl mx-auto flex justify-between gap-4">
-          <Button
-            type="button"
-            onClick={handlePrev}
-            variant="ghost"
-            disabled={currentStep === 1}
-            className={cn("transition-opacity", currentStep === 1 ? "opacity-0 pointer-events-none" : "opacity-100")}
-          >
-            <ChevronRight className="w-4 h-4 ml-2" />
-            הקודם
-          </Button>
+            <Button
+              type="button"
+              onClick={handlePrev}
+              variant="ghost"
+              disabled={currentStep === 1}
+              className={cn("transition-opacity", currentStep === 1 ? "opacity-0 pointer-events-none" : "opacity-100")}
+            >
+              <ChevronRight className="w-4 h-4 ml-2" />
+              הקודם
+            </Button>
 
-          {currentStep < totalSteps ? (
-            <Button 
-              type="button" 
-              onClick={handleNext}
-              className="bg-blue-600 hover:bg-blue-700 text-white min-w-[120px] shadow-lg shadow-blue-100"
-            >
-              הבא
-              <ChevronLeft className="w-4 h-4 mr-2" />
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleSubmit}
-              className="bg-green-600 hover:bg-green-700 text-white min-w-[120px] shadow-lg shadow-green-100"
-            >
-              סיים ובנה
-              <Sparkles className="w-4 h-4 mr-2" />
-            </Button>
-          )}
+            {currentStep < totalSteps ? (
+              <Button 
+                type="button" 
+                onClick={handleNext}
+                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[120px] shadow-lg shadow-blue-100"
+              >
+                הבא
+                <ChevronLeft className="w-4 h-4 mr-2" />
+              </Button>
+            ) : (
+              <Button 
+                onClick={handleSubmit}
+                className="bg-green-600 hover:bg-green-700 text-white min-w-[120px] shadow-lg shadow-green-100"
+              >
+                סיים ובנה
+                <Sparkles className="w-4 h-4 mr-2" />
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
       )}
     </div>
   );
