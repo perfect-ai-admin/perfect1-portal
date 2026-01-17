@@ -104,17 +104,10 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
   const handleSubmit = async (finalAnswers) => {
     setIsSubmitting(true);
     try {
-      if (userId) {
-        await base44.entities.User.update(userId, {
-          business_journey_completed: true,
-          business_journey_answers: finalAnswers
-        });
-      }
+      // Call the "Brain" function to analyze and update user
+      await base44.functions.invoke('analyzeBusinessJourney', { answers: finalAnswers });
       
-      // Artificial delay for "processing" effect
-      setTimeout(() => {
-        onComplete();
-      }, 1500);
+      onComplete();
     } catch (error) {
       console.error("Error saving answers:", error);
       setIsSubmitting(false);
