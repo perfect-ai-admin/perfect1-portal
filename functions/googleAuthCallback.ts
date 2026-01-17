@@ -104,15 +104,27 @@ Deno.serve(async (req) => {
             });
         }
         
-        // Store client in localStorage and redirect
-        const clientData = JSON.stringify(client);
+        // Return HTML page that stores client in localStorage and redirects
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>מתחבר...</title>
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <script>
+                    localStorage.setItem('client', '${JSON.stringify(client).replace(/'/g, "\\'")}');
+                    window.location.href = '${BASE_URL}/ClientDashboard';
+                </script>
+                <p style="text-align: center; font-family: Arial; margin-top: 50px;">מתחבר למערכת...</p>
+            </body>
+            </html>
+        `;
         
-        // Redirect with client data in URL (will be stored in localStorage by ClientDashboard)
-        const redirectUrl = `${BASE_URL}/ClientDashboard?google_login=1&client_data=${encodeURIComponent(clientData)}`;
-        
-        return new Response(null, {
-            status: 302,
-            headers: { 'Location': redirectUrl }
+        return new Response(html, {
+            status: 200,
+            headers: { 'Content-Type': 'text/html; charset=utf-8' }
         });
         
     } catch (error) {
