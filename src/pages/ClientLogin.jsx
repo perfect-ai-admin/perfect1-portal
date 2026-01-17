@@ -49,9 +49,22 @@ export default function ClientLogin() {
     navigate(createPageUrl('ClientDashboard'));
   };
 
-  const handleGoogleLogin = () => {
-    // Use Base44 function endpoint directly
-    window.location.href = 'https://perfect-one.co.il/googleAuthStart';
+  const handleGoogleLogin = async () => {
+    try {
+      // Call the backend function to initiate Google OAuth
+      const response = await fetch('/googleAuthStart');
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        const redirectUrl = response.headers.get('Location');
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        }
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      setError('שגיאה בהתחברות עם Google. אנא נסה שוב.');
+    }
   };
 
   return (
