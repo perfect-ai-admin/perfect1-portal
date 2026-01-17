@@ -253,6 +253,22 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [textInput, setTextInput] = useState("");
+
+  const handleTextSubmit = () => {
+    if (!textInput.trim()) return;
+    
+    const currentQ = questionsList[currentStep];
+    const newAnswers = { ...answers, [currentQ.id]: textInput };
+    setAnswers(newAnswers);
+    
+    if (currentStep < questionsList.length - 1) {
+      setCurrentStep(prev => prev + 1);
+      setTextInput("");
+    } else {
+      handleSubmit(newAnswers);
+    }
+  };
 
   const handleSelect = (optionId) => {
     const currentQ = questionsList[currentStep];
@@ -263,7 +279,8 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
     if (currentStep === 0 && currentQ.id === 'current_status') {
       const selectedFlow = FLOWS[optionId];
       if (selectedFlow) {
-        setQuestionsList([BASE_QUESTION, ...selectedFlow]);
+        // Add the profession question at the end of every flow
+        setQuestionsList([BASE_QUESTION, ...selectedFlow, PROFESSION_QUESTION]);
       }
     }
 
@@ -360,30 +377,55 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
           </div>
 
           <div className="space-y-3">
-            {currentQuestion.options.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => handleSelect(option.id)}
-                className={cn(
-                  "w-full p-4 rounded-xl border-2 text-right transition-all duration-200 flex items-center justify-between group",
-                  answers[currentQuestion.id] === option.id
-                    ? "border-blue-600 bg-blue-50 text-blue-900"
-                    : "border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50 text-gray-700"
-                )}
-              >
-                <span className="font-medium text-lg">{option.label}</span>
-                <div className={cn(
-                  "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
-                  answers[currentQuestion.id] === option.id
-                    ? "border-blue-600 bg-blue-600"
-                    : "border-gray-300 group-hover:border-blue-300"
-                )}>
-                  {answers[currentQuestion.id] === option.id && (
-                    <Check className="w-3.5 h-3.5 text-white" />
+            {currentQuestion.type === 'text' ? (
+              <div className="space-y-4">
+                <Input
+                  autoFocus
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  placeholder={currentQuestion.placeholder}
+                  className="text-lg p-6 h-14"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleTextSubmit();
+                    }
+                  }}
+                />
+                <Button 
+                  onClick={handleTextSubmit} 
+                  disabled={!textInput.trim()}
+                  className="w-full h-12 text-lg"
+                >
+                  המשך
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                </Button>
+              </div>
+            ) : (
+              currentQuestion.options.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleSelect(option.id)}
+                  className={cn(
+                    "w-full p-4 rounded-xl border-2 text-right transition-all duration-200 flex items-center justify-between group",
+                    answers[currentQuestion.id] === option.id
+                      ? "border-blue-600 bg-blue-50 text-blue-900"
+                      : "border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50 text-gray-700"
                   )}
-                </div>
-              </button>
-            ))}
+                >
+                  <span className="font-medium text-lg">{option.label}</span>
+                  <div className={cn(
+                    "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
+                    answers[currentQuestion.id] === option.id
+                      ? "border-blue-600 bg-blue-600"
+                      : "border-gray-300 group-hover:border-blue-300"
+                  )}>
+                    {answers[currentQuestion.id] === option.id && (
+                      <Check className="w-3.5 h-3.5 text-white" />
+                    )}
+                  </div>
+                </button>
+              ))
+            )}
           </div>
         </motion.div>
       </AnimatePresence>

@@ -27,6 +27,11 @@ Deno.serve(async (req) => {
             **User Profile & Answers:**
             ${JSON.stringify(answers, null, 2)}
 
+            **CRITICAL CONTEXT - PROFESSION:**
+            The user has explicitly stated their profession/business type in the 'profession_description' field. 
+            YOU MUST USE THIS to tailor the plan. If they are a "Singer", suggest music-related steps. If "Lawyer", suggest legal marketing. 
+            Do not give generic advice if you know the profession.
+
             **Context on The Flows:**
             The user came through one of 5 specific flows based on their 'current_status':
             1. **Idea Stage** (answers include: field, blocker, commitment, skill_level) -> Needs validation, overcoming fear, and initial setup.
