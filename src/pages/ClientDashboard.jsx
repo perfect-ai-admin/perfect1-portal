@@ -322,7 +322,7 @@ export default function ClientDashboard() {
                  }} />}
                  {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
                  {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
-                 {activeTab === 'goals' && permissions.mentor && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} />}
+                 {activeTab === 'goals' && permissions.mentor && <GoalsTab user={currentData} data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} />}
                  {activeTab === 'marketing' && permissions.marketing && <MarketingTab data={enrichedData} />}
                  {activeTab === 'mentor' && permissions.mentor && <MentorTab data={enrichedData} />}
                </div>
