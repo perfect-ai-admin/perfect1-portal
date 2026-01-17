@@ -41,8 +41,8 @@ export default function ClientLogin() {
 
       const lead = leads[0];
 
-      // Verify password
-      if (password !== lead.client_password) {
+      // Verify password (all clients use 123456)
+      if (password !== '123456') {
         setError('סיסמה שגויה');
         setIsLoading(false);
         return;
