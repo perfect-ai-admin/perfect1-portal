@@ -96,18 +96,24 @@ Deno.serve(async (req) => {
                 last_login_at: new Date().toISOString()
             });
         } else {
-            // Create new user with default permissions
+            // Get Free plan
+            const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
+            const freePlan = freePlans.length > 0 ? freePlans[0] : null;
+
+            // Create new user with free plan permissions
             user = await base44.asServiceRole.entities.User.create({
                 full_name: name || 'משתמש Google',
                 email,
                 login_provider: 'google',
                 status: 'active',
                 last_login_at: new Date().toISOString(),
-                marketing_enabled: false,
-                mentor_enabled: true, // Free tier gets mentor with 1 goal
-                finance_enabled: false,
-                goals_limit: 1,
-                max_active_goals: 1
+                current_plan_id: freePlan?.id || null,
+                plan_start_date: new Date().toISOString(),
+                marketing_enabled: freePlan?.marketing_enabled || false,
+                mentor_enabled: freePlan?.mentor_enabled || true,
+                finance_enabled: freePlan?.finance_enabled || false,
+                goals_limit: freePlan?.goals_limit || 1,
+                max_active_goals: freePlan?.max_active_goals || 1
             });
         }
         
