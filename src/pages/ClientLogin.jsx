@@ -50,8 +50,8 @@ export default function ClientLogin() {
   };
 
   const handleGoogleLogin = () => {
-    // Redirect to Google OAuth start endpoint
-    window.location.href = `${window.location.origin}/googleAuthStart`;
+    // Use Base44 function endpoint directly
+    window.location.href = 'https://perfect-one.co.il/googleAuthStart';
   };
 
   return (
