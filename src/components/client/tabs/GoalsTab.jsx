@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import GoalTemplates from '../goals/GoalTemplatesFixed';
+import GoalsCatalog from '../goals/GoalsCatalog';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,11 +42,27 @@ const SAMPLE_GOALS = [
 
 
 
-export default function GoalsTab({ data, openAddGoal = false }) {
+export default function GoalsTab({ user, data, openAddGoal = false }) {
   const [goals, setGoals] = useState(SAMPLE_GOALS);
+  const [userGoals, setUserGoals] = useState([]);
   const [showAddGoal, setShowAddGoal] = useState(openAddGoal);
   const [editingGoal, setEditingGoal] = useState(null);
   const goalsTopRef = useRef(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      loadUserGoals();
+    }
+  }, [user?.id]);
+
+  const loadUserGoals = async () => {
+    try {
+      const ug = await base44.entities.UserGoal.filter({ user_id: user.id });
+      setUserGoals(ug);
+    } catch (error) {
+      console.error('Error loading user goals:', error);
+    }
+  };
 
 
 
@@ -113,6 +131,15 @@ export default function GoalsTab({ data, openAddGoal = false }) {
           className="space-y-8"
         >
           
+          {/* Goals Catalog */}
+          {user && (
+            <GoalsCatalog 
+              user={user} 
+              userGoals={userGoals} 
+              onUpdate={loadUserGoals}
+            />
+          )}
+
           {/* Header Section */}
           <div className="flex items-end justify-between px-1">
              <div>
