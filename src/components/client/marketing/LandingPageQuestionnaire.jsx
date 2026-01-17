@@ -843,6 +843,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
