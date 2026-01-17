@@ -11,6 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { base44 } from '@/api/base44Client';
 import LogoSelectorMobile from './LogoSelectorMobile';
 import LogoCheckout from './LogoCheckout';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 const COLOR_SCHEMES = [
   { name: 'כחול מקצועי', colors: ['#1E3A5F', '#3B82F6', '#FFFFFF'] },
@@ -87,6 +89,7 @@ const MobileWizardStep = ({ children, title, subtitle, onBack, onClose, currentS
 };
 
 export default function LogoCreator({ businessName, onClose }) {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     businessName: businessName || '',
@@ -613,9 +616,14 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         <LogoCheckout 
           businessName={formData.businessName}
           onBack={() => setStep(4)}
-          onSuccess={() => {
-            alert('תשלום בהצליחה! 🎉 הלוגו בדרך אליך למייל.');
+          onSuccess={(data) => {
             onClose();
+            navigate(createPageUrl('LogoThankYou'), { 
+              state: { 
+                businessName: formData.businessName,
+                email: data?.email 
+              } 
+            });
           }}
         />
       </div>

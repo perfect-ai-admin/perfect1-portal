@@ -86,7 +86,10 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, price = 
     // Simulate processing
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsProcessing(false);
-    onSuccess();
+    onSuccess({
+      email: cardData.email,
+      businessName: businessName
+    });
   };
 
   return (
