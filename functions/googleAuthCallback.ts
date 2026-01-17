@@ -83,68 +83,36 @@ Deno.serve(async (req) => {
             });
         }
         
-        // Find or create user
-        let user;
+        // Find or create lead (client)
+        let client;
         
-        // First try to find by google_sub
-        const usersBySub = await base44.asServiceRole.entities.User.filter({ google_sub });
+        // Try to find by email first
+        const leadsByEmail = await base44.asServiceRole.entities.Lead.filter({ email });
         
-        if (usersBySub.length > 0) {
-            // User exists with this google account
-            user = usersBySub[0];
-            await base44.asServiceRole.entities.User.update(user.id, {
-                last_login_at: new Date().toISOString(),
-                google_picture: picture,
-                full_name: name || user.full_name
-            });
+        if (leadsByEmail.length > 0) {
+            // Client exists
+            client = leadsByEmail[0];
         } else {
-            // Try to find by email
-            const usersByEmail = await base44.asServiceRole.entities.User.filter({ email });
-            
-            if (usersByEmail.length > 0) {
-                // Link existing email account to Google
-                user = usersByEmail[0];
-                await base44.asServiceRole.entities.User.update(user.id, {
-                    google_sub,
-                    auth_provider: 'google',
-                    google_picture: picture,
-                    last_login_at: new Date().toISOString(),
-                    full_name: name || user.full_name
-                });
-            } else {
-                // Create new user
-                user = await base44.asServiceRole.entities.User.create({
-                    email,
-                    full_name: name,
-                    google_sub,
-                    google_picture: picture,
-                    auth_provider: 'google',
-                    is_active: true,
-                    last_login_at: new Date().toISOString(),
-                    role: 'user'
-                });
-            }
+            // Create new lead
+            client = await base44.asServiceRole.entities.Lead.create({
+                name: name || 'לקוח Google',
+                email,
+                phone: '000000000', // Required field
+                status: 'new',
+                source_page: 'Google Login',
+                interaction_type: 'manual'
+            });
         }
         
-        // Create JWT session
-        const jwtPayload = {
-            user_id: user.id,
-            email: user.email,
-            iat: Math.floor(Date.now() / 1000),
-            exp: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60) // 30 days
-        };
+        // Store client in localStorage and redirect
+        const clientData = JSON.stringify(client);
         
-        const token = await createJWT(jwtPayload);
-        
-        // Set session cookie and redirect to dashboard
-        const headers = new Headers({
-            'Location': '/client/dashboard',
-            'Set-Cookie': `auth_token=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${30 * 24 * 60 * 60}`
-        });
+        // Redirect with client data in URL (will be stored in localStorage by ClientDashboard)
+        const redirectUrl = `${BASE_URL}/ClientDashboard?google_login=1&client_data=${encodeURIComponent(clientData)}`;
         
         return new Response(null, {
             status: 302,
-            headers: headers
+            headers: { 'Location': redirectUrl }
         });
         
     } catch (error) {
