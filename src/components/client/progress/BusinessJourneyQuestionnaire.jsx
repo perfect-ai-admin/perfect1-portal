@@ -5,94 +5,275 @@ import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 
-// Questions Configuration
-const QUESTIONS = [
-  {
-    id: 1,
-    question: "איפה אתה נמצא היום ביחס לעסק?",
-    subtext: "בחר את מה שהכי קרוב למצב שלך",
-    options: [
-      { id: 'idea', label: "אני עדיין בשלב הרעיון / חושב לפתוח עסק" },
-      { id: 'new', label: "פתחתי עסק לאחרונה" },
-      { id: 'active', label: "העסק כבר פעיל ויש הכנסות" },
-      { id: 'stable', label: "העסק עובד באופן יציב" },
-      { id: 'scaling', label: "העסק רץ הרבה זמן ואני מחפש לייעל / לגדול" }
-    ]
-  },
-  {
-    id: 2,
-    question: "כמה זמן אתה עוסק בזה בפועל?",
-    subtext: "לא חייב להיות מדויק – רק תחושה כללית",
-    options: [
-      { id: 'not_started', label: "עוד לא התחלתי" },
-      { id: 'under_6m', label: "עד חצי שנה" },
-      { id: '6m_to_2y', label: "בין חצי שנה לשנתיים" },
-      { id: '2y_to_5y', label: "בין שנתיים לחמש שנים" },
-      { id: 'over_5y', label: "מעל חמש שנים" }
-    ]
-  },
-  {
-    id: 3,
-    question: "מה הדבר שהכי מעסיק אותך עכשיו?",
-    subtext: "מה מרגיש לך ה”כאב” המרכזי",
-    options: [
-      { id: 'viability', label: "להבין אם העסק בכלל כדאי לי" },
-      { id: 'first_customers', label: "להביא לקוחות ראשונים" },
-      { id: 'order', label: "לעשות סדר (כסף / תמחור / ניהול)" },
-      { id: 'focus', label: "לגדול בלי להתפזר" },
-      { id: 'efficiency', label: "לייעל ולחסוך זמן" },
-      { id: 'stability', label: "לבנות משהו יציב לטווח ארוך" }
-    ]
-  },
-  {
-    id: 4,
-    question: "איך העסק מתנהל היום?",
-    subtext: "בחר את מה שהכי נכון עבורך",
-    options: [
-      { id: 'not_managed', label: "עדיין לא באמת מתנהל" },
-      { id: 'solo_messy', label: "אני עושה הכול לבד ודי מבולגן" },
-      { id: 'customers_no_system', label: "יש לי לקוחות אבל אין שיטה" },
-      { id: 'system_inconsistent', label: "יש שיטה, אבל היא לא תמיד עובדת" },
-      { id: 'system_improve', label: "יש מערכת, אבל אני רוצה לשפר אותה" }
-    ]
-  },
-  {
-    id: 5,
-    question: "מה הכי חשוב לך עכשיו?",
-    subtext: "אין תשובה נכונה או לא נכונה",
-    options: [
-      { id: 'certainty', label: "ביטחון וודאות" },
-      { id: 'income', label: "הכנסה ראשונה / יותר הכנסה" },
-      { id: 'order_quiet', label: "סדר ושקט" },
-      { id: 'time', label: "זמן פנוי" },
-      { id: 'growth', label: "צמיחה והתרחבות" }
-    ]
-  },
-  {
-    id: 6,
-    question: "איך היית רוצה שהמערכת תעזור לך?",
-    subtext: "(בחירה אחת)",
-    options: [
-      { id: 'guide', label: "להכווין אותי צעד־צעד" },
-      { id: 'pace', label: "לעזור לי להתקדם בקצב שלי" },
-      { id: 'tools', label: "לתת לי כלים ולעבוד לבד" },
-      { id: 'avoid_mistakes', label: "לעשות לי סדר ולחסוך טעויות" }
-    ]
-  }
-];
+// Base Question
+const BASE_QUESTION = {
+  id: 'current_status',
+  question: "איפה אתה נמצא היום ביחס לעסק?",
+  subtext: "בחר את מה שהכי קרוב למצב שלך",
+  options: [
+    { id: 'idea', label: "אני עדיין בשלב הרעיון / חושב לפתוח עסק" },
+    { id: 'new', label: "פתחתי עסק לאחרונה" },
+    { id: 'active', label: "העסק כבר פעיל ויש הכנסות" },
+    { id: 'stable', label: "העסק עובד באופן יציב" },
+    { id: 'scaling', label: "העסק רץ הרבה זמן ואני מחפש לייעל / לגדול" }
+  ]
+};
+
+// Flows Configuration
+const FLOWS = {
+  // Path 1: Idea
+  idea: [
+    {
+      id: 'field',
+      question: "באיזה תחום אתה חושב לפתוח את העסק?",
+      subtext: "מה הכיוון הכללי?",
+      options: [
+        { id: 'service', label: "מתן שירות (ייעוץ, טיפול, עיצוב וכו')" },
+        { id: 'product', label: "מכירת מוצרים פיזיים" },
+        { id: 'digital', label: "מוצרים דיגיטליים / קורסים" },
+        { id: 'tech', label: "סטארטאפ / טכנולוגיה" },
+        { id: 'unsure', label: "עדיין לא סגור על זה" }
+      ]
+    },
+    {
+      id: 'blocker',
+      question: "מה מונע ממך להתחיל כרגע?",
+      subtext: "מה החסם העיקרי?",
+      options: [
+        { id: 'fear', label: "חשש מכישלון / חוסר ביטחון" },
+        { id: 'money', label: "חוסר בתקציב להקמה" },
+        { id: 'knowledge', label: "לא יודע איך מתחילים (בירוקרטיה/שיווק)" },
+        { id: 'time', label: "אין לי מספיק זמן פנוי" }
+      ]
+    },
+    {
+      id: 'commitment',
+      question: "כמה זמן אתה מוכן להשקיע בזה?",
+      options: [
+        { id: 'full_time', label: "מוכן להתאבד על זה (משרה מלאה)" },
+        { id: 'side_hustle', label: "במקביל לעבודה אחרת (שעות ערב/בוקר)" },
+        { id: 'weekends', label: "רק בסופ״שים כרגע" },
+        { id: 'low', label: "רוצה הכנסה פסיבית במינימום מאמץ" }
+      ]
+    },
+    {
+      id: 'skill_level',
+      question: "האם יש לך כבר ידע מקצועי בתחום?",
+      options: [
+        { id: 'pro', label: "כן, אני מקצוען בתחום" },
+        { id: 'student', label: "למדתי את זה אבל אין לי ניסיון" },
+        { id: 'beginner', label: "רק התחלתי ללמוד" },
+        { id: 'none', label: "לא, אני בונה על ללמוד תוך כדי תנועה" }
+      ]
+    }
+  ],
+
+  // Path 2: New Business
+  new: [
+    {
+      id: 'bureaucracy_status',
+      question: "האם כבר נרשמת ברשויות?",
+      subtext: "מס הכנסה, מע״מ, ביטוח לאומי",
+      options: [
+        { id: 'fully', label: "כן, הכל מסודר ורשום" },
+        { id: 'partially', label: "פתחתי חלקית / בתהליך" },
+        { id: 'not_yet', label: "עדיין לא, אני בדיוק שם" },
+        { id: 'exempt', label: "אני עוסק פטור" }
+      ]
+    },
+    {
+      id: 'first_clients',
+      question: "האם כבר היו לך לקוחות ראשונים?",
+      options: [
+        { id: 'paying', label: "כן, כבר קיבלתי תשלום מלקוחות" },
+        { id: 'free', label: "נתתי שירות בחינם/לחברים בלבד" },
+        { id: 'prospects', label: "יש מתעניינים אבל עוד לא סגרו" },
+        { id: 'none', label: "עדיין לא" }
+      ]
+    },
+    {
+      id: 'marketing_method',
+      question: "איך אנשים שומעים עליך כרגע?",
+      options: [
+        { id: 'word_mouth', label: "פה לאוזן / חברים" },
+        { id: 'social', label: "רשתות חברתיות (אורגני)" },
+        { id: 'ads', label: "קמפיינים ממומנים" },
+        { id: 'cold_outreach', label: "פניות יזומות שלי" },
+        { id: 'none', label: "עדיין לא התחלתי לשווק" }
+      ]
+    },
+    {
+      id: 'biggest_challenge_new',
+      question: "מה האתגר הכי גדול שלך כרגע?",
+      options: [
+        { id: 'leads', label: "להשיג לידים (פניות)" },
+        { id: 'sales', label: "לסגור עסקאות (מכירות)" },
+        { id: 'price', label: "לתמחר נכון את השירות" },
+        { id: 'confidence', label: "ביטחון עצמי מול לקוח" }
+      ]
+    }
+  ],
+
+  // Path 3: Active & Revenue
+  active: [
+    {
+      id: 'revenue_range',
+      question: "מה מחזור ההכנסות החודשי הממוצע?",
+      options: [
+        { id: 'micro', label: "עד 5,000 ₪" },
+        { id: 'small', label: "בין 5,000 ל-15,000 ₪" },
+        { id: 'medium', label: "בין 15,000 ל-30,000 ₪" },
+        { id: 'high', label: "מעל 30,000 ₪" }
+      ]
+    },
+    {
+      id: 'lead_source_active',
+      question: "מאיפה מגיעים רוב הלקוחות שלך?",
+      options: [
+        { id: 'referrals', label: "המלצות ופה לאוזן (עיקרי)" },
+        { id: 'social_content', label: "תוכן ברשתות חברתיות" },
+        { id: 'paid_ads', label: "פרסום ממומן" },
+        { id: 'partners', label: "שיתופי פעולה" }
+      ]
+    },
+    {
+      id: 'process_status',
+      question: "האם יש לך תהליך עבודה מסודר?",
+      subtext: "מרגע הליד ועד סיום השירות",
+      options: [
+        { id: 'organized', label: "כן, הכל ברור וכתוב" },
+        { id: 'semi', label: "בערך, יש תבנית קבועה בראש" },
+        { id: 'chaos', label: "לא ממש, כל לקוח זה משהו אחר" },
+        { id: 'messy', label: "בלאגן שלם" }
+      ]
+    },
+    {
+      id: 'missing_piece',
+      question: "מה חסר לך כדי להגיע לשלב הבא?",
+      options: [
+        { id: 'more_leads', label: "יותר פניות של לקוחות רלוונטיים" },
+        { id: 'better_sales', label: "אחוזי סגירה גבוהים יותר" },
+        { id: 'time_mgmt', label: "ניהול זמן טוב יותר (אני קורס)" },
+        { id: 'team', label: "עזרה / עובדים" }
+      ]
+    }
+  ],
+
+  // Path 4: Stable
+  stable: [
+    {
+      id: 'team_structure',
+      question: "איך בנוי הצוות שלך?",
+      options: [
+        { id: 'solo', label: "אני עובד/ת לבד (One Man Show)" },
+        { id: 'freelancers', label: "נעזר בפרילנסרים לפי צורך" },
+        { id: 'employees', label: "יש לי עובדים שכירים" },
+        { id: 'partner', label: "יש לי שותף/ה" }
+      ]
+    },
+    {
+      id: 'ceiling',
+      question: "האם אתה מרגיש שאתה בתקרת זכוכית?",
+      options: [
+        { id: 'time_cap', label: "כן, אין לי יותר זמן לקבל לקוחות" },
+        { id: 'income_cap', label: "כן, ההכנסה תקועה על סכום קבוע" },
+        { id: 'energy_cap', label: "כן, אני שחוק/ה" },
+        { id: 'no', label: "לא, אני מרגיש בצמיחה מתמדת" }
+      ]
+    },
+    {
+      id: 'finance_mgmt',
+      question: "איך נראה הניהול הפיננסי שלך?",
+      options: [
+        { id: 'tight', label: "שליטה מלאה, תזרים, צפי" },
+        { id: 'accountant', label: "סומך בעיקר על רואה החשבון" },
+        { id: 'basic', label: "בודק פעם בחודש מה נכנס/יצא" },
+        { id: 'loose', label: "לא ממש עוקב" }
+      ]
+    },
+    {
+      id: 'next_year_goal',
+      question: "מה המטרה העיקרית לשנה הקרובה?",
+      options: [
+        { id: 'profit', label: "להגדיל את הרווח הנקי" },
+        { id: 'less_work', label: "להוריד שעות עבודה (לשמור על הכנסה)" },
+        { id: 'new_products', label: "לפתח מוצרים/שירותים חדשים" },
+        { id: 'exit', label: "להכין את העסק למכירה/פרישה" }
+      ]
+    }
+  ],
+
+  // Path 5: Scaling
+  scaling: [
+    {
+      id: 'bottleneck',
+      question: "מה צוואר הבקבוק העיקרי בצמיחה?",
+      options: [
+        { id: 'me', label: "אני (הכל עובר דרכי)" },
+        { id: 'ops', label: "התפעול לא עומד בעומס" },
+        { id: 'marketing', label: "השיווק לא מביא מספיק לידים" },
+        { id: 'cashflow', label: "תזרים מזומנים להשקעה" }
+      ]
+    },
+    {
+      id: 'sops',
+      question: "האם יש לך נהלי עבודה כתובים (SOPs)?",
+      options: [
+        { id: 'yes_all', label: "כן, לכל תפקיד ומשימה" },
+        { id: 'some', label: "לחלק מהדברים המרכזיים" },
+        { id: 'mental', label: "הכל בראש שלי / של העובדים" },
+        { id: 'none', label: "אין נהלים, כל אחד מאלתר" }
+      ]
+    },
+    {
+      id: 'involvement',
+      question: "כמה אתה מעורב ביום-יום של התפעול?",
+      options: [
+        { id: 'micromanage', label: "מעורב בכל פרט קטן" },
+        { id: 'high_level', label: "מנהל מלמעלה, מתערב בבעיות" },
+        { id: 'strategy', label: "מתעסק רק בפיתוח עסקי ואסטרטגיה" },
+        { id: 'passive', label: "כמעט ולא נמצא בעסק" }
+      ]
+    },
+    {
+      id: 'vision',
+      question: "לאן אתה רוצה לקחת את העסק?",
+      options: [
+        { id: 'franchise', label: "רשת / סניפים / זכיינות" },
+        { id: 'market_leader', label: "להיות אוטוריטה מספר 1 בתחום" },
+        { id: 'sell', label: "אקזיט (מכירה)" },
+        { id: 'cash_machine', label: "מכונת מזומנים אוטומטית" }
+      ]
+    }
+  ]
+};
 
 export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
+  const [questionsList, setQuestionsList] = useState([BASE_QUESTION]);
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSelect = (optionId) => {
-    const newAnswers = { ...answers, [QUESTIONS[currentStep].id]: optionId };
+    const currentQ = questionsList[currentStep];
+    const newAnswers = { ...answers, [currentQ.id]: optionId };
     setAnswers(newAnswers);
 
+    // If this is the first question, determine the flow
+    if (currentStep === 0 && currentQ.id === 'current_status') {
+      const selectedFlow = FLOWS[optionId];
+      if (selectedFlow) {
+        setQuestionsList([BASE_QUESTION, ...selectedFlow]);
+      }
+    }
+
     // Auto advance after short delay for better UX
-    if (currentStep < QUESTIONS.length - 1) {
-      setTimeout(() => {
+    if (currentStep < questionsList.length - 1 || (currentStep === 0 && FLOWS[optionId])) {
+       // Check if we need to wait for state update (rendering new questions)
+       // Actually, since we update state above, it might not reflect immediately in questionsList.length
+       // But for the FIRST step, we know we are adding more.
+       
+       setTimeout(() => {
         setCurrentStep(prev => prev + 1);
       }, 250);
     } else {
@@ -100,6 +281,26 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
       handleSubmit(newAnswers);
     }
   };
+
+  const handleSubmit = async (finalAnswers) => {
+    setIsSubmitting(true);
+    try {
+      // Call the "Brain" function to analyze and update user
+      await base44.functions.invoke('analyzeBusinessJourney', { answers: finalAnswers });
+      
+      onComplete();
+    } catch (error) {
+      console.error("Error saving answers:", error);
+      setIsSubmitting(false);
+    }
+  };
+
+  const currentQuestion = questionsList[currentStep];
+  // Calculate progress based on the *potential* total length
+  // If we are at step 0, total is unknown roughly, but we can assume generic length or just show 1/X
+  // Let's assume standard flow length is about 5 questions (1 base + 4 flow)
+  const totalSteps = questionsList.length > 1 ? questionsList.length : 5; 
+  const progress = ((currentStep + 1) / totalSteps) * 100;
 
   const handleSubmit = async (finalAnswers) => {
     setIsSubmitting(true);
