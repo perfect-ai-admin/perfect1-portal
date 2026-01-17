@@ -150,20 +150,20 @@ export default function ClientDashboard() {
   const enrichedData = React.useMemo(() => ({
     ...currentData,
     business_state: currentData?.business_state || {
-      stage: 'early_revenue',
-      primary_challenge: 'no_leads',
+      stage: null,
+      primary_challenge: null,
       marketing_state: {
-        current_phase: 'not_ready',
+        current_phase: null,
         active_channels: [],
         past_experiments: []
       },
       sales_state: {
         pipeline: {},
         conversion_rates: {},
-        bottleneck: 'lead_gen'
+        bottleneck: null
       },
       operations_state: {
-        workload_status: 'under_capacity',
+        workload_status: null,
         weekly_capacity: {}
       },
       performance_state: {
@@ -171,19 +171,11 @@ export default function ClientDashboard() {
         execution_rate: 0
       },
       focus_state: {
-        current_strategic_focus: 'growth',
+        current_strategic_focus: null,
         active_initiatives: [],
         deferred_ideas: []
       },
-      unified_recommendation: {
-        single_next_action: 'התחל בערוץ שיווק אחד (פייסבוק או Google) למשך 30 יום',
-        why_this_matters: 'אתה בתחילת דרך וצריך ללמוד מה עובד לפני שמרחיבים',
-        what_not_doing_now: [
-          'אתר חדש - זה יבוא אחרי שיש ביקוש',
-          'העלאת מחירים - קודם תדע מה השוק מוכן לשלם',
-          'קורסים נוספים - תתמקד בביצוע לא בלמידה'
-        ]
-      }
+      unified_recommendation: null
     }
   }), [currentData]);
 

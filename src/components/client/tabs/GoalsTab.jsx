@@ -12,38 +12,8 @@ import {
   DialogContent,
 } from '@/components/ui/dialog';
 
-const SAMPLE_GOALS = [
-  {
-    id: '1',
-    title: 'הכנסה חודשית של ₪15,000',
-    description: 'להגיע להכנסה יציבה ועקבית',
-    currentDisplay: '₪12,500',
-    targetDisplay: '₪15,000',
-    deadline: '2026-03-31',
-    status: 'active',
-    isPrimary: true,
-    actionHint: 'התמקד בלקוחות קיימים - זה יביא לך למטרה ב-3 שבועות.'
-  },
-  {
-    id: '2',
-    title: '10 לקוחות פעילים',
-    deadline: '2026-06-30',
-    status: 'active',
-    isPrimary: false
-  },
-  {
-    id: '3',
-    title: 'מערכת ניהול חשבונות',
-    deadline: '2026-04-30',
-    status: 'active',
-    isPrimary: false
-  }
-];
-
-
-
 export default function GoalsTab({ user, data, openAddGoal = false }) {
-  const [goals, setGoals] = useState(SAMPLE_GOALS);
+  const [goals, setGoals] = useState([]);
   const [userGoals, setUserGoals] = useState([]);
   const [showAddGoal, setShowAddGoal] = useState(openAddGoal);
   const [editingGoal, setEditingGoal] = useState(null);
