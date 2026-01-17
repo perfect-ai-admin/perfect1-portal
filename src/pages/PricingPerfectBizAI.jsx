@@ -9,12 +9,24 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Check, X, ArrowRight, Star, Lock, AlertTriangle, 
-  Layout, Presentation, Megaphone, Loader2, LogIn, CreditCard, ShieldCheck
+  Layout, Presentation, Megaphone, Loader2, LogIn, CreditCard, ShieldCheck,
+  LogOut, HelpCircle, User, Globe
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import TabNavigation from '@/components/client/TabNavigation';
+import NotificationCenter from '@/components/client/NotificationCenter';
+import ShoppingCart from '@/components/client/shared/ShoppingCart';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export default function PricingPerfectBizAI() {
+  const [activeTab, setActiveTab] = useState(null);
+  const [language, setLanguage] = useState('he');
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'yearly'
   const [user, setUser] = useState(null);
   const [plans, setPlans] = useState([]);
@@ -227,6 +239,31 @@ export default function PricingPerfectBizAI() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate(createPageUrl('ClientLogin'));
+  };
+
+  const toggleLanguage = () => {
+    const newLang = language === 'he' ? 'en' : 'he';
+    setLanguage(newLang);
+    document.documentElement.dir = newLang === 'he' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
+  };
+
+  // Permissions logic for tabs
+  const permissions = React.useMemo(() => ({
+    marketing: user?.marketing_enabled || false,
+    mentor: user?.mentor_enabled || false,
+    finance: user?.finance_enabled || false
+  }), [user]);
+
+  const handleTabChange = (tabId) => {
+    // Navigate to dashboard with specific tab if needed, or just dashboard
+    // Currently ClientDashboard defaults to 'progress', but could support query param
+    navigate(createPageUrl('ClientDashboard'));
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -241,53 +278,110 @@ export default function PricingPerfectBizAI() {
         <title>מחירון ומסלולים | Perfect Biz AI</title>
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50 pb-20 font-heebo overflow-x-hidden" dir="rtl">
-        {/* Header - Consistent with ClientDashboard */}
+      <div className="min-h-screen bg-gray-50 pb-20 font-heebo overflow-x-hidden" dir={language === 'he' ? 'rtl' : 'ltr'}>
+        {/* Header - Exact replica of ClientDashboard */}
         <header 
-          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-md sticky top-0 z-50"
+          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
           role="banner"
         >
-          <div className="w-full px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center gap-3">
-                 <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => navigate(-1)} 
-                    className="text-white hover:bg-white/10 hover:text-white p-2 h-auto rounded-full transition-colors"
-                 >
-                    <ArrowRight className="w-5 h-5" />
-                 </Button>
-
-                 {user ? (
-                   <div className="flex items-center gap-2.5">
-                      <Avatar className="w-8 h-8 border-2 border-white/20 shadow-sm">
-                        <AvatarFallback className="bg-white/10 text-white text-xs font-medium">
-                          {user.full_name?.charAt(0) || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm font-medium hidden sm:inline-block text-white/90">{user.full_name}</span>
-                   </div>
-                 ) : (
-                    <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold tracking-tight">Perfect Biz AI</span>
+          <div className="w-full px-3 sm:px-6 lg:px-8">
+            {/* Top Bar - 56px fixed height */}
+            <div className="flex items-center justify-between h-14">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => navigate(-1)} 
+                  className="text-white hover:bg-white/10 hover:text-white p-2 h-auto rounded-full transition-colors mr-1"
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
+                
+                {user ? (
+                  <>
+                    <Avatar className="w-9 h-9 border border-white/20 flex-shrink-0">
+                      <AvatarFallback className="bg-white/10 text-white text-sm font-semibold">
+                        {user.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{user.full_name}</p>
                     </div>
-                 )}
+                  </>
+                ) : (
+                  <div className="flex items-center gap-2">
+                     <span className="text-lg font-bold tracking-tight">Perfect Biz AI</span>
+                  </div>
+                )}
               </div>
 
-              <div className="flex items-center gap-2">
-                 {!user && (
-                     <Button 
-                        size="sm" 
-                        onClick={() => setShowLoginModal(true)}
-                        className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm transition-all"
-                     >
-                        <LogIn className="w-4 h-4 ml-2" />
-                        התחבר
-                     </Button>
-                 )}
+              {/* Right Icons */}
+              <div className="flex items-center gap-1 flex-shrink-0">
+                {user && <ShoppingCart />}
+                
+                <button
+                  className="p-2 bg-white/10 rounded-lg transition-colors text-white"
+                  title="מחירון ומסלולים"
+                >
+                  <CreditCard className="w-6 h-6" />
+                </button>
+
+                {user && <NotificationCenter />}
+                
+                {!user && (
+                   <Button 
+                      size="sm" 
+                      onClick={() => setShowLoginModal(true)}
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm transition-all ml-2"
+                   >
+                      <LogIn className="w-4 h-4 ml-2" />
+                      התחבר
+                   </Button>
+                )}
+
+                {user && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-2 hover:bg-white/10 rounded transition-colors" aria-label="תפריט">
+                        <User className="w-5 h-5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                      <DropdownMenuItem onClick={toggleLanguage} className="text-sm">
+                        <Globe className="w-4 h-4 ml-2" />
+                        {language === 'he' ? 'English' : 'עברית'}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-sm">
+                        <HelpCircle className="w-4 h-4 ml-2" />
+                        עזרה
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleLogout} className="text-sm text-red-600">
+                        <LogOut className="w-4 h-4 ml-2" />
+                        יציאה
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             </div>
+
+            {/* Tab Navigation - Desktop Only - Only if user is logged in */}
+            {user && (
+              <div className="hidden md:block">
+                <TabNavigation 
+                  activeTab={activeTab} 
+                  onChange={handleTabChange} 
+                  availableTabs={[
+                    { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
+                    permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
+                    permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
+                    permissions.mentor && { id: 'goals', label: 'מטרות', icon: 'Target' },
+                    permissions.marketing && { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
+                    permissions.mentor && { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
+                  ].filter(Boolean)} 
+                />
+              </div>
+            )}
           </div>
         </header>
 
