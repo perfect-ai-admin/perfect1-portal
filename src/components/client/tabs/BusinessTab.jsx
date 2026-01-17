@@ -30,8 +30,45 @@ export default function BusinessTab({ data }) {
   const [period, setPeriod] = useState('month');
   const [isExporting, setIsExporting] = useState(false);
   
-  // Empty initial data
-  const revenueData = [];
+  // Check if we have real data (mock check for now)
+  const hasRealData = false; // This would normally check data.revenue_metrics?.length > 0
+
+  // Beautiful Demo Data
+  const demoRevenueData = [
+    { period: 'ינו', value: 12000, previous: 10000 },
+    { period: 'פבר', value: 18000, previous: 12000 },
+    { period: 'מרץ', value: 15000, previous: 18000 },
+    { period: 'אפר', value: 22000, previous: 15000 },
+    { period: 'מאי', value: 28000, previous: 22000 },
+    { period: 'יוני', value: 32000, previous: 28000 },
+  ];
+
+  const demoExpenseData = [
+    { name: 'שיווק ומיתוג', value: 8500, category: 'marketing' },
+    { name: 'תוכנות ותשתיות', value: 3200, category: 'software' },
+    { name: 'ציוד משרדי', value: 1500, category: 'supplies' },
+    { name: 'נסיעות', value: 1200, category: 'travel' },
+    { name: 'אחר', value: 800, category: 'other' }
+  ];
+
+  const demoHeatmapData = Array.from({ length: 90 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    return {
+      date: d.toISOString().split('T')[0],
+      value: Math.random() > 0.6 ? Math.floor(Math.random() * 10) : 0
+    };
+  });
+
+  const revenueData = hasRealData ? [] : demoRevenueData;
+  const expenseData = hasRealData ? [] : demoExpenseData;
+  const heatmapData = hasRealData ? [] : demoHeatmapData;
+
+  // Calculate Demo Totals
+  const totalRevenue = revenueData.reduce((acc, curr) => acc + curr.value, 0);
+  const totalExpenses = expenseData.reduce((acc, curr) => acc + curr.value, 0);
+  const netProfit = totalRevenue - totalExpenses;
+  const performance = 85; // Mock percentage
 
 
 
@@ -107,8 +144,27 @@ export default function BusinessTab({ data }) {
 
 
 
+      {/* Demo Mode Banner */}
+      {!hasRealData && (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-4 flex items-start gap-4 shadow-sm"
+        >
+          <div className="bg-white p-2 rounded-lg shadow-sm">
+            <Sparkles className="w-5 h-5 text-indigo-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-indigo-900 text-sm">המערכת במצב הדגמה</h3>
+            <p className="text-xs text-indigo-700 mt-1">
+              כך יראו הנתונים שלך כשתתחיל לעבוד. כל הגרפים והמדדים יוצגו בזמן אמת ברגע שתזין נתונים אמיתיים.
+            </p>
+          </div>
+        </motion.div>
+      )}
+
       {/* Controls */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mt-6">
         <h2 className="text-lg font-bold text-gray-900">סקירת ביצועים</h2>
         <div className="flex items-center gap-2">
           <Select value={period} onValueChange={setPeriod}>
@@ -150,9 +206,9 @@ export default function BusinessTab({ data }) {
       <div className="hidden md:grid md:grid-cols-4 gap-3">
         <MetricQuadrant
           title="הכנסות"
-          value={0}
-          change="0%"
-          trend={0}
+          value={totalRevenue}
+          change="+12%"
+          trend={1}
           chartData={revenueData}
           icon={TrendingUp}
           isCurrency={true}
@@ -160,9 +216,9 @@ export default function BusinessTab({ data }) {
         />
         <MetricQuadrant
           title="הוצאות"
-          value={0}
-          change="0%"
-          trend={0}
+          value={totalExpenses}
+          change="-5%"
+          trend={-1}
           chartData={revenueData}
           icon={DollarSign}
           isCurrency={true}
@@ -170,9 +226,9 @@ export default function BusinessTab({ data }) {
         />
         <MetricQuadrant
           title="רווח נקי"
-          value={0}
-          change="0%"
-          trend={0}
+          value={netProfit}
+          change="+24%"
+          trend={1}
           chartData={revenueData}
           icon={PieChart}
           isCurrency={true}
@@ -180,9 +236,9 @@ export default function BusinessTab({ data }) {
         />
         <MetricQuadrant
           title="ביצוע"
-          value={0}
-          change="0%"
-          trend={0}
+          value={performance}
+          change="+2%"
+          trend={1}
           chartData={revenueData}
           icon={BarChart3}
           isPercentage={true}
@@ -217,13 +273,23 @@ export default function BusinessTab({ data }) {
 
       {/* Charts Section - Mobile Optimized */}
       <div className="space-y-3">
-        <div className="bg-white rounded-lg border border-gray-200 p-3">
+        <div className="bg-white rounded-lg border border-gray-200 p-3 relative overflow-hidden">
+          {!hasRealData && (
+            <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
+              נתונים לדוגמה
+            </div>
+          )}
           <h3 className="text-sm font-bold text-gray-900 mb-2">מגמת הכנסות</h3>
           <RevenueLineChart data={revenueData} period={period} />
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-3">
+        <div className="bg-white rounded-lg border border-gray-200 p-3 relative overflow-hidden">
+          {!hasRealData && (
+            <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
+              נתונים לדוגמה
+            </div>
+          )}
           <h3 className="text-sm font-bold text-gray-900 mb-2">פילוח הוצאות</h3>
-          <ExpenseDonutChart />
+          <ExpenseDonutChart data={expenseData} />
         </div>
       </div>
 
@@ -244,11 +310,16 @@ export default function BusinessTab({ data }) {
             />
           </div>
 
-          <div className="bg-white rounded-lg shadow p-3 md:p-4">
+          <div className="bg-white rounded-lg shadow p-3 md:p-4 relative">
+            {!hasRealData && (
+              <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
+                נתונים לדוגמה
+              </div>
+            )}
             <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">תעדוף פעילות</h3>
             <div className="flex items-center justify-center overflow-x-auto">
               <HeatmapCalendar 
-                data={[]}
+                data={heatmapData}
                 cellSize={8}
                 cellGap={1}
               />
