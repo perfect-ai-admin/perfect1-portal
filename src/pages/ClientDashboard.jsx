@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import DebugErrorBoundary from '../components/DebugErrorBoundary';
 import { 
-  LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon
+  LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
+  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb
 } from 'lucide-react';
 import {
   Tooltip,
@@ -284,7 +285,14 @@ export default function ClientDashboard() {
 
             {/* Tab Navigation - Desktop Only */}
             <div className="hidden md:block">
-              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} />}
+              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
+                { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
+                permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
+                permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
+                permissions.mentor && { id: 'goals', label: 'מטרות', icon: 'Target' },
+                permissions.marketing && { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
+                permissions.mentor && { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
+              ].filter(Boolean)} />}
             </div>
             </div>
         </header>
@@ -325,7 +333,14 @@ export default function ClientDashboard() {
 
 
         {/* Mobile Bottom Tab Bar */}
-         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} />}
+         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
+           { id: 'progress', label: 'התקדמות', icon: TrendingUp },
+           permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
+           permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
+           permissions.mentor && { id: 'goals', label: 'מטרות', icon: Target },
+           permissions.marketing && { id: 'marketing', label: 'שיווק', icon: Megaphone },
+           permissions.mentor && { id: 'mentor', label: 'מנטור', icon: MessageSquare }
+         ].filter(Boolean)} />}
         </div>
         </>
         </DebugErrorBoundary>

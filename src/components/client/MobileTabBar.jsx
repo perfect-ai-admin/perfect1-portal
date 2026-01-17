@@ -18,10 +18,10 @@ import {
 
 // Mobile Bottom Tab Bar (section 8)
 // Minimum touch targets: 44px
-export default function MobileTabBar({ activeTab, onChange }) {
+export default function MobileTabBar({ activeTab, onChange, availableTabs }) {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   
-  const tabs = [
+  const defaultTabs = [
     { id: 'progress', label: 'התקדמות', icon: TrendingUp },
     { id: 'business', label: 'עסק', icon: BarChart3 },
     { id: 'financial', label: 'כספים', icon: Wallet },
@@ -30,7 +30,9 @@ export default function MobileTabBar({ activeTab, onChange }) {
     { id: 'mentor', label: 'מנטור', icon: MessageSquare }
   ];
 
-  const visibleTabs = tabs.slice(0, 5);
+  const tabs = availableTabs || defaultTabs;
+
+  const visibleTabs = tabs.slice(0, Math.min(5, tabs.length));
   const hiddenTabs = tabs.slice(5);
 
   return (

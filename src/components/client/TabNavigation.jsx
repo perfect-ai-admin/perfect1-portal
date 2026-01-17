@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { BarChart3, Wallet, Target, Lightbulb, MapPin, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const TABS = [
+const DEFAULT_TABS = [
   {
     id: 'progress',
     label: 'מסע העסק',
@@ -36,7 +36,8 @@ const TABS = [
   }
 ];
 
-export default function TabNavigation({ activeTab, onChange }) {
+export default function TabNavigation({ activeTab, onChange, availableTabs }) {
+  const TABS = availableTabs || DEFAULT_TABS;
   return (
     <>
       {/* Desktop Navigation */}
@@ -108,4 +109,4 @@ export default function TabNavigation({ activeTab, onChange }) {
   );
 }
 
-export { TABS };
+export { DEFAULT_TABS as TABS };
