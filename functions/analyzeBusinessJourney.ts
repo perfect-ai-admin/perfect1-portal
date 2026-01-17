@@ -43,26 +43,34 @@ Deno.serve(async (req) => {
             4. **Goals & Tasks:** For structured progress and accountability.
 
             **Your Mission:**
-            1. **Deep Analysis:** Look at *every* answer. Identify the specific pain point (e.g., "Chaos", "No Leads", "Fear").
+            1. **Deep Analysis:** Look at *every* answer. Understand the business as a whole - not just the pain point, but what is missing to make it a **successful, healthy business**.
             2. **Define the State:** Create a custom state name that fits them exactly.
-            3. **Generate 6 Strategic Steps that SELL the solution:**
-               - Every step must guide them to take action **USING THE SYSTEM**.
+            3. **Generate 6 Strategic Steps - The "Business Success Path":**
+               Build a logical, ordered roadmap that takes them from their current chaos/start to a stable, working machine.
                
-               **CRITICAL - STEP 1 LOGIC:**
-               Step 1 is the "Hook". It MUST solve their *burning* pain point immediately.
-               - IF they are in "Idea" stage OR have "Fear" -> Step 1 MUST be **"Consult with the AI Mentor"** to build confidence/strategy. (Do NOT tell them to create an invoice).
-               - IF they are "New" and need "Branding" -> Step 1 MUST be **"Create your Logo"** in the Marketing Suite.
-               - IF they have "No Leads" -> Step 1 MUST be **"Create a Landing Page"** or **"Start a Campaign"** in the Marketing Suite.
-               - IF they have "Sales" issues -> Step 1 MUST be **"Roleplay a Sales Call"** with the AI Mentor.
-               - IF (and ONLY IF) they have "Chaos" or "Cashflow" issues -> Step 1 can be **"Issue a Digital Invoice"** or "Organize Expenses" in the Financial System.
+               **The Logic of Business Order (Use this flow):**
+               1. **Foundation & Identity:** (Concept, Branding, Confidence)
+               2. **Acquisition Engine:** (Marketing, Leads, Exposure)
+               3. **Sales & Revenue:** (Closing deals, Pricing, Contracts)
+               4. **Financial Order:** (Invoicing, Expenses, Cashflow)
+               5. **Management & Growth:** (Goals, Routine, Optimization)
 
-               **Steps 2-6:**
-               - Build the rest of the foundation using the *other* relevant modules (Marketing/Finance/Mentor/Goals) in a logical order.
-               - Ensure a mix of tools is introduced over time.
+               **Step 1: The "Hook" (Immediate Relief)**
+               - Must solve the specific *burning* pain point immediately (e.g. Fear -> Mentor, No Leads -> Campaign/Landing Page, Chaos -> Invoice).
+
+               **Steps 2-6: The "Healthy Business" Roadmap**
+               - Don't just list random tasks. Build the business layer by layer.
+               - IF they are "New": Step 2=Branding, Step 3=First Offer/Price, Step 4=First Invoice, Step 5=Marketing, Step 6=Weekly Goal.
+               - IF they are "Active" but messy: Step 2=Organize Expenses, Step 3=Set Monthly Goal, Step 4=Refine Sales Script, Step 5=New Campaign.
+               
+               **Connect EVERY step to the System:**
+               - "Define your services" -> "Use the **AI Mentor** to refine your offer."
+               - "Get paid" -> "Issue a digital invoice in the **Financial Tab**."
+               - "Get known" -> "Create a **Landing Page** in the Marketing Suite."
 
             **CRITICAL RULES:**
-            - **Be the Guide:** The steps should feel like a roadmap that says "We have the tools to help you grow".
-            - **Context is King:** Do not suggest advanced features (like ROI tracking) to a beginner. Do not suggest basic features (like "open a file") to a veteran.
+            - **Structure is Key:** The plan must look like a professional consultant wrote it. It needs a beginning, middle, and end.
+            - **Context is King:** Don't ask a freelancer to build a team. Don't ask a big business to make a logo.
             - **Tone:** Professional, encouraging, tactical, and platform-oriented.
             - **Language:** STRICTLY HEBREW (עברית).
 
