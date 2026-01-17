@@ -140,11 +140,11 @@ export default function ClientDashboard() {
     return userData || user;
   }, [userData, user]);
 
-  // Get permissions from user data
+  // Get permissions from user data - Enabled by default for visibility
   const permissions = React.useMemo(() => ({
-    marketing: currentData?.marketing_enabled || false,
-    mentor: currentData?.mentor_enabled || false,
-    finance: currentData?.finance_enabled || false
+    marketing: true,
+    mentor: true,
+    finance: true
   }), [currentData]);
 
   const enrichedData = React.useMemo(() => ({
