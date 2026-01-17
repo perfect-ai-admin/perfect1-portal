@@ -36,6 +36,15 @@ const DEFAULT_TABS = [
   }
 ];
 
+const ICON_MAP = {
+  'MapPin': MapPin,
+  'BarChart3': BarChart3,
+  'Wallet': Wallet,
+  'Target': Target,
+  'Megaphone': Megaphone,
+  'Lightbulb': Lightbulb
+};
+
 export default function TabNavigation({ activeTab, onChange, availableTabs }) {
   const TABS = availableTabs || DEFAULT_TABS;
   return (
@@ -46,30 +55,35 @@ export default function TabNavigation({ activeTab, onChange, availableTabs }) {
         role="tablist"
         aria-label="ניווט תפריטים ראשי"
       >
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => onChange(tab.id)}
-            className={cn(
-              "px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors relative",
-              activeTab === tab.id
-                ? "text-white bg-white/5"
-                : "text-white/70 hover:text-white/90"
-            )}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            aria-label={tab.label}
-            tabIndex={activeTab === tab.id ? 0 : -1}
-          >
-            {tab.label}
-            {activeTab === tab.id && (
-              <motion.div 
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-white"
-                layoutId="activeTab"
-              />
-            )}
-          </button>
-        ))}
+        {TABS.map(tab => {
+          const Icon = typeof tab.icon === 'string' ? ICON_MAP[tab.icon] : tab.icon;
+          
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onChange(tab.id)}
+              className={cn(
+                "px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors relative flex items-center gap-2",
+                activeTab === tab.id
+                  ? "text-white bg-white/5"
+                  : "text-white/70 hover:text-white/90"
+              )}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              aria-label={tab.label}
+              tabIndex={activeTab === tab.id ? 0 : -1}
+            >
+              {Icon && <Icon className="w-5 h-5" />}
+              {tab.label}
+              {activeTab === tab.id && (
+                <motion.div 
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-white"
+                  layoutId="activeTab"
+                />
+              )}
+            </button>
+          );
+        })}
       </nav>
 
       {/* Mobile Navigation */}
