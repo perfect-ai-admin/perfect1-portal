@@ -7,7 +7,7 @@ import QuickStatsBar from '../progress/QuickStatsBar';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import { ProgressTabHelp } from '../help/ContextualHelp';
 import GoalsFloatingButton from '../GoalsFloatingButton';
-import { Sparkles, Target, ArrowLeft, Rocket } from 'lucide-react';
+import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
@@ -113,6 +113,16 @@ export default function ProgressTab({ data, onNavigate }) {
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <h2 className="text-sm font-bold text-gray-900">מסע העסק</h2>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowQuestionnaire(true);
+              }}
+              className="mr-2 p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-600 transition-colors"
+              title="התחל שאלון מחדש"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
           </div>
           <motion.div
             animate={{ rotate: isMobileExpanded ? 180 : 0 }}
@@ -196,12 +206,24 @@ export default function ProgressTab({ data, onNavigate }) {
         {/* Journey Timeline - Left 50% */}
         <div className="lg:col-span-6">
           <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              המסע שלך
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+                המסע שלך
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowQuestionnaire(true)}
+                className="text-gray-400 hover:text-blue-600 hover:bg-blue-50 gap-2 h-8"
+                title="התחל שאלון מחדש"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span className="text-xs">שאלון מחדש</span>
+              </Button>
+            </div>
             <JourneyTimeline 
               completedMilestones={completedMilestones}
               currentMilestone={currentMilestone}
@@ -255,6 +277,15 @@ export default function ProgressTab({ data, onNavigate }) {
           }}
         />
       </div>
+
+      <Dialog open={showQuestionnaire} onOpenChange={setShowQuestionnaire}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:p-0 bg-white border-0 shadow-2xl rounded-2xl">
+          <BusinessJourneyQuestionnaire 
+            onComplete={handleQuestionnaireComplete}
+            userId={data?.id}
+          />
+        </DialogContent>
+      </Dialog>
     </motion.div>
     </>
   );
