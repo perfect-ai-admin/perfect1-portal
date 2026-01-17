@@ -200,7 +200,11 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
       {/* Modal for Landing Page */}
       <Dialog open={activeFlowId === 'landing'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <LandingPageQuestionnaire onComplete={() => setActiveFlowId(null)} />
+          <LandingPageQuestionnaire 
+            onComplete={() => setActiveFlowId(null)} 
+            onClose={() => setActiveFlowId(null)}
+            onSwitchToLogo={() => setActiveFlowId('logo')}
+          />
         </DialogContent>
       </Dialog>
 
