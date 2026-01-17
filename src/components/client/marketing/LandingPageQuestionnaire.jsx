@@ -9,7 +9,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, Building2, 
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
-  Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check
+  Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
+  Upload, Phone, Mail, Globe, Lock, CreditCard
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
