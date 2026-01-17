@@ -60,16 +60,21 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
     processSteps: '',
     proofs: [],
     testimonialText: '',
-    ctaType: '',
+    ctaTypes: [], // Changed from ctaType string to array
     ctaText: '',
     pageStyle: '',
     preferredColors: '',
     logoStatus: '',
+    logoFile: null, // New: Store uploaded logo
     formFields: ['name', 'phone'],
     leadDestination: '',
+    destinationPhone: '', // New
+    destinationEmail: '', // New
   });
 
   const [errors, setErrors] = useState({});
+  const [isBuilding, setIsBuilding] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
