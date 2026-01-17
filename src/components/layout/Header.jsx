@@ -175,14 +175,14 @@ export default function Header() {
           {/* Logo - Clickable */}
           <Link 
             to={createPageUrl('Home')} 
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity group"
+            className="flex items-center gap-3 hover:opacity-90 transition-all group"
           >
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#27AE60] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all group-hover:scale-105">
-              <span className="text-white font-black text-xl">P1</span>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#27AE60] flex items-center justify-center shadow-lg shadow-blue-900/20 group-hover:shadow-2xl group-hover:shadow-blue-900/30 transition-all duration-300 group-hover:scale-105 border border-white/20">
+              <span className="text-white font-black text-2xl tracking-tight">P1</span>
             </div>
             <div>
-              <h1 className="font-black text-xl text-[#1E3A5F] leading-tight">פרפקט וואן</h1>
-              <p className="text-xs text-[#27AE60] font-bold">הבית לעצמאים</p>
+              <h1 className="font-black text-2xl text-[#1E3A5F] leading-tight tracking-tight group-hover:text-[#2C5282] transition-colors">פרפקט וואן</h1>
+              <p className="text-sm text-[#27AE60] font-bold tracking-wide">הבית לעצמאים</p>
             </div>
           </Link>
 
