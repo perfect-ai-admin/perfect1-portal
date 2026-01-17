@@ -1,5 +1,6 @@
 import About from './pages/About';
 import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
+import AdminDashboard from './pages/AdminDashboard';
 import AgentCRM from './pages/AgentCRM';
 import AgentLogin from './pages/AgentLogin';
 import AgentsManager from './pages/AgentsManager';
@@ -12,7 +13,6 @@ import BlogPost from './pages/BlogPost';
 import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import Checkout from './pages/Checkout';
 import CheckoutSuccess from './pages/CheckoutSuccess';
-import ClientDashboard from './pages/ClientDashboard';
 import ClientLogin from './pages/ClientLogin';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
@@ -63,7 +63,6 @@ import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransi
 import OsekPaturVsMorasha from './pages/OsekPaturVsMorasha';
 import Partnership from './pages/Partnership';
 import PhotographerLanding from './pages/PhotographerLanding';
-import Pricing from './pages/Pricing';
 import PricingCost from './pages/PricingCost';
 import Privacy from './pages/Privacy';
 import ProfessionLanding from './pages/ProfessionLanding';
@@ -100,13 +99,15 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import AdminDashboard from './pages/AdminDashboard';
+import ClientDashboard from './pages/ClientDashboard';
+import Pricing from './pages/Pricing';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
     "AccountantForOsekMorsha": AccountantForOsekMorsha,
+    "AdminDashboard": AdminDashboard,
     "AgentCRM": AgentCRM,
     "AgentLogin": AgentLogin,
     "AgentsManager": AgentsManager,
@@ -119,7 +120,6 @@ export const PAGES = {
     "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
     "Checkout": Checkout,
     "CheckoutSuccess": CheckoutSuccess,
-    "ClientDashboard": ClientDashboard,
     "ClientLogin": ClientLogin,
     "CloseBusinessLanding": CloseBusinessLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
@@ -170,7 +170,6 @@ export const PAGES = {
     "OsekPaturVsMorasha": OsekPaturVsMorasha,
     "Partnership": Partnership,
     "PhotographerLanding": PhotographerLanding,
-    "Pricing": Pricing,
     "PricingCost": PricingCost,
     "Privacy": Privacy,
     "ProfessionLanding": ProfessionLanding,
@@ -207,7 +206,8 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "AdminDashboard": AdminDashboard,
+    "ClientDashboard": ClientDashboard,
+    "Pricing": Pricing,
 }
 
 export const pagesConfig = {
