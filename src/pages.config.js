@@ -43,6 +43,7 @@ import IncomeTaxPayment from './pages/IncomeTaxPayment';
 import InvoicesAppLanding from './pages/InvoicesAppLanding';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
+import LogoThankYou from './pages/LogoThankYou';
 import MaamatOsekPatur from './pages/MaamatOsekPatur';
 import ManicuristLanding from './pages/ManicuristLanding';
 import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
@@ -99,7 +100,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import LogoThankYou from './pages/LogoThankYou';
 import __Layout from './Layout.jsx';
 
 
@@ -149,6 +149,7 @@ export const PAGES = {
     "InvoicesAppLanding": InvoicesAppLanding,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
+    "LogoThankYou": LogoThankYou,
     "MaamatOsekPatur": MaamatOsekPatur,
     "ManicuristLanding": ManicuristLanding,
     "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
@@ -205,7 +206,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "LogoThankYou": LogoThankYou,
 }
 
 export const pagesConfig = {
