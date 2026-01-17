@@ -39,7 +39,6 @@ export default function ProgressTab({ data, onNavigate }) {
     urgentActions: '0'
   };
 
-  const nextStep = null;
   const isJourneyCompleted = data?.business_journey_completed;
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
