@@ -88,16 +88,18 @@ Deno.serve(async (req) => {
             Business States Definitions:
             ${statesDefinitions}
             
+            IMPORTANT: Output must be strictly in Hebrew (עברית). All titles, descriptions, and names must be in Hebrew.
+            
             Return a JSON object with the following structure:
             {
                 "state_id": "string (e.g., state_1, state_2)",
-                "state_name": "string (The name of the state)",
-                "state_description": "string (The description / subtext)",
-                "state_goal": "string (Where we lead them)",
+                "state_name": "string (The name of the state in Hebrew)",
+                "state_description": "string (The description / subtext in Hebrew)",
+                "state_goal": "string (Where we lead them in Hebrew)",
                 "tasks": [
                     {
-                        "title": "string (Task title)",
-                        "description": "string (Short description based on the task name)",
+                        "title": "string (Task title in Hebrew)",
+                        "description": "string (Short description based on the task name in Hebrew)",
                         "is_milestone": boolean (true for major steps)
                     }
                 ]
