@@ -257,17 +257,16 @@ export default function PricingPerfectBizAI() {
     document.documentElement.lang = newLang;
   };
 
-  // Permissions logic for tabs
+  // Permissions logic for tabs - Show all tabs like in Dashboard
   const permissions = React.useMemo(() => ({
-    marketing: user?.marketing_enabled || false,
-    mentor: user?.mentor_enabled || false,
-    finance: user?.finance_enabled || false
+    marketing: true,
+    mentor: true,
+    finance: true
   }), [user]);
 
   const handleTabChange = (tabId) => {
-    // Navigate to dashboard with specific tab if needed, or just dashboard
-    // Currently ClientDashboard defaults to 'progress', but could support query param
-    navigate(createPageUrl('ClientDashboard'));
+    // Navigate to dashboard with specific tab
+    navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
   };
 
   if (isLoading) {

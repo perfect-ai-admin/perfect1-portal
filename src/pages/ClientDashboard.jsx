@@ -49,6 +49,17 @@ export default function ClientDashboard() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
+  
+  const location = useLocation(); // Ensure useLocation is used
+
+  // Handle tab change from URL query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [location.search]);
 
   // Reset goalsTabConfig when leaving goals tab
   React.useEffect(() => {
