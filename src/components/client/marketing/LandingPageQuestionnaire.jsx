@@ -502,26 +502,64 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <Label className="text-xs font-semibold">האם יש לך לוגו?</Label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-1 gap-3">
+                  {/* Option 1: Have Logo - Upload */}
                   <div 
-                    onClick={() => handleInputChange('logoStatus', 'yes')}
                     className={cn(
-                      "flex-1 cursor-pointer p-2.5 rounded-xl border text-center transition-all",
-                      formData.logoStatus === 'yes' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200 hover:bg-gray-50"
+                      "border-2 border-dashed rounded-xl p-6 transition-all text-center cursor-pointer relative",
+                      formData.logoStatus === 'uploaded' ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-pink-400 hover:bg-pink-50"
                     )}
                   >
-                    <span className="text-sm font-medium">יש לי לוגו</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleLogoUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <div className="flex flex-col items-center gap-2 pointer-events-none">
+                      {formData.logoStatus === 'uploaded' ? (
+                        <>
+                          <Check className="w-8 h-8 text-green-600" />
+                          <span className="text-sm font-bold text-green-700">הלוגו נשמר בהצלחה!</span>
+                          <span className="text-xs text-green-600">{formData.logoFile?.name}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-8 h-8 text-gray-400" />
+                          <span className="text-sm font-bold text-gray-700">יש לי לוגו - לחץ להעלאה</span>
+                          <span className="text-xs text-gray-500">או גרור את הקובץ לכאן</span>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div 
-                    onClick={() => handleInputChange('logoStatus', 'no')}
-                    className={cn(
-                      "flex-1 cursor-pointer p-2.5 rounded-xl border text-center transition-all",
-                      formData.logoStatus === 'no' ? "border-pink-500 bg-pink-50 text-pink-900" : "border-gray-200 hover:bg-gray-50"
-                    )}
-                  >
-                    <span className="text-sm font-medium">צריך לעצב</span>
+
+                  {/* Option 2: Need Design */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-gray-600">אין לך לוגו? בחר אפשרות:</p>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={onSwitchToLogo}
+                        className="flex-1 py-3 px-2 bg-pink-600 text-white rounded-xl text-xs font-bold hover:bg-pink-700 transition-colors flex items-center justify-center gap-2 shadow-sm"
+                      >
+                        <Paintbrush className="w-3.5 h-3.5" />
+                        עצב לוגו עכשיו
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleInputChange('logoStatus', 'later')}
+                        className={cn(
+                          "flex-1 py-3 px-2 border rounded-xl text-xs font-bold transition-colors",
+                          formData.logoStatus === 'later' 
+                            ? "border-pink-600 bg-pink-50 text-pink-700" 
+                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                        )}
+                      >
+                        אעצב בהמשך
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
