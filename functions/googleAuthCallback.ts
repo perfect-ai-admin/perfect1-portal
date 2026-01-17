@@ -105,22 +105,28 @@ Deno.serve(async (req) => {
         }
         
         // Return HTML page that stores client in localStorage and redirects
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>מתחבר...</title>
-                <meta charset="utf-8">
-            </head>
-            <body>
-                <script>
-                    localStorage.setItem('client', '${JSON.stringify(client).replace(/'/g, "\\'")}');
-                    window.location.href = '${BASE_URL}/ClientDashboard';
-                </script>
-                <p style="text-align: center; font-family: Arial; margin-top: 50px;">מתחבר למערכת...</p>
-            </body>
-            </html>
-        `;
+        const clientJson = JSON.stringify(client).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        
+        const html = `<!DOCTYPE html>
+<html>
+<head>
+    <title>מתחבר...</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <script>
+        try {
+            const clientData = '${clientJson}';
+            localStorage.setItem('client', clientData);
+            window.location.href = '${BASE_URL}/ClientDashboard';
+        } catch(e) {
+            console.error('Error:', e);
+            window.location.href = '${BASE_URL}/ClientLogin?error=storage_failed';
+        }
+    </script>
+    <p style="text-align: center; font-family: Arial; margin-top: 50px;">מתחבר למערכת...</p>
+</body>
+</html>`;
         
         return new Response(html, {
             status: 200,
