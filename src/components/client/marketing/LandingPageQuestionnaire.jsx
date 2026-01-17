@@ -158,8 +158,19 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
-      onComplete(formData);
+      setIsBuilding(true);
+      // Simulate building process
+      setTimeout(() => {
+        setIsBuilding(false);
+        setShowSuccess(true);
+      }, 2500);
     }
+  };
+
+  const handlePurchase = () => {
+    // Navigate to checkout or show payment modal
+    // For now, we simulate this
+    window.location.href = '/Checkout?product=landing-page&price=499';
   };
 
   const progressPercent = (currentStep / totalSteps) * 100;
