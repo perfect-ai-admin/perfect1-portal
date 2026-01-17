@@ -51,12 +51,14 @@ export default function ClientLogin() {
 
   const handleGoogleLogin = async () => {
     try {
-      // Call backend function to get Google OAuth URL
       const response = await base44.functions.invoke('googleAuthStart', {});
       
-      // The function should return a redirect, so we follow it
       if (response.data && response.data.url) {
+        // Save state for verification
+        sessionStorage.setItem('oauth_state', response.data.state);
         window.location.href = response.data.url;
+      } else {
+        setError('שגיאה בהתחברות עם Google. אנא נסה שוב.');
       }
     } catch (error) {
       console.error('Google login error:', error);
