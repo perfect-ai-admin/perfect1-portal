@@ -42,8 +42,18 @@ const MILESTONES = [
   }
 ];
 
-export default function JourneyTimeline({ completedMilestones = [], currentMilestone = 'registration' }) {
+export default function JourneyTimeline({ 
+  completedMilestones = [], 
+  currentMilestone = 'registration',
+  milestones = MILESTONES 
+}) {
   const getMilestoneStatus = (milestone) => {
+    // Check if tasks have status directly
+    if (milestone.status === 'completed') return 'completed';
+    if (milestone.status === 'in_progress') return 'current';
+    if (milestone.status === 'pending') return 'locked';
+    
+    // Fallback to id-based check
     if (completedMilestones.includes(milestone.id)) return 'completed';
     if (milestone.id === currentMilestone) return 'current';
     return 'locked';
@@ -51,7 +61,7 @@ export default function JourneyTimeline({ completedMilestones = [], currentMiles
 
   return (
     <div className="space-y-3">
-      {MILESTONES.map((milestone, index) => {
+      {milestones.map((milestone, index) => {
         const status = getMilestoneStatus(milestone);
         const isCompleted = status === 'completed';
         const isCurrent = status === 'current';
@@ -66,7 +76,7 @@ export default function JourneyTimeline({ completedMilestones = [], currentMiles
             className="relative"
           >
             {/* Connector Line */}
-            {index < MILESTONES.length - 1 && (
+            {index < milestones.length - 1 && (
               <div 
                 className={cn(
                   "absolute right-5 top-12 w-0.5 h-8",

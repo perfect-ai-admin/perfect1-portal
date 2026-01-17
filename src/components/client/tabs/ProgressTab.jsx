@@ -17,9 +17,18 @@ export default function ProgressTab({ data, onNavigate }) {
   const queryClient = useQueryClient();
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   
-  // Empty initial data
+  // Use dynamic tasks if available, otherwise default milestones
+  const activeMilestones = data?.client_tasks?.length > 0 
+    ? data.client_tasks 
+    : MILESTONES;
+
+  // Determine current/completed based on status field in tasks
+  const currentTask = activeMilestones.find(t => t.status === 'in_progress' || t.status === 'pending');
+  const nextStep = currentTask || activeMilestones[0];
+  
+  // For legacy/default milestones
   const completedMilestones = [];
-  const currentMilestone = null;
+  const currentMilestone = nextStep?.id;
   const whyMattersRef = React.useRef(null);
   const [whyExpanded, setWhyExpanded] = useState(false);
   
@@ -140,9 +149,17 @@ export default function ProgressTab({ data, onNavigate }) {
             exit={{ height: 0, opacity: 0 }}
             className="mt-2 space-y-1.5"
           >
-            {MILESTONES.map((milestone) => {
-              const status = completedMilestones.includes(milestone.id) ? 'completed' 
-                : milestone.id === currentMilestone ? 'current' : 'locked';
+            {activeMilestones.map((milestone) => {
+              let status = 'locked';
+              if (milestone.status) {
+                 if (milestone.status === 'completed') status = 'completed';
+                 else if (milestone.status === 'in_progress') status = 'current';
+              } else {
+                 // Fallback
+                 status = completedMilestones.includes(milestone.id) ? 'completed' 
+                  : milestone.id === currentMilestone ? 'current' : 'locked';
+              }
+
               const isCompleted = status === 'completed';
               const isCurrent = status === 'current';
 
@@ -224,9 +241,17 @@ export default function ProgressTab({ data, onNavigate }) {
                 <span className="text-xs">שאלון מחדש</span>
               </Button>
             </div>
+            {data?.business_state && (
+              <div className="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <div className="text-sm text-blue-800 font-semibold">{data.business_state.name}</div>
+                <div className="text-xs text-blue-600 mt-1">{data.business_state.description}</div>
+                <div className="text-xs font-bold text-blue-700 mt-2">המטרה: {data.business_state.goal}</div>
+              </div>
+            )}
             <JourneyTimeline 
               completedMilestones={completedMilestones}
               currentMilestone={currentMilestone}
+              milestones={activeMilestones}
             />
           </div>
         </div>
