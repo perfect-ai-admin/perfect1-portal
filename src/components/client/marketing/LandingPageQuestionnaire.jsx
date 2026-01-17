@@ -406,24 +406,25 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="block font-bold text-xs">מה הפעולה הרצויה?</Label>
+                <Label className="block font-bold text-xs">מה הפעולה הרצויה? (ניתן לבחור כמה)</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'details', label: 'השארת פרטים', desc: 'טופס לידים' },
-                    { value: 'whatsapp', label: 'וואטסאפ', desc: 'פנייה ישירה' },
-                    { value: 'phone', label: 'שיחה', desc: 'חיוג מיידי' },
-                    { value: 'meeting', label: 'פגישה', desc: 'יומן דיגיטלי' }
+                    { value: 'details', label: 'השארת פרטים', desc: 'טופס לידים', icon: FileText },
+                    { value: 'whatsapp', label: 'וואטסאפ', desc: 'פנייה ישירה', icon: MessageSquare },
+                    { value: 'phone', label: 'שיחה', desc: 'חיוג מיידי', icon: Phone },
+                    { value: 'meeting', label: 'פגישה', desc: 'יומן דיגיטלי', icon: Calendar }
                   ].map(option => (
                     <SelectionCard
                       key={option.value}
-                      selected={formData.ctaType === option.value}
-                      onClick={() => handleInputChange('ctaType', option.value)}
-                      icon={Send}
+                      selected={formData.ctaTypes.includes(option.value)}
+                      onClick={() => handleCheckboxChange('ctaTypes', option.value, !formData.ctaTypes.includes(option.value))}
+                      icon={option.icon || Send}
                       title={option.label}
                       description={option.desc}
                     />
                   ))}
                 </div>
+                {errors.ctaTypes && <p className="text-red-500 text-[10px] mt-1">{errors.ctaTypes}</p>}
               </div>
 
               <div className="space-y-2">
