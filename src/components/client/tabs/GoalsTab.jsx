@@ -105,61 +105,81 @@ export default function GoalsTab({ data, openAddGoal = false }) {
         </DialogContent>
       </Dialog>
 
-      <div className="flex justify-center pt-4 px-4 md:pt-0 md:p-0 md:justify-start">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="space-y-3 w-full max-w-xs md:max-w-none md:w-full md:bg-transparent md:border-0 md:p-0 md:shadow-none bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
-      >
-
-      {/* Hero Goal */}
-      {heroGoal && (
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-2">המטרה הראשית שלך</p>
-          <HeroGoal 
-            goal={heroGoal}
-            onStatusChange={handleStatusChange}
-            onEdit={handleEditGoal}
-            onDelete={handleDeleteGoal}
-          />
-        </div>
-      )}
-
-      {/* Secondary Goals */}
-      {secondaryGoals.length > 0 && (
-        <SecondaryGoals 
-          goals={secondaryGoals}
-          onStatusChange={handleStatusChange}
-          onEdit={handleEditGoal}
-          onDelete={handleDeleteGoal}
-        />
-      )}
-
-      {/* Add Goal Button */}
-      <div className="pt-4">
-        <Button 
-          className="w-full gap-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white border-0 hover:from-purple-600 hover:to-purple-700 shadow-md hover:shadow-lg transition-all"
-          onClick={handleShowAddGoal}
+      <div className="container mx-auto max-w-4xl p-0 md:p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          className="space-y-8"
         >
-          <Plus className="w-4 h-4" />
-          מטרה חדשה
-        </Button>
-      </div>
+          
+          {/* Header Section */}
+          <div className="flex items-end justify-between px-1">
+             <div>
+               <h1 className="text-2xl font-bold text-gray-900">המטרות שלי</h1>
+               <p className="text-gray-500 text-sm mt-1">
+                 {goals.length > 0 
+                   ? `יש לך ${goals.length} מטרות פעילות. תן בראש! 💪` 
+                   : 'זה הזמן להגדיר מטרות חדשות ולהתחיל לצמוח 🌱'}
+               </p>
+             </div>
+             <Button 
+                onClick={handleShowAddGoal}
+                size="sm"
+                className="bg-gray-900 text-white hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all rounded-full px-4"
+              >
+                <Plus className="w-4 h-4 ml-2" />
+                מטרה חדשה
+              </Button>
+          </div>
 
-      {/* Empty State */}
-      {goals.length === 0 && (
-        <div className="bg-white rounded-lg border-2 border-dashed border-gray-200 p-8 text-center">
-          <p className="text-gray-600 mb-4">אין מטרות עדיין</p>
-          <Button onClick={handleShowAddGoal}>
-            <Plus className="w-4 h-4 ml-2" />
-            צור מטרה ראשונה
-          </Button>
-        </div>
-      )}
+          {/* Hero Goal */}
+          {heroGoal && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 px-1">
+                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                <p className="text-xs font-bold text-blue-600 uppercase tracking-wider">הפוקוס העיקרי שלך</p>
+              </div>
+              <HeroGoal 
+                goal={heroGoal}
+                onStatusChange={handleStatusChange}
+                onEdit={handleEditGoal}
+                onDelete={handleDeleteGoal}
+              />
+            </div>
+          )}
 
-      </motion.div>
+          {/* Secondary Goals */}
+          {secondaryGoals.length > 0 && (
+            <SecondaryGoals 
+              goals={secondaryGoals}
+              onStatusChange={handleStatusChange}
+              onEdit={handleEditGoal}
+              onDelete={handleDeleteGoal}
+            />
+          )}
+
+          {/* Empty State */}
+          {goals.length === 0 && (
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center"
+            >
+              <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Plus className="w-10 h-10 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">אין מטרות עדיין</h3>
+              <p className="text-gray-500 mb-8 max-w-sm mx-auto">מטרות הן המצפן של העסק. בוא נגדיר את היעד הבא שלך ונתחיל לנוע לעברו.</p>
+              <Button onClick={handleShowAddGoal} size="lg" className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200">
+                <Plus className="w-5 h-5 ml-2" />
+                צור מטרה ראשונה
+              </Button>
+            </motion.div>
+          )}
+
+        </motion.div>
       </div>
-      </>
+    </>
       );
       }
