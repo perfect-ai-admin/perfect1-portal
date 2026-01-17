@@ -12,35 +12,7 @@ const insightTypes = {
   consistency: { icon: Lightbulb, label: 'עקביות', color: 'from-blue-500 to-blue-600' }
 };
 
-const mockInsights = [
-  {
-    id: 1,
-    type: 'leads',
-    title: 'ירידה בלידים מגוגל',
-    why: 'תקציב הקמפיין נגמר וקמפיין חדש עוד לא הופעל',
-    action: 'הפעל קמפיין חדש או הגדל תקציב',
-    metric: 'מטרה: 10+ לידים חדשים בשבוע',
-    confidence: 'high'
-  },
-  {
-    id: 2,
-    type: 'sales',
-    title: 'אתה לא שולח פולואפים',
-    why: 'אחוז הסגירה נמוך מכיוון שאתה מתחבר אבל לא עוקב',
-    action: 'שלח הודעת פולואפ ל-3 לידים שממתינים',
-    metric: 'מטרה: 2 סגירות בשבוע',
-    confidence: 'high'
-  },
-  {
-    id: 3,
-    type: 'expenses',
-    title: 'הוצאות מעלות כל חודש',
-    why: 'תקציב גוגל עלה בלי שהכנסות עלו',
-    action: 'בדוק ROAS וקבע תקציב מקסימלי',
-    metric: 'ROAS יעד: 3:1',
-    confidence: 'medium'
-  }
-];
+const mockInsights = [];
 
 export default function Insights() {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
@@ -50,7 +22,7 @@ export default function Insights() {
     <div className="flex flex-col h-full bg-white">
       <MentorHeader 
         title="ניתוחים"
-        subtitle={`${mockInsights.length} תובנות השבוע`}
+        subtitle="אין תובנות חדשות"
         icon={Zap}
       />
 
