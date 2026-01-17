@@ -22,7 +22,7 @@ export default function AdminDashboard() {
     const checkAuth = async () => {
         try {
             const currentUser = await base44.auth.me();
-            if (!currentUser || !currentUser.is_admin) {
+            if (!currentUser || currentUser.role !== 'admin') {
                 window.location.href = '/';
                 return;
             }
