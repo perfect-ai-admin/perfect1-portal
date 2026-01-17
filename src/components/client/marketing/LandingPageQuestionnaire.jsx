@@ -147,6 +147,14 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
+  const handleLogoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, logoFile: file, logoStatus: 'uploaded' }));
+      // In a real app, we would upload this to storage here
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
