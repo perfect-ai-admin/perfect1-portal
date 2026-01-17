@@ -45,7 +45,7 @@ import { SkeletonHeader, SkeletonTabContent } from '../components/client/Skeleto
 
 
 export default function ClientDashboard() {
-  const [client, setClient] = useState(null);
+  const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
 
@@ -62,43 +62,45 @@ export default function ClientDashboard() {
   // Check authentication
   useEffect(() => {
     try {
-      const storedClient = localStorage.getItem('client');
-      if (!storedClient) {
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) {
         navigate(createPageUrl('ClientLogin'));
         return;
       }
-      const parsed = JSON.parse(storedClient);
-      if (!parsed?.id || !parsed?.name) {
-        throw new Error('Invalid client data');
+      const parsed = JSON.parse(storedUser);
+      if (!parsed?.id || !parsed?.full_name) {
+        throw new Error('Invalid user data');
       }
-      setClient(parsed);
+      setUser(parsed);
     } catch (error) {
       console.error('Auth error:', error);
-      localStorage.removeItem('client');
+      localStorage.removeItem('user');
       navigate(createPageUrl('ClientLogin'));
     }
   }, [navigate]);
 
-  // Fetch client data
-  const { data: clientData, isLoading, error: fetchError } = useQuery({
-    queryKey: ['client', client?.id],
+  // Fetch user data
+  const { data: userData, isLoading, error: fetchError } = useQuery({
+    queryKey: ['user', user?.id],
     queryFn: async () => {
-      if (!client?.id) {
-        return client;
+      if (!user?.id) {
+        return user;
       }
       try {
-        const leads = await base44.entities.Lead.filter({ id: client.id });
-        if (!leads || leads.length === 0) {
-          console.warn('No leads found, using stored client data');
-          return client;
+        const users = await base44.entities.User.filter({ id: user.id });
+        if (!users || users.length === 0) {
+          console.warn('No users found, using stored user data');
+          return user;
         }
-        return leads[0] || client;
+        const freshUser = users[0] || user;
+        localStorage.setItem('user', JSON.stringify(freshUser));
+        return freshUser;
       } catch (err) {
-        console.error('Error fetching client data:', err);
-        return client;
+        console.error('Error fetching user data:', err);
+        return user;
       }
     },
-    enabled: !!client?.id,
+    enabled: !!user?.id,
     refetchInterval: false,
     retry: 1,
     staleTime: 30000,
@@ -112,7 +114,7 @@ export default function ClientDashboard() {
 
   const handleRefresh = async () => {
     try {
-      await queryClient.invalidateQueries({ queryKey: ['client', client?.id] });
+      await queryClient.invalidateQueries({ queryKey: ['user', user?.id] });
       return new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
       console.error('Refresh error:', error);
@@ -134,8 +136,15 @@ export default function ClientDashboard() {
   const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
 
   const currentData = React.useMemo(() => {
-    return clientData || client;
-  }, [clientData, client]);
+    return userData || user;
+  }, [userData, user]);
+
+  // Get permissions from user data
+  const permissions = React.useMemo(() => ({
+    marketing: currentData?.marketing_enabled || false,
+    mentor: currentData?.mentor_enabled || false,
+    finance: currentData?.finance_enabled || false
+  }), [currentData]);
 
   const enrichedData = React.useMemo(() => ({
     ...currentData,
@@ -177,7 +186,7 @@ export default function ClientDashboard() {
     }
   }), [currentData]);
 
-  if (!client) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl">
@@ -195,7 +204,7 @@ export default function ClientDashboard() {
     );
   }
 
-  if (!currentData?.id || !currentData?.name || typeof currentData !== 'object') {
+  if (!currentData?.id || !currentData?.full_name || typeof currentData !== 'object') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
         <Alert variant="destructive" className="max-w-md">
@@ -220,7 +229,7 @@ export default function ClientDashboard() {
     <DebugErrorBoundary>
       <>
       <Helmet>
-        <title>מרכז ניהול עסקי - {currentData.name} | Perfect One</title>
+        <title>מרכז ניהול עסקי - {currentData.full_name} | Perfect One</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -236,11 +245,11 @@ export default function ClientDashboard() {
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <Avatar className="w-9 h-9 border border-white/20 flex-shrink-0">
                 <AvatarFallback className="bg-white/10 text-white text-sm font-semibold">
-                  {currentData?.name?.charAt(0)?.toUpperCase() || 'U'}
+                  {currentData?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{currentData?.name || 'משתמש'}</p>
+                <p className="text-sm font-medium truncate">{currentData?.full_name || 'משתמש'}</p>
               </div>
             </div>
 
@@ -296,18 +305,18 @@ export default function ClientDashboard() {
                    <Breadcrumbs activeTab={activeTab} onNavigate={setActiveTab} />
                  </div>
 
-                 {/* Tabs */}
+                 {/* Tabs - Dynamic based on permissions */}
                  {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={(tab, config) => {
                    setActiveTab(tab);
                    if (tab === 'goals' && config) {
                      setGoalsTabConfig(config);
                    }
                  }} />}
-                 {activeTab === 'business' && <BusinessTab data={enrichedData} />}
-                 {activeTab === 'financial' && <FinancialTab data={enrichedData} />}
-                 {activeTab === 'goals' && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} />}
-                 {activeTab === 'marketing' && <MarketingTab data={enrichedData} />}
-                 {activeTab === 'mentor' && <MentorTab data={enrichedData} />}
+                 {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
+                 {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
+                 {activeTab === 'goals' && permissions.mentor && <GoalsTab data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} />}
+                 {activeTab === 'marketing' && permissions.marketing && <MarketingTab data={enrichedData} />}
+                 {activeTab === 'mentor' && permissions.mentor && <MentorTab data={enrichedData} />}
                </div>
              </main>
            </div>
