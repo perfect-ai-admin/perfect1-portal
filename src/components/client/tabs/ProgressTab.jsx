@@ -10,49 +10,20 @@ import GoalsFloatingButton from '../GoalsFloatingButton';
 import { Sparkles, Target } from 'lucide-react';
 
 export default function ProgressTab({ data, onNavigate }) {
-  // Mock data - יש להחליף בנתונים אמיתיים
-  const completedMilestones = ['registration'];
-  const currentMilestone = 'first_invoice';
+  // Empty initial data
+  const completedMilestones = [];
+  const currentMilestone = null;
   const whyMattersRef = React.useRef(null);
   const [whyExpanded, setWhyExpanded] = useState(false);
   
   const quickStats = {
-    monthlyRevenue: '₪12,500',
-    activeGoals: '3',
-    pendingInvoices: '2',
-    urgentActions: '1'
+    monthlyRevenue: '₪0',
+    activeGoals: '0',
+    pendingInvoices: '0',
+    urgentActions: '0'
   };
 
-  const nextStep = {
-    title: 'צור את החשבונית הראשונה שלך',
-    why: 'זה הצעד שהופך אותך מעצמאי בתיאוריה לעסק אמיתי.',
-    icon: <Target className="w-10 h-10" />,
-    reasons: [
-      {
-        type: 'planning',
-        title: 'רגע מכנון',
-        description: 'החשבונית הראשונה היא הקודה שדה אתרה רשימה. "זעמ" - לא רק בתיאוריה - במציאות.'
-      },
-      {
-        type: 'impact',
-        title: 'מה זה אומר על השקע',
-        description: 'לקוח שנוודים = משכנתא שלנו ששירות שלך השקע הממשי לרישום השקע.'
-      },
-      {
-        type: 'tracking',
-        title: 'למה לעקוב אחרי זה',
-        description: 'כל שחברות משפרות משימות חלוק מבטוח. מחפש נכון. זה ההמיתחיד שיעוזור לך לצמוח.'
-      },
-      {
-        type: 'remember',
-        title: 'מה חשוב לזכור',
-        description: 'חשבונית רישונה לא היחידה וגם אינה סוף. חשבון מצטבר ממעשים ברורים.'
-      }
-    ],
-    action: () => {
-      onNavigate('financial');
-    }
-  };
+  const nextStep = null;
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
@@ -136,27 +107,31 @@ export default function ProgressTab({ data, onNavigate }) {
       </div>
 
       {/* Next Step Card - Mobile */}
-      <div className="lg:hidden">
-        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-3">
-          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
-              <Target className="w-3.5 h-3.5 text-white" />
+      {nextStep && (
+        <>
+          <div className="lg:hidden">
+            <div className="bg-white rounded-lg shadow-md border border-gray-100 p-3">
+              <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <div className="w-7 h-7 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
+                  <Target className="w-3.5 h-3.5 text-white" />
+                </div>
+                השלב הבא שלך
+              </h2>
+              <NextStepCard step={nextStep} onWhyClick={scrollToWhyMatters} />
             </div>
-            השלב הבא שלך
-          </h2>
-          <NextStepCard step={nextStep} onWhyClick={scrollToWhyMatters} />
-        </div>
-      </div>
+          </div>
 
-      {/* Why This Matters - Mobile */}
-      <div className="lg:hidden">
-        <StepImportancePanel 
-          ref={whyMattersRef} 
-          step={nextStep} 
-          isExpanded={whyExpanded}
-          onExpandChange={setWhyExpanded}
-        />
-      </div>
+          {/* Why This Matters - Mobile */}
+          <div className="lg:hidden">
+            <StepImportancePanel 
+              ref={whyMattersRef} 
+              step={nextStep} 
+              isExpanded={whyExpanded}
+              onExpandChange={setWhyExpanded}
+            />
+          </div>
+        </>
+      )}
 
       {/* Desktop Grid */}
       <div className="hidden lg:grid lg:grid-cols-12 gap-6">
@@ -184,18 +159,32 @@ export default function ProgressTab({ data, onNavigate }) {
            </div>
 
            {/* Next Step */}
-           <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
-             <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-               <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
-                 <Target className="w-4 h-4 text-white" />
+           {nextStep && (
+             <>
+               <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                   <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
+                     <Target className="w-4 h-4 text-white" />
+                   </div>
+                   השלב הבא
+                 </h2>
+                 <NextStepCard step={nextStep} />
                </div>
-               השלב הבא
-             </h2>
-             <NextStepCard step={nextStep} />
-           </div>
 
-           {/* Why This Matters */}
-           <StepImportancePanel step={nextStep} />
+               {/* Why This Matters */}
+               <StepImportancePanel step={nextStep} />
+             </>
+           )}
+           
+           {!nextStep && (
+             <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5 text-center py-12">
+               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <Target className="w-8 h-8 text-gray-400" />
+               </div>
+               <h3 className="text-lg font-bold text-gray-900 mb-2">אין צעד הבא מוגדר</h3>
+               <p className="text-gray-500">התחל על ידי הגדרת מטרות חדשות או עדכון הסטטוס העסקי שלך.</p>
+             </div>
+           )}
          </div>
       </div>
 
