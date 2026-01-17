@@ -10,7 +10,8 @@ import {
   ChevronLeft, ChevronRight, X, Sparkles, Building2, 
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
-  Upload, Phone, Mail, Globe, Lock, CreditCard
+  Upload, Phone, Mail, Globe, Lock, CreditCard,
+  FileText, Calendar
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
