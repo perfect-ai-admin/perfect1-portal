@@ -117,7 +117,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
         if (!formData.processSteps.trim()) newErrors.processSteps = 'איך זה עובד?';
         break;
       case 5:
-        if (!formData.ctaType) newErrors.ctaType = 'איך יפנו אליך?';
+        if (formData.ctaTypes.length === 0) newErrors.ctaTypes = 'בחר לפחות דרך אחת ליצירת קשר';
         if (!formData.ctaText) newErrors.ctaText = 'מה כתוב על הכפתור?';
         break;
       case 6:
@@ -127,6 +127,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose }) {
       case 7:
         if (formData.formFields.length === 0) newErrors.formFields = 'איזה פרטים לקלוט?';
         if (!formData.leadDestination) newErrors.leadDestination = 'לאן לשלוח את הליד?';
+        if (formData.leadDestination === 'whatsapp' && !formData.destinationPhone) newErrors.destinationPhone = 'נא להזין מספר טלפון';
+        if (formData.leadDestination === 'email' && !formData.destinationEmail) newErrors.destinationEmail = 'נא להזין כתובת מייל';
         break;
     }
     setErrors(newErrors);
