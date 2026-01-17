@@ -44,7 +44,7 @@ const SelectionCard = ({ selected, onClick, icon: Icon, title, description }) =>
   </div>
 );
 
-export default function LandingPageQuestionnaire({ onComplete, onClose }) {
+export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitchToLogo }) {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 7;
   
