@@ -1,162 +1,227 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Button } from '@/components/ui/button';
-import { Check, Star, Building, Briefcase } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { motion } from 'framer-motion';
+import PricingSection from '../components/home/PricingSection';
+import FAQSection from '../components/home/FAQSection';
+import CTASection from '../components/home/CTASection';
+import InternalLinker from '../components/seo/InternalLinker';
+import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
+import { CheckCircle, Info, ArrowLeft } from 'lucide-react';
 
 export default function Pricing() {
-  const navigate = useNavigate();
-
-  const pricingTiers = [
-    {
-      name: 'עוסק פטור',
-      price: '₪117',
-      period: '/חודש',
-      description: 'הפתרון המושלם לעסקים קטנים ופטורים ממע"מ',
-      icon: Star,
-      features: [
-        'פתיחת תיק ברשויות',
-        'הגשת דוח שנתי',
-        'הצהרת הון (במידת הצורך)',
-        'ייצוג מול רשויות המס',
-        'אפליקציה להפקת קבלות',
-        'התייעצות שוטפת בווצאפ'
-      ],
-      cta: 'פתח תיק עוסק פטור',
-      link: 'OsekPaturLanding',
-      highlight: false
+  // Enhanced Pricing Schema with isPartOf and sameAs
+  const pricingSchema = {
+    "@context": "https://schema.org",
+    "@type": "PriceSpecification",
+    "name": "מחירון עוסק פטור בישראל",
+    "description": "מחירים שקופים לפתיחת וליווי עוסק פטור",
+    "priceCurrency": "ILS",
+    "offers": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "פתיחת עוסק פטור",
+          "description": "תהליך פתיחה מלא"
+        },
+        "price": "199",
+        "priceCurrency": "ILS",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "ליווי חודשי",
+          "description": "ליווי שוטף ואפליקציה"
+        },
+        "price": "149",
+        "priceCurrency": "ILS",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "דוח שנתי",
+          "description": "הכנה והגשת דוח שנתי"
+        },
+        "price": "500",
+        "priceCurrency": "ILS",
+        "availability": "https://schema.org/InStock"
+      }
+    ],
+    "seller": {
+      "@type": "Organization",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il",
+      "sameAs": [
+        "https://www.facebook.com/perfect1.co.il",
+        "https://www.linkedin.com/company/perfect1",
+        "https://www.instagram.com/perfect1.co.il"
+      ]
     },
-    {
-      name: 'עוסק מורשה',
-      price: '₪250',
-      period: '/חודש',
-      description: 'לעסקים בצמיחה שחייבים בדיווח מע"מ',
-      icon: Briefcase,
-      features: [
-        'פתיחת תיק ברשויות',
-        'דיווח מע"מ דו-חודשי/חד-חודשי',
-        'דוח שנתי והצהרות הון',
-        'ייצוג מלא מול כל הרשויות',
-        'הנהלת חשבונות מלאה',
-        'ייעוץ מס ותכנון מקדמות',
-        'אפליקציה לניהול העסק'
-      ],
-      cta: 'פרטים על עוסק מורשה',
-      link: 'OsekMorshaLanding',
-      highlight: true
-    },
-    {
-      name: 'חברה בע"מ',
-      price: '₪1,200',
-      period: '/חודש',
-      description: 'לחברות וארגונים הדורשים הנהלת חשבונות כפולה',
-      icon: Building,
-      features: [
-        'פתיחת חברה ברשם החברות',
-        'הנהלת חשבונות כפולה',
-        'ביקורת דוחות כספיים',
-        'דוח שנתי לחברה וליחיד',
-        'משכורות לעובדים ובעלי שליטה',
-        'ייצוג מלא בביטוח לאומי ומס הכנסה',
-        'ייעוץ פיננסי שוטף'
-      ],
-      cta: 'צור קשר לפתיחת חברה',
-      link: 'CompanyLanding',
-      highlight: false
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Perfect One",
+      "url": "https://perfect1.co.il"
     }
-  ];
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20" dir="rtl">
-      <Helmet>
-        <title>מחירון שירותי ראיית חשבון | Perfect One</title>
-        <meta name="description" content="מחירון שקוף והוגן לשירותי ראיית חשבון: עוסק פטור, עוסק מורשה וחברה בע״מ. כולל דוחות שנתיים, ייצוג ברשויות ואפליקציה מתקדמת." />
-      </Helmet>
-
-      {/* Hero Section */}
-      <div className="bg-[#1E3A5F] text-white pt-20 pb-24 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold mb-6">
-            מחירון שירותי ראיית חשבון
-          </h1>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            מחירים הוגנים ושקופים, ללא הפתעות וללא אותיות קטנות.
-            בחרו את סוג העסק שלכם והתחילו להתנהל בראש שקט.
-          </p>
+    <>
+      <SEOOptimized 
+        {...seoPresets.pricing}
+        canonical="https://perfect1.co.il/pricing"
+        schema={pricingSchema}
+      />
+      <main className="pt-20">
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <span className="inline-block bg-white/10 text-white px-4 py-2 rounded-full text-sm font-medium mb-6">
+              💰 מחירון שקוף ללא הפתעות
+            </span>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              מחירון עוסק פטור בישראל 2024
+            </h1>
+            <div className="text-xl text-white/80 max-w-2xl mx-auto">
+              <InternalLinker 
+                content="מחיר פתיחת עוסק פטור שקוף וברור - בלי אותיות קטנות, בלי עמלות נסתרות"
+                currentPage="Pricing"
+              />
+            </div>
+          </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Pricing Cards */}
-      <div className="max-w-7xl mx-auto px-4 -mt-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {pricingTiers.map((tier, index) => {
-            const Icon = tier.icon;
-            return (
-              <div 
-                key={index}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden border-2 flex flex-col ${
-                  tier.highlight ? 'border-[#D4AF37] ring-4 ring-[#D4AF37]/10' : 'border-transparent'
-                }`}
-              >
-                {tier.highlight && (
-                  <div className="bg-[#D4AF37] text-white text-center py-2 text-sm font-bold uppercase tracking-wider">
-                    הכי פופולרי
-                  </div>
-                )}
-                
-                <div className="p-8 flex-1 flex flex-col">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${
-                    tier.highlight ? 'bg-yellow-50 text-[#D4AF37]' : 'bg-blue-50 text-[#1E3A5F]'
-                  }`}>
-                    <Icon className="w-8 h-8" />
-                  </div>
-                  
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier.name}</h3>
-                  <p className="text-gray-500 mb-6">{tier.description}</p>
-                  
-                  <div className="flex items-baseline mb-8">
-                    <span className="text-4xl font-extrabold text-[#1E3A5F]">{tier.price}</span>
-                    <span className="text-gray-500 mr-2">{tier.period}</span>
-                  </div>
-                  
-                  <ul className="space-y-4 mb-8 flex-1">
-                    {tier.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <Check className="w-5 h-5 text-green-500 ml-3 mt-0.5 shrink-0" />
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <Button 
-                    className={`w-full py-6 text-lg font-bold shadow-lg transition-all ${
-                      tier.highlight 
-                        ? 'bg-[#1E3A5F] hover:bg-[#162B47] text-white' 
-                        : 'bg-white border-2 border-[#1E3A5F] text-[#1E3A5F] hover:bg-blue-50'
-                    }`}
-                    onClick={() => navigate(createPageUrl(tier.link))}
-                  >
-                    {tier.cta}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      <div className="-mt-8">
+        <PricingSection />
       </div>
 
-      {/* FAQ Link / Contact */}
-      <div className="text-center mt-16 mb-10">
-        <p className="text-gray-600 mb-4">מתלבטים איזה עוסק לפתוח?</p>
-        <Button 
-          variant="link" 
-          onClick={() => navigate(createPageUrl('Contact'))}
-          className="text-[#1E3A5F] font-semibold text-lg"
-        >
-          דברו איתנו ונשמח לייעץ ללא עלות &larr;
-        </Button>
-      </div>
-    </div>
+      {/* What's Included */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">
+              מה כולל כל חבילה?
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-[#F8F9FA] rounded-2xl p-6"
+            >
+              <h3 className="text-xl font-bold text-[#1E3A5F] mb-4">פתיחת תיק (199₪)</h3>
+              <ul className="space-y-3">
+                {[
+                  'רישום במס הכנסה',
+                  'פתיחת תיק במע"מ כפטור',
+                  'פתיחת תיק בביטוח לאומי',
+                  'הסבר על חובות ודיווחים',
+                  'הדרכה על הפקת קבלות'
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#27AE60]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-[#F8F9FA] rounded-2xl p-6"
+            >
+              <h3 className="text-xl font-bold text-[#1E3A5F] mb-4">ליווי חודשי (149₪)</h3>
+              <ul className="space-y-3">
+                {[
+                  'אפליקציה להפקת קבלות',
+                  'מעקב הכנסות והוצאות',
+                  'דיווחים שוטפים לרשויות',
+                  'גישה לרו"ח/יועץ מס',
+                  'ייעוץ מס ותכנון',
+                  'סגירת תיק בעת הצורך'
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-[#27AE60]" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 bg-blue-50 rounded-2xl p-6 flex items-start gap-4"
+          >
+            <Info className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1" />
+            <div>
+              <h4 className="font-bold text-gray-800 mb-2">חשוב לדעת</h4>
+              <div className="text-gray-600">
+                <InternalLinker 
+                  content='כל המחירים הם + מע"מ. ניתן לבטל את ליווי חודשי בכל עת ללא קנסות. דוח שנתי נדרש רק פעם בשנה ואינו חובה לכל עוסק פטור.'
+                  currentPage="Pricing"
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Urgent Invoice Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-8 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 border-2 border-red-200"
+          >
+            <Link to={createPageUrl('UrgentInvoice')} className="flex items-center justify-between hover:opacity-80 transition-opacity">
+              <div>
+                <h4 className="font-bold text-[#1E3A5F] mb-2 flex items-center gap-2">
+                  <span>⚠️ חשבונית לעוסק פטור</span>
+                </h4>
+                <p className="text-gray-700">לקוחות חוסמים עד לחשבונית? קבל הבהרה משפטית מיידית על דרישות חוקיות</p>
+              </div>
+              <ArrowLeft className="w-5 h-5 text-red-600 flex-shrink-0" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      <FAQSection />
+      
+      {/* Disclaimer */}
+      <section className="py-8 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
+            <p className="text-xs text-gray-700 leading-relaxed text-center">
+              <strong className="text-yellow-800">הבהרה חשובה:</strong> Perfect One הוא שירות פרטי לייעוץ וליווי. 
+              האתר אינו אתר ממשלתי ואינו מהווה תחליף לייעוץ משפטי או חשבונאי רשמי.
+            </p>
+          </div>
+        </div>
+      </section>
+      
+      <CTASection />
+      </main>
+    </>
   );
 }

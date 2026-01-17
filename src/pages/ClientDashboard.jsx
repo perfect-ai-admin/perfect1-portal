@@ -256,15 +256,6 @@ export default function ClientDashboard() {
 
             {/* Right Icons */}
             <div className="flex items-center gap-1 flex-shrink-0">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate(createPageUrl('ClientPricing'))}
-                className="text-white hover:bg-white/10"
-                title="מחירון"
-              >
-                <Wallet className="w-6 h-6" />
-              </Button>
               {typeof ShoppingCart === 'function' && <ShoppingCart />}
               {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
