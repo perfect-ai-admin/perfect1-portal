@@ -11,7 +11,7 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers
+  FileText, Calendar, Layers, Share2
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
