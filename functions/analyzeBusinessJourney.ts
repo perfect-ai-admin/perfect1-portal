@@ -134,7 +134,7 @@ Deno.serve(async (req) => {
             id: crypto.randomUUID(),
             title: task.title,
             description: task.description || task.title,
-            status: "pending",
+            status: index === 0 ? "in_progress" : "pending",
             is_milestone: task.is_milestone || false
         }));
 
