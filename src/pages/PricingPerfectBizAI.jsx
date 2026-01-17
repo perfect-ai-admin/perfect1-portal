@@ -425,7 +425,7 @@ export default function PricingPerfectBizAI() {
              </div>
 
              <div className="relative z-10 max-w-4xl mx-auto space-y-6">
-                 <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                 <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight text-white">
                      בחר את הדרך הנכונה <br className="md:hidden" /> לקדם את העסק שלך
                  </h1>
                  <p className="text-blue-100 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
