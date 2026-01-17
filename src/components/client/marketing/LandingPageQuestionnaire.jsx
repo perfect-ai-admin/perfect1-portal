@@ -809,8 +809,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       </div>
 
       {/* Footer Navigation */}
-      <div className="flex-none p-4 border-t border-gray-100 bg-white z-10 safe-area-bottom">
-        <div className="max-w-2xl mx-auto flex justify-between gap-4">
+      {!isBuilding && !showSuccess && (
+        <div className="flex-none p-4 border-t border-gray-100 bg-white z-10 safe-area-bottom">
+          <div className="max-w-2xl mx-auto flex justify-between gap-4">
           <Button
             type="button"
             onClick={handlePrev}
