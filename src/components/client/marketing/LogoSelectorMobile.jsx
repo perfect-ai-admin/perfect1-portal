@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { Download, Palette, ChevronLeft, ChevronRight, Image, Code, FileJson, CheckCircle2, Wand2 } from 'lucide-react';
+import { Download, Palette, ChevronLeft, ChevronRight, Image, Code, FileJson, CheckCircle2, Wand2, ShoppingCart } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 export default function LogoSelectorMobile({ logos, formData, onNext, onReset, onGenerateMore, isGenerating }) {
   const [mounted, setMounted] = useState(false);
@@ -29,7 +30,26 @@ export default function LogoSelectorMobile({ logos, formData, onNext, onReset, o
       savedAt: new Date().toISOString()
     });
     localStorage.setItem('saved_logos', JSON.stringify(allSaved));
-    alert(`הלוגו נשמר בהצלחה! ✓`);
+    
+    // Trigger Cart Event
+    window.dispatchEvent(new Event('cart-updated'));
+
+    // Option B: Success Toast
+    toast.success(
+      <div className="flex flex-col gap-1">
+        <span className="font-bold text-sm">הלוגו נוסף לסל בהצלחה!</span>
+        <span className="text-xs opacity-90">הפריט ממתין לך להמשך רכישה</span>
+      </div>,
+      {
+        action: {
+          label: 'לסל הקניות',
+          onClick: () => window.dispatchEvent(new Event('open-cart')),
+        },
+        duration: 4000,
+        className: "bg-white border-blue-100 shadow-lg",
+        icon: <CheckCircle2 className="w-5 h-5 text-green-500" />
+      }
+    );
   };
 
   const currentLogo = logos[currentIndex];
@@ -97,10 +117,10 @@ export default function LogoSelectorMobile({ logos, formData, onNext, onReset, o
           </button>
           <button 
             onClick={() => saveLogo(currentLogo.url, currentLogo.variant)}
-            className="flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-sm font-bold hover:bg-gray-50 active:scale-95 transition-all"
+            className="flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-700 py-3 rounded-xl text-sm font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 active:scale-95 transition-all"
           >
-            <Palette className="w-4 h-4" />
-            שמור
+            <ShoppingCart className="w-4 h-4" />
+            הוסף לסל
           </button>
         </div>
 

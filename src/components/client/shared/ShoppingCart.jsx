@@ -6,16 +6,35 @@ import { Button } from '@/components/ui/button';
 export default function ShoppingCartButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [savedLogos, setSavedLogos] = useState([]);
+  const [isBouncing, setIsBouncing] = useState(false);
+
+  const updateCart = () => {
+    const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
+    const flat = Object.entries(allSaved).flatMap(([name, items]) =>
+      items.map(item => ({ ...item, businessName: name }))
+    );
+    setSavedLogos(flat);
+  };
 
   React.useEffect(() => {
-    if (isOpen) {
-      const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
-      const flat = Object.entries(allSaved).flatMap(([name, items]) =>
-        items.map(item => ({ ...item, businessName: name }))
-      );
-      setSavedLogos(flat);
-    }
-  }, [isOpen]);
+    updateCart();
+
+    const handleUpdate = () => {
+      updateCart();
+      setIsBouncing(true);
+      setTimeout(() => setIsBouncing(false), 600);
+    };
+
+    const handleOpenCart = () => setIsOpen(true);
+
+    window.addEventListener('cart-updated', handleUpdate);
+    window.addEventListener('open-cart', handleOpenCart);
+    
+    return () => {
+      window.removeEventListener('cart-updated', handleUpdate);
+      window.removeEventListener('open-cart', handleOpenCart);
+    };
+  }, []);
 
   const itemCount = savedLogos.length;
 
@@ -24,15 +43,29 @@ export default function ShoppingCartButton() {
       {/* Cart Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors group"
         title="העגלה שלך"
       >
-        <ShoppingCart className="w-5 h-5 text-gray-700" />
-        {itemCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-            {itemCount}
-          </span>
-        )}
+        <motion.div
+          animate={isBouncing ? { rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] } : {}}
+          transition={{ duration: 0.5 }}
+        >
+          <ShoppingCart className="w-5 h-5 text-gray-700 group-hover:text-blue-600 transition-colors" />
+        </motion.div>
+        
+        <AnimatePresence>
+          {itemCount > 0 && (
+            <motion.span
+              key="badge"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm border border-white"
+            >
+              {itemCount}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </button>
 
       {/* Cart Drawer */}
