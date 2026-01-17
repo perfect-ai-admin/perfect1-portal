@@ -9,8 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Check, X, ArrowRight, Star, Lock, AlertTriangle, 
-  Layout, Presentation, Megaphone, Loader2, LogIn, CreditCard, ShieldCheck,
-  LogOut, HelpCircle, User, Globe
+  Palette, MonitorPlay, Rocket, Loader2, LogIn, CreditCard, ShieldCheck,
+  LogOut, HelpCircle, User, Globe, Sparkles
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -127,31 +127,37 @@ export default function PricingPerfectBizAI() {
 
   const oneTimeServices = [
     {
-      name: 'יצירת לוגו',
+      name: 'יצירת לוגו ומיתוג',
       dbNames: ['Logo', 'לוגו', 'Logo Design'],
       price: 99,
-      icon: Layout,
-      description: 'עיצוב לוגו מקצועי ומותאם אישית + קבצים להורדה',
+      icon: Palette,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      description: 'עיצוב לוגו מקצועי ומותאם אישית + קבצים לכל השימושים',
       cta: 'צור לוגו עכשיו',
       micro: 'תשלום חד־פעמי · ללא מנוי'
     },
     {
-      name: 'מצגת עסקית',
+      name: 'מצגת עסקית מנצחת',
       dbNames: ['Presentation', 'מצגת', 'Business Presentation'],
       price: 149,
-      icon: Presentation,
-      description: 'בניית מצגת שיווקית או עסקית מנצחת',
+      icon: MonitorPlay,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      description: 'בניית מצגת שיווקית או עסקית שתשכנע כל לקוח או משקיע',
       cta: 'הכן מצגת',
-      micro: 'מתאים להצגה ללקוחות או משקיעים'
+      micro: 'מתאים לזום, פגישות וכנסים'
     },
     {
-      name: 'קמפיין שיווקי',
+      name: 'הזנקת קמפיין שיווקי',
       dbNames: ['Campaign', 'קמפיין', 'Marketing Campaign'],
       price: 299,
-      icon: Megaphone,
-      description: 'הקמת קמפיין בסיסי ממוקד להבאת לידים',
+      icon: Rocket,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+      description: 'הקמת קמפיין ממומן ממוקד להבאת לידים איכותיים',
       cta: 'התחל קמפיין',
-      micro: 'הגדרה ראשונית, בלי התחייבות'
+      micro: 'הגדרה ראשונית מהירה ומקצועית'
     }
   ];
 
@@ -591,34 +597,49 @@ export default function PricingPerfectBizAI() {
                     return (
                         <motion.div
                             key={idx}
-                            whileHover={{ y: -5 }}
-                            className="bg-gray-50/50 rounded-2xl p-6 border border-gray-100 hover:border-gray-200 hover:bg-white hover:shadow-lg transition-all duration-300 flex flex-col group"
+                            whileHover={{ y: -8 }}
+                            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group relative overflow-hidden"
                         >
-                            <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center mb-5 text-[#1E3A5F] group-hover:scale-110 group-hover:text-[#D4AF37] transition-all">
-                                <Icon className="w-7 h-7" />
+                            {/* Top Accent Gradient */}
+                            <div className={`absolute top-0 left-0 right-0 h-1.5 ${service.bgColor.replace('bg-', 'bg-gradient-to-r from-white via-')}`} />
+
+                            <div className="flex items-start justify-between mb-6">
+                                <div className={cn(
+                                    "w-16 h-16 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm",
+                                    service.bgColor,
+                                    service.color
+                                )}>
+                                    <Icon className="w-8 h-8" strokeWidth={1.5} />
+                                </div>
+                                <Badge variant="secondary" className="bg-gray-50 text-gray-500 font-normal text-[10px] border-0">
+                                    חד-פעמי
+                                </Badge>
                             </div>
                             
-                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#1E3A5F] transition-colors">
+                            <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#1E3A5F] transition-colors">
                                 {service.name}
                             </h3>
-                            <p className="text-gray-500 text-sm mb-6 flex-1 leading-relaxed">
+                            <p className="text-gray-500 text-sm mb-8 flex-1 leading-relaxed">
                                 {service.description}
                             </p>
                             
-                            <div className="mt-auto pt-6 border-t border-gray-200/60">
-                                <div className="flex items-center justify-between mb-5">
-                                    <div className="text-2xl font-black text-gray-900">
+                            <div className="mt-auto">
+                                <div className="flex items-baseline gap-1 mb-6">
+                                    <span className="text-3xl font-black text-gray-900">
                                         ₪{service.price}
-                                    </div>
-                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">חד-פעמי</span>
+                                    </span>
+                                    <span className="text-sm text-gray-400 font-medium">/תשלום אחד</span>
                                 </div>
+                                
                                 <Button 
                                     onClick={() => handleServiceClick(service)}
-                                    className="w-full bg-white border-2 border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white transition-all rounded-xl font-bold h-12 shadow-sm"
+                                    className="w-full bg-white border border-gray-200 text-gray-700 hover:border-[#1E3A5F] hover:text-[#1E3A5F] hover:bg-gray-50 transition-all rounded-xl font-bold h-12 shadow-sm group-hover:shadow-md flex items-center justify-between px-6"
                                 >
-                                    {service.cta}
+                                    <span>{service.cta}</span>
+                                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
                                 </Button>
-                                <p className="text-[11px] text-gray-400 text-center mt-3 font-medium">
+                                <p className="text-[11px] text-gray-400 text-center mt-3 flex items-center justify-center gap-1.5">
+                                    <Sparkles className="w-3 h-3 text-yellow-400 fill-yellow-400" />
                                     {service.micro}
                                 </p>
                             </div>
