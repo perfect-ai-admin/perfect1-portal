@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Check, X, ArrowRight, Star, Zap, Layout, Presentation, Megaphone, Loader2, ArrowLeft } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { 
+  Check, X, ArrowRight, Star, Zap, Layout, Presentation, Megaphone, 
+  Loader2, ArrowLeft, ShieldCheck, LogIn, CreditCard, Lock, AlertTriangle 
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -16,15 +20,29 @@ export default function PricingPerfectBizAI() {
   const [user, setUser] = useState(null);
   const [plans, setPlans] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [limitReached, setLimitReached] = useState(false);
+
+  // Check for limit reached param
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('limit') === 'true') {
+      setLimitReached(true);
+    }
+  }, [location.search]);
 
   // Define static data from spec
   const subscriptionTiers = [
     {
-      name: 'Free', // Map to DB name 'חינמי' or 'Free'
+      name: 'Free',
+      title: 'התחלה חכמה',
+      badge: 'מתאים לעצמאים בתחילת הדרך',
       dbNames: ['חינמי', 'Free', 'Starter'],
       price: 0,
-      description: 'לצעדים הראשונים בעולם העסקים',
+      cta: 'התחל בחינם',
+      micro: 'לא נדרש כרטיס אשראי · אפשר לשדרג בכל שלב',
       features: [
         { text: 'מטרה אחת פעילה', included: true },
         { text: 'Mentor עסקי למטרה אחת', included: true },
@@ -34,14 +52,16 @@ export default function PricingPerfectBizAI() {
         { text: 'פיננסים מתקדמים', included: false },
         { text: 'אוטומציות', included: false },
       ],
-      cta: 'התחל בחינם',
       highlight: false
     },
     {
       name: 'Basic',
+      title: 'התקדמות יציבה',
+      badge: 'לעסק שכבר מתחיל לזוז',
       dbNames: ['Basic', 'בסיסי'],
       price: 59,
-      description: 'לעסקים שרוצים להתחיל לצמוח',
+      cta: 'שדרג למסלול Basic',
+      micro: 'ניתן לבטל בכל רגע · ללא התחייבות',
       features: [
         { text: 'עד 3 מטרות', included: true },
         { text: 'Mentor מלא', included: true },
@@ -50,14 +70,16 @@ export default function PricingPerfectBizAI() {
         { text: 'אוטומציות', included: false },
         { text: 'פיננסים מתקדמים', included: false },
       ],
-      cta: 'שדרג למסלול Basic',
       highlight: false
     },
     {
       name: 'Pro',
+      title: 'שליטה וצמיחה',
+      badge: 'לעסק פעיל שרוצה סדר ותוצאות',
       dbNames: ['Pro', 'מקצועי'],
       price: 149,
-      description: 'הפתרון המושלם לעסק בצמיחה',
+      cta: 'בחר במסלול Pro',
+      micro: 'גישה מלאה למנטור ולניהול מתקדם',
       features: [
         { text: 'עד 7 מטרות', included: true },
         { text: 'Mentor מתקדם (מעקב, מדדים)', included: true },
@@ -65,14 +87,16 @@ export default function PricingPerfectBizAI() {
         { text: 'Finance בסיסי', included: true },
         { text: 'סדר וניהול עסקי', included: true },
       ],
-      cta: 'בחר Pro',
       highlight: true // Popular choice
     },
     {
       name: 'Elite',
+      title: 'מערכת שעובדת בשבילך',
+      badge: 'לעסקים שרוצים מקסימום יכולת',
       dbNames: ['Elite', 'עלית'],
       price: 349,
-      description: 'מעטפת מלאה לעסקים מובילים',
+      cta: 'הצטרף ל־Elite',
+      micro: 'המגבלות יורדות · הכל פתוח',
       features: [
         { text: 'מטרות ללא הגבלה', included: true },
         { text: 'עבודה על כמה מטרות במקביל', included: true },
@@ -82,7 +106,6 @@ export default function PricingPerfectBizAI() {
         { text: 'אוטומציות חכמות', included: true },
         { text: 'עדיפות לפיצ’רים עתידיים', included: true },
       ],
-      cta: 'הצטרף ל־Elite',
       highlight: false
     }
   ];
@@ -94,7 +117,8 @@ export default function PricingPerfectBizAI() {
       price: 99,
       icon: Layout,
       description: 'עיצוב לוגו מקצועי ומותאם אישית + קבצים להורדה',
-      cta: 'רכוש לוגו'
+      cta: 'צור לוגו עכשיו',
+      micro: 'תשלום חד־פעמי · ללא מנוי'
     },
     {
       name: 'מצגת עסקית',
@@ -102,7 +126,8 @@ export default function PricingPerfectBizAI() {
       price: 149,
       icon: Presentation,
       description: 'בניית מצגת שיווקית או עסקית מנצחת',
-      cta: 'צור מצגת'
+      cta: 'הכן מצגת',
+      micro: 'מתאים להצגה ללקוחות או משקיעים'
     },
     {
       name: 'קמפיין שיווקי',
@@ -110,7 +135,8 @@ export default function PricingPerfectBizAI() {
       price: 299,
       icon: Megaphone,
       description: 'הקמת קמפיין בסיסי ממוקד להבאת לידים',
-      cta: 'התחל קמפיין'
+      cta: 'התחל קמפיין',
+      micro: 'הגדרה ראשונית, בלי התחייבות'
     }
   ];
 
@@ -143,8 +169,7 @@ export default function PricingPerfectBizAI() {
     const planId = getPlanId(tier);
     
     if (!user) {
-      toast.info('יש להתחבר למערכת כדי לרכוש מסלול');
-      navigate(createPageUrl('ClientLogin'));
+      setShowLoginModal(true);
       return;
     }
 
@@ -167,22 +192,13 @@ export default function PricingPerfectBizAI() {
     const planId = getPlanId(service);
     
     if (!user) {
-      toast.info('יש להתחבר למערכת כדי לרכוש שירות');
-      navigate(createPageUrl('ClientLogin'));
+      setShowLoginModal(true);
       return;
     }
-
-    // Since these are "Services" but logic requires a Plan entity for checkout (or special handling),
-    // we assume for now they are set up as Plans in the backend or we handle them specially.
-    // If we found a matching ID, great. If not, we might need a workaround.
-    // For this implementation, we'll try to find the ID.
     
     if (planId) {
         navigate(`/Checkout?type=plan&id=${planId}`);
     } else {
-        // Fallback: Use 'goal' type or similar if 'service' isn't supported, 
-        // OR pass hardcoded ID/Name if Checkout supports it (it doesn't seem to based on reading).
-        // We'll show an error for now if not found in DB.
         toast.error(`השירות ${service.name} אינו זמין כרגע לרכישה`);
     }
   };
@@ -195,13 +211,17 @@ export default function PricingPerfectBizAI() {
     return user.current_plan_id === planId;
   };
 
-  // Determine if a tier is "lower" than current (simple logic based on price)
-  const isDowngrade = (tier) => {
-    if (!user) return false;
-    // Find current user's plan price
-    const currentDbPlan = plans.find(p => p.id === user.current_plan_id);
-    if (!currentDbPlan) return false; // Can't determine
-    return tier.price < (currentDbPlan.price || 0);
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await base44.functions.invoke('googleAuthStart', {});
+      if (response.data && response.data.url) {
+        sessionStorage.setItem('oauth_state', response.data.state);
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('שגיאה בהתחברות לגוגל');
+    }
   };
 
   if (isLoading) {
@@ -219,17 +239,87 @@ export default function PricingPerfectBizAI() {
       </Helmet>
 
       <div className="min-h-screen bg-gray-50 pb-20 font-heebo" dir="rtl">
-        {/* Navbar / Back Button */}
-        <div className="bg-white border-b sticky top-0 z-40">
-             <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-                <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="gap-2">
-                    <ArrowRight className="w-4 h-4" />
-                    חזור
-                </Button>
-                <span className="font-bold text-[#1E3A5F]">Perfect Biz AI</span>
-                <div className="w-20" /> {/* Spacer */}
-             </div>
-        </div>
+        {/* Header - Like ClientDashboard */}
+        <header 
+          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
+          role="banner"
+        >
+          <div className="w-full px-3 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-14">
+              <div className="flex items-center gap-3">
+                 <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => navigate(-1)} 
+                    className="text-white hover:bg-white/10 hover:text-white p-2 h-auto rounded-full"
+                 >
+                    <ArrowRight className="w-5 h-5" />
+                 </Button>
+
+                 {user ? (
+                   <div className="flex items-center gap-2">
+                      <Avatar className="w-8 h-8 border border-white/20">
+                        <AvatarFallback className="bg-white/10 text-white text-xs">
+                          {user.full_name?.charAt(0) || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm font-medium hidden sm:inline-block">{user.full_name}</span>
+                   </div>
+                 ) : (
+                    <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold">Perfect Biz AI</span>
+                    </div>
+                 )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                 {!user && (
+                     <Button 
+                        size="sm" 
+                        onClick={() => setShowLoginModal(true)}
+                        className="bg-white/20 hover:bg-white/30 text-white border-none"
+                     >
+                        <LogIn className="w-4 h-4 ml-2" />
+                        התחבר
+                     </Button>
+                 )}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Limit Reached Alert */}
+        <AnimatePresence>
+            {limitReached && (
+                <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="bg-red-50 border-b border-red-200"
+                >
+                    <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                            <div className="bg-red-100 p-2 rounded-full">
+                                <AlertTriangle className="w-5 h-5 text-red-600" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-red-900">הגעת למכסת המטרות במסלול שלך</h3>
+                                <p className="text-sm text-red-700">כדי להקים מטרה נוספת, יש לשדרג את המסלול</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center gap-1 w-full md:w-auto">
+                            <Button 
+                                onClick={() => document.getElementById('plans-section').scrollIntoView({ behavior: 'smooth' })}
+                                className="bg-red-600 hover:bg-red-700 text-white w-full md:w-auto"
+                            >
+                                צפה באפשרויות שדרוג
+                            </Button>
+                            <span className="text-[10px] text-red-600 font-medium">השדרוג נכנס לתוקף מיידית</span>
+                        </div>
+                    </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
 
         {/* 1. Hero Section */}
         <div className="bg-[#1E3A5F] text-white py-16 px-4 text-center relative overflow-hidden">
@@ -244,7 +334,7 @@ export default function PricingPerfectBizAI() {
                      בחר את הדרך הנכונה לקדם את העסק שלך
                  </h1>
                  <p className="text-blue-100 text-lg md:text-xl mb-8">
-                     מסלולים חודשיים או שירותים נקודתיים – לפי מה שמתאים לך עכשיו
+                     התחל בחינם, התקדם בקצב שלך, ושדרג רק כשזה באמת עוזר לך
                  </p>
 
                  {/* Toggle */}
@@ -275,11 +365,10 @@ export default function PricingPerfectBizAI() {
         </div>
 
         {/* 2. Subscriptions Section */}
-        <div className="max-w-7xl mx-auto px-4 -mt-8 relative z-20">
+        <div id="plans-section" className="max-w-7xl mx-auto px-4 -mt-8 relative z-20">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {subscriptionTiers.map((tier, idx) => {
                     const isCurrent = isCurrentPlan(tier);
-                    const downgrade = !isCurrent && isDowngrade(tier);
                     
                     return (
                         <motion.div
@@ -312,14 +401,16 @@ export default function PricingPerfectBizAI() {
                             )}
 
                             <div className="mb-6 text-center">
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">{tier.name}</h3>
+                                <h3 className="text-xl font-bold text-gray-900 mb-1">{tier.title}</h3>
+                                <Badge variant="secondary" className="bg-gray-100 text-gray-600 text-xs font-normal mb-4">
+                                    {tier.badge}
+                                </Badge>
                                 <div className="flex items-baseline justify-center gap-1">
                                     <span className="text-4xl font-bold text-gray-900">
                                         ₪{billingCycle === 'yearly' ? Math.round(tier.price * 0.83) : tier.price}
                                     </span>
-                                    <span className="text-gray-500 text-sm">/חודש</span>
+                                    {tier.price > 0 && <span className="text-gray-500 text-sm">/חודש</span>}
                                 </div>
-                                <p className="text-gray-500 text-sm mt-3 h-10">{tier.description}</p>
                             </div>
 
                             <div className="flex-1 space-y-3 mb-8">
@@ -339,20 +430,25 @@ export default function PricingPerfectBizAI() {
                                 ))}
                             </div>
 
-                            <Button
-                                onClick={() => handleSubscriptionClick(tier)}
-                                disabled={isCurrent || (downgrade && user)} // Disable downgrade based on spec "Low plans -> disabled"
-                                variant={tier.highlight ? "default" : "outline"}
-                                className={cn(
-                                    "w-full rounded-xl h-12 font-bold transition-all",
-                                    tier.highlight 
-                                        ? "bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:shadow-lg hover:shadow-blue-900/20 text-white" 
-                                        : "hover:bg-gray-50 border-gray-200",
-                                    isCurrent && "bg-green-50 text-green-700 border-green-200 hover:bg-green-100 opacity-100 cursor-default"
-                                )}
-                            >
-                                {isCurrent ? 'המסלול הנוכחי שלך' : downgrade ? 'כלול במסלול שלך' : tier.cta}
-                            </Button>
+                            <div className="mt-auto">
+                                <Button
+                                    onClick={() => handleSubscriptionClick(tier)}
+                                    disabled={isCurrent}
+                                    variant={tier.highlight ? "default" : "outline"}
+                                    className={cn(
+                                        "w-full rounded-xl h-12 font-bold transition-all",
+                                        tier.highlight 
+                                            ? "bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:shadow-lg hover:shadow-blue-900/20 text-white" 
+                                            : "hover:bg-gray-50 border-gray-200",
+                                        isCurrent && "bg-green-50 text-green-700 border-green-200 hover:bg-green-100 opacity-100 cursor-default"
+                                    )}
+                                >
+                                    {isCurrent ? 'המסלול הנוכחי שלך' : tier.cta}
+                                </Button>
+                                <p className="text-[10px] text-gray-400 text-center mt-2 h-4">
+                                    {isCurrent ? 'אפשר לשדרג בכל זמן מההגדרות' : tier.micro}
+                                </p>
+                            </div>
                         </motion.div>
                     );
                 })}
@@ -363,10 +459,10 @@ export default function PricingPerfectBizAI() {
         <div className="max-w-7xl mx-auto px-4 mt-20">
             <div className="text-center mb-10">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                    צריך משהו נקודתי? אפשר גם בלי מסלול
+                    צריך משהו נקודתי? אפשר גם בלי מנוי
                 </h2>
                 <p className="text-gray-500">
-                    שירותים מקצועיים לחיזוק העסק שלך, בתשלום חד-פעמי
+                    שירותים חד־פעמיים, בלי התחייבות למסלול חודשי
                 </p>
             </div>
 
@@ -377,29 +473,33 @@ export default function PricingPerfectBizAI() {
                         <motion.div
                             key={idx}
                             whileHover={{ y: -5 }}
-                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all"
+                            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all flex flex-col"
                         >
                             <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 text-[#1E3A5F]">
                                 <Icon className="w-6 h-6" />
                             </div>
                             
                             <h3 className="text-lg font-bold text-gray-900 mb-2">{service.name}</h3>
-                            <p className="text-gray-500 text-sm mb-4 min-h-[40px]">
+                            <p className="text-gray-500 text-sm mb-4 flex-1">
                                 {service.description}
                             </p>
                             
-                            <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-50">
-                                <div className="text-2xl font-bold text-gray-900">
-                                    ₪{service.price}
-                                    <span className="text-xs text-gray-400 font-normal mr-1">חד-פעמי</span>
+                            <div className="pt-6 border-t border-gray-50">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="text-2xl font-bold text-gray-900">
+                                        ₪{service.price}
+                                    </div>
+                                    <Badge variant="outline" className="text-xs text-gray-400 font-normal border-gray-200">חד-פעמי</Badge>
                                 </div>
                                 <Button 
                                     onClick={() => handleServiceClick(service)}
-                                    size="sm"
-                                    className="bg-white border border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white transition-colors rounded-lg"
+                                    className="w-full bg-white border border-[#1E3A5F] text-[#1E3A5F] hover:bg-[#1E3A5F] hover:text-white transition-colors rounded-lg font-medium"
                                 >
                                     {service.cta}
                                 </Button>
+                                <p className="text-[10px] text-gray-400 text-center mt-2">
+                                    {service.micro}
+                                </p>
                             </div>
                         </motion.div>
                     );
@@ -407,6 +507,77 @@ export default function PricingPerfectBizAI() {
             </div>
         </div>
 
+        {/* Trust Footer */}
+        <div className="text-center mt-20 pb-8 text-gray-400 text-sm">
+            <div className="flex items-center justify-center gap-2 mb-2">
+                <ShieldCheck className="w-4 h-4" />
+                <span>המידע שלך מאובטח · תשלום דרך ספקים מאושרים</span>
+            </div>
+            <p>אין אותיות קטנות · אתה שולט בשדרוגים ובביטול</p>
+        </div>
+
+        {/* Login Modal */}
+        <AnimatePresence>
+            {showLoginModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <motion.div 
+                        initial={{ opacity: 0 }} 
+                        animate={{ opacity: 1 }} 
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowLoginModal(false)}
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                    />
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }} 
+                        animate={{ opacity: 1, scale: 1 }} 
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 shadow-2xl"
+                    >
+                        <button 
+                            onClick={() => setShowLoginModal(false)}
+                            className="absolute top-4 left-4 text-gray-400 hover:text-gray-600"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        
+                        <div className="text-center mb-6">
+                            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Lock className="w-6 h-6 text-[#1E3A5F]" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">כדי להמשיך, יש להתחבר לחשבון</h3>
+                            <p className="text-sm text-gray-500">
+                                ההתחברות מאפשרת לנו לשייך את הרכישה לחשבון שלך
+                            </p>
+                        </div>
+
+                        <div className="space-y-3">
+                             <Button
+                                onClick={handleGoogleLogin}
+                                variant="outline"
+                                className="w-full h-11 text-base font-medium border-gray-200 hover:bg-gray-50 text-gray-700 rounded-lg flex items-center justify-center gap-2"
+                              >
+                                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                </svg>
+                                התחבר עם Google
+                              </Button>
+                              <Button
+                                onClick={() => navigate(createPageUrl('ClientLogin'))}
+                                className="w-full h-11 text-base bg-[#1E3A5F] hover:bg-[#162B47] text-white rounded-lg"
+                              >
+                                כניסה רגילה
+                              </Button>
+                        </div>
+                        <p className="text-[10px] text-gray-400 text-center mt-3">
+                            לוקח כמה שניות · ללא רישום ידני
+                        </p>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
       </div>
     </>
   );

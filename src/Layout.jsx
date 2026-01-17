@@ -33,8 +33,8 @@ export default function Layout({ children, currentPageName }) {
       );
     }
 
-    // ClientDashboard במובייל - אל תציג Header רגיל
-    if (currentPageName === 'ClientDashboard') {
+    // ClientDashboard / PricingPerfectBizAI - אל תציג Header רגיל (יש להם Header משלהם)
+    if (currentPageName === 'ClientDashboard' || currentPageName === 'PricingPerfectBizAI') {
       return (
         <HelmetProvider>
           <CriticalCSS />
