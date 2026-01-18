@@ -7,6 +7,26 @@ const BASE_URL = Deno.env.get('BASE_URL');
 // Generate server-side error ID for tracing
 const generateErrorId = () => `SERVER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
+// Log auth error to database for telemetry
+const logAuthError = async (base44, errorId, endpoint, step, message, statusCode, userEmail = null) => {
+  try {
+    await base44.asServiceRole.entities.AuthError.create({
+      error_id: errorId,
+      endpoint,
+      step,
+      message: message.substring(0, 500), // Truncate if too long
+      status_code: statusCode,
+      user_email: userEmail,
+      timestamp: new Date().toISOString(),
+      resolved: false
+    });
+    console.log(`[${errorId}] Error logged to database`);
+  } catch (logErr) {
+    console.warn(`[${errorId}] Could not log error to DB:`, logErr.message);
+    // Non-critical - don't fail auth because of telemetry
+  }
+};
+
 Deno.serve(async (req) => {
     const errorId = generateErrorId();
     
@@ -19,6 +39,7 @@ Deno.serve(async (req) => {
             body = await req.json();
         } catch (parseErr) {
             console.error(`[${errorId}] [STEP: request_parse] Error:`, parseErr);
+            // Can't log to DB yet (no base44), so skip
             return Response.json({ 
                 error: 'Invalid request', 
                 step: 'request_parse',
@@ -125,7 +146,7 @@ Deno.serve(async (req) => {
         // Create user object
         const fullName = name && name.trim() ? name : normalizedEmail.split('@')[0] || 'משתמש חדש';
         
-        // Get free plan - CRITICAL, must exist
+        // Get free plan - best effort, but DON'T block authentication
         let freePlan = null;
 
         try {
@@ -134,43 +155,16 @@ Deno.serve(async (req) => {
 
             if (freePlans && freePlans.length > 0) {
                 freePlan = freePlans[0];
-                console.log(`[${errorId}] [STEP: plan_lookup] Found free plan: ${freePlan.id}`);
+                console.log(`[${errorId}] [STEP: plan_lookup] Found: ${freePlan.id}`);
             }
         } catch (lookupErr) {
             console.error(`[${errorId}] [STEP: plan_lookup] Error:`, lookupErr.message);
         }
 
-        // If no plan found, attempt create (once only)
+        // If no plan, use placeholder (user will have pending status, plan created async later)
         if (!freePlan) {
-            try {
-                console.log(`[${errorId}] [STEP: plan_create] Creating free plan...`);
-                freePlan = await base44.asServiceRole.entities.Plan.create({
-                    name: 'חינמי',
-                    name_en: 'Free',
-                    price: 0,
-                    billing_type: 'monthly',
-                    marketing_enabled: false,
-                    mentor_enabled: true,
-                    finance_enabled: false,
-                    goals_limit: 1,
-                    max_active_goals: 1,
-                    is_active: true,
-                    display_order: 0
-                });
-                console.log(`[${errorId}] [STEP: plan_create] Created: ${freePlan.id}`);
-            } catch (createErr) {
-                console.error(`[${errorId}] [STEP: plan_create] Error:`, createErr.message);
-            }
-        }
-
-        // If still no plan after lookup + create, HARD FAIL (system misconfigured)
-        if (!freePlan) {
-            console.error(`[${errorId}] [STEP: plan_fallback] CRITICAL: No free plan available`);
-            return Response.json({
-                error: 'System configuration error: free plan not available',
-                step: 'plan_creation',
-                errorId
-            }, { status: 503 });
+            console.log(`[${errorId}] [STEP: plan_default] Using pending status, plan will be resolved later`);
+            freePlan = { id: null }; // Proceed with null, user becomes pending
         }
 
         // Find or create user - with comprehensive error handling
@@ -211,10 +205,10 @@ Deno.serve(async (req) => {
                     email: normalizedEmail,
                     full_name: fullName,
                     phone: '0000000000',
-                    status: 'active',
+                    status: freePlan?.id ? 'active' : 'pending', // pending if no plan yet
                     login_provider: 'google',
                     last_login_at: now,
-                    current_plan_id: freePlan.id,
+                    current_plan_id: freePlan?.id || null,
                     plan_start_date: now,
                     marketing_enabled: false,
                     mentor_enabled: true,
@@ -280,12 +274,19 @@ Deno.serve(async (req) => {
         return Response.json({ user: userToReturn });
 
         } catch (error) {
-        console.error(`[${errorId}] [STEP: unexpected_error] Error:`, error?.message);
-        console.error(`[${errorId}] [STEP: unexpected_error] Stack:`, error?.stack);
-        return Response.json({ 
-            error: 'Authentication failed',
-            step: 'unexpected',
-            errorId
-        }, { status: 503 });
+            console.error(`[${errorId}] [STEP: unexpected_error] Error:`, error?.message);
+            console.error(`[${errorId}] [STEP: unexpected_error] Stack:`, error?.stack);
+
+            // Log to telemetry
+            try {
+                await logAuthError(base44, errorId, 'googleAuthCallback', 'unexpected', 
+                  error?.message || 'Unknown error', 503, normalizedEmail || null);
+            } catch (_) {}
+
+            return Response.json({ 
+                error: 'Authentication failed',
+                step: 'unexpected',
+                errorId
+            }, { status: 503 });
         }
         });
