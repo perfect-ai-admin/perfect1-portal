@@ -157,22 +157,54 @@ function ClientLogin() {
       </Helmet>
 
       <div className="min-h-screen bg-white flex" dir="rtl">
-        {/* Left Side - Login Form */}
-        <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
-          <div className="w-full max-w-[380px] space-y-6">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 mb-4 justify-center">
-                <div className="w-8 h-8 bg-[#1E3A5F] rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-                <h2 className="text-xl font-bold text-[#1E3A5F]">Perfect Biz AI</h2>
-              </div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-                כניסה לאזור האישי
-              </h1>
-            </div>
+         {/* Left Side - Login Form */}
+         <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
+           <div className="w-full max-w-[380px] space-y-6">
+             <div className="text-center">
+               <div className="inline-flex items-center gap-2 mb-4 justify-center">
+                 <div className="w-8 h-8 bg-[#1E3A5F] rounded-lg flex items-center justify-center">
+                   <Sparkles className="w-4 h-4 text-white" />
+                 </div>
+                 <h2 className="text-xl font-bold text-[#1E3A5F]">Perfect Biz AI</h2>
+               </div>
+               {existingUser ? (
+                 <div className="space-y-2">
+                   <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                     שלום, {existingUser.full_name}
+                   </h1>
+                   <p className="text-sm text-gray-500">נראה שאתה כבר מחובר</p>
+                 </div>
+               ) : (
+                 <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                   כניסה לאזור האישי
+                 </h1>
+               )}
+             </div>
 
-            <div className="space-y-4">
+             <div className="space-y-4">
+               {existingUser && (
+                 <div className="space-y-3">
+                   <Button
+                     onClick={() => window.location.href = '/ClientDashboard'}
+                     className="w-full h-10 text-base bg-[#1E3A5F] hover:bg-[#162B47] text-white font-medium rounded-lg shadow-sm hover:shadow transition-all"
+                   >
+                     המשך ללוח המחוונים
+                   </Button>
+                   <button 
+                     onClick={() => {
+                       localStorage.removeItem('user');
+                       setExistingUser(null);
+                       setPhone('');
+                       setPassword('');
+                       setError('');
+                     }}
+                     className="w-full text-sm text-gray-600 hover:text-[#1E3A5F] transition-colors underline"
+                   >
+                     התחברות עם חשבון אחר
+                   </button>
+                 </div>
+               )}
+               {!existingUser && (
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-1.5">
                    <label className="block text-sm font-medium text-gray-700">
