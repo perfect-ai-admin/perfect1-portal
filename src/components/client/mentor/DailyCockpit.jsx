@@ -66,12 +66,28 @@ export default function DailyCockpit({ onNavigate }) {
       {/* Results Tracker Widget */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
         <div className="col-span-2 md:col-span-1 border-l pl-4 border-gray-100">
-            <span className="text-xs text-gray-500 block mb-1">יעד הכנסות חודשי</span>
-            <div className="flex items-end gap-2">
-                <span className="text-2xl font-bold text-gray-900">₪12,500</span>
-                <span className="text-xs text-green-600 mb-1 font-medium">85% מהיעד</span>
-            </div>
-            <Progress value={85} className="h-1.5 mt-2 bg-gray-100" indicatorClassName="bg-green-500" />
+            <span className="text-xs text-gray-500 block mb-1">המטרה הראשית</span>
+            {primaryGoal ? (
+                <>
+                    <div className="flex flex-col gap-1 mb-2">
+                        <span className="text-lg font-bold text-gray-900 leading-tight line-clamp-1" title={primaryGoal.title}>
+                            {primaryGoal.title}
+                        </span>
+                        <div className="flex items-center gap-2">
+                             <span className="text-xs text-green-600 font-medium">{Math.round(primaryGoal.progress || 0)}% הושלמו</span>
+                             <span className="text-xs text-gray-400">({primaryGoal.current || 0}/{primaryGoal.target})</span>
+                        </div>
+                    </div>
+                    <Progress value={primaryGoal.progress || 0} className="h-1.5 mt-auto bg-gray-100" indicatorClassName="bg-green-500" />
+                </>
+            ) : (
+                <div className="flex flex-col h-full justify-center items-start">
+                    <span className="text-sm text-gray-400 mb-2">לא הוגדרה מטרה ראשית</span>
+                    <Button variant="link" className="p-0 h-auto text-indigo-600 text-xs" onClick={() => onNavigate('status')}>
+                        הגדר עכשיו
+                    </Button>
+                </div>
+            )}
         </div>
         <div className="border-l pl-4 border-gray-100 hidden md:block">
             <span className="text-xs text-gray-500 block mb-1">לידים חדשים</span>
