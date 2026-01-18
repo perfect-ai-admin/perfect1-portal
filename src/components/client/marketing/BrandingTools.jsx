@@ -21,6 +21,7 @@ import LogoCreator from './LogoCreator';
 import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 import PresentationQuestionnaire from './PresentationQuestionnaire';
 import StickerQuestionnaire from './StickerQuestionnaire';
+import SocialMediaQuestionnaire from './SocialMediaQuestionnaire';
 
 const tools = [
   {
@@ -221,6 +222,16 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
       <Dialog open={activeFlowId === 'sticker'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <StickerQuestionnaire 
+            onComplete={() => setActiveFlowId(null)} 
+            onClose={() => setActiveFlowId(null)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal for Social Media */}
+      <Dialog open={activeFlowId === 'social'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <SocialMediaQuestionnaire 
             onComplete={() => setActiveFlowId(null)} 
             onClose={() => setActiveFlowId(null)}
           />
