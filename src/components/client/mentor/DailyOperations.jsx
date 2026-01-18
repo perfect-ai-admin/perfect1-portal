@@ -7,7 +7,7 @@ import WeeklyStructureScreen from './daily/WeeklyStructureScreen';
 import FocusScreen from './daily/FocusScreen';
 import LoadScreen from './daily/LoadScreen';
 import ReviewScreen from './daily/ReviewScreen';
-import { Calendar, Zap, Focus, Activity, CheckCircle } from 'lucide-react';
+import { Zap, Calendar, Target, Activity, CheckCircle2 } from 'lucide-react';
 
 export default function DailyOperations({ data }) {
   const [focus, setFocus] = useState(null);
@@ -56,59 +56,60 @@ export default function DailyOperations({ data }) {
   };
 
   if (loading) {
-    return <div className="h-96 bg-gray-100 rounded-lg animate-pulse" />;
+    return <div className="h-96 bg-gray-100 rounded-3xl animate-pulse" />;
   }
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="w-full"
+      className="w-full h-full flex flex-col"
     >
-      <Tabs defaultValue="daily" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 mb-8">
-          <TabsTrigger value="daily" className="gap-2">
-            <Zap className="w-4 h-4" />
-            <span className="hidden sm:inline">היום</span>
-          </TabsTrigger>
-          <TabsTrigger value="weekly" className="gap-2">
-            <Calendar className="w-4 h-4" />
-            <span className="hidden sm:inline">השבוע</span>
-          </TabsTrigger>
-          <TabsTrigger value="focus" className="gap-2">
-            <Focus className="w-4 h-4" />
-            <span className="hidden sm:inline">פוקוס</span>
-          </TabsTrigger>
-          <TabsTrigger value="load" className="gap-2">
-            <Activity className="w-4 h-4" />
-            <span className="hidden sm:inline">עומס</span>
-          </TabsTrigger>
-          <TabsTrigger value="review" className="gap-2">
-            <CheckCircle className="w-4 h-4" />
-            <span className="hidden sm:inline">סיכום</span>
-          </TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="daily" className="w-full flex-1 flex flex-col">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-1 mb-6 inline-flex w-fit mx-auto sticky top-0 z-20">
+            <TabsList className="bg-transparent h-auto p-0 gap-1">
+            <TabTrigger value="daily" icon={Zap} label="היום" />
+            <TabTrigger value="weekly" icon={Calendar} label="השבוע" />
+            <TabTrigger value="focus" icon={Target} label="פוקוס" />
+            <TabTrigger value="load" icon={Activity} label="עומס" />
+            <TabTrigger value="review" icon={CheckCircle2} label="סיכום" />
+            </TabsList>
+        </div>
 
-        <TabsContent value="daily">
-          <DailyFocusScreen focus={focus} onSave={handleSave} />
-        </TabsContent>
+        <div className="flex-1 overflow-y-auto px-4 pb-10">
+            <TabsContent value="daily" className="mt-0 h-full">
+            <DailyFocusScreen focus={focus} onSave={handleSave} />
+            </TabsContent>
 
-        <TabsContent value="weekly">
-          <WeeklyStructureScreen />
-        </TabsContent>
+            <TabsContent value="weekly" className="mt-0 h-full">
+            <WeeklyStructureScreen />
+            </TabsContent>
 
-        <TabsContent value="focus">
-          <FocusScreen focus={focus} onSave={handleSave} />
-        </TabsContent>
+            <TabsContent value="focus" className="mt-0 h-full">
+            <FocusScreen focus={focus} onSave={handleSave} />
+            </TabsContent>
 
-        <TabsContent value="load">
-          <LoadScreen focus={focus} onSave={handleSave} />
-        </TabsContent>
+            <TabsContent value="load" className="mt-0 h-full">
+            <LoadScreen focus={focus} onSave={handleSave} />
+            </TabsContent>
 
-        <TabsContent value="review">
-          <ReviewScreen focus={focus} onSave={handleSave} />
-        </TabsContent>
+            <TabsContent value="review" className="mt-0 h-full">
+            <ReviewScreen focus={focus} onSave={handleSave} />
+            </TabsContent>
+        </div>
       </Tabs>
     </motion.div>
   );
+}
+
+function TabTrigger({ value, icon: Icon, label }) {
+    return (
+        <TabsTrigger 
+            value={value} 
+            className="rounded-xl px-4 py-2 data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-600 text-gray-500 hover:text-gray-900 transition-all gap-2"
+        >
+            <Icon className="w-4 h-4" />
+            <span className="text-sm font-medium">{label}</span>
+        </TabsTrigger>
+    )
 }

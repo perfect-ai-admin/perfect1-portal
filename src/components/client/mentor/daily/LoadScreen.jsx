@@ -1,130 +1,133 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
+import { 
+  Battery, 
+  BatteryLow, 
+  BatteryMedium, 
+  BatteryFull, 
+  Coffee,
+  Music,
+  Moon,
+  Users,
+  Wind
+} from 'lucide-react';
 
 export default function LoadScreen({ focus, onSave }) {
-  const [loadLevel, setLoadLevel] = useState(focus?.load_level || 'medium');
-  const [reason, setReason] = useState(focus?.load_reason || '');
+  const [energyLevel, setEnergyLevel] = useState(50); // 0-100
 
-  const LOAD_COLORS = {
-    low: { bg: 'bg-green-100', border: 'border-green-300', text: 'text-green-900', label: 'נמוך' },
-    medium: { bg: 'bg-yellow-100', border: 'border-yellow-300', text: 'text-yellow-900', label: 'בינוני' },
-    high: { bg: 'bg-red-100', border: 'border-red-300', text: 'text-red-900', label: 'גבוה' }
+  const getBatteryIcon = () => {
+    if (energyLevel > 70) return <BatteryFull className="w-16 h-16 text-green-500" />;
+    if (energyLevel > 30) return <BatteryMedium className="w-16 h-16 text-yellow-500" />;
+    return <BatteryLow className="w-16 h-16 text-red-500" />;
   };
 
-  const color = LOAD_COLORS[loadLevel];
+  const getAdvice = () => {
+    if (energyLevel > 80) return {
+        title: "אתה על הגל! 🌊",
+        text: "זה הזמן למשימות הכי קשות ומורכבות. נצל את האנרגיה הגבוהה לשיחות מכירה או יצירה.",
+        actions: []
+    };
+    if (energyLevel > 40) return {
+        title: "מצב יציב ✨",
+        text: "זמן טוב לעבודה שוטפת. אם אתה מרגיש ירידה קלה, קח הפסקה קצרה של 5 דקות.",
+        actions: [
+            { icon: Music, label: 'שים פלייליסט מרים' },
+            { icon: Coffee, label: 'שתה כוס מים/קפה' }
+        ]
+    };
+    return {
+        title: "סכנת שחיקה ⚠️",
+        text: "המוח שלך מאותת שהוא צריך מנוחה. אל תילחם בזה - אתה תעשה טעויות. תעצור רגע.",
+        actions: [
+            { icon: Wind, label: 'צא לנשום אוויר (10 דק)' },
+            { icon: Moon, label: 'שנ"צ קצר או מדיטציה' },
+            { icon: Users, label: 'דבר עם חבר (לא על עבודה)' }
+        ]
+    };
+  };
+
+  const advice = getAdvice();
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8"
+      className="space-y-8 max-w-4xl mx-auto"
     >
-      {/* Header */}
-      <div className="space-y-2">
-        <h2 className="text-4xl font-bold text-gray-900">עומס נוכחי</h2>
-        <p className="text-lg text-gray-600">איך אתה מרגיש?</p>
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-gray-900">ניהול אנרגיה</h2>
+        <p className="text-gray-500">העסק שלך צריך אותך חד. מה מצב הסוללה שלך כרגע?</p>
       </div>
 
-      {/* Load Level Selector */}
-      <div className="space-y-4">
-        <p className="text-sm font-semibold text-gray-800">אני מרגיש...</p>
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center">
+        <div className="mb-8 relative">
+            {getBatteryIcon()}
+            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 font-bold text-gray-900">{energyLevel}%</span>
+        </div>
         
-        <div className="grid grid-cols-3 gap-3">
-          {['low', 'medium', 'high'].map((level) => (
-            <motion.button
-              key={level}
-              onClick={() => setLoadLevel(level)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={`rounded-2xl p-6 border-2 transition-all ${
-                loadLevel === level
-                  ? `${LOAD_COLORS[level].bg} ${LOAD_COLORS[level].border} border-2`
-                  : 'bg-white border-gray-200'
-              }`}
-            >
-              <p className="text-3xl mb-2">
-                {level === 'low' && '😌'}
-                {level === 'medium' && '🤔'}
-                {level === 'high' && '😰'}
-              </p>
-              <p className="font-semibold text-sm">
-                {level === 'low' && 'בקרה'}
-                {level === 'medium' && 'בסדר'}
-                {level === 'high' && 'מוצף'}
-              </p>
-            </motion.button>
-          ))}
+        <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            step="10"
+            value={energyLevel}
+            onChange={(e) => setEnergyLevel(parseInt(e.target.value))}
+            className="w-full max-w-md h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 mb-8"
+        />
+        <div className="flex justify-between w-full max-w-md text-xs text-gray-400 px-1">
+            <span>גמור לגמרי</span>
+            <span>חצי כוח</span>
+            <span>מלא אנרגיה</span>
         </div>
       </div>
 
-      {/* Reason */}
-      {loadLevel === 'high' && (
-        <div className="bg-red-50 rounded-2xl p-6 border-2 border-red-200 space-y-4">
-          <label>
-            <p className="text-sm font-semibold text-red-900 mb-2">למה העומס גבוה?</p>
-            <Textarea
-              placeholder="למשל: יש יותר מדי משימות פתוחות / עבודה רביעית שלא כללתי"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="h-16"
-            />
-          </label>
-
-          <div className="space-y-2">
-            <p className="text-sm text-red-900 font-semibold">💡 אפשרויות:</p>
-            <div className="space-y-2">
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  onSave({
-                    load_level: 'low',
-                    load_reason: 'סילוק משימות'
-                  });
-                }}
-              >
-                🗑️ בואו נמחוק / נדחה משימות
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  onSave({
-                    load_level: 'medium',
-                    load_reason: 'פירוק משימות'
-                  });
-                }}
-              >
-                ✂️ בואו נפרק משימות
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {loadLevel !== 'high' && (
-        <div className="bg-green-50 rounded-2xl p-6 border-2 border-green-200">
-          <p className="text-green-900">
-            ✨ אתה בקרה. המשך ככה.
-          </p>
-        </div>
-      )}
-
-      <Button
-        onClick={() =>
-          onSave({
-            load_level: loadLevel,
-            load_reason: reason
-          })
-        }
-        size="lg"
-        className="w-full"
+      <motion.div 
+        layout
+        className={`rounded-2xl p-6 border-2 transition-colors ${
+            energyLevel > 70 ? 'bg-green-50 border-green-100' : 
+            energyLevel > 30 ? 'bg-yellow-50 border-yellow-100' : 
+            'bg-red-50 border-red-100'
+        }`}
       >
-        שמור עומס
-      </Button>
+        <div className="flex items-start gap-4">
+            <div className={`p-3 rounded-xl bg-white shadow-sm ${
+                 energyLevel > 70 ? 'text-green-600' : 
+                 energyLevel > 30 ? 'text-yellow-600' : 
+                 'text-red-600'
+            }`}>
+                <Battery className="w-8 h-8" />
+            </div>
+            <div className="flex-1">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{advice.title}</h3>
+                <p className="text-gray-700 leading-relaxed mb-6">
+                    {advice.text}
+                </p>
+
+                {advice.actions.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {advice.actions.map((action, idx) => {
+                            const Icon = action.icon;
+                            return (
+                                <button key={idx} className="bg-white p-3 rounded-xl border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all flex flex-col items-center text-center gap-2 group">
+                                    <Icon className="w-6 h-6 text-gray-400 group-hover:text-indigo-600 transition-colors" />
+                                    <span className="text-sm font-medium text-gray-700">{action.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+        </div>
+      </motion.div>
+
+      <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
+        <h4 className="font-bold text-blue-900 mb-2">💡 חוק הברזל:</h4>
+        <p className="text-blue-800 text-sm">
+            אנחנו מנהלים אנרגיה, לא זמן. שעה אחת של עבודה כשאתה רענן שווה 4 שעות כשאתה עייף. תנוח כדי להרוויח יותר.
+        </p>
+      </div>
+
     </motion.div>
   );
 }
