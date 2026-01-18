@@ -58,12 +58,18 @@ function ClientLogin() {
         return;
       }
 
+      console.log('[ClientLogin] [handleLogin] Starting login...');
+      
       const response = await base44.functions.invoke('clientLogin', { 
         credential: phone.trim(), 
         password 
       });
 
-      if (response.data && response.data.user) {
+      console.log('[ClientLogin] [handleLogin] Response status:', response?.status);
+      
+      if (response?.data?.user) {
+        console.log('[ClientLogin] [handleLogin] User data received:', response.data.user.id);
+        
         const userToStore = {
           id: response.data.user.id,
           full_name: response.data.user.full_name,
@@ -71,17 +77,23 @@ function ClientLogin() {
           phone: response.data.user.phone,
           status: response.data.user.status
         };
+        
         localStorage.setItem('user', JSON.stringify(userToStore));
-        window.location.replace('/ClientDashboard');
+        console.log('[ClientLogin] [handleLogin] User stored in localStorage');
+        
+        // Wait a tick to ensure the redirect happens after state update
+        console.log('[ClientLogin] [handleLogin] Redirecting to /ClientDashboard');
+        window.location.href = '/ClientDashboard';
       } else {
-        const errorMsg = response.data?.error || 'שגיאה בתהליך הכניסה';
-        const errorId = response.data?.errorId || 'unknown';
+        const errorMsg = response?.data?.error || 'שגיאה בתהליך הכניסה';
+        const errorId = response?.data?.errorId || 'unknown';
+        console.error('[ClientLogin] [handleLogin] Login failed:', errorMsg, 'ID:', errorId);
         setError(`${errorMsg}${errorId && errorId !== 'unknown' ? ` (${errorId})` : ''}`);
         setIsLoading(false);
       }
     } catch (err) {
-      console.error('Login error:', err);
-      const errorMsg = err.response?.data?.error || err.message || 'שגיאה בתהליך הכניסה';
+      console.error('[ClientLogin] [handleLogin] Catch error:', err);
+      const errorMsg = err?.response?.data?.error || err?.message || 'שגיאה בתהליך הכניסה';
       setError(errorMsg);
       setIsLoading(false);
     }
