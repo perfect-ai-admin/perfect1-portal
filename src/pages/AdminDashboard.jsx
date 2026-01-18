@@ -127,22 +127,18 @@ export default function AdminDashboard() {
                                 <Users className="w-4 h-4" />
                                 משתמשים
                             </TabsTrigger>
-                            {user?.role === 'admin' && (
-                                <>
-                                    <TabsTrigger value="goals" className="flex items-center gap-2">
-                                        <Target className="w-4 h-4" />
-                                        מטרות
-                                    </TabsTrigger>
-                                    <TabsTrigger value="plans" className="flex items-center gap-2">
-                                        <CreditCard className="w-4 h-4" />
-                                        מסלולים
-                                    </TabsTrigger>
-                                    <TabsTrigger value="activity" className="flex items-center gap-2">
-                                        <Activity className="w-4 h-4" />
-                                        פעילות
-                                    </TabsTrigger>
-                                </>
-                            )}
+                            <TabsTrigger value="goals" className="flex items-center gap-2">
+                                <Target className="w-4 h-4" />
+                                מטרות
+                            </TabsTrigger>
+                            <TabsTrigger value="plans" className="flex items-center gap-2">
+                                <CreditCard className="w-4 h-4" />
+                                מסלולים
+                            </TabsTrigger>
+                            <TabsTrigger value="activity" className="flex items-center gap-2">
+                                <Activity className="w-4 h-4" />
+                                פעילות
+                            </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="users">
