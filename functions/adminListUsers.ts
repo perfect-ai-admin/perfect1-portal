@@ -9,26 +9,13 @@ Deno.serve(async (req) => {
         const payload = await req.json().catch(() => ({}));
         const { bypassCode, phone } = payload;
         
-        // Check authentication
-        let authorized = false;
-        
-        // 1. Check bypass
-        if (bypassCode === '123456' && phone === '0502277087') {
-            authorized = true;
-        } else {
-            // 2. Check real admin session
-            const user = await base44.auth.me().catch(() => null);
-            if (user && user.role === 'admin') {
-                authorized = true;
-            }
-        }
-
-        if (!authorized) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        // Check authentication - must be admin
+        const user = await base44.auth.me().catch(() => null);
+        if (!user || user.role !== 'admin') {
+            return Response.json({ error: 'Unauthorized - admin only' }, { status: 403 });
         }
 
         // Fetch all users using service role
-        // The User entity is available via entities.User for service role
         const users = await base44.asServiceRole.entities.User.list();
         
         return Response.json({ users });
