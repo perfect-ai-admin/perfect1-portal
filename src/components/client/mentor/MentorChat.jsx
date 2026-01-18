@@ -11,7 +11,7 @@ export default function MentorChat({ clientData }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `שלום ${clientData.name}! 👋\n\nאני המנטור העסקי החכם שלך. אני כאן כדי לעזור לך לקבל החלטות נכונות בעסק, לענות על שאלות, ולתת לך עצות מבוססות נתונים.\n\nאני מכיר את כל המידע העסקי שלך - ההכנסות, ההוצאות, המטרות שלך, ועוד. תרגיש חופשי לשאול אותי כל דבר! 💡`
+      content: `שלום ${clientData.name || 'חבר'}! 👋\n\nאני המנטור העסקי החכם שלך. אני כאן כדי לעזור לך לקבל החלטות נכונות, לענות על שאלות ולדחוף את העסק שלך קדימה.\n\nאני זמין עבורך 24/7. מה הדבר שהכי מטריד אותך כרגע בעסק?`
     }
   ]);
   const [input, setInput] = useState('');
@@ -19,10 +19,10 @@ export default function MentorChat({ clientData }) {
   const messagesEndRef = useRef(null);
 
   const suggestedQuestions = [
-    'האם עכשיו זמן טוב להשקיע בשיווק?',
-    'איך אני יכול להגדיל את הרווחיות?',
-    'מה ההוצאות שכדאי לי לעקוב אחריהן?',
-    'איך אני יכול לחסוך במס באופן חוקי?'
+    'מה המיקוד הכי חשוב להיום?',
+    'איך להגדיל מכירות החודש?',
+    'תן לי רעיון לפוסט שיווקי',
+    'האם התזרים שלי תקין?'
   ];
 
   useEffect(() => {
@@ -73,10 +73,10 @@ ${userMessage}
 
   return (
     <div className="space-y-4">
-      {/* Context Panel */}
-      <ContextPanel clientData={clientData} />
+      {/* Context Panel - Hidden in new design to cleaner look, or moved */}
+      {/* <ContextPanel clientData={clientData} /> */}
       
-      <div className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden" style={{ height: '600px' }}>
+      <div className="flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden h-full min-h-[500px]">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
         <AnimatePresence>
@@ -145,13 +145,13 @@ ${userMessage}
 
       {/* Input Area */}
       <div className="border-t border-gray-200 p-6">
-        <div className="flex gap-3">
+        <div className="flex gap-2 items-end bg-gray-50 p-2 rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="שאל אותי כל דבר על העסק שלך..."
-            className="flex-1 resize-none"
-            rows={2}
+            placeholder="הקלד הודעה למנטור..."
+            className="flex-1 resize-none bg-transparent border-none focus-visible:ring-0 shadow-none min-h-[44px] max-h-32 py-3"
+            rows={1}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -162,9 +162,9 @@ ${userMessage}
           <Button
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 h-auto"
+            className="bg-indigo-600 hover:bg-indigo-700 h-10 w-10 p-0 rounded-lg mb-1 shadow-sm"
           >
-            <Send className="w-5 h-5" />
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </Button>
         </div>
       </div>

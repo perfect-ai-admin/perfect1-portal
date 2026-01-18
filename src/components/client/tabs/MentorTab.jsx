@@ -1,108 +1,131 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Zap, TrendingUp, Calendar, BarChart3, CheckCircle2, BookOpen } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Home,
+  MessageSquare, 
+  BarChart2, 
+  ListTodo, 
+  Settings,
+  Menu
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-import MentorConversation from '../mentor/MentorConversation';
-import Insights from '../mentor/Insights';
-import Sales from '../mentor/Sales';
-import Daily from '../mentor/Daily';
-import History from '../mentor/History';
-import Actions from '../mentor/Actions';
-import Resources from '../mentor/Resources';
+import DailyCockpit from '../mentor/DailyCockpit';
+import MentorChat from '../mentor/MentorChat';
+import Insights from '../mentor/Insights'; // Reusing existing for now, will rename/wrap if needed
+import DailyOperations from '../mentor/DailyOperations'; // Using as "The Plan" base for now
 
 export default function MentorTab({ data }) {
+  const [activeView, setActiveView] = useState('cockpit'); // cockpit, chat, status, plan
+
+  const MENU_ITEMS = [
+    { id: 'cockpit', label: 'המיקוד היומי', icon: Home },
+    { id: 'chat', label: 'המנטור האישי', icon: MessageSquare },
+    { id: 'status', label: 'תמונת מצב', icon: BarChart2 },
+    { id: 'plan', label: 'התוכנית שלי', icon: ListTodo },
+  ];
+
+  const renderContent = () => {
+    switch (activeView) {
+      case 'cockpit':
+        return <DailyCockpit onNavigate={setActiveView} />;
+      case 'chat':
+        return (
+            <div className="h-[calc(100vh-200px)] md:h-[600px]">
+                <MentorChat clientData={data} />
+            </div>
+        );
+      case 'status':
+        return <Insights />;
+      case 'plan':
+        return <DailyOperations data={data} />;
+      default:
+        return <DailyCockpit onNavigate={setActiveView} />;
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full flex flex-col"
+      className="h-full flex flex-col md:flex-row gap-6"
     >
-      {/* Tabs */}
-      <Tabs defaultValue="conversations" className="w-full h-full flex flex-col">
-        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7 mb-6 bg-white border border-gray-100">
-          <TabsTrigger value="conversations" className="flex gap-2">
-            <MessageCircle className="w-5 h-5" />
-            <span className="hidden sm:inline">שיחים</span>
-          </TabsTrigger>
-
-          <TabsTrigger value="insights" className="flex gap-2">
-            <Zap className="w-5 h-5" />
-            <span className="hidden sm:inline">ניתוחים</span>
-          </TabsTrigger>
-
-          <TabsTrigger value="sales" className="flex gap-2 hidden md:flex">
-            <TrendingUp className="w-5 h-5" />
-            <span className="hidden lg:inline">מכירות</span>
-          </TabsTrigger>
-
-          <TabsTrigger value="daily" className="flex gap-2 hidden md:flex">
-            <Calendar className="w-5 h-5" />
-            <span className="hidden lg:inline">יום יום</span>
-          </TabsTrigger>
-
-          <TabsTrigger value="history" className="hidden lg:flex gap-2">
-            <BarChart3 className="w-5 h-5" />
-            היסטוריה
-          </TabsTrigger>
-
-          <TabsTrigger value="actions" className="hidden lg:flex gap-2">
-            <CheckCircle2 className="w-5 h-5" />
-            פעולות
-          </TabsTrigger>
-
-          <TabsTrigger value="resources" className="hidden lg:flex gap-2">
-            <BookOpen className="w-5 h-5" />
-            משאבים
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Content */}
-        <div className="flex-1 overflow-hidden flex items-center justify-center px-4 py-4">
-          <TabsContent value="conversations" className="h-full w-full max-w-4xl">
-            <div className="bg-white rounded-lg border border-gray-200 h-full overflow-hidden shadow-lg" dir="rtl">
-              <MentorConversation />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="insights" className="h-full">
-            <div className="bg-white rounded-lg border border-gray-100 h-full overflow-hidden">
-              <Insights />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="sales" className="h-full">
-            <div className="bg-white rounded-lg border border-gray-100 h-full overflow-hidden">
-              <Sales />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="daily" className="h-full">
-            <div className="bg-white rounded-lg border border-gray-100 h-full overflow-hidden">
-              <Daily />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="history" className="h-full">
-            <div className="bg-white rounded-lg border border-gray-100 h-full overflow-hidden">
-              <History />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="actions" className="h-full">
-            <div className="bg-white rounded-lg border border-gray-100 h-full overflow-hidden">
-              <Actions />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="resources" className="h-full">
-            <div className="bg-white rounded-lg border border-gray-100 h-full overflow-hidden">
-              <Resources />
-            </div>
-          </TabsContent>
+      {/* Sidebar Navigation - Desktop */}
+      <div className="hidden md:flex flex-col w-64 bg-white rounded-2xl border border-gray-100 p-4 h-fit sticky top-4 shadow-sm">
+        <div className="mb-6 px-2">
+            <h2 className="text-xl font-bold text-gray-900">אזור המנטור</h2>
+            <p className="text-xs text-gray-500">העוזר האישי החכם שלך</p>
         </div>
-      </Tabs>
+        <nav className="space-y-1">
+          {MENU_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeView === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveView(item.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm font-medium ${
+                  isActive 
+                    ? 'bg-indigo-50 text-indigo-700 shadow-sm' 
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-gray-400'}`} />
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Mobile Navigation Header */}
+      <div className="md:hidden flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm mb-4">
+        <div className="flex items-center gap-2">
+            <h2 className="font-bold text-gray-900">אזור המנטור</h2>
+            <span className="text-gray-300">|</span>
+            <span className="text-indigo-600 font-medium">
+                {MENU_ITEMS.find(i => i.id === activeView)?.label}
+            </span>
+        </div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-5 h-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[80%]">
+            <div className="mt-8 space-y-2">
+              {MENU_ITEMS.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeView === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveView(item.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-right ${
+                      isActive 
+                        ? 'bg-indigo-50 text-indigo-700' 
+                        : 'text-gray-600'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-gray-400'}`} />
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 min-w-0">
+        <div className="bg-white/50 rounded-3xl min-h-[500px]">
+             {renderContent()}
+        </div>
+      </div>
     </motion.div>
   );
 }
