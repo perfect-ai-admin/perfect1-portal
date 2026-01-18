@@ -19,29 +19,32 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing credential or password', step: 'validation' }, { status: 400 });
     }
 
-    // Verify password first
+    console.log('[STEP: password_verify] Checking password...');
     if (password !== '123456') {
-      return Response.json({ error: 'Invalid password' }, { status: 401 });
+      return Response.json({ error: 'Invalid password', step: 'password_verify' }, { status: 401 });
     }
+    console.log('[STEP: password_verify] Success');
 
     // Determine if credential is email or phone
     const isEmail = credential.includes('@');
-    const cleanCredential = isEmail ? credential : credential.replace(/[^0-9]/g, '');
+    const cleanCredential = isEmail ? credential.trim().toLowerCase() : credential.replace(/[^0-9]/g, '');
+    console.log('[STEP: credential_parse] Type:', isEmail ? 'email' : 'phone', 'Value:', isEmail ? '***' : cleanCredential);
 
-    // Get free plan - MUST exist or create placeholder
+    // Get free plan
     let freePlan = null;
     try {
+      console.log('[STEP: plan_lookup] Searching for free plan...');
       const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
       freePlan = freePlans.length > 0 ? freePlans[0] : null;
-      console.log('Free plan found:', freePlan?.id);
+      console.log('[STEP: plan_lookup] Found:', freePlan?.id);
     } catch (planErr) {
-      console.error('Plan filter error:', planErr);
+      console.error('[STEP: plan_lookup] Error:', planErr.message);
     }
 
-    // If no free plan exists, create one as fallback
+    // Create fallback plan if needed
     if (!freePlan) {
       try {
-        console.log('Creating fallback free plan...');
+        console.log('[STEP: plan_creation] Creating fallback...');
         freePlan = await base44.asServiceRole.entities.Plan.create({
           name: 'חינמי',
           name_en: 'Free',
@@ -55,31 +58,30 @@ Deno.serve(async (req) => {
           is_active: true,
           display_order: 0
         });
-        console.log('Fallback plan created:', freePlan.id);
+        console.log('[STEP: plan_creation] Created:', freePlan.id);
       } catch (createPlanErr) {
-        console.error('Failed to create fallback plan:', createPlanErr.message);
+        console.error('[STEP: plan_creation] Failed:', createPlanErr.message);
         return Response.json({ error: 'System configuration error', step: 'plan_creation' }, { status: 500 });
       }
     }
 
-    // Find or create user by email or phone
+    // Find or create user
     let user;
     try {
       const searchFilter = isEmail ? { email: cleanCredential } : { phone: cleanCredential };
-      console.log('Searching for user with filter:', JSON.stringify(searchFilter));
+      console.log('[STEP: user_lookup] Searching...');
       const existingUsers = await base44.asServiceRole.entities.User.filter(searchFilter);
 
       if (existingUsers.length > 0) {
-        // User exists - update last login
         user = existingUsers[0];
-        console.log('User exists, updating login time:', user.id);
+        console.log('[STEP: user_lookup] Found:', user.id);
+        console.log('[STEP: user_update] Updating login time...');
         await base44.asServiceRole.entities.User.update(user.id, {
           last_login_at: new Date().toISOString()
         });
-        console.log('Existing user logged in:', user.id);
+        console.log('[STEP: user_update] Success');
       } else {
-        // New user - create with required fields guaranteed
-        console.log('Creating new user for:', cleanCredential);
+        console.log('[STEP: user_create] Creating new user...');
         
         const newUserData = {
           full_name: 'משתמש חדש',
@@ -97,15 +99,15 @@ Deno.serve(async (req) => {
           max_active_goals: 1
         };
         
-        console.log('Creating user with data:', JSON.stringify({...newUserData, email: '***'}));
         user = await base44.asServiceRole.entities.User.create(newUserData);
-        console.log('New user created:', user.id);
+        console.log('[STEP: user_create] Success:', user.id);
       }
     } catch (userErr) {
-      console.error('User operation failed - step: db_insert', userErr.message, userErr.stack);
+      console.error('[STEP: user_lookup/create] Error:', userErr.message);
+      console.error('[STEP: user_lookup/create] Stack:', userErr.stack);
       return Response.json({ 
         error: 'Failed to create or update user', 
-        step: 'db_insert',
+        step: 'user_lookup',
         details: userErr.message 
       }, { status: 500 });
     }
