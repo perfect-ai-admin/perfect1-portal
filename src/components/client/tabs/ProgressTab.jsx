@@ -67,7 +67,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
   
   const quickStats = {
     monthlyRevenue: '₪0',
-    activeGoals: activeGoals?.length?.toString() || '0',
+    // Only count truly active goals for the stats display
+    activeGoals: activeGoals?.filter(g => g.status === 'active').length.toString() || '0',
     pendingInvoices: '0',
     urgentActions: '0'
   };
