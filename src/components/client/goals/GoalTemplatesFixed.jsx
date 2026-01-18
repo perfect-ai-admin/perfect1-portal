@@ -479,7 +479,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   // Desktop layout
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0" ref={drawerRef}>
+      <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 sm:max-w-2xl" ref={drawerRef}>
           {/* Header */}
           <div className="flex-shrink-0 px-5 py-3 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50">
             <div className="flex items-center justify-between">
@@ -544,14 +544,14 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                 
                 {/* Compact Examples */}
                 {selectedTemplate.examples && (
-                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-2.5 border border-purple-100">
-                    <p className="text-xs font-bold text-gray-700 mb-1.5 opacity-80">דוגמאות מהירות (לחץ לבחירה)</p>
+                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-3 border border-purple-100">
+                    <p className="text-xs font-bold text-gray-700 mb-2 opacity-80">דוגמאות מהירות (לחץ לבחירה)</p>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {selectedTemplate.examples.map((example, i) => (
                         <button
                           key={i}
                           onClick={() => handleExampleSelect(example)}
-                          className="w-full text-center px-2 py-1.5 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg text-xs font-medium text-gray-900 transition-colors truncate"
+                          className="w-full text-center px-2 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg text-xs font-medium text-gray-900 transition-colors h-auto min-h-[36px] whitespace-normal leading-tight flex items-center justify-center"
                           title={example.title}
                         >
                           {example.title}
@@ -577,16 +577,16 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
                   {/* Two Custom Questions Side-by-Side */}
                   {selectedTemplate.questions && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {selectedTemplate.questions.map((q) => (
-                        <div key={q.id} className="space-y-1">
-                          <Label htmlFor={q.id} className="text-xs font-semibold block text-gray-700">{q.label}</Label>
+                        <div key={q.id} className="space-y-1.5 flex flex-col">
+                          <Label htmlFor={q.id} className="text-xs font-semibold block text-gray-700 min-h-[1.5em]">{q.label}</Label>
                           <Input
                             id={q.id}
                             value={customAnswers[q.id] || ''}
                             onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
                             placeholder={q.placeholder}
-                            className="text-xs h-8 bg-gray-50 border-gray-200 focus:bg-white"
+                            className="text-sm h-9 bg-gray-50 border-gray-200 focus:bg-white mt-auto"
                           />
                         </div>
                       ))}
