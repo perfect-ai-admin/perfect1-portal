@@ -22,8 +22,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function DailyCockpit({ onNavigate }) {
   const [dailyFocus, setDailyFocus] = useState(null);
   const [primaryGoal, setPrimaryGoal] = useState(null);
+  const [allGoals, setAllGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
+  const [businessState, setBusinessState] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -32,27 +34,39 @@ export default function DailyCockpit({ onNavigate }) {
     const unsubscribe = base44.entities.UserGoal.subscribe(() => {
         loadData();
     });
-    return () => unsubscribe();
+    // Also subscribe to DailyFocus updates
+    const unsubscribeFocus = base44.entities.DailyFocus.subscribe(() => {
+        loadData();
+    });
+    return () => {
+        unsubscribe();
+        unsubscribeFocus();
+    };
   }, []);
 
   const loadData = async () => {
     try {
       const user = await base44.auth.me();
       setUserName(user.full_name?.split(' ')[0] || 'חבר');
+      setBusinessState(user.business_state);
       
       const today = new Date().toISOString().split('T')[0];
       const focusData = await base44.entities.DailyFocus.filter({ date: today }, '-created_date', 1);
       
       if (focusData.length > 0) {
         setDailyFocus(focusData[0]);
+      } else {
+        setDailyFocus(null);
       }
 
       // Robustly fetch the primary goal:
       // 1. Fetch all relevant goals for the user
       // 2. Look for explicit isPrimary=true
       // 3. Fallback to the most recent active/selected goal (matching Goals Tab logic)
-      const allGoals = await base44.entities.UserGoal.filter({ user_id: user.id }, '-created_date', 50);
-      const activeGoals = allGoals.filter(g => ['active', 'selected'].includes(g.status));
+      const fetchedGoals = await base44.entities.UserGoal.filter({ user_id: user.id }, '-created_date', 50);
+      setAllGoals(fetchedGoals || []);
+      
+      const activeGoals = fetchedGoals.filter(g => ['active', 'selected'].includes(g.status));
       
       let mainGoal = activeGoals.find(g => g.isPrimary);
       if (!mainGoal && activeGoals.length > 0) {
@@ -243,19 +257,25 @@ export default function DailyCockpit({ onNavigate }) {
             icon={BarChart2} 
             color="text-blue-600" 
             bg="bg-blue-50"
-            onClick={() => onNavigate('status')}
+            onClick={() => onNavigate('business')}
         >
             <div className="mt-4 space-y-3">
                 <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-500">שלב נוכחי</span>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">צמיחה</Badge>
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                        {businessState?.stage === 'early_revenue' ? 'הכנסות ראשונות' :
+                         businessState?.stage === 'growing' ? 'צמיחה' :
+                         businessState?.stage === 'stable' ? 'יציב' :
+                         businessState?.stage === 'pre_revenue' ? 'לפני הכנסות' :
+                         'לא הוגדר'}
+                    </Badge>
                 </div>
                 <div className="space-y-1">
                     <div className="flex justify-between text-xs text-gray-500">
-                        <span>בריאות עסקית</span>
-                        <span>85%</span>
+                        <span>ביצוע מטרות</span>
+                        <span>{Math.round(primaryGoal?.progress || 0)}%</span>
                     </div>
-                    <Progress value={85} className="h-1.5 bg-blue-100" indicatorClassName="bg-blue-600" />
+                    <Progress value={primaryGoal?.progress || 0} className="h-1.5 bg-blue-100" indicatorClassName="bg-blue-600" />
                 </div>
             </div>
         </StatusCard>
@@ -269,7 +289,9 @@ export default function DailyCockpit({ onNavigate }) {
         >
             <div className="mt-4 flex items-end justify-between">
                 <div>
-                    <span className="text-3xl font-bold text-gray-900">4</span>
+                    <span className="text-3xl font-bold text-gray-900">
+                        {dailyFocus?.secondary_tasks?.filter(t => !['completed', 'cancelled', 'deferred'].includes(t.status))?.length || 0}
+                    </span>
                     <span className="text-gray-500 text-sm mr-2">משימות להיום</span>
                 </div>
                 <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
@@ -283,21 +305,37 @@ export default function DailyCockpit({ onNavigate }) {
             icon={Trophy} 
             color="text-amber-600" 
             bg="bg-amber-50"
-            onClick={() => onNavigate('status')}
+            onClick={() => onNavigate('goals')}
         >
             <div className="mt-4">
-                <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-amber-100 rounded-lg">
-                        <Sparkles className="w-4 h-4 text-amber-600" />
+                {allGoals.filter(g => g.status === 'completed').length > 0 ? (
+                     <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 bg-amber-100 rounded-lg">
+                            <Trophy className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                            {allGoals.filter(g => g.status === 'completed').length} מטרות הושלמו
+                        </span>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">קמפיין ראשון עלה לאוויר</span>
-                </div>
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-amber-100 rounded-lg">
-                        <Target className="w-4 h-4 text-amber-600" />
+                ) : (
+                    <div className="flex items-center gap-3 mb-2 opacity-60">
+                         <div className="p-2 bg-gray-100 rounded-lg">
+                            <Sparkles className="w-4 h-4 text-gray-400" />
+                        </div>
+                        <span className="text-sm text-gray-500">אין הישגים עדיין</span>
                     </div>
-                    <span className="text-sm font-medium text-gray-700">הוגדר יעד הכנסות</span>
-                </div>
+                )}
+                
+                {allGoals.length > 0 && (
+                     <div className="flex items-center gap-3">
+                        <div className="p-2 bg-amber-100 rounded-lg">
+                            <Target className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                             {allGoals.filter(g => g.status === 'active').length} מטרות פעילות
+                        </span>
+                    </div>
+                )}
             </div>
         </StatusCard>
       </div>
