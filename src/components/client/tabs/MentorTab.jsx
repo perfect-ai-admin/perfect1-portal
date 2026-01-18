@@ -15,14 +15,16 @@ import DailyCockpit from '../mentor/DailyCockpit';
 import MentorChat from '../mentor/MentorChat';
 import Insights from '../mentor/Insights'; // Reusing existing for now, will rename/wrap if needed
 import DailyOperations from '../mentor/DailyOperations'; // Using as "The Plan" base for now
+import SalesCenter from '../mentor/sales/SalesCenter';
 
 export default function MentorTab({ data }) {
-  const [activeView, setActiveView] = useState('cockpit'); // cockpit, chat, status, plan
+  const [activeView, setActiveView] = useState('cockpit'); // cockpit, chat, status, plan, sales
 
   const MENU_ITEMS = [
     { id: 'cockpit', label: 'המיקוד היומי', icon: Home },
     { id: 'chat', label: 'המנטור האישי', icon: MessageSquare },
-    { id: 'status', label: 'תמונת מצב', icon: BarChart2 },
+    { id: 'sales', label: 'מרכז המכירות', icon: BarChart2 },
+    { id: 'status', label: 'תמונת מצב', icon: Settings },
     { id: 'plan', label: 'התוכנית שלי', icon: ListTodo },
   ];
 
@@ -36,6 +38,8 @@ export default function MentorTab({ data }) {
                 <MentorChat clientData={data} />
             </div>
         );
+      case 'sales':
+        return <SalesCenter />;
       case 'status':
         return <Insights />;
       case 'plan':

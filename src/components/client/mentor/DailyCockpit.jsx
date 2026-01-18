@@ -57,6 +57,32 @@ export default function DailyCockpit({ onNavigate }) {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-10">
+      {/* Results Tracker Widget */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+        <div className="col-span-2 md:col-span-1 border-l pl-4 border-gray-100">
+            <span className="text-xs text-gray-500 block mb-1">יעד הכנסות חודשי</span>
+            <div className="flex items-end gap-2">
+                <span className="text-2xl font-bold text-gray-900">₪12,500</span>
+                <span className="text-xs text-green-600 mb-1 font-medium">85% מהיעד</span>
+            </div>
+            <Progress value={85} className="h-1.5 mt-2 bg-gray-100" indicatorClassName="bg-green-500" />
+        </div>
+        <div className="border-l pl-4 border-gray-100 hidden md:block">
+            <span className="text-xs text-gray-500 block mb-1">לידים חדשים</span>
+            <span className="text-xl font-bold text-gray-900">24</span>
+            <span className="text-xs text-green-600 block">+4 השבוע</span>
+        </div>
+        <div className="border-l pl-4 border-gray-100 hidden md:block">
+            <span className="text-xs text-gray-500 block mb-1">שיחות מכירה</span>
+            <span className="text-xl font-bold text-gray-900">8</span>
+            <span className="text-xs text-gray-400 block">יעד שבועי: 10</span>
+        </div>
+        <div className="flex items-center justify-end">
+            <Button variant="ghost" className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 text-xs h-8">
+                לדוח המלא <ArrowRight className="w-3 h-3 mr-1" />
+            </Button>
+        </div>
+      </div>
       {/* Hero Section */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
