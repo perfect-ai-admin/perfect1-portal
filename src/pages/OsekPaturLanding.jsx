@@ -203,8 +203,8 @@ export default function OsekPaturLanding() {
           }
         }}
       />
-      <main className="pt-20 bg-[#F8F9FA]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      <main className="pt-14 md:pt-20 bg-[#F8F9FA]">
+        <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
           <Breadcrumbs items={[
             { label: 'דף הבית', url: 'Home' },
             { label: 'פתיחת עוסק פטור' }
