@@ -793,10 +793,10 @@ export default function OsekPaturLanding() {
               viewport={{ once: true }}
             >
               <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                די לפורום ודי לחיפוש - בואו לעשות
+                עוסק פטור לעצמאים ופרילנסרים - ליווי מלא לאורך הדרך
               </h2>
               <p className="text-xl text-white/90 mb-8">
-                שיחה קצרה וחינם - ואתם תדעו בדיוק איפה אתם עומדים ומה הצעד הבא
+                בואו נעזור לכם להתחיל נכון - שיחה קצרה וחינם, בלי התחייבות, בלי בירוקרטיה
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
