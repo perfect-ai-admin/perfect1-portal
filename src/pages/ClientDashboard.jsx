@@ -74,19 +74,29 @@ export default function ClientDashboard() {
   // Check authentication
   useEffect(() => {
     try {
-      const storedUser = localStorage.getItem('user');
-      if (!storedUser) {
-        navigate(createPageUrl('ClientLogin'));
-        return;
+      let parsed = localStorage.getItem('user');
+      
+      // If no user, check for clientSession
+      if (!parsed) {
+        parsed = localStorage.getItem('clientSession');
+        if (!parsed) {
+          navigate(createPageUrl('ClientLogin'));
+          return;
+        }
+        parsed = JSON.parse(parsed);
+      } else {
+        parsed = JSON.parse(parsed);
       }
-      const parsed = JSON.parse(storedUser);
-      if (!parsed?.id || !parsed?.full_name) {
+      
+      if (!parsed?.id) {
         throw new Error('Invalid user data');
       }
+      
       setUser(parsed);
     } catch (error) {
       console.error('Auth error:', error);
       localStorage.removeItem('user');
+      localStorage.removeItem('clientSession');
       navigate(createPageUrl('ClientLogin'));
     }
   }, [navigate]);
