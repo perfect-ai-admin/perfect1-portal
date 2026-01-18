@@ -113,7 +113,7 @@ function ClientLogin() {
               status: response.data.user.status
             };
             localStorage.setItem('user', JSON.stringify(userToStore));
-            window.location.href = '/ClientDashboard';
+            window.location.replace('/ClientDashboard');
           } else {
             setError(response.data?.error || 'שגיאה בתהליך ההתחברות');
             setIsLoading(false);
