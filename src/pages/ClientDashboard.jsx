@@ -71,112 +71,50 @@ export default function ClientDashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Check authentication via /me endpoint with retry logic
+  // Check authentication
   useEffect(() => {
-    const verifyUser = async () => {
+    try {
       const storedUser = localStorage.getItem('user');
       if (!storedUser) {
-        console.log('[ClientDashboard] No stored user, redirecting to login');
         navigate(createPageUrl('ClientLogin'));
         return;
       }
-      
-      try {
-        const parsed = JSON.parse(storedUser);
-        if (!parsed?.id) {
-          console.error('[ClientDashboard] Invalid stored user - missing id');
-          throw new Error('Invalid user data - missing id');
-        }
-        
-        console.log('[ClientDashboard] [auth_init] Starting user verification...');
-        
-        // Bootstrap: verify with /me endpoint (with retries for new users)
-        const maxRetries = 6; // ~30 seconds with exponential backoff
-        let lastError = null;
-        
-        for (let attempt = 0; attempt < maxRetries; attempt++) {
-          try {
-            console.log(`[ClientDashboard] [auth_fetch_me] Attempt ${attempt + 1}/${maxRetries}...`);
-            const response = await base44.functions.invoke('me', {});
-            
-            console.log('[ClientDashboard] [auth_fetch_me_response]', response?.status, response?.data?.status);
-            
-            if (response?.data?.status === 'ready') {
-              console.log('[ClientDashboard] [auth_success] User ready, setting user data');
-              if (!parsed.full_name) {
-                parsed.full_name = parsed.email?.split('@')[0] || 'משתמש';
-              }
-              setUser(parsed);
-              console.log('[ClientDashboard] [auth_complete] User verification complete');
-              return;
-            } else if (response?.data?.status === 'pending') {
-              const waitTime = Math.pow(2, attempt) * 500;
-              console.log(`[ClientDashboard] [auth_pending] User pending, retry in ${waitTime}ms`);
-              lastError = 'User account still being created';
-              // Wait with exponential backoff before retry
-              await new Promise(resolve => setTimeout(resolve, waitTime));
-              continue;
-            } else {
-              console.error('[ClientDashboard] [auth_invalid_response]', response?.data);
-              throw new Error('Invalid /me response: ' + JSON.stringify(response?.data));
-            }
-          } catch (meErr) {
-            console.error(`[ClientDashboard] [auth_error] Attempt ${attempt + 1} failed:`, meErr.message);
-            lastError = meErr.message;
-            
-            if (attempt === maxRetries - 1) {
-              console.error('[ClientDashboard] [auth_failed_max_retries] Max retries reached');
-              throw new Error(`Authentication failed: ${lastError}`);
-            }
-            
-            // Exponential backoff
-            const waitTime = Math.pow(2, attempt) * 500;
-            await new Promise(resolve => setTimeout(resolve, waitTime));
-          }
-        }
-        
-        throw new Error(lastError || 'User verification timed out');
-      } catch (error) {
-        console.error('[ClientDashboard] [auth_failed_redirect]', error.message);
-        console.log('[ClientDashboard] Clearing localStorage and redirecting to login');
-        localStorage.removeItem('user');
-        navigate(createPageUrl('ClientLogin'));
+      const parsed = JSON.parse(storedUser);
+      if (!parsed?.id || !parsed?.full_name) {
+        throw new Error('Invalid user data');
       }
-    };
-    
-    verifyUser();
+      setUser(parsed);
+    } catch (error) {
+      console.error('Auth error:', error);
+      localStorage.removeItem('user');
+      navigate(createPageUrl('ClientLogin'));
+    }
   }, [navigate]);
 
-  // Fetch user data - only after /me verification succeeds
+  // Fetch user data
   const { data: userData, isLoading, error: fetchError } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: async () => {
       if (!user?.id) {
-        console.log('[ClientDashboard] No user ID, using stored user');
         return user;
       }
-      
       try {
-        console.log('[ClientDashboard] Fetching fresh user data for:', user?.id);
         const users = await base44.entities.User.filter({ id: user.id });
-        
         if (!users || users.length === 0) {
-          console.warn('[ClientDashboard] User not in DB yet, using localStorage');
+          console.warn('No users found, using stored user data');
           return user;
         }
-        
         const freshUser = users[0] || user;
-        console.log('[ClientDashboard] Fresh user data fetched');
         localStorage.setItem('user', JSON.stringify(freshUser));
         return freshUser;
       } catch (err) {
-        console.error('[ClientDashboard] Fresh user fetch error:', err.message);
+        console.error('Error fetching user data:', err);
         return user;
       }
     },
     enabled: !!user?.id,
     refetchInterval: false,
-    retry: 0,
+    retry: 1,
     staleTime: 30000,
     gcTime: 1000 * 60 * 10
   });
@@ -254,20 +192,23 @@ export default function ClientDashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4" dir="rtl">
-        <div className="text-center space-y-4">
-          <div className="animate-spin">
-            <div className="w-12 h-12 border-4 border-[#1E3A5F] border-t-transparent rounded-full mx-auto"></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="mb-6">
+              <SkeletonHeader />
+            </div>
+            <div className="h-12 bg-white/10 rounded-lg" />
           </div>
-          <h2 className="text-xl font-semibold text-[#1E3A5F]">יוצרים את החשבון שלך...</h2>
-          <p className="text-sm text-gray-600">זה לוקח רק רגע</p>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <SkeletonTabContent />
         </div>
       </div>
     );
   }
 
-  if (!currentData?.id || typeof currentData !== 'object') {
-    console.error('[ClientDashboard] Invalid user data:', currentData);
+  if (!currentData?.id || !currentData?.full_name || typeof currentData !== 'object') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
         <Alert variant="destructive" className="max-w-md">

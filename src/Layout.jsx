@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
-import { createPageUrl } from '@/utils';
 
 // GTM Scripts injected directly
 const gtmScriptId = 'gtm-script';
@@ -18,25 +17,22 @@ import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children, currentPageName }) {
-          const location = useLocation();
-          const navigate = useNavigate();
+    const location = useLocation();
 
-    
+    // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
+    if (currentPageName === 'SystemLogicMap') {
+      return children;
+    }
 
-          // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
-          if (currentPageName === 'SystemLogicMap') {
-            return children;
-          }
-
-          // ClientLogin - עמוד כניסה עצמאי
-          if (currentPageName === 'ClientLogin') {
-            return (
-              <HelmetProvider>
-                {children}
-                <Toaster />
-              </HelmetProvider>
-            );
-          }
+    // ClientLogin - עמוד כניסה עצמאי
+    if (currentPageName === 'ClientLogin') {
+      return (
+        <HelmetProvider>
+          {children}
+          <Toaster />
+        </HelmetProvider>
+      );
+    }
 
     // ClientDashboard / PricingPerfectBizAI - אל תציג Header רגיל (יש להם Header משלהם)
     if (currentPageName === 'ClientDashboard' || currentPageName === 'PricingPerfectBizAI') {

@@ -9,7 +9,6 @@ import UsersTable from '../components/admin/UsersTable';
 import GoalsManager from '../components/admin/GoalsManager';
 import PlansManager from '../components/admin/PlansManager';
 import ActivityLogView from '../components/admin/ActivityLogView';
-import AuthErrorsViewer from '../components/admin/AuthErrorsViewer';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
@@ -123,26 +122,22 @@ export default function AdminDashboard() {
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                        <TabsList className="grid grid-cols-5 gap-2 bg-white p-2 rounded-xl shadow-md h-auto">
-                            <TabsTrigger value="users" className="flex items-center gap-2 text-sm">
+                        <TabsList className="grid grid-cols-4 gap-4 bg-white p-2 rounded-xl shadow-md">
+                            <TabsTrigger value="users" className="flex items-center gap-2">
                                 <Users className="w-4 h-4" />
                                 משתמשים
                             </TabsTrigger>
-                            <TabsTrigger value="goals" className="flex items-center gap-2 text-sm">
+                            <TabsTrigger value="goals" className="flex items-center gap-2">
                                 <Target className="w-4 h-4" />
                                 מטרות
                             </TabsTrigger>
-                            <TabsTrigger value="plans" className="flex items-center gap-2 text-sm">
+                            <TabsTrigger value="plans" className="flex items-center gap-2">
                                 <CreditCard className="w-4 h-4" />
                                 מסלולים
                             </TabsTrigger>
-                            <TabsTrigger value="activity" className="flex items-center gap-2 text-sm">
+                            <TabsTrigger value="activity" className="flex items-center gap-2">
                                 <Activity className="w-4 h-4" />
                                 פעילות
-                            </TabsTrigger>
-                            <TabsTrigger value="autherrors" className="flex items-center gap-2 text-sm">
-                                <Shield className="w-4 h-4" />
-                                Auth Errors
                             </TabsTrigger>
                         </TabsList>
 
@@ -160,10 +155,6 @@ export default function AdminDashboard() {
 
                         <TabsContent value="activity">
                             <ActivityLogView />
-                        </TabsContent>
-
-                        <TabsContent value="autherrors">
-                            <AuthErrorsViewer />
                         </TabsContent>
                     </Tabs>
                 </div>

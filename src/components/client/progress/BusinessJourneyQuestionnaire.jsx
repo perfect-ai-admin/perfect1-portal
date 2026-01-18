@@ -271,10 +271,10 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
     const currentQ = questionsList[currentStep];
     const newAnswers = { ...answers, [currentQ.id]: textInput };
     setAnswers(newAnswers);
-    setTextInput("");
     
     if (currentStep < questionsList.length - 1) {
       setCurrentStep(prev => prev + 1);
+      setTextInput("");
     } else {
       handleSubmit(newAnswers);
     }
@@ -291,14 +291,16 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
       if (selectedFlow) {
         // Add the profession question at the end of every flow
         setQuestionsList([BASE_QUESTION, ...selectedFlow, PROFESSION_QUESTION]);
-        // Auto advance after short delay
-        setTimeout(() => {
-          setCurrentStep(prev => prev + 1);
-        }, 250);
       }
-    } else if (currentStep < questionsList.length - 1) {
-      // Not at the end yet - advance
-      setTimeout(() => {
+    }
+
+    // Auto advance after short delay for better UX
+    if (currentStep < questionsList.length - 1 || (currentStep === 0 && FLOWS[optionId])) {
+       // Check if we need to wait for state update (rendering new questions)
+       // Actually, since we update state above, it might not reflect immediately in questionsList.length
+       // But for the FIRST step, we know we are adding more.
+       
+       setTimeout(() => {
         setCurrentStep(prev => prev + 1);
       }, 250);
     } else {

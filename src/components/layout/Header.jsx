@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import {
 import { Menu, Phone, MessageCircle, ChevronDown } from 'lucide-react';
 import { trackPhoneClick, trackWhatsAppClick } from '../tracking/EventTracker';
 
-function Header() {
+export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOsekPaturOpen, setIsOsekPaturOpen] = useState(false);
@@ -316,8 +316,8 @@ function Header() {
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
             {/* Client Area Button - Desktop */}
-            <button
-              onClick={() => window.location.href = '/ClientLogin'}
+            <Link
+              to={createPageUrl('ClientLogin')}
               className="hidden lg:flex"
             >
               <Button 
@@ -326,7 +326,7 @@ function Header() {
               >
                 🔐 אזור אישי
               </Button>
-            </button>
+            </Link>
 
             {/* Mobile CTA Buttons - Show on all screens */}
             <a
@@ -412,12 +412,13 @@ function Header() {
                   <nav className="flex-1 p-6 overflow-y-auto">
                     <ul className="space-y-2">
                       <li>
-                        <button
-                          onClick={() => { setIsMobileMenuOpen(false); window.location.href = '/ClientLogin'; }}
-                          className="w-full flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
+                        <Link
+                          to={createPageUrl('ClientLogin')}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
                         >
                           🔐 אזור אישי ללקוחות
-                        </button>
+                        </Link>
                       </li>
                       <li>
                         <Link
@@ -615,5 +616,3 @@ function Header() {
     </header>
   );
 }
-
-export default memo(Header);

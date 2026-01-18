@@ -48,7 +48,9 @@ function FAQItem({ question, answer }) {
 export default function OsekPaturLanding() {
   const [formData, setFormData] = useState({
     name: '',
-    phone: ''
+    phone: '',
+    email: '',
+    profession: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -59,18 +61,16 @@ export default function OsekPaturLanding() {
       alert('אנא מלא שם וטלפון');
       return;
     }
-    setIsSuccess(true);
 
     setIsSubmitting(true);
     try {
       await base44.entities.Lead.create({
-        name: formData.name,
-        phone: formData.phone,
+        ...formData,
         source_page: 'דף נחיתה - פתיחת עוסק פטור',
         status: 'new'
       });
 
-
+      window.location.href = '/ThankYou';
     } catch (err) {
       console.error(err);
     } finally {
@@ -227,12 +227,12 @@ export default function OsekPaturLanding() {
 
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                   פתיחת עוסק פטור <span className="text-[#27AE60]">בקלות</span>
+                   פתיחת עוסק פטור ב-24 שעות <span className="text-[#27AE60]">בלי לצאת מהבית</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                   תהליך ברור ופשוט<br className="hidden md:block" />
-                   שירות מקצועי לפתיחת עוסק פטור בישראל.
+                   אנחנו נטפל בבירוקרטיה, בטפסים ובפתיחת התיק מול כל הרשויות.<br className="hidden md:block" />
+                   אתם? תתחילו להרוויח.
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
@@ -319,10 +319,10 @@ export default function OsekPaturLanding() {
                className="text-center mb-10"
              >
                <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                 רוצה לפתוח עוסק פטור?
+                 השאלה האמיתית שצריך לשאול
                </h2>
                <p className="text-xl text-gray-600">
-                 <strong className="text-[#D4AF37]">לא בטוחים איך לפתוח עוסק פטור?</strong> אנחנו כאן לעשות סדר.
+                 לא "איך לפתוח עוסק?" אלא <strong className="text-[#D4AF37]">"מי יעזור לי לא לטעות?"</strong>
                </p>
              </motion.div>
 
@@ -362,10 +362,10 @@ export default function OsekPaturLanding() {
                  ✅ הפתרון שעבד לאלפים
                </div>
                <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
-                 שירות פרטי לפתיחת עוסק פטור
+                 6 היתרונות שלנו - למה כדאי לבחור בנו?
                </h2>
                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                 ליווי ברור ופשוט לכל התהליך. מתאים לעצמאים בתחילת הדרך.
+                 מאז 2018 אנחנו מטפלים בכל הבירוקרטיה כדי שאתם תוכלו לעבוד בראש שקט
                </p>
              </motion.div>
 
@@ -409,10 +409,10 @@ export default function OsekPaturLanding() {
                  📊 הוכחה שזה עובד
                </div>
                <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-                 2,000+ עצמאים כבר התחילו
+                 2,000+ עצמאים בחרו בנו להיות הביטחון שלהם
                </h2>
                <p className="text-xl text-white/90 mb-8">
-                 פתיחת עוסק פטור אונליין עם ליווי אנושי ומענה לשאלות.
+                 בכל חודש משלוש עצמאיים חדשים בוחרים בנו להיות החברה שלהם בדרך
                </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                <Button onClick={scrollToForm} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
@@ -579,16 +579,11 @@ export default function OsekPaturLanding() {
                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
                   <CheckCircle className="w-10 h-10 text-green-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">✅ בדיקה מתחילה!</h3>
-                <p className="text-gray-600 mb-4">נחזור אליך בתוך 24 שעות עם תוכנית אישית</p>
-                <p className="text-sm text-[#27AE60] font-bold">💚 שיחה חינם ללא התחייבות</p>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
+                <p className="text-gray-600">נחזור אליך בקרוב ונתחיל את התהליך</p>
               </div>
             ) : (
               <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-[#D4AF37]/30">
-                <div className="mb-6 text-center">
-                  <p className="text-lg font-bold text-[#1E3A5F] mb-2">⏰ שיחה ראשונית חינם - 15 דקות</p>
-                  <p className="text-sm text-gray-600">רק 2 שדות. תחזרנו בתוך 24 שעות.</p>
-                </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">שם מלא *</label>
@@ -613,17 +608,40 @@ export default function OsekPaturLanding() {
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">מייל *</label>
+                    <Input
+                      type="email"
+                      placeholder="example@gmail.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="h-12 rounded-xl border-2"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">סוג עיסוק (לא חובה)</label>
+                    <Input
+                      placeholder="למשל: צלם, מעצב, מאמן כושר..."
+                      value={formData.profession}
+                      onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                      className="h-12 rounded-xl border-2"
+                    />
+                  </div>
+
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg transform hover:scale-105 transition-all"
+                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
                   >
-                    {isSubmitting ? '⏳ שנייה...' : '✨ קבל ייעוץ חינם עכשיו'}
+                    {isSubmitting ? 'שולח...' : 'הגשת פרטים'}
                   </Button>
 
-                  <p className="text-xs text-gray-500 text-center mt-4 flex items-center justify-center gap-1">
-                    <CheckCircle className="w-3 h-3" />
-                    ללא תשלום • ללא התחייבות • בתוך 24 שעות
+
+
+                  <p className="text-xs text-gray-500 text-center mt-4">
+                    ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום
                   </p>
                   </form>
               </div>
