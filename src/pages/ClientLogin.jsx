@@ -105,8 +105,15 @@ function ClientLogin() {
         });
       }
 
-      // Store user data in localStorage
-      localStorage.setItem('user', JSON.stringify(user));
+      // Store user data in localStorage with id ensured
+      const userToStore = {
+        id: user.id || user.created_by,
+        full_name: user.full_name,
+        email: user.email,
+        phone: user.phone,
+        status: user.status
+      };
+      localStorage.setItem('user', JSON.stringify(userToStore));
       window.location.href = '/ClientDashboard';
     } catch (err) {
     console.error('Login error:', err);
