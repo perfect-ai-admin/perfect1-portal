@@ -26,63 +26,54 @@ Deno.serve(async (req) => {
 
     // Determine if credential is email or phone
     const isEmail = credential.includes('@');
-    const searchFilter = isEmail 
-      ? { email: credential }
-      : { phone: credential.replace(/[^0-9]/g, '') };
+    const cleanCredential = isEmail ? credential : credential.replace(/[^0-9]/g, '');
 
-    // Search for Lead by email or phone
-    let leads = [];
+    // Get free plan for new users
+    let freePlan = null;
     try {
-      leads = await base44.asServiceRole.entities.Lead.filter(searchFilter);
-    } catch (err) {
-      console.error('Lead filter error:', err);
+      const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
+      freePlan = freePlans.length > 0 ? freePlans[0] : null;
+    } catch (planErr) {
+      console.error('Plan filter error:', planErr);
     }
 
-    if (leads.length === 0) {
-      return Response.json({ error: isEmail ? 'Email not found' : 'Phone not found' }, { status: 404 });
-    }
-
-    const lead = leads[0];
-
-    // Find or create User for this Lead
+    // Find or create user by email or phone
     let user;
-    const cleanPhone = credential.replace(/[^0-9]/g, '');
     try {
-      const usersByPhone = await base44.asServiceRole.entities.User.filter({ phone: cleanPhone });
+      const searchFilter = isEmail ? { email: cleanCredential } : { phone: cleanCredential };
+      const existingUsers = await base44.asServiceRole.entities.User.filter(searchFilter);
 
-      if (usersByPhone.length > 0) {
-        user = usersByPhone[0];
+      if (existingUsers.length > 0) {
+        // User exists - update last login
+        user = existingUsers[0];
         await base44.asServiceRole.entities.User.update(user.id, {
           last_login_at: new Date().toISOString()
         });
+        console.log('Existing user logged in:', user.id);
       } else {
-        // Create new User from Lead
-        let freePlan = null;
-        try {
-          const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
-          freePlan = freePlans.length > 0 ? freePlans[0] : null;
-        } catch (planErr) {
-          console.error('Plan filter error:', planErr);
-        }
-
+        // New user - create directly (don't require Lead)
+        console.log('Creating new user for:', cleanCredential);
+        
         user = await base44.asServiceRole.entities.User.create({
-          full_name: lead.name || 'משתמש חדש',
-          email: lead.email || `lead_${lead.phone}@bizpilot.local`,
-          phone: cleanPhone,
+          full_name: 'משתמש חדש',
+          email: isEmail ? cleanCredential : `phone_${cleanCredential}@bizpilot.local`,
+          phone: isEmail ? '0000000000' : cleanCredential,
           status: 'active',
+          login_provider: 'password',
           last_login_at: new Date().toISOString(),
           current_plan_id: freePlan?.id || null,
           plan_start_date: new Date().toISOString(),
           marketing_enabled: freePlan?.marketing_enabled || false,
-          mentor_enabled: freePlan?.mentor_enabled || true,
+          mentor_enabled: freePlan?.mentor_enabled !== false ? true : false,
           finance_enabled: freePlan?.finance_enabled || false,
           goals_limit: freePlan?.goals_limit || 1,
           max_active_goals: freePlan?.max_active_goals || 1
         });
+        console.log('New user created:', user.id);
       }
     } catch (userErr) {
-      console.error('User operation error:', userErr);
-      throw userErr;
+      console.error('User operation error:', userErr.message);
+      return Response.json({ error: 'Failed to create or update user' }, { status: 500 });
     }
 
     const userToReturn = {
@@ -96,6 +87,6 @@ Deno.serve(async (req) => {
     return Response.json({ user: userToReturn });
   } catch (error) {
     console.error('Client login error:', error.message);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: 'Login failed. Please try again.' }, { status: 500 });
   }
 });
