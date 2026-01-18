@@ -21,7 +21,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
   
   // Fetch active goals for the floating button
-  const { data: activeGoals } = useQuery({
+  const { data: activeGoals, refetch: refetchGoals } = useQuery({
     queryKey: ['activeGoals', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
@@ -31,6 +31,14 @@ export default function ProgressTab({ data, onNavigate, user }) {
     enabled: !!user?.id,
     initialData: []
   });
+
+  // Subscribe to goal changes to update the floating button in real-time
+  React.useEffect(() => {
+    const unsubscribe = base44.entities.UserGoal.subscribe(() => {
+      refetchGoals();
+    });
+    return () => unsubscribe();
+  }, [refetchGoals]);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [activeTaskQuestionnaire, setActiveTaskQuestionnaire] = useState(null);
   
