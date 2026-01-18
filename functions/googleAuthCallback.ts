@@ -167,21 +167,18 @@ Deno.serve(async (req) => {
         <p>מתחבר למערכת...</p>
     </div>
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            try {
-                const userData = ${userJson};
-                if (!userData || typeof userData !== 'object' || !userData.id) {
-                    console.error('Invalid user data:', userData);
-                    throw new Error('Invalid user data');
-                }
-                localStorage.setItem('user', JSON.stringify(userData));
-                // Use window.location.replace to avoid adding to history
-                window.location.replace('/ClientDashboard');
-            } catch (error) {
-                console.error('Auth error:', error);
-                window.location.replace('/ClientLogin?error=' + encodeURIComponent(error.message));
-            }
-        });
+       (function() {
+           try {
+               const userData = ${userJson};
+               if (!userData || typeof userData !== 'object' || !userData.id) {
+                   throw new Error('Invalid user data');
+               }
+               localStorage.setItem('user', JSON.stringify(userData));
+               window.location.href = '/ClientDashboard';
+           } catch (error) {
+               window.location.href = '/ClientLogin?error=' + encodeURIComponent(error.message);
+           }
+       })();
     </script>
 </body>
 </html>`;
