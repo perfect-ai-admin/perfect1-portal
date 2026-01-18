@@ -158,9 +158,11 @@ export default function SocialCampaign({ onBack, onComplete }) {
 
       <div className="flex gap-3 pt-4">
         <Button variant="outline" onClick={() => setStep(1)} className="flex-1">חזור</Button>
-        <Button onClick={onComplete} className="flex-[2] bg-pink-600 hover:bg-pink-700 text-white">
+        <Button onClick={handleLaunch} disabled={isLoading} className="flex-[2] bg-pink-600 hover:bg-pink-700 text-white">
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>
             צור קמפיין
             <ArrowRight className="w-4 h-4 mr-2" />
+            </>}
         </Button>
       </div>
     </div>

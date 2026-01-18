@@ -1,12 +1,31 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Settings, Search, Mail, LayoutGrid, Rocket, ArrowRight } from 'lucide-react';
+import { Plus, Settings, Search, Mail, LayoutGrid, Rocket, ArrowRight, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CampaignBuilder from './CampaignBuilder';
+import { toast } from 'sonner';
 
 export default function CampaignSection() {
   const [isCreating, setIsCreating] = useState(false);
-  const [campaigns, setCampaigns] = useState([]);
+  const queryClient = useQueryClient();
+
+  const { data: campaigns = [], isLoading } = useQuery({
+    queryKey: ['campaigns'],
+    queryFn: () => base44.entities.Campaign.list(),
+  });
+
+  const deleteCampaignMutation = useMutation({
+    mutationFn: (id) => base44.entities.Campaign.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+      toast.success('הקמפיין נמחק בהצלחה');
+    },
+    onError: () => {
+      toast.error('שגיאה במחיקת הקמפיין');
+    }
+  });
 
   const channels = [
     { id: 'google', name: 'Google Ads', description: 'חיפוש', icon: Search, color: 'text-blue-600', bg: 'bg-blue-100', border: 'border-blue-100' },
@@ -21,7 +40,10 @@ export default function CampaignSection() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
       >
-        <CampaignBuilder onClose={() => setIsCreating(false)} />
+        <CampaignBuilder 
+            onClose={() => setIsCreating(false)} 
+            onCampaignCreated={() => queryClient.invalidateQueries({ queryKey: ['campaigns'] })}
+        />
       </motion.div>
     );
   }
@@ -48,7 +70,11 @@ export default function CampaignSection() {
       </div>
 
       {/* Campaigns List or Empty State */}
-      {campaigns.length === 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        </div>
+      ) : campaigns.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 md:p-12 text-center">
           <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <Rocket className="w-10 h-10 text-gray-400" />
@@ -69,13 +95,13 @@ export default function CampaignSection() {
       ) : (
         <div className="grid gap-4">
           {campaigns.map(campaign => (
-            <div key={campaign.id} className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+            <div key={campaign.id} className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-all group">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-bold text-gray-900 text-lg">{campaign.name}</h4>
                   <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
                     <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                    {campaign.channel}
+                    {campaign.channel === 'social' ? 'Social Media' : campaign.channel === 'google' ? 'Google Ads' : 'Email Marketing'}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -86,8 +112,18 @@ export default function CampaignSection() {
                   }`}>
                     {campaign.status === 'active' ? 'פעיל' : 'כבוי'}
                   </span>
-                  <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100">
-                    <Settings className="w-5 h-5 text-gray-400" />
+                  
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="rounded-full hover:bg-red-50 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => {
+                        if(confirm('האם אתה בטוח שברצונך למחוק קמפיין זה?')) {
+                            deleteCampaignMutation.mutate(campaign.id);
+                        }
+                    }}
+                  >
+                    <Trash2 className="w-5 h-5" />
                   </Button>
                 </div>
               </div>

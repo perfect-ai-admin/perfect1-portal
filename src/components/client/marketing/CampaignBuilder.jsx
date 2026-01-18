@@ -58,7 +58,7 @@ const TEMPLATES = [
   }
 ];
 
-export default function CampaignBuilder({ onClose }) {
+export default function CampaignBuilder({ onClose, onCampaignCreated }) {
   const [step, setStep] = useState(1);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [campaignData, setCampaignData] = useState({
@@ -68,6 +68,13 @@ export default function CampaignBuilder({ onClose }) {
     duration: '',
     targetAudience: ''
   });
+
+  const handleComplete = () => {
+    if (onCampaignCreated) {
+        onCampaignCreated();
+    }
+    setStep(3);
+  };
 
   if (step === 1) {
     return (
@@ -155,19 +162,19 @@ export default function CampaignBuilder({ onClose }) {
             {selectedTemplate?.id === 'social_media' && (
                 <SocialCampaign 
                     onBack={() => setStep(1)}
-                    onComplete={() => setStep(3)}
+                    onComplete={handleComplete}
                 />
             )}
             {selectedTemplate?.id === 'google_ads' && (
                 <GoogleCampaign 
                     onBack={() => setStep(1)}
-                    onComplete={() => setStep(3)}
+                    onComplete={handleComplete}
                 />
             )}
             {selectedTemplate?.id === 'email' && (
                 <EmailCampaign 
                     onBack={() => setStep(1)}
-                    onComplete={() => setStep(3)}
+                    onComplete={handleComplete}
                 />
             )}
         </div>

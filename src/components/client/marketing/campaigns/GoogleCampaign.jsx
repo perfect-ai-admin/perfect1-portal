@@ -4,17 +4,45 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, MapPin, Check, Link2, ArrowRight, DollarSign, Globe } from 'lucide-react';
+import { Search, MapPin, Check, Link2, ArrowRight, DollarSign, Globe, Loader2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 export default function GoogleCampaign({ onBack, onComplete }) {
   const [step, setStep] = useState(1);
   const [isConnected, setIsConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({
     keywords: '',
     location: '',
     budget: '',
     headline: ''
   });
+
+  const handleLaunch = async () => {
+    try {
+        setIsLoading(true);
+        await base44.entities.Campaign.create({
+            name: `Google Ads - ${new Date().toLocaleDateString('he-IL')}`,
+            channel: 'google',
+            platform: 'google_ads',
+            budget: Number(data.budget) || 0,
+            status: 'active',
+            target_audience: data.location,
+            content: {
+                headline: data.headline,
+                keywords: data.keywords.split(',').map(k => k.trim())
+            }
+        });
+        toast.success('הקמפיין נוצר בהצלחה');
+        onComplete();
+    } catch (error) {
+        console.error(error);
+        toast.error('שגיאה ביצירת הקמפיין');
+    } finally {
+        setIsLoading(false);
+    }
+  };
 
   const handleConnect = () => {
     // Simulate connection
@@ -125,9 +153,11 @@ export default function GoogleCampaign({ onBack, onComplete }) {
 
       <div className="flex gap-3 pt-4">
         <Button variant="outline" onClick={() => setStep(1)} className="flex-1">חזור</Button>
-        <Button onClick={onComplete} className="flex-[2] bg-blue-600 hover:bg-blue-700 text-white">
+        <Button onClick={handleLaunch} disabled={isLoading} className="flex-[2] bg-blue-600 hover:bg-blue-700 text-white">
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>
             השק את הקמפיין
             <ArrowRight className="w-4 h-4 mr-2" />
+            </>}
         </Button>
       </div>
     </div>

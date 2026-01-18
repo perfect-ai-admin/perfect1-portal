@@ -4,15 +4,42 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Mail, Users, Clock, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Mail, Users, Clock, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 export default function EmailCampaign({ onBack, onComplete }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({
     subject: '',
     segment: 'all',
     content: '',
     schedule: 'now'
   });
+
+  const handleLaunch = async () => {
+    try {
+        setIsLoading(true);
+        await base44.entities.Campaign.create({
+            name: `Email Campaign - ${new Date().toLocaleDateString('he-IL')}`,
+            channel: 'email',
+            status: 'active',
+            content: {
+                email_subject: data.subject,
+                email_content: data.content,
+                segment: data.segment,
+                schedule: data.schedule
+            }
+        });
+        toast.success('הקמפיין נוצר בהצלחה');
+        onComplete();
+    } catch (error) {
+        console.error(error);
+        toast.error('שגיאה ביצירת הקמפיין');
+    } finally {
+        setIsLoading(false);
+    }
+  };
 
   return (
     <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-4 pt-2">
@@ -86,9 +113,11 @@ export default function EmailCampaign({ onBack, onComplete }) {
       </div>
 
       <div className="pt-4">
-        <Button onClick={onComplete} className="w-full bg-purple-600 hover:bg-purple-700 text-white h-12 text-base shadow-lg shadow-purple-100">
+        <Button onClick={handleLaunch} disabled={isLoading} className="w-full bg-purple-600 hover:bg-purple-700 text-white h-12 text-base shadow-lg shadow-purple-100">
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>
             שגר קמפיין
             <ArrowRight className="w-5 h-5 mr-2" />
+            </>}
         </Button>
       </div>
     </div>
