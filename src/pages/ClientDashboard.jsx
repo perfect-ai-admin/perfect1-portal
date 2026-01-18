@@ -137,33 +137,30 @@ export default function ClientDashboard() {
     verifyUser();
   }, [navigate]);
 
-  // Fetch user data - for new users, skip DB fetch and use localStorage data
+  // Fetch user data - only after /me verification succeeds
   const { data: userData, isLoading, error: fetchError } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: async () => {
       if (!user?.id) {
-        console.log('[ClientDashboard] No user ID, returning stored user');
+        console.log('[ClientDashboard] No user ID, using stored user');
         return user;
       }
       
-      // For new Google users, immediately use localStorage data without DB fetch
-      // This prevents permission/database issues during first load
       try {
-        console.log('[ClientDashboard] Attempting to fetch fresh user data for:', user?.id);
+        console.log('[ClientDashboard] Fetching fresh user data for:', user?.id);
         const users = await base44.entities.User.filter({ id: user.id });
         
         if (!users || users.length === 0) {
-          console.warn('[ClientDashboard] User not found in DB, using localStorage data');
+          console.warn('[ClientDashboard] User not in DB yet, using localStorage');
           return user;
         }
         
         const freshUser = users[0] || user;
-        console.log('[ClientDashboard] Fresh user data fetched successfully');
+        console.log('[ClientDashboard] Fresh user data fetched');
         localStorage.setItem('user', JSON.stringify(freshUser));
         return freshUser;
       } catch (err) {
-        console.error('[ClientDashboard] User fetch error (expected for new users):', err.message);
-        console.log('[ClientDashboard] Using localStorage data instead');
+        console.error('[ClientDashboard] Fresh user fetch error:', err.message);
         return user;
       }
     },
