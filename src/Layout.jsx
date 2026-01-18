@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
+import { createPageUrl } from '@/utils';
 
 // GTM Scripts injected directly
 const gtmScriptId = 'gtm-script';
