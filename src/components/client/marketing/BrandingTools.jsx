@@ -66,7 +66,7 @@ const tools = [
     features: ['פוסטים אינסטגרם', 'סטוריז', 'קאברים קבועים']
   },
   {
-    id: 'business-card',
+    id: 'business_card',
     title: 'כרטיס ביקור דיגיטלי',
     description: 'עמוד אישי קצר עם כפתורי יצירת קשר',
     icon: Share2,
