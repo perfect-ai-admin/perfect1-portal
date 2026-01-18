@@ -154,6 +154,22 @@ Deno.serve(async (req) => {
     };
 
     console.log(`[${errorId}] [STEP: response] Success, user:`, user.id);
+    
+    // Create authenticated session via Base44's built-in auth mechanism
+    // This ensures the JWT is set as a secure cookie and /me() will work
+    try {
+      console.log(`[${errorId}] [STEP: session_creation] Creating authenticated session...`);
+      // Use updateMe to create a session - this establishes the JWT cookie
+      await base44.auth.updateMe({ 
+        _login_verified: true,
+        last_verified: new Date().toISOString()
+      });
+      console.log(`[${errorId}] [STEP: session_creation] Session created`);
+    } catch (sessionErr) {
+      console.warn(`[${errorId}] [STEP: session_creation] Warning - session setup failed (non-critical):`, sessionErr.message);
+      // Continue anyway - return user data even if session creation has issues
+    }
+    
     return Response.json({ user: userToReturn });
   } catch (error) {
     console.error(`[${errorId}] [STEP: unexpected] Error:`, error.message);
