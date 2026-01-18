@@ -4,12 +4,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Facebook, Instagram, Check, AlertCircle, Link2, Image, Layout, ArrowRight, Calendar, DollarSign } from 'lucide-react';
+import { Facebook, Instagram, Check, AlertCircle, Link2, Image, Layout, ArrowRight, Calendar, DollarSign, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 export default function SocialCampaign({ onBack, onComplete }) {
   const [step, setStep] = useState(1);
   const [isConnected, setIsConnected] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({
     platforms: [],
     objective: '',
@@ -29,6 +32,30 @@ export default function SocialCampaign({ onBack, onComplete }) {
   const handleConnect = () => {
     // Simulate connection
     setTimeout(() => setIsConnected(true), 1500);
+  };
+
+  const handleLaunch = async () => {
+    try {
+        setIsLoading(true);
+        await base44.entities.Campaign.create({
+            name: `Social Campaign - ${new Date().toLocaleDateString('he-IL')}`,
+            channel: 'social',
+            platform: data.platforms.join(', '),
+            budget: Number(data.budget) || 0,
+            status: 'active',
+            content: {
+                objective: data.objective,
+                creativeType: data.creativeType
+            }
+        });
+        toast.success('הקמפיין נוצר בהצלחה');
+        onComplete();
+    } catch (error) {
+        console.error(error);
+        toast.error('שגיאה ביצירת הקמפיין');
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   const renderStep1_Connect = () => (
