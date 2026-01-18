@@ -38,7 +38,8 @@ function ClientLogin() {
     }
 
     const user = localStorage.getItem('user');
-    if (user) {
+    const skipRedirect = new URLSearchParams(window.location.search).get('logout') === 'true';
+    if (user && !skipRedirect) {
       window.location.href = '/ClientDashboard';
     }
   }, []);
