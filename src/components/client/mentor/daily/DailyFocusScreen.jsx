@@ -139,10 +139,20 @@ export default function DailyFocusScreen({ focus, onSave }) {
               
               <div className="relative z-10 space-y-6">
                 <div>
-                  <label className="text-sm font-bold text-gray-900 mb-2 block flex items-center gap-2">
-                    <Target className="w-4 h-4 text-indigo-600" />
-                    הגדר את המשימה העיקרית
-                  </label>
+                  <div className="flex justify-between items-end mb-2">
+                    <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                        <Target className="w-4 h-4 text-indigo-600" />
+                        הגדר את המשימה העיקרית
+                    </label>
+                    {primaryGoal && (
+                        <div className="flex items-center gap-1.5 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100">
+                            <Link className="w-3 h-3 text-blue-600" />
+                            <span className="text-xs text-blue-800">
+                                עבור המטרה: <span className="font-semibold">{primaryGoal.title}</span>
+                            </span>
+                        </div>
+                    )}
+                  </div>
                   <Textarea
                     placeholder="למשל: לסגור את העסקה עם יוסי..."
                     value={primaryFocus}
