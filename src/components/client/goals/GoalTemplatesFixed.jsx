@@ -25,13 +25,15 @@ const GOAL_TEMPLATES = [
     name: 'הגדלת כמות לקוחות פעילים',
     icon: Users,
     color: 'from-blue-400 to-blue-600',
-    defaultTarget: 20,
-    unit: 'לקוחות',
     description: 'הגדל את מספר הלקוחות הפעילים שלך',
     examples: [
-      { title: 'להגיע ל־5 לקוחות פעילים', target: 5, timeframe: 'quarter' },
-      { title: 'להגיע ל־20 לקוחות פעילים', target: 20, timeframe: 'quarter' },
-      { title: 'להגיע ל־50 לקוחות פעילים', target: 50, timeframe: 'year' }
+      { title: 'להגיע ל־5 לקוחות פעילים' },
+      { title: 'להגיע ל־20 לקוחות פעילים' },
+      { title: 'להגיע ל־50 לקוחות פעילים' }
+    ],
+    questions: [
+      { id: 'q1', label: 'כמה לקוחות פעילים יש לך היום?', placeholder: 'לדוגמה: 3' },
+      { id: 'q2', label: 'מה מקור הלקוחות העיקרי שלך כרגע?', placeholder: 'לדוגמה: המלצות מפה לאוזן' }
     ]
   },
   {
@@ -39,13 +41,15 @@ const GOAL_TEMPLATES = [
     name: 'הגדלת הכנסה חודשית',
     icon: DollarSign,
     color: 'from-green-400 to-green-600',
-    defaultTarget: 30000,
-    unit: '₪',
     description: 'הגדל את ההכנסה החודשית שלך',
     examples: [
-      { title: 'הכנסה חודשית של 10,000 ₪', target: 10000, timeframe: 'month' },
-      { title: 'הכנסה חודשית של 30,000 ₪', target: 30000, timeframe: 'month' },
-      { title: 'הכנסה חודשית של 70,000 ₪', target: 70000, timeframe: 'month' }
+      { title: 'הכנסה חודשית של 10,000 ₪' },
+      { title: 'הכנסה חודשית של 30,000 ₪' },
+      { title: 'הכנסה חודשית של 70,000 ₪' }
+    ],
+    questions: [
+      { id: 'q1', label: 'מה ההכנסה החודשית הממוצעת שלך היום?', placeholder: 'לדוגמה: ₪5,000' },
+      { id: 'q2', label: 'איזה שירות/מוצר יביא את הגידול בהכנסה?', placeholder: 'לדוגמה: חבילת ליווי פרימיום' }
     ]
   },
   {
@@ -53,13 +57,15 @@ const GOAL_TEMPLATES = [
     name: 'יציבות בתזרים מזומנים',
     icon: Heart,
     color: 'from-pink-400 to-pink-600',
-    defaultTarget: 3,
-    unit: 'חודשים',
     description: 'שפר את היציבות הפיננסית',
     examples: [
-      { title: 'לדעת שכל ההוצאות החודשיות מכוסות', target: 1, timeframe: 'month' },
-      { title: 'להישאר חיובי כל חודש בלי מינוס', target: 3, timeframe: 'quarter' },
-      { title: 'כרית ביטחון של 2–3 חודשי פעילות', target: 3, timeframe: 'quarter' }
+      { title: 'לדעת שכל ההוצאות החודשיות מכוסות' },
+      { title: 'להישאר חיובי כל חודש בלי מינוס' },
+      { title: 'כרית ביטחון של 2–3 חודשי פעילות' }
+    ],
+    questions: [
+      { id: 'q1', label: 'מה ההוצאה החודשית הקבועה הכי גדולה שלך?', placeholder: 'לדוגמה: שכירות קליניקה' },
+      { id: 'q2', label: 'האם יש לך כרגע רזרבה בצד? כמה?', placeholder: 'לדוגמה: כן, כ-10,000 ש״ח' }
     ]
   },
   {
@@ -67,13 +73,15 @@ const GOAL_TEMPLATES = [
     name: 'יותר פניות / לידים איכותיים',
     icon: Users,
     color: 'from-cyan-400 to-cyan-600',
-    defaultTarget: 20,
-    unit: 'פניות',
     description: 'הגדל את כמות הפניות האיכותיות',
     examples: [
-      { title: '5 פניות איכותיות בחודש', target: 5, timeframe: 'month' },
-      { title: '20 פניות איכותיות בחודש', target: 20, timeframe: 'month' },
-      { title: '50 פניות איכותיות בחודש', target: 50, timeframe: 'month' }
+      { title: '5 פניות איכותיות בחודש' },
+      { title: '20 פניות איכותיות בחודש' },
+      { title: '50 פניות איכותיות בחודש' }
+    ],
+    questions: [
+      { id: 'q1', label: 'כמה פניות (לידים) מגיעות אליך בחודש ממוצע?', placeholder: 'לדוגמה: 2-3 בשבוע' },
+      { id: 'q2', label: 'מה מגדיר "ליד איכותי" עבורך?', placeholder: 'לדוגמה: לקוח שמוכן לשלם מראש' }
     ]
   },
   {
@@ -81,13 +89,15 @@ const GOAL_TEMPLATES = [
     name: 'שיפור אחוזי סגירה',
     icon: TrendingUp,
     color: 'from-purple-400 to-purple-600',
-    defaultTarget: 33,
-    unit: '%',
     description: 'שפר את אחוז הסגירה מפניות',
     examples: [
-      { title: 'לסגור 1 מכל 5 פניות', target: 20, timeframe: 'quarter' },
-      { title: 'לסגור 1 מכל 3 פניות', target: 33, timeframe: 'quarter' },
-      { title: 'לסגור 50% מהפניות', target: 50, timeframe: 'quarter' }
+      { title: 'לסגור 1 מכל 5 פניות' },
+      { title: 'לסגור 1 מכל 3 פניות' },
+      { title: 'לסגור 50% מהפניות' }
+    ],
+    questions: [
+      { id: 'q1', label: 'מתוך 10 שיחות, כמה נסגרות בערך?', placeholder: 'לדוגמה: 1 או 2' },
+      { id: 'q2', label: 'מה הסיבה העיקרית שלקוחות אומרים "לא"?', placeholder: 'לדוגמה: יקר להם' }
     ]
   },
   {
@@ -95,13 +105,15 @@ const GOAL_TEMPLATES = [
     name: 'העלאת מחיר / ערך עסקה',
     icon: TrendingUp,
     color: 'from-amber-400 to-amber-600',
-    defaultTarget: 10,
-    unit: '%',
     description: 'הגדל את הערך הממוצע של עסקה',
     examples: [
-      { title: 'העלאת מחיר ב־10%', target: 10, timeframe: 'quarter' },
-      { title: 'מכירה של חבילה/שירות יקר יותר', target: 25, timeframe: 'quarter' },
-      { title: 'מעבר ללקוחות פרימיום בלבד', target: 50, timeframe: 'year' }
+      { title: 'העלאת מחיר ב־10%' },
+      { title: 'מכירה של חבילה/שירות יקר יותר' },
+      { title: 'מעבר ללקוחות פרימיום בלבד' }
+    ],
+    questions: [
+      { id: 'q1', label: 'מתי בפעם האחרונה העלית מחירים?', placeholder: 'לדוגמה: לפני שנה' },
+      { id: 'q2', label: 'איזה ערך נוסף אתה יכול לתת כדי להצדיק מחיר גבוה?', placeholder: 'לדוגמה: זמינות גבוהה יותר בוואטסאפ' }
     ]
   },
   {
@@ -109,13 +121,15 @@ const GOAL_TEMPLATES = [
     name: 'חיסכון בזמן עבודה',
     icon: Clock,
     color: 'from-indigo-400 to-indigo-600',
-    defaultTarget: 40,
-    unit: 'שעות/שבוע',
     description: 'עבוד פחות ובצורה חכמה יותר',
     examples: [
-      { title: 'לחסוך 5 שעות עבודה בשבוע', target: 45, timeframe: 'month' },
-      { title: 'לעבוד עד 40 שעות בשבוע', target: 40, timeframe: 'quarter' },
-      { title: 'לעבוד פחות מ־30 שעות בשבוע', target: 30, timeframe: 'quarter' }
+      { title: 'לחסוך 5 שעות עבודה בשבוע' },
+      { title: 'לעבוד עד 40 שעות בשבוע' },
+      { title: 'לעבוד פחות מ־30 שעות בשבוע' }
+    ],
+    questions: [
+      { id: 'q1', label: 'מהן המשימות שגוזלות ממך הכי הרבה זמן?', placeholder: 'לדוגמה: הצעות מחיר וגבייה' },
+      { id: 'q2', label: 'כמה שעות היית רוצה לעבוד בשבוע אידיאלי?', placeholder: 'לדוגמה: 30 שעות נטו' }
     ]
   },
   {
@@ -123,13 +137,15 @@ const GOAL_TEMPLATES = [
     name: 'סדר ושליטה בעסק',
     icon: BookOpen,
     color: 'from-teal-400 to-teal-600',
-    defaultTarget: 100,
-    unit: '% השלמה',
     description: 'שלוט במה שקורה בעסק',
     examples: [
-      { title: 'לדעת בכל רגע מה צריך לעשות השבוע', target: 100, timeframe: 'month' },
-      { title: 'לסיים שבוע בלי משימות פתוחות', target: 100, timeframe: 'quarter' },
-      { title: 'לעבוד לפי סדר יום קבוע וברור', target: 100, timeframe: 'quarter' }
+      { title: 'לדעת בכל רגע מה צריך לעשות השבוע' },
+      { title: 'לסיים שבוע בלי משימות פתוחות' },
+      { title: 'לעבוד לפי סדר יום קבוע וברור' }
+    ],
+    questions: [
+      { id: 'q1', label: 'איזה תחום בעסק מרגיש הכי מבולגן כרגע?', placeholder: 'לדוגמה: המשימות והפניות בוואטסאפ' },
+      { id: 'q2', label: 'באילו כלים אתה משתמש כרגע לניהול?', placeholder: 'לדוגמה: מחברת ופתקים' }
     ]
   },
   {
@@ -137,13 +153,15 @@ const GOAL_TEMPLATES = [
     name: 'בניית מנגנון שיווק קבוע',
     icon: TrendingUp,
     color: 'from-rose-400 to-rose-600',
-    defaultTarget: 1,
-    unit: 'ערוצים',
     description: 'בנה מנגנון שיווק שעובד בעצמו',
     examples: [
-      { title: 'ערוץ שיווק אחד שעובד קבוע', target: 1, timeframe: 'quarter' },
-      { title: 'מערכת שמביאה פניות כל חודש', target: 1, timeframe: 'quarter' },
-      { title: 'שיווק שעובד גם כשלא עובדים', target: 1, timeframe: 'year' }
+      { title: 'ערוץ שיווק אחד שעובד קבוע' },
+      { title: 'מערכת שמביאה פניות כל חודש' },
+      { title: 'שיווק שעובד גם כשלא עובדים' }
+    ],
+    questions: [
+      { id: 'q1', label: 'איזה ערוץ שיווקי עבד לך הכי טוב בעבר?', placeholder: 'לדוגמה: פייסבוק אורגני' },
+      { id: 'q2', label: 'מה התקציב או הזמן שאתה מוכן להשקיע בשיווק?', placeholder: 'לדוגמה: 500 ש״ח בחודש' }
     ]
   },
   {
@@ -151,13 +169,15 @@ const GOAL_TEMPLATES = [
     name: 'שימור והחזרת לקוחות',
     icon: Heart,
     color: 'from-fuchsia-400 to-fuchsia-600',
-    defaultTarget: 5,
-    unit: 'לקוחות',
     description: 'החזר לקוחות ומכור להם שוב',
     examples: [
-      { title: 'להחזיר לקוחות עבר', target: 5, timeframe: 'quarter' },
-      { title: 'למכור שוב ללקוחות קיימים', target: 10, timeframe: 'quarter' },
-      { title: 'לייצור הכנסה חוזרת מאותו לקוח', target: 15, timeframe: 'quarter' }
+      { title: 'להחזיר לקוחות עבר' },
+      { title: 'למכור שוב ללקוחות קיימים' },
+      { title: 'לייצור הכנסה חוזרת מאותו לקוח' }
+    ],
+    questions: [
+      { id: 'q1', label: 'כל כמה זמן אתה יוצר קשר עם לקוחות עבר?', placeholder: 'לדוגמה: כמעט אף פעם' },
+      { id: 'q2', label: 'מה יש לך להציע להם כרגע?', placeholder: 'לדוגמה: שירות תחזוקה חדש' }
     ]
   },
   {
@@ -165,13 +185,15 @@ const GOAL_TEMPLATES = [
     name: 'פחות לחץ ושחיקה',
     icon: Heart,
     color: 'from-emerald-400 to-emerald-600',
-    defaultTarget: 100,
-    unit: '% שיפור',
     description: 'הפחת לחץ ושחיקה עסקית',
     examples: [
-      { title: 'לסיים חודש בלי תחושת רדיפה', target: 100, timeframe: 'quarter' },
-      { title: 'להרגיש שליטה ולא כיבוי שריפות', target: 100, timeframe: 'quarter' },
-      { title: 'לשמור על אנרגיה לאורך זמן', target: 100, timeframe: 'quarter' }
+      { title: 'לסיים חודש בלי תחושת רדיפה' },
+      { title: 'להרגיש שליטה ולא כיבוי שריפות' },
+      { title: 'לשמור על אנרגיה לאורך זמן' }
+    ],
+    questions: [
+      { id: 'q1', label: 'מה גורם לך להכי הרבה לחץ בעסק?', placeholder: 'לדוגמה: חוסר ודאות לגבי החודש הבא' },
+      { id: 'q2', label: 'מה הדבר שהכי היה מרגיע אותך עכשיו?', placeholder: 'לדוגמה: לדעת שיש הכנסה קבועה' }
     ]
   },
   {
@@ -179,13 +201,15 @@ const GOAL_TEMPLATES = [
     name: 'מיקוד וכיוון עסקי ברור',
     icon: Target,
     color: 'from-violet-400 to-violet-600',
-    defaultTarget: 1,
-    unit: 'שירות',
     description: 'התמקד במה שחשוב',
     examples: [
-      { title: 'לבחור שירות אחד מרכזי', target: 1, timeframe: 'quarter' },
-      { title: 'לוותר על לקוחות לא מתאימים', target: 100, timeframe: 'quarter' },
-      { title: 'לדעת על מה אומרים "לא"', target: 100, timeframe: 'quarter' }
+      { title: 'לבחור שירות אחד מרכזי' },
+      { title: 'לוותר על לקוחות לא מתאימים' },
+      { title: 'לדעת על מה אומרים "לא"' }
+    ],
+    questions: [
+      { id: 'q1', label: 'האם יש לך יותר מדי שירותים? מהו "מוצר הדגל"?', placeholder: 'לדוגמה: כן, הטיפול הזוגי הוא העיקרי' },
+      { id: 'q2', label: 'מי הלקוח האידיאלי שאתה רוצה לעבוד רק איתו?', placeholder: 'לדוגמה: זוגות צעירים לפני חתונה' }
     ]
   }
 ];
@@ -193,9 +217,7 @@ const GOAL_TEMPLATES = [
 export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null }) {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [goalTitle, setGoalTitle] = useState('');
-  const [targetValue, setTargetValue] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [timeframe, setTimeframe] = useState('month');
+  const [customAnswers, setCustomAnswers] = useState({ q1: '', q2: '' });
   const [urgency, setUrgency] = useState(editingGoal?.urgency || 'medium');
   const [isPrimary, setIsPrimary] = useState(editingGoal?.isPrimary || false);
   const drawerRef = useRef(null);
@@ -206,9 +228,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   React.useEffect(() => {
     if (editingGoal) {
       setGoalTitle(editingGoal.title);
-      setTargetValue(editingGoal.target?.toString() || '');
-      setDeadline(editingGoal.deadline || '');
-      setTimeframe(editingGoal.timeframe || 'month');
+      setCustomAnswers(editingGoal.customAnswers || { q1: '', q2: '' });
       setUrgency(editingGoal.urgency || 'medium');
       setIsPrimary(editingGoal.isPrimary || false);
       const template = GOAL_TEMPLATES.find(t => t.id === editingGoal.category);
@@ -244,21 +264,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
-    setTargetValue(template.defaultTarget.toString());
+    setCustomAnswers({ q1: '', q2: '' }); // Reset answers
     if (template.examples?.length > 0) {
       setGoalTitle(template.examples[0].title);
-      setTimeframe(template.examples[0].timeframe);
     }
   };
 
   const handleExampleSelect = (example) => {
     setGoalTitle(example.title);
-    setTargetValue(example.target.toString());
-    setTimeframe(example.timeframe);
   };
 
   const handleCreate = () => {
-    if (!selectedTemplate || !goalTitle || !targetValue) return;
+    if (!selectedTemplate || !goalTitle) return;
 
     const goalData = {
       id: editingGoal?.id || Date.now().toString(),
@@ -266,11 +283,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       title: goalTitle,
       description: selectedTemplate.description,
       current: editingGoal?.current || 0,
-      target: parseFloat(targetValue),
-      currentDisplay: editingGoal?.currentDisplay || `0 ${selectedTemplate.unit}`,
-      targetDisplay: `${targetValue} ${selectedTemplate.unit}`,
-      deadline: deadline || null,
-      timeframe: timeframe,
+      target: 100, // Default target for non-numeric goals
+      customAnswers: customAnswers,
       urgency: urgency,
       status: editingGoal?.status || 'active',
       isPrimary: isPrimary && !hasPrimaryGoal,
@@ -344,8 +358,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                   onClick={() => {
                     setSelectedTemplate(null);
                     setGoalTitle('');
-                    setTargetValue('');
-                    setDeadline('');
+                    setCustomAnswers({ q1: '', q2: '' });
                   }}
                   className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 h-8 text-xs"
                 >
@@ -385,39 +398,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="targetValue" className="text-xs font-bold text-gray-700 block mb-1">כמה בדיוק?</Label>
-                    <div className="flex gap-1.5">
+                  {selectedTemplate.questions?.map((q) => (
+                    <div key={q.id}>
+                      <Label htmlFor={q.id} className="text-xs font-bold text-gray-700 block mb-1">{q.label}</Label>
                       <Input
-                        id="targetValue"
-                        type="number"
-                        value={targetValue}
-                        onChange={(e) => setTargetValue(e.target.value)}
-                        placeholder="0"
-                        className="flex-1 text-xs h-8"
+                        id={q.id}
+                        value={customAnswers[q.id] || ''}
+                        onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                        placeholder={q.placeholder}
+                        className="text-xs h-8"
                       />
-                      {selectedTemplate.unit && (
-                        <div className="px-2 py-1.5 bg-gray-100 rounded-lg flex items-center text-gray-700 text-xs font-medium border border-gray-200">
-                          {selectedTemplate.unit}
-                        </div>
-                      )}
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="timeframe" className="text-xs font-bold text-gray-700 block mb-1">לתוך כמה זמן?</Label>
-                    <Select value={timeframe} onValueChange={setTimeframe}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="week">שבוע</SelectItem>
-                        <SelectItem value="month">חודש</SelectItem>
-                        <SelectItem value="quarter">רבעון</SelectItem>
-                        <SelectItem value="year">שנה</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  ))}
 
                   <div>
                     <Label className="text-xs font-bold text-gray-700 block mb-2">דחיפות המשימה</Label>
@@ -468,7 +460,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             <div className="mobile-sheet-footer">
               <Button 
                 onClick={handleCreate} 
-                disabled={!goalTitle || !targetValue}
+                disabled={!goalTitle}
                 className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold h-9 text-sm"
               >
                 <Check className="w-4 h-4 ml-1.5" />
@@ -572,39 +564,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="targetValue" className="text-sm font-bold block mb-1">כמה?</Label>
-                    <div className="flex gap-2">
+                  {selectedTemplate.questions?.map((q) => (
+                    <div key={q.id}>
+                      <Label htmlFor={q.id} className="text-sm font-bold block mb-1">{q.label}</Label>
                       <Input
-                        id="targetValue"
-                        type="number"
-                        value={targetValue}
-                        onChange={(e) => setTargetValue(e.target.value)}
-                        placeholder="0"
-                        className="flex-1 text-sm"
+                        id={q.id}
+                        value={customAnswers[q.id] || ''}
+                        onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                        placeholder={q.placeholder}
+                        className="text-sm"
                       />
-                      {selectedTemplate.unit && (
-                        <div className="px-3 py-2 bg-gray-100 rounded-lg flex items-center text-gray-700 text-sm font-medium">
-                          {selectedTemplate.unit}
-                        </div>
-                      )}
                     </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="timeframe" className="text-sm font-bold block mb-1">לתוך כמה זמן?</Label>
-                    <Select value={timeframe} onValueChange={setTimeframe}>
-                      <SelectTrigger className="h-9 text-sm">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="week">שבוע</SelectItem>
-                        <SelectItem value="month">חודש</SelectItem>
-                        <SelectItem value="quarter">רבעון</SelectItem>
-                        <SelectItem value="year">שנה</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  ))}
 
                   <div>
                     <Label className="text-sm font-bold text-gray-700 block mb-2">דחיפות המשימה</Label>
@@ -640,7 +611,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             <div className="flex-shrink-0 flex gap-2 px-6 py-4 border-t border-gray-200">
               <Button 
                 onClick={handleCreate} 
-                disabled={!goalTitle || !targetValue}
+                disabled={!goalTitle}
                 className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white"
               >
                 <Check className="w-4 h-4 ml-1" />
