@@ -1,4 +1,4 @@
-export const BUILD_VERSION = `v${new Date().toISOString().split('T')[0]}-${Math.random().toString(36).substr(2, 5)}`;
+export const BUILD_VERSION = `v2026-01-18-autherrors-telemetry`;
 
 export function BuildVersionBadge() {
   return (
