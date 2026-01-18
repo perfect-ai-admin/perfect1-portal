@@ -215,8 +215,8 @@ const GOAL_TEMPLATES = [
   }
 ];
 
-export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null, user }) {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null, user, initialTemplate = null }) {
+  const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
   const [goalTitle, setGoalTitle] = useState('');
   const [customAnswers, setCustomAnswers] = useState({ q1: '', q2: '' });
   const [urgency, setUrgency] = useState(editingGoal?.urgency || 'medium');
@@ -229,7 +229,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const initialFocusRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Initialize form with editing goal data
+  // Initialize form with editing goal data or initial template
   React.useEffect(() => {
     if (editingGoal) {
       setGoalTitle(editingGoal.title);
@@ -240,8 +240,14 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       if (template) {
         setSelectedTemplate(template);
       }
+    } else if (initialTemplate) {
+      setSelectedTemplate(initialTemplate);
+      // Pre-fill title if it's a specific task-based template
+      if (initialTemplate.defaultTitle) {
+        setGoalTitle(initialTemplate.defaultTitle);
+      }
     }
-  }, [editingGoal]);
+  }, [editingGoal, initialTemplate]);
 
   // Detect mobile
   useEffect(() => {
