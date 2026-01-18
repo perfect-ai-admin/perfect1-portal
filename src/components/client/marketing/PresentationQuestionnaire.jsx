@@ -9,7 +9,7 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Layers, FileText, MonitorPlay, BarChart3, Star,
-  Lightbulb, Trophy, Presentation
+  Lightbulb, Trophy, Presentation, Calendar
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
