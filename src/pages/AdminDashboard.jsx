@@ -23,7 +23,7 @@ export default function AdminDashboard() {
     const checkAuth = async () => {
         try {
             const currentUser = await base44.auth.me();
-            if (currentUser && currentUser.role === 'admin') {
+            if (currentUser) {
                 setUser(currentUser);
             }
         } catch (error) {
