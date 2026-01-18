@@ -13,12 +13,15 @@ import {
   Shield,
   Zap,
   Bot,
-  Sparkles
+  Sparkles,
+  Link
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { base44 } from '@/api/base44Client';
 
 export default function DailyFocusScreen({ focus, onSave }) {
   const [primaryFocus, setPrimaryFocus] = useState(focus?.primary_focus || '');
+  const [primaryGoal, setPrimaryGoal] = useState(null);
   const [estimatedTime, setEstimatedTime] = useState(focus?.estimated_time || 60);
   const [subTasks, setSubTasks] = useState(focus?.sub_tasks || []);
   const [newSubTask, setNewSubTask] = useState('');
