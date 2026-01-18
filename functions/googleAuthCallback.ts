@@ -68,25 +68,52 @@ Deno.serve(async (req) => {
         // Create user object
         const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
         
+        // Get free plan - MUST exist or create placeholder
+        let freePlan = null;
+        try {
+            const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
+            freePlan = freePlans.length > 0 ? freePlans[0] : null;
+            console.log('Free plan found:', freePlan?.id);
+        } catch (planErr) {
+            console.error('Plan filter error:', planErr);
+        }
+
+        // If no free plan exists, create one as fallback
+        if (!freePlan) {
+            try {
+                console.log('Creating fallback free plan...');
+                freePlan = await base44.asServiceRole.entities.Plan.create({
+                    name: 'חינמי',
+                    name_en: 'Free',
+                    price: 0,
+                    billing_type: 'monthly',
+                    marketing_enabled: false,
+                    mentor_enabled: true,
+                    finance_enabled: false,
+                    goals_limit: 1,
+                    max_active_goals: 1,
+                    is_active: true,
+                    display_order: 0
+                });
+                console.log('Fallback plan created:', freePlan.id);
+            } catch (createPlanErr) {
+                console.error('Failed to create fallback plan:', createPlanErr.message);
+                throw new Error('System configuration error: cannot create free plan');
+            }
+        }
+
         // Find or create user in database
         let user;
         const existingUsers = await base44.asServiceRole.entities.User.filter({ email });
 
         if (existingUsers.length > 0) {
             user = existingUsers[0];
+            console.log('Google user exists, updating login:', user.id);
             await base44.asServiceRole.entities.User.update(user.id, {
                 last_login_at: new Date().toISOString()
             });
         } else {
-            // Get free plan for new users
-            let freePlan = null;
-            try {
-                const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
-                freePlan = freePlans.length > 0 ? freePlans[0] : null;
-            } catch (planErr) {
-                console.error('Plan filter error:', planErr);
-            }
-
+            console.log('Creating new Google user:', email);
             user = await base44.asServiceRole.entities.User.create({
                 email,
                 full_name: fullName,
@@ -94,14 +121,15 @@ Deno.serve(async (req) => {
                 status: 'active',
                 login_provider: 'google',
                 last_login_at: new Date().toISOString(),
-                current_plan_id: freePlan?.id || null,
+                current_plan_id: freePlan.id,
                 plan_start_date: new Date().toISOString(),
-                marketing_enabled: freePlan?.marketing_enabled || false,
-                mentor_enabled: freePlan?.mentor_enabled || true,
-                finance_enabled: freePlan?.finance_enabled || false,
-                goals_limit: freePlan?.goals_limit || 1,
-                max_active_goals: freePlan?.max_active_goals || 1
+                marketing_enabled: false,
+                mentor_enabled: true,
+                finance_enabled: false,
+                goals_limit: 1,
+                max_active_goals: 1
             });
+            console.log('New Google user created:', user.id);
         }
         
         const userToReturn = {
