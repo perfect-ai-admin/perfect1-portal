@@ -428,18 +428,14 @@ export default function ProgressTab({ data, onNavigate, user }) {
       </Dialog>
 
       {/* Specific Goal Creation Dialog for Current Step */}
-      <Dialog open={showGoalCreation} onOpenChange={setShowGoalCreation}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-lg p-0 border-0 bg-transparent">
-          {showGoalCreation && goalTemplateForStep && (
-            <GoalTemplatesFixed
-              user={user}
-              onCreateGoal={handleGoalCreated}
-              onClose={() => setShowGoalCreation(false)}
-              initialTemplate={goalTemplateForStep}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      {showGoalCreation && goalTemplateForStep && (
+        <GoalTemplatesFixed
+          user={user}
+          onCreateGoal={handleGoalCreated}
+          onClose={() => setShowGoalCreation(false)}
+          initialTemplate={goalTemplateForStep}
+        />
+      )}
     </motion.div>
     </>
   );

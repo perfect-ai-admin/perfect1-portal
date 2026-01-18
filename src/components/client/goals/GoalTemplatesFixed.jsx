@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -423,8 +424,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
   // Mobile layout
   if (isMobile) {
-    return (
-      <div className="mobile-sheet-container" data-state="open">
+    return createPortal(
+      <div className="mobile-sheet-container" data-state="open" style={{ zIndex: 9999 }}>
         <div className="mobile-sheet-overlay" onClick={onClose} />
         <div className="mobile-sheet-content" ref={drawerRef}>
           {/* Header */}
@@ -598,7 +599,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             </div>
           )}
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
