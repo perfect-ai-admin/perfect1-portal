@@ -405,47 +405,6 @@ export default function ProgressTab({ data, onNavigate, user }) {
              <QuickStatsBar stats={quickStats} />
            </div>
 
-           {/* Active Goals Section - Desktop */}
-           {activeGoals.length > 0 && (
-             <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
-               <div className="flex items-center justify-between mb-4">
-                 <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                   <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded flex items-center justify-center">
-                     <Target className="w-4 h-4 text-white" />
-                   </div>
-                   המטרות שלי
-                 </h2>
-                 <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => onNavigate('goals')}
-                    className="text-purple-600 hover:bg-purple-50"
-                 >
-                    לכל המטרות
-                 </Button>
-               </div>
-               
-               <div className="space-y-4">
-                 {primaryGoal && (
-                    <HeroGoal 
-                      goal={primaryGoal} 
-                      onStatusChange={handleGoalStatusChange}
-                      onEdit={handleGoalEdit}
-                      onDelete={handleGoalDelete}
-                    />
-                 )}
-                 {secondaryGoalsList.length > 0 && (
-                    <SecondaryGoals 
-                      goals={secondaryGoalsList}
-                      onStatusChange={handleGoalStatusChange}
-                      onEdit={handleGoalEdit}
-                      onDelete={handleGoalDelete}
-                    />
-                 )}
-               </div>
-             </div>
-           )}
-
            {/* Next Step */}
            {nextStep && (
              <>
@@ -474,6 +433,60 @@ export default function ProgressTab({ data, onNavigate, user }) {
                </div>
                <h3 className="text-lg font-bold text-gray-900 mb-2">אין צעד הבא מוגדר</h3>
                <p className="text-gray-500">התחל על ידי הגדרת מטרות חדשות או עדכון הסטטוס העסקי שלך.</p>
+             </div>
+           )}
+
+           {/* Active Goals Section - Desktop Accordion */}
+           {activeGoals.length > 0 && (
+             <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
+               <button 
+                  onClick={() => setIsGoalsExpanded(!isGoalsExpanded)}
+                  className="w-full p-5 flex items-center justify-between hover:bg-gray-50 transition-colors"
+               >
+                 <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                   <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded flex items-center justify-center">
+                     <Target className="w-4 h-4 text-white" />
+                   </div>
+                   המטרות שלי
+                 </h2>
+                 <ChevronDown className={cn("w-5 h-5 text-gray-400 transition-transform duration-200", isGoalsExpanded && "rotate-180")} />
+               </button>
+               
+               <motion.div 
+                 initial={false}
+                 animate={{ height: isGoalsExpanded ? 'auto' : 0 }}
+                 className="overflow-hidden"
+               >
+                 <div className="p-5 pt-0 space-y-4 border-t border-gray-100">
+                   <div className="flex justify-end pt-2">
+                    <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => onNavigate('goals')}
+                        className="text-purple-600 hover:bg-purple-50 text-xs"
+                     >
+                        לכל המטרות
+                     </Button>
+                   </div>
+                   {primaryGoal && (
+                      <HeroGoal 
+                        goal={primaryGoal} 
+                        onStatusChange={handleGoalStatusChange}
+                        onEdit={handleGoalEdit}
+                        onDelete={handleGoalDelete}
+                      />
+                   )}
+                   {secondaryGoalsList.length > 0 && (
+                      <SecondaryGoals 
+                        goals={secondaryGoalsList}
+                        onStatusChange={handleGoalStatusChange}
+                        onEdit={handleGoalEdit}
+                        onDelete={handleGoalDelete}
+                        showHeader={false}
+                      />
+                   )}
+                 </div>
+               </motion.div>
              </div>
            )}
          </div>
