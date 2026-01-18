@@ -71,25 +71,24 @@ export default function CampaignBuilder({ onClose }) {
 
   if (step === 1) {
     return (
-      <div className="space-y-6 max-w-5xl mx-auto px-4 pt-4 pb-6">
-        {/* Compact Header */}
-        <div className="flex justify-between items-start mb-2">
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <Megaphone className="w-6 h-6 text-pink-600" />
-                    בחר תבנית קמפיין
-                </h1>
-                <p className="text-gray-500 text-sm mt-1">
-                    נתחיל מתבנית מוכנה ונתאים אותה אישית לעסק שלך
-                </p>
-            </div>
-            <Button 
-                variant="ghost" 
-                onClick={onClose} 
-                className="text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full w-8 h-8 p-0"
-            >
-                <X className="w-5 h-5" />
-            </Button>
+      <div className="space-y-6 max-w-5xl mx-auto px-4 pt-2 pb-6 relative">
+        <Button 
+            variant="ghost" 
+            onClick={onClose} 
+            className="absolute top-2 left-4 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full w-8 h-8 p-0"
+        >
+            <X className="w-5 h-5" />
+        </Button>
+
+        {/* Centered Header */}
+        <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
+                <Megaphone className="w-6 h-6 text-pink-600" />
+                בחר תבנית קמפיין
+            </h1>
+            <p className="text-gray-500 text-sm">
+                נתחיל מתבנית מוכנה ונתאים אותה אישית לעסק שלך
+            </p>
         </div>
 
         {/* Templates Grid */}
