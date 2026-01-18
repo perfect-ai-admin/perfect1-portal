@@ -164,14 +164,11 @@ function ClientLogin() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-white flex flex-col" dir="rtl">
-         {/* Build Version Badge */}
-         <div className="text-xs text-gray-400 text-center py-1 border-b border-gray-100">
-           {BUILD_VERSION}
-         </div>
-
-         {/* Left Side - Login Form */}
-         <div className="flex-1 w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
+      <Header />
+      
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col" dir="rtl">
+         {/* Main Content - with top margin for header */}
+         <div className="flex-1 w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10 mt-20 lg:mt-0">
            <div className="w-full max-w-[380px] space-y-6">
              <div className="text-center">
                <div className="inline-flex items-center gap-2 mb-4 justify-center">
