@@ -7,7 +7,7 @@ import QuickStatsBar from '../progress/QuickStatsBar';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import { ProgressTabHelp } from '../help/ContextualHelp';
 import GoalsFloatingButton from '../GoalsFloatingButton';
-import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -95,7 +95,6 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const isJourneyCompleted = data?.business_journey_completed;
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
-  const [isGoalsExpanded, setIsGoalsExpanded] = useState(false);
 
   const scrollToWhyMatters = () => {
     setWhyExpanded(true);
@@ -405,38 +404,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
              <QuickStatsBar stats={quickStats} />
            </div>
 
-           {/* Next Step - Moved Up */}
-           {nextStep && (
-             <>
-               <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
-                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                   <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
-                     <Target className="w-4 h-4 text-white" />
-                   </div>
-                   השלב הבא
-                 </h2>
-                 <NextStepCard 
-                    step={nextStep} 
-                    onAction={handleStartNextStep}
-                 />
-               </div>
-
-               {/* Why This Matters */}
-               <StepImportancePanel step={nextStep} />
-             </>
-           )}
-           
-           {!nextStep && (
-             <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5 text-center py-12">
-               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                 <Target className="w-8 h-8 text-gray-400" />
-               </div>
-               <h3 className="text-lg font-bold text-gray-900 mb-2">אין צעד הבא מוגדר</h3>
-               <p className="text-gray-500">התחל על ידי הגדרת מטרות חדשות או עדכון הסטטוס העסקי שלך.</p>
-             </div>
-           )}
-
-           {/* Active Goals Section - Moved Down */}
+           {/* Active Goals Section - Desktop */}
            {activeGoals.length > 0 && (
              <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
                <div className="flex items-center justify-between mb-4">
@@ -465,35 +433,46 @@ export default function ProgressTab({ data, onNavigate, user }) {
                       onDelete={handleGoalDelete}
                     />
                  )}
-                 
                  {secondaryGoalsList.length > 0 && (
-                    <div className="border-t border-gray-100 pt-4 mt-4">
-                        <button 
-                           onClick={() => setIsGoalsExpanded(!isGoalsExpanded)}
-                           className="w-full flex items-center justify-between text-sm font-medium text-gray-500 hover:text-purple-600 transition-colors"
-                        >
-                           <span>מטרות נוספות ({secondaryGoalsList.length})</span>
-                           {isGoalsExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                        </button>
-                        
-                        <motion.div
-                           initial={false}
-                           animate={{ height: isGoalsExpanded ? 'auto' : 0, opacity: isGoalsExpanded ? 1 : 0 }}
-                           transition={{ duration: 0.3 }}
-                           className="overflow-hidden"
-                        >
-                            <div className="pt-4">
-                               <SecondaryGoals 
-                                 goals={secondaryGoalsList}
-                                 onStatusChange={handleGoalStatusChange}
-                                 onEdit={handleGoalEdit}
-                                 onDelete={handleGoalDelete}
-                               />
-                            </div>
-                        </motion.div>
-                    </div>
+                    <SecondaryGoals 
+                      goals={secondaryGoalsList}
+                      onStatusChange={handleGoalStatusChange}
+                      onEdit={handleGoalEdit}
+                      onDelete={handleGoalDelete}
+                    />
                  )}
                </div>
+             </div>
+           )}
+
+           {/* Next Step */}
+           {nextStep && (
+             <>
+               <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                   <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center">
+                     <Target className="w-4 h-4 text-white" />
+                   </div>
+                   השלב הבא
+                 </h2>
+                 <NextStepCard 
+                    step={nextStep} 
+                    onAction={handleStartNextStep}
+                 />
+               </div>
+
+               {/* Why This Matters */}
+               <StepImportancePanel step={nextStep} />
+             </>
+           )}
+           
+           {!nextStep && (
+             <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5 text-center py-12">
+               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <Target className="w-8 h-8 text-gray-400" />
+               </div>
+               <h3 className="text-lg font-bold text-gray-900 mb-2">אין צעד הבא מוגדר</h3>
+               <p className="text-gray-500">התחל על ידי הגדרת מטרות חדשות או עדכון הסטטוס העסקי שלך.</p>
              </div>
            )}
          </div>
