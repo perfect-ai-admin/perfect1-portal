@@ -224,9 +224,7 @@ export default function OsekPaturLanding() {
                 animate={{ opacity: 1, x: 0 }}
                 className="text-center lg:text-right"
               >
-                <div className="bg-yellow-400/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-yellow-400/40 inline-flex items-center gap-2">
-                  <span className="text-yellow-400 text-sm font-bold">⚠️ שירות פרטי - לא ממשלתי</span>
-                </div>
+
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
                    פתיחת עוסק פטור ב-24 שעות <span className="text-[#27AE60]">בלי לצאת מהבית</span>
