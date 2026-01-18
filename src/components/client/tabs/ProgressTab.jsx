@@ -14,11 +14,23 @@ import { Button } from '@/components/ui/button';
 import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
 import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
 export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
+  
+  // Fetch active goals for the floating button
+  const { data: activeGoals } = useQuery({
+    queryKey: ['activeGoals', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const goals = await base44.entities.UserGoal.filter({ user_id: user.id });
+      return goals.filter(g => ['active', 'selected'].includes(g.status));
+    },
+    enabled: !!user?.id,
+    initialData: []
+  });
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [activeTaskQuestionnaire, setActiveTaskQuestionnaire] = useState(null);
   
@@ -396,6 +408,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
       {/* Goals Button - Mobile Only - Bottom */}
       <div className="lg:hidden">
         <GoalsFloatingButton 
+          goals={activeGoals}
           onNavigate={onNavigate}
           onAddGoal={() => {
             onNavigate('goals', { openAddGoal: true });

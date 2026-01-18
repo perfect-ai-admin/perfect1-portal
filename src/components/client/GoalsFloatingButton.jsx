@@ -7,11 +7,7 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = React.useRef(null);
   
-  // Mock goals - להחליף בנתונים אמיתיים
-  const activeGoals = goals.length > 0 ? goals : [
-    { id: 1, title: 'להגיע ל-50 לקוחות חדשים', progress: 65 },
-    { id: 2, title: 'להגדיל הכנסות ב-30%', progress: 42 }
-  ];
+  const activeGoals = goals;
 
   const handleAddGoal = () => {
     setIsOpen(false);
