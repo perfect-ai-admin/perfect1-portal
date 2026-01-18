@@ -80,8 +80,11 @@ export default function ClientDashboard() {
         return;
       }
       const parsed = JSON.parse(storedUser);
-      if (!parsed?.id || !parsed?.full_name) {
-        throw new Error('Invalid user data');
+      if (!parsed?.id) {
+        throw new Error('Invalid user data - missing id');
+      }
+      if (!parsed?.full_name) {
+        parsed.full_name = parsed.email?.split('@')[0] || 'משתמש';
       }
       setUser(parsed);
     } catch (error) {
@@ -208,7 +211,7 @@ export default function ClientDashboard() {
     );
   }
 
-  if (!currentData?.id || !currentData?.full_name || typeof currentData !== 'object') {
+  if (!currentData?.id || typeof currentData !== 'object') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
         <Alert variant="destructive" className="max-w-md">

@@ -101,8 +101,9 @@ Deno.serve(async (req) => {
             const freePlan = freePlans.length > 0 ? freePlans[0] : null;
 
             // Create new user with free plan permissions
+            const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
             user = await base44.asServiceRole.entities.User.create({
-                full_name: name || 'משתמש Google',
+                full_name: fullName,
                 email,
                 login_provider: 'google',
                 status: 'active',
@@ -113,7 +114,9 @@ Deno.serve(async (req) => {
                 mentor_enabled: freePlan?.mentor_enabled || true,
                 finance_enabled: freePlan?.finance_enabled || false,
                 goals_limit: freePlan?.goals_limit || 1,
-                max_active_goals: freePlan?.max_active_goals || 1
+                max_active_goals: freePlan?.max_active_goals || 1,
+                phone: '',
+                business_journey_completed: false
             });
         }
         
