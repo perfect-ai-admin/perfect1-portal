@@ -122,17 +122,13 @@ Deno.serve(async (req) => {
         
         // Return HTML that handles auth directly
         const userJson = JSON.stringify(user);
-        const escapedJson = userJson
-            .replace(/\\/g, '\\\\')
-            .replace(/`/g, '\\`')
-            .replace(/\$/g, '\\$');
-        
+
         const html = `<!DOCTYPE html>
-<html>
-<head>
-    <title>מתחבר...</title>
-    <meta charset="utf-8">
-    <style>
+        <html>
+        <head>
+        <title>מתחבר...</title>
+        <meta charset="utf-8">
+        <style>
         * { margin: 0; padding: 0; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
@@ -159,36 +155,48 @@ Deno.serve(async (req) => {
             to { transform: rotate(360deg); }
         }
         p { font-size: 18px; }
-    </style>
-</head>
-<body>
-    <div class="container">
+        </style>
+        </head>
+        <body>
+        <div class="container">
         <div class="spinner"></div>
         <p>מתחבר למערכת...</p>
-    </div>
-    <script>
-       (function() {
-           try {
-               const userData = ${userJson};
-               if (!userData || typeof userData !== 'object' || !userData.id) {
-                   throw new Error('Invalid user data');
-               }
-               localStorage.setItem('user', JSON.stringify(userData));
-               window.location.href = '/ClientDashboard';
-           } catch (error) {
-               window.location.href = '/ClientLogin?error=' + encodeURIComponent(error.message);
-           }
-       })();
-    </script>
-</body>
-</html>`;
-        
+        </div>
+        <script>
+        // Use text node to avoid injection issues
+        const userDataEl = document.createElement('script');
+        userDataEl.type = 'application/json';
+        userDataEl.id = 'userData';
+        userDataEl.textContent = '${userJson}';
+        document.head.appendChild(userDataEl);
+
+        setTimeout(function() {
+            try {
+                const el = document.getElementById('userData');
+                const userData = JSON.parse(el.textContent);
+
+                if (!userData || typeof userData !== 'object' || !userData.id) {
+                    throw new Error('Invalid user data');
+                }
+
+                localStorage.setItem('user', JSON.stringify(userData));
+                window.location.href = '/ClientDashboard';
+            } catch (error) {
+                console.error('Auth error:', error);
+                window.location.href = '/ClientLogin?error=' + encodeURIComponent(error.message);
+            }
+        }, 100);
+        </script>
+        </body>
+        </html>`;
+
         return new Response(html, {
             status: 200,
             headers: { 
-                'Content-Type': 'text/html; charset=utf-8',
+                'Content-Type': 'text/html; charset=utf-8; charset=utf-8',
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'X-Content-Type-Options': 'nosniff'
+                'X-Content-Type-Options': 'nosniff',
+                'Content-Security-Policy': "default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'"
             }
         });
         
