@@ -15,11 +15,14 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
   };
 
   const config = statusConfig[goal.status] || statusConfig.active;
+
+  const urgencyConfig = {
+    low: { label: 'נמוכה', color: 'text-green-700', bg: 'bg-green-50' },
+    medium: { label: 'בינונית', color: 'text-orange-700', bg: 'bg-orange-50' },
+    high: { label: 'גבוהה', color: 'text-red-700', bg: 'bg-red-50' }
+  };
   
-  const isValidDate = (d) => d && !isNaN(new Date(d).getTime());
-  const daysLeft = isValidDate(goal.deadline) 
-    ? Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24))
-    : 0;
+  const urgency = urgencyConfig[goal.urgency] || urgencyConfig.medium;
   
   // Calculate progress percentage
   const parseAmount = (str) => {
@@ -49,11 +52,7 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
                 <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-sm", config.color, "bg-white border-current opacity-80")}>
                   {config.label}
                 </span>
-                {daysLeft > 0 && (
-                  <span className="text-[10px] font-medium text-gray-500 bg-white/50 px-2 py-0.5 rounded-full flex items-center gap-1">
-                    ⏳ עוד {daysLeft} ימים
-                  </span>
-                )}
+
               </div>
               <h2 className="text-base md:text-lg font-black text-gray-900 leading-tight mb-1">{goal.title}</h2>
               <p className="text-xs md:text-sm text-gray-600 leading-relaxed line-clamp-2 md:line-clamp-none">{goal.description}</p>
@@ -97,9 +96,9 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete }) {
             </div>
           ) : (
              <div className="flex items-center justify-between py-2">
-                <span className="text-sm text-gray-500">תאריך יעד</span>
-                <span className="font-bold text-gray-900">
-                  {isValidDate(goal.deadline) ? new Date(goal.deadline).toLocaleDateString('he-IL') : 'לא הוגדר'}
+                <span className="text-sm text-gray-500">רמת דחיפות</span>
+                <span className={cn("font-bold px-2.5 py-0.5 rounded-full text-xs border", urgency.color, urgency.bg, urgency.bg.replace('bg-', 'border-').replace('50', '200'))}>
+                  {urgency.label}
                 </span>
              </div>
           )}
