@@ -262,12 +262,21 @@ function ClientLogin() {
                 Google
               </Button>
 
-              <div className="text-center pt-2">
+              <div className="text-center pt-4 space-y-2">
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem('user');
+                    window.location.href = '/ClientLogin?logout=true';
+                  }}
+                  className="text-xs text-gray-500 hover:text-[#1E3A5F] transition-colors underline block w-full"
+                >
+                  התחברות עם חשבון אחר
+                </button>
                 <a 
                   href={`https://wa.me/972537703603?text=${encodeURIComponent('היי, אני צריך עזרה עם הכניסה לאזור האישי')}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-gray-500 hover:text-[#1E3A5F] transition-colors"
+                  className="text-xs text-gray-500 hover:text-[#1E3A5F] transition-colors block"
                 >
                   נתקלת בבעיה? פנה לתמיכה
                 </a>
