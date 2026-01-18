@@ -122,48 +122,77 @@ Deno.serve(async (req) => {
             freePlan = { id: 'free_default_placeholder' };
         }
 
-        // Find or create user
+        // Find or create user - with detailed validation
         let user;
         try {
             console.log('[STEP: user_lookup] Searching for user:', normalizedEmail);
-            const existingUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
+            let existingUsers = [];
+            
+            try {
+                existingUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
+                console.log('[STEP: user_lookup] Query result:', existingUsers.length, 'users found');
+            } catch (filterErr) {
+                console.error('[STEP: user_lookup] Filter error:', filterErr.message);
+                existingUsers = [];
+            }
 
             if (existingUsers.length > 0) {
+                // User exists - update last login
                 user = existingUsers[0];
-                console.log('[STEP: user_lookup] User exists:', user.id);
-                console.log('[STEP: user_update] Updating last_login_at...');
-                await base44.asServiceRole.entities.User.update(user.id, {
-                    last_login_at: new Date().toISOString()
-                });
-                console.log('[STEP: user_update] Success');
+                console.log('[STEP: user_lookup] User exists, ID:', user.id);
+                try {
+                    console.log('[STEP: user_update] Updating last_login_at...');
+                    await base44.asServiceRole.entities.User.update(user.id, {
+                        last_login_at: new Date().toISOString()
+                    });
+                    console.log('[STEP: user_update] Success');
+                } catch (updateErr) {
+                    console.error('[STEP: user_update] Warning - update failed:', updateErr.message);
+                    console.log('[STEP: user_update] Continuing anyway...');
+                }
             } else {
-                console.log('[STEP: user_create] Creating new user for:', normalizedEmail);
+                // New user - create with ALL required fields
+                console.log('[STEP: user_create] User not found, creating new one...');
+                
+                const now = new Date().toISOString();
                 const newUserData = {
                     email: normalizedEmail,
                     full_name: fullName,
                     phone: '0000000000',
                     status: 'active',
                     login_provider: 'google',
-                    last_login_at: new Date().toISOString(),
+                    last_login_at: now,
                     current_plan_id: freePlan.id,
-                    plan_start_date: new Date().toISOString(),
+                    plan_start_date: now,
                     marketing_enabled: false,
                     mentor_enabled: true,
                     finance_enabled: false,
                     goals_limit: 1,
                     max_active_goals: 1
                 };
-                console.log('[STEP: user_create] Data prepared:', { ...newUserData, email: '***' });
+                
+                console.log('[STEP: user_create] Validating all required fields...');
+                const requiredFields = ['phone', 'last_login_at', 'current_plan_id', 'plan_start_date'];
+                for (const field of requiredFields) {
+                    if (!newUserData[field]) {
+                        console.error(`[STEP: user_create] ERROR: Missing required field: ${field}`);
+                        throw new Error(`Missing required field: ${field}`);
+                    }
+                }
+                console.log('[STEP: user_create] All required fields present ✓');
+                
+                console.log('[STEP: user_create] Creating user...');
                 user = await base44.asServiceRole.entities.User.create(newUserData);
                 console.log('[STEP: user_create] Success, user ID:', user.id);
             }
         } catch (userErr) {
-            console.error('[STEP: user_lookup/create] Error:', userErr.message);
-            console.error('[STEP: user_lookup/create] Stack:', userErr.stack);
+            console.error('[STEP: user_lookup/create] CRITICAL ERROR:', userErr.message);
+            console.error('[STEP: user_lookup/create] Full stack:', userErr.stack);
             return Response.json({ 
                 error: 'Failed to create or find user',
                 step: 'user_lookup',
-                details: userErr.message
+                message: userErr.message,
+                details: userErr.toString()
             }, { status: 500 });
         }
         
