@@ -475,16 +475,16 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         ) : (
           <motion.div className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             
-            {/* Compact Examples */}
+            {/* Compact Examples - Horizontal Scroll on Mobile */}
             {selectedTemplate.examples && (
-              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-3 border border-purple-100">
-                <p className="text-xs font-bold text-gray-700 mb-2 opacity-80">דוגמאות מהירות (לחץ לבחירה)</p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-2 border border-purple-100 mb-2">
+                <p className="text-[10px] font-bold text-gray-600 mb-1.5 opacity-80">דוגמאות מהירות (לחץ לבחירה)</p>
+                <div className="flex sm:grid sm:grid-cols-3 gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide snap-x">
                   {selectedTemplate.examples.map((example, i) => (
                     <button
                       key={i}
                       onClick={() => handleExampleSelect(example)}
-                      className="w-full text-center px-2 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg text-xs font-medium text-gray-900 transition-colors h-auto min-h-[36px] whitespace-normal leading-tight flex items-center justify-center"
+                      className="flex-shrink-0 w-[85%] sm:w-full snap-center text-center px-2 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-md text-xs font-medium text-gray-900 transition-colors h-auto min-h-[32px] whitespace-normal leading-tight flex items-center justify-center shadow-sm"
                       title={example.title}
                     >
                       {example.title}
@@ -494,32 +494,32 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* Goal Title */}
               <div>
-                <Label htmlFor="goalTitle" className="text-sm font-bold block mb-1 text-gray-800">מה המטרה שלך?</Label>
+                <Label htmlFor="goalTitle" className="text-xs font-bold block mb-1 text-gray-700">מה המטרה שלך?</Label>
                 <Input
                   id="goalTitle"
                   value={goalTitle}
                   onChange={(e) => setGoalTitle(e.target.value)}
                   placeholder="הקלד כאן את המטרה..."
-                  className="text-sm h-9 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                  className="text-xs h-9 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
                   autoFocus
                 />
               </div>
 
               {/* Two Custom Questions Side-by-Side */}
               {selectedTemplate.questions && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {selectedTemplate.questions.map((q) => (
-                    <div key={q.id} className="space-y-1.5 flex flex-col">
-                      <Label htmlFor={q.id} className="text-xs font-semibold block text-gray-700 min-h-[1.5em]">{q.label}</Label>
+                    <div key={q.id} className="space-y-1 flex flex-col">
+                      <Label htmlFor={q.id} className="text-[11px] font-semibold block text-gray-600 leading-tight">{q.label}</Label>
                       <Input
                         id={q.id}
                         value={customAnswers[q.id] || ''}
                         onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
                         placeholder={q.placeholder}
-                        className="text-sm h-9 bg-gray-50 border-gray-200 focus:bg-white mt-auto"
+                        className="text-xs h-9 bg-gray-50 border-gray-200 focus:bg-white mt-1"
                       />
                     </div>
                   ))}
