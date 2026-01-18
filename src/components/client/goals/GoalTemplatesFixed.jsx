@@ -590,6 +590,46 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                       )}
                     </div>
                   </div>
+
+                  <div>
+                    <Label htmlFor="timeframe" className="text-sm font-bold block mb-1">לתוך כמה זמן?</Label>
+                    <Select value={timeframe} onValueChange={setTimeframe}>
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="week">שבוע</SelectItem>
+                        <SelectItem value="month">חודש</SelectItem>
+                        <SelectItem value="quarter">רבעון</SelectItem>
+                        <SelectItem value="year">שנה</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-bold text-gray-700 block mb-2">דחיפות המשימה</Label>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { value: 'low', label: 'נמוכה', desc: 'לא דחוף, בזמן שלי' },
+                        { value: 'medium', label: 'בינונית', desc: 'חשוב, אבל בלי לחץ' },
+                        { value: 'high', label: 'גבוהה', desc: 'דחוף מאוד, מעכשיו' }
+                      ].map((level) => (
+                        <button
+                          key={level.value}
+                          onClick={() => setUrgency(level.value)}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-3 rounded-xl border transition-all text-center h-full",
+                            urgency === level.value
+                              ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm ring-1 ring-purple-200"
+                              : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
+                          )}
+                        >
+                          <span className="text-sm font-bold mb-1">{level.label}</span>
+                          <span className="text-xs opacity-80">{level.desc}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             )}
