@@ -121,13 +121,15 @@ Deno.serve(async (req) => {
         }
         
         // Return HTML page that stores user in localStorage and redirects
+        const userDataString = JSON.stringify(user).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         const html = `<!DOCTYPE html>
 <html>
 <head>
     <title>מתחבר...</title>
     <meta charset="utf-8">
+    <meta http-equiv="refresh" content="2; url=/ClientDashboard">
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background: #f5f5f5; }
         .loading { font-size: 18px; color: #333; }
     </style>
 </head>
@@ -136,17 +138,17 @@ Deno.serve(async (req) => {
     <script>
         (function() {
             try {
-                const userData = ${JSON.stringify(user)};
+                const userData = JSON.parse('${userDataString}');
                 if (!userData || !userData.id) {
                     throw new Error('Invalid user data');
                 }
                 localStorage.setItem('user', JSON.stringify(userData));
                 window.location.href = '/ClientDashboard';
             } catch(e) {
-                console.error('Error:', e);
+                console.error('Auth error:', e.message);
                 setTimeout(() => {
                     window.location.href = '/ClientLogin?error=' + encodeURIComponent(e.message);
-                }, 1000);
+                }, 1500);
             }
         })();
     </script>
@@ -155,7 +157,10 @@ Deno.serve(async (req) => {
         
         return new Response(html, {
             status: 200,
-            headers: { 'Content-Type': 'text/html; charset=utf-8' }
+            headers: { 
+                'Content-Type': 'text/html; charset=utf-8',
+                'Cache-Control': 'no-cache, no-store, must-revalidate'
+            }
         });
         
     } catch (error) {
