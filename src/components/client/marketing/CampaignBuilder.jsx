@@ -71,34 +71,29 @@ export default function CampaignBuilder({ onClose }) {
 
   if (step === 1) {
     return (
-      <div className="space-y-8 max-w-5xl mx-auto px-4 py-6">
-        {/* Top Bar */}
-        <div className="flex justify-between items-center">
-          <Button 
-            variant="ghost" 
-            onClick={onClose} 
-            className="text-gray-500 hover:text-gray-900 gap-2 p-0 hover:bg-transparent"
-          >
-            <ArrowRight className="w-4 h-4" />
-            ביטול
-          </Button>
-          <h1 className="text-lg font-bold text-gray-900">בונה קמפיינים</h1>
-        </div>
-
-        {/* Hero Section */}
-        <div className="text-center py-8">
-          <div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6 transform rotate-[-10deg]">
-            <Megaphone className="w-10 h-10 text-pink-600" />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">בחר תבנית קמפיין</h2>
-          <p className="text-gray-500 max-w-md mx-auto text-sm md:text-base">
-            נתחיל מתבנית מוכנה ונתאים אותה אישית לעסק שלך, 
-            כדי להשיג את התוצאות הטובות ביותר.
-          </p>
+      <div className="space-y-6 max-w-5xl mx-auto px-4 pt-4 pb-6">
+        {/* Compact Header */}
+        <div className="flex justify-between items-start mb-2">
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    <Megaphone className="w-6 h-6 text-pink-600" />
+                    בחר תבנית קמפיין
+                </h1>
+                <p className="text-gray-500 text-sm mt-1">
+                    נתחיל מתבנית מוכנה ונתאים אותה אישית לעסק שלך
+                </p>
+            </div>
+            <Button 
+                variant="ghost" 
+                onClick={onClose} 
+                className="text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full w-8 h-8 p-0"
+            >
+                <X className="w-5 h-5" />
+            </Button>
         </div>
 
         {/* Templates Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4">
           {TEMPLATES.map((template, index) => {
             const Icon = template.icon;
             return (
