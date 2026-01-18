@@ -398,10 +398,10 @@ export default function OsekPaturLanding() {
                  ✅ הפתרון שעבד לאלפים
                </div>
                <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
-                 6 היתרונות שלנו - למה כדאי לבחור בנו?
+                 עצמאי? פותחים עוסק פטור עם ליווי מלא
                </h2>
                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                 מאז 2018 אנחנו מטפלים בכל הבירוקרטיה כדי שאתם תוכלו לעבוד בראש שקט
+                 מתאים לעצמאים בתחילת הדרך - הסבר מלא וליווי אישי מרגע ההחלטה
                </p>
              </motion.div>
 
