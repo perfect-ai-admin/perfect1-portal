@@ -286,6 +286,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
        targetDisplay: `${targetValue} ${selectedTemplate.unit}`,
        deadline: deadline || null,
        timeframe: timeframe,
+       urgency: urgency,
        status: editingGoal?.status || 'active',
        isPrimary: isPrimary && !hasPrimaryGoal,
        aiInsight: editingGoal?.aiInsight || 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
