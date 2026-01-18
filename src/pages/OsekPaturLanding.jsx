@@ -816,6 +816,82 @@ export default function OsekPaturLanding() {
         </section>
       </main>
 
+      {/* Popup Modal - 35% Scroll */}
+      {showPopup && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          onClick={() => setShowPopup(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full"
+          >
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
+
+            <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">
+              רגע לפני שתמשיכו! 👋
+            </h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              בואו נעזור לכם להחליט אם עוסק פטור זה הדבר הנכון לכם. תשאירו פרטים ונקבע שיחה קצרה וחינם.
+            </p>
+
+            <form onSubmit={handlePopupSubmit} className="space-y-3">
+              <div>
+                <Input
+                  placeholder="שם מלא *"
+                  value={popupFormData.name}
+                  onChange={(e) => setPopupFormData({ ...popupFormData, name: e.target.value })}
+                  className="h-11 rounded-xl border-2"
+                  required
+                />
+              </div>
+
+              <div>
+                <Input
+                  type="tel"
+                  placeholder="טלפון *"
+                  value={popupFormData.phone}
+                  onChange={(e) => setPopupFormData({ ...popupFormData, phone: e.target.value })}
+                  className="h-11 rounded-xl border-2"
+                  required
+                />
+              </div>
+
+              <div>
+                <Input
+                  type="email"
+                  placeholder="מייל (לא חובה)"
+                  value={popupFormData.email}
+                  onChange={(e) => setPopupFormData({ ...popupFormData, email: e.target.value })}
+                  className="h-11 rounded-xl border-2"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-11 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
+              >
+                כן, אשארתי פרטים
+              </Button>
+
+              <p className="text-xs text-gray-500 text-center">
+                ללא התחייבות • תשובה תוך 24 שעות
+              </p>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+
       {/* Sticky Mobile CTA */}
       <motion.div
         initial={{ y: 100 }}
