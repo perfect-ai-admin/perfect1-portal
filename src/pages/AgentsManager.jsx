@@ -60,6 +60,8 @@ export default function AgentsManager() {
   return (
     <>
       <Helmet>
+        <title>ניהול נציגים | מערכת CRM</title>
+        <meta name="description" content="מערכת ניהול נציגי מכירות - הוספה, עריכה, ניהול הרשאות ומעקב אחר סטטוס נציגים. ריכוז העדפות התראה וניהול צוות המכירות במקום אחד." />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="min-h-screen bg-gray-50 p-4 sm:p-6" dir="rtl">
@@ -72,8 +74,8 @@ export default function AgentsManager() {
           </div>
           <div className="flex gap-3">
             <Link to={createPageUrl('LeadsAdmin')}>
-              <Button variant="outline">
-                חזור ל-CRM
+              <Button variant="outline" asChild>
+                <span>חזור ל-CRM</span>
               </Button>
             </Link>
             <Button 
@@ -92,7 +94,7 @@ export default function AgentsManager() {
             <div key={agent.id} className="bg-white rounded-lg shadow p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-[#1E3A5F]">{agent.full_name}</h3>
+                  <h2 className="text-xl font-bold text-[#1E3A5F]">{agent.full_name}</h2>
                   <p className="text-sm text-gray-600">שם משתמש: {agent.username}</p>
                   {agent.email && (
                     <p className="text-sm text-gray-600">אימייל: {agent.email}</p>
@@ -145,7 +147,7 @@ export default function AgentsManager() {
           <div className="text-center py-16">
             <div className="bg-white rounded-lg shadow-lg p-12 max-w-md mx-auto">
               <UserPlus className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-700 mb-2">אין נציגים במערכת</h3>
+              <h2 className="text-xl font-bold text-gray-700 mb-2">אין נציגים במערכת</h2>
               <p className="text-gray-500 mb-6">הוסף נציג מכירות ראשון כדי להתחיל</p>
               <Button 
                 onClick={() => setShowAddDialog(true)}
@@ -166,11 +168,13 @@ export default function AgentsManager() {
           <DialogHeader>
             <DialogTitle>הוספת נציג חדש</DialogTitle>
           </DialogHeader>
-          <AgentForm
-            onSave={(data) => createAgentMutation.mutate(data)}
-            onCancel={() => setShowAddDialog(false)}
-            isLoading={createAgentMutation.isPending}
-          />
+          {showAddDialog && (
+            <AgentForm
+              onSave={(data) => createAgentMutation.mutate(data)}
+              onCancel={() => setShowAddDialog(false)}
+              isLoading={createAgentMutation.isPending}
+            />
+          )}
         </DialogContent>
       </Dialog>
 
