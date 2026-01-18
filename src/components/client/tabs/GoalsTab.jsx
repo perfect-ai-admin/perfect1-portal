@@ -132,7 +132,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   return (
     <>
       <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-lg">
+        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
           {showAddGoal && (
             <GoalTemplates
               user={user}
