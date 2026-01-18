@@ -70,31 +70,20 @@ Deno.serve(async (req) => {
         
         // Find or create user in database
         let user;
-        try {
-            const existingUsers = await base44.asServiceRole.entities.User.filter({ email });
-            
-            if (existingUsers.length > 0) {
-                user = existingUsers[0];
-                await base44.asServiceRole.entities.User.update(user.id, {
-                    last_login_at: new Date().toISOString()
-                });
-            } else {
-                user = await base44.asServiceRole.entities.User.create({
-                    email,
-                    full_name: fullName,
-                    status: 'active',
-                    last_login_at: new Date().toISOString()
-                });
-            }
-        } catch (dbErr) {
-            console.error('Database error:', dbErr.message);
-            // Return minimal user object without persisting if DB fails
-            user = {
-                id: `temp_${Date.now()}`,
+        const existingUsers = await base44.asServiceRole.entities.User.filter({ email });
+
+        if (existingUsers.length > 0) {
+            user = existingUsers[0];
+            await base44.asServiceRole.entities.User.update(user.id, {
+                last_login_at: new Date().toISOString()
+            });
+        } else {
+            user = await base44.asServiceRole.entities.User.create({
                 email,
                 full_name: fullName,
+                role: 'user',
                 status: 'active'
-            };
+            });
         }
         
         const userToReturn = {
