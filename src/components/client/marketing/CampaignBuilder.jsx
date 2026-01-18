@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Megaphone, Target, DollarSign, Calendar, Send } from 'lucide-react';
+import { Megaphone, Target, DollarSign, Calendar, Send, ArrowRight, Instagram, Facebook, Mail, Search, Globe, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
