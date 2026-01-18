@@ -105,37 +105,16 @@ function ClientLogin() {
       const response = await base44.functions.invoke('googleAuthCallback', { code });
 
           if (response.data && response.data.user) {
-            const googleUser = response.data.user;
-
-            // Check if user exists
-            const existingUsers = await base44.entities.User.filter({ email: googleUser.email });
-            let user;
-
-            if (existingUsers.length > 0) {
-              user = existingUsers[0];
-              await base44.entities.User.update(user.id, {
-                last_login_at: new Date().toISOString()
-              });
-            } else {
-              // Create new user from Google
-              user = await base44.entities.User.create({
-                full_name: googleUser.full_name,
-                email: googleUser.email,
-                status: 'active',
-                last_login_at: new Date().toISOString()
-              });
-            }
-
             const userToStore = {
-              id: user.id,
-              full_name: user.full_name,
-              email: user.email,
-              status: user.status
+              id: response.data.user.id,
+              full_name: response.data.user.full_name,
+              email: response.data.user.email,
+              status: response.data.user.status
             };
             localStorage.setItem('user', JSON.stringify(userToStore));
             window.location.href = '/ClientDashboard';
           } else {
-            setError('שגיאה בתהליך ההתחברות');
+            setError(response.data?.error || 'שגיאה בתהליך ההתחברות');
             setIsLoading(false);
           }
     } catch (error) {
