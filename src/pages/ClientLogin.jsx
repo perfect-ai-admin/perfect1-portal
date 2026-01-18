@@ -12,16 +12,23 @@ function ClientLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Check if user is already logged in
+  // Check if user is already logged in or returning from Google OAuth
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
     const authData = params.get('authData');
+
+    // Handle Google OAuth callback
+    if (code) {
+      setIsLoading(true);
+      handleGoogleOAuthCallback(code);
+      return;
+    }
 
     if (authData) {
       try {
         const userData = JSON.parse(atob(authData));
         localStorage.setItem('user', JSON.stringify(userData));
-        // Remove authData from URL for security
         window.location.href = '/ClientDashboard';
       } catch (err) {
         console.error('Auth data decode error:', err);
