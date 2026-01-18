@@ -59,6 +59,7 @@ export default function OsekPaturLanding() {
       alert('אנא מלא שם וטלפון');
       return;
     }
+    setIsSuccess(true);
 
     setIsSubmitting(true);
     try {
