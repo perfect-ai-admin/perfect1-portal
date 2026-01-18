@@ -52,31 +52,18 @@ function ClientLogin() {
     setIsLoading(true);
 
     try {
-      // Validate credential (email or phone)
       if (!phone.trim()) {
         setError('הזן מייל או מספר טלפון');
         setIsLoading(false);
         return;
       }
 
-      console.log('[CLIENT] [clientLogin] Starting request...');
-      
-      // Add timeout to catch hanging requests
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Request timeout after 30s')), 30000)
-      );
-      
-      // Call backend function with timeout
-      const responsePromise = base44.functions.invoke('clientLogin', { 
+      const response = await base44.functions.invoke('clientLogin', { 
         credential: phone.trim(), 
         password 
       });
-      
-      const response = await Promise.race([responsePromise, timeoutPromise]);
 
-      console.log('[CLIENT] [clientLogin] Response received:', response?.status, response?.data);
-
-      if (response?.data?.user) {
+      if (response.data && response.data.user) {
         const userToStore = {
           id: response.data.user.id,
           full_name: response.data.user.full_name,
@@ -85,21 +72,16 @@ function ClientLogin() {
           status: response.data.user.status
         };
         localStorage.setItem('user', JSON.stringify(userToStore));
-        console.log('[CLIENT] [clientLogin] User stored, redirecting to /ClientDashboard');
-        // Ensure navigation happens
-        setTimeout(() => {
-          window.location.href = '/ClientDashboard';
-        }, 100);
+        window.location.replace('/ClientDashboard');
       } else {
-        const errorMsg = response?.data?.error || 'שגיאה בתהליך הכניסה - אין תשובה מהשרת';
-        const errorId = response?.data?.errorId || 'unknown';
-        console.error('[CLIENT] [clientLogin] Error:', errorMsg, 'ID:', errorId);
+        const errorMsg = response.data?.error || 'שגיאה בתהליך הכניסה';
+        const errorId = response.data?.errorId || 'unknown';
         setError(`${errorMsg}${errorId && errorId !== 'unknown' ? ` (${errorId})` : ''}`);
         setIsLoading(false);
       }
     } catch (err) {
-      console.error('[CLIENT] [clientLogin] Catch error:', err);
-      const errorMsg = err?.response?.data?.error || err?.message || 'שגיאה בתהליך הכניסה';
+      console.error('Login error:', err);
+      const errorMsg = err.response?.data?.error || err.message || 'שגיאה בתהליך הכניסה';
       setError(errorMsg);
       setIsLoading(false);
     }
