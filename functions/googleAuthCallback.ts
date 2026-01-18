@@ -97,52 +97,23 @@ Deno.serve(async (req) => {
         
         console.log('Email from Google:', email);
         
-        // Find or create user
-        let user;
-        
-        try {
-            const usersByEmail = await base44.asServiceRole.entities.User.filter({ email });
-            
-            if (usersByEmail.length > 0) {
-                user = usersByEmail[0];
-                console.log('User exists:', user.id);
-                await base44.asServiceRole.entities.User.update(user.id, {
-                    last_login_at: new Date().toISOString()
-                });
-            } else {
-                console.log('Creating new user for:', email);
-                const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
-                const freePlan = freePlans.length > 0 ? freePlans[0] : null;
-
-                const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
-                user = await base44.asServiceRole.entities.User.create({
-                    full_name: fullName,
-                    email,
-                    login_provider: 'google',
-                    status: 'active',
-                    last_login_at: new Date().toISOString(),
-                    current_plan_id: freePlan?.id || null,
-                    plan_start_date: new Date().toISOString(),
-                    marketing_enabled: freePlan?.marketing_enabled || false,
-                    mentor_enabled: freePlan?.mentor_enabled || true,
-                    finance_enabled: freePlan?.finance_enabled || false,
-                    goals_limit: freePlan?.goals_limit || 1,
-                    max_active_goals: freePlan?.max_active_goals || 1,
-                    phone: '',
-                    business_journey_completed: false
-                });
-                console.log('User created:', user.id);
-            }
-        } catch (dbError) {
-            console.error('Database error:', dbError);
-            throw dbError;
-        }
+        // Create user object for client storage
+        const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
+        const user = {
+            email,
+            full_name: fullName,
+            login_provider: 'google',
+            status: 'active',
+            last_login_at: new Date().toISOString(),
+            phone: '',
+            business_journey_completed: false
+        };
         
         console.log('Preparing redirect with user data');
         
         const userJson = JSON.stringify(user);
         const encodedUser = btoa(userJson);
-        const redirectUrl = `/ClientLogin?authData=${encodedUser}`;
+        const redirectUrl = `/ClientDashboard?authData=${encodedUser}`;
         
         console.log('Redirecting to:', redirectUrl);
 
