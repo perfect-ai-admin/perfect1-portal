@@ -9,7 +9,8 @@ import {
   Share2, 
   Mail, 
   FileText,
-  X
+  X,
+  Smile
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,6 +20,7 @@ import {
 import LogoCreator from './LogoCreator';
 import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 import PresentationQuestionnaire from './PresentationQuestionnaire';
+import StickerQuestionnaire from './StickerQuestionnaire';
 
 const tools = [
   {
@@ -46,12 +48,12 @@ const tools = [
     features: ['סטוריה עסקית', 'שפה גרפית אחידה', 'עיצוב מקצועי']
   },
   {
-    id: 'brand-kit',
-    title: 'זהות מותג מלאה',
-    description: 'Brand Kit עם סלוגן, צבעים, פונטים ושפה גרפית',
-    icon: Shield,
+    id: 'sticker',
+    title: 'יצירת Sticker ממותג',
+    description: 'סטיקר מותאם לעסק לוואטסאפ ורשתות',
+    icon: Smile,
     color: 'from-green-500 to-emerald-500',
-    features: ['סלוגן מותג', 'פלטת צבעים', 'קובץ Brand Kit']
+    features: ['עיצוב אישי', 'מותאם לוואטסאפ', 'מחזק מיתוג']
   },
   {
     id: 'social',
@@ -212,6 +214,16 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
       <Dialog open={activeFlowId === 'presentation'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <PresentationQuestionnaire onComplete={() => setActiveFlowId(null)} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal for Sticker */}
+      <Dialog open={activeFlowId === 'sticker'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <StickerQuestionnaire 
+            onComplete={() => setActiveFlowId(null)} 
+            onClose={() => setActiveFlowId(null)}
+          />
         </DialogContent>
       </Dialog>
     </div>
