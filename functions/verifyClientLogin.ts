@@ -41,8 +41,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'מספר טלפון לא נמצא במערכת' }, { status: 404 });
     }
 
-    // Verify password
-    if (lead.client_password !== password) {
+    // Verify password (use default password if not set)
+    const expectedPassword = lead.client_password || '123456';
+    if (password !== expectedPassword) {
       return Response.json({ error: 'סיסמה שגויה' }, { status: 401 });
     }
 
