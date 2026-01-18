@@ -40,18 +40,29 @@ export default function ClientLogin() {
       const lead = response.data.lead;
       console.log('✅ Lead received:', lead);
 
-      // Store lead data in localStorage for client session
+      // Validate lead data
+      if (!lead.id || !lead.name) {
+        console.error('❌ Lead missing required fields:', lead);
+        setError('נתוני משתמש לא תקינים');
+        setIsLoading(false);
+        return;
+      }
+
+      // Store lead data in localStorage for client session (using "user" key for compatibility with ClientDashboard)
       const clientSession = {
         id: lead.id,
+        full_name: lead.name,
         name: lead.name,
         phone: lead.phone,
-        email: lead.email,
+        email: lead.email || '',
         status: lead.status,
         is_client: true,
         login_time: new Date().toISOString()
       };
 
       console.log('💾 Storing session:', clientSession);
+      // Store with 'user' key so ClientDashboard recognizes it
+      localStorage.setItem('user', JSON.stringify(clientSession));
       localStorage.setItem('clientSession', JSON.stringify(clientSession));
       
       console.log('🚀 Session stored, navigating to ClientDashboard...');
