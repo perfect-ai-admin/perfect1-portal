@@ -126,33 +126,34 @@ Deno.serve(async (req) => {
         let user;
         try {
             console.log('[STEP: user_lookup] Searching for user:', normalizedEmail);
-            let existingUsers = [];
             
+            // Try to find existing user
+            let existingUsers = [];
             try {
                 existingUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
                 console.log('[STEP: user_lookup] Query result:', existingUsers.length, 'users found');
             } catch (filterErr) {
                 console.error('[STEP: user_lookup] Filter error:', filterErr.message);
-                existingUsers = [];
+                // Continue - might be permission issue for new users
             }
 
             if (existingUsers.length > 0) {
-                // User exists - update last login
+                // User exists - use existing
                 user = existingUsers[0];
-                console.log('[STEP: user_lookup] User exists, ID:', user.id);
+                console.log('[STEP: user_exists] User already exists, ID:', user.id);
+                
+                // Try to update last login (non-critical)
                 try {
-                    console.log('[STEP: user_update] Updating last_login_at...');
                     await base44.asServiceRole.entities.User.update(user.id, {
                         last_login_at: new Date().toISOString()
                     });
-                    console.log('[STEP: user_update] Success');
+                    console.log('[STEP: user_update] Last login updated');
                 } catch (updateErr) {
-                    console.error('[STEP: user_update] Warning - update failed:', updateErr.message);
-                    console.log('[STEP: user_update] Continuing anyway...');
+                    console.warn('[STEP: user_update] Non-critical: could not update last_login_at:', updateErr.message);
                 }
             } else {
-                // New user - create with ALL required fields
-                console.log('[STEP: user_create] User not found, creating new one...');
+                // NEW USER - Create with absolute minimum required fields
+                console.log('[STEP: user_create] Creating new user...');
                 
                 const now = new Date().toISOString();
                 const newUserData = {
@@ -171,23 +172,21 @@ Deno.serve(async (req) => {
                     max_active_goals: 1
                 };
                 
-                console.log('[STEP: user_create] Validating all required fields...');
-                const requiredFields = ['phone', 'last_login_at', 'current_plan_id', 'plan_start_date'];
-                for (const field of requiredFields) {
-                    if (!newUserData[field]) {
-                        console.error(`[STEP: user_create] ERROR: Missing required field: ${field}`);
-                        throw new Error(`Missing required field: ${field}`);
-                    }
-                }
-                console.log('[STEP: user_create] All required fields present ✓');
+                console.log('[STEP: user_create] Payload:', JSON.stringify(newUserData));
                 
-                console.log('[STEP: user_create] Creating user...');
-                user = await base44.asServiceRole.entities.User.create(newUserData);
-                console.log('[STEP: user_create] Success, user ID:', user.id);
+                try {
+                    user = await base44.asServiceRole.entities.User.create(newUserData);
+                    console.log('[STEP: user_create] ✓ User created successfully, ID:', user.id);
+                } catch (createErr) {
+                    console.error('[STEP: user_create] FAILED:', createErr.message);
+                    console.error('[STEP: user_create] Error details:', JSON.stringify(createErr));
+                    throw createErr;
+                }
             }
         } catch (userErr) {
             console.error('[STEP: user_lookup/create] CRITICAL ERROR:', userErr.message);
-            console.error('[STEP: user_lookup/create] Full stack:', userErr.stack);
+            console.error('[STEP: user_lookup/create] Stack:', userErr.stack);
+            console.error('[STEP: user_lookup/create] Full error object:', JSON.stringify(userErr, null, 2));
             return Response.json({ 
                 error: 'Failed to create or find user',
                 step: 'user_lookup',
