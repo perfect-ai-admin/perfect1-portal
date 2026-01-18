@@ -1,5 +1,6 @@
 import About from './pages/About';
 import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
+import AdminDashboard from './pages/AdminDashboard';
 import AgentCRM from './pages/AgentCRM';
 import AgentLogin from './pages/AgentLogin';
 import AgentsManager from './pages/AgentsManager';
@@ -12,6 +13,8 @@ import BlogPost from './pages/BlogPost';
 import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import Checkout from './pages/Checkout';
 import CheckoutSuccess from './pages/CheckoutSuccess';
+import ClientDashboard from './pages/ClientDashboard';
+import ClientLogin from './pages/ClientLogin';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
@@ -54,6 +57,7 @@ import OsekMorshaLanding from './pages/OsekMorshaLanding';
 import OsekMorshaRights from './pages/OsekMorshaRights';
 import OsekMorshaSteps from './pages/OsekMorshaSteps';
 import OsekMorshaTime from './pages/OsekMorshaTime';
+import OsekPaturLanding from './pages/OsekPaturLanding';
 import OsekPaturOnlineLanding from './pages/OsekPaturOnlineLanding';
 import OsekPaturSteps from './pages/OsekPaturSteps';
 import OsekPaturThresholdAndTransition from './pages/OsekPaturThresholdAndTransition';
@@ -98,16 +102,13 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import AdminDashboard from './pages/AdminDashboard';
-import OsekPaturLanding from './pages/OsekPaturLanding';
-import ClientDashboard from './pages/ClientDashboard';
-import ClientLogin from './pages/ClientLogin';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
     "AccountantForOsekMorsha": AccountantForOsekMorsha,
+    "AdminDashboard": AdminDashboard,
     "AgentCRM": AgentCRM,
     "AgentLogin": AgentLogin,
     "AgentsManager": AgentsManager,
@@ -120,6 +121,8 @@ export const PAGES = {
     "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
     "Checkout": Checkout,
     "CheckoutSuccess": CheckoutSuccess,
+    "ClientDashboard": ClientDashboard,
+    "ClientLogin": ClientLogin,
     "CloseBusinessLanding": CloseBusinessLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
     "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
@@ -162,6 +165,7 @@ export const PAGES = {
     "OsekMorshaRights": OsekMorshaRights,
     "OsekMorshaSteps": OsekMorshaSteps,
     "OsekMorshaTime": OsekMorshaTime,
+    "OsekPaturLanding": OsekPaturLanding,
     "OsekPaturOnlineLanding": OsekPaturOnlineLanding,
     "OsekPaturSteps": OsekPaturSteps,
     "OsekPaturThresholdAndTransition": OsekPaturThresholdAndTransition,
@@ -206,10 +210,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "AdminDashboard": AdminDashboard,
-    "OsekPaturLanding": OsekPaturLanding,
-    "ClientDashboard": ClientDashboard,
-    "ClientLogin": ClientLogin,
 }
 
 export const pagesConfig = {
