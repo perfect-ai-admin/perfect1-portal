@@ -22,6 +22,7 @@ import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 import PresentationQuestionnaire from './PresentationQuestionnaire';
 import StickerQuestionnaire from './StickerQuestionnaire';
 import SocialMediaQuestionnaire from './SocialMediaQuestionnaire';
+import BusinessCardQuestionnaire from './BusinessCardQuestionnaire';
 
 const tools = [
   {
@@ -232,6 +233,16 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
       <Dialog open={activeFlowId === 'social'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <SocialMediaQuestionnaire 
+            onComplete={() => setActiveFlowId(null)} 
+            onClose={() => setActiveFlowId(null)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal for Business Card */}
+      <Dialog open={activeFlowId === 'business_card'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <BusinessCardQuestionnaire 
             onComplete={() => setActiveFlowId(null)} 
             onClose={() => setActiveFlowId(null)}
           />
