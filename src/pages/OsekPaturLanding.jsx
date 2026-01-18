@@ -70,7 +70,7 @@ export default function OsekPaturLanding() {
         status: 'new'
       });
 
-      window.location.href = '/ThankYou';
+
     } catch (err) {
       console.error(err);
     } finally {
