@@ -520,9 +520,9 @@ export default function OsekPaturLanding() {
                className="text-center mb-10"
              >
                <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                 למי אנחנו כאן?
+                 פתיחת עוסק פטור אונליין עם ליווי אנושי ומענה לשאלות
                </h2>
-               <p className="text-lg text-gray-600">אם אתה בעמדה הזאת - אנחנו בדיוק מה אתה צריך</p>
+               <p className="text-lg text-gray-600">למי זה מתאים? עצמאים, פרילנסרים ונותני שירותים בכל תחום</p>
              </motion.div>
 
             <div className="grid md:grid-cols-2 gap-6">
