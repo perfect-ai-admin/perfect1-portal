@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
         }
         
         // Return HTML page that stores user in localStorage and redirects
-        const userJson = JSON.stringify(user).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        const userJson = JSON.stringify(user);
         
         const html = `<!DOCTYPE html>
 <html>
@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
 <body>
     <script>
         try {
-            const userData = '${userJson}';
+            const userData = ${JSON.stringify(userJson)};
             localStorage.setItem('user', userData);
             window.location.href = '/ClientDashboard';
         } catch(e) {
