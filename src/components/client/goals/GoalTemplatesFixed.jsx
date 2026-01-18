@@ -479,8 +479,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   // Desktop layout
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" ref={drawerRef}>
-        <div className="flex flex-col h-full w-full min-w-0">
+      <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0" ref={drawerRef}>
           {/* Header */}
           <div className="flex-shrink-0 px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50">
             <div className="flex items-center justify-between">
@@ -622,7 +621,6 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </Button>
             </div>
           )}
-        </div>
       </DialogContent>
     </Dialog>
   );
