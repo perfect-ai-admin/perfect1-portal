@@ -82,6 +82,17 @@ export default function OsekPaturLanding() {
     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Sticky CTA Logic
+  const [showStickyCTA, setShowStickyCTA] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyCTA(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const faqs = [
     {
       question: "מה בדיוק הבדל בין עוסק פטור לעוסק מורשה?",
@@ -218,11 +229,12 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                   רוצה עוסק פטור? בואו נעשה את זה נכון מהתחלה
+                   פתיחת עוסק פטור ב-24 שעות <span className="text-[#27AE60]">בלי לצאת מהבית</span>
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                   שירות ייעוץ וליווי עד לפתיחת העוסק בהצלחה
+                   אנחנו נטפל בבירוקרטיה, בטפסים ובפתיחת התיק מול כל הרשויות.<br className="hidden md:block" />
+                   אתם? תתחילו להרוויח.
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
@@ -242,9 +254,9 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg">
+                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg shadow-green-900/20 transform hover:-translate-y-1 transition-all">
                     <Target className="ml-2 w-5 h-5" />
-                    השאר פרטים
+                    בדיקת זכאות ופתיחת תיק
                   </Button>
                   <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-4 sm:px-8 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white text-[#1E3A5F] hover:bg-white/90 shadow-lg">
@@ -639,6 +651,64 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
+        {/* Testimonials Section - NEW */}
+        <section className="py-16 bg-[#F8F9FA]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">מה אומרים עלינו?</h2>
+              <p className="text-xl text-gray-600">אלפי עצמאים כבר פתחו עוסק פטור איתנו. הנה כמה מהם:</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                {
+                  text: "פשוט הצילו אותי. לא הבנתי כלום מהטפסים של מס הכנסה, הם עשו הכל תוך יום אחד. השירות הכי יעיל שנתקלתי בו.",
+                  name: "דניאל כהן",
+                  role: "מעצב גרפי",
+                  stars: 5
+                },
+                {
+                  text: "החשש הכי גדול שלי היה לעשות טעות מול הרשויות. הצוות של Perfect One נתן לי ביטחון מלא וליווי אישי מדהים.",
+                  name: "שרה לוי",
+                  role: "קוסמטיקאית",
+                  stars: 5
+                },
+                {
+                  text: "האפליקציה שלהם גאונית! אני מצלם קבלות והכל מסודר. שווה כל שקל רק בשביל השקט הנפשי הזה.",
+                  name: "עומר יוסף",
+                  role: "מאמן כושר אישי",
+                  stars: 5
+                }
+              ].map((review, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative"
+                >
+                  <div className="absolute -top-4 right-8 text-6xl text-[#D4AF37] opacity-20 font-serif">"</div>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(review.stars)].map((_, s) => (
+                      <Star key={s} className="w-5 h-5 text-[#D4AF37] fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 text-lg mb-6 leading-relaxed">"{review.text}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-[#1E3A5F]">
+                      {review.name[0]}
+                    </div>
+                    <div>
+                      <p className="font-bold text-[#1E3A5F]">{review.name}</p>
+                      <p className="text-sm text-gray-500">{review.role}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* FAQ Section */}
         <section className="py-12 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -711,6 +781,25 @@ export default function OsekPaturLanding() {
           </div>
         </section>
       </main>
+
+      {/* Sticky Mobile CTA */}
+      <motion.div
+        initial={{ y: 100 }}
+        animate={{ y: showStickyCTA ? 0 : 100 }}
+        className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 md:hidden flex gap-3"
+      >
+        <Button 
+          onClick={scrollToForm}
+          className="flex-1 h-12 text-lg font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-md"
+        >
+          בדיקת זכאות
+        </Button>
+        <a href="https://wa.me/972502277087?text=היי, אשמח לפרטים על פתיחת עוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-none">
+          <Button variant="outline" className="h-12 w-12 rounded-xl border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366]/10 p-0 flex items-center justify-center">
+            <MessageCircle className="w-6 h-6" />
+          </Button>
+        </a>
+      </motion.div>
     </>
   );
 }
