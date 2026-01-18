@@ -144,7 +144,14 @@ Deno.serve(async (req) => {
         return Response.json({ user: userToReturn });
         
     } catch (error) {
-        console.error('Google auth callback error:', error.message, error.stack);
-        return Response.json({ error: error.message }, { status: 500 });
+        console.error('Google auth callback error - FULL STACK:', error);
+        console.error('Error message:', error?.message);
+        console.error('Error stack:', error?.stack);
+        return Response.json({ 
+            error: 'Authentication failed',
+            step: 'user_creation',
+            details: error?.message || 'Unknown error',
+            stack: error?.stack
+        }, { status: 500 });
     }
 });
