@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
@@ -14,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 
 export default function GoalsTab({ user, data, openAddGoal = false }) {
+  const queryClient = useQueryClient();
   const [goals, setGoals] = useState([]);
   const [userGoals, setUserGoals] = useState([]);
   const [goalsLoaded, setGoalsLoaded] = useState(false);
@@ -95,6 +97,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
     try {
       await base44.entities.UserGoal.update(goal.id, { status: nextStatus });
+      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
     } catch (error) {
       console.error("Failed to update status:", error);
       // Revert if failed
@@ -114,6 +117,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
      try {
        await base44.entities.UserGoal.delete(goalId);
+       queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
      } catch (error) {
        console.error("Failed to delete goal:", error);
        // Revert if failed
@@ -142,6 +146,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
              setGoals(prev => [...prev, created]);
           }
        }
+       queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
        setShowAddGoal(false);
      } catch (error) {
         console.error("Error saving goal:", error);
