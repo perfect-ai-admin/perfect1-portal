@@ -169,14 +169,14 @@ function ClientLogin() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col" dir="rtl">
          {/* Main Content - with top margin for header */}
          <div className="flex-1 w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10 mt-20 lg:mt-0">
-           <div className="w-full max-w-[380px] space-y-6">
-             <div className="text-center">
-               <div className="inline-flex items-center gap-2 mb-4 justify-center">
-                 <div className="w-8 h-8 bg-[#1E3A5F] rounded-lg flex items-center justify-center">
-                   <Sparkles className="w-4 h-4 text-white" />
+           <div className="w-full max-w-[420px] space-y-6">
+             <div className="text-center mb-8">
+               <Link to={createPageUrl('Home')} className="inline-flex items-center gap-3 hover:opacity-80 transition-all mb-6">
+                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#27AE60] flex items-center justify-center shadow-md">
+                   <span className="text-white font-black text-lg">P1</span>
                  </div>
-                 <h2 className="text-xl font-bold text-[#1E3A5F]">Perfect Biz AI</h2>
-               </div>
+                 <h2 className="text-2xl font-bold text-[#1E3A5F]">פרפקט וואן</h2>
+               </Link>
                {existingUser ? (
                  <div className="space-y-2">
                    <h1 className="text-2xl font-bold tracking-tight text-gray-900">
