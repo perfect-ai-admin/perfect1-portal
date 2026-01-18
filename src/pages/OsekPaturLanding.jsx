@@ -263,12 +263,12 @@ export default function OsekPaturLanding() {
 
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                   פתיחת עוסק פטור ב-24 שעות <span className="text-[#27AE60]">בלי לצאת מהבית</span>
+                   <span className="text-[#27AE60]">פתיחת עוסק פטור</span> בצורה מסודרת, בלי בלבול ובלי כאבי ראש
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                   אנחנו נטפל בבירוקרטיה, בטפסים ובפתיחת התיק מול כל הרשויות.<br className="hidden md:block" />
-                   אתם? תתחילו להרוויח.
+                   שירות פרטי לפתיחת עוסק פטור עם ליווי ברור ופשוט בכל התהליך<br className="hidden md:block" />
+                   מרגע ההחלטה עד הפתיחה - אנחנו עושים את כל הדברים הקשים
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
