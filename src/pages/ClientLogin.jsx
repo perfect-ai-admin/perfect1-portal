@@ -1,11 +1,13 @@
 import React, { useState, memo } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Lock, Phone, ArrowRight, Sparkles, Zap } from 'lucide-react';
-import { BUILD_VERSION } from '@/components/BuildVersion';
+import { Loader2, Lock, Mail, ArrowRight, Sparkles, Zap, Home } from 'lucide-react';
+import Header from '@/components/layout/Header';
 
 function ClientLogin() {
   const [phone, setPhone] = useState('');
