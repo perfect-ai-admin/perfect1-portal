@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft } from 'lucide-react';
+import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { base44 } from '@/api/base44Client';
 
 import {
   Dialog,
@@ -214,12 +215,16 @@ const GOAL_TEMPLATES = [
   }
 ];
 
-export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null }) {
+export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null, user }) {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [goalTitle, setGoalTitle] = useState('');
   const [customAnswers, setCustomAnswers] = useState({ q1: '', q2: '' });
   const [urgency, setUrgency] = useState(editingGoal?.urgency || 'medium');
   const [isPrimary, setIsPrimary] = useState(editingGoal?.isPrimary || false);
+  const [showPhonePrompt, setShowPhonePrompt] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isSubmittingPhone, setIsSubmittingPhone] = useState(false);
+  
   const drawerRef = useRef(null);
   const initialFocusRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -249,8 +254,10 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
   // Focus management
   useEffect(() => {
-    initialFocusRef.current?.focus();
-  }, [selectedTemplate]);
+    if (!showPhonePrompt) {
+      initialFocusRef.current?.focus();
+    }
+  }, [selectedTemplate, showPhonePrompt]);
 
   // Scroll mobile sheet body to top when component mounts
   useEffect(() => {
@@ -277,8 +284,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const handleCreate = () => {
     if (!selectedTemplate || !goalTitle) return;
 
+    // Check if phone number is missing (only for new goals, and if user exists)
+    // We assume if user.phone is missing, we need to ask.
+    // Also checking if user.mobile is present as fallback
+    const hasPhone = user?.phone || user?.mobile || user?.phoneNumber;
+    
+    if (!editingGoal && !hasPhone && !showPhonePrompt) {
+      setShowPhonePrompt(true);
+      return;
+    }
+
     const goalData = {
-      id: editingGoal?.id || Date.now().toString(),
+      id: editingGoal?.id, // Let DB generate ID if null, or keep existing
       category: selectedTemplate.id,
       title: goalTitle,
       description: selectedTemplate.description,
@@ -292,8 +309,111 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     };
 
     onCreateGoal(goalData, !!editingGoal);
-    onClose();
+    // Don't close immediately if we just saved the phone, actually we can.
+    // The onCreateGoal will trigger the close in parent
   };
+
+  const handlePhoneSubmit = async () => {
+    if (!phoneNumber || phoneNumber.length < 9) return;
+    setIsSubmittingPhone(true);
+    try {
+      await base44.auth.updateMe({ phone: phoneNumber });
+      // Proceed to create goal
+      const goalData = {
+        category: selectedTemplate.id,
+        title: goalTitle,
+        description: selectedTemplate.description,
+        current: 0,
+        target: 100,
+        customAnswers: customAnswers,
+        urgency: urgency,
+        status: 'active',
+        isPrimary: isPrimary && !hasPrimaryGoal,
+        aiInsight: 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
+      };
+      onCreateGoal(goalData, false);
+      // onClose is called inside onCreateGoal (in parent) usually? 
+      // Wait, onCreateGoal in parent sets showAddGoal(false).
+    } catch (error) {
+      console.error("Error updating phone:", error);
+    } finally {
+      setIsSubmittingPhone(false);
+    }
+  };
+
+  if (showPhonePrompt) {
+    const PhonePromptContent = (
+      <div className="flex flex-col h-full">
+        <div className="mobile-sheet-header p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
+           <h2 className="text-xl font-bold text-gray-900 mb-2">רגע לפני שמתחילים... 🚀</h2>
+           <p className="text-gray-600 text-sm">כדי שנוכל לשלוח לך את הצעד הבא וללוות אותך בתהליך הדיגיטלי, אנחנו צריכים את המספר שלך.</p>
+        </div>
+        <div className="p-6 space-y-6 flex-1 flex flex-col justify-center">
+          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4">
+             <div className="flex items-start gap-3">
+               <div className="bg-blue-100 p-2 rounded-full">
+                 <Zap className="w-5 h-5 text-blue-600" />
+               </div>
+               <div>
+                 <h3 className="font-bold text-gray-900 text-sm mb-1">למה זה חשוב?</h3>
+                 <p className="text-xs text-gray-600 leading-relaxed">אנחנו שולחים בוואטסאפ תובנות מותאמות אישית, תזכורות למשימות ועדכונים קריטיים על העסק.</p>
+               </div>
+             </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-sm font-bold text-gray-700">מספר הנייד שלך</Label>
+            <div className="relative">
+              <Phone className="absolute top-3 right-3 w-5 h-5 text-gray-400" />
+              <Input
+                id="phone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="050-0000000"
+                className="pr-10 h-12 text-lg"
+                type="tel"
+                autoFocus
+              />
+            </div>
+          </div>
+
+          <Button 
+            onClick={handlePhoneSubmit} 
+            disabled={!phoneNumber || isSubmittingPhone}
+            className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 mt-4"
+          >
+            {isSubmittingPhone ? 'שומר...' : 'שמור וצור מטרה'}
+          </Button>
+          
+          <button 
+             onClick={() => setShowPhonePrompt(false)} 
+             className="w-full text-center text-gray-400 text-sm hover:text-gray-600 py-2"
+          >
+            חזור לעריכת המטרה
+          </button>
+        </div>
+      </div>
+    );
+
+    if (isMobile) {
+      return (
+        <div className="mobile-sheet-container" data-state="open">
+          <div className="mobile-sheet-overlay" />
+          <div className="mobile-sheet-content h-auto max-h-[85vh]">
+            {PhonePromptContent}
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <Dialog open={true} onOpenChange={() => setShowPhonePrompt(false)}>
+        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-w-md">
+           {PhonePromptContent}
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   // Mobile layout
   if (isMobile) {
@@ -402,7 +522,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                     <div key={q.id}>
                       <Label htmlFor={q.id} className="text-xs font-bold text-gray-700 block mb-1">{q.label}</Label>
                       <Input
-                        id={q.id}
+                        id="q.id"
                         value={customAnswers[q.id] || ''}
                         onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
                         placeholder={q.placeholder}
@@ -500,7 +620,6 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                     onClick={() => {
                       setSelectedTemplate(null);
                       setGoalTitle('');
-                      setTargetValue('');
                       setCustomAnswers({ q1: '', q2: '' });
                     }}
                     className="text-sm font-medium text-purple-700 hover:text-purple-900 flex items-center gap-1"

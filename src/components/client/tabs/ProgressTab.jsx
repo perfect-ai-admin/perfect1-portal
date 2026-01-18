@@ -218,7 +218,7 @@ export default function ProgressTab({ data, onNavigate }) {
               <NextStepCard 
                 step={nextStep} 
                 onWhyClick={scrollToWhyMatters} 
-                onAction={() => setActiveTaskQuestionnaire(nextStep)}
+                onAction={() => onNavigate('goals', { openAddGoal: true })}
               />
             </div>
           </div>
@@ -292,7 +292,7 @@ export default function ProgressTab({ data, onNavigate }) {
                  </h2>
                  <NextStepCard 
                     step={nextStep} 
-                    onAction={() => setActiveTaskQuestionnaire(nextStep)}
+                    onAction={() => onNavigate('goals', { openAddGoal: true })}
                  />
                </div>
 
