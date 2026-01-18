@@ -90,7 +90,6 @@ export default function DailyCockpit({ onNavigate }) {
                         </span>
                         <div className="flex items-center gap-2">
                              <span className="text-xs text-green-600 font-medium">{Math.round(primaryGoal.progress || 0)}% הושלמו</span>
-                             <span className="text-xs text-gray-400">({primaryGoal.current || 0}/{primaryGoal.target})</span>
                         </div>
                     </div>
                     <Progress value={primaryGoal.progress || 0} className="h-1.5 mt-auto bg-gray-100" indicatorClassName="bg-green-500" />
@@ -105,14 +104,18 @@ export default function DailyCockpit({ onNavigate }) {
             )}
         </div>
         <div className="border-l pl-4 border-gray-100 hidden md:block">
-            <span className="text-xs text-gray-500 block mb-1">לידים חדשים</span>
-            <span className="text-xl font-bold text-gray-900">24</span>
-            <span className="text-xs text-green-600 block">+4 השבוע</span>
+            <span className="text-xs text-gray-500 block mb-1">מצב נוכחי</span>
+            <span className="text-xl font-bold text-gray-900">
+                {primaryGoal ? (primaryGoal.current || 0).toLocaleString() : '-'}
+            </span>
+            <span className="text-xs text-gray-400 block">התקדמות בפועל</span>
         </div>
         <div className="border-l pl-4 border-gray-100 hidden md:block">
-            <span className="text-xs text-gray-500 block mb-1">שיחות מכירה</span>
-            <span className="text-xl font-bold text-gray-900">8</span>
-            <span className="text-xs text-gray-400 block">יעד שבועי: 10</span>
+            <span className="text-xs text-gray-500 block mb-1">יעד סופי</span>
+            <span className="text-xl font-bold text-gray-900">
+                {primaryGoal ? (primaryGoal.target || 0).toLocaleString() : '-'}
+            </span>
+            <span className="text-xs text-gray-400 block">המטרה שלך</span>
         </div>
         <div className="flex items-center justify-end">
             <Button 
