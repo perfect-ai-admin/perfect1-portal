@@ -148,12 +148,20 @@ export default function DailyCockpit({ onNavigate }) {
                 <h3 className="text-xl font-bold text-white leading-snug">
                   {dailyFocus.primary_focus || 'עדיין לא הוגדר מיקוד להיום'}
                 </h3>
-                {dailyFocus.primary_focus && (
-                    <div className="flex items-center gap-2 text-sm text-indigo-200 bg-indigo-900/40 p-2 rounded-lg w-fit px-3">
-                        <Calendar className="w-3 h-3" />
-                        <span>זמן משוער: {dailyFocus.estimated_time || 60} דק'</span>
-                    </div>
-                )}
+                <div className="flex flex-wrap gap-2">
+                    {dailyFocus.primary_focus && (
+                        <div className="flex items-center gap-2 text-sm text-indigo-200 bg-indigo-900/40 p-2 rounded-lg w-fit px-3">
+                            <Calendar className="w-3 h-3" />
+                            <span>{dailyFocus.estimated_time || 60} דק'</span>
+                        </div>
+                    )}
+                    {primaryGoal && (
+                        <div className="flex items-center gap-2 text-sm text-indigo-100 bg-white/10 p-2 rounded-lg w-fit px-3 border border-white/10">
+                            <Target className="w-3 h-3" />
+                            <span className="truncate max-w-[150px]">{primaryGoal.title}</span>
+                        </div>
+                    )}
+                </div>
               </div>
             ) : (
               <div className="text-center py-6 space-y-3">
