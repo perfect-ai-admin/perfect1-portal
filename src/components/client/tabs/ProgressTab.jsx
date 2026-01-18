@@ -29,8 +29,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
       if (!user?.id) return [];
       // Fetch all goals to filter client-side or use a more specific filter if possible
       const goals = await base44.entities.UserGoal.filter({ user_id: user.id });
-      // Ensure we get both 'active' and 'selected' goals
-      return goals.filter(g => ['active', 'selected'].includes(g.status));
+      // Ensure we get 'active', 'selected', and 'completed' goals
+      return goals.filter(g => ['active', 'selected', 'completed'].includes(g.status));
     },
     enabled: !!user?.id,
     initialData: []
