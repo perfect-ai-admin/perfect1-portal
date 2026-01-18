@@ -613,40 +613,17 @@ export default function OsekPaturLanding() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">מייל *</label>
-                    <Input
-                      type="email"
-                      placeholder="example@gmail.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="h-12 rounded-xl border-2"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">סוג עיסוק (לא חובה)</label>
-                    <Input
-                      placeholder="למשל: צלם, מעצב, מאמן כושר..."
-                      value={formData.profession}
-                      onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                      className="h-12 rounded-xl border-2"
-                    />
-                  </div>
-
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
+                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg transform hover:scale-105 transition-all"
                   >
-                    {isSubmitting ? 'שולח...' : 'הגשת פרטים'}
+                    {isSubmitting ? '⏳ שנייה...' : '✨ קבל ייעוץ חינם עכשיו'}
                   </Button>
 
-
-
-                  <p className="text-xs text-gray-500 text-center mt-4">
-                    ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום
+                  <p className="text-xs text-gray-500 text-center mt-4 flex items-center justify-center gap-1">
+                    <CheckCircle className="w-3 h-3" />
+                    ללא תשלום • ללא התחייבות • בתוך 24 שעות
                   </p>
                   </form>
               </div>
