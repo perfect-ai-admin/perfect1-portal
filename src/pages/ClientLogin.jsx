@@ -21,18 +21,24 @@ export default function ClientLogin() {
     setIsLoading(true);
 
     try {
+      console.log('🔵 Starting login with:', { phone, passwordLength: password.length });
+      
       const response = await base44.functions.invoke('verifyClientLogin', {
         phone: phone,
         password: password
       });
 
+      console.log('🟢 Function response:', response);
+
       if (!response.data.success) {
+        console.log('❌ Login failed:', response.data.error);
         setError(response.data.error || 'שגיאה בהכניסה');
         setIsLoading(false);
         return;
       }
 
       const lead = response.data.lead;
+      console.log('✅ Lead received:', lead);
 
       // Store lead data in localStorage for client session
       const clientSession = {
@@ -45,10 +51,17 @@ export default function ClientLogin() {
         login_time: new Date().toISOString()
       };
 
+      console.log('💾 Storing session:', clientSession);
       localStorage.setItem('clientSession', JSON.stringify(clientSession));
-      navigate(createPageUrl('ClientDashboard'));
+      
+      console.log('🚀 Session stored, navigating to ClientDashboard...');
+      const dashboardUrl = createPageUrl('ClientDashboard');
+      console.log('🔗 Dashboard URL:', dashboardUrl);
+      
+      navigate(dashboardUrl);
+      console.log('✨ Navigation called');
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('❌ Login error:', err);
       setError(err.response?.data?.error || 'שגיאה בתהליך הכניסה. אנא נסה שוב.');
       setIsLoading(false);
     }
