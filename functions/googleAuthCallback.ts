@@ -2,51 +2,19 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const GOOGLE_CLIENT_ID = Deno.env.get('GOOGLE_CLIENT_ID');
 const GOOGLE_CLIENT_SECRET = Deno.env.get('GOOGLE_CLIENT_SECRET');
-const JWT_SECRET = Deno.env.get('JWT_SECRET');
 const BASE_URL = Deno.env.get('BASE_URL');
-
-// Simple JWT creation (or use a library like jose)
-async function createJWT(payload) {
-    const encoder = new TextEncoder();
-    const header = { alg: 'HS256', typ: 'JWT' };
-    
-    const encodedHeader = btoa(JSON.stringify(header));
-    const encodedPayload = btoa(JSON.stringify(payload));
-    
-    const data = encoder.encode(`${encodedHeader}.${encodedPayload}`);
-    const keyData = encoder.encode(JWT_SECRET);
-    
-    const key = await crypto.subtle.importKey(
-        'raw',
-        keyData,
-        { name: 'HMAC', hash: 'SHA-256' },
-        false,
-        ['sign']
-    );
-    
-    const signature = await crypto.subtle.sign('HMAC', key, data);
-    const encodedSignature = btoa(String.fromCharCode(...new Uint8Array(signature)));
-    
-    return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
-}
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
-        const url = new URL(req.url);
+        const body = await req.json();
+        const code = body.code;
         
-        const code = url.searchParams.get('code');
-        const state = url.searchParams.get('state');
-        
-        if (!code || !state) {
-            console.error('Missing code or state');
-            return new Response(null, {
-                status: 302,
-                headers: { 'Location': '/ClientLogin?error=missing_params' }
-            });
+        if (!code) {
+            console.error('Missing code');
+            return Response.json({ error: 'Missing authorization code' }, { status: 400 });
         }
         
-        console.log('Google auth callback - code received, exchanging for tokens...');
+        console.log('Exchanging Google code for tokens...');
         
         // Exchange code for tokens
         const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
@@ -56,7 +24,7 @@ Deno.serve(async (req) => {
                 code: code,
                 client_id: GOOGLE_CLIENT_ID,
                 client_secret: GOOGLE_CLIENT_SECRET,
-                redirect_uri: `${BASE_URL.replace(/\/$/, '')}/functions/googleAuthCallback`,
+                redirect_uri: `${BASE_URL.replace(/\/$/, '')}/ClientLogin`,
                 grant_type: 'authorization_code'
             })
         });
@@ -64,10 +32,7 @@ Deno.serve(async (req) => {
         if (!tokenResponse.ok) {
             const errorData = await tokenResponse.text();
             console.error('Token exchange failed:', tokenResponse.status, errorData);
-            return new Response(null, {
-                status: 302,
-                headers: { 'Location': '/ClientLogin?error=token_exchange_failed' }
-            });
+            return Response.json({ error: 'Token exchange failed', details: errorData }, { status: 400 });
         }
         
         const tokens = await tokenResponse.json();
@@ -75,10 +40,7 @@ Deno.serve(async (req) => {
         
         if (!tokens.id_token) {
             console.error('No id_token in response');
-            return new Response(null, {
-                status: 302,
-                headers: { 'Location': '/ClientLogin?error=no_id_token' }
-            });
+            return Response.json({ error: 'No id_token in response' }, { status: 400 });
         }
         
         // Decode id_token
@@ -89,15 +51,12 @@ Deno.serve(async (req) => {
         
         if (!email) {
             console.error('No email in token');
-            return new Response(null, {
-                status: 302,
-                headers: { 'Location': '/ClientLogin?error=no_email' }
-            });
+            return Response.json({ error: 'No email in token' }, { status: 400 });
         }
         
         console.log('Email from Google:', email);
         
-        // Create user object for client storage
+        // Create user object
         const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
         const user = {
             email,
@@ -109,30 +68,12 @@ Deno.serve(async (req) => {
             business_journey_completed: false
         };
         
-        console.log('Preparing redirect with user data');
+        console.log('User prepared successfully');
         
-        const userJson = JSON.stringify(user);
-        const encodedUser = btoa(userJson);
-        const redirectUrl = `/ClientDashboard?authData=${encodedUser}`;
-        
-        console.log('Redirecting to:', redirectUrl);
-
-        return new Response(null, {
-            status: 302,
-            headers: { 
-                'Location': redirectUrl,
-                'Cache-Control': 'no-cache, no-store, must-revalidate'
-            }
-        });
+        return Response.json({ user });
         
     } catch (error) {
         console.error('Google auth callback error:', error.message, error.stack);
-        return new Response(JSON.stringify({
-            error: error.message,
-            stack: error.stack
-        }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return Response.json({ error: error.message }, { status: 500 });
     }
 });
