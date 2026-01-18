@@ -196,6 +196,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const [targetValue, setTargetValue] = useState('');
   const [deadline, setDeadline] = useState('');
   const [timeframe, setTimeframe] = useState('month');
+  const [urgency, setUrgency] = useState(editingGoal?.urgency || 'medium');
   const [isPrimary, setIsPrimary] = useState(editingGoal?.isPrimary || false);
   const drawerRef = useRef(null);
   const initialFocusRef = useRef(null);
@@ -208,6 +209,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       setTargetValue(editingGoal.target?.toString() || '');
       setDeadline(editingGoal.deadline || '');
       setTimeframe(editingGoal.timeframe || 'month');
+      setUrgency(editingGoal.urgency || 'medium');
       setIsPrimary(editingGoal.isPrimary || false);
       const template = GOAL_TEMPLATES.find(t => t.id === editingGoal.category);
       if (template) {
@@ -269,6 +271,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       targetDisplay: `${targetValue} ${selectedTemplate.unit}`,
       deadline: deadline || null,
       timeframe: timeframe,
+      urgency: urgency,
       status: editingGoal?.status || 'active',
       isPrimary: isPrimary && !hasPrimaryGoal,
       aiInsight: editingGoal?.aiInsight || 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
@@ -417,14 +420,28 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                   </div>
 
                   <div>
-                    <Label htmlFor="deadline" className="text-xs font-semibold text-gray-600 block mb-1">תאריך יעד</Label>
-                    <Input
-                      id="deadline"
-                      type="date"
-                      value={deadline}
-                      onChange={(e) => setDeadline(e.target.value)}
-                      className="text-xs h-8"
-                    />
+                    <Label className="text-xs font-bold text-gray-700 block mb-2">דחיפות המשימה</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { value: 'low', label: 'נמוכה', desc: 'לא דחוף, בזמן שלי' },
+                        { value: 'medium', label: 'בינונית', desc: 'חשוב, אבל בלי לחץ' },
+                        { value: 'high', label: 'גבוהה', desc: 'דחוף מאוד, מעכשיו' }
+                      ].map((level) => (
+                        <button
+                          key={level.value}
+                          onClick={() => setUrgency(level.value)}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-2 rounded-xl border transition-all text-center h-full",
+                            urgency === level.value
+                              ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm ring-1 ring-purple-200"
+                              : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
+                          )}
+                        >
+                          <span className="text-xs font-bold mb-0.5">{level.label}</span>
+                          <span className="text-[9px] opacity-80 leading-tight">{level.desc}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   {!hasPrimaryGoal && (
