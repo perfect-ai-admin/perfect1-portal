@@ -69,7 +69,9 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
                       transition={{ delay: index * 0.05 }}
                       onClick={() => {
                         setIsOpen(false);
-                        onNavigate('goals');
+                        // Navigate to goals tab but allow viewing here too
+                        // For now just navigate as requested behavior seems to be "reflecting"
+                        onNavigate('goals'); 
                       }}
                       className="p-3 bg-gradient-to-br from-purple-50 to-purple-100/50 rounded-xl cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-200 border border-purple-200/50"
                     >

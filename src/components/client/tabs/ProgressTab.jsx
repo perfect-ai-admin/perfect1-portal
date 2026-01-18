@@ -16,6 +16,8 @@ import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import HeroGoal from '../goals/HeroGoal';
+import SecondaryGoals from '../goals/SecondaryGoals';
 
 export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
@@ -65,10 +67,29 @@ export default function ProgressTab({ data, onNavigate, user }) {
   
   const quickStats = {
     monthlyRevenue: '₪0',
-    activeGoals: '0',
+    activeGoals: activeGoals?.length?.toString() || '0',
     pendingInvoices: '0',
     urgentActions: '0'
   };
+
+  const handleGoalStatusChange = async (goal, newStatus) => {
+      await base44.entities.UserGoal.update(goal.id, { status: newStatus });
+      refetchGoals();
+  };
+
+  const handleGoalEdit = (goal) => {
+      onNavigate('goals', { editGoal: goal });
+  };
+
+  const handleGoalDelete = async (goalId) => {
+      if (confirm('האם אתה בטוח שברצונך למחוק מטרה זו?')) {
+          await base44.entities.UserGoal.delete(goalId);
+          refetchGoals();
+      }
+  };
+
+  const primaryGoal = activeGoals.find(g => g.isPrimary) || activeGoals[0];
+  const secondaryGoalsList = activeGoals.filter(g => g.id !== primaryGoal?.id);
 
   const isJourneyCompleted = data?.business_journey_completed;
 
@@ -381,6 +402,47 @@ export default function ProgressTab({ data, onNavigate, user }) {
            <div className="hidden lg:block">
              <QuickStatsBar stats={quickStats} />
            </div>
+
+           {/* Active Goals Section - Desktop */}
+           {activeGoals.length > 0 && (
+             <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
+               <div className="flex items-center justify-between mb-4">
+                 <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                   <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded flex items-center justify-center">
+                     <Target className="w-4 h-4 text-white" />
+                   </div>
+                   המטרות שלי
+                 </h2>
+                 <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => onNavigate('goals')}
+                    className="text-purple-600 hover:bg-purple-50"
+                 >
+                    לכל המטרות
+                 </Button>
+               </div>
+               
+               <div className="space-y-4">
+                 {primaryGoal && (
+                    <HeroGoal 
+                      goal={primaryGoal} 
+                      onStatusChange={handleGoalStatusChange}
+                      onEdit={handleGoalEdit}
+                      onDelete={handleGoalDelete}
+                    />
+                 )}
+                 {secondaryGoalsList.length > 0 && (
+                    <SecondaryGoals 
+                      goals={secondaryGoalsList}
+                      onStatusChange={handleGoalStatusChange}
+                      onEdit={handleGoalEdit}
+                      onDelete={handleGoalDelete}
+                    />
+                 )}
+               </div>
+             </div>
+           )}
 
            {/* Next Step */}
            {nextStep && (
