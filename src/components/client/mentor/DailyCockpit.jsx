@@ -27,6 +27,12 @@ export default function DailyCockpit({ onNavigate }) {
 
   useEffect(() => {
     loadData();
+    
+    // Subscribe to changes in goals to keep the dashboard updated in real-time
+    const unsubscribe = base44.entities.UserGoal.subscribe(() => {
+        loadData();
+    });
+    return () => unsubscribe();
   }, []);
 
   const loadData = async () => {
@@ -41,10 +47,19 @@ export default function DailyCockpit({ onNavigate }) {
         setDailyFocus(focusData[0]);
       }
 
-      const goals = await base44.entities.UserGoal.filter({ isPrimary: true, status: 'active' }, '-created_date', 1);
-      if (goals && goals.length > 0) {
-          setPrimaryGoal(goals[0]);
+      // Robustly fetch the primary goal:
+      // 1. Fetch all relevant goals for the user
+      // 2. Look for explicit isPrimary=true
+      // 3. Fallback to the most recent active/selected goal (matching Goals Tab logic)
+      const allGoals = await base44.entities.UserGoal.filter({ user_id: user.id }, '-created_date', 50);
+      const activeGoals = allGoals.filter(g => ['active', 'selected'].includes(g.status));
+      
+      let mainGoal = activeGoals.find(g => g.isPrimary);
+      if (!mainGoal && activeGoals.length > 0) {
+          mainGoal = activeGoals[0]; // Fallback to the top/most recent goal
       }
+      setPrimaryGoal(mainGoal || null);
+
     } catch (error) {
       console.error(error);
     } finally {
