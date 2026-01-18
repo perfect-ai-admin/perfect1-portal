@@ -78,11 +78,16 @@ export default function DailyCockpit({ onNavigate }) {
             <span className="text-xs text-gray-400 block">יעד שבועי: 10</span>
         </div>
         <div className="flex items-center justify-end">
-            <Button variant="ghost" className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 text-xs h-8">
+            <Button 
+                variant="ghost" 
+                onClick={() => onNavigate('status')}
+                className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 text-xs h-8"
+            >
                 לדוח המלא <ArrowRight className="w-3 h-3 mr-1" />
             </Button>
         </div>
       </div>
+
       {/* Hero Section */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
