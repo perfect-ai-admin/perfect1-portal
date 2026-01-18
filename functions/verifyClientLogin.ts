@@ -67,14 +67,26 @@ Deno.serve(async (req) => {
     });
 
     // Verify password (use default password if not set)
-    const expectedPassword = lead.client_password || '123456';
+    const expectedPassword = (lead.client_password || '123456').trim();
+    const providedPassword = (password || '').trim();
+
     console.log('Password check:', {
-      provided: password,
-      expected: expectedPassword,
-      match: password === expectedPassword
+     provided: providedPassword,
+     expected: expectedPassword,
+     match: providedPassword === expectedPassword,
+     providedLength: providedPassword.length,
+     expectedLength: expectedPassword.length
     });
-    if (password !== expectedPassword) {
-      return Response.json({ error: 'סיסמה שגויה' }, { status: 401 });
+
+    if (providedPassword !== expectedPassword) {
+     return Response.json({ error: 'סיסמה שגויה' }, { status: 401 });
+    }
+
+    // Verify status allows login
+    const allowedStatuses = ['new', 'contacted', 'no_answer', 'in_progress', 'qualified', 'converted', 'closed'];
+    if (!allowedStatuses.includes(lead.status)) {
+     console.log(`Lead status not allowed for login: ${lead.status}`);
+     return Response.json({ error: 'משתמש זה לא יכול להיכנס למערכת' }, { status: 403 });
     }
 
     return Response.json({
