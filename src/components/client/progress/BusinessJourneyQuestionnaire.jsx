@@ -271,10 +271,10 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
     const currentQ = questionsList[currentStep];
     const newAnswers = { ...answers, [currentQ.id]: textInput };
     setAnswers(newAnswers);
+    setTextInput("");
     
     if (currentStep < questionsList.length - 1) {
       setCurrentStep(prev => prev + 1);
-      setTextInput("");
     } else {
       handleSubmit(newAnswers);
     }
