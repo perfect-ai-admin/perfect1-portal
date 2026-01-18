@@ -21,41 +21,24 @@ export default function ClientLogin() {
     setIsLoading(true);
 
     try {
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
-          if (cleanPhone.length < 9) {
-            setError('מספר טלפון לא תקין');
-            setIsLoading(false);
-            return;
-          }
+      const response = await base44.functions.invoke('verifyClientLogin', {
+        phone: phone,
+        password: password
+      });
 
-          // Get all leads and compare phone numbers flexibly
-          const allLeads = await base44.entities.Lead.list();
-
-          // Function to normalize phone for comparison
-          const normalizePhone = (p) => p.replace(/[^0-9]/g, '');
-          const queryPhoneNorm = normalizePhone(cleanPhone);
-
-          // Find matching lead
-          const lead = allLeads.find(l => normalizePhone(l.phone) === queryPhoneNorm);
-
-          if (!lead) {
-            setError('מספר טלפון לא נמצא במערכת');
-            setIsLoading(false);
-            return;
-          }
-
-          // Verify password (all clients use 123456)
-          if (password !== '123456') {
-        setError('סיסמה שגויה');
+      if (!response.data.success) {
+        setError(response.data.error || 'שגיאה בהכניסה');
         setIsLoading(false);
         return;
       }
+
+      const lead = response.data.lead;
 
       // Store lead data in localStorage for client session
       const clientSession = {
         id: lead.id,
         name: lead.name,
-        phone: cleanPhone,
+        phone: lead.phone,
         email: lead.email,
         status: lead.status,
         is_client: true,
@@ -66,7 +49,7 @@ export default function ClientLogin() {
       navigate(createPageUrl('ClientDashboard'));
     } catch (err) {
       console.error('Login error:', err);
-      setError('שגיאה בתהליך הכניסה. אנא נסה שוב.');
+      setError(err.response?.data?.error || 'שגיאה בתהליך הכניסה. אנא נסה שוב.');
       setIsLoading(false);
     }
   };
