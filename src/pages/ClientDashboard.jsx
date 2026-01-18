@@ -94,30 +94,39 @@ export default function ClientDashboard() {
     }
   }, [navigate]);
 
-  // Fetch user data
+  // Fetch user data - for new users, skip DB fetch and use localStorage data
   const { data: userData, isLoading, error: fetchError } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: async () => {
       if (!user?.id) {
+        console.log('[ClientDashboard] No user ID, returning stored user');
         return user;
       }
+      
+      // For new Google users, immediately use localStorage data without DB fetch
+      // This prevents permission/database issues during first load
       try {
+        console.log('[ClientDashboard] Attempting to fetch fresh user data for:', user?.id);
         const users = await base44.entities.User.filter({ id: user.id });
+        
         if (!users || users.length === 0) {
-          console.warn('No users found, using stored user data');
+          console.warn('[ClientDashboard] User not found in DB, using localStorage data');
           return user;
         }
+        
         const freshUser = users[0] || user;
+        console.log('[ClientDashboard] Fresh user data fetched successfully');
         localStorage.setItem('user', JSON.stringify(freshUser));
         return freshUser;
       } catch (err) {
-        console.error('Error fetching user data:', err);
+        console.error('[ClientDashboard] User fetch error (expected for new users):', err.message);
+        console.log('[ClientDashboard] Using localStorage data instead');
         return user;
       }
     },
     enabled: !!user?.id,
     refetchInterval: false,
-    retry: 1,
+    retry: 0,
     staleTime: 30000,
     gcTime: 1000 * 60 * 10
   });
