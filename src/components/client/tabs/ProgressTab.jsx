@@ -12,11 +12,13 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
+import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function ProgressTab({ data, onNavigate }) {
   const queryClient = useQueryClient();
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [activeTaskQuestionnaire, setActiveTaskQuestionnaire] = useState(null);
   
   // Use dynamic tasks if available, otherwise default milestones
   const activeMilestones = data?.client_tasks?.length > 0 
@@ -213,7 +215,11 @@ export default function ProgressTab({ data, onNavigate }) {
                 </div>
                 השלב הבא שלך
               </h2>
-              <NextStepCard step={nextStep} onWhyClick={scrollToWhyMatters} />
+              <NextStepCard 
+                step={nextStep} 
+                onWhyClick={scrollToWhyMatters} 
+                onAction={() => setActiveTaskQuestionnaire(nextStep)}
+              />
             </div>
           </div>
 
@@ -284,7 +290,10 @@ export default function ProgressTab({ data, onNavigate }) {
                    </div>
                    השלב הבא
                  </h2>
-                 <NextStepCard step={nextStep} />
+                 <NextStepCard 
+                    step={nextStep} 
+                    onAction={() => setActiveTaskQuestionnaire(nextStep)}
+                 />
                </div>
 
                {/* Why This Matters */}
@@ -320,6 +329,20 @@ export default function ProgressTab({ data, onNavigate }) {
             onComplete={handleQuestionnaireComplete}
             userId={data?.id}
           />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!activeTaskQuestionnaire} onOpenChange={(open) => !open && setActiveTaskQuestionnaire(null)}>
+        <DialogContent className="max-w-md p-0 bg-transparent border-0 shadow-2xl">
+          {activeTaskQuestionnaire && (
+            <DynamicTaskQuestionnaire
+              task={activeTaskQuestionnaire}
+              onComplete={() => {
+                setActiveTaskQuestionnaire(null);
+                // Optionally trigger celebration or refresh
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </motion.div>
