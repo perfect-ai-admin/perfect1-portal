@@ -21,6 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DailyCockpit({ onNavigate }) {
   const [dailyFocus, setDailyFocus] = useState(null);
+  const [primaryGoal, setPrimaryGoal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
 
@@ -38,6 +39,11 @@ export default function DailyCockpit({ onNavigate }) {
       
       if (focusData.length > 0) {
         setDailyFocus(focusData[0]);
+      }
+
+      const goals = await base44.entities.UserGoal.filter({ isPrimary: true, status: 'active' }, '-created_date', 1);
+      if (goals && goals.length > 0) {
+          setPrimaryGoal(goals[0]);
       }
     } catch (error) {
       console.error(error);
