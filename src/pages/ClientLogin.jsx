@@ -222,7 +222,7 @@ function ClientLogin() {
                          מייל או מספר טלפון
                        </label>
                        <div className="relative">
-                         <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                         <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                          <Input
                            type="text"
                            placeholder="example@email.com או 05X-XXXXXXX"
