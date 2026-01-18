@@ -244,17 +244,13 @@ export default function ClientDashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="mb-6">
-              <SkeletonHeader />
-            </div>
-            <div className="h-12 bg-white/10 rounded-lg" />
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center p-4" dir="rtl">
+        <div className="text-center space-y-4">
+          <div className="animate-spin">
+            <div className="w-12 h-12 border-4 border-[#1E3A5F] border-t-transparent rounded-full mx-auto"></div>
           </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <SkeletonTabContent />
+          <h2 className="text-xl font-semibold text-[#1E3A5F]">יוצרים את החשבון שלך...</h2>
+          <p className="text-sm text-gray-600">זה לוקח רק רגע</p>
         </div>
       </div>
     );
