@@ -120,7 +120,6 @@ export default function Layout({ children, currentPageName }) {
         prefetchPages={['/Services', '/Pricing', '/Contact', '/OsekPaturLanding', '/Blog']}
       />
       <WebVitalsMonitor />
-      <QAChecker />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
                 <Header />
                 <main>
