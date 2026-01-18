@@ -79,51 +79,66 @@ export default function DailyCockpit({ onNavigate }) {
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-10">
       {/* Results Tracker Widget */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-        <div className="col-span-2 md:col-span-1 border-l pl-4 border-gray-100">
-            <span className="text-xs text-gray-500 block mb-1">המטרה הראשית</span>
+      <div className="flex flex-col md:flex-row md:items-center gap-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        
+        {/* Goal Title & Progress */}
+        <div className="flex-1 min-w-0 md:pl-6 md:border-l border-gray-100">
+            <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">המטרה הראשית</span>
+                {primaryGoal && (
+                    <span className="text-xs text-green-600 font-medium">{Math.round(primaryGoal.progress || 0)}% הושלמו</span>
+                )}
+            </div>
+            
             {primaryGoal ? (
-                <>
-                    <div className="flex flex-col gap-1 mb-2">
-                        <span className="text-lg font-bold text-gray-900 leading-tight line-clamp-1" title={primaryGoal.title}>
-                            {primaryGoal.title}
-                        </span>
-                        <div className="flex items-center gap-2">
-                             <span className="text-xs text-green-600 font-medium">{Math.round(primaryGoal.progress || 0)}% הושלמו</span>
-                        </div>
-                    </div>
-                    <Progress value={primaryGoal.progress || 0} className="h-1.5 mt-auto bg-gray-100" indicatorClassName="bg-green-500" />
-                </>
+                <div className="space-y-3">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 leading-tight truncate" title={primaryGoal.title}>
+                        {primaryGoal.title}
+                    </h3>
+                    <Progress value={primaryGoal.progress || 0} className="h-2 bg-gray-100" indicatorClassName="bg-gradient-to-l from-green-500 to-emerald-400" />
+                </div>
             ) : (
-                <div className="flex flex-col h-full justify-center items-start">
-                    <span className="text-sm text-gray-400 mb-2">לא הוגדרה מטרה ראשית</span>
-                    <Button variant="link" className="p-0 h-auto text-indigo-600 text-xs" onClick={() => onNavigate('status')}>
+                <div className="flex items-center gap-3 py-2">
+                    <span className="text-gray-400 text-sm">לא הוגדרה מטרה ראשית</span>
+                    <Button variant="link" className="p-0 h-auto text-indigo-600 text-sm font-medium" onClick={() => onNavigate('status')}>
                         הגדר עכשיו
                     </Button>
                 </div>
             )}
         </div>
-        <div className="border-l pl-4 border-gray-100 hidden md:block">
-            <span className="text-xs text-gray-500 block mb-1">מצב נוכחי</span>
-            <span className="text-xl font-bold text-gray-900">
-                {primaryGoal ? (primaryGoal.current || 0).toLocaleString() : '-'}
-            </span>
-            <span className="text-xs text-gray-400 block">התקדמות בפועל</span>
+
+        {/* Stats Section */}
+        <div className="grid grid-cols-2 md:flex items-center gap-8 md:gap-12 px-2 md:px-6 border-t md:border-t-0 border-gray-50 pt-4 md:pt-0">
+            <div className="flex flex-col items-start min-w-[80px]">
+                <span className="text-xs text-gray-500 mb-1">מצב נוכחי</span>
+                <span className="text-2xl font-bold text-gray-900 font-mono tracking-tight">
+                    {primaryGoal ? (primaryGoal.current || 0).toLocaleString() : '-'}
+                </span>
+                <span className="text-[10px] text-gray-400">התקדמות בפועל</span>
+            </div>
+
+            <div className="w-px h-10 bg-gray-100 hidden md:block"></div>
+
+            <div className="flex flex-col items-start min-w-[80px]">
+                <span className="text-xs text-gray-500 mb-1">יעד סופי</span>
+                <span className="text-2xl font-bold text-gray-900 font-mono tracking-tight">
+                    {primaryGoal ? (primaryGoal.target || 0).toLocaleString() : '-'}
+                </span>
+                <span className="text-[10px] text-gray-400">המטרה שלך</span>
+            </div>
         </div>
-        <div className="border-l pl-4 border-gray-100 hidden md:block">
-            <span className="text-xs text-gray-500 block mb-1">יעד סופי</span>
-            <span className="text-xl font-bold text-gray-900">
-                {primaryGoal ? (primaryGoal.target || 0).toLocaleString() : '-'}
-            </span>
-            <span className="text-xs text-gray-400 block">המטרה שלך</span>
-        </div>
-        <div className="flex items-center justify-end">
+
+        {/* Action Button */}
+        <div className="flex items-center justify-end md:justify-start">
             <Button 
                 variant="ghost" 
                 onClick={() => onNavigate('status')}
-                className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 text-xs h-8"
+                className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-xl gap-2 pl-2 pr-4 group h-10"
             >
-                לדוח המלא <ArrowRight className="w-3 h-3 mr-1" />
+                <span className="font-medium text-sm">לדוח המלא</span>
+                <div className="bg-indigo-100 p-1.5 rounded-full group-hover:bg-indigo-200 transition-colors">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                </div>
             </Button>
         </div>
       </div>
