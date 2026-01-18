@@ -17,13 +17,16 @@ Deno.serve(async (req) => {
     
     // Try exact match
     let leads = await base44.asServiceRole.entities.Lead.filter({ phone: cleanPhone });
+    console.log(`Search 1 - cleanPhone: ${cleanPhone}, found: ${leads.length}`);
     if (leads.length > 0) {
       lead = leads[0];
     }
     
     // Try with leading 0
     if (!lead && !cleanPhone.startsWith('0')) {
-      leads = await base44.asServiceRole.entities.Lead.filter({ phone: '0' + cleanPhone });
+      const withZero = '0' + cleanPhone;
+      leads = await base44.asServiceRole.entities.Lead.filter({ phone: withZero });
+      console.log(`Search 2 - withZero: ${withZero}, found: ${leads.length}`);
       if (leads.length > 0) {
         lead = leads[0];
       }
@@ -31,15 +34,26 @@ Deno.serve(async (req) => {
     
     // Try without leading 0
     if (!lead && cleanPhone.startsWith('0')) {
-      leads = await base44.asServiceRole.entities.Lead.filter({ phone: cleanPhone.substring(1) });
+      const withoutZero = cleanPhone.substring(1);
+      leads = await base44.asServiceRole.entities.Lead.filter({ phone: withoutZero });
+      console.log(`Search 3 - withoutZero: ${withoutZero}, found: ${leads.length}`);
       if (leads.length > 0) {
         lead = leads[0];
       }
     }
 
     if (!lead) {
+      console.log(`No lead found for phone: ${cleanPhone}`);
       return Response.json({ error: 'מספר טלפון לא נמצא במערכת' }, { status: 404 });
     }
+
+    console.log(`Lead found:`, {
+      id: lead.id,
+      name: lead.name,
+      phone: lead.phone,
+      status: lead.status,
+      client_password: lead.client_password
+    });
 
     // Verify password (use default password if not set)
     const expectedPassword = lead.client_password || '123456';
