@@ -67,22 +67,23 @@ Deno.serve(async (req) => {
         console.log('[STEP: token_parse] Email:', normalizedEmail, 'GoogleSub:', sub);
         
         // Create user object
-        const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
+        const fullName = name && name.trim() ? name : normalizedEmail.split('@')[0] || 'משתמש חדש';
         
-        // Get free plan - MUST exist or create placeholder
+        // Get free plan
         let freePlan = null;
         try {
+            console.log('[STEP: plan_lookup] Searching for free plan...');
             const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
             freePlan = freePlans.length > 0 ? freePlans[0] : null;
-            console.log('Free plan found:', freePlan?.id);
+            console.log('[STEP: plan_lookup] Found plan:', freePlan?.id);
         } catch (planErr) {
-            console.error('Plan filter error:', planErr);
+            console.error('[STEP: plan_lookup] Error:', planErr.message);
         }
 
-        // If no free plan exists, create one as fallback
+        // If no free plan exists, create fallback
         if (!freePlan) {
             try {
-                console.log('Creating fallback free plan...');
+                console.log('[STEP: plan_creation] Creating fallback free plan...');
                 freePlan = await base44.asServiceRole.entities.Plan.create({
                     name: 'חינמי',
                     name_en: 'Free',
@@ -96,41 +97,60 @@ Deno.serve(async (req) => {
                     is_active: true,
                     display_order: 0
                 });
-                console.log('Fallback plan created:', freePlan.id);
+                console.log('[STEP: plan_creation] Fallback plan created:', freePlan.id);
             } catch (createPlanErr) {
-                console.error('Failed to create fallback plan:', createPlanErr.message);
-                throw new Error('System configuration error: cannot create free plan');
+                console.error('[STEP: plan_creation] Failed:', createPlanErr.message);
+                return Response.json({ 
+                    error: 'System configuration error', 
+                    step: 'plan_creation',
+                    details: createPlanErr.message
+                }, { status: 500 });
             }
         }
 
-        // Find or create user in database
+        // Find or create user
         let user;
-        const existingUsers = await base44.asServiceRole.entities.User.filter({ email });
+        try {
+            console.log('[STEP: user_lookup] Searching for user:', normalizedEmail);
+            const existingUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
 
-        if (existingUsers.length > 0) {
-            user = existingUsers[0];
-            console.log('Google user exists, updating login:', user.id);
-            await base44.asServiceRole.entities.User.update(user.id, {
-                last_login_at: new Date().toISOString()
-            });
-        } else {
-            console.log('Creating new Google user:', email);
-            user = await base44.asServiceRole.entities.User.create({
-                email,
-                full_name: fullName,
-                phone: '0000000000',
-                status: 'active',
-                login_provider: 'google',
-                last_login_at: new Date().toISOString(),
-                current_plan_id: freePlan.id,
-                plan_start_date: new Date().toISOString(),
-                marketing_enabled: false,
-                mentor_enabled: true,
-                finance_enabled: false,
-                goals_limit: 1,
-                max_active_goals: 1
-            });
-            console.log('New Google user created:', user.id);
+            if (existingUsers.length > 0) {
+                user = existingUsers[0];
+                console.log('[STEP: user_lookup] User exists:', user.id);
+                console.log('[STEP: user_update] Updating last_login_at...');
+                await base44.asServiceRole.entities.User.update(user.id, {
+                    last_login_at: new Date().toISOString()
+                });
+                console.log('[STEP: user_update] Success');
+            } else {
+                console.log('[STEP: user_create] Creating new user for:', normalizedEmail);
+                const newUserData = {
+                    email: normalizedEmail,
+                    full_name: fullName,
+                    phone: '0000000000',
+                    status: 'active',
+                    login_provider: 'google',
+                    last_login_at: new Date().toISOString(),
+                    current_plan_id: freePlan.id,
+                    plan_start_date: new Date().toISOString(),
+                    marketing_enabled: false,
+                    mentor_enabled: true,
+                    finance_enabled: false,
+                    goals_limit: 1,
+                    max_active_goals: 1
+                };
+                console.log('[STEP: user_create] Data prepared:', { ...newUserData, email: '***' });
+                user = await base44.asServiceRole.entities.User.create(newUserData);
+                console.log('[STEP: user_create] Success, user ID:', user.id);
+            }
+        } catch (userErr) {
+            console.error('[STEP: user_lookup/create] Error:', userErr.message);
+            console.error('[STEP: user_lookup/create] Stack:', userErr.stack);
+            return Response.json({ 
+                error: 'Failed to create or find user',
+                step: 'user_lookup',
+                details: userErr.message
+            }, { status: 500 });
         }
         
         const userToReturn = {
@@ -140,19 +160,17 @@ Deno.serve(async (req) => {
             status: user.status
         };
         
-        console.log('User prepared successfully');
-        
+        console.log('[STEP: response] User prepared successfully:', user.id);
         return Response.json({ user: userToReturn });
         
     } catch (error) {
-        console.error('Google auth callback error - FULL STACK:', error);
-        console.error('Error message:', error?.message);
-        console.error('Error stack:', error?.stack);
+        console.error('[STEP: unexpected_error] Full error:', error);
+        console.error('[STEP: unexpected_error] Message:', error?.message);
+        console.error('[STEP: unexpected_error] Stack:', error?.stack);
         return Response.json({ 
             error: 'Authentication failed',
-            step: 'user_creation',
-            details: error?.message || 'Unknown error',
-            stack: error?.stack
+            step: 'unexpected',
+            details: error?.message || 'Unknown error'
         }, { status: 500 });
     }
 });
