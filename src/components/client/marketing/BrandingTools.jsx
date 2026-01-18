@@ -24,6 +24,7 @@ import StickerQuestionnaire from './StickerQuestionnaire';
 import SocialMediaQuestionnaire from './SocialMediaQuestionnaire';
 import BusinessCardQuestionnaire from './BusinessCardQuestionnaire';
 import EmailSignatureQuestionnaire from './EmailSignatureQuestionnaire';
+import ProposalQuestionnaire from './ProposalQuestionnaire';
 
 const tools = [
   {
@@ -254,6 +255,16 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
       <Dialog open={activeFlowId === 'email-signature'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <EmailSignatureQuestionnaire 
+            onComplete={() => setActiveFlowId(null)} 
+            onClose={() => setActiveFlowId(null)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal for Proposal */}
+      <Dialog open={activeFlowId === 'proposal'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <ProposalQuestionnaire 
             onComplete={() => setActiveFlowId(null)} 
             onClose={() => setActiveFlowId(null)}
           />
