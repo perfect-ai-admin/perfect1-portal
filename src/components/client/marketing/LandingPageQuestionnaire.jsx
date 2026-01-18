@@ -16,30 +16,43 @@ import {
 import { cn } from "@/lib/utils";
 
 // Custom specialized card selector component for better UX
-const SelectionCard = ({ selected, onClick, icon: Icon, title, description }) => (
+const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
   <div 
     onClick={onClick}
     className={cn(
-      "cursor-pointer relative flex items-center gap-3 p-3 rounded-xl border-2 transition-all duration-200 h-full",
+      "cursor-pointer relative flex items-center gap-2.5 p-2.5 rounded-xl border transition-all duration-200 h-full",
       selected 
         ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500/20" 
-        : "border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50"
+        : "border-gray-200 bg-white hover:border-blue-200 hover:bg-gray-50",
+      className
     )}
   >
     {selected && (
-      <div className="absolute top-2 left-2 bg-blue-500 rounded-full p-0.5">
-        <Check className="w-2 h-2 text-white" />
+      <div className="absolute top-1.5 left-1.5 bg-blue-500 rounded-full p-0.5">
+        <Check className="w-1.5 h-1.5 text-white" />
       </div>
     )}
     <div className={cn(
-      "p-2 rounded-lg flex-shrink-0",
+      "p-1.5 rounded-lg flex-shrink-0",
       selected ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"
     )}>
-      <Icon className="w-4 h-4" />
+      <Icon className="w-3.5 h-3.5" />
     </div>
     <div className="flex-1 min-w-0">
-      <div className={cn("font-bold text-sm leading-tight", selected ? "text-blue-900" : "text-gray-900")}>{title}</div>
-      {description && <div className="text-[11px] text-gray-500 leading-tight mt-0.5 line-clamp-2">{description}</div>}
+      <div className={cn("font-bold text-xs leading-tight", selected ? "text-blue-900" : "text-gray-900")}>{title}</div>
+      {description && <div className="text-[10px] text-gray-500 leading-tight mt-0.5 line-clamp-1">{description}</div>}
+    </div>
+  </div>
+);
+
+const StepHeader = ({ icon: Icon, title, description, colorClass = "bg-blue-100 text-blue-600" }) => (
+  <div className="flex items-center gap-3 mb-2 pb-2 border-b border-gray-100">
+    <div className={cn("w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0", colorClass)}>
+      <Icon className="w-4 h-4" />
+    </div>
+    <div>
+      <h3 className="text-sm font-bold text-gray-900 leading-tight">{title}</h3>
+      <p className="text-[10px] text-gray-500 leading-tight">{description}</p>
     </div>
   </div>
 );
@@ -62,16 +75,16 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     processSteps: '',
     proofs: [],
     testimonialText: '',
-    ctaTypes: [], // Changed from ctaType string to array
+    ctaTypes: [],
     ctaText: '',
     pageStyle: '',
     preferredColors: '',
     logoStatus: '',
-    logoFile: null, // New: Store uploaded logo
+    logoFile: null,
     formFields: ['name', 'phone'],
     leadDestination: '',
-    destinationPhone: '', // New
-    destinationEmail: '', // New
+    destinationPhone: '',
+    destinationEmail: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -151,7 +164,6 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     const file = e.target.files[0];
     if (file) {
       setFormData(prev => ({ ...prev, logoFile: file, logoStatus: 'uploaded' }));
-      // In a real app, we would upload this to storage here
     }
   };
 
@@ -159,7 +171,6 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     e.preventDefault();
     if (validateStep(currentStep)) {
       setIsBuilding(true);
-      // Simulate building process
       setTimeout(() => {
         setIsBuilding(false);
         setShowSuccess(true);
@@ -168,25 +179,20 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   };
 
   const handlePurchase = () => {
-    // Navigate to checkout or show payment modal
-    // For now, we simulate this
     window.location.href = '/Checkout?product=landing-page&price=499';
   };
-
-  const progressPercent = (currentStep / totalSteps) * 100;
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-4">
-            <div className="text-center space-y-1 mb-4">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Building2 className="w-5 h-5 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">נתחיל מהבסיס</h3>
-              <p className="text-gray-500 text-xs">מי אתה ומי הקהל שלך?</p>
-            </div>
+          <div className="space-y-3">
+            <StepHeader 
+              icon={Building2} 
+              title="נתחיל מהבסיס" 
+              description="מי אתה ומי הקהל שלך?"
+              colorClass="bg-blue-100 text-blue-600"
+            />
 
             <div className="space-y-3">
               <div className="space-y-1">
@@ -196,7 +202,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.businessName} 
                   onChange={(e) => handleInputChange('businessName', e.target.value)} 
                   placeholder="לדוגמה: דיגיטל פרו" 
-                  className={cn("h-10", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
+                  className={cn("h-9 text-xs", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
                   autoFocus
                 />
                 {errors.businessName && <p className="text-red-500 text-[10px] flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.businessName}</p>}
@@ -208,8 +214,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   id="mainField" 
                   value={formData.mainField} 
                   onChange={(e) => handleInputChange('mainField', e.target.value)} 
-                  placeholder="לדוגמה: שיווק דיגיטלי לעסקים קטנים" 
-                  className={cn("h-10", errors.mainField && 'border-red-500 focus-visible:ring-red-500')} 
+                  placeholder="לדוגמה: שיווק דיגיטלי" 
+                  className={cn("h-9 text-xs", errors.mainField && 'border-red-500 focus-visible:ring-red-500')} 
                 />
               </div>
 
@@ -237,16 +243,16 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     title="פרטיים"
                     description="B2C"
                   />
-                  <div className="flex items-center px-3 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 h-full min-h-[60px]">
+                  <div className="flex items-center px-2 rounded-xl border border-dashed border-gray-300 bg-gray-50/50 h-full">
                      <Input 
                         placeholder="אחר..." 
                         value={formData.targetAudienceOther} 
                         onChange={(e) => handleInputChange('targetAudienceOther', e.target.value)} 
-                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full text-base md:text-sm"
+                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full text-xs"
                       />
                   </div>
                 </div>
-                {errors.targetAudience && <p className="text-red-500 text-[10px] mt-1">{errors.targetAudience}</p>}
+                {errors.targetAudience && <p className="text-red-500 text-[10px]">{errors.targetAudience}</p>}
               </div>
             </div>
           </div>
@@ -254,36 +260,35 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 2:
         return (
-          <div className="space-y-4">
-            <div className="text-center space-y-1 mb-4">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">הכאב של הלקוח</h3>
-              <p className="text-gray-500 text-xs">למה הוא צריך אותך?</p>
-            </div>
+          <div className="space-y-3">
+            <StepHeader 
+              icon={AlertCircle} 
+              title="הכאב של הלקוח" 
+              description="למה הוא צריך אותך?"
+              colorClass="bg-red-100 text-red-600"
+            />
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="space-y-1">
-                <Label htmlFor="painPoints" className="text-sm font-semibold">מה הבעיה או הכאב שהלקוח חווה?</Label>
+                <Label htmlFor="painPoints" className="text-xs font-semibold">מה הבעיה או הכאב שהלקוח חווה?</Label>
                 <Textarea 
                   id="painPoints" 
                   value={formData.painPoints} 
                   onChange={(e) => handleInputChange('painPoints', e.target.value)} 
                   placeholder="לדוגמה: מבזבז המון זמן על בירוקרטיה..." 
-                  className={cn("h-24 resize-none", errors.painPoints && 'border-red-500')} 
+                  className={cn("h-20 resize-none text-xs", errors.painPoints && 'border-red-500')} 
                   autoFocus
                 />
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="consequences" className="text-sm font-semibold">מה קורה אם הוא לא פותר את זה?</Label>
+                <Label htmlFor="consequences" className="text-xs font-semibold">מה קורה אם הוא לא פותר את זה?</Label>
                 <Textarea 
                   id="consequences" 
                   value={formData.consequences} 
                   onChange={(e) => handleInputChange('consequences', e.target.value)} 
                   placeholder="לדוגמה: מפסיד כסף, לחץ, מאבד לקוחות..." 
-                  className={cn("h-24 resize-none", errors.consequences && 'border-red-500')} 
+                  className={cn("h-20 resize-none text-xs", errors.consequences && 'border-red-500')} 
                 />
               </div>
             </div>
@@ -292,16 +297,15 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 3:
         return (
-          <div className="space-y-4">
-            <div className="text-center space-y-1 mb-4">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Zap className="w-5 h-5 text-green-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">הפתרון שלך</h3>
-              <p className="text-gray-500 text-xs">איך אתה עוזר לו?</p>
-            </div>
+          <div className="space-y-3">
+            <StepHeader 
+              icon={Zap} 
+              title="הפתרון שלך" 
+              description="איך אתה עוזר לו?"
+              colorClass="bg-green-100 text-green-600"
+            />
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="space-y-1">
                 <Label htmlFor="serviceOffered" className="text-xs font-semibold">מה השירות במשפט אחד?</Label>
                 <Input 
@@ -309,7 +313,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.serviceOffered} 
                   onChange={(e) => handleInputChange('serviceOffered', e.target.value)} 
                   placeholder="אני עוזר ל... לעשות... כדי ש..." 
-                  className={cn("h-10", errors.serviceOffered && 'border-red-500')} 
+                  className={cn("h-9 text-xs", errors.serviceOffered && 'border-red-500')} 
                 />
               </div>
 
@@ -335,7 +339,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   placeholder="סיבה אחרת..." 
                   value={formData.whyChooseYouOther} 
                   onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} 
-                  className="bg-gray-50 h-9 text-base md:text-sm"
+                  className="bg-gray-50 h-8 text-xs"
                 />
               </div>
 
@@ -346,7 +350,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.processSteps} 
                   onChange={(e) => handleInputChange('processSteps', e.target.value)} 
                   placeholder="שלב 1 -> שלב 2 -> שלב 3" 
-                  className={cn("h-10", errors.processSteps && 'border-red-500')} 
+                  className={cn("h-9 text-xs", errors.processSteps && 'border-red-500')} 
                 />
               </div>
             </div>
@@ -355,14 +359,13 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 4:
         return (
-          <div className="space-y-4">
-             <div className="text-center space-y-1 mb-4">
-              <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <ThumbsUp className="w-5 h-5 text-amber-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">הוכחות ואמון</h3>
-              <p className="text-gray-500 text-xs">למה שיסמכו עליך?</p>
-            </div>
+          <div className="space-y-3">
+            <StepHeader 
+              icon={ThumbsUp} 
+              title="הוכחות ואמון" 
+              description="למה שיסמכו עליך?"
+              colorClass="bg-amber-100 text-amber-600"
+            />
 
             <div className="grid grid-cols-1 gap-2">
               <SelectionCard
@@ -379,7 +382,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     placeholder="כמה שנות ניסיון?" 
                     value={formData.experienceYears} 
                     onChange={(e) => handleInputChange('experienceYears', e.target.value)} 
-                    className="mr-10 w-[calc(100%-2.5rem)] h-9 text-base md:text-sm"
+                    className="mr-8 w-[calc(100%-2rem)] h-8 text-xs"
                   />
                 </motion.div>
               )}
@@ -405,7 +408,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     placeholder="כתוב כאן את ההמלצה..." 
                     value={formData.testimonialText} 
                     onChange={(e) => handleInputChange('testimonialText', e.target.value)} 
-                    className="mr-10 w-[calc(100%-2.5rem)] min-h-[60px] text-base md:text-sm"
+                    className="mr-8 w-[calc(100%-2rem)] min-h-[50px] text-xs"
                   />
                 </motion.div>
               )}
@@ -415,18 +418,17 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 5:
         return (
-          <div className="space-y-4">
-            <div className="text-center space-y-1 mb-4">
-              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Send className="w-5 h-5 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">הנעה לפעולה</h3>
-              <p className="text-gray-500 text-xs">מה אנחנו רוצים שיקרה?</p>
-            </div>
+          <div className="space-y-3">
+            <StepHeader 
+              icon={Send} 
+              title="הנעה לפעולה" 
+              description="מה אנחנו רוצים שיקרה?"
+              colorClass="bg-purple-100 text-purple-600"
+            />
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="space-y-2">
-                <Label className="block font-bold text-xs">מה הפעולה הרצויה? (ניתן לבחור כמה)</Label>
+                <Label className="block font-bold text-xs">מה הפעולה הרצויה?</Label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { value: 'details', label: 'השארת פרטים', desc: 'טופס לידים', icon: FileText },
@@ -477,16 +479,15 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 6:
         return (
-          <div className="space-y-4">
-            <div className="text-center space-y-1 mb-4">
-              <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Paintbrush className="w-5 h-5 text-pink-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">עיצוב וסגנון</h3>
-              <p className="text-gray-500 text-xs">איך הדף יראה?</p>
-            </div>
+          <div className="space-y-3">
+            <StepHeader 
+              icon={Paintbrush} 
+              title="עיצוב וסגנון" 
+              description="איך הדף יראה?"
+              colorClass="bg-pink-100 text-pink-600"
+            />
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="space-y-2">
                 <Label className="block text-xs font-semibold">סגנון כללי</Label>
                 <div className="grid grid-cols-2 gap-2">
@@ -500,27 +501,26 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                       key={option.value}
                       onClick={() => handleInputChange('pageStyle', option.value)}
                       className={cn(
-                        "cursor-pointer p-3 rounded-xl border-2 text-center transition-all",
+                        "cursor-pointer p-2 rounded-xl border text-center transition-all",
                         formData.pageStyle === option.value 
                           ? "border-pink-500 ring-1 ring-pink-500/20" 
-                          : "border-gray-100 hover:border-pink-200"
+                          : "border-gray-200 hover:border-pink-200"
                       )}
                     >
-                      <div className={cn("w-full h-6 rounded-md mb-1.5 mx-auto", option.color)} />
+                      <div className={cn("w-full h-4 rounded-sm mb-1 mx-auto", option.color)} />
                       <span className="text-xs font-bold">{option.label}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <Label className="text-xs font-semibold">האם יש לך לוגו?</Label>
-                <div className="grid grid-cols-1 gap-3">
-                  {/* Option 1: Have Logo - Upload */}
+                <div className="grid grid-cols-1 gap-2">
                   <div 
                     className={cn(
-                      "border-2 border-dashed rounded-xl p-6 transition-all text-center cursor-pointer relative",
-                      formData.logoStatus === 'uploaded' ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-pink-400 hover:bg-pink-50"
+                      "border border-dashed rounded-xl p-4 transition-all text-center cursor-pointer relative",
+                      formData.logoStatus === 'uploaded' ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-pink-400 hover:bg-pink-50"
                     )}
                   >
                     <input 
@@ -529,48 +529,43 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                       onChange={handleLogoUpload}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
-                    <div className="flex flex-col items-center gap-2 pointer-events-none">
+                    <div className="flex flex-col items-center gap-1 pointer-events-none">
                       {formData.logoStatus === 'uploaded' ? (
                         <>
-                          <Check className="w-8 h-8 text-green-600" />
-                          <span className="text-sm font-bold text-green-700">הלוגו נשמר בהצלחה!</span>
-                          <span className="text-xs text-green-600">{formData.logoFile?.name}</span>
+                          <Check className="w-5 h-5 text-green-600" />
+                          <span className="text-xs font-bold text-green-700">הלוגו נשמר בהצלחה!</span>
+                          <span className="text-[10px] text-green-600">{formData.logoFile?.name}</span>
                         </>
                       ) : (
                         <>
-                          <Upload className="w-8 h-8 text-gray-400" />
-                          <span className="text-sm font-bold text-gray-700">יש לי לוגו - לחץ להעלאה</span>
-                          <span className="text-xs text-gray-500">או גרור את הקובץ לכאן</span>
+                          <Upload className="w-5 h-5 text-gray-400" />
+                          <span className="text-xs font-bold text-gray-700">יש לי לוגו - לחץ להעלאה</span>
                         </>
                       )}
                     </div>
                   </div>
 
-                  {/* Option 2: Need Design */}
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-gray-600">אין לך לוגו? בחר אפשרות:</p>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={onSwitchToLogo}
-                        className="flex-1 py-3 px-2 bg-pink-600 text-white rounded-xl text-xs font-bold hover:bg-pink-700 transition-colors flex items-center justify-center gap-2 shadow-sm"
-                      >
-                        <Paintbrush className="w-3.5 h-3.5" />
-                        עצב לוגו עכשיו
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleInputChange('logoStatus', 'later')}
-                        className={cn(
-                          "flex-1 py-3 px-2 border rounded-xl text-xs font-bold transition-colors",
-                          formData.logoStatus === 'later' 
-                            ? "border-pink-600 bg-pink-50 text-pink-700" 
-                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
-                        )}
-                      >
-                        אעצב בהמשך
-                      </button>
-                    </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={onSwitchToLogo}
+                      className="flex-1 py-2 px-2 bg-pink-600 text-white rounded-lg text-xs font-bold hover:bg-pink-700 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                    >
+                      <Paintbrush className="w-3 h-3" />
+                      עצב לוגו
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleInputChange('logoStatus', 'later')}
+                      className={cn(
+                        "flex-1 py-2 px-2 border rounded-lg text-xs font-bold transition-colors",
+                        formData.logoStatus === 'later' 
+                          ? "border-pink-600 bg-pink-50 text-pink-700" 
+                          : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                      )}
+                    >
+                      אעצב בהמשך
+                    </button>
                   </div>
                 </div>
               </div>
@@ -580,16 +575,15 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 7:
         return (
-          <div className="space-y-4">
-            <div className="text-center space-y-1 mb-4">
-              <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Sparkles className="w-5 h-5 text-teal-600" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900">טאצ'ים אחרונים</h3>
-              <p className="text-gray-500 text-xs">הגדרות טכניות</p>
-            </div>
+          <div className="space-y-3">
+            <StepHeader 
+              icon={Sparkles} 
+              title="טאצ'ים אחרונים" 
+              description="הגדרות טכניות"
+              colorClass="bg-teal-100 text-teal-600"
+            />
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="space-y-2">
                 <Label className="block font-bold text-xs">איזה שדות יהיו בטופס?</Label>
                 <div className="grid grid-cols-2 gap-2">
@@ -598,12 +592,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                       key={field} 
                       onClick={() => handleCheckboxChange('formFields', field, !formData.formFields.includes(field))}
                       className={cn(
-                        "cursor-pointer flex items-center gap-2 p-2.5 rounded-xl border transition-all",
+                        "cursor-pointer flex items-center gap-2 p-2 rounded-lg border transition-all",
                         formData.formFields.includes(field) ? "border-teal-500 bg-teal-50" : "border-gray-200"
                       )}
                     >
                       <div className={cn(
-                        "w-4 h-4 rounded border flex items-center justify-center bg-white",
+                        "w-3.5 h-3.5 rounded border flex items-center justify-center bg-white",
                         formData.formFields.includes(field) ? "border-teal-500" : "border-gray-300"
                       )}>
                         {formData.formFields.includes(field) && <Check className="w-2.5 h-2.5 text-teal-600" />}
@@ -644,12 +638,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                         >
                           <Label className="text-[10px] text-gray-500 mb-1 block">לאיזה מספר לשלוח את ההודעות?</Label>
                           <div className="relative">
-                            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <Input 
                               placeholder="050-0000000"
                               value={formData.destinationPhone}
                               onChange={(e) => handleInputChange('destinationPhone', e.target.value)}
-                              className="pr-9 h-10 bg-gray-50 border-teal-200 focus-visible:ring-teal-500"
+                              className="pr-8 h-9 text-xs bg-gray-50 border-teal-200 focus-visible:ring-teal-500"
                             />
                           </div>
                         </motion.div>
@@ -663,12 +657,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                         >
                            <Label className="text-[10px] text-gray-500 mb-1 block">לאיזה מייל לשלוח את הלידים?</Label>
                            <div className="relative">
-                            <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                             <Input 
                               placeholder="your@email.com"
                               value={formData.destinationEmail}
                               onChange={(e) => handleInputChange('destinationEmail', e.target.value)}
-                              className="pr-9 h-10 bg-gray-50 border-teal-200 focus-visible:ring-teal-500"
+                              className="pr-8 h-9 text-xs bg-gray-50 border-teal-200 focus-visible:ring-teal-500"
                             />
                           </div>
                         </motion.div>
@@ -721,12 +715,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       {/* Main Content - Compact & Centered */}
       <div 
         id="questionnaire-scroll-area"
-        className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8"
+        className="flex-1 overflow-y-auto overflow-x-hidden p-4"
       >
-        <div className="max-w-xl mx-auto min-h-full flex flex-col justify-center py-4">
+        <div className="max-w-xl mx-auto min-h-full flex flex-col justify-start pt-2">
           
           {isBuilding ? (
-            <div className="flex flex-col items-center justify-center text-center space-y-6">
+            <div className="flex flex-col items-center justify-center text-center space-y-6 mt-10">
               <div className="relative w-20 h-20">
                 <div className="absolute inset-0 border-4 border-gray-100 rounded-full"></div>
                 <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
@@ -738,7 +732,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
             </div>
           ) : showSuccess ? (
-             <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500">
+             <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-4">
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2 shadow-lg shadow-green-200">
                 <Check className="w-10 h-10 text-green-600" />
               </div>
@@ -817,7 +811,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               onClick={handlePrev}
               variant="ghost"
               disabled={currentStep === 1}
-              className={cn("transition-opacity", currentStep === 1 ? "opacity-0 pointer-events-none" : "opacity-100")}
+              className={cn("transition-opacity text-xs h-9", currentStep === 1 ? "opacity-0 pointer-events-none" : "opacity-100")}
             >
               <ChevronRight className="w-4 h-4 ml-2" />
               הקודם
@@ -827,7 +821,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               <Button 
                 type="button" 
                 onClick={handleNext}
-                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[120px] shadow-lg shadow-blue-100"
+                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[100px] shadow-lg shadow-blue-100 h-9 text-xs"
               >
                 הבא
                 <ChevronLeft className="w-4 h-4 mr-2" />
@@ -835,7 +829,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
             ) : (
               <Button 
                 onClick={handleSubmit}
-                className="bg-green-600 hover:bg-green-700 text-white min-w-[120px] shadow-lg shadow-green-100"
+                className="bg-green-600 hover:bg-green-700 text-white min-w-[100px] shadow-lg shadow-green-100 h-9 text-xs"
               >
                 סיים ובנה
                 <Sparkles className="w-4 h-4 mr-2" />
