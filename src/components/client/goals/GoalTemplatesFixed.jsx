@@ -293,7 +293,12 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     if (!phoneNumber || phoneNumber.length < 9) return;
     setIsSubmittingPhone(true);
     try {
+      // Use backend function to ensure persistence
+      await base44.functions.invoke('updateUserPhone', { phone: phoneNumber });
+      
+      // Also update locally for optimistic UI if needed
       await base44.auth.updateMe({ phone: phoneNumber });
+
       // Proceed to create goal
       const goalData = {
         category: selectedTemplate.id,
