@@ -95,6 +95,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const isJourneyCompleted = data?.business_journey_completed;
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const [isGoalsExpanded, setIsGoalsExpanded] = useState(false);
 
   const scrollToWhyMatters = () => {
     setWhyExpanded(true);
