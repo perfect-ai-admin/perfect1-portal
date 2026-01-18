@@ -7,6 +7,7 @@ const gtmScriptId = 'gtm-script';
 const noscriptId = 'gtm-noscript';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import ClientFooter from './components/client/ClientFooter';
 
 
 import CriticalCSS from './components/performance/CriticalCSS';
@@ -49,7 +50,7 @@ export default function Layout({ children, currentPageName }) {
               {children}
             </main>
             <div className="hidden md:block">
-              <Footer />
+              <ClientFooter />
             </div>
           </div>
           <Toaster />
