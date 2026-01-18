@@ -13,17 +13,17 @@ Deno.serve(async (req) => {
             base44 = createClientFromRequest(req);
             body = await req.json();
         } catch (parseErr) {
-            console.error('Request parse error:', parseErr);
-            return Response.json({ error: 'Invalid request' }, { status: 400 });
+            console.error('[STEP: request_parse] Error:', parseErr);
+            return Response.json({ error: 'Invalid request', step: 'request_parse' }, { status: 400 });
         }
         const code = body.code;
         
         if (!code) {
-            console.error('Missing code');
-            return Response.json({ error: 'Missing authorization code' }, { status: 400 });
+            console.error('[STEP: code_validation] Missing code');
+            return Response.json({ error: 'Missing authorization code', step: 'code_validation' }, { status: 400 });
         }
         
-        console.log('Exchanging Google code for tokens...');
+        console.log('[STEP: token_exchange] Starting...');
         
         // Exchange code for tokens
         const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
@@ -40,30 +40,31 @@ Deno.serve(async (req) => {
         
         if (!tokenResponse.ok) {
             const errorData = await tokenResponse.text();
-            console.error('Token exchange failed:', tokenResponse.status, errorData);
-            return Response.json({ error: 'Token exchange failed', details: errorData }, { status: 400 });
+            console.error('[STEP: token_exchange] Failed:', tokenResponse.status, errorData);
+            return Response.json({ error: 'Token exchange failed', step: 'token_exchange', details: errorData }, { status: 400 });
         }
         
         const tokens = await tokenResponse.json();
-        console.log('Tokens received successfully');
+        console.log('[STEP: token_exchange] Success - tokens received');
         
         if (!tokens.id_token) {
-            console.error('No id_token in response');
-            return Response.json({ error: 'No id_token in response' }, { status: 400 });
+            console.error('[STEP: token_validation] No id_token in response');
+            return Response.json({ error: 'No id_token in response', step: 'token_validation' }, { status: 400 });
         }
         
         // Decode id_token
         const idTokenParts = tokens.id_token.split('.');
         const payload = JSON.parse(atob(idTokenParts[1]));
         
-        const { email, name } = payload;
+        const { email, name, sub } = payload;
         
         if (!email) {
-            console.error('No email in token');
-            return Response.json({ error: 'No email in token' }, { status: 400 });
+            console.error('[STEP: token_parse] No email in token');
+            return Response.json({ error: 'No email in token', step: 'token_parse' }, { status: 400 });
         }
         
-        console.log('Email from Google:', email);
+        const normalizedEmail = email.trim().toLowerCase();
+        console.log('[STEP: token_parse] Email:', normalizedEmail, 'GoogleSub:', sub);
         
         // Create user object
         const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
