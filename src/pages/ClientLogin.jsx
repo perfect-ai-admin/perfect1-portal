@@ -56,71 +56,33 @@ function ClientLogin() {
         return;
       }
 
-      // Search for Lead by phone
-      const leads = await base44.entities.Lead.filter({ phone: cleanPhone });
+      // Call backend function to handle login
+      const response = await base44.functions.invoke('clientLogin', { 
+        phone: cleanPhone, 
+        password 
+      });
 
-      if (leads.length === 0) {
-        setError('מספר טלפון לא נמצא במערכת');
-        setIsLoading(false);
-        return;
-      }
-
-      const lead = leads[0];
-
-      // Verify password (all clients use 123456)
-      if (password !== '123456') {
-        setError('סיסמה שגויה');
-        setIsLoading(false);
-        return;
-      }
-
-      // Find or create User for this Lead
-      let user;
-      const usersByEmail = await base44.entities.User.filter({ email: lead.email });
-
-      if (usersByEmail.length > 0) {
-        // User exists
-        user = usersByEmail[0];
-        await base44.entities.User.update(user.id, {
-          last_login_at: new Date().toISOString()
-        });
+      if (response.data && response.data.user) {
+        const userToStore = {
+          id: response.data.user.id,
+          full_name: response.data.user.full_name,
+          email: response.data.user.email,
+          phone: response.data.user.phone,
+          status: response.data.user.status
+        };
+        localStorage.setItem('user', JSON.stringify(userToStore));
+        window.location.href = '/ClientDashboard';
       } else {
-        // Create new User from Lead
-        const freePlans = await base44.entities.Plan.filter({ name: 'חינמי' });
-        const freePlan = freePlans.length > 0 ? freePlans[0] : null;
-
-        user = await base44.entities.User.create({
-          full_name: lead.name || 'משתמש חדש',
-          email: lead.email || `lead_${lead.phone}@bizpilot.local`,
-          phone: cleanPhone,
-          status: 'active',
-          last_login_at: new Date().toISOString(),
-          current_plan_id: freePlan?.id || null,
-          plan_start_date: new Date().toISOString(),
-          marketing_enabled: freePlan?.marketing_enabled || false,
-          mentor_enabled: freePlan?.mentor_enabled || true,
-          finance_enabled: freePlan?.finance_enabled || false,
-          goals_limit: freePlan?.goals_limit || 1,
-          max_active_goals: freePlan?.max_active_goals || 1
-        });
+        setError(response.data?.error || 'שגיאה בתהליך הכניסה');
+        setIsLoading(false);
       }
-
-      // Store user data in localStorage with id ensured
-      const userToStore = {
-        id: user.id || user.created_by,
-        full_name: user.full_name,
-        email: user.email,
-        phone: user.phone,
-        status: user.status
-      };
-      localStorage.setItem('user', JSON.stringify(userToStore));
-      window.location.href = '/ClientDashboard';
     } catch (err) {
-    console.error('Login error:', err);
-    setError('שגיאה בתהליך הכניסה. אנא נסה שוב.');
-    setIsLoading(false);
+      console.error('Login error:', err);
+      const errorMsg = err.response?.data?.error || err.message || 'שגיאה בתהליך הכניסה';
+      setError(errorMsg);
+      setIsLoading(false);
     }
-    }
+  }
 
     const BrandingSide = memo(() => (
     <div className="hidden lg:flex w-1/2 bg-[#F8F9FA] relative items-center justify-center p-20 overflow-hidden">
