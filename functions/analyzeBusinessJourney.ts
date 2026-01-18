@@ -138,6 +138,7 @@ Deno.serve(async (req) => {
         await base44.auth.updateMe({
             business_journey_completed: true,
             business_journey_answers: answers,
+            business_journey_completed_date: new Date().toISOString(),
             business_state: {
                 id: analysis.state_id,
                 name: analysis.state_name,
