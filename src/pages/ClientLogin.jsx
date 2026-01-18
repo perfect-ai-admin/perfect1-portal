@@ -1,13 +1,11 @@
 import React, { useState, memo } from 'react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Lock, Mail, ArrowRight, Sparkles, Zap, Home } from 'lucide-react';
-import Header from '@/components/layout/Header';
+import { Loader2, Lock, Phone, ArrowRight, Sparkles, Zap } from 'lucide-react';
+import { BUILD_VERSION } from '@/components/BuildVersion';
 
 function ClientLogin() {
   const [phone, setPhone] = useState('');
@@ -164,19 +162,22 @@ function ClientLogin() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <Header />
-      
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex flex-col" dir="rtl">
-         {/* Main Content - with top margin for header */}
-         <div className="flex-1 w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10 mt-20 lg:mt-0">
-           <div className="w-full max-w-[420px] space-y-6">
-             <div className="text-center mb-8">
-               <Link to={createPageUrl('Home')} className="inline-flex items-center gap-3 hover:opacity-80 transition-all mb-6">
-                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#27AE60] flex items-center justify-center shadow-md">
-                   <span className="text-white font-black text-lg">P1</span>
+      <div className="min-h-screen bg-white flex flex-col" dir="rtl">
+         {/* Build Version Badge */}
+         <div className="text-xs text-gray-400 text-center py-1 border-b border-gray-100">
+           {BUILD_VERSION}
+         </div>
+
+         {/* Left Side - Login Form */}
+         <div className="flex-1 w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
+           <div className="w-full max-w-[380px] space-y-6">
+             <div className="text-center">
+               <div className="inline-flex items-center gap-2 mb-4 justify-center">
+                 <div className="w-8 h-8 bg-[#1E3A5F] rounded-lg flex items-center justify-center">
+                   <Sparkles className="w-4 h-4 text-white" />
                  </div>
-                 <h2 className="text-2xl font-bold text-[#1E3A5F]">פרפקט וואן</h2>
-               </Link>
+                 <h2 className="text-xl font-bold text-[#1E3A5F]">Perfect Biz AI</h2>
+               </div>
                {existingUser ? (
                  <div className="space-y-2">
                    <h1 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -222,7 +223,7 @@ function ClientLogin() {
                          מייל או מספר טלפון
                        </label>
                        <div className="relative">
-                         <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                         <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                          <Input
                            type="text"
                            placeholder="example@email.com או 05X-XXXXXXX"
@@ -323,9 +324,9 @@ function ClientLogin() {
               </div>
 
         <BrandingSide />
-        </div>
-        </>
-        );
-        }
+      </div>
+    </>
+  );
+}
 
 export default memo(ClientLogin);
