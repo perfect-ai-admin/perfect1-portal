@@ -33,6 +33,18 @@ export default function DailyFocusScreen({ focus, onSave }) {
         setEstimatedTime(focus.estimated_time || 60);
         setStatus(focus.status || 'pending');
     }
+
+    const loadPrimaryGoal = async () => {
+        try {
+            const goals = await base44.entities.UserGoal.filter({ isPrimary: true, status: 'active' }, '-created_date', 1);
+            if (goals && goals.length > 0) {
+                setPrimaryGoal(goals[0]);
+            }
+        } catch (error) {
+            console.error('Failed to load primary goal:', error);
+        }
+    };
+    loadPrimaryGoal();
   }, [focus]);
 
   const handleComplete = () => {
