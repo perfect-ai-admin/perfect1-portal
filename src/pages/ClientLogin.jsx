@@ -16,11 +16,12 @@ function ClientLogin() {
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const authData = params.get('authData');
-    
+
     if (authData) {
       try {
         const userData = JSON.parse(atob(authData));
         localStorage.setItem('user', JSON.stringify(userData));
+        // Remove authData from URL for security
         window.location.href = '/ClientDashboard';
       } catch (err) {
         console.error('Auth data decode error:', err);
@@ -28,7 +29,7 @@ function ClientLogin() {
       }
       return;
     }
-    
+
     const user = localStorage.getItem('user');
     if (user) {
       window.location.href = '/ClientDashboard';
