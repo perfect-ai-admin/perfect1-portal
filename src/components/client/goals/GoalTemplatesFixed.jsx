@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap } from 'lucide-react';
+import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -481,22 +481,42 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0" ref={drawerRef}>
           {/* Header */}
-          <div className="flex-shrink-0 px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50">
+          <div className="flex-shrink-0 px-5 py-3 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50">
             <div className="flex items-center justify-between">
-              <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg">
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg">
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+              
               <h2 ref={initialFocusRef} tabIndex="-1" className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <Target className="w-5 h-5 text-purple-600" />
-                {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
+                {selectedTemplate ? selectedTemplate.name : (editingGoal ? 'עריכת מטרה' : 'מטרה חדשה')}
               </h2>
-              <div className="w-5" />
+
+              <div className="flex items-center gap-2">
+                {selectedTemplate && (
+                  <button 
+                    onClick={() => {
+                      setSelectedTemplate(null);
+                      setGoalTitle('');
+                      setTargetValue('');
+                      setCustomAnswers({ q1: '', q2: '' });
+                    }}
+                    className="text-sm font-medium text-purple-700 hover:text-purple-900 flex items-center gap-1"
+                  >
+                    חזור לבחירה
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                )}
+                {!selectedTemplate && <div className="w-5" />}
+              </div>
             </div>
-            {!selectedTemplate && <p className="text-center text-sm text-gray-600 font-medium mt-2">בחר מטרה שמשפיעה על העסק</p>}
+            {!selectedTemplate && <p className="text-center text-sm text-gray-600 font-medium mt-1">בחר מטרה שמשפיעה על העסק</p>}
           </div>
 
           {/* Body */}
-          <div className="flex-1 overflow-y-auto px-6 py-4">
+          <div className="flex-1 overflow-y-auto px-5 py-3">
             {!selectedTemplate ? (
               <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <div className="grid grid-cols-2 gap-2">
@@ -520,29 +540,19 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                 </div>
               </motion.div>
             ) : (
-              <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedTemplate(null);
-                    setGoalTitle('');
-                    setTargetValue('');
-                  }}
-                  className="text-gray-600 h-8 text-sm"
-                >
-                  ← חזור
-                </Button>
-
+              <motion.div className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                
+                {/* Compact Examples */}
                 {selectedTemplate.examples && (
-                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-3 border border-purple-100">
-                    <p className="text-sm font-bold text-gray-700 mb-2">דוגמאות</p>
-                    <div className="space-y-2">
+                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-2.5 border border-purple-100">
+                    <p className="text-xs font-bold text-gray-700 mb-1.5 opacity-80">דוגמאות מהירות (לחץ לבחירה)</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {selectedTemplate.examples.map((example, i) => (
                         <button
                           key={i}
                           onClick={() => handleExampleSelect(example)}
-                          className="w-full text-right px-3 py-2 bg-white hover:bg-blue-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-900"
+                          className="w-full text-center px-2 py-1.5 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg text-xs font-medium text-gray-900 transition-colors truncate"
+                          title={example.title}
                         >
                           {example.title}
                         </button>
@@ -552,50 +562,58 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                 )}
 
                 <div className="space-y-3">
+                  {/* Goal Title */}
                   <div>
-                    <Label htmlFor="goalTitle" className="text-sm font-bold block mb-1">מה המטרה?</Label>
+                    <Label htmlFor="goalTitle" className="text-sm font-bold block mb-1 text-gray-800">מה המטרה שלך?</Label>
                     <Input
                       id="goalTitle"
                       value={goalTitle}
                       onChange={(e) => setGoalTitle(e.target.value)}
-                      placeholder="למשל: 10 לקוחות חדשים"
-                      className="text-sm"
+                      placeholder="הקלד כאן את המטרה..."
+                      className="text-sm h-9 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                      autoFocus
                     />
                   </div>
 
-                  {selectedTemplate.questions?.map((q) => (
-                    <div key={q.id}>
-                      <Label htmlFor={q.id} className="text-sm font-bold block mb-1">{q.label}</Label>
-                      <Input
-                        id={q.id}
-                        value={customAnswers[q.id] || ''}
-                        onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                        placeholder={q.placeholder}
-                        className="text-sm"
-                      />
+                  {/* Two Custom Questions Side-by-Side */}
+                  {selectedTemplate.questions && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {selectedTemplate.questions.map((q) => (
+                        <div key={q.id} className="space-y-1">
+                          <Label htmlFor={q.id} className="text-xs font-semibold block text-gray-700">{q.label}</Label>
+                          <Input
+                            id={q.id}
+                            value={customAnswers[q.id] || ''}
+                            onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                            placeholder={q.placeholder}
+                            className="text-xs h-8 bg-gray-50 border-gray-200 focus:bg-white"
+                          />
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
 
+                  {/* Urgency - Compact */}
                   <div>
-                    <Label className="text-sm font-bold text-gray-700 block mb-2">דחיפות המשימה</Label>
-                    <div className="grid grid-cols-3 gap-3">
+                    <Label className="text-xs font-bold text-gray-700 block mb-1.5">דחיפות המשימה</Label>
+                    <div className="grid grid-cols-3 gap-2">
                       {[
-                        { value: 'low', label: 'נמוכה', desc: 'לא דחוף, בזמן שלי' },
-                        { value: 'medium', label: 'בינונית', desc: 'חשוב, אבל בלי לחץ' },
-                        { value: 'high', label: 'גבוהה', desc: 'דחוף מאוד, מעכשיו' }
+                        { value: 'low', label: 'נמוכה', desc: 'בזמן שלי' },
+                        { value: 'medium', label: 'בינונית', desc: 'חשוב' },
+                        { value: 'high', label: 'גבוהה', desc: 'דחוף!' }
                       ].map((level) => (
                         <button
                           key={level.value}
                           onClick={() => setUrgency(level.value)}
                           className={cn(
-                            "flex flex-col items-center justify-center p-3 rounded-xl border transition-all text-center h-full",
+                            "flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all text-center",
                             urgency === level.value
                               ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm ring-1 ring-purple-200"
                               : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
                           )}
                         >
-                          <span className="text-sm font-bold mb-1">{level.label}</span>
-                          <span className="text-xs opacity-80">{level.desc}</span>
+                          <span className="text-xs font-bold">{level.label}</span>
+                          <span className="text-[10px] opacity-70">{level.desc}</span>
                         </button>
                       ))}
                     </div>
