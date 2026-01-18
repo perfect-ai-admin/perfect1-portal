@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete }) {
+export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete, showHeader = true }) {
   if (!goals || goals.length === 0) return null;
 
   const statusIcons = {
@@ -27,10 +27,12 @@ export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete
       transition={{ delay: 0.1 }}
       className="space-y-3 pt-2"
     >
-      <div className="flex items-center justify-between px-1">
-        <p className="text-sm font-bold text-gray-900">מטרות נוספות</p>
-        <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{goals.length}</span>
-      </div>
+      {showHeader && (
+        <div className="flex items-center justify-between px-1">
+          <p className="text-sm font-bold text-gray-900">מטרות נוספות</p>
+          <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{goals.length}</span>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {goals.map(goal => (
