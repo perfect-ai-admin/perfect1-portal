@@ -231,7 +231,7 @@ export default function OsekPaturLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                   תהליך ברור, פשוט ומלווה – מרגע ההחלטה ועד הפתיחה.<br className="hidden md:block" />
+                   תהליך ברור ופשוט<br className="hidden md:block" />
                    שירות מקצועי לפתיחת עוסק פטור בישראל.
                 </p>
 
