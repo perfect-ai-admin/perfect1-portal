@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Edit, UserCog, Loader2 } from 'lucide-react';
 import UserProfileModal from './UserProfileModal';
 
-export default function UsersTable() {
+export default function UsersTable(props) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -19,10 +19,28 @@ export default function UsersTable() {
     const loadUsers = async () => {
         setLoading(true);
         try {
-            const allUsers = await base44.entities.User.list();
-            setUsers(allUsers);
+            // Use backend function to list users (supports bypass and admin check)
+            const response = await base44.functions.invoke('adminListUsers', {
+                bypassCode: props.loginData?.code,
+                phone: props.loginData?.phone
+            });
+            
+            if (response.data && response.data.users) {
+                setUsers(response.data.users);
+            } else {
+                // Fallback for direct entity access if function fails or returns weird format
+                const allUsers = await base44.entities.User.list();
+                setUsers(allUsers);
+            }
         } catch (error) {
             console.error('Error loading users:', error);
+            try {
+                // Fallback try direct access
+                const allUsers = await base44.entities.User.list();
+                setUsers(allUsers);
+            } catch (e) {
+                console.error('Fallback failed:', e);
+            }
         } finally {
             setLoading(false);
         }
