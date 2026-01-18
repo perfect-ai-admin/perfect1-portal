@@ -12,6 +12,14 @@ function ClientLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Check if user is already logged in
+  React.useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      window.location.href = '/ClientDashboard';
+    }
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
