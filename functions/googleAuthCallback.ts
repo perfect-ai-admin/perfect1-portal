@@ -6,6 +6,7 @@ const BASE_URL = Deno.env.get('BASE_URL');
 
 Deno.serve(async (req) => {
     try {
+        const base44 = createClientFromRequest(req);
         const body = await req.json();
         const code = body.code;
         
@@ -58,19 +59,35 @@ Deno.serve(async (req) => {
         
         // Create user object
         const fullName = name && name.trim() ? name : email.split('@')[0] || 'משתמש חדש';
-        const user = {
-            email,
-            full_name: fullName,
-            login_provider: 'google',
-            status: 'active',
-            last_login_at: new Date().toISOString(),
-            phone: '',
-            business_journey_completed: false
+        
+        // Find or create user in database
+        let user;
+        const existingUsers = await base44.asServiceRole.entities.User.filter({ email });
+        
+        if (existingUsers.length > 0) {
+            user = existingUsers[0];
+            await base44.asServiceRole.entities.User.update(user.id, {
+                last_login_at: new Date().toISOString()
+            });
+        } else {
+            user = await base44.asServiceRole.entities.User.create({
+                email,
+                full_name: fullName,
+                status: 'active',
+                last_login_at: new Date().toISOString()
+            });
+        }
+        
+        const userToReturn = {
+            id: user.id,
+            email: user.email,
+            full_name: user.full_name,
+            status: user.status
         };
         
         console.log('User prepared successfully');
         
-        return Response.json({ user });
+        return Response.json({ user: userToReturn });
         
     } catch (error) {
         console.error('Google auth callback error:', error.message, error.stack);
