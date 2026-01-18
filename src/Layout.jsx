@@ -13,7 +13,7 @@ import ClientFooter from './components/client/ClientFooter';
 import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
 import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
-import QAChecker from './components/QAChecker';
+
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children, currentPageName }) {
@@ -44,7 +44,7 @@ export default function Layout({ children, currentPageName }) {
             prefetchPages={['/Services', '/Pricing', '/Contact']}
           />
           <WebVitalsMonitor />
-          <QAChecker />
+
           <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
             <main>
               {children}
