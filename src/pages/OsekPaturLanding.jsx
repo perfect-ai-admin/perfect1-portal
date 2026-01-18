@@ -48,9 +48,7 @@ function FAQItem({ question, answer }) {
 export default function OsekPaturLanding() {
   const [formData, setFormData] = useState({
     name: '',
-    phone: '',
-    email: '',
-    profession: ''
+    phone: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
