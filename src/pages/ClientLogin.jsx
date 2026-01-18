@@ -22,20 +22,30 @@ export default function ClientLogin() {
 
     try {
       const cleanPhone = phone.replace(/[^0-9]/g, '');
-      if (cleanPhone.length < 9) {
-        setError('מספר טלפון לא תקין');
-        setIsLoading(false);
-        return;
-      }
+          if (cleanPhone.length < 9) {
+            setError('מספר טלפון לא תקין');
+            setIsLoading(false);
+            return;
+          }
 
-      // Search for Lead by phone
-      const leads = await base44.entities.Lead.filter({ phone: cleanPhone });
+          // Search for Lead by phone - try multiple formats
+          let leads = await base44.entities.Lead.filter({ phone: cleanPhone });
 
-      if (leads.length === 0) {
-        setError('מספר טלפון לא נמצא במערכת');
-        setIsLoading(false);
-        return;
-      }
+          // If not found, try with leading 0
+          if (leads.length === 0 && !cleanPhone.startsWith('0')) {
+            leads = await base44.entities.Lead.filter({ phone: '0' + cleanPhone });
+          }
+
+          // If not found, try without leading 0
+          if (leads.length === 0 && cleanPhone.startsWith('0')) {
+            leads = await base44.entities.Lead.filter({ phone: cleanPhone.substring(1) });
+          }
+
+          if (leads.length === 0) {
+            setError('מספר טלפון לא נמצא במערכת');
+            setIsLoading(false);
+            return;
+          }
 
       const lead = leads[0];
 
