@@ -565,7 +565,7 @@ export default function OsekPaturLanding() {
                  🎯 מה שונה בנו
                </div>
                <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                 הסיבה בחרו בנו על כל השאר
+                 ליווי בפתיחת עוסק פטור - מקצועיות וניסיון שעובד
                </h2>
              </motion.div>
 
