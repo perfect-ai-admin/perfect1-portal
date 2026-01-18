@@ -9,14 +9,14 @@ Deno.serve(async (req) => {
       base44 = createClientFromRequest(req);
       body = await req.json();
     } catch (parseErr) {
-      console.error('Request parse error:', parseErr);
-      return Response.json({ error: 'Invalid request' }, { status: 400 });
+      console.error('[STEP: request_parse] Error:', parseErr);
+      return Response.json({ error: 'Invalid request', step: 'request_parse' }, { status: 400 });
     }
     
     const { credential, password } = body;
 
     if (!credential || !password) {
-      return Response.json({ error: 'Missing credential or password' }, { status: 400 });
+      return Response.json({ error: 'Missing credential or password', step: 'validation' }, { status: 400 });
     }
 
     // Verify password first
