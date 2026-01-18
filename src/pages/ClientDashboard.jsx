@@ -326,7 +326,7 @@ export default function ClientDashboard() {
                  </div>
 
                  {/* Tabs - Dynamic based on permissions */}
-                 {activeTab === 'progress' && <ProgressTab data={enrichedData} onNavigate={(tab, config) => {
+                 {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
                    setActiveTab(tab);
                    if (tab === 'goals' && config) {
                      setGoalsTabConfig(config);
