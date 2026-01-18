@@ -63,7 +63,8 @@ export default function OsekPaturLanding() {
     setIsSubmitting(true);
     try {
       await base44.entities.Lead.create({
-        ...formData,
+        name: formData.name,
+        phone: formData.phone,
         source_page: 'דף נחיתה - פתיחת עוסק פטור',
         status: 'new'
       });
