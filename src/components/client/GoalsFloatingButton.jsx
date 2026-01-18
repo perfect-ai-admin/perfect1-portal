@@ -59,7 +59,7 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
               transition={{ duration: 0.2, ease: 'easeOut' }}
               className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-purple-100 overflow-hidden z-10"
             >
-              {activeGoals.length > 0 && (
+              {activeGoals.length > 0 ? (
                 <div className="p-4 space-y-2.5 max-h-64 overflow-y-auto">
                   {activeGoals.map((goal, index) => (
                     <motion.div
@@ -89,6 +89,10 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
                       )}
                     </motion.div>
                   ))}
+                </div>
+              ) : (
+                <div className="p-6 text-center text-gray-500 text-sm">
+                  אין מטרות פעילות כרגע
                 </div>
               )}
               <button

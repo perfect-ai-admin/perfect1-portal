@@ -20,12 +20,14 @@ import { base44 } from '@/api/base44Client';
 export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
   
-  // Fetch active goals for the floating button
+  // Fetch active goals for the floating button and desktop view
   const { data: activeGoals, refetch: refetchGoals } = useQuery({
     queryKey: ['activeGoals', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
+      // Fetch all goals to filter client-side or use a more specific filter if possible
       const goals = await base44.entities.UserGoal.filter({ user_id: user.id });
+      // Ensure we get both 'active' and 'selected' goals
       return goals.filter(g => ['active', 'selected'].includes(g.status));
     },
     enabled: !!user?.id,
