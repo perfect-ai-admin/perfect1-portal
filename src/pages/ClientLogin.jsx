@@ -71,7 +71,8 @@ function ClientLogin() {
           status: response.data.user.status
         };
         localStorage.setItem('user', JSON.stringify(userToStore));
-        window.location.href = '/ClientDashboard';
+        // Use replace to avoid back button issues
+        window.location.replace('/ClientDashboard');
       } else {
         setError(response.data?.error || 'שגיאה בתהליך הכניסה');
         setIsLoading(false);
