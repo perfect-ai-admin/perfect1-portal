@@ -4,14 +4,9 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Handle CORS preflight if needed, though SDK handles it usually.
         // Get payload
         const payload = await req.json().catch(() => ({}));
         const { bypassCode, phone } = payload;
-        
-        // Check bypass first (for admin dashboard login)
-        const phone = body?.phone;
-        const bypassCode = body?.bypassCode;
         
         let isAuthorized = false;
         
