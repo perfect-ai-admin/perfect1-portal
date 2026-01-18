@@ -49,16 +49,16 @@ function ClientLogin() {
     setIsLoading(true);
 
     try {
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
-      if (cleanPhone.length < 9) {
-        setError('מספר טלפון לא תקין');
+      // Validate credential (email or phone)
+      if (!phone.trim()) {
+        setError('הזן מייל או מספר טלפון');
         setIsLoading(false);
         return;
       }
 
       // Call backend function to handle login
       const response = await base44.functions.invoke('clientLogin', { 
-        phone: cleanPhone, 
+        credential: phone.trim(), 
         password 
       });
 
