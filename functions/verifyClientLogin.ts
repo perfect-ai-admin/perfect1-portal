@@ -12,33 +12,44 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'מספר טלפון לא תקין' }, { status: 400 });
     }
 
-    // Try multiple phone formats
+    // Try multiple phone formats - search across all statuses
     let lead = null;
     
+    // Get all leads with this phone (any status)
+    let allLeads = [];
+    
     // Try exact match
-    let leads = await base44.asServiceRole.entities.Lead.filter({ phone: cleanPhone });
-    console.log(`Search 1 - cleanPhone: ${cleanPhone}, found: ${leads.length}`);
-    if (leads.length > 0) {
-      lead = leads[0];
+    try {
+      allLeads = await base44.asServiceRole.entities.Lead.list(undefined, 1000);
+      allLeads = allLeads.filter(l => l.phone && l.phone.replace(/[^0-9]/g, '') === cleanPhone);
+      console.log(`Search 1 - cleanPhone: ${cleanPhone}, found: ${allLeads.length}`);
+    } catch (e) {
+      console.log('Error in list:', e.message);
+    }
+    
+    if (allLeads.length > 0) {
+      lead = allLeads[0];
     }
     
     // Try with leading 0
     if (!lead && !cleanPhone.startsWith('0')) {
       const withZero = '0' + cleanPhone;
-      leads = await base44.asServiceRole.entities.Lead.filter({ phone: withZero });
-      console.log(`Search 2 - withZero: ${withZero}, found: ${leads.length}`);
-      if (leads.length > 0) {
-        lead = leads[0];
+      allLeads = await base44.asServiceRole.entities.Lead.list(undefined, 1000);
+      allLeads = allLeads.filter(l => l.phone === withZero);
+      console.log(`Search 2 - withZero: ${withZero}, found: ${allLeads.length}`);
+      if (allLeads.length > 0) {
+        lead = allLeads[0];
       }
     }
     
     // Try without leading 0
     if (!lead && cleanPhone.startsWith('0')) {
       const withoutZero = cleanPhone.substring(1);
-      leads = await base44.asServiceRole.entities.Lead.filter({ phone: withoutZero });
-      console.log(`Search 3 - withoutZero: ${withoutZero}, found: ${leads.length}`);
-      if (leads.length > 0) {
-        lead = leads[0];
+      allLeads = await base44.asServiceRole.entities.Lead.list(undefined, 1000);
+      allLeads = allLeads.filter(l => l.phone === withoutZero);
+      console.log(`Search 3 - withoutZero: ${withoutZero}, found: ${allLeads.length}`);
+      if (allLeads.length > 0) {
+        lead = allLeads[0];
       }
     }
 
