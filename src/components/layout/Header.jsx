@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import {
 import { Menu, Phone, MessageCircle, ChevronDown } from 'lucide-react';
 import { trackPhoneClick, trackWhatsAppClick } from '../tracking/EventTracker';
 
-export default function Header() {
+function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOsekPaturOpen, setIsOsekPaturOpen] = useState(false);
@@ -616,3 +616,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default memo(Header);
