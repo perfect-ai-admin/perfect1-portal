@@ -409,10 +409,10 @@ export default function OsekPaturLanding() {
                  📊 הוכחה שזה עובד
                </div>
                <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-                 2,000+ עצמאים בחרו בנו להיות הביטחון שלהם
+                 2,000+ עצמאים כבר התחילו
                </h2>
                <p className="text-xl text-white/90 mb-8">
-                 בכל חודש משלוש עצמאיים חדשים בוחרים בנו להיות החברה שלהם בדרך
+                 פתיחת עוסק פטור אונליין עם ליווי אנושי ומענה לשאלות.
                </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                <Button onClick={scrollToForm} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
