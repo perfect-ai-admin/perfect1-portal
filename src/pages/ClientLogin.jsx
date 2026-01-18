@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Lock, Phone, ArrowRight, Sparkles, Zap } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 
-export default function ClientLogin() {
+function ClientLogin() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -81,11 +78,27 @@ export default function ClientLogin() {
       localStorage.setItem('user', JSON.stringify(user));
       window.location.href = '/ClientDashboard';
     } catch (err) {
-      console.error('Login error:', err);
-      setError('שגיאה בתהליך הכניסה. אנא נסה שוב.');
-      setIsLoading(false);
+    console.error('Login error:', err);
+    setError('שגיאה בתהליך הכניסה. אנא נסה שוב.');
+    setIsLoading(false);
     }
-  };
+    }
+
+    const BrandingSide = memo(() => (
+    <div className="hidden lg:flex w-1/2 bg-[#F8F9FA] relative items-center justify-center p-20 overflow-hidden">
+    <div className="absolute inset-0 opacity-40">
+     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+     <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-green-50 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+    </div>
+    <div className="relative z-10 text-center max-w-lg">
+     <div className="w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-8 transform -rotate-6 transition-transform hover:rotate-0 duration-500">
+       <Sparkles className="w-10 h-10 text-[#1E3A5F]" />
+     </div>
+     <h2 className="text-4xl font-bold text-[#1E3A5F] mb-4 tracking-tight">Perfect Biz AI</h2>
+     <p className="text-xl text-gray-500 font-light leading-relaxed">טכנולוגיה חכמה לניהול עסקי פשוט.</p>
+    </div>
+    </div>
+    ));
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -237,27 +250,10 @@ export default function ClientLogin() {
           </div>
         </div>
 
-        {/* Right Side - Branding (Hidden on Mobile) */}
-        <div className="hidden lg:flex w-1/2 bg-[#F8F9FA] relative items-center justify-center p-20 overflow-hidden">
-            {/* Elegant Abstract Background */}
-            <div className="absolute inset-0 opacity-40">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-green-50 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
-            </div>
-            
-            <div className="relative z-10 text-center max-w-lg">
-              <div className="w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-8 transform -rotate-6 transition-transform hover:rotate-0 duration-500">
-                  <Sparkles className="w-10 h-10 text-[#1E3A5F]" />
-              </div>
-              <h2 className="text-4xl font-bold text-[#1E3A5F] mb-4 tracking-tight">
-                Perfect Biz AI
-              </h2>
-              <p className="text-xl text-gray-500 font-light leading-relaxed">
-                טכנולוגיה חכמה לניהול עסקי פשוט.
-              </p>
-            </div>
-        </div>
+        <BrandingSide />
       </div>
     </>
   );
 }
+
+export default memo(ClientLogin);
