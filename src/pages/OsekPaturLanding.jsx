@@ -476,9 +476,9 @@ export default function OsekPaturLanding() {
                className="text-center mb-10"
              >
                <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                 ביום הראשון - מה אתם מקבלים?
+                 פתיחת תיק עוסק פטור - תהליך ברור וביטוח מלא
                </h2>
-               <p className="text-xl text-gray-600">מחיר יחיד - תוכן מלא. בלי חיסכונים וללא הפתעות בעתיד</p>
+               <p className="text-xl text-gray-600">ליווי שוטף + דוח שנתי + אפליקציה לניהול העסק - הכל בחבילה אחת</p>
              </motion.div>
 
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl shadow-xl p-8 md:p-10 border-2 border-[#1E3A5F]/10">
