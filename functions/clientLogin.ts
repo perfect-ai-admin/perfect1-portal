@@ -2,8 +2,17 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-    const body = await req.json();
+    let base44;
+    let body;
+    
+    try {
+      base44 = createClientFromRequest(req);
+      body = await req.json();
+    } catch (parseErr) {
+      console.error('Request parse error:', parseErr);
+      return Response.json({ error: 'Invalid request' }, { status: 400 });
+    }
+    
     const { phone, password } = body;
 
     if (!phone || !password) {
