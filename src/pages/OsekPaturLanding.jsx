@@ -355,10 +355,10 @@ export default function OsekPaturLanding() {
                className="text-center mb-10"
              >
                <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                 השאלה האמיתית שצריך לשאול
+                 לא בטוחים איך לפתוח עוסק פטור?
                </h2>
                <p className="text-xl text-gray-600">
-                 לא "איך לפתוח עוסק?" אלא <strong className="text-[#D4AF37]">"מי יעזור לי לא לטעות?"</strong>
+                 אנחנו כאן <strong className="text-[#27AE60]">לעשות סדר</strong> - שירות מקצועי לפתיחת עוסק פטור בישראל
                </p>
              </motion.div>
 
