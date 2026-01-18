@@ -84,12 +84,22 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1);
 
-  const handleStatusChange = (goal, nextStatus) => {
+  const handleStatusChange = async (goal, nextStatus) => {
+    // Optimistic update
+    const previousGoals = goals;
     setGoals(prev => prev.map(g => 
       g.id === goal.id 
         ? { ...g, status: nextStatus }
         : g
     ));
+
+    try {
+      await base44.entities.UserGoal.update(goal.id, { status: nextStatus });
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      // Revert if failed
+      setGoals(previousGoals);
+    }
   };
 
   const handleEditGoal = (goal) => {
@@ -97,8 +107,18 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
      setShowAddGoal(true);
    };
 
-  const handleDeleteGoal = (goalId) => {
+  const handleDeleteGoal = async (goalId) => {
+     // Optimistic update
+     const previousGoals = goals;
      setGoals(prev => prev.filter(g => g.id !== goalId));
+
+     try {
+       await base44.entities.UserGoal.delete(goalId);
+     } catch (error) {
+       console.error("Failed to delete goal:", error);
+       // Revert if failed
+       setGoals(previousGoals);
+     }
    };
 
   const handleCreateGoal = async (newGoal, isEditing = false) => {
