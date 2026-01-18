@@ -13,29 +13,33 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid request' }, { status: 400 });
     }
     
-    const { phone, password } = body;
+    const { credential, password } = body;
 
-    if (!phone || !password) {
-      return Response.json({ error: 'Missing phone or password' }, { status: 400 });
+    if (!credential || !password) {
+      return Response.json({ error: 'Missing credential or password' }, { status: 400 });
     }
-
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
 
     // Verify password first
     if (password !== '123456') {
       return Response.json({ error: 'Invalid password' }, { status: 401 });
     }
 
-    // Search for Lead by phone
+    // Determine if credential is email or phone
+    const isEmail = credential.includes('@');
+    const searchFilter = isEmail 
+      ? { email: credential }
+      : { phone: credential.replace(/[^0-9]/g, '') };
+
+    // Search for Lead by email or phone
     let leads = [];
     try {
-      leads = await base44.asServiceRole.entities.Lead.filter({ phone: cleanPhone });
+      leads = await base44.asServiceRole.entities.Lead.filter(searchFilter);
     } catch (err) {
       console.error('Lead filter error:', err);
     }
 
     if (leads.length === 0) {
-      return Response.json({ error: 'Phone not found' }, { status: 404 });
+      return Response.json({ error: isEmail ? 'Email not found' : 'Phone not found' }, { status: 404 });
     }
 
     const lead = leads[0];
