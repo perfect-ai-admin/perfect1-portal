@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
 
                **Steps 2-6: The "Healthy Business" Roadmap**
                - Don't just list random tasks. Build the business layer by layer.
-               - IF they are "Idea Stage" (רעיון/חושב לפתוח): **MANDATORY:** One of the steps MUST be "Opening Osek Patur" (פתיחת עוסק פטור) to make it official.
+               - IF they are "Idea Stage" (רעיון/חושב לפתוח): Follow this EXACT order: Step 1 = Formulate the Idea (גיבוש הרעיון), Step 2 = Acquire First Client (גיוס לקוח ראשון), Step 3 = Open Osek Patur (פתיחת עוסק פטור) to issue a receipt.
                - IF they are "New": Step 2=Branding, Step 3=First Offer/Price, Step 4=First Invoice, Step 5=Marketing, Step 6=Weekly Goal.
                - IF they are "Active" but messy: Step 2=Organize Expenses, Step 3=Set Monthly Goal, Step 4=Refine Sales Script, Step 5=New Campaign.
                
