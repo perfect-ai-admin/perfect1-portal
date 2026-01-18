@@ -131,13 +131,31 @@ function ClientLogin() {
     </div>
     ));
 
+  const handleGoogleOAuthCallback = async (code) => {
+    try {
+      const response = await base44.functions.invoke('googleAuthCallback', { code });
+
+      if (response.data && response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        window.location.href = '/ClientDashboard';
+      } else {
+        setError('שגיאה בתהליך ההתחברות');
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Google OAuth callback error:', error);
+      setError(`שגיאה בתהליך ההתחברות: ${error.message}`);
+      setIsLoading(false);
+    }
+  };
+
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setError('');
-    
+
     try {
       const response = await base44.functions.invoke('googleAuthStart', {});
-      
+
       if (response.data && response.data.url) {
         sessionStorage.setItem('oauth_state', response.data.state);
         window.location.href = response.data.url;
