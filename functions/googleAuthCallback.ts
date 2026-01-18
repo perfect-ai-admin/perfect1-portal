@@ -131,10 +131,10 @@ Deno.serve(async (req) => {
         try {
             const userData = '${userJson}';
             localStorage.setItem('user', userData);
-            window.location.href = '/';
+            window.location.href = '/ClientDashboard';
         } catch(e) {
             console.error('Error:', e);
-            window.location.href = '/?error=storage_failed';
+            window.location.href = '/ClientLogin?error=storage_failed';
         }
     </script>
     <p style="text-align: center; font-family: Arial; margin-top: 50px;">מתחבר למערכת...</p>

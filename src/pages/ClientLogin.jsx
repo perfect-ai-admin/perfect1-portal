@@ -79,7 +79,7 @@ export default function ClientLogin() {
 
       // Store user data in localStorage
       localStorage.setItem('user', JSON.stringify(user));
-      navigate(createPageUrl('ClientDashboard'));
+      window.location.href = '/ClientDashboard';
     } catch (err) {
       console.error('Login error:', err);
       setError('שגיאה בתהליך הכניסה. אנא נסה שוב.');
