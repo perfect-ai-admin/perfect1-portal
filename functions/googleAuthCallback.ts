@@ -69,43 +69,57 @@ Deno.serve(async (req) => {
         // Create user object
         const fullName = name && name.trim() ? name : normalizedEmail.split('@')[0] || 'משתמש חדש';
         
-        // Get free plan
+        // Get free plan - with retry
         let freePlan = null;
-        try {
-            console.log('[STEP: plan_lookup] Searching for free plan...');
-            const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
-            freePlan = freePlans.length > 0 ? freePlans[0] : null;
-            console.log('[STEP: plan_lookup] Found plan:', freePlan?.id);
-        } catch (planErr) {
-            console.error('[STEP: plan_lookup] Error:', planErr.message);
-        }
-
-        // If no free plan exists, create fallback
-        if (!freePlan) {
+        const MAX_PLAN_RETRIES = 2;
+        
+        for (let attempt = 0; attempt < MAX_PLAN_RETRIES; attempt++) {
             try {
-                console.log('[STEP: plan_creation] Creating fallback free plan...');
-                freePlan = await base44.asServiceRole.entities.Plan.create({
-                    name: 'חינמי',
-                    name_en: 'Free',
-                    price: 0,
-                    billing_type: 'monthly',
-                    marketing_enabled: false,
-                    mentor_enabled: true,
-                    finance_enabled: false,
-                    goals_limit: 1,
-                    max_active_goals: 1,
-                    is_active: true,
-                    display_order: 0
-                });
-                console.log('[STEP: plan_creation] Fallback plan created:', freePlan.id);
-            } catch (createPlanErr) {
-                console.error('[STEP: plan_creation] Failed:', createPlanErr.message);
-                return Response.json({ 
-                    error: 'System configuration error', 
-                    step: 'plan_creation',
-                    details: createPlanErr.message
-                }, { status: 500 });
+                console.log(`[STEP: plan_lookup] Attempt ${attempt + 1}/${MAX_PLAN_RETRIES}...`);
+                const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
+                if (freePlans.length > 0) {
+                    freePlan = freePlans[0];
+                    console.log('[STEP: plan_lookup] Found existing plan:', freePlan.id);
+                    break;
+                } else {
+                    console.log('[STEP: plan_lookup] No plan found, creating new one...');
+                }
+            } catch (lookupErr) {
+                console.error(`[STEP: plan_lookup] Lookup attempt ${attempt + 1} failed:`, lookupErr.message);
+                if (attempt === MAX_PLAN_RETRIES - 1) {
+                    console.error('[STEP: plan_lookup] Max retries reached');
+                }
             }
+            
+            // Try to create plan
+            if (!freePlan) {
+                try {
+                    console.log('[STEP: plan_creation] Creating fallback plan...');
+                    freePlan = await base44.asServiceRole.entities.Plan.create({
+                        name: 'חינמי',
+                        name_en: 'Free',
+                        price: 0,
+                        billing_type: 'monthly',
+                        marketing_enabled: false,
+                        mentor_enabled: true,
+                        finance_enabled: false,
+                        goals_limit: 1,
+                        max_active_goals: 1,
+                        is_active: true,
+                        display_order: 0
+                    });
+                    console.log('[STEP: plan_creation] Success, plan ID:', freePlan.id);
+                    break;
+                } catch (createErr) {
+                    console.error(`[STEP: plan_creation] Attempt ${attempt + 1} failed:`, createErr.message);
+                }
+            }
+        }
+        
+        // If still no plan, use a safe default placeholder
+        if (!freePlan) {
+            console.warn('[STEP: plan_fallback] Could not find/create plan, using placeholder ID');
+            freePlan = { id: 'free_default_placeholder' };
         }
 
         // Find or create user
