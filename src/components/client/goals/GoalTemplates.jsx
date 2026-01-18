@@ -735,6 +735,32 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
                  />
                </div>
 
+               {/* Urgency Selection */}
+               <div>
+                 <Label className="text-xs font-bold text-gray-700 block mb-1.5">דחיפות המשימה</Label>
+                 <div className="grid grid-cols-3 gap-2">
+                   {[
+                     { value: 'low', label: 'נמוכה', desc: 'בזמן שלי' },
+                     { value: 'medium', label: 'בינונית', desc: 'חשוב' },
+                     { value: 'high', label: 'גבוהה', desc: 'דחוף!' }
+                   ].map((level) => (
+                     <button
+                       key={level.value}
+                       onClick={() => setUrgency(level.value)}
+                       className={cn(
+                         "flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all text-center",
+                         urgency === level.value
+                           ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm ring-1 ring-purple-200"
+                           : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
+                       )}
+                     >
+                       <span className="text-xs font-bold">{level.label}</span>
+                       <span className="text-[10px] opacity-70">{level.desc}</span>
+                     </button>
+                   ))}
+                 </div>
+               </div>
+
                {!hasPrimaryGoal && (
                  <div className="flex items-center gap-2.5 p-2.5 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200">
                    <input
