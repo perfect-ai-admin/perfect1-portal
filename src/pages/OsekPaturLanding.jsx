@@ -84,16 +84,27 @@ export default function OsekPaturLanding() {
     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Sticky CTA Logic
+  // Sticky CTA Logic & Popup Trigger
   const [showStickyCTA, setShowStickyCTA] = useState(false);
+  const [popupShown, setPopupShown] = useState(false);
 
   React.useEffect(() => {
     const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const scrollPercentage = (scrollPosition / scrollHeight) * 100;
+      
       setShowStickyCTA(window.scrollY > 500);
+      
+      // Show popup at 35% scroll
+      if (scrollPercentage >= 35 && !popupShown) {
+        setShowPopup(true);
+        setPopupShown(true);
+      }
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [popupShown]);
 
   const faqs = [
     {
