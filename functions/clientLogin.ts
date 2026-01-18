@@ -46,6 +46,7 @@ Deno.serve(async (req) => {
 
     // Find or create User for this Lead
     let user;
+    const cleanPhone = credential.replace(/[^0-9]/g, '');
     try {
       const usersByPhone = await base44.asServiceRole.entities.User.filter({ phone: cleanPhone });
 

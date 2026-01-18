@@ -78,11 +78,29 @@ Deno.serve(async (req) => {
                 last_login_at: new Date().toISOString()
             });
         } else {
+            // Get free plan for new users
+            let freePlan = null;
+            try {
+                const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
+                freePlan = freePlans.length > 0 ? freePlans[0] : null;
+            } catch (planErr) {
+                console.error('Plan filter error:', planErr);
+            }
+
             user = await base44.asServiceRole.entities.User.create({
                 email,
                 full_name: fullName,
-                role: 'user',
-                status: 'active'
+                phone: '0000000000',
+                status: 'active',
+                login_provider: 'google',
+                last_login_at: new Date().toISOString(),
+                current_plan_id: freePlan?.id || null,
+                plan_start_date: new Date().toISOString(),
+                marketing_enabled: freePlan?.marketing_enabled || false,
+                mentor_enabled: freePlan?.mentor_enabled || true,
+                finance_enabled: freePlan?.finance_enabled || false,
+                goals_limit: freePlan?.goals_limit || 1,
+                max_active_goals: freePlan?.max_active_goals || 1
             });
         }
         
