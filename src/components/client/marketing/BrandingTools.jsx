@@ -49,7 +49,7 @@ const tools = [
   },
   {
     id: 'sticker',
-    title: 'יצירת Sticker ממותג',
+    title: 'Sticker ממותג לעסק',
     description: 'סטיקר מותאם לעסק לוואטסאפ ורשתות',
     icon: Smile,
     color: 'from-green-500 to-emerald-500',
