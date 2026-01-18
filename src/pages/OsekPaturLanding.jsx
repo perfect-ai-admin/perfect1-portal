@@ -579,11 +579,16 @@ export default function OsekPaturLanding() {
                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
                   <CheckCircle className="w-10 h-10 text-green-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
-                <p className="text-gray-600">נחזור אליך בקרוב ונתחיל את התהליך</p>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">✅ בדיקה מתחילה!</h3>
+                <p className="text-gray-600 mb-4">נחזור אליך בתוך 24 שעות עם תוכנית אישית</p>
+                <p className="text-sm text-[#27AE60] font-bold">💚 שיחה חינם ללא התחייבות</p>
               </div>
             ) : (
               <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-[#D4AF37]/30">
+                <div className="mb-6 text-center">
+                  <p className="text-lg font-bold text-[#1E3A5F] mb-2">⏰ שיחה ראשונית חינם - 15 דקות</p>
+                  <p className="text-sm text-gray-600">רק 2 שדות. תחזרנו בתוך 24 שעות.</p>
+                </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">שם מלא *</label>
