@@ -4,7 +4,12 @@ const GOOGLE_CLIENT_ID = Deno.env.get('GOOGLE_CLIENT_ID');
 const GOOGLE_CLIENT_SECRET = Deno.env.get('GOOGLE_CLIENT_SECRET');
 const BASE_URL = Deno.env.get('BASE_URL');
 
+// Generate server-side error ID for tracing
+const generateErrorId = () => `SERVER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
 Deno.serve(async (req) => {
+    const errorId = generateErrorId();
+    
     try {
         let base44;
         let body;
@@ -13,152 +18,194 @@ Deno.serve(async (req) => {
             base44 = createClientFromRequest(req);
             body = await req.json();
         } catch (parseErr) {
-            console.error('[STEP: request_parse] Error:', parseErr);
-            return Response.json({ error: 'Invalid request', step: 'request_parse' }, { status: 400 });
+            console.error(`[${errorId}] [STEP: request_parse] Error:`, parseErr);
+            return Response.json({ 
+                error: 'Invalid request', 
+                step: 'request_parse',
+                errorId 
+            }, { status: 400 });
         }
         const code = body.code;
         
         if (!code) {
-            console.error('[STEP: code_validation] Missing code');
-            return Response.json({ error: 'Missing authorization code', step: 'code_validation' }, { status: 400 });
+            console.error(`[${errorId}] [STEP: code_validation] Missing code`);
+            return Response.json({ 
+                error: 'Missing authorization code', 
+                step: 'code_validation',
+                errorId 
+            }, { status: 400 });
         }
         
-        console.log('[STEP: token_exchange] Starting...');
-        
-        // Exchange code for tokens
-        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                code: code,
-                client_id: GOOGLE_CLIENT_ID,
-                client_secret: GOOGLE_CLIENT_SECRET,
-                redirect_uri: `${BASE_URL.replace(/\/$/, '')}/ClientLogin`,
-                grant_type: 'authorization_code'
-            })
-        });
-        
+        console.log(`[${errorId}] [STEP: token_exchange] Starting...`);
+
+        let tokenResponse;
+        try {
+            // Exchange code for tokens
+            tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    code: code,
+                    client_id: GOOGLE_CLIENT_ID,
+                    client_secret: GOOGLE_CLIENT_SECRET,
+                    redirect_uri: `${BASE_URL.replace(/\/$/, '')}/ClientLogin`,
+                    grant_type: 'authorization_code'
+                })
+            });
+        } catch (fetchErr) {
+            console.error(`[${errorId}] [STEP: token_exchange] Fetch failed:`, fetchErr.message);
+            return Response.json({ 
+                error: 'Token exchange failed', 
+                step: 'token_exchange', 
+                errorId 
+            }, { status: 503 });
+        }
+
         if (!tokenResponse.ok) {
             const errorData = await tokenResponse.text();
-            console.error('[STEP: token_exchange] Failed:', tokenResponse.status, errorData);
-            return Response.json({ error: 'Token exchange failed', step: 'token_exchange', details: errorData }, { status: 400 });
+            console.error(`[${errorId}] [STEP: token_exchange] Failed:`, tokenResponse.status, errorData);
+            return Response.json({ 
+                error: 'Token exchange failed', 
+                step: 'token_exchange', 
+                errorId 
+            }, { status: 400 });
         }
         
-        const tokens = await tokenResponse.json();
-        console.log('[STEP: token_exchange] Success - tokens received');
-        
+        let tokens;
+        try {
+            tokens = await tokenResponse.json();
+        } catch (parseErr) {
+            console.error(`[${errorId}] [STEP: token_parse] JSON parse failed:`, parseErr.message);
+            return Response.json({ 
+                error: 'Invalid token response', 
+                step: 'token_parse', 
+                errorId 
+            }, { status: 400 });
+        }
+
+        console.log(`[${errorId}] [STEP: token_exchange] Success - tokens received`);
+
         if (!tokens.id_token) {
-            console.error('[STEP: token_validation] No id_token in response');
-            return Response.json({ error: 'No id_token in response', step: 'token_validation' }, { status: 400 });
+            console.error(`[${errorId}] [STEP: token_validation] No id_token in response`);
+            return Response.json({ 
+                error: 'No id_token in response', 
+                step: 'token_validation', 
+                errorId 
+            }, { status: 400 });
         }
-        
+
         // Decode id_token
-        const idTokenParts = tokens.id_token.split('.');
-        const payload = JSON.parse(atob(idTokenParts[1]));
-        
-        const { email, name, sub } = payload;
-        
-        if (!email) {
-            console.error('[STEP: token_parse] No email in token');
-            return Response.json({ error: 'No email in token', step: 'token_parse' }, { status: 400 });
+        let payload;
+        try {
+            const idTokenParts = tokens.id_token.split('.');
+            payload = JSON.parse(atob(idTokenParts[1]));
+        } catch (decodeErr) {
+            console.error(`[${errorId}] [STEP: token_decode] Decode failed:`, decodeErr.message);
+            return Response.json({ 
+                error: 'Invalid token format', 
+                step: 'token_decode', 
+                errorId 
+            }, { status: 400 });
         }
-        
+
+        const { email, name, sub } = payload;
+
+        if (!email) {
+            console.error(`[${errorId}] [STEP: token_parse] No email in token`);
+            return Response.json({ 
+                error: 'No email in token', 
+                step: 'token_parse', 
+                errorId 
+            }, { status: 400 });
+        }
+
         const normalizedEmail = email.trim().toLowerCase();
-        console.log('[STEP: token_parse] Email:', normalizedEmail, 'GoogleSub:', sub);
+        console.log(`[${errorId}] [STEP: token_parse] Email: ${normalizedEmail}, GoogleSub: ${sub}`);
         
         // Create user object
         const fullName = name && name.trim() ? name : normalizedEmail.split('@')[0] || 'משתמש חדש';
         
-        // Get free plan - with retry
+        // Get free plan - CRITICAL, must exist
         let freePlan = null;
-        const MAX_PLAN_RETRIES = 2;
-        
-        for (let attempt = 0; attempt < MAX_PLAN_RETRIES; attempt++) {
-            try {
-                console.log(`[STEP: plan_lookup] Attempt ${attempt + 1}/${MAX_PLAN_RETRIES}...`);
-                const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
-                if (freePlans.length > 0) {
-                    freePlan = freePlans[0];
-                    console.log('[STEP: plan_lookup] Found existing plan:', freePlan.id);
-                    break;
-                } else {
-                    console.log('[STEP: plan_lookup] No plan found, creating new one...');
-                }
-            } catch (lookupErr) {
-                console.error(`[STEP: plan_lookup] Lookup attempt ${attempt + 1} failed:`, lookupErr.message);
-                if (attempt === MAX_PLAN_RETRIES - 1) {
-                    console.error('[STEP: plan_lookup] Max retries reached');
-                }
+
+        try {
+            console.log(`[${errorId}] [STEP: plan_lookup] Fetching free plan...`);
+            const freePlans = await base44.asServiceRole.entities.Plan.filter({ name: 'חינמי' });
+
+            if (freePlans && freePlans.length > 0) {
+                freePlan = freePlans[0];
+                console.log(`[${errorId}] [STEP: plan_lookup] Found free plan: ${freePlan.id}`);
             }
-            
-            // Try to create plan
-            if (!freePlan) {
-                try {
-                    console.log('[STEP: plan_creation] Creating fallback plan...');
-                    freePlan = await base44.asServiceRole.entities.Plan.create({
-                        name: 'חינמי',
-                        name_en: 'Free',
-                        price: 0,
-                        billing_type: 'monthly',
-                        marketing_enabled: false,
-                        mentor_enabled: true,
-                        finance_enabled: false,
-                        goals_limit: 1,
-                        max_active_goals: 1,
-                        is_active: true,
-                        display_order: 0
-                    });
-                    console.log('[STEP: plan_creation] Success, plan ID:', freePlan.id);
-                    break;
-                } catch (createErr) {
-                    console.error(`[STEP: plan_creation] Attempt ${attempt + 1} failed:`, createErr.message);
-                }
+        } catch (lookupErr) {
+            console.error(`[${errorId}] [STEP: plan_lookup] Error:`, lookupErr.message);
+        }
+
+        // If no plan found, attempt create (once only)
+        if (!freePlan) {
+            try {
+                console.log(`[${errorId}] [STEP: plan_create] Creating free plan...`);
+                freePlan = await base44.asServiceRole.entities.Plan.create({
+                    name: 'חינמי',
+                    name_en: 'Free',
+                    price: 0,
+                    billing_type: 'monthly',
+                    marketing_enabled: false,
+                    mentor_enabled: true,
+                    finance_enabled: false,
+                    goals_limit: 1,
+                    max_active_goals: 1,
+                    is_active: true,
+                    display_order: 0
+                });
+                console.log(`[${errorId}] [STEP: plan_create] Created: ${freePlan.id}`);
+            } catch (createErr) {
+                console.error(`[${errorId}] [STEP: plan_create] Error:`, createErr.message);
             }
         }
-        
-        // If still no plan, HARD FAIL - plan MUST exist
+
+        // If still no plan after lookup + create, HARD FAIL (system misconfigured)
         if (!freePlan) {
-            console.error('[STEP: plan_fallback] CRITICAL: Could not find or create free plan');
+            console.error(`[${errorId}] [STEP: plan_fallback] CRITICAL: No free plan available`);
             return Response.json({
                 error: 'System configuration error: free plan not available',
                 step: 'plan_creation',
-                details: 'Free plan could not be created or found'
+                errorId
             }, { status: 503 });
         }
 
-        // Find or create user - with detailed validation
+        // Find or create user - with comprehensive error handling
         let user;
         try {
-            console.log('[STEP: user_lookup] Searching for user:', normalizedEmail);
-            
+            console.log(`[${errorId}] [STEP: user_lookup] Searching for user: ${normalizedEmail}`);
+
             // Try to find existing user
             let existingUsers = [];
             try {
                 existingUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
-                console.log('[STEP: user_lookup] Query result:', existingUsers.length, 'users found');
+                console.log(`[${errorId}] [STEP: user_lookup] Found ${existingUsers.length} user(s)`);
             } catch (filterErr) {
-                console.error('[STEP: user_lookup] Filter error:', filterErr.message);
-                // Continue - might be permission issue for new users
+                console.error(`[${errorId}] [STEP: user_lookup] Filter error:`, filterErr.message);
+                // Continue - filter might fail for new users, but create should work
             }
 
-            if (existingUsers.length > 0) {
+            if (existingUsers && existingUsers.length > 0) {
                 // User exists - use existing
                 user = existingUsers[0];
-                console.log('[STEP: user_exists] User already exists, ID:', user.id);
-                
+                console.log(`[${errorId}] [STEP: user_found] User exists: ${user.id}`);
+
                 // Try to update last login (non-critical)
                 try {
                     await base44.asServiceRole.entities.User.update(user.id, {
                         last_login_at: new Date().toISOString()
                     });
-                    console.log('[STEP: user_update] Last login updated');
+                    console.log(`[${errorId}] [STEP: user_update] Last login updated`);
                 } catch (updateErr) {
-                    console.warn('[STEP: user_update] Non-critical: could not update last_login_at:', updateErr.message);
+                    console.warn(`[${errorId}] [STEP: user_update] Non-critical error:`, updateErr.message);
                 }
             } else {
                 // NEW USER - ATOMIC UPSERT (find-or-create)
-                console.log('[STEP: user_create] Attempting atomic create or find for:', normalizedEmail);
-                
+                console.log(`[${errorId}] [STEP: user_create] Creating new user: ${normalizedEmail}`);
+
                 const now = new Date().toISOString();
                 const newUserData = {
                     email: normalizedEmail,
@@ -175,39 +222,51 @@ Deno.serve(async (req) => {
                     goals_limit: 1,
                     max_active_goals: 1
                 };
-                
-                console.log('[STEP: user_create] Fields to create:', Object.keys(newUserData).join(', '));
-                
+
+                console.log(`[${errorId}] [STEP: user_create] Fields: ${Object.keys(newUserData).join(', ')}`);
+
                 try {
                     user = await base44.asServiceRole.entities.User.create(newUserData);
-                    console.log('[STEP: user_create] ✓ User created, ID:', user.id);
+                    console.log(`[${errorId}] [STEP: user_create] ✓ Created: ${user.id}`);
                 } catch (createErr) {
-                    // If unique constraint fails, user likely already exists
-                    if (createErr.message?.includes('unique') || createErr.message?.includes('UNIQUE') || createErr.code === 'UNIQUE_CONSTRAINT') {
-                        console.log('[STEP: user_create] User already exists (UNIQUE constraint), fetching...');
-                        const retryUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
-                        if (retryUsers && retryUsers.length > 0) {
-                            user = retryUsers[0];
-                            console.log('[STEP: user_create] ✓ User found on retry, ID:', user.id);
-                        } else {
-                            throw new Error('User creation failed and re-fetch also failed');
+                    // If unique constraint, retry lookup
+                    if (createErr.message?.toLowerCase().includes('unique') || createErr.code === 'UNIQUE_CONSTRAINT') {
+                        console.log(`[${errorId}] [STEP: user_create] Unique constraint - retrying lookup...`);
+                        try {
+                            const retryUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
+                            if (retryUsers && retryUsers.length > 0) {
+                                user = retryUsers[0];
+                                console.log(`[${errorId}] [STEP: user_create] ✓ Found on retry: ${user.id}`);
+                            } else {
+                                throw new Error('Retry lookup also failed');
+                            }
+                        } catch (retryErr) {
+                            console.error(`[${errorId}] [STEP: user_create] Retry failed:`, retryErr.message);
+                            return Response.json({
+                                error: 'Failed to create user account',
+                                step: 'user_create',
+                                errorId
+                            }, { status: 503 });
                         }
                     } else {
-                        console.error('[STEP: user_create] Create failed:', createErr.message);
-                        throw createErr;
+                        // Other DB error
+                        console.error(`[${errorId}] [STEP: user_create] Error:`, createErr.message);
+                        return Response.json({
+                            error: 'Failed to create user account',
+                            step: 'user_create',
+                            errorId
+                        }, { status: 503 });
                     }
                 }
             }
         } catch (userErr) {
-            console.error('[STEP: user_lookup/create] CRITICAL ERROR:', userErr.message);
-            console.error('[STEP: user_lookup/create] Stack:', userErr.stack);
-            console.error('[STEP: user_lookup/create] Full error object:', JSON.stringify(userErr, null, 2));
+            console.error(`[${errorId}] [STEP: user_lookup] Unexpected error:`, userErr.message);
+            console.error(`[${errorId}] [STEP: user_lookup] Stack:`, userErr.stack);
             return Response.json({ 
                 error: 'Failed to create or find user',
                 step: 'user_lookup',
-                message: userErr.message,
-                details: userErr.toString()
-            }, { status: 500 });
+                errorId
+            }, { status: 503 });
         }
         
         const userToReturn = {
@@ -216,18 +275,17 @@ Deno.serve(async (req) => {
             full_name: user.full_name,
             status: user.status
         };
-        
-        console.log('[STEP: response] User prepared successfully:', user.id);
+
+        console.log(`[${errorId}] [STEP: response] Success, user: ${user.id}`);
         return Response.json({ user: userToReturn });
-        
-    } catch (error) {
-        console.error('[STEP: unexpected_error] Full error:', error);
-        console.error('[STEP: unexpected_error] Message:', error?.message);
-        console.error('[STEP: unexpected_error] Stack:', error?.stack);
+
+        } catch (error) {
+        console.error(`[${errorId}] [STEP: unexpected_error] Error:`, error?.message);
+        console.error(`[${errorId}] [STEP: unexpected_error] Stack:`, error?.stack);
         return Response.json({ 
             error: 'Authentication failed',
             step: 'unexpected',
-            details: error?.message || 'Unknown error'
-        }, { status: 500 });
-    }
-});
+            errorId
+        }, { status: 503 });
+        }
+        });
