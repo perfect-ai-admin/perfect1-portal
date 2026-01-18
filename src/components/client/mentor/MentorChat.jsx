@@ -1,29 +1,37 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sparkles, Loader2 } from 'lucide-react';
+import { Send, Sparkles, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { base44 } from '@/api/base44Client';
-import ContextPanel from './ContextPanel';
 import ReactMarkdown from 'react-markdown';
 
 export default function MentorChat({ clientData }) {
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: `שלום ${clientData.name || 'חבר'}! 👋\n\nאני המנטור העסקי החכם שלך. אני כאן כדי לעזור לך לקבל החלטות נכונות, לענות על שאלות ולדחוף את העסק שלך קדימה.\n\nאני זמין עבורך 24/7. מה הדבר שהכי מטריד אותך כרגע בעסק?`
-    }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const suggestedQuestions = [
-    'מה המיקוד הכי חשוב להיום?',
-    'איך להגדיל מכירות החודש?',
-    'תן לי רעיון לפוסט שיווקי',
-    'האם התזרים שלי תקין?'
-  ];
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  const loadHistory = async () => {
+    try {
+        const history = await base44.entities.MentorMessage.filter({}, '-created_date', 20);
+        if (history.length > 0) {
+            setMessages(history.reverse());
+        } else {
+            // Initial greeting
+            setMessages([{
+                role: 'assistant',
+                content: `שלום ${clientData.name || 'חבר'}! 👋\n\nאני המנטור העסקי החכם שלך. אני לומד את העסק שלך תוך כדי שיחה.\n\nספר לי - מה מטריד אותך כרגע? עומס? חוסר פוקוס? או שאולי בא לך לחגוג הצלחה?`
+            }]);
+        }
+    } catch (error) {
+        console.error("Failed to load history", error);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,137 +46,116 @@ export default function MentorChat({ clientData }) {
     setIsLoading(true);
 
     try {
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `אתה מנטור עסקי חכם ותומך. אתה מדבר עברית, בצורה חמה ומעודדת.
+        // Call the smart backend function
+        const response = await base44.functions.invoke('mentorChat', {
+            message: userMessage,
+            clientData: clientData
+        });
+
+        const reply = response.data.reply;
+
+        setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
         
-הנה המידע על העסק של ${clientData.name}:
-- שם: ${clientData.name}
-- טלפון: ${clientData.phone}
-- מקצוע: ${clientData.profession || 'לא צוין'}
-- קטגוריה: ${clientData.category || 'לא צוין'}
-- סטטוס: ${clientData.status}
-- הערות: ${clientData.notes || 'אין'}
+        // Trigger a refresh of the dashboard/focus if a suggestion was made
+        // In a real app we might use a context or event emitter, here we rely on the user navigating or refresh intervals
+        if (response.data.suggested_focus) {
+            // Optional: Show a toast or small indicator that the plan was updated
+            console.log("Plan updated by mentor!");
+        }
 
-השאלה של הלקוח:
-${userMessage}
-
-תן תשובה ממוקדת, מעשית ומעודדת. השתמש במידע שיש לך על הלקוח. אם אתה לא בטוח במשהו, הצע לפנות למומחה (רואה חשבון או עורך דין).`,
-        add_context_from_internet: false
-      });
-
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
     } catch (error) {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: 'מצטער, נתקלתי בבעיה. אנא נסה שוב או פנה לתמיכה.' 
-      }]);
+        console.error(error);
+        setMessages(prev => [...prev, { 
+            role: 'assistant', 
+            content: 'מצטער, נתקלתי בבעיה בחיבור למח. נסה שוב רגע.' 
+        }]);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
   };
 
-  const handleSuggestedQuestion = (question) => {
-    setInput(question);
-  };
-
   return (
-    <div className="space-y-4">
-      {/* Context Panel - Hidden in new design to cleaner look, or moved */}
-      {/* <ContextPanel clientData={clientData} /> */}
-      
-      <div className="flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden h-full min-h-[500px]">
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        <AnimatePresence>
-          {messages.map((message, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-2xl px-6 py-4 ${
-                  message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-900'
-                }`}
-              >
-                {message.role === 'assistant' && (
-                  <Sparkles className="w-5 h-5 text-blue-600 mb-2" />
-                )}
-                {message.role === 'user' ? (
-                  <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                ) : (
-                  <ReactMarkdown className="text-base leading-relaxed prose prose-sm max-w-none">
-                    {message.content}
-                  </ReactMarkdown>
-                )}
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex justify-start"
-          >
-            <div className="bg-gray-100 rounded-2xl px-6 py-4 flex items-center gap-3">
-              <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
-              <span className="text-gray-600">חושב...</span>
+    <div className="flex flex-col h-full bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden min-h-[500px]">
+        {/* Header */}
+        <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
+            <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                    <h3 className="font-bold text-gray-900">המנטור האישי</h3>
+                    <p className="text-xs text-gray-500">לומד ומתעדכן בזמן אמת</p>
+                </div>
             </div>
-          </motion.div>
-        )}
-
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Suggested Questions */}
-      {messages.length === 1 && (
-        <div className="px-6 pb-4">
-          <p className="text-sm text-gray-600 mb-3">שאלות מוצעות:</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestedQuestions.map((q, i) => (
-              <button
-                key={i}
-                onClick={() => handleSuggestedQuestion(q)}
-                className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm transition-all"
-              >
-                {q}
-              </button>
-            ))}
-          </div>
+            <Button variant="ghost" size="icon" onClick={loadHistory} title="רענן שיחה">
+                <RefreshCw className="w-4 h-4 text-gray-400" />
+            </Button>
         </div>
-      )}
 
-      {/* Input Area */}
-      <div className="border-t border-gray-200 p-6">
-        <div className="flex gap-2 items-end bg-gray-50 p-2 rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="הקלד הודעה למנטור..."
-            className="flex-1 resize-none bg-transparent border-none focus-visible:ring-0 shadow-none min-h-[44px] max-h-32 py-3"
-            rows={1}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-              }
-            }}
-          />
-          <Button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
-            className="bg-indigo-600 hover:bg-indigo-700 h-10 w-10 p-0 rounded-lg mb-1 shadow-sm"
-          >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          </Button>
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <AnimatePresence>
+                {messages.map((message, index) => (
+                    <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                        <div
+                            className={`max-w-[85%] rounded-2xl px-5 py-3 shadow-sm ${
+                                message.role === 'user'
+                                    ? 'bg-indigo-600 text-white rounded-br-none'
+                                    : 'bg-white border border-gray-100 text-gray-900 rounded-bl-none'
+                            }`}
+                        >
+                            <ReactMarkdown className={`text-sm leading-relaxed prose max-w-none ${message.role === 'user' ? 'prose-invert' : ''}`}>
+                                {message.content}
+                            </ReactMarkdown>
+                        </div>
+                    </motion.div>
+                ))}
+            </AnimatePresence>
+
+            {isLoading && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                    <div className="bg-gray-50 rounded-2xl px-4 py-3 flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 text-indigo-600 animate-spin" />
+                        <span className="text-xs text-gray-500">מנתח את המצב...</span>
+                    </div>
+                </motion.div>
+            )}
+            <div ref={messagesEndRef} />
         </div>
-      </div>
-      </div>
+
+        {/* Input Area */}
+        <div className="p-4 bg-white border-t">
+            <div className="flex gap-2 items-end bg-gray-50 p-2 rounded-xl border focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+                <Textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="כתוב הודעה..."
+                    className="flex-1 resize-none bg-transparent border-none focus-visible:ring-0 shadow-none min-h-[44px] max-h-32 py-3 text-sm"
+                    rows={1}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSend();
+                        }
+                    }}
+                />
+                <Button
+                    onClick={handleSend}
+                    disabled={!input.trim() || isLoading}
+                    className="bg-indigo-600 hover:bg-indigo-700 h-10 w-10 p-0 rounded-lg mb-1 shadow-sm"
+                >
+                    <Send className="w-4 h-4" />
+                </Button>
+            </div>
+            <p className="text-xs text-center text-gray-400 mt-2">
+                המערכת מנתחת את השיחה כדי לעדכן את תוכנית העבודה שלך
+            </p>
+        </div>
     </div>
   );
 }

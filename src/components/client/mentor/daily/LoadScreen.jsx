@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { 
@@ -16,6 +16,17 @@ import {
 export default function LoadScreen({ focus, onSave }) {
   const [energyLevel, setEnergyLevel] = useState(50); // 0-100
 
+  useEffect(() => {
+    if (focus?.load_score) {
+        setEnergyLevel(focus.load_score);
+    }
+  }, [focus]);
+
+  const updateEnergy = (val) => {
+    setEnergyLevel(val);
+    onSave({ load_score: val });
+  }
+
   const getBatteryIcon = () => {
     if (energyLevel > 70) return <BatteryFull className="w-16 h-16 text-green-500" />;
     if (energyLevel > 30) return <BatteryMedium className="w-16 h-16 text-yellow-500" />;
@@ -25,12 +36,12 @@ export default function LoadScreen({ focus, onSave }) {
   const getAdvice = () => {
     if (energyLevel > 80) return {
         title: "אתה על הגל! 🌊",
-        text: "זה הזמן למשימות הכי קשות ומורכבות. נצל את האנרגיה הגבוהה לשיחות מכירה או יצירה.",
+        text: "המנטור מזהה שיש לך אנרגיה גבוהה. זה הזמן לתקוף את המשימות הכי קשות ומורכבות.",
         actions: []
     };
     if (energyLevel > 40) return {
         title: "מצב יציב ✨",
-        text: "זמן טוב לעבודה שוטפת. אם אתה מרגיש ירידה קלה, קח הפסקה קצרה של 5 דקות.",
+        text: "זמן טוב לעבודה שוטפת. המנטור ממליץ על הפסקות קטנות כדי לשמור על הקצב.",
         actions: [
             { icon: Music, label: 'שים פלייליסט מרים' },
             { icon: Coffee, label: 'שתה כוס מים/קפה' }
@@ -38,7 +49,7 @@ export default function LoadScreen({ focus, onSave }) {
     };
     return {
         title: "סכנת שחיקה ⚠️",
-        text: "המוח שלך מאותת שהוא צריך מנוחה. אל תילחם בזה - אתה תעשה טעויות. תעצור רגע.",
+        text: "המוח שלך מאותת שהוא צריך מנוחה. השיחות האחרונות שלך מראות סימני עומס. תעצור רגע.",
         actions: [
             { icon: Wind, label: 'צא לנשום אוויר (10 דק)' },
             { icon: Moon, label: 'שנ"צ קצר או מדיטציה' },
@@ -57,7 +68,7 @@ export default function LoadScreen({ focus, onSave }) {
     >
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900">ניהול אנרגיה</h2>
-        <p className="text-gray-500">העסק שלך צריך אותך חד. מה מצב הסוללה שלך כרגע?</p>
+        <p className="text-gray-500">העסק שלך צריך אותך חד. המנטור עוקב אחרי רמות האנרגיה שלך.</p>
       </div>
 
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center">
@@ -72,7 +83,7 @@ export default function LoadScreen({ focus, onSave }) {
             max="100" 
             step="10"
             value={energyLevel}
-            onChange={(e) => setEnergyLevel(parseInt(e.target.value))}
+            onChange={(e) => updateEnergy(parseInt(e.target.value))}
             className="w-full max-w-md h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 mb-8"
         />
         <div className="flex justify-between w-full max-w-md text-xs text-gray-400 px-1">
@@ -124,7 +135,7 @@ export default function LoadScreen({ focus, onSave }) {
       <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
         <h4 className="font-bold text-blue-900 mb-2">💡 חוק הברזל:</h4>
         <p className="text-blue-800 text-sm">
-            אנחנו מנהלים אנרגיה, לא זמן. שעה אחת של עבודה כשאתה רענן שווה 4 שעות כשאתה עייף. תנוח כדי להרוויח יותר.
+            אנחנו מנהלים אנרגיה, לא זמן. המערכת לומדת מתי אתה בשיא שלך ומתי כדאי להוריד הילוך.
         </p>
       </div>
 

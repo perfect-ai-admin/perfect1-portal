@@ -11,7 +11,9 @@ import {
   Flame, 
   ArrowRight,
   Shield,
-  Zap
+  Zap,
+  Bot,
+  Sparkles
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -21,6 +23,14 @@ export default function DailyFocusScreen({ focus, onSave }) {
   const [subTasks, setSubTasks] = useState(focus?.sub_tasks || []);
   const [newSubTask, setNewSubTask] = useState('');
   const [status, setStatus] = useState(focus?.status || 'pending');
+
+  useEffect(() => {
+    if (focus) {
+        setPrimaryFocus(focus.primary_focus || '');
+        setEstimatedTime(focus.estimated_time || 60);
+        setStatus(focus.status || 'pending');
+    }
+  }, [focus]);
 
   const handleComplete = () => {
     confetti({
@@ -35,6 +45,13 @@ export default function DailyFocusScreen({ focus, onSave }) {
       sub_tasks: subTasks,
       status: 'completed' 
     });
+  };
+
+  const acceptAiSuggestion = () => {
+    if (focus?.ai_suggestion) {
+        setPrimaryFocus(focus.ai_suggestion);
+        onSave({ primary_focus: focus.ai_suggestion });
+    }
   };
 
   const addSubTask = () => {
@@ -74,6 +91,34 @@ export default function DailyFocusScreen({ focus, onSave }) {
         <div className="grid md:grid-cols-3 gap-6">
           {/* Main Focus Card */}
           <div className="md:col-span-2 space-y-6">
+            
+            {/* AI Suggestion Banner */}
+            {focus?.ai_suggestion && focus.ai_suggestion !== primaryFocus && (
+                <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="bg-indigo-900 text-white p-4 rounded-2xl flex items-start gap-4 shadow-lg relative overflow-hidden"
+                >
+                    <div className="absolute top-0 left-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl -ml-10 -mt-10"></div>
+                    <div className="p-2 bg-white/10 rounded-xl shrink-0">
+                        <Sparkles className="w-5 h-5 text-yellow-300" />
+                    </div>
+                    <div className="flex-1 relative z-10">
+                        <h4 className="font-bold text-sm mb-1 text-indigo-100">המנטור זיהה הזדמנות:</h4>
+                        <p className="font-bold text-lg mb-2">"{focus.ai_suggestion}"</p>
+                        <p className="text-xs text-indigo-300 mb-3">{focus.ai_reasoning}</p>
+                        <Button 
+                            size="sm" 
+                            variant="secondary" 
+                            className="bg-white text-indigo-900 hover:bg-indigo-50 w-full md:w-auto"
+                            onClick={acceptAiSuggestion}
+                        >
+                            קבל הצעה והתמקד בזה
+                        </Button>
+                    </div>
+                </motion.div>
+            )}
+
             <div className="bg-white rounded-3xl p-8 shadow-xl shadow-indigo-100 border border-indigo-50 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-10 -mt-10 z-0"></div>
               
