@@ -221,6 +221,7 @@ export default function ClientDashboard() {
   }
 
   if (!currentData?.id || typeof currentData !== 'object') {
+    console.error('[ClientDashboard] Invalid user data:', currentData);
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
         <Alert variant="destructive" className="max-w-md">
