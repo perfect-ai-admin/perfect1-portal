@@ -121,26 +121,35 @@ Deno.serve(async (req) => {
         }
         
         // Return HTML page that stores user in localStorage and redirects
-        const userJson = JSON.stringify(user);
-        
         const html = `<!DOCTYPE html>
 <html>
 <head>
     <title>מתחבר...</title>
     <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .loading { font-size: 18px; color: #333; }
+    </style>
 </head>
 <body>
+    <div class="loading">מתחבר למערכת...</div>
     <script>
-        try {
-            const userData = ${JSON.stringify(userJson)};
-            localStorage.setItem('user', userData);
-            window.location.href = '/ClientDashboard';
-        } catch(e) {
-            console.error('Error:', e);
-            window.location.href = '/ClientLogin?error=storage_failed';
-        }
+        (function() {
+            try {
+                const userData = ${JSON.stringify(user)};
+                if (!userData || !userData.id) {
+                    throw new Error('Invalid user data');
+                }
+                localStorage.setItem('user', JSON.stringify(userData));
+                window.location.href = '/ClientDashboard';
+            } catch(e) {
+                console.error('Error:', e);
+                setTimeout(() => {
+                    window.location.href = '/ClientLogin?error=' + encodeURIComponent(e.message);
+                }, 1000);
+            }
+        })();
     </script>
-    <p style="text-align: center; font-family: Arial; margin-top: 50px;">מתחבר למערכת...</p>
 </body>
 </html>`;
         
