@@ -21,13 +21,7 @@ export default function Layout({ children, currentPageName }) {
           const location = useLocation();
           const navigate = useNavigate();
 
-          // Check if user is logged in and redirect to ClientDashboard
-          useEffect(() => {
-            const user = localStorage.getItem('user');
-            if (user && currentPageName === 'Home') {
-              navigate(createPageUrl('ClientDashboard'));
-            }
-          }, [currentPageName, navigate]);
+    
 
           // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
           if (currentPageName === 'SystemLogicMap') {
