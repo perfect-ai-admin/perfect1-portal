@@ -46,7 +46,7 @@ function FAQItem({ question, answer }) {
 }
 
 export default function OsekPaturLanding() {
-  const [formData, setFormData] = useState({
+   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
@@ -54,6 +54,8 @@ export default function OsekPaturLanding() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupFormData, setPopupFormData] = useState({ name: '', phone: '', email: '' });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
