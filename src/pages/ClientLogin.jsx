@@ -61,25 +61,31 @@ function ClientLogin() {
 
       // Call backend function to handle login
       const response = await base44.functions.invoke('clientLogin', { 
-        credential: phone.trim(), 
-        password 
-      });
+            credential: phone.trim(), 
+            password 
+          });
 
-      if (response.data && response.data.user) {
-        const userToStore = {
-          id: response.data.user.id,
-          full_name: response.data.user.full_name,
-          email: response.data.user.email,
-          phone: response.data.user.phone,
-          status: response.data.user.status
-        };
-        localStorage.setItem('user', JSON.stringify(userToStore));
-        // Use replace to avoid back button issues
-        window.location.replace('/ClientDashboard');
-      } else {
-        setError(response.data?.error || 'שגיאה בתהליך הכניסה');
-        setIsLoading(false);
-      }
+          console.log('[CLIENT] [clientLogin] Response:', response.status, response.data);
+
+          if (response.data && response.data.user) {
+            const userToStore = {
+              id: response.data.user.id,
+              full_name: response.data.user.full_name,
+              email: response.data.user.email,
+              phone: response.data.user.phone,
+              status: response.data.user.status
+            };
+            localStorage.setItem('user', JSON.stringify(userToStore));
+            console.log('[CLIENT] [clientLogin] User stored, redirecting...');
+            // Use replace to avoid back button issues
+            window.location.replace('/ClientDashboard');
+          } else {
+            const errorMsg = response.data?.error || 'שגיאה בתהליך הכניסה';
+            const errorId = response.data?.errorId || 'unknown';
+            console.error('[CLIENT] [clientLogin] Error:', errorMsg, 'ID:', errorId);
+            setError(`${errorMsg}${errorId && errorId !== 'unknown' ? ` (${errorId})` : ''}`);
+            setIsLoading(false);
+          }
     } catch (err) {
       console.error('Login error:', err);
       const errorMsg = err.response?.data?.error || err.message || 'שגיאה בתהליך הכניסה';
