@@ -11,6 +11,7 @@ function ClientLogin() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [existingUser, setExistingUser] = useState(null);
 
   // Check if user is already logged in or returning from Google OAuth
   React.useEffect(() => {
@@ -40,7 +41,7 @@ function ClientLogin() {
     const user = localStorage.getItem('user');
     const skipRedirect = new URLSearchParams(window.location.search).get('logout') === 'true';
     if (user && !skipRedirect) {
-      window.location.href = '/ClientDashboard';
+      setExistingUser(JSON.parse(user));
     }
   }, []);
 
