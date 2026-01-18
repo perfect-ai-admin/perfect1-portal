@@ -81,7 +81,30 @@ export default function OsekPaturLanding() {
   };
 
   const scrollToForm = () => {
+    setShowPopup(false);
     document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handlePopupSubmit = async (e) => {
+    e.preventDefault();
+    if (!popupFormData.name || !popupFormData.phone) {
+      alert('אנא מלא שם וטלפון');
+      return;
+    }
+
+    try {
+      await base44.entities.Lead.create({
+        ...popupFormData,
+        source_page: 'פופאפ - 35% גלילה',
+        status: 'new'
+      });
+      setShowPopup(false);
+      alert('תודה! נצור קשר בקרוב');
+      setPopupFormData({ name: '', phone: '', email: '' });
+    } catch (err) {
+      console.error(err);
+      alert('שגיאה בשליחה, אנא נסה שוב');
+    }
   };
 
   // Sticky CTA Logic & Popup Trigger
