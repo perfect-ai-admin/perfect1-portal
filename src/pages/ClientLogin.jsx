@@ -28,20 +28,17 @@ export default function ClientLogin() {
             return;
           }
 
-          // Search for Lead by phone - try multiple formats
-          let leads = await base44.entities.Lead.filter({ phone: cleanPhone });
+          // Get all leads and compare phone numbers flexibly
+          const allLeads = await base44.entities.Lead.list();
 
-          // If not found, try with leading 0
-          if (leads.length === 0 && !cleanPhone.startsWith('0')) {
-            leads = await base44.entities.Lead.filter({ phone: '0' + cleanPhone });
-          }
+          // Function to normalize phone for comparison
+          const normalizePhone = (p) => p.replace(/[^0-9]/g, '');
+          const queryPhoneNorm = normalizePhone(cleanPhone);
 
-          // If not found, try without leading 0
-          if (leads.length === 0 && cleanPhone.startsWith('0')) {
-            leads = await base44.entities.Lead.filter({ phone: cleanPhone.substring(1) });
-          }
+          // Find matching lead
+          const lead = allLeads.find(l => normalizePhone(l.phone) === queryPhoneNorm);
 
-          if (leads.length === 0) {
+          if (!lead) {
             setError('מספר טלפון לא נמצא במערכת');
             setIsLoading(false);
             return;
