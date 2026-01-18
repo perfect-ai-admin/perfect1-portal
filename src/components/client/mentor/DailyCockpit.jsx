@@ -332,7 +332,7 @@ export default function DailyCockpit({ onNavigate }) {
                             <Target className="w-4 h-4 text-amber-600" />
                         </div>
                         <span className="text-sm font-medium text-gray-700">
-                             {allGoals.filter(g => g.status === 'active').length} מטרות פעילות
+                             {allGoals.filter(g => ['active', 'selected'].includes(g.status)).length} מטרות פעילות
                         </span>
                     </div>
                 )}
