@@ -120,18 +120,78 @@ Deno.serve(async (req) => {
             });
         }
         
-        // Create redirect URL with user data encoded
-        const userData = JSON.stringify(user);
-        const encodedUser = btoa(userData);
+        // Return HTML that handles auth directly
+        const userJson = JSON.stringify(user);
+        const escapedJson = userJson
+            .replace(/\\/g, '\\\\')
+            .replace(/`/g, '\\`')
+            .replace(/\$/g, '\\$');
         
-        // Store user data in URL and redirect to handler page
-        const redirectUrl = `/ClientAuthHandler?user=${encodedUser}`;
+        const html = `<!DOCTYPE html>
+<html>
+<head>
+    <title>מתחבר...</title>
+    <meta charset="utf-8">
+    <style>
+        * { margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            text-align: center;
+            color: white;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        p { font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <p>מתחבר למערכת...</p>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            try {
+                const userData = ${userJson};
+                if (!userData || typeof userData !== 'object' || !userData.id) {
+                    console.error('Invalid user data:', userData);
+                    throw new Error('Invalid user data');
+                }
+                localStorage.setItem('user', JSON.stringify(userData));
+                // Use window.location.replace to avoid adding to history
+                window.location.replace('/ClientDashboard');
+            } catch (error) {
+                console.error('Auth error:', error);
+                window.location.replace('/ClientLogin?error=' + encodeURIComponent(error.message));
+            }
+        });
+    </script>
+</body>
+</html>`;
         
-        return new Response(null, {
-            status: 302,
+        return new Response(html, {
+            status: 200,
             headers: { 
-                'Location': redirectUrl,
-                'Cache-Control': 'no-cache, no-store, must-revalidate'
+                'Content-Type': 'text/html; charset=utf-8',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'X-Content-Type-Options': 'nosniff'
             }
         });
         
