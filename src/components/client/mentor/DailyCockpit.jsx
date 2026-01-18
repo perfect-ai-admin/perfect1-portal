@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { 
   Target, 
   MessageSquare, 
@@ -28,23 +29,18 @@ export default function DailyCockpit({ onNavigate }) {
   const [businessState, setBusinessState] = useState(null);
 
   useEffect(() => {
-    loadData();
+    loadUserData();
     
-    // Subscribe to changes in goals to keep the dashboard updated in real-time
-    const unsubscribe = base44.entities.UserGoal.subscribe(() => {
-        loadData();
-    });
-    // Also subscribe to DailyFocus updates
+    // Subscribe to DailyFocus updates
     const unsubscribeFocus = base44.entities.DailyFocus.subscribe(() => {
-        loadData();
+        loadUserData();
     });
     return () => {
-        unsubscribe();
         unsubscribeFocus();
     };
   }, []);
 
-  const loadData = async () => {
+  const loadUserData = async () => {
     try {
       const user = await base44.auth.me();
       setUserName(user.full_name?.split(' ')[0] || 'חבר');
@@ -58,28 +54,55 @@ export default function DailyCockpit({ onNavigate }) {
       } else {
         setDailyFocus(null);
       }
-
-      // Robustly fetch the primary goal:
-      // 1. Fetch all relevant goals for the user
-      // 2. Look for explicit isPrimary=true
-      // 3. Fallback to the most recent active/selected goal (matching Goals Tab logic)
-      const fetchedGoals = await base44.entities.UserGoal.filter({ user_id: user.id }, '-created_date', 50);
-      setAllGoals(fetchedGoals || []);
-      
-      const activeGoals = fetchedGoals.filter(g => ['active', 'selected'].includes(g.status));
-      
-      let mainGoal = activeGoals.find(g => g.isPrimary);
-      if (!mainGoal && activeGoals.length > 0) {
-          mainGoal = activeGoals[0]; // Fallback to the top/most recent goal
-      }
-      setPrimaryGoal(mainGoal || null);
-
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
+
+  // Use useQuery for goals to ensure sync with GoalsTab
+  const { data: fetchedGoals, isLoading: isLoadingGoals, refetch: refetchGoals } = useQuery({
+    queryKey: ['userGoals'], // Using general key to match GoalsTab invalidation
+    queryFn: async () => {
+        const user = await base44.auth.me();
+        if (!user) return [];
+        return await base44.entities.UserGoal.filter({ user_id: user.id }, '-created_date', 50);
+    },
+    staleTime: 1000 * 60, // 1 minute
+  });
+
+  // Effect to process goals when fetched
+  useEffect(() => {
+    if (fetchedGoals) {
+        setAllGoals(fetchedGoals);
+        
+        // Filter goals: active, selected, or completed
+        const relevantGoals = fetchedGoals.filter(g => ['active', 'selected', 'completed'].includes(g.status));
+        
+        // 1. Look for explicit primary goal
+        let mainGoal = relevantGoals.find(g => g.isPrimary);
+        
+        // 2. If no primary, look for the most recent active/selected one
+        if (!mainGoal) {
+            mainGoal = relevantGoals.find(g => ['active', 'selected'].includes(g.status));
+        }
+
+        // 3. If still no goal, fallback to the most recent completed one
+        if (!mainGoal && relevantGoals.length > 0) {
+            mainGoal = relevantGoals[0];
+        }
+
+        setPrimaryGoal(mainGoal || null);
+        setLoading(false);
+    }
+  }, [fetchedGoals]);
+
+  // Subscribe to changes in goals
+  useEffect(() => {
+      const unsubscribe = base44.entities.UserGoal.subscribe(() => {
+          refetchGoals();
+      });
+      return () => unsubscribe();
+  }, [refetchGoals]);
 
   const getTimeGreeting = () => {
     const hour = new Date().getHours();
