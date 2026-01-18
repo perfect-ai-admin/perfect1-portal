@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Lock, Phone, ArrowRight, Sparkles, Zap } from 'lucide-react';
+import { BUILD_VERSION } from '@/components/BuildVersion';
 
 function ClientLogin() {
   const [phone, setPhone] = useState('');
@@ -104,28 +105,34 @@ function ClientLogin() {
     ));
 
   const handleGoogleOAuthCallback = async (code) => {
-    try {
-      const response = await base44.functions.invoke('googleAuthCallback', { code });
+          try {
+            console.log('[CLIENT] [STEP: googleAuthCallback_invoke] Calling backend...');
+            const response = await base44.functions.invoke('googleAuthCallback', { code });
+            console.log('[CLIENT] [STEP: googleAuthCallback_response] Status:', response.status);
 
-          if (response.data && response.data.user) {
-            const userToStore = {
-              id: response.data.user.id,
-              full_name: response.data.user.full_name,
-              email: response.data.user.email,
-              status: response.data.user.status
-            };
-            localStorage.setItem('user', JSON.stringify(userToStore));
-            window.location.replace('/ClientDashboard');
-          } else {
-            setError(response.data?.error || 'שגיאה בתהליך ההתחברות');
+                if (response.data && response.data.user) {
+                  console.log('[CLIENT] [STEP: googleAuthCallback_success] User created/found');
+                  const userToStore = {
+                    id: response.data.user.id,
+                    full_name: response.data.user.full_name,
+                    email: response.data.user.email,
+                    status: response.data.user.status
+                  };
+                  localStorage.setItem('user', JSON.stringify(userToStore));
+                  window.location.replace('/ClientDashboard');
+                } else {
+                  console.error('[CLIENT] [STEP: googleAuthCallback_error] Invalid response:', response.data);
+                  const errorMsg = response.data?.error || response.data?.details || 'שגיאה בתהליך ההתחברות';
+                  setError(`${errorMsg}\nErrorId: ${response.data?.step || 'unknown'}`);
+                  setIsLoading(false);
+                }
+          } catch (error) {
+            console.error('[CLIENT] [STEP: googleAuthCallback_catch]', error);
+            const errorId = `ERR-${Date.now()}`;
+            setError(`שגיאה בתהליך ההתחברות\nID: ${errorId}\nפרטים: ${error.message}`);
             setIsLoading(false);
           }
-    } catch (error) {
-      console.error('Google OAuth callback error:', error);
-      setError(`שגיאה בתהליך ההתחברות: ${error.message}`);
-      setIsLoading(false);
-    }
-  };
+        };
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -156,9 +163,14 @@ function ClientLogin() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-white flex" dir="rtl">
+      <div className="min-h-screen bg-white flex flex-col" dir="rtl">
+         {/* Build Version Badge */}
+         <div className="text-xs text-gray-400 text-center py-1 border-b border-gray-100">
+           {BUILD_VERSION}
+         </div>
+
          {/* Left Side - Login Form */}
-         <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
+         <div className="flex-1 w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
            <div className="w-full max-w-[380px] space-y-6">
              <div className="text-center">
                <div className="inline-flex items-center gap-2 mb-4 justify-center">
