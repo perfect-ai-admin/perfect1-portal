@@ -222,7 +222,7 @@ export default function OsekPaturLanding() {
                 </h1>
 
                 <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                   שירות ייעוץ וליווי פרטי עד לפתיחת העוסק בהצלחה
+                   שירות ייעוץ וליווי עד לפתיחת העוסק בהצלחה
                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
