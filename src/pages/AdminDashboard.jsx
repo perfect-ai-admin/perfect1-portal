@@ -149,17 +149,21 @@ export default function AdminDashboard() {
                             <UsersTable loginData={loginData} />
                         </TabsContent>
 
-                        <TabsContent value="goals">
-                            <GoalsManager />
-                        </TabsContent>
+                        {user?.role === 'admin' && (
+                            <>
+                                <TabsContent value="goals">
+                                    <GoalsManager />
+                                </TabsContent>
 
-                        <TabsContent value="plans">
-                            <PlansManager />
-                        </TabsContent>
+                                <TabsContent value="plans">
+                                    <PlansManager />
+                                </TabsContent>
 
-                        <TabsContent value="activity">
-                            <ActivityLogView />
-                        </TabsContent>
+                                <TabsContent value="activity">
+                                    <ActivityLogView />
+                                </TabsContent>
+                            </>
+                        )}
                     </Tabs>
                 </div>
             </div>
