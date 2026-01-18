@@ -173,22 +173,22 @@ function ClientLogin() {
             <div className="space-y-4">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    מספר טלפון
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                      type="tel"
-                      placeholder="05X-XXXXXXX"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                </div>
+                   <label className="block text-sm font-medium text-gray-700">
+                     מייל או מספר טלפון
+                   </label>
+                   <div className="relative">
+                     <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                     <Input
+                       type="text"
+                       placeholder="example@email.com או 05X-XXXXXXX"
+                       value={phone}
+                       onChange={(e) => setPhone(e.target.value)}
+                       className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
+                       required
+                       disabled={isLoading}
+                     />
+                   </div>
+                 </div>
 
                 <div className="space-y-1.5">
                   <label className="block text-sm font-medium text-gray-700">
