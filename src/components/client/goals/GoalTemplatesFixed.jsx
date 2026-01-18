@@ -274,6 +274,25 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       return;
     }
 
+    setIsCreating(true);
+    try {
+    // Generate AI insight if it's a new goal
+    let generatedInsight = editingGoal?.aiInsight || 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!';
+
+    if (!editingGoal) {
+        try {
+          const { data } = await base44.functions.invoke('generateGoalInsight', {
+              title: goalTitle,
+              customAnswers: customAnswers
+          });
+          if (data?.insight) {
+              generatedInsight = data.insight;
+          }
+        } catch (err) {
+          console.error("Failed to generate AI insight, using default", err);
+        }
+    }
+
     const goalData = {
       id: editingGoal?.id, // Let DB generate ID if null, or keep existing
       category: selectedTemplate.id,
@@ -285,16 +304,16 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       urgency: urgency,
       status: editingGoal?.status || 'active',
       isPrimary: isPrimary && !hasPrimaryGoal,
-      aiInsight: editingGoal?.aiInsight || 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
+      aiInsight: generatedInsight,
+      // Map aiInsight to actionHint for HeroGoal display if needed, or keep separate field
+      actionHint: generatedInsight 
     };
 
-    setIsCreating(true);
-    try {
-      await onCreateGoal(goalData, !!editingGoal);
+    await onCreateGoal(goalData, !!editingGoal);
     } catch (error) {
-      console.error("Failed to create goal:", error);
+    console.error("Failed to create goal:", error);
     } finally {
-      setIsCreating(false);
+    setIsCreating(false);
     }
   };
 
