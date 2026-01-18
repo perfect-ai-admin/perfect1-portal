@@ -43,6 +43,11 @@ Deno.serve(async (req) => {
 
     // Verify password (use default password if not set)
     const expectedPassword = lead.client_password || '123456';
+    console.log('Password check:', {
+      provided: password,
+      expected: expectedPassword,
+      match: password === expectedPassword
+    });
     if (password !== expectedPassword) {
       return Response.json({ error: 'סיסמה שגויה' }, { status: 401 });
     }
