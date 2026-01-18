@@ -22,13 +22,13 @@ export default function GoogleCampaign({ onBack, onComplete }) {
   };
 
   const renderStep1_Connect = () => (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900">חיבור ל-Google Ads</h3>
-        <p className="text-sm text-gray-500">חבר את חשבון הפרסום שלך בגוגל</p>
+    <div className="space-y-4 pt-2">
+      <div className="text-center mb-4">
+        <h3 className="text-lg font-bold text-gray-900">חיבור ל-Google Ads</h3>
+        <p className="text-xs text-gray-500">חבר את חשבון הפרסום שלך בגוגל</p>
       </div>
 
-      <div className="bg-white border border-gray-100 shadow-sm rounded-xl p-6 flex flex-col items-center text-center space-y-4">
+      <div className="bg-white border border-gray-100 shadow-sm rounded-xl p-5 flex flex-col items-center text-center space-y-3">
         <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-2">
             <Search className="w-8 h-8 text-blue-600" />
         </div>

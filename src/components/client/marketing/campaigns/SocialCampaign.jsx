@@ -32,13 +32,13 @@ export default function SocialCampaign({ onBack, onComplete }) {
   };
 
   const renderStep1_Connect = () => (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900">חיבור לרשתות חברתיות</h3>
-        <p className="text-sm text-gray-500">חבר את הנכסים הדיגיטליים שלך כדי להריץ קמפיינים</p>
+    <div className="space-y-4 pt-2">
+      <div className="text-center mb-4">
+        <h3 className="text-lg font-bold text-gray-900">חיבור לרשתות חברתיות</h3>
+        <p className="text-xs text-gray-500">חבר את הנכסים הדיגיטליים שלך כדי להריץ קמפיינים</p>
       </div>
 
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 flex flex-col items-center text-center space-y-4">
+      <div className="bg-blue-50 border border-blue-100 rounded-xl p-5 flex flex-col items-center text-center space-y-3">
         <div className="flex -space-x-2 space-x-reverse">
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm z-10">
             <Facebook className="w-6 h-6 text-blue-600" />

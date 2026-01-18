@@ -141,13 +141,17 @@ export default function CampaignBuilder({ onClose }) {
 
   if (step === 2) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        <Button variant="ghost" onClick={() => setStep(1)} className="gap-2 pl-0 hover:bg-transparent text-gray-500">
-            <ChevronRight className="w-4 h-4" />
-            חזרה לבחירת תבנית
-        </Button>
-        
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+      <div className="max-w-3xl mx-auto px-4 py-4 relative">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-8 relative">
+            <Button 
+                variant="ghost" 
+                onClick={() => setStep(1)} 
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 gap-1 p-0 h-auto text-xs font-normal z-10"
+            >
+                <ChevronRight className="w-3 h-3" />
+                חזרה לתבניות
+            </Button>
+
             {selectedTemplate?.id === 'social_media' && (
                 <SocialCampaign 
                     onBack={() => setStep(1)}

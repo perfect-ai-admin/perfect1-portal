@@ -15,17 +15,17 @@ export default function EmailCampaign({ onBack, onComplete }) {
   });
 
   return (
-    <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-6">
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium mb-3">
+    <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-4 pt-2">
+      <div className="text-center mb-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-medium mb-2">
             <CheckCircle2 className="w-3 h-3" />
             מערכת הדיוור מחוברת
         </div>
-        <h3 className="text-xl font-bold text-gray-900">יצירת קמפיין מייל</h3>
-        <p className="text-sm text-gray-500">שלח מסר אישי ללקוחות שלך</p>
+        <h3 className="text-lg font-bold text-gray-900">יצירת קמפיין מייל</h3>
+        <p className="text-xs text-gray-500">שלח מסר אישי ללקוחות שלך</p>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         <div className="space-y-2">
             <Label className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-purple-500" />
