@@ -211,6 +211,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
       setTargetValue(editingGoal.target.toString());
       setDeadline(editingGoal.deadline || '');
       setTimeframe(editingGoal.timeframe || 'month');
+      setUrgency(editingGoal.urgency || 'medium');
       setIsPrimary(editingGoal.isPrimary || false);
       
       // Find template by category
