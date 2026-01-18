@@ -7,7 +7,7 @@ export default function GoalsFloatingButton({ onNavigate, onAddGoal, goals = [] 
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = React.useRef(null);
   
-  const activeGoals = goals;
+  const activeGoals = goals.filter(g => g.status === 'active');
 
   const handleAddGoal = () => {
     setIsOpen(false);
