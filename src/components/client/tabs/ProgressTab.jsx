@@ -13,13 +13,19 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
 import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
+import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import { useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 
-export default function ProgressTab({ data, onNavigate }) {
+export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [activeTaskQuestionnaire, setActiveTaskQuestionnaire] = useState(null);
   
+  // State for Goal Creation specific to Step
+  const [showGoalCreation, setShowGoalCreation] = useState(false);
+  const [goalTemplateForStep, setGoalTemplateForStep] = useState(null);
+
   // Use dynamic tasks if available, otherwise default milestones
   const activeMilestones = data?.client_tasks?.length > 0 
     ? data.client_tasks 
@@ -53,6 +59,80 @@ export default function ProgressTab({ data, onNavigate }) {
   const handleQuestionnaireComplete = () => {
     setShowQuestionnaire(false);
     queryClient.invalidateQueries({ queryKey: ['user', data.id] });
+  };
+
+  // Smart mapping function
+  const getGoalTemplateForTask = (task) => {
+    // Basic structure for custom template
+    const baseTemplate = {
+      id: `task_goal_${task.id}`,
+      name: task.title,
+      icon: Target,
+      color: 'from-blue-500 to-indigo-600',
+      description: task.description || 'המטרה הבאה שלך במסע העסקי',
+      defaultTitle: task.title,
+      examples: [
+        { title: `להשלים את "${task.title}" בהצלחה` },
+        { title: `לסיים את "${task.title}" עד סוף החודש` }
+      ],
+      questions: [
+        { id: 'blocker', label: 'מה האתגר העיקרי שמונע ממך לסיים את זה?', placeholder: 'לדוגמה: חוסר זמן / ידע...' },
+        { id: 'success_criteria', label: 'איך תדע שהמשימה הושלמה בהצלחה?', placeholder: 'לדוגמה: כשהלקוח ישלם...' }
+      ]
+    };
+
+    // Specific overrides based on keywords or IDs
+    // We can expand this logic significantly based on Hebrew keywords
+    const title = task.title || '';
+    
+    if (title.includes('לקוח') || title.includes('ראשון')) {
+       baseTemplate.name = 'גיוס הלקוח הראשון';
+       baseTemplate.icon = Sparkles;
+       baseTemplate.questions = [
+         { id: 'who', label: 'מי הלקוח האידיאלי הראשון שלך?', placeholder: 'לדוגמה: חברים / משפחה...' },
+         { id: 'offer', label: 'מה השירות שאתה הולך להציע לו?', placeholder: 'לדוגמה: ייעוץ במחיר מוזל...' }
+       ];
+    } else if (title.includes('עוסק פטור') || title.includes('תיק')) {
+       baseTemplate.name = 'פתיחת תיק עוסק פטור';
+       baseTemplate.questions = [
+         { id: 'bureaucracy', label: 'האם כבר נרשמת באתר רשות המסים?', placeholder: 'כן / לא / בתהליך' },
+         { id: 'date', label: 'מתי אתה מתכנן לסיים את הרישום?', placeholder: 'לדוגמה: יום ראשון הקרוב' }
+       ];
+    } else if (title.includes('רעיון') || title.includes('גיבוש')) {
+       baseTemplate.name = 'גיבוש הרעיון העסקי';
+       baseTemplate.questions = [
+         { id: 'core_idea', label: 'במשפט אחד, מה הרעיון?', placeholder: 'לדוגמה: עסק לצילום אירועים...' },
+         { id: 'validation', label: 'איך תבדוק אם אנשים רוצים את זה?', placeholder: 'לדוגמה: אשאל 5 חברים...' }
+       ];
+    }
+
+    return baseTemplate;
+  };
+
+  const handleStartNextStep = () => {
+    if (!nextStep) return;
+    const template = getGoalTemplateForTask(nextStep);
+    setGoalTemplateForStep(template);
+    setShowGoalCreation(true);
+  };
+
+  const handleGoalCreated = async (newGoal) => {
+    try {
+      // Save goal directly
+      const goalToCreate = { ...newGoal, user_id: user.id };
+      await base44.entities.UserGoal.create(goalToCreate);
+      
+      // Optionally invalidate goals query if needed, mainly need to ensure UI feedback
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      
+      // Close dialog
+      setShowGoalCreation(false);
+      setGoalTemplateForStep(null);
+      
+      // Maybe show celebration or confirmation
+    } catch (error) {
+      console.error("Error creating goal from journey:", error);
+    }
   };
 
   if (!isJourneyCompleted) {
@@ -218,7 +298,7 @@ export default function ProgressTab({ data, onNavigate }) {
               <NextStepCard 
                 step={nextStep} 
                 onWhyClick={scrollToWhyMatters} 
-                onAction={() => onNavigate('goals', { openAddGoal: true })}
+                onAction={handleStartNextStep}
               />
             </div>
           </div>
@@ -292,7 +372,7 @@ export default function ProgressTab({ data, onNavigate }) {
                  </h2>
                  <NextStepCard 
                     step={nextStep} 
-                    onAction={() => onNavigate('goals', { openAddGoal: true })}
+                    onAction={handleStartNextStep}
                  />
                </div>
 
@@ -342,6 +422,20 @@ export default function ProgressTab({ data, onNavigate }) {
                 setActiveTaskQuestionnaire(null);
                 // Optionally trigger celebration or refresh
               }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Specific Goal Creation Dialog for Current Step */}
+      <Dialog open={showGoalCreation} onOpenChange={setShowGoalCreation}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-lg p-0 border-0 bg-transparent">
+          {showGoalCreation && goalTemplateForStep && (
+            <GoalTemplatesFixed
+              user={user}
+              onCreateGoal={handleGoalCreated}
+              onClose={() => setShowGoalCreation(false)}
+              initialTemplate={goalTemplateForStep}
             />
           )}
         </DialogContent>
