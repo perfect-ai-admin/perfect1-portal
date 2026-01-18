@@ -17,22 +17,31 @@ import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children, currentPageName }) {
-    const location = useLocation();
+          const location = useLocation();
+          const navigate = useNavigate();
 
-    // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
-    if (currentPageName === 'SystemLogicMap') {
-      return children;
-    }
+          // Check if user is logged in and redirect to ClientDashboard
+          useEffect(() => {
+            const user = localStorage.getItem('user');
+            if (user && currentPageName === 'Home') {
+              navigate(createPageUrl('ClientDashboard'));
+            }
+          }, [currentPageName, navigate]);
 
-    // ClientLogin - עמוד כניסה עצמאי
-    if (currentPageName === 'ClientLogin') {
-      return (
-        <HelmetProvider>
-          {children}
-          <Toaster />
-        </HelmetProvider>
-      );
-    }
+          // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
+          if (currentPageName === 'SystemLogicMap') {
+            return children;
+          }
+
+          // ClientLogin - עמוד כניסה עצמאי
+          if (currentPageName === 'ClientLogin') {
+            return (
+              <HelmetProvider>
+                {children}
+                <Toaster />
+              </HelmetProvider>
+            );
+          }
 
     // ClientDashboard / PricingPerfectBizAI - אל תציג Header רגיל (יש להם Header משלהם)
     if (currentPageName === 'ClientDashboard' || currentPageName === 'PricingPerfectBizAI') {
