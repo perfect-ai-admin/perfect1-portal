@@ -71,27 +71,70 @@ export default function ClientDashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Check authentication
+  // Check authentication via /me endpoint with retry logic
   useEffect(() => {
-    try {
+    const verifyUser = async () => {
       const storedUser = localStorage.getItem('user');
       if (!storedUser) {
+        console.log('[ClientDashboard] No stored user, redirecting to login');
         navigate(createPageUrl('ClientLogin'));
         return;
       }
-      const parsed = JSON.parse(storedUser);
-      if (!parsed?.id) {
-        throw new Error('Invalid user data - missing id');
+      
+      try {
+        const parsed = JSON.parse(storedUser);
+        if (!parsed?.id) {
+          throw new Error('Invalid user data - missing id');
+        }
+        
+        // Bootstrap: verify with /me endpoint (with retries for new users)
+        const maxRetries = 6; // ~30 seconds with exponential backoff
+        let lastError = null;
+        
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+          try {
+            console.log(`[ClientDashboard] Verifying user with /me (attempt ${attempt + 1}/${maxRetries})...`);
+            const response = await base44.functions.invoke('me', {});
+            
+            if (response.data?.status === 'ready') {
+              console.log('[ClientDashboard] User ready, setting user data');
+              if (!parsed.full_name) {
+                parsed.full_name = parsed.email?.split('@')[0] || 'משתמש';
+              }
+              setUser(parsed);
+              return;
+            } else if (response.data?.status === 'pending') {
+              console.log(`[ClientDashboard] User still pending, retrying in ${Math.pow(2, attempt) * 500}ms...`);
+              lastError = 'User account still being created';
+              // Wait with exponential backoff before retry
+              await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 500));
+              continue;
+            } else {
+              throw new Error('Invalid /me response: ' + JSON.stringify(response.data));
+            }
+          } catch (meErr) {
+            console.error(`[ClientDashboard] /me call failed (attempt ${attempt + 1}):`, meErr.message);
+            lastError = meErr.message;
+            
+            if (attempt === maxRetries - 1) {
+              console.error('[ClientDashboard] Max retries reached');
+              throw lastError;
+            }
+            
+            // Exponential backoff
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 500));
+          }
+        }
+        
+        throw new Error(lastError || 'User verification timed out');
+      } catch (error) {
+        console.error('[ClientDashboard] Auth verification failed:', error);
+        localStorage.removeItem('user');
+        navigate(createPageUrl('ClientLogin'));
       }
-      if (!parsed?.full_name) {
-        parsed.full_name = parsed.email?.split('@')[0] || 'משתמש';
-      }
-      setUser(parsed);
-    } catch (error) {
-      console.error('Auth error:', error);
-      localStorage.removeItem('user');
-      navigate(createPageUrl('ClientLogin'));
-    }
+    };
+    
+    verifyUser();
   }, [navigate]);
 
   // Fetch user data - for new users, skip DB fetch and use localStorage data
