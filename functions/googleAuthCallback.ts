@@ -116,10 +116,14 @@ Deno.serve(async (req) => {
             }
         }
         
-        // If still no plan, use a safe default placeholder
+        // If still no plan, HARD FAIL - plan MUST exist
         if (!freePlan) {
-            console.warn('[STEP: plan_fallback] Could not find/create plan, using placeholder ID');
-            freePlan = { id: 'free_default_placeholder' };
+            console.error('[STEP: plan_fallback] CRITICAL: Could not find or create free plan');
+            return Response.json({
+                error: 'System configuration error: free plan not available',
+                step: 'plan_creation',
+                details: 'Free plan could not be created or found'
+            }, { status: 503 });
         }
 
         // Find or create user - with detailed validation
@@ -152,8 +156,8 @@ Deno.serve(async (req) => {
                     console.warn('[STEP: user_update] Non-critical: could not update last_login_at:', updateErr.message);
                 }
             } else {
-                // NEW USER - Create with absolute minimum required fields
-                console.log('[STEP: user_create] Creating new user...');
+                // NEW USER - ATOMIC UPSERT (find-or-create)
+                console.log('[STEP: user_create] Attempting atomic create or find for:', normalizedEmail);
                 
                 const now = new Date().toISOString();
                 const newUserData = {
@@ -172,15 +176,26 @@ Deno.serve(async (req) => {
                     max_active_goals: 1
                 };
                 
-                console.log('[STEP: user_create] Payload:', JSON.stringify(newUserData));
+                console.log('[STEP: user_create] Fields to create:', Object.keys(newUserData).join(', '));
                 
                 try {
                     user = await base44.asServiceRole.entities.User.create(newUserData);
-                    console.log('[STEP: user_create] ✓ User created successfully, ID:', user.id);
+                    console.log('[STEP: user_create] ✓ User created, ID:', user.id);
                 } catch (createErr) {
-                    console.error('[STEP: user_create] FAILED:', createErr.message);
-                    console.error('[STEP: user_create] Error details:', JSON.stringify(createErr));
-                    throw createErr;
+                    // If unique constraint fails, user likely already exists
+                    if (createErr.message?.includes('unique') || createErr.message?.includes('UNIQUE') || createErr.code === 'UNIQUE_CONSTRAINT') {
+                        console.log('[STEP: user_create] User already exists (UNIQUE constraint), fetching...');
+                        const retryUsers = await base44.asServiceRole.entities.User.filter({ email: normalizedEmail });
+                        if (retryUsers && retryUsers.length > 0) {
+                            user = retryUsers[0];
+                            console.log('[STEP: user_create] ✓ User found on retry, ID:', user.id);
+                        } else {
+                            throw new Error('User creation failed and re-fetch also failed');
+                        }
+                    } else {
+                        console.error('[STEP: user_create] Create failed:', createErr.message);
+                        throw createErr;
+                    }
                 }
             }
         } catch (userErr) {
