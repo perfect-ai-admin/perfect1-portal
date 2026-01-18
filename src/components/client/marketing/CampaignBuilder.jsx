@@ -21,6 +21,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import SocialCampaign from './campaigns/SocialCampaign';
+import GoogleCampaign from './campaigns/GoogleCampaign';
+import EmailCampaign from './campaigns/EmailCampaign';
 
 const TEMPLATES = [
   {
@@ -150,109 +153,25 @@ export default function CampaignBuilder({ onClose }) {
             חזרה לבחירת תבנית
         </Button>
         
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-8">
-          <div>
-              <div className="flex items-center gap-3 mb-2">
-                  <div className={`p-2 rounded-lg ${selectedTemplate.bgColor}`}>
-                      <selectedTemplate.icon className={`w-5 h-5 ${selectedTemplate.color}`} />
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">הגדרת {selectedTemplate.title}</h2>
-              </div>
-              <p className="text-gray-500 text-sm">מלא את הפרטים הבאים כדי שנוכל לבנות עבורך את הקמפיין המושלם.</p>
-          </div>
-          
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                <Label className="text-sm font-semibold text-gray-700">שם הקמפיין</Label>
-                <Input
-                    value={campaignData.name}
-                    onChange={(e) => setCampaignData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="למשל: 'קמפיין קיץ 2026'"
-                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+            {selectedTemplate?.id === 'social_media' && (
+                <SocialCampaign 
+                    onBack={() => setStep(1)}
+                    onComplete={() => setStep(3)}
                 />
-                </div>
-
-                <div className="space-y-2">
-                <Label className="text-sm font-semibold text-gray-700">מטרת הקמפיין</Label>
-                <Select value={campaignData.goal} onValueChange={(val) => setCampaignData(prev => ({ ...prev, goal: val }))}>
-                    <SelectTrigger className="bg-gray-50 border-gray-200 focus:bg-white transition-colors">
-                    <SelectValue placeholder="בחר מטרה" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    <SelectItem value="awareness">חשיפה ומודעות</SelectItem>
-                    <SelectItem value="leads">יצירת לידים</SelectItem>
-                    <SelectItem value="sales">מכירות ישירות</SelectItem>
-                    <SelectItem value="engagement">מעורבות קהל</SelectItem>
-                    </SelectContent>
-                </Select>
-                </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                <Label className="text-sm font-semibold text-gray-700">תקציב (₪)</Label>
-                <div className="relative">
-                    <Input
-                        type="number"
-                        value={campaignData.budget}
-                        onChange={(e) => setCampaignData(prev => ({ ...prev, budget: e.target.value }))}
-                        placeholder={`מומלץ: ${selectedTemplate?.suggestedBudget}`}
-                        className="bg-gray-50 border-gray-200 focus:bg-white transition-colors pl-8"
-                    />
-                    <DollarSign className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
-                </div>
-                </div>
-
-                <div className="space-y-2">
-                <Label className="text-sm font-semibold text-gray-700">משך הקמפיין</Label>
-                <Select value={campaignData.duration} onValueChange={(val) => setCampaignData(prev => ({ ...prev, duration: val }))}>
-                    <SelectTrigger className="bg-gray-50 border-gray-200 focus:bg-white transition-colors">
-                    <SelectValue placeholder="בחר משך זמן" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    <SelectItem value="week">שבוע</SelectItem>
-                    <SelectItem value="2weeks">שבועיים</SelectItem>
-                    <SelectItem value="month">חודש</SelectItem>
-                    <SelectItem value="3months">3 חודשים</SelectItem>
-                    </SelectContent>
-                </Select>
-                </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-sm font-semibold text-gray-700">קהל יעד</Label>
-              <Textarea
-                value={campaignData.targetAudience}
-                onChange={(e) => setCampaignData(prev => ({ ...prev, targetAudience: e.target.value }))}
-                placeholder="תאר את קהל היעד שלך (גיל, מיקום, תחומי עניין...)"
-                rows={3}
-                className="bg-gray-50 border-gray-200 focus:bg-white transition-colors resize-none"
-              />
-            </div>
-          </div>
-
-          <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl flex gap-4 items-start">
-            <div className="bg-blue-100 p-2 rounded-full shrink-0">
-                <Target className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-                <h4 className="font-bold text-blue-900 mb-1 text-sm">💡 חישוב ROI משוער</h4>
-                <p className="text-xs text-blue-800 leading-relaxed">
-                בהתבסס על התקציב שהגדרת ({campaignData.budget ? `₪${campaignData.budget}` : '___'}), 
-                אנחנו מעריכים שתוכל להגיע ל-<span className="font-bold">{campaignData.budget ? Math.round(parseInt(campaignData.budget) / 50) : '___'} לקוחות פוטנציאליים</span>.
-                </p>
-            </div>
-          </div>
-
-          <Button 
-            onClick={() => setStep(3)}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 text-base shadow-lg shadow-blue-100"
-            disabled={!campaignData.name || !campaignData.goal || !campaignData.budget}
-          >
-            <Calendar className="w-5 h-5 ml-2" />
-            המשך לתזמון
-          </Button>
+            )}
+            {selectedTemplate?.id === 'google_ads' && (
+                <GoogleCampaign 
+                    onBack={() => setStep(1)}
+                    onComplete={() => setStep(3)}
+                />
+            )}
+            {selectedTemplate?.id === 'email' && (
+                <EmailCampaign 
+                    onBack={() => setStep(1)}
+                    onComplete={() => setStep(3)}
+                />
+            )}
         </div>
       </div>
     );
