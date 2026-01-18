@@ -605,9 +605,9 @@ export default function OsekPaturLanding() {
                className="text-center mb-8"
              >
                <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                 בואו נעשה את זה ביחד
+                 מתחילים עסק? פתיחת עוסק פטור עם בטחון מלא
                </h2>
-               <p className="text-xl text-white/90">השאירו פרטים - נתזמן שיחה חינם של 15 דקות כדי לדבר על המצב שלכם</p>
+               <p className="text-xl text-white/90">השאירו פרטים ותתקבלו שיחה ישירה - כדי לדעת בדיוק איפה אתם עומדים ומה הצעד הבא</p>
              </motion.div>
 
             {isSuccess ? (
