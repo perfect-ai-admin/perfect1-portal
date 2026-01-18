@@ -44,10 +44,8 @@ export default function ClientLogin() {
             return;
           }
 
-      const lead = leads[0];
-
-      // Verify password (all clients use 123456)
-      if (password !== '123456') {
+          // Verify password (all clients use 123456)
+          if (password !== '123456') {
         setError('סיסמה שגויה');
         setIsLoading(false);
         return;
