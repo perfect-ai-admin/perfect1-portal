@@ -259,7 +259,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     setGoalTitle(example.title);
   };
 
-  const handleCreate = () => {
+  const [isCreating, setIsCreating] = useState(false);
+
+  const handleCreate = async () => {
     if (!selectedTemplate || !goalTitle) return;
 
     // Check if phone number is missing (only for new goals, and if user exists)
@@ -286,7 +288,14 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       aiInsight: editingGoal?.aiInsight || 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
     };
 
-    onCreateGoal(goalData, !!editingGoal);
+    setIsCreating(true);
+    try {
+      await onCreateGoal(goalData, !!editingGoal);
+    } catch (error) {
+      console.error("Failed to create goal:", error);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const handlePhoneSubmit = async () => {
@@ -533,11 +542,20 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         <div className="flex-shrink-0 flex gap-2 px-6 py-4 border-t border-gray-200 bg-white">
           <Button 
             onClick={handleCreate} 
-            disabled={!goalTitle}
+            disabled={!goalTitle || isCreating}
             className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white"
           >
-            <Check className="w-4 h-4 ml-1" />
-            {editingGoal ? 'שמור' : 'צור'}
+            {isCreating ? (
+              <>
+                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                שומר...
+              </>
+            ) : (
+              <>
+                <Check className="w-4 h-4 ml-1" />
+                {editingGoal ? 'שמור' : 'צור'}
+              </>
+            )}
           </Button>
           <Button variant="outline" onClick={onClose} className="px-4">
             <X className="w-4 h-4" />
