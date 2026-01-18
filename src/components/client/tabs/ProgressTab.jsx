@@ -336,6 +336,7 @@ export default function ProgressTab({ data, onNavigate }) {
         <DialogContent className="max-w-md p-0 bg-transparent border-0 shadow-2xl">
           {activeTaskQuestionnaire && (
             <DynamicTaskQuestionnaire
+              key={activeTaskQuestionnaire.id || 'dynamic-task-q'}
               task={activeTaskQuestionnaire}
               onComplete={() => {
                 setActiveTaskQuestionnaire(null);

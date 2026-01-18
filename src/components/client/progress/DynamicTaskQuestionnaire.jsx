@@ -125,7 +125,9 @@ export default function DynamicTaskQuestionnaire({ task, onComplete }) {
   // Resolve configuration based on task ID or fallback to default
   const config = TASK_QUESTIONS[task?.id] || TASK_QUESTIONS['default'];
   const questions = config.questions;
-  const currentQuestion = questions[currentStep];
+  const currentQuestion = questions ? questions[currentStep] : null;
+
+  if (!currentQuestion) return null;
 
   const handleNext = (value) => {
     const newAnswers = { ...answers, [currentQuestion.id]: value };
