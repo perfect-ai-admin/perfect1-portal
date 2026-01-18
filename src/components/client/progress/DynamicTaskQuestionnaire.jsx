@@ -26,6 +26,16 @@ const TASK_QUESTIONS = {
         text: 'האם כבר חשבת על שם לעסק?',
         type: 'text',
         placeholder: 'לדוגמה: יוסי כהן - ייעוץ משכנתאות'
+      },
+      {
+        id: 'urgency',
+        text: 'מה רמת הדחיפות של המשימה?',
+        type: 'select',
+        options: [
+          { id: 'low', label: 'נמוכה (בזמן שלי)' },
+          { id: 'medium', label: 'בינונית (חשוב)' },
+          { id: 'high', label: 'גבוהה (דחוף!)' }
+        ]
       }
     ]
   },
@@ -48,6 +58,16 @@ const TASK_QUESTIONS = {
         text: 'מה השירות שעליו יוצאת החשבונית?',
         type: 'text',
         placeholder: 'לדוגמה: ייעוץ זוגי - פגישה ראשונה'
+      },
+      {
+        id: 'urgency',
+        text: 'מה רמת הדחיפות של המשימה?',
+        type: 'select',
+        options: [
+          { id: 'low', label: 'נמוכה (בזמן שלי)' },
+          { id: 'medium', label: 'בינונית (חשוב)' },
+          { id: 'high', label: 'גבוהה (דחוף!)' }
+        ]
       }
     ]
   },
@@ -70,6 +90,16 @@ const TASK_QUESTIONS = {
         text: 'מה סכום התשלום הצפוי?',
         type: 'text',
         placeholder: 'בשקלים'
+      },
+      {
+        id: 'urgency',
+        text: 'מה רמת הדחיפות של המשימה?',
+        type: 'select',
+        options: [
+          { id: 'low', label: 'נמוכה (בזמן שלי)' },
+          { id: 'medium', label: 'בינונית (חשוב)' },
+          { id: 'high', label: 'גבוהה (דחוף!)' }
+        ]
       }
     ]
   },
@@ -91,6 +121,16 @@ const TASK_QUESTIONS = {
         text: 'מה סך ההכנסות החודש (בערך)?',
         type: 'text',
         placeholder: 'לדוגמה: 8,500'
+      },
+      {
+        id: 'urgency',
+        text: 'מה רמת הדחיפות של המשימה?',
+        type: 'select',
+        options: [
+          { id: 'low', label: 'נמוכה (בזמן שלי)' },
+          { id: 'medium', label: 'בינונית (חשוב)' },
+          { id: 'high', label: 'גבוהה (דחוף!)' }
+        ]
       }
     ]
   },
@@ -112,6 +152,16 @@ const TASK_QUESTIONS = {
         text: 'מה הצעד הראשון הקטן שתוכל לעשות היום?',
         type: 'text',
         placeholder: 'לדוגמה: לשלוח הודעה ללקוח...'
+      },
+      {
+        id: 'urgency',
+        text: 'מה רמת הדחיפות של המשימה?',
+        type: 'select',
+        options: [
+          { id: 'low', label: 'נמוכה (בזמן שלי)' },
+          { id: 'medium', label: 'בינונית (חשוב)' },
+          { id: 'high', label: 'גבוהה (דחוף!)' }
+        ]
       }
     ]
   }
