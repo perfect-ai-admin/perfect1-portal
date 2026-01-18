@@ -323,9 +323,9 @@ function ClientLogin() {
               </div>
 
         <BrandingSide />
-      </div>
-    </>
-  );
-}
+        </div>
+        </>
+        );
+        }
 
 export default memo(ClientLogin);
