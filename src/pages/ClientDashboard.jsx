@@ -84,8 +84,11 @@ export default function ClientDashboard() {
       try {
         const parsed = JSON.parse(storedUser);
         if (!parsed?.id) {
+          console.error('[ClientDashboard] Invalid stored user - missing id');
           throw new Error('Invalid user data - missing id');
         }
+        
+        console.log('[ClientDashboard] [auth_init] Starting user verification...');
         
         // Bootstrap: verify with /me endpoint (with retries for new users)
         const maxRetries = 6; // ~30 seconds with exponential backoff
@@ -93,42 +96,49 @@ export default function ClientDashboard() {
         
         for (let attempt = 0; attempt < maxRetries; attempt++) {
           try {
-            console.log(`[ClientDashboard] Verifying user with /me (attempt ${attempt + 1}/${maxRetries})...`);
+            console.log(`[ClientDashboard] [auth_fetch_me] Attempt ${attempt + 1}/${maxRetries}...`);
             const response = await base44.functions.invoke('me', {});
             
-            if (response.data?.status === 'ready') {
-              console.log('[ClientDashboard] User ready, setting user data');
+            console.log('[ClientDashboard] [auth_fetch_me_response]', response?.status, response?.data?.status);
+            
+            if (response?.data?.status === 'ready') {
+              console.log('[ClientDashboard] [auth_success] User ready, setting user data');
               if (!parsed.full_name) {
                 parsed.full_name = parsed.email?.split('@')[0] || 'משתמש';
               }
               setUser(parsed);
+              console.log('[ClientDashboard] [auth_complete] User verification complete');
               return;
-            } else if (response.data?.status === 'pending') {
-              console.log(`[ClientDashboard] User still pending, retrying in ${Math.pow(2, attempt) * 500}ms...`);
+            } else if (response?.data?.status === 'pending') {
+              const waitTime = Math.pow(2, attempt) * 500;
+              console.log(`[ClientDashboard] [auth_pending] User pending, retry in ${waitTime}ms`);
               lastError = 'User account still being created';
               // Wait with exponential backoff before retry
-              await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 500));
+              await new Promise(resolve => setTimeout(resolve, waitTime));
               continue;
             } else {
-              throw new Error('Invalid /me response: ' + JSON.stringify(response.data));
+              console.error('[ClientDashboard] [auth_invalid_response]', response?.data);
+              throw new Error('Invalid /me response: ' + JSON.stringify(response?.data));
             }
           } catch (meErr) {
-            console.error(`[ClientDashboard] /me call failed (attempt ${attempt + 1}):`, meErr.message);
+            console.error(`[ClientDashboard] [auth_error] Attempt ${attempt + 1} failed:`, meErr.message);
             lastError = meErr.message;
             
             if (attempt === maxRetries - 1) {
-              console.error('[ClientDashboard] Max retries reached');
-              throw lastError;
+              console.error('[ClientDashboard] [auth_failed_max_retries] Max retries reached');
+              throw new Error(`Authentication failed: ${lastError}`);
             }
             
             // Exponential backoff
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 500));
+            const waitTime = Math.pow(2, attempt) * 500;
+            await new Promise(resolve => setTimeout(resolve, waitTime));
           }
         }
         
         throw new Error(lastError || 'User verification timed out');
       } catch (error) {
-        console.error('[ClientDashboard] Auth verification failed:', error);
+        console.error('[ClientDashboard] [auth_failed_redirect]', error.message);
+        console.log('[ClientDashboard] Clearing localStorage and redirecting to login');
         localStorage.removeItem('user');
         navigate(createPageUrl('ClientLogin'));
       }
