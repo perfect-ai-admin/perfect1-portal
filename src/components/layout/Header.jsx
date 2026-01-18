@@ -316,8 +316,8 @@ function Header() {
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
             {/* Client Area Button - Desktop */}
-            <Link
-              to={createPageUrl('ClientLogin')}
+            <button
+              onClick={() => window.location.href = '/ClientLogin'}
               className="hidden lg:flex"
             >
               <Button 
@@ -326,7 +326,7 @@ function Header() {
               >
                 🔐 אזור אישי
               </Button>
-            </Link>
+            </button>
 
             {/* Mobile CTA Buttons - Show on all screens */}
             <a
@@ -412,13 +412,12 @@ function Header() {
                   <nav className="flex-1 p-6 overflow-y-auto">
                     <ul className="space-y-2">
                       <li>
-                        <Link
-                          to={createPageUrl('ClientLogin')}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
+                        <button
+                          onClick={() => { setIsMobileMenuOpen(false); window.location.href = '/ClientLogin'; }}
+                          className="w-full flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
                         >
                           🔐 אזור אישי ללקוחות
-                        </Link>
+                        </button>
                       </li>
                       <li>
                         <Link
