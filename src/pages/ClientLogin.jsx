@@ -1,19 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Lock, Phone, ArrowRight, Sparkles, Zap } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Loader2, Lock, Mail, ArrowRight, Sparkles, Zap } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function ClientLogin() {
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Check if already logged in
+    const checkAuth = async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (isAuth) {
+          navigate(createPageUrl('ClientDashboard'));
+        }
+      } catch (err) {
+        console.log('Not authenticated');
+      }
+    };
+    checkAuth();
+
+    // Show error from URL if present
+    const errorParam = searchParams.get('error');
+    if (errorParam) {
+      setError(decodeURIComponent(errorParam));
+    }
+  }, [navigate, searchParams]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,81 +43,27 @@ export default function ClientLogin() {
     setIsLoading(true);
 
     try {
-      console.log('🔵 Starting login with:', { phone, passwordLength: password.length });
-      
-      const response = await base44.functions.invoke('verifyClientLogin', {
-        phone: phone,
-        password: password
+      await base44.auth.login({
+        email,
+        password,
+        provider: 'email'
       });
-
-      console.log('🟢 Function response:', response);
-
-      if (!response.data.success) {
-        console.log('❌ Login failed:', response.data.error);
-        setError(response.data.error || 'שגיאה בהכניסה');
-        setIsLoading(false);
-        return;
-      }
-
-      const lead = response.data.lead;
-      console.log('✅ Lead received:', lead);
-
-      // Validate lead data
-      if (!lead.id || !lead.name) {
-        console.error('❌ Lead missing required fields:', lead);
-        setError('נתוני משתמש לא תקינים');
-        setIsLoading(false);
-        return;
-      }
-
-      // Store lead data in localStorage for client session (using "user" key for compatibility with ClientDashboard)
-      const clientSession = {
-        id: lead.id,
-        full_name: lead.name,
-        name: lead.name,
-        phone: lead.phone,
-        email: lead.email || '',
-        status: lead.status,
-        is_client: true,
-        login_time: new Date().toISOString()
-      };
-
-      console.log('💾 Storing session:', clientSession);
-      // Store with 'user' key so ClientDashboard recognizes it
-      localStorage.setItem('user', JSON.stringify(clientSession));
-      localStorage.setItem('clientSession', JSON.stringify(clientSession));
       
-      console.log('🚀 Session stored, navigating to ClientDashboard...');
-      const dashboardUrl = createPageUrl('ClientDashboard');
-      console.log('🔗 Dashboard URL:', dashboardUrl);
-      
-      navigate(dashboardUrl);
-      console.log('✨ Navigation called');
+      navigate(createPageUrl('ClientDashboard'));
     } catch (err) {
-      console.error('❌ Login error:', err);
-      setError(err.response?.data?.error || 'שגיאה בתהליך הכניסה. אנא נסה שוב.');
+      setError(err.message || 'שגיאה בתהליך הכניסה. אנא בדוק את הדוא"ל והסיסמה.');
       setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    setError('');
-    
     try {
-      const response = await base44.functions.invoke('googleAuthStart', {});
-      
-      if (response.data && response.data.url) {
-        sessionStorage.setItem('oauth_state', response.data.state);
-        window.location.href = response.data.url;
-      } else {
-        console.error('Invalid response:', response);
-        setError(`שגיאה בהתחברות עם Google: ${response.data?.error || 'תשובה לא תקינה מהשרת'}`);
-        setIsLoading(false);
-      }
+      await base44.auth.login({
+        provider: 'google'
+      });
+      navigate(createPageUrl('ClientDashboard'));
     } catch (error) {
-      console.error('Google login error:', error);
-      setError(`שגיאה בהתחברות עם Google: ${error.message || 'שגיאה לא צפויה'}`);
+      setError('שגיאה בהתחברות עם Google. אנא נסה שוב.');
       setIsLoading(false);
     }
   };
@@ -127,15 +95,15 @@ export default function ClientLogin() {
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-1.5">
                   <label className="block text-sm font-medium text-gray-700">
-                    מספר טלפון
+                    דוא"ל
                   </label>
                   <div className="relative">
-                    <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <Input
-                      type="tel"
-                      placeholder="05X-XXXXXXX"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
                       required
                       disabled={isLoading}
