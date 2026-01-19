@@ -25,51 +25,42 @@ Deno.serve(async (req) => {
     }
 
     // Build WhatsApp message based on status
-    const statusMessages = {
-      'new': `שלום ${lead.name}, קיבלנו את פרטיך. צוות שלנו יחזור אליך בקרוב.`,
-      'contacted': `שלום ${lead.name}, אנחנו כבר בקשר איתך. תודה על התיעניינות!`,
-      'qualified': `מזל טוב ${lead.name}! אתה זכאי לשירות שלנו. בואנו נתחיל!`,
-      'closed': `תודה ${lead.name}, הטיפול שלך הסתיים. אנחנו כאן אם תצטרך שוב.`,
-      'not_interested': `${lead.name}, אנחנו מכבדים את בחירתך. בהצלחה! 👋`,
-    };
+    // Send to n8n webhook
+    const n8nWebhookUrl = Deno.env.get('N8N_WEBHOOK_URL');
 
-    const message = statusMessages[newStatus] || `${lead.name}, הסטטוס שלך עודכן ל-${newStatus}`;
-
-    // Send to WhatsApp Cloud API
-    const accessToken = Deno.env.get('WHATSAPP_ACCESS_TOKEN');
-    const phoneNumberId = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID');
-
-    if (!accessToken || !phoneNumberId) {
-      console.error('Missing WhatsApp credentials');
-      return Response.json({ error: 'Missing WhatsApp credentials' }, { status: 400 });
+    if (!n8nWebhookUrl) {
+      console.error('Missing N8N_WEBHOOK_URL');
+      return Response.json({ error: 'Missing N8N_WEBHOOK_URL' }, { status: 400 });
     }
 
-    const response = await fetch(`https://graph.instagram.com/v18.0/${phoneNumberId}/messages`, {
+    const response = await fetch(n8nWebhookUrl, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: phone,
-        type: 'text',
-        text: {
-          body: message,
+        event: 'lead_status_changed',
+        lead: {
+          id: event.entity_id,
+          name: lead.name,
+          phone: phone,
+          email: lead.email,
+          oldStatus: oldStatus,
+          newStatus: newStatus,
         },
+        timestamp: new Date().toISOString(),
       }),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      console.error('WhatsApp API error:', error);
-      return Response.json({ error: 'Failed to send WhatsApp message', details: error }, { status: response.status });
+      const error = await response.text();
+      console.error('n8n webhook error:', error);
+      return Response.json({ error: 'Failed to send to n8n', details: error }, { status: response.status });
     }
 
-    const result = await response.json();
     return Response.json({ 
       success: true, 
-      message: `WhatsApp sent to ${phone}`,
+      message: 'Webhook sent to n8n',
       lead_name: lead.name,
       old_status: oldStatus,
       new_status: newStatus,
