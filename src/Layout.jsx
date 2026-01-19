@@ -20,19 +20,38 @@ export default function Layout({ children, currentPageName }) {
     const location = useLocation();
 
     // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
-    if (currentPageName === 'SystemLogicMap') {
-      return children;
-    }
+            if (currentPageName === 'SystemLogicMap') {
+              return children;
+            }
 
-    // ClientLogin - עמוד כניסה עצמאי
-    if (currentPageName === 'ClientLogin') {
-      return (
-        <HelmetProvider>
-          {children}
-          <Toaster />
-        </HelmetProvider>
-      );
-    }
+            // ClientLogin - עמוד כניסה עצמאי
+            if (currentPageName === 'ClientLogin') {
+              return (
+                <HelmetProvider>
+                  {children}
+                  <Toaster />
+                </HelmetProvider>
+              );
+            }
+
+            // Check if page requires authentication
+            const publicPages = ['Home', 'Pricing', 'About', 'Contact', 'Professions', 'Services'];
+            const isPublicPage = publicPages.includes(currentPageName);
+
+            if (!isPublicPage && currentPageName !== 'ClientDashboard' && currentPageName !== 'AdminDashboard') {
+              // Private pages - check auth
+              const checkPrivatePageAuth = async () => {
+                try {
+                  const isAuth = await base44.auth.isAuthenticated();
+                  if (!isAuth) {
+                    window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname);
+                  }
+                } catch (err) {
+                  console.log('Auth check failed');
+                }
+              };
+              checkPrivatePageAuth();
+            }
 
     // ClientDashboard / PricingPerfectBizAI - אל תציג Header רגיל (יש להם Header משלהם)
     if (currentPageName === 'ClientDashboard' || currentPageName === 'PricingPerfectBizAI') {
@@ -101,7 +120,7 @@ export default function Layout({ children, currentPageName }) {
           {/* Performance optimizations */}
           <meta httpEquiv="x-dns-prefetch-control" content="on" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-          
+
           {/* Google Ads Conversion Tracking */}
           <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085" />
           <script dangerouslySetInnerHTML={{__html: `
@@ -110,9 +129,11 @@ export default function Layout({ children, currentPageName }) {
             gtag('js', new Date());
             gtag('config', 'AW-10811556085');
           `}} />
-          
+
           {/* Facebook Pixel */}
           <script async dangerouslySetInnerHTML={{__html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');if(typeof fbq !== 'undefined'){fbq('init','1234567890');fbq('track','PageView');}`}} />
+
+          {/* Base44 Default Auth */}
         </Helmet>
       <CriticalCSS />
       <ResourceHints 
