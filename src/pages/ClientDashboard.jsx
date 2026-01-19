@@ -8,7 +8,7 @@ import { createPageUrl } from '@/utils';
 import DebugErrorBoundary from '../components/DebugErrorBoundary';
 import { 
   LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
-  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard
+  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard, Download
 } from 'lucide-react';
 import {
   Tooltip,
@@ -142,6 +142,23 @@ export default function ClientDashboard() {
     } catch (error) {
       console.error('Refresh error:', error);
       return Promise.resolve();
+    }
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      const response = await base44.functions.invoke('exportDataCSV', {});
+      const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `export-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Export error:', error);
     }
   };
 
@@ -281,6 +298,14 @@ export default function ClientDashboard() {
               </button>
 
               {typeof NotificationCenter === 'function' && <NotificationCenter />}
+
+              <button
+                onClick={handleExportCSV}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/90 hover:text-white"
+                title="ייצוא נתונים"
+              >
+                <Download className="w-6 h-6" />
+              </button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
