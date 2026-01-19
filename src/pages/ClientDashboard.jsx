@@ -71,35 +71,31 @@ export default function ClientDashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Check authentication
-  useEffect(() => {
-    try {
-      let parsed = localStorage.getItem('user');
-      
-      // If no user, check for clientSession
-      if (!parsed) {
-        parsed = localStorage.getItem('clientSession');
-        if (!parsed) {
-          navigate(createPageUrl('ClientLogin'));
-          return;
-        }
-        parsed = JSON.parse(parsed);
-      } else {
-        parsed = JSON.parse(parsed);
-      }
-      
-      if (!parsed?.id) {
-        throw new Error('Invalid user data');
-      }
-      
-      setUser(parsed);
-    } catch (error) {
-      console.error('Auth error:', error);
-      localStorage.removeItem('user');
-      localStorage.removeItem('clientSession');
-      navigate(createPageUrl('ClientLogin'));
-    }
-  }, [navigate]);
+  // Check authentication with Base44 auth
+        useEffect(() => {
+          const checkAuth = async () => {
+            try {
+              const isAuth = await base44.auth.isAuthenticated();
+              if (!isAuth) {
+                navigate(createPageUrl('ClientLogin'));
+                return;
+              }
+
+              const currentUser = await base44.auth.me();
+              if (!currentUser) {
+                navigate(createPageUrl('ClientLogin'));
+                return;
+              }
+
+              setUser(currentUser);
+            } catch (error) {
+              console.error('Auth check error:', error);
+              navigate(createPageUrl('ClientLogin'));
+            }
+          };
+
+          checkAuth();
+        }, [navigate]);
 
   // Fetch user data
   const { data: userData, isLoading, error: fetchError } = useQuery({
@@ -129,11 +125,10 @@ export default function ClientDashboard() {
     gcTime: 1000 * 60 * 10
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('clientSession');
-    navigate(createPageUrl('ClientLogin'));
-  };
+  const handleLogout = async () => {
+          await base44.auth.logout();
+          navigate(createPageUrl('ClientLogin'));
+        };
 
   const handleRefresh = async () => {
     try {
