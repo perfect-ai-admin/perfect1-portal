@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function ClientLogin() {
-  const [loginMethod, setLoginMethod] = useState('phone'); // 'phone' or 'email'
+  const [loginMethod, setLoginMethod] = useState('phone');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +19,6 @@ export default function ClientLogin() {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    // Check if already logged in
     const checkAuth = async () => {
       try {
         const isAuth = await base44.auth.isAuthenticated();
@@ -32,7 +31,6 @@ export default function ClientLogin() {
     };
     checkAuth();
 
-    // Show error from URL if present
     const errorParam = searchParams.get('error');
     if (errorParam) {
       setError(decodeURIComponent(errorParam));
@@ -45,36 +43,26 @@ export default function ClientLogin() {
     setIsLoading(true);
 
     try {
-      // If using phone login method
       if (loginMethod === 'phone') {
-        // Call backend to verify phone and get email
         const response = await base44.functions.invoke('phoneLogin', { 
           phone: phone,
           password: password
         });
 
         if (!response.data.success) {
-          setError('שגיאה בהתחברות. אנא נסה שוב.');
+          setError(response.data.error || 'שגיאה בהתחברות. אנא נסה שוב.');
           setIsLoading(false);
           return;
         }
 
-        // Login with the email returned
-        await base44.auth.login({
-          email: response.data.email,
-          password: password,
-          provider: 'email'
-        });
+        // Redirect to Base44 login with the email
+        const loginUrl = `/login?email=${encodeURIComponent(response.data.email)}&redirect=${encodeURIComponent('/ClientDashboard')}`;
+        window.location.href = loginUrl;
       } else {
-        // Email login
-        await base44.auth.login({
-          email,
-          password,
-          provider: 'email'
-        });
+        // Email login - redirect to Base44 login
+        const loginUrl = `/login?email=${encodeURIComponent(email)}&redirect=${encodeURIComponent('/ClientDashboard')}`;
+        window.location.href = loginUrl;
       }
-      
-      navigate(createPageUrl('ClientDashboard'));
     } catch (err) {
       setError(err.message || 'שגיאה בתהליך הכניסה. אנא בדוק את הפרטים והסיסמה.');
       setIsLoading(false);
@@ -83,10 +71,8 @@ export default function ClientLogin() {
 
   const handleGoogleLogin = async () => {
     try {
-      await base44.auth.login({
-        provider: 'google'
-      });
-      navigate(createPageUrl('ClientDashboard'));
+      const loginUrl = `/login?provider=google&redirect=${encodeURIComponent('/ClientDashboard')}`;
+      window.location.href = loginUrl;
     } catch (error) {
       setError('שגיאה בהתחברות עם Google. אנא נסה שוב.');
       setIsLoading(false);
@@ -101,7 +87,6 @@ export default function ClientLogin() {
       </Helmet>
 
       <div className="min-h-screen bg-white flex" dir="rtl">
-        {/* Left Side - Login Form */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 lg:p-12 z-10">
           <div className="w-full max-w-[380px] space-y-6">
             <div className="text-center">
@@ -117,7 +102,6 @@ export default function ClientLogin() {
             </div>
 
             <div className="space-y-4">
-              {/* Login Method Toggle */}
               <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
                 <button
                   type="button"
@@ -267,9 +251,7 @@ export default function ClientLogin() {
           </div>
         </div>
 
-        {/* Right Side - Branding (Hidden on Mobile) */}
         <div className="hidden lg:flex w-1/2 bg-[#F8F9FA] relative items-center justify-center p-20 overflow-hidden">
-            {/* Elegant Abstract Background */}
             <div className="absolute inset-0 opacity-40">
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-green-50 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
