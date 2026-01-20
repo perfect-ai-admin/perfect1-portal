@@ -4,23 +4,32 @@ Deno.serve(async (req) => {
     try {
         const payload = await req.json();
         // Automation payload structure: { event: { type, entity_name, entity_id }, data: { ... }, old_data: { ... } }
-        const { data } = payload;
+        const { data, event } = payload;
 
         if (!data) {
             console.log('No data in payload');
             return Response.json({ status: 'ignored', reason: 'no data' });
         }
 
-        console.log('Sending lead to N8N webhook:', data.id);
+        const entityType = event?.entity_name || 'Lead';
+        console.log(`Sending ${entityType} to N8N webhook:`, data.id);
 
         const n8nUrl = 'https://n8n.perfect-1.one/webhook/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
         const n8nTestUrl = 'https://n8n.perfect-1.one/webhook-test/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
         
+        // Enhance payload with source info
+        const webhookPayload = {
+            ...data,
+            _entity_type: entityType,
+            _event_type: event?.type || 'create',
+            _timestamp: new Date().toISOString()
+        };
+
         // Send to production URL
         const response = await fetch(n8nUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify(webhookPayload)
         });
 
         // Send to Test URL (fail silently if not active)
@@ -29,7 +38,7 @@ Deno.serve(async (req) => {
             await fetch(n8nTestUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(webhookPayload)
             });
             console.log('Sent to N8N Test URL successfully');
         } catch (e) {
