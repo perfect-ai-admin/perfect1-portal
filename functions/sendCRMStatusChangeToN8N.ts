@@ -70,6 +70,8 @@ Deno.serve(async (req) => {
         // Send to production URL
         let prodStatus = 'error';
         let prodBody = '';
+        let syncSuccess = false;
+
         try {
             const response = await fetch(n8nUrl, {
                 method: 'POST',
@@ -79,7 +81,9 @@ Deno.serve(async (req) => {
             prodStatus = response.status;
             prodBody = await response.text();
             
-            if (!response.ok) {
+            if (response.ok) {
+                syncSuccess = true;
+            } else {
                 console.error(`N8N Production error ${response.status}:`, prodBody);
             }
             console.log('N8N Production response:', response.status, prodBody);
@@ -104,9 +108,27 @@ Deno.serve(async (req) => {
             testResponseStatus = 'error';
         }
 
+        // Update Entity with Sync Status
+        try {
+            const updateData = {
+                n8n_synced: syncSuccess,
+                n8n_last_sync: new Date().toISOString(),
+                n8n_error: syncSuccess ? null : `Status: ${prodStatus}, Body: ${prodBody.substring(0, 200)}`
+            };
+            
+            // Only update if entity name is known (it should be CRMLead based on automation)
+            const entityName = event?.entity_name || 'CRMLead';
+            if (event?.entity_id) {
+                await base44.asServiceRole.entities[entityName].update(event.entity_id, updateData);
+                console.log(`Updated ${entityName} sync status:`, updateData);
+            }
+        } catch (updateError) {
+            console.error('Failed to update entity sync status:', updateError);
+        }
+
         // Log completion
         await base44.asServiceRole.entities.SystemLog.create({
-            level: prodStatus === 200 || testResponseStatus === 200 ? 'info' : 'warn',
+            level: syncSuccess ? 'info' : 'error',
             source: 'sendCRMStatusChangeToN8N',
             message: `Processed status change for ${data.id}`,
             details: { 
@@ -114,7 +136,8 @@ Deno.serve(async (req) => {
                 new_status: newStatus,
                 prod_status: prodStatus, 
                 test_status: testResponseStatus,
-                prod_body_preview: prodBody.substring(0, 100)
+                prod_body_preview: prodBody.substring(0, 100),
+                sync_success: syncSuccess
             }
         });
 
