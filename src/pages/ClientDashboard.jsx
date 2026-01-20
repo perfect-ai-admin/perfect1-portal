@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import DebugErrorBoundary from '../components/DebugErrorBoundary';
+import GeneralErrorBoundary from '../components/GeneralErrorBoundary';
 import { 
   LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
   TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard
@@ -26,23 +26,25 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-// Import Tab Components
+// Components
 import TabNavigation from '../components/client/TabNavigation';
 import MobileTabBar from '../components/client/MobileTabBar';
 import SwipeableTabs from '../components/client/SwipeableTabs';
 import PullToRefresh from '../components/client/PullToRefresh';
-import ProgressTab from '../components/client/tabs/ProgressTab';
-import BusinessTab from '../components/client/tabs/BusinessTab';
-import FinancialTab from '../components/client/tabs/FinancialTab';
-import GoalsTab from '../components/client/tabs/GoalsTab';
-import MarketingTab from '../components/client/tabs/MarketingTab';
-import MentorTab from '../components/client/tabs/MentorTab';
 import NotificationCenter from '../components/client/NotificationCenter';
 import FloatingActionButton from '../components/client/FloatingActionButton';
 import Breadcrumbs from '../components/client/Breadcrumbs';
 import ShoppingCart from '../components/client/shared/ShoppingCart';
 
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
+
+// Lazy Load Heavy Tabs
+const ProgressTab = React.lazy(() => import('../components/client/tabs/ProgressTab'));
+const BusinessTab = React.lazy(() => import('../components/client/tabs/BusinessTab'));
+const FinancialTab = React.lazy(() => import('../components/client/tabs/FinancialTab'));
+const GoalsTab = React.lazy(() => import('../components/client/tabs/GoalsTab'));
+const MarketingTab = React.lazy(() => import('../components/client/tabs/MarketingTab'));
+const MentorTab = React.lazy(() => import('../components/client/tabs/MentorTab'));
 
 
 export default function ClientDashboard() {
@@ -101,28 +103,25 @@ export default function ClientDashboard() {
   const { data: userData, isLoading, error: fetchError } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: async () => {
-      if (!user?.id) {
-        return user;
-      }
+      if (!user?.id) return user;
       try {
         const users = await base44.entities.User.filter({ id: user.id });
         if (!users || users.length === 0) {
-          console.warn('No users found, using stored user data');
           return user;
         }
         const freshUser = users[0] || user;
         localStorage.setItem('user', JSON.stringify(freshUser));
         return freshUser;
       } catch (err) {
-        console.error('Error fetching user data:', err);
         return user;
       }
     },
     enabled: !!user?.id,
     refetchInterval: false,
+    refetchOnWindowFocus: false, // Don't refetch on every focus
     retry: 1,
-    staleTime: 30000,
-    gcTime: 1000 * 60 * 10
+    staleTime: 1000 * 60 * 5, // 5 minutes stale time
+    gcTime: 1000 * 60 * 30 // 30 minutes cache
   });
 
   const handleLogout = async () => {
@@ -235,7 +234,7 @@ export default function ClientDashboard() {
   }
 
   return (
-    <DebugErrorBoundary>
+    <GeneralErrorBoundary>
       <>
       <Helmet>
         <title>מרכז ניהול עסקי - {currentData.full_name} | Perfect One</title>
@@ -331,19 +330,21 @@ export default function ClientDashboard() {
                  </div>
 
                  {/* Tabs - Dynamic based on permissions */}
-                 {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
-                   setActiveTab(tab);
-                   if (tab === 'goals' && config) {
-                     setGoalsTabConfig(config);
-                   }
-                 }} />}
-                 {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
-                 {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
-                 {activeTab === 'goals' && permissions.mentor && <GoalsTab user={currentData} data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} />}
-                 {activeTab === 'marketing' && permissions.marketing && <MarketingTab data={enrichedData} />}
-                 {activeTab === 'mentor' && permissions.mentor && <MentorTab data={enrichedData} />}
-               </div>
-             </main>
+                 <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
+                   {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
+                     setActiveTab(tab);
+                     if (tab === 'goals' && config) {
+                       setGoalsTabConfig(config);
+                     }
+                   }} />}
+                   {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
+                   {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
+                   {activeTab === 'goals' && permissions.mentor && <GoalsTab user={currentData} data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} />}
+                   {activeTab === 'marketing' && permissions.marketing && <MarketingTab data={enrichedData} />}
+                   {activeTab === 'mentor' && permissions.mentor && <MentorTab data={enrichedData} />}
+                 </React.Suspense>
+                 </div>
+                 </main>
            </div>
         </div>
 
@@ -360,6 +361,6 @@ export default function ClientDashboard() {
          ].filter(Boolean)} />}
         </div>
         </>
-        </DebugErrorBoundary>
+        </GeneralErrorBoundary>
         );
         }

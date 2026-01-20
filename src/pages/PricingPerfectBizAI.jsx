@@ -125,7 +125,7 @@ export default function PricingPerfectBizAI() {
     }
   ];
 
-  const oneTimeServices = [
+  const oneTimeServices = React.useMemo(() => [
     {
       name: 'יצירת לוגו ומיתוג',
       dbNames: ['Logo', 'לוגו', 'Logo Design'],
@@ -159,7 +159,7 @@ export default function PricingPerfectBizAI() {
       cta: 'התחל קמפיין',
       micro: 'הגדרה ראשונית מהירה ומקצועית'
     }
-  ];
+  ], []);
 
   useEffect(() => {
     const init = async () => {

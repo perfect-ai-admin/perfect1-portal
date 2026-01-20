@@ -1,15 +1,20 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import React, { Suspense } from 'react';
 import HeroNewSection from '../components/home/HeroNewSection';
-import BusinessTypesSection from '../components/home/BusinessTypesSection';
-import TrustSection from '../components/home/TrustSection';
-import ProcessSimpleSection from '../components/home/ProcessSimpleSection';
-import KnowledgeSection from '../components/home/KnowledgeSection';
-import CTAGentleSection from '../components/home/CTAGentleSection';
-import GeoContent from '../components/seo/GeoContent';
-import CTASection from '../components/home/CTASection';
-import SEOOptimized, { seoPresets, schemaTemplates } from './SEOOptimized';
+import SEOOptimized, { seoPresets } from './SEOOptimized';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
+
+// Lazy Load sections below the fold
+const BusinessTypesSection = React.lazy(() => import('../components/home/BusinessTypesSection'));
+const TrustSection = React.lazy(() => import('../components/home/TrustSection'));
+const ProcessSimpleSection = React.lazy(() => import('../components/home/ProcessSimpleSection'));
+const KnowledgeSection = React.lazy(() => import('../components/home/KnowledgeSection'));
+const CTAGentleSection = React.lazy(() => import('../components/home/CTAGentleSection'));
+const GeoContent = React.lazy(() => import('../components/seo/GeoContent'));
+const CTASection = React.lazy(() => import('../components/home/CTASection'));
+
+const SectionLoader = () => <div className="h-96 w-full bg-gray-50/50 animate-pulse" />;
 
 export default function Home() {
   return (
@@ -82,27 +87,31 @@ export default function Home() {
         }}
       />
       <main>
+        {/* Eager load the Hero section for LCP */}
         <HeroNewSection />
-        <BusinessTypesSection />
-        <TrustSection />
-        <ProcessSimpleSection />
-        <KnowledgeSection />
-        <CTAGentleSection />
-        <GeoContent />
         
-        {/* Disclaimer */}
-        <section className="py-8 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
-              <p className="text-xs text-gray-700 leading-relaxed text-center">
-                <strong className="text-yellow-800">הבהרה חשובה:</strong> Perfect One הוא שירות פרטי לייעוץ וליווי בפתיחת עוסקים. 
-                האתר אינו אתר ממשלתי ואינו מהווה תחליף לייעוץ משפטי או חשבונאי רשמי.
-              </p>
+        <Suspense fallback={<SectionLoader />}>
+          <BusinessTypesSection />
+          <TrustSection />
+          <ProcessSimpleSection />
+          <KnowledgeSection />
+          <CTAGentleSection />
+          <GeoContent />
+          
+          {/* Disclaimer */}
+          <section className="py-8 bg-white">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4">
+                <p className="text-xs text-gray-700 leading-relaxed text-center">
+                  <strong className="text-yellow-800">הבהרה חשובה:</strong> Perfect One הוא שירות פרטי לייעוץ וליווי בפתיחת עוסקים. 
+                  האתר אינו אתר ממשלתי ואינו מהווה תחליף לייעוץ משפטי או חשבונאי רשמי.
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
-        
-        <CTASection />
+          </section>
+          
+          <CTASection />
+        </Suspense>
       </main>
     </>
   );
