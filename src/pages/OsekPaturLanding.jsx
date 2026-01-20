@@ -646,93 +646,117 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Form Section */}
-         <section className="py-16 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]" id="contact-form">
-           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-8 md:py-20 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]" id="contact-form">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="text-center lg:text-right"
+              >
+                <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white mb-3 lg:mb-6 leading-tight">
+                  מתחילים עסק? <br className="hidden lg:block"/>
+                  פתיחת עוסק פטור עם בטחון מלא
+                </h2>
+                <p className="text-lg md:text-xl text-white/90 leading-relaxed mb-6 lg:mb-8 max-w-lg mx-auto lg:mx-0">
+                  השאירו פרטים ותקבלו שיחה ישירה - כדי לדעת בדיוק איפה אתם עומדים ומה הצעד הבא.
+                </p>
+
+                <div className="hidden lg:flex flex-col gap-4 text-white/80">
+                   <div className="flex items-center gap-3">
+                     <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                       <Shield className="w-6 h-6 text-[#27AE60]" />
+                     </div>
+                     <span className="text-lg">בלי טרטורים ובירוקרטיה</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                       <Zap className="w-6 h-6 text-[#D4AF37]" />
+                     </div>
+                     <span className="text-lg">תהליך מהיר ומדויק</span>
+                   </div>
+                </div>
+              </motion.div>
+
              <motion.div
                initial={{ opacity: 0, y: 20 }}
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
-               className="text-center mb-8"
              >
-               <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                 מתחילים עסק? פתיחת עוסק פטור עם בטחון מלא
-               </h2>
-               <p className="text-xl text-white/90">השאירו פרטים ותתקבלו שיחה ישירה - כדי לדעת בדיוק איפה אתם עומדים ומה הצעד הבא</p>
+               {isSuccess ? (
+                 <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
+                   <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+                     <CheckCircle className="w-10 h-10 text-green-500" />
+                   </div>
+                   <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
+                   <p className="text-gray-600">נחזור אליך בקרוב ונתחיל את התהליך</p>
+                 </div>
+               ) : (
+                 <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border-2 border-[#D4AF37]/30">
+                   <form onSubmit={handleSubmit} className="space-y-3">
+                     <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1.5">שם מלא *</label>
+                        <Input
+                          placeholder="איך קוראים לך?"
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1.5">טלפון *</label>
+                        <Input
+                          type="tel"
+                          placeholder="050-1234567"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1.5">מייל *</label>
+                        <Input
+                          type="email"
+                          placeholder="example@gmail.com"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-1.5">סוג עיסוק (לא חובה)</label>
+                        <Input
+                          placeholder="למשל: צלם, מעצב..."
+                          value={formData.profession}
+                          onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                          className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                        />
+                      </div>
+
+                     <Button
+                       type="submit"
+                       disabled={isSubmitting}
+                       className="w-full h-12 md:h-14 text-base md:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white mt-2"
+                     >
+                       {isSubmitting ? 'שולח...' : 'הגשת פרטים'}
+                     </Button>
+
+                     <p className="text-xs text-gray-500 text-center mt-3">
+                       ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום
+                     </p>
+                     </form>
+                 </div>
+               )}
              </motion.div>
-
-            {isSuccess ? (
-              <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle className="w-10 h-10 text-green-500" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
-                <p className="text-gray-600">נחזור אליך בקרוב ונתחיל את התהליך</p>
-              </div>
-            ) : (
-              <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-[#D4AF37]/30">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                     <label className="block text-sm font-bold text-gray-700 mb-2">שם מלא *</label>
-                     <Input
-                       placeholder="איך קוראים לך?"
-                       value={formData.name}
-                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
-                       required
-                     />
-                   </div>
-
-                   <div>
-                     <label className="block text-sm font-bold text-gray-700 mb-2">טלפון *</label>
-                     <Input
-                       type="tel"
-                       placeholder="050-1234567"
-                       value={formData.phone}
-                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
-                       required
-                     />
-                   </div>
-
-                   <div>
-                     <label className="block text-sm font-bold text-gray-700 mb-2">מייל *</label>
-                     <Input
-                       type="email"
-                       placeholder="example@gmail.com"
-                       value={formData.email}
-                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
-                       required
-                     />
-                   </div>
-
-                   <div>
-                     <label className="block text-sm font-bold text-gray-700 mb-2">סוג עיסוק (לא חובה)</label>
-                     <Input
-                       placeholder="למשל: צלם, מעצב, מאמן כושר..."
-                       value={formData.profession}
-                       onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
-                     />
-                   </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full h-12 sm:h-14 text-base sm:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
-                  >
-                    {isSubmitting ? 'שולח...' : 'הגשת פרטים'}
-                  </Button>
-
-
-
-                  <p className="text-xs text-gray-500 text-center mt-4">
-                    ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום
-                  </p>
-                  </form>
-              </div>
-            )}
-          </div>
+            </div>
+         </div>
         </section>
 
         {/* Testimonials Section - NEW */}
