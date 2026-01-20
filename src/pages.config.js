@@ -14,7 +14,6 @@ import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import Checkout from './pages/Checkout';
 import CheckoutSuccess from './pages/CheckoutSuccess';
 import ClientDashboard from './pages/ClientDashboard';
-import ClientLogin from './pages/ClientLogin';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
@@ -122,7 +121,6 @@ export const PAGES = {
     "Checkout": Checkout,
     "CheckoutSuccess": CheckoutSuccess,
     "ClientDashboard": ClientDashboard,
-    "ClientLogin": ClientLogin,
     "CloseBusinessLanding": CloseBusinessLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
     "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
