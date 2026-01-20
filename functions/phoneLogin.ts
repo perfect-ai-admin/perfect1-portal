@@ -19,41 +19,55 @@ Deno.serve(async (req) => {
     );
 
     if (!leads || leads.length === 0) {
-      return Response.json({ error: 'לא נמצא לקוח עם מספר זה' }, { status: 404 });
+      return Response.json({ 
+        success: false,
+        error: 'לא נמצא לקוח עם מספר זה' 
+      }, { status: 404 });
     }
 
     const lead = leads[0];
+
+    if (!lead.email) {
+      return Response.json({ 
+        success: false,
+        error: 'לא נמצא כתובת אימייל ללקוח. אנא פנה לתמיכה.' 
+      }, { status: 400 });
+    }
+
+    // Check if password matches (either the lead's client_password or default 123456)
+    const validPassword = lead.client_password || '123456';
+    if (password !== validPassword) {
+      return Response.json({ 
+        success: false,
+        error: 'סיסמה שגויה' 
+      }, { status: 401 });
+    }
 
     // Check if user exists with this email
     const users = await base44.asServiceRole.entities.User.filter({ 
       email: lead.email 
     });
 
-    let userEmail = lead.email;
-
-    // If user doesn't exist and password is 123456, create a temporary user
+    // If user doesn't exist, invite them
     if (users.length === 0) {
-      if (password !== '123456') {
-        return Response.json({ error: 'סיסמה שגויה' }, { status: 401 });
-      }
-
-      // Invite user to create account
       try {
         await base44.asServiceRole.users.inviteUser(lead.email, 'user');
       } catch (err) {
-        // User might already be invited
-        console.log('User might already be invited:', err);
+        console.log('User invitation error:', err);
       }
     }
 
     return Response.json({ 
       success: true,
-      email: userEmail,
+      email: lead.email,
       name: lead.name
     });
 
   } catch (error) {
     console.error('Phone login error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ 
+      success: false,
+      error: error.message 
+    }, { status: 500 });
   }
 });
