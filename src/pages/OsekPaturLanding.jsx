@@ -951,7 +951,7 @@ export default function OsekPaturLanding() {
           onClick={scrollToForm}
           className="flex-1 h-12 text-lg font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-md"
         >
-          בדיקת זכאות
+          פתיחת עוסק פטור
         </Button>
         <a href="https://wa.me/972502277087?text=היי, אשמח לפרטים על פתיחת עוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-none">
           <Button variant="outline" className="h-12 w-12 rounded-xl border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366]/10 p-0 flex items-center justify-center">
