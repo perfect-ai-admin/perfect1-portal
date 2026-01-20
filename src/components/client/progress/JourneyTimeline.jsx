@@ -1,139 +1,289 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle, Circle, Lock } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Map, 
+  Wallet, 
+  Target, 
+  TrendingUp, 
+  Megaphone, 
+  Shield, 
+  Lock,
+  Check,
+  ChevronLeft,
+  X,
+  Circle
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-const MILESTONES = [
+const steps = [
   {
-    id: 'registration',
-    title: 'רישום עוסק פטור',
-    description: 'פתיחת תיק במס הכנסה וביטוח לאומי',
-    order: 1
+    id: 'snapshot',
+    title: 'תמונת מצב העסק שלך',
+    description: 'מבינים איפה אתה עומד היום ומה באמת קורה בעסק',
+    icon: Map,
+    status: 'completed',
+    details: {
+      done: ['ניתוח ראשוני של העסק', 'זיהוי נקודות חוזק וחולשה'],
+      todo: ['אישור הנתונים הסופיים'],
+      nextAction: 'צפה בסיכום'
+    }
   },
   {
-    id: 'first_invoice',
-    title: 'חשבונית ראשונה',
-    description: 'יצירה והנפקה של החשבונית הראשונה שלך',
-    order: 2
+    id: 'expenses',
+    title: 'ארגון ההוצאות שלך',
+    description: 'עושים סדר בכסף כדי לדעת מה נשאר ביד',
+    icon: Wallet,
+    status: 'current',
+    details: {
+      done: ['חיבור לחשבונות הבנק', 'קטגוריזציה אוטומטית'],
+      todo: ['אישור הוצאות חריגות', 'הגדרת תקציב חודשי'],
+      nextAction: 'סדר את ההוצאות'
+    }
   },
   {
-    id: 'first_client_payment',
-    title: 'תשלום ראשון מלקוח',
-    description: 'קבלת התשלום הראשון על העבודה שלך',
-    order: 3
+    id: 'goals',
+    title: 'תכנון יעד חודשי',
+    description: 'מגדירים מטרה ברורה שאפשר לעמוד בה',
+    icon: Target,
+    status: 'locked',
+    details: {}
   },
   {
-    id: 'monthly_report',
-    title: 'דיווח חודשי ראשון',
-    description: 'השלמת דיווח חודשי ראשון לרשויות',
-    order: 4
+    id: 'sales',
+    title: 'שיפור תהליך המכירה',
+    description: 'מחדדים איך להפוך פניות ללקוחות',
+    icon: TrendingUp,
+    status: 'locked',
+    details: {}
   },
   {
-    id: 'steady_income',
-    title: 'הכנסה קבועה',
-    description: '3 חודשים רצופים עם הכנסה',
-    order: 5
+    id: 'campaign',
+    title: 'השקעה בקמפיין פרסומי',
+    description: 'רק כשיש בסיס יציב – מביאים עוד תנועה',
+    icon: Megaphone,
+    status: 'locked',
+    details: {}
   },
   {
-    id: 'annual_report',
-    title: 'דוח שנתי ראשון',
-    description: 'השלמת דוח שנתי ראשון לרשויות המס',
-    order: 6
+    id: 'funding',
+    title: 'הגדרת מערכת מימון',
+    description: 'בונים תשתית שתאפשר לעסק לגדול בשקט',
+    icon: Shield,
+    status: 'locked',
+    details: {}
   }
 ];
 
-export default function JourneyTimeline({ 
-  completedMilestones = [], 
-  currentMilestone = 'registration',
-  milestones = MILESTONES 
-}) {
-  const getMilestoneStatus = (milestone) => {
-    // Check if tasks have status directly
-    if (milestone.status === 'completed') return 'completed';
-    if (milestone.status === 'in_progress') return 'current';
-    if (milestone.status === 'pending') return 'locked';
-    
-    // Fallback to id-based check
-    if (completedMilestones.includes(milestone.id)) return 'completed';
-    if (milestone.id === currentMilestone) return 'current';
-    return 'locked';
+export default function JourneyTimeline() {
+  const [selectedStep, setSelectedStep] = useState(null);
+  const [showTooltip, setShowTooltip] = useState(null);
+
+  const handleStepClick = (step) => {
+    if (step.status === 'locked') {
+      setShowTooltip(step.id);
+      setTimeout(() => setShowTooltip(null), 2000);
+      return;
+    }
+    setSelectedStep(step);
   };
 
   return (
-    <div className="space-y-3">
-      {milestones.map((milestone, index) => {
-        const status = getMilestoneStatus(milestone);
-        const isCompleted = status === 'completed';
-        const isCurrent = status === 'current';
-        const isLocked = status === 'locked';
+    <div className="relative min-h-[500px] p-4 pb-20 bg-gray-50/50 rounded-3xl">
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-3">
+          <Map className="w-6 h-6 text-blue-600" />
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">מסע העסק שלך</h2>
+        <p className="text-sm text-gray-500 max-w-[250px] mx-auto">
+          מבוסס על התשובות שלך – זה המסלול שבנינו עבורך
+        </p>
+      </div>
 
-        return (
-          <motion.div
-            key={milestone.id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.08 }}
-            className="relative"
-          >
-            {/* Connector Line */}
-            {index < milestones.length - 1 && (
-              <div 
-                className={cn(
-                  "absolute right-5 top-12 w-0.5 h-8",
-                  isCompleted ? "bg-green-500" : "bg-gray-200"
-                )}
-              />
-            )}
+      {/* Timeline */}
+      <div className="relative max-w-md mx-auto space-y-4">
+        {/* Vertical Line */}
+        <div className="absolute top-6 bottom-6 right-[29px] w-0.5 bg-gray-200 z-0" />
 
-            <div
-              className={cn(
-                "bg-white rounded-lg p-4 border transition-all",
-                isCurrent && "border-blue-500 ring-2 ring-blue-100 bg-blue-50",
-                isCompleted && "border-green-500 bg-green-50",
-                isLocked && "border-gray-200 opacity-50"
-              )}
+        {steps.map((step, index) => {
+          const isCurrent = step.status === 'current';
+          const isCompleted = step.status === 'completed';
+          const isLocked = step.status === 'locked';
+          const Icon = step.icon;
+
+          return (
+            <motion.div 
+              key={step.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="relative z-10"
             >
-              <div className="flex items-start gap-3">
-                {/* Icon */}
-                <div
-                  className={cn(
-                    "w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0",
-                    isCompleted && "bg-green-500",
-                    isCurrent && "bg-blue-500",
-                    isLocked && "bg-gray-300"
-                  )}
-                >
-                  {isCompleted && <CheckCircle className="w-5 h-5 text-white" />}
-                  {isCurrent && <Circle className="w-5 h-5 text-white" />}
-                  {isLocked && <Lock className="w-5 h-5 text-gray-500" />}
+              <div 
+                onClick={() => handleStepClick(step)}
+                className={cn(
+                  "relative flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden bg-white",
+                  isCurrent 
+                    ? "border-blue-100 shadow-lg scale-[1.02] ring-1 ring-blue-50"
+                    : "border-transparent hover:border-gray-100 shadow-sm",
+                  isLocked && "opacity-60 grayscale bg-gray-50/50"
+                )}
+              >
+                {/* Timeline Node */}
+                <div className={cn(
+                  "relative z-10 flex items-center justify-center w-14 h-14 rounded-full border-4 flex-shrink-0 transition-all duration-500",
+                  isCurrent ? "bg-blue-600 border-blue-50 text-white shadow-blue-200 shadow-xl" : 
+                  isCompleted ? "bg-green-500 border-green-50 text-white" : 
+                  "bg-white border-gray-100 text-gray-300"
+                )}>
+                  {isCompleted ? <Check className="w-6 h-6" /> : 
+                   isLocked ? <Lock className="w-5 h-5" /> : 
+                   <Icon className="w-6 h-6" />}
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-sm font-semibold text-gray-900">
-                      {milestone.title}
-                    </h3>
-                    {isCompleted && (
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium flex-shrink-0">
-                        ✓
-                      </span>
-                    )}
-                    {isCurrent && (
-                      <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-medium flex-shrink-0">
-                        עכשיו
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-600 mt-1 leading-relaxed">{milestone.description}</p>
+                <div className="flex-1 min-w-0 text-right">
+                  <h3 className={cn(
+                    "font-bold text-lg mb-1",
+                    isCurrent ? "text-blue-900" : "text-gray-900"
+                  )}>
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 leading-snug line-clamp-2 pl-2">
+                    {step.description}
+                  </p>
                 </div>
+
+                {/* Chevron / Indicator */}
+                {!isLocked && (
+                  <ChevronLeft className={cn(
+                    "w-5 h-5 transition-transform flex-shrink-0",
+                    isCurrent ? "text-blue-400" : "text-gray-300"
+                  )} />
+                )}
+
+                {/* Active Indicator Glow */}
+                {isCurrent && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-transparent pointer-events-none opacity-20" />
+                )}
+
+                {/* Locked Tooltip Overlay */}
+                <AnimatePresence>
+                  {showTooltip === step.id && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 bg-gray-900/90 flex items-center justify-center text-white text-xs font-medium rounded-xl z-20 backdrop-blur-sm"
+                    >
+                      ייפתח לאחר השלמת השלב הקודם
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
-          </motion.div>
-        );
-      })}
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Bottom Sheet Drawer */}
+      <AnimatePresence>
+        {selectedStep && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedStep(null)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[32px] z-50 p-6 pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+              drag="y"
+              dragConstraints={{ top: 0 }}
+              onDragEnd={(_, info) => {
+                if (info.offset.y > 100) setSelectedStep(null);
+              }}
+            >
+              {/* Handle */}
+              <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
+
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className={cn(
+                    "w-12 h-12 rounded-2xl flex items-center justify-center",
+                    selectedStep.status === 'completed' ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"
+                  )}>
+                    {React.createElement(selectedStep.icon, { className: "w-6 h-6" })}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{selectedStep.title}</h3>
+                    <span className={cn(
+                      "text-xs font-bold px-2 py-0.5 rounded-full",
+                      selectedStep.status === 'completed' ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                    )}>
+                      {selectedStep.status === 'completed' ? 'הושלם' : 'בתהליך'}
+                    </span>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedStep(null)}
+                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {selectedStep.details.done && selectedStep.details.done.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-500 uppercase mb-3">מה עשינו עד עכשיו</h4>
+                    <div className="space-y-2">
+                      {selectedStep.details.done.map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 text-gray-700">
+                          <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <Check className="w-3 h-3 text-green-600" />
+                          </div>
+                          <span className="text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedStep.details.todo && selectedStep.details.todo.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-500 uppercase mb-3">מה נשאר לעשות</h4>
+                    <div className="space-y-2">
+                      {selectedStep.details.todo.map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 text-gray-700">
+                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <div className="w-2 h-2 rounded-full bg-blue-500" />
+                          </div>
+                          <span className="text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <Button 
+                  className="w-full h-14 text-lg font-bold rounded-2xl mt-4 bg-blue-600 hover:bg-blue-700"
+                  size="lg"
+                  onClick={() => setSelectedStep(null)}
+                >
+                  {selectedStep.details.nextAction || 'המשך לשלב הבא'}
+                </Button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
-export { MILESTONES };

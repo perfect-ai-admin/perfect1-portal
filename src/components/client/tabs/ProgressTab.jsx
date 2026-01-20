@@ -1,6 +1,45 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import JourneyTimeline, { MILESTONES } from '../progress/JourneyTimeline';
+import JourneyTimeline from '../progress/JourneyTimeline';
+
+const MILESTONES = [
+  {
+    id: 'registration',
+    title: 'רישום עוסק פטור',
+    description: 'פתיחת תיק במס הכנסה וביטוח לאומי',
+    order: 1
+  },
+  {
+    id: 'first_invoice',
+    title: 'חשבונית ראשונה',
+    description: 'יצירה והנפקה של החשבונית הראשונה שלך',
+    order: 2
+  },
+  {
+    id: 'first_client_payment',
+    title: 'תשלום ראשון מלקוח',
+    description: 'קבלת התשלום הראשון על העבודה שלך',
+    order: 3
+  },
+  {
+    id: 'monthly_report',
+    title: 'דיווח חודשי ראשון',
+    description: 'השלמת דיווח חודשי ראשון לרשויות',
+    order: 4
+  },
+  {
+    id: 'steady_income',
+    title: 'הכנסה קבועה',
+    description: '3 חודשים רצופים עם הכנסה',
+    order: 5
+  },
+  {
+    id: 'annual_report',
+    title: 'דוח שנתי ראשון',
+    description: 'השלמת דוח שנתי ראשון לרשויות המס',
+    order: 6
+  }
+];
 import NextStepCard from '../progress/NextStepCard';
 import StepImportancePanel from '../progress/StepImportancePanel';
 import QuickStatsBar from '../progress/QuickStatsBar';
@@ -239,95 +278,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
         <QuickStatsBar stats={quickStats} />
       </div>
 
-      {/* Mobile Collapsed View */}
-      <div className="lg:hidden">
-        <button
-          onClick={() => setIsMobileExpanded(!isMobileExpanded)}
-          className="w-full bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-all active:scale-[0.98]"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-200">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <h2 className="text-lg font-bold text-gray-900">מסע העסק</h2>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowQuestionnaire(true);
-              }}
-              className="mr-1 p-2 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-600 transition-colors"
-              title="התחל שאלון מחדש"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          </div>
-          <motion.div
-            animate={{ rotate: isMobileExpanded ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-            className="text-gray-400"
-          >
-            ▼
-          </motion.div>
-        </button>
-
-        <motion.div
-          initial={false}
-          animate={{ height: isMobileExpanded ? 'auto' : 0, opacity: isMobileExpanded ? 1 : 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="overflow-hidden"
-        >
-          <div className="pt-3 space-y-3 pb-1">
-            {activeMilestones.map((milestone) => {
-              let status = 'locked';
-              if (milestone.status) {
-                 if (milestone.status === 'completed') status = 'completed';
-                 else if (milestone.status === 'in_progress') status = 'current';
-              } else {
-                 status = completedMilestones.includes(milestone.id) ? 'completed' 
-                  : milestone.id === currentMilestone ? 'current' : 'locked';
-              }
-
-              const isCompleted = status === 'completed';
-              const isCurrent = status === 'current';
-
-              return (
-                <div
-                  key={milestone.id}
-                  className={cn(
-                    "relative overflow-hidden rounded-xl border p-4 transition-all duration-200",
-                    isCurrent 
-                      ? "bg-white border-blue-500 shadow-md ring-1 ring-blue-100" 
-                      : isCompleted 
-                        ? "bg-white border-green-200" 
-                        : "bg-white border-gray-100 opacity-70 grayscale-[0.5]"
-                  )}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className={cn(
-                        "font-bold text-base leading-tight",
-                        isCurrent ? "text-blue-900" : "text-gray-600"
-                      )}>
-                        {milestone.title}
-                      </h3>
-                    </div>
-                    
-                    <div className={cn(
-                      "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm transition-colors",
-                      isCurrent ? "bg-blue-500 text-white" :
-                      isCompleted ? "bg-green-500 text-white" :
-                      "bg-gray-100 text-gray-400"
-                    )}>
-                      {isCompleted ? <Check className="w-5 h-5" /> : 
-                       isCurrent ? <Circle className="w-5 h-5 fill-current opacity-50" /> : 
-                       <Lock className="w-4 h-4" />}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
+      {/* Journey Timeline - Mobile */}
+      <div className="lg:hidden mb-6">
+        <JourneyTimeline />
       </div>
 
       {/* Next Step Card - Mobile */}
@@ -363,40 +316,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
       {/* Desktop Grid */}
       <div className="hidden lg:grid lg:grid-cols-12 gap-6">
-        {/* Journey Timeline - Left 50% */}
+        {/* Journey Timeline - Desktop */}
         <div className="lg:col-span-6">
-          <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
-                המסע שלך
-              </h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowQuestionnaire(true)}
-                className="text-gray-400 hover:text-blue-600 hover:bg-blue-50 gap-2 h-8"
-                title="התחל שאלון מחדש"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span className="text-xs">שאלון מחדש</span>
-              </Button>
-            </div>
-            {data?.business_state && (
-              <div className="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                <div className="text-sm text-blue-800 font-semibold">{data.business_state.name}</div>
-                <div className="text-xs text-blue-600 mt-1">{data.business_state.description}</div>
-                <div className="text-xs font-bold text-blue-700 mt-2">המטרה: {data.business_state.goal}</div>
-              </div>
-            )}
-            <JourneyTimeline 
-              completedMilestones={completedMilestones}
-              currentMilestone={currentMilestone}
-              milestones={activeMilestones}
-            />
-          </div>
+           <JourneyTimeline />
         </div>
 
         {/* Right Column - Next Step & Actions 50% */}
