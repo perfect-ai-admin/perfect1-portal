@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req); // Init client early for logging
         
         console.log('Webhook payload keys:', Object.keys(payload));
-        let { data, event, payload_too_large } = payload;
+        let { data, old_data, event, payload_too_large } = payload;
         
         const entityType = event?.entity_name || 'Lead';
         const eventType = event?.type || 'create';
@@ -48,9 +48,21 @@ Deno.serve(async (req) => {
         const n8nUrl = 'https://n8n.perfect-1.one/webhook/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
         const n8nTestUrl = 'https://n8n.perfect-1.one/webhook-test/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
         
+        // Check for status change if old_data is available
+        let statusChangeInfo = {};
+        if (old_data && old_data.status && data.status && old_data.status !== data.status) {
+            statusChangeInfo = {
+                previous_status: old_data.status,
+                new_status: data.status,
+                is_status_change: true
+            };
+            console.log(`Status changed from ${old_data.status} to ${data.status}`);
+        }
+
         // Enhance payload with source info
         const webhookPayload = {
             ...data,
+            ...statusChangeInfo,
             _entity_type: entityType,
             _event_type: eventType,
             _timestamp: new Date().toISOString()
