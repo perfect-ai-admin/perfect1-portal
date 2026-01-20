@@ -346,28 +346,54 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* The Challenge Section */}
-         <section className="py-12 bg-white border-t-4 border-[#D4AF37]">
+         <section className="py-16 bg-gradient-to-b from-white to-gray-50 border-t-4 border-[#D4AF37]">
            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
              <motion.div
                initial={{ opacity: 0, y: 20 }}
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
-               className="text-center mb-10"
+               className="text-center mb-12"
              >
-               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+               <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-6">
                  לא בטוחים איך לפתוח עוסק פטור?
                </h2>
-               <p className="text-xl text-gray-600">
-                 אנחנו כאן <strong className="text-[#27AE60]">לעשות סדר</strong> - שירות מקצועי לפתיחת עוסק פטור בישראל
+               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                 אתם לא לבד. הרוב הגדול של העצמאים החדשים חוששים בדיוק מאותם הדברים.
+                 <br />
+                 <span className="font-bold text-[#D4AF37]">אבל יש דרך פשוטה יותר.</span>
                </p>
              </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {[
-                { title: 'הבלבול', desc: 'יש המון דרישות, טפסים וגופים - איפה מתחילים?' },
-                { title: 'הסיכון', desc: 'טעות קטנה בהגשה יכולה לעלות בהרבה כסף' },
-                { title: 'הזמן', desc: 'לא מספיק זמן בין העבודה והנדרש ממנהל עסק' },
-                { title: 'השקט הנפשי', desc: 'איך יודעים שעשו נכון ושהם חוקיים באמת?' }
+                { 
+                  icon: AlertCircle, 
+                  color: 'text-orange-500', 
+                  bg: 'bg-orange-50', 
+                  title: 'הבלבול', 
+                  desc: 'טפסים, רשויות, הגדרות... מאיפה בכלל מתחילים?' 
+                },
+                { 
+                  icon: Shield, 
+                  color: 'text-red-500', 
+                  bg: 'bg-red-50', 
+                  title: 'הסיכון', 
+                  desc: 'טעות קטנה בהגשה יכולה לעלות בקנסות של אלפי שקלים' 
+                },
+                { 
+                  icon: Clock, 
+                  color: 'text-blue-500', 
+                  bg: 'bg-blue-50', 
+                  title: 'הזמן היקר', 
+                  desc: 'במקום לעבוד ולהרוויח, אתם מבזבזים שעות על בירוקרטיה' 
+                },
+                { 
+                  icon: Zap,
+                  color: 'text-purple-500', 
+                  bg: 'bg-purple-50', 
+                  title: 'חוסר ודאות', 
+                  desc: 'האם עשיתי נכון? האם שכחתי משהו? המתח הזה מיותר.' 
+                }
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -375,12 +401,35 @@ export default function OsekPaturLanding() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-red-50 rounded-xl p-6 border-r-4 border-red-400"
+                  className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 text-center group"
                 >
-                  <p className="text-lg font-bold text-red-700 mb-2">{item.title}</p>
-                  <p className="text-gray-700">{item.desc}</p>
+                  <div className={`w-16 h-16 mx-auto rounded-full ${item.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <item.icon className={`w-8 h-8 ${item.color}`} />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-3">{item.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
+            </div>
+
+            <div className="text-center">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="inline-block"
+              >
+                <Button 
+                  onClick={scrollToForm} 
+                  className="h-14 sm:h-16 px-8 sm:px-12 text-lg sm:text-xl font-bold rounded-full bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:from-[#2C5282] hover:to-[#1E3A5F] text-white shadow-xl hover:shadow-2xl hover:shadow-blue-900/30 transform hover:-translate-y-1 transition-all"
+                >
+                  אני רוצה לעשות סדר ומהר!
+                  <ArrowLeft className="mr-2 w-5 h-5 md:w-6 md:h-6" />
+                </Button>
+                <p className="mt-4 text-sm text-gray-500 font-medium">
+                  שיחת ייעוץ קצרה • בדיקת זכאות חינם • 0 התחייבות
+                </p>
+              </motion.div>
             </div>
           </div>
         </section>
