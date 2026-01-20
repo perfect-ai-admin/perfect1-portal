@@ -65,7 +65,8 @@ Deno.serve(async (req) => {
             ...statusChangeInfo,
             _entity_type: entityType,
             _event_type: eventType,
-            _timestamp: new Date().toISOString()
+            _timestamp: new Date().toISOString(),
+            send_delivery_confirmation: true
         };
 
         // Send to production URL
