@@ -10,8 +10,13 @@ import {
   ArrowLeft,
   Target,
   Clock,
-  CheckSquare
+  CheckSquare,
+  Zap,
+  HelpCircle,
+  BarChart2
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -186,24 +191,101 @@ export default function MentorOverview() {
                         )}
 
                         {/* 3. Work Plan (Tasks List) */}
-                        <div className="space-y-3 flex-1">
-                            <h4 className="font-bold text-sm text-gray-400 uppercase tracking-wider">תוכנית עבודה</h4>
+                        <div className="space-y-4 flex-1">
+                            <div className="flex items-center justify-between">
+                                <h4 className="font-bold text-sm text-gray-400 uppercase tracking-wider">תוכנית עבודה</h4>
+                                {goal.plan_summary && (
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger>
+                                                <HelpCircle className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-help" />
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-xs text-right bg-slate-900 text-white p-3 text-xs leading-relaxed" dir="rtl">
+                                                <p className="font-bold mb-1">היגיון התוכנית:</p>
+                                                {goal.plan_summary}
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                )}
+                            </div>
                             
-                            {/* Open Tasks */}
-                            <div className="space-y-2">
-                                {openTasks.slice(0, 3).map(task => (
-                                    <div key={task.id} className="flex items-start gap-3 group">
-                                        <button 
-                                            onClick={() => handleToggleTask(goal, task.id)}
-                                            className="mt-0.5 text-gray-300 hover:text-indigo-600 transition-colors flex-shrink-0"
+                            {/* Open Tasks Cards */}
+                            <div className="space-y-3">
+                                {openTasks.slice(0, 3).map(task => {
+                                    const isMomentum = task.momentum;
+                                    const effortColors = {
+                                        'קל': 'bg-green-100 text-green-700 border-green-200',
+                                        'בינוני': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                                        'קשה': 'bg-red-100 text-red-700 border-red-200'
+                                    };
+                                    
+                                    return (
+                                        <div 
+                                            key={task.id} 
+                                            className={`
+                                                relative border rounded-xl p-3 transition-all hover:shadow-md
+                                                ${isMomentum ? 'border-amber-200 bg-amber-50/30' : 'border-gray-100 bg-white'}
+                                            `}
                                         >
-                                            <Circle className="w-5 h-5" />
-                                        </button>
-                                        <span className="text-gray-700 text-sm leading-relaxed pt-0.5">
-                                            {task.title}
-                                        </span>
-                                    </div>
-                                ))}
+                                            {/* Header */}
+                                            <div className="flex items-start gap-3 mb-2">
+                                                <button 
+                                                    onClick={() => handleToggleTask(goal, task.id)}
+                                                    className="mt-0.5 text-gray-300 hover:text-indigo-600 transition-colors flex-shrink-0"
+                                                >
+                                                    <Circle className="w-5 h-5" />
+                                                </button>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="font-bold text-gray-800 text-sm leading-tight">
+                                                            {task.title}
+                                                        </span>
+                                                        {isMomentum && (
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger>
+                                                                        <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>משימת מומנטום (48 שעות)</TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                        )}
+                                                    </div>
+                                                    {task.why && (
+                                                        <p className="text-xs text-gray-500 leading-snug line-clamp-2 mb-1.5">
+                                                            {task.why}
+                                                        </p>
+                                                    )}
+                                                    
+                                                    {/* Meta Row */}
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        {task.effort && (
+                                                            <Badge variant="outline" className={`text-[10px] h-5 px-1.5 border ${effortColors[task.effort] || 'bg-gray-100 text-gray-600'}`}>
+                                                                {task.effort}
+                                                            </Badge>
+                                                        )}
+                                                        {task.definition_of_done && (
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <div className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-indigo-600 cursor-help bg-gray-50 px-1.5 py-0.5 rounded-md">
+                                                                            <CheckSquare className="w-3 h-3" />
+                                                                            <span>הגדרת סיום</span>
+                                                                        </div>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent className="max-w-xs text-right" dir="rtl">
+                                                                        <p className="font-bold text-xs mb-1">איך יודעים שסיימנו?</p>
+                                                                        {task.definition_of_done}
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
 
                             {/* Completed Tasks (Collapsed/Subtle) */}
@@ -211,11 +293,13 @@ export default function MentorOverview() {
                                 <div className="pt-2 border-t border-gray-100 mt-2">
                                     <div className="space-y-2 opacity-60">
                                         {completedTasks.slice(0, 2).map(task => (
-                                            <div key={task.id} className="flex items-start gap-3">
-                                                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                                                <span className="text-gray-500 text-sm line-through pt-0.5">
-                                                    {task.title}
-                                                </span>
+                                            <div key={task.id} className="flex items-start gap-3 p-2 rounded-lg bg-gray-50/50">
+                                                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                                                <div>
+                                                    <span className="text-gray-500 text-sm line-through block">
+                                                        {task.title}
+                                                    </span>
+                                                </div>
                                             </div>
                                         ))}
                                         {completedTasks.length > 2 && (
