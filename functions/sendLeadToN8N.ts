@@ -32,31 +32,35 @@ Deno.serve(async (req) => {
             body: JSON.stringify(webhookPayload)
         });
 
-        // Send to Test URL (fail silently if not active)
+        // Send to Test URL
+        let testResponseStatus = 'not_sent';
         try {
             console.log('Sending to N8N Test URL...');
-            await fetch(n8nTestUrl, {
+            const testRes = await fetch(n8nTestUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(webhookPayload)
             });
-            console.log('Sent to N8N Test URL successfully');
+            testResponseStatus = testRes.status;
+            console.log('N8N Test URL response:', testRes.status);
         } catch (e) {
-            console.warn('Failed to send to N8N Test URL (expected if editor is closed):', e);
+            console.warn('Failed to send to N8N Test URL:', e);
+            testResponseStatus = 'error';
         }
 
         const responseText = await response.text();
         
         if (!response.ok) {
-            // If production failed, we still want to know, but we proceeded with test url
             console.error(`N8N Production error ${response.status}:`, responseText);
-            // We don't throw here to allow test flow to complete if needed, or we can throw. 
-            // The user is debugging, let's return the status.
         }
 
         console.log('N8N Production response:', response.status, responseText);
 
-        return Response.json({ success: true, n8n_status: response.status });
+        return Response.json({ 
+            success: true, 
+            n8n_production_status: response.status,
+            n8n_test_status: testResponseStatus
+        });
     } catch (error) {
         console.error('Error sending lead to N8N:', error);
         return Response.json({ error: error.message }, { status: 500 });
