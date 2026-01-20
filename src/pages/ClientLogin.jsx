@@ -4,12 +4,14 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, Lock, Mail, ArrowRight, Sparkles, Zap } from 'lucide-react';
+import { Loader2, Lock, Mail, Phone, ArrowRight, Sparkles, Zap } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function ClientLogin() {
+  const [loginMethod, setLoginMethod] = useState('phone'); // 'phone' or 'email'
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -43,15 +45,37 @@ export default function ClientLogin() {
     setIsLoading(true);
 
     try {
-      await base44.auth.login({
-        email,
-        password,
-        provider: 'email'
-      });
+      // If using phone login method
+      if (loginMethod === 'phone') {
+        // Find user by phone
+        const users = await base44.entities.User.filter({ phone: phone });
+        
+        if (!users || users.length === 0) {
+          setError('לא נמצא משתמש עם מספר הטלפון הזה.');
+          setIsLoading(false);
+          return;
+        }
+        
+        const user = users[0];
+        
+        // Use user's email to login
+        await base44.auth.login({
+          email: user.email,
+          password,
+          provider: 'email'
+        });
+      } else {
+        // Email login
+        await base44.auth.login({
+          email,
+          password,
+          provider: 'email'
+        });
+      }
       
       navigate(createPageUrl('ClientDashboard'));
     } catch (err) {
-      setError(err.message || 'שגיאה בתהליך הכניסה. אנא בדוק את הדוא"ל והסיסמה.');
+      setError(err.message || 'שגיאה בתהליך הכניסה. אנא בדוק את הפרטים והסיסמה.');
       setIsLoading(false);
     }
   };
@@ -92,24 +116,70 @@ export default function ClientLogin() {
             </div>
 
             <div className="space-y-4">
+              {/* Login Method Toggle */}
+              <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod('phone')}
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                    loginMethod === 'phone'
+                      ? 'bg-white text-[#1E3A5F] shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  מספר טלפון
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod('email')}
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                    loginMethod === 'email'
+                      ? 'bg-white text-[#1E3A5F] shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  דוא"ל
+                </button>
+              </div>
+
               <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    דוא"ל
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                      type="email"
-                      placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
-                      required
-                      disabled={isLoading}
-                    />
+                {loginMethod === 'phone' ? (
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-medium text-gray-700">
+                      מספר טלפון
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        type="tel"
+                        placeholder="0502277087"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
+                        required
+                        disabled={isLoading}
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-medium text-gray-700">
+                      דוא"ל
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        type="email"
+                        placeholder="your@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="pr-9 h-10 text-base bg-white border-gray-200 focus:border-[#1E3A5F] focus:ring-[#1E3A5F] transition-all"
+                        required
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-1.5">
                   <label className="block text-sm font-medium text-gray-700">
