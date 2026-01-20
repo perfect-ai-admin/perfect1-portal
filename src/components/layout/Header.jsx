@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -316,17 +317,13 @@ export default function Header() {
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
             {/* Client Area Button - Desktop */}
-            <a
-              href="/login?redirect=/ClientDashboard"
-              className="hidden lg:flex"
+            <Button 
+              size="lg"
+              onClick={() => base44.auth.redirectToLogin('/ClientDashboard')}
+              className="hidden lg:flex bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold rounded-xl px-5 h-12 shadow-md hover:shadow-lg transition-all"
             >
-              <Button 
-                size="lg"
-                className="bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold rounded-xl px-5 h-12 shadow-md hover:shadow-lg transition-all"
-              >
-                🔐 אזור אישי
-              </Button>
-            </a>
+              🔐 אזור אישי
+            </Button>
 
             {/* Mobile CTA Buttons - Show on all screens */}
             <a
@@ -412,13 +409,15 @@ export default function Header() {
                   <nav className="flex-1 p-6 overflow-y-auto">
                     <ul className="space-y-2">
                       <li>
-                        <a
-                          href="/login?redirect=/ClientDashboard"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
+                        <button
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            base44.auth.redirectToLogin('/ClientDashboard');
+                          }}
+                          className="w-full flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
                         >
                           🔐 אזור אישי ללקוחות
-                        </a>
+                        </button>
                       </li>
                       <li>
                         <Link
