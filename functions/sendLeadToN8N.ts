@@ -42,6 +42,14 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'ignored', reason: 'no data' });
         }
 
+        // Strict check: Only send on Create or Status Change
+        if (eventType === 'update') {
+            if (old_data && data.status === old_data.status) {
+                 console.log('Status unchanged, skipping N8N sync to prevent duplicates/loops');
+                 return Response.json({ status: 'ignored', reason: 'status unchanged' });
+            }
+        }
+
         console.log(`Processing ${entityType} event: ${eventType}`);
         console.log(`Sending ${entityType} to N8N webhook:`, data.id);
 
