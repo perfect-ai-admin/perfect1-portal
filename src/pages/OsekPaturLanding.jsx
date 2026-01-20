@@ -66,7 +66,8 @@ export default function OsekPaturLanding() {
 
     setIsSubmitting(true);
     try {
-      await base44.entities.Lead.create({
+      // Use backend function to bypass RLS for public users
+      await base44.functions.invoke('submitLead', {
         ...formData,
         source_page: 'דף נחיתה - פתיחת עוסק פטור',
         status: 'new'
@@ -75,6 +76,7 @@ export default function OsekPaturLanding() {
       window.location.href = '/ThankYou';
     } catch (err) {
       console.error(err);
+      alert('אירעה שגיאה בשליחת הטופס. אנא נסה שוב או צור קשר בטלפון.');
     } finally {
       setIsSubmitting(false);
     }
@@ -93,13 +95,14 @@ export default function OsekPaturLanding() {
     }
 
     try {
-      await base44.entities.Lead.create({
+      // Use backend function to bypass RLS for public users
+      await base44.functions.invoke('submitLead', {
         ...popupFormData,
         source_page: 'פופאפ - 35% גלילה',
         status: 'new'
       });
       setShowPopup(false);
-      alert('תודה! נצור קשר בקרוב');
+      alert('תודה! ניצור קשר בקרוב');
       setPopupFormData({ name: '', phone: '', email: '' });
     } catch (err) {
       console.error(err);
