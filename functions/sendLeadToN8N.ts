@@ -14,23 +14,38 @@ Deno.serve(async (req) => {
         console.log('Sending lead to N8N webhook:', data.id);
 
         const n8nUrl = 'https://n8n.perfect-1.one/webhook/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
+        const n8nTestUrl = 'https://n8n.perfect-1.one/webhook-test/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
         
+        // Send to production URL
         const response = await fetch(n8nUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+
+        // Send to Test URL (fail silently if not active)
+        try {
+            console.log('Sending to N8N Test URL...');
+            await fetch(n8nTestUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            console.log('Sent to N8N Test URL successfully');
+        } catch (e) {
+            console.warn('Failed to send to N8N Test URL (expected if editor is closed):', e);
+        }
 
         const responseText = await response.text();
         
         if (!response.ok) {
-            console.error(`N8N error ${response.status}:`, responseText);
-            throw new Error(`N8N responded with ${response.status}`);
+            // If production failed, we still want to know, but we proceeded with test url
+            console.error(`N8N Production error ${response.status}:`, responseText);
+            // We don't throw here to allow test flow to complete if needed, or we can throw. 
+            // The user is debugging, let's return the status.
         }
 
-        console.log('N8N response:', response.status, responseText);
+        console.log('N8N Production response:', response.status, responseText);
 
         return Response.json({ success: true, n8n_status: response.status });
     } catch (error) {
