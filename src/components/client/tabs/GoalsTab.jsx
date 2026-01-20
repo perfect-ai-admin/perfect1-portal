@@ -7,6 +7,7 @@ import SecondaryGoals from '../goals/SecondaryGoals';
 import GoalTemplates from '../goals/GoalTemplatesFixed';
 // GoalsCatalog removed
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
+import UpgradePrompt from '../UpgradePrompt';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +15,10 @@ import {
   DialogContent,
 } from '@/components/ui/dialog';
 
-export default function GoalsTab({ user, data, openAddGoal = false }) {
+export default function GoalsTab({ user, data, openAddGoal = false, hasAccess = true }) {
+  if (!hasAccess) {
+    return <UpgradePrompt feature="mentor" />;
+  }
   const queryClient = useQueryClient();
   const [goals, setGoals] = useState([]);
   const [userGoals, setUserGoals] = useState([]);
