@@ -64,20 +64,17 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
   const handleShowAddGoal = () => {
     const limit = user?.goals_limit;
-    // If limit is null/undefined -> Unlimited (Elite plan). If number -> Limit.
-    // However, default logic for Free plan is 1. If user has no plan, we assume Free (1).
-    const effectiveLimit = limit === null || limit === undefined ? 1 : limit;
     
-    // Allow unlimited if explicitly null/high number, but here we treat null as 1 for safety unless plan says otherwise?
-    // Wait, in ClientLogin: goals_limit: freePlan?.goals_limit || 1.
-    // In Pricing: Elite has "goals_limit: null" (unlimited).
-    // So if limit === null, it allows infinite.
+    // Check if unlimited (Full plan has null)
+    const isUnlimited = limit === null;
     
-    const isUnlimited = limit === null; // Based on Elite plan config in Pricing
-    
-    if (!isUnlimited && goals.length >= limit) {
-      setShowUpgradeDialog(true);
-      return;
+    // If not unlimited, check if reached limit
+    if (!isUnlimited) {
+      const actualLimit = limit || 1; // Default to 1 if undefined
+      if (goals.length >= actualLimit) {
+        setShowUpgradeDialog(true);
+        return;
+      }
     }
     
     setShowAddGoal(true);
