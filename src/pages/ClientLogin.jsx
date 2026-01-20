@@ -47,21 +47,22 @@ export default function ClientLogin() {
     try {
       // If using phone login method
       if (loginMethod === 'phone') {
-        // Find user by phone
-        const users = await base44.entities.User.filter({ phone: phone });
-        
-        if (!users || users.length === 0) {
-          setError('לא נמצא משתמש עם מספר הטלפון הזה.');
+        // Call backend to verify phone and get email
+        const response = await base44.functions.invoke('phoneLogin', { 
+          phone: phone,
+          password: password
+        });
+
+        if (!response.data.success) {
+          setError('שגיאה בהתחברות. אנא נסה שוב.');
           setIsLoading(false);
           return;
         }
-        
-        const user = users[0];
-        
-        // Use user's email to login
+
+        // Login with the email returned
         await base44.auth.login({
-          email: user.email,
-          password,
+          email: response.data.email,
+          password: password,
           provider: 'email'
         });
       } else {
