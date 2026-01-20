@@ -672,49 +672,49 @@ export default function OsekPaturLanding() {
               <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-[#D4AF37]/30">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">שם מלא *</label>
-                    <Input
-                      placeholder="איך קוראים לך?"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="h-12 rounded-xl border-2"
-                      required
-                    />
-                  </div>
+                     <label className="block text-sm font-bold text-gray-700 mb-2">שם מלא *</label>
+                     <Input
+                       placeholder="איך קוראים לך?"
+                       value={formData.name}
+                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                       required
+                     />
+                   </div>
 
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">טלפון *</label>
-                    <Input
-                      type="tel"
-                      placeholder="050-1234567"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="h-12 rounded-xl border-2"
-                      required
-                    />
-                  </div>
+                   <div>
+                     <label className="block text-sm font-bold text-gray-700 mb-2">טלפון *</label>
+                     <Input
+                       type="tel"
+                       placeholder="050-1234567"
+                       value={formData.phone}
+                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                       required
+                     />
+                   </div>
 
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">מייל *</label>
-                    <Input
-                      type="email"
-                      placeholder="example@gmail.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="h-12 rounded-xl border-2"
-                      required
-                    />
-                  </div>
+                   <div>
+                     <label className="block text-sm font-bold text-gray-700 mb-2">מייל *</label>
+                     <Input
+                       type="email"
+                       placeholder="example@gmail.com"
+                       value={formData.email}
+                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                       required
+                     />
+                   </div>
 
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">סוג עיסוק (לא חובה)</label>
-                    <Input
-                      placeholder="למשל: צלם, מעצב, מאמן כושר..."
-                      value={formData.profession}
-                      onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                      className="h-12 rounded-xl border-2"
-                    />
-                  </div>
+                   <div>
+                     <label className="block text-sm font-bold text-gray-700 mb-2">סוג עיסוק (לא חובה)</label>
+                     <Input
+                       placeholder="למשל: צלם, מעצב, מאמן כושר..."
+                       value={formData.profession}
+                       onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
+                       className="h-12 md:h-14 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
+                     />
+                   </div>
 
                   <Button
                     type="submit"
