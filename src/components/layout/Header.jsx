@@ -319,7 +319,14 @@ export default function Header() {
             {/* Client Area Button - Desktop */}
             <Button 
               size="lg"
-              onClick={() => base44.auth.redirectToLogin('/ClientDashboard')}
+              onClick={async () => {
+                const isAuth = await base44.auth.isAuthenticated();
+                if (isAuth) {
+                  window.location.href = createPageUrl('ClientDashboard');
+                } else {
+                  window.location.href = `https://auth.base44.com/login?app_id=${window.location.hostname}&redirect_url=${encodeURIComponent(window.location.origin + '/ClientDashboard')}`;
+                }
+              }}
               className="hidden lg:flex bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold rounded-xl px-5 h-12 shadow-md hover:shadow-lg transition-all"
             >
               🔐 אזור אישי
@@ -410,9 +417,14 @@ export default function Header() {
                     <ul className="space-y-2">
                       <li>
                         <button
-                          onClick={() => {
+                          onClick={async () => {
                             setIsMobileMenuOpen(false);
-                            base44.auth.redirectToLogin('/ClientDashboard');
+                            const isAuth = await base44.auth.isAuthenticated();
+                            if (isAuth) {
+                              window.location.href = createPageUrl('ClientDashboard');
+                            } else {
+                              window.location.href = `https://auth.base44.com/login?app_id=${window.location.hostname}&redirect_url=${encodeURIComponent(window.location.origin + '/ClientDashboard')}`;
+                            }
                           }}
                           className="w-full flex items-center py-3 px-4 rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] text-white font-bold transition-all text-lg shadow-lg mb-4"
                         >
