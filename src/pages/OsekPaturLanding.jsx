@@ -354,13 +354,13 @@ export default function OsekPaturLanding() {
                viewport={{ once: true }}
                className="text-center mb-12"
              >
-               <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-6">
-                 לא בטוחים איך לפתוח עוסק פטור?
+               <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-6 leading-tight">
+                 רוצים להיות עצמאים,<br/>לא פקידים של מס הכנסה?
                </h2>
-               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                 אתם לא לבד. הרוב הגדול של העצמאים החדשים חוששים בדיוק מאותם הדברים.
+               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
+                 בואו נדבר דוגרי: הבירוקרטיה מפחידה את כולם.
                  <br />
-                 <span className="font-bold text-[#D4AF37]">אבל יש דרך פשוטה יותר.</span>
+                 <span className="font-bold text-[#27AE60] bg-green-50 px-2 py-1 rounded-lg mt-2 inline-block">אנחנו כאן כדי להעיף אותה מהדרך שלכם להצלחה.</span>
                </p>
              </motion.div>
 
@@ -368,31 +368,31 @@ export default function OsekPaturLanding() {
               {[
                 { 
                   icon: AlertCircle, 
-                  color: 'text-orange-500', 
+                  color: 'text-orange-600', 
                   bg: 'bg-orange-50', 
-                  title: 'הבלבול', 
-                  desc: 'טפסים, רשויות, הגדרות... מאיפה בכלל מתחילים?' 
+                  title: 'הלכתם לאיבוד בטפסים?', 
+                  desc: 'מע״מ, מס הכנסה, ביטוח לאומי... למה שתתמודדו עם זה לבד? אנחנו מדברים את השפה שלהם כדי שאתם לא תצטרכו.' 
                 },
                 { 
                   icon: Shield, 
-                  color: 'text-red-500', 
+                  color: 'text-red-600', 
                   bg: 'bg-red-50', 
-                  title: 'הסיכון', 
-                  desc: 'טעות קטנה בהגשה יכולה לעלות בקנסות של אלפי שקלים' 
+                  title: 'הפחד מטעויות יקרות', 
+                  desc: 'שכחתם לדווח? מילאתם סעיף לא נכון? טעויות קטנות עולות ביוקר. אצלנו יש אפס מקום לטעויות - אנחנו שומרים עליכם.' 
                 },
                 { 
                   icon: Clock, 
-                  color: 'text-blue-500', 
+                  color: 'text-blue-600', 
                   bg: 'bg-blue-50', 
-                  title: 'הזמן היקר', 
-                  desc: 'במקום לעבוד ולהרוויח, אתם מבזבזים שעות על בירוקרטיה' 
+                  title: 'תפסיקו לבזבז זמן', 
+                  desc: 'בזמן שאתם מנסים להבין טופס 101, המתחרים שלכם עובדים. תנו לנו את הניירת המעצבנת, ותתמקדו בלהגדיל את העסק.' 
                 },
                 { 
                   icon: Zap,
-                  color: 'text-purple-500', 
+                  color: 'text-purple-600', 
                   bg: 'bg-purple-50', 
-                  title: 'חוסר ודאות', 
-                  desc: 'האם עשיתי נכון? האם שכחתי משהו? המתח הזה מיותר.' 
+                  title: 'לישון בשקט בלילה', 
+                  desc: 'בלי רואה חשבון, אתם לבד מול המערכת. איתנו? יש לכם גב מקצועי, מענה לכל שאלה ותחושת ביטחון אמיתית.' 
                 }
               ].map((item, i) => (
                 <motion.div
