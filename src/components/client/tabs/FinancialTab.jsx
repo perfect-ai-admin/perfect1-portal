@@ -1,10 +1,5 @@
 import FinancialWorkbench from '../financial/FinancialWorkbench';
-import UpgradePrompt from '../UpgradePrompt';
 
-export default function FinancialTab({ data, hasAccess = true }) {
-  if (!hasAccess) {
-    return <UpgradePrompt feature="finance" />;
-  }
-  
+export default function FinancialTab({ data }) {
   return <FinancialWorkbench data={data} />;
 }

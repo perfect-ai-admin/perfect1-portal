@@ -26,12 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import UpgradePrompt from '../UpgradePrompt';
-
-export default function BusinessTab({ data, hasAccess = true }) {
-  if (!hasAccess) {
-    return <UpgradePrompt feature="finance" />;
-  }
+export default function BusinessTab({ data }) {
   const [period, setPeriod] = useState('month');
   const [isExporting, setIsExporting] = useState(false);
   
