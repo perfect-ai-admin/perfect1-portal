@@ -44,25 +44,18 @@ export default function MentorOverview() {
 
   const createGoalMutation = useMutation({
     mutationFn: async (title) => {
-        const user = await base44.auth.me();
-        // יצירת מטרה עם משימות דיפולטיביות כפי שביקש המשתמש
-        return base44.entities.UserGoal.create({
-            user_id: user.id,
-            title: title,
-            description: 'מטרה חדשה שנפתחה',
-            status: 'active',
-            progress: 0,
-            tasks: [
-                { id: crypto.randomUUID(), title: 'הגדרת יעדים מדויקים', isCompleted: false },
-                { id: crypto.randomUUID(), title: 'בניית תוכנית פעולה ראשונית', isCompleted: false },
-                { id: crypto.randomUUID(), title: 'ביצוע צעד ראשון', isCompleted: false }
-            ]
-        });
+        // קריאה לפונקציית בבקנד שמייצרת תוכנית עבודה עם AI
+        const response = await base44.functions.invoke('generateGoalPlan', { title });
+        return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userGoals'] });
       setShowNewGoalDialog(false);
-      toast.success('מטרה חדשה נוצרה בהצלחה');
+      toast.success('מטרה חדשה נוצרה בהצלחה! המנטור בנה לך תוכנית עבודה.');
+    },
+    onError: (error) => {
+        console.error(error);
+        toast.error('שגיאה ביצירת המטרה. נסה שוב.');
     }
   });
 
@@ -269,11 +262,14 @@ export default function MentorOverview() {
 
 function CreateGoalDialog({ open, onOpenChange, onSubmit }) {
     const [title, setTitle] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (title.trim()) {
-            onSubmit(title);
+            setIsSubmitting(true);
+            await onSubmit(title);
+            setIsSubmitting(false);
             setTitle('');
         }
     };
@@ -293,13 +289,25 @@ function CreateGoalDialog({ open, onOpenChange, onSubmit }) {
                             placeholder="לדוגמה: להשיג 5 לקוחות חדשים החודש"
                             className="text-lg"
                             autoFocus
+                            disabled={isSubmitting}
                         />
                     </div>
                     <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-800">
-                        לאחר יצירת המטרה, המערכת תייצר עבורך אוטומטית סט משימות ראשוני להתחלה.
+                        {isSubmitting ? (
+                            <div className="flex items-center gap-2">
+                                <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                                <span>המנטור מנתח את המטרה ובונה תוכנית עבודה...</span>
+                            </div>
+                        ) : (
+                            "לאחר יצירת המטרה, המנטור ינתח אותה ויבנה עבורך תוכנית עבודה מדויקת."
+                        )}
                     </div>
-                    <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 font-bold">
-                        צא לדרך
+                    <Button 
+                        type="submit" 
+                        disabled={isSubmitting || !title.trim()} 
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 font-bold"
+                    >
+                        {isSubmitting ? 'בונה תוכנית...' : 'צא לדרך'}
                     </Button>
                 </form>
             </DialogContent>
