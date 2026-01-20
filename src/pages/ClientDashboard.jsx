@@ -156,11 +156,11 @@ export default function ClientDashboard() {
     return userData || user;
   }, [userData, user]);
 
-  // Get permissions from user data - Enabled by default for visibility
+  // Get actual permissions from user data
   const permissions = React.useMemo(() => ({
-    marketing: true,
-    mentor: true,
-    finance: true
+    marketing: currentData?.marketing_enabled || false,
+    mentor: currentData?.mentor_enabled || false,
+    finance: currentData?.finance_enabled || false
   }), [currentData]);
 
   const enrichedData = React.useMemo(() => ({
@@ -302,14 +302,14 @@ export default function ClientDashboard() {
 
             {/* Tab Navigation - Desktop Only */}
             <div className="hidden md:block">
-              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
+              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={[
                 { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
-                permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
-                permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
-                permissions.mentor && { id: 'goals', label: 'מטרות', icon: 'Target' },
-                permissions.marketing && { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
-                permissions.mentor && { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
-              ].filter(Boolean)} />}
+                { id: 'business', label: 'נתוני העסק', icon: 'BarChart3', locked: !permissions.finance },
+                { id: 'financial', label: 'כספים', icon: 'Wallet', locked: !permissions.finance },
+                { id: 'goals', label: 'מטרות', icon: 'Target', locked: !permissions.mentor },
+                { id: 'marketing', label: 'שיווק', icon: 'Megaphone', locked: !permissions.marketing },
+                { id: 'mentor', label: 'מנטור', icon: 'Lightbulb', locked: !permissions.mentor }
+              ]} />}
             </div>
             </div>
         </header>
@@ -330,18 +330,18 @@ export default function ClientDashboard() {
                    <Breadcrumbs activeTab={activeTab} onNavigate={setActiveTab} />
                  </div>
 
-                 {/* Tabs - Dynamic based on permissions */}
+                 {/* Tabs - Always visible, with upgrade prompts */}
                  {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
                    setActiveTab(tab);
                    if (tab === 'goals' && config) {
                      setGoalsTabConfig(config);
                    }
                  }} />}
-                 {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
-                 {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
-                 {activeTab === 'goals' && permissions.mentor && <GoalsTab user={currentData} data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} />}
-                 {activeTab === 'marketing' && permissions.marketing && <MarketingTab data={enrichedData} />}
-                 {activeTab === 'mentor' && permissions.mentor && <MentorTab data={enrichedData} />}
+                 {activeTab === 'business' && <BusinessTab data={enrichedData} hasAccess={permissions.finance} />}
+                 {activeTab === 'financial' && <FinancialTab data={enrichedData} hasAccess={permissions.finance} />}
+                 {activeTab === 'goals' && <GoalsTab user={currentData} data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} hasAccess={permissions.mentor} />}
+                 {activeTab === 'marketing' && <MarketingTab data={enrichedData} hasAccess={permissions.marketing} />}
+                 {activeTab === 'mentor' && <MentorTab data={enrichedData} hasAccess={permissions.mentor} />}
                </div>
              </main>
            </div>
@@ -350,14 +350,14 @@ export default function ClientDashboard() {
 
 
         {/* Mobile Bottom Tab Bar */}
-         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
+         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={[
            { id: 'progress', label: 'התקדמות', icon: TrendingUp },
-           permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
-           permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
-           permissions.mentor && { id: 'goals', label: 'מטרות', icon: Target },
-           permissions.marketing && { id: 'marketing', label: 'שיווק', icon: Megaphone },
-           permissions.mentor && { id: 'mentor', label: 'מנטור', icon: MessageSquare }
-         ].filter(Boolean)} />}
+           { id: 'business', label: 'עסק', icon: BarChart3, locked: !permissions.finance },
+           { id: 'financial', label: 'כספים', icon: Wallet, locked: !permissions.finance },
+           { id: 'goals', label: 'מטרות', icon: Target, locked: !permissions.mentor },
+           { id: 'marketing', label: 'שיווק', icon: Megaphone, locked: !permissions.marketing },
+           { id: 'mentor', label: 'מנטור', icon: MessageSquare, locked: !permissions.mentor }
+         ]} />}
         </div>
         </>
         </DebugErrorBoundary>
