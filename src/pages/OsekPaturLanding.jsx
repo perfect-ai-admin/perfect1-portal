@@ -745,7 +745,7 @@ export default function OsekPaturLanding() {
                        disabled={isSubmitting}
                        className="w-full h-12 md:h-14 text-base md:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white mt-2"
                      >
-                       {isSubmitting ? 'שולח...' : 'הגשת פרטים'}
+                       {isSubmitting ? 'שולח...' : 'לפתיחת עוסק פטור'}
                      </Button>
 
                      <p className="text-xs text-gray-500 text-center mt-3">
@@ -947,7 +947,7 @@ export default function OsekPaturLanding() {
                 type="submit"
                 className="w-full h-12 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg shadow-green-900/10"
               >
-                כן, חזרו אליי!
+                לפתיחת עוסק פטור
               </Button>
 
               <p className="text-xs text-gray-500 text-center mt-2">
