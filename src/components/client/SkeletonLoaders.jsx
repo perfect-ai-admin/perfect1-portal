@@ -48,3 +48,28 @@ export function SkeletonHeader() {
     </div>
   );
 }
+
+export function SkeletonPricing() {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="text-center mb-12 space-y-4">
+        <SkeletonText width="w-1/3" height="h-10" className="mx-auto" />
+        <SkeletonText width="w-1/4" height="h-6" className="mx-auto" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="border rounded-2xl p-6 space-y-4">
+            <SkeletonText width="w-1/2" height="h-8" className="mx-auto" />
+            <SkeletonText width="w-1/3" height="h-12" className="mx-auto" />
+            <div className="space-y-2 pt-4">
+              {[1, 2, 3, 4, 5].map((j) => (
+                <SkeletonText key={j} width="w-full" height="h-4" />
+              ))}
+            </div>
+            <SkeletonCard className="h-12 w-full mt-4" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

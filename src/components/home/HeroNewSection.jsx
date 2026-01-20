@@ -17,17 +17,17 @@ export default function HeroNewSection() {
         <motion.div
           animate={{ y: [0, -30, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 right-1/4 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl"
+          className="absolute top-0 right-1/4 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl will-change-transform"
         />
         <motion.div
           animate={{ y: [0, 30, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 left-1/3 w-96 h-96 bg-[#27AE60]/15 rounded-full blur-3xl"
+          className="absolute bottom-0 left-1/3 w-96 h-96 bg-[#27AE60]/15 rounded-full blur-3xl will-change-transform"
         />
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 right-0 w-96 h-96 bg-[#1E3A5F]/20 rounded-full blur-3xl"
+          className="absolute top-1/2 right-0 w-96 h-96 bg-[#1E3A5F]/20 rounded-full blur-3xl will-change-transform"
         />
       </div>
 

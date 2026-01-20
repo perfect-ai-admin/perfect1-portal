@@ -23,18 +23,109 @@ import NotificationCenter from '@/components/client/NotificationCenter';
 import ShoppingCart from '@/components/client/shared/ShoppingCart';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useQuery } from '@tanstack/react-query';
+import { SkeletonPricing } from '@/components/client/SkeletonLoaders';
+
+// Static data outside component
+const SUBSCRIPTION_TIERS = [
+  {
+    name: 'Free',
+    title: 'התחלה חכמה',
+    badge: 'מתאים לעצמאים בתחילת הדרך',
+    dbNames: ['חינמי', 'Free', 'Starter'],
+    price: 0,
+    cta: 'התחל בחינם',
+    micro: 'לא נדרש כרטיס אשראי · אפשר לשדרג בכל שלב',
+    features: [
+      { text: 'מטרה אחת פעילה', included: true },
+      { text: 'Mentor עסקי למטרה אחת', included: true },
+      { text: 'מערכת מיתוג בסיסית', included: true },
+      { text: 'חיבור למערכת חשבונות', included: true },
+      { text: 'ריבוי מטרות', included: false },
+      { text: 'פיננסים מתקדמים', included: false },
+      { text: 'אוטומציות', included: false },
+    ],
+    highlight: false
+  },
+  {
+    name: 'Basic',
+    title: 'התקדמות יציבה',
+    badge: 'לעסק שכבר מתחיל לזוז',
+    dbNames: ['Basic', 'בסיסי'],
+    price: 59,
+    cta: 'שדרג למסלול Basic',
+    micro: 'ניתן לבטל בכל רגע · ללא התחייבות',
+    features: [
+      { text: 'עד 3 מטרות', included: true },
+      { text: 'Mentor מלא', included: true },
+      { text: 'שיווק + מיתוג מתקדם', included: true },
+      { text: 'חיבור פיננסי בסיסי', included: true },
+      { text: 'אוטומציות', included: false },
+      { text: 'פיננסים מתקדמים', included: false },
+    ],
+    highlight: false
+  },
+  {
+    name: 'Pro',
+    title: 'שליטה וצמיחה',
+    badge: 'לעסק פעיל שרוצה סדר ותוצאות',
+    dbNames: ['Pro', 'מקצועי'],
+    price: 149,
+    cta: 'בחר במסלול Pro',
+    micro: 'גישה מלאה למנטור ולניהול מתקדם',
+    features: [
+      { text: 'עד 7 מטרות', included: true },
+      { text: 'Mentor מתקדם (מעקב, מדדים)', included: true },
+      { text: 'שיווק מתקדם (קמפיינים)', included: true },
+      { text: 'Finance בסיסי', included: true },
+      { text: 'סדר וניהול עסקי', included: true },
+    ],
+    highlight: true // Popular choice
+  },
+  {
+    name: 'Elite',
+    title: 'מערכת שעובדת בשבילך',
+    badge: 'לעסקים שרוצים מקסימום יכולת',
+    dbNames: ['Elite', 'עלית'],
+    price: 349,
+    cta: 'הצטרף ל־Elite',
+    micro: 'המגבלות יורדות · הכל פתוח',
+    features: [
+      { text: 'מטרות ללא הגבלה', included: true },
+      { text: 'עבודה על כמה מטרות במקביל', included: true },
+      { text: 'Mentor מלא + מתקדם', included: true },
+      { text: 'שיווק מלא', included: true },
+      { text: 'Finance מלא', included: true },
+      { text: 'אוטומציות חכמות', included: true },
+      { text: 'עדיפות לפיצ’רים עתידיים', included: true },
+    ],
+    highlight: false
+  }
+];
 
 export default function PricingPerfectBizAI() {
   const [activeTab, setActiveTab] = useState(null);
   const [language, setLanguage] = useState('he');
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'yearly'
-  const [user, setUser] = useState(null);
-  const [plans, setPlans] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [limitReached, setLimitReached] = useState(false);
+
+  // Optimized data fetching with React Query
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ['user', 'me'],
+    queryFn: () => base44.auth.me().catch(() => null),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  const { data: plans = [], isLoading: isPlansLoading } = useQuery({
+    queryKey: ['plans'],
+    queryFn: () => base44.entities.Plan.list({ limit: 50 }),
+    staleTime: 1000 * 60 * 60, // 1 hour (plans don't change often)
+  });
+
+  const isLoading = isUserLoading || isPlansLoading;
 
   // Check for limit reached param
   useEffect(() => {
@@ -47,83 +138,6 @@ export default function PricingPerfectBizAI() {
       }, 500);
     }
   }, [location.search]);
-
-  // Define static data from spec
-  const subscriptionTiers = [
-    {
-      name: 'Free',
-      title: 'התחלה חכמה',
-      badge: 'מתאים לעצמאים בתחילת הדרך',
-      dbNames: ['חינמי', 'Free', 'Starter'],
-      price: 0,
-      cta: 'התחל בחינם',
-      micro: 'לא נדרש כרטיס אשראי · אפשר לשדרג בכל שלב',
-      features: [
-        { text: 'מטרה אחת פעילה', included: true },
-        { text: 'Mentor עסקי למטרה אחת', included: true },
-        { text: 'מערכת מיתוג בסיסית', included: true },
-        { text: 'חיבור למערכת חשבונות', included: true },
-        { text: 'ריבוי מטרות', included: false },
-        { text: 'פיננסים מתקדמים', included: false },
-        { text: 'אוטומציות', included: false },
-      ],
-      highlight: false
-    },
-    {
-      name: 'Basic',
-      title: 'התקדמות יציבה',
-      badge: 'לעסק שכבר מתחיל לזוז',
-      dbNames: ['Basic', 'בסיסי'],
-      price: 59,
-      cta: 'שדרג למסלול Basic',
-      micro: 'ניתן לבטל בכל רגע · ללא התחייבות',
-      features: [
-        { text: 'עד 3 מטרות', included: true },
-        { text: 'Mentor מלא', included: true },
-        { text: 'שיווק + מיתוג מתקדם', included: true },
-        { text: 'חיבור פיננסי בסיסי', included: true },
-        { text: 'אוטומציות', included: false },
-        { text: 'פיננסים מתקדמים', included: false },
-      ],
-      highlight: false
-    },
-    {
-      name: 'Pro',
-      title: 'שליטה וצמיחה',
-      badge: 'לעסק פעיל שרוצה סדר ותוצאות',
-      dbNames: ['Pro', 'מקצועי'],
-      price: 149,
-      cta: 'בחר במסלול Pro',
-      micro: 'גישה מלאה למנטור ולניהול מתקדם',
-      features: [
-        { text: 'עד 7 מטרות', included: true },
-        { text: 'Mentor מתקדם (מעקב, מדדים)', included: true },
-        { text: 'שיווק מתקדם (קמפיינים)', included: true },
-        { text: 'Finance בסיסי', included: true },
-        { text: 'סדר וניהול עסקי', included: true },
-      ],
-      highlight: true // Popular choice
-    },
-    {
-      name: 'Elite',
-      title: 'מערכת שעובדת בשבילך',
-      badge: 'לעסקים שרוצים מקסימום יכולת',
-      dbNames: ['Elite', 'עלית'],
-      price: 349,
-      cta: 'הצטרף ל־Elite',
-      micro: 'המגבלות יורדות · הכל פתוח',
-      features: [
-        { text: 'מטרות ללא הגבלה', included: true },
-        { text: 'עבודה על כמה מטרות במקביל', included: true },
-        { text: 'Mentor מלא + מתקדם', included: true },
-        { text: 'שיווק מלא', included: true },
-        { text: 'Finance מלא', included: true },
-        { text: 'אוטומציות חכמות', included: true },
-        { text: 'עדיפות לפיצ’רים עתידיים', included: true },
-      ],
-      highlight: false
-    }
-  ];
 
   const oneTimeServices = React.useMemo(() => [
     {
@@ -160,25 +174,6 @@ export default function PricingPerfectBizAI() {
       micro: 'הגדרה ראשונית מהירה ומקצועית'
     }
   ], []);
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        // 1. Get current user
-        const currentUser = await base44.auth.me().catch(() => null);
-        setUser(currentUser);
-
-        // 2. Fetch plans from DB to get IDs
-        const dbPlans = await base44.entities.Plan.list({ limit: 50 });
-        setPlans(dbPlans);
-      } catch (error) {
-        console.error('Error loading pricing data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    init();
-  }, []);
 
   const getPlanId = (tier) => {
     // Find matching DB plan
@@ -271,8 +266,8 @@ export default function PricingPerfectBizAI() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#1E3A5F]" />
+      <div className="min-h-screen bg-gray-50">
+        <SkeletonPricing />
       </div>
     );
   }
@@ -467,7 +462,7 @@ export default function PricingPerfectBizAI() {
         {/* 2. Subscriptions Section - Improved Cards */}
         <div id="plans-section" className="max-w-7xl mx-auto px-4 -mt-10 md:-mt-16 relative z-20 pb-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-                {subscriptionTiers.map((tier, idx) => {
+                {SUBSCRIPTION_TIERS.map((tier, idx) => {
                     const isCurrent = isCurrentPlan(tier);
                     const isPro = tier.name === 'Pro';
                     

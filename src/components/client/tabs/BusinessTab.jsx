@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export default function BusinessTab({ data }) {
+const BusinessTab = React.memo(({ data }) => {
   const [period, setPeriod] = useState('month');
   const [isExporting, setIsExporting] = useState(false);
   
@@ -350,4 +350,6 @@ export default function BusinessTab({ data }) {
 
     </motion.div>
   );
-}
+});
+
+export default BusinessTab;
