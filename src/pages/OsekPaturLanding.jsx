@@ -423,7 +423,7 @@ export default function OsekPaturLanding() {
                   onClick={scrollToForm} 
                   className="h-14 sm:h-16 px-8 sm:px-12 text-lg sm:text-xl font-bold rounded-full bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:from-[#2C5282] hover:to-[#1E3A5F] text-white shadow-xl hover:shadow-2xl hover:shadow-blue-900/30 transform hover:-translate-y-1 transition-all"
                 >
-                  אני רוצה לעשות סדר ומהר!
+                  אני רוצה עוסק פטור מהר!
                   <ArrowLeft className="mr-2 w-5 h-5 md:w-6 md:h-6" />
                 </Button>
                 <p className="mt-4 text-sm text-gray-500 font-medium">
