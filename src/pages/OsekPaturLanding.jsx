@@ -736,13 +736,13 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Testimonials Section - NEW */}
-        <section className="py-16 bg-[#F8F9FA]">
+        <section className="py-12 md:py-20 bg-[#F8F9FA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">מה אומרים עלינו?</h2>
-              <p className="text-xl text-gray-600">אלפי עצמאים כבר פתחו עוסק פטור איתנו. הנה כמה מהם:</p>
+            <div className="text-center mb-8 md:mb-16">
+              <h2 className="text-2xl md:text-4xl font-black text-[#1E3A5F] mb-3 md:mb-4">מה אומרים עלינו?</h2>
+              <p className="text-lg md:text-xl text-gray-600 px-4">אלפי עצמאים כבר פתחו עוסק פטור איתנו. הנה כמה מהם:</p>
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {[
                 {
                   text: "פשוט הצילו אותי. לא הבנתי כלום מהטפסים של מס הכנסה, הם עשו הכל תוך יום אחד. השירות הכי יעיל שנתקלתי בו.",
