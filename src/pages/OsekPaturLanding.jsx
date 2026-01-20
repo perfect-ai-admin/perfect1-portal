@@ -436,21 +436,21 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* How We Solve It */}
-         <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+         <section className="py-10 md:py-16 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
              <motion.div
                initial={{ opacity: 0, y: 20 }}
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
-               className="text-center mb-10"
+               className="text-center mb-8 md:mb-12"
              >
-               <div className="inline-block bg-green-100 text-green-700 px-6 py-2 rounded-full text-sm font-bold mb-6">
+               <div className="inline-block bg-green-100 text-green-700 px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 shadow-sm">
                  ✅ הפתרון שעבד לאלפים
                </div>
-               <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-4">
+               <h2 className="text-2xl md:text-5xl font-black text-[#1E3A5F] mb-3 md:mb-4 leading-tight">
                  עצמאי? פותחים עוסק פטור עם ליווי מלא
                </h2>
-               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+               <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4 md:px-0">
                  מתאים לעצמאים בתחילת הדרך - הסבר מלא וליווי אישי מרגע ההחלטה
                </p>
              </motion.div>
