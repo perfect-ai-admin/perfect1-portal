@@ -102,8 +102,7 @@ export default function OsekPaturLanding() {
         status: 'new'
       });
       setShowPopup(false);
-      alert('תודה! ניצור קשר בקרוב');
-      setPopupFormData({ name: '', phone: '', email: '' });
+      window.location.href = '/ThankYou';
     } catch (err) {
       console.error(err);
       alert('שגיאה בשליחה, אנא נסה שוב');
