@@ -59,6 +59,8 @@ Deno.serve(async (req) => {
         // Send to production URL
         let prodStatus = 'error';
         let prodBody = '';
+        let syncSuccess = false;
+        
         try {
             const response = await fetch(n8nUrl, {
                 method: 'POST',
@@ -68,7 +70,9 @@ Deno.serve(async (req) => {
             prodStatus = response.status;
             prodBody = await response.text();
             
-            if (!response.ok) {
+            if (response.ok) {
+                syncSuccess = true;
+            } else {
                 console.error(`N8N Production error ${response.status}:`, prodBody);
             }
             console.log('N8N Production response:', response.status, prodBody);
@@ -88,21 +92,40 @@ Deno.serve(async (req) => {
             });
             testResponseStatus = testRes.status;
             console.log('N8N Test URL response:', testRes.status);
+            // If prod failed but test succeeded, we can consider it a "partial" success or just keep it as failed for prod.
+            // For now, let's stick to prod status for the entity flag.
         } catch (e) {
             console.warn('Failed to send to N8N Test URL:', e);
             testResponseStatus = 'error';
         }
 
+        // Update Entity with Sync Status
+        try {
+            const updateData = {
+                n8n_synced: syncSuccess,
+                n8n_last_sync: new Date().toISOString(),
+                n8n_error: syncSuccess ? null : `Status: ${prodStatus}, Body: ${prodBody.substring(0, 200)}`
+            };
+            
+            if (event?.entity_name && event?.entity_id) {
+                await base44.asServiceRole.entities[event.entity_name].update(event.entity_id, updateData);
+                console.log(`Updated ${event.entity_name} sync status:`, updateData);
+            }
+        } catch (updateError) {
+            console.error('Failed to update entity sync status:', updateError);
+        }
+
         // Log completion
         await base44.asServiceRole.entities.SystemLog.create({
-            level: prodStatus === 200 || testResponseStatus === 200 ? 'info' : 'warn',
+            level: syncSuccess ? 'info' : 'error',
             source: 'sendLeadToN8N',
             message: `Finished processing ${entityType}`,
             details: { 
                 entity_id: data.id, 
                 prod_status: prodStatus, 
                 test_status: testResponseStatus,
-                prod_body_preview: prodBody.substring(0, 100)
+                prod_body_preview: prodBody.substring(0, 100),
+                sync_success: syncSuccess
             }
         });
 
