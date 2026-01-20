@@ -263,13 +263,11 @@ export default function OsekPaturLanding() {
 
 
                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4 md:mb-6">
-                    <span className="text-[#27AE60] block md:inline">פתיחת תיק עוסק פטור</span> בקלות ובמהירות - אנחנו עושים את זה בשבילכם
+                    <span className="text-[#27AE60] block md:inline">פתיחת עוסק פטור</span> פשוט, מהיר וחוקי
                  </h1>
 
                  <p className="text-lg md:text-2xl text-white/90 mb-6 leading-relaxed font-medium px-2 md:px-0">
-                    רוצים להיות עצמאים? המומחים שלנו יפתחו עבורכם את התיק מול כל הרשויות.<br className="hidden md:block" />
-                    <span className="md:hidden"> </span>
-                    בלי בירוקרטיה ובלי כאבי ראש - משאירים פרטים ויוצאים לדרך.
+                    אנחנו פותחים לך עוסק פטור בליווי מלא, בלי בירוקרטיה ובלי התעסקות
                  </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
@@ -291,7 +289,7 @@ export default function OsekPaturLanding() {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                   <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg shadow-green-900/20 transform hover:-translate-y-1 transition-all">
                     <Target className="ml-2 w-5 h-5" />
-                    בדיקת זכאות ופתיחת תיק
+                    השאר פרטים ונפתח לך עסק פטור
                   </Button>
                   <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-4 sm:px-8 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white text-[#1E3A5F] hover:bg-white/90 shadow-lg">
