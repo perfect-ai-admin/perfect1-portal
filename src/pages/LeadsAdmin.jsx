@@ -122,6 +122,35 @@ export default function LeadsAdmin() {
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (!window.confirm(`האם אתה בטוח שברצונך למחוק ${selectedLeads.length} לידים? פעולה זו אינה הפיכה.`)) {
+      return;
+    }
+
+    let deletedCount = 0;
+    let failedCount = 0;
+
+    for (const leadId of selectedLeads) {
+      try {
+        await base44.entities.Lead.delete(leadId);
+        deletedCount++;
+      } catch (error) {
+        console.error(`Failed to delete lead ${leadId}:`, error);
+        failedCount++;
+      }
+    }
+
+    if (deletedCount > 0) {
+      toast.success(`${deletedCount} לידים נמחקו בהצלחה`);
+    }
+    if (failedCount > 0) {
+      toast.error(`${failedCount} לידים נכשלו במחיקה`);
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['leads'] });
+    setSelectedLeads([]);
+  };
+
   const handleBulkAssignToAgent = async (agentName) => {
     console.log('🔵 Bulk assign התחיל, נציג:', agentName);
     const selectedAgent = agents.find(a => a.full_name === agentName);
@@ -407,6 +436,14 @@ export default function LeadsAdmin() {
                 >
                   <Users className="w-4 h-4 ml-2" />
                   העבר לנציג
+                </Button>
+                <Button 
+                  onClick={handleBulkDelete}
+                  size="sm"
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  <Trash2 className="w-4 h-4 ml-2" />
+                  מחק נבחרים
                 </Button>
               </div>
               <Button 
