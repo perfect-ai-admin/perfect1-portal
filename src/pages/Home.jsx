@@ -1,6 +1,5 @@
-import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import React, { Suspense } from 'react';
+import { Helmet } from 'react-helmet-async';
 import HeroNewSection from '../components/home/HeroNewSection';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
