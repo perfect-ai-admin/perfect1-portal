@@ -135,7 +135,9 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           // If id is undefined, don't include it in payload to avoid issues? 
           // Actually if it's undefined, it's fine.
           
-          const created = await base44.entities.UserGoal.create(goalToCreate);
+          // Use backend function to generate tasks via AI
+          const response = await base44.functions.invoke('generateGoalPlan', { goalData: goalToCreate });
+          const created = response.data;
           
           if (newGoal.isPrimary) {
              setGoals(prev => [created, ...prev.filter(g => !g.isPrimary)]);

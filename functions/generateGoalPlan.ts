@@ -9,17 +9,30 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { title } = await req.json();
+        // Support both old format {title} and new format {goalData}
+        const body = await req.json();
+        let goalData = body.goalData || {};
+        
+        // If called with just title (old format or from MentorOverview)
+        if (body.title && !goalData.title) {
+            goalData.title = body.title;
+        }
 
-        if (!title) {
+        if (!goalData.title) {
             return Response.json({ error: 'Goal title is required' }, { status: 400 });
         }
+
+        const customAnswersStr = goalData.customAnswers 
+            ? JSON.stringify(goalData.customAnswers) 
+            : '';
 
         const prompt = `
         You are an expert business mentor for freelancers and small business owners in Israel.
         Your task is to take a user's goal and decompose it into a concrete, actionable plan of small, atomic tasks.
 
-        User's Goal: "${title}"
+        User's Goal: "${goalData.title}"
+        Context/Answers: ${customAnswersStr}
+        Category: ${goalData.category || 'General'}
 
         GUIDELINES:
         1. Analyze the goal type (Idea, Revenue, Clients, Organization, Marketing, Sales).
@@ -32,7 +45,7 @@ Deno.serve(async (req) => {
         
         OUTPUT FORMAT (JSON):
         {
-            "description": "One line description of the goal context",
+            "description": "One line description of the goal context (if not provided)",
             "complexity": "low/medium/high",
             "tasks": [
                 { "title": "Task text", "type": "action" }
@@ -73,15 +86,25 @@ Deno.serve(async (req) => {
             createdAt: new Date().toISOString()
         }));
 
-        const newGoal = await base44.entities.UserGoal.create({
+        // Merge generated data with provided goalData
+        // If goalData has description, keep it. If not, use generated one.
+        const finalDescription = goalData.description || plan.description || 'תוכנית עבודה מותאמת אישית';
+        
+        // Construct the final object for creation
+        const goalToCreate = {
+            ...goalData,
             user_id: user.id,
-            title: title,
-            description: plan.description || 'תוכנית עבודה מותאמת אישית',
-            status: 'active',
-            progress: 0,
+            description: finalDescription,
+            status: goalData.status || 'active',
+            progress: goalData.progress || 0,
             tasks: tasksWithIds,
-            aiInsight: `תוכנית זו הוגדרה כרמת מורכבות ${plan.complexity === 'high' ? 'גבוהה' : plan.complexity === 'medium' ? 'בינונית' : 'נמוכה'} ומכילה ${tasksWithIds.length} צעדים.`
-        });
+            // Append complexity info to existing insight or create new one
+            aiInsight: goalData.aiInsight 
+                ? `${goalData.aiInsight}\n(תוכנית ברמת מורכבות ${plan.complexity === 'high' ? 'גבוהה' : plan.complexity === 'medium' ? 'בינונית' : 'נמוכה'})`
+                : `תוכנית זו הוגדרה כרמת מורכבות ${plan.complexity === 'high' ? 'גבוהה' : plan.complexity === 'medium' ? 'בינונית' : 'נמוכה'} ומכילה ${tasksWithIds.length} צעדים.`
+        };
+
+        const newGoal = await base44.entities.UserGoal.create(goalToCreate);
 
         return Response.json(newGoal);
 
