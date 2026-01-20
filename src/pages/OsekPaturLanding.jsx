@@ -872,27 +872,29 @@ export default function OsekPaturLanding() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
           onClick={() => setShowPopup(false)}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full"
+            className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-6 md:p-8 max-w-md w-full relative"
           >
             <button
               onClick={() => setShowPopup(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 p-2 bg-gray-100 rounded-full text-gray-500 hover:text-gray-800 hover:bg-gray-200 transition-colors"
             >
-              ✕
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
             </button>
 
-            <h3 className="text-2xl font-black text-[#1E3A5F] mb-2">
-              רגע לפני שתמשיכו! 👋
+            <h3 className="text-xl md:text-2xl font-black text-[#1E3A5F] mb-3 pr-8">
+              רגע לפני שממשיכים 👋
             </h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              בואו נעזור לכם להחליט אם עוסק פטור זה הדבר הנכון לכם. תשאירו פרטים ונקבע שיחה קצרה וחינם.
+            <p className="text-gray-600 mb-6 leading-relaxed text-sm md:text-base">
+              מתלבטים אם עוסק פטור מתאים לכם? השאירו פרטים ומומחה שלנו יעשה לכם סדר בחינם.
             </p>
 
             <form onSubmit={handlePopupSubmit} className="space-y-3">
@@ -901,7 +903,7 @@ export default function OsekPaturLanding() {
                   placeholder="שם מלא *"
                   value={popupFormData.name}
                   onChange={(e) => setPopupFormData({ ...popupFormData, name: e.target.value })}
-                  className="h-11 rounded-xl border-2"
+                  className="h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
                   required
                 />
               </div>
@@ -912,30 +914,20 @@ export default function OsekPaturLanding() {
                   placeholder="טלפון *"
                   value={popupFormData.phone}
                   onChange={(e) => setPopupFormData({ ...popupFormData, phone: e.target.value })}
-                  className="h-11 rounded-xl border-2"
+                  className="h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
                   required
-                />
-              </div>
-
-              <div>
-                <Input
-                  type="email"
-                  placeholder="מייל (לא חובה)"
-                  value={popupFormData.email}
-                  onChange={(e) => setPopupFormData({ ...popupFormData, email: e.target.value })}
-                  className="h-11 rounded-xl border-2"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-11 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white"
+                className="w-full h-12 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg shadow-green-900/10"
               >
-                כן, אשארתי פרטים
+                כן, חזרו אליי!
               </Button>
 
-              <p className="text-xs text-gray-500 text-center">
-                ללא התחייבות • תשובה תוך 24 שעות
+              <p className="text-xs text-gray-500 text-center mt-2">
+                * ללא עלות וללא התחייבות
               </p>
             </form>
           </motion.div>
@@ -946,7 +938,8 @@ export default function OsekPaturLanding() {
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: showStickyCTA ? 0 : 100 }}
-        className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 md:hidden flex gap-3"
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 md:hidden flex gap-3 safe-area-bottom"
       >
         <Button 
           onClick={scrollToForm}
