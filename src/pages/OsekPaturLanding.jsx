@@ -366,18 +366,11 @@ export default function OsekPaturLanding() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {[
                 { 
-                  icon: AlertCircle, 
-                  color: 'text-orange-600', 
-                  bg: 'bg-orange-50', 
-                  title: 'הלכתם לאיבוד בטפסים?', 
-                  desc: 'מע״מ, מס הכנסה, ביטוח לאומי... למה שתתמודדו עם זה לבד? אנחנו מדברים את השפה שלהם כדי שאתם לא תצטרכו.' 
-                },
-                { 
-                  icon: Shield, 
-                  color: 'text-red-600', 
-                  bg: 'bg-red-50', 
-                  title: 'הפחד מטעויות יקרות', 
-                  desc: 'שכחתם לדווח? מילאתם סעיף לא נכון? טעויות קטנות עולות ביוקר. אצלנו יש אפס מקום לטעויות - אנחנו שומרים עליכם.' 
+                  icon: Zap,
+                  color: 'text-purple-600', 
+                  bg: 'bg-purple-50', 
+                  title: 'לישון בשקט בלילה', 
+                  desc: 'בלי רואה חשבון, אתם לבד מול המערכת. איתנו? יש לכם גב מקצועי, מענה לכל שאלה ותחושת ביטחון אמיתית.' 
                 },
                 { 
                   icon: Clock, 
@@ -387,11 +380,18 @@ export default function OsekPaturLanding() {
                   desc: 'בזמן שאתם מנסים להבין טופס 101, המתחרים שלכם עובדים. תנו לנו את הניירת המעצבנת, ותתמקדו בלהגדיל את העסק.' 
                 },
                 { 
-                  icon: Zap,
-                  color: 'text-purple-600', 
-                  bg: 'bg-purple-50', 
-                  title: 'לישון בשקט בלילה', 
-                  desc: 'בלי רואה חשבון, אתם לבד מול המערכת. איתנו? יש לכם גב מקצועי, מענה לכל שאלה ותחושת ביטחון אמיתית.' 
+                  icon: Shield, 
+                  color: 'text-red-600', 
+                  bg: 'bg-red-50', 
+                  title: 'הפחד מטעויות יקרות', 
+                  desc: 'שכחתם לדווח? מילאתם סעיף לא נכון? טעויות קטנות עולות ביוקר. אצלנו יש אפס מקום לטעויות - אנחנו שומרים עליכם.' 
+                },
+                { 
+                  icon: AlertCircle, 
+                  color: 'text-orange-600', 
+                  bg: 'bg-orange-50', 
+                  title: 'הלכתם לאיבוד בטפסים?', 
+                  desc: 'מע״מ, מס הכנסה, ביטוח לאומי... למה שתתמודדו עם זה לבד? אנחנו מדברים את השפה שלהם כדי שאתם לא תצטרכו.' 
                 }
               ].map((item, i) => (
                 <motion.div
@@ -815,25 +815,65 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className="py-12 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Search Intent Section (Replaces FAQ) */}
+        <section className="py-16 bg-white">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                עוד שאלות נפוצות
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-2">
+                גם אתה חיפשת את זה?
               </h2>
+              <p className="text-lg text-gray-500 font-medium">השאלות שכולם שואלים בגוגל</p>
             </motion.div>
 
-            <div className="space-y-4">
-              {faqs.map((faq, i) => (
-                <FAQItem key={i} question={faq.question} answer={faq.answer} />
+            <div className="space-y-4 mb-12">
+              {[
+                "איך פותחים עוסק פטור?",
+                "עוסק פטור או מורשה?",
+                "צריך רואה חשבון לפתיחת עוסק?",
+                "כמה זמן לוקח לפתוח עוסק פטור?",
+                "איך מתחילים לעבוד חוקי?"
+              ].map((query, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-gray-50 rounded-xl px-6 py-4 flex justify-between items-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default"
+                >
+                  <span className="text-lg text-gray-700 font-medium">{query}</span>
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                </motion.div>
               ))}
             </div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="bg-[#E8F5E9] rounded-3xl p-8 text-center border border-[#27AE60]/20"
+            >
+              <h3 className="text-2xl font-bold text-[#1E3A5F] mb-2">
+                במקום לחפש תשובות –
+                <span className="block text-[#27AE60]">אנחנו עושים את זה בשבילך.</span>
+              </h3>
+              <button 
+                onClick={scrollToForm}
+                className="mt-6 inline-flex items-center text-[#27AE60] font-bold text-lg hover:underline hover:text-[#219150] transition-colors"
+              >
+                בואו נתחיל
+                <ArrowLeft className="mr-2 w-5 h-5" />
+              </button>
+            </motion.div>
           </div>
         </section>
 
