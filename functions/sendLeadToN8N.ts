@@ -3,15 +3,27 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
     try {
         const payload = await req.json();
-        // Automation payload structure: { event: { type, entity_name, entity_id }, data: { ... }, old_data: { ... } }
-        const { data, event } = payload;
+        console.log('Webhook payload keys:', Object.keys(payload));
+        
+        let { data, event, payload_too_large } = payload;
+
+        // Handle large payload (fetch data manually if missing)
+        if (payload_too_large || !data) {
+            console.log('Payload too large or data missing, fetching entity...');
+            if (event?.entity_name && event?.entity_id) {
+                const base44 = createClientFromRequest(req);
+                data = await base44.asServiceRole.entities[event.entity_name].get(event.entity_id);
+                console.log('Fetched data manually:', data?.id);
+            }
+        }
 
         if (!data) {
-            console.log('No data in payload');
+            console.log('No data available even after fetch attempt');
             return Response.json({ status: 'ignored', reason: 'no data' });
         }
 
         const entityType = event?.entity_name || 'Lead';
+        console.log(`Processing ${entityType} event: ${event?.type || 'unknown'}`);
         console.log(`Sending ${entityType} to N8N webhook:`, data.id);
 
         const n8nUrl = 'https://n8n.perfect-1.one/webhook/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
