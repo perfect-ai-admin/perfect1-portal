@@ -101,9 +101,10 @@ export default function ProgressTab({ data, onNavigate, user }) {
     setWhyExpanded(true);
   };
 
-  const handleQuestionnaireComplete = () => {
+  const handleQuestionnaireComplete = async () => {
     setShowQuestionnaire(false);
-    queryClient.invalidateQueries({ queryKey: ['user', data.id] });
+    await queryClient.invalidateQueries({ queryKey: ['user', data.id] });
+    window.location.reload();
   };
 
   // Smart mapping function
