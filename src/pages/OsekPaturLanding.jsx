@@ -263,13 +263,13 @@ export default function OsekPaturLanding() {
 
 
                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4 md:mb-6">
-                    <span className="text-[#27AE60] block md:inline">פתיחת עוסק פטור</span> בצורה מסודרת, בלי בלבול ובלי כאבי ראש
+                    <span className="text-[#27AE60] block md:inline">פתיחת תיק עוסק פטור</span> בקלות ובמהירות - אנחנו עושים את זה בשבילכם
                  </h1>
 
                  <p className="text-lg md:text-2xl text-white/90 mb-6 leading-relaxed font-medium px-2 md:px-0">
-                    פתיחת עוסק פטור עם ליווי ברור ופשוט בכל התהליך.<br className="hidden md:block" />
+                    רוצים להיות עצמאים? המומחים שלנו יפתחו עבורכם את התיק מול כל הרשויות.<br className="hidden md:block" />
                     <span className="md:hidden"> </span>
-                    אנחנו עושים את כל הדברים הקשים בשבילך.
+                    בלי בירוקרטיה ובלי כאבי ראש - משאירים פרטים ויוצאים לדרך.
                  </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
@@ -317,17 +317,17 @@ export default function OsekPaturLanding() {
                       height="48"
                       loading="eager"
                     />
-                    <h3 className="text-xl font-black text-[#1E3A5F] mb-1">מתחילים נכון</h3>
-                    <p className="text-sm text-gray-600">אנחנו עושים את זה בשבילך</p>
+                    <h3 className="text-xl font-black text-[#1E3A5F] mb-1">יוצאים לדרך</h3>
+                    <p className="text-sm text-gray-600">הדרך הקלה להיות עצמאי</p>
                   </div>
 
                   <ul className="space-y-2">
                     {[
-                       'פתיחת תיק עוסק פטור',
-                       'ליווי מול כל הרשויות',
-                       'אפליקציה לניהול העסק',
-                       'ליווי שוטף + דוח שנתי',
-                       'תמיכה אישית'
+                       'פתיחת התיק מול כל הרשויות',
+                       'טיפול מלא בבירוקרטיה',
+                       'אפליקציה להפקת קבלות',
+                       'ראש שקט ממס הכנסה',
+                       'מענה אנושי מקצועי'
                      ].map((item, i) => (
                       <li key={i} className="flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-[#27AE60] flex-shrink-0" />
