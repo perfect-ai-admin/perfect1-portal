@@ -13,7 +13,12 @@ import CampaignBuilder from '../marketing/CampaignBuilder';
 import BarChart from '../business/BarChart';
 import Sparkline from '../business/Sparkline';
 
-export default function MarketingTab({ data }) {
+import UpgradePrompt from '../UpgradePrompt';
+
+export default function MarketingTab({ data, hasAccess = true }) {
+  if (!hasAccess) {
+    return <UpgradePrompt feature="marketing" />;
+  }
   return (
     <motion.div
       initial={{ opacity: 0 }}

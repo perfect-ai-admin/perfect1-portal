@@ -17,7 +17,12 @@ import Insights from '../mentor/Insights'; // Reusing existing for now, will ren
 import DailyOperations from '../mentor/DailyOperations'; // Using as "The Plan" base for now
 import SalesCenter from '../mentor/sales/SalesCenter';
 
-export default function MentorTab({ data }) {
+import UpgradePrompt from '../UpgradePrompt';
+
+export default function MentorTab({ data, hasAccess = true }) {
+  if (!hasAccess) {
+    return <UpgradePrompt feature="mentor" />;
+  }
   const [activeView, setActiveView] = useState('cockpit'); // cockpit, chat, status, plan, sales
 
   const MENU_ITEMS = [
