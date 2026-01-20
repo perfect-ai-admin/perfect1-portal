@@ -13,7 +13,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import DailyCockpit from '../mentor/DailyCockpit';
 import MentorChat from '../mentor/MentorChat';
-import Insights from '../mentor/Insights'; // Reusing existing for now, will rename/wrap if needed
+import Insights from '../mentor/Insights';
+import MentorOverview from '../mentor/MentorOverview';
 import DailyOperations from '../mentor/DailyOperations'; // Using as "The Plan" base for now
 import SalesCenter from '../mentor/sales/SalesCenter';
 
@@ -41,7 +42,7 @@ export default function MentorTab({ data }) {
       case 'sales':
         return <SalesCenter />;
       case 'status':
-        return <Insights />;
+        return <MentorOverview />;
       case 'plan':
         return <DailyOperations data={data} />;
       default:
