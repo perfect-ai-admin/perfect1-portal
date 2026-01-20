@@ -344,92 +344,65 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* The Challenge Section */}
-         <section className="py-16 bg-gradient-to-b from-white to-gray-50 border-t-4 border-[#D4AF37]">
-           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-             <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               className="text-center mb-12"
-             >
-               <h2 className="text-3xl md:text-5xl font-black text-[#1E3A5F] mb-6 leading-tight">
-                 רוצים להיות עצמאים,<br/>לא פקידים של מס הכנסה?
-               </h2>
-               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-medium">
-                 בואו נדבר דוגרי: הבירוקרטיה מפחידה את כולם.
-                 <br />
-                 <span className="font-bold text-[#27AE60] bg-green-50 px-2 py-1 rounded-lg mt-2 inline-block">אנחנו כאן כדי להעיף אותה מהדרך שלכם להצלחה.</span>
-               </p>
-             </motion.div>
+        {/* Search Intent Section */}
+        <section className="py-16 bg-gradient-to-b from-white to-gray-50 border-t-4 border-[#D4AF37]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-10"
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-2">
+                גם אתה חיפשת את זה?
+              </h2>
+              <p className="text-lg text-gray-500 font-medium">השאלות שכולם שואלים בגוגל</p>
+            </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="space-y-4 mb-12">
               {[
-                { 
-                  icon: Zap,
-                  color: 'text-purple-600', 
-                  bg: 'bg-purple-50', 
-                  title: 'לישון בשקט בלילה', 
-                  desc: 'בלי רואה חשבון, אתם לבד מול המערכת. איתנו? יש לכם גב מקצועי, מענה לכל שאלה ותחושת ביטחון אמיתית.' 
-                },
-                { 
-                  icon: Clock, 
-                  color: 'text-blue-600', 
-                  bg: 'bg-blue-50', 
-                  title: 'תפסיקו לבזבז זמן', 
-                  desc: 'בזמן שאתם מנסים להבין טופס 101, המתחרים שלכם עובדים. תנו לנו את הניירת המעצבנת, ותתמקדו בלהגדיל את העסק.' 
-                },
-                { 
-                  icon: Shield, 
-                  color: 'text-red-600', 
-                  bg: 'bg-red-50', 
-                  title: 'הפחד מטעויות יקרות', 
-                  desc: 'שכחתם לדווח? מילאתם סעיף לא נכון? טעויות קטנות עולות ביוקר. אצלנו יש אפס מקום לטעויות - אנחנו שומרים עליכם.' 
-                },
-                { 
-                  icon: AlertCircle, 
-                  color: 'text-orange-600', 
-                  bg: 'bg-orange-50', 
-                  title: 'הלכתם לאיבוד בטפסים?', 
-                  desc: 'מע״מ, מס הכנסה, ביטוח לאומי... למה שתתמודדו עם זה לבד? אנחנו מדברים את השפה שלהם כדי שאתם לא תצטרכו.' 
-                }
-              ].map((item, i) => (
+                "איך פותחים עוסק פטור?",
+                "עוסק פטור או מורשה?",
+                "צריך רואה חשבון לפתיחת עוסק?",
+                "כמה זמן לוקח לפתוח עוסק פטור?",
+                "איך מתחילים לעבוד חוקי?"
+              ].map((query, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 text-center group"
+                  className="bg-white rounded-xl px-6 py-4 flex justify-between items-center shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-default"
                 >
-                  <div className={`w-16 h-16 mx-auto rounded-full ${item.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <item.icon className={`w-8 h-8 ${item.color}`} />
+                  <span className="text-lg text-gray-700 font-medium">{query}</span>
+                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-3">{item.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
 
-            <div className="text-center">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="inline-block"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="bg-[#E8F5E9] rounded-3xl p-8 text-center border border-[#27AE60]/20"
+            >
+              <h3 className="text-2xl font-bold text-[#1E3A5F] mb-2">
+                במקום לחפש תשובות –
+                <span className="block text-[#27AE60]">אנחנו עושים את זה בשבילך.</span>
+              </h3>
+              <button 
+                onClick={scrollToForm}
+                className="mt-6 inline-flex items-center text-[#27AE60] font-bold text-lg hover:underline hover:text-[#219150] transition-colors"
               >
-                <Button 
-                  onClick={scrollToForm} 
-                  className="h-14 sm:h-16 px-8 sm:px-12 text-lg sm:text-xl font-bold rounded-full bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] hover:from-[#2C5282] hover:to-[#1E3A5F] text-white shadow-xl hover:shadow-2xl hover:shadow-blue-900/30 transform hover:-translate-y-1 transition-all"
-                >
-                  אני רוצה עוסק פטור מהר!
-                  <ArrowLeft className="mr-2 w-5 h-5 md:w-6 md:h-6" />
-                </Button>
-                <p className="mt-4 text-sm text-gray-500 font-medium">
-                  שיחת ייעוץ קצרה • בדיקת זכאות חינם • 0 התחייבות
-                </p>
-              </motion.div>
-            </div>
+                בואו נתחיל
+                <ArrowLeft className="mr-2 w-5 h-5" />
+              </button>
+            </motion.div>
           </div>
         </section>
 
@@ -815,65 +788,25 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* Search Intent Section (Replaces FAQ) */}
-        <section className="py-16 bg-white">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* FAQ Section */}
+        <section className="py-12 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-2">
-                גם אתה חיפשת את זה?
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                עוד שאלות נפוצות
               </h2>
-              <p className="text-lg text-gray-500 font-medium">השאלות שכולם שואלים בגוגל</p>
             </motion.div>
 
-            <div className="space-y-4 mb-12">
-              {[
-                "איך פותחים עוסק פטור?",
-                "עוסק פטור או מורשה?",
-                "צריך רואה חשבון לפתיחת עוסק?",
-                "כמה זמן לוקח לפתוח עוסק פטור?",
-                "איך מתחילים לעבוד חוקי?"
-              ].map((query, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-gray-50 rounded-xl px-6 py-4 flex justify-between items-center shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-default"
-                >
-                  <span className="text-lg text-gray-700 font-medium">{query}</span>
-                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                </motion.div>
+            <div className="space-y-4">
+              {faqs.map((faq, i) => (
+                <FAQItem key={i} question={faq.question} answer={faq.answer} />
               ))}
             </div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="bg-[#E8F5E9] rounded-3xl p-8 text-center border border-[#27AE60]/20"
-            >
-              <h3 className="text-2xl font-bold text-[#1E3A5F] mb-2">
-                במקום לחפש תשובות –
-                <span className="block text-[#27AE60]">אנחנו עושים את זה בשבילך.</span>
-              </h3>
-              <button 
-                onClick={scrollToForm}
-                className="mt-6 inline-flex items-center text-[#27AE60] font-bold text-lg hover:underline hover:text-[#219150] transition-colors"
-              >
-                בואו נתחיל
-                <ArrowLeft className="mr-2 w-5 h-5" />
-              </button>
-            </motion.div>
           </div>
         </section>
 
