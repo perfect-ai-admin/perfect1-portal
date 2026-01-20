@@ -214,21 +214,32 @@ Before outputting, verify:
         const complexityMap = { 'simple': 'פשוטה', 'medium': 'בינונית', 'complex': 'מורכבת' };
         const complexityLabel = complexityMap[plan.goal_complexity] || 'רגילה';
 
-        const goalToCreate = {
-            ...goalData,
-            user_id: user.id,
+        const commonData = {
             title: plan.goal_title || goalData.title, 
             description: goalData.description || 'תוכנית עבודה ממוקדת',
             status: goalData.status || 'active',
-            progress: 0,
             tasks: tasksWithIds,
             plan_summary: plan.plan_summary || "לא התקבל תקציר.",
             clarifying_questions: plan.clarifying_questions || [],
             aiInsight: `המנטור בנה תוכנית ${complexityLabel} עם ${tasksWithIds.length} צעדים.`
         };
 
-        const newGoal = await base44.entities.UserGoal.create(goalToCreate);
-        return Response.json(newGoal);
+        let resultGoal;
+        if (body.goalId) {
+            // Update existing goal
+            resultGoal = await base44.entities.UserGoal.update(body.goalId, commonData);
+        } else {
+            // Create new goal
+            const goalToCreate = {
+                ...goalData,
+                ...commonData,
+                user_id: user.id,
+                progress: 0,
+            };
+            resultGoal = await base44.entities.UserGoal.create(goalToCreate);
+        }
+
+        return Response.json(resultGoal);
 
     } catch (error) {
         console.error('Critical Error:', error);

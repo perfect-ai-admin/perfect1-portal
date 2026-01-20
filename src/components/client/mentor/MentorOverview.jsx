@@ -48,9 +48,11 @@ export default function MentorOverview() {
   });
 
   const createGoalMutation = useMutation({
-    mutationFn: async (title) => {
+    mutationFn: async ({ title, goalId }) => {
         // קריאה לפונקציית בבקנד שמייצרת תוכנית עבודה עם AI
-        const response = await base44.functions.invoke('generateGoalPlan', { title });
+        // Supports both creating new (title only) and updating existing (goalId)
+        const payload = goalId ? { title, goalId } : { title };
+        const response = await base44.functions.invoke('generateGoalPlan', payload);
         return response.data;
     },
     onSuccess: () => {
@@ -186,7 +188,15 @@ export default function MentorOverview() {
                             <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100 text-center">
                                 <Clock className="w-8 h-8 text-gray-400 mx-auto mb-2 animate-pulse" />
                                 <div className="font-bold text-gray-600">בונה תוכנית עבודה...</div>
-                                <div className="text-xs text-gray-500 mt-1">המנטור מכין עבורך את המשימות</div>
+                                <div className="text-xs text-gray-500 mt-1 mb-3">המנטור מכין עבורך את המשימות</div>
+                                <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => createGoalMutation.mutate({ title: goal.title, goalId: goal.id })}
+                                    className="text-xs h-7"
+                                >
+                                    בנה תוכנית כעת
+                                </Button>
                             </div>
                         )}
 
@@ -344,7 +354,7 @@ export default function MentorOverview() {
       <CreateGoalDialog 
         open={showNewGoalDialog} 
         onOpenChange={setShowNewGoalDialog}
-        onSubmit={(title) => createGoalMutation.mutate(title)}
+        onSubmit={(title) => createGoalMutation.mutate({ title })}
       />
     </div>
   );

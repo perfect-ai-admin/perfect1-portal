@@ -203,12 +203,13 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleGoalCreated = async (newGoal) => {
     try {
-      // Save goal directly
-      const goalToCreate = { ...newGoal, user_id: user.id };
-      await base44.entities.UserGoal.create(goalToCreate);
+      // Use the AI function to generate the plan and create the goal
+      // We pass the template data as goalData
+      await base44.functions.invoke('generateGoalPlan', { goalData: newGoal });
       
       // Optionally invalidate goals query if needed, mainly need to ensure UI feedback
       queryClient.invalidateQueries({ queryKey: ['goals'] });
+      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
       
       // Close dialog
       setShowGoalCreation(false);
