@@ -50,7 +50,7 @@ export default function ClientDashboard() {
   const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
   
-  const location = useLocation(); // Ensure useLocation is used
+  const location = useLocation();
 
   // Handle tab change from URL query params
   useEffect(() => {
@@ -72,30 +72,30 @@ export default function ClientDashboard() {
   const queryClient = useQueryClient();
 
   // Check authentication with Base44 auth
-        useEffect(() => {
-          const checkAuth = async () => {
-            try {
-              const isAuth = await base44.auth.isAuthenticated();
-              if (!isAuth) {
-                navigate(createPageUrl('ClientLogin'));
-                return;
-              }
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) {
+          base44.auth.redirectToLogin('/ClientDashboard');
+          return;
+        }
 
-              const currentUser = await base44.auth.me();
-              if (!currentUser) {
-                navigate(createPageUrl('ClientLogin'));
-                return;
-              }
+        const currentUser = await base44.auth.me();
+        if (!currentUser) {
+          base44.auth.redirectToLogin('/ClientDashboard');
+          return;
+        }
 
-              setUser(currentUser);
-            } catch (error) {
-              console.error('Auth check error:', error);
-              navigate(createPageUrl('ClientLogin'));
-            }
-          };
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Auth check error:', error);
+        base44.auth.redirectToLogin('/ClientDashboard');
+      }
+    };
 
-          checkAuth();
-        }, [navigate]);
+    checkAuth();
+  }, []);
 
   // Fetch user data
   const { data: userData, isLoading, error: fetchError } = useQuery({
@@ -126,9 +126,8 @@ export default function ClientDashboard() {
   });
 
   const handleLogout = async () => {
-          await base44.auth.logout();
-          navigate(createPageUrl('ClientLogin'));
-        };
+    await base44.auth.logout();
+  };
 
   const handleRefresh = async () => {
     try {
@@ -279,10 +278,10 @@ export default function ClientDashboard() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                                <button className="p-2 hover:bg-white/10 rounded transition-colors" aria-label="תפריט">
-                                  <User className="w-5 h-5" />
-                                </button>
-                              </DropdownMenuTrigger>
+                  <button className="p-2 hover:bg-white/10 rounded transition-colors" aria-label="תפריט">
+                    <User className="w-5 h-5" />
+                  </button>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
                   <DropdownMenuItem onClick={toggleLanguage} className="text-sm">
                     <Globe className="w-4 h-4 ml-2" />

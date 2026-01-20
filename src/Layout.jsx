@@ -20,38 +20,28 @@ export default function Layout({ children, currentPageName }) {
     const location = useLocation();
 
     // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
-            if (currentPageName === 'SystemLogicMap') {
-              return children;
-            }
+    if (currentPageName === 'SystemLogicMap') {
+      return children;
+    }
 
-            // ClientLogin - עמוד כניסה עצמאי
-            if (currentPageName === 'ClientLogin') {
-              return (
-                <HelmetProvider>
-                  {children}
-                  <Toaster />
-                </HelmetProvider>
-              );
-            }
+    // Check if page requires authentication
+    const publicPages = ['Home', 'Pricing', 'About', 'Contact', 'Professions', 'Services'];
+    const isPublicPage = publicPages.includes(currentPageName);
 
-            // Check if page requires authentication
-            const publicPages = ['Home', 'Pricing', 'About', 'Contact', 'Professions', 'Services'];
-            const isPublicPage = publicPages.includes(currentPageName);
-
-            if (!isPublicPage && currentPageName !== 'ClientDashboard' && currentPageName !== 'AdminDashboard') {
-              // Private pages - check auth
-              const checkPrivatePageAuth = async () => {
-                try {
-                  const isAuth = await base44.auth.isAuthenticated();
-                  if (!isAuth) {
-                    window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname);
-                  }
-                } catch (err) {
-                  console.log('Auth check failed');
-                }
-              };
-              checkPrivatePageAuth();
-            }
+    if (!isPublicPage && currentPageName !== 'ClientDashboard' && currentPageName !== 'AdminDashboard') {
+      // Private pages - check auth
+      const checkPrivatePageAuth = async () => {
+        try {
+          const isAuth = await base44.auth.isAuthenticated();
+          if (!isAuth) {
+            window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname);
+          }
+        } catch (err) {
+          console.log('Auth check failed');
+        }
+      };
+      checkPrivatePageAuth();
+    }
 
     // ClientDashboard / PricingPerfectBizAI - אל תציג Header רגיל (יש להם Header משלהם)
     if (currentPageName === 'ClientDashboard' || currentPageName === 'PricingPerfectBizAI') {
