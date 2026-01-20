@@ -10,10 +10,13 @@ Deno.serve(async (req) => {
     }
 
     // Check if there's a Lead with this phone and status "converted" or "closed"
-    const leads = await base44.asServiceRole.entities.Lead.filter({ 
-      phone: phone,
-      status: 'converted'
+    const allLeads = await base44.asServiceRole.entities.Lead.filter({ 
+      phone: phone
     });
+    
+    const leads = allLeads.filter(lead => 
+      lead.status === 'converted' || lead.status === 'closed'
+    );
 
     if (!leads || leads.length === 0) {
       return Response.json({ error: 'לא נמצא לקוח עם מספר זה' }, { status: 404 });
