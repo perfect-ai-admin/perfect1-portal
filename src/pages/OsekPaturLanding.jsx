@@ -247,29 +247,30 @@ export default function OsekPaturLanding() {
           ]} />
         </div>
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847] overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-20 right-20 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
-          </div>
-          
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-center lg:text-right"
-              >
+         <section className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847] overflow-hidden">
+           <div className="absolute inset-0 opacity-10">
+             <div className="absolute top-20 right-20 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
+             <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
+           </div>
+
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative">
+             <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+               <motion.div
+                 initial={{ opacity: 0, x: -50 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 className="text-center lg:text-right"
+               >
 
 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                   <span className="text-[#27AE60]">פתיחת עוסק פטור</span> בצורה מסודרת, בלי בלבול ובלי כאבי ראש
-                </h1>
+                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4 md:mb-6">
+                    <span className="text-[#27AE60] block md:inline">פתיחת עוסק פטור</span> בצורה מסודרת, בלי בלבול ובלי כאבי ראש
+                 </h1>
 
-                <p className="text-xl md:text-2xl text-white/90 mb-6 leading-relaxed font-medium">
-                   פתיחת עוסק פטור עם ליווי ברור ופשוט בכל התהליך<br className="hidden md:block" />
-                   מרגע ההחלטה עד הפתיחה - אנחנו עושים את כל הדברים הקשים
-                </p>
+                 <p className="text-lg md:text-2xl text-white/90 mb-6 leading-relaxed font-medium px-2 md:px-0">
+                    פתיחת עוסק פטור עם ליווי ברור ופשוט בכל התהליך.<br className="hidden md:block" />
+                    <span className="md:hidden"> </span>
+                    אנחנו עושים את כל הדברים הקשים בשבילך.
+                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
                   <div className="grid grid-cols-2 gap-4 text-white">
