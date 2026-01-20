@@ -64,7 +64,8 @@ Deno.serve(async (req) => {
             new_status: newStatus,
             event_type: 'status_change',
             entity: 'CRMLead',
-            _timestamp: new Date().toISOString()
+            _timestamp: new Date().toISOString(),
+            send_delivery_confirmation: true
         };
 
         // Send to production URL
