@@ -324,7 +324,7 @@ export default function Header() {
                 if (isAuth) {
                   window.location.href = createPageUrl('ClientDashboard');
                 } else {
-                  window.location.href = `https://auth.base44.com/login?app_id=${window.location.hostname}&redirect_url=${encodeURIComponent(window.location.origin + '/ClientDashboard')}`;
+                  await base44.auth.redirectToLogin(window.location.origin + '/ClientDashboard');
                 }
               }}
               className="hidden lg:flex bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold rounded-xl px-5 h-12 shadow-md hover:shadow-lg transition-all"
