@@ -53,32 +53,57 @@ Deno.serve(async (req) => {
         }
         `;
 
-        // Using Core.InvokeLLM which is always available
-        const plan = await base44.integrations.Core.InvokeLLM({
-            prompt: prompt,
-            response_json_schema: {
-                type: "object",
-                properties: {
-                    description: { type: "string" },
-                    complexity: { type: "string" },
-                    tasks: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                title: { type: "string" },
-                                type: { type: "string" }
-                            },
-                            required: ["title", "type"]
+        let plan;
+        try {
+            // Using Core.InvokeLLM which is always available
+            plan = await base44.integrations.Core.InvokeLLM({
+                prompt: prompt,
+                response_json_schema: {
+                    type: "object",
+                    properties: {
+                        description: { type: "string" },
+                        complexity: { type: "string" },
+                        tasks: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    title: { type: "string" },
+                                    type: { type: "string" }
+                                },
+                                required: ["title", "type"]
+                            }
                         }
-                    }
-                },
-                required: ["description", "tasks"]
-            }
-        });
+                    },
+                    required: ["description", "tasks"]
+                }
+            });
+        } catch (err) {
+            console.error('LLM invocation failed:', err);
+            // Fallback plan if LLM fails
+            plan = {
+                description: 'תוכנית עבודה ראשונית',
+                complexity: 'low',
+                tasks: [
+                    { title: 'הגדרת יעדים מדויקים', type: 'thinking' },
+                    { title: 'בניית תוכנית פעולה', type: 'thinking' },
+                    { title: 'ביצוע צעד ראשון', type: 'action' }
+                ]
+            };
+        }
+
+        // Ensure tasks exist
+        let tasksList = plan.tasks || [];
+        if (tasksList.length === 0) {
+            tasksList = [
+                { title: 'הגדרת יעדים מדויקים', type: 'thinking' },
+                { title: 'בניית תוכנית פעולה', type: 'thinking' },
+                { title: 'ביצוע צעד ראשון', type: 'action' }
+            ];
+        }
 
         // Create the goal entity with the generated plan
-        const tasksWithIds = plan.tasks.map(t => ({
+        const tasksWithIds = tasksList.map(t => ({
             id: crypto.randomUUID(),
             title: t.title,
             type: t.type,

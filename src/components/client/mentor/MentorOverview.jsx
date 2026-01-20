@@ -172,10 +172,16 @@ export default function MentorOverview() {
                                     סמן כבוצע והתקדם
                                 </Button>
                             </div>
-                        ) : (
+                        ) : (goal.tasks && goal.tasks.length > 0) ? (
                             <div className="bg-green-50 rounded-xl p-4 mb-6 border border-green-100 text-center">
                                 <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto mb-2" />
                                 <div className="font-bold text-green-800">כל המשימות הושלמו!</div>
+                            </div>
+                        ) : (
+                            <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100 text-center">
+                                <Clock className="w-8 h-8 text-gray-400 mx-auto mb-2 animate-pulse" />
+                                <div className="font-bold text-gray-600">בונה תוכנית עבודה...</div>
+                                <div className="text-xs text-gray-500 mt-1">המנטור מכין עבורך את המשימות</div>
                             </div>
                         )}
 
