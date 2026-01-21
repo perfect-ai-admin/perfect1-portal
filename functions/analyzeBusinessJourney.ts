@@ -126,6 +126,13 @@ Deno.serve(async (req) => {
 
         const analysis = llmResponse;
 
+        console.log('AI Analysis Result:', JSON.stringify(analysis, null, 2));
+
+        // Validate that we got a proper response
+        if (!analysis.tasks || analysis.tasks.length === 0) {
+            throw new Error('AI failed to generate tasks. Please try again.');
+        }
+
         // Update user entity
         const tasksWithIds = analysis.tasks.map((task, index) => ({
             id: crypto.randomUUID(),

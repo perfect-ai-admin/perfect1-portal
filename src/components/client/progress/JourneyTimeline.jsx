@@ -11,71 +11,72 @@ import {
   Check,
   ChevronLeft,
   X,
-  Circle
+  Circle,
+  Lightbulb,
+  Users,
+  DollarSign,
+  Rocket
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
-const steps = [
-  {
-    id: 'snapshot',
-    title: 'תמונת מצב העסק שלך',
-    description: 'מבינים איפה אתה עומד היום ומה באמת קורה בעסק',
-    icon: Map,
-    status: 'completed',
-    details: {
-      done: ['ניתוח ראשוני של העסק', 'זיהוי נקודות חוזק וחולשה'],
-      todo: ['אישור הנתונים הסופיים'],
-      nextAction: 'צפה בסיכום'
-    }
-  },
-  {
-    id: 'expenses',
-    title: 'ארגון ההוצאות שלך',
-    description: 'עושים סדר בכסף כדי לדעת מה נשאר ביד',
-    icon: Wallet,
-    status: 'current',
-    details: {
-      done: ['חיבור לחשבונות הבנק', 'קטגוריזציה אוטומטית'],
-      todo: ['אישור הוצאות חריגות', 'הגדרת תקציב חודשי'],
-      nextAction: 'סדר את ההוצאות'
-    }
-  },
-  {
-    id: 'goals',
-    title: 'תכנון יעד חודשי',
-    description: 'מגדירים מטרה ברורה שאפשר לעמוד בה',
-    icon: Target,
-    status: 'locked',
-    details: {}
-  },
-  {
-    id: 'sales',
-    title: 'שיפור תהליך המכירה',
-    description: 'מחדדים איך להפוך פניות ללקוחות',
-    icon: TrendingUp,
-    status: 'locked',
-    details: {}
-  },
-  {
-    id: 'campaign',
-    title: 'השקעה בקמפיין פרסומי',
-    description: 'רק כשיש בסיס יציב – מביאים עוד תנועה',
-    icon: Megaphone,
-    status: 'locked',
-    details: {}
-  },
-  {
-    id: 'funding',
-    title: 'הגדרת מערכת מימון',
-    description: 'בונים תשתית שתאפשר לעסק לגדול בשקט',
-    icon: Shield,
-    status: 'locked',
-    details: {}
-  }
-];
+import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
 
 export default function JourneyTimeline() {
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => await base44.auth.me(),
+  });
+
+  const clientTasks = user?.client_tasks || [];
+  const businessState = user?.business_state || {};
+
+  // Map task to icon based on keywords
+  const getIconForTask = (title) => {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('רעיון') || lowerTitle.includes('גיבוש')) return Lightbulb;
+    if (lowerTitle.includes('לקוח') || lowerTitle.includes('גיוס')) return Users;
+    if (lowerTitle.includes('עוסק') || lowerTitle.includes('תיק')) return Shield;
+    if (lowerTitle.includes('חשבונית') || lowerTitle.includes('מחיר')) return DollarSign;
+    if (lowerTitle.includes('שיווק') || lowerTitle.includes('קמפיין')) return Megaphone;
+    if (lowerTitle.includes('מטרה') || lowerTitle.includes('יעד')) return Target;
+    if (lowerTitle.includes('הכנסה') || lowerTitle.includes('הוצאות')) return Wallet;
+    if (lowerTitle.includes('צמיחה') || lowerTitle.includes('הגדלה')) return TrendingUp;
+    return Rocket;
+  };
+
+  // Convert client_tasks to steps format
+  const steps = clientTasks.length > 0 
+    ? clientTasks.map((task, index) => {
+        const isCompleted = task.status === 'completed';
+        const isCurrent = task.status === 'in_progress';
+        const isLocked = task.status === 'pending' && index !== 0 && clientTasks[index - 1]?.status !== 'completed';
+
+        return {
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          icon: getIconForTask(task.title),
+          status: isCompleted ? 'completed' : isCurrent ? 'current' : 'locked',
+          is_milestone: task.is_milestone,
+          details: {
+            done: isCompleted ? [task.description] : [],
+            todo: !isCompleted ? ['השלם משימה זו כדי להמשיך'] : [],
+            nextAction: 'התחל עכשיו'
+          }
+        };
+      })
+    : [
+        {
+          id: 'placeholder',
+          title: 'טוען את המסע שלך...',
+          description: 'אנא המתן',
+          icon: Map,
+          status: 'current',
+          details: {}
+        }
+      ];
+
   const [selectedStep, setSelectedStep] = useState(null);
   const [showTooltip, setShowTooltip] = useState(null);
 
@@ -95,10 +96,18 @@ export default function JourneyTimeline() {
         <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-3">
           <Map className="w-6 h-6 text-blue-600" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">מסע העסק שלך</h2>
-        <p className="text-sm text-gray-500 max-w-[250px] mx-auto">
-          מבוסס על התשובות שלך – זה המסלול שבנינו עבורך
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">
+          {businessState?.name || 'מסע העסק שלך'}
+        </h2>
+        <p className="text-sm text-gray-500 max-w-[280px] mx-auto">
+          {businessState?.description || 'מבוסס על התשובות שלך – זה המסלול שבנינו עבורך'}
         </p>
+        {businessState?.goal && (
+          <div className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full">
+            <Target className="w-4 h-4 text-blue-600" />
+            <span className="text-xs font-medium text-blue-700">{businessState.goal}</span>
+          </div>
+        )}
       </div>
 
       {/* Timeline */}
