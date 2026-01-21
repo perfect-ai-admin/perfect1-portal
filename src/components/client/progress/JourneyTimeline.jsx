@@ -45,13 +45,26 @@ export default function JourneyTimeline() {
     return Rocket;
   };
 
-  // Convert client_tasks to steps format
-  const steps = clientTasks.length > 0 
+  // First step is always the snapshot (completed)
+  const snapshotStep = {
+    id: 'snapshot',
+    title: 'תמונת מצב העסק שלך',
+    description: 'מבינים איפה אתה עומד היום ומה באמת קורה בעסק',
+    icon: Map,
+    status: 'completed',
+    details: {
+      done: ['ניתחנו את המצב העסקי שלך', 'זיהינו את נקודות החוזק והאתגרים'],
+      todo: [],
+      nextAction: 'צפה בסיכום'
+    }
+  };
+
+  // Convert client_tasks to steps format (these are the AI-generated tasks)
+  const dynamicSteps = clientTasks.length > 0 
     ? clientTasks.map((task, index) => {
-        // First task is always completed (snapshot)
-        const isCompleted = index === 0 || task.status === 'completed';
-        const isCurrent = index === 1 || (task.status === 'in_progress' && index !== 0);
-        const isLocked = index > 1 && !isCompleted && !isCurrent;
+        const isCompleted = task.status === 'completed';
+        const isCurrent = task.status === 'in_progress' || (index === 0 && !isCompleted);
+        const isLocked = !isCompleted && !isCurrent;
 
         return {
           id: task.id,
@@ -67,16 +80,10 @@ export default function JourneyTimeline() {
           }
         };
       })
-    : [
-        {
-          id: 'placeholder',
-          title: 'טוען את המסע שלך...',
-          description: 'אנא המתן',
-          icon: Map,
-          status: 'current',
-          details: {}
-        }
-      ];
+    : [];
+
+  // Combine snapshot with dynamic steps
+  const steps = [snapshotStep, ...dynamicSteps];
 
   const [selectedStep, setSelectedStep] = useState(null);
   const [showTooltip, setShowTooltip] = useState(null);
