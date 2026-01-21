@@ -21,12 +21,15 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 
 export default function MentorOverview() {
   const queryClient = useQueryClient();
   const [showNewGoalDialog, setShowNewGoalDialog] = useState(false);
+  const [showGoalTemplates, setShowGoalTemplates] = useState(false);
 
   const { data: goals, isLoading } = useQuery({
     queryKey: ['userGoals', 'active'],
@@ -48,10 +51,31 @@ export default function MentorOverview() {
   });
 
   const createGoalMutation = useMutation({
-    mutationFn: async ({ title, goalId }) => {
+    mutationFn: async ({ title, goalId, goalData }) => {
         // קריאה לפונקציית בבקנד שמייצרת תוכנית עבודה עם AI
         // Supports both creating new (title only) and updating existing (goalId)
-        const payload = goalId ? { title, goalId } : { title };
+        let payload;
+        if (goalData) {
+          // Full goal data from templates
+          const user = await base44.auth.me();
+          const activeGoalsCount = goals?.length || 0;
+          payload = { 
+            goalData: {
+              ...goalData,
+              user_id: user.id,
+              _context: {
+                activeGoalsCount,
+                goalPosition: activeGoalsCount + 1,
+                businessState: user?.business_state,
+                businessJourneyAnswers: user?.business_journey_answers
+              }
+            }
+          };
+        } else if (goalId) {
+          payload = { title, goalId };
+        } else {
+          payload = { title };
+        }
         const response = await base44.functions.invoke('generateGoalPlan', payload);
         return response.data;
     },
@@ -340,7 +364,7 @@ export default function MentorOverview() {
         })}
 
         {/* 6. New Goal Button */}
-        <Card className="border-2 border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer min-h-[400px]" onClick={() => setShowNewGoalDialog(true)}>
+        <Card className="border-2 border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer min-h-[400px]" onClick={() => setShowGoalTemplates(true)}>
             <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Plus className="w-8 h-8 text-indigo-600" />
             </div>
@@ -351,11 +375,54 @@ export default function MentorOverview() {
         </Card>
       </div>
 
-      <CreateGoalDialog 
-        open={showNewGoalDialog} 
-        onOpenChange={setShowNewGoalDialog}
-        onSubmit={(title) => createGoalMutation.mutate({ title })}
-      />
+      {/* Goal Templates - Mobile Sheet */}
+      <div className="md:hidden">
+        <Sheet open={showGoalTemplates} onOpenChange={setShowGoalTemplates}>
+          <SheetContent 
+            side="bottom" 
+            className="h-[95vh] max-h-[95vh] p-0 border-0 rounded-t-2xl flex flex-col top-[5vh]"
+          >
+            {showGoalTemplates && (
+              <GoalTemplatesFixed
+                user={{ id: goals?.[0]?.user_id }}
+                onCreateGoal={async (newGoal) => {
+                  try {
+                    await createGoalMutation.mutateAsync({ title: newGoal.title, goalData: newGoal });
+                    setShowGoalTemplates(false);
+                  } catch (error) {
+                    console.error('Error creating goal:', error);
+                  }
+                }}
+                onClose={() => setShowGoalTemplates(false)}
+                hasPrimaryGoal={false}
+              />
+            )}
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Goal Templates - Desktop Dialog */}
+      <div className="hidden md:block">
+        <Dialog open={showGoalTemplates} onOpenChange={setShowGoalTemplates}>
+          <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
+            {showGoalTemplates && (
+              <GoalTemplatesFixed
+                user={{ id: goals?.[0]?.user_id }}
+                onCreateGoal={async (newGoal) => {
+                  try {
+                    await createGoalMutation.mutateAsync({ title: newGoal.title, goalData: newGoal });
+                    setShowGoalTemplates(false);
+                  } catch (error) {
+                    console.error('Error creating goal:', error);
+                  }
+                }}
+                onClose={() => setShowGoalTemplates(false)}
+                hasPrimaryGoal={false}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }
