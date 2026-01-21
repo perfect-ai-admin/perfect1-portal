@@ -103,10 +103,6 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   };
 
   const handleEditGoal = (goal) => {
-     // Scroll to top of goals section smoothly
-     if (goalsTopRef.current) {
-       goalsTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-     }
      setEditingGoal(goal);
      setShowAddGoal(true);
    };
@@ -128,18 +124,11 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
   const handleCreateGoal = async (newGoal, isEditing = false) => {
      try {
-       // Save to DB
        if (isEditing) {
           await base44.entities.UserGoal.update(newGoal.id, newGoal);
           setGoals(prev => prev.map(g => g.id === newGoal.id ? newGoal : g));
        } else {
-          // Remove ID if it's undefined or generated locally, let DB handle it or use it if valid
-          // If newGoal.id is undefined, entity create will generate one.
           const goalToCreate = { ...newGoal, user_id: user.id };
-          // If id is undefined, don't include it in payload to avoid issues? 
-          // Actually if it's undefined, it's fine.
-          
-          // Use backend function to generate tasks via AI
           const response = await base44.functions.invoke('generateGoalPlan', { goalData: goalToCreate });
           const created = response.data;
           
@@ -151,14 +140,31 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
        }
        queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
        setShowAddGoal(false);
+       setEditingGoal(null);
      } catch (error) {
         console.error("Error saving goal:", error);
-        throw error; // Re-throw so GoalTemplatesFixed can catch it
+        throw error;
      }
    };
 
   return (
     <>
+      <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
+        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
+          {showAddGoal && (
+            <GoalTemplates
+              user={user}
+              onCreateGoal={handleCreateGoal}
+              onClose={() => {
+                setShowAddGoal(false);
+                setEditingGoal(null);
+              }}
+              hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+              editingGoal={editingGoal}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       <LimitUpgradeDialog 
         isOpen={showUpgradeDialog} 
@@ -166,7 +172,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
         limit={user?.goals_limit || 1}
       />
 
-      <div className="container mx-auto max-w-4xl p-0 md:p-4" ref={goalsTopRef}>
+      <div className="container mx-auto max-w-4xl p-0 md:p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -174,27 +180,6 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           className="space-y-8"
         >
           
-          {/* Inline Goal Editor */}
-          {showAddGoal && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
-            >
-              <GoalTemplates
-                user={user}
-                onCreateGoal={handleCreateGoal}
-                onClose={() => {
-                  setShowAddGoal(false);
-                  setEditingGoal(null);
-                }}
-                hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-                editingGoal={editingGoal}
-              />
-            </motion.div>
-          )}
-
           {/* Header Section */}
           <div className="flex items-end justify-between px-1">
              <div>
