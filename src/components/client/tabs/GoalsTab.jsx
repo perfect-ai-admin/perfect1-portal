@@ -158,7 +158,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
         <Sheet open={showAddGoal} onOpenChange={setShowAddGoal}>
           <SheetContent 
             side="bottom" 
-            className="h-[92vh] max-h-[92vh] p-0 border-0 rounded-t-2xl flex flex-col"
+            className="h-[85vh] max-h-[85vh] p-0 border-0 rounded-t-2xl flex flex-col"
           >
             {showAddGoal && (
               <GoalTemplates
