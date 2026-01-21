@@ -111,21 +111,7 @@ export default function JourneyTimeline() {
           מבוסס על התשובות שלך – זה המסלול שבנינו עבורך
         </p>
         
-        {/* Business State Info - Always visible */}
-        <div className="mt-4 p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl max-w-md mx-auto text-right">
-          <p className="text-sm font-bold text-gray-900 mb-2">
-            {businessState?.name || 'צמיחה מדויקת'}
-          </p>
-          <p className="text-xs text-gray-600 leading-relaxed mb-3">
-            {businessState?.description || 'אתה בעיצומו של תהליך הצמיחה עם תשומת לב לאסטרטגיות אופרטיביות. הסתמכות על ידע מנטלי ללא מבנים מסודרים מפריעה להתקדמות שלך וגורמת לקשיים בניהול התהליכים.'}
-          </p>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm">
-            <Target className="w-3.5 h-3.5 text-blue-600" />
-            <span className="text-xs font-medium text-blue-700">
-              {businessState?.goal || 'להקים נהלי עבודה מדויקים על מנת לאוטומט את הפעילות העסקית ולהגביר את ההכנסות.'}
-            </span>
-          </div>
-        </div>
+
       </div>
 
       {/* Timeline */}
