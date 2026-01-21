@@ -265,7 +265,6 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     if (!selectedTemplate || !goalTitle) return;
 
     // Check if phone number is missing (only for new goals)
-    // Fetch current user data to check for phone
     if (!editingGoal && !showPhonePrompt) {
       try {
         const currentUser = await base44.auth.me();
@@ -277,11 +276,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         }
       } catch (error) {
         console.error('Error checking user phone:', error);
-        // Continue anyway if there's an error
       }
     }
-
-    setIsCreating(true);
     
     const goalData = {
       id: editingGoal?.id,
@@ -298,12 +294,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       actionHint: 'המטרה נוצרת...'
     };
 
-    // Close dialog immediately for better UX
-    onCreateGoal(goalData, !!editingGoal).catch(error => {
-      console.error("Failed to create goal:", error);
-    });
-    
-    setIsCreating(false);
+    // Call parent handler immediately without waiting
+    onCreateGoal(goalData, !!editingGoal);
   };
 
   const handlePhoneSubmit = async () => {
