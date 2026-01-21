@@ -55,6 +55,7 @@ import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 
@@ -144,6 +145,21 @@ export default function ProgressTab({ data, onNavigate, user }) {
     setShowQuestionnaire(false);
     await queryClient.invalidateQueries({ queryKey: ['user', data.id] });
     window.location.reload();
+  };
+
+  const handleResetJourney = async () => {
+    if (!confirm('האם אתה בטוח שברצונך לאפס את המסע העסקי ולהתחיל מחדש?')) {
+      return;
+    }
+    
+    try {
+      await base44.functions.invoke('resetBusinessJourney');
+      toast.success('המסע אופס בהצלחה!');
+      window.location.reload();
+    } catch (error) {
+      console.error('Error resetting journey:', error);
+      toast.error('אירעה שגיאה באיפוס המסע');
+    }
   };
 
   // Smart mapping function
@@ -286,7 +302,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => setShowQuestionnaire(true)}
+            onClick={handleResetJourney}
             className="text-xs"
           >
             <RefreshCcw className="w-3.5 h-3.5 ml-1.5" />
@@ -336,7 +352,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
              <Button 
                variant="outline" 
                size="sm"
-               onClick={() => setShowQuestionnaire(true)}
+               onClick={handleResetJourney}
                className="text-sm"
              >
                <RefreshCcw className="w-4 h-4 ml-2" />
