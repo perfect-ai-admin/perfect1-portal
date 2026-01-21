@@ -112,56 +112,69 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
    };
 
   const handleDeleteGoal = async (goalId) => {
-     // Optimistic update
-     const previousGoals = goals;
-     setGoals(prev => prev.filter(g => g.id !== goalId));
+    if (!confirm('האם אתה בטוח שברצונך למחוק את המטרה הזו?')) {
+      return;
+    }
 
-     try {
-       await base44.entities.UserGoal.delete(goalId);
-       queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-     } catch (error) {
-       console.error("Failed to delete goal:", error);
-       // Revert if failed
-       setGoals(previousGoals);
-     }
-   };
+    // Optimistic update
+    const previousGoals = goals;
+    setGoals(prev => prev.filter(g => g.id !== goalId));
+
+    try {
+      await base44.entities.UserGoal.delete(goalId);
+      // Refresh both local and active goals
+      await loadUserGoals();
+      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+    } catch (error) {
+      console.error("Failed to delete goal:", error);
+      // Revert if failed
+      setGoals(previousGoals);
+    }
+  };
 
   const handleCreateGoal = async (newGoal, isEditing = false) => {
-     try {
-       if (isEditing) {
-          await base44.entities.UserGoal.update(newGoal.id, newGoal);
-          setGoals(prev => prev.map(g => g.id === newGoal.id ? newGoal : g));
-       } else {
-          const goalToCreate = { ...newGoal, user_id: user.id };
-          
-          // Optimistic update - add goal immediately
-          const tempId = 'temp_' + Date.now();
-          const optimisticGoal = { ...goalToCreate, id: tempId, tasks: [] };
-          
-          if (newGoal.isPrimary) {
-             setGoals(prev => [optimisticGoal, ...prev.filter(g => !g.isPrimary)]);
-          } else {
-             setGoals(prev => [...prev, optimisticGoal]);
-          }
-          
-          // Close dialog immediately
-          setShowAddGoal(false);
-          setEditingGoal(null);
-          
-          // Create goal in background
-          const response = await base44.functions.invoke('generateGoalPlan', { goalData: goalToCreate });
-          const created = response.data;
-          
-          // Replace temp goal with real one
-          setGoals(prev => prev.map(g => g.id === tempId ? created : g));
-       }
-       queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-     } catch (error) {
-        console.error("Error saving goal:", error);
-        setGoals(prev => prev.filter(g => !g.id.toString().startsWith('temp_')));
-        throw error;
-     }
-   };
+    try {
+      if (isEditing) {
+         await base44.entities.UserGoal.update(newGoal.id, newGoal);
+         await loadUserGoals();
+         setShowAddGoal(false);
+         setEditingGoal(null);
+      } else {
+         const goalToCreate = { ...newGoal, user_id: user.id };
+
+         // Optimistic update - add goal immediately
+         const tempId = 'temp_' + Date.now();
+         const optimisticGoal = { ...goalToCreate, id: tempId, tasks: [] };
+
+         if (newGoal.isPrimary) {
+            setGoals(prev => [optimisticGoal, ...prev.filter(g => !g.isPrimary)]);
+         } else {
+            setGoals(prev => [...prev, optimisticGoal]);
+         }
+
+         // Close dialog immediately
+         setShowAddGoal(false);
+         setEditingGoal(null);
+
+         // Create goal in background
+         const response = await base44.functions.invoke('generateGoalPlan', { goalData: goalToCreate });
+         const created = response.data;
+
+         // Reload all goals to ensure sync
+         await loadUserGoals();
+      }
+
+      // Invalidate all goal-related queries
+      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+    } catch (error) {
+       console.error("Error saving goal:", error);
+       setGoals(prev => prev.filter(g => !g.id.toString().startsWith('temp_')));
+       await loadUserGoals();
+       throw error;
+    }
+  };
 
   return (
     <>

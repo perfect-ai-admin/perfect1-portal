@@ -227,15 +227,19 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleGoalCreated = async (newGoal) => {
     try {
+      // Close dialog immediately for better UX
+      setShowGoalCreation(false);
+      setGoalTemplateForStep(null);
+
       // Gather context for smarter task generation
       const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
       const goalPosition = activeGoalsCount + 1; // This will be the Nth goal
-      
+
       // Use the AI function to generate the plan and create the goal
-      // We pass the template data as goalData + context
       await base44.functions.invoke('generateGoalPlan', { 
         goalData: {
           ...newGoal,
+          user_id: user?.id,
           // Context for AI
           _context: {
             activeGoalsCount,
@@ -245,18 +249,18 @@ export default function ProgressTab({ data, onNavigate, user }) {
           }
         }
       });
-      
-      // Optionally invalidate goals query if needed, mainly need to ensure UI feedback
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
-      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-      
-      // Close dialog
-      setShowGoalCreation(false);
-      setGoalTemplateForStep(null);
-      
-      // Maybe show celebration or confirmation
+
+      // Invalidate all goal queries to refresh
+      await queryClient.invalidateQueries({ queryKey: ['goals'] });
+      await queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
+      await queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+
+      // Refetch to ensure sync
+      await refetchGoals();
     } catch (error) {
       console.error("Error creating goal from journey:", error);
+      setShowGoalCreation(false);
+      setGoalTemplateForStep(null);
     }
   };
 
