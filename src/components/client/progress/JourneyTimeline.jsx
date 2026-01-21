@@ -158,12 +158,12 @@ export default function JourneyTimeline() {
                 {/* Content */}
                 <div className="flex-1 min-w-0 text-right">
                   <h3 className={cn(
-                    "font-bold text-lg mb-1",
+                    "font-bold text-base mb-1 leading-tight",
                     isCurrent ? "text-blue-900" : "text-gray-900"
                   )}>
                     {step.title}
                   </h3>
-                  <p className="text-sm text-gray-500 leading-snug line-clamp-2 pl-2">
+                  <p className="text-xs text-gray-500 leading-relaxed">
                     {step.description}
                   </p>
                 </div>
