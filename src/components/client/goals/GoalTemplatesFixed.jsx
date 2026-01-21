@@ -264,14 +264,21 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const handleCreate = async () => {
     if (!selectedTemplate || !goalTitle) return;
 
-    // Check if phone number is missing (only for new goals, and if user exists)
-    // We assume if user.phone is missing, we need to ask.
-    // Also checking if user.mobile is present as fallback
-    const hasPhone = user?.phone || user?.mobile || user?.phoneNumber;
-    
-    if (!editingGoal && !hasPhone && !showPhonePrompt) {
-      setShowPhonePrompt(true);
-      return;
+    // Check if phone number is missing (only for new goals)
+    // Fetch current user data to check for phone
+    if (!editingGoal && !showPhonePrompt) {
+      try {
+        const currentUser = await base44.auth.me();
+        const hasPhone = currentUser?.phone || currentUser?.mobile || currentUser?.phoneNumber;
+        
+        if (!hasPhone) {
+          setShowPhonePrompt(true);
+          return;
+        }
+      } catch (error) {
+        console.error('Error checking user phone:', error);
+        // Continue anyway if there's an error
+      }
     }
 
     setIsCreating(true);

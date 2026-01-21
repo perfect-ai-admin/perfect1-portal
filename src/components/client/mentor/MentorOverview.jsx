@@ -384,7 +384,7 @@ export default function MentorOverview() {
           >
             {showGoalTemplates && (
               <GoalTemplatesFixed
-                user={{ id: goals?.[0]?.user_id }}
+                user={null}
                 onCreateGoal={async (newGoal) => {
                   try {
                     await createGoalMutation.mutateAsync({ title: newGoal.title, goalData: newGoal });
@@ -407,7 +407,7 @@ export default function MentorOverview() {
           <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
             {showGoalTemplates && (
               <GoalTemplatesFixed
-                user={{ id: goals?.[0]?.user_id }}
+                user={null}
                 onCreateGoal={async (newGoal) => {
                   try {
                     await createGoalMutation.mutateAsync({ title: newGoal.title, goalData: newGoal });
