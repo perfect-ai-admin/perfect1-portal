@@ -227,9 +227,24 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleGoalCreated = async (newGoal) => {
     try {
+      // Gather context for smarter task generation
+      const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
+      const goalPosition = activeGoalsCount + 1; // This will be the Nth goal
+      
       // Use the AI function to generate the plan and create the goal
-      // We pass the template data as goalData
-      await base44.functions.invoke('generateGoalPlan', { goalData: newGoal });
+      // We pass the template data as goalData + context
+      await base44.functions.invoke('generateGoalPlan', { 
+        goalData: {
+          ...newGoal,
+          // Context for AI
+          _context: {
+            activeGoalsCount,
+            goalPosition,
+            businessState: currentUserData?.business_state,
+            businessJourneyAnswers: currentUserData?.business_journey_answers
+          }
+        }
+      });
       
       // Optionally invalidate goals query if needed, mainly need to ensure UI feedback
       queryClient.invalidateQueries({ queryKey: ['goals'] });

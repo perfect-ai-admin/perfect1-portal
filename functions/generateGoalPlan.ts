@@ -68,57 +68,111 @@ Deno.serve(async (req) => {
         if (body.title && !goalData.title) goalData.title = body.title;
         if (!goalData.title) return Response.json({ error: 'Goal title is required' }, { status: 400 });
 
-        const customAnswersStr = goalData.customAnswers ? JSON.stringify(goalData.customAnswers) : 'No specific context provided';
+        // Extract context for smarter planning
+        const context = goalData._context || {};
+        const activeGoalsCount = context.activeGoalsCount || 0;
+        const goalPosition = context.goalPosition || 1;
+        const businessState = context.businessState || {};
+        const businessJourneyAnswers = context.businessJourneyAnswers || {};
+        
+        const customAnswersStr = goalData.customAnswers ? JSON.stringify(goalData.customAnswers) : 'אין מידע נוסף';
+        const businessStateStr = businessState.stage ? `שלב עסקי: ${businessState.stage}, אתגר עיקרי: ${businessState.primary_challenge || 'לא ידוע'}` : 'לא ידוע';
+        const journeyContext = businessJourneyAnswers ? `מידע מהשאלון: ${JSON.stringify(businessJourneyAnswers).substring(0, 300)}` : 'אין';
 
         const prompt = `
 ### 🧠 ROLE DEFINITION (CRITICAL)
-      You are **Task Builder + Task Critic** — a world-class business mentor AI.
+      You are **Task Builder + Task Critic** — a world-class business mentor AI specialized in Israeli small businesses.
       **IMPORTANT: You must output everything in Hebrew (עברית) ONLY.**
 
       ## 🔹 GOAL INPUT
       * **Goal**: "${goalData.title}"
-      * **Context**: ${customAnswersStr}
+      * **Context from user**: ${customAnswersStr}
+      * **Business State**: ${businessStateStr}
+      * **Journey Context**: ${journeyContext}
+
+      ## 📊 USER CONTEXT (CRITICAL FOR TASK PLANNING)
+      * **Active Goals Count**: ${activeGoalsCount} מטרות פעילות כרגע
+      * **Goal Position**: זו המטרה ה-${goalPosition} של המשתמש
+      * **Implication**: ${goalPosition === 1 ? 'משתמש חדש - יצור משימות פשוטות וממוקדות (3-4 משימות)' : goalPosition === 2 ? 'משתמש עם ניסיון - אפשר להוסיף עומק (5-7 משימות)' : 'משתמש מתקדם - אפשר משימות מורכבות יותר (6-10 משימות)'}
 
       ## 🧱 SUPER RULES (STRICT)
       1. **Language**: ALL OUTPUT MUST BE IN HEBREW. Titles, descriptions, summaries - EVERYTHING.
-      2. **Simple** (3-5 tasks) | **Medium** (6-9 tasks) | **Complex** (10-14 tasks).
-      3. **Single Task Rule**: One clear action per task.
-      4. **No Fluff**: Real actions only. No "Think about strategy".
-      5. **48h Momentum Rule**: You MUST tag exactly one task as \`momentum: true\`. This task must be doable within 48 hours to create quick wins.
-      6. **Quality**: Every task needs \`task_title\`, \`why_it_matters\`, \`definition_of_done\`, \`effort_level\`.
+      
+      2. **Dynamic Task Count (CRITICAL)**:
+         * מטרה ראשונה (position=1): 3-4 משימות פשוטות, ברורות, ברות ביצוע. התמקד ב-quick wins.
+         * מטרה שנייה (position=2): 5-7 משימות עם יותר עומק. המשתמש כבר מכיר את המערכת.
+         * מטרה שלישית+ (position≥3): 6-10 משימות מפורטות. המשתמש מנוסה ומחפש תוכנית מקיפה.
+      
+      3. **Business Impact Priority**: תעדף משימות שמשפיעות ישירות על הכנסות/לקוחות/צמיחה.
+      
+      4. **Single Task Rule**: כל משימה = פעולה אחת ברורה ומדידה.
+      
+      5. **No Fluff**: רק פעולות קונקרטיות. אין "לחשוב על אסטרטגיה" או "לתכנן". רק ACT.
+      
+      6. **48h Momentum Rule (MANDATORY)**: 
+         * תסמן בדיוק משימה אחת כ-\`momentum: true\`
+         * המשימה חייבת להיות ניתנת לביצוע תוך 48 שעות
+         * זו חייבת להיות המשימה הראשונה ברשימה
+         * דוגמאות טובות: "שלח הודעה ללקוח פוטנציאלי אחד", "צור טיוטה של חשבונית", "פרסם פוסט אחד ברשתות"
+      
+      7. **Quality Standards**: 
+         * כל משימה חייבת להכיל: \`task_title\`, \`why_it_matters\`, \`definition_of_done\`, \`effort_level\`
+         * ה-\`why_it_matters\` צריך להיות משכנע ולהסביר איך זה עוזר למטרה
+         * ה-\`definition_of_done\` צריך להיות מדיד וברור (לא "לעשות טוב" אלא "לשלוח 3 הודעות")
+
+      8. **Actionable Task Sequence**: 
+         * סדר המשימות חייב להיות הגיוני - כל משימה מובילה לבאה
+         * התחל קל, עלה בהדרגה בקושי
+         * וודא שהמשתמש יכול להתחיל מיד במשימה הראשונה
 
 # =========================
 # PART A — Task Builder
 # =========================
-Build the tasks.
+בנה את המשימות בהתאם למטרה, למצב העסקי, ולמיקום של המטרה (ראשונה/שנייה/שלישית).
+
+דוגמה למטרה ראשונה "גיוס לקוח ראשון":
+1. (momentum=true) שלח הודעה אישית ללקוח פוטנציאלי אחד מהרשימה שלך
+2. הכן הצעת מחיר פשוטה (תבנית בסיסית)
+3. תזמן שיחת ייעוץ ראשונה (אפילו עם חבר)
+
+דוגמה למטרה שלישית "הגדלת מכירות ב-30%":
+1. (momentum=true) פרסם פוסט אחד עם מבצע בפייסבוק
+2. צור רשימה של 10 לקוחות קיימים לפנייה חוזרת
+3. הכן תסריט שיחה לפנייה ללקוחות
+4. פנה ללקוח אחד מהרשימה וקבל משוב
+5. שפר את התסריט בהתאם למשוב
+6. פנה ל-5 לקוחות נוספים
+7. נתח תוצאות וקבע צעדים הבאים
 
 # =========================
 # PART B — Task Critic (Self-Correction)
 # =========================
-Before outputting, verify:
-* Is there a momentum task?
-* Is the order Easy → Medium → Hard?
-* Are the explanations ("why") convincing?
-* **Write a 'plan_summary' explaining your logic (2-3 sentences).**
+לפני פלט, בדוק:
+* ✅ יש משימת momentum אחת ברורה (48 שעות)?
+* ✅ הסדר הוא מקל לקשה?
+* ✅ כל ההסברים ("למה זה חשוב") משכנעים?
+* ✅ כל משימה ברת ביצוע ומדידה?
+* ✅ כמות המשימות מתאימה למיקום המטרה (${goalPosition === 1 ? '3-4' : goalPosition === 2 ? '5-7' : '6-10'})?
+* ✅ כתוב 'plan_summary' שמסביר את ההיגיון (2-3 משפטים).
 
 ## 📦 OUTPUT FORMAT (JSON ONLY)
 {
-  "goal_title": "Refined title",
+  "goal_title": "כותרת מדויקת ומשודרגת",
   "goal_complexity": "simple | medium | complex",
-  "plan_summary": "Logic of the plan...",
+  "plan_summary": "הסבר ההיגיון של התוכנית בעברית...",
   "clarifying_questions": [],
   "tasks": [
     {
-      "task_title": "",
-      "why_it_matters": "",
-      "definition_of_done": "",
+      "task_title": "כותרת ברורה",
+      "why_it_matters": "הסבר משכנע למה זה חשוב",
+      "definition_of_done": "קריטריון מדיד להצלחה",
       "effort_level": "קל | בינוני | קשה",
       "task_type": "THINK | CHECK | DECIDE | PLAN | ACT",
       "momentum": true/false,
       "status": "todo"
     }
   ],
-  "next_step": ""
+  "next_step": "מה לעשות אחרי השלמת כל המשימות"
 }
 `;
 
