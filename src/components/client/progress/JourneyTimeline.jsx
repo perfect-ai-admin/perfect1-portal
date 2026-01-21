@@ -48,9 +48,10 @@ export default function JourneyTimeline() {
   // Convert client_tasks to steps format
   const steps = clientTasks.length > 0 
     ? clientTasks.map((task, index) => {
-        const isCompleted = task.status === 'completed';
-        const isCurrent = task.status === 'in_progress';
-        const isLocked = task.status === 'pending' && index !== 0 && clientTasks[index - 1]?.status !== 'completed';
+        // First task is always completed (snapshot)
+        const isCompleted = index === 0 || task.status === 'completed';
+        const isCurrent = index === 1 || (task.status === 'in_progress' && index !== 0);
+        const isLocked = index > 1 && !isCompleted && !isCurrent;
 
         return {
           id: task.id,
