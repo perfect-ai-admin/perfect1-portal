@@ -143,8 +143,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleQuestionnaireComplete = async () => {
     setShowQuestionnaire(false);
-    await queryClient.invalidateQueries({ queryKey: ['user', data.id] });
-    window.location.reload();
+    // Refetch user data smoothly without page reload
+    await queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+    await queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
   };
 
   const handleResetJourney = async () => {
