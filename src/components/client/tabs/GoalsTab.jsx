@@ -26,6 +26,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
+  const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const goalsTopRef = useRef(null);
   const processedOpenAddGoal = useRef(false);
 
@@ -136,16 +137,27 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const handleCreateGoal = async (newGoal, isEditing = false) => {
     try {
       if (isEditing) {
+         setIsCreatingGoal(true);
          await base44.entities.UserGoal.update(newGoal.id, newGoal);
          await loadUserGoals();
          setShowAddGoal(false);
          setEditingGoal(null);
+         setIsCreatingGoal(false);
       } else {
          const goalToCreate = { ...newGoal, user_id: user.id };
 
-         // Optimistic update - add goal immediately
+         // Show creating state
+         setIsCreatingGoal(true);
+
+         // Add optimistic goal with loading indicator
          const tempId = 'temp_' + Date.now();
-         const optimisticGoal = { ...goalToCreate, id: tempId, tasks: [] };
+         const optimisticGoal = { 
+           ...goalToCreate, 
+           id: tempId, 
+           tasks: [],
+           isLoading: true,
+           plan_summary: 'בונה את תוכנית הפעולה שלך...'
+         };
 
          if (newGoal.isPrimary) {
             setGoals(prev => [optimisticGoal, ...prev.filter(g => !g.isPrimary)]);
@@ -161,8 +173,9 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
          const response = await base44.functions.invoke('generateGoalPlan', { goalData: goalToCreate });
          const created = response.data;
 
-         // Reload all goals to ensure sync
+         // Reload all goals to get the real data
          await loadUserGoals();
+         setIsCreatingGoal(false);
       }
 
       // Invalidate all goal-related queries
@@ -171,6 +184,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     } catch (error) {
        console.error("Error saving goal:", error);
        setGoals(prev => prev.filter(g => !g.id.toString().startsWith('temp_')));
+       setIsCreatingGoal(false);
        await loadUserGoals();
        throw error;
     }
@@ -267,6 +281,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                 onStatusChange={handleStatusChange}
                 onEdit={handleEditGoal}
                 onDelete={handleDeleteGoal}
+                isLoading={heroGoal.isLoading || heroGoal.id?.toString().startsWith('temp_')}
               />
             </div>
           )}
