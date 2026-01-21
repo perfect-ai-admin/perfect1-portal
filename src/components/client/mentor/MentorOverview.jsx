@@ -386,12 +386,8 @@ export default function MentorOverview() {
               <GoalTemplatesFixed
                 user={null}
                 onCreateGoal={async (newGoal) => {
-                  try {
-                    await createGoalMutation.mutateAsync({ title: newGoal.title, goalData: newGoal });
-                    setShowGoalTemplates(false);
-                  } catch (error) {
-                    console.error('Error creating goal:', error);
-                  }
+                  setShowGoalTemplates(false);
+                  createGoalMutation.mutate({ title: newGoal.title, goalData: newGoal });
                 }}
                 onClose={() => setShowGoalTemplates(false)}
                 hasPrimaryGoal={false}
@@ -409,12 +405,8 @@ export default function MentorOverview() {
               <GoalTemplatesFixed
                 user={null}
                 onCreateGoal={async (newGoal) => {
-                  try {
-                    await createGoalMutation.mutateAsync({ title: newGoal.title, goalData: newGoal });
-                    setShowGoalTemplates(false);
-                  } catch (error) {
-                    console.error('Error creating goal:', error);
-                  }
+                  setShowGoalTemplates(false);
+                  createGoalMutation.mutate({ title: newGoal.title, goalData: newGoal });
                 }}
                 onClose={() => setShowGoalTemplates(false)}
                 hasPrimaryGoal={false}
