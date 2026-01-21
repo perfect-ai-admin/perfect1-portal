@@ -46,7 +46,7 @@ import QuickStatsBar from '../progress/QuickStatsBar';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import { ProgressTabHelp } from '../help/ContextualHelp';
 import GoalsFloatingButton from '../GoalsFloatingButton';
-import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, ChevronDown } from 'lucide-react';
+import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, ChevronDown, RefreshCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -281,6 +281,18 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
       {/* Journey Timeline - Mobile */}
       <div className="lg:hidden mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-gray-900">המסע שלך</h2>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowQuestionnaire(true)}
+            className="text-xs"
+          >
+            <RefreshCcw className="w-3.5 h-3.5 ml-1.5" />
+            רענן מסע
+          </Button>
+        </div>
         <JourneyTimeline />
       </div>
 
@@ -319,6 +331,18 @@ export default function ProgressTab({ data, onNavigate, user }) {
       <div className="hidden lg:grid lg:grid-cols-12 gap-6">
         {/* Journey Timeline - Desktop */}
         <div className="lg:col-span-6">
+           <div className="flex items-center justify-between mb-4">
+             <h2 className="text-xl font-bold text-gray-900">המסע שלך</h2>
+             <Button 
+               variant="outline" 
+               size="sm"
+               onClick={() => setShowQuestionnaire(true)}
+               className="text-sm"
+             >
+               <RefreshCcw className="w-4 h-4 ml-2" />
+               רענן מסע
+             </Button>
+           </div>
            <JourneyTimeline />
         </div>
 
