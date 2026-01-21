@@ -249,6 +249,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
           const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
 
           await base44.functions.invoke('generateGoalPlan', { 
+            goalId: createdGoal.id,
             goalData: {
               ...createdGoal,
               _context: {
