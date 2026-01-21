@@ -62,6 +62,13 @@ import SecondaryGoals from '../goals/SecondaryGoals';
 export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
   
+  // Fetch current user data to ensure we have fresh journey status
+  const { data: currentUserData } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => await base44.auth.me(),
+    initialData: data
+  });
+  
   // Fetch active goals for the floating button and desktop view
   const { data: activeGoals, refetch: refetchGoals } = useQuery({
     queryKey: ['activeGoals', user?.id],
@@ -91,8 +98,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const [goalTemplateForStep, setGoalTemplateForStep] = useState(null);
 
   // Use dynamic tasks if available, otherwise default milestones
-  const activeMilestones = data?.client_tasks?.length > 0 
-    ? data.client_tasks 
+  const activeMilestones = currentUserData?.client_tasks?.length > 0 
+    ? currentUserData.client_tasks 
     : MILESTONES;
 
   // Determine current/completed based on status field in tasks
@@ -132,7 +139,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const primaryGoal = activeGoals.find(g => g.isPrimary) || activeGoals[0];
   const secondaryGoalsList = activeGoals.filter(g => g.id !== primaryGoal?.id);
 
-  const isJourneyCompleted = data?.business_journey_completed;
+  const isJourneyCompleted = currentUserData?.business_journey_completed;
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
   const [isGoalsExpanded, setIsGoalsExpanded] = useState(false);
@@ -472,7 +479,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:p-0 bg-white border-0 shadow-2xl rounded-2xl">
           <BusinessJourneyQuestionnaire 
             onComplete={handleQuestionnaireComplete}
-            userId={data?.id}
+            userId={currentUserData?.id}
           />
         </DialogContent>
       </Dialog>
