@@ -225,43 +225,40 @@ export default function ProgressTab({ data, onNavigate, user }) {
     setShowGoalCreation(true);
   };
 
-  const handleGoalCreated = async (newGoal) => {
-    try {
-      // Close dialog immediately for better UX
-      setShowGoalCreation(false);
-      setGoalTemplateForStep(null);
+  const handleGoalCreated = (newGoal) => {
+    // Close dialog IMMEDIATELY
+    setShowGoalCreation(false);
+    setGoalTemplateForStep(null);
 
-      // Gather context for smarter task generation
-      const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
-      const goalPosition = activeGoalsCount + 1; // This will be the Nth goal
+    // Start background process without blocking UI
+    (async () => {
+      try {
+        const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
+        const goalPosition = activeGoalsCount + 1;
 
-      // Use the AI function to generate the plan and create the goal
-      await base44.functions.invoke('generateGoalPlan', { 
-        goalData: {
-          ...newGoal,
-          user_id: user?.id,
-          // Context for AI
-          _context: {
-            activeGoalsCount,
-            goalPosition,
-            businessState: currentUserData?.business_state,
-            businessJourneyAnswers: currentUserData?.business_journey_answers
+        // Generate plan in background
+        await base44.functions.invoke('generateGoalPlan', { 
+          goalData: {
+            ...newGoal,
+            user_id: user?.id,
+            _context: {
+              activeGoalsCount,
+              goalPosition,
+              businessState: currentUserData?.business_state,
+              businessJourneyAnswers: currentUserData?.business_journey_answers
+            }
           }
-        }
-      });
+        });
 
-      // Invalidate all goal queries to refresh
-      await queryClient.invalidateQueries({ queryKey: ['goals'] });
-      await queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-      await queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-
-      // Refetch to ensure sync
-      await refetchGoals();
-    } catch (error) {
-      console.error("Error creating goal from journey:", error);
-      setShowGoalCreation(false);
-      setGoalTemplateForStep(null);
-    }
+        // Refresh data after creation
+        queryClient.invalidateQueries({ queryKey: ['goals'] });
+        queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
+        queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+        refetchGoals();
+      } catch (error) {
+        console.error("Error creating goal from journey:", error);
+      }
+    })();
   };
 
   if (!isJourneyCompleted) {
