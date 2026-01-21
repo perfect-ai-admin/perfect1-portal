@@ -126,12 +126,12 @@ export default function MentorOverview() {
   return (
     <div className="space-y-8 p-4 md:p-6 max-w-7xl mx-auto" dir="rtl">
       
-      {/* 1. Header Section */}
-      <div className="text-right space-y-2">
-        <h1 className="text-2xl md:text-3xl font-black text-[#1E3A5F]">
-          תמונת מצב – העבודה על המטרות שלך
+      {/* Header Section */}
+      <div className="text-right space-y-3 mb-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          תמונת המצב שלי
         </h1>
-        <p className="text-lg text-gray-600 font-medium">
+        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
           {getHeaderStatus()}
         </p>
       </div>
@@ -161,140 +161,152 @@ export default function MentorOverview() {
                 <Card key={goal.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-2xl overflow-hidden flex flex-col">
                     <div className="p-6 flex-1 flex flex-col">
                         {/* Goal Header */}
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 className="text-xl font-bold text-[#1E3A5F] mb-1">{goal.title}</h3>
-                                <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusColor}`}>
+                        <div className="flex justify-between items-start mb-3">
+                            <div className="flex-1">
+                                <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">{goal.title}</h3>
+                                <div className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold ${statusColor}`}>
                                     {statusLabel}
                                 </div>
                             </div>
-                            <div className="text-left">
-                                <span className="text-xs font-bold text-gray-500">
-                                    {completedTasks.length} / {goal.tasks?.length || 0}
+                            <div className="flex flex-col items-end gap-1 ml-3">
+                                <span className="text-2xl font-bold text-gray-900">
+                                    {completedTasks.length}
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                    מתוך {goal.tasks?.length || 0}
                                 </span>
                             </div>
                         </div>
 
                         {/* Progress Summary */}
-                        <div className="mb-6">
-                            <p className="text-sm text-gray-500 mb-2">
-                                {completedTasks.length > 0 
-                                    ? `בוצעו ${completedTasks.length} משימות מתוך ${goal.tasks?.length}`
-                                    : 'טרם בוצעו משימות במטרה זו'
-                                }
-                            </p>
-                            <Progress value={goal.progress} className="h-1.5" />
+                        <div className="mb-5">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-xs font-medium text-gray-600">
+                                    {completedTasks.length > 0 
+                                        ? `${completedTasks.length} משימות הושלמו`
+                                        : 'עוד לא התחלת'
+                                    }
+                                </p>
+                                <span className="text-xs font-bold text-gray-900">{goal.progress}%</span>
+                            </div>
+                            <Progress value={goal.progress} className="h-2" />
                         </div>
 
-                        {/* 4. Next Step (Critical CTA) */}
+                        {/* Next Step CTA */}
                         {nextTask ? (
-                            <div className="bg-indigo-50 rounded-xl p-4 mb-6 border border-indigo-100">
-                                <div className="flex items-center gap-2 mb-2 text-indigo-800 font-bold text-sm">
-                                    <Play className="w-4 h-4 fill-indigo-800" />
-                                    הצעד הבא במטרה זו
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 mb-5 border border-blue-100">
+                                <div className="flex items-center gap-2 mb-2.5">
+                                    <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center">
+                                        <Play className="w-3.5 h-3.5 text-white fill-white" />
+                                    </div>
+                                    <span className="text-xs font-bold text-blue-900">הצעד הבא</span>
                                 </div>
-                                <div className="font-medium text-gray-900 mb-3 text-lg leading-tight">
+                                <p className="font-semibold text-gray-900 mb-3.5 text-base leading-snug">
                                     {nextTask.title}
-                                </div>
+                                </p>
                                 <Button 
                                     onClick={() => handleToggleTask(goal, nextTask.id)}
-                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg h-10 text-sm font-bold shadow-sm"
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 text-sm font-semibold shadow-md transition-all active:scale-[0.98]"
                                 >
-                                    סמן כבוצע והתקדם
+                                    <CheckCircle2 className="w-4 h-4 ml-2" />
+                                    סיימתי את המשימה
                                 </Button>
                             </div>
                         ) : (goal.tasks && goal.tasks.length > 0) ? (
-                            <div className="bg-green-50 rounded-xl p-4 mb-6 border border-green-100 text-center">
-                                <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                                <div className="font-bold text-green-800">כל המשימות הושלמו!</div>
+                            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 mb-5 border border-green-200 text-center">
+                                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <CheckCircle2 className="w-7 h-7 text-green-600" />
+                                </div>
+                                <div className="font-bold text-green-900 text-base">המטרה הושלמה! 🎉</div>
+                                <p className="text-xs text-green-700 mt-1">כל הכבוד על השלמת כל המשימות</p>
                             </div>
                         ) : (
-                            <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100 text-center">
-                                <Clock className="w-8 h-8 text-gray-400 mx-auto mb-2 animate-pulse" />
-                                <div className="font-bold text-gray-600">בונה תוכנית עבודה...</div>
-                                <div className="text-xs text-gray-500 mt-1 mb-3">המנטור מכין עבורך את המשימות</div>
+                            <div className="bg-gray-50 rounded-xl p-5 mb-5 border border-gray-200 text-center">
+                                <Clock className="w-10 h-10 text-gray-400 mx-auto mb-3 animate-pulse" />
+                                <div className="font-semibold text-gray-700 mb-1">בונה תוכנית...</div>
+                                <div className="text-xs text-gray-500 mb-4">המנטור מכין את המשימות</div>
                                 <Button 
                                     variant="outline" 
                                     size="sm"
                                     onClick={() => createGoalMutation.mutate({ title: goal.title, goalId: goal.id })}
-                                    className="text-xs h-7"
+                                    className="text-sm h-9 font-medium"
                                 >
-                                    בנה תוכנית כעת
+                                    בנה תוכנית עכשיו
                                 </Button>
                             </div>
                         )}
 
-                        {/* 3. Work Plan (Tasks List) */}
-                        <div className="space-y-4 flex-1">
-                            <div className="flex items-center justify-between">
-                                <h4 className="font-bold text-sm text-gray-400 uppercase tracking-wider">תוכנית עבודה</h4>
+                        {/* Work Plan */}
+                        <div className="space-y-3 flex-1">
+                            <div className="flex items-center justify-between mb-1">
+                                <h4 className="font-semibold text-xs text-gray-500 uppercase tracking-wide">המשימות שלי</h4>
                                 {goal.plan_summary && (
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger>
-                                                <HelpCircle className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-help" />
+                                                <HelpCircle className="w-4 h-4 text-gray-400 hover:text-blue-600 cursor-help transition-colors" />
                                             </TooltipTrigger>
-                                            <TooltipContent className="max-w-xs text-right bg-slate-900 text-white p-3 text-xs leading-relaxed" dir="rtl">
-                                                <p className="font-bold mb-1">היגיון התוכנית:</p>
-                                                {goal.plan_summary}
+                                            <TooltipContent className="max-w-sm text-right bg-gray-900 text-white p-4 text-sm leading-relaxed rounded-xl" dir="rtl">
+                                                <p className="font-bold mb-2 text-blue-300">💡 ההיגיון מאחורי התוכנית</p>
+                                                <p className="text-gray-100">{goal.plan_summary}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
                                 )}
                             </div>
                             
-                            {/* Open Tasks Cards */}
-                            <div className="space-y-3">
+                            {/* Open Tasks */}
+                            <div className="space-y-2.5">
                                 {openTasks.slice(0, 3).map(task => {
                                     const isMomentum = task.momentum;
                                     const effortColors = {
-                                        'קל': 'bg-green-100 text-green-700 border-green-200',
-                                        'בינוני': 'bg-yellow-100 text-yellow-700 border-yellow-200',
-                                        'קשה': 'bg-red-100 text-red-700 border-red-200'
+                                        'קל': 'bg-green-100 text-green-800 border-green-200',
+                                        'בינוני': 'bg-amber-100 text-amber-800 border-amber-200',
+                                        'קשה': 'bg-red-100 text-red-800 border-red-200'
                                     };
                                     
                                     return (
                                         <div 
                                             key={task.id} 
                                             className={`
-                                                relative border rounded-xl p-3 transition-all hover:shadow-md
-                                                ${isMomentum ? 'border-amber-200 bg-amber-50/30' : 'border-gray-100 bg-white'}
+                                                relative border-2 rounded-xl p-3.5 transition-all active:scale-[0.98]
+                                                ${isMomentum ? 'border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50 shadow-sm' : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'}
                                             `}
                                         >
-                                            {/* Header */}
-                                            <div className="flex items-start gap-3 mb-2">
+                                            <div className="flex items-start gap-3">
                                                 <button 
                                                     onClick={() => handleToggleTask(goal, task.id)}
-                                                    className="mt-0.5 text-gray-300 hover:text-indigo-600 transition-colors flex-shrink-0"
+                                                    className="mt-0.5 flex-shrink-0 transition-transform hover:scale-110 active:scale-95"
                                                 >
-                                                    <Circle className="w-5 h-5" />
+                                                    <div className="w-5 h-5 rounded-full border-2 border-gray-300 hover:border-blue-500 transition-colors" />
                                                 </button>
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className="font-bold text-gray-800 text-sm leading-tight">
+                                                    <div className="flex items-center gap-2 mb-1.5">
+                                                        <span className="font-semibold text-gray-900 text-sm leading-tight">
                                                             {task.title}
                                                         </span>
                                                         {isMomentum && (
                                                             <TooltipProvider>
                                                                 <Tooltip>
                                                                     <TooltipTrigger>
-                                                                        <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                                                                        <Zap className="w-4 h-4 text-amber-600 fill-amber-500" />
                                                                     </TooltipTrigger>
-                                                                    <TooltipContent>משימת מומנטום (48 שעות)</TooltipContent>
+                                                                    <TooltipContent className="bg-amber-900 text-white">
+                                                                        ⚡ משימת מומנטום - 48 שעות
+                                                                    </TooltipContent>
                                                                 </Tooltip>
                                                             </TooltipProvider>
                                                         )}
                                                     </div>
                                                     {task.why && (
-                                                        <p className="text-xs text-gray-500 leading-snug line-clamp-2 mb-1.5">
+                                                        <p className="text-xs text-gray-600 leading-relaxed line-clamp-2 mb-2">
                                                             {task.why}
                                                         </p>
                                                     )}
                                                     
-                                                    {/* Meta Row */}
-                                                    <div className="flex items-center gap-2 mt-2">
+                                                    <div className="flex items-center gap-2 flex-wrap">
                                                         {task.effort && (
-                                                            <Badge variant="outline" className={`text-[10px] h-5 px-1.5 border ${effortColors[task.effort] || 'bg-gray-100 text-gray-600'}`}>
+                                                            <Badge variant="outline" className={`text-[11px] h-5 px-2 font-medium border ${effortColors[task.effort] || 'bg-gray-100 text-gray-700'}`}>
                                                                 {task.effort}
                                                             </Badge>
                                                         )}
@@ -302,14 +314,14 @@ export default function MentorOverview() {
                                                             <TooltipProvider>
                                                                 <Tooltip>
                                                                     <TooltipTrigger asChild>
-                                                                        <div className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-indigo-600 cursor-help bg-gray-50 px-1.5 py-0.5 rounded-md">
+                                                                        <button className="flex items-center gap-1 text-[11px] text-gray-500 hover:text-blue-600 bg-gray-100 hover:bg-blue-50 px-2 py-1 rounded-md transition-colors">
                                                                             <CheckSquare className="w-3 h-3" />
-                                                                            <span>הגדרת סיום</span>
-                                                                        </div>
+                                                                            <span className="font-medium">איך סיימנו?</span>
+                                                                        </button>
                                                                     </TooltipTrigger>
-                                                                    <TooltipContent className="max-w-xs text-right" dir="rtl">
-                                                                        <p className="font-bold text-xs mb-1">איך יודעים שסיימנו?</p>
-                                                                        {task.definition_of_done}
+                                                                    <TooltipContent className="max-w-xs text-right bg-gray-900 text-white p-3 rounded-lg" dir="rtl">
+                                                                        <p className="font-bold text-xs mb-1.5 text-blue-300">✓ הגדרת סיום</p>
+                                                                        <p className="text-xs leading-relaxed">{task.definition_of_done}</p>
                                                                     </TooltipContent>
                                                                 </Tooltip>
                                                             </TooltipProvider>
@@ -322,23 +334,21 @@ export default function MentorOverview() {
                                 })}
                             </div>
 
-                            {/* Completed Tasks (Collapsed/Subtle) */}
+                            {/* Completed Tasks */}
                             {completedTasks.length > 0 && (
-                                <div className="pt-2 border-t border-gray-100 mt-2">
-                                    <div className="space-y-2 opacity-60">
+                                <div className="pt-3 border-t border-gray-200 mt-3">
+                                    <div className="space-y-2 opacity-70">
                                         {completedTasks.slice(0, 2).map(task => (
-                                            <div key={task.id} className="flex items-start gap-3 p-2 rounded-lg bg-gray-50/50">
-                                                <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                                                <div>
-                                                    <span className="text-gray-500 text-sm line-through block">
-                                                        {task.title}
-                                                    </span>
-                                                </div>
+                                            <div key={task.id} className="flex items-start gap-2.5 p-2.5 rounded-lg bg-gray-50">
+                                                <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                                                <span className="text-gray-600 text-sm line-through leading-relaxed">
+                                                    {task.title}
+                                                </span>
                                             </div>
                                         ))}
                                         {completedTasks.length > 2 && (
-                                            <div className="text-xs text-gray-400 pr-8">
-                                                + עוד {completedTasks.length - 2} משימות שהושלמו
+                                            <div className="text-xs text-gray-500 pr-7 font-medium">
+                                                ✓ ועוד {completedTasks.length - 2} משימות שהושלמו
                                             </div>
                                         )}
                                     </div>
@@ -363,14 +373,17 @@ export default function MentorOverview() {
             );
         })}
 
-        {/* 6. New Goal Button */}
-        <Card className="border-2 border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer min-h-[400px]" onClick={() => setShowGoalTemplates(true)}>
-            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Plus className="w-8 h-8 text-indigo-600" />
+        {/* New Goal Card */}
+        <Card 
+            className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/30 transition-all rounded-2xl flex flex-col items-center justify-center p-8 md:p-10 cursor-pointer min-h-[400px] group active:scale-[0.98]" 
+            onClick={() => setShowGoalTemplates(true)}
+        >
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-sm">
+                <Plus className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">פתיחת מטרה חדשה</h3>
-            <p className="text-gray-500 text-center max-w-xs">
-                הגדר יעד חדש והמערכת תבנה עבורך תוכנית עבודה מותאמת אישית
+            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">מטרה חדשה</h3>
+            <p className="text-sm md:text-base text-gray-600 text-center max-w-xs leading-relaxed">
+                הגדר יעד חדש והמערכת תיצור עבורך תוכנית עבודה מותאמת אישית
             </p>
         </Card>
       </div>
