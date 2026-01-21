@@ -13,6 +13,10 @@ import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog';
+import {
+  Sheet,
+  SheetContent,
+} from '@/components/ui/sheet';
 
 export default function GoalsTab({ user, data, openAddGoal = false }) {
   const queryClient = useQueryClient();
@@ -149,22 +153,45 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
   return (
     <>
-      <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
-        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
-          {showAddGoal && (
-            <GoalTemplates
-              user={user}
-              onCreateGoal={handleCreateGoal}
-              onClose={() => {
-                setShowAddGoal(false);
-                setEditingGoal(null);
-              }}
-              hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-              editingGoal={editingGoal}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Mobile Sheet */}
+      <div className="md:hidden">
+        <Sheet open={showAddGoal} onOpenChange={setShowAddGoal}>
+          <SheetContent side="bottom" className="h-[95vh] p-0 border-0 rounded-t-3xl">
+            {showAddGoal && (
+              <GoalTemplates
+                user={user}
+                onCreateGoal={handleCreateGoal}
+                onClose={() => {
+                  setShowAddGoal(false);
+                  setEditingGoal(null);
+                }}
+                hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+                editingGoal={editingGoal}
+              />
+            )}
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Desktop Dialog */}
+      <div className="hidden md:block">
+        <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
+          <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
+            {showAddGoal && (
+              <GoalTemplates
+                user={user}
+                onCreateGoal={handleCreateGoal}
+                onClose={() => {
+                  setShowAddGoal(false);
+                  setEditingGoal(null);
+                }}
+                hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+                editingGoal={editingGoal}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
 
       <LimitUpgradeDialog 
         isOpen={showUpgradeDialog} 
