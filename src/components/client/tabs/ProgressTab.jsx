@@ -225,40 +225,50 @@ export default function ProgressTab({ data, onNavigate, user }) {
     setShowGoalCreation(true);
   };
 
-  const handleGoalCreated = (newGoal) => {
+  const handleGoalCreated = async (newGoal) => {
     // Close dialog IMMEDIATELY
     setShowGoalCreation(false);
     setGoalTemplateForStep(null);
 
-    // Start background process without blocking UI
-    (async () => {
-      try {
-        const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
-        const goalPosition = activeGoalsCount + 1;
+    try {
+      // Create goal in DB immediately WITHOUT waiting for AI
+      const createdGoal = await base44.entities.UserGoal.create({
+        ...newGoal,
+        user_id: user?.id,
+        status: 'active',
+        plan_summary: 'בונה תוכנית...',
+        tasks: []
+      });
 
-        // Generate plan in background
-        await base44.functions.invoke('generateGoalPlan', { 
-          goalData: {
-            ...newGoal,
-            user_id: user?.id,
-            _context: {
-              activeGoalsCount,
-              goalPosition,
-              businessState: currentUserData?.business_state,
-              businessJourneyAnswers: currentUserData?.business_journey_answers
+      // Refresh immediately to show the new goal
+      refetchGoals();
+
+      // Generate AI plan in background without blocking
+      setTimeout(async () => {
+        try {
+          const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
+
+          await base44.functions.invoke('generateGoalPlan', { 
+            goalData: {
+              ...createdGoal,
+              _context: {
+                activeGoalsCount,
+                goalPosition: activeGoalsCount + 1,
+                businessState: currentUserData?.business_state,
+                businessJourneyAnswers: currentUserData?.business_journey_answers
+              }
             }
-          }
-        });
+          });
 
-        // Refresh data after creation
-        queryClient.invalidateQueries({ queryKey: ['goals'] });
-        queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-        queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-        refetchGoals();
-      } catch (error) {
-        console.error("Error creating goal from journey:", error);
-      }
-    })();
+          refetchGoals();
+        } catch (error) {
+          console.error("Error generating plan:", error);
+        }
+      }, 100);
+
+    } catch (error) {
+      console.error("Error creating goal:", error);
+    }
   };
 
   if (!isJourneyCompleted) {
