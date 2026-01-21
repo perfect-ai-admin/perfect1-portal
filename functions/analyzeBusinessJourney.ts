@@ -85,6 +85,23 @@ Deno.serve(async (req) => {
             - **Tone:** Professional, encouraging, tactical, and platform-oriented.
             - **Language:** STRICTLY HEBREW (עברית).
 
+            **CRITICAL - Description Format:**
+            Each task description MUST be:
+            - Maximum 8-10 words in Hebrew
+            - One clear sentence only
+            - No technical jargon
+            - Readable on mobile (small screen)
+            - Focus on the outcome, not the process
+
+            Examples of GOOD descriptions:
+            ✅ "הגדר מה אתה מוכר ולמי"
+            ✅ "צור דף נחיתה שמביא לקוחות"
+            ✅ "פתח תיק במס הכנסה"
+
+            Examples of BAD descriptions (too long):
+            ❌ "זהו את הלקוחות הפוטנציאליים ובנה אסטרטגיה מותאמת להם"
+            ❌ "כדי להתחיל לדווח ולהוציא חשבוניות, יש לפתוח עוסק פטור"
+
             **Output JSON Structure:**
             {
                 "state_id": "string (one of: idea, new, active, stable, scaling)",
@@ -93,8 +110,8 @@ Deno.serve(async (req) => {
                 "state_goal": "string (The primary objective for the next 3-6 months in Hebrew)",
                 "tasks": [
                     {
-                        "title": "string (Actionable, specific step title in Hebrew)",
-                        "description": "string (Why this step fixes their specific problem)",
+                        "title": "string (Actionable, specific step title in Hebrew - max 4 words)",
+                        "description": "string (MAXIMUM 8-10 words in Hebrew. One clear sentence. Mobile-friendly.)",
                         "is_milestone": boolean (true for steps 1, 3, 6)
                     }
                 ]
