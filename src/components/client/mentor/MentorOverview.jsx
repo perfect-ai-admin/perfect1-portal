@@ -69,37 +69,51 @@ export default function MentorOverview() {
 
   const createGoalMutation = useMutation({
     mutationFn: async ({ title, goalId, goalData }) => {
-        // קריאה לפונקציית בבקנד שמייצרת תוכנית עבודה עם AI
-        // Supports both creating new (title only) and updating existing (goalId)
-        let payload;
-        if (goalData) {
-          // Full goal data from templates
-          const user = await base44.auth.me();
-          const activeGoalsCount = goals?.length || 0;
-          payload = { 
-            goalData: {
-              ...goalData,
-              user_id: user.id,
-              _context: {
-                activeGoalsCount,
-                goalPosition: activeGoalsCount + 1,
-                businessState: user?.business_state,
-                businessJourneyAnswers: user?.business_journey_answers
+        const currentUser = await base44.auth.me();
+        const activeGoalsCount = goals?.length || 0;
+        
+        // Create goal in DB first
+        const goalToCreate = {
+          ...goalData,
+          user_id: currentUser.id,
+          status: 'active',
+          plan_summary: 'בונה תוכנית...',
+          tasks: []
+        };
+        
+        const createdGoal = await base44.entities.UserGoal.create(goalToCreate);
+        
+        // Generate plan in background
+        setTimeout(async () => {
+          try {
+            await base44.functions.invoke('generateGoalPlan', { 
+              goalId: createdGoal.id,
+              title: createdGoal.title,
+              goalData: {
+                ...goalData,
+                id: createdGoal.id,
+                _context: {
+                  activeGoalsCount,
+                  goalPosition: activeGoalsCount + 1,
+                  businessState: currentUser?.business_state,
+                  businessJourneyAnswers: currentUser?.business_journey_answers
+                }
               }
-            }
-          };
-        } else if (goalId) {
-          payload = { title, goalId };
-        } else {
-          payload = { title };
-        }
-        const response = await base44.functions.invoke('generateGoalPlan', payload);
-        return response.data;
+            });
+            
+            queryClient.invalidateQueries({ queryKey: ['userGoals'] });
+          } catch (error) {
+            console.error("Error generating plan:", error);
+          }
+        }, 100);
+        
+        return createdGoal;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userGoals'] });
       setShowNewGoalDialog(false);
-      toast.success('מטרה חדשה נוצרה בהצלחה! המנטור בנה לך תוכנית עבודה.');
+      setShowGoalTemplates(false);
+      toast.success('מטרה חדשה נוצרה בהצלחה!');
     },
     onError: (error) => {
         console.error(error);
