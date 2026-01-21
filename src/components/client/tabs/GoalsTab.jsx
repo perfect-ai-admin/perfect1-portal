@@ -133,20 +133,32 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           setGoals(prev => prev.map(g => g.id === newGoal.id ? newGoal : g));
        } else {
           const goalToCreate = { ...newGoal, user_id: user.id };
+          
+          // Optimistic update - add goal immediately
+          const tempId = 'temp_' + Date.now();
+          const optimisticGoal = { ...goalToCreate, id: tempId, tasks: [] };
+          
+          if (newGoal.isPrimary) {
+             setGoals(prev => [optimisticGoal, ...prev.filter(g => !g.isPrimary)]);
+          } else {
+             setGoals(prev => [...prev, optimisticGoal]);
+          }
+          
+          // Close dialog immediately
+          setShowAddGoal(false);
+          setEditingGoal(null);
+          
+          // Create goal in background
           const response = await base44.functions.invoke('generateGoalPlan', { goalData: goalToCreate });
           const created = response.data;
           
-          if (newGoal.isPrimary) {
-             setGoals(prev => [created, ...prev.filter(g => !g.isPrimary)]);
-          } else {
-             setGoals(prev => [...prev, created]);
-          }
+          // Replace temp goal with real one
+          setGoals(prev => prev.map(g => g.id === tempId ? created : g));
        }
        queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-       setShowAddGoal(false);
-       setEditingGoal(null);
      } catch (error) {
         console.error("Error saving goal:", error);
+        setGoals(prev => prev.filter(g => !g.id.toString().startsWith('temp_')));
         throw error;
      }
    };

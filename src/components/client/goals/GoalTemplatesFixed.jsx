@@ -282,46 +282,28 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     }
 
     setIsCreating(true);
-    try {
-    // Generate AI insight if it's a new goal
-    let generatedInsight = editingGoal?.aiInsight || 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!';
-
-    if (!editingGoal) {
-        try {
-          const { data } = await base44.functions.invoke('generateGoalInsight', {
-              title: goalTitle,
-              customAnswers: customAnswers
-          });
-          if (data?.insight) {
-              generatedInsight = data.insight;
-          }
-        } catch (err) {
-          console.error("Failed to generate AI insight, using default", err);
-        }
-    }
-
+    
     const goalData = {
-      id: editingGoal?.id, // Let DB generate ID if null, or keep existing
+      id: editingGoal?.id,
       category: selectedTemplate.id,
       title: goalTitle,
       description: selectedTemplate.description,
       current: editingGoal?.current || 0,
-      target: 100, // Default target for non-numeric goals
+      target: 100,
       customAnswers: customAnswers,
       urgency: urgency,
       status: editingGoal?.status || 'active',
       isPrimary: isPrimary && !hasPrimaryGoal,
-      aiInsight: generatedInsight,
-      // Map aiInsight to actionHint for HeroGoal display if needed, or keep separate field
-      actionHint: generatedInsight 
+      aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
+      actionHint: 'המטרה נוצרת...'
     };
 
-    await onCreateGoal(goalData, !!editingGoal);
-    } catch (error) {
-    console.error("Failed to create goal:", error);
-    } finally {
+    // Close dialog immediately for better UX
+    onCreateGoal(goalData, !!editingGoal).catch(error => {
+      console.error("Failed to create goal:", error);
+    });
+    
     setIsCreating(false);
-    }
   };
 
   const handlePhoneSubmit = async () => {
