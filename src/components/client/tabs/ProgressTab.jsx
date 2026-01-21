@@ -250,8 +250,10 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
           await base44.functions.invoke('generateGoalPlan', { 
             goalId: createdGoal.id,
+            title: createdGoal.title,
             goalData: {
-              ...createdGoal,
+              ...newGoal,
+              id: createdGoal.id,
               _context: {
                 activeGoalsCount,
                 goalPosition: activeGoalsCount + 1,
