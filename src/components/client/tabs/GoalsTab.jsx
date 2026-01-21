@@ -156,7 +156,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       {/* Mobile Sheet */}
       <div className="md:hidden">
         <Sheet open={showAddGoal} onOpenChange={setShowAddGoal}>
-          <SheetContent side="bottom" className="h-[95vh] p-0 border-0 rounded-t-3xl">
+          <SheetContent 
+            side="bottom" 
+            className="h-[98vh] max-h-[98vh] p-0 border-0 rounded-t-2xl flex flex-col"
+          >
             {showAddGoal && (
               <GoalTemplates
                 user={user}
