@@ -25,11 +25,19 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
+import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
 
 export default function MentorOverview() {
   const queryClient = useQueryClient();
   const [showNewGoalDialog, setShowNewGoalDialog] = useState(false);
   const [showGoalTemplates, setShowGoalTemplates] = useState(false);
+  const [showLimitDialog, setShowLimitDialog] = useState(false);
+  const [currentLimit, setCurrentLimit] = useState(null);
+
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => await base44.auth.me()
+  });
 
   const { data: goals, isLoading } = useQuery({
     queryKey: ['userGoals', 'active'],
@@ -40,6 +48,15 @@ export default function MentorOverview() {
             status: 'active' 
         });
     }
+  });
+
+  const { data: userPlan } = useQuery({
+    queryKey: ['userPlan', user?.plan_id],
+    queryFn: async () => {
+      if (!user?.plan_id) return null;
+      return await base44.entities.Plan.filter({ id: user.plan_id });
+    },
+    enabled: !!user?.plan_id
   });
 
   const updateGoalMutation = useMutation({
@@ -112,6 +129,9 @@ export default function MentorOverview() {
   };
 
   const activeGoalsCount = goals?.length || 0;
+  const plan = userPlan?.[0];
+  const goalsLimit = plan?.goals_limit ?? 1; // Default to 1 if no plan
+  const canAddGoal = goalsLimit === null || activeGoalsCount < goalsLimit;
   
   // חישוב סטטוס דינמי לכותרת
   const getHeaderStatus = () => {
@@ -119,6 +139,15 @@ export default function MentorOverview() {
     const stuckGoals = goals?.filter(g => g.progress === 0 || !g.tasks?.some(t => t.isCompleted)).length || 0;
     if (stuckGoals > 0) return `אתה עובד על ${activeGoalsCount} מטרות. שים לב, ${stuckGoals} מטרות עדיין בשלב ההתחלה.`;
     return `אתה עובד על ${activeGoalsCount} מטרות פעילות ומתקדם יפה!`;
+  };
+
+  const handleOpenGoalCreation = () => {
+    if (!canAddGoal) {
+      setCurrentLimit(goalsLimit);
+      setShowLimitDialog(true);
+    } else {
+      setShowGoalTemplates(true);
+    }
   };
 
   if (isLoading) return <div className="p-8 text-center text-gray-500">טוען נתונים...</div>;
@@ -376,7 +405,7 @@ export default function MentorOverview() {
         {/* New Goal Card */}
         <Card 
             className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/30 transition-all rounded-2xl flex flex-col items-center justify-center p-8 md:p-10 cursor-pointer min-h-[400px] group active:scale-[0.98]" 
-            onClick={() => setShowGoalTemplates(true)}
+            onClick={handleOpenGoalCreation}
         >
             <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-sm">
                 <Plus className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
@@ -397,7 +426,7 @@ export default function MentorOverview() {
           >
             {showGoalTemplates && (
               <GoalTemplatesFixed
-                user={null}
+                user={user}
                 onCreateGoal={async (newGoal) => {
                   setShowGoalTemplates(false);
                   createGoalMutation.mutate({ title: newGoal.title, goalData: newGoal });
@@ -416,7 +445,7 @@ export default function MentorOverview() {
           <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
             {showGoalTemplates && (
               <GoalTemplatesFixed
-                user={null}
+                user={user}
                 onCreateGoal={async (newGoal) => {
                   setShowGoalTemplates(false);
                   createGoalMutation.mutate({ title: newGoal.title, goalData: newGoal });
@@ -428,6 +457,13 @@ export default function MentorOverview() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Limit Upgrade Dialog */}
+      <LimitUpgradeDialog 
+        isOpen={showLimitDialog}
+        onClose={() => setShowLimitDialog(false)}
+        limit={currentLimit}
+      />
     </div>
   );
 }
