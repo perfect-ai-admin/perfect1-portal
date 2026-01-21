@@ -105,15 +105,29 @@ export default function JourneyTimeline() {
           <Map className="w-6 h-6 text-blue-600" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-1">
-          {businessState?.name || 'מסע העסק שלך'}
+          מסע העסק שלך
         </h2>
         <p className="text-sm text-gray-500 max-w-[280px] mx-auto">
-          {businessState?.description || 'מבוסס על התשובות שלך – זה המסלול שבנינו עבורך'}
+          מבוסס על התשובות שלך – זה המסלול שבנינו עבורך
         </p>
-        {businessState?.goal && (
-          <div className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full">
-            <Target className="w-4 h-4 text-blue-600" />
-            <span className="text-xs font-medium text-blue-700">{businessState.goal}</span>
+        
+        {/* Business State Info */}
+        {businessState?.name && (
+          <div className="mt-4 p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl max-w-md mx-auto">
+            <p className="text-sm font-medium text-gray-900 mb-1">
+              {businessState.name}
+            </p>
+            {businessState.description && (
+              <p className="text-xs text-gray-600 leading-relaxed">
+                {businessState.description}
+              </p>
+            )}
+            {businessState.goal && (
+              <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full shadow-sm">
+                <Target className="w-3.5 h-3.5 text-blue-600" />
+                <span className="text-xs font-medium text-blue-700">{businessState.goal}</span>
+              </div>
+            )}
           </div>
         )}
       </div>
