@@ -12,8 +12,9 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2, Copy
+  FileText, Calendar, Layers, Share2, Copy, Eye
 } from 'lucide-react';
+import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { cn } from "@/lib/utils";
 
 // Custom specialized card selector component for better UX
@@ -92,6 +93,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [isBuilding, setIsBuilding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [pageSlug, setPageSlug] = useState('');
+  const [createdPageData, setCreatedPageData] = useState(null);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
@@ -177,17 +179,26 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         const res = await base44.functions.invoke('createLandingPage', { data: formData });
         if (res.data && res.data.slug) {
             setPageSlug(res.data.slug);
+            
+            // Fetch the full page data for preview
+            try {
+                const pages = await base44.entities.LandingPage.filter({ slug: res.data.slug });
+                if (pages && pages.length > 0) {
+                    setCreatedPageData(pages[0]);
+                }
+            } catch (err) {
+                console.error("Failed to fetch page details", err);
+            }
+
             setShowSuccess(true);
         } else {
             console.error("Failed to create landing page", res);
-            // Fallback for demo if API fails
-            setPageSlug('demo-' + Math.random().toString(36).substr(2, 5));
+            setPageSlug('demo-error');
             setShowSuccess(true);
         }
       } catch (error) {
         console.error("Error creating landing page:", error);
-        // Fallback for demo
-        setPageSlug('demo-' + Math.random().toString(36).substr(2, 5));
+        setPageSlug('demo-error');
         setShowSuccess(true);
       } finally {
         setIsBuilding(false);
