@@ -184,12 +184,60 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
             
             // Fetch the full page data for preview
             try {
-                const pages = await base44.entities.LandingPage.filter({ slug: res.data.slug });
-                if (pages && pages.length > 0) {
-                    setCreatedPageData(pages[0]);
+                // Try to get by ID if available, otherwise filter by slug
+                let pageData = null;
+                if (res.data.id) {
+                    try {
+                        pageData = await base44.entities.LandingPage.get(res.data.id);
+                    } catch (e) {
+                        console.log("Could not get by ID, trying filter...");
+                    }
+                }
+                
+                if (!pageData) {
+                    const pages = await base44.entities.LandingPage.filter({ slug: res.data.slug });
+                    if (pages && pages.length > 0) {
+                        pageData = pages[0];
+                    }
+                }
+
+                if (pageData) {
+                    setCreatedPageData(pageData);
+                } else {
+                    throw new Error("Page not found after creation");
                 }
             } catch (err) {
-                console.error("Failed to fetch page details", err);
+                console.error("Failed to fetch page details, using fallback", err);
+                // Fallback: Construct preview data from local state so user sees something
+                setCreatedPageData({
+                    business_name: formData.businessName,
+                    primary_color: '#3B82F6', // Default blue
+                    headline: formData.businessName,
+                    subheadline: 'הדף שלך מוכן!',
+                    sections_json: [
+                        {
+                            type: 'hero',
+                            title: formData.businessName,
+                            subtitle: formData.serviceOffered || 'הפתרון המושלם עבורך',
+                            ctaText: formData.ctaText || 'צור קשר',
+                        },
+                        {
+                            type: 'features',
+                            title: 'היתרונות שלנו',
+                            items: formData.whyChooseYou.map(id => ({ 
+                                title: id === 'price' ? 'מחיר משתלם' : id === 'experience' ? 'ניסיון ומקצועיות' : 'שירות אישי', 
+                                description: 'אנחנו כאן כדי לתת לך את הטוב ביותר' 
+                            }))
+                        },
+                        {
+                            type: 'contact',
+                            title: 'צור קשר',
+                            subtitle: 'השאר פרטים ונחזור אליך',
+                            form_fields: formData.formFields,
+                            phone: formData.destinationPhone
+                        }
+                    ]
+                });
             }
 
             setShowSuccess(true);
