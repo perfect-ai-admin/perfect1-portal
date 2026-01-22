@@ -300,6 +300,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
     g.category === `task_goal_${firstJourneyTask?.id}`
   );
 
+  // Check if there are ANY active goals currently
+  const hasAnyActiveGoal = activeGoals?.some(g => g.status === 'active');
+
   // Determine if Next Step Card should be shown
   const isNextStepSameAsRecommended = recommendedGoal && nextStep && recommendedGoal.originalTask?.id === nextStep.id;
   const shouldShowNextStep = nextStep && (
@@ -385,7 +388,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
       </div>
 
       {/* Recommended Goal - Mobile */}
-      {recommendedGoal && !hasCreatedRecommendedGoal && (
+      {recommendedGoal && !hasCreatedRecommendedGoal && !hasAnyActiveGoal && (
         <div className="lg:hidden mb-3">
            <RecommendedGoalCard 
              recommendedGoal={recommendedGoal}
@@ -471,7 +474,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
            </div>
 
            {/* Recommended Goal - Desktop */}
-           {recommendedGoal && !hasCreatedRecommendedGoal && (
+           {recommendedGoal && !hasCreatedRecommendedGoal && !hasAnyActiveGoal && (
              <RecommendedGoalCard 
                recommendedGoal={recommendedGoal}
                onStart={() => {
