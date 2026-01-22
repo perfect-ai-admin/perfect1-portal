@@ -1,400 +1,399 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Clock, Shield, Zap, AlertCircle, Award, TrendingUp, Users, ThumbsUp, Briefcase } from 'lucide-react';
+import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Shield, Zap, AlertCircle, Award, TrendingUp, Users, ThumbsUp, Briefcase, MapPin, Mail, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Card, CardContent } from "@/components/ui/card";
-import { motion } from 'framer-motion';
+import { Card } from "@/components/ui/card";
+import { motion, AnimatePresence } from 'framer-motion';
+
+// --- Theme & Style Utilities ---
+const getContrastColor = (hexColor) => {
+    // Simple logic to decide text color based on background luminance
+    const r = parseInt(hexColor.substr(1, 2), 16);
+    const g = parseInt(hexColor.substr(3, 2), 16);
+    const b = parseInt(hexColor.substr(5, 2), 16);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return yiq >= 128 ? '#1e293b' : '#ffffff'; // slate-800 or white
+};
+
+const fadeInUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.2
+        }
+    }
+};
 
 export default function DynamicLandingPage({ data, isThumbnail = false }) {
     if (!data) return null;
 
-    const { primary_color, sections_json } = data;
+    const { primary_color = '#2563EB', sections_json, business_name } = data;
+    const contrastColor = getContrastColor(primary_color);
 
-    // Helper to inject dynamic styles with enhanced aesthetics
+    // CSS Variables for dynamic theming
     const themeStyle = {
-        '--primary': primary_color || '#2563EB',
-        '--primary-dark': `${primary_color}99` || '#1E40AF', // Darker shade/opacity
-        '--primary-light': `${primary_color}10` || '#EFF6FF', // Light tint
+        '--primary': primary_color,
+        '--primary-foreground': contrastColor,
+        '--primary-50': `${primary_color}0d`, // 5% opacity
+        '--primary-100': `${primary_color}1a`, // 10% opacity
+        '--primary-500': primary_color, // base
+        '--primary-900': `${primary_color}e6`, // 90% opacity
     };
 
-    // Sticky CTA Logic - Only enabled if NOT in thumbnail mode
+    // Sticky CTA Logic
     const [showStickyCTA, setShowStickyCTA] = useState(false);
     useEffect(() => {
         if (isThumbnail) return;
-        
-        const handleScroll = () => {
-            setShowStickyCTA(window.scrollY > 400);
-        };
+        const handleScroll = () => setShowStickyCTA(window.scrollY > 600);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isThumbnail]);
 
     const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
 
+    // --- Renderers ---
+
+    const renderHero = (section, idx) => {
+        const bgImage = section.image_prompt
+            ? `https://image.pollinations.ai/prompt/${encodeURIComponent(section.image_prompt)}?width=1920&height=1080&nologo=true`
+            : null;
+
+        return (
+            <header key={idx} className={`relative flex items-center justify-center overflow-hidden bg-slate-900 ${isThumbnail ? 'h-[600px]' : 'min-h-[90vh]'}`}>
+                {/* Background Layer */}
+                <div className="absolute inset-0 z-0">
+                    {bgImage && (
+                        <motion.img
+                            initial={{ scale: 1.1, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 0.4 }}
+                            transition={{ duration: 1.5 }}
+                            src={bgImage}
+                            alt="Background"
+                            className="w-full h-full object-cover mix-blend-overlay"
+                        />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/60 to-slate-900" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-transparent to-slate-900/90" />
+                </div>
+
+                {/* Content Layer */}
+                <div className="relative z-10 container mx-auto px-6 text-center">
+                    <motion.div
+                        initial={isThumbnail ? "visible" : "hidden"}
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={staggerContainer}
+                        className="max-w-4xl mx-auto"
+                    >
+                        <motion.div variants={fadeInUp} className="mb-6 flex justify-center">
+                            <span className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-blue-100 text-sm font-medium flex items-center gap-2">
+                                <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                                {section.badge || 'המובילים בתחום'}
+                            </span>
+                        </motion.div>
+
+                        <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight drop-shadow-xl">
+                            {section.title}
+                        </motion.h1>
+
+                        <motion.p variants={fadeInUp} className="text-lg md:text-2xl text-slate-200 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                            {section.subtitle}
+                        </motion.p>
+
+                        <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                            <Button
+                                onClick={scrollToContact}
+                                className="h-14 px-8 text-lg rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] hover:brightness-110 hover:shadow-lg hover:shadow-[var(--primary)]/40 transition-all duration-300 font-bold"
+                            >
+                                {section.ctaText || 'התחל עכשיו'}
+                                <ArrowLeft className="mr-2 w-5 h-5" />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                                className="h-14 px-8 text-lg rounded-full text-white border border-white/20 hover:bg-white/10 transition-all duration-300"
+                            >
+                                גלה עוד
+                                <ChevronDown className="mr-2 w-5 h-5" />
+                            </Button>
+                        </motion.div>
+                    </motion.div>
+                </div>
+            </header>
+        );
+    };
+
+    const renderStats = (section, idx) => (
+        <section key={idx} className="py-20 bg-white relative z-20">
+            <div className="container mx-auto px-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {section.items?.map((stat, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            viewport={{ once: true }}
+                            className="text-center p-6 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors"
+                        >
+                            <div className="text-4xl md:text-5xl font-black text-[var(--primary)] mb-2">{stat.value}</div>
+                            <div className="text-sm md:text-base text-slate-600 font-medium">{stat.label}</div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderFeatures = (section, idx) => (
+        <section key={idx} id="features" className="py-24 bg-slate-50 overflow-hidden">
+            <div className="container mx-auto px-6">
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-6">{section.title}</h2>
+                    <p className="text-lg text-slate-600">{section.subtitle}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {section.items?.map((item, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 group"
+                        >
+                            <div className="w-14 h-14 rounded-2xl bg-[var(--primary-100)] flex items-center justify-center mb-6 text-[var(--primary)] group-hover:scale-110 transition-transform duration-300">
+                                <Zap className="w-7 h-7" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-4">{item.title}</h3>
+                            <p className="text-slate-600 leading-relaxed">{item.description}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderTestimonials = (section, idx) => (
+        <section key={idx} className="py-24 bg-white">
+            <div className="container mx-auto px-6">
+                <h2 className="text-3xl md:text-5xl font-bold text-center text-slate-900 mb-16">{section.title}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {section.items?.map((item, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            className="p-8 rounded-[2rem] bg-slate-50 border border-slate-100 relative"
+                        >
+                            <div className="flex gap-1 mb-6">
+                                {[...Array(5)].map((_, stars) => (
+                                    <Star key={stars} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                ))}
+                            </div>
+                            <p className="text-slate-700 text-lg mb-8 font-medium leading-relaxed">"{item.text}"</p>
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-500">
+                                    {item.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <div className="font-bold text-slate-900">{item.name}</div>
+                                    <div className="text-sm text-slate-500">{item.role || 'לקוח מאומת'}</div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderContact = (section, idx) => (
+        <section key={idx} id="contact" className="py-24 bg-slate-900 text-white relative overflow-hidden">
+            {/* Ambient Background */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--primary)] blur-[120px] opacity-20 rounded-full pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500 blur-[120px] opacity-10 rounded-full pointer-events-none" />
+
+            <div className="container mx-auto px-6 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 className="text-4xl md:text-6xl font-black mb-6">{section.title || 'בואו נדבר'}</h2>
+                        <p className="text-xl text-slate-300 mb-12 font-light">{section.subtitle || 'אנחנו זמינים לכל שאלה. השאירו פרטים ונחזור אליכם.'}</p>
+
+                        <div className="space-y-6">
+                            {section.phone && (
+                                <a href={`tel:${section.phone}`} className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
+                                    <div className="w-12 h-12 rounded-full bg-[var(--primary)] flex items-center justify-center text-white">
+                                        <Phone className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <div className="text-sm text-slate-400">טלפון</div>
+                                        <div className="text-xl font-bold dir-ltr text-right">{section.phone}</div>
+                                    </div>
+                                </a>
+                            )}
+                            {section.whatsapp && (
+                                <a href={`https://wa.me/${section.whatsapp.replace(/[^0-9]/g, '')}`} className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
+                                    <div className="w-12 h-12 rounded-full bg-[#25D366] flex items-center justify-center text-white">
+                                        <MessageCircle className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <div className="text-sm text-slate-400">WhatsApp</div>
+                                        <div className="text-xl font-bold">שלח הודעה</div>
+                                    </div>
+                                </a>
+                            )}
+                        </div>
+                    </div>
+
+                    <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-8 md:p-10 rounded-[2rem] shadow-2xl">
+                        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                {section.form_fields?.includes('name') && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-300">שם מלא</label>
+                                        <Input className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" placeholder="ישראל ישראלי" />
+                                    </div>
+                                )}
+                                {section.form_fields?.includes('phone') && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-300">טלפון</label>
+                                        <Input className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" placeholder="050-0000000" />
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {section.form_fields?.includes('email') && (
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-300">אימייל</label>
+                                    <Input className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" placeholder="example@mail.com" />
+                                </div>
+                            )}
+                            
+                            {section.form_fields?.includes('message') && (
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-300">הודעה</label>
+                                    <Textarea className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)] resize-none" placeholder="כיצד נוכל לעזור?" />
+                                </div>
+                            )}
+
+                            <Button className="w-full h-14 text-lg font-bold bg-[var(--primary)] text-[var(--primary-foreground)] hover:brightness-110 rounded-xl mt-4 shadow-lg shadow-[var(--primary)]/25">
+                                {section.ctaText || 'שליחת פרטים'}
+                                <Send className="mr-2 w-5 h-5" />
+                            </Button>
+                        </form>
+                    </Card>
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderFAQ = (section, idx) => (
+        <section key={idx} className="py-24 bg-white">
+            <div className="max-w-3xl mx-auto px-6">
+                <h2 className="text-3xl md:text-5xl font-bold text-center text-slate-900 mb-16">{section.title}</h2>
+                <div className="space-y-4">
+                    {section.items?.map((item, i) => (
+                        <Accordion key={i} type="single" collapsible className="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+                            <AccordionItem value={`item-${i}`} className="border-0">
+                                <AccordionTrigger className="px-6 py-5 hover:no-underline hover:bg-slate-100 transition-colors text-lg font-bold text-slate-800">
+                                    {item.question}
+                                </AccordionTrigger>
+                                <AccordionContent className="px-6 pb-6 text-slate-600 leading-relaxed text-base bg-slate-50">
+                                    {item.answer}
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+
+    // --- Main Component Return ---
+
     return (
-        <div 
-            style={themeStyle} 
-            className={`bg-slate-50 text-slate-900 font-sans antialiased selection:bg-[var(--primary)] selection:text-white ${isThumbnail ? '' : 'min-h-screen pb-20 md:pb-0'}`} 
+        <div
+            style={themeStyle}
+            className={`font-sans bg-slate-50 selection:bg-[var(--primary)] selection:text-[var(--primary-foreground)] ${isThumbnail ? 'overflow-hidden rounded-t-xl' : 'min-h-screen'}`}
             dir="rtl"
         >
-            
-            {/* Sticky Floating CTA for Mobile & Desktop - Hidden in thumbnail */}
-            {!isThumbnail && (
-                <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 transform ${showStickyCTA ? 'translate-y-0' : 'translate-y-full'}`}>
-                    <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-                        <div className="hidden md:block">
-                            <p className="font-bold text-slate-900 text-lg">{data.business_name}</p>
-                            <p className="text-sm text-slate-500">הפתרון המושלם עבורך במרחק קליק</p>
+            {/* Sticky CTA (Mobile/Desktop) */}
+            <AnimatePresence>
+                {!isThumbnail && showStickyCTA && (
+                    <motion.div
+                        initial={{ y: 100 }}
+                        animate={{ y: 0 }}
+                        exit={{ y: 100 }}
+                        className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-t border-slate-200 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+                    >
+                        <div className="container mx-auto flex items-center justify-between">
+                            <div className="hidden md:block">
+                                <div className="font-bold text-slate-900">{business_name}</div>
+                                <div className="text-sm text-slate-500">אנחנו כאן כדי לעזור לך להצליח</div>
+                            </div>
+                            <Button
+                                onClick={scrollToContact}
+                                className="w-full md:w-auto h-12 px-8 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] font-bold shadow-lg"
+                            >
+                                צור קשר עכשיו
+                                <ArrowLeft className="mr-2 w-4 h-4" />
+                            </Button>
                         </div>
-                        <Button 
-                            onClick={scrollToContact}
-                            className="w-full md:w-auto h-12 md:h-14 px-8 text-lg font-bold rounded-full bg-[var(--primary)] hover:brightness-110 shadow-lg shadow-[var(--primary)]/30 animate-pulse-glow"
-                        >
-                            {sections_json?.find(s => s.type === 'hero')?.ctaText || 'אני רוצה להתחיל'}
-                            <ArrowLeft className="mr-2 w-5 h-5" />
-                        </Button>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
+            {/* Sections Loop */}
             {sections_json?.map((section, idx) => {
                 switch (section.type) {
-                    case 'hero':
-                        const bgImage = section.image_prompt 
-                            ? `https://image.pollinations.ai/prompt/${encodeURIComponent(section.image_prompt)}?width=1920&height=1080&nologo=true`
-                            : null;
-
+                    case 'hero': return renderHero(section, idx);
+                    case 'features': return renderFeatures(section, idx);
+                    case 'stats': return renderStats(section, idx);
+                    case 'testimonials': return renderTestimonials(section, idx);
+                    case 'contact': return renderContact(section, idx);
+                    case 'faq': return renderFAQ(section, idx);
+                    case 'process': // Simple process fallback reused features style or custom
                         return (
-                            <header key={idx} className={`relative flex items-center justify-center overflow-hidden bg-slate-900 ${isThumbnail ? 'h-[760px]' : 'min-h-[95vh]'}`}>
-                                <div className="absolute inset-0 z-0">
-                                    {bgImage && (
-                                        <img 
-                                            src={bgImage} 
-                                            alt="Background" 
-                                            className="w-full h-full object-cover opacity-30 mix-blend-overlay" 
-                                            loading="eager"
-                                        />
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-900"></div>
-                                </div>
-                                
-                                {/* Dynamic Glow Effects */}
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[var(--primary)] rounded-full blur-[150px] opacity-20 animate-pulse"></div>
-
-                                <div className="max-w-6xl mx-auto relative z-10 px-6 text-center mt-12">
-                                    <div className={isThumbnail ? '' : 'motion-wrapper'}>
-                                        <motion.div
-                                            initial={isThumbnail ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.8, ease: "easeOut" }}
-                                        >
-                                            <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-blue-100 text-sm font-medium mb-8">
-                                                ✨ הפתרון המוביל בתחום
-                                            </div>
-                                            <h1 className="text-5xl md:text-7xl lg:text-9xl font-black text-white mb-8 leading-[1.05] tracking-tight drop-shadow-2xl">
-                                                {section.title}
-                                            </h1>
-                                            <p className="text-xl md:text-3xl text-slate-200 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-                                                {section.subtitle}
-                                            </p>
-                                            
-                                            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                                                <Button 
-                                                    className="h-16 px-12 text-xl rounded-full bg-[var(--primary)] text-white hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(37,99,235,0.4)] font-bold border-t border-white/20"
-                                                    onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                                                >
-                                                    {section.ctaText || 'התחל עכשיו'}
-                                                    <ArrowLeft className="mr-2 w-6 h-6" />
-                                                </Button>
-                                                <Button 
-                                                    variant="ghost"
-                                                    className="h-16 px-12 text-xl rounded-full text-white hover:bg-white/5 transition-all duration-300"
-                                                    onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-                                                >
-                                                    למידע נוסף
-                                                    <ChevronDown className="mr-2 w-6 h-6" />
-                                                </Button>
-                                            </div>
-                                        </motion.div>
-                                    </div>
-                                </div>
-                            </header>
-                        );
-
-                    case 'stats':
-                        return (
-                            <section key={idx} className="py-20 bg-slate-50 relative z-20 -mt-20 px-6">
-                                <div className="max-w-6xl mx-auto bg-white rounded-[2rem] shadow-xl p-12 md:p-16 border border-slate-100 relative overflow-hidden">
-                                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 -z-10"></div>
-                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-slate-100">
-                                         {section.items?.map((stat, i) => (
-                                             <div key={i} className="pt-8 md:pt-0">
-                                                 <div className="text-5xl md:text-6xl font-black text-[var(--primary)] mb-4 tracking-tight">{stat.value}</div>
-                                                 <div className="text-xl text-slate-500 font-medium uppercase tracking-wide">{stat.label}</div>
-                                             </div>
-                                         ))}
-                                     </div>
-                                </div>
-                            </section>
-                        );
-
-                    case 'pain_points':
-                        return (
-                            <section key={idx} className="py-24 px-6 bg-white relative overflow-hidden">
-                                <div className="max-w-6xl mx-auto">
-                                    <div className="text-center max-w-3xl mx-auto mb-20">
-                                        <span className="text-red-500 font-bold tracking-widest uppercase text-sm mb-4 block">האתגר</span>
-                                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
-                                            {section.title}
-                                        </h2>
-                                        <div className="w-24 h-1.5 bg-red-500 mx-auto rounded-full"></div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                        {section.items?.map((item, itemIdx) => (
-                                            <motion.div 
-                                                key={itemIdx}
-                                                whileHover={{ y: -10 }}
-                                                className="bg-red-50/30 p-10 rounded-[2rem] border border-red-100 relative group overflow-hidden"
-                                            >
-                                                <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-bl-[4rem] transition-all group-hover:bg-red-500/10"></div>
-                                                <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center mb-6 text-red-600 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                                    <AlertCircle className="w-7 h-7" />
+                            <section key={idx} className="py-24 bg-white">
+                                <div className="container mx-auto px-6 text-center">
+                                    <h2 className="text-3xl md:text-5xl font-bold mb-16">{section.title}</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                                        <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-slate-100 -z-0" />
+                                        {section.steps?.map((step, i) => (
+                                            <div key={i} className="relative z-10">
+                                                <div className="w-24 h-24 mx-auto bg-white rounded-full border-4 border-[var(--primary)] flex items-center justify-center text-3xl font-black text-[var(--primary)] mb-6 shadow-xl">
+                                                    {i + 1}
                                                 </div>
-                                                <h3 className="text-2xl font-bold mb-4 text-slate-900">{item.title}</h3>
-                                                <p className="text-slate-600 leading-relaxed text-lg">{item.description}</p>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
-                        );
-
-                    case 'features':
-                        return (
-                            <section key={idx} id="features" className="py-32 px-6 bg-slate-900 text-white relative overflow-hidden">
-                                {/* Background effects */}
-                                <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[var(--primary)] rounded-full blur-[150px] opacity-10"></div>
-
-                                <div className="max-w-7xl mx-auto relative z-10">
-                                    <div className="text-center mb-24">
-                                        <div className="inline-block px-4 py-1 rounded-full border border-[var(--primary)] text-[var(--primary)] text-sm font-bold tracking-widest uppercase mb-6 bg-[var(--primary)]/10">
-                                            למה אנחנו?
-                                        </div>
-                                        <h2 className="text-4xl md:text-6xl font-black mb-6">{section.title}</h2>
-                                        {section.subtitle && <p className="text-2xl text-slate-400 max-w-3xl mx-auto font-light leading-relaxed">{section.subtitle}</p>}
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                        {section.items?.map((item, itemIdx) => (
-                                            <div key={itemIdx} className="group relative">
-                                                <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--primary)] to-blue-600 rounded-[2rem] opacity-20 group-hover:opacity-100 transition duration-500 blur"></div>
-                                                <div className="relative h-full bg-slate-900/95 backdrop-blur-xl p-8 rounded-[1.9rem] border border-white/10 hover:border-white/20 transition-all flex flex-col">
-                                                    <div className="w-16 h-16 bg-gradient-to-br from-[var(--primary)] to-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                                                        <Check className="w-8 h-8 text-white" />
-                                                    </div>
-                                                    <h3 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 group-hover:to-white transition-all">{item.title}</h3>
-                                                    <p className="text-slate-400 leading-relaxed text-lg group-hover:text-slate-300 transition-colors">
-                                                        {item.description}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    
-                                    <div className="mt-20 text-center">
-                                        <Button 
-                                            onClick={scrollToContact}
-                                            className="h-14 px-10 text-lg rounded-full bg-white text-slate-900 hover:bg-blue-50 font-bold transition-transform hover:scale-105"
-                                        >
-                                            אני רוצה לשמוע עוד
-                                            <ArrowLeft className="mr-2 w-5 h-5" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            </section>
-                        );
-
-                    case 'process':
-                        return (
-                            <section key={idx} className="py-32 px-6 bg-slate-50">
-                                <div className="max-w-6xl mx-auto">
-                                    <h2 className="text-4xl md:text-5xl font-black text-center mb-24 text-slate-900">{section.title}</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-16 relative">
-                                        {/* Connecting Line */}
-                                        <div className="hidden md:block absolute top-12 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent -z-0" />
-                                        
-                                        {section.steps?.map((step, stepIdx) => (
-                                            <div key={stepIdx} className="relative z-10">
-                                                <div className="bg-white p-2 rounded-full w-24 h-24 mx-auto mb-8 shadow-xl shadow-slate-200">
-                                                    <div className="w-full h-full bg-gradient-to-br from-[var(--primary)] to-slate-800 rounded-full flex items-center justify-center text-3xl font-black text-white">
-                                                        {stepIdx + 1}
-                                                    </div>
-                                                </div>
-                                                <div className="text-center px-4">
-                                                    <h3 className="text-2xl font-bold mb-4 text-slate-900">{step.title}</h3>
-                                                    <p className="text-slate-600 text-lg leading-relaxed">{step.description}</p>
-                                                </div>
+                                                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+                                                <p className="text-slate-600 max-w-xs mx-auto">{step.description}</p>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </section>
                         );
-
-                    case 'testimonials':
-                        return (
-                            <section key={idx} className="py-32 px-6 bg-white">
-                                <div className="max-w-7xl mx-auto">
-                                    <h2 className="text-4xl md:text-5xl font-black text-center mb-20 text-slate-900">{section.title}</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                        {section.items?.map((item, itemIdx) => (
-                                            <div key={itemIdx} className="bg-slate-50 p-10 rounded-[2.5rem] relative">
-                                                <div className="absolute top-10 right-10 text-6xl text-[var(--primary)] opacity-20 font-serif leading-none">"</div>
-                                                <div className="flex gap-1 mb-8">
-                                                    {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400 drop-shadow-sm" />)}
-                                                </div>
-                                                <p className="text-xl text-slate-700 mb-10 leading-relaxed font-medium">"{item.text}"</p>
-                                                <div className="flex items-center gap-5 border-t border-slate-200 pt-8">
-                                                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center shadow-inner">
-                                                        <User className="w-7 h-7 text-slate-500" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-bold text-lg text-slate-900">{item.name}</div>
-                                                        <div className="text-slate-500">{item.role || 'לקוח מרוצה'}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
-                        );
-
-                    case 'faq':
-                        return (
-                            <section key={idx} className="py-24 px-6 bg-slate-50">
-                                <div className="max-w-4xl mx-auto">
-                                    <h2 className="text-4xl md:text-5xl font-black text-center mb-16 text-slate-900">{section.title}</h2>
-                                    <div className="space-y-6">
-                                        {section.items?.map((item, itemIdx) => (
-                                            <Card key={itemIdx} className="border-0 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                                                <Accordion type="single" collapsible className="w-full bg-white">
-                                                    <AccordionItem value={`item-${itemIdx}`} className="border-b-0">
-                                                        <AccordionTrigger className="px-8 py-6 text-xl font-bold text-slate-800 hover:text-[var(--primary)] hover:no-underline text-right transition-colors">
-                                                            {item.question}
-                                                        </AccordionTrigger>
-                                                        <AccordionContent className="px-8 pb-8 text-lg text-slate-600 leading-relaxed">
-                                                            {item.answer}
-                                                        </AccordionContent>
-                                                    </AccordionItem>
-                                                </Accordion>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
-                        );
-
-                    case 'contact':
-                        return (
-                            <section key={idx} id="contact" className="py-32 px-6 bg-gradient-to-b from-white to-blue-50">
-                                <div className="max-w-7xl mx-auto">
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-                                        <div>
-                                            <span className="text-[var(--primary)] font-bold tracking-widest uppercase text-sm mb-4 block">דברו איתנו</span>
-                                            <h2 className="text-5xl md:text-6xl font-black mb-8 text-slate-900 leading-tight">
-                                                {section.title || 'מוכנים להתקדם?'}
-                                            </h2>
-                                            <p className="text-2xl text-slate-600 mb-12 font-light">
-                                                {section.subtitle || 'השאירו פרטים ונחזור אליכם בהקדם לשיחת ייעוץ ללא עלות.'}
-                                            </p>
-                                            
-                                            <div className="space-y-8">
-                                                {section.phone && (
-                                                    <a href={`tel:${section.phone}`} className="flex items-center gap-6 p-6 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all group">
-                                                        <div className="w-16 h-16 bg-blue-50 text-[var(--primary)] rounded-full flex items-center justify-center group-hover:bg-[var(--primary)] group-hover:text-white transition-colors">
-                                                            <Phone className="w-8 h-8" />
-                                                        </div>
-                                                        <div>
-                                                            <div className="font-bold text-xl text-slate-900">שיחת ייעוץ</div>
-                                                            <div className="text-slate-500 text-lg dir-ltr text-right">{section.phone}</div>
-                                                        </div>
-                                                    </a>
-                                                )}
-                                                {section.whatsapp && (
-                                                    <a href={`https://wa.me/${section.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 p-6 bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all group">
-                                                        <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors">
-                                                            <MessageCircle className="w-8 h-8" />
-                                                        </div>
-                                                        <div>
-                                                            <div className="font-bold text-xl text-slate-900">WhatsApp</div>
-                                                            <div className="text-slate-500 text-lg">זמינים גם בהודעות</div>
-                                                        </div>
-                                                    </a>
-                                                )}
-                                                <div className="flex items-center gap-3 text-slate-400 mt-8">
-                                                    <Shield className="w-5 h-5" />
-                                                    <span className="text-sm">הפרטים שלך מאובטחים ב-100% ולא יועברו לצד שלישי.</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 relative">
-                                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-[var(--primary)] rounded-full blur-[60px] opacity-20"></div>
-                                            <form className="space-y-6 relative z-10" onSubmit={(e) => e.preventDefault()}>
-                                                {section.form_fields?.includes('name') && (
-                                                    <div>
-                                                        <label className="block text-sm font-bold text-slate-700 mb-2">שם מלא</label>
-                                                        <Input placeholder="ישראל ישראלי" className="h-14 text-lg bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-xl" />
-                                                    </div>
-                                                )}
-                                                
-                                                {section.form_fields?.includes('phone') && (
-                                                    <div>
-                                                        <label className="block text-sm font-bold text-slate-700 mb-2">טלפון</label>
-                                                        <Input placeholder="050-0000000" type="tel" className="h-14 text-lg bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-xl" />
-                                                    </div>
-                                                )}
-                                                
-                                                {section.form_fields?.includes('email') && (
-                                                    <div>
-                                                        <label className="block text-sm font-bold text-slate-700 mb-2">אימייל</label>
-                                                        <Input placeholder="your@email.com" type="email" className="h-14 text-lg bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-xl" />
-                                                    </div>
-                                                )}
-
-                                                {section.form_fields?.includes('message') && (
-                                                    <div>
-                                                        <label className="block text-sm font-bold text-slate-700 mb-2">הודעה</label>
-                                                        <Textarea placeholder="כתבו לנו..." className="min-h-[140px] text-lg bg-slate-50 border-slate-200 focus:bg-white transition-all rounded-xl resize-none" />
-                                                    </div>
-                                                )}
-
-                                                <Button className="w-full h-16 text-xl font-bold bg-[var(--primary)] hover:bg-slate-900 shadow-xl shadow-blue-500/20 hover:shadow-2xl transition-all rounded-xl mt-4">
-                                                    {section.ctaText || 'שליחת פרטים'}
-                                                    <Send className="mr-2 w-5 h-5" />
-                                                </Button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        );
-
-                    default:
-                        return null;
+                    default: return null;
                 }
             })}
 
-            <footer className="bg-slate-900 text-white py-20 border-t border-slate-800">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="text-center md:text-right">
-                        <h4 className="text-3xl font-black mb-4 tracking-tight">{data.business_name}</h4>
-                        <p className="text-slate-400 text-lg font-light">כל הזכויות שמורות © {new Date().getFullYear()}</p>
+            <footer className="bg-slate-950 text-slate-400 py-12 border-t border-white/5">
+                <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p>© {new Date().getFullYear()} {business_name}. כל הזכויות שמורות.</p>
+                    <div className="flex gap-6">
+                        <span className="hover:text-white cursor-pointer transition-colors">תנאי שימוש</span>
+                        <span className="hover:text-white cursor-pointer transition-colors">מדיניות פרטיות</span>
                     </div>
                 </div>
             </footer>
