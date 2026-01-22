@@ -5,9 +5,11 @@ import { base44 } from '@/api/base44Client';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import GoalTemplates from '../goals/GoalTemplatesFixed';
+import GOAL_TEMPLATES_DATA from '../goals/GoalTemplatesFixed'; // Import the default export to access GOAL_TEMPLATES
 // GoalsCatalog removed
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
-import { Plus } from 'lucide-react';
+import { Plus, Sparkles, Target, ArrowLeft } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -29,6 +31,30 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const goalsTopRef = useRef(null);
   const processedOpenAddGoal = useRef(false);
+
+  // Check for recommended goal
+  const recommendedGoalData = user?.recommended_goal;
+  // Check if any active goal matches the recommended goal ID
+  const hasStartedRecommendedGoal = userGoals.some(g => g.category === recommendedGoalData?.goal_id);
+  
+  // Find the full template data for the recommended goal
+  const recommendedTemplate = recommendedGoalData && !hasStartedRecommendedGoal
+    ? import('../goals/GoalTemplatesFixed').then(m => m.default.GOAL_TEMPLATES?.find(t => t.id === recommendedGoalData.goal_id))
+    : null;
+
+  const [resolvedRecommendedTemplate, setResolvedRecommendedTemplate] = useState(null);
+
+  useEffect(() => {
+    if (recommendedGoalData && !hasStartedRecommendedGoal) {
+       import('../goals/GoalTemplatesFixed').then(m => {
+          const template = m.default.GOAL_TEMPLATES?.find(t => t.id === recommendedGoalData.goal_id);
+          setResolvedRecommendedTemplate(template);
+       });
+    } else {
+      setResolvedRecommendedTemplate(null);
+    }
+  }, [recommendedGoalData, hasStartedRecommendedGoal]);
+
 
   useEffect(() => {
     if (user?.id) {
@@ -68,6 +94,17 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
 
   const handleShowAddGoal = () => {
+    // Log override if recommendation exists and not taken
+    if (recommendedGoalData && !hasStartedRecommendedGoal) {
+       // Log to analytics or console as requested
+       console.log('User overrode recommendation', { 
+         recommended: recommendedGoalData.goal_id, 
+         user_id: user.id 
+       });
+       // Optionally track in DB via simple update if needed, but console/analytics is usually enough for "logging"
+       // base44.analytics.track('user_overrode_recommendation', { ... });
+    }
+
     const limit = user?.goals_limit;
     
     // Check if unlimited (Full plan has null)
@@ -83,6 +120,18 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     }
     
     setShowAddGoal(true);
+  };
+
+  const handleStartRecommended = () => {
+    if (resolvedRecommendedTemplate) {
+       setEditingGoal(null); // Ensure not editing mode
+       // We can pass the template via a state or prop to the dialog, 
+       // but GoalTemplates component selects it inside. 
+       // We'll modify the state to pre-select it.
+       // For now, let's open the add goal dialog and we'll handle pre-selection there if possible
+       // Or better, we set a temporary state 'initialTemplate' which GoalTemplates accepts
+       setShowAddGoal(true);
+    }
   };
 
   const heroGoal = goals[0];
@@ -268,6 +317,51 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                 מטרה חדשה
               </Button>
           </div>
+
+          {/* Recommended Goal - Special Section */}
+          {resolvedRecommendedTemplate && !hasStartedRecommendedGoal && (
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-4 border border-purple-200 shadow-sm relative overflow-hidden group">
+               {/* Decorative background element */}
+               <div className="absolute top-0 left-0 w-32 h-32 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+
+               <div className="relative">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="bg-purple-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                       <Sparkles className="w-3 h-3" />
+                       מומלץ עבורך
+                    </div>
+                    <span className="text-xs font-medium text-purple-700 bg-purple-100/50 px-2 py-0.5 rounded-full border border-purple-100">
+                      טרם התחיל
+                    </span>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-4">
+                     <div className="flex-1">
+                        <h2 className="text-lg font-bold text-gray-900 mb-1 flex items-center gap-2">
+                           <Target className="w-5 h-5 text-purple-600" />
+                           {resolvedRecommendedTemplate.name}
+                        </h2>
+                        <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                           {resolvedRecommendedTemplate.description}
+                        </p>
+                        <p className="text-xs text-purple-700 bg-white/60 p-2 rounded-lg border border-purple-100 inline-block">
+                           <strong>למה זה מומלץ:</strong> {recommendedGoalData.reason}
+                        </p>
+                     </div>
+                     <div className="flex flex-col gap-2">
+                        <Button 
+                          onClick={handleStartRecommended}
+                          className="bg-purple-600 hover:bg-purple-700 text-white shadow-md whitespace-nowrap"
+                        >
+                          <Plus className="w-4 h-4 ml-1.5" />
+                          התחל עכשיו
+                        </Button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
 
           {/* Hero Goal */}
           {heroGoal && (
