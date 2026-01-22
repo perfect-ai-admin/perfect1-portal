@@ -451,6 +451,25 @@ export default function ProgressTab({ data, onNavigate, user }) {
              <QuickStatsBar stats={quickStats} />
            </div>
 
+           {/* Recommended Goal - Desktop */}
+           {recommendedGoal && !hasCreatedRecommendedGoal && (
+             <RecommendedGoalCard 
+               recommendedGoal={recommendedGoal}
+               onStart={() => {
+                  if (recommendedGoal.isJourneyTask) {
+                     const template = getGoalTemplateForTask(recommendedGoal.originalTask);
+                     setGoalTemplateForStep(template);
+                     setShowGoalCreation(true);
+                  } else {
+                     const template = GOAL_TEMPLATES.find(t => t.id === recommendedGoal.goal_id);
+                     setGoalTemplateForStep(template);
+                     setShowGoalCreation(true);
+                  }
+               }}
+               onNavigate={onNavigate}
+             />
+           )}
+
            {/* Next Step - Hide if shown as Recommended Goal */}
            {nextStep && (hasCreatedRecommendedGoal || !recommendedGoal) && (
              <>
