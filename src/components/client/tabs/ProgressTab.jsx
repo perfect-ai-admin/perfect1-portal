@@ -559,16 +559,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
          </div>
       </div>
 
-      {/* Goals Button - Mobile Only - Bottom */}
-      <div className="lg:hidden">
-        <GoalsFloatingButton 
-          goals={activeGoals}
-          onNavigate={onNavigate}
-          onAddGoal={() => {
-            onNavigate('goals', { openAddGoal: true });
-          }}
-        />
-      </div>
+
 
       <Dialog open={showQuestionnaire} onOpenChange={setShowQuestionnaire}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:p-0 bg-white border-0 shadow-2xl rounded-2xl">
