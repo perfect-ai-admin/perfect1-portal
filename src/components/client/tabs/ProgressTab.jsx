@@ -529,38 +529,28 @@ export default function ProgressTab({ data, onNavigate, user }) {
              </div>
            )}
 
-           {/* Active Goals Section - Desktop Accordion */}
+           {/* Active Goals Section - Desktop Fixed Open */}
            {activeGoals.length > 0 && (
              <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden">
-               <button 
-                  onClick={() => setIsGoalsExpanded(!isGoalsExpanded)}
-                  className="w-full p-5 flex items-center justify-between hover:bg-gray-50 transition-colors"
-               >
+               <div className="p-5 flex items-center justify-between border-b border-gray-100 bg-gray-50/50">
                  <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded flex items-center justify-center">
                      <Target className="w-4 h-4 text-white" />
                    </div>
                    המטרות שלי
                  </h2>
-                 <ChevronDown className={cn("w-5 h-5 text-gray-400 transition-transform duration-200", isGoalsExpanded && "rotate-180")} />
-               </button>
+                 <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => onNavigate('goals')}
+                    className="text-purple-600 hover:bg-purple-50 text-xs font-medium"
+                 >
+                    לכל המטרות
+                    <ArrowLeft className="w-3 h-3 mr-1" />
+                 </Button>
+               </div>
                
-               <motion.div 
-                 initial={false}
-                 animate={{ height: isGoalsExpanded ? 'auto' : 0 }}
-                 className="overflow-hidden"
-               >
-                 <div className="p-5 pt-0 space-y-4 border-t border-gray-100">
-                   <div className="flex justify-end pt-2">
-                    <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => onNavigate('goals')}
-                        className="text-purple-600 hover:bg-purple-50 text-xs"
-                     >
-                        לכל המטרות
-                     </Button>
-                   </div>
+               <div className="p-5 space-y-4">
                    {primaryGoal && (
                       <HeroGoal 
                         goal={primaryGoal} 
@@ -578,8 +568,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
                         showHeader={false}
                       />
                    )}
-                 </div>
-               </motion.div>
+               </div>
              </div>
            )}
          </div>
