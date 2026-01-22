@@ -19,7 +19,8 @@ Deno.serve(async (req) => {
         // Update status
         const updatedPage = await base44.entities.LandingPage.update(page.id, {
             status: 'published',
-            paid_at: new Date().toISOString()
+            paid_at: new Date().toISOString(),
+            published_at: new Date().toISOString()
         });
 
         return Response.json({ success: true, slug: updatedPage.slug });

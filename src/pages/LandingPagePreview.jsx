@@ -16,17 +16,8 @@ export default function LandingPagePreview() {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    // CSS Hack to hide the main app layout (Header/Footer)
-    useEffect(() => {
-        const style = document.createElement('style');
-        style.innerHTML = `
-            header, footer, .layout-header, .layout-footer { display: none !important; }
-            main { padding: 0 !important; margin: 0 !important; max-width: none !important; }
-            body { background: white !important; }
-        `;
-        document.head.appendChild(style);
-        return () => document.head.removeChild(style);
-    }, []);
+    // Note: Layout.js handles hiding the header/footer for this page based on the page name.
+
 
     // Fetch the draft page (Requires Auth)
     const { data: page, isLoading, error } = useQuery({

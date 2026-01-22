@@ -9,21 +9,8 @@ export default function LP() {
     const [searchParams] = useSearchParams();
     const slug = searchParams.get('slug');
 
-    // Robust CSS Overlay to hide main app shell
-    useEffect(() => {
-        // Option 1: Style Injection
-        const style = document.createElement('style');
-        style.innerHTML = `
-            header, footer, .layout-header, .layout-footer, nav { display: none !important; }
-            main { padding: 0 !important; margin: 0 !important; max-width: none !important; }
-            body { background: white !important; overflow: auto !important; }
-            #root > div { min-height: 0 !important; }
-        `;
-        document.head.appendChild(style);
+    // Note: Layout.js handles hiding the header/footer for this page based on the page name.
 
-        // Option 2: Z-Index Overlay container style ensures this page sits on top of everything
-        return () => document.head.removeChild(style);
-    }, []);
 
     const { data: page, isLoading, error } = useQuery({
         queryKey: ['publicLandingPage', slug],

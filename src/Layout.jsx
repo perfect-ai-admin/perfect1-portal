@@ -19,8 +19,8 @@ import { Toaster } from "@/components/ui/sonner";
 export default function Layout({ children, currentPageName }) {
     const location = useLocation();
 
-    // SystemLogicMap עמוד עצמאי - אל תציג Header/Footer
-    if (currentPageName === 'SystemLogicMap') {
+    // עמודים עצמאיים ללא Header/Footer
+    if (['SystemLogicMap', 'LP', 'LandingPagePreview'].includes(currentPageName)) {
       return children;
     }
 
