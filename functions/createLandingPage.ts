@@ -87,13 +87,18 @@ Deno.serve(async (req) => {
                 Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW based on the methodology above.
 
                 REQUIRED SECTIONS (Map to JSON structure):
-                1. HERO: High impact, big promise.
-                2. PAIN_POINTS: Sympathize with struggle.
-                3. FEATURES_BENEFITS: Solution + Competitive Advantage.
-                4. PROCESS: How it works (3 steps).
-                5. TESTIMONIALS: Social Proof.
-                6. FAQ: Real objections (4-5 items).
-                7. CONTACT: Lead form (fields based on input).
+                1. HERO: High impact, big promise. MUST include an 'image_prompt' for background generation (English description).
+                2. STATS: 3-4 impressive numbers/statistics that build authority (e.g., "500+ Clients", "98% Success").
+                3. PAIN_POINTS: Sympathize with struggle.
+                4. FEATURES_BENEFITS: Solution + Competitive Advantage.
+                5. PROCESS: How it works (3 steps).
+                6. TESTIMONIALS: Social Proof.
+                7. FAQ: Real objections (4-5 items).
+                8. CONTACT: Lead form (fields based on input).
+
+                IMPORTANT: 
+                - For the 'hero' section, provide an 'image_prompt' in English describing a high-quality, photorealistic professional background image suitable for this business.
+                - For 'features' and 'process', try to suggest a 'lucide_icon' name if possible (e.g., "Shield", "Zap", "Clock").
 
                 OUTPUT FORMAT:
                 Return a JSON object with the following structure:
@@ -101,9 +106,19 @@ Deno.serve(async (req) => {
                     "headline": "Main Hero Headline",
                     "subheadline": "Main Hero Subheadline",
                     "sections_json": [
-                        { "type": "hero", "title": "...", "subtitle": "...", "ctaText": "..." },
+                        { 
+                            "type": "hero", 
+                            "title": "...", 
+                            "subtitle": "...", 
+                            "ctaText": "...", 
+                            "image_prompt": "modern office with happy people working, cinematic lighting, 4k" 
+                        },
+                        { 
+                            "type": "stats", 
+                            "items": [{ "value": "500+", "label": "לקוחות מרוצים" }, { "value": "100%", "label": "אחריות" }, { "value": "24/7", "label": "זמינות" }] 
+                        },
                         { "type": "pain_points", "title": "...", "items": [{ "title": "...", "description": "..." }] },
-                        { "type": "features", "title": "...", "items": [{ "title": "...", "description": "...", "icon": "check" }] },
+                        { "type": "features", "title": "...", "items": [{ "title": "...", "description": "...", "icon": "Shield" }] },
                         { "type": "process", "title": "...", "steps": [{ "number": 1, "title": "...", "description": "..." }] },
                         { "type": "testimonials", "title": "...", "items": [{ "name": "...", "text": "...", "role": "..." }] },
                         { "type": "faq", "title": "...", "items": [{ "question": "...", "answer": "..." }] },
@@ -128,18 +143,19 @@ Deno.serve(async (req) => {
                             items: {
                                 type: "object",
                                 properties: {
-                                    type: { type: "string", enum: ["hero", "pain_points", "features", "process", "testimonials", "faq", "contact"] },
+                                    type: { type: "string", enum: ["hero", "stats", "pain_points", "features", "process", "testimonials", "faq", "contact"] },
                                     title: { type: "string" },
                                     subtitle: { type: "string" },
                                     description: { type: "string" },
                                     ctaText: { type: "string" },
+                                    image_prompt: { type: "string" },
                                     items: { type: "array", items: { type: "object", additionalProperties: true } },
                                     steps: { type: "array", items: { type: "object", additionalProperties: true } },
                                     form_fields: { type: "array", items: { type: "string" } },
                                     phone: { type: "string" },
                                     whatsapp: { type: "string" }
                                 },
-                                required: ["type", "title"]
+                                required: ["type"]
                             }
                         }
                     },

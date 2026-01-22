@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Clock, Shield, Zap, AlertCircle } from 'lucide-react';
+import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Clock, Shield, Zap, AlertCircle, Award, TrendingUp, Users, ThumbsUp, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,57 +24,80 @@ export default function DynamicLandingPage({ data }) {
             {sections_json?.map((section, idx) => {
                 switch (section.type) {
                     case 'hero':
+                        const bgImage = section.image_prompt 
+                            ? `https://image.pollinations.ai/prompt/${encodeURIComponent(section.image_prompt)}?width=1920&height=1080&nologo=true`
+                            : null;
+
                         return (
-                            <header key={idx} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-                                {/* Enhanced Gradient Background */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[var(--primary)] to-slate-900 opacity-95"></div>
-                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+                            <header key={idx} className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
+                                {bgImage && (
+                                    <div className="absolute inset-0 z-0">
+                                        <img 
+                                            src={bgImage} 
+                                            alt="Background" 
+                                            className="w-full h-full object-cover opacity-30 mix-blend-overlay" 
+                                            loading="eager"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-900"></div>
+                                    </div>
+                                )}
                                 
                                 {/* Dynamic Glow Effects */}
-                                <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[var(--primary)] rounded-full blur-[120px] opacity-40 animate-pulse"></div>
-                                <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-500 rounded-full blur-[120px] opacity-30 animate-pulse delay-700"></div>
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[var(--primary)] rounded-full blur-[150px] opacity-20 animate-pulse"></div>
 
-                                <div className="max-w-5xl mx-auto relative z-10 px-6 text-center">
+                                <div className="max-w-6xl mx-auto relative z-10 px-6 text-center mt-12">
                                     <motion.div
-                                        initial={{ opacity: 0, y: 30 }}
+                                        initial={{ opacity: 0, y: 40 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.8, ease: "easeOut" }}
                                     >
-                                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight drop-shadow-xl">
+                                        <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-blue-100 text-sm font-medium mb-8">
+                                            ✨ הפתרון המוביל בתחום
+                                        </div>
+                                        <h1 className="text-5xl md:text-7xl lg:text-9xl font-black text-white mb-8 leading-[1.05] tracking-tight drop-shadow-2xl">
                                             {section.title}
                                         </h1>
-                                        <p className="text-xl md:text-3xl text-blue-50 mb-12 max-w-3xl mx-auto font-light leading-relaxed drop-shadow-md">
+                                        <p className="text-xl md:text-3xl text-slate-200 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
                                             {section.subtitle}
                                         </p>
                                         
                                         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
                                             <Button 
-                                                className="h-16 px-12 text-xl rounded-full bg-white text-[var(--primary)] hover:bg-blue-50 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.3)] font-bold"
+                                                className="h-16 px-12 text-xl rounded-full bg-[var(--primary)] text-white hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(37,99,235,0.4)] font-bold border-t border-white/20"
                                                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                                             >
                                                 {section.ctaText || 'התחל עכשיו'}
                                                 <ArrowLeft className="mr-2 w-6 h-6" />
                                             </Button>
-                                            {/* Secondary CTA (optional, hardcoded for depth) */}
                                             <Button 
-                                                variant="outline"
-                                                className="h-16 px-12 text-xl rounded-full border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all duration-300"
+                                                variant="ghost"
+                                                className="h-16 px-12 text-xl rounded-full text-white hover:bg-white/5 transition-all duration-300"
                                                 onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
                                             >
                                                 למידע נוסף
                                                 <ChevronDown className="mr-2 w-6 h-6" />
                                             </Button>
                                         </div>
-
-                                        <div className="mt-16 flex justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                                             {/* Trust badges placeholders for premium feel */}
-                                             {[1,2,3,4].map(i => (
-                                                <div key={i} className="h-8 w-24 bg-white/20 rounded animate-pulse"></div>
-                                             ))}
-                                        </div>
                                     </motion.div>
                                 </div>
                             </header>
+                        );
+
+                    case 'stats':
+                        return (
+                            <section key={idx} className="py-20 bg-slate-50 relative z-20 -mt-20 px-6">
+                                <div className="max-w-6xl mx-auto bg-white rounded-[2rem] shadow-xl p-12 md:p-16 border border-slate-100 relative overflow-hidden">
+                                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl opacity-50 -z-10"></div>
+                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-slate-100">
+                                         {section.items?.map((stat, i) => (
+                                             <div key={i} className="pt-8 md:pt-0">
+                                                 <div className="text-5xl md:text-6xl font-black text-[var(--primary)] mb-4 tracking-tight">{stat.value}</div>
+                                                 <div className="text-xl text-slate-500 font-medium uppercase tracking-wide">{stat.label}</div>
+                                             </div>
+                                         ))}
+                                     </div>
+                                </div>
+                            </section>
                         );
 
                     case 'pain_points':
