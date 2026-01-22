@@ -30,7 +30,7 @@ export default function RecommendedGoalCard({ recommendedGoal, onStart, onNaviga
                <Target className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900 text-lg">
+              <h4 className="font-black text-gray-900 text-xl md:text-2xl leading-tight">
                 {recommendedGoal.title}
               </h4>
               <p className="text-xs text-purple-600 font-medium">המטרה הראשונה שלך במסע</p>
