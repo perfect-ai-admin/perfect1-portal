@@ -4,8 +4,9 @@ import { CheckCircle2, Circle, Lock, ChevronDown, ChevronUp, Map, Play, Plus } f
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-export default function BusinessRoadmap({ user, tasks, onSelectStep, activeGoals = [] }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+export default function BusinessRoadmap({ user, tasks, onSelectStep, activeGoals = [], onShowUpgrade, goalLimit = 1 }) {
+  // Always expanded by default now, but can be toggled
+  const [isExpanded, setIsExpanded] = useState(true);
 
   if (!tasks || tasks.length === 0) return null;
 
@@ -23,26 +24,29 @@ export default function BusinessRoadmap({ user, tasks, onSelectStep, activeGoals
   };
 
   return (
-    <div className="bg-gray-50/50 rounded-xl border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-xl border border-indigo-100 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
       <button 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-5 bg-gradient-to-l from-white to-indigo-50/30 transition-colors"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-             <Map className="w-4 h-4" />
+        <div className="flex items-center gap-4">
+          <div className="relative">
+             <div className="absolute inset-0 bg-indigo-400 blur-lg opacity-20 rounded-full"></div>
+             <div className="w-10 h-10 rounded-full bg-white border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm relative z-10">
+                <Map className="w-5 h-5" />
+             </div>
           </div>
           <div className="text-right">
-             <h3 className="text-sm font-bold text-gray-900">המפה העסקית שלך</h3>
-             <p className="text-xs text-gray-500">
-               {tasks.length} שלבים להצלחה • {Math.round((activeIndex / tasks.length) * 100)}% הושלמו
+             <h3 className="text-base font-bold text-gray-900">המפה העסקית המלאה</h3>
+             <p className="text-xs text-gray-500 mt-0.5">
+               המסלול שלך להצלחה: {tasks.length} שלבים • {Math.round((activeIndex / tasks.length) * 100)}% הושלמו
              </p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
-           <span className="text-xs text-blue-600 font-medium hidden sm:inline-block">
-              {isExpanded ? 'סגור מפה' : 'הצג את המסע המלא'}
+           <span className="text-xs text-indigo-600 font-medium bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100 hidden sm:inline-block">
+              {isExpanded ? 'הסתר מפה' : 'הצג מפה'}
            </span>
            {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
         </div>
@@ -111,12 +115,21 @@ export default function BusinessRoadmap({ user, tasks, onSelectStep, activeGoals
                           ) : (
                             <Button 
                                size="sm" 
-                               variant="ghost" 
-                               className="h-7 px-2 text-xs hover:bg-indigo-50 hover:text-indigo-600 text-gray-400 gap-1.5"
-                               onClick={() => onSelectStep(task)}
+                               variant="outline" 
+                               className="h-7 px-3 text-xs border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800 gap-1.5 bg-white shadow-sm"
+                               onClick={() => {
+                                 // Active goals count check (excluding completed/archived usually, but activeGoals passed here should be the filtered list)
+                                 const currentActiveCount = activeGoals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
+                                 
+                                 if (goalLimit !== null && currentActiveCount >= goalLimit) {
+                                   onShowUpgrade();
+                                 } else {
+                                   onSelectStep(task);
+                                 }
+                               }}
                             >
                                <Plus className="w-3 h-3" />
-                               הוסף כמטרה
+                               הוסף
                             </Button>
                           )}
                        </div>

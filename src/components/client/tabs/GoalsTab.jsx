@@ -181,9 +181,19 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
         g.category === `task_goal_${task.id}`
       );
 
-      if (isActive) {
-         // Scroll to goal or highlight it could be added here
-         return;
+      if (isActive) return;
+
+      // Check limit (Double check, although UI handles it too)
+      const limit = user?.goals_limit;
+      const isUnlimited = limit === null;
+      if (!isUnlimited) {
+         const actualLimit = limit || 1;
+         const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
+
+         if (activeGoalsCount >= actualLimit) {
+           setShowUpgradeDialog(true);
+           return;
+         }
       }
 
       const taskTemplate = {
@@ -477,6 +487,8 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                  tasks={user.client_tasks} 
                  onSelectStep={handleSelectRoadmapStep}
                  activeGoals={userGoals}
+                 onShowUpgrade={() => setShowUpgradeDialog(true)}
+                 goalLimit={user?.goals_limit}
               />
             </div>
           )}
