@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
+import JourneyTimeline from '../progress/JourneyTimeline';
 
 export default function MentorOverview() {
   const queryClient = useQueryClient();
@@ -178,6 +179,8 @@ export default function MentorOverview() {
           {getHeaderStatus()}
         </p>
       </div>
+
+      <JourneyTimeline />
 
       {/* 2. Goals Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
