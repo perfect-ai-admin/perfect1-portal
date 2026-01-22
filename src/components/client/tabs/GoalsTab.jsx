@@ -31,15 +31,30 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const goalsTopRef = useRef(null);
   const processedOpenAddGoal = useRef(false);
 
-  // Check for recommended goal
-  const recommendedGoalData = user?.recommended_goal;
-  // Check if any active goal matches the recommended goal ID
-  const hasStartedRecommendedGoal = userGoals.some(g => g.category === recommendedGoalData?.goal_id);
+  // Check for recommended goal (First task of journey)
+  const firstJourneyTask = user?.client_tasks?.[0];
   
-  // Find the full template data for the recommended goal
-  // Now using the exported GOAL_TEMPLATES directly
-  const resolvedRecommendedTemplate = recommendedGoalData && !hasStartedRecommendedGoal
-    ? GOAL_TEMPLATES.find(t => t.id === recommendedGoalData.goal_id)
+  // Define the "Recommended Goal" as the current journey step
+  const recommendedGoal = firstJourneyTask ? {
+    goal_id: 'journey_step_' + firstJourneyTask.id,
+    name: firstJourneyTask.title,
+    title: firstJourneyTask.title,
+    description: firstJourneyTask.description,
+    reason: user?.business_state?.description || 'זה הצעד הראשון בתוכנית הצמיחה שלך',
+    icon: Target,
+    color: 'from-purple-500 to-indigo-600',
+    isJourneyTask: true,
+    originalTask: firstJourneyTask
+  } : null;
+
+  // Check if this specific journey task has been converted to a goal already
+  const hasStartedRecommendedGoal = userGoals.some(g => 
+    g.title === firstJourneyTask?.title || 
+    g.category === `task_${firstJourneyTask?.id}`
+  );
+  
+  const resolvedRecommendedTemplate = recommendedGoal && !hasStartedRecommendedGoal
+    ? recommendedGoal
     : null;
 
 
@@ -111,15 +126,40 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
   const handleStartRecommended = () => {
     if (resolvedRecommendedTemplate) {
-       setEditingGoal(null); // Ensure not editing mode
-       // We can pass the template via a state or prop to the dialog, 
-       // but GoalTemplates component selects it inside. 
-       // We'll modify the state to pre-select it.
-       // For now, let's open the add goal dialog and we'll handle pre-selection there if possible
-       // Or better, we set a temporary state 'initialTemplate' which GoalTemplates accepts
+       setEditingGoal(null);
+       
+       if (resolvedRecommendedTemplate.isJourneyTask) {
+          // Create a template object from the task
+          const taskTemplate = {
+            id: `task_goal_${resolvedRecommendedTemplate.originalTask.id}`,
+            name: resolvedRecommendedTemplate.name,
+            icon: Target,
+            color: 'from-purple-500 to-indigo-600',
+            description: resolvedRecommendedTemplate.description,
+            defaultTitle: resolvedRecommendedTemplate.name,
+            examples: [
+              { title: `להשלים את "${resolvedRecommendedTemplate.name}" בהצלחה` }
+            ],
+            questions: [
+              { id: 'blocker', label: 'מה האתגר העיקרי שמונע ממך לסיים את זה?', placeholder: 'לדוגמה: חוסר זמן / ידע...' },
+              { id: 'success_criteria', label: 'איך תדע שהמשימה הושלמה בהצלחה?', placeholder: 'לדוגמה: כשהלקוח ישלם...' }
+            ]
+          };
+          
+          // Hack: we need to pass this specific template to the dialog
+          // We'll modify the state directly or use a new state if needed
+          // For now, we rely on the component receiving this as 'initialTemplate' prop logic if we were passing props down
+          // But here GoalTemplates is inside the dialog. 
+          
+          // We need to set a state to hold this special template to pass to GoalTemplates
+          setSpecificTemplate(taskTemplate);
+       }
+       
        setShowAddGoal(true);
     }
   };
+  
+  const [specificTemplate, setSpecificTemplate] = useState(null);
 
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1);
@@ -334,10 +374,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                           {resolvedRecommendedTemplate.name}
                        </h3>
                        <p className="text-gray-600 mb-4 leading-relaxed max-w-xl">
-                          {resolvedRecommendedTemplate.description}.
+                          {resolvedRecommendedTemplate.description}
                           <br/>
                           <span className="text-sm text-purple-600 font-medium bg-purple-50 px-2 py-0.5 rounded mt-1 inline-block">
-                             למה בחרנו בזה? {recommendedGoalData.reason}
+                             למה בחרנו בזה? {resolvedRecommendedTemplate.reason}
                           </span>
                        </p>
 

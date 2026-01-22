@@ -274,9 +274,27 @@ export default function ProgressTab({ data, onNavigate, user }) {
     }
   };
 
-  // Check if user has recommended goal and hasn't created it yet
-  const recommendedGoal = currentUserData?.recommended_goal;
-  const hasCreatedRecommendedGoal = activeGoals?.some(g => g.category === recommendedGoal?.goal_id);
+  // Check if user has recommended goal (First task of journey)
+  // We prioritize the ACTUAL first task of the journey over the generic recommended_goal
+  const firstJourneyTask = currentUserData?.client_tasks?.[0];
+  const nextStep = activeMilestones.find(t => t.status === 'in_progress' || t.status === 'pending') || activeMilestones[0];
+  
+  // Define the "Recommended Goal" as the current journey step
+  const recommendedGoal = firstJourneyTask ? {
+    goal_id: 'journey_step_' + firstJourneyTask.id,
+    title: firstJourneyTask.title,
+    description: firstJourneyTask.description,
+    reason: currentUserData?.business_state?.description || 'זה הצעד הראשון בתוכנית הצמיחה שלך',
+    isJourneyTask: true,
+    originalTask: firstJourneyTask
+  } : null;
+
+  // Check if this specific journey task has been converted to a goal already
+  // We check if any active goal has the same title or is linked to this task ID
+  const hasCreatedRecommendedGoal = activeGoals?.some(g => 
+    g.title === firstJourneyTask?.title || 
+    g.category === `task_${firstJourneyTask?.id}`
+  );
 
   if (!isJourneyCompleted) {
     return (
@@ -358,12 +376,16 @@ export default function ProgressTab({ data, onNavigate, user }) {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900 text-lg">
-                    {GOAL_TEMPLATES.find(t => t.id === recommendedGoal.goal_id)?.name || 'מטרה מומלצת'}
+                    {recommendedGoal.title}
                   </h4>
                   <p className="text-xs text-purple-600 font-medium">המטרה הראשונה שלך במסע</p>
                 </div>
               </div>
               
+              <p className="text-gray-600 text-sm mb-3">
+                {recommendedGoal.description}
+              </p>
+
               <div className="flex items-start gap-3 bg-white/80 rounded-lg p-3 border border-purple-100/50">
                 <div className="mt-1 w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0" />
                 <p className="text-sm text-gray-700 leading-relaxed">
@@ -377,9 +399,11 @@ export default function ProgressTab({ data, onNavigate, user }) {
               <Button 
                 size="lg"
                 onClick={() => {
-                  const template = GOAL_TEMPLATES.find(t => t.id === recommendedGoal.goal_id);
-                  setGoalTemplateForStep(template);
-                  setShowGoalCreation(true);
+                  if (recommendedGoal.isJourneyTask) {
+                     const template = getGoalTemplateForTask(recommendedGoal.originalTask);
+                     setGoalTemplateForStep(template);
+                     setShowGoalCreation(true);
+                  }
                 }}
                 className="flex-1 bg-gray-900 hover:bg-black text-white shadow-xl shadow-gray-200 h-12 text-base"
               >
