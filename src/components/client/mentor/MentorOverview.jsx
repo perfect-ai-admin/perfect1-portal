@@ -209,11 +209,14 @@ export default function MentorOverview() {
     <div className="space-y-8 p-4 md:p-6 max-w-7xl mx-auto" dir="rtl">
       
       {/* Header Section */}
-      <div className="text-right space-y-3 mb-2">
+      <div className="text-center space-y-3 mb-8 py-6 bg-white rounded-2xl border border-gray-100 shadow-sm mx-auto max-w-4xl">
+        <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2">
+            <BarChart2 className="w-6 h-6 text-blue-600" />
+        </div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
           תמונת המצב שלי
         </h1>
-        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+        <p className="text-sm md:text-base text-gray-600 leading-relaxed max-w-lg mx-auto px-4">
           {getHeaderStatus()}
         </p>
       </div>
@@ -472,7 +475,11 @@ export default function MentorOverview() {
 
       {/* Business Journey Roadmap */}
       {user?.business_journey_completed && user?.client_tasks && (
-          <div className="mt-8">
+          <div className="mt-12 pt-10 border-t border-gray-100 max-w-4xl mx-auto">
+              <div className="mb-6 text-center">
+                  <h2 className="text-xl font-bold text-gray-900">המסע העסקי שלך</h2>
+                  <p className="text-gray-500 text-sm mt-1">המפה המלאה להצלחה של העסק שלך</p>
+              </div>
               <BusinessRoadmap 
                   user={user} 
                   tasks={user.client_tasks} 
