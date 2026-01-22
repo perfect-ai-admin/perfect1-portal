@@ -49,29 +49,36 @@ Deno.serve(async (req) => {
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
                 ROLE:
-                You are Israel's top Conversion Rate Optimization (CRO) expert and Senior UX Copywriter.
-                You build "High-Converting" landing pages that are visually rich, psychologically persuasive, and fully comprehensive.
-                
-                TASK:
-                Generate a COMPLETE, LONG-FORM landing page JSON structure based on the business profile below.
-                The content must be in native, persuasive Hebrew.
-                
-                THE PAGE MUST HAVE EXACTLY THESE 6 SECTIONS (in this order):
-                1. HERO: High impact, big promise, immediate CTA.
-                2. PAIN_POINTS: Sympathize with the customer's struggle (using the provided pain points).
-                3. FEATURES_BENEFITS: How we solve it + The "Why Us" (competitive advantage).
-                4. PROCESS / ABOUT: How it works (3 simple steps) OR About the business.
-                5. SOCIAL_PROOF: Testimonials (use provided one, or generate 2 generic but realistic placeholders if missing) + Stats.
-                6. FAQ: 4-5 relevant questions and answers that address objections.
-                7. CONTACT: A lead form section + direct contact options.
+                You are a Senior Head of Product specializing in World-Class UX/UI, CRO, SaaS & B2B Landing Pages, and Mobile-first Design.
+                Your goal: Build a landing page that converts, looks professional, clear, credible — and makes the user act without hesitation.
 
+                METHODOLOGY (Strictly follow these 9 steps):
+                1. GOAL: Define the main action (Lead/Sale) based on input.
+                2. HIERARCHY: Flow must be: Hero -> Value -> Pain -> Solution -> Proof -> Details -> CTA -> Close.
+                3. HERO: 3-second rule. Clear "What, For Whom, Why Good".
+                4. UX FLOW: One main action. No clutter.
+                5. UI PRINCIPLES: Readable fonts, whitespace = credibility.
+                6. BUTTONS: Result-oriented text (e.g., "Get Proposal" not "Send").
+                7. MOBILE FIRST: Short texts, scrollable flow.
+                8. TRUST: Address "Why not buy?" with FAQs and Social Proof.
+                9. FINAL CHECK: No wall of text. Clear next steps.
+
+                GOLDEN RULE: "If you have to explain it, it's not clear enough."
+
+                INPUT DATA:
                 ${promptContext}
 
-                CRITICAL GUIDELINES:
-                - Tone: Match the '${data.pageStyle}' style requested.
-                - Hero: Must be "Wow".
-                - FAQ: Must be real objections customers in this field have (e.g., price, time, guarantee).
-                - Contact Form: The JSON must specify which fields to show based on 'Form Fields Needed'.
+                TASK:
+                Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW.
+                
+                REQUIRED SECTIONS (Map to JSON structure):
+                1. HERO: High impact, big promise.
+                2. PAIN_POINTS: Sympathize with struggle.
+                3. FEATURES_BENEFITS: Solution + Competitive Advantage.
+                4. PROCESS: How it works (3 steps).
+                5. TESTIMONIALS: Social Proof.
+                6. FAQ: Real objections (4-5 items).
+                7. CONTACT: Lead form (fields based on input).
 
                 OUTPUT FORMAT:
                 Return a JSON object with the following structure:
@@ -89,7 +96,7 @@ Deno.serve(async (req) => {
                             "type": "contact", 
                             "title": "...", 
                             "subtitle": "...", 
-                            "form_fields": ["name", "phone", ...], // based on input
+                            "form_fields": ["name", "phone", ...], 
                             "phone": "...", 
                             "whatsapp": "..." 
                         }
