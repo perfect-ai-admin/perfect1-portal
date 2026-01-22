@@ -894,7 +894,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     <div className="relative w-full h-[380px] overflow-hidden bg-white cursor-pointer" onClick={() => setIsFullPreviewOpen(true)}>
                          {/* The scaled content - simulating desktop view */}
                          <div className="w-[200%] h-[200%] transform scale-50 origin-top-left pointer-events-none select-none">
-                             <DynamicLandingPage data={createdPageData} />
+                             <DynamicLandingPage data={createdPageData} isThumbnail={true} />
                          </div>
 
                          {/* Hover Overlay */}

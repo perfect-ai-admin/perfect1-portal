@@ -7,7 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from 'framer-motion';
 
-export default function DynamicLandingPage({ data }) {
+export default function DynamicLandingPage({ data, isThumbnail = false }) {
     if (!data) return null;
 
     const { primary_color, sections_json } = data;
@@ -19,37 +19,60 @@ export default function DynamicLandingPage({ data }) {
         '--primary-light': `${primary_color}10` || '#EFF6FF', // Light tint
     };
 
-    // Sticky CTA Logic
+    // Sticky CTA Logic - Only enabled if NOT in thumbnail mode
     const [showStickyCTA, setShowStickyCTA] = useState(false);
     useEffect(() => {
+        if (isThumbnail) return;
+        
         const handleScroll = () => {
             setShowStickyCTA(window.scrollY > 400);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [isThumbnail]);
 
     const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
 
     return (
-        <div style={themeStyle} className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-[var(--primary)] selection:text-white pb-20 md:pb-0" dir="rtl">
+        <div 
+            style={themeStyle} 
+            className={`bg-slate-50 text-slate-900 font-sans antialiased selection:bg-[var(--primary)] selection:text-white ${isThumbnail ? '' : 'min-h-screen pb-20 md:pb-0'}`} 
+            dir="rtl"
+        >
             
-            {/* Sticky Floating CTA for Mobile & Desktop */}
-            <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 transform ${showStickyCTA ? 'translate-y-0' : 'translate-y-full'}`}>
-                <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-                    <div className="hidden md:block">
-                        <p className="font-bold text-slate-900 text-lg">{data.business_name}</p>
-                        <p className="text-sm text-slate-500">הפתרון המושלם עבורך במרחק קליק</p>
+            {/* Sticky Floating CTA for Mobile & Desktop - Hidden in thumbnail */}
+            {!isThumbnail && (
+                <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 transform ${showStickyCTA ? 'translate-y-0' : 'translate-y-full'}`}>
+                    <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+                        <div className="hidden md:block">
+                            <p className="font-bold text-slate-900 text-lg">{data.business_name}</p>
+                            <p className="text-sm text-slate-500">הפתרון המושלם עבורך במרחק קליק</p>
+                        </div>
+                        <Button 
+                            onClick={scrollToContact}
+                            className="w-full md:w-auto h-12 md:h-14 px-8 text-lg font-bold rounded-full bg-[var(--primary)] hover:brightness-110 shadow-lg shadow-[var(--primary)]/30 animate-pulse-glow"
+                        >
+                            {sections_json?.find(s => s.type === 'hero')?.ctaText || 'אני רוצה להתחיל'}
+                            <ArrowLeft className="mr-2 w-5 h-5" />
+                        </Button>
                     </div>
-                    <Button 
-                        onClick={scrollToContact}
-                        className="w-full md:w-auto h-12 md:h-14 px-8 text-lg font-bold rounded-full bg-[var(--primary)] hover:brightness-110 shadow-lg shadow-[var(--primary)]/30 animate-pulse-glow"
-                    >
-                        {sections_json?.find(s => s.type === 'hero')?.ctaText || 'אני רוצה להתחיל'}
-                        <ArrowLeft className="mr-2 w-5 h-5" />
-                    </Button>
                 </div>
-            </div>
+            )}
+                <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+                        <div className="hidden md:block">
+                            <p className="font-bold text-slate-900 text-lg">{data.business_name}</p>
+                            <p className="text-sm text-slate-500">הפתרון המושלם עבורך במרחק קליק</p>
+                        </div>
+                        <Button 
+                            onClick={scrollToContact}
+                            className="w-full md:w-auto h-12 md:h-14 px-8 text-lg font-bold rounded-full bg-[var(--primary)] hover:brightness-110 shadow-lg shadow-[var(--primary)]/30 animate-pulse-glow"
+                        >
+                            {sections_json?.find(s => s.type === 'hero')?.ctaText || 'אני רוצה להתחיל'}
+                            <ArrowLeft className="mr-2 w-5 h-5" />
+                        </Button>
+                    </div>
+                </div>
+            )}
 
             {sections_json?.map((section, idx) => {
                 switch (section.type) {
