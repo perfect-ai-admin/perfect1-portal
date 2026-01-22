@@ -173,6 +173,39 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   
   const [specificTemplate, setSpecificTemplate] = useState(null);
 
+  const handleSelectRoadmapStep = (task) => {
+      // Check if already active
+      const isActive = userGoals.some(g => 
+        g.title === task.title || 
+        g.category === `task_${task.id}` ||
+        g.category === `task_goal_${task.id}`
+      );
+
+      if (isActive) {
+         // Scroll to goal or highlight it could be added here
+         return;
+      }
+
+      const taskTemplate = {
+        id: `task_goal_${task.id}`,
+        name: task.title,
+        icon: Target,
+        color: 'from-blue-500 to-indigo-600',
+        description: task.description,
+        defaultTitle: task.title,
+        examples: [
+          { title: `להשלים את "${task.title}" בהצלחה` }
+        ],
+        questions: [
+          { id: 'blocker', label: 'מה האתגר העיקרי שמונע ממך לסיים את זה?', placeholder: 'לדוגמה: חוסר זמן / ידע...' },
+          { id: 'success_criteria', label: 'איך תדע שהמשימה הושלמה בהצלחה?', placeholder: 'לדוגמה: כשהלקוח ישלם...' }
+        ]
+      };
+
+      setSpecificTemplate(taskTemplate);
+      setShowAddGoal(true);
+  };
+
   const heroGoal = goals[0];
   const secondaryGoals = goals.slice(1);
 
@@ -341,13 +374,8 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           className="space-y-8"
         >
           
-          {/* Business Roadmap - Shows the deep process */}
-          {user?.business_journey_completed && user?.client_tasks && (
-            <BusinessRoadmap user={user} tasks={user.client_tasks} />
-          )}
-
           {/* Header Section */}
-          <div className="flex items-end justify-between px-1">
+          <div className="flex items-end justify-between px-1 mb-6">
              <div>
                <h1 className="text-2xl font-bold text-gray-900">המטרות שלי בפועל</h1>
                <p className="text-gray-500 text-sm mt-1">
@@ -439,6 +467,18 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
               onEdit={handleEditGoal}
               onDelete={handleDeleteGoal}
             />
+          )}
+
+          {/* Business Roadmap - Shows the deep process (Minimalist at bottom) */}
+          {user?.business_journey_completed && user?.client_tasks && (
+            <div className="mt-12 pt-8 border-t border-gray-100">
+              <BusinessRoadmap 
+                 user={user} 
+                 tasks={user.client_tasks} 
+                 onSelectStep={handleSelectRoadmapStep}
+                 activeGoals={userGoals}
+              />
+            </div>
           )}
 
           {/* Empty State - Only if no roadmap either, or simply simplified */}

@@ -1,124 +1,133 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle2, Circle, Lock, ArrowDown, Map, Flag, Star } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, Circle, Lock, ChevronDown, ChevronUp, Map, Play, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
-export default function BusinessRoadmap({ user, tasks }) {
+export default function BusinessRoadmap({ user, tasks, onSelectStep, activeGoals = [] }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   if (!tasks || tasks.length === 0) return null;
 
-  // Find current active step index
+  // Find current active step index (first pending/in_progress)
   const currentStepIndex = tasks.findIndex(t => t.status === 'in_progress' || t.status === 'pending');
   const activeIndex = currentStepIndex === -1 ? tasks.length : currentStepIndex;
 
+  // Helper to check if a task is already an active goal
+  const isTaskActiveGoal = (task) => {
+    return activeGoals.some(g => 
+        g.title === task.title || 
+        g.category === `task_${task.id}` || 
+        g.category === `task_goal_${task.id}`
+    );
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-6 text-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Map className="w-5 h-5 text-blue-400" />
-              תוכנית הצמיחה העסקית שלך
-            </h2>
-            <p className="text-slate-300 text-sm mt-1 max-w-lg">
-              זהו המסע המלא לבניית העסק היציב והרווחי שרצית. כל שלב כאן הוא אבן דרך קריטית.
-            </p>
+    <div className="bg-gray-50/50 rounded-xl border border-gray-100 overflow-hidden">
+      <button 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+             <Map className="w-4 h-4" />
           </div>
-          <div className="hidden sm:block text-right">
-             <div className="text-2xl font-bold text-blue-400">{Math.round((activeIndex / tasks.length) * 100)}%</div>
-             <div className="text-xs text-slate-400">הושלמו</div>
+          <div className="text-right">
+             <h3 className="text-sm font-bold text-gray-900">המפה העסקית שלך</h3>
+             <p className="text-xs text-gray-500">
+               {tasks.length} שלבים להצלחה • {Math.round((activeIndex / tasks.length) * 100)}% הושלמו
+             </p>
           </div>
-        </div>
-      </div>
-
-      <div className="p-6 relative">
-        {/* Connecting Line */}
-        <div className="absolute top-6 bottom-6 right-[43px] w-0.5 bg-gray-100 z-0 hidden sm:block"></div>
-
-        <div className="space-y-6 relative z-10">
-          {tasks.map((task, index) => {
-            const isCompleted = index < activeIndex;
-            const isCurrent = index === activeIndex;
-            const isLocked = index > activeIndex;
-
-            return (
-              <motion.div 
-                key={task.id || index}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={cn(
-                  "relative flex gap-4 p-4 rounded-xl border transition-all duration-300",
-                  isCurrent 
-                    ? "bg-blue-50/50 border-blue-200 shadow-sm ring-1 ring-blue-100" 
-                    : "bg-white border-transparent hover:border-gray-100"
-                )}
-              >
-                {/* Status Indicator */}
-                <div className="flex-shrink-0 relative">
-                  <div className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors z-10 relative bg-white",
-                    isCompleted ? "border-green-500 bg-green-50" :
-                    isCurrent ? "border-blue-500 bg-blue-600 text-white shadow-lg shadow-blue-200" :
-                    "border-gray-200 bg-gray-50 text-gray-400"
-                  )}>
-                    {isCompleted ? <CheckCircle2 className="w-5 h-5 text-green-600" /> :
-                     isCurrent ? <Flag className="w-5 h-5 animate-pulse" /> :
-                     task.is_milestone ? <Star className="w-4 h-4 text-amber-400 fill-amber-400" /> :
-                     <Circle className="w-4 h-4" />}
-                  </div>
-                  {/* Mobile Connecting Line */}
-                  {index !== tasks.length - 1 && (
-                    <div className={cn(
-                      "absolute top-10 bottom-[-24px] left-1/2 w-0.5 -translate-x-1/2 sm:hidden",
-                      isCompleted ? "bg-green-200" : "bg-gray-100"
-                    )}></div>
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0 pt-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className={cn(
-                      "font-bold text-base",
-                      isCompleted ? "text-gray-500 line-through decoration-gray-300" :
-                      isCurrent ? "text-blue-700" :
-                      "text-gray-400"
-                    )}>
-                      {task.title}
-                    </h3>
-                    <span className="text-xs font-mono font-medium text-gray-300">#{index + 1}</span>
-                  </div>
-                  
-                  <p className={cn(
-                    "text-sm leading-relaxed max-w-2xl",
-                    isCompleted ? "text-gray-400" :
-                    isCurrent ? "text-gray-700 font-medium" :
-                    "text-gray-400"
-                  )}>
-                    {task.description}
-                  </p>
-                  
-                  {isCurrent && (
-                    <div className="mt-3 flex items-center gap-2">
-                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-100 text-blue-700 text-xs font-bold">
-                          בפוקוס עכשיו
-                       </span>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
         </div>
         
-        {/* End of Journey */}
-        <div className="mt-8 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 text-amber-600 mb-2 shadow-sm">
-                <Star className="w-6 h-6 fill-current" />
-            </div>
-            <p className="text-sm text-gray-500 font-medium">המטרה הגדולה: {user?.business_state?.goal || 'עסק יציב ורווחי'}</p>
+        <div className="flex items-center gap-2">
+           <span className="text-xs text-blue-600 font-medium hidden sm:inline-block">
+              {isExpanded ? 'סגור מפה' : 'הצג את המסע המלא'}
+           </span>
+           {isExpanded ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
         </div>
-      </div>
+      </button>
+
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="border-t border-gray-100"
+          >
+            <div className="p-4 space-y-3">
+              {tasks.map((task, index) => {
+                const isCompleted = index < activeIndex;
+                const isCurrent = index === activeIndex;
+                const isActiveGoal = isTaskActiveGoal(task);
+                
+                return (
+                  <div 
+                    key={task.id || index}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-lg border transition-all",
+                      isCurrent 
+                        ? "bg-white border-indigo-200 shadow-sm" 
+                        : "bg-white/50 border-transparent hover:border-gray-200 hover:bg-white"
+                    )}
+                  >
+                    <div className={cn(
+                      "w-6 h-6 rounded-full flex items-center justify-center border text-xs font-bold flex-shrink-0",
+                      isCompleted ? "bg-green-100 border-green-200 text-green-700" :
+                      isCurrent ? "bg-indigo-100 border-indigo-200 text-indigo-700" :
+                      "bg-gray-50 border-gray-200 text-gray-400"
+                    )}>
+                      {isCompleted ? <CheckCircle2 className="w-3.5 h-3.5" /> : (index + 1)}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                       <div className="flex items-center gap-2">
+                          <h4 className={cn(
+                            "text-sm font-medium truncate",
+                            isCompleted ? "text-gray-500 line-through" : "text-gray-900"
+                          )}>
+                            {task.title}
+                          </h4>
+                          {task.is_milestone && (
+                            <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] rounded-full font-bold">
+                              אבן דרך
+                            </span>
+                          )}
+                       </div>
+                       {isCurrent && (
+                          <p className="text-xs text-indigo-600 mt-0.5">
+                             זה השלב הנוכחי בתוכנית שלך
+                          </p>
+                       )}
+                    </div>
+
+                    {!isCompleted && (
+                       <div className="flex-shrink-0">
+                          {isActiveGoal ? (
+                            <span className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-md font-medium border border-green-100">
+                               בביצוע
+                            </span>
+                          ) : (
+                            <Button 
+                               size="sm" 
+                               variant="ghost" 
+                               className="h-7 px-2 text-xs hover:bg-indigo-50 hover:text-indigo-600 text-gray-400 gap-1.5"
+                               onClick={() => onSelectStep(task)}
+                            >
+                               <Plus className="w-3 h-3" />
+                               הוסף כמטרה
+                            </Button>
+                          )}
+                       </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
