@@ -12,7 +12,7 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2
+  FileText, Calendar, Layers, Share2, Copy
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
