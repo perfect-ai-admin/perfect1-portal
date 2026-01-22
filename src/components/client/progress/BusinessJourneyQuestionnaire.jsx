@@ -445,8 +445,8 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
         <Button
           variant="ghost"
           onClick={() => setCurrentStep(prev => prev - 1)}
-          disabled={currentStep === 0}
-          className={cn("text-gray-400 hover:text-gray-600", currentStep === 0 && "opacity-0")}
+          disabled={currentStep === 0 || isSubmitting}
+          className={cn("text-gray-400 hover:text-gray-600", (currentStep === 0 || isSubmitting) && "opacity-0 pointer-events-none")}
         >
           <ArrowRight className="w-4 h-4 ml-2" />
           חזור
