@@ -50,10 +50,14 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   // Check if this specific journey task has been converted to a goal already
   const hasStartedRecommendedGoal = userGoals.some(g => 
     g.title === firstJourneyTask?.title || 
-    g.category === `task_${firstJourneyTask?.id}`
+    g.category === `task_${firstJourneyTask?.id}` ||
+    g.category === `task_goal_${firstJourneyTask?.id}`
   );
+
+  // Check if there are ANY active goals currently
+  const hasAnyActiveGoal = userGoals.some(g => g.status === 'active' || g.status === 'in_progress');
   
-  const resolvedRecommendedTemplate = recommendedGoal && !hasStartedRecommendedGoal
+  const resolvedRecommendedTemplate = recommendedGoal && !hasStartedRecommendedGoal && !hasAnyActiveGoal
     ? recommendedGoal
     : null;
 
