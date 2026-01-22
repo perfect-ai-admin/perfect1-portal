@@ -444,8 +444,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
         <JourneyTimeline />
       </div>
 
-      {/* Next Step Card - Mobile */}
-      {nextStep && (
+      {/* Next Step Card - Mobile - Hide if shown as Recommended Goal */}
+      {nextStep && (hasCreatedRecommendedGoal || !recommendedGoal) && (
         <>
           <div className="lg:hidden">
             <div className="bg-white rounded-lg shadow-md border border-gray-100 p-3">
@@ -501,8 +501,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
              <QuickStatsBar stats={quickStats} />
            </div>
 
-           {/* Next Step */}
-           {nextStep && (
+           {/* Next Step - Hide if shown as Recommended Goal */}
+           {nextStep && (hasCreatedRecommendedGoal || !recommendedGoal) && (
              <>
                <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
                  <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
