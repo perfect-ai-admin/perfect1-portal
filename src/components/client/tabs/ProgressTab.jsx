@@ -381,17 +381,14 @@ export default function ProgressTab({ data, onNavigate, user }) {
                 </div>
               </div>
               
-              <p className="text-gray-600 text-sm mb-3">
-                {recommendedGoal.description}
-              </p>
-
-              <div className="flex items-start gap-3 bg-white/80 rounded-lg p-3 border border-purple-100/50">
-                <div className="mt-1 w-1.5 h-1.5 rounded-full bg-purple-500 flex-shrink-0" />
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  <span className="font-bold text-purple-700 ml-1">למה זה מומלץ:</span>
-                  {recommendedGoal.reason}
+              {recommendedGoal.description && (
+                <p className="text-sm text-gray-600 mb-2">
+                  {recommendedGoal.description}
                 </p>
-              </div>
+              )}
+              <p className="text-sm text-purple-700 bg-purple-50 rounded-lg p-2 border border-purple-100">
+                <strong>למה זה מומלץ:</strong> {recommendedGoal.reason}
+              </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
@@ -408,9 +405,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
                      setShowGoalCreation(true);
                   }
                 }}
-                className="flex-1 bg-gray-900 hover:bg-black text-white shadow-xl shadow-gray-200 h-12 text-base"
+                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white shadow-lg"
               >
-                <Play className="w-5 h-5 ml-2 fill-current" />
+                <Play className="w-4 h-4 ml-2" />
                 להתחיל מהמטרה המומלצת
               </Button>
               <Button 
