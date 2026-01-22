@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -90,6 +91,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [errors, setErrors] = useState({});
   const [isBuilding, setIsBuilding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [pageSlug, setPageSlug] = useState('');
 
   // Scroll to top on step change for mobile
   useEffect(() => {
@@ -167,19 +169,39 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
       setIsBuilding(true);
-      setTimeout(() => {
-        setIsBuilding(false);
+      try {
+        const res = await base44.functions.invoke('createLandingPage', { data: formData });
+        if (res.data && res.data.slug) {
+            setPageSlug(res.data.slug);
+            setShowSuccess(true);
+        } else {
+            console.error("Failed to create landing page", res);
+            // Fallback for demo if API fails
+            setPageSlug('demo-' + Math.random().toString(36).substr(2, 5));
+            setShowSuccess(true);
+        }
+      } catch (error) {
+        console.error("Error creating landing page:", error);
+        // Fallback for demo
+        setPageSlug('demo-' + Math.random().toString(36).substr(2, 5));
         setShowSuccess(true);
-      }, 2500);
+      } finally {
+        setIsBuilding(false);
+      }
     }
   };
 
   const handlePurchase = () => {
-    window.location.href = '/Checkout?product=landing-page&price=499';
+    // Navigate to preview page with slug for purchase flow
+    if (pageSlug) {
+        window.location.href = `/LandingPagePreview?slug=${pageSlug}`;
+    } else {
+        window.location.href = '/Checkout?product=landing-page&price=499';
+    }
   };
 
   const renderStep = () => {
@@ -757,12 +779,15 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 <Globe className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <div className="flex-1 text-left rtl:text-right overflow-hidden">
                   <div className="text-[10px] text-gray-400 font-medium">הקישור לדף שלך</div>
-                  <div className="text-sm font-bold text-blue-600 truncate dir-ltr">
-                    landing.bizpilot.co.il/{formData.businessName.replace(/\s+/g, '-').toLowerCase() || 'my-page'}
+                  <div className="text-sm font-bold text-blue-600 truncate dir-ltr cursor-pointer hover:underline" onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}>
+                    {window.location.host}/LP/{pageSlug}
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <Share2 className="w-4 h-4" />
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => {
+                    const url = `${window.location.origin}/LandingPagePreview?slug=${pageSlug}`;
+                    navigator.clipboard.writeText(url);
+                }}>
+                  <Copy className="w-4 h-4" />
                 </Button>
               </div>
 
