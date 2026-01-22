@@ -18,49 +18,70 @@ Deno.serve(async (req) => {
         let generatedContent = null;
         try {
             console.log("Generating landing page content with AI...");
+            // Construct a rich, detailed prompt based on questionnaire inputs
+            const promptContext = `
+            BUSINESS PROFILE:
+            - Name: ${data.businessName}
+            - Field: ${data.mainField}
+            - Target Audience: ${data.targetAudience?.join(', ') || data.targetAudienceOther}
+            
+            PSYCHOLOGY & STRATEGY:
+            - Customer Pain Points: ${data.painPoints}
+            - Consequences of Inaction: ${data.consequences}
+            - Unique Value Proposition: ${data.serviceOffered}
+            - Why Choose Us: ${data.whyChooseYou?.join(', ')} ${data.whyChooseYouOther ? `(${data.whyChooseYouOther})` : ''}
+            - Process: ${data.processSteps}
+            
+            TRUST & PROOF:
+            - Experience: ${data.experienceYears} years
+            - Proof Elements: ${data.proofs?.join(', ')}
+            - Testimonial: "${data.testimonialText}"
+            
+            CONVERSION GOALS:
+            - Desired Action: ${data.ctaTypes?.join(', ')}
+            - CTA Button Text: ${data.ctaText}
+            
+            DESIGN & TONE:
+            - Style Preference: ${data.pageStyle} (Adjust the copy tone to match this style - e.g., 'luxury' needs elegant language, 'energetic' needs punchy language)
+            `;
+
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
-                You are an expert UX copywriter and web designer specializing in high-converting landing pages in Hebrew.
+                ROLE:
+                You are Israel's top Conversion Rate Optimization (CRO) expert and Senior UX Copywriter. 
+                You specialize in building "High-Converting Landing Pages" that turn visitors into leads using psychological triggers.
                 
-                Your task is to take the raw business information provided below and generate professional, engaging, and high-quality content for a landing page.
-                Focus on user experience (UX), clarity, and persuasive copywriting. 
-                The content MUST be in Hebrew.
+                TASK:
+                Create the full content structure for a landing page based on the detailed business profile below.
+                The content must be in PERFECT, NATIVE HEBREW. 
+                Do not translate literally - write as a local marketing expert.
                 
-                Raw Business Info:
-                ${JSON.stringify(data, null, 2)}
-                
-                Generate a JSON object with the following structure for the landing page content. 
-                Ensure the tone is appropriate for the business type (e.g., professional for lawyers, energetic for fitness trainers).
-                
-                Required JSON Structure:
-                {
-                    "headline": "Main Hero Headline (Short, punchy, benefit-driven)",
-                    "subheadline": "Compelling subheadline that elaborates on the value proposition",
-                    "sections": [
-                        {
-                            "type": "hero",
-                            "title": "Same as headline",
-                            "subtitle": "Same as subheadline",
-                            "ctaText": "Strong Call to Action (e.g. Start Now, Talk to Us)",
-                            "ctaLink": "#contact"
-                        },
-                        {
-                            "type": "features",
-                            "title": "Headline for features section (e.g. Why Choose Us?)",
-                            "items": [
-                                { "title": "Feature 1 Title", "description": "Benefit driven description" },
-                                { "title": "Feature 2 Title", "description": "Benefit driven description" },
-                                { "title": "Feature 3 Title", "description": "Benefit driven description" }
-                            ]
-                        },
-                        {
-                            "type": "contact",
-                            "title": "Contact section headline",
-                            "phone": "${data.phone || ''}",
-                            "whatsapp": "${data.whatsapp || data.phone || ''}"
-                        }
-                    ]
-                }
+                ${promptContext}
+
+                GUIDELINES FOR SECTIONS:
+                1. HERO SECTION:
+                   - Headline: Must be a "Hook". Address the main benefit or the solution to the pain point immediately.
+                   - Subheadline: Explain *how* we solve it and remove anxiety.
+                   - CTA: Use the user's preferred text but make it compelling.
+
+                2. FEATURES / BENEFITS (The "Why Us"):
+                   - Don't just list features. Translate them into BENEFITS. 
+                   - Use the "Why Choose Us" data to highlight competitive advantages.
+                   - Keep descriptions punchy (2-3 lines max).
+
+                3. SOCIAL PROOF (Trust):
+                   - If a testimonial exists, format it beautifully.
+                   - If experience years are mentioned, highlight them as an authority indicator.
+                   - Use a "Trust Badge" style for credibility (e.g., "Over X years of experience").
+
+                4. CONTACT / CONVERSION:
+                   - Clear, friction-free call to action.
+                   - Reiterate the value one last time (e.g., "Ready to stop [Pain Point]?").
+
+                OUTPUT FORMAT:
+                Return a JSON object matching the schema below.
+                Ensure the 'sections' array contains objects with 'type': 'hero' | 'features' | 'contact'.
+                You can add a 'text' type section for the "Process" or "About" if the input data supports it.
                 `,
                 response_json_schema: {
                     type: "object",
