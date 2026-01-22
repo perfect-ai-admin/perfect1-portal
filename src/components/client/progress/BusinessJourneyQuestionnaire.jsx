@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 
 // Profession Question (Free Text)
@@ -319,6 +320,7 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
     } catch (error) {
       console.error("Error saving answers:", error);
       setIsSubmitting(false);
+      toast.error("אירעה שגיאה בשמירת הנתונים. אנא נסה שוב.");
     }
   };
 
