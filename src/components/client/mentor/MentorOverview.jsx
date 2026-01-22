@@ -219,6 +219,18 @@ export default function MentorOverview() {
         <p className="text-sm md:text-base text-gray-600 leading-relaxed max-w-lg mx-auto px-4">
           {getHeaderStatus()}
         </p>
+        
+        {activeGoalsCount > 0 && (
+            <div className="mt-5">
+                <Button 
+                    onClick={handleOpenGoalCreation}
+                    className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 h-12 shadow-lg hover:shadow-xl transition-all hover:scale-105 text-base font-medium"
+                >
+                    <Plus className="w-5 h-5 ml-2" />
+                    מטרה חדשה
+                </Button>
+            </div>
+        )}
       </div>
 
       {/* 2. Goals Grid */}
@@ -458,19 +470,21 @@ export default function MentorOverview() {
             );
         })}
 
-        {/* New Goal Card */}
-        <Card 
-            className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/30 transition-all rounded-2xl flex flex-col items-center justify-center p-8 md:p-10 cursor-pointer min-h-[400px] group active:scale-[0.98]" 
-            onClick={handleOpenGoalCreation}
-        >
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-sm">
-                <Plus className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
-            </div>
-            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">מטרה חדשה</h3>
-            <p className="text-sm md:text-base text-gray-600 text-center max-w-xs leading-relaxed">
-                הגדר יעד חדש והמערכת תיצור עבורך תוכנית עבודה מותאמת אישית
-            </p>
-        </Card>
+        {/* New Goal Card - Only show when no active goals */}
+        {activeGoalsCount === 0 && (
+            <Card 
+                className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/30 transition-all rounded-2xl flex flex-col items-center justify-center p-8 md:p-10 cursor-pointer min-h-[400px] group active:scale-[0.98]" 
+                onClick={handleOpenGoalCreation}
+            >
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-sm">
+                    <Plus className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">מטרה חדשה</h3>
+                <p className="text-sm md:text-base text-gray-600 text-center max-w-xs leading-relaxed">
+                    הגדר יעד חדש והמערכת תיצור עבורך תוכנית עבודה מותאמת אישית
+                </p>
+            </Card>
+        )}
       </div>
 
       {/* Business Journey Roadmap */}
