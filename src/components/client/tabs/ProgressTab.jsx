@@ -46,7 +46,7 @@ import QuickStatsBar from '../progress/QuickStatsBar';
 import AchievementsSystem from '../progress/AchievementsSystem';
 import { ProgressTabHelp } from '../help/ContextualHelp';
 import GoalsFloatingButton from '../GoalsFloatingButton';
-import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, ChevronDown, RefreshCcw } from 'lucide-react';
+import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, ChevronDown, RefreshCcw, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -274,6 +274,10 @@ export default function ProgressTab({ data, onNavigate, user }) {
     }
   };
 
+  // Check if user has recommended goal and hasn't created it yet
+  const recommendedGoal = currentUserData?.recommended_goal;
+  const hasCreatedRecommendedGoal = activeGoals?.some(g => g.category === recommendedGoal?.goal_id);
+
   if (!isJourneyCompleted) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -327,6 +331,59 @@ export default function ProgressTab({ data, onNavigate, user }) {
         exit={{ opacity: 0 }}
         className="space-y-6"
       >
+      {/* Recommended Goal - Show if exists and not created yet */}
+      {recommendedGoal && !hasCreatedRecommendedGoal && (
+        <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-5 border-2 border-purple-200 shadow-sm mb-6">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-900 mb-1">📍 נקודת ההתחלה שלך</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                לפי מה שסיפרת לנו בשאלון, זה השלב שהכי נכון להתחיל ממנו עכשיו.
+              </p>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl p-4 mb-3 border border-purple-100">
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-5 h-5 text-purple-600" />
+              <h4 className="font-bold text-gray-900">המטרה המומלצת</h4>
+            </div>
+            <p className="text-gray-700 font-medium mb-2">
+              {import('@/components/client/goals/GoalTemplatesFixed').then(m => m.default.GOAL_TEMPLATES?.find(t => t.id === recommendedGoal.goal_id)?.name || 'מטרה מומלצת')}
+            </p>
+            <p className="text-sm text-purple-700 bg-purple-50 rounded-lg p-2 border border-purple-100">
+              <strong>למה זה מומלץ:</strong> {recommendedGoal.reason}
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => {
+                const template = import('@/components/client/goals/GoalTemplatesFixed').then(m => 
+                  m.default.GOAL_TEMPLATES?.find(t => t.id === recommendedGoal.goal_id)
+                );
+                setGoalTemplateForStep(template);
+                setShowGoalCreation(true);
+              }}
+              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white shadow-lg"
+            >
+              <Play className="w-4 h-4 ml-2" />
+              להתחיל מהמטרה המומלצת
+            </Button>
+            <Button 
+              variant="ghost"
+              onClick={() => onNavigate('goals')}
+              className="text-purple-700 hover:bg-purple-100 text-sm"
+            >
+              רוצה לבחור אחרת?
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Quick Stats - Mobile First */}
       <div className="lg:hidden -mt-2">
         <QuickStatsBar stats={quickStats} />

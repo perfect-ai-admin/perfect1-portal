@@ -102,12 +102,44 @@ Deno.serve(async (req) => {
             ❌ "זהו את הלקוחות הפוטנציאליים ובנה אסטרטגיה מותאמת להם"
             ❌ "כדי להתחיל לדווח ולהוציא חשבוניות, יש לפתוח עוסק פטור"
 
+            **CRITICAL: Recommended Goal Selection**
+            Based on the user's answers, you MUST select ONE recommended goal that is the BEST starting point for them RIGHT NOW.
+            
+            Available Goal Templates (by ID):
+            - active_customers: הגדלת כמות לקוחות פעילים
+            - monthly_income: הגדלת הכנסה חודשית
+            - cashflow_stability: יציבות בתזרים מזומנים
+            - quality_leads: יותר פניות / לידים איכותיים
+            - conversion_rate: שיפור אחוזי סגירה
+            - deal_value: העלאת מחיר / ערך עסקה
+            - time_saving: חיסכון בזמן עבודה
+            - business_control: סדר ושליטה בעסק
+            - marketing_engine: בניית מנגנון שיווק קבוע
+            - retention: שימור והחזרת לקוחות
+            - reduce_stress: פחות לחץ ושחיקה
+            - focus_direction: מיקוד וכיוון עסקי ברור
+            
+            **Logic for Goal Selection:**
+            - "idea" stage -> focus_direction (צריכים בהירות)
+            - "new" with no clients -> quality_leads (צריכים לקוחות)
+            - "new" with first clients but low conversion -> conversion_rate
+            - "active" with chaos -> business_control
+            - "active" with low revenue -> monthly_income
+            - "stable" with time pressure -> time_saving
+            - "stable" with stress -> reduce_stress
+            - "scaling" -> depends on bottleneck
+            
             **Output JSON Structure:**
             {
                 "state_id": "string (one of: idea, new, active, stable, scaling)",
                 "state_name": "string (Creative Hebrew name for their current status)",
                 "state_description": "string (A sharp, 2-sentence diagnosis of where they are and what's holding them back, in Hebrew)",
                 "state_goal": "string (The primary objective for the next 3-6 months in Hebrew)",
+                "recommended_goal": {
+                    "goal_id": "string (one of the goal template IDs above)",
+                    "reason": "string (ONE sentence in Hebrew explaining WHY this goal is perfect for them right now. Max 15 words.)",
+                    "confidence": "string (high/medium/low)"
+                },
                 "tasks": [
                     {
                         "title": "string (Actionable, specific step title in Hebrew - max 4 words)",
@@ -124,6 +156,15 @@ Deno.serve(async (req) => {
                     state_name: { type: "string" },
                     state_description: { type: "string" },
                     state_goal: { type: "string" },
+                    recommended_goal: {
+                        type: "object",
+                        properties: {
+                            goal_id: { type: "string" },
+                            reason: { type: "string" },
+                            confidence: { type: "string" }
+                        },
+                        required: ["goal_id", "reason", "confidence"]
+                    },
                     tasks: {
                         type: "array",
                         items: {
@@ -137,7 +178,7 @@ Deno.serve(async (req) => {
                         }
                     }
                 },
-                required: ["state_id", "state_name", "tasks"]
+                required: ["state_id", "state_name", "tasks", "recommended_goal"]
             }
         });
 
@@ -169,6 +210,7 @@ Deno.serve(async (req) => {
                 description: analysis.state_description,
                 goal: analysis.state_goal
             },
+            recommended_goal: analysis.recommended_goal,
             client_tasks: tasksWithIds
         });
 
