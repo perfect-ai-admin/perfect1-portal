@@ -209,27 +209,31 @@ export default function MentorOverview() {
     <div className="space-y-8 p-4 md:p-6 max-w-7xl mx-auto" dir="rtl">
       
       {/* Header Section */}
-      <div className="text-center space-y-3 mb-8 py-6 bg-white rounded-2xl border border-gray-100 shadow-sm mx-auto max-w-4xl">
-        <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2">
-            <BarChart2 className="w-6 h-6 text-blue-600" />
-        </div>
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-          תמונת המצב שלי
-        </h1>
-        <p className="text-sm md:text-base text-gray-600 leading-relaxed max-w-lg mx-auto px-4">
-          {getHeaderStatus()}
-        </p>
-        
-        {activeGoalsCount > 0 && (
-            <div className="mt-5">
-                <Button 
-                    onClick={handleOpenGoalCreation}
-                    className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 h-12 shadow-lg hover:shadow-xl transition-all hover:scale-105 text-base font-medium"
-                >
-                    <Plus className="w-5 h-5 ml-2" />
-                    מטרה חדשה
-                </Button>
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 pb-4 border-b border-gray-100/50">
+        <div>
+            <div className="flex items-center gap-3 mb-1">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                תמונת המצב שלי
+                </h1>
+                {activeGoalsCount > 0 && (
+                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-100 px-2.5 py-0.5 rounded-full font-medium">
+                        {activeGoalsCount} מטרות פעילות
+                    </Badge>
+                )}
             </div>
+            <p className="text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
+                {getHeaderStatus()}
+            </p>
+        </div>
+
+        {activeGoalsCount > 0 && (
+            <Button 
+                onClick={handleOpenGoalCreation}
+                className="bg-gray-900 hover:bg-black text-white rounded-full px-6 h-11 shadow-sm hover:shadow-md transition-all flex-shrink-0"
+            >
+                <Plus className="w-4 h-4 ml-2" />
+                מטרה חדשה
+            </Button>
         )}
       </div>
 
