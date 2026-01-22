@@ -282,10 +282,11 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                 onClose={() => {
                   setShowAddGoal(false);
                   setEditingGoal(null);
+                  setSpecificTemplate(null);
                 }}
                 hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
                 editingGoal={editingGoal}
-                initialTemplate={!editingGoal && resolvedRecommendedTemplate && !hasStartedRecommendedGoal ? resolvedRecommendedTemplate : null}
+                initialTemplate={specificTemplate || (!editingGoal && resolvedRecommendedTemplate && !hasStartedRecommendedGoal ? resolvedRecommendedTemplate : null)}
               />
             )}
           </SheetContent>
@@ -303,10 +304,11 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                 onClose={() => {
                   setShowAddGoal(false);
                   setEditingGoal(null);
+                  setSpecificTemplate(null);
                 }}
                 hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
                 editingGoal={editingGoal}
-                initialTemplate={!editingGoal && resolvedRecommendedTemplate && !hasStartedRecommendedGoal ? resolvedRecommendedTemplate : null}
+                initialTemplate={specificTemplate || (!editingGoal && resolvedRecommendedTemplate && !hasStartedRecommendedGoal ? resolvedRecommendedTemplate : null)}
               />
             )}
           </DialogContent>
