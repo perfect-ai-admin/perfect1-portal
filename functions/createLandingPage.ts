@@ -40,81 +40,88 @@ Deno.serve(async (req) => {
             CONVERSION GOALS:
             - Desired Action: ${data.ctaTypes?.join(', ')}
             - CTA Button Text: ${data.ctaText}
+            - Form Fields Needed: ${data.formFields?.join(', ')}
             
             DESIGN & TONE:
-            - Style Preference: ${data.pageStyle} (Adjust the copy tone to match this style - e.g., 'luxury' needs elegant language, 'energetic' needs punchy language)
+            - Style Preference: ${data.pageStyle}
             `;
 
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
                 ROLE:
-                You are Israel's top Conversion Rate Optimization (CRO) expert and Senior UX Copywriter. 
-                You specialize in building "High-Converting Landing Pages" that turn visitors into leads using psychological triggers.
+                You are Israel's top Conversion Rate Optimization (CRO) expert and Senior UX Copywriter.
+                You build "High-Converting" landing pages that are visually rich, psychologically persuasive, and fully comprehensive.
                 
                 TASK:
-                Create the full content structure for a landing page based on the detailed business profile below.
-                The content must be in PERFECT, NATIVE HEBREW. 
-                Do not translate literally - write as a local marketing expert.
+                Generate a COMPLETE, LONG-FORM landing page JSON structure based on the business profile below.
+                The content must be in native, persuasive Hebrew.
                 
+                THE PAGE MUST HAVE EXACTLY THESE 6 SECTIONS (in this order):
+                1. HERO: High impact, big promise, immediate CTA.
+                2. PAIN_POINTS: Sympathize with the customer's struggle (using the provided pain points).
+                3. FEATURES_BENEFITS: How we solve it + The "Why Us" (competitive advantage).
+                4. PROCESS / ABOUT: How it works (3 simple steps) OR About the business.
+                5. SOCIAL_PROOF: Testimonials (use provided one, or generate 2 generic but realistic placeholders if missing) + Stats.
+                6. FAQ: 4-5 relevant questions and answers that address objections.
+                7. CONTACT: A lead form section + direct contact options.
+
                 ${promptContext}
 
-                GUIDELINES FOR SECTIONS:
-                1. HERO SECTION:
-                   - Headline: Must be a "Hook". Address the main benefit or the solution to the pain point immediately.
-                   - Subheadline: Explain *how* we solve it and remove anxiety.
-                   - CTA: Use the user's preferred text but make it compelling.
-
-                2. FEATURES / BENEFITS (The "Why Us"):
-                   - Don't just list features. Translate them into BENEFITS. 
-                   - Use the "Why Choose Us" data to highlight competitive advantages.
-                   - Keep descriptions punchy (2-3 lines max).
-
-                3. SOCIAL PROOF (Trust):
-                   - If a testimonial exists, format it beautifully.
-                   - If experience years are mentioned, highlight them as an authority indicator.
-                   - Use a "Trust Badge" style for credibility (e.g., "Over X years of experience").
-
-                4. CONTACT / CONVERSION:
-                   - Clear, friction-free call to action.
-                   - Reiterate the value one last time (e.g., "Ready to stop [Pain Point]?").
+                CRITICAL GUIDELINES:
+                - Tone: Match the '${data.pageStyle}' style requested.
+                - Hero: Must be "Wow".
+                - FAQ: Must be real objections customers in this field have (e.g., price, time, guarantee).
+                - Contact Form: The JSON must specify which fields to show based on 'Form Fields Needed'.
 
                 OUTPUT FORMAT:
-                Return a JSON object matching the schema below.
-                Ensure the 'sections' array contains objects with 'type': 'hero' | 'features' | 'contact'.
-                You can add a 'text' type section for the "Process" or "About" if the input data supports it.
+                Return a JSON object with the following structure:
+                {
+                    "headline": "Main Hero Headline",
+                    "subheadline": "Main Hero Subheadline",
+                    "sections_json": [
+                        { "type": "hero", "title": "...", "subtitle": "...", "ctaText": "..." },
+                        { "type": "pain_points", "title": "...", "items": [{ "title": "...", "description": "..." }] },
+                        { "type": "features", "title": "...", "items": [{ "title": "...", "description": "...", "icon": "check" }] },
+                        { "type": "process", "title": "...", "steps": [{ "number": 1, "title": "...", "description": "..." }] },
+                        { "type": "testimonials", "title": "...", "items": [{ "name": "...", "text": "...", "role": "..." }] },
+                        { "type": "faq", "title": "...", "items": [{ "question": "...", "answer": "..." }] },
+                        { 
+                            "type": "contact", 
+                            "title": "...", 
+                            "subtitle": "...", 
+                            "form_fields": ["name", "phone", ...], // based on input
+                            "phone": "...", 
+                            "whatsapp": "..." 
+                        }
+                    ]
+                }
                 `,
                 response_json_schema: {
                     type: "object",
                     properties: {
                         headline: { type: "string" },
                         subheadline: { type: "string" },
-                        sections: {
+                        sections_json: {
                             type: "array",
                             items: {
                                 type: "object",
                                 properties: {
-                                    type: { type: "string" },
+                                    type: { type: "string", enum: ["hero", "pain_points", "features", "process", "testimonials", "faq", "contact"] },
                                     title: { type: "string" },
                                     subtitle: { type: "string" },
+                                    description: { type: "string" },
                                     ctaText: { type: "string" },
-                                    ctaLink: { type: "string" },
+                                    items: { type: "array", items: { type: "object", additionalProperties: true } },
+                                    steps: { type: "array", items: { type: "object", additionalProperties: true } },
+                                    form_fields: { type: "array", items: { type: "string" } },
                                     phone: { type: "string" },
-                                    whatsapp: { type: "string" },
-                                    items: {
-                                        type: "array",
-                                        items: {
-                                            type: "object",
-                                            properties: {
-                                                title: { type: "string" },
-                                                description: { type: "string" }
-                                            }
-                                        }
-                                    }
-                                }
+                                    whatsapp: { type: "string" }
+                                },
+                                required: ["type", "title"]
                             }
                         }
                     },
-                    required: ["headline", "sections"]
+                    required: ["headline", "sections_json"]
                 }
             });
         } catch (err) {
@@ -148,7 +155,7 @@ Deno.serve(async (req) => {
             }
         ];
 
-        const finalSections = generatedContent?.sections || fallbackSections;
+        const finalSections = generatedContent?.sections_json || fallbackSections;
         const headline = generatedContent?.headline || data.headline || data.business_name;
         const subheadline = generatedContent?.subheadline || data.subheadline || '';
 
