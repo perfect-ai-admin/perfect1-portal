@@ -4,8 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
-import GoalTemplates from '../goals/GoalTemplatesFixed';
-import GOAL_TEMPLATES_DATA from '../goals/GoalTemplatesFixed'; // Import the default export to access GOAL_TEMPLATES
+import GoalTemplates, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
 // GoalsCatalog removed
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
 import { Plus, Sparkles, Target, ArrowLeft } from 'lucide-react';
@@ -38,22 +37,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const hasStartedRecommendedGoal = userGoals.some(g => g.category === recommendedGoalData?.goal_id);
   
   // Find the full template data for the recommended goal
-  const recommendedTemplate = recommendedGoalData && !hasStartedRecommendedGoal
-    ? import('../goals/GoalTemplatesFixed').then(m => m.default.GOAL_TEMPLATES?.find(t => t.id === recommendedGoalData.goal_id))
+  // Now using the exported GOAL_TEMPLATES directly
+  const resolvedRecommendedTemplate = recommendedGoalData && !hasStartedRecommendedGoal
+    ? GOAL_TEMPLATES.find(t => t.id === recommendedGoalData.goal_id)
     : null;
-
-  const [resolvedRecommendedTemplate, setResolvedRecommendedTemplate] = useState(null);
-
-  useEffect(() => {
-    if (recommendedGoalData && !hasStartedRecommendedGoal) {
-       import('../goals/GoalTemplatesFixed').then(m => {
-          const template = m.default.GOAL_TEMPLATES?.find(t => t.id === recommendedGoalData.goal_id);
-          setResolvedRecommendedTemplate(template);
-       });
-    } else {
-      setResolvedRecommendedTemplate(null);
-    }
-  }, [recommendedGoalData, hasStartedRecommendedGoal]);
 
 
   useEffect(() => {

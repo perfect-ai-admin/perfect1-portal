@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 
 // Goal Templates
-const GOAL_TEMPLATES = [
+export const GOAL_TEMPLATES = [
   {
     id: 'active_customers',
     name: 'הגדלת כמות לקוחות פעילים',
