@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Clock, Shield, Zap } from 'lucide-react';
+import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Clock, Shield, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
