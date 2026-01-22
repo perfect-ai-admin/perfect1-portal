@@ -296,7 +296,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
   // We check if any active goal has the same title or is linked to this task ID
   const hasCreatedRecommendedGoal = activeGoals?.some(g => 
     g.title === firstJourneyTask?.title || 
-    g.category === `task_${firstJourneyTask?.id}`
+    g.category === `task_${firstJourneyTask?.id}` ||
+    g.category === `task_goal_${firstJourneyTask?.id}`
   );
 
   // Determine if Next Step Card should be shown
