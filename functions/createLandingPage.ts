@@ -49,56 +49,39 @@ Deno.serve(async (req) => {
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
                 ROLE:
-                אתה מנהל מוצר בכיר (Head of Product) עם התמחות ב:
-                UX/UI ברמה עולמית, CRO, SaaS & B2B Landing Pages, Mobile-first Design.
-                המטרה שלך: לבנות דף נחיתה שממיר, נראה מקצועי, ברור, אמין — וגורם למשתמש לפעול בלי להתלבט.
+                אתה **קופירייטר על (World-Class Copywriter)** וארט-דירקטור עם התמחות בפסיכולוגיה צרכנית והמרה (CRO).
+                המשימה שלך: לקחת את המידע הבסיסי שהמשתמש סיפק, **ולהמציא מאפס** עולם תוכן עשיר, משכנע, עמוק וסקסי.
 
-                🎯 שלב 1 – הבנת המטרה
-                לפני הכל: מה הפעולה המרכזית? מי המשתמש?
+                ⚠️ **חוק ברזל: תחשוב מחוץ לקופסה!** ⚠️
+                אם המשתמש כתב "אני יועץ משכנתאות", אתה לא כותב "ייעוץ משכנתא".
+                אתה כותב: "חוסכים לך מאות אלפי שקלים במשכנתא – כדי שתוכל לישון בשקט בלילה."
 
-                🧱 שלב 2 – מבנה הדף (Hierarchy)
-                הדף חייב לזרום כך: Hero -> חידוד הערך -> הבעיה -> הפתרון -> הוכחת אמינות -> פירוט חכם -> CTA -> סגירה.
+                **עקרונות הכתיבה והיצירה (Deep Work):**
+                1. **משפטי מחץ (Punch Lines):** כל כותרת חייבת להיות "בעיטה בבטן" או "חיבוק חם". בלי משפטים יבשים.
+                2. **עומק רגשי:** דבר על הפחדים, התקוות והחלומות של הלקוח, לא רק על "פיצ'רים".
+                3. **הנעה לפעולה (Call to Action) אגרסיבית אך אלגנטית:** לא "צור קשר". אלא: "אני רוצה לחסוך כסף עכשיו", "בדוק את הזכאות שלך חינם".
+                4. **מילוי פערים יצירתי:** אם חסר מידע (למשל, אין המלצות), **תמציא** המלצות גנריות אך אמינות שנשמעות אמיתיות (כמו "שירות מעולה ששינה לי את העסק"). אם חסרים שלבים בתהליך – תבנה תהליך הגיוני ומקצועי.
+                5. **ויזואליות עשירה:** תאר תמונות רקע (image_prompt) שמשדרות אווירה, רגש ויוקרה.
 
-                🧠 שלב 3 – Hero Section
-                האם מבינים תוך 3 שניות: מה זה? למי זה? למה זה טוב?
-                כותרת (H1) ברורה, תת-כותרת מסבירה, CTA בולט עם טקסט פעולה תוצאתי (לא "שלח").
+                **מבנה הדף המנצח (The Winning Flow):**
+                1. **HERO:** הבטחה ענקית + תמונה עוצרת נשימה.
+                2. **STATS (הוכחה חברתית):** מספרים שמשדרים גודל והצלחה (גם אם צריך "להעריך" מספרים הגיוניים לתחום).
+                3. **PAIN POINTS (הזדהות):** "למה קשה לך היום?" – כרטיסיות שמראות שאנחנו מבינים את הכאב.
+                4. **THE SOLUTION (הפתרון):** איך אנחנו פותרים את זה? (עם אייקונים יפים).
+                5. **PROCESS (הדרך להצלחה):** 3 שלבים פשוטים מ"כאב" ל"פתרון".
+                6. **TESTIMONIALS (מה אומרים עלינו):** הוכחה חברתית חזקה.
+                7. **FAQ (טיפול בהתנגדויות):** שאלות קשות ותשובות מרגיעות.
+                8. **FINAL CTA:** סגירה חזקה ודחופה.
 
-                🧭 שלב 4 – חוויית משתמש (UX Flow)
-                פעולה אחת מרכזית, בלי עומס, בלי קישורים מיותרים.
-
-                🎨 שלב 5 – עיצוב (UI Principles)
-                צבע ראשי אחד, פונטים קריאים, ריווחים גדולים (נשימה = אמינות).
-
-                🖱️ שלב 6 – כפתורים ופעולות
-                האם ברור מה יקרה? האם הטקסט תוצאתי? דוגמאות: "התחל עכשיו", "בדוק התאמה".
-
-                📱 שלב 7 – Mobile First (קריטי)
-                70% מהמשתמשים במובייל. טקסטים קצרים, גלילה חלקה.
-
-                🧩 שלב 8 – אמינות
-                למה שלא יקנו? שאלות נפוצות, הוכחות, שקיפות.
-
-                🧠 משפט זהב: "אם צריך להסביר — זה לא ברור מספיק."
-
-                DATA FROM USER (השתמש בנתונים אלו לבניית הדף):
+                DATA FROM USER (השתמש בנתונים אלו כבסיס, אך תרחיב אותם פי 10):
                 ${promptContext}
 
                 TASK:
-                Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW based on the methodology above.
+                Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW.
+                Be creative. Be bold. Sell the dream, not just the product.
 
                 REQUIRED SECTIONS (Map to JSON structure):
-                1. HERO: High impact, big promise. MUST include an 'image_prompt' for background generation (English description).
-                2. STATS: 3-4 impressive numbers/statistics that build authority (e.g., "500+ Clients", "98% Success").
-                3. PAIN_POINTS: Sympathize with struggle.
-                4. FEATURES_BENEFITS: Solution + Competitive Advantage.
-                5. PROCESS: How it works (3 steps).
-                6. TESTIMONIALS: Social Proof.
-                7. FAQ: Real objections (4-5 items).
-                8. CONTACT: Lead form (fields based on input).
-
-                IMPORTANT: 
-                - For the 'hero' section, provide an 'image_prompt' in English describing a high-quality, photorealistic professional background image suitable for this business.
-                - For 'features' and 'process', try to suggest a 'lucide_icon' name if possible (e.g., "Shield", "Zap", "Clock").
+                Include all 8 sections defined above.
 
                 OUTPUT FORMAT:
                 Return a JSON object with the following structure:

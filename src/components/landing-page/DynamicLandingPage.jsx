@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Clock, Shield, Zap, AlertCircle, Award, TrendingUp, Users, ThumbsUp, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,8 +19,38 @@ export default function DynamicLandingPage({ data }) {
         '--primary-light': `${primary_color}10` || '#EFF6FF', // Light tint
     };
 
+    // Sticky CTA Logic
+    const [showStickyCTA, setShowStickyCTA] = useState(false);
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowStickyCTA(window.scrollY > 400);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+
     return (
-        <div style={themeStyle} className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-[var(--primary)] selection:text-white" dir="rtl">
+        <div style={themeStyle} className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-[var(--primary)] selection:text-white pb-20 md:pb-0" dir="rtl">
+            
+            {/* Sticky Floating CTA for Mobile & Desktop */}
+            <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] transition-transform duration-300 transform ${showStickyCTA ? 'translate-y-0' : 'translate-y-full'}`}>
+                <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+                    <div className="hidden md:block">
+                        <p className="font-bold text-slate-900 text-lg">{data.business_name}</p>
+                        <p className="text-sm text-slate-500">הפתרון המושלם עבורך במרחק קליק</p>
+                    </div>
+                    <Button 
+                        onClick={scrollToContact}
+                        className="w-full md:w-auto h-12 md:h-14 px-8 text-lg font-bold rounded-full bg-[var(--primary)] hover:brightness-110 shadow-lg shadow-[var(--primary)]/30 animate-pulse-glow"
+                    >
+                        {sections_json?.find(s => s.type === 'hero')?.ctaText || 'אני רוצה להתחיל'}
+                        <ArrowLeft className="mr-2 w-5 h-5" />
+                    </Button>
+                </div>
+            </div>
+
             {sections_json?.map((section, idx) => {
                 switch (section.type) {
                     case 'hero':
@@ -141,25 +171,38 @@ export default function DynamicLandingPage({ data }) {
 
                                 <div className="max-w-7xl mx-auto relative z-10">
                                     <div className="text-center mb-24">
-                                        <span className="text-[var(--primary)] font-bold tracking-widest uppercase text-sm mb-4 block">הפתרון שלנו</span>
+                                        <div className="inline-block px-4 py-1 rounded-full border border-[var(--primary)] text-[var(--primary)] text-sm font-bold tracking-widest uppercase mb-6 bg-[var(--primary)]/10">
+                                            למה אנחנו?
+                                        </div>
                                         <h2 className="text-4xl md:text-6xl font-black mb-6">{section.title}</h2>
-                                        {section.subtitle && <p className="text-2xl text-slate-400 max-w-3xl mx-auto font-light">{section.subtitle}</p>}
+                                        {section.subtitle && <p className="text-2xl text-slate-400 max-w-3xl mx-auto font-light leading-relaxed">{section.subtitle}</p>}
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                         {section.items?.map((item, itemIdx) => (
-                                            <div key={itemIdx} className="group p-1 bg-gradient-to-br from-white/10 to-transparent rounded-[2rem] hover:from-[var(--primary)] hover:to-[var(--primary)]/50 transition-all duration-500">
-                                                <div className="bg-slate-900/90 backdrop-blur-xl h-full p-8 rounded-[1.9rem] border border-white/5 group-hover:border-transparent transition-all">
-                                                    <div className="w-16 h-16 bg-gradient-to-br from-[var(--primary)] to-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform duration-500">
+                                            <div key={itemIdx} className="group relative">
+                                                <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--primary)] to-blue-600 rounded-[2rem] opacity-20 group-hover:opacity-100 transition duration-500 blur"></div>
+                                                <div className="relative h-full bg-slate-900/95 backdrop-blur-xl p-8 rounded-[1.9rem] border border-white/10 hover:border-white/20 transition-all flex flex-col">
+                                                    <div className="w-16 h-16 bg-gradient-to-br from-[var(--primary)] to-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-blue-500/20 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                                                         <Check className="w-8 h-8 text-white" />
                                                     </div>
-                                                    <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
+                                                    <h3 className="text-2xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 group-hover:to-white transition-all">{item.title}</h3>
                                                     <p className="text-slate-400 leading-relaxed text-lg group-hover:text-slate-300 transition-colors">
                                                         {item.description}
                                                     </p>
                                                 </div>
                                             </div>
                                         ))}
+                                    </div>
+                                    
+                                    <div className="mt-20 text-center">
+                                        <Button 
+                                            onClick={scrollToContact}
+                                            className="h-14 px-10 text-lg rounded-full bg-white text-slate-900 hover:bg-blue-50 font-bold transition-transform hover:scale-105"
+                                        >
+                                            אני רוצה לשמוע עוד
+                                            <ArrowLeft className="mr-2 w-5 h-5" />
+                                        </Button>
                                     </div>
                                 </div>
                             </section>
