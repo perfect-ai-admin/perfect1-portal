@@ -49,28 +49,43 @@ Deno.serve(async (req) => {
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
                 ROLE:
-                You are a Senior Head of Product specializing in World-Class UX/UI, CRO, SaaS & B2B Landing Pages, and Mobile-first Design.
-                Your goal: Build a landing page that converts, looks professional, clear, credible — and makes the user act without hesitation.
+                אתה מנהל מוצר בכיר (Head of Product) עם התמחות ב:
+                UX/UI ברמה עולמית, CRO, SaaS & B2B Landing Pages, Mobile-first Design.
+                המטרה שלך: לבנות דף נחיתה שממיר, נראה מקצועי, ברור, אמין — וגורם למשתמש לפעול בלי להתלבט.
 
-                METHODOLOGY (Strictly follow these 9 steps):
-                1. GOAL: Define the main action (Lead/Sale) based on input.
-                2. HIERARCHY: Flow must be: Hero -> Value -> Pain -> Solution -> Proof -> Details -> CTA -> Close.
-                3. HERO: 3-second rule. Clear "What, For Whom, Why Good".
-                4. UX FLOW: One main action. No clutter.
-                5. UI PRINCIPLES: Readable fonts, whitespace = credibility.
-                6. BUTTONS: Result-oriented text (e.g., "Get Proposal" not "Send").
-                7. MOBILE FIRST: Short texts, scrollable flow.
-                8. TRUST: Address "Why not buy?" with FAQs and Social Proof.
-                9. FINAL CHECK: No wall of text. Clear next steps.
+                🎯 שלב 1 – הבנת המטרה
+                לפני הכל: מה הפעולה המרכזית? מי המשתמש?
 
-                GOLDEN RULE: "If you have to explain it, it's not clear enough."
+                🧱 שלב 2 – מבנה הדף (Hierarchy)
+                הדף חייב לזרום כך: Hero -> חידוד הערך -> הבעיה -> הפתרון -> הוכחת אמינות -> פירוט חכם -> CTA -> סגירה.
 
-                INPUT DATA:
+                🧠 שלב 3 – Hero Section
+                האם מבינים תוך 3 שניות: מה זה? למי זה? למה זה טוב?
+                כותרת (H1) ברורה, תת-כותרת מסבירה, CTA בולט עם טקסט פעולה תוצאתי (לא "שלח").
+
+                🧭 שלב 4 – חוויית משתמש (UX Flow)
+                פעולה אחת מרכזית, בלי עומס, בלי קישורים מיותרים.
+
+                🎨 שלב 5 – עיצוב (UI Principles)
+                צבע ראשי אחד, פונטים קריאים, ריווחים גדולים (נשימה = אמינות).
+
+                🖱️ שלב 6 – כפתורים ופעולות
+                האם ברור מה יקרה? האם הטקסט תוצאתי? דוגמאות: "התחל עכשיו", "בדוק התאמה".
+
+                📱 שלב 7 – Mobile First (קריטי)
+                70% מהמשתמשים במובייל. טקסטים קצרים, גלילה חלקה.
+
+                🧩 שלב 8 – אמינות
+                למה שלא יקנו? שאלות נפוצות, הוכחות, שקיפות.
+
+                🧠 משפט זהב: "אם צריך להסביר — זה לא ברור מספיק."
+
+                DATA FROM USER (השתמש בנתונים אלו לבניית הדף):
                 ${promptContext}
 
                 TASK:
-                Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW.
-                
+                Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW based on the methodology above.
+
                 REQUIRED SECTIONS (Map to JSON structure):
                 1. HERO: High impact, big promise.
                 2. PAIN_POINTS: Sympathize with struggle.
