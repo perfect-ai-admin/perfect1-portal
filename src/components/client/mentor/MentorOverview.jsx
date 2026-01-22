@@ -27,7 +27,6 @@ import { toast } from 'sonner';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
 import BusinessRoadmap from '../goals/BusinessRoadmap';
-import { Target } from 'lucide-react';
 
 export default function MentorOverview() {
   const queryClient = useQueryClient();
