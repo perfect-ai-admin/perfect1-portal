@@ -58,6 +58,7 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
+import RecommendedGoalCard from '../goals/RecommendedGoalCard';
 
 export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
