@@ -118,6 +118,7 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                                             </Button>
                                         </div>
                                     </motion.div>
+                                    </div>
                                 </div>
                             </header>
                         );
