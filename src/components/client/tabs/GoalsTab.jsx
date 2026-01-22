@@ -309,46 +309,48 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
           {/* Recommended Goal - Special Section */}
           {resolvedRecommendedTemplate && !hasStartedRecommendedGoal && (
-            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-4 border border-purple-200 shadow-sm relative overflow-hidden group">
-               {/* Decorative background element */}
-               <div className="absolute top-0 left-0 w-32 h-32 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+            <div className="mb-8">
+              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600 fill-purple-100" />
+                מטרה מומלצת להתחלה
+              </h2>
+              
+              <div className="bg-white rounded-xl p-6 border-2 border-purple-100 shadow-md relative overflow-hidden">
+                 {/* Badge */}
+                 <div className="absolute top-4 left-4 bg-purple-50 text-purple-700 text-xs font-bold px-3 py-1 rounded-full border border-purple-100 flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-purple-600 animate-pulse" />
+                    Recommended · Not Started
+                 </div>
 
-               <div className="relative">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="bg-purple-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                       <Sparkles className="w-3 h-3" />
-                       מומלץ עבורך
+                 <div className="flex flex-col sm:flex-row gap-6">
+                    <div className="flex-shrink-0">
+                       <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${resolvedRecommendedTemplate.color} flex items-center justify-center shadow-lg transform rotate-3`}>
+                          <resolvedRecommendedTemplate.icon className="w-8 h-8 text-white" />
+                       </div>
                     </div>
-                    <span className="text-xs font-medium text-purple-700 bg-purple-100/50 px-2 py-0.5 rounded-full border border-purple-100">
-                      טרם התחיל
-                    </span>
-                  </div>
 
-                  <div className="flex items-start justify-between gap-4">
-                     <div className="flex-1">
-                        <h2 className="text-lg font-bold text-gray-900 mb-1 flex items-center gap-2">
-                           <Target className="w-5 h-5 text-purple-600" />
-                           {resolvedRecommendedTemplate.name}
-                        </h2>
-                        <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                           {resolvedRecommendedTemplate.description}
-                        </p>
-                        <p className="text-xs text-purple-700 bg-white/60 p-2 rounded-lg border border-purple-100 inline-block">
-                           <strong>למה זה מומלץ:</strong> {recommendedGoalData.reason}
-                        </p>
-                     </div>
-                     <div className="flex flex-col gap-2">
-                        <Button 
-                          onClick={handleStartRecommended}
-                          className="bg-purple-600 hover:bg-purple-700 text-white shadow-md whitespace-nowrap"
-                        >
-                          <Plus className="w-4 h-4 ml-1.5" />
-                          התחל עכשיו
-                        </Button>
-                     </div>
-                  </div>
-               </div>
+                    <div className="flex-1">
+                       <h3 className="text-xl font-black text-gray-900 mb-2">
+                          {resolvedRecommendedTemplate.name}
+                       </h3>
+                       <p className="text-gray-600 mb-4 leading-relaxed max-w-xl">
+                          {resolvedRecommendedTemplate.description}.
+                          <br/>
+                          <span className="text-sm text-purple-600 font-medium bg-purple-50 px-2 py-0.5 rounded mt-1 inline-block">
+                             למה בחרנו בזה? {recommendedGoalData.reason}
+                          </span>
+                       </p>
+
+                       <Button 
+                         onClick={handleStartRecommended}
+                         className="bg-gray-900 hover:bg-black text-white shadow-lg hover:shadow-xl transition-all h-11 px-6 rounded-lg font-medium"
+                       >
+                         <Plus className="w-4 h-4 ml-2" />
+                         התחל את המטרה המומלצת
+                       </Button>
+                    </div>
+                 </div>
+              </div>
             </div>
           )}
 
