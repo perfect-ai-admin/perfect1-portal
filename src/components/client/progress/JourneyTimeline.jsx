@@ -94,7 +94,7 @@ export default function JourneyTimeline() {
   };
 
   return (
-    <div className="relative min-h-[500px] p-4 pb-20 bg-gray-50/50 rounded-3xl">
+    <div className="relative min-h-[300px] p-4 pb-6 bg-gray-50/50 rounded-3xl">
       {/* Header */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-3">

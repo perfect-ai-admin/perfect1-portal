@@ -357,7 +357,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
       </div>
 
       {/* Journey Timeline - Mobile */}
-      <div className="lg:hidden mb-6">
+      <div className="lg:hidden mb-3">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">המסע שלך</h2>
           <Button 
@@ -375,7 +375,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
       {/* Recommended Goal - Mobile */}
       {recommendedGoal && !hasCreatedRecommendedGoal && (
-        <div className="lg:hidden mb-6">
+        <div className="lg:hidden mb-3">
            <RecommendedGoalCard 
              recommendedGoal={recommendedGoal}
              onStart={() => {
