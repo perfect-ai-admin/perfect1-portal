@@ -52,7 +52,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
 import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
-import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
+import GoalTemplatesFixed, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -352,7 +352,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
               <h4 className="font-bold text-gray-900">המטרה המומלצת</h4>
             </div>
             <p className="text-gray-700 font-medium mb-2">
-              {import('@/components/client/goals/GoalTemplatesFixed').then(m => m.GOAL_TEMPLATES?.find(t => t.id === recommendedGoal.goal_id)?.name || 'מטרה מומלצת')}
+              {GOAL_TEMPLATES.find(t => t.id === recommendedGoal.goal_id)?.name || 'מטרה מומלצת'}
             </p>
             <p className="text-sm text-purple-700 bg-purple-50 rounded-lg p-2 border border-purple-100">
               <strong>למה זה מומלץ:</strong> {recommendedGoal.reason}
@@ -362,12 +362,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
           <div className="flex gap-2">
             <Button 
               onClick={() => {
-                // Using dynamic import correctly with named export
-                import('@/components/client/goals/GoalTemplatesFixed').then(m => {
-                  const template = m.GOAL_TEMPLATES?.find(t => t.id === recommendedGoal.goal_id);
-                  setGoalTemplateForStep(template);
-                  setShowGoalCreation(true);
-                });
+                const template = GOAL_TEMPLATES.find(t => t.id === recommendedGoal.goal_id);
+                setGoalTemplateForStep(template);
+                setShowGoalCreation(true);
               }}
               className="flex-1 bg-purple-600 hover:bg-purple-700 text-white shadow-lg"
             >
