@@ -137,9 +137,39 @@ export default function LandingPagePreview() {
                 </div>
             </div>
 
-            {/* The Actual Landing Page Content */}
-            <div className="pointer-events-none opacity-90 scale-[0.98] origin-top transition-transform duration-500 mt-4 shadow-2xl rounded-t-2xl overflow-hidden mx-auto max-w-[1400px] bg-white border border-gray-200">
-                <DynamicLandingPage data={page} />
+            {/* The Actual Landing Page Content - Mockup View */}
+            <div className="mt-8 mx-auto max-w-[1200px] perspective-1000">
+                <div className="relative bg-white rounded-xl shadow-[0_50px_100px_-20px_rgba(50,50,93,0.25),0_30px_60px_-30px_rgba(0,0,0,0.3)] border border-slate-200 overflow-hidden ring-1 ring-slate-900/5">
+                    {/* Browser Toolbar */}
+                    <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center gap-4 select-none">
+                        <div className="flex gap-2">
+                            <div className="w-3 h-3 rounded-full bg-[#ff5f56] shadow-sm"></div>
+                            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] shadow-sm"></div>
+                            <div className="w-3 h-3 rounded-full bg-[#27c93f] shadow-sm"></div>
+                        </div>
+                        
+                        {/* Address Bar */}
+                        <div className="flex-1 max-w-2xl mx-auto bg-white border border-slate-200 rounded-md px-3 py-1.5 flex items-center justify-center gap-2 shadow-sm">
+                            <Lock className="w-3 h-3 text-slate-400" />
+                            <span className="text-xs text-slate-500 font-mono truncate dir-ltr">
+                                {liveUrl || `https://perfectbiz.ai/${slug}`}
+                            </span>
+                        </div>
+
+                        {/* Spacer to center address bar */}
+                        <div className="w-[52px]"></div>
+                    </div>
+
+                    {/* Viewport - Scrollable */}
+                    <div className="relative h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent">
+                        <div className="pointer-events-none origin-top">
+                            <DynamicLandingPage data={page} />
+                        </div>
+                    </div>
+                </div>
+                
+                {/* Reflection/Shadow Effect */}
+                <div className="absolute -inset-4 bg-gradient-to-t from-white via-transparent to-transparent z-[-1] opacity-50 blur-xl"></div>
             </div>
 
             {/* Payment Modal */}
