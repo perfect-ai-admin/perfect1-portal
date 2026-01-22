@@ -58,21 +58,6 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                     </div>
                 </div>
             )}
-                <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-                        <div className="hidden md:block">
-                            <p className="font-bold text-slate-900 text-lg">{data.business_name}</p>
-                            <p className="text-sm text-slate-500">הפתרון המושלם עבורך במרחק קליק</p>
-                        </div>
-                        <Button 
-                            onClick={scrollToContact}
-                            className="w-full md:w-auto h-12 md:h-14 px-8 text-lg font-bold rounded-full bg-[var(--primary)] hover:brightness-110 shadow-lg shadow-[var(--primary)]/30 animate-pulse-glow"
-                        >
-                            {sections_json?.find(s => s.type === 'hero')?.ctaText || 'אני רוצה להתחיל'}
-                            <ArrowLeft className="mr-2 w-5 h-5" />
-                        </Button>
-                    </div>
-                </div>
-            )}
 
             {sections_json?.map((section, idx) => {
                 switch (section.type) {
