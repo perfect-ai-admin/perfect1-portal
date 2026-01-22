@@ -97,14 +97,12 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
   const handleShowAddGoal = () => {
     // Log override if recommendation exists and not taken
-    if (recommendedGoalData && !hasStartedRecommendedGoal) {
+    if (recommendedGoal && !hasStartedRecommendedGoal) {
        // Log to analytics or console as requested
        console.log('User overrode recommendation', { 
-         recommended: recommendedGoalData.goal_id, 
+         recommended: recommendedGoal.goal_id, 
          user_id: user.id 
        });
-       // Optionally track in DB via simple update if needed, but console/analytics is usually enough for "logging"
-       // base44.analytics.track('user_overrode_recommendation', { ... });
     }
 
     const limit = user?.goals_limit;
@@ -146,12 +144,6 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
             ]
           };
           
-          // Hack: we need to pass this specific template to the dialog
-          // We'll modify the state directly or use a new state if needed
-          // For now, we rely on the component receiving this as 'initialTemplate' prop logic if we were passing props down
-          // But here GoalTemplates is inside the dialog. 
-          
-          // We need to set a state to hold this special template to pass to GoalTemplates
           setSpecificTemplate(taskTemplate);
        }
        
@@ -445,5 +437,5 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
         </motion.div>
       </div>
     </>
-      );
-      }
+  );
+}

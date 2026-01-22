@@ -277,7 +277,6 @@ export default function ProgressTab({ data, onNavigate, user }) {
   // Check if user has recommended goal (First task of journey)
   // We prioritize the ACTUAL first task of the journey over the generic recommended_goal
   const firstJourneyTask = currentUserData?.client_tasks?.[0];
-  const nextStep = activeMilestones.find(t => t.status === 'in_progress' || t.status === 'pending') || activeMilestones[0];
   
   // Define the "Recommended Goal" as the current journey step
   const recommendedGoal = firstJourneyTask ? {
@@ -401,6 +400,10 @@ export default function ProgressTab({ data, onNavigate, user }) {
                 onClick={() => {
                   if (recommendedGoal.isJourneyTask) {
                      const template = getGoalTemplateForTask(recommendedGoal.originalTask);
+                     setGoalTemplateForStep(template);
+                     setShowGoalCreation(true);
+                  } else {
+                     const template = GOAL_TEMPLATES.find(t => t.id === recommendedGoal.goal_id);
                      setGoalTemplateForStep(template);
                      setShowGoalCreation(true);
                   }
