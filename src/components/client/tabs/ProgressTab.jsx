@@ -233,7 +233,6 @@ export default function ProgressTab({ data, onNavigate, user }) {
     setShowGoalCreation(false);
     setGoalTemplateForStep(null);
     setShowGoalSelectionConfirmation(true);
-    setIsGoalsExpanded(true); // Ensure goals are visible when confirmation closes
 
     try {
       // Create goal in DB immediately WITHOUT waiting for AI
@@ -385,7 +384,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
       </div>
 
       {/* Recommended Goal - Mobile */}
-      {recommendedGoal && !hasCreatedRecommendedGoal && activeGoals.length === 0 && (
+      {recommendedGoal && !hasCreatedRecommendedGoal && (
         <div className="lg:hidden mb-3">
            <RecommendedGoalCard 
              recommendedGoal={recommendedGoal}
@@ -471,7 +470,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
            </div>
 
            {/* Recommended Goal - Desktop */}
-           {recommendedGoal && !hasCreatedRecommendedGoal && activeGoals.length === 0 && (
+           {recommendedGoal && !hasCreatedRecommendedGoal && (
              <RecommendedGoalCard 
                recommendedGoal={recommendedGoal}
                onStart={() => {
