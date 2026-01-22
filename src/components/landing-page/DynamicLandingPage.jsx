@@ -67,7 +67,7 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                             : null;
 
                         return (
-                            <header key={idx} className="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900">
+                            <header key={idx} className={`relative flex items-center justify-center overflow-hidden bg-slate-900 ${isThumbnail ? 'h-[760px]' : 'min-h-[95vh]'}`}>
                                 <div className="absolute inset-0 z-0">
                                     {bgImage && (
                                         <img 
@@ -84,8 +84,9 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[var(--primary)] rounded-full blur-[150px] opacity-20 animate-pulse"></div>
 
                                 <div className="max-w-6xl mx-auto relative z-10 px-6 text-center mt-12">
+                                    <div className={isThumbnail ? '' : 'motion-wrapper'}>
                                     <motion.div
-                                        initial={{ opacity: 0, y: 40 }}
+                                        initial={isThumbnail ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.8, ease: "easeOut" }}
                                     >
