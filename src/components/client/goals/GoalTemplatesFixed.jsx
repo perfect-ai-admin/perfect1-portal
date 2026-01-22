@@ -294,6 +294,24 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       actionHint: 'המטרה נוצרת...'
     };
 
+    // Check for duplicates before creating
+    if (!editingGoal) {
+      try {
+         const existingGoals = await base44.entities.UserGoal.filter({ 
+            user_id: user?.id,
+            status: 'active'
+         });
+         
+         const isDuplicate = existingGoals.some(g => g.title === goalTitle || g.category === selectedTemplate.id);
+         if (isDuplicate) {
+            alert('נראה שכבר יש לך מטרה כזו פעילה. כדאי להתמקד בה!');
+            return;
+         }
+      } catch (err) {
+         console.error('Error checking duplicates:', err);
+      }
+    }
+
     // Call parent handler immediately without waiting
     onCreateGoal(goalData, !!editingGoal);
   };
