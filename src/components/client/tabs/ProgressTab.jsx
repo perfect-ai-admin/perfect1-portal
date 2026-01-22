@@ -59,6 +59,7 @@ import { toast } from 'sonner';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import RecommendedGoalCard from '../goals/RecommendedGoalCard';
+import GoalSelectionConfirmation from '../goals/GoalSelectionConfirmation';
 
 export default function ProgressTab({ data, onNavigate, user }) {
   const queryClient = useQueryClient();
@@ -97,6 +98,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   // State for Goal Creation specific to Step
   const [showGoalCreation, setShowGoalCreation] = useState(false);
   const [goalTemplateForStep, setGoalTemplateForStep] = useState(null);
+  const [showGoalSelectionConfirmation, setShowGoalSelectionConfirmation] = useState(false);
 
   // Use dynamic tasks if available, otherwise default milestones
   const activeMilestones = currentUserData?.client_tasks?.length > 0 
@@ -230,6 +232,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
     // Close dialog IMMEDIATELY
     setShowGoalCreation(false);
     setGoalTemplateForStep(null);
+    setShowGoalSelectionConfirmation(true);
 
     try {
       // Create goal in DB immediately WITHOUT waiting for AI
@@ -294,6 +297,13 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const hasCreatedRecommendedGoal = activeGoals?.some(g => 
     g.title === firstJourneyTask?.title || 
     g.category === `task_${firstJourneyTask?.id}`
+  );
+
+  // Determine if Next Step Card should be shown
+  const isNextStepSameAsRecommended = recommendedGoal && nextStep && recommendedGoal.originalTask?.id === nextStep.id;
+  const shouldShowNextStep = nextStep && (
+      !recommendedGoal || 
+      (hasCreatedRecommendedGoal && !isNextStepSameAsRecommended)
   );
 
   if (!isJourneyCompleted) {
@@ -394,8 +404,15 @@ export default function ProgressTab({ data, onNavigate, user }) {
         </div>
       )}
 
+      {/* Goal Selection Confirmation - Mobile */}
+      {showGoalSelectionConfirmation && (
+        <div className="lg:hidden mb-3">
+          <GoalSelectionConfirmation onContinue={() => setShowGoalSelectionConfirmation(false)} />
+        </div>
+      )}
+
       {/* Next Step Card - Mobile - Hide if shown as Recommended Goal */}
-      {nextStep && (hasCreatedRecommendedGoal || !recommendedGoal) && (
+      {!showGoalSelectionConfirmation && shouldShowNextStep && (
         <>
           <div className="lg:hidden">
             <div className="bg-white rounded-lg shadow-md border border-gray-100 p-3">
