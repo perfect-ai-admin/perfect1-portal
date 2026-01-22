@@ -786,12 +786,41 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 <p className="text-gray-600">הקמנו עבורך דף נחיתה ראשוני על בסיס התשובות שלך</p>
               </div>
 
+              {createdPageData && (
+                <div className="w-full h-[400px] border rounded-xl overflow-hidden shadow-sm bg-gray-100 relative group mb-4">
+                  <div className="absolute top-2 right-2 z-10 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    <Eye className="w-3 h-3" />
+                    תצוגה מקדימה
+                  </div>
+                  <div className="w-full h-full overflow-y-auto">
+                    <div className="transform origin-top scale-[0.6] w-[166%] h-auto min-h-[600px]">
+                      <DynamicLandingPage data={createdPageData} />
+                    </div>
+                  </div>
+                  
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button 
+                      size="sm" 
+                      variant="secondary"
+                      className="gap-2 shadow-lg"
+                      onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}
+                    >
+                      <Globe className="w-4 h-4" />
+                      פתח בחלון חדש
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               <div className="w-full bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center gap-3">
                 <Globe className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <div className="flex-1 text-left rtl:text-right overflow-hidden">
-                  <div className="text-[10px] text-gray-400 font-medium">הקישור לדף שלך</div>
-                  <div className="text-sm font-bold text-blue-600 truncate dir-ltr cursor-pointer hover:underline" onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}>
-                    {window.location.host}/LP/{pageSlug}
+                  <div className="text-[10px] text-gray-400 font-medium">הקישור לתצוגה מקדימה</div>
+                  <div 
+                    className="text-sm font-bold text-blue-600 truncate dir-ltr cursor-pointer hover:underline" 
+                    onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}
+                  >
+                    {window.location.origin}/LandingPagePreview?slug={pageSlug}
                   </div>
                 </div>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => {
