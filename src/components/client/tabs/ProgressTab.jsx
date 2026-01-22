@@ -488,8 +488,13 @@ export default function ProgressTab({ data, onNavigate, user }) {
              />
            )}
 
+           {/* Goal Selection Confirmation - Desktop */}
+           {showGoalSelectionConfirmation && (
+              <GoalSelectionConfirmation onContinue={() => setShowGoalSelectionConfirmation(false)} />
+           )}
+
            {/* Next Step - Hide if shown as Recommended Goal */}
-           {nextStep && (hasCreatedRecommendedGoal || !recommendedGoal) && (
+           {!showGoalSelectionConfirmation && shouldShowNextStep && (
              <>
                <div className="bg-white rounded-lg shadow-md border border-gray-100 p-5">
                  <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
