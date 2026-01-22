@@ -373,6 +373,27 @@ export default function ProgressTab({ data, onNavigate, user }) {
         <JourneyTimeline />
       </div>
 
+      {/* Recommended Goal - Mobile */}
+      {recommendedGoal && !hasCreatedRecommendedGoal && (
+        <div className="lg:hidden mb-6">
+           <RecommendedGoalCard 
+             recommendedGoal={recommendedGoal}
+             onStart={() => {
+                if (recommendedGoal.isJourneyTask) {
+                   const template = getGoalTemplateForTask(recommendedGoal.originalTask);
+                   setGoalTemplateForStep(template);
+                   setShowGoalCreation(true);
+                } else {
+                   const template = GOAL_TEMPLATES.find(t => t.id === recommendedGoal.goal_id);
+                   setGoalTemplateForStep(template);
+                   setShowGoalCreation(true);
+                }
+             }}
+             onNavigate={onNavigate}
+           />
+        </div>
+      )}
+
       {/* Next Step Card - Mobile - Hide if shown as Recommended Goal */}
       {nextStep && (hasCreatedRecommendedGoal || !recommendedGoal) && (
         <>
