@@ -409,6 +409,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
                 step={nextStep} 
                 onWhyClick={scrollToWhyMatters} 
                 onAction={handleStartNextStep}
+                onNavigate={onNavigate}
               />
             </div>
           </div>
@@ -483,6 +484,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
                  <NextStepCard 
                     step={nextStep} 
                     onAction={handleStartNextStep}
+                    onNavigate={onNavigate}
                  />
                </div>
 

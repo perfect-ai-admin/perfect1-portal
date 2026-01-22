@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, HelpCircle, Sparkles } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Sparkles, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function NextStepCard({ step, onAction, onWhyClick }) {
+export default function NextStepCard({ step, onAction, onWhyClick, onNavigate }) {
   const [showWhy, setShowWhy] = React.useState(false);
 
   if (!step) {
@@ -53,6 +53,18 @@ export default function NextStepCard({ step, onAction, onWhyClick }) {
               <HelpCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />
               <span className="text-xs md:text-sm">למה?</span>
             </motion.button>
+            
+            {onNavigate && (
+               <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onNavigate('mentor')}
+                className="px-2.5 py-1.5 md:px-3 md:py-2 bg-white/20 backdrop-blur text-white hover:bg-white/30 rounded-xl transition-all flex items-center gap-1.5 flex-shrink-0 shadow-sm font-bold"
+              >
+                <BookOpen className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                <span className="text-xs md:text-sm">משאבים</span>
+              </motion.button>
+            )}
           </div>
           
           <p className="text-sm md:text-lg mb-3 md:mb-4 leading-relaxed font-medium">{step.title}</p>

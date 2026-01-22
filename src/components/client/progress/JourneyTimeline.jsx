@@ -89,11 +89,7 @@ export default function JourneyTimeline() {
   const [showTooltip, setShowTooltip] = useState(null);
 
   const handleStepClick = (step) => {
-    if (step.status === 'locked') {
-      setShowTooltip(step.id);
-      setTimeout(() => setShowTooltip(null), 2000);
-      return;
-    }
+    // Allow clicking all steps to view details/expectations
     setSelectedStep(step);
   };
 
@@ -230,17 +226,22 @@ export default function JourneyTimeline() {
                 <div className="flex items-center gap-4">
                   <div className={cn(
                     "w-12 h-12 rounded-2xl flex items-center justify-center",
-                    selectedStep.status === 'completed' ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"
+                    selectedStep.status === 'completed' ? "bg-green-100 text-green-600" : 
+                    selectedStep.status === 'locked' ? "bg-gray-100 text-gray-500" :
+                    "bg-blue-100 text-blue-600"
                   )}>
-                    {React.createElement(selectedStep.icon, { className: "w-6 h-6" })}
+                    {selectedStep.status === 'locked' ? <Lock className="w-6 h-6" /> : React.createElement(selectedStep.icon, { className: "w-6 h-6" })}
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">{selectedStep.title}</h3>
                     <span className={cn(
                       "text-xs font-bold px-2 py-0.5 rounded-full",
-                      selectedStep.status === 'completed' ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                      selectedStep.status === 'completed' ? "bg-green-100 text-green-700" : 
+                      selectedStep.status === 'locked' ? "bg-gray-100 text-gray-600" :
+                      "bg-blue-100 text-blue-700"
                     )}>
-                      {selectedStep.status === 'completed' ? 'הושלם' : 'בתהליך'}
+                      {selectedStep.status === 'completed' ? 'הושלם' : 
+                       selectedStep.status === 'locked' ? 'טרם נפתח' : 'בתהליך'}
                     </span>
                   </div>
                 </div>
@@ -285,13 +286,19 @@ export default function JourneyTimeline() {
                   </div>
                 )}
 
-                <Button 
-                  className="w-full h-14 text-lg font-bold rounded-2xl mt-4 bg-blue-600 hover:bg-blue-700"
-                  size="lg"
-                  onClick={() => setSelectedStep(null)}
-                >
-                  {selectedStep.details.nextAction || 'המשך לשלב הבא'}
-                </Button>
+                {selectedStep.status !== 'locked' ? (
+                  <Button 
+                    className="w-full h-14 text-lg font-bold rounded-2xl mt-4 bg-blue-600 hover:bg-blue-700"
+                    size="lg"
+                    onClick={() => setSelectedStep(null)}
+                  >
+                    {selectedStep.details.nextAction || 'המשך לשלב הבא'}
+                  </Button>
+                ) : (
+                  <div className="bg-gray-50 p-4 rounded-xl text-center text-sm text-gray-500 border border-gray-100">
+                    השלב הזה ייפתח אוטומטית כשתסיים את השלבים הקודמים
+                  </div>
+                )}
               </div>
             </motion.div>
           </>
