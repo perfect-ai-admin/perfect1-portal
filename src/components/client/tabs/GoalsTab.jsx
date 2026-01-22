@@ -55,9 +55,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   );
 
   // Check if there are ANY active goals currently
-  const hasAnyActiveGoal = userGoals.some(g => g.status === 'active' || g.status === 'in_progress');
+  const hasAnyActiveGoal = userGoals.some(g => ['active', 'in_progress', 'selected'].includes(g.status));
   
-  const resolvedRecommendedTemplate = recommendedGoal && !hasStartedRecommendedGoal && !hasAnyActiveGoal
+  // Only show recommendation if goals are loaded and no active goals exist
+  const resolvedRecommendedTemplate = goalsLoaded && recommendedGoal && !hasStartedRecommendedGoal && !hasAnyActiveGoal
     ? recommendedGoal
     : null;
 
@@ -127,6 +128,20 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   };
 
   const handleStartRecommended = () => {
+    // Check limit before starting
+    const limit = user?.goals_limit;
+    const isUnlimited = limit === null;
+    if (!isUnlimited) {
+      const actualLimit = limit || 1;
+      // Filter goals to only count active ones for the limit check
+      const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
+      
+      if (activeGoalsCount >= actualLimit) {
+        setShowUpgradeDialog(true);
+        return;
+      }
+    }
+
     if (resolvedRecommendedTemplate) {
        setEditingGoal(null);
        
