@@ -6,83 +6,56 @@ export default function RecommendedGoalCard({ recommendedGoal, onStart, onNaviga
   if (!recommendedGoal) return null;
 
   return (
-    <div className="bg-gradient-to-br from-white to-purple-50/30 rounded-2xl p-6 border border-purple-100 shadow-lg relative overflow-hidden group hover:border-purple-200 transition-all">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -mr-10 -mt-10 opacity-50 z-0 pointer-events-none"></div>
-      
-      {/* Badge */}
-      <div className="absolute top-5 left-5 bg-white text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full border border-purple-100 shadow-sm flex items-center gap-1.5 z-10">
-         <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-         מומלץ עבורך
+    <div className="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
+      {/* Top Tag - Clean & Inline */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2 text-purple-700 bg-purple-50 px-3 py-1 rounded-full text-xs font-bold">
+           <Sparkles className="w-3.5 h-3.5" />
+           המלצה אישית עבורך
+        </div>
       </div>
 
-      <div className="flex flex-col gap-6 relative z-10">
-         {/* Header */}
-         <div className="flex items-start gap-4">
-             <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-200">
-                <Sparkles className="w-6 h-6 text-white" />
-             </div>
-             <div>
-               <h3 className="text-xl font-black text-gray-900 mb-1">📍 נקודת ההתחלה שלך</h3>
-               <p className="text-gray-600 leading-relaxed text-sm">
-                 לפי מה שסיפרת לנו, זה השלב שהכי נכון להתחיל ממנו.
-               </p>
-             </div>
+      <div className="flex flex-col sm:flex-row gap-5">
+         {/* Icon */}
+         <div className="flex-shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-100 to-indigo-50 flex items-center justify-center border border-purple-100">
+               <Target className="w-7 h-7 text-purple-600" />
+            </div>
          </div>
 
-         {/* Content */}
-         <div className="flex flex-col sm:flex-row gap-6">
-             <div className="flex-shrink-0 mt-2 hidden sm:block">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-200 transform group-hover:scale-105 transition-transform duration-300">
-                   <Target className="w-8 h-8 text-white" />
-                </div>
-             </div>
+         {/* Main Content */}
+         <div className="flex-1">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">
+               {recommendedGoal.title}
+            </h3>
+            
+            <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+               {recommendedGoal.description}
+            </p>
+            
+            {/* Why Section - simplified */}
+            <div className="mb-5 text-xs text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <span className="font-semibold text-purple-700 block mb-1">למה זה הצעד הבא?</span>
+                {recommendedGoal.reason}
+            </div>
 
-             <div className="flex-1">
-                <div className="flex items-center gap-3 sm:hidden mb-2">
-                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-md">
-                      <Target className="w-5 h-5 text-white" />
-                   </div>
-                   <h3 className="text-xl font-black text-gray-900 leading-tight">
-                      {recommendedGoal.title}
-                   </h3>
-                </div>
-                
-                <h3 className="hidden sm:block text-2xl font-black text-gray-900 mb-2 leading-tight">
-                   {recommendedGoal.title}
-                </h3>
-                
-                <p className="text-gray-600 text-base mb-5 leading-relaxed max-w-xl">
-                   {recommendedGoal.description}
-                </p>
-                
-                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-purple-100 mb-6 inline-block w-full sm:w-auto">
-                   <p className="text-sm text-purple-800 font-medium flex items-start gap-2">
-                      <Sparkles className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
-                      <span>
-                        <span className="font-bold ml-1">למה דווקא עכשיו?</span>
-                        {recommendedGoal.reason}
-                      </span>
-                   </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button 
-                    onClick={onStart}
-                    className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-purple-200 hover:-translate-y-0.5 transition-all h-12 px-8 rounded-xl font-bold text-base w-full sm:w-auto"
-                  >
-                    <Play className="w-5 h-5 ml-2 fill-current" />
-                    יאללה, בוא נתחיל!
-                  </Button>
-                  
-                  <Button 
-                    variant="ghost"
-                    onClick={() => onNavigate('goals')}
-                    className="text-gray-500 hover:text-gray-900 hover:bg-purple-50 text-sm font-normal"
-                  >
-                    רוצה לבחור מטרה אחרת?
-                  </Button>
-                </div>
-             </div>
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 items-center">
+              <Button 
+                onClick={onStart}
+                className="w-full sm:w-auto bg-gray-900 hover:bg-black text-white h-11 px-6 rounded-xl font-medium text-sm shadow-sm"
+              >
+                <Play className="w-4 h-4 ml-2 fill-current" />
+                התחל את המטרה הזו
+              </Button>
+              
+              <button 
+                onClick={() => onNavigate('goals')}
+                className="text-sm text-gray-400 hover:text-gray-600 underline decoration-gray-300 underline-offset-4 transition-colors"
+              >
+                בחר מטרה אחרת
+              </button>
+            </div>
          </div>
       </div>
     </div>

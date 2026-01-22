@@ -343,55 +343,46 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
           {/* Recommended Goal - Special Section */}
           {resolvedRecommendedTemplate && !hasStartedRecommendedGoal && (
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-purple-600 fill-purple-100" />
-                המלצה חמה להתחלה
-              </h2>
-              
-              <div className="bg-gradient-to-br from-white to-purple-50/30 rounded-2xl p-6 border border-purple-100 shadow-lg relative overflow-hidden group hover:border-purple-200 transition-all">
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-bl-full -mr-10 -mt-10 opacity-50 z-0 pointer-events-none"></div>
-                 
-                 {/* Badge */}
-                 <div className="absolute top-5 left-5 bg-white text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full border border-purple-100 shadow-sm flex items-center gap-1.5 z-10">
-                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-                    מומלץ עבורך
+            <div className="mb-6">
+              <div className="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm relative overflow-hidden">
+                 {/* Header Tag */}
+                 <div className="flex items-center gap-2 mb-4">
+                    <span className="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5">
+                       <Sparkles className="w-3.5 h-3.5" />
+                       המלצה אישית
+                    </span>
                  </div>
 
-                 <div className="flex flex-col sm:flex-row gap-6 relative z-10">
-                    <div className="flex-shrink-0 mt-2">
-                       <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${resolvedRecommendedTemplate.color} flex items-center justify-center shadow-lg shadow-purple-200 transform group-hover:scale-105 transition-transform duration-300`}>
-                          <resolvedRecommendedTemplate.icon className="w-8 h-8 text-white" />
+                 <div className="flex flex-col sm:flex-row gap-5">
+                    <div className="flex-shrink-0">
+                       <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${resolvedRecommendedTemplate.color} flex items-center justify-center shadow-sm`}>
+                          <resolvedRecommendedTemplate.icon className="w-7 h-7 text-white" />
                        </div>
                     </div>
 
                     <div className="flex-1">
-                       <h3 className="text-2xl font-black text-gray-900 mb-2 leading-tight">
+                       <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
                           {resolvedRecommendedTemplate.name}
                        </h3>
-                       <p className="text-gray-600 text-base mb-5 leading-relaxed max-w-xl">
+                       <p className="text-gray-600 text-sm mb-4 leading-relaxed">
                           {resolvedRecommendedTemplate.description}
                        </p>
-                       
-                       <div className="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-purple-100 mb-6 inline-block">
-                          <p className="text-sm text-purple-800 font-medium flex items-start gap-2">
-                             <Sparkles className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
-                             <span>
-                               <span className="font-bold ml-1">למה דווקא עכשיו?</span>
-                               {resolvedRecommendedTemplate.reason}
-                             </span>
+
+                       {/* Why - Minimal */}
+                       <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 mb-4">
+                          <p className="text-xs text-gray-600">
+                             <span className="font-bold text-purple-700 block mb-1">למה עכשיו?</span>
+                             {resolvedRecommendedTemplate.reason}
                           </p>
                        </div>
 
-                       <div className="flex flex-wrap gap-3">
-                         <Button 
-                           onClick={handleStartRecommended}
-                           className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-purple-200 hover:-translate-y-0.5 transition-all h-12 px-8 rounded-xl font-bold text-base"
-                         >
-                           <Plus className="w-5 h-5 ml-2" />
-                           יאללה, בוא נתחיל!
-                         </Button>
-                       </div>
+                       <Button 
+                         onClick={handleStartRecommended}
+                         className="w-full sm:w-auto bg-gray-900 hover:bg-black text-white h-10 px-6 rounded-lg font-medium text-sm shadow-sm"
+                       >
+                         <Plus className="w-4 h-4 ml-2" />
+                         התחל מטרה זו
+                       </Button>
                     </div>
                  </div>
               </div>
