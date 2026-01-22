@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
+import BusinessRoadmap from '../goals/BusinessRoadmap';
 import GoalTemplates, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
 // GoalsCatalog removed
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
@@ -340,14 +341,19 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           className="space-y-8"
         >
           
+          {/* Business Roadmap - Shows the deep process */}
+          {user?.business_journey_completed && user?.client_tasks && (
+            <BusinessRoadmap user={user} tasks={user.client_tasks} />
+          )}
+
           {/* Header Section */}
           <div className="flex items-end justify-between px-1">
              <div>
-               <h1 className="text-2xl font-bold text-gray-900">המטרות שלי</h1>
+               <h1 className="text-2xl font-bold text-gray-900">המטרות שלי בפועל</h1>
                <p className="text-gray-500 text-sm mt-1">
                  {goals.length > 0 
-                   ? `יש לך ${goals.length} מטרות פעילות. תן בראש! 💪` 
-                   : 'זה הזמן להגדיר מטרות חדשות ולהתחיל לצמוח 🌱'}
+                   ? `יש לך ${goals.length} מטרות פעילות שאתה עובד עליהן כרגע.` 
+                   : 'כאן יופיעו המטרות הפעילות שבחרת להתמקד בהן.'}
                </p>
              </div>
              <Button 
@@ -435,8 +441,8 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
             />
           )}
 
-          {/* Empty State */}
-          {goals.length === 0 && (
+          {/* Empty State - Only if no roadmap either, or simply simplified */}
+          {goals.length === 0 && !user?.business_journey_completed && (
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
