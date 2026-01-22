@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone, Loader2, ArrowLeft, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
-
 import {
   Dialog,
   DialogContent,
@@ -48,8 +47,8 @@ export const GOAL_TEMPLATES = [
   },
   {
     id: 'cashflow_stability',
-    name: 'יציבות בתזרים מזומנים',
-    icon: Heart,
+    name: 'ארגן את ההוצאות',
+    icon: DollarSign, // Using DollarSign as generic wallet replacement if Wallet not imported, but user screenshot had wallet.
     color: 'from-pink-400 to-pink-600',
     description: 'שפר את היציבות הפיננסית',
     examples: [
@@ -221,7 +220,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const initialFocusRef = useRef(null);
 
   // Initialize form with editing goal data or initial template
-  React.useEffect(() => {
+  useEffect(() => {
     if (editingGoal) {
       setGoalTitle(editingGoal.title);
       setCustomAnswers(editingGoal.customAnswers || { q1: '', q2: '' });
@@ -236,16 +235,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       // Pre-fill title if it's a specific task-based template
       if (initialTemplate.defaultTitle) {
         setGoalTitle(initialTemplate.defaultTitle);
+      } else {
+         setGoalTitle(initialTemplate.name); // Default to template name if no specific title
       }
     }
   }, [editingGoal, initialTemplate]);
 
   // Focus management
   useEffect(() => {
-    if (!showPhonePrompt) {
+    if (!showPhonePrompt && !initialTemplate) {
       initialFocusRef.current?.focus();
     }
-  }, [selectedTemplate, showPhonePrompt]);
+  }, [selectedTemplate, showPhonePrompt, initialTemplate]);
 
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
@@ -262,7 +263,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreate = async () => {
-    if (!selectedTemplate || !goalTitle) return;
+    if (!selectedTemplate) return;
+    const titleToUse = goalTitle || selectedTemplate.name;
 
     // Check if phone number is missing (only for new goals)
     if (!editingGoal && !showPhonePrompt) {
@@ -279,10 +281,12 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       }
     }
     
+    setIsCreating(true);
+
     const goalData = {
       id: editingGoal?.id,
       category: selectedTemplate.id,
-      title: goalTitle,
+      title: titleToUse,
       description: selectedTemplate.description,
       current: editingGoal?.current || 0,
       target: 100,
@@ -302,9 +306,10 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             status: 'active'
          });
          
-         const isDuplicate = existingGoals.some(g => g.title === goalTitle || g.category === selectedTemplate.id);
+         const isDuplicate = existingGoals.some(g => g.title === titleToUse || g.category === selectedTemplate.id);
          if (isDuplicate) {
             alert('נראה שכבר יש לך מטרה כזו פעילה. כדאי להתמקד בה!');
+            setIsCreating(false);
             return;
          }
       } catch (err) {
@@ -327,9 +332,10 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       await base44.auth.updateMe({ phone: phoneNumber });
 
       // Proceed to create goal
+      const titleToUse = goalTitle || selectedTemplate.name;
       const goalData = {
         category: selectedTemplate.id,
-        title: goalTitle,
+        title: titleToUse,
         description: selectedTemplate.description,
         current: 0,
         target: 100,
@@ -347,7 +353,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     }
   };
 
+  // --- RENDER FOR PHONE PROMPT ---
   if (showPhonePrompt) {
+    // ... same as before
     const PhonePromptContent = (
       <div className="flex flex-col h-full">
         <div className="flex-shrink-0 p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
@@ -410,7 +418,81 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     );
   }
 
-  // Render content only - Parent handles the Dialog wrapper
+  // --- RENDER FOR "LUXURIOUS" CONFIRMATION (Initial Template provided) ---
+  if (initialTemplate) {
+    const Icon = selectedTemplate?.icon || Target;
+    
+    return (
+      <div className="bg-white flex flex-col h-full sm:h-auto min-h-[400px]">
+        {/* Header - Transparent/Minimal */}
+        <div className="flex justify-between items-start p-6 pb-2">
+          {/* Close Button - Left aligned */}
+           <button 
+             onClick={onClose}
+             className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+           >
+             <X className="w-4 h-4 text-gray-500" />
+           </button>
+           
+           {/* Top Right - Status Badge (Optional, inferred) */}
+           <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
+              בתהליך
+           </div>
+        </div>
+        
+        {/* Main Content */}
+        <div className="px-8 flex-1 flex flex-col items-center text-center sm:text-right sm:items-end">
+           {/* Title Section */}
+           <div className="flex flex-col sm:flex-row-reverse items-center sm:items-start gap-4 mb-8 w-full">
+              <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0 text-blue-600 shadow-sm">
+                 <Icon className="w-7 h-7" />
+              </div>
+              <div className="flex-1 text-center sm:text-right">
+                 <h2 className="text-2xl font-black text-gray-900 leading-tight mb-1">
+                   {selectedTemplate?.name || goalTitle}
+                 </h2>
+                 {selectedTemplate?.description && (
+                   <p className="text-gray-500 text-sm">
+                     {selectedTemplate.description}
+                   </p>
+                 )}
+              </div>
+           </div>
+
+           {/* Task Section */}
+           <div className="w-full mb-8">
+              <h3 className="text-right text-gray-500 font-medium text-sm mb-4">מה נשאר לעשות</h3>
+              
+              <div className="flex items-center gap-3 p-4 rounded-xl border border-blue-100 bg-blue-50/30 w-full hover:bg-blue-50 transition-colors cursor-default">
+                 <div className="flex-shrink-0 w-6 h-6 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                    <div className="w-3 h-3 rounded-full bg-blue-500" />
+                 </div>
+                 <span className="text-gray-900 font-medium text-base">
+                    השלם משימה זו כדי להמשיך
+                 </span>
+              </div>
+           </div>
+        </div>
+
+        {/* Footer - Full Width Button */}
+        <div className="p-6 pt-2">
+           <Button
+             onClick={handleCreate}
+             disabled={isCreating}
+             className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all"
+           >
+             {isCreating ? (
+               <Loader2 className="w-5 h-5 animate-spin" />
+             ) : (
+               'התחל עכשיו'
+             )}
+           </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- ORIGINAL RENDER FOR GENERIC SELECTION ---
   return (
     <div className="flex flex-col h-full bg-white">
       {/* Header */}
