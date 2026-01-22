@@ -12,9 +12,10 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2, Copy, Eye
+  FileText, Calendar, Layers, Share2, Copy, Eye, Maximize2, ExternalLink
 } from 'lucide-react';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
+import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 // Custom specialized card selector component for better UX
@@ -94,6 +95,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [showSuccess, setShowSuccess] = useState(false);
   const [pageSlug, setPageSlug] = useState('');
   const [createdPageData, setCreatedPageData] = useState(null);
+  const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
@@ -821,29 +823,71 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
 
               {createdPageData && (
-                <div className="w-full h-[400px] border rounded-xl overflow-hidden shadow-sm bg-gray-100 relative group mb-4">
-                  <div className="absolute top-2 right-2 z-10 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                    <Eye className="w-3 h-3" />
-                    תצוגה מקדימה
-                  </div>
-                  <div className="w-full h-full overflow-y-auto">
-                    <div className="transform origin-top scale-[0.6] w-[166%] h-auto min-h-[600px]">
-                      <DynamicLandingPage data={createdPageData} />
+                <>
+                  <div className="w-full border rounded-xl overflow-hidden shadow-sm bg-gray-100 relative group mb-4 transition-all hover:shadow-md">
+                    {/* Browser Header */}
+                    <div className="bg-white border-b border-gray-100 px-3 py-2 flex items-center gap-2">
+                        <div className="flex gap-1.5">
+                            <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
+                        </div>
+                        <div className="flex-1 text-center">
+                            <div className="bg-gray-50 border border-gray-100 rounded-md text-[10px] text-gray-400 py-1 px-3 mx-auto w-2/3 truncate font-mono">
+                                {window.location.host}/LP/{pageSlug}
+                            </div>
+                        </div>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 ml-1" onClick={() => setIsFullPreviewOpen(true)}>
+                            <Maximize2 className="w-3.5 h-3.5 text-gray-400" />
+                        </Button>
+                    </div>
+                    
+                    {/* Content Container */}
+                    <div className="relative w-full h-[380px] overflow-hidden bg-white cursor-pointer" onClick={() => setIsFullPreviewOpen(true)}>
+                         {/* The scaled content - simulating desktop view */}
+                         <div className="w-[200%] h-[200%] transform scale-50 origin-top-left pointer-events-none select-none">
+                             <DynamicLandingPage data={createdPageData} />
+                         </div>
+
+                         {/* Hover Overlay */}
+                         <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                             <Button className="gap-2 rounded-full shadow-xl pointer-events-none bg-black/80 hover:bg-black text-white px-6">
+                                 <Maximize2 className="w-4 h-4" />
+                                 הגדל תצוגה
+                             </Button>
+                         </div>
                     </div>
                   </div>
-                  
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button 
-                      size="sm" 
-                      variant="secondary"
-                      className="gap-2 shadow-lg"
-                      onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}
-                    >
-                      <Globe className="w-4 h-4" />
-                      פתח בחלון חדש
-                    </Button>
-                  </div>
-                </div>
+
+                  {/* Full Preview Dialog */}
+                  <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
+                      <DialogContent className="max-w-[95vw] w-[1400px] h-[90vh] p-0 flex flex-col gap-0 overflow-hidden rounded-xl border-0 shadow-2xl bg-gray-100">
+                          <div className="bg-white border-b px-4 py-3 flex justify-between items-center shrink-0 z-50">
+                               <div className="flex gap-3 items-center">
+                                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                      <Globe className="w-4 h-4" />
+                                   </div>
+                                   <div className="flex flex-col">
+                                      <span className="text-sm font-bold text-gray-900">{createdPageData.business_name}</span>
+                                      <span className="text-xs text-gray-500 dir-ltr">{window.location.host}/LP/{pageSlug}</span>
+                                   </div>
+                               </div>
+                               <div className="flex gap-2">
+                                   <Button size="sm" variant="outline" className="gap-2 h-9" onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}>
+                                      <ExternalLink className="w-3.5 h-3.5" />
+                                      פתח בחלון חדש
+                                   </Button>
+                                   <DialogClose asChild>
+                                      <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-gray-100"><X className="w-5 h-5" /></Button>
+                                   </DialogClose>
+                               </div>
+                          </div>
+                          <div className="flex-1 overflow-auto bg-white relative">
+                              <DynamicLandingPage data={createdPageData} />
+                          </div>
+                      </DialogContent>
+                  </Dialog>
+                </>
               )}
 
               <div className="w-full bg-gray-50 rounded-xl p-4 border border-gray-200 flex items-center gap-3">
