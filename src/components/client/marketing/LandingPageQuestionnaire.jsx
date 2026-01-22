@@ -194,11 +194,45 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         } else {
             console.error("Failed to create landing page", res);
             setPageSlug('demo-error');
+            // Mock data for preview in case of error (so user sees SOMETHING)
+            setCreatedPageData({
+                business_name: formData.businessName,
+                primary_color: '#3B82F6',
+                sections_json: [
+                    {
+                        type: 'hero',
+                        title: formData.businessName,
+                        subtitle: 'הדף שלך כמעט מוכן (מצב הדגמה)',
+                        ctaText: 'צור קשר',
+                    },
+                    {
+                        type: 'features',
+                        title: 'השירותים שלנו',
+                        items: [
+                            { title: 'שירות מקצועי', description: 'תיאור השירות שלך יופיע כאן' },
+                            { title: 'זמינות מלאה', description: 'פרטים נוספים יופיעו כאן' }
+                        ]
+                    }
+                ]
+            });
             setShowSuccess(true);
         }
       } catch (error) {
         console.error("Error creating landing page:", error);
         setPageSlug('demo-error');
+        // Mock data for preview
+        setCreatedPageData({
+            business_name: formData.businessName,
+            primary_color: '#3B82F6',
+            sections_json: [
+                {
+                    type: 'hero',
+                    title: formData.businessName,
+                    subtitle: 'הדף שלך כמעט מוכן (מצב הדגמה - אירעה שגיאה)',
+                    ctaText: 'נסה שוב',
+                }
+            ]
+        });
         setShowSuccess(true);
       } finally {
         setIsBuilding(false);
