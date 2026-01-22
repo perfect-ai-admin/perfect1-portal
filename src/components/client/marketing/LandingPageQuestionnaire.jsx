@@ -220,6 +220,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                             title: formData.businessName,
                             subtitle: formData.serviceOffered || 'הפתרון המושלם עבורך',
                             ctaText: formData.ctaText || 'צור קשר',
+                            image_prompt: 'abstract modern business background blue and white professional'
                         },
                         {
                             type: 'features',

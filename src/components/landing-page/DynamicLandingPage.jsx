@@ -67,18 +67,18 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                             : null;
 
                         return (
-                            <header key={idx} className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
-                                {bgImage && (
-                                    <div className="absolute inset-0 z-0">
+                            <header key={idx} className="relative min-h-[95vh] flex items-center justify-center overflow-hidden bg-slate-900">
+                                <div className="absolute inset-0 z-0">
+                                    {bgImage && (
                                         <img 
                                             src={bgImage} 
                                             alt="Background" 
                                             className="w-full h-full object-cover opacity-30 mix-blend-overlay" 
                                             loading="eager"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-900"></div>
-                                    </div>
-                                )}
+                                    )}
+                                    <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-900"></div>
+                                </div>
                                 
                                 {/* Dynamic Glow Effects */}
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-[var(--primary)] rounded-full blur-[150px] opacity-20 animate-pulse"></div>
