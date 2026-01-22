@@ -85,39 +85,39 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
 
                                 <div className="max-w-6xl mx-auto relative z-10 px-6 text-center mt-12">
                                     <div className={isThumbnail ? '' : 'motion-wrapper'}>
-                                    <motion.div
-                                        initial={isThumbnail ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.8, ease: "easeOut" }}
-                                    >
-                                        <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-blue-100 text-sm font-medium mb-8">
-                                            ✨ הפתרון המוביל בתחום
-                                        </div>
-                                        <h1 className="text-5xl md:text-7xl lg:text-9xl font-black text-white mb-8 leading-[1.05] tracking-tight drop-shadow-2xl">
-                                            {section.title}
-                                        </h1>
-                                        <p className="text-xl md:text-3xl text-slate-200 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-                                            {section.subtitle}
-                                        </p>
-                                        
-                                        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                                            <Button 
-                                                className="h-16 px-12 text-xl rounded-full bg-[var(--primary)] text-white hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(37,99,235,0.4)] font-bold border-t border-white/20"
-                                                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-                                            >
-                                                {section.ctaText || 'התחל עכשיו'}
-                                                <ArrowLeft className="mr-2 w-6 h-6" />
-                                            </Button>
-                                            <Button 
-                                                variant="ghost"
-                                                className="h-16 px-12 text-xl rounded-full text-white hover:bg-white/5 transition-all duration-300"
-                                                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-                                            >
-                                                למידע נוסף
-                                                <ChevronDown className="mr-2 w-6 h-6" />
-                                            </Button>
-                                        </div>
-                                    </motion.div>
+                                        <motion.div
+                                            initial={isThumbnail ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.8, ease: "easeOut" }}
+                                        >
+                                            <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-blue-100 text-sm font-medium mb-8">
+                                                ✨ הפתרון המוביל בתחום
+                                            </div>
+                                            <h1 className="text-5xl md:text-7xl lg:text-9xl font-black text-white mb-8 leading-[1.05] tracking-tight drop-shadow-2xl">
+                                                {section.title}
+                                            </h1>
+                                            <p className="text-xl md:text-3xl text-slate-200 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
+                                                {section.subtitle}
+                                            </p>
+                                            
+                                            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                                                <Button 
+                                                    className="h-16 px-12 text-xl rounded-full bg-[var(--primary)] text-white hover:brightness-110 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(37,99,235,0.4)] font-bold border-t border-white/20"
+                                                    onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                                                >
+                                                    {section.ctaText || 'התחל עכשיו'}
+                                                    <ArrowLeft className="mr-2 w-6 h-6" />
+                                                </Button>
+                                                <Button 
+                                                    variant="ghost"
+                                                    className="h-16 px-12 text-xl rounded-full text-white hover:bg-white/5 transition-all duration-300"
+                                                    onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                                                >
+                                                    למידע נוסף
+                                                    <ChevronDown className="mr-2 w-6 h-6" />
+                                                </Button>
+                                            </div>
+                                        </motion.div>
                                     </div>
                                 </div>
                             </header>
