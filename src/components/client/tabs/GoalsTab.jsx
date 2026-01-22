@@ -278,7 +278,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                 }}
                 hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
                 editingGoal={editingGoal}
-                initialTemplate={specificTemplate || (!editingGoal && resolvedRecommendedTemplate && !hasStartedRecommendedGoal ? resolvedRecommendedTemplate : null)}
+                initialTemplate={specificTemplate}
               />
             )}
           </SheetContent>
@@ -300,7 +300,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                 }}
                 hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
                 editingGoal={editingGoal}
-                initialTemplate={specificTemplate || (!editingGoal && resolvedRecommendedTemplate && !hasStartedRecommendedGoal ? resolvedRecommendedTemplate : null)}
+                initialTemplate={specificTemplate}
               />
             )}
           </DialogContent>
