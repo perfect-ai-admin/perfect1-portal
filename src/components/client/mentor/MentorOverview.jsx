@@ -26,7 +26,8 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
-import JourneyTimeline from '../progress/JourneyTimeline';
+import BusinessRoadmap from '../goals/BusinessRoadmap';
+import { Target } from 'lucide-react';
 
 export default function MentorOverview() {
   const queryClient = useQueryClient();
@@ -34,6 +35,7 @@ export default function MentorOverview() {
   const [showGoalTemplates, setShowGoalTemplates] = useState(false);
   const [showLimitDialog, setShowLimitDialog] = useState(false);
   const [currentLimit, setCurrentLimit] = useState(null);
+  const [specificTemplate, setSpecificTemplate] = useState(null);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -161,8 +163,45 @@ export default function MentorOverview() {
       setCurrentLimit(goalsLimit);
       setShowLimitDialog(true);
     } else {
+      setSpecificTemplate(null);
       setShowGoalTemplates(true);
     }
+  };
+
+  const handleSelectRoadmapStep = (task) => {
+      // Check if already active
+      const isActive = goals?.some(g => 
+        g.title === task.title || 
+        g.category === `task_${task.id}` ||
+        g.category === `task_goal_${task.id}`
+      );
+      
+      if (isActive) return;
+
+      if (!canAddGoal) {
+         setCurrentLimit(goalsLimit);
+         setShowLimitDialog(true);
+         return;
+      }
+
+      const taskTemplate = {
+        id: `task_goal_${task.id}`,
+        name: task.title,
+        icon: Target,
+        color: 'from-blue-500 to-indigo-600',
+        description: task.description,
+        defaultTitle: task.title,
+        examples: [
+          { title: `להשלים את "${task.title}" בהצלחה` }
+        ],
+        questions: [
+          { id: 'blocker', label: 'מה האתגר העיקרי שמונע ממך לסיים את זה?', placeholder: 'לדוגמה: חוסר זמן / ידע...' },
+          { id: 'success_criteria', label: 'איך תדע שהמשימה הושלמה בהצלחה?', placeholder: 'לדוגמה: כשהלקוח ישלם...' }
+        ]
+      };
+      
+      setSpecificTemplate(taskTemplate);
+      setShowGoalTemplates(true);
   };
 
   if (isLoading) return <div className="p-8 text-center text-gray-500">טוען נתונים...</div>;
@@ -179,8 +218,6 @@ export default function MentorOverview() {
           {getHeaderStatus()}
         </p>
       </div>
-
-      <JourneyTimeline />
 
       {/* 2. Goals Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -434,6 +471,23 @@ export default function MentorOverview() {
         </Card>
       </div>
 
+      {/* Business Journey Roadmap */}
+      {user?.business_journey_completed && user?.client_tasks && (
+          <div className="mt-8">
+              <BusinessRoadmap 
+                  user={user} 
+                  tasks={user.client_tasks} 
+                  onSelectStep={handleSelectRoadmapStep}
+                  activeGoals={goals || []}
+                  onShowUpgrade={() => {
+                      setCurrentLimit(goalsLimit);
+                      setShowLimitDialog(true);
+                  }}
+                  goalLimit={goalsLimit}
+              />
+          </div>
+      )}
+
       {/* Goal Templates - Mobile Sheet */}
       <div className="md:hidden">
         <Sheet open={showGoalTemplates} onOpenChange={setShowGoalTemplates}>
@@ -448,8 +502,12 @@ export default function MentorOverview() {
                   setShowGoalTemplates(false);
                   createGoalMutation.mutate({ title: newGoal.title, goalData: newGoal });
                 }}
-                onClose={() => setShowGoalTemplates(false)}
+                onClose={() => {
+                    setShowGoalTemplates(false);
+                    setSpecificTemplate(null);
+                }}
                 hasPrimaryGoal={false}
+                initialTemplate={specificTemplate}
               />
             )}
           </SheetContent>
@@ -467,8 +525,12 @@ export default function MentorOverview() {
                   setShowGoalTemplates(false);
                   createGoalMutation.mutate({ title: newGoal.title, goalData: newGoal });
                 }}
-                onClose={() => setShowGoalTemplates(false)}
+                onClose={() => {
+                    setShowGoalTemplates(false);
+                    setSpecificTemplate(null);
+                }}
                 hasPrimaryGoal={false}
+                initialTemplate={specificTemplate}
               />
             )}
           </DialogContent>
