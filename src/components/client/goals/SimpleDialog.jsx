@@ -98,7 +98,7 @@ const DebugPanel = ({ debug, clickTrace, actionLog, isDialogOpen, dialogCount })
   );
 };
 
-export default function SimpleDialog({ open, onClose, children, className = '' }) {
+export default function SimpleDialog({ open, onClose, children, footer = null, footerHeight = 80, className = '' }) {
   const context = useContext(DialogContext);
   const { setIsDialogOpen, dialogCount = 0 } = context || {};
   const [debug, setDebug] = useState(null);
@@ -283,15 +283,15 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
     <>
       {/* Overlay - Mobile fullscreen / Desktop centered */}
       <div 
-        className={isMobile ? 'fixed inset-0 bg-black/40 z-40' : 'fixed inset-0 bg-black/60 z-40'} 
+        className={isMobile ? 'fixed inset-0 bg-black/40 z-[9999]' : 'fixed inset-0 bg-black/60 z-[9999]'} 
         onClick={onClose} 
       />
       
       {/* Dialog Container */}
       <div 
         className={isMobile 
-          ? 'fixed inset-0 z-50 flex flex-col' 
-          : 'fixed inset-0 z-50 flex items-center justify-center p-3'}
+          ? 'fixed inset-0 z-[10000] flex flex-col' 
+          : 'fixed inset-0 z-[10000] flex items-center justify-center p-3'}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Dialog Panel - Mobile fullscreen / Desktop modal */}
@@ -302,38 +302,49 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
               ? 'w-full h-[100dvh] flex flex-col bg-white rounded-none' 
               : 'w-full max-w-2xl flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden'
           } ${className}`}
-          style={isMobile ? {} : {
-            maxHeight: `calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom))`
-          }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Mobile: scrollable body + fixed footer wrapper */}
           {isMobile ? (
             <>
-              {/* Body - scrollable */}
-              <div className="flex-1 overflow-y-auto overflow-x-hidden">
+              {/* Mobile: Body with padding for sticky footer */}
+              <div 
+                className="flex-1 overflow-y-auto overflow-x-hidden"
+                style={{
+                  paddingBottom: `calc(${footerHeight}px + env(safe-area-inset-bottom))`
+                }}
+              >
                 {children}
               </div>
-              {/* Spacer for footer - prevents content from hiding under fixed footer */}
-              <div className="h-20" />
+
+              {/* Mobile: Sticky Footer at bottom of panel */}
+              {footer && (
+                <div 
+                  className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50"
+                  style={{
+                    minHeight: `${footerHeight}px`,
+                    paddingBottom: `env(safe-area-inset-bottom)`
+                  }}
+                >
+                  {footer}
+                </div>
+              )}
             </>
           ) : (
-            /* Desktop: normal layout */
-            children
+            <>
+              {/* Desktop: Normal body */}
+              <div className="flex-1 overflow-y-auto">
+                {children}
+              </div>
+
+              {/* Desktop: Normal footer */}
+              {footer && (
+                <div className="flex-shrink-0 border-t border-gray-200 bg-white">
+                  {footer}
+                </div>
+              )}
+            </>
           )}
         </div>
-
-        {/* Mobile: Fixed footer wrapper at bottom */}
-        {isMobile && (
-          <div 
-            className="fixed bottom-0 left-0 right-0 z-[51] bg-white border-t border-gray-200 w-full"
-            style={{
-              paddingBottom: `env(safe-area-inset-bottom)`
-            }}
-          >
-            {/* This will be populated by mobile-specific buttons if needed */}
-          </div>
-        )}
       </div>
 
       {/* Debug Panel */}
