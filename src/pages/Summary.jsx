@@ -264,9 +264,9 @@ export default function Summary() {
             חזרה למרכז הניהול
           </Button>
         </div>
-      </motion.div>
-      </div>
+        </motion.div>
+        </div>
       </main>
-      </div>
-      );
-      }
+    </div>
+  );
+}
