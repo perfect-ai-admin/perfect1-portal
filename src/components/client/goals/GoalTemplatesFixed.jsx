@@ -441,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Main Content - Scrollable */}
-        <div className="px-5 flex-1 overflow-y-auto pb-4">
+        <div className="px-5 flex-1 overflow-y-auto pb-4 min-h-0">
            {/* Title Section */}
            <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
@@ -460,7 +460,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
 
            {/* Task Section */}
-           <div className="w-full mb-20">
+           <div className="w-full">
               <h3 className="text-right text-gray-500 font-medium text-sm mb-3">מה נשאר לעשות</h3>
               
               <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-100 bg-blue-50/30 w-full">
