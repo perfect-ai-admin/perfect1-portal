@@ -7,8 +7,7 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
 
   return createPortal(
     <div 
-      className="fixed inset-0 z-50 flex justify-center p-4 overflow-visible"
-      style={{ top: '10%' }}
+      className="fixed left-0 right-0 top-0 z-50 flex justify-center pt-[5vh] p-4 overflow-visible min-h-screen"
       onClick={onClose}
     >
       {/* Overlay */}
