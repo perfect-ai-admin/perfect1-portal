@@ -6,21 +6,18 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
   if (!open) return null;
 
   return createPortal(
-    <div 
-      className="fixed left-0 right-0 top-0 z-50 flex justify-center pt-[5vh] p-4 overflow-visible min-h-screen"
-      onClick={onClose}
-    >
+    <>
       {/* Overlay */}
-      <div className="fixed inset-0 bg-black/60 animate-in fade-in" />
+      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
       
-      {/* Dialog */}
+      {/* Dialog - Fixed at top with max height */}
       <div 
-        className={`relative z-50 w-full max-w-2xl animate-in fade-in zoom-in-95 ${className}`}
+        className={`fixed top-[10%] left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl max-h-[80vh] flex flex-col bg-white rounded-2xl shadow-2xl ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
-    </div>,
+    </>,
     document.body
   );
 }
