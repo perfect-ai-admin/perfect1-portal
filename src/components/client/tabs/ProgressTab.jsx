@@ -58,6 +58,7 @@ import GoalTemplatesFixed, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed'
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import SummaryTab from './SummaryTab';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import RecommendedGoalCard from '../goals/RecommendedGoalCard';
