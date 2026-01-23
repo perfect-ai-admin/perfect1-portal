@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ResponsiveDialog from '@/components/ui/responsive-dialog';
-import { useDialogState } from '@/context/DialogStateContext';
+import { useDialogState } from '@/components/DialogStateContext';
 
 /**
  * SimpleDialog - Wrapper around ResponsiveDialog
