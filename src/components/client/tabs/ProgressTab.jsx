@@ -64,6 +64,7 @@ import RecommendedGoalCard from '../goals/RecommendedGoalCard';
 import GoalSelectionConfirmation from '../goals/GoalSelectionConfirmation';
 
 export default function ProgressTab({ data, onNavigate, user }) {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   
   // Fetch current user data to ensure we have fresh journey status
