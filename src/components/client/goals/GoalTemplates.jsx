@@ -7,8 +7,8 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import {
   Dialog,
-  DialogContent,
 } from '@/components/ui/dialog';
+import ResponsiveDialog from '@/components/ui/responsive-dialog';
 import {
   Sheet,
   SheetContent,
