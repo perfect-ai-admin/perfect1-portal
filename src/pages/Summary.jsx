@@ -18,6 +18,7 @@ import {
 export default function Summary() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [language, setLanguage] = useState('he');
 
   // Check authentication
   useEffect(() => {
