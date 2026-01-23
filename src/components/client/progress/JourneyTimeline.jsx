@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function JourneyTimeline() {
+  const navigate = useNavigate();
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => await base44.auth.me(),
