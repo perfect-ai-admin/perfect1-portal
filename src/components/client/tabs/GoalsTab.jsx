@@ -462,5 +462,4 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       </div>
     </>
   );
-  };
 }
