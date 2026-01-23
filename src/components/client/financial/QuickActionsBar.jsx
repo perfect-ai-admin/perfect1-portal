@@ -120,7 +120,41 @@ export default function QuickActionsBar({ onActionComplete }) {
          </div>
        </div>
 
+      {/* Modals */}
+      {showCreateModal && (
+        <Dialog open={!!showCreateModal} onOpenChange={() => setShowCreateModal(null)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {showCreateModal.type === 'document' && 'הפק מסמך חדש'}
+                {showCreateModal.type === 'expense' && 'קלוט הוצאה'}
+                {showCreateModal.type === 'customer' && 'הוסף לקוח'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="p-4 text-center text-gray-600">
+              {/* Placeholder - will be replaced with actual forms */}
+              פורם בבנייה...
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
+      {/* Mobile Search Modal */}
+      {showSearch && (
+        <Dialog open={showSearch} onOpenChange={setShowSearch}>
+          <DialogContent className="max-w-md h-full max-h-screen">
+            <DialogHeader>
+              <DialogTitle>חיפוש</DialogTitle>
+            </DialogHeader>
+            <input
+              type="text"
+              autoFocus
+              placeholder="חיפוש מסמך או לקוח..."
+              className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 }
