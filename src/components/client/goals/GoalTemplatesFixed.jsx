@@ -470,8 +470,14 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </div>
         </div>
 
-        {/* Button - Sticky footer with safe area */}
-        <div className="flex-shrink-0 px-5 py-4 border-t border-gray-200 bg-white" style={{ paddingBottom: 'calc(1rem + max(0px, env(safe-area-inset-bottom)))' }}>
+        {/* Footer - CTA with safe area (flex: 0 0 auto = no shrink/grow) */}
+        <div 
+          className="flex-shrink-0 flex-grow-0 px-5 py-4 border-t border-gray-200 bg-white"
+          style={{ 
+            minHeight: '64px',
+            paddingBottom: `calc(1rem + max(0px, env(safe-area-inset-bottom)))`
+          }}
+        >
           <button
             onClick={handleCreate}
             disabled={isCreating}
