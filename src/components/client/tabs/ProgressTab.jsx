@@ -387,16 +387,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
             רענן מסע
           </Button>
         </div>
-        <div className="space-y-2">
-          <JourneyTimeline />
-          <Button 
-            onClick={() => navigate(createPageUrl('Summary'))}
-            className="w-full h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm"
-          >
-            <ArrowLeft className="w-4 h-4 ml-2" />
-            צפה בסיכום
-          </Button>
-        </div>
+        <JourneyTimeline />
       </div>
 
       {/* Recommended Goal - Mobile */}
@@ -484,7 +475,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
              <ArrowLeft className="w-4 h-4 ml-2" />
              צפה בסיכום
            </Button>
-           </div>
+         </div>
         </div>
 
         {/* Right Column - Next Step & Actions 50% */}
