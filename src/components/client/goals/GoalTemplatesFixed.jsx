@@ -6,11 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
-
-import {
-  Dialog,
-  DialogContent,
-} from '@/components/ui/dialog';
+import SimpleDialog from '@/components/client/SimpleDialog';
 
 // Goal Templates
 export const GOAL_TEMPLATES = [
@@ -348,25 +344,47 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   };
 
   if (showPhonePrompt) {
-    const PhonePromptContent = (
-      <div className="flex flex-col h-full">
-        <div className="flex-shrink-0 p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
-           <h2 className="text-xl font-bold text-gray-900 mb-2">רגע לפני שמתחילים... 🚀</h2>
-           <p className="text-gray-600 text-sm">כדי שנוכל לשלוח לך את הצעד הבא וללוות אותך בתהליך הדיגיטלי, אנחנו צריכים את המספר שלך.</p>
-        </div>
-        <div className="p-6 space-y-6 flex-1 flex flex-col justify-center">
-          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4">
-             <div className="flex items-start gap-3">
-               <div className="bg-blue-100 p-2 rounded-full">
-                 <Zap className="w-5 h-5 text-blue-600" />
-               </div>
-               <div>
-                 <h3 className="font-bold text-gray-900 text-sm mb-1">למה זה חשוב?</h3>
-                 <p className="text-xs text-gray-600 leading-relaxed">אנחנו שולחים בוואטסאפ תובנות מותאמות אישית, תזכורות למשימות ועדכונים קריטיים על העסק.</p>
-               </div>
-             </div>
+    return (
+      <SimpleDialog
+        open={true}
+        onOpenChange={() => setShowPhonePrompt(false)}
+        header={
+          <div className="p-5 bg-gradient-to-r from-blue-50 to-purple-50">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">רגע לפני שמתחילים... 🚀</h2>
+            <p className="text-gray-600 text-sm">כדי שנוכל לשלוח לך את הצעד הבא וללוות אותך בתהליך הדיגיטלי, אנחנו צריכים את המספר שלך.</p>
           </div>
-          
+        }
+        footer={
+          <div className="px-6 py-3 space-y-3 h-full flex flex-col justify-center">
+            <Button 
+              onClick={handlePhoneSubmit} 
+              disabled={!phoneNumber || isSubmittingPhone}
+              className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200"
+            >
+              {isSubmittingPhone ? 'שומר...' : 'שמור וצור מטרה'}
+            </Button>
+            <button 
+              onClick={() => setShowPhonePrompt(false)} 
+              className="w-full text-center text-gray-400 text-sm hover:text-gray-600 py-2"
+            >
+              חזור לעריכת המטרה
+            </button>
+          </div>
+        }
+      >
+        <div className="p-6 space-y-6">
+          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+            <div className="flex items-start gap-3">
+              <div className="bg-blue-100 p-2 rounded-full">
+                <Zap className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 text-sm mb-1">למה זה חשוב?</h3>
+                <p className="text-xs text-gray-600 leading-relaxed">אנחנו שולחים בוואטסאפ תובנות מותאמות אישית, תזכורות למשימות ועדכונים קריטיים על העסק.</p>
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="phone" className="text-sm font-bold text-gray-700">מספר הנייד שלך</Label>
             <div className="relative">
@@ -382,37 +400,15 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               />
             </div>
           </div>
-
-          <Button 
-            onClick={handlePhoneSubmit} 
-            disabled={!phoneNumber || isSubmittingPhone}
-            className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 mt-4"
-          >
-            {isSubmittingPhone ? 'שומר...' : 'שמור וצור מטרה'}
-          </Button>
-          
-          <button 
-             onClick={() => setShowPhonePrompt(false)} 
-             className="w-full text-center text-gray-400 text-sm hover:text-gray-600 py-2"
-          >
-            חזור לעריכת המטרה
-          </button>
         </div>
-      </div>
-    );
-
-    return (
-      <Dialog open={true} onOpenChange={() => setShowPhonePrompt(false)}>
-        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-w-md bg-white">
-           {PhonePromptContent}
-        </DialogContent>
-      </Dialog>
+      </SimpleDialog>
     );
   }
 
-  // Render content only - Parent handles the Dialog wrapper
+  // Now wrapped inside SimpleDialog by parent
+  // This component is the body content
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="bg-white">
       {/* Header */}
       <div className="flex-shrink-0 px-5 py-3 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50">
         <div className="flex items-center justify-between">
