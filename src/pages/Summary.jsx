@@ -186,29 +186,29 @@ export default function Summary() {
 
           {/* Tab Navigation */}
           <div className="flex items-center justify-between py-3 px-2 border-t border-white/10 text-xs sm:text-sm gap-2 overflow-x-auto">
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+            <button onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=progress')} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
               <MapPin className="w-4 h-4" />
-              <span className="hidden sm:inline">מיקום</span>
+              <span className="hidden sm:inline">מסע העסק</span>
             </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">מטריקות היום</span>
+            <button onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=business')} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <BarChart3 className="w-4 h-4" />
+              <span className="hidden sm:inline">נתוני העסק</span>
             </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+            <button onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=financial')} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <Wallet className="w-4 h-4" />
+              <span className="hidden sm:inline">כספים</span>
+            </button>
+            <button onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
               <Target className="w-4 h-4" />
-              <span className="hidden sm:inline">שדרות</span>
+              <span className="hidden sm:inline">מטרות</span>
             </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+            <button onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=marketing')} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
               <Megaphone className="w-4 h-4" />
               <span className="hidden sm:inline">שיווק</span>
             </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <CreditCard className="w-4 h-4" />
-              <span className="hidden sm:inline">כלפים</span>
-            </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <HelpCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">שאלות</span>
+            <button onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=mentor')} className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <Lightbulb className="w-4 h-4" />
+              <span className="hidden sm:inline">מנטור</span>
             </button>
           </div>
         </div>
