@@ -125,19 +125,20 @@ export const ResponsiveDialog = React.forwardRef(
               </div>
             )}
 
-            {/* Close Button - For accessibility */}
-            <DialogClose
-              asChild
-              className="absolute top-4 right-4 md:top-4 md:right-4 z-10"
-            >
-              <button
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="סגור"
+              {/* Close Button - For accessibility */}
+              <DialogClose
+                asChild
+                className="absolute top-4 right-4 md:top-4 md:right-4 z-10"
               >
-                <X className="w-5 h-5 text-gray-500" />
-              </button>
-            </DialogClose>
-          </div>
+                <button
+                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="סגור"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </DialogClose>
+            </div>
+          </DialogContent>
         </DialogPortal>
       </Dialog>
     );
