@@ -172,6 +172,16 @@ export default function JourneyTimeline() {
 
                 {/* Content */}
                 <div className="flex-1 min-w-0 text-right">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={cn(
+                      "text-xs font-bold px-2 py-0.5 rounded-full",
+                      isCurrent ? "bg-blue-100 text-blue-700" : 
+                      isCompleted ? "bg-green-100 text-green-700" :
+                      "bg-gray-100 text-gray-500"
+                    )}>
+                      שלב {index + 1}/{steps.length}
+                    </span>
+                  </div>
                   <h3 className={cn(
                     "font-bold text-base mb-1 leading-tight",
                     isCurrent ? "text-blue-900" : "text-gray-900"
