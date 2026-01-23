@@ -132,6 +132,7 @@ export default function Summary() {
         role="banner"
       >
         <div className="w-full px-3 sm:px-6 lg:px-8">
+          {/* Top Bar */}
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <Avatar className="w-9 h-9 border border-white/20 flex-shrink-0">
@@ -175,6 +176,34 @@ export default function Summary() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+          </div>
+
+          {/* Navigation Bar */}
+          <div className="flex items-center justify-between py-3 px-2 border-t border-white/10 text-xs sm:text-sm gap-2 overflow-x-auto">
+            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <Globe className="w-4 h-4" />
+              <span className="hidden sm:inline">מיקום</span>
+            </button>
+            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <TrendingUp className="w-4 h-4" />
+              <span className="hidden sm:inline">מטריקות היום</span>
+            </button>
+            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <Target className="w-4 h-4" />
+              <span className="hidden sm:inline">שדרות</span>
+            </button>
+            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <Megaphone className="w-4 h-4" />
+              <span className="hidden sm:inline">שיווק</span>
+            </button>
+            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <CreditCard className="w-4 h-4" />
+              <span className="hidden sm:inline">כלפים</span>
+            </button>
+            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">שאלות</span>
+            </button>
           </div>
         </div>
       </header>
