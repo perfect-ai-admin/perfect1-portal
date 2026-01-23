@@ -604,7 +604,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
       <Dialog open={showGoalCreation} onOpenChange={setShowGoalCreation}>
         <DialogContent 
           hideCloseButton
-          className="goal-dialog-fixed p-0 border-0 rounded-2xl shadow-2xl w-[95%] sm:w-full sm:max-w-2xl bg-white"
+          className="p-0 border-0 rounded-2xl shadow-2xl w-[95%] sm:w-full sm:max-w-2xl bg-white"
+          style={{ height: 'auto', maxHeight: '90vh', overflow: 'hidden' }}
         >
           {showGoalCreation && goalTemplateForStep && (
             <GoalTemplatesFixed

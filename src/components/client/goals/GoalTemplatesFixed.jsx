@@ -423,97 +423,162 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
 
     return (
-      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: '100%', minHeight: '400px', maxHeight: '85vh', background: 'white', paddingBottom: '90px' }}>
-        {/* Header - Transparent/Minimal */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px', paddingBottom: '12px', flexShrink: 0, zIndex: 10, background: 'white' }}>
-           {/* Close Button - Left aligned */}
-           <button 
-             onClick={onClose}
-             className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-           >
-             <X className="w-4 h-4 text-gray-500" />
-           </button>
-
-           {/* Top Right - Status Badge */}
-           <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
-              בתהליך
-           </div>
-        </div>
-
-        {/* Main Content - Scrollable */}
-        <div style={{ padding: '0 20px', flex: '1 1 auto', overflowY: 'auto' }}>
-           {/* Title Section */}
-           <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
-              <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
-                 <Icon className="w-7 h-7" />
-              </div>
-              <div className="w-full">
-                 <h2 className="text-xl font-black text-gray-900 leading-tight mb-1">
-                   {selectedTemplate?.name || goalTitle}
-                 </h2>
-                 {selectedTemplate?.description && (
-                   <p className="text-gray-500 text-sm">
-                     {selectedTemplate.description}
-                   </p>
-                 )}
-              </div>
-           </div>
-
-           {/* Task Section */}
-           <div className="w-full mb-4">
-              <h3 className="text-right text-gray-500 font-medium text-sm mb-3">מה נשאר לעשות</h3>
-
-              <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-100 bg-blue-50/30 w-full">
-                 <div className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                 </div>
-                 <span className="text-gray-900 font-medium text-sm">
-                    השלם משימה זו כדי להמשיך
-                 </span>
-              </div>
-           </div>
-        </div>
-
-        {/* Footer - Full Width Button - ABSOLUTE BOTTOM WITH VISIBILITY */}
+      <div style={{ 
+        width: '100%',
+        height: '500px',
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'white'
+      }}>
+        {/* Header */}
         <div style={{ 
-          position: 'fixed',
-          bottom: '0px',
-          left: '0px',
-          right: '0px',
-          padding: '16px', 
-          borderTop: '1px solid #e5e7eb', 
-          background: 'white',
-          zIndex: 9999,
-          boxShadow: '0 -4px 12px rgba(0,0,0,0.1)',
-          margin: 0
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderBottom: '1px solid #e5e7eb',
+          flexShrink: 0
         }}>
-           <button
-             onClick={handleCreate}
-             disabled={isCreating}
-             style={{
-               width: '100%',
-               height: '56px',
-               borderRadius: '12px',
-               backgroundColor: isCreating ? '#93c5fd' : '#2563eb',
-               color: 'white',
-               fontWeight: 'bold',
-               fontSize: '16px',
-               border: 'none',
-               cursor: isCreating ? 'not-allowed' : 'pointer',
-               display: 'flex',
-               alignItems: 'center',
-               justifyContent: 'center',
-               boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
-               position: 'relative',
-               zIndex: 9999
-             }}
-           >
-             {isCreating ? (
-               <Loader2 className="w-5 h-5 animate-spin" />
-             ) : (
-               'התחל עכשיו'
-             )}
-           </button>
+          <button 
+            onClick={onClose}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: '#f3f4f6',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            <X className="w-4 h-4 text-gray-500" />
+          </button>
+
+          <div style={{
+            background: '#eff6ff',
+            color: '#2563eb',
+            padding: '4px 12px',
+            borderRadius: '20px',
+            fontSize: '12px',
+            fontWeight: 'bold'
+          }}>
+            בתהליך
+          </div>
+        </div>
+
+        {/* Content */}
+        <div style={{ 
+          flex: 1,
+          padding: '20px',
+          overflowY: 'auto',
+          minHeight: 0
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              background: '#dbeafe',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 12px',
+              color: '#2563eb'
+            }}>
+              <Icon className="w-7 h-7" />
+            </div>
+            <h2 style={{
+              fontSize: '20px',
+              fontWeight: '900',
+              color: '#111827',
+              marginBottom: '8px'
+            }}>
+              {selectedTemplate?.name || goalTitle}
+            </h2>
+            {selectedTemplate?.description && (
+              <p style={{ fontSize: '14px', color: '#6b7280' }}>
+                {selectedTemplate.description}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <h3 style={{ 
+              fontSize: '14px',
+              fontWeight: '500',
+              color: '#6b7280',
+              marginBottom: '12px',
+              textAlign: 'right'
+            }}>
+              מה נשאר לעשות
+            </h3>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px',
+              borderRadius: '12px',
+              border: '1px solid #dbeafe',
+              background: '#eff6ff'
+            }}>
+              <div style={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                border: '2px solid #2563eb',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <div style={{
+                  width: '10px',
+                  height: '10px',
+                  borderRadius: '50%',
+                  background: '#2563eb'
+                }} />
+              </div>
+              <span style={{ fontSize: '14px', fontWeight: '500', color: '#111827' }}>
+                השלם משימה זו כדי להמשיך
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Button - Fixed at bottom */}
+        <div style={{ 
+          padding: '20px',
+          borderTop: '1px solid #e5e7eb',
+          background: 'white',
+          flexShrink: 0
+        }}>
+          <button
+            onClick={handleCreate}
+            disabled={isCreating}
+            style={{
+              width: '100%',
+              height: '56px',
+              borderRadius: '12px',
+              background: isCreating ? '#93c5fd' : '#2563eb',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              border: 'none',
+              cursor: isCreating ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)'
+            }}
+          >
+            {isCreating ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              'התחל עכשיו'
+            )}
+          </button>
         </div>
       </div>
     );
