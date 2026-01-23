@@ -54,7 +54,8 @@ const FLOWS = {
         { id: 'fear', label: "חשש מכישלון / חוסר ביטחון" },
         { id: 'money', label: "חוסר בתקציב להקמה" },
         { id: 'knowledge', label: "לא יודע איך מתחילים (בירוקרטיה/שיווק)" },
-        { id: 'time', label: "אין לי מספיק זמן פנוי" }
+        { id: 'time', label: "אין לי מספיק זמן פנוי" },
+        { id: 'other', label: "משהו אחר...", hasTextInput: true }
       ]
     },
     {
