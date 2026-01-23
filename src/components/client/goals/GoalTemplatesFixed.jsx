@@ -263,62 +263,89 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreate = async () => {
-    if (!selectedTemplate) return;
-    const titleToUse = goalTitle || selectedTemplate.name;
-
-    // Check if phone number is missing (only for new goals)
-    if (!editingGoal && !showPhonePrompt) {
-      try {
-        const currentUser = await base44.auth.me();
-        const hasPhone = currentUser?.phone || currentUser?.mobile || currentUser?.phoneNumber;
-        
-        if (!hasPhone) {
-          setShowPhonePrompt(true);
-          return;
-        }
-      } catch (error) {
-        console.error('Error checking user phone:', error);
+    try {
+      console.log('[ACTION_START] handleCreate called');
+      
+      if (!selectedTemplate) {
+        console.log('[BLOCKED_BY] no selectedTemplate');
+        return;
       }
-    }
-    
-    setIsCreating(true);
+      
+      const titleToUse = goalTitle || selectedTemplate.name;
+      console.log('[VALIDATE] title check passed', { titleToUse });
 
-    const goalData = {
-      id: editingGoal?.id,
-      category: selectedTemplate.id,
-      title: titleToUse,
-      description: selectedTemplate.description,
-      current: editingGoal?.current || 0,
-      target: 100,
-      customAnswers: customAnswers,
-      urgency: urgency,
-      status: editingGoal?.status || 'active',
-      isPrimary: isPrimary && !hasPrimaryGoal,
-      aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
-      actionHint: 'המטרה נוצרת...'
-    };
+      // Check if phone number is missing (only for new goals)
+      if (!editingGoal && !showPhonePrompt) {
+        try {
+          console.log('[BEFORE_ASYNC] fetching user...');
+          const currentUser = await base44.auth.me();
+          console.log('[AFTER_ASYNC] user fetched', { hasPhone: !!currentUser?.phone });
+          const hasPhone = currentUser?.phone || currentUser?.mobile || currentUser?.phoneNumber;
+          
+          if (!hasPhone) {
+            console.log('[BLOCKED_BY] no phone number');
+            setShowPhonePrompt(true);
+            return;
+          }
+        } catch (error) {
+          console.error('[ERROR] checking user phone:', error);
+          throw error;
+        }
+      }
+      
+      setIsCreating(true);
+      console.log('[BEFORE_VALIDATE] creating goalData');
 
-    // Check for duplicates before creating
-    if (!editingGoal) {
-      try {
-         const existingGoals = await base44.entities.UserGoal.filter({ 
+      const goalData = {
+        id: editingGoal?.id,
+        category: selectedTemplate.id,
+        title: titleToUse,
+        description: selectedTemplate.description,
+        current: editingGoal?.current || 0,
+        target: 100,
+        customAnswers: customAnswers,
+        urgency: urgency,
+        status: editingGoal?.status || 'active',
+        isPrimary: isPrimary && !hasPrimaryGoal,
+        aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
+        actionHint: 'המטרה נוצרת...'
+      };
+
+      console.log('[AFTER_VALIDATE] goalData created');
+
+      // Check for duplicates before creating
+      if (!editingGoal) {
+        try {
+          console.log('[BEFORE_ASYNC] checking duplicates...');
+          const existingGoals = await base44.entities.UserGoal.filter({ 
             user_id: user?.id,
             status: 'active'
-         });
-         
-         const isDuplicate = existingGoals.some(g => g.title === titleToUse || g.category === selectedTemplate.id);
-         if (isDuplicate) {
+          });
+          console.log('[AFTER_ASYNC] duplicates checked', { count: existingGoals?.length });
+          
+          const isDuplicate = existingGoals.some(g => g.title === titleToUse || g.category === selectedTemplate.id);
+          if (isDuplicate) {
+            console.log('[BLOCKED_BY] duplicate goal exists');
             alert('נראה שכבר יש לך מטרה כזו פעילה. כדאי להתמקד בה!');
             setIsCreating(false);
             return;
-         }
-      } catch (err) {
-         console.error('Error checking duplicates:', err);
+          }
+        } catch (err) {
+          console.error('[ERROR] checking duplicates:', err);
+          throw err;
+        }
       }
-    }
 
-    // Call parent handler immediately without waiting
-    onCreateGoal(goalData, !!editingGoal);
+      console.log('[BEFORE_CALLBACK] calling onCreateGoal');
+      // Call parent handler immediately without waiting
+      onCreateGoal(goalData, !!editingGoal);
+      console.log('[ACTION_END] onCreateGoal called successfully');
+
+    } catch (error) {
+      console.error('[ERROR] handleCreate failed:', error);
+      setIsCreating(false);
+      throw error;
+    }
   };
 
   const handlePhoneSubmit = async () => {
