@@ -423,9 +423,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col w-full" style={{ height: '70vh', maxHeight: '600px', minHeight: '400px' }}>
+      <div className="bg-white flex flex-col w-full h-full max-h-[75vh]">
         {/* Header - Transparent/Minimal */}
-        <div className="flex justify-between items-start p-4 sm:p-5 pb-3 shrink-0">
+        <div className="flex justify-between items-start p-4 pb-3 shrink-0">
            {/* Close Button - Left aligned */}
            <button 
              onClick={onClose}
@@ -440,19 +440,19 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
         </div>
 
-        {/* Main Content - Scrollable with flex-1 */}
-        <div className="px-4 sm:px-6 flex-1 overflow-y-auto min-h-0 flex flex-col">
+        {/* Main Content - Scrollable */}
+        <div className="px-5 flex-1 overflow-y-auto">
            {/* Title Section */}
-           <div className="flex flex-col sm:flex-row-reverse items-center sm:items-start gap-3 mb-4 sm:mb-6 w-full">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0 text-blue-600 shadow-sm">
-                 <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
+           <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
+              <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
+                 <Icon className="w-7 h-7" />
               </div>
-              <div className="flex-1 text-center sm:text-right">
-                 <h2 className="text-lg sm:text-xl font-black text-gray-900 leading-tight mb-1">
+              <div className="w-full">
+                 <h2 className="text-xl font-black text-gray-900 leading-tight mb-1">
                    {selectedTemplate?.name || goalTitle}
                  </h2>
                  {selectedTemplate?.description && (
-                   <p className="text-gray-500 text-xs sm:text-sm">
+                   <p className="text-gray-500 text-sm">
                      {selectedTemplate.description}
                    </p>
                  )}
@@ -460,29 +460,29 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
 
            {/* Task Section */}
-           <div className="w-full mb-4">
-              <h3 className="text-right text-gray-500 font-medium text-xs sm:text-sm mb-2 sm:mb-3">מה נשאר לעשות</h3>
+           <div className="w-full mb-5">
+              <h3 className="text-right text-gray-500 font-medium text-sm mb-3">מה נשאר לעשות</h3>
               
-              <div className="flex items-center gap-2 sm:gap-3 p-3 rounded-xl border border-blue-100 bg-blue-50/30 w-full">
+              <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-100 bg-blue-50/30 w-full">
                  <div className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
                     <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
                  </div>
-                 <span className="text-gray-900 font-medium text-xs sm:text-sm">
+                 <span className="text-gray-900 font-medium text-sm">
                     השלם משימה זו כדי להמשיך
                  </span>
               </div>
            </div>
         </div>
 
-        {/* Footer - Full Width Button - ALWAYS VISIBLE */}
-        <div className="p-4 sm:p-5 pt-3 shrink-0 border-t border-gray-100 bg-white">
+        {/* Footer - Full Width Button - STICKY BOTTOM */}
+        <div className="p-4 pt-3 shrink-0 border-t border-gray-100 bg-white">
            <Button
              onClick={handleCreate}
              disabled={isCreating}
-             className="w-full h-12 sm:h-13 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base shadow-lg"
+             className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-lg"
            >
              {isCreating ? (
-               <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+               <Loader2 className="w-5 h-5 animate-spin" />
              ) : (
                'התחל עכשיו'
              )}
