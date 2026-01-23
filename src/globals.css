@@ -1,3 +1,4 @@
+css
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
@@ -371,13 +372,4 @@ body[data-sheet-open] {
 
 .animate-pulse-glow {
   animation: pulse-glow 2s infinite;
-}
-
-/* Goal Dialog Fix */
-.goal-dialog-fixed {
-  max-height: 85vh !important;
-  height: auto !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
 }

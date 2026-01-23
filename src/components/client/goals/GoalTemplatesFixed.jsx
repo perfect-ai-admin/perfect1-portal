@@ -423,158 +423,66 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
 
     return (
-      <div style={{ 
-        width: '100%',
-        height: '500px',
-        display: 'flex',
-        flexDirection: 'column',
-        background: 'white'
-      }}>
+      <div className="flex flex-col w-full bg-white rounded-2xl" style={{ maxHeight: '85vh', minHeight: '400px' }}>
         {/* Header */}
-        <div style={{ 
-          padding: '20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid #e5e7eb',
-          flexShrink: 0
-        }}>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
           <button 
             onClick={onClose}
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: '#f3f4f6',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}
+            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            type="button"
           >
             <X className="w-4 h-4 text-gray-500" />
           </button>
 
-          <div style={{
-            background: '#eff6ff',
-            color: '#2563eb',
-            padding: '4px 12px',
-            borderRadius: '20px',
-            fontSize: '12px',
-            fontWeight: 'bold'
-          }}>
+          <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
             בתהליך
           </div>
         </div>
 
-        {/* Content */}
-        <div style={{ 
-          flex: 1,
-          padding: '20px',
-          overflowY: 'auto',
-          minHeight: 0
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <div style={{
-              width: '56px',
-              height: '56px',
-              background: '#dbeafe',
-              borderRadius: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 12px',
-              color: '#2563eb'
-            }}>
+        {/* Content - Scrollable */}
+        <div className="flex-1 px-5 py-4 overflow-y-auto" style={{ minHeight: 0 }}>
+          <div className="flex flex-col items-center text-center mb-5">
+            <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-3">
               <Icon className="w-7 h-7" />
             </div>
-            <h2 style={{
-              fontSize: '20px',
-              fontWeight: '900',
-              color: '#111827',
-              marginBottom: '8px'
-            }}>
+            <h2 className="text-xl font-black text-gray-900 mb-2">
               {selectedTemplate?.name || goalTitle}
             </h2>
             {selectedTemplate?.description && (
-              <p style={{ fontSize: '14px', color: '#6b7280' }}>
+              <p className="text-sm text-gray-600">
                 {selectedTemplate.description}
               </p>
             )}
           </div>
 
-          <div>
-            <h3 style={{ 
-              fontSize: '14px',
-              fontWeight: '500',
-              color: '#6b7280',
-              marginBottom: '12px',
-              textAlign: 'right'
-            }}>
+          <div className="space-y-3">
+            <h3 className="text-right text-gray-600 font-medium text-sm">
               מה נשאר לעשות
             </h3>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '12px',
-              borderRadius: '12px',
-              border: '1px solid #dbeafe',
-              background: '#eff6ff'
-            }}>
-              <div style={{
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                border: '2px solid #2563eb',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0
-              }}>
-                <div style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  background: '#2563eb'
-                }} />
+            <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-200 bg-blue-50">
+              <div className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
               </div>
-              <span style={{ fontSize: '14px', fontWeight: '500', color: '#111827' }}>
+              <span className="text-gray-900 font-medium text-sm">
                 השלם משימה זו כדי להמשיך
               </span>
             </div>
           </div>
         </div>
 
-        {/* Button - Fixed at bottom */}
-        <div style={{ 
-          padding: '20px',
-          borderTop: '1px solid #e5e7eb',
-          background: 'white',
-          flexShrink: 0
-        }}>
+        {/* Button - Always visible at bottom */}
+        <div className="px-5 py-4 border-t border-gray-200 bg-white flex-shrink-0">
           <button
             onClick={handleCreate}
             disabled={isCreating}
-            style={{
-              width: '100%',
-              height: '56px',
-              borderRadius: '12px',
-              background: isCreating ? '#93c5fd' : '#2563eb',
-              color: 'white',
-              fontWeight: 'bold',
-              fontSize: '16px',
-              border: 'none',
-              cursor: isCreating ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)'
-            }}
+            className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-base transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+            type="button"
           >
             {isCreating ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>שומר...</span>
+              </>
             ) : (
               'התחל עכשיו'
             )}
