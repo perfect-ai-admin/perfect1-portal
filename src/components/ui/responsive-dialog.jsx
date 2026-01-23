@@ -54,8 +54,8 @@ export const ResponsiveDialog = React.forwardRef(
           {/* Content - Responsive */}
           <div
             className={cn(
-              // Mobile (< 768px): Full screen
-              'fixed md:relative inset-0 md:inset-auto z-50',
+              // Mobile (< 768px): Full screen height, stretch width
+              'fixed md:relative inset-y-0 left-0 right-0 md:inset-auto z-50',
               'md:left-[50%] md:top-[50%] md:translate-x-[-50%] md:translate-y-[-50%]',
               'w-full md:max-w-lg md:max-h-[90vh]',
               'rounded-none md:rounded-lg',
