@@ -8,17 +8,10 @@ import BusinessRoadmap from '../goals/BusinessRoadmap';
 import GoalTemplates, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
 // GoalsCatalog removed
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
+import SimpleDialog from '../SimpleDialog';
 import { Plus, Sparkles, Target, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-} from '@/components/ui/dialog';
-import {
-  Sheet,
-  SheetContent,
-} from '@/components/ui/sheet';
 
 export default function GoalsTab({ user, data, openAddGoal = false }) {
   const queryClient = useQueryClient();
@@ -321,54 +314,58 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     }
   };
 
-  return (
-    <>
-      {/* Mobile Sheet */}
-      <div className="md:hidden">
-        <Sheet open={showAddGoal} onOpenChange={setShowAddGoal}>
-          <SheetContent 
-            side="bottom" 
-            className="h-[95vh] max-h-[95vh] p-0 border-0 rounded-t-2xl flex flex-col top-[5vh]"
-          >
-            {showAddGoal && (
-              <GoalTemplates
-                user={user}
-                onCreateGoal={handleCreateGoal}
-                onClose={() => {
-                  setShowAddGoal(false);
-                  setEditingGoal(null);
-                  setSpecificTemplate(null);
-                }}
-                hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-                editingGoal={editingGoal}
-                initialTemplate={specificTemplate}
-              />
-            )}
-          </SheetContent>
-        </Sheet>
+  {/* Unified Responsive Dialog */}
+  <SimpleDialog
+    open={showAddGoal}
+    onOpenChange={setShowAddGoal}
+    header={
+      <div className="px-5 py-3 bg-gradient-to-r from-purple-50 to-blue-50">
+        <div className="flex items-center justify-between">
+          <div></div>
+          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <Target className="w-5 h-5 text-purple-600" />
+            {(() => {
+              const template = showAddGoal ? true : false;
+              return editingGoal ? 'עריכת מטרה' : 'מטרה חדשה';
+            })()}
+          </h2>
+          <div className="w-5"></div>
+        </div>
       </div>
-
-      {/* Desktop Dialog */}
-      <div className="hidden md:block">
-        <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
-          <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
-            {showAddGoal && (
-              <GoalTemplates
-                user={user}
-                onCreateGoal={handleCreateGoal}
-                onClose={() => {
-                  setShowAddGoal(false);
-                  setEditingGoal(null);
-                  setSpecificTemplate(null);
-                }}
-                hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-                editingGoal={editingGoal}
-                initialTemplate={specificTemplate}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
+    }
+    footer={
+      <div className="px-6 py-3 space-y-3 flex items-center justify-end gap-2 h-full">
+        <Button 
+          onClick={() => {
+            setShowAddGoal(false);
+            setEditingGoal(null);
+            setSpecificTemplate(null);
+          }}
+          variant="outline"
+          className="px-4"
+        >
+          ביטול
+        </Button>
       </div>
+    }
+  >
+    {showAddGoal && (
+      <div className="px-5 py-3">
+        <GoalTemplates
+          user={user}
+          onCreateGoal={handleCreateGoal}
+          onClose={() => {
+            setShowAddGoal(false);
+            setEditingGoal(null);
+            setSpecificTemplate(null);
+          }}
+          hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+          editingGoal={editingGoal}
+          initialTemplate={specificTemplate}
+        />
+      </div>
+    )}
+  </SimpleDialog>
 
       <LimitUpgradeDialog 
         isOpen={showUpgradeDialog} 
