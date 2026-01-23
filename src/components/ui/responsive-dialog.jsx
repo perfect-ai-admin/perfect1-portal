@@ -3,7 +3,6 @@ import { X } from 'lucide-react';
 import {
   Dialog,
   DialogPortal,
-  DialogContent,
   DialogOverlay,
   DialogClose,
 } from '@/components/ui/dialog';
@@ -23,7 +22,7 @@ export const ResponsiveDialog = React.forwardRef(
     children,
     header,
     footer,
-    footerHeight = 88, // default 88px (56px btn + 16px padding × 2)
+    footerHeight = 88,
     className,
     overlayClassName,
     contentClassName,
@@ -52,38 +51,21 @@ export const ResponsiveDialog = React.forwardRef(
           />
 
           {/* Content - Responsive */}
-          <DialogContent
+          <div
+            ref={ref}
             className={cn(
-              // Mobile (< 768px): Full screen height, stretch width
-              'fixed md:relative inset-y-0 left-0 right-0 md:inset-auto',
+              'fixed md:absolute inset-y-0 left-0 right-0 md:inset-auto z-50',
               'md:left-[50%] md:top-[50%] md:translate-x-[-50%] md:translate-y-[-50%]',
-              'w-full md:max-w-lg md:max-h-[90vh]',
+              'w-full md:w-auto md:max-w-lg md:max-h-[90vh]',
               'rounded-none md:rounded-lg',
               'flex flex-col',
+              'bg-white shadow-lg md:shadow-lg',
               'p-0 border-0',
-              'bg-white shadow-lg md:shadow-lg',
               className
             )}
             style={{
               '--footer-height': `${footerHeight}px`,
-            }}
-          >
-            <div
-              className="flex flex-col h-full w-full"
-              ref={ref}
-            className={cn(
-              // Mobile (< 768px): Full screen height, stretch width
-              'fixed md:relative inset-y-0 left-0 right-0 md:inset-auto z-50',
-              'md:left-[50%] md:top-[50%] md:translate-x-[-50%] md:translate-y-[-50%]',
-              'w-full md:max-w-lg md:max-h-[90vh]',
-              'rounded-none md:rounded-lg',
-              'flex flex-col',
-              'bg-white shadow-lg md:shadow-lg',
-              className
-            )}
-            style={{
-              '--footer-height': `${footerHeight}px`,
-            }}
+            } as React.CSSProperties}
           >
             {/* Header - Fixed */}
             {header && (
@@ -97,7 +79,6 @@ export const ResponsiveDialog = React.forwardRef(
               <div
                 className={cn(
                   'flex-1 overflow-y-auto',
-                  // Ensure body doesn't go under footer
                   'md:pb-0',
                   footer && 'pb-[calc(var(--footer-height)+env(safe-area-inset-bottom))]'
                 )}
@@ -111,7 +92,6 @@ export const ResponsiveDialog = React.forwardRef(
               <div
                 className={cn(
                   'flex-shrink-0 border-t border-gray-200 bg-white',
-                  // Mobile: fixed at bottom with safe-area
                   'md:sticky md:bottom-0',
                   'fixed md:relative bottom-0 left-0 right-0 md:left-auto md:right-auto',
                   'z-[1] md:z-auto'
@@ -125,20 +105,19 @@ export const ResponsiveDialog = React.forwardRef(
               </div>
             )}
 
-              {/* Close Button - For accessibility */}
-              <DialogClose
-                asChild
-                className="absolute top-4 right-4 md:top-4 md:right-4 z-10"
+            {/* Close Button - For accessibility */}
+            <DialogClose
+              asChild
+              className="absolute top-4 right-4 md:top-4 md:right-4 z-10"
+            >
+              <button
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="סגור"
               >
-                <button
-                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  aria-label="סגור"
-                >
-                  <X className="w-5 h-5 text-gray-500" />
-                </button>
-              </DialogClose>
-            </div>
-          </DialogContent>
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </DialogClose>
+          </div>
         </DialogPortal>
       </Dialog>
     );
