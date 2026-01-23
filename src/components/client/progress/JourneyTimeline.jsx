@@ -131,8 +131,8 @@ export default function JourneyTimeline() {
 
       {/* Timeline */}
       <div className="relative max-w-md mx-auto space-y-4">
-        {/* Vertical Line */}
-        <div className="absolute top-6 bottom-6 right-[29px] w-0.5 bg-gray-200 z-0" />
+        {/* Vertical Line - Gradient */}
+        <div className="absolute top-6 bottom-6 right-[29px] w-0.5 bg-gradient-to-b from-green-400 via-blue-400 to-gray-200 z-0" />
 
         {steps.map((step, index) => {
           const isCurrent = step.status === 'current';
