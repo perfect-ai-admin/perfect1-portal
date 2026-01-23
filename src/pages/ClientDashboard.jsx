@@ -52,7 +52,11 @@ export default function ClientDashboard() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogCount, setDialogCount] = useState(0);
+  
+  const setIsDialogOpen = (open) => {
+    setDialogCount(prev => open ? prev + 1 : Math.max(0, prev - 1));
+  };
   
   const location = useLocation();
 
@@ -236,7 +240,7 @@ export default function ClientDashboard() {
   }
 
   return (
-    <DialogContext.Provider value={{ isDialogOpen, setIsDialogOpen }}>
+    <DialogContext.Provider value={{ dialogCount, setIsDialogOpen }}>
     <GeneralErrorBoundary>
       <>
       <Helmet>
@@ -354,7 +358,7 @@ export default function ClientDashboard() {
 
 
         {/* Mobile Bottom Tab Bar - Hidden when Dialog is open */}
-          {!isDialogOpen && typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
+          {dialogCount === 0 && typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
             { id: 'progress', label: 'התקדמות', icon: TrendingUp },
             permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
             permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
