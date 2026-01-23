@@ -205,14 +205,14 @@ export default function JourneyTimeline() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedStep(null)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
             />
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[32px] z-50 p-6 pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[32px] z-[9999] p-6 pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] max-h-[90vh] overflow-y-auto"
               drag="y"
               dragConstraints={{ top: 0 }}
               onDragEnd={(_, info) => {
