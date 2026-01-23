@@ -272,7 +272,11 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
     if (!textInput.trim()) return;
     
     const currentQ = questionsList[currentStep];
-    const newAnswers = { ...answers, [currentQ.id]: textInput };
+    const currentAnswer = answers[currentQ.id];
+    
+    // If answer is "other", append the text input to it
+    const finalAnswer = currentAnswer === 'other' ? `other: ${textInput}` : textInput;
+    const newAnswers = { ...answers, [currentQ.id]: finalAnswer };
     setAnswers(newAnswers);
     
     if (currentStep < questionsList.length - 1) {
