@@ -423,9 +423,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col w-full h-auto max-h-[85dvh] sm:max-h-[600px] min-h-[300px] sm:min-h-[400px]">
+      <div className="bg-white flex flex-col w-full h-full max-h-[90dvh]">
         {/* Header - Transparent/Minimal */}
-        <div className="flex justify-between items-start p-6 pb-2 shrink-0">
+        <div className="flex justify-between items-start p-4 sm:p-6 pb-2 shrink-0">
            {/* Close Button - Left aligned */}
            <button 
              onClick={onClose}
@@ -440,15 +440,15 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
         </div>
 
-        {/* Main Content */}
-        <div className="px-8 flex-1 flex flex-col items-center text-center sm:text-right sm:items-end overflow-y-auto min-h-0">
+        {/* Main Content - Scrollable */}
+        <div className="px-4 sm:px-8 flex-1 flex flex-col items-center text-center sm:text-right sm:items-end overflow-y-auto min-h-0">
            {/* Title Section */}
-           <div className="flex flex-col sm:flex-row-reverse items-center sm:items-start gap-4 mb-8 w-full">
-              <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0 text-blue-600 shadow-sm">
-                 <Icon className="w-7 h-7" />
+           <div className="flex flex-col sm:flex-row-reverse items-center sm:items-start gap-3 sm:gap-4 mb-6 sm:mb-8 w-full">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0 text-blue-600 shadow-sm">
+                 <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
               </div>
               <div className="flex-1 text-center sm:text-right">
-                 <h2 className="text-2xl font-black text-gray-900 leading-tight mb-1">
+                 <h2 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight mb-1">
                    {selectedTemplate?.name || goalTitle}
                  </h2>
                  {selectedTemplate?.description && (
@@ -460,26 +460,26 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
 
            {/* Task Section */}
-           <div className="w-full mb-8">
-              <h3 className="text-right text-gray-500 font-medium text-sm mb-4">מה נשאר לעשות</h3>
+           <div className="w-full mb-6 sm:mb-8">
+              <h3 className="text-right text-gray-500 font-medium text-sm mb-3 sm:mb-4">מה נשאר לעשות</h3>
               
-              <div className="flex items-center gap-3 p-4 rounded-xl border border-blue-100 bg-blue-50/30 w-full hover:bg-blue-50 transition-colors cursor-default">
-                 <div className="flex-shrink-0 w-6 h-6 rounded-full border-2 border-blue-500 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-blue-500" />
+              <div className="flex items-center gap-3 p-3 sm:p-4 rounded-xl border border-blue-100 bg-blue-50/30 w-full hover:bg-blue-50 transition-colors cursor-default">
+                 <div className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500" />
                  </div>
-                 <span className="text-gray-900 font-medium text-base">
+                 <span className="text-gray-900 font-medium text-sm sm:text-base">
                     השלם משימה זו כדי להמשיך
                  </span>
               </div>
            </div>
         </div>
 
-        {/* Footer - Full Width Button */}
-        <div className="p-6 pt-2 shrink-0 mt-auto">
+        {/* Footer - Full Width Button - Fixed at bottom */}
+        <div className="p-4 sm:p-6 pt-2 shrink-0 border-t border-gray-100">
            <Button
              onClick={handleCreate}
              disabled={isCreating}
-             className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all"
+             className="w-full h-12 sm:h-14 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base sm:text-lg shadow-lg hover:shadow-xl hover:scale-[1.01] transition-all"
            >
              {isCreating ? (
                <Loader2 className="w-5 h-5 animate-spin" />
