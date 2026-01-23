@@ -423,9 +423,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
 
     return (
-        <div className="flex flex-col w-full bg-white rounded-2xl overflow-visible" style={{ maxHeight: '85vh', minHeight: '400px' }}>
+        <div className="flex flex-col w-full bg-white rounded-2xl overflow-visible h-auto">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
           <button 
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
@@ -440,7 +440,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Content - Scrollable */}
-        <div className="flex-1 px-5 py-4 overflow-y-auto" style={{ minHeight: 0 }}>
+        <div className="px-5 py-4 overflow-y-auto max-h-[60vh]">
           <div className="flex flex-col items-center text-center mb-5">
             <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-3">
               <Icon className="w-7 h-7" />
@@ -471,7 +471,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Button - Always visible at bottom */}
-        <div className="px-5 py-4 border-t border-gray-200 bg-white flex-shrink-0">
+        <div className="px-5 py-4 border-t border-gray-200 bg-white">
           <button
             onClick={handleCreate}
             disabled={isCreating}
