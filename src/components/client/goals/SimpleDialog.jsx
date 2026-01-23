@@ -10,13 +10,22 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
       
-      {/* Dialog - Centered, limited height for mobile, ensures button always visible */}
+      {/* Dialog Container - Full screen with safe area padding, flex container */}
       <div 
-        className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100%-2rem)] max-w-2xl flex flex-col bg-white rounded-2xl shadow-2xl ${className}`}
-        style={{ maxHeight: '85dvh' }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{
+          paddingTop: 'env(safe-area-inset-top)',
+          paddingBottom: 'env(safe-area-inset-bottom)'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        {children}
+        {/* Dialog Panel - Bounded by viewport */}
+        <div 
+          className={`w-full max-w-2xl max-h-full flex flex-col bg-white rounded-2xl shadow-2xl ${className}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {children}
+        </div>
       </div>
     </>,
     document.body
