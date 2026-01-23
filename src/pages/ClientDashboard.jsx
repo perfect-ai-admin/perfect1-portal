@@ -305,7 +305,6 @@ export default function ClientDashboard() {
             {/* Tab Navigation - Desktop Only */}
              <div className="hidden md:block">
                {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
-                    { id: 'summary', label: 'סיכום', icon: 'MapPin' },
                     { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
                     permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
                   permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
