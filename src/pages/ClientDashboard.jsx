@@ -41,7 +41,7 @@ import { SkeletonHeader, SkeletonTabContent } from '../components/client/Skeleto
 
 // Lazy Load Heavy Tabs
 const ProgressTab = React.lazy(() => import('../components/client/tabs/ProgressTab'));
-const SummaryTab = React.lazy(() => import('../components/client/tabs/SummaryTab.js'));
+const SummaryTab = React.lazy(() => import('../components/client/tabs/SummaryTab'));
 const BusinessTab = React.lazy(() => import('../components/client/tabs/BusinessTab'));
 const FinancialTab = React.lazy(() => import('../components/client/tabs/FinancialTab'));
 const GoalsTab = React.lazy(() => import('../components/client/tabs/GoalsTab'));
