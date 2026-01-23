@@ -21,6 +21,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function JourneyTimeline() {
   const { data: user } = useQuery({
