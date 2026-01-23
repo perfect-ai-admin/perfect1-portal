@@ -50,6 +50,7 @@ import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, Ch
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import SimpleDialog from '../goals/SimpleDialog';
 import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
 import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
 import GoalTemplatesFixed, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
