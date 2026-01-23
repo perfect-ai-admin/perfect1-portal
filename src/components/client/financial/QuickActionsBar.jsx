@@ -10,8 +10,6 @@ import {
 
 
 export default function QuickActionsBar({ onActionComplete }) {
-  const [showCreateModal, setShowCreateModal] = useState(null);
-  const [showSearch, setShowSearch] = useState(false);
 
   const documentTypes = [
     { id: 'invoice', label: 'חשבונית מס', icon: '🧾' },
