@@ -150,7 +150,7 @@ export default function ClientDashboard() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab]);
 
-  const tabOrder = ['progress', 'summary', 'business', 'financial', 'goals', 'marketing', 'mentor'];
+  const tabOrder = ['progress', 'business', 'financial', 'goals', 'marketing', 'mentor'];
 
   const currentData = React.useMemo(() => {
     return userData || user;
