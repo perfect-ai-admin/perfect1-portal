@@ -314,59 +314,61 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     }
   };
 
-  {/* Unified Responsive Dialog */}
-  <SimpleDialog
-    open={showAddGoal}
-    onOpenChange={setShowAddGoal}
-    header={
-      <div className="px-5 py-3 bg-gradient-to-r from-purple-50 to-blue-50">
-        <div className="flex items-center justify-between">
-          <div></div>
-          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <Target className="w-5 h-5 text-purple-600" />
-            {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
-          </h2>
-          <div className="w-5"></div>
-        </div>
-      </div>
-    }
-    footer={
-      <div className="px-6 py-3 flex items-center justify-end gap-2">
-        <Button 
-          onClick={() => {
-            setShowAddGoal(false);
-            setEditingGoal(null);
-            setSpecificTemplate(null);
-          }}
-          variant="outline"
-          className="px-4"
-        >
-          ביטול
-        </Button>
-      </div>
-    }
-  >
-    {showAddGoal && (
-      <GoalTemplates
-        user={user}
-        onCreateGoal={handleCreateGoal}
-        onClose={() => {
-          setShowAddGoal(false);
-          setEditingGoal(null);
-          setSpecificTemplate(null);
-        }}
-        hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-        editingGoal={editingGoal}
-        initialTemplate={specificTemplate}
-      />
-    )}
-  </SimpleDialog>
+  return (
+   <>
+     {/* Unified Responsive Dialog */}
+     <SimpleDialog
+       open={showAddGoal}
+       onOpenChange={setShowAddGoal}
+       header={
+         <div className="px-5 py-3 bg-gradient-to-r from-purple-50 to-blue-50">
+           <div className="flex items-center justify-between">
+             <div></div>
+             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+               <Target className="w-5 h-5 text-purple-600" />
+               {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
+             </h2>
+             <div className="w-5"></div>
+           </div>
+         </div>
+       }
+       footer={
+         <div className="px-6 py-3 flex items-center justify-end gap-2">
+           <Button 
+             onClick={() => {
+               setShowAddGoal(false);
+               setEditingGoal(null);
+               setSpecificTemplate(null);
+             }}
+             variant="outline"
+             className="px-4"
+           >
+             ביטול
+           </Button>
+         </div>
+       }
+     >
+       {showAddGoal && (
+         <GoalTemplates
+           user={user}
+           onCreateGoal={handleCreateGoal}
+           onClose={() => {
+             setShowAddGoal(false);
+             setEditingGoal(null);
+             setSpecificTemplate(null);
+           }}
+           hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+           editingGoal={editingGoal}
+           initialTemplate={specificTemplate}
+         />
+       )}
+     </SimpleDialog>
 
-      <LimitUpgradeDialog 
-        isOpen={showUpgradeDialog} 
-        onClose={() => setShowUpgradeDialog(false)} 
-        limit={user?.goals_limit || 1}
-      />
+     <LimitUpgradeDialog 
+       isOpen={showUpgradeDialog} 
+       onClose={() => setShowUpgradeDialog(false)} 
+       limit={user?.goals_limit || 1}
+     />
 
       <div className="container mx-auto max-w-4xl p-0 md:p-4">
         <motion.div
@@ -508,4 +510,5 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       </div>
     </>
   );
+  };
 }
