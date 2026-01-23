@@ -423,7 +423,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxHeight: '85vh', background: 'white' }}>
+      <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: '100%', minHeight: '400px', maxHeight: '85vh', background: 'white', paddingBottom: '90px' }}>
         {/* Header - Transparent/Minimal */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px', paddingBottom: '12px', flexShrink: 0, zIndex: 10, background: 'white' }}>
            {/* Close Button - Left aligned */}
@@ -441,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Main Content - Scrollable */}
-        <div style={{ padding: '0 20px', flex: '1 1 0', overflowY: 'auto', paddingBottom: '100px', minHeight: 0 }}>
+        <div style={{ padding: '0 20px', flex: '1 1 auto', overflowY: 'auto' }}>
            {/* Title Section */}
            <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
@@ -460,7 +460,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
 
            {/* Task Section */}
-           <div className="w-full">
+           <div className="w-full mb-4">
               <h3 className="text-right text-gray-500 font-medium text-sm mb-3">מה נשאר לעשות</h3>
 
               <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-100 bg-blue-50/30 w-full">
@@ -474,28 +474,43 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
         </div>
 
-        {/* Footer - Full Width Button - ABSOLUTE BOTTOM */}
+        {/* Footer - Full Width Button - ABSOLUTE BOTTOM WITH VISIBILITY */}
         <div style={{ 
           position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          bottom: '0px',
+          left: '0px',
+          right: '0px',
           padding: '16px', 
           borderTop: '1px solid #e5e7eb', 
           background: 'white',
-          zIndex: 30
+          zIndex: 999,
+          boxShadow: '0 -4px 12px rgba(0,0,0,0.1)'
         }}>
-           <Button
+           <button
              onClick={handleCreate}
              disabled={isCreating}
-             className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-lg shadow-blue-200"
+             style={{
+               width: '100%',
+               height: '56px',
+               borderRadius: '12px',
+               backgroundColor: isCreating ? '#93c5fd' : '#2563eb',
+               color: 'white',
+               fontWeight: 'bold',
+               fontSize: '16px',
+               border: 'none',
+               cursor: isCreating ? 'not-allowed' : 'pointer',
+               display: 'flex',
+               alignItems: 'center',
+               justifyContent: 'center',
+               boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)'
+             }}
            >
              {isCreating ? (
                <Loader2 className="w-5 h-5 animate-spin" />
              ) : (
                'התחל עכשיו'
              )}
-           </Button>
+           </button>
         </div>
       </div>
     );

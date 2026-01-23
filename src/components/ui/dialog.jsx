@@ -37,9 +37,9 @@ const DialogContent = React.forwardRef(({ className, children, hideCloseButton, 
       style={{
         maxHeight: className?.includes('goal-dialog-fixed') ? '85vh' : undefined,
         height: className?.includes('goal-dialog-fixed') ? 'auto' : undefined,
-        display: className?.includes('goal-dialog-fixed') ? 'flex' : undefined,
-        flexDirection: className?.includes('goal-dialog-fixed') ? 'column' : undefined,
-        overflow: className?.includes('goal-dialog-fixed') ? 'hidden' : undefined,
+        display: className?.includes('goal-dialog-fixed') ? 'block' : undefined,
+        overflow: className?.includes('goal-dialog-fixed') ? 'visible' : undefined,
+        padding: className?.includes('goal-dialog-fixed') ? '0' : undefined,
       }}
       {...props}>
       {children}
