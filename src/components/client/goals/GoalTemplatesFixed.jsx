@@ -423,7 +423,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col w-full" style={{ height: '60vh' }}>
+      <div className="bg-white flex flex-col w-full h-full max-h-full">
         {/* Header - Transparent/Minimal */}
         <div className="flex justify-between items-start p-4 pb-3 flex-shrink-0">
            {/* Close Button - Left aligned */}
@@ -441,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Main Content - Scrollable */}
-        <div className="px-5 flex-1 overflow-y-auto">
+        <div className="px-5 flex-1 overflow-y-auto pb-4">
            {/* Title Section */}
            <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
@@ -460,7 +460,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
 
            {/* Task Section */}
-           <div className="w-full mb-5">
+           <div className="w-full mb-20">
               <h3 className="text-right text-gray-500 font-medium text-sm mb-3">מה נשאר לעשות</h3>
               
               <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-100 bg-blue-50/30 w-full">
@@ -474,8 +474,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
         </div>
 
-        {/* Footer - Full Width Button - STICKY BOTTOM */}
-        <div className="p-4 pt-3 flex-shrink-0 border-t border-gray-100 bg-white sticky bottom-0">
+        {/* Footer - Full Width Button - FIXED AT BOTTOM */}
+        <div className="p-4 pt-3 flex-shrink-0 border-t border-gray-100 bg-white w-full">
            <Button
              onClick={handleCreate}
              disabled={isCreating}
