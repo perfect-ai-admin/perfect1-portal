@@ -419,30 +419,64 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
                 </Button>
               </div>
             ) : (
-              currentQuestion.options.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => handleSelect(option.id)}
-                  className={cn(
-                    "w-full p-4 rounded-xl border-2 text-right transition-all duration-200 flex items-center justify-between group",
-                    answers[currentQuestion.id] === option.id
-                      ? "border-blue-600 bg-blue-50 text-blue-900"
-                      : "border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50 text-gray-700"
-                  )}
-                >
-                  <span className="font-medium text-lg">{option.label}</span>
-                  <div className={cn(
-                    "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
-                    answers[currentQuestion.id] === option.id
-                      ? "border-blue-600 bg-blue-600"
-                      : "border-gray-300 group-hover:border-blue-300"
-                  )}>
-                    {answers[currentQuestion.id] === option.id && (
-                      <Check className="w-3.5 h-3.5 text-white" />
+              <>
+                {currentQuestion.options.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleSelect(option.id)}
+                    className={cn(
+                      "w-full p-4 rounded-xl border-2 text-right transition-all duration-200 flex items-center justify-between group",
+                      answers[currentQuestion.id] === option.id
+                        ? "border-blue-600 bg-blue-50 text-blue-900"
+                        : "border-gray-100 bg-white hover:border-blue-200 hover:bg-gray-50 text-gray-700"
                     )}
-                  </div>
-                </button>
-              ))
+                  >
+                    <span className="font-medium text-lg">{option.label}</span>
+                    <div className={cn(
+                      "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors",
+                      answers[currentQuestion.id] === option.id
+                        ? "border-blue-600 bg-blue-600"
+                        : "border-gray-300 group-hover:border-blue-300"
+                    )}>
+                      {answers[currentQuestion.id] === option.id && (
+                        <Check className="w-3.5 h-3.5 text-white" />
+                      )}
+                    </div>
+                  </button>
+                ))}
+
+                {/* Text Input for "Other" Option */}
+                {answers[currentQuestion.id] === 'other' && 
+                 currentQuestion.options.some(opt => opt.id === 'other' && opt.hasTextInput) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-6 space-y-4 pt-4 border-t border-gray-200"
+                  >
+                    <p className="text-sm text-gray-600 font-medium">ספר לנו קצת יותר:</p>
+                    <Input
+                      autoFocus
+                      value={textInput}
+                      onChange={(e) => setTextInput(e.target.value)}
+                      placeholder="כתוב כאן..."
+                      className="text-lg p-6 h-14"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleTextSubmit();
+                        }
+                      }}
+                    />
+                    <Button 
+                      onClick={handleTextSubmit} 
+                      disabled={!textInput.trim()}
+                      className="w-full h-12 text-lg"
+                    >
+                      המשך
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                    </Button>
+                  </motion.div>
+                )}
+              </>
             )}
           </div>
         </motion.div>
