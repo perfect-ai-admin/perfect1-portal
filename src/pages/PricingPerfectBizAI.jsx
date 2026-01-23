@@ -121,7 +121,10 @@ export default function PricingPerfectBizAI() {
 
   const { data: plans = [], isLoading: isPlansLoading } = useQuery({
     queryKey: ['plans'],
-    queryFn: () => base44.entities.Plan.list({ limit: 50 }),
+    queryFn: async () => {
+      const allPlans = await base44.entities.Plan.list();
+      return allPlans.filter(p => p.is_active);
+    },
     staleTime: 1000 * 60 * 60, // 1 hour (plans don't change often)
   });
 
@@ -229,14 +232,10 @@ export default function PricingPerfectBizAI() {
 
   const handleGoogleLogin = async () => {
     try {
-      const response = await base44.functions.invoke('googleAuthStart', {});
-      if (response.data && response.data.url) {
-        sessionStorage.setItem('oauth_state', response.data.state);
-        window.location.href = response.data.url;
-      }
+      await base44.auth.redirectToLogin();
     } catch (error) {
-      console.error('Google login error:', error);
-      toast.error('שגיאה בהתחברות לגוגל');
+      console.error('Login error:', error);
+      toast.error('שגיאה בהתחברות');
     }
   };
 
