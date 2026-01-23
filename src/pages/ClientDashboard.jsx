@@ -305,13 +305,14 @@ export default function ClientDashboard() {
             {/* Tab Navigation - Desktop Only */}
              <div className="hidden md:block">
                {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
-                   { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
-                   permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
-                 permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
-                 permissions.mentor && { id: 'goals', label: 'מטרות', icon: 'Target' },
-                 permissions.marketing && { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
-                 permissions.mentor && { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
-               ].filter(Boolean)} />}
+                    { id: 'summary', label: 'סיכום', icon: 'MapPin' },
+                    { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
+                    permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
+                  permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
+                  permissions.mentor && { id: 'goals', label: 'מטרות', icon: 'Target' },
+                  permissions.marketing && { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
+                  permissions.mentor && { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
+                ].filter(Boolean)} />}
              </div>
             </div>
         </header>
