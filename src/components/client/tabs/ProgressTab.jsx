@@ -50,7 +50,6 @@ import { Sparkles, Target, ArrowLeft, Rocket, RotateCcw, Check, Lock, Circle, Ch
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import SimpleDialog from '../goals/SimpleDialog';
 import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnaire';
 import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
 import GoalTemplatesFixed, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
@@ -602,20 +601,18 @@ export default function ProgressTab({ data, onNavigate, user }) {
       </Dialog>
 
       {/* Specific Goal Creation Dialog for Current Step */}
-      <SimpleDialog 
-        open={showGoalCreation} 
-        onClose={() => setShowGoalCreation(false)}
-        className="bg-white rounded-2xl shadow-2xl overflow-hidden"
-      >
-        {showGoalCreation && goalTemplateForStep && (
-          <GoalTemplatesFixed
-            user={user}
-            onCreateGoal={handleGoalCreated}
-            onClose={() => setShowGoalCreation(false)}
-            initialTemplate={goalTemplateForStep}
-          />
-        )}
-      </SimpleDialog>
+      <Dialog open={showGoalCreation} onOpenChange={setShowGoalCreation}>
+        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
+          {showGoalCreation && goalTemplateForStep && (
+            <GoalTemplatesFixed
+              user={user}
+              onCreateGoal={handleGoalCreated}
+              onClose={() => setShowGoalCreation(false)}
+              initialTemplate={goalTemplateForStep}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </motion.div>
     </>
   );
