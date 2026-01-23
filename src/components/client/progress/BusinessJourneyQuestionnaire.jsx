@@ -224,7 +224,8 @@ const FLOWS = {
         { id: 'me', label: "אני (הכל עובר דרכי)" },
         { id: 'ops', label: "התפעול לא עומד בעומס" },
         { id: 'marketing', label: "השיווק לא מביא מספיק לידים" },
-        { id: 'cashflow', label: "תזרים מזומנים להשקעה" }
+        { id: 'cashflow', label: "תזרים מזומנים להשקעה" },
+        { id: 'other', label: "משהו אחר...", hasTextInput: true }
       ]
     },
     {
