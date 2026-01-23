@@ -126,18 +126,18 @@ export default function JourneyTimeline() {
               exit={{ y: 100, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:w-96 p-4 sm:p-6 pb-8 sm:pb-6 shadow-2xl sm:max-w-md max-h-[70vh] overflow-y-auto"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:w-96 shadow-2xl sm:max-w-md flex flex-col max-h-[92vh] sm:max-h-none"
             >
               {/* Close Button */}
               <button 
                 onClick={() => setSelectedStep(null)}
-                className="absolute top-3 left-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="absolute top-3 left-4 p-2 hover:bg-gray-100 rounded-full transition-colors z-50"
               >
                 <X className="w-5 h-5 text-gray-500" />
               </button>
 
-              {/* Content */}
-              <div className="text-center space-y-3 sm:space-y-4 pt-2">
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 text-center space-y-3 sm:space-y-4 pt-6">
                 {/* Icon */}
                 <div className={cn(
                   "w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mx-auto",
@@ -166,11 +166,13 @@ export default function JourneyTimeline() {
                 <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
                   {selectedStep.description}
                 </p>
+              </div>
 
-                {/* Button */}
+              {/* Fixed Footer Button */}
+              <div className="flex-shrink-0 border-t border-gray-100 bg-white p-4 sm:p-6 rounded-b-3xl">
                 {selectedStep.status !== 'locked' ? (
                   <Button 
-                    className="w-full h-10 sm:h-11 text-sm sm:text-base font-bold rounded-xl mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+                    className="w-full h-10 sm:h-11 text-sm sm:text-base font-bold rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
                     onClick={() => setSelectedStep(null)}
                   >
                     הבנתי ✓
