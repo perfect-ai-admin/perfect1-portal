@@ -807,7 +807,6 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
             </motion.div>
           )}
           </div>
-          </DialogContent>
-          </Dialog>
+          </ResponsiveDialog>
           );
           }
