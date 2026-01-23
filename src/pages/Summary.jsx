@@ -265,6 +265,8 @@ export default function Summary() {
           </Button>
         </div>
       </motion.div>
-    </div>
-  );
-}
+      </div>
+      </main>
+      </div>
+      );
+      }
