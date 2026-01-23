@@ -10,6 +10,7 @@ import {
   LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
   TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard
 } from 'lucide-react';
+import { DialogContext } from '../components/client/goals/SimpleDialog';
 import {
   Tooltip,
   TooltipContent,
@@ -235,6 +236,7 @@ export default function ClientDashboard() {
   }
 
   return (
+    <DialogContext.Provider value={{ isDialogOpen, setIsDialogOpen }}>
     <GeneralErrorBoundary>
       <>
       <Helmet>
@@ -363,5 +365,6 @@ export default function ClientDashboard() {
         </div>
         </>
         </GeneralErrorBoundary>
-        );
-        }
+    </DialogContext.Provider>
+    );
+    }
