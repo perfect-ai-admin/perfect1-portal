@@ -51,6 +51,7 @@ export default function ClientDashboard() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   const location = useLocation();
 
@@ -350,15 +351,15 @@ export default function ClientDashboard() {
 
 
 
-        {/* Mobile Bottom Tab Bar */}
-         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
-           { id: 'progress', label: 'התקדמות', icon: TrendingUp },
-           permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
-           permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
-           permissions.mentor && { id: 'goals', label: 'מטרות', icon: Target },
-           permissions.marketing && { id: 'marketing', label: 'שיווק', icon: Megaphone },
-           permissions.mentor && { id: 'mentor', label: 'מנטור', icon: MessageSquare }
-         ].filter(Boolean)} />}
+        {/* Mobile Bottom Tab Bar - Hidden when Dialog is open */}
+          {!isDialogOpen && typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
+            { id: 'progress', label: 'התקדמות', icon: TrendingUp },
+            permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
+            permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
+            permissions.mentor && { id: 'goals', label: 'מטרות', icon: Target },
+            permissions.marketing && { id: 'marketing', label: 'שיווק', icon: Megaphone },
+            permissions.mentor && { id: 'mentor', label: 'מנטור', icon: MessageSquare }
+          ].filter(Boolean)} />}
         </div>
         </>
         </GeneralErrorBoundary>
