@@ -118,39 +118,39 @@ export default function JourneyTimeline() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedStep(null)}
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 flex items-end sm:items-center justify-center"
+            className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
           >
             <motion.div
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 100, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:w-96 shadow-2xl sm:max-w-md flex flex-col max-h-[92vh] sm:max-h-none"
+              className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl relative"
             >
               {/* Close Button */}
               <button 
                 onClick={() => setSelectedStep(null)}
-                className="absolute top-3 left-4 p-2 hover:bg-gray-100 rounded-full transition-colors z-50"
+                className="absolute top-4 left-4 p-1.5 hover:bg-gray-100 rounded-full transition-colors"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-gray-400" />
               </button>
 
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 text-center space-y-3 sm:space-y-4 pt-6">
+              {/* Content */}
+              <div className="text-center space-y-4">
                 {/* Icon */}
                 <div className={cn(
-                  "w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mx-auto",
+                  "w-16 h-16 rounded-2xl flex items-center justify-center mx-auto",
                   selectedStep.status === 'completed' ? "bg-green-100 text-green-600" : 
                   selectedStep.status === 'locked' ? "bg-gray-100 text-gray-500" :
                   "bg-blue-100 text-blue-600"
                 )}>
-                  {selectedStep.status === 'locked' ? <Lock className="w-6 h-6 sm:w-7 sm:h-7" /> : React.createElement(selectedStep.icon, { className: "w-6 h-6 sm:w-7 sm:h-7" })}
+                  {selectedStep.status === 'locked' ? <Lock className="w-7 h-7" /> : React.createElement(selectedStep.icon, { className: "w-7 h-7" })}
                 </div>
 
                 {/* Title & Status */}
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900">{selectedStep.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{selectedStep.title}</h3>
                   <span className={cn(
                     "text-xs font-bold px-3 py-1 rounded-full mt-2 inline-block",
                     selectedStep.status === 'completed' ? "bg-green-100 text-green-700" : 
@@ -163,26 +163,26 @@ export default function JourneyTimeline() {
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed">
                   {selectedStep.description}
                 </p>
-              </div>
 
-              {/* Fixed Footer Button */}
-              <div className="flex-shrink-0 border-t border-gray-100 bg-white p-4 sm:p-6 rounded-b-3xl">
-                {selectedStep.status !== 'locked' ? (
-                  <Button 
-                    className="w-full h-10 sm:h-11 text-sm sm:text-base font-bold rounded-xl bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={() => setSelectedStep(null)}
-                  >
-                    הבנתי ✓
-                  </Button>
-                ) : (
-                  <div className="bg-gray-50 p-3 rounded-xl text-xs sm:text-sm text-gray-500 border border-gray-100">
-                    <Lock className="w-4 h-4 inline ml-2" />
-                    נפתח אחרי שלמת את השלבים הקודמים
-                  </div>
-                )}
+                {/* Button */}
+                <div className="pt-2">
+                  {selectedStep.status !== 'locked' ? (
+                    <Button 
+                      className="w-full h-11 font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => setSelectedStep(null)}
+                    >
+                      הבנתי ✓
+                    </Button>
+                  ) : (
+                    <div className="bg-gray-50 p-3 rounded-lg text-xs text-gray-600 border border-gray-200">
+                      <Lock className="w-3.5 h-3.5 inline ml-2" />
+                      נפתח אחרי השלמת השלבים הקודמים
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           </motion.div>
