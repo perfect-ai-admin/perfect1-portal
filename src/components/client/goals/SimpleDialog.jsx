@@ -7,39 +7,65 @@ export const DialogContext = createContext({
   setIsDialogOpen: () => {}
 });
 
-const DebugPanel = ({ debug }) => {
+const DebugPanel = ({ debug, isDialogOpen, dialogCount }) => {
   if (!debug) return null;
   return (
     <div 
-      className="fixed bottom-0 left-0 right-0 bg-black/90 text-white text-xs p-3 z-[60] max-h-48 overflow-y-auto font-mono"
+      className="fixed bottom-0 left-0 right-0 bg-black/95 text-white text-xs p-3 z-[60] max-h-56 overflow-y-auto font-mono border-t-2 border-blue-500"
       style={{ pointerEvents: 'none', bottom: '80px' }}
     >
       <div className="space-y-1">
+        {/* Context State */}
+        <div className="border-b border-gray-600 pb-2 mb-2">
+          <div className={isDialogOpen ? 'text-cyan-300 font-bold' : 'text-gray-400'}>
+            🔷 isDialogOpen: {String(isDialogOpen)} | dialogCount: {dialogCount}
+          </div>
+          <div className="text-gray-500 text-[10px]">MobileTabBar should be {isDialogOpen ? '❌ HIDDEN' : '✓ VISIBLE'}</div>
+        </div>
+
+        {/* CTA Visibility */}
         <div>📏 vvh={debug.vvh}px | cta.bottom={debug.ctaBottom}px | gap={debug.gap}px</div>
         <div className={debug.ctaIsVisible ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>
           ✓ ctaIsVisible: {String(debug.ctaIsVisible)}
         </div>
+
+        {/* Coverage Detection */}
         <div className={debug.isCovered ? 'text-red-400 font-bold' : 'text-green-400 font-bold'}>
           {debug.isCovered ? '❌ isCovered: TRUE (BLOCKED!)' : '✓ isCovered: FALSE (CLICKABLE)'}
         </div>
-        <div className="text-gray-300">
-          Top element covering: {debug.topElementTag || 'none'}
+        <div className="text-gray-300 text-[11px]">
+          Covering element: {debug.topElementTag || 'none'}
           {debug.topElementClass && ` .${debug.topElementClass}`}
+          {debug.isCovered && debug.topElementId && ` #${debug.topElementId}`}
         </div>
-        <div className="text-yellow-300">bottomBarHeight: {debug.bottomBarHeight}px</div>
+
+        {/* Bottom Bar */}
+        <div className="text-yellow-300 text-[11px]">
+          bottomBarHeight: {debug.bottomBarHeight}px {debug.bottomBarHidden ? '(hidden ✓)' : '(visible ❌)'}
+        </div>
+
+        {/* Definition of Done */}
+        <div className="border-t border-gray-600 pt-2 mt-2 text-[10px]">
+          <div className={debug.ctaIsVisible && !debug.isCovered && isDialogOpen && debug.bottomBarHidden ? 'text-green-400 font-bold' : 'text-yellow-400'}>
+            ✓ READY: ctaVisible={debug.ctaIsVisible} | notCovered={!debug.isCovered} | barHidden={debug.bottomBarHidden}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default function SimpleDialog({ open, onClose, children, className = '' }) {
-  const { setIsDialogOpen } = useContext(DialogContext);
+  const context = useContext(DialogContext);
+  const { setIsDialogOpen, dialogCount = 0 } = context || {};
   const [debug, setDebug] = useState(null);
   const panelRef = React.useRef(null);
 
   useEffect(() => {
     // Notify parent when dialog opens/closes
-    setIsDialogOpen(open);
+    if (setIsDialogOpen) {
+      setIsDialogOpen(open);
+    }
     
     if (open) {
       // Prevent body scroll
@@ -48,12 +74,17 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
     
     return () => {
       document.body.style.overflow = '';
-      setIsDialogOpen(false);
+      if (setIsDialogOpen) {
+        setIsDialogOpen(false);
+      }
     };
   }, [open, setIsDialogOpen]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setDebug(null);
+      return;
+    }
 
     const isDebugMode = new URLSearchParams(window.location.search).has('debug');
     if (!isDebugMode) return;
@@ -74,9 +105,9 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
       const topEl = document.elementFromPoint(ctaCenter.x, ctaCenter.y);
       const isCovered = topEl && !ctaBtn.contains(topEl);
       
-      // Find bottom bar height
+      // Find bottom bar
       const bottomBar = document.querySelector('nav[role="navigation"]');
-      const bottomBarHeight = bottomBar ? bottomBar.getBoundingClientRect().height : 0;
+      const bottomBarHidden = !bottomBar || bottomBar.style.display === 'none' || getComputedStyle(bottomBar).display === 'none';
 
       setDebug({
         vvh: Math.round(vvh),
@@ -86,7 +117,9 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
         isCovered,
         topElementTag: topEl?.tagName || 'none',
         topElementClass: topEl?.className?.split(' ')?.[0] || '',
-        bottomBarHeight
+        topElementId: topEl?.id || '',
+        bottomBarHeight: bottomBar ? Math.round(bottomBar.getBoundingClientRect().height) : 0,
+        bottomBarHidden
       });
     };
 
@@ -145,7 +178,7 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
       </div>
 
       {/* Debug Panel */}
-      <DebugPanel debug={debug} />
+      <DebugPanel debug={debug} isDialogOpen={open} dialogCount={dialogCount} />
     </>,
     document.body
   );
