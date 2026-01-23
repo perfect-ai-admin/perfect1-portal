@@ -277,33 +277,63 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
 
   if (!open) return null;
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   return createPortal(
     <>
-      {/* Overlay */}
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
-      
-      {/* Dialog Container - Full viewport flex container */}
+      {/* Overlay - Mobile fullscreen / Desktop centered */}
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center p-3"
-        style={{
-          paddingTop: `max(12px, env(safe-area-inset-top))`,
-          paddingBottom: `max(12px, env(safe-area-inset-bottom))`,
-          paddingLeft: '12px',
-          paddingRight: '12px'
-        }}
+        className={isMobile ? 'fixed inset-0 bg-black/40 z-40' : 'fixed inset-0 bg-black/60 z-40'} 
+        onClick={onClose} 
+      />
+      
+      {/* Dialog Container */}
+      <div 
+        className={isMobile 
+          ? 'fixed inset-0 z-50 flex flex-col' 
+          : 'fixed inset-0 z-50 flex items-center justify-center p-3'}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Dialog Panel - Flex column */}
+        {/* Dialog Panel - Mobile fullscreen / Desktop modal */}
         <div 
           ref={panelRef}
-          className={`w-full max-w-2xl flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden ${className}`}
-          style={{
+          className={`${
+            isMobile 
+              ? 'w-full h-[100dvh] flex flex-col bg-white rounded-none' 
+              : 'w-full max-w-2xl flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden'
+          } ${className}`}
+          style={isMobile ? {} : {
             maxHeight: `calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom))`
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {children}
+          {/* Mobile: scrollable body + fixed footer wrapper */}
+          {isMobile ? (
+            <>
+              {/* Body - scrollable */}
+              <div className="flex-1 overflow-y-auto overflow-x-hidden">
+                {children}
+              </div>
+              {/* Spacer for footer - prevents content from hiding under fixed footer */}
+              <div className="h-20" />
+            </>
+          ) : (
+            /* Desktop: normal layout */
+            children
+          )}
         </div>
+
+        {/* Mobile: Fixed footer wrapper at bottom */}
+        {isMobile && (
+          <div 
+            className="fixed bottom-0 left-0 right-0 z-[51] bg-white border-t border-gray-200 w-full"
+            style={{
+              paddingBottom: `env(safe-area-inset-bottom)`
+            }}
+          >
+            {/* This will be populated by mobile-specific buttons if needed */}
+          </div>
+        )}
       </div>
 
       {/* Debug Panel */}
