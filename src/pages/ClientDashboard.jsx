@@ -340,7 +340,6 @@ export default function ClientDashboard() {
                        setGoalsTabConfig(config);
                      }
                    }} />}
-                   {activeTab === 'summary' && <SummaryTab data={enrichedData} user={enrichedData} onNavigate={setActiveTab} />}
                    {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
                    {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
                    {activeTab === 'goals' && permissions.mentor && <GoalsTab user={currentData} data={enrichedData} openAddGoal={goalsTabConfig.openAddGoal} permissions={permissions} />}
