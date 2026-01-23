@@ -50,6 +50,7 @@ const MentorTab = React.lazy(() => import('../components/client/tabs/MentorTab')
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
+  const [authError, setAuthError] = useState(null);
   const [activeTab, setActiveTab] = useState(null);
   const location = useLocation();
 
@@ -67,22 +68,25 @@ export default function ClientDashboard() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setAuthError(null);
         const isAuth = await base44.auth.isAuthenticated();
         if (!isAuth) {
-          base44.auth.redirectToLogin('/ClientDashboard');
+          base44.auth.redirectToLogin(createPageUrl('ClientDashboard'));
           return;
         }
 
         const currentUser = await base44.auth.me();
         if (!currentUser) {
-          base44.auth.redirectToLogin('/ClientDashboard');
+          setAuthError('משתמש לא נמצא');
+          base44.auth.redirectToLogin(createPageUrl('ClientDashboard'));
           return;
         }
 
         setUser(currentUser);
       } catch (error) {
         console.error('Auth check error:', error);
-        base44.auth.redirectToLogin('/ClientDashboard');
+        setAuthError('שגיאה בעת בדיקת הרשאות');
+        setTimeout(() => base44.auth.redirectToLogin(createPageUrl('ClientDashboard')), 2000);
       }
     };
 
@@ -90,7 +94,7 @@ export default function ClientDashboard() {
   }, []);
 
   // Fetch user data
-  const { data: userData, isLoading, error: fetchError } = useQuery({
+  const { data: userData, isLoading, error: fetchError, refetch } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: async () => {
       if (!user?.id) return user;
@@ -103,15 +107,16 @@ export default function ClientDashboard() {
         localStorage.setItem('user', JSON.stringify(freshUser));
         return freshUser;
       } catch (err) {
-        return user;
+        console.error('User data fetch error:', err);
+        throw err;
       }
     },
     enabled: !!user?.id,
     refetchInterval: false,
-    refetchOnWindowFocus: false, // Don't refetch on every focus
-    retry: 1,
-    staleTime: 1000 * 60 * 5, // 5 minutes stale time
-    gcTime: 1000 * 60 * 30 // 30 minutes cache
+    refetchOnWindowFocus: false,
+    retry: 2,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30
   });
 
   const handleLogout = async () => {
@@ -198,6 +203,43 @@ export default function ClientDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <SkeletonTabContent />
         </div>
+      </div>
+    );
+  }
+
+  if (authError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
+        <Alert variant="destructive" className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <p className="font-bold mb-2">שגיאה</p>
+            <p className="text-sm">{authError}</p>
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (fetchError && !userData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
+        <Alert variant="destructive" className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <p className="font-bold mb-2">לא ניתן לטעון את הנתונים</p>
+            <p className="text-sm mb-4">אנא נסה שוב או התחבר מחדש</p>
+            <Button size="sm" onClick={() => refetch()} className="mr-2">
+              נסה שוב
+            </Button>
+            <button 
+              onClick={handleLogout}
+              className="text-sm font-medium underline hover:no-underline focus:outline-none"
+            >
+              התחבר מחדש
+            </button>
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }

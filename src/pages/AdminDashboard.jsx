@@ -15,6 +15,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('users');
     const [loginData, setLoginData] = useState({ phone: '', code: '' });
+    const [loginError, setLoginError] = useState('');
 
     useEffect(() => {
         checkAuth();
@@ -35,24 +36,28 @@ export default function AdminDashboard() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoginError('');
+        
         if (!loginData.phone || !loginData.code) {
-            alert('אנא מלא את כל השדות');
+            setLoginError('אנא מלא את כל השדות');
             return;
         }
+        
         try {
             const response = await base44.functions.invoke('adminLogin', {
                 phone: loginData.phone,
                 code: loginData.code
             });
+            
             if (response?.data?.success && response?.data?.user) {
                 setUser(response.data.user);
                 setLoginData({ phone: '', code: '' });
             } else {
-                alert('פרטים שגויים או אין הרשאה');
+                setLoginError(response?.data?.message || 'פרטים שגויים או אין הרשאה');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('שגיאה בהתחברות - אנא נסה שוב');
+            setLoginError('שגיאה בהתחברות - אנא בדוק את הפרטים ונסה שוב');
         }
     };
 
@@ -73,31 +78,38 @@ export default function AdminDashboard() {
                         <h1 className="text-2xl font-bold text-[#1E3A5F]">כניסה לניהול</h1>
                     </div>
                     <form onSubmit={handleLogin} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label>
-                            <Input 
-                                value={loginData.phone}
-                                onChange={e => setLoginData({...loginData, phone: e.target.value})}
-                                placeholder="050-0000000"
-                                className="text-left"
-                                dir="ltr"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">קוד אימות</label>
-                            <Input 
-                                type="password"
-                                value={loginData.code}
-                                onChange={e => setLoginData({...loginData, code: e.target.value})}
-                                placeholder="******"
-                                className="text-left"
-                                dir="ltr"
-                            />
-                        </div>
-                        <Button type="submit" className="w-full bg-[#1E3A5F] hover:bg-[#2C5282]">
-                            כניסה
-                        </Button>
-                    </form>
+                         {loginError && (
+                             <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                 <p className="text-sm text-red-700">{loginError}</p>
+                             </div>
+                         )}
+                         <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label>
+                             <Input 
+                                 value={loginData.phone}
+                                 onChange={e => setLoginData({...loginData, phone: e.target.value})}
+                                 placeholder="050-0000000"
+                                 className="text-left"
+                                 dir="ltr"
+                                 disabled={loading}
+                             />
+                         </div>
+                         <div>
+                             <label className="block text-sm font-medium text-gray-700 mb-1">קוד אימות</label>
+                             <Input 
+                                 type="password"
+                                 value={loginData.code}
+                                 onChange={e => setLoginData({...loginData, code: e.target.value})}
+                                 placeholder="******"
+                                 className="text-left"
+                                 dir="ltr"
+                                 disabled={loading}
+                             />
+                         </div>
+                         <Button type="submit" className="w-full bg-[#1E3A5F] hover:bg-[#2C5282]" disabled={loading}>
+                             {loading ? 'טוען...' : 'כניסה'}
+                         </Button>
+                     </form>
                 </div>
             </div>
         );
