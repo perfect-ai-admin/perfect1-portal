@@ -421,9 +421,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   // --- RENDER FOR "LUXURIOUS" CONFIRMATION (Initial Template provided) ---
   if (initialTemplate) {
     const Icon = selectedTemplate?.icon || Target;
-    
+
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', overflow: 'hidden', background: 'white' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxHeight: '85vh', background: 'white' }}>
         {/* Header - Transparent/Minimal */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px', paddingBottom: '12px', flexShrink: 0, zIndex: 10, background: 'white' }}>
            {/* Close Button - Left aligned */}
@@ -441,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Main Content - Scrollable */}
-        <div style={{ padding: '0 20px', flex: 1, overflowY: 'auto', paddingBottom: '24px', minHeight: 0 }}>
+        <div style={{ padding: '0 20px', flex: '1 1 0', overflowY: 'auto', paddingBottom: '100px', minHeight: 0 }}>
            {/* Title Section */}
            <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
@@ -462,7 +462,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            {/* Task Section */}
            <div className="w-full">
               <h3 className="text-right text-gray-500 font-medium text-sm mb-3">מה נשאר לעשות</h3>
-              
+
               <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-100 bg-blue-50/30 w-full">
                  <div className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
                     <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
@@ -474,8 +474,17 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
            </div>
         </div>
 
-        {/* Footer - Full Width Button - FIXED AT BOTTOM */}
-        <div style={{ padding: '16px 16px 12px 16px', flexShrink: 0, borderTop: '1px solid #e5e7eb', background: 'white', width: '100%', zIndex: 20 }}>
+        {/* Footer - Full Width Button - ABSOLUTE BOTTOM */}
+        <div style={{ 
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '16px', 
+          borderTop: '1px solid #e5e7eb', 
+          background: 'white',
+          zIndex: 30
+        }}>
            <Button
              onClick={handleCreate}
              disabled={isCreating}
