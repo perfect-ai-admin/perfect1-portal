@@ -1,91 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext, createContext } from 'react';
 import { createPortal } from 'react-dom';
-import { X } from 'lucide-react';
 
-const DebugPanel = ({ debug }) => {
-  if (!debug) return null;
-  return (
-    <div className="fixed bottom-0 left-0 right-0 bg-black text-white text-xs p-2 z-[60] max-h-40 overflow-y-auto font-mono text-[10px]">
-      <div>vvh={debug.vvh} | panel.bottom={debug.panelBottom} | footer.bottom={debug.footerBottom} | cta.bottom={debug.ctaBottom}</div>
-      <div className={debug.ctaIsVisible ? 'text-green-400' : 'text-red-400'}>
-        ctaIsVisible: {String(debug.ctaIsVisible)} | gap: {debug.gap}px
-      </div>
-    </div>
-  );
-};
+// Dialog Context for managing open state globally
+export const DialogContext = createContext({
+  isDialogOpen: false,
+  setIsDialogOpen: () => {}
+});
 
 export default function SimpleDialog({ open, onClose, children, className = '' }) {
-  const [debug, setDebug] = useState(null);
-  const [vvh, setVvh] = useState('100dvh');
-  const panelRef = React.useRef(null);
-  const footerRef = React.useRef(null);
-  const ctaRef = React.useRef(null);
+  const { setIsDialogOpen } = useContext(DialogContext);
 
   useEffect(() => {
-    if (!open) return;
-
-    const isDebugMode = new URLSearchParams(window.location.search).has('debug');
+    // Notify parent when dialog opens/closes
+    setIsDialogOpen(open);
     
-    const updateMeasurements = () => {
-      // Set CSS variable for visualViewport
-      if (window.visualViewport) {
-        const newVvh = `${window.visualViewport.height}px`;
-        setVvh(newVvh);
-        document.documentElement.style.setProperty('--vvh', newVvh);
-      }
-
-      if (!isDebugMode) return;
-
-      // Get measurements
-      const windowHeight = window.innerHeight;
-      const vvhValue = window.visualViewport?.height || windowHeight;
-      const panelRect = panelRef.current?.getBoundingClientRect();
-      const footerRect = footerRef.current?.getBoundingClientRect();
-      const ctaRect = ctaRef.current?.querySelector('button')?.getBoundingClientRect();
-
-      const panelBottom = panelRect?.bottom || 0;
-      const footerBottom = footerRect?.bottom || 0;
-      const ctaBottom = ctaRect?.bottom || 0;
-      const gap = vvhValue - ctaBottom;
-      const ctaIsVisible = ctaBottom <= vvhValue - 4;
-
-      setDebug({
-        vvh: Math.round(vvhValue),
-        windowHeight,
-        panelBottom: Math.round(panelBottom),
-        footerBottom: Math.round(footerBottom),
-        ctaBottom: Math.round(ctaBottom),
-        gap: Math.round(gap),
-        ctaIsVisible
-      });
-    };
-
-    // Initial measurement
-    setTimeout(updateMeasurements, 100);
-
-    // Listen to viewport changes
-    const resizeListener = () => updateMeasurements();
-    const focusListener = () => setTimeout(updateMeasurements, 300);
-
-    window.addEventListener('resize', resizeListener);
-    window.addEventListener('focusin', focusListener);
-    window.addEventListener('focusout', focusListener);
-    
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', resizeListener);
-      window.visualViewport.addEventListener('scroll', resizeListener);
+    if (open) {
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
     }
-
+    
     return () => {
-      window.removeEventListener('resize', resizeListener);
-      window.removeEventListener('focusin', focusListener);
-      window.removeEventListener('focusout', focusListener);
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', resizeListener);
-        window.visualViewport.removeEventListener('scroll', resizeListener);
-      }
+      document.body.style.overflow = '';
+      setIsDialogOpen(false);
     };
-  }, [open]);
+  }, [open, setIsDialogOpen]);
 
   if (!open) return null;
 
@@ -105,25 +43,17 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Dialog Panel - Flex column with measured height */}
+        {/* Dialog Panel - Flex column */}
         <div 
-          ref={panelRef}
           className={`w-full max-w-2xl flex flex-col bg-white rounded-2xl shadow-2xl overflow-hidden ${className}`}
           style={{
-            maxHeight: `calc(var(--vvh, 100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom))`
+            maxHeight: `calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom))`
           }}
           onClick={(e) => e.stopPropagation()}
         >
           {children}
-          
-          {/* Debug Panel */}
-          <DebugPanel debug={debug} />
         </div>
       </div>
-
-      {/* Refs for measurement */}
-      <div ref={footerRef} style={{ display: 'none' }} />
-      <div ref={ctaRef} style={{ display: 'none' }} />
     </>,
     document.body
   );
