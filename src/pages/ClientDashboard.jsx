@@ -335,6 +335,7 @@ export default function ClientDashboard() {
 
                  {/* Tabs - Dynamic based on permissions */}
                  <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
+                   {activeTab === 'summary' && <SummaryTab data={enrichedData} />}
                    {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
                      setActiveTab(tab);
                      if (tab === 'goals' && config) {
