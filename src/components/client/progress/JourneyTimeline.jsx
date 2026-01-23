@@ -58,7 +58,8 @@ export default function JourneyTimeline() {
     details: {
       done: ['ניתחנו את המצב העסקי שלך', 'זיהינו את נקודות החוזק והאתגרים'],
       todo: [],
-      nextAction: 'צפה בסיכום'
+      nextAction: 'צפה בסיכום',
+      action: () => navigate(createPageUrl('Summary'))
     }
   };
 
