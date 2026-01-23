@@ -423,7 +423,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
 
     return (
-      <div className="flex flex-col w-full bg-white rounded-2xl" style={{ maxHeight: '85vh', minHeight: '400px' }}>
+        <div className="flex flex-col w-full bg-white rounded-2xl overflow-visible" style={{ maxHeight: '85vh', minHeight: '400px' }}>
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
           <button 
