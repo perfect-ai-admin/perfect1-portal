@@ -165,7 +165,8 @@ const FLOWS = {
         { id: 'more_leads', label: "יותר פניות של לקוחות רלוונטיים" },
         { id: 'better_sales', label: "אחוזי סגירה גבוהים יותר" },
         { id: 'time_mgmt', label: "ניהול זמן טוב יותר (אני קורס)" },
-        { id: 'team', label: "עזרה / עובדים" }
+        { id: 'team', label: "עזרה / עובדים" },
+        { id: 'other', label: "משהו אחר...", hasTextInput: true }
       ]
     }
   ],
