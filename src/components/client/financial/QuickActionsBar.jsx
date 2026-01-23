@@ -20,11 +20,8 @@ export default function QuickActionsBar({ onActionComplete }) {
   ];
 
   return (
-    <>
-      {/* Desktop Bar */}
-      <div className="hidden md:flex items-center gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4 shadow-sm">
-
-      </div>
+    <></>
+  );
 
 
 
