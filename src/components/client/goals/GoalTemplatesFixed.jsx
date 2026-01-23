@@ -423,7 +423,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
 
     return (
-        <div className="flex flex-col w-full h-full bg-white rounded-2xl">
+        <div className="flex flex-col w-full h-full bg-white rounded-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
           <button 
@@ -439,8 +439,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </div>
         </div>
 
-        {/* Content - Scrollable */}
-        <div className="flex-1 px-5 py-3 overflow-y-auto min-h-0">
+        {/* Content - Scrollable, leaves space for button */}
+        <div className="flex-1 px-5 py-3 overflow-y-auto">
           <div className="flex flex-col items-center text-center mb-4">
             <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-2">
               <Icon className="w-6 h-6" />
@@ -470,8 +470,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </div>
         </div>
 
-        {/* Button - Always visible at bottom */}
-        <div className="px-5 py-3 border-t border-gray-200 bg-white flex-shrink-0">
+        {/* Button - Sticky footer with safe area */}
+        <div className="flex-shrink-0 px-5 py-4 border-t border-gray-200 bg-white" style={{ paddingBottom: 'calc(1rem + max(0px, env(safe-area-inset-bottom)))' }}>
           <button
             onClick={handleCreate}
             disabled={isCreating}
