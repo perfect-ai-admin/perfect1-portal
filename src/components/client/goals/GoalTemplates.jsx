@@ -568,8 +568,9 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
 
           // Desktop View
           return (
-          <Dialog open={true} onOpenChange={onClose}>
-          <DialogContent 
+          <ResponsiveDialog
+          open={true}
+          onOpenChange={onClose}
           className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] w-full max-w-2xl flex flex-col"
           ref={drawerRef}
           >
