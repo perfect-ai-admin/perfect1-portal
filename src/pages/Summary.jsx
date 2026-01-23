@@ -125,8 +125,8 @@ export default function Summary() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
-      {/* Header - Match ClientDashboard */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
+      {/* Header */}
       <header 
         className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
         role="banner"
