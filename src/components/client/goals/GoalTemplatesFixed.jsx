@@ -423,7 +423,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col w-full h-full sm:h-auto min-h-[300px] sm:min-h-[400px] max-h-[85vh] sm:max-h-none">
+      <div className="bg-white flex flex-col w-full h-full sm:h-auto min-h-[300px] sm:min-h-[400px] max-h-[80dvh] sm:max-h-none">
         {/* Header - Transparent/Minimal */}
         <div className="flex justify-between items-start p-6 pb-2 shrink-0">
            {/* Close Button - Left aligned */}
