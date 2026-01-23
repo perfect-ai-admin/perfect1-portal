@@ -602,14 +602,16 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
       {/* Specific Goal Creation Dialog for Current Step */}
       <Dialog open={showGoalCreation} onOpenChange={setShowGoalCreation}>
-        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl w-[95%] sm:w-full sm:max-w-2xl bg-white !overflow-hidden flex flex-col" style={{ maxHeight: 'calc(100vh - 80px)', height: 'auto' }}>
+        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl w-[95%] sm:w-full sm:max-w-2xl bg-white flex flex-col max-h-[90vh] h-auto">
           {showGoalCreation && goalTemplateForStep && (
-            <GoalTemplatesFixed
-              user={user}
-              onCreateGoal={handleGoalCreated}
-              onClose={() => setShowGoalCreation(false)}
-              initialTemplate={goalTemplateForStep}
-            />
+            <div className="flex flex-col h-full max-h-full overflow-hidden">
+              <GoalTemplatesFixed
+                user={user}
+                onCreateGoal={handleGoalCreated}
+                onClose={() => setShowGoalCreation(false)}
+                initialTemplate={goalTemplateForStep}
+              />
+            </div>
           )}
         </DialogContent>
       </Dialog>

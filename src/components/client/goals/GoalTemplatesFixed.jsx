@@ -423,9 +423,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col w-full h-full max-h-full">
+      <div className="bg-white flex flex-col w-full h-full overflow-hidden">
         {/* Header - Transparent/Minimal */}
-        <div className="flex justify-between items-start p-4 pb-3 flex-shrink-0">
+        <div className="flex justify-between items-start p-4 pb-3 flex-shrink-0 z-10 bg-white">
            {/* Close Button - Left aligned */}
            <button 
              onClick={onClose}
@@ -441,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Main Content - Scrollable */}
-        <div className="px-5 flex-1 overflow-y-auto pb-4 min-h-0">
+        <div className="px-5 flex-1 overflow-y-auto pb-24 min-h-0">
            {/* Title Section */}
            <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
@@ -475,11 +475,11 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Footer - Full Width Button - FIXED AT BOTTOM */}
-        <div className="p-4 pt-3 flex-shrink-0 border-t border-gray-100 bg-white w-full">
+        <div className="p-4 pt-3 flex-shrink-0 border-t border-gray-100 bg-white w-full z-20">
            <Button
              onClick={handleCreate}
              disabled={isCreating}
-             className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-lg"
+             className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-lg shadow-blue-200"
            >
              {isCreating ? (
                <Loader2 className="w-5 h-5 animate-spin" />
