@@ -7,11 +7,11 @@ export const DialogContext = createContext({
   setIsDialogOpen: () => {}
 });
 
-const DebugPanel = ({ debug, isDialogOpen, dialogCount }) => {
+const DebugPanel = ({ debug, clickTrace, isDialogOpen, dialogCount }) => {
   if (!debug) return null;
   return (
     <div 
-      className="fixed bottom-0 left-0 right-0 bg-black/95 text-white text-xs p-3 z-[60] max-h-56 overflow-y-auto font-mono border-t-2 border-blue-500"
+      className="fixed bottom-0 left-0 right-0 bg-black/95 text-white text-xs p-3 z-[60] max-h-96 overflow-y-auto font-mono border-t-2 border-blue-500"
       style={{ pointerEvents: 'none', bottom: '80px' }}
     >
       <div className="space-y-1">
@@ -36,7 +36,6 @@ const DebugPanel = ({ debug, isDialogOpen, dialogCount }) => {
         <div className="text-gray-300 text-[11px]">
           Covering element: {debug.topElementTag || 'none'}
           {debug.topElementClass && ` .${debug.topElementClass}`}
-          {debug.isCovered && debug.topElementId && ` #${debug.topElementId}`}
         </div>
 
         {/* Bottom Bar */}
@@ -44,10 +43,38 @@ const DebugPanel = ({ debug, isDialogOpen, dialogCount }) => {
           bottomBarHeight: {debug.bottomBarHeight}px {debug.bottomBarHidden ? '(hidden ✓)' : '(visible ❌)'}
         </div>
 
+        {/* CLICK TRACE */}
+        <div className="border-t border-gray-600 pt-2 mt-2">
+          <div className="text-cyan-300 font-bold text-[12px]">🎯 CLICK TRACE</div>
+          <div className={clickTrace.ctaClickCount > 0 ? 'text-green-400 font-bold' : 'text-gray-400'}>
+            ctaClickCount: {clickTrace.ctaClickCount}
+          </div>
+          <div className="text-[10px] text-gray-300">
+            lastPointerTarget: {clickTrace.lastPointerTarget?.slice(0, 30) || 'none'}
+          </div>
+          <div className="text-[10px] text-gray-300">
+            elementAtTap: {clickTrace.elementAtTap || 'none'}
+          </div>
+          {clickTrace.composedPath && (
+            <div className="text-[10px] text-gray-400 mt-1">
+              composedPath: {clickTrace.composedPath.split(' > ').slice(0, 3).join(' > ')}
+            </div>
+          )}
+          {clickTrace.clickCount > 0 && (
+            <div className={clickTrace.clickCount > 0 ? 'text-green-400 font-bold text-[11px]' : 'text-gray-400'}>
+              ✅ CLICK RECEIVED: {clickTrace.clickCount}
+            </div>
+          )}
+        </div>
+
         {/* Definition of Done */}
         <div className="border-t border-gray-600 pt-2 mt-2 text-[10px]">
-          <div className={debug.ctaIsVisible && !debug.isCovered && isDialogOpen && debug.bottomBarHidden ? 'text-green-400 font-bold' : 'text-yellow-400'}>
-            ✓ READY: ctaVisible={debug.ctaIsVisible} | notCovered={!debug.isCovered} | barHidden={debug.bottomBarHidden}
+          <div className={
+            debug.ctaIsVisible && !debug.isCovered && isDialogOpen && debug.bottomBarHidden && clickTrace.clickCount > 0
+              ? 'text-green-400 font-bold' 
+              : 'text-yellow-400'
+          }>
+            ✓ DONE: visible={debug.ctaIsVisible} | notCovered={!debug.isCovered} | hidden={debug.bottomBarHidden} | clicked={clickTrace.clickCount > 0}
           </div>
         </div>
       </div>
@@ -59,7 +86,15 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
   const context = useContext(DialogContext);
   const { setIsDialogOpen, dialogCount = 0 } = context || {};
   const [debug, setDebug] = useState(null);
+  const [clickTrace, setClickTrace] = useState({
+    ctaClickCount: 0,
+    clickCount: 0,
+    lastPointerTarget: null,
+    elementAtTap: null,
+    composedPath: null
+  });
   const panelRef = React.useRef(null);
+  const ctaRef = React.useRef(null);
 
   useEffect(() => {
     // Notify parent when dialog opens/closes
@@ -87,9 +122,10 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
     }
 
     const isDebugMode = new URLSearchParams(window.location.search).has('debug');
-    if (!isDebugMode) return;
 
     const updateDebug = () => {
+      if (!isDebugMode) return;
+
       const vvh = window.visualViewport?.height || window.innerHeight;
       const ctaBtn = panelRef.current?.querySelector('button[type="button"]');
       
@@ -146,6 +182,75 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
     };
   }, [open]);
 
+  // Click Trace - Capture all pointer events
+  useEffect(() => {
+    if (!open) return;
+
+    const isDebugMode = new URLSearchParams(window.location.search).has('debug');
+    if (!isDebugMode) return;
+
+    // CTA button listeners
+    const ctaBtn = panelRef.current?.querySelector('button[type="button"]');
+    
+    const handlePointerDown = (e) => {
+      if (isDebugMode) {
+        setClickTrace(prev => ({
+          ...prev,
+          ctaClickCount: prev.ctaClickCount + 1
+        }));
+      }
+    };
+
+    const handlePointerUp = (e) => {
+      if (isDebugMode) {
+        const vvh = window.visualViewport?.height || window.innerHeight;
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        setClickTrace(prev => ({
+          ...prev,
+          elementAtTap: el?.tagName + (el?.className ? '.' + el.className.split(' ')[0] : '')
+        }));
+      }
+    };
+
+    const handleClick = (e) => {
+      if (isDebugMode) {
+        setClickTrace(prev => ({
+          ...prev,
+          clickCount: prev.clickCount + 1
+        }));
+      }
+    };
+
+    if (ctaBtn) {
+      ctaBtn.addEventListener('pointerdown', handlePointerDown);
+      ctaBtn.addEventListener('pointerup', handlePointerUp);
+      ctaBtn.addEventListener('click', handleClick);
+    }
+
+    // Global pointer listener (capture phase)
+    const handleGlobalPointerDown = (e) => {
+      if (isDebugMode) {
+        const path = e.composedPath?.()?.map(el => el.tagName + (el.className ? '.' + el.className.split(' ')[0] : '')).join(' > ') || '';
+        setClickTrace(prev => ({
+          ...prev,
+          lastPointerTarget: path.slice(0, 100),
+          composedPath: path
+        }));
+      }
+    };
+
+    document.addEventListener('pointerdown', handleGlobalPointerDown, true);
+
+    return () => {
+      if (ctaBtn) {
+        ctaBtn.removeEventListener('pointerdown', handlePointerDown);
+        ctaBtn.removeEventListener('pointerup', handlePointerUp);
+        ctaBtn.removeEventListener('click', handleClick);
+      }
+      document.removeEventListener('pointerdown', handleGlobalPointerDown, true);
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return createPortal(
@@ -178,7 +283,7 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
       </div>
 
       {/* Debug Panel */}
-      <DebugPanel debug={debug} isDialogOpen={open} dialogCount={dialogCount} />
+      <DebugPanel debug={debug} clickTrace={clickTrace} isDialogOpen={open} dialogCount={dialogCount} />
     </>,
     document.body
   );
