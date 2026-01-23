@@ -104,7 +104,6 @@ const SUBSCRIPTION_TIERS = [
 ];
 
 export default function PricingPerfectBizAI() {
-  const [activeTab, setActiveTab] = useState(null);
   const [language, setLanguage] = useState('he');
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'yearly'
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -239,9 +238,9 @@ export default function PricingPerfectBizAI() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate(createPageUrl('ClientLogin'));
+  const handleLogout = async () => {
+    await base44.auth.logout();
+    navigate(createPageUrl('Home'));
   };
 
   const toggleLanguage = () => {
@@ -260,7 +259,9 @@ export default function PricingPerfectBizAI() {
 
   const handleTabChange = (tabId) => {
     // Navigate to dashboard with specific tab
-    navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
+    if (user) {
+      navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
+    }
   };
 
   if (isLoading) {
@@ -290,7 +291,7 @@ export default function PricingPerfectBizAI() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => navigate(-1)} 
+                  onClick={() => navigate(createPageUrl('Home'))} 
                   className="text-white hover:bg-white/10 hover:text-white p-2 h-auto rounded-full transition-colors mr-1"
                 >
                   <ArrowRight className="w-5 h-5" />
