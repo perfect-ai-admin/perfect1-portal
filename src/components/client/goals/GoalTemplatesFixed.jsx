@@ -409,42 +409,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   // This component is the body content
   return (
     <div className="bg-white">
-      {/* Header */}
-      <div className="flex-shrink-0 px-5 py-3 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg">
-              <X className="w-5 h-5 text-gray-500" />
-            </button>
-          </div>
-          
-          <h2 ref={initialFocusRef} tabIndex="-1" className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <Target className="w-5 h-5 text-purple-600" />
-            {selectedTemplate ? selectedTemplate.name : (editingGoal ? 'עריכת מטרה' : 'מטרה חדשה')}
-          </h2>
-
-          <div className="flex items-center gap-2">
-            {selectedTemplate && (
-              <button 
-                onClick={() => {
-                  setSelectedTemplate(null);
-                  setGoalTitle('');
-                  setCustomAnswers({ q1: '', q2: '' });
-                }}
-                className="text-sm font-medium text-purple-700 hover:text-purple-900 flex items-center gap-1"
-              >
-                חזור לבחירה
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-            )}
-            {!selectedTemplate && <div className="w-5" />}
-          </div>
-        </div>
-        {!selectedTemplate && <p className="text-center text-sm text-gray-600 font-medium mt-1">בחר מטרה שמשפיעה על העסק</p>}
-      </div>
-
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto px-5 py-3">
+      {/* Body - goes inside SimpleDialog */}
+       <div className="px-5 py-3">
         {!selectedTemplate ? (
           <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="grid grid-cols-2 gap-2">
@@ -550,32 +516,5 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </motion.div>
         )}
       </div>
-
-      {/* Footer */}
-      {selectedTemplate && (
-        <div className="flex-shrink-0 flex gap-2 px-6 py-4 border-t border-gray-200 bg-white">
-          <Button 
-            onClick={handleCreate} 
-            disabled={!goalTitle || isCreating}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white"
-          >
-            {isCreating ? (
-              <>
-                <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                שומר...
-              </>
-            ) : (
-              <>
-                <Check className="w-4 h-4 ml-1" />
-                {editingGoal ? 'שמור' : 'צור'}
-              </>
-            )}
-          </Button>
-          <Button variant="outline" onClick={onClose} className="px-4">
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-      )}
-    </div>
-  );
+      );
 }
