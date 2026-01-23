@@ -576,43 +576,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
 
 
-      <Dialog open={showQuestionnaire} onOpenChange={setShowQuestionnaire}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:p-0 bg-white border-0 shadow-2xl rounded-2xl">
-          <BusinessJourneyQuestionnaire 
-            onComplete={handleQuestionnaireComplete}
-            userId={currentUserData?.id}
-          />
-        </DialogContent>
-      </Dialog>
 
-      <Dialog open={!!activeTaskQuestionnaire} onOpenChange={(open) => !open && setActiveTaskQuestionnaire(null)}>
-        <DialogContent className="max-w-md p-0 bg-transparent border-0 shadow-2xl">
-          {activeTaskQuestionnaire && (
-            <DynamicTaskQuestionnaire
-              key={activeTaskQuestionnaire.id || 'dynamic-task-q'}
-              task={activeTaskQuestionnaire}
-              onComplete={() => {
-                setActiveTaskQuestionnaire(null);
-                // Optionally trigger celebration or refresh
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Specific Goal Creation Dialog for Current Step */}
-      <Dialog open={showGoalCreation} onOpenChange={setShowGoalCreation}>
-        <DialogContent className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col gap-0 w-full sm:max-w-2xl bg-white">
-          {showGoalCreation && goalTemplateForStep && (
-            <GoalTemplatesFixed
-              user={user}
-              onCreateGoal={handleGoalCreated}
-              onClose={() => setShowGoalCreation(false)}
-              initialTemplate={goalTemplateForStep}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </motion.div>
     </>
   );
