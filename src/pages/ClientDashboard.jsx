@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import GeneralErrorBoundary from '../components/GeneralErrorBoundary';
+import { DialogStateProvider } from '../components/DialogStateContext';
 import { 
   LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
   TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard
@@ -234,9 +235,10 @@ export default function ClientDashboard() {
   }
 
   return (
-    <GeneralErrorBoundary>
-      <>
-      <Helmet>
+    <DialogStateProvider>
+      <GeneralErrorBoundary>
+        <>
+        <Helmet>
         <title>מרכז ניהול עסקי - {currentData.full_name} | Perfect One</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
@@ -362,5 +364,6 @@ export default function ClientDashboard() {
         </div>
         </>
         </GeneralErrorBoundary>
+        </DialogStateProvider>
         );
         }
