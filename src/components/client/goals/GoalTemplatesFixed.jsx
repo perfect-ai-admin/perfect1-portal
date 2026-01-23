@@ -498,29 +498,53 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Footer - CTA with safe area (flex: 0 0 auto = no shrink/grow) */}
-        <div 
-          className="flex-shrink-0 flex-grow-0 px-5 py-4 border-t border-gray-200 bg-white"
-          style={{ 
-            minHeight: '64px',
-            paddingBottom: `calc(1rem + max(0px, env(safe-area-inset-bottom)))`
-          }}
-        >
-          <button
-            onClick={handleCreate}
-            disabled={isCreating}
-            className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
-            type="button"
-          >
-            {isCreating ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>שומר...</span>
-              </>
-            ) : (
-              'התחל עכשיו'
-            )}
-          </button>
-        </div>
+              <div 
+                className="hidden md:block flex-shrink-0 flex-grow-0 px-5 py-4 border-t border-gray-200 bg-white"
+                style={{ 
+                  minHeight: '64px',
+                  paddingBottom: `calc(1rem + max(0px, env(safe-area-inset-bottom)))`
+                }}
+              >
+                <button
+                  onClick={handleCreate}
+                  disabled={isCreating}
+                  className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+                  type="button"
+                >
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>שומר...</span>
+                    </>
+                  ) : (
+                    'התחל עכשיו'
+                  )}
+                </button>
+              </div>
+
+              {/* Mobile: Fixed footer at bottom */}
+              <div 
+                className="md:hidden fixed bottom-0 left-0 right-0 z-[51] px-5 py-4 border-t border-gray-200 bg-white w-full"
+                style={{ 
+                  paddingBottom: `calc(1rem + env(safe-area-inset-bottom))`
+                }}
+              >
+                <button
+                  onClick={handleCreate}
+                  disabled={isCreating}
+                  className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+                  type="button"
+                >
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>שומר...</span>
+                    </>
+                  ) : (
+                    'התחל עכשיו'
+                  )}
+                </button>
+              </div>
       </div>
     );
   }
