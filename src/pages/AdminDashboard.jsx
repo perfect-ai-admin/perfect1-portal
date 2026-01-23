@@ -35,19 +35,24 @@ export default function AdminDashboard() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        if (!loginData.phone || !loginData.code) {
+            alert('אנא מלא את כל השדות');
+            return;
+        }
         try {
             const response = await base44.functions.invoke('adminLogin', {
                 phone: loginData.phone,
                 code: loginData.code
             });
-            if (response.data.success) {
+            if (response?.data?.success && response?.data?.user) {
                 setUser(response.data.user);
+                setLoginData({ phone: '', code: '' });
             } else {
-                alert('פרטים שגויים');
+                alert('פרטים שגויים או אין הרשאה');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('שגיאה בהתחברות');
+            alert('שגיאה בהתחברות - אנא נסה שוב');
         }
     };
 

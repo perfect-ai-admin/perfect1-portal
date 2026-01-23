@@ -50,26 +50,15 @@ const MentorTab = React.lazy(() => import('../components/client/tabs/MentorTab')
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('progress');
-  const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
-  
+  const [activeTab, setActiveTab] = useState(null);
   const location = useLocation();
 
-  // Handle tab change from URL query params
+  // Handle tab change from URL query params with proper sync
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
-    if (tabParam) {
-      setActiveTab(tabParam);
-    }
+    setActiveTab(tabParam || 'progress');
   }, [location.search]);
-
-  // Reset goalsTabConfig when leaving goals tab
-  React.useEffect(() => {
-    if (activeTab !== 'goals') {
-      setGoalsTabConfig({ openAddGoal: false });
-    }
-  }, [activeTab]);
   const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -126,7 +115,7 @@ export default function ClientDashboard() {
   });
 
   const handleLogout = async () => {
-    await base44.auth.logout();
+    await base44.auth.logout(createPageUrl('Home'));
   };
 
   const handleRefresh = async () => {
@@ -333,11 +322,8 @@ export default function ClientDashboard() {
 
                  {/* Tabs - Dynamic based on permissions */}
                  <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
-                   {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
-                     setActiveTab(tab);
-                     if (tab === 'goals' && config) {
-                       setGoalsTabConfig(config);
-                     }
+                   {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab) => {
+                     navigate(`${createPageUrl('ClientDashboard')}?tab=${tab}`);
                    }} />}
                    {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
                    {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
