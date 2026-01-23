@@ -1,10 +1,16 @@
-import React, { useEffect, useContext, createContext, useState } from 'react';
+import React, { useEffect, useContext, createContext, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
 // Dialog Context for managing open state globally
 export const DialogContext = createContext({
   isDialogOpen: false,
   setIsDialogOpen: () => {}
+});
+
+// Action Trace Context
+export const ActionTraceContext = createContext({
+  logAction: () => {},
+  actionLog: []
 });
 
 const DebugPanel = ({ debug, clickTrace, actionLog, isDialogOpen, dialogCount }) => {
@@ -302,11 +308,6 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
 
       {/* Debug Panel */}
       <DebugPanel debug={debug} clickTrace={clickTrace} actionLog={actionLog} isDialogOpen={open} dialogCount={dialogCount} />
-
-      {/* Action Trace Context Provider */}
-      <ActionTraceContext.Provider value={{ logAction, actionLog }}>
-        <div>{children}</div>
-      </ActionTraceContext.Provider>
     </>,
     document.body
   );
