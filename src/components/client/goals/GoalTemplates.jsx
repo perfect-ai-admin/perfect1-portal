@@ -570,7 +570,7 @@ export default function GoalTemplates({ onCreateGoal, onClose, hasPrimaryGoal = 
           return (
           <Dialog open={true} onOpenChange={onClose}>
           <DialogContent 
-          className="p-0 border-0 rounded-2xl shadow-2xl overflow-x-hidden max-h-[90vh] flex flex-col"
+          className="p-0 border-0 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] w-full max-w-2xl flex flex-col"
           ref={drawerRef}
           >
           <div className="flex flex-col h-full w-full min-w-0 overflow-x-hidden">
