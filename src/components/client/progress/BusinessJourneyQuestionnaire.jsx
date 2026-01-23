@@ -285,6 +285,14 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
 
   const handleSelect = (optionId) => {
     const currentQ = questionsList[currentStep];
+    const selectedOption = currentQ.options?.find(opt => opt.id === optionId);
+
+    // If option has text input, show input field instead of advancing
+    if (selectedOption?.hasTextInput) {
+      setAnswers({ ...answers, [currentQ.id]: optionId });
+      return;
+    }
+
     const newAnswers = { ...answers, [currentQ.id]: optionId };
     setAnswers(newAnswers);
 
@@ -299,10 +307,6 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
 
     // Auto advance after short delay for better UX
     if (currentStep < questionsList.length - 1 || (currentStep === 0 && FLOWS[optionId])) {
-       // Check if we need to wait for state update (rendering new questions)
-       // Actually, since we update state above, it might not reflect immediately in questionsList.length
-       // But for the FIRST step, we know we are adding more.
-       
        setTimeout(() => {
         setCurrentStep(prev => prev + 1);
       }, 250);
