@@ -51,7 +51,7 @@ const SummaryTab = React.lazy(() => import('../components/client/tabs/SummaryTab
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('progress');
+  const [activeTab, setActiveTab] = useState('summary');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
   
   const location = useLocation();
