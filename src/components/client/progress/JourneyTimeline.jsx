@@ -106,88 +106,9 @@ export default function JourneyTimeline() {
         <p className="text-sm text-gray-500 max-w-[280px] mx-auto">
           מבוסס על התשובות שלך – זה המסלול שבנינו עבורך
         </p>
-
+        
 
       </div>
-
-      {/* Step Details Popup */}
-      <AnimatePresence>
-        {selectedStep && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedStep(null)}
-            className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 20, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl relative"
-            >
-              {/* Close Button */}
-              <button 
-                onClick={() => setSelectedStep(null)}
-                className="absolute top-4 left-4 p-1.5 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-400" />
-              </button>
-
-              {/* Content */}
-              <div className="text-center space-y-4">
-                {/* Icon */}
-                <div className={cn(
-                  "w-16 h-16 rounded-2xl flex items-center justify-center mx-auto",
-                  selectedStep.status === 'completed' ? "bg-green-100 text-green-600" : 
-                  selectedStep.status === 'locked' ? "bg-gray-100 text-gray-500" :
-                  "bg-blue-100 text-blue-600"
-                )}>
-                  {selectedStep.status === 'locked' ? <Lock className="w-7 h-7" /> : React.createElement(selectedStep.icon, { className: "w-7 h-7" })}
-                </div>
-
-                {/* Title & Status */}
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">{selectedStep.title}</h3>
-                  <span className={cn(
-                    "text-xs font-bold px-3 py-1 rounded-full mt-2 inline-block",
-                    selectedStep.status === 'completed' ? "bg-green-100 text-green-700" : 
-                    selectedStep.status === 'locked' ? "bg-gray-100 text-gray-600" :
-                    "bg-blue-100 text-blue-700"
-                  )}>
-                    {selectedStep.status === 'completed' ? 'הושלם' : 
-                     selectedStep.status === 'locked' ? 'טרם נפתח' : 'בתהליך'}
-                  </span>
-                </div>
-
-                {/* Description */}
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {selectedStep.description}
-                </p>
-
-                {/* Button */}
-                <div className="pt-2">
-                  {selectedStep.status !== 'locked' ? (
-                    <Button 
-                      className="w-full h-11 font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
-                      onClick={() => setSelectedStep(null)}
-                    >
-                      הבנתי ✓
-                    </Button>
-                  ) : (
-                    <div className="bg-gray-50 p-3 rounded-lg text-xs text-gray-600 border border-gray-200">
-                      <Lock className="w-3.5 h-3.5 inline ml-2" />
-                      נפתח אחרי השלמת השלבים הקודמים
-                    </div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Timeline */}
       <div className="relative max-w-md mx-auto space-y-4">
@@ -275,7 +196,114 @@ export default function JourneyTimeline() {
         })}
       </div>
 
+      {/* Bottom Sheet Drawer */}
+      <AnimatePresence>
+        {selectedStep && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedStep(null)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[32px] z-50 p-6 pb-10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]"
+              drag="y"
+              dragConstraints={{ top: 0 }}
+              onDragEnd={(_, info) => {
+                if (info.offset.y > 100) setSelectedStep(null);
+              }}
+            >
+              {/* Handle */}
+              <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
 
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className={cn(
+                    "w-12 h-12 rounded-2xl flex items-center justify-center",
+                    selectedStep.status === 'completed' ? "bg-green-100 text-green-600" : 
+                    selectedStep.status === 'locked' ? "bg-gray-100 text-gray-500" :
+                    "bg-blue-100 text-blue-600"
+                  )}>
+                    {selectedStep.status === 'locked' ? <Lock className="w-6 h-6" /> : React.createElement(selectedStep.icon, { className: "w-6 h-6" })}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{selectedStep.title}</h3>
+                    <span className={cn(
+                      "text-xs font-bold px-2 py-0.5 rounded-full",
+                      selectedStep.status === 'completed' ? "bg-green-100 text-green-700" : 
+                      selectedStep.status === 'locked' ? "bg-gray-100 text-gray-600" :
+                      "bg-blue-100 text-blue-700"
+                    )}>
+                      {selectedStep.status === 'completed' ? 'הושלם' : 
+                       selectedStep.status === 'locked' ? 'טרם נפתח' : 'בתהליך'}
+                    </span>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedStep(null)}
+                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {selectedStep.details.done && selectedStep.details.done.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-500 uppercase mb-3">מה עשינו עד עכשיו</h4>
+                    <div className="space-y-2">
+                      {selectedStep.details.done.map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 text-gray-700">
+                          <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <Check className="w-3 h-3 text-green-600" />
+                          </div>
+                          <span className="text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedStep.details.todo && selectedStep.details.todo.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-bold text-gray-500 uppercase mb-3">מה נשאר לעשות</h4>
+                    <div className="space-y-2">
+                      {selectedStep.details.todo.map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 text-gray-700">
+                          <div className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <div className="w-2 h-2 rounded-full bg-blue-500" />
+                          </div>
+                          <span className="text-sm">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedStep.status !== 'locked' ? (
+                  <Button 
+                    className="w-full h-14 text-lg font-bold rounded-2xl mt-4 bg-blue-600 hover:bg-blue-700"
+                    size="lg"
+                    onClick={() => setSelectedStep(null)}
+                  >
+                    {selectedStep.details.nextAction || 'המשך לשלב הבא'}
+                  </Button>
+                ) : (
+                  <div className="bg-gray-50 p-4 rounded-xl text-center text-sm text-gray-500 border border-gray-100">
+                    השלב הזה ייפתח אוטומטית כשתסיים את השלבים הקודמים
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

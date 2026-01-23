@@ -13,7 +13,6 @@ import BlogPost from './pages/BlogPost';
 import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import Checkout from './pages/Checkout';
 import CheckoutSuccess from './pages/CheckoutSuccess';
-import ClientDashboard from './pages/ClientDashboard';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
@@ -103,6 +102,7 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import ClientDashboard from './pages/ClientDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -122,7 +122,6 @@ export const PAGES = {
     "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
     "Checkout": Checkout,
     "CheckoutSuccess": CheckoutSuccess,
-    "ClientDashboard": ClientDashboard,
     "CloseBusinessLanding": CloseBusinessLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
     "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
@@ -212,6 +211,7 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "ClientDashboard": ClientDashboard,
 }
 
 export const pagesConfig = {

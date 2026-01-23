@@ -104,6 +104,7 @@ const SUBSCRIPTION_TIERS = [
 ];
 
 export default function PricingPerfectBizAI() {
+  const [activeTab, setActiveTab] = useState(null);
   const [language, setLanguage] = useState('he');
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' | 'yearly'
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -120,10 +121,7 @@ export default function PricingPerfectBizAI() {
 
   const { data: plans = [], isLoading: isPlansLoading } = useQuery({
     queryKey: ['plans'],
-    queryFn: async () => {
-      const allPlans = await base44.entities.Plan.list();
-      return allPlans.filter(p => p.is_active);
-    },
+    queryFn: () => base44.entities.Plan.list({ limit: 50 }),
     staleTime: 1000 * 60 * 60, // 1 hour (plans don't change often)
   });
 
@@ -231,16 +229,20 @@ export default function PricingPerfectBizAI() {
 
   const handleGoogleLogin = async () => {
     try {
-      await base44.auth.redirectToLogin();
+      const response = await base44.functions.invoke('googleAuthStart', {});
+      if (response.data && response.data.url) {
+        sessionStorage.setItem('oauth_state', response.data.state);
+        window.location.href = response.data.url;
+      }
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error('שגיאה בהתחברות');
+      console.error('Google login error:', error);
+      toast.error('שגיאה בהתחברות לגוגל');
     }
   };
 
-  const handleLogout = async () => {
-    await base44.auth.logout();
-    navigate(createPageUrl('Home'));
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate(createPageUrl('ClientLogin'));
   };
 
   const toggleLanguage = () => {
@@ -259,9 +261,7 @@ export default function PricingPerfectBizAI() {
 
   const handleTabChange = (tabId) => {
     // Navigate to dashboard with specific tab
-    if (user) {
-      navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
-    }
+    navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
   };
 
   if (isLoading) {
@@ -291,7 +291,7 @@ export default function PricingPerfectBizAI() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => navigate(createPageUrl('Home'))} 
+                  onClick={() => navigate(-1)} 
                   className="text-white hover:bg-white/10 hover:text-white p-2 h-auto rounded-full transition-colors mr-1"
                 >
                   <ArrowRight className="w-5 h-5" />

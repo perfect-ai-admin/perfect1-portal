@@ -50,16 +50,26 @@ const MentorTab = React.lazy(() => import('../components/client/tabs/MentorTab')
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
-  const [authError, setAuthError] = useState(null);
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState('progress');
+  const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
+  
   const location = useLocation();
 
-  // Handle tab change from URL query params with proper sync
+  // Handle tab change from URL query params
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
-    setActiveTab(tabParam || 'progress');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
   }, [location.search]);
+
+  // Reset goalsTabConfig when leaving goals tab
+  React.useEffect(() => {
+    if (activeTab !== 'goals') {
+      setGoalsTabConfig({ openAddGoal: false });
+    }
+  }, [activeTab]);
   const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -68,25 +78,22 @@ export default function ClientDashboard() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        setAuthError(null);
         const isAuth = await base44.auth.isAuthenticated();
         if (!isAuth) {
-          base44.auth.redirectToLogin(createPageUrl('ClientDashboard'));
+          base44.auth.redirectToLogin('/ClientDashboard');
           return;
         }
 
         const currentUser = await base44.auth.me();
         if (!currentUser) {
-          setAuthError('משתמש לא נמצא');
-          base44.auth.redirectToLogin(createPageUrl('ClientDashboard'));
+          base44.auth.redirectToLogin('/ClientDashboard');
           return;
         }
 
         setUser(currentUser);
       } catch (error) {
         console.error('Auth check error:', error);
-        setAuthError('שגיאה בעת בדיקת הרשאות');
-        setTimeout(() => base44.auth.redirectToLogin(createPageUrl('ClientDashboard')), 2000);
+        base44.auth.redirectToLogin('/ClientDashboard');
       }
     };
 
@@ -94,7 +101,7 @@ export default function ClientDashboard() {
   }, []);
 
   // Fetch user data
-  const { data: userData, isLoading, error: fetchError, refetch } = useQuery({
+  const { data: userData, isLoading, error: fetchError } = useQuery({
     queryKey: ['user', user?.id],
     queryFn: async () => {
       if (!user?.id) return user;
@@ -107,20 +114,19 @@ export default function ClientDashboard() {
         localStorage.setItem('user', JSON.stringify(freshUser));
         return freshUser;
       } catch (err) {
-        console.error('User data fetch error:', err);
-        throw err;
+        return user;
       }
     },
     enabled: !!user?.id,
     refetchInterval: false,
-    refetchOnWindowFocus: false,
-    retry: 2,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 30
+    refetchOnWindowFocus: false, // Don't refetch on every focus
+    retry: 1,
+    staleTime: 1000 * 60 * 5, // 5 minutes stale time
+    gcTime: 1000 * 60 * 30 // 30 minutes cache
   });
 
   const handleLogout = async () => {
-    await base44.auth.logout(createPageUrl('Home'));
+    await base44.auth.logout();
   };
 
   const handleRefresh = async () => {
@@ -203,43 +209,6 @@ export default function ClientDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <SkeletonTabContent />
         </div>
-      </div>
-    );
-  }
-
-  if (authError) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            <p className="font-bold mb-2">שגיאה</p>
-            <p className="text-sm">{authError}</p>
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
-  if (fetchError && !userData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            <p className="font-bold mb-2">לא ניתן לטעון את הנתונים</p>
-            <p className="text-sm mb-4">אנא נסה שוב או התחבר מחדש</p>
-            <Button size="sm" onClick={() => refetch()} className="mr-2">
-              נסה שוב
-            </Button>
-            <button 
-              onClick={handleLogout}
-              className="text-sm font-medium underline hover:no-underline focus:outline-none"
-            >
-              התחבר מחדש
-            </button>
-          </AlertDescription>
-        </Alert>
       </div>
     );
   }
@@ -364,8 +333,11 @@ export default function ClientDashboard() {
 
                  {/* Tabs - Dynamic based on permissions */}
                  <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
-                   {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab) => {
-                     navigate(`${createPageUrl('ClientDashboard')}?tab=${tab}`);
+                   {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
+                     setActiveTab(tab);
+                     if (tab === 'goals' && config) {
+                       setGoalsTabConfig(config);
+                     }
                    }} />}
                    {activeTab === 'business' && permissions.finance && <BusinessTab data={enrichedData} />}
                    {activeTab === 'financial' && permissions.finance && <FinancialTab data={enrichedData} />}
