@@ -423,25 +423,25 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col h-full sm:h-auto min-h-[400px]">
+      <div className="bg-white flex flex-col w-full h-full sm:h-auto min-h-[300px] sm:min-h-[400px] max-h-[85vh] sm:max-h-none">
         {/* Header - Transparent/Minimal */}
-        <div className="flex justify-between items-start p-6 pb-2">
-          {/* Close Button - Left aligned */}
+        <div className="flex justify-between items-start p-6 pb-2 shrink-0">
+           {/* Close Button - Left aligned */}
            <button 
              onClick={onClose}
              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
            >
              <X className="w-4 h-4 text-gray-500" />
            </button>
-           
+
            {/* Top Right - Status Badge (Optional, inferred) */}
            <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
               בתהליך
            </div>
         </div>
-        
+
         {/* Main Content */}
-        <div className="px-8 flex-1 flex flex-col items-center text-center sm:text-right sm:items-end">
+        <div className="px-8 flex-1 flex flex-col items-center text-center sm:text-right sm:items-end overflow-y-auto min-h-0">
            {/* Title Section */}
            <div className="flex flex-col sm:flex-row-reverse items-center sm:items-start gap-4 mb-8 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0 text-blue-600 shadow-sm">
@@ -475,7 +475,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Footer - Full Width Button */}
-        <div className="p-6 pt-2">
+        <div className="p-6 pt-2 shrink-0 mt-auto">
            <Button
              onClick={handleCreate}
              disabled={isCreating}
