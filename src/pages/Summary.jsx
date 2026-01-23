@@ -129,7 +129,7 @@ export default function Summary() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col" dir={language === 'he' ? 'rtl' : 'ltr'} lang={language}>
-      {/* Header */}
+      {/* Header - Desktop & Mobile */}
       <header 
         className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
         role="banner"
@@ -149,6 +149,8 @@ export default function Summary() {
             </div>
 
             <div className="flex items-center gap-1 flex-shrink-0">
+              {typeof ShoppingCart === 'function' && <ShoppingCart />}
+
               <button
                 onClick={() => navigate(createPageUrl('PricingPerfectBizAI'))}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/90 hover:text-white"
@@ -156,6 +158,8 @@ export default function Summary() {
               >
                 <CreditCard className="w-6 h-6" />
               </button>
+
+              {typeof NotificationCenter === 'function' && <NotificationCenter />}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -181,32 +185,16 @@ export default function Summary() {
             </div>
           </div>
 
-          {/* Navigation Bar */}
-          <div className="flex items-center justify-between py-3 px-2 border-t border-white/10 text-xs sm:text-sm gap-2 overflow-x-auto">
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <Globe className="w-4 h-4" />
-              <span className="hidden sm:inline">מיקום</span>
-            </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">מטריקות היום</span>
-            </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <Target className="w-4 h-4" />
-              <span className="hidden sm:inline">שדרות</span>
-            </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <Megaphone className="w-4 h-4" />
-              <span className="hidden sm:inline">שיווק</span>
-            </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <CreditCard className="w-4 h-4" />
-              <span className="hidden sm:inline">כלפים</span>
-            </button>
-            <button className="flex items-center gap-2 text-white/90 hover:text-white transition-colors flex-shrink-0 whitespace-nowrap">
-              <HelpCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">שאלות</span>
-            </button>
+          {/* Tab Navigation - Desktop Only */}
+          <div className="hidden md:block">
+            {typeof TabNavigation === 'function' && <TabNavigation activeTab="summary" onChange={() => {}} availableTabs={[
+              { id: 'summary', label: 'מיקום', icon: 'MapPin' },
+              { id: 'metrics', label: 'מטריקות היום', icon: 'TrendingUp' },
+              { id: 'goals', label: 'שדרות', icon: 'Target' },
+              { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
+              { id: 'finance', label: 'כלפים', icon: 'CreditCard' },
+              { id: 'help', label: 'שאלות', icon: 'HelpCircle' }
+            ]} />}
           </div>
         </div>
       </header>
