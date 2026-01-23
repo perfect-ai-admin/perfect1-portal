@@ -476,15 +476,16 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
         {/* Footer - Full Width Button - ABSOLUTE BOTTOM WITH VISIBILITY */}
         <div style={{ 
-          position: 'absolute',
+          position: 'fixed',
           bottom: '0px',
           left: '0px',
           right: '0px',
           padding: '16px', 
           borderTop: '1px solid #e5e7eb', 
           background: 'white',
-          zIndex: 999,
-          boxShadow: '0 -4px 12px rgba(0,0,0,0.1)'
+          zIndex: 9999,
+          boxShadow: '0 -4px 12px rgba(0,0,0,0.1)',
+          margin: 0
         }}>
            <button
              onClick={handleCreate}
@@ -502,7 +503,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                display: 'flex',
                alignItems: 'center',
                justifyContent: 'center',
-               boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)'
+               boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
+               position: 'relative',
+               zIndex: 9999
              }}
            >
              {isCreating ? (
