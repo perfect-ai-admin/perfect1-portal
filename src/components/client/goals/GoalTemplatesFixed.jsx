@@ -449,103 +449,76 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   if (initialTemplate) {
     const Icon = selectedTemplate?.icon || Target;
 
-    return (
-        <div className="flex flex-col w-full h-full bg-white rounded-2xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
-          <button 
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-            type="button"
-          >
-            <X className="w-4 h-4 text-gray-500" />
-          </button>
-
-          <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
-            בתהליך
-          </div>
-        </div>
-
-        {/* Content - Scrollable, leaves space for button */}
-        <div className="flex-1 px-5 py-3 overflow-y-auto">
-          <div className="flex flex-col items-center text-center mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-2">
-              <Icon className="w-6 h-6" />
-            </div>
-            <h2 className="text-lg font-black text-gray-900 mb-1">
-              {selectedTemplate?.name || goalTitle}
-            </h2>
-            {selectedTemplate?.description && (
-              <p className="text-xs text-gray-600">
-                {selectedTemplate.description}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-right text-gray-600 font-medium text-xs">
-              מה נשאר לעשות
-            </h3>
-            <div className="flex items-center gap-3 p-2 rounded-lg border border-blue-200 bg-blue-50">
-              <div className="flex-shrink-0 w-4 h-4 rounded-full border-2 border-blue-500 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-blue-500" />
-              </div>
-              <span className="text-gray-900 font-medium text-xs">
-                השלם משימה זו כדי להמשיך
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer - CTA with safe area (flex: 0 0 auto = no shrink/grow) */}
-              <div 
-                className="hidden md:block flex-shrink-0 flex-grow-0 px-5 py-4 border-t border-gray-200 bg-white"
-                style={{ 
-                  minHeight: '64px',
-                  paddingBottom: `calc(1rem + max(0px, env(safe-area-inset-bottom)))`
-                }}
-              >
-                <button
-                  onClick={handleCreate}
-                  disabled={isCreating}
-                  className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
-                  type="button"
-                >
-                  {isCreating ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>שומר...</span>
-                    </>
-                  ) : (
-                    'התחל עכשיו'
-                  )}
-                </button>
-              </div>
-
-              {/* Mobile: Fixed footer at bottom */}
-              <div 
-                className="md:hidden fixed bottom-0 left-0 right-0 z-[51] px-5 py-4 border-t border-gray-200 bg-white w-full"
-                style={{ 
-                  paddingBottom: `calc(1rem + env(safe-area-inset-bottom))`
-                }}
-              >
-                <button
-                  onClick={handleCreate}
-                  disabled={isCreating}
-                  className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
-                  type="button"
-                >
-                  {isCreating ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>שומר...</span>
-                    </>
-                  ) : (
-                    'התחל עכשיו'
-                  )}
-                </button>
-              </div>
+    const confirmationFooter = (
+      <div className="px-5 py-4">
+        <button
+          onClick={handleCreate}
+          disabled={isCreating}
+          className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+          type="button"
+        >
+          {isCreating ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>שומר...</span>
+            </>
+          ) : (
+            'התחל עכשיו'
+          )}
+        </button>
       </div>
+    );
+
+    return (
+      <SimpleDialog open={true} onClose={onClose} footer={confirmationFooter} footerHeight={88}>
+        <div className="flex flex-col w-full h-full">
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
+            <button 
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+              type="button"
+            >
+              <X className="w-4 h-4 text-gray-500" />
+            </button>
+
+            <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
+              בתהליך
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="px-5 py-3">
+            <div className="flex flex-col items-center text-center mb-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-2">
+                <Icon className="w-6 h-6" />
+              </div>
+              <h2 className="text-lg font-black text-gray-900 mb-1">
+                {selectedTemplate?.name || goalTitle}
+              </h2>
+              {selectedTemplate?.description && (
+                <p className="text-xs text-gray-600">
+                  {selectedTemplate.description}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-right text-gray-600 font-medium text-xs">
+                מה נשאר לעשות
+              </h3>
+              <div className="flex items-center gap-3 p-2 rounded-lg border border-blue-200 bg-blue-50">
+                <div className="flex-shrink-0 w-4 h-4 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                </div>
+                <span className="text-gray-900 font-medium text-xs">
+                  השלם משימה זו כדי להמשיך
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SimpleDialog>
     );
   }
 
