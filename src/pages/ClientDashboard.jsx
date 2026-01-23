@@ -10,7 +10,6 @@ import {
   LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
   TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard
 } from 'lucide-react';
-import { DialogContext } from '../components/client/goals/SimpleDialog';
 import {
   Tooltip,
   TooltipContent,
@@ -52,11 +51,6 @@ export default function ClientDashboard() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
-  const [dialogCount, setDialogCount] = useState(0);
-  
-  const setIsDialogOpen = (open) => {
-    setDialogCount(prev => open ? prev + 1 : Math.max(0, prev - 1));
-  };
   
   const location = useLocation();
 
@@ -240,7 +234,6 @@ export default function ClientDashboard() {
   }
 
   return (
-    <DialogContext.Provider value={{ dialogCount, setIsDialogOpen }}>
     <GeneralErrorBoundary>
       <>
       <Helmet>
@@ -357,18 +350,17 @@ export default function ClientDashboard() {
 
 
 
-        {/* Mobile Bottom Tab Bar - Hidden when Dialog is open */}
-          {dialogCount === 0 && typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
-            { id: 'progress', label: 'התקדמות', icon: TrendingUp },
-            permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
-            permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
-            permissions.mentor && { id: 'goals', label: 'מטרות', icon: Target },
-            permissions.marketing && { id: 'marketing', label: 'שיווק', icon: Megaphone },
-            permissions.mentor && { id: 'mentor', label: 'מנטור', icon: MessageSquare }
-          ].filter(Boolean)} />}
+        {/* Mobile Bottom Tab Bar */}
+         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
+           { id: 'progress', label: 'התקדמות', icon: TrendingUp },
+           permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
+           permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
+           permissions.mentor && { id: 'goals', label: 'מטרות', icon: Target },
+           permissions.marketing && { id: 'marketing', label: 'שיווק', icon: Megaphone },
+           permissions.mentor && { id: 'mentor', label: 'מנטור', icon: MessageSquare }
+         ].filter(Boolean)} />}
         </div>
         </>
         </GeneralErrorBoundary>
-    </DialogContext.Provider>
-    );
-    }
+        );
+        }

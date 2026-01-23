@@ -263,89 +263,62 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreate = async () => {
-    try {
-      console.log('[ACTION_START] handleCreate called');
-      
-      if (!selectedTemplate) {
-        console.log('[BLOCKED_BY] no selectedTemplate');
-        return;
-      }
-      
-      const titleToUse = goalTitle || selectedTemplate.name;
-      console.log('[VALIDATE] title check passed', { titleToUse });
+    if (!selectedTemplate) return;
+    const titleToUse = goalTitle || selectedTemplate.name;
 
-      // Check if phone number is missing (only for new goals)
-      if (!editingGoal && !showPhonePrompt) {
-        try {
-          console.log('[BEFORE_ASYNC] fetching user...');
-          const currentUser = await base44.auth.me();
-          console.log('[AFTER_ASYNC] user fetched', { hasPhone: !!currentUser?.phone });
-          const hasPhone = currentUser?.phone || currentUser?.mobile || currentUser?.phoneNumber;
-          
-          if (!hasPhone) {
-            console.log('[BLOCKED_BY] no phone number');
-            setShowPhonePrompt(true);
-            return;
-          }
-        } catch (error) {
-          console.error('[ERROR] checking user phone:', error);
-          throw error;
+    // Check if phone number is missing (only for new goals)
+    if (!editingGoal && !showPhonePrompt) {
+      try {
+        const currentUser = await base44.auth.me();
+        const hasPhone = currentUser?.phone || currentUser?.mobile || currentUser?.phoneNumber;
+        
+        if (!hasPhone) {
+          setShowPhonePrompt(true);
+          return;
         }
+      } catch (error) {
+        console.error('Error checking user phone:', error);
       }
-      
-      setIsCreating(true);
-      console.log('[BEFORE_VALIDATE] creating goalData');
+    }
+    
+    setIsCreating(true);
 
-      const goalData = {
-        id: editingGoal?.id,
-        category: selectedTemplate.id,
-        title: titleToUse,
-        description: selectedTemplate.description,
-        current: editingGoal?.current || 0,
-        target: 100,
-        customAnswers: customAnswers,
-        urgency: urgency,
-        status: editingGoal?.status || 'active',
-        isPrimary: isPrimary && !hasPrimaryGoal,
-        aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
-        actionHint: 'המטרה נוצרת...'
-      };
+    const goalData = {
+      id: editingGoal?.id,
+      category: selectedTemplate.id,
+      title: titleToUse,
+      description: selectedTemplate.description,
+      current: editingGoal?.current || 0,
+      target: 100,
+      customAnswers: customAnswers,
+      urgency: urgency,
+      status: editingGoal?.status || 'active',
+      isPrimary: isPrimary && !hasPrimaryGoal,
+      aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
+      actionHint: 'המטרה נוצרת...'
+    };
 
-      console.log('[AFTER_VALIDATE] goalData created');
-
-      // Check for duplicates before creating
-      if (!editingGoal) {
-        try {
-          console.log('[BEFORE_ASYNC] checking duplicates...');
-          const existingGoals = await base44.entities.UserGoal.filter({ 
+    // Check for duplicates before creating
+    if (!editingGoal) {
+      try {
+         const existingGoals = await base44.entities.UserGoal.filter({ 
             user_id: user?.id,
             status: 'active'
-          });
-          console.log('[AFTER_ASYNC] duplicates checked', { count: existingGoals?.length });
-          
-          const isDuplicate = existingGoals.some(g => g.title === titleToUse || g.category === selectedTemplate.id);
-          if (isDuplicate) {
-            console.log('[BLOCKED_BY] duplicate goal exists');
+         });
+         
+         const isDuplicate = existingGoals.some(g => g.title === titleToUse || g.category === selectedTemplate.id);
+         if (isDuplicate) {
             alert('נראה שכבר יש לך מטרה כזו פעילה. כדאי להתמקד בה!');
             setIsCreating(false);
             return;
-          }
-        } catch (err) {
-          console.error('[ERROR] checking duplicates:', err);
-          throw err;
-        }
+         }
+      } catch (err) {
+         console.error('Error checking duplicates:', err);
       }
-
-      console.log('[BEFORE_CALLBACK] calling onCreateGoal');
-      // Call parent handler immediately without waiting
-      onCreateGoal(goalData, !!editingGoal);
-      console.log('[ACTION_END] onCreateGoal called successfully');
-
-    } catch (error) {
-      console.error('[ERROR] handleCreate failed:', error);
-      setIsCreating(false);
-      throw error;
     }
+
+    // Call parent handler immediately without waiting
+    onCreateGoal(goalData, !!editingGoal);
   };
 
   const handlePhoneSubmit = async () => {
@@ -449,76 +422,73 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   if (initialTemplate) {
     const Icon = selectedTemplate?.icon || Target;
 
-    const confirmationFooter = (
-      <div className="px-5 py-4">
-        <button
-          onClick={handleCreate}
-          disabled={isCreating}
-          className="w-full h-12 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-sm transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
-          type="button"
-        >
-          {isCreating ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>שומר...</span>
-            </>
-          ) : (
-            'התחל עכשיו'
-          )}
-        </button>
-      </div>
-    );
-
     return (
-      <SimpleDialog open={true} onClose={onClose} footer={confirmationFooter} footerHeight={88}>
-        <div className="flex flex-col w-full h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 flex-shrink-0">
-            <button 
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-              type="button"
-            >
-              <X className="w-4 h-4 text-gray-500" />
-            </button>
+      <div className="flex flex-col w-full bg-white rounded-2xl" style={{ maxHeight: '85vh', minHeight: '400px' }}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
+          <button 
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            type="button"
+          >
+            <X className="w-4 h-4 text-gray-500" />
+          </button>
 
-            <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
-              בתהליך
+          <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">
+            בתהליך
+          </div>
+        </div>
+
+        {/* Content - Scrollable */}
+        <div className="flex-1 px-5 py-4 overflow-y-auto" style={{ minHeight: 0 }}>
+          <div className="flex flex-col items-center text-center mb-5">
+            <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-3">
+              <Icon className="w-7 h-7" />
             </div>
+            <h2 className="text-xl font-black text-gray-900 mb-2">
+              {selectedTemplate?.name || goalTitle}
+            </h2>
+            {selectedTemplate?.description && (
+              <p className="text-sm text-gray-600">
+                {selectedTemplate.description}
+              </p>
+            )}
           </div>
 
-          {/* Content */}
-          <div className="px-5 py-3">
-            <div className="flex flex-col items-center text-center mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-2">
-                <Icon className="w-6 h-6" />
+          <div className="space-y-3">
+            <h3 className="text-right text-gray-600 font-medium text-sm">
+              מה נשאר לעשות
+            </h3>
+            <div className="flex items-center gap-3 p-3 rounded-xl border border-blue-200 bg-blue-50">
+              <div className="flex-shrink-0 w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
               </div>
-              <h2 className="text-lg font-black text-gray-900 mb-1">
-                {selectedTemplate?.name || goalTitle}
-              </h2>
-              {selectedTemplate?.description && (
-                <p className="text-xs text-gray-600">
-                  {selectedTemplate.description}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="text-right text-gray-600 font-medium text-xs">
-                מה נשאר לעשות
-              </h3>
-              <div className="flex items-center gap-3 p-2 rounded-lg border border-blue-200 bg-blue-50">
-                <div className="flex-shrink-0 w-4 h-4 rounded-full border-2 border-blue-500 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-blue-500" />
-                </div>
-                <span className="text-gray-900 font-medium text-xs">
-                  השלם משימה זו כדי להמשיך
-                </span>
-              </div>
+              <span className="text-gray-900 font-medium text-sm">
+                השלם משימה זו כדי להמשיך
+              </span>
             </div>
           </div>
         </div>
-      </SimpleDialog>
+
+        {/* Button - Always visible at bottom */}
+        <div className="px-5 py-4 border-t border-gray-200 bg-white flex-shrink-0">
+          <button
+            onClick={handleCreate}
+            disabled={isCreating}
+            className="w-full h-14 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold text-base transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+            type="button"
+          >
+            {isCreating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>שומר...</span>
+              </>
+            ) : (
+              'התחל עכשיו'
+            )}
+          </button>
+        </div>
+      </div>
     );
   }
 
