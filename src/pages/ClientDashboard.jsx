@@ -46,6 +46,7 @@ const FinancialTab = React.lazy(() => import('../components/client/tabs/Financia
 const GoalsTab = React.lazy(() => import('../components/client/tabs/GoalsTab'));
 const MarketingTab = React.lazy(() => import('../components/client/tabs/MarketingTab'));
 const MentorTab = React.lazy(() => import('../components/client/tabs/MentorTab'));
+const SummaryTab = React.lazy(() => import('../components/client/tabs/SummaryTab'));
 
 
 export default function ClientDashboard() {
