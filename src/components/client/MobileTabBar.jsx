@@ -15,10 +15,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useDialogState } from '@/components/DialogStateContext';
 
 // Mobile Bottom Tab Bar (section 8)
 // Minimum touch targets: 44px
 export default function MobileTabBar({ activeTab, onChange, availableTabs }) {
+  const { isAnyDialogOpen } = useDialogState();
+
+  // Hide completely when dialog is open
+  if (isAnyDialogOpen) {
+    return null;
+  }
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   
   const defaultTabs = [
