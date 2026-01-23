@@ -7,11 +7,11 @@ export const DialogContext = createContext({
   setIsDialogOpen: () => {}
 });
 
-const DebugPanel = ({ debug, clickTrace, isDialogOpen, dialogCount }) => {
+const DebugPanel = ({ debug, clickTrace, actionLog, isDialogOpen, dialogCount }) => {
   if (!debug) return null;
   return (
     <div 
-      className="fixed bottom-0 left-0 right-0 bg-black/95 text-white text-xs p-3 z-[60] max-h-96 overflow-y-auto font-mono border-t-2 border-blue-500"
+      className="fixed bottom-0 left-0 right-0 bg-black/95 text-white text-xs p-3 z-[60] max-h-[500px] overflow-y-auto font-mono border-t-2 border-blue-500"
       style={{ pointerEvents: 'none', bottom: '80px' }}
     >
       <div className="space-y-1">
@@ -49,32 +49,42 @@ const DebugPanel = ({ debug, clickTrace, isDialogOpen, dialogCount }) => {
           <div className={clickTrace.ctaClickCount > 0 ? 'text-green-400 font-bold' : 'text-gray-400'}>
             ctaClickCount: {clickTrace.ctaClickCount}
           </div>
-          <div className="text-[10px] text-gray-300">
-            lastPointerTarget: {clickTrace.lastPointerTarget?.slice(0, 30) || 'none'}
-          </div>
-          <div className="text-[10px] text-gray-300">
-            elementAtTap: {clickTrace.elementAtTap || 'none'}
-          </div>
-          {clickTrace.composedPath && (
-            <div className="text-[10px] text-gray-400 mt-1">
-              composedPath: {clickTrace.composedPath.split(' > ').slice(0, 3).join(' > ')}
-            </div>
-          )}
           {clickTrace.clickCount > 0 && (
-            <div className={clickTrace.clickCount > 0 ? 'text-green-400 font-bold text-[11px]' : 'text-gray-400'}>
+            <div className='text-green-400 font-bold text-[11px]'>
               ✅ CLICK RECEIVED: {clickTrace.clickCount}
             </div>
           )}
         </div>
 
+        {/* ACTION TRACE */}
+        {actionLog && actionLog.length > 0 && (
+          <div className="border-t border-gray-600 pt-2 mt-2">
+            <div className="text-amber-300 font-bold text-[12px]">⚙️ ACTION TRACE</div>
+            <div className="max-h-32 overflow-y-auto space-y-0.5">
+              {actionLog.slice(-10).map((entry, idx) => (
+                <div key={idx} className={
+                  entry.type === 'ACTION_START' ? 'text-cyan-300' :
+                  entry.type === 'ACTION_END' ? 'text-green-400 font-bold' :
+                  entry.type === 'ERROR' ? 'text-red-400 font-bold' :
+                  entry.type === 'BLOCKED_BY' ? 'text-yellow-400' :
+                  'text-gray-300'
+                }>
+                  [{entry.type}] {entry.message}
+                  {entry.details && <span className="text-[9px] opacity-75"> • {JSON.stringify(entry.details).slice(0, 40)}</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Definition of Done */}
         <div className="border-t border-gray-600 pt-2 mt-2 text-[10px]">
           <div className={
             debug.ctaIsVisible && !debug.isCovered && isDialogOpen && debug.bottomBarHidden && clickTrace.clickCount > 0
-              ? 'text-green-400 font-bold' 
+              ? actionLog.some(log => log.type === 'ACTION_END') ? 'text-green-400 font-bold' : 'text-yellow-400'
               : 'text-yellow-400'
           }>
-            ✓ DONE: visible={debug.ctaIsVisible} | notCovered={!debug.isCovered} | hidden={debug.bottomBarHidden} | clicked={clickTrace.clickCount > 0}
+            ✓ DONE: clicked={clickTrace.clickCount > 0} | actionsLogged={actionLog?.length > 0}
           </div>
         </div>
       </div>
@@ -93,8 +103,21 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
     elementAtTap: null,
     composedPath: null
   });
+  const [actionLog, setActionLog] = useState([]);
+  const [lastError, setLastError] = useState(null);
   const panelRef = React.useRef(null);
   const ctaRef = React.useRef(null);
+
+  const logAction = useCallback((type, message, details = null) => {
+    const entry = {
+      type,
+      message,
+      details,
+      timestamp: new Date().toLocaleTimeString('he-IL', { hour12: false })
+    };
+    setActionLog(prev => [...prev, entry]);
+    console.log(`[${type}]`, message, details);
+  }, []);
 
   useEffect(() => {
     // Notify parent when dialog opens/closes
@@ -182,13 +205,12 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
     };
   }, [open]);
 
-  // Click Trace - Capture all pointer events
+  // Click Trace + Error Capture
   useEffect(() => {
     if (!open) return;
 
     const isDebugMode = new URLSearchParams(window.location.search).has('debug');
-    if (!isDebugMode) return;
-
+    
     // CTA button listeners
     const ctaBtn = panelRef.current?.querySelector('button[type="button"]');
     
@@ -198,17 +220,7 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
           ...prev,
           ctaClickCount: prev.ctaClickCount + 1
         }));
-      }
-    };
-
-    const handlePointerUp = (e) => {
-      if (isDebugMode) {
-        const vvh = window.visualViewport?.height || window.innerHeight;
-        const el = document.elementFromPoint(e.clientX, e.clientY);
-        setClickTrace(prev => ({
-          ...prev,
-          elementAtTap: el?.tagName + (el?.className ? '.' + el.className.split(' ')[0] : '')
-        }));
+        logAction('POINTER_DOWN', 'Button pointer down');
       }
     };
 
@@ -218,38 +230,44 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
           ...prev,
           clickCount: prev.clickCount + 1
         }));
+        logAction('ACTION_START', 'Handler starting', { targetTag: e.target?.tagName });
       }
     };
 
     if (ctaBtn) {
       ctaBtn.addEventListener('pointerdown', handlePointerDown);
-      ctaBtn.addEventListener('pointerup', handlePointerUp);
       ctaBtn.addEventListener('click', handleClick);
     }
 
-    // Global pointer listener (capture phase)
-    const handleGlobalPointerDown = (e) => {
+    // Global error capture
+    const handleError = (event) => {
       if (isDebugMode) {
-        const path = e.composedPath?.()?.map(el => el.tagName + (el.className ? '.' + el.className.split(' ')[0] : '')).join(' > ') || '';
-        setClickTrace(prev => ({
-          ...prev,
-          lastPointerTarget: path.slice(0, 100),
-          composedPath: path
-        }));
+        const msg = event.message || String(event);
+        setLastError(msg);
+        logAction('ERROR', msg, { source: 'error event' });
       }
     };
 
-    document.addEventListener('pointerdown', handleGlobalPointerDown, true);
+    const handleUnhandledRejection = (event) => {
+      if (isDebugMode) {
+        const msg = event.reason?.message || String(event.reason);
+        setLastError(msg);
+        logAction('ERROR', 'Unhandled Promise rejection: ' + msg, { reason: event.reason });
+      }
+    };
+
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
     return () => {
       if (ctaBtn) {
         ctaBtn.removeEventListener('pointerdown', handlePointerDown);
-        ctaBtn.removeEventListener('pointerup', handlePointerUp);
         ctaBtn.removeEventListener('click', handleClick);
       }
-      document.removeEventListener('pointerdown', handleGlobalPointerDown, true);
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
     };
-  }, [open]);
+  }, [open, logAction]);
 
   if (!open) return null;
 
@@ -283,7 +301,12 @@ export default function SimpleDialog({ open, onClose, children, className = '' }
       </div>
 
       {/* Debug Panel */}
-      <DebugPanel debug={debug} clickTrace={clickTrace} isDialogOpen={open} dialogCount={dialogCount} />
+      <DebugPanel debug={debug} clickTrace={clickTrace} actionLog={actionLog} isDialogOpen={open} dialogCount={dialogCount} />
+
+      {/* Action Trace Context Provider */}
+      <ActionTraceContext.Provider value={{ logAction, actionLog }}>
+        <div>{children}</div>
+      </ActionTraceContext.Provider>
     </>,
     document.body
   );
