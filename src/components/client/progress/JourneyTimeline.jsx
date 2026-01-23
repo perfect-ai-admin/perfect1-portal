@@ -93,6 +93,11 @@ export default function JourneyTimeline() {
     setSelectedStep(step);
   };
 
+  // Calculate progress
+  const totalSteps = steps.length;
+  const completedSteps = steps.filter(s => s.status === 'completed').length;
+  const progressPercentage = (completedSteps / totalSteps) * 100;
+
   return (
     <div className="relative min-h-[300px] p-4 pb-6 bg-gray-50/50 rounded-3xl">
       {/* Header */}
@@ -107,7 +112,21 @@ export default function JourneyTimeline() {
           מבוסס על התשובות שלך – זה המסלול שבנינו עבורך
         </p>
         
-
+        {/* Progress Bar */}
+        <div className="mt-6 space-y-2">
+          <div className="flex items-center justify-between px-2">
+            <span className="text-xs font-semibold text-gray-600">התקדמות: {completedSteps}/{totalSteps}</span>
+            <span className="text-xs font-semibold text-blue-600">{Math.round(progressPercentage)}%</span>
+          </div>
+          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercentage}%` }}
+              transition={{ duration: 0.6 }}
+              className="h-full bg-gradient-to-r from-green-400 to-blue-600 rounded-full"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Timeline */}
