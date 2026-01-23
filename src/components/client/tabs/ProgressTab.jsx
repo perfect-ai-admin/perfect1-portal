@@ -477,14 +477,14 @@ export default function ProgressTab({ data, onNavigate, user }) {
            </div>
            <div className="space-y-3">
            <JourneyTimeline />
-           <Button 
-             onClick={() => navigate(createPageUrl('Summary'))}
-             className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
+           <Link 
+             to={createPageUrl('Summary')}
+             className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 no-underline"
            >
-             <ArrowLeft className="w-4 h-4 ml-2" />
+             <ArrowLeft className="w-4 h-4" />
              צפה בסיכום
-           </Button>
-         </div>
+           </Link>
+           </div>
         </div>
 
         {/* Right Column - Next Step & Actions 50% */}
