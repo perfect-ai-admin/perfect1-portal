@@ -1,5 +1,6 @@
 import About from './pages/About';
 import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
+import AdminDashboard from './pages/AdminDashboard';
 import AgentCRM from './pages/AgentCRM';
 import AgentLogin from './pages/AgentLogin';
 import AgentsManager from './pages/AgentsManager';
@@ -12,6 +13,7 @@ import BlogPost from './pages/BlogPost';
 import BookkeepingOsekMorsha from './pages/BookkeepingOsekMorsha';
 import Checkout from './pages/Checkout';
 import CheckoutSuccess from './pages/CheckoutSuccess';
+import ClientDashboard from './pages/ClientDashboard';
 import CloseBusinessLanding from './pages/CloseBusinessLanding';
 import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
@@ -65,6 +67,7 @@ import Partnership from './pages/Partnership';
 import PhotographerLanding from './pages/PhotographerLanding';
 import Pricing from './pages/Pricing';
 import PricingCost from './pages/PricingCost';
+import PricingPerfectBizAI from './pages/PricingPerfectBizAI';
 import Privacy from './pages/Privacy';
 import ProfessionLanding from './pages/ProfessionLanding';
 import ProfessionPage from './pages/ProfessionPage';
@@ -82,6 +85,7 @@ import SitemapArticles from './pages/SitemapArticles';
 import SitemapFAQ from './pages/SitemapFAQ';
 import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
+import Summary from './pages/Summary';
 import SystemLogicMap from './pages/SystemLogicMap';
 import TakratOsekPatur from './pages/TakratOsekPatur';
 import TaxAdvances from './pages/TaxAdvances';
@@ -100,16 +104,13 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import PricingPerfectBizAI from './pages/PricingPerfectBizAI';
-import ClientDashboard from './pages/ClientDashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import Summary from './pages/Summary';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
     "AccountantForOsekMorsha": AccountantForOsekMorsha,
+    "AdminDashboard": AdminDashboard,
     "AgentCRM": AgentCRM,
     "AgentLogin": AgentLogin,
     "AgentsManager": AgentsManager,
@@ -122,6 +123,7 @@ export const PAGES = {
     "BookkeepingOsekMorsha": BookkeepingOsekMorsha,
     "Checkout": Checkout,
     "CheckoutSuccess": CheckoutSuccess,
+    "ClientDashboard": ClientDashboard,
     "CloseBusinessLanding": CloseBusinessLanding,
     "CloseOsekMorsha": CloseOsekMorsha,
     "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
@@ -175,6 +177,7 @@ export const PAGES = {
     "PhotographerLanding": PhotographerLanding,
     "Pricing": Pricing,
     "PricingCost": PricingCost,
+    "PricingPerfectBizAI": PricingPerfectBizAI,
     "Privacy": Privacy,
     "ProfessionLanding": ProfessionLanding,
     "ProfessionPage": ProfessionPage,
@@ -192,6 +195,7 @@ export const PAGES = {
     "SitemapFAQ": SitemapFAQ,
     "SitemapGeo": SitemapGeo,
     "SitemapPages": SitemapPages,
+    "Summary": Summary,
     "SystemLogicMap": SystemLogicMap,
     "TakratOsekPatur": TakratOsekPatur,
     "TaxAdvances": TaxAdvances,
@@ -210,10 +214,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "PricingPerfectBizAI": PricingPerfectBizAI,
-    "ClientDashboard": ClientDashboard,
-    "AdminDashboard": AdminDashboard,
-    "Summary": Summary,
 }
 
 export const pagesConfig = {
