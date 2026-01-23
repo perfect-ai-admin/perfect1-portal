@@ -356,7 +356,6 @@ export default function ClientDashboard() {
 
         {/* Mobile Bottom Tab Bar */}
          {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
-            { id: 'summary', label: 'סיכום', icon: TrendingUp },
             { id: 'progress', label: 'התקדמות', icon: TrendingUp },
             permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
            permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
