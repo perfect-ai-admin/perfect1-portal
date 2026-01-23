@@ -324,17 +324,14 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
           <div></div>
           <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
             <Target className="w-5 h-5 text-purple-600" />
-            {(() => {
-              const template = showAddGoal ? true : false;
-              return editingGoal ? 'עריכת מטרה' : 'מטרה חדשה';
-            })()}
+            {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
           </h2>
           <div className="w-5"></div>
         </div>
       </div>
     }
     footer={
-      <div className="px-6 py-3 space-y-3 flex items-center justify-end gap-2 h-full">
+      <div className="px-6 py-3 flex items-center justify-end gap-2">
         <Button 
           onClick={() => {
             setShowAddGoal(false);
@@ -350,20 +347,18 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     }
   >
     {showAddGoal && (
-      <div className="px-5 py-3">
-        <GoalTemplates
-          user={user}
-          onCreateGoal={handleCreateGoal}
-          onClose={() => {
-            setShowAddGoal(false);
-            setEditingGoal(null);
-            setSpecificTemplate(null);
-          }}
-          hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-          editingGoal={editingGoal}
-          initialTemplate={specificTemplate}
-        />
-      </div>
+      <GoalTemplates
+        user={user}
+        onCreateGoal={handleCreateGoal}
+        onClose={() => {
+          setShowAddGoal(false);
+          setEditingGoal(null);
+          setSpecificTemplate(null);
+        }}
+        hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+        editingGoal={editingGoal}
+        initialTemplate={specificTemplate}
+      />
     )}
   </SimpleDialog>
 

@@ -408,9 +408,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   // Now wrapped inside SimpleDialog by parent
   // This component is the body content
   return (
-    <div className="bg-white">
-      {/* Body - goes inside SimpleDialog */}
-       <div className="px-5 py-3">
+    <div className="px-5 py-3">
         {!selectedTemplate ? (
           <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="grid grid-cols-2 gap-2">
@@ -514,7 +512,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </div>
             </div>
           </motion.div>
-        )}
-      </div>
-      );
+          )}
+          </div>
+          );
 }

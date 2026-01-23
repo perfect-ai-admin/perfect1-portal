@@ -65,7 +65,7 @@ export const ResponsiveDialog = React.forwardRef(
             )}
             style={{
               '--footer-height': `${footerHeight}px`,
-            } as React.CSSProperties}
+            }}
           >
             {/* Header - Fixed */}
             {header && (
