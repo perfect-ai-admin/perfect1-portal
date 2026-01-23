@@ -423,9 +423,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col w-full h-full overflow-hidden">
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', overflow: 'hidden', background: 'white' }}>
         {/* Header - Transparent/Minimal */}
-        <div className="flex justify-between items-start p-4 pb-3 flex-shrink-0 z-10 bg-white">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '16px', paddingBottom: '12px', flexShrink: 0, zIndex: 10, background: 'white' }}>
            {/* Close Button - Left aligned */}
            <button 
              onClick={onClose}
@@ -441,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Main Content - Scrollable */}
-        <div className="px-5 flex-1 overflow-y-auto pb-24 min-h-0">
+        <div style={{ padding: '0 20px', flex: 1, overflowY: 'auto', paddingBottom: '24px', minHeight: 0 }}>
            {/* Title Section */}
            <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
@@ -475,7 +475,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Footer - Full Width Button - FIXED AT BOTTOM */}
-        <div className="p-4 pt-3 flex-shrink-0 border-t border-gray-100 bg-white w-full z-20">
+        <div style={{ padding: '16px 16px 12px 16px', flexShrink: 0, borderTop: '1px solid #e5e7eb', background: 'white', width: '100%', zIndex: 20 }}>
            <Button
              onClick={handleCreate}
              disabled={isCreating}
