@@ -423,7 +423,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     const Icon = selectedTemplate?.icon || Target;
     
     return (
-      <div className="bg-white flex flex-col w-full h-full max-h-[75vh]">
+      <div className="bg-white flex flex-col w-full h-full">
         {/* Header - Transparent/Minimal */}
         <div className="flex justify-between items-start p-4 pb-3 shrink-0">
            {/* Close Button - Left aligned */}
@@ -441,7 +441,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         </div>
 
         {/* Main Content - Scrollable */}
-        <div className="px-5 flex-1 overflow-y-auto">
+        <div className="px-5 flex-1 overflow-y-auto min-h-0">
            {/* Title Section */}
            <div className="flex flex-col items-center text-center gap-3 mb-5 w-full">
               <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
