@@ -180,8 +180,8 @@ export default function Summary() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-6" role="main">
-        <div className="max-w-2xl mx-auto w-full">
+      <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8" role="main">
+        <div className="max-w-3xl mx-auto w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
