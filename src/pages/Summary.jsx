@@ -44,22 +44,14 @@ export default function Summary() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const isAuth = await base44.auth.isAuthenticated();
-        if (!isAuth) {
-          base44.auth.redirectToLogin('/Summary');
-          return;
-        }
-
         const currentUser = await base44.auth.me();
-        if (!currentUser) {
+        if (currentUser) {
+          setUser(currentUser);
+        } else {
           base44.auth.redirectToLogin('/Summary');
-          return;
         }
-
-        setUser(currentUser);
       } catch (error) {
         console.error('Auth check error:', error);
-        base44.auth.redirectToLogin('/Summary');
       }
     };
 
