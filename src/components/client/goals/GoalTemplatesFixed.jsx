@@ -448,19 +448,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             </div>
           </motion.div>
         ) : (
-          <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedTemplate(null)}
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 mb-1 h-7 text-xs"
-            >
-              <ChevronLeft className="w-3.5 h-3.5 ml-1" />
-              חזור
-            </Button>
-
+          <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             {/* Goal Title - Bold and Non-editable */}
-            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-3 border border-purple-200">
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-2.5 border border-purple-200">
               <div className="flex items-center gap-2.5">
                 <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${selectedTemplate.color} flex items-center justify-center flex-shrink-0`}>
                   <selectedTemplate.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
