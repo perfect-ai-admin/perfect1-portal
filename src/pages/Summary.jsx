@@ -235,44 +235,51 @@ export default function Summary() {
         <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">
           <div className="max-w-4xl mx-auto w-full">
             
-            {/* 1. Hero Section: Personal Diagnosis */}
+            {/* 1. Hero Section: Premium Dark Design */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] text-white py-12 px-6 sm:px-10 rounded-3xl overflow-hidden mb-10 shadow-xl"
+              className="relative bg-[#0F172A] text-white py-14 px-6 sm:px-12 rounded-2xl overflow-hidden mb-12 shadow-2xl border border-[#1E293B]"
             >
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+              {/* Subtle Premium Background Effect */}
+              <div className="absolute inset-0 opacity-20">
+                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-900/30 rounded-full blur-[100px] -mr-32 -mt-32"></div>
+                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[100px] -ml-32 -mb-32"></div>
+                 <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
               </div>
 
               <div className="relative z-10">
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+                <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
                     
                     {/* Stage & Challenge */}
-                    <div className="flex-1 text-center md:text-right">
-                        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full mb-6 border border-white/20">
-                            <Brain className="w-4 h-4 text-amber-300" />
-                            <span className="text-sm font-medium tracking-wide">תוצאות האבחון העסקי שלך</span>
+                    <div className="flex-1 text-center lg:text-right">
+                        <div className="inline-flex items-center gap-3 bg-[#1E293B] backdrop-blur-md px-5 py-2 rounded-full mb-8 border border-white/10 shadow-lg">
+                            <Crown className="w-4 h-4 text-[#D4AF37]" />
+                            <span className="text-sm font-medium text-gray-300 tracking-wide uppercase">אבחון עסקי מקצועי</span>
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
-                            העסק שלך בשלב: <br className="hidden md:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-100">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight tracking-tight">
+                            העסק שלך נמצא בשלב <br className="hidden md:block" />
+                            <span className="text-[#D4AF37] drop-shadow-lg">
                                 {stageLabels[stage]}
                             </span>
                         </h1>
 
+                        <p className="text-lg text-gray-400 max-w-2xl mx-auto lg:mx-0 mb-8 font-light">
+                          ניתוח הנתונים מראה שזהו השלב הקריטי ביותר עבורך. תוכנית העבודה הותאמה כדי להעביר אותך לשלב הבא בבטחה.
+                        </p>
+
                         {primaryChallenge && (
-                            <div className="bg-white/10 rounded-2xl p-4 mt-6 border border-white/10 backdrop-blur-sm inline-block w-full md:max-w-xl">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <Target className="w-5 h-5 text-red-200" />
+                            <div className="bg-white/5 rounded-xl p-5 border-l-4 border-[#D4AF37] backdrop-blur-sm inline-block w-full lg:max-w-2xl text-right">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-lg bg-[#D4AF37]/10 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <Target className="w-6 h-6 text-[#D4AF37]" />
                                     </div>
-                                    <div className="text-right">
-                                        <h3 className="text-lg font-bold text-white mb-1">
-                                            האתגר המרכזי שזיהינו: {challengeLabels[primaryChallenge]}
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white mb-2">
+                                            האתגר האסטרטגי: {challengeLabels[primaryChallenge]}
                                         </h3>
-                                        <p className="text-blue-100 text-sm leading-relaxed">
+                                        <p className="text-gray-300 leading-relaxed text-base">
                                             {challengeDescriptions[primaryChallenge]}
                                         </p>
                                     </div>
@@ -281,160 +288,185 @@ export default function Summary() {
                         )}
                     </div>
 
-                    {/* Unified Recommendation Highlight */}
+                    {/* Unified Recommendation Highlight - Premium Card */}
                     {unifiedRecommendation?.single_next_action && (
                         <motion.div 
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="w-full md:w-[320px] bg-white text-[#1E3A5F] rounded-2xl p-6 shadow-2xl relative overflow-hidden"
+                            className="w-full lg:w-[380px] bg-gradient-to-br from-[#1E293B] to-[#0F172A] rounded-2xl p-1 shadow-2xl border border-white/5"
                         >
-                            <div className="absolute top-0 right-0 w-20 h-20 bg-amber-100 rounded-full blur-2xl -mr-10 -mt-10 opacity-60"></div>
-                            
-                            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">המיקוד שלך כרגע</h3>
-                            <div className="text-2xl font-black leading-tight mb-4">
-                                {unifiedRecommendation.single_next_action}
-                            </div>
-                            
-                            <div className="space-y-3 mb-6">
-                                <div className="flex items-start gap-2">
-                                    <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                                    <span className="text-sm font-medium text-gray-700">זה הדבר שיביא לשינוי הגדול ביותר</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                                    <span className="text-sm font-medium text-gray-700">כל השאר יכול לחכות כרגע</span>
-                                </div>
-                            </div>
+                            <div className="bg-[#0F172A] rounded-xl p-8 h-full relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-[#D4AF37]/20 transition-all duration-700"></div>
+                                
+                                <div className="relative z-10">
+                                  <h3 className="text-xs font-bold text-[#D4AF37] uppercase tracking-widest mb-4 flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></div>
+                                    המהלך האסטרטגי הבא
+                                  </h3>
+                                  
+                                  <div className="text-2xl font-bold text-white leading-snug mb-6 border-b border-white/10 pb-6">
+                                      {unifiedRecommendation.single_next_action}
+                                  </div>
+                                  
+                                  <div className="space-y-4 mb-8">
+                                      <div className="flex items-start gap-3">
+                                          <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5 flex-shrink-0">
+                                            <Check className="w-3 h-3 text-green-400" />
+                                          </div>
+                                          <span className="text-sm text-gray-300">פעולה שתייצר אימפקט מיידי</span>
+                                      </div>
+                                      <div className="flex items-start gap-3">
+                                          <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center mt-0.5 flex-shrink-0">
+                                            <Brain className="w-3 h-3 text-blue-400" />
+                                          </div>
+                                          <span className="text-sm text-gray-300">ממוקד לפתרון האתגר הנוכחי</span>
+                                      </div>
+                                  </div>
 
-                            <Button 
-                                onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
-                                className="w-full bg-[#1E3A5F] hover:bg-[#162B47] text-white font-bold h-12 rounded-xl shadow-lg hover:shadow-xl transition-all"
-                            >
-                                התחל לפעול עכשיו
-                                <ArrowRight className="w-4 h-4 mr-2" />
-                            </Button>
+                                  <Button 
+                                      onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                      className="w-full bg-[#D4AF37] hover:bg-[#b5952f] text-[#0F172A] font-bold h-12 rounded-lg transition-all"
+                                  >
+                                      מעבר לביצוע
+                                      <ArrowRight className="w-4 h-4 mr-2" />
+                                  </Button>
+                                </div>
+                            </div>
                         </motion.div>
                     )}
                 </div>
               </div>
             </motion.div>
 
-            {/* 1.5 Diagnostic Report Detail */}
+            {/* 1.5 Diagnostic Report Detail - Professional Grid */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-12"
+              className="mb-16"
             >
-               <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-                  <div className="text-center mb-8">
-                      <h2 className="text-2xl font-bold text-gray-900">דוח מצב קיים</h2>
-                      <p className="text-gray-500">ניתוח מעמיק של העסק נכון להיום</p>
+               <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm relative overflow-hidden">
+                  <div className="flex items-center justify-between mb-8 border-b border-gray-100 pb-6">
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">דוח מצב קיים</h2>
+                        <p className="text-gray-500 mt-1">תמונת מצב עדכנית של ביצועי העסק</p>
+                      </div>
+                      <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
+                        <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                        מעודכן להיום
+                      </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                       {/* Marketing Status */}
-                      <div className="p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
-                          <div className="flex items-center gap-3 mb-3">
-                              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                      <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 relative">
+                          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <div className="flex justify-between items-start mb-4">
+                              <h3 className="font-bold text-gray-700">שיווק</h3>
+                              <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
                                   <Megaphone className="w-5 h-5" />
                               </div>
-                              <h3 className="font-bold text-gray-900">שיווק</h3>
                           </div>
-                          <div className="space-y-2">
-                              <p className="text-sm text-gray-500">סטטוס נוכחי</p>
-                              <div className="font-semibold text-blue-900">
+                          <div className="space-y-1">
+                              <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">סטטוס נוכחי</p>
+                              <div className="font-bold text-xl text-gray-900">
                                   {{
-                                      'not_ready': 'טרם בשל לשיווק',
-                                      'testing': 'בשלב הטסטים',
-                                      'scaling': 'בצמיחה והרחבה',
-                                      'optimizing': 'באופטימיזציה',
-                                      'paused': 'פעילות מושהית'
+                                      'not_ready': 'טרם בשל',
+                                      'testing': 'בטסטים',
+                                      'scaling': 'בצמיחה',
+                                      'optimizing': 'אופטימיזציה',
+                                      'paused': 'מושהה'
                                   }[businessState?.marketing_state?.current_phase] || 'טרם הוגדר'}
                               </div>
-                              <p className="text-xs text-gray-400">
-                                  {businessState?.marketing_state?.active_channels?.length > 0 
-                                      ? `${businessState.marketing_state.active_channels.length} ערוצים פעילים`
-                                      : 'אין ערוצים פעילים'
-                                  }
-                              </p>
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center gap-2 text-sm text-gray-600">
+                              <Globe className="w-4 h-4 text-gray-400" />
+                              {businessState?.marketing_state?.active_channels?.length > 0 
+                                  ? `${businessState.marketing_state.active_channels.length} ערוצים פעילים`
+                                  : 'אין ערוצים פעילים'
+                              }
                           </div>
                       </div>
 
                       {/* Sales Status */}
-                      <div className="p-5 bg-green-50/50 rounded-2xl border border-green-100">
-                          <div className="flex items-center gap-3 mb-3">
-                              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                      <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all duration-300 relative">
+                          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-green-600 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <div className="flex justify-between items-start mb-4">
+                              <h3 className="font-bold text-gray-700">מכירות</h3>
+                              <div className="p-2 bg-green-50 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors">
                                   <DollarSign className="w-5 h-5" />
                               </div>
-                              <h3 className="font-bold text-gray-900">מכירות</h3>
                           </div>
-                          <div className="space-y-2">
-                              <p className="text-sm text-gray-500">צוואר בקבוק עיקרי</p>
-                              <div className="font-semibold text-green-900">
+                          <div className="space-y-1">
+                              <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">צוואר בקבוק</p>
+                              <div className="font-bold text-xl text-gray-900">
                                   {{
                                       'lead_gen': 'כמות לידים',
                                       'qualification': 'איכות לידים',
                                       'closing': 'סגירת עסקאות',
                                       'none': 'הכל תקין'
-                                  }[businessState?.sales_state?.bottleneck] || 'טרם זוהה'}
+                                  }[businessState?.sales_state?.bottleneck] || 'בבדיקה'}
                               </div>
-                              <div className="w-full bg-green-100 rounded-full h-1.5 mt-2">
-                                  <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '40%' }}></div>
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-100">
+                              <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                  <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '60%' }}></div>
                               </div>
                           </div>
                       </div>
 
                       {/* Operations Status */}
-                      <div className="p-5 bg-purple-50/50 rounded-2xl border border-purple-100">
-                          <div className="flex items-center gap-3 mb-3">
-                              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                      <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 relative">
+                          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-purple-600 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <div className="flex justify-between items-start mb-4">
+                              <h3 className="font-bold text-gray-700">תפעול</h3>
+                              <div className="p-2 bg-purple-50 text-purple-600 rounded-lg group-hover:bg-purple-600 group-hover:text-white transition-colors">
                                   <Zap className="w-5 h-5" />
                               </div>
-                              <h3 className="font-bold text-gray-900">תפעול ועומס</h3>
                           </div>
-                          <div className="space-y-2">
-                              <p className="text-sm text-gray-500">מצב עומס נוכחי</p>
-                              <div className="font-semibold text-purple-900">
+                          <div className="space-y-1">
+                              <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">עומס עבודה</p>
+                              <div className="font-bold text-xl text-gray-900">
                                   {{
-                                      'under_capacity': 'יש מקום לעבודה',
-                                      'optimal': 'עומס אופטימלי',
-                                      'near_limit': 'קרוב לקצה',
+                                      'under_capacity': 'פנוי לעבודה',
+                                      'optimal': 'אופטימלי',
+                                      'near_limit': 'גבוה',
                                       'overloaded': 'עומס יתר'
                                   }[businessState?.operations_state?.workload_status] || 'לא ידוע'}
                               </div>
-                              <p className="text-xs text-gray-400">
-                                  {businessState?.operations_state?.workload_status === 'overloaded' 
-                                      ? 'נדרשת התייעלות דחופה' 
-                                      : 'יש יכולת לקלוט לקוחות'}
-                              </p>
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600">
+                              {businessState?.operations_state?.workload_status === 'overloaded' 
+                                  ? <span className="text-red-500 flex items-center gap-1"><Shield className="w-3 h-3"/> נדרשת התייעלות</span>
+                                  : <span className="text-green-600 flex items-center gap-1"><Check className="w-3 h-3"/> יש קיבולת</span>}
                           </div>
                       </div>
 
                       {/* Focus Status */}
-                      <div className="p-5 bg-amber-50/50 rounded-2xl border border-amber-100">
-                          <div className="flex items-center gap-3 mb-3">
-                              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                      <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-amber-300 hover:shadow-lg transition-all duration-300 relative">
+                          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          <div className="flex justify-between items-start mb-4">
+                              <h3 className="font-bold text-gray-700">אסטרטגיה</h3>
+                              <div className="p-2 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-500 group-hover:text-white transition-colors">
                                   <Target className="w-5 h-5" />
                               </div>
-                              <h3 className="font-bold text-gray-900">מיקוד אסטרטגי</h3>
                           </div>
-                          <div className="space-y-2">
-                              <p className="text-sm text-gray-500">הכיוון הנוכחי</p>
-                              <div className="font-semibold text-amber-900">
+                          <div className="space-y-1">
+                              <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">מיקוד</p>
+                              <div className="font-bold text-xl text-gray-900">
                                   {{
-                                      'growth': 'צמיחה והתרחבות',
-                                      'stability': 'ייצוב המערכת',
-                                      'optimization': 'שיפור רווחיות',
-                                      'survival': 'הישרדות וחירום'
+                                      'growth': 'צמיחה',
+                                      'stability': 'יציבות',
+                                      'optimization': 'רווחיות',
+                                      'survival': 'חירום'
                                   }[businessState?.focus_state?.current_strategic_focus] || 'כללי'}
                               </div>
-                              <div className="flex gap-1 mt-2">
-                                  {[1,2,3].map(i => (
-                                      <div key={i} className={`h-1.5 flex-1 rounded-full ${i === 1 ? 'bg-amber-400' : 'bg-amber-100'}`} />
-                                  ))}
-                              </div>
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-100 flex gap-1">
+                              {[1,2,3].map(i => (
+                                  <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= 2 ? 'bg-amber-400' : 'bg-gray-100'}`} />
+                              ))}
                           </div>
                       </div>
                   </div>
