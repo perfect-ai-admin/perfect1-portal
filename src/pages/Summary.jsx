@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   Rocket, Brain, Zap, Award, ArrowRight, Lightbulb, Users, DollarSign, Target, TrendingUp, 
-  Crown, Shield, Sparkles, LogOut, HelpCircle, Globe, CreditCard, LogIn, User, Check, Map, Lock
+  Crown, Shield, Sparkles, LogOut, HelpCircle, Globe, CreditCard, LogIn, User, Check, Map, Lock, Megaphone
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
