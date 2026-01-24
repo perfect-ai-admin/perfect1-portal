@@ -22,8 +22,8 @@ import NotificationCenter from '@/components/client/NotificationCenter';
 import ShoppingCart from '@/components/client/shared/ShoppingCart';
 
 // Hooks
-import { useAppAuth, useLogout } from '@/hooks/useAppAuth';
-import { useCreateGoal } from '@/hooks/useGoals';
+import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
+import { useCreateGoal } from '@/components/hooks/useGoals';
 import { base44 } from '@/api/base44Client'; // Keep base44 for direct calls if absolutely needed (e.g. redirect)
 
 export default function Summary() {

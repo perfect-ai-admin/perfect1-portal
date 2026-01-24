@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 // Hooks
-import { useGoals, useUpdateGoal, useDeleteGoal, useGenerateGoalPlan } from '@/hooks/useGoals';
+import { useGoals, useUpdateGoal, useDeleteGoal, useGenerateGoalPlan } from '@/components/hooks/useGoals';
 
 export default function GoalsTab({ user, data, openAddGoal = false }) {
   const queryClient = useQueryClient();

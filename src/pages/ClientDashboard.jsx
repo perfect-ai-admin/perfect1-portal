@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAppAuth, useLogout } from '@/hooks/useAppAuth';
+import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import GeneralErrorBoundary from '../components/GeneralErrorBoundary';
