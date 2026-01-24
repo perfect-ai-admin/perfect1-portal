@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   LogOut, HelpCircle, User, Globe, ShoppingCart as ShoppingCartIcon,
-  CreditCard, MapPin, BarChart3, Wallet, Target, Megaphone, MessageSquare
+  CreditCard, MapPin, BarChart3, Wallet, Target, Megaphone, MessageSquare, Lightbulb
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -169,12 +169,12 @@ export default function Summary() {
             {/* Tab Navigation - Desktop Only */}
             <div className="hidden md:block">
               {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={[
-                { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
-                { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
-                { id: 'financial', label: 'כספים', icon: 'Wallet' },
-                { id: 'goals', label: 'מטרות', icon: 'Target' },
-                { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
-                { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
+                { id: 'progress', label: 'מסע העסק', icon: MapPin },
+                { id: 'business', label: 'נתוני העסק', icon: BarChart3 },
+                { id: 'financial', label: 'כספים', icon: Wallet },
+                { id: 'goals', label: 'מטרות', icon: Target },
+                { id: 'marketing', label: 'שיווק', icon: Megaphone },
+                { id: 'mentor', label: 'מנטור', icon: Lightbulb }
               ]} />}
             </div>
           </div>
