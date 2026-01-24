@@ -23,17 +23,20 @@ import ShoppingCart from '@/components/client/shared/ShoppingCart';
 
 // Hooks
 import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
-import { useCreateGoal } from '@/components/hooks/useGoals';
+import { useCreateGoal, useGoals } from '@/components/hooks/useGoals';
+import LimitUpgradeDialog from '@/components/client/goals/LimitUpgradeDialog';
 import { base44 } from '@/api/base44Client';
 
 export default function Summary() {
   const { data: user, isLoading: isUserLoading } = useAppAuth();
+  const { data: goals = [] } = useGoals(user?.id ? { user_id: user.id } : {});
   const createGoalMutation = useCreateGoal();
   const logoutMutation = useLogout();
   
   const [activeTab, setActiveTab] = useState('summary');
   const [language, setLanguage] = useState('he');
   const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [recommendedGoal, setRecommendedGoal] = useState(null);
   const navigate = useNavigate();
 
@@ -68,6 +71,26 @@ export default function Summary() {
       setRecommendedGoal(GOAL_TEMPLATES[0]);
     }
   }, [user]);
+
+  const handleShowGoalDialog = () => {
+    const limit = user?.goals_limit;
+    // Check if unlimited (Full plan has null)
+    const isUnlimited = limit === null;
+    
+    // If not unlimited, check if reached limit
+    if (!isUnlimited) {
+      const actualLimit = limit || 1; // Default to 1 if undefined
+      // Count active goals (same logic as GoalsTab)
+      const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
+      
+      if (activeGoalsCount >= actualLimit) {
+        setShowUpgradeDialog(true);
+        return;
+      }
+    }
+    
+    setShowGoalDialog(true);
+  };
 
   const handleCreateGoal = async (goalData) => {
     try {
@@ -485,7 +508,7 @@ export default function Summary() {
                                             
                                             {isCurrent && (
                                                 <Button 
-                                                    onClick={() => setShowGoalDialog(true)}
+                                                    onClick={handleShowGoalDialog}
                                                     size="sm"
                                                     className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs"
                                                 >
@@ -544,7 +567,7 @@ export default function Summary() {
                                         
                                         {isCurrent && (
                                             <Button 
-                                                onClick={() => setShowGoalDialog(true)}
+                                                onClick={handleShowGoalDialog}
                                                 className="w-full bg-gray-900 text-white hover:bg-black rounded-xl h-11 text-sm font-medium shadow-lg shadow-gray-200 transition-transform active:scale-95"
                                             >
                                                 התחל את המשימה
@@ -601,7 +624,7 @@ export default function Summary() {
                             התוכנית מוכנה, היעדים ברורים. בוא נתחיל את השינוי כבר היום.
                         </p>
                         <Button 
-                            onClick={() => setShowGoalDialog(true)}
+                            onClick={handleShowGoalDialog}
                             size="lg"
                             className="bg-white text-[#1E3A5F] hover:bg-gray-100 font-bold text-lg px-10 h-14 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
                         >
@@ -614,13 +637,19 @@ export default function Summary() {
 
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 md:hidden z-40">
                 <Button 
-                    onClick={() => setShowGoalDialog(true)}
+                    onClick={handleShowGoalDialog}
                     className="w-full bg-[#1E3A5F] text-white font-bold h-12 rounded-xl shadow-lg"
                 >
                     התחל את המשימה הראשונה
                 </Button>
             </div>
             
+            <LimitUpgradeDialog 
+                isOpen={showUpgradeDialog} 
+                onClose={() => setShowUpgradeDialog(false)} 
+                limit={user?.goals_limit || 1}
+            />
+
             {showGoalDialog && recommendedGoal && (
                 <GoalTemplatesFixed
                   onCreateGoal={handleCreateGoal}
