@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/base44Client'; // Keep for direct entity check
 import SimpleDialog from '@/components/client/SimpleDialog';
+import { useUpdateUserPhone } from '@/components/hooks/useAppAuth';
 
 // Goal Templates
 export const GOAL_TEMPLATES = [
@@ -214,6 +215,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isSubmittingPhone, setIsSubmittingPhone] = useState(false);
   
+  const updateUserPhoneMutation = useUpdateUserPhone();
   const initialFocusRef = useRef(null);
 
   // Initialize form with editing goal data or initial template
@@ -311,11 +313,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     if (!phoneNumber || phoneNumber.length < 9) return;
     setIsSubmittingPhone(true);
     try {
-      // Use backend function to ensure persistence
-      await base44.functions.invoke('updateUserPhone', { phone: phoneNumber });
-      
-      // Also update locally for optimistic UI if needed
-      await base44.auth.updateMe({ phone: phoneNumber });
+      await updateUserPhoneMutation.mutateAsync({ phone: phoneNumber });
 
       // Proceed to create goal
       const goalData = {

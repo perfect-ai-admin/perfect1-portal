@@ -62,39 +62,37 @@ import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import RecommendedGoalCard from '../goals/RecommendedGoalCard';
 import GoalSelectionConfirmation from '../goals/GoalSelectionConfirmation';
+import { useAppAuth } from '@/components/hooks/useAppAuth';
+import { useGoals, useUpdateGoal, useDeleteGoal, useCreateGoal, useGenerateGoalPlan } from '@/components/hooks/useGoals';
+import { queryKeys } from '@/components/hooks/useQueryKeys';
 
 export default function ProgressTab({ data, onNavigate, user }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   
-  // Fetch current user data to ensure we have fresh journey status
-  const { data: currentUserData } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async () => await base44.auth.me(),
-    initialData: data
-  });
+  // Hooks
+  const { data: currentUserData } = useAppAuth();
   
-  // Fetch active goals for the floating button and desktop view
-  const { data: activeGoals, refetch: refetchGoals } = useQuery({
-    queryKey: ['activeGoals', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return [];
-      // Fetch all goals to filter client-side or use a more specific filter if possible
-      const goals = await base44.entities.UserGoal.filter({ user_id: user.id });
-      // Ensure we get 'active', 'selected', and 'completed' goals
-      return goals.filter(g => ['active', 'selected', 'completed'].includes(g.status));
-    },
-    enabled: !!user?.id,
-    initialData: []
-  });
+  // Fetch all goals and filter locally (consistent with GoalsTab)
+  const { data: allGoals = [] } = useGoals(user?.id ? { user_id: user.id } : {});
+  
+  const activeGoals = React.useMemo(() => {
+    return allGoals.filter(g => ['active', 'selected', 'completed'].includes(g.status));
+  }, [allGoals]);
 
-  // Subscribe to goal changes to update the floating button in real-time
+  // Mutations
+  const updateGoalMutation = useUpdateGoal();
+  const deleteGoalMutation = useDeleteGoal();
+  const createGoalMutation = useCreateGoal();
+  const generateGoalPlanMutation = useGenerateGoalPlan();
+
+  // Subscribe to goal changes
   React.useEffect(() => {
     const unsubscribe = base44.entities.UserGoal.subscribe(() => {
-      refetchGoals();
+      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
     });
     return () => unsubscribe();
-  }, [refetchGoals]);
+  }, [queryClient]);
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const [activeTaskQuestionnaire, setActiveTaskQuestionnaire] = useState(null);
   
@@ -127,8 +125,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   };
 
   const handleGoalStatusChange = async (goal, newStatus) => {
-      await base44.entities.UserGoal.update(goal.id, { status: newStatus });
-      refetchGoals();
+      await updateGoalMutation.mutateAsync({ id: goal.id, status: newStatus });
   };
 
   const handleGoalEdit = (goal) => {
@@ -137,8 +134,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleGoalDelete = async (goalId) => {
       if (confirm('האם אתה בטוח שברצונך למחוק מטרה זו?')) {
-          await base44.entities.UserGoal.delete(goalId);
-          refetchGoals();
+          await deleteGoalMutation.mutateAsync(goalId);
       }
   };
 
@@ -156,9 +152,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleQuestionnaireComplete = async () => {
     setShowQuestionnaire(false);
-    // Refetch user data smoothly without page reload
-    await queryClient.invalidateQueries({ queryKey: ['currentUser'] });
-    await queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
   };
 
   const handleResetJourney = async () => {
@@ -168,8 +163,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
     
     try {
       await base44.functions.invoke('resetBusinessJourney');
+      await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
       toast.success('המסע אופס בהצלחה!');
-      window.location.reload();
     } catch (error) {
       console.error('Error resetting journey:', error);
       toast.error('אירעה שגיאה באיפוס המסע');
@@ -239,7 +235,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
     try {
       // Create goal in DB immediately WITHOUT waiting for AI
-      const createdGoal = await base44.entities.UserGoal.create({
+      // Use hook
+      const createdGoal = await createGoalMutation.mutateAsync({
         ...newGoal,
         user_id: user?.id,
         status: 'active',
@@ -247,14 +244,18 @@ export default function ProgressTab({ data, onNavigate, user }) {
         tasks: []
       });
 
-      // Refresh immediately to show the new goal
-      refetchGoals();
-
       // Generate AI plan in background without blocking
       setTimeout(async () => {
         try {
           const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
 
+          // Call backend function via direct invoke (because this specific flow handles existing ID and complex context, 
+          // and useGenerateGoalPlan hook might be too simple/different signature. 
+          // Or we can use the hook if it supports passing goalId.
+          // The current hook useGenerateGoalPlan expects goalData and returns data.
+          // I'll stick to direct invoke here for the specific "background update" pattern,
+          // BUT invalidate queries at the end.
+          
           await base44.functions.invoke('generateGoalPlan', { 
             goalId: createdGoal.id,
             title: createdGoal.title,
@@ -270,7 +271,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
             }
           });
 
-          refetchGoals();
+          // Invalidate
+          queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+          queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
         } catch (error) {
           console.error("Error generating plan:", error);
         }
