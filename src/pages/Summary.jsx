@@ -320,6 +320,127 @@ export default function Summary() {
               </div>
             </motion.div>
 
+            {/* 1.5 Diagnostic Report Detail */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-12"
+            >
+               <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+                  <div className="text-center mb-8">
+                      <h2 className="text-2xl font-bold text-gray-900">דוח מצב קיים</h2>
+                      <p className="text-gray-500">ניתוח מעמיק של העסק נכון להיום</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {/* Marketing Status */}
+                      <div className="p-5 bg-blue-50/50 rounded-2xl border border-blue-100">
+                          <div className="flex items-center gap-3 mb-3">
+                              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                  <Megaphone className="w-5 h-5" />
+                              </div>
+                              <h3 className="font-bold text-gray-900">שיווק</h3>
+                          </div>
+                          <div className="space-y-2">
+                              <p className="text-sm text-gray-500">סטטוס נוכחי</p>
+                              <div className="font-semibold text-blue-900">
+                                  {{
+                                      'not_ready': 'טרם בשל לשיווק',
+                                      'testing': 'בשלב הטסטים',
+                                      'scaling': 'בצמיחה והרחבה',
+                                      'optimizing': 'באופטימיזציה',
+                                      'paused': 'פעילות מושהית'
+                                  }[businessState?.marketing_state?.current_phase] || 'טרם הוגדר'}
+                              </div>
+                              <p className="text-xs text-gray-400">
+                                  {businessState?.marketing_state?.active_channels?.length > 0 
+                                      ? `${businessState.marketing_state.active_channels.length} ערוצים פעילים`
+                                      : 'אין ערוצים פעילים'
+                                  }
+                              </p>
+                          </div>
+                      </div>
+
+                      {/* Sales Status */}
+                      <div className="p-5 bg-green-50/50 rounded-2xl border border-green-100">
+                          <div className="flex items-center gap-3 mb-3">
+                              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                  <DollarSign className="w-5 h-5" />
+                              </div>
+                              <h3 className="font-bold text-gray-900">מכירות</h3>
+                          </div>
+                          <div className="space-y-2">
+                              <p className="text-sm text-gray-500">צוואר בקבוק עיקרי</p>
+                              <div className="font-semibold text-green-900">
+                                  {{
+                                      'lead_gen': 'כמות לידים',
+                                      'qualification': 'איכות לידים',
+                                      'closing': 'סגירת עסקאות',
+                                      'none': 'הכל תקין'
+                                  }[businessState?.sales_state?.bottleneck] || 'טרם זוהה'}
+                              </div>
+                              <div className="w-full bg-green-100 rounded-full h-1.5 mt-2">
+                                  <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '40%' }}></div>
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Operations Status */}
+                      <div className="p-5 bg-purple-50/50 rounded-2xl border border-purple-100">
+                          <div className="flex items-center gap-3 mb-3">
+                              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                                  <Zap className="w-5 h-5" />
+                              </div>
+                              <h3 className="font-bold text-gray-900">תפעול ועומס</h3>
+                          </div>
+                          <div className="space-y-2">
+                              <p className="text-sm text-gray-500">מצב עומס נוכחי</p>
+                              <div className="font-semibold text-purple-900">
+                                  {{
+                                      'under_capacity': 'יש מקום לעבודה',
+                                      'optimal': 'עומס אופטימלי',
+                                      'near_limit': 'קרוב לקצה',
+                                      'overloaded': 'עומס יתר'
+                                  }[businessState?.operations_state?.workload_status] || 'לא ידוע'}
+                              </div>
+                              <p className="text-xs text-gray-400">
+                                  {businessState?.operations_state?.workload_status === 'overloaded' 
+                                      ? 'נדרשת התייעלות דחופה' 
+                                      : 'יש יכולת לקלוט לקוחות'}
+                              </p>
+                          </div>
+                      </div>
+
+                      {/* Focus Status */}
+                      <div className="p-5 bg-amber-50/50 rounded-2xl border border-amber-100">
+                          <div className="flex items-center gap-3 mb-3">
+                              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                  <Target className="w-5 h-5" />
+                              </div>
+                              <h3 className="font-bold text-gray-900">מיקוד אסטרטגי</h3>
+                          </div>
+                          <div className="space-y-2">
+                              <p className="text-sm text-gray-500">הכיוון הנוכחי</p>
+                              <div className="font-semibold text-amber-900">
+                                  {{
+                                      'growth': 'צמיחה והתרחבות',
+                                      'stability': 'ייצוב המערכת',
+                                      'optimization': 'שיפור רווחיות',
+                                      'survival': 'הישרדות וחירום'
+                                  }[businessState?.focus_state?.current_strategic_focus] || 'כללי'}
+                              </div>
+                              <div className="flex gap-1 mt-2">
+                                  {[1,2,3].map(i => (
+                                      <div key={i} className={`h-1.5 flex-1 rounded-full ${i === 1 ? 'bg-amber-400' : 'bg-amber-100'}`} />
+                                  ))}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+               </div>
+            </motion.div>
+
             {/* 2. The Plan: Your Personal Roadmap */}
             {clientTasks.length > 0 && (
                 <div className="mb-16">
