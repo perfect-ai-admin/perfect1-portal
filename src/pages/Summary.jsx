@@ -61,6 +61,62 @@ export default function Summary() {
 
   const data = userData || user;
 
+  // Set recommended goal based on user's business
+  useEffect(() => {
+    if (data && GOAL_TEMPLATES.length > 0) {
+      setRecommendedGoal(GOAL_TEMPLATES[0]);
+    }
+  }, [data]);
+
+  const handleCreateGoal = async (goalData, isEditing) => {
+    try {
+      await base44.entities.UserGoal.create({
+        ...goalData,
+        user_id: user.id
+      });
+      setShowGoalDialog(false);
+      navigate(createPageUrl('ClientDashboard') + '?tab=goals');
+    } catch (error) {
+      console.error('Error creating goal:', error);
+    }
+  };
+
+  // Journey stages for timeline
+  const journeyStages = [
+    { 
+      icon: Rocket, 
+      title: 'קביעת מטרה', 
+      description: 'נבחר יחד את המטרה הכי חשובה לעסק שלך',
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200'
+    },
+    { 
+      icon: Brain, 
+      title: 'בניית תוכנית', 
+      description: 'המערכת תבנה תוכנית פעולה מותאמת אישית',
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-50',
+      borderColor: 'border-purple-200'
+    },
+    { 
+      icon: Zap, 
+      title: 'ליווי יומיומי', 
+      description: 'המנטור העסקי ילווה אותך בכל צעד',
+      color: 'from-amber-500 to-amber-600',
+      bgColor: 'bg-amber-50',
+      borderColor: 'border-amber-200'
+    },
+    { 
+      icon: Award, 
+      title: 'השגת תוצאות', 
+      description: 'נעקוב אחר ההתקדמות ונחגוג הצלחות',
+      color: 'from-green-500 to-green-600',
+      bgColor: 'bg-green-50',
+      borderColor: 'border-green-200'
+    }
+  ];
+
   // Generate personalized summary based on business state
   const summary = useMemo(() => {
     if (!data?.business_state) {
