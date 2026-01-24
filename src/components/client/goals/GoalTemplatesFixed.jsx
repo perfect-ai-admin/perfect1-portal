@@ -462,7 +462,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </div>
             </div>
 
-            <div className="space-y-2.5">
+            <div className="space-y-2">
 
               {/* Two Custom Questions */}
               {selectedTemplate.questions && (
