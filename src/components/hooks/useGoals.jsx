@@ -11,14 +11,44 @@ export function useGoals(filters = {}) {
   });
 }
 
-// --- Mutation: Create Goal (Simple Entity Create) ---
+// --- Mutation: Create Goal ---
 export function useCreateGoal() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (goalData) => base44.entities.UserGoal.create(goalData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+    onMutate: async (newGoal) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ['goals', 'list'] });
+
+      // Snapshot the previous value
+      const previousGoals = queryClient.getQueriesData({ queryKey: ['goals', 'list'] });
+
+      // Optimistically update to the new value
+      const optimisticGoal = { 
+        ...newGoal, 
+        id: 'temp_' + Date.now(), 
+        created_date: new Date().toISOString(),
+        isOptimistic: true 
+      };
+
+      queryClient.setQueriesData({ queryKey: ['goals', 'list'] }, (old) => {
+        return old ? [optimisticGoal, ...old] : [optimisticGoal];
+      });
+
+      return { previousGoals };
+    },
+    onError: (err, newGoal, context) => {
+      // Rollback to the previous value
+      if (context?.previousGoals) {
+        context.previousGoals.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
     },
   });
@@ -34,7 +64,7 @@ export function useGenerateGoalPlan() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
     },
   });
@@ -47,10 +77,26 @@ export function useUpdateGoal() {
   return useMutation({
     mutationFn: ({ id, ...data }) => base44.entities.UserGoal.update(id, data),
     onMutate: async ({ id, ...newData }) => {
-      await queryClient.cancelQueries({ queryKey: queryKeys.goals.all });
+      await queryClient.cancelQueries({ queryKey: ['goals', 'list'] });
+      const previousGoals = queryClient.getQueriesData({ queryKey: ['goals', 'list'] });
+
+      // Optimistically update
+      queryClient.setQueriesData({ queryKey: ['goals', 'list'] }, (old) => {
+        if (!old) return old;
+        return old.map(goal => goal.id === id ? { ...goal, ...newData } : goal);
+      });
+
+      return { previousGoals };
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+    onError: (err, newData, context) => {
+      if (context?.previousGoals) {
+        context.previousGoals.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
     },
   });
@@ -62,8 +108,27 @@ export function useDeleteGoal() {
 
   return useMutation({
     mutationFn: (goalId) => base44.entities.UserGoal.delete(goalId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+    onMutate: async (goalId) => {
+      await queryClient.cancelQueries({ queryKey: ['goals', 'list'] });
+      const previousGoals = queryClient.getQueriesData({ queryKey: ['goals', 'list'] });
+
+      // Optimistically delete
+      queryClient.setQueriesData({ queryKey: ['goals', 'list'] }, (old) => {
+        if (!old) return old;
+        return old.filter(goal => goal.id !== goalId);
+      });
+
+      return { previousGoals };
+    },
+    onError: (err, goalId, context) => {
+      if (context?.previousGoals) {
+        context.previousGoals.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
     },
   });

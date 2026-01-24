@@ -49,8 +49,21 @@ export function useUpdateUserPhone() {
 
   return useMutation({
     mutationFn: async ({ phone }) => {
+      // First backend function if needed
       await base44.functions.invoke('updateUserPhone', { phone });
+      // Then update auth state
       return base44.auth.updateMe({ phone });
+    },
+    onMutate: async ({ phone }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.user.me });
+      const previousUser = queryClient.getQueryData(queryKeys.user.me);
+      queryClient.setQueryData(queryKeys.user.me, (old) => ({ ...old, phone }));
+      return { previousUser };
+    },
+    onError: (err, vars, context) => {
+      if (context?.previousUser) {
+        queryClient.setQueryData(queryKeys.user.me, context.previousUser);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.user.me });

@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import BusinessRoadmap from '../goals/BusinessRoadmap';
 import GoalTemplates, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
-// GoalsCatalog removed
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
 import SimpleDialog from '../SimpleDialog';
 import { Plus, Sparkles, Target, ArrowLeft } from 'lucide-react';
@@ -13,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 // Hooks
-import { useGoals, useUpdateGoal, useDeleteGoal, useGenerateGoalPlan } from '@/components/hooks/useGoals';
+import { useGoals, useUpdateGoal, useDeleteGoal, useGenerateGoalPlan, useCreateGoal } from '@/components/hooks/useGoals';
 
 export default function GoalsTab({ user, data, openAddGoal = false }) {
   const queryClient = useQueryClient();
@@ -21,28 +20,29 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   // Mutations
   const updateGoalMutation = useUpdateGoal();
   const deleteGoalMutation = useDeleteGoal();
+  const createGoalMutation = useCreateGoal();
   const generateGoalPlanMutation = useGenerateGoalPlan();
 
   // Query - Fetch goals using hook
+  // We use useMemo to ensure filters object reference is stable if needed, though useGoals handles it
   const { data: fetchedGoals = [], isLoading } = useGoals(user?.id ? { user_id: user.id } : {});
 
-  // Local state for optimistic UI (synced with React Query)
-  const [goals, setGoals] = useState([]);
-  const [userGoals, setUserGoals] = useState([]);
-  
+  // Clean, memoized goals list from Server State
+  const goals = useMemo(() => {
+    return fetchedGoals.filter(g => g.title && g.title.trim() !== '')
+      .sort((a, b) => {
+        // Sort optimistic items to top if needed, or by creation date
+        if (a.isOptimistic && !b.isOptimistic) return -1;
+        if (!a.isOptimistic && b.isOptimistic) return 1;
+        return new Date(b.created_date || 0) - new Date(a.created_date || 0);
+      });
+  }, [fetchedGoals]);
+
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
-  const goalsTopRef = useRef(null);
   const processedOpenAddGoal = useRef(false);
-
-  // Sync fetched data to local state for optimistic handling + valid filtering
-  useEffect(() => {
-    const validGoals = fetchedGoals.filter(g => g.title && g.title.trim() !== '');
-    setGoals(validGoals);
-    setUserGoals(validGoals);
-  }, [fetchedGoals]);
 
   const goalsLoaded = !isLoading;
 
@@ -50,7 +50,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const firstJourneyTask = user?.client_tasks?.[0];
   
   // Define the "Recommended Goal" as the current journey step
-  const recommendedGoal = firstJourneyTask ? {
+  const recommendedGoal = useMemo(() => firstJourneyTask ? {
     goal_id: 'journey_step_' + firstJourneyTask.id,
     name: firstJourneyTask.title,
     title: firstJourneyTask.title,
@@ -60,17 +60,17 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     color: 'from-purple-500 to-indigo-600',
     isJourneyTask: true,
     originalTask: firstJourneyTask
-  } : null;
+  } : null, [firstJourneyTask, user?.business_state?.description]);
 
   // Check if this specific journey task has been converted to a goal already
-  const hasStartedRecommendedGoal = userGoals.some(g => 
+  const hasStartedRecommendedGoal = useMemo(() => goals.some(g => 
     g.title === firstJourneyTask?.title || 
     g.category === `task_${firstJourneyTask?.id}` ||
     g.category === `task_goal_${firstJourneyTask?.id}`
-  );
+  ), [goals, firstJourneyTask]);
 
   // Check if there are ANY active goals currently
-  const hasAnyActiveGoal = userGoals.some(g => ['active', 'in_progress', 'selected'].includes(g.status));
+  const hasAnyActiveGoal = useMemo(() => goals.some(g => ['active', 'in_progress', 'selected'].includes(g.status)), [goals]);
   
   // Only show recommendation if goals are loaded and no active goals exist
   const resolvedRecommendedTemplate = goalsLoaded && recommendedGoal && !hasStartedRecommendedGoal && !hasAnyActiveGoal
@@ -92,12 +92,9 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     }
   }, [openAddGoal]);
 
-
-
   const handleShowAddGoal = () => {
     // Log override if recommendation exists and not taken
     if (recommendedGoal && !hasStartedRecommendedGoal) {
-       // Log to analytics or console as requested
        console.log('User overrode recommendation', { 
          recommended: recommendedGoal.goal_id, 
          user_id: user.id 
@@ -112,7 +109,8 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     // If not unlimited, check if reached limit
     if (!isUnlimited) {
       const actualLimit = limit || 1; // Default to 1 if undefined
-      if (goals.length >= actualLimit) {
+      const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
+      if (activeGoalsCount >= actualLimit) {
         setShowUpgradeDialog(true);
         return;
       }
@@ -127,7 +125,6 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     const isUnlimited = limit === null;
     if (!isUnlimited) {
       const actualLimit = limit || 1;
-      // Filter goals to only count active ones for the limit check
       const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
       
       if (activeGoalsCount >= actualLimit) {
@@ -168,7 +165,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
   const handleSelectRoadmapStep = (task) => {
       // Check if already active
-      const isActive = userGoals.some(g => 
+      const isActive = goals.some(g => 
         g.title === task.title || 
         g.category === `task_${task.id}` ||
         g.category === `task_goal_${task.id}`
@@ -176,7 +173,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
       if (isActive) return;
 
-      // Check limit (Double check, although UI handles it too)
+      // Check limit
       const limit = user?.goals_limit;
       const isUnlimited = limit === null;
       if (!isUnlimited) {
@@ -213,20 +210,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const secondaryGoals = goals.slice(1);
 
   const handleStatusChange = async (goal, nextStatus) => {
-    // Optimistic update local state for immediate feedback
-    const previousGoals = goals;
-    setGoals(prev => prev.map(g => 
-      g.id === goal.id 
-        ? { ...g, status: nextStatus }
-        : g
-    ));
-
     try {
       await updateGoalMutation.mutateAsync({ id: goal.id, status: nextStatus });
-      // Invalidation handled by hook
     } catch (error) {
       console.error("Failed to update status:", error);
-      setGoals(previousGoals); // Revert
     }
   };
 
@@ -240,16 +227,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       return;
     }
 
-    // Optimistic update
-    const previousGoals = goals;
-    setGoals(prev => prev.filter(g => g.id !== goalId));
-
     try {
       await deleteGoalMutation.mutateAsync(goalId);
-      // Invalidation handled by hook
     } catch (error) {
       console.error("Failed to delete goal:", error);
-      setGoals(previousGoals);
     }
   };
 
@@ -264,41 +245,35 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
          setEditingGoal(null);
          setIsCreatingGoal(false);
       } else {
-         const goalToCreate = { ...newGoal, user_id: user.id };
-
-         // Show creating state
-         setIsCreatingGoal(true);
-
-         // Add optimistic goal for UI
-         const tempId = 'temp_' + Date.now();
-         const optimisticGoal = { 
-           ...goalToCreate, 
-           id: tempId, 
-           tasks: [],
-           isLoading: true,
-           plan_summary: 'בונה את תוכנית הפעולה שלך...'
+         const goalToCreate = { 
+           ...newGoal, 
+           user_id: user.id,
+           plan_summary: 'בונה את תוכנית הפעולה שלך...' // Initial optimistic state
          };
 
-         if (newGoal.isPrimary) {
-            setGoals(prev => [optimisticGoal, ...prev.filter(g => !g.isPrimary)]);
-         } else {
-            setGoals(prev => [...prev, optimisticGoal]);
-         }
+         // Show creating state in modal only
+         setIsCreatingGoal(true);
 
-         // Close dialog immediately
+         // Close dialog immediately - optimistic update will show the goal in the list
          setShowAddGoal(false);
          setEditingGoal(null);
 
-         // Use generate plan hook
-         await generateGoalPlanMutation.mutateAsync(goalToCreate);
+         // Create the goal (Hook handles optimistic update + server create + plan generation if needed)
+         const createdGoal = await createGoalMutation.mutateAsync(goalToCreate);
+         
+         // Trigger AI Plan generation in background (if it wasn't part of create logic)
+         // Note: The useCreateGoal hook handles invalidation, but we might want to trigger the plan generation separately 
+         // if it's a heavy operation that shouldn't block creation.
+         // However, relying on the hook sequence is safer.
+         
+         if (createdGoal?.id && !createdGoal.id.toString().startsWith('temp_')) {
+            generateGoalPlanMutation.mutate(goalToCreate);
+         }
          
          setIsCreatingGoal(false);
       }
-      // Hooks handle invalidations
     } catch (error) {
        console.error("Error saving goal:", error);
-       // Revert optimistic add
-       setGoals(prev => prev.filter(g => !g.id.toString().startsWith('temp_')));
        setIsCreatingGoal(false);
     }
   };
@@ -414,7 +389,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                 onStatusChange={handleStatusChange}
                 onEdit={handleEditGoal}
                 onDelete={handleDeleteGoal}
-                isLoading={heroGoal.isLoading || heroGoal.id?.toString().startsWith('temp_')}
+                isLoading={heroGoal.isLoading || heroGoal.isOptimistic}
               />
             </div>
           )}
@@ -436,7 +411,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
                  user={user} 
                  tasks={user.client_tasks} 
                  onSelectStep={handleSelectRoadmapStep}
-                 activeGoals={userGoals}
+                 activeGoals={goals}
                  onShowUpgrade={() => setShowUpgradeDialog(true)}
                  goalLimit={user?.goals_limit}
               />
