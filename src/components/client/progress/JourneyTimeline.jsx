@@ -59,10 +59,10 @@ export default function JourneyTimeline() {
       done: ['ניתחנו את המצב העסקי שלך', 'זיהינו את נקודות החוזק והאתגרים'],
       todo: [],
       nextAction: 'צפה בסיכום',
-      action: () => {
-        setSelectedStep(null);
+      action: (closeModal, navFunc) => {
+        closeModal(null);
         setTimeout(() => {
-          navigate(createPageUrl('Summary'));
+          navFunc(createPageUrl('Summary'));
         }, 100);
       }
     }
