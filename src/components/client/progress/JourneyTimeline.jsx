@@ -329,7 +329,9 @@ export default function JourneyTimeline() {
                     className="w-full h-14 text-lg font-bold rounded-2xl mt-4 bg-blue-600 hover:bg-blue-700"
                     size="lg"
                     onClick={() => {
-                      if (selectedStep.details.action) {
+                      if (selectedStep.id === 'snapshot') {
+                        window.location.href = createPageUrl('Summary');
+                      } else if (selectedStep.details.action) {
                         selectedStep.details.action(setSelectedStep);
                       } else {
                         setSelectedStep(null);
