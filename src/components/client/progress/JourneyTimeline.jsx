@@ -323,15 +323,10 @@ export default function JourneyTimeline() {
                     className="w-full h-14 text-lg font-bold rounded-2xl mt-4 bg-blue-600 hover:bg-blue-700"
                     size="lg"
                     onClick={() => {
-                      if (selectedStep.id === 'snapshot') {
-                        const url = createPageUrl('Summary');
-                        console.log('Navigating to:', url);
-                        navigate(url);
-                      } else if (selectedStep.details.action) {
-                        selectedStep.details.action(setSelectedStep);
-                      } else {
-                        setSelectedStep(null);
-                      }
+                      setSelectedStep(null);
+                      setTimeout(() => {
+                        navigate('/Summary');
+                      }, 300);
                     }}
                   >
                     {selectedStep.details.nextAction || 'המשך לשלב הבא'}
