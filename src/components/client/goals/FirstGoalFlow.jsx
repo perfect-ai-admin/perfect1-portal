@@ -61,7 +61,7 @@ export default function FirstGoalFlow({ goal, onComplete }) {
       // Save the *next* step index immediately so if they refresh they are on the new step
       base44.entities.UserGoal.update(goal.id, { flow_step: currentStep + 1 });
     } else {
-      if (onComplete) onComplete();
+      if (onComplete) onComplete(formData);
     }
   };
 
