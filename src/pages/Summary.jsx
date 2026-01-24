@@ -31,10 +31,29 @@ export default function Summary() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (GOAL_TEMPLATES && GOAL_TEMPLATES.length > 0) {
+    const clientTasks = user?.client_tasks || [];
+    
+    if (clientTasks.length > 0) {
+      const firstTask = clientTasks[0];
+      
+      const customTemplate = {
+        id: firstTask.id || 'custom_task_1',
+        name: firstTask.title,
+        description: firstTask.description,
+        icon: Target,
+        color: 'from-blue-500 to-blue-600',
+        questions: [
+          { id: 'q1', label: 'מה הצעד המעשי הראשון לביצוע המשימה?', placeholder: 'לדוגמה: לכתוב טיוטה / להרים טלפון' },
+          { id: 'q2', label: 'מתי אתה מתכנן להשלים אותה?', placeholder: 'לדוגמה: עד סוף השבוע' }
+        ],
+        defaultTitle: firstTask.title
+      };
+      
+      setRecommendedGoal(customTemplate);
+    } else if (GOAL_TEMPLATES && GOAL_TEMPLATES.length > 0) {
       setRecommendedGoal(GOAL_TEMPLATES[0]);
     }
-  }, []);
+  }, [user]);
 
   const handleCreateGoal = async (goalData) => {
     try {
