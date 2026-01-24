@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, CheckCircle, Target, TrendingUp, LogOut, HelpCircle, User, Globe, CreditCard, Megaphone, BarChart3, Wallet, MapPin, Lightbulb, MessageSquare } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Target, TrendingUp, LogOut, HelpCircle, User, Globe, CreditCard, Megaphone, BarChart3, Wallet, MapPin, Lightbulb, MessageSquare, Rocket, Users, DollarSign, Brain, Zap, Award, Star, ChevronLeft, Sparkles, Crown, Shield } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import NotificationCenter from '@/components/client/NotificationCenter';
 import ShoppingCart from '@/components/client/shared/ShoppingCart';
+import GoalTemplatesFixed, { GOAL_TEMPLATES } from '@/components/client/goals/GoalTemplatesFixed';
 
 export default function Summary() {
   const navigate = useNavigate();
