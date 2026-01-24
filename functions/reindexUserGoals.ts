@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.11';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
     try {
@@ -20,7 +20,6 @@ Deno.serve(async (req) => {
         goals.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
 
         // 3. Update each goal with a sequence number
-        const updates = [];
         const resultList = [];
         
         for (let i = 0; i < goals.length; i++) {
@@ -32,15 +31,9 @@ Deno.serve(async (req) => {
                 await base44.entities.UserGoal.update(goal.id, {
                     goal_index: newIndex
                 });
-                goal.goal_index = newIndex; // For display
             }
             
-            resultList.push({
-                index: newIndex,
-                title: goal.title,
-                id: goal.id,
-                status: goal.status
-            });
+            resultList.push(`מטרה #${newIndex}: ${goal.title} (${goal.status})`);
         }
 
         return Response.json({ 
