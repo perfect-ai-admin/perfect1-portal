@@ -25,10 +25,12 @@ import ShoppingCart from '@/components/client/shared/ShoppingCart';
 import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
 import { useCreateGoal, useGoals } from '@/components/hooks/useGoals';
 import LimitUpgradeDialog from '@/components/client/goals/LimitUpgradeDialog';
+import { useBusinessJourney } from '@/components/hooks/useBusinessJourney';
 import { base44 } from '@/api/base44Client';
 
 export default function Summary() {
   const { data: user, isLoading: isUserLoading } = useAppAuth();
+  const { data: activeJourney } = useBusinessJourney(user?.id);
   const { data: goals = [] } = useGoals(user?.id ? { user_id: user.id } : {});
   const createGoalMutation = useCreateGoal();
   const logoutMutation = useLogout();
@@ -50,7 +52,8 @@ export default function Summary() {
   useEffect(() => {
     if (!user) return;
     
-    const clientTasks = user?.client_tasks || [];
+    // Prefer active journey tasks, fallback to user (legacy)
+    const clientTasks = activeJourney?.tasks || user?.client_tasks || [];
     
     if (clientTasks.length > 0) {
       const firstTask = clientTasks[0];
@@ -136,7 +139,9 @@ export default function Summary() {
   const stage = businessState?.stage || 'unknown';
   const primaryChallenge = businessState?.primary_challenge;
   const unifiedRecommendation = businessState?.unified_recommendation || {};
-  const clientTasks = user?.client_tasks || [];
+  
+  // Prefer active journey tasks
+  const clientTasks = activeJourney?.tasks || user?.client_tasks || [];
 
   const stageLabels = {
     pre_revenue: 'לפני הכנסה ראשונה',

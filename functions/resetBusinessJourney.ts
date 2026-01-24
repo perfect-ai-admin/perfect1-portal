@@ -9,13 +9,21 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Reset the business journey completely
+        // Archive the active business journey
+        const existingJourneys = await base44.entities.BusinessJourney.filter({ user_id: user.id, status: 'active' });
+        for (const journey of existingJourneys) {
+            await base44.entities.BusinessJourney.update(journey.id, { status: 'archived' });
+        }
+
+        // Reset the business journey flags on user (for backward compatibility/UI flags)
         await base44.auth.updateMe({
             business_journey_completed: false,
             business_journey_answers: null,
             business_journey_completed_date: null,
             business_state: null,
-            client_tasks: []
+            client_tasks: [],
+            recommended_goal: null,
+            active_journey_id: null
         });
 
         return Response.json({ 
