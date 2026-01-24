@@ -228,9 +228,61 @@ export default function MentorOverview() {
         <Card className="p-6 md:p-10 border-blue-100 bg-white shadow-lg rounded-3xl">
           <FirstGoalFlow 
             goal={activeFirstGoal} 
-            onComplete={() => {
-              base44.entities.UserGoal.update(activeFirstGoal.id, { flow_step: 8 });
+            onComplete={async (finalData) => {
+              // 1. Create tasks from the flow steps
+              const tasks = [];
+              
+              // Task 1: Mental Mapping (Completed)
+              tasks.push({
+                id: `task_${Date.now()}_1`,
+                title: 'מיפוי מנטלי',
+                why: 'יצירת סדר ובהירות ראשונית',
+                definition_of_done: 'מיפוי 3 נקודות חיוביות וחסם אחד',
+                effort: 'קל',
+                status: 'done',
+                isCompleted: true,
+                completedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString()
+              });
+
+              // Task 2: Micro Action (Active)
+              if (finalData?.micro_action) {
+                tasks.push({
+                   id: `task_${Date.now()}_2`,
+                   title: finalData.micro_action,
+                   why: 'יצירת תנועה ראשונה ושבירת הקיפאון',
+                   definition_of_done: 'ביצוע הפעולה הקטנה שנבחרה (עד 10 דקות)',
+                   effort: 'קל',
+                   status: 'todo',
+                   isCompleted: false,
+                   createdAt: new Date().toISOString(),
+                   momentum: true
+                });
+              }
+
+              // Task 3: Closure / Insight (Completed)
+              tasks.push({
+                id: `task_${Date.now()}_3`,
+                title: 'דיוק ותובנה',
+                why: 'חיבור רגשי והבנת המשמעות',
+                definition_of_done: 'ניסוח תובנה ודירוג תחושת הבהירות',
+                effort: 'קל',
+                status: 'done',
+                isCompleted: true,
+                completedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString()
+              });
+
+              // Update Goal with tasks and status
+              await base44.entities.UserGoal.update(activeFirstGoal.id, { 
+                  flow_step: 8,
+                  tasks: tasks,
+                  plan_summary: finalData?.insight || 'יצאנו לדרך עם מיקרו-פעולה ראשונה!',
+                  status: 'active'
+              });
+              
               refetchGoals();
+              toast.success('התוכנית מוכנה! בהצלחה בצעד הראשון');
             }} 
           />
         </Card>

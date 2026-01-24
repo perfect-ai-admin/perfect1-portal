@@ -87,32 +87,58 @@ export default function FirstGoalFlow({ goal, onComplete }) {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-xl font-bold text-gray-900">נתחיל בבדיקת דופק קצרה</h3>
-              <p className="text-gray-600">איך את/ה חווה את הנושא הזה כרגע?</p>
-              <div className="grid grid-cols-2 gap-3">
-                {['מאתגר אותי', 'מבלבל', 'בשליטה', 'מסקרן/מעניין'].map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => updateAwareness('feeling', option)}
-                    className={`p-3 rounded-lg border text-right transition-all ${
-                      formData.awareness?.feeling === option 
-                        ? 'border-primary bg-primary/5 ring-1 ring-primary' 
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
-                    }`}
-                  >
-                    {option}
-                  </button>
-                ))}
+              <p className="text-gray-600">שתי שאלות קצרות שיעזרו לנו להתפקס (לא מבחן!)</p>
+              
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-gray-700">1. איך את/ה חווה את הנושא הזה כרגע?</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {['מאתגר / מלחיץ', 'מבלבל / עמוס', 'בשליטה / ברור', 'מסקרן / מעניין'].map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => updateAwareness('feeling', option)}
+                      className={`p-3 rounded-lg border text-right transition-all text-sm ${
+                        formData.awareness?.feeling === option 
+                          ? 'border-primary bg-primary/5 ring-1 ring-primary shadow-sm' 
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <p className="text-gray-600">מה הדבר האחד שמרגיש הכי לא ברור או מעכב כרגע?</p>
-              <Textarea 
-                value={formData.awareness?.blocker || ''}
-                onChange={(e) => updateAwareness('blocker', e.target.value)}
-                placeholder="למשל: אני לא בטוח מאיפה להתחיל..."
-                className="min-h-[100px] resize-none"
-              />
+
+              <div className="space-y-3 pt-2">
+                 <label className="text-sm font-medium text-gray-700">2. מה מרגיש כרגע הכי תקוע או לא ברור?</label>
+                 <div className="grid grid-cols-1 gap-2">
+                  {['אין לי זמן לזה כרגע', 'חסר לי ידע איך לגשת לזה', 'יש יותר מדי אפשרויות', 'לא בטוח/ה שזה הזמן הנכון'].map((option) => (
+                    <button
+                      key={option}
+                      onClick={() => updateAwareness('blocker', option)}
+                      className={`p-3 rounded-lg border text-right transition-all text-sm ${
+                        formData.awareness?.blocker === option 
+                          ? 'border-primary bg-primary/5 ring-1 ring-primary shadow-sm' 
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                  <div className="relative">
+                      <Input 
+                        value={!['אין לי זמן לזה כרגע', 'חסר לי ידע איך לגשת לזה', 'יש יותר מדי אפשרויות', 'לא בטוח/ה שזה הזמן הנכון'].includes(formData.awareness?.blocker) ? formData.awareness?.blocker : ''}
+                        onChange={(e) => updateAwareness('blocker', e.target.value)}
+                        placeholder="אחר (כתוב במילים שלך)..."
+                        className={`pr-3 text-sm ${!['אין לי זמן לזה כרגע', 'חסר לי ידע איך לגשת לזה', 'יש יותר מדי אפשרויות', 'לא בטוח/ה שזה הזמן הנכון'].includes(formData.awareness?.blocker) && formData.awareness?.blocker ? 'border-primary ring-1 ring-primary' : ''}`}
+                        onClick={() => {
+                            if (['אין לי זמן לזה כרגע', 'חסר לי ידע איך לגשת לזה', 'יש יותר מדי אפשרויות', 'לא בטוח/ה שזה הזמן הנכון'].includes(formData.awareness?.blocker)) {
+                                updateAwareness('blocker', '');
+                            }
+                        }}
+                      />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -156,17 +182,23 @@ export default function FirstGoalFlow({ goal, onComplete }) {
 
       case 3: // Smart Reflection (System -> User)
         return (
-          <div className="flex flex-col items-center justify-center py-8 text-center space-y-6 animate-fade-in-up">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-primary mb-4">
-              <Brain className="w-8 h-8" />
+          <div className="flex flex-col items-center justify-center py-6 text-center space-y-6 animate-fade-in-up">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center text-primary mb-2 shadow-sm">
+              <Sparkles className="w-8 h-8 text-blue-600" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900">נקודה למחשבה</h3>
-            <div className="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <p className="text-lg text-gray-700 leading-relaxed">
-                "הרבה פעמים, מה שמעכב התקדמות בשלב כזה הוא לא חוסר בידע מקצועי – אלא פשוט הצורך <strong>בסדר, בהירות ומיקוד</strong>."
+            
+            <div className="space-y-2">
+                <h3 className="text-2xl font-bold text-gray-900">נקודה למחשבה</h3>
+                <p className="text-gray-500">שיקוף קצר עליך ועל המצב</p>
+            </div>
+
+            <div className="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-purple-400"></div>
+              <p className="text-xl text-gray-800 leading-relaxed font-medium">
+                "הרבה פעמים, מה שמעכב התקדמות בשלב כזה הוא לא ידע – אלא חוסר סדר, בהירות או מיקוד."
               </p>
-              <p className="mt-4 text-gray-600">
-                כשמפרקים את העומס לחלקים קטנים וברורים, פתאום הדרך נראית אפשרית הרבה יותר.
+              <p className="mt-4 text-gray-600 text-sm">
+                אנחנו כאן בדיוק בשביל זה. לעשות סדר ולקחת צעד אחד קטן בכל פעם.
               </p>
             </div>
           </div>
@@ -252,37 +284,45 @@ export default function FirstGoalFlow({ goal, onComplete }) {
       case 7: // Summary Card
         return (
           <div className="text-center space-y-6 animate-fade-in-up">
-            <div className="inline-flex items-center justify-center p-3 bg-green-100 text-green-600 rounded-full mb-2">
-              <Sparkles className="w-8 h-8" />
+            <div className="inline-flex items-center justify-center p-3 bg-green-100 text-green-600 rounded-full mb-2 shadow-sm">
+              <CheckCircle2 className="w-8 h-8" />
             </div>
             
-            <h3 className="text-2xl font-bold text-gray-900">כל הכבוד! עשית את הצעד הראשון</h3>
+            <div className="space-y-2">
+                <h3 className="text-2xl font-bold text-gray-900">סיימנו את השלב הראשון!</h3>
+                <p className="text-gray-500">זהו צעד ראשון ומשמעותי, לא שינוי מלא - וזה מצוין.</p>
+            </div>
             
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-right space-y-4 max-w-md mx-auto">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-gray-900 border-b pb-2">מה השגנו עכשיו?</h4>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>יצרנו מודעות למצב הקיים ולתחושות</span>
+            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 text-right space-y-4 max-w-md mx-auto relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-green-400 to-blue-400"></div>
+              <div className="space-y-3">
+                <h4 className="font-bold text-gray-900 text-lg">מה עשינו עכשיו?</h4>
+                <ul className="space-y-3 text-gray-600 text-sm">
+                  <li className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
+                    <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                    <span>יצרנו מודעות ומיפינו את המצב בשטח</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>מיפינו את החוזקות ואת החסמים</span>
+                  <li className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
+                    <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                    <span>בחרנו מיקרו-פעולה אחת להתנעה</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>בחרנו מיקרו-פעולה אחת לביצוע מיידי</span>
+                  <li className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
+                    <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                    <span>הבנו שצעדים קטנים מנצחים עומס גדול</span>
                   </li>
                 </ul>
               </div>
               
-              <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mt-4">
-                <strong>איך המנטור עובד?</strong>
-                <br />
-                בדיוק ככה - בצעדים קטנים, מדויקים ומותאמים אישית, שלא מעמיסים עלייך.
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl text-sm text-blue-900 border border-blue-100 mt-4">
+                <div className="font-bold mb-1 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-blue-600" />
+                    איך ממשיכים מפה?
+                </div>
+                המנטור ימשיך ללוות אותך בצעדים קטנים, מדויקים ומותאמים אישית. בלי לחץ, בלי עומס - רק התקדמות.
               </div>
             </div>
+            
+            <p className="text-gray-500 font-medium">מוכן להמשיך לשלב הבא?</p>
           </div>
         );
         
