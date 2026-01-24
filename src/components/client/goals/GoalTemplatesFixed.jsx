@@ -205,7 +205,7 @@ export const GOAL_TEMPLATES = [
   }
 ];
 
-export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null, user, initialTemplate = null }) {
+export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGoal = false, editingGoal = null, user, initialTemplate = null, existingGoals = [] }) {
   const [selectedTemplate, setSelectedTemplate] = useState(initialTemplate);
   const [goalTitle, setGoalTitle] = useState('');
   const [customAnswers, setCustomAnswers] = useState({ q1: '', q2: '' });
@@ -288,22 +288,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       actionHint: 'המטרה נוצרת...'
     };
 
-    // Check for duplicates before creating
+    // Check for duplicates before creating (Client Side Sync Check)
     if (!editingGoal) {
-      try {
-         const existingGoals = await base44.entities.UserGoal.filter({ 
-            user_id: user?.id,
-            status: 'active'
-         });
+         // Check against existingGoals prop (synchronous, includes optimistic updates)
+         const isDuplicateClient = existingGoals.some(g => 
+           (g.title === finalGoalTitle || g.category === selectedTemplate.id) &&
+           ['active', 'in_progress', 'selected'].includes(g.status)
+         );
          
-         const isDuplicate = existingGoals.some(g => g.title === goalTitle || g.category === selectedTemplate.id);
-         if (isDuplicate) {
+         if (isDuplicateClient) {
             alert('נראה שכבר יש לך מטרה כזו פעילה. כדאי להתמקד בה!');
             return;
          }
-      } catch (err) {
-         console.error('Error checking duplicates:', err);
-      }
     }
 
     // Call parent handler immediately without waiting

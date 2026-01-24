@@ -282,16 +282,17 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     <>
       {showAddGoal && (
         <GoalTemplates
-          user={user}
-          onCreateGoal={handleCreateGoal}
-          onClose={() => {
-            setShowAddGoal(false);
-            setEditingGoal(null);
-            setSpecificTemplate(null);
-          }}
-          hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
-          editingGoal={editingGoal}
-          initialTemplate={specificTemplate}
+        user={user}
+        onCreateGoal={handleCreateGoal}
+        onClose={() => {
+          setShowAddGoal(false);
+          setEditingGoal(null);
+          setSpecificTemplate(null);
+        }}
+        hasPrimaryGoal={goals.some(g => g.isPrimary && g.id !== editingGoal?.id)}
+        editingGoal={editingGoal}
+        initialTemplate={specificTemplate}
+        existingGoals={goals}
         />
       )}
 
