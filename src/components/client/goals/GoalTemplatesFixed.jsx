@@ -464,40 +464,20 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               חזור
             </Button>
 
-            {/* Compact Examples */}
-            {selectedTemplate.examples && (
-              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-3 border border-purple-100">
-                <p className="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-amber-500" />
-                  דוגמאות מהירות
-                </p>
-                <div className="grid grid-cols-1 gap-1.5">
-                  {selectedTemplate.examples.map((example, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleExampleSelect(example)}
-                      className="text-right px-3 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg text-xs font-medium text-gray-900 transition-all"
-                    >
-                      {example.title}
-                    </button>
-                  ))}
+            {/* Goal Title - Bold and Non-editable */}
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-4 border border-purple-200">
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${selectedTemplate.color} flex items-center justify-center flex-shrink-0`}>
+                  <selectedTemplate.icon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-purple-600 font-medium mb-1">המטרה שלך</p>
+                  <h3 className="text-xl font-bold text-gray-900">{selectedTemplate.name}</h3>
                 </div>
               </div>
-            )}
+            </div>
 
             <div className="space-y-3">
-              {/* Goal Title */}
-              <div>
-                <Label htmlFor="goalTitle" className="text-sm font-bold block mb-1.5 text-gray-700">מה המטרה שלך?</Label>
-                <Input
-                  id="goalTitle"
-                  value={goalTitle}
-                  onChange={(e) => setGoalTitle(e.target.value)}
-                  placeholder="הקלד כאן את המטרה..."
-                  className="h-10"
-                  autoFocus
-                />
-              </div>
 
               {/* Two Custom Questions */}
               {selectedTemplate.questions && (
