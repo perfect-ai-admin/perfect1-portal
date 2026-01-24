@@ -235,107 +235,98 @@ export default function Summary() {
         <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">
           <div className="max-w-4xl mx-auto w-full">
             
-            {/* 1. Hero Section: Premium Dark Design */}
+            {/* 1. Hero Section: Minimalist Clean Design */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="relative bg-[#0F172A] text-white py-14 px-6 sm:px-12 rounded-2xl overflow-hidden mb-12 shadow-2xl border border-[#1E293B]"
+              className="py-10 mb-10"
             >
-              {/* Subtle Premium Background Effect */}
-              <div className="absolute inset-0 opacity-20">
-                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-900/30 rounded-full blur-[100px] -mr-32 -mt-32"></div>
-                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[100px] -ml-32 -mb-32"></div>
-                 <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-              </div>
+              <div className="flex flex-col lg:flex-row items-start justify-between gap-12">
+                  
+                  {/* Left Side: Title & Info */}
+                  <div className="flex-1 max-w-3xl">
+                      <div className="inline-flex items-center gap-2 mb-6">
+                          <Crown className="w-5 h-5 text-blue-600" />
+                          <span className="text-sm font-semibold text-blue-600 tracking-wide uppercase">אבחון עסקי מקצועי</span>
+                          <div className="h-4 w-[1px] bg-gray-300 mx-2"></div>
+                          <span className="text-sm text-gray-500">{new Date().toLocaleDateString('he-IL')}</span>
+                      </div>
 
-              <div className="relative z-10">
-                <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
-                    
-                    {/* Stage & Challenge */}
-                    <div className="flex-1 text-center lg:text-right">
-                        <div className="inline-flex items-center gap-3 bg-[#1E293B] backdrop-blur-md px-5 py-2 rounded-full mb-8 border border-white/10 shadow-lg">
-                            <Crown className="w-4 h-4 text-[#D4AF37]" />
-                            <span className="text-sm font-medium text-gray-300 tracking-wide uppercase">אבחון עסקי מקצועי</span>
-                        </div>
+                      <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
+                          העסק שלך נמצא בשלב <br />
+                          <span className="text-transparent bg-clip-text bg-gradient-to-l from-blue-600 to-indigo-600">
+                              {stageLabels[stage]}
+                          </span>
+                      </h1>
 
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight tracking-tight">
-                            העסק שלך נמצא בשלב <br className="hidden md:block" />
-                            <span className="text-[#D4AF37] drop-shadow-lg">
-                                {stageLabels[stage]}
-                            </span>
-                        </h1>
+                      <p className="text-lg text-gray-500 leading-relaxed max-w-2xl mb-10">
+                        על בסיס הנתונים שהזנת, זיהינו שזהו השלב הקריטי ביותר בצמיחה שלך. 
+                        בנינו עבורך תוכנית עבודה מותאמת אישית שתעזור לך לעבור לשלב הבא בבטחה וביעילות.
+                      </p>
 
-                        <p className="text-lg text-gray-400 max-w-2xl mx-auto lg:mx-0 mb-8 font-light">
-                          ניתוח הנתונים מראה שזהו השלב הקריטי ביותר עבורך. תוכנית העבודה הותאמה כדי להעביר אותך לשלב הבא בבטחה.
-                        </p>
-
-                        {primaryChallenge && (
-                            <div className="bg-white/5 rounded-xl p-5 border-l-4 border-[#D4AF37] backdrop-blur-sm inline-block w-full lg:max-w-2xl text-right">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 rounded-lg bg-[#D4AF37]/10 flex items-center justify-center flex-shrink-0 mt-1">
-                                        <Target className="w-6 h-6 text-[#D4AF37]" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-white mb-2">
-                                            האתגר האסטרטגי: {challengeLabels[primaryChallenge]}
-                                        </h3>
-                                        <p className="text-gray-300 leading-relaxed text-base">
-                                            {challengeDescriptions[primaryChallenge]}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Unified Recommendation Highlight - Premium Card */}
-                    {unifiedRecommendation?.single_next_action && (
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="w-full lg:w-[380px] bg-gradient-to-br from-[#1E293B] to-[#0F172A] rounded-2xl p-1 shadow-2xl border border-white/5"
-                        >
-                            <div className="bg-[#0F172A] rounded-xl p-8 h-full relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-[#D4AF37]/20 transition-all duration-700"></div>
-                                
-                                <div className="relative z-10">
-                                  <h3 className="text-xs font-bold text-[#D4AF37] uppercase tracking-widest mb-4 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></div>
-                                    המהלך האסטרטגי הבא
-                                  </h3>
-                                  
-                                  <div className="text-2xl font-bold text-white leading-snug mb-6 border-b border-white/10 pb-6">
-                                      {unifiedRecommendation.single_next_action}
+                      {primaryChallenge && (
+                          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 inline-block w-full max-w-2xl">
+                              <div className="flex items-start gap-4">
+                                  <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0 mt-1">
+                                      <Target className="w-5 h-5 text-orange-500" />
                                   </div>
-                                  
-                                  <div className="space-y-4 mb-8">
-                                      <div className="flex items-start gap-3">
-                                          <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5 flex-shrink-0">
-                                            <Check className="w-3 h-3 text-green-400" />
-                                          </div>
-                                          <span className="text-sm text-gray-300">פעולה שתייצר אימפקט מיידי</span>
-                                      </div>
-                                      <div className="flex items-start gap-3">
-                                          <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center mt-0.5 flex-shrink-0">
-                                            <Brain className="w-3 h-3 text-blue-400" />
-                                          </div>
-                                          <span className="text-sm text-gray-300">ממוקד לפתרון האתגר הנוכחי</span>
-                                      </div>
+                                  <div>
+                                      <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                          האתגר האסטרטגי: {challengeLabels[primaryChallenge]}
+                                      </h3>
+                                      <p className="text-gray-500 leading-relaxed text-base">
+                                          {challengeDescriptions[primaryChallenge]}
+                                      </p>
                                   </div>
+                              </div>
+                          </div>
+                      )}
+                  </div>
 
-                                  <Button 
-                                      onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
-                                      className="w-full bg-[#D4AF37] hover:bg-[#b5952f] text-[#0F172A] font-bold h-12 rounded-lg transition-all"
-                                  >
-                                      מעבר לביצוע
-                                      <ArrowRight className="w-4 h-4 mr-2" />
-                                  </Button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    )}
-                </div>
+                  {/* Right Side: Recommendation Card (Minimalist) */}
+                  {unifiedRecommendation?.single_next_action && (
+                      <motion.div 
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 }}
+                          className="w-full lg:w-[400px] flex-shrink-0"
+                      >
+                          <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-xl shadow-blue-900/5 relative overflow-hidden group">
+                              <div className="absolute top-0 right-0 w-2 h-full bg-gradient-to-b from-blue-500 to-indigo-600"></div>
+                              
+                              <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <span className="relative flex h-2 w-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                                </span>
+                                המהלך האסטרטגי הבא
+                              </h3>
+                              
+                              <div className="text-2xl font-bold text-gray-900 leading-tight mb-6 pb-6 border-b border-gray-50">
+                                  {unifiedRecommendation.single_next_action}
+                              </div>
+                              
+                              <div className="space-y-4 mb-8">
+                                  <div className="flex items-start gap-3">
+                                      <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                      <span className="text-sm text-gray-600">פעולה שתייצר אימפקט מיידי</span>
+                                  </div>
+                                  <div className="flex items-start gap-3">
+                                      <Brain className="w-5 h-5 text-indigo-500 flex-shrink-0" />
+                                      <span className="text-sm text-gray-600">ממוקד לפתרון האתגר הנוכחי</span>
+                                  </div>
+                              </div>
+
+                              <Button 
+                                  onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                  className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium h-12 rounded-xl transition-all shadow-lg shadow-gray-200"
+                              >
+                                  מעבר לביצוע
+                                  <ArrowRight className="w-4 h-4 mr-2" />
+                              </Button>
+                          </div>
+                      </motion.div>
+                  )}
               </div>
             </motion.div>
 

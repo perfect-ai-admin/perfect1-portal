@@ -85,6 +85,7 @@ import SitemapArticles from './pages/SitemapArticles';
 import SitemapFAQ from './pages/SitemapFAQ';
 import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
+import Summary from './pages/Summary';
 import SystemLogicMap from './pages/SystemLogicMap';
 import TakratOsekPatur from './pages/TakratOsekPatur';
 import TaxAdvances from './pages/TaxAdvances';
@@ -103,7 +104,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import Summary from './pages/Summary';
 import __Layout from './Layout.jsx';
 
 
@@ -195,6 +195,7 @@ export const PAGES = {
     "SitemapFAQ": SitemapFAQ,
     "SitemapGeo": SitemapGeo,
     "SitemapPages": SitemapPages,
+    "Summary": Summary,
     "SystemLogicMap": SystemLogicMap,
     "TakratOsekPatur": TakratOsekPatur,
     "TaxAdvances": TaxAdvances,
@@ -213,7 +214,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "Summary": Summary,
 }
 
 export const pagesConfig = {
