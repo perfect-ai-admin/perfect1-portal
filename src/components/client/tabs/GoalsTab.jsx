@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import BusinessRoadmap from '../goals/BusinessRoadmap';
@@ -13,17 +12,39 @@ import { Plus, Sparkles, Target, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
+// Hooks
+import { useGoals, useUpdateGoal, useDeleteGoal, useGenerateGoalPlan } from '@/hooks/useGoals';
+
 export default function GoalsTab({ user, data, openAddGoal = false }) {
   const queryClient = useQueryClient();
+  
+  // Mutations
+  const updateGoalMutation = useUpdateGoal();
+  const deleteGoalMutation = useDeleteGoal();
+  const generateGoalPlanMutation = useGenerateGoalPlan();
+
+  // Query - Fetch goals using hook
+  const { data: fetchedGoals = [], isLoading } = useGoals(user?.id ? { user_id: user.id } : {});
+
+  // Local state for optimistic UI (synced with React Query)
   const [goals, setGoals] = useState([]);
   const [userGoals, setUserGoals] = useState([]);
-  const [goalsLoaded, setGoalsLoaded] = useState(false);
+  
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
   const [editingGoal, setEditingGoal] = useState(null);
   const [isCreatingGoal, setIsCreatingGoal] = useState(false);
   const goalsTopRef = useRef(null);
   const processedOpenAddGoal = useRef(false);
+
+  // Sync fetched data to local state for optimistic handling + valid filtering
+  useEffect(() => {
+    const validGoals = fetchedGoals.filter(g => g.title && g.title.trim() !== '');
+    setGoals(validGoals);
+    setUserGoals(validGoals);
+  }, [fetchedGoals]);
+
+  const goalsLoaded = !isLoading;
 
   // Check for recommended goal (First task of journey)
   const firstJourneyTask = user?.client_tasks?.[0];
@@ -55,27 +76,6 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const resolvedRecommendedTemplate = goalsLoaded && recommendedGoal && !hasStartedRecommendedGoal && !hasAnyActiveGoal
     ? recommendedGoal
     : null;
-
-
-  useEffect(() => {
-    if (user?.id) {
-      loadUserGoals();
-    }
-  }, [user?.id]);
-
-  const loadUserGoals = async () => {
-    try {
-      const ug = await base44.entities.UserGoal.filter({ user_id: user.id });
-      // Filter out invalid goals (no title)
-      const validGoals = ug.filter(g => g.title && g.title.trim() !== '');
-      setUserGoals(validGoals);
-      setGoals(validGoals);
-      setGoalsLoaded(true);
-    } catch (error) {
-      console.error('Error loading user goals:', error);
-      setGoalsLoaded(true);
-    }
-  };
 
   // Handle openAddGoal prop once goals are loaded
   useEffect(() => {
@@ -213,7 +213,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
   const secondaryGoals = goals.slice(1);
 
   const handleStatusChange = async (goal, nextStatus) => {
-    // Optimistic update
+    // Optimistic update local state for immediate feedback
     const previousGoals = goals;
     setGoals(prev => prev.map(g => 
       g.id === goal.id 
@@ -222,12 +222,11 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     ));
 
     try {
-      await base44.entities.UserGoal.update(goal.id, { status: nextStatus });
-      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
+      await updateGoalMutation.mutateAsync({ id: goal.id, status: nextStatus });
+      // Invalidation handled by hook
     } catch (error) {
       console.error("Failed to update status:", error);
-      // Revert if failed
-      setGoals(previousGoals);
+      setGoals(previousGoals); // Revert
     }
   };
 
@@ -246,14 +245,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     setGoals(prev => prev.filter(g => g.id !== goalId));
 
     try {
-      await base44.entities.UserGoal.delete(goalId);
-      // Refresh both local and active goals
-      await loadUserGoals();
-      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      await deleteGoalMutation.mutateAsync(goalId);
+      // Invalidation handled by hook
     } catch (error) {
       console.error("Failed to delete goal:", error);
-      // Revert if failed
       setGoals(previousGoals);
     }
   };
@@ -262,8 +257,9 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     try {
       if (isEditing) {
          setIsCreatingGoal(true);
-         await base44.entities.UserGoal.update(newGoal.id, newGoal);
-         await loadUserGoals();
+         // Use update hook
+         await updateGoalMutation.mutateAsync(newGoal);
+         
          setShowAddGoal(false);
          setEditingGoal(null);
          setIsCreatingGoal(false);
@@ -273,7 +269,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
          // Show creating state
          setIsCreatingGoal(true);
 
-         // Add optimistic goal with loading indicator
+         // Add optimistic goal for UI
          const tempId = 'temp_' + Date.now();
          const optimisticGoal = { 
            ...goalToCreate, 
@@ -293,24 +289,17 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
          setShowAddGoal(false);
          setEditingGoal(null);
 
-         // Create goal in background
-         const response = await base44.functions.invoke('generateGoalPlan', { goalData: goalToCreate });
-         const created = response.data;
-
-         // Reload all goals to get the real data
-         await loadUserGoals();
+         // Use generate plan hook
+         await generateGoalPlanMutation.mutateAsync(goalToCreate);
+         
          setIsCreatingGoal(false);
       }
-
-      // Invalidate all goal-related queries
-      queryClient.invalidateQueries({ queryKey: ['activeGoals'] });
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      // Hooks handle invalidations
     } catch (error) {
        console.error("Error saving goal:", error);
+       // Revert optimistic add
        setGoals(prev => prev.filter(g => !g.id.toString().startsWith('temp_')));
        setIsCreatingGoal(false);
-       await loadUserGoals();
-       throw error;
     }
   };
 

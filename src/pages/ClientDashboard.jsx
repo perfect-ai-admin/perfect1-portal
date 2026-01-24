@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAppAuth, useLogout } from '@/hooks/useAppAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import GeneralErrorBoundary from '../components/GeneralErrorBoundary';
@@ -101,38 +102,17 @@ export default function ClientDashboard() {
     checkAuth();
   }, []);
 
-  // Fetch user data
-  const { data: userData, isLoading, error: fetchError } = useQuery({
-    queryKey: ['user', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return user;
-      try {
-        const users = await base44.entities.User.filter({ id: user.id });
-        if (!users || users.length === 0) {
-          return user;
-        }
-        const freshUser = users[0] || user;
-        localStorage.setItem('user', JSON.stringify(freshUser));
-        return freshUser;
-      } catch (err) {
-        return user;
-      }
-    },
-    enabled: !!user?.id,
-    refetchInterval: false,
-    refetchOnWindowFocus: false, // Don't refetch on every focus
-    retry: 1,
-    staleTime: 1000 * 60 * 5, // 5 minutes stale time
-    gcTime: 1000 * 60 * 30 // 30 minutes cache
-  });
+  // Fetch user data using centralized hook
+  const { data: userData, isLoading, refetch: refetchUser } = useAppAuth();
+  const logoutMutation = useLogout();
 
   const handleLogout = async () => {
-    await base44.auth.logout();
+    logoutMutation.mutate();
   };
 
   const handleRefresh = async () => {
     try {
-      await queryClient.invalidateQueries({ queryKey: ['user', user?.id] });
+      await refetchUser();
       return new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
       console.error('Refresh error:', error);
