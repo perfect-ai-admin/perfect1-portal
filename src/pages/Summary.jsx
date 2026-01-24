@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import GoalTemplatesFixed, { GOAL_TEMPLATES } from '@/components/client/goals/GoalTemplatesFixed';
 import TabNavigation from '@/components/client/TabNavigation';
 import NotificationCenter from '@/components/client/NotificationCenter';
 import ShoppingCart from '@/components/client/shared/ShoppingCart';
@@ -25,7 +26,28 @@ export default function Summary() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('summary');
   const [language, setLanguage] = useState('he');
+  const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [recommendedGoal, setRecommendedGoal] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (GOAL_TEMPLATES && GOAL_TEMPLATES.length > 0) {
+      setRecommendedGoal(GOAL_TEMPLATES[0]);
+    }
+  }, []);
+
+  const handleCreateGoal = async (goalData) => {
+    try {
+      await base44.entities.UserGoal.create({
+        ...goalData,
+        user_id: user.id
+      });
+      setShowGoalDialog(false);
+      navigate(createPageUrl('ClientDashboard') + '?tab=goals');
+    } catch (error) {
+      console.error('Error creating goal:', error);
+    }
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -497,7 +519,7 @@ export default function Summary() {
                                             
                                             {isCurrent && (
                                                 <Button 
-                                                    onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                                    onClick={() => setShowGoalDialog(true)}
                                                     size="sm"
                                                     className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs"
                                                 >
@@ -561,7 +583,7 @@ export default function Summary() {
                                         
                                         {isCurrent && (
                                             <Button 
-                                                onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                                onClick={() => setShowGoalDialog(true)}
                                                 className="w-full bg-gray-900 text-white hover:bg-black rounded-xl h-11 text-sm font-medium shadow-lg shadow-gray-200 transition-transform active:scale-95"
                                             >
                                                 התחל את המשימה
@@ -611,12 +633,21 @@ export default function Summary() {
             {/* Bottom Sticky CTA on Mobile */}
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 md:hidden z-40">
                 <Button 
-                    onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                    onClick={() => setShowGoalDialog(true)}
                     className="w-full bg-[#1E3A5F] text-white font-bold h-12 rounded-xl shadow-lg"
                 >
                     התחל את המשימה הראשונה
                 </Button>
             </div>
+            
+            {showGoalDialog && recommendedGoal && (
+                <GoalTemplatesFixed
+                  onCreateGoal={handleCreateGoal}
+                  onClose={() => setShowGoalDialog(false)}
+                  user={user}
+                  initialTemplate={recommendedGoal}
+                />
+            )}
           </div>
         </main>
       </div>
