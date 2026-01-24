@@ -330,7 +330,7 @@ export default function JourneyTimeline() {
                     size="lg"
                     onClick={() => {
                       if (selectedStep.details.action) {
-                        selectedStep.details.action();
+                        selectedStep.details.action(setSelectedStep, navigate);
                       } else {
                         setSelectedStep(null);
                       }
