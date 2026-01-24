@@ -235,97 +235,65 @@ export default function Summary() {
         <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">
           <div className="max-w-4xl mx-auto w-full">
             
-            {/* 1. Hero Section: Minimalist Clean Design */}
+            {/* 1. Hero Section: Super Minimalist Typography */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="py-10 mb-10"
+              className="py-12 mb-8"
             >
-              <div className="flex flex-col lg:flex-row items-start justify-between gap-12">
+              <div className="flex flex-col lg:flex-row items-start justify-between gap-16">
                   
-                  {/* Left Side: Title & Info */}
+                  {/* Left Side: Pure Typography */}
                   <div className="flex-1 max-w-3xl">
-                      <div className="inline-flex items-center gap-2 mb-6">
-                          <Crown className="w-5 h-5 text-blue-600" />
-                          <span className="text-sm font-semibold text-blue-600 tracking-wide uppercase">אבחון עסקי מקצועי</span>
-                          <div className="h-4 w-[1px] bg-gray-300 mx-2"></div>
-                          <span className="text-sm text-gray-500">{new Date().toLocaleDateString('he-IL')}</span>
-                      </div>
+                      <span className="text-blue-600 font-bold tracking-wide uppercase mb-3 block">
+                        תוצאות האבחון העסקי שלך
+                      </span>
 
-                      <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
-                          העסק שלך נמצא בשלב <br />
-                          <span className="text-transparent bg-clip-text bg-gradient-to-l from-blue-600 to-indigo-600">
+                      <h1 className="text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
+                          העסק בשלב <br />
+                          <span className="text-blue-600">
                               {stageLabels[stage]}
                           </span>
                       </h1>
 
-                      <p className="text-lg text-gray-500 leading-relaxed max-w-2xl mb-10">
+                      <p className="text-xl text-gray-500 leading-relaxed max-w-2xl mb-10 font-light">
                         על בסיס הנתונים שהזנת, זיהינו שזהו השלב הקריטי ביותר בצמיחה שלך. 
-                        בנינו עבורך תוכנית עבודה מותאמת אישית שתעזור לך לעבור לשלב הבא בבטחה וביעילות.
+                        בנינו עבורך תוכנית עבודה מותאמת אישית שתעזור לך לעבור לשלב הבא.
                       </p>
 
                       {primaryChallenge && (
-                          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 inline-block w-full max-w-2xl">
-                              <div className="flex items-start gap-4">
-                                  <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0 mt-1">
-                                      <Target className="w-5 h-5 text-orange-500" />
-                                  </div>
-                                  <div>
-                                      <h3 className="text-lg font-bold text-gray-900 mb-2">
-                                          האתגר האסטרטגי: {challengeLabels[primaryChallenge]}
-                                      </h3>
-                                      <p className="text-gray-500 leading-relaxed text-base">
-                                          {challengeDescriptions[primaryChallenge]}
-                                      </p>
-                                  </div>
-                              </div>
+                          <div className="pl-6 border-l-4 border-orange-400">
+                              <h3 className="text-lg font-bold text-gray-900 mb-1">
+                                  האתגר האסטרטגי: {challengeLabels[primaryChallenge]}
+                              </h3>
+                              <p className="text-gray-500">
+                                  {challengeDescriptions[primaryChallenge]}
+                              </p>
                           </div>
                       )}
                   </div>
 
-                  {/* Right Side: Recommendation Card (Minimalist) */}
+                  {/* Right Side: Recommendation - Clean */}
                   {unifiedRecommendation?.single_next_action && (
-                      <motion.div 
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.2 }}
-                          className="w-full lg:w-[400px] flex-shrink-0"
-                      >
-                          <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-xl shadow-blue-900/5 relative overflow-hidden group">
-                              <div className="absolute top-0 right-0 w-2 h-full bg-gradient-to-b from-blue-500 to-indigo-600"></div>
-                              
-                              <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <span className="relative flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                                </span>
+                      <div className="w-full lg:w-[380px] pt-4">
+                          <div className="bg-gray-50 rounded-xl p-8 border border-gray-100">
+                              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
                                 המהלך האסטרטגי הבא
                               </h3>
                               
-                              <div className="text-2xl font-bold text-gray-900 leading-tight mb-6 pb-6 border-b border-gray-50">
+                              <div className="text-2xl font-bold text-gray-900 leading-snug mb-6">
                                   {unifiedRecommendation.single_next_action}
                               </div>
                               
-                              <div className="space-y-4 mb-8">
-                                  <div className="flex items-start gap-3">
-                                      <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                                      <span className="text-sm text-gray-600">פעולה שתייצר אימפקט מיידי</span>
-                                  </div>
-                                  <div className="flex items-start gap-3">
-                                      <Brain className="w-5 h-5 text-indigo-500 flex-shrink-0" />
-                                      <span className="text-sm text-gray-600">ממוקד לפתרון האתגר הנוכחי</span>
-                                  </div>
-                              </div>
-
                               <Button 
                                   onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
-                                  className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium h-12 rounded-xl transition-all shadow-lg shadow-gray-200"
+                                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg transition-all"
                               >
                                   מעבר לביצוע
                                   <ArrowRight className="w-4 h-4 mr-2" />
                               </Button>
                           </div>
-                      </motion.div>
+                      </div>
                   )}
               </div>
             </motion.div>
