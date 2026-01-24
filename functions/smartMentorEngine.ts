@@ -46,12 +46,14 @@ Deno.serve(async (req) => {
 
             const profile = await getProfile();
             const timelineHistory = await getTimeline();
-            
+            const goal = await base44.entities.UserGoal.get(goal_id);
+
             // Construct context for AI
             const context = {
                 current_answer: client_response,
-                question_asked: content || "Unknown question", // Should be passed or fetched
+                question_asked: content || "Unknown question",
                 profile: profile,
+                strategic_context: goal?.strategic_context || {},
                 history: timelineHistory.data.map(t => ({
                     q: t.content,
                     a: t.client_response,
@@ -60,13 +62,14 @@ Deno.serve(async (req) => {
             };
 
             const prompt = `
-ROLE: אתה פסיכולוג עסקי + מנטור ותיק.
-INPUT:
-- תשובת הלקוח: "${client_response}"
-- הקשר מלא: ${JSON.stringify(context.history)}
-- פרופיל נוכחי: ${JSON.stringify(profile)}
+        ROLE: אתה פסיכולוג עסקי + מנטור ותיק.
+        INPUT:
+        - תשובת הלקוח: "${client_response}"
+        - הקשר מלא: ${JSON.stringify(context.history)}
+        - פרופיל נוכחי: ${JSON.stringify(profile)}
+        - הקשר אסטרטגי (סוג עסק, חזון, ציפיות): ${JSON.stringify(context.strategic_context)}
 
-ANALYZE:
+        ANALYZE:
 1. מה הלקוח באמת אומר? (קרא בין השורות)
 2. איזו תבנית התנהגותית זה חושף?
 3. מה החסם האמיתי שמתגלה?
@@ -165,13 +168,14 @@ OUTPUT (JSON):
 
             // AI Selection Logic (Adaptive Engine)
             const selectionPrompt = `
-ROLE: אתה אוצר תוכן מותאם אישית.
-INPUT:
-- Current: Week ${currentWeek}
-- Client Profile: ${JSON.stringify(profile)}
-- Candidates: ${JSON.stringify(contentCandidates.data.map(c => ({ id: c.id, content: c.content, tags: c.tags, difficulty: c.difficulty })))}
+            ROLE: אתה אוצר תוכן מותאם אישית.
+            INPUT:
+            - Current: Week ${currentWeek}
+            - Client Profile: ${JSON.stringify(profile)}
+            - Strategic Context (Business Type, Vision): ${JSON.stringify(goal.strategic_context || {})}
+            - Candidates: ${JSON.stringify(contentCandidates.data.map(c => ({ id: c.id, content: c.content, tags: c.tags, difficulty: c.difficulty })))}
 
-TASK:
+            TASK:
 בחר את השאלה/משימה הבאה הכי מתאימה מהרשימה.
 קריטריונים:
 1. התאמה לפרופיל (פחד, פרפקציוניזם וכו')
