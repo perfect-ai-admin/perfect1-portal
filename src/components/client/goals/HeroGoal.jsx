@@ -54,7 +54,10 @@ export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete, isLoa
                 </span>
 
               </div>
-              <h2 className="text-base md:text-lg font-black text-gray-900 leading-tight mb-1">{goal.title}</h2>
+              <h2 className="text-base md:text-lg font-black text-gray-900 leading-tight mb-1">
+                {goal.goal_index && <span className="text-blue-600/50 text-sm ml-1">#{goal.goal_index}</span>}
+                {goal.title}
+              </h2>
               <p className="text-xs md:text-sm text-gray-600 leading-relaxed line-clamp-2 md:line-clamp-none">{goal.description}</p>
             </div>
             

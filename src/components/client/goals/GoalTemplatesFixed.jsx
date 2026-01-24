@@ -289,6 +289,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     };
 
     // Check for duplicates before creating (Client Side Sync Check)
+    let nextIndex = 1;
     if (!editingGoal) {
          // Check against existingGoals prop (synchronous, includes optimistic updates)
          const isDuplicateClient = existingGoals.some(g => 
@@ -300,10 +301,17 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             alert('נראה שכבר יש לך מטרה כזו פעילה. כדאי להתמקד בה!');
             return;
          }
+
+         // Calculate next index
+         const maxIndex = existingGoals.reduce((max, g) => Math.max(max, g.goal_index || 0), 0);
+         nextIndex = maxIndex + 1;
     }
 
     // Call parent handler immediately without waiting
-    onCreateGoal(goalData, !!editingGoal);
+    onCreateGoal({
+        ...goalData,
+        goal_index: editingGoal ? editingGoal.goal_index : nextIndex
+    }, !!editingGoal);
   };
 
   const handlePhoneSubmit = async () => {

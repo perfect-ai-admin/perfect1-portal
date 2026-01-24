@@ -55,6 +55,7 @@ export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete
                   "text-sm font-semibold truncate transition-colors",
                   goal.status === 'achieved' ? 'text-gray-400 line-through' : 'text-gray-800 group-hover:text-blue-700'
                 )}>
+                  {goal.goal_index && <span className="text-xs text-gray-500 ml-1">#{goal.goal_index}</span>}
                   {goal.title}
                 </p>
                 <div className="flex items-center gap-2 text-xs text-gray-500">
