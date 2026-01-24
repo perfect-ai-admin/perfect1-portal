@@ -454,18 +454,29 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </motion.div>
         ) : (
           <motion.div className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            
-            {/* Compact Examples - Horizontal Scroll on Mobile */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedTemplate(null)}
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 mb-2 h-8"
+            >
+              <ChevronLeft className="w-4 h-4 ml-1" />
+              חזור
+            </Button>
+
+            {/* Compact Examples */}
             {selectedTemplate.examples && (
-              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-2 border border-purple-100 mb-2">
-                <p className="text-[10px] font-bold text-gray-600 mb-1.5 opacity-80">דוגמאות מהירות (לחץ לבחירה)</p>
-                <div className="flex sm:grid sm:grid-cols-3 gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide snap-x">
+              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-3 border border-purple-100">
+                <p className="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+                  דוגמאות מהירות
+                </p>
+                <div className="grid grid-cols-1 gap-1.5">
                   {selectedTemplate.examples.map((example, i) => (
                     <button
                       key={i}
                       onClick={() => handleExampleSelect(example)}
-                      className="flex-shrink-0 w-[85%] sm:w-full snap-center text-center px-2 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-md text-xs font-medium text-gray-900 transition-colors h-auto min-h-[32px] whitespace-normal leading-tight flex items-center justify-center shadow-sm"
-                      title={example.title}
+                      className="text-right px-3 py-2 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg text-xs font-medium text-gray-900 transition-all"
                     >
                       {example.title}
                     </button>
@@ -474,41 +485,41 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               </div>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               {/* Goal Title */}
               <div>
-                <Label htmlFor="goalTitle" className="text-xs font-bold block mb-1 text-gray-700">מה המטרה שלך?</Label>
+                <Label htmlFor="goalTitle" className="text-sm font-bold block mb-1.5 text-gray-700">מה המטרה שלך?</Label>
                 <Input
                   id="goalTitle"
                   value={goalTitle}
                   onChange={(e) => setGoalTitle(e.target.value)}
                   placeholder="הקלד כאן את המטרה..."
-                  className="text-xs h-9 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                  className="h-10"
                   autoFocus
                 />
               </div>
 
-              {/* Two Custom Questions Side-by-Side */}
+              {/* Two Custom Questions */}
               {selectedTemplate.questions && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {selectedTemplate.questions.map((q) => (
-                    <div key={q.id} className="space-y-1 flex flex-col">
-                      <Label htmlFor={q.id} className="text-[11px] font-semibold block text-gray-600 leading-tight">{q.label}</Label>
+                    <div key={q.id} className="space-y-1.5">
+                      <Label htmlFor={q.id} className="text-xs font-semibold text-gray-600">{q.label}</Label>
                       <Input
                         id={q.id}
                         value={customAnswers[q.id] || ''}
                         onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
                         placeholder={q.placeholder}
-                        className="text-xs h-9 bg-gray-50 border-gray-200 focus:bg-white mt-1"
+                        className="h-9 text-sm"
                       />
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Urgency - Compact */}
+              {/* Urgency */}
               <div>
-                <Label className="text-xs font-bold text-gray-700 block mb-1.5">דחיפות המשימה</Label>
+                <Label className="text-sm font-bold text-gray-700 block mb-2">דחיפות המשימה</Label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { value: 'low', label: 'נמוכה', desc: 'בזמן שלי' },
@@ -519,21 +530,53 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                       key={level.value}
                       onClick={() => setUrgency(level.value)}
                       className={cn(
-                        "flex flex-col items-center justify-center py-2 px-1 rounded-lg border transition-all text-center",
+                        "flex flex-col items-center justify-center py-2.5 px-2 rounded-lg border transition-all",
                         urgency === level.value
-                          ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm ring-1 ring-purple-200"
+                          ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm"
                           : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
                       )}
                     >
-                      <span className="text-xs font-bold">{level.label}</span>
-                      <span className="text-[10px] opacity-70">{level.desc}</span>
+                      <span className="text-sm font-bold">{level.label}</span>
+                      <span className="text-xs opacity-70">{level.desc}</span>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
           </motion.div>
-          )}
+        )}
+        </div>
+
+        {/* Footer */}
+        {selectedTemplate && (
+          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl flex gap-2 flex-shrink-0">
+            <Button 
+              onClick={handleCreate} 
+              disabled={!goalTitle || isCreating}
+              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white h-11 font-semibold"
+            >
+              {isCreating ? (
+                <>
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                  יוצר...
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4 ml-2" />
+                  {editingGoal ? 'שמור שינויים' : 'צור מטרה'}
+                </>
+              )}
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={onClose}
+              className="px-4"
+            >
+              ביטול
+            </Button>
           </div>
-          );
+        )}
+      </div>
+    </div>
+  );
 }
