@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
@@ -22,20 +21,36 @@ import TabNavigation from '@/components/client/TabNavigation';
 import NotificationCenter from '@/components/client/NotificationCenter';
 import ShoppingCart from '@/components/client/shared/ShoppingCart';
 
+// Hooks
+import { useAppAuth, useLogout } from '@/hooks/useAppAuth';
+import { useCreateGoal } from '@/hooks/useGoals';
+import { base44 } from '@/api/base44Client'; // Keep base44 for direct calls if absolutely needed (e.g. redirect)
+
 export default function Summary() {
-  const [user, setUser] = useState(null);
+  const { data: user, isLoading: isUserLoading } = useAppAuth();
+  const createGoalMutation = useCreateGoal();
+  const logoutMutation = useLogout();
+  
   const [activeTab, setActiveTab] = useState('summary');
   const [language, setLanguage] = useState('he');
   const [showGoalDialog, setShowGoalDialog] = useState(false);
   const [recommendedGoal, setRecommendedGoal] = useState(null);
   const navigate = useNavigate();
 
+  // Redirect if not authenticated (handled by wrapper/layout usually, but safe to keep)
   useEffect(() => {
+    if (!isUserLoading && !user) {
+      base44.auth.redirectToLogin('/Summary');
+    }
+  }, [user, isUserLoading]);
+
+  useEffect(() => {
+    if (!user) return;
+    
     const clientTasks = user?.client_tasks || [];
     
     if (clientTasks.length > 0) {
       const firstTask = clientTasks[0];
-      
       const customTemplate = {
         id: firstTask.id || 'custom_task_1',
         name: firstTask.title,
@@ -48,7 +63,6 @@ export default function Summary() {
         ],
         defaultTitle: firstTask.title
       };
-      
       setRecommendedGoal(customTemplate);
     } else if (GOAL_TEMPLATES && GOAL_TEMPLATES.length > 0) {
       setRecommendedGoal(GOAL_TEMPLATES[0]);
@@ -57,7 +71,7 @@ export default function Summary() {
 
   const handleCreateGoal = async (goalData) => {
     try {
-      await base44.entities.UserGoal.create({
+      await createGoalMutation.mutateAsync({
         ...goalData,
         user_id: user.id
       });
@@ -68,31 +82,13 @@ export default function Summary() {
     }
   };
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        if (currentUser) {
-          setUser(currentUser);
-        } else {
-          base44.auth.redirectToLogin('/Summary');
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
   const handleTabChange = (tabId) => {
-    // Navigate to dashboard with specific tab, unless it's the current summary tab which we are on
     if (tabId === 'summary') return;
     navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
   };
 
   const handleLogout = async () => {
-     await base44.auth.logout();
+     logoutMutation.mutate();
   };
 
   const toggleLanguage = () => {
