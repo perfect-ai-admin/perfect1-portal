@@ -324,7 +324,9 @@ export default function JourneyTimeline() {
                     size="lg"
                     onClick={() => {
                       if (selectedStep.id === 'snapshot') {
-                        window.location.href = createPageUrl('Summary');
+                        const url = createPageUrl('Summary');
+                        console.log('Navigating to:', url);
+                        navigate(url);
                       } else if (selectedStep.details.action) {
                         selectedStep.details.action(setSelectedStep);
                       } else {
