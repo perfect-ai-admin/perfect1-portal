@@ -34,7 +34,7 @@ const MentorTab = React.lazy(() => import('../components/client/tabs/MentorTab')
 
 export default function Summary() {
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('summary');
+  const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
   const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
@@ -169,7 +169,6 @@ export default function Summary() {
             {/* Tab Navigation - Desktop Only */}
             <div className="hidden md:block">
               {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={[
-                { id: 'summary', label: 'סיכום', icon: 'Target' },
                 { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
                 { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
                 { id: 'financial', label: 'כספים', icon: 'Wallet' },
@@ -185,7 +184,6 @@ export default function Summary() {
         <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
           <div className="max-w-7xl mx-auto w-full">
             <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
-              {activeTab === 'summary' && <SummaryTab data={user} />}
               {activeTab === 'progress' && <ProgressTab data={user} user={user} onNavigate={(tab, config) => {
                 setActiveTab(tab);
                 if (tab === 'goals' && config) {
@@ -203,7 +201,6 @@ export default function Summary() {
 
         {/* Mobile Bottom Tab Bar */}
         {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={[
-          { id: 'summary', label: 'סיכום', icon: Target },
           { id: 'progress', label: 'התקדמות', icon: MapPin },
           { id: 'business', label: 'עסק', icon: BarChart3 },
           { id: 'financial', label: 'כספים', icon: Wallet },
