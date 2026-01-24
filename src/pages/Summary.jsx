@@ -96,7 +96,10 @@ export default function Summary() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <div className="text-gray-600">טוען...</div>
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">טוען...</p>
+        </div>
       </div>
     );
   }
@@ -183,7 +186,7 @@ export default function Summary() {
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
           <div className="max-w-7xl mx-auto w-full">
-            <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
+            <React.Suspense fallback={<SkeletonTabContent />}>
               {activeTab === 'progress' && <ProgressTab data={user} user={user} onNavigate={(tab, config) => {
                 setActiveTab(tab);
                 if (tab === 'goals' && config) {
