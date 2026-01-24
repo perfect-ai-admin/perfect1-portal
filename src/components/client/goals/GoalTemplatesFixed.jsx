@@ -409,13 +409,30 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     );
   }
 
-  // Now wrapped inside SimpleDialog by parent
-  // This component is the body content
+  // Main Dialog UI
   return (
-    <div className="px-5 py-3">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-200 rounded-t-2xl flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Target className="w-5 h-5 text-purple-600" />
+              {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
+            </h2>
+            <div className="w-5"></div>
+          </div>
+          {!selectedTemplate && <p className="text-center text-sm text-gray-600 mt-2">בחר מטרה שמשפיעה על העסק שלך</p>}
+        </div>
+
+        {/* Body - scrollable */}
+        <div className="px-6 py-4 flex-1 overflow-y-auto">
         {!selectedTemplate ? (
           <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2.5">
               {GOAL_TEMPLATES.map((template, idx) => (
                 <motion.button
                   key={template.id}
@@ -423,13 +440,13 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.03 }}
                   onClick={() => handleTemplateSelect(template)}
-                  className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-2.5 transition-all"
+                  className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-3 transition-all group"
                 >
-                  <div className="flex items-center gap-2">
-                    <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0`}>
-                      <template.icon className="w-5 h-5 text-white" />
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                      <template.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 text-sm text-right">{template.name}</h3>
+                    <h3 className="font-semibold text-gray-900 text-sm text-right leading-tight">{template.name}</h3>
                   </div>
                 </motion.button>
               ))}
