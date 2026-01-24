@@ -62,55 +62,60 @@ Deno.serve(async (req) => {
             };
 
             const prompt = `
-        ROLE: אתה פסיכולוג עסקי + מנטור ותיק.
-        INPUT:
-        - תשובת הלקוח: "${client_response}"
-        - הקשר מלא: ${JSON.stringify(context.history)}
-        - פרופיל נוכחי: ${JSON.stringify(profile)}
-        - הקשר אסטרטגי (סוג עסק, חזון, ציפיות): ${JSON.stringify(context.strategic_context)}
+              ROLE: אתה פסיכולוג עסקי + מנטור ותיק.
+              INPUT:
+              - תשובת הלקוח: "${client_response}"
+              - הקשר מלא: ${JSON.stringify(context.history)}
+              - פרופיל נוכחי: ${JSON.stringify(profile)}
+              - הקשר אסטרטגי (סוג עסק, חזון, ציפיות): ${JSON.stringify(context.strategic_context)}
 
-        ANALYZE:
-1. מה הלקוח באמת אומר? (קרא בין השורות)
-2. איזו תבנית התנהגותית זה חושף?
-3. מה החסם האמיתי שמתגלה?
-4. האם זה תואם לתשובות קודמות או סותר?
-5. מה הלקוח מנסה להסתיר מעצמו?
+              ANALYZE:
+            1. מה הלקוח באמת אומר? (קרא בין השורות)
+            2. איזו תבנית התנהגותית זה חושף?
+            3. מה החסם האמיתי שמתגלה?
+            4. האם זה תואם לתשובות קודמות או סותר?
+            5. מה הלקוח מנסה להסתיר מעצמו?
+            6. האם התוכן (השאלה/משימה) היה אפקטיבי?
 
-OUTPUT (JSON):
-{
-  "surface_meaning": "מה הוא אמר במילים",
-  "deep_meaning": "מה הוא באמת מתכוון",
-  "pattern_detected": ["perfectionist", "fear_of_exposure", "action_avoider", "needs_structure", "inconsistent"], 
-  "confidence_level": "high/medium/low",
-  "recommended_adjustment": "האם לשנות את השאלה/משימה הבאה?",
-  "intervention_needed": boolean,
-  "intervention_reason": "סיבה להתערבות אם נדרש",
-  "profile_updates": {
-      "perfectionist": boolean (optional),
-      "fear_of_exposure": boolean (optional),
-      "needs_structure": boolean (optional),
-      "action_avoider": boolean (optional)
-  }
-}
-`;
+            OUTPUT (JSON):
+            {
+            "surface_meaning": "מה הוא אמר במילים",
+            "deep_meaning": "מה הוא באמת מתכוון",
+            "pattern_detected": ["perfectionist", "fear_of_exposure", "action_avoider", "needs_structure", "inconsistent"], 
+            "confidence_level": "high/medium/low",
+            "recommended_adjustment": "האם לשנות את השאלה/משימה הבאה?",
+            "intervention_needed": boolean,
+            "intervention_reason": "סיבה להתערבות אם נדרש",
+            "profile_updates": {
+            "perfectionist": boolean (optional),
+            "fear_of_exposure": boolean (optional),
+            "needs_structure": boolean (optional),
+            "action_avoider": boolean (optional)
+            },
+            "effectiveness_score": number (1-5, based on depth and honesty of answer),
+            "strategy_update_for_mentor": "הערה קצרה לעצמך לעתיד: איך לגשת ללקוח הזה טוב יותר? (למשל: 'להיות ישיר יותר', 'לתת יותר חיזוקים', 'לאתגר אותו')"
+            }
+            `;
 
-            const aiRes = await base44.integrations.Core.InvokeLLM({
-                prompt: prompt,
-                response_json_schema: {
-                    type: "object",
-                    properties: {
-                        surface_meaning: { type: "string" },
-                        deep_meaning: { type: "string" },
-                        pattern_detected: { type: "array", items: { type: "string" } },
-                        confidence_level: { type: "string" },
-                        recommended_adjustment: { type: "string" },
-                        intervention_needed: { type: "boolean" },
-                        intervention_reason: { type: "string" },
-                        profile_updates: { type: "object", additionalProperties: true }
-                    },
-                    required: ["deep_meaning", "intervention_needed"]
-                }
-            });
+                  const aiRes = await base44.integrations.Core.InvokeLLM({
+                      prompt: prompt,
+                      response_json_schema: {
+                          type: "object",
+                          properties: {
+                              surface_meaning: { type: "string" },
+                              deep_meaning: { type: "string" },
+                              pattern_detected: { type: "array", items: { type: "string" } },
+                              confidence_level: { type: "string" },
+                              recommended_adjustment: { type: "string" },
+                              intervention_needed: { type: "boolean" },
+                              intervention_reason: { type: "string" },
+                              profile_updates: { type: "object", additionalProperties: true },
+                              effectiveness_score: { type: "number" },
+                              strategy_update_for_mentor: { type: "string" }
+                          },
+                          required: ["deep_meaning", "intervention_needed"]
+                      }
+                  });
 
             const analysis = aiRes; // InvokeLLM returns the object directly when schema is provided
 
@@ -122,9 +127,37 @@ OUTPUT (JSON):
                 status: "completed"
             });
 
-            // 2. Update Profile
-            if (analysis.profile_updates) {
-                await base44.entities.ClientProfile.update(profile.id, analysis.profile_updates);
+            // 1.1 Learn & Feedback Loop: Update ContentBank and Strategy
+            const timelineEntry = await base44.entities.Timeline.get(timeline_entry_id);
+            if (timelineEntry && timelineEntry.content_id) {
+                // Update content effectiveness (simple weighted average or increment)
+                const contentItem = await base44.entities.ContentBank.get(timelineEntry.content_id);
+                if (contentItem) {
+                    const score = analysis.effectiveness_score || 3; // Default to neutral if not provided
+                    const currentRating = contentItem.effectiveness_rating || 0;
+                    const usage = contentItem.usage_count || 1;
+
+                    // Weighted update: 90% history, 10% new score
+                    const newRating = currentRating === 0 ? score : (currentRating * 0.9 + score * 0.1);
+
+                    await base44.entities.ContentBank.update(timelineEntry.content_id, {
+                        effectiveness_rating: parseFloat(newRating.toFixed(2))
+                    });
+                }
+            }
+
+            // 2. Update Profile & Strategy
+            let profileUpdates = analysis.profile_updates || {};
+
+            // Append strategy notes if provided
+            if (analysis.strategy_update_for_mentor) {
+                const currentNotes = profile.mentor_strategy_notes || "";
+                const timestamp = new Date().toISOString().split('T')[0];
+                profileUpdates.mentor_strategy_notes = currentNotes + `\n[${timestamp}] ${analysis.strategy_update_for_mentor}`;
+            }
+
+            if (Object.keys(profileUpdates).length > 0) {
+                await base44.entities.ClientProfile.update(profile.id, profileUpdates);
             }
 
             // 3. Handle Intervention
@@ -172,16 +205,18 @@ OUTPUT (JSON):
             INPUT:
             - Current: Week ${currentWeek}
             - Client Profile: ${JSON.stringify(profile)}
+            - Mentor Strategy Notes (LEARNINGS): ${profile.mentor_strategy_notes || "None yet"}
             - Strategic Context (Business Type, Vision): ${JSON.stringify(goal.strategic_context || {})}
-            - Candidates: ${JSON.stringify(contentCandidates.data.map(c => ({ id: c.id, content: c.content, tags: c.tags, difficulty: c.difficulty })))}
+            - Candidates: ${JSON.stringify(contentCandidates.data.map(c => ({ id: c.id, content: c.content, tags: c.tags, difficulty: c.difficulty, rating: c.effectiveness_rating })))}
 
             TASK:
-בחר את השאלה/משימה הבאה הכי מתאימה מהרשימה.
-קריטריונים:
-1. התאמה לפרופיל (פחד, פרפקציוניזם וכו')
-2. רמת קושי מתאימה
+            בחר את השאלה/משימה הבאה הכי מתאימה מהרשימה.
+            קריטריונים:
+            1. התאמה לפרופיל ולמדדים שנלמדו עליו (ראה Strategy Notes)
+            2. רמת קושי מתאימה
+            3. העדף תוכן עם rating גבוה אם מתאים לקונטקסט
 
-OUTPUT (JSON):
+            OUTPUT (JSON):
 {
     "selected_content_id": "id_from_candidates",
     "personalized_content": "התוכן מותאם אישית ללקוח (שנה ניסוח אם צריך)",
@@ -205,12 +240,18 @@ OUTPUT (JSON):
             const selected = contentCandidates.data.find(c => c.id === selectionRes.selected_content_id) || contentCandidates.data[0];
             const personalizedContent = selectionRes.personalized_content || selected.content;
 
+            // Update usage count
+            await base44.entities.ContentBank.update(selected.id, {
+                usage_count: (selected.usage_count || 0) + 1
+            });
+
             // Create Timeline Entry
             const newTimelineEntry = await base44.entities.Timeline.create({
                 user_id: user.id,
                 goal_id: goal_id,
+                content_id: selected.id, // Link to content for feedback loop
                 week: currentWeek,
-                day: goal.current_day || 1, // Need to handle day increment logic elsewhere
+                day: goal.current_day || 1, 
                 type: selected.type,
                 content: personalizedContent,
                 status: "pending"
