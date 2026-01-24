@@ -24,7 +24,7 @@ import ShoppingCart from '@/components/client/shared/ShoppingCart';
 // Hooks
 import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
 import { useCreateGoal } from '@/components/hooks/useGoals';
-import { base44 } from '@/api/base44Client'; // Keep base44 for direct calls if absolutely needed (e.g. redirect)
+import { base44 } from '@/api/base44Client';
 
 export default function Summary() {
   const { data: user, isLoading: isUserLoading } = useAppAuth();
@@ -37,7 +37,7 @@ export default function Summary() {
   const [recommendedGoal, setRecommendedGoal] = useState(null);
   const navigate = useNavigate();
 
-  // Redirect if not authenticated (handled by wrapper/layout usually, but safe to keep)
+  // Redirect if not authenticated
   useEffect(() => {
     if (!isUserLoading && !user) {
       base44.auth.redirectToLogin('/Summary');
@@ -142,40 +142,6 @@ export default function Summary() {
     focus: 'יש המון רעיונות וכיוונים, אבל חסר מסלול אחד ברור.'
   };
 
-  const journeyStages = [
-    { 
-      icon: Rocket, 
-      title: 'קביעת מטרה', 
-      description: 'נבחר יחד את המטרה הכי חשובה לעסק שלך',
-      color: 'from-blue-500 to-blue-600'
-    },
-    { 
-      icon: Brain, 
-      title: 'בניית תוכנית', 
-      description: 'המערכת תבנה תוכנית פעולה מותאמת אישית',
-      color: 'from-purple-500 to-purple-600'
-    },
-    { 
-      icon: Zap, 
-      title: 'ליווי יומיומי', 
-      description: 'המנטור העסקי ילווה אותך בכל צעד',
-      color: 'from-amber-500 to-amber-600'
-    },
-    { 
-      icon: Award, 
-      title: 'השגת תוצאות', 
-      description: 'נעקוב אחר ההתקדמות ונחגוג הצלחות',
-      color: 'from-green-500 to-green-600'
-    }
-  ];
-
-  // Default permissions if not available
-  const permissions = {
-    marketing: true,
-    mentor: true,
-    finance: true
-  };
-
   return (
     <>
       <Helmet>
@@ -184,13 +150,11 @@ export default function Summary() {
       </Helmet>
 
       <div className="min-h-screen bg-[#F8F9FA]" dir={language === 'he' ? 'rtl' : 'ltr'}>
-        {/* Header - Replica of Pricing/Dashboard Header */}
         <header 
           className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
           role="banner"
         >
           <div className="w-full px-3 sm:px-6 lg:px-8">
-            {/* Top Bar - 56px fixed height */}
             <div className="flex items-center justify-between h-14">
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Button 
@@ -212,7 +176,6 @@ export default function Summary() {
                 </div>
               </div>
 
-              {/* Right Icons */}
               <div className="flex items-center gap-1 flex-shrink-0">
                 <ShoppingCart />
                 
@@ -250,29 +213,26 @@ export default function Summary() {
               </div>
             </div>
 
-            {/* Tab Navigation - Desktop Only */}
             <div className="hidden md:block">
               <TabNavigation 
                 activeTab={activeTab} 
                 onChange={handleTabChange} 
                 availableTabs={[
                   { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
-                  permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
-                  permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
-                  permissions.mentor && { id: 'goals', label: 'מטרות', icon: 'Target' },
-                  permissions.marketing && { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
-                  permissions.mentor && { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
-                ].filter(Boolean)} 
+                  { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
+                  { id: 'financial', label: 'כספים', icon: 'Wallet' },
+                  { id: 'goals', label: 'מטרות', icon: 'Target' },
+                  { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
+                  { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
+                ]} 
               />
             </div>
           </div>
         </header>
 
-        {/* Main Content */}
         <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-4 pb-12">
           <div className="max-w-4xl mx-auto w-full">
 
-            {/* 1. Hero Section: Super Minimalist Typography */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -280,7 +240,6 @@ export default function Summary() {
             >
               <div className="flex flex-col lg:flex-row items-start justify-between gap-16">
                   
-                  {/* Left Side: Pure Typography */}
                   <div className="flex-1 max-w-3xl">
                       <span className="text-blue-600 font-bold tracking-wide uppercase mb-3 block">
                         תוצאות האבחון העסקי שלך
@@ -310,7 +269,6 @@ export default function Summary() {
                       )}
                   </div>
 
-                  {/* Right Side: Recommendation - Clean */}
                   {unifiedRecommendation?.single_next_action && (
                       <div className="w-full lg:w-[380px] pt-4">
                           <div className="bg-gray-50 rounded-xl p-8 border border-gray-100">
@@ -335,7 +293,6 @@ export default function Summary() {
               </div>
             </motion.div>
 
-            {/* 1.5 Diagnostic Report Detail - Professional Grid */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -355,7 +312,6 @@ export default function Summary() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {/* Marketing Status */}
                       <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 relative">
                           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                           <div className="flex justify-between items-start mb-4">
@@ -385,7 +341,6 @@ export default function Summary() {
                           </div>
                       </div>
 
-                      {/* Sales Status */}
                       <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all duration-300 relative">
                           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-green-600 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                           <div className="flex justify-between items-start mb-4">
@@ -412,7 +367,6 @@ export default function Summary() {
                           </div>
                       </div>
 
-                      {/* Operations Status */}
                       <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 relative">
                           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-purple-600 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                           <div className="flex justify-between items-start mb-4">
@@ -439,7 +393,6 @@ export default function Summary() {
                           </div>
                       </div>
 
-                      {/* Focus Status */}
                       <div className="group p-6 bg-white rounded-xl border border-gray-200 hover:border-amber-300 hover:shadow-lg transition-all duration-300 relative">
                           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-500 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                           <div className="flex justify-between items-start mb-4">
@@ -469,7 +422,6 @@ export default function Summary() {
                </div>
             </motion.div>
 
-            {/* 2. The Plan: Your Personal Roadmap */}
             {clientTasks.length > 0 && (
                 <div className="mb-16">
                     <div className="text-center mb-12">
@@ -483,7 +435,6 @@ export default function Summary() {
                         </p>
                     </div>
 
-                    {/* Desktop View - Horizontal Graph */}
                     <div className="hidden md:block relative px-4">
                         <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-100 -translate-y-1/2 z-0 rounded-full"></div>
                         <div className="absolute top-1/2 right-0 h-1 bg-blue-500 -translate-y-1/2 z-0 rounded-full transition-all duration-1000" style={{ width: '15%' }}></div>
@@ -548,9 +499,7 @@ export default function Summary() {
                         </div>
                     </div>
 
-                    {/* Mobile View - Vertical Graph - Refined UX */}
                     <div className="md:hidden relative pr-2">
-                        {/* Elegant Connection Line */}
                         <div className="absolute top-6 bottom-6 right-[27px] w-[2px] bg-gradient-to-b from-blue-600 via-gray-200 to-transparent opacity-20"></div>
                         
                         {clientTasks.map((task, idx) => {
@@ -563,7 +512,6 @@ export default function Summary() {
                                     viewport={{ once: true }}
                                     className="relative flex gap-5 mb-6 last:mb-0"
                                 >
-                                    {/* Timeline Node */}
                                     <div className={`
                                         relative z-10 w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-500
                                         ${isCurrent 
@@ -573,13 +521,11 @@ export default function Summary() {
                                     `}>
                                         {isCurrent ? <Target className="w-6 h-6" /> : <span className="text-sm font-medium text-gray-400">{idx + 1}</span>}
                                         
-                                        {/* Subtle Pulse for Current */}
                                         {isCurrent && (
                                             <span className="absolute inset-0 rounded-full border border-blue-100 animate-ping opacity-75"></span>
                                         )}
                                     </div>
 
-                                    {/* Content Card */}
                                     <div className={`flex-1 rounded-2xl p-5 transition-all duration-300
                                         ${isCurrent 
                                             ? 'bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100' 
@@ -614,7 +560,6 @@ export default function Summary() {
             )}
 
 
-            {/* 3. Why Us Section - Reassurance */}
             <div className="bg-gradient-to-b from-white to-gray-50 rounded-3xl p-8 md:p-12 text-center border border-gray-100 shadow-sm mb-12">
               <div className="max-w-2xl mx-auto">
                 <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3">
@@ -645,7 +590,6 @@ export default function Summary() {
               </div>
             </div>
 
-            {/* Desktop Bottom CTA */}
             <div className="hidden md:block mt-8 mb-16">
                 <div className="bg-[#1E3A5F] rounded-2xl p-10 text-center text-white relative overflow-hidden shadow-2xl">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
@@ -668,7 +612,6 @@ export default function Summary() {
                 </div>
             </div>
 
-            {/* Bottom Sticky CTA on Mobile */}
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 md:hidden z-40">
                 <Button 
                     onClick={() => setShowGoalDialog(true)}
