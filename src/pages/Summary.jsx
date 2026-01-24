@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   LogOut, HelpCircle, User, Globe, ShoppingCart as ShoppingCartIcon,
-  CreditCard
+  CreditCard, MapPin, BarChart3, Wallet, Target, Megaphone, MessageSquare
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -17,14 +17,28 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 // Components
+import TabNavigation from '../components/client/TabNavigation';
+import MobileTabBar from '../components/client/MobileTabBar';
 import NotificationCenter from '../components/client/NotificationCenter';
 import ShoppingCart from '../components/client/shared/ShoppingCart';
-import SummaryTab from '../components/client/tabs/SummaryTab';
+import { SkeletonTabContent } from '../components/client/SkeletonLoaders';
+
+// Lazy Load Tabs
+const SummaryTab = React.lazy(() => import('../components/client/tabs/SummaryTab'));
+const ProgressTab = React.lazy(() => import('../components/client/tabs/ProgressTab'));
+const BusinessTab = React.lazy(() => import('../components/client/tabs/BusinessTab'));
+const FinancialTab = React.lazy(() => import('../components/client/tabs/FinancialTab'));
+const GoalsTab = React.lazy(() => import('../components/client/tabs/GoalsTab'));
+const MarketingTab = React.lazy(() => import('../components/client/tabs/MarketingTab'));
+const MentorTab = React.lazy(() => import('../components/client/tabs/MentorTab'));
 
 export default function Summary() {
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('summary');
+  const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
   const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Check authentication
   useEffect(() => {
@@ -51,6 +65,22 @@ export default function Summary() {
 
     checkAuth();
   }, []);
+
+  // Handle tab change from URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [location.search]);
+
+  // Reset goalsTabConfig when leaving goals tab
+  useEffect(() => {
+    if (activeTab !== 'goals') {
+      setGoalsTabConfig({ openAddGoal: false });
+    }
+  }, [activeTab]);
 
   const handleLogout = async () => {
     await base44.auth.logout();
@@ -135,13 +165,52 @@ export default function Summary() {
                 </DropdownMenu>
               </div>
             </div>
+
+            {/* Tab Navigation - Desktop Only */}
+            <div className="hidden md:block">
+              {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={[
+                { id: 'summary', label: 'סיכום', icon: 'Target' },
+                { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
+                { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
+                { id: 'financial', label: 'כספים', icon: 'Wallet' },
+                { id: 'goals', label: 'מטרות', icon: 'Target' },
+                { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
+                { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
+              ]} />}
+            </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          <SummaryTab data={user} />
+        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
+          <div className="max-w-7xl mx-auto w-full">
+            <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
+              {activeTab === 'summary' && <SummaryTab data={user} />}
+              {activeTab === 'progress' && <ProgressTab data={user} user={user} onNavigate={(tab, config) => {
+                setActiveTab(tab);
+                if (tab === 'goals' && config) {
+                  setGoalsTabConfig(config);
+                }
+              }} />}
+              {activeTab === 'business' && <BusinessTab data={user} />}
+              {activeTab === 'financial' && <FinancialTab data={user} />}
+              {activeTab === 'goals' && <GoalsTab user={user} data={user} openAddGoal={goalsTabConfig.openAddGoal} permissions={{ marketing: true, mentor: true, finance: true }} />}
+              {activeTab === 'marketing' && <MarketingTab data={user} />}
+              {activeTab === 'mentor' && <MentorTab data={user} />}
+            </React.Suspense>
+          </div>
         </main>
+
+        {/* Mobile Bottom Tab Bar */}
+        {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={[
+          { id: 'summary', label: 'סיכום', icon: Target },
+          { id: 'progress', label: 'התקדמות', icon: MapPin },
+          { id: 'business', label: 'עסק', icon: BarChart3 },
+          { id: 'financial', label: 'כספים', icon: Wallet },
+          { id: 'goals', label: 'מטרות', icon: Target },
+          { id: 'marketing', label: 'שיווק', icon: Megaphone },
+          { id: 'mentor', label: 'מנטור', icon: MessageSquare }
+        ]} />}
       </div>
     </>
   );
