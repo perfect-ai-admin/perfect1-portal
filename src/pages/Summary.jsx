@@ -444,66 +444,133 @@ export default function Summary() {
             {/* 2. The Plan: Your Personal Roadmap */}
             {clientTasks.length > 0 && (
                 <div className="mb-16">
-                    <div className="text-center mb-10">
-                        <h2 className="text-3xl font-bold text-gray-900">תוכנית הפעולה שבנינו עבורך</h2>
-                        <p className="text-gray-600 mt-2">צעד אחר צעד, מהמצב הנוכחי ועד ליעד</p>
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center justify-center p-3 bg-blue-50 rounded-full mb-4">
+                            <Map className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <h2 className="text-3xl font-bold text-gray-900">מפת הדרכים שלך להצלחה</h2>
+                        <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
+                            תוכנית עבודה מדויקת שלוקחת אותך מהמצב הנוכחי (שלב {stageLabels[stage]}) 
+                            ועד ליעד שהגדרנו.
+                        </p>
                     </div>
 
-                    <div className="space-y-4">
+                    {/* Desktop View - Horizontal Graph */}
+                    <div className="hidden md:block relative px-4">
+                        <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-100 -translate-y-1/2 z-0 rounded-full"></div>
+                        <div className="absolute top-1/2 right-0 h-1 bg-blue-500 -translate-y-1/2 z-0 rounded-full transition-all duration-1000" style={{ width: '15%' }}></div>
+                        
+                        <div className="relative z-10 grid grid-cols-4 gap-4">
+                            {clientTasks.map((task, idx) => {
+                                const isCurrent = idx === 0;
+                                return (
+                                    <motion.div 
+                                        key={task.id || idx}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: idx * 0.15 }}
+                                        className="flex flex-col items-center text-center group"
+                                    >
+                                        <div className={`
+                                            w-12 h-12 rounded-full flex items-center justify-center border-4 mb-4 transition-all duration-300 relative
+                                            ${isCurrent 
+                                                ? 'bg-blue-600 border-blue-200 text-white scale-125 shadow-lg shadow-blue-200' 
+                                                : 'bg-white border-gray-200 text-gray-400 group-hover:border-blue-300'
+                                            }
+                                        `}>
+                                            {isCurrent ? <TrendingUp className="w-5 h-5" /> : idx + 1}
+                                            
+                                            {isCurrent && (
+                                                <div className="absolute -top-10 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-sm whitespace-nowrap animate-bounce">
+                                                    אנחנו כאן
+                                                    <div className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-2 h-2 bg-blue-600 rotate-45"></div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className={`p-4 rounded-xl transition-all duration-300 w-full min-h-[140px] flex flex-col justify-between
+                                            ${isCurrent 
+                                                ? 'bg-blue-50 border border-blue-100 shadow-sm' 
+                                                : 'bg-white border border-transparent hover:border-gray-100'
+                                            }
+                                        `}>
+                                            <div>
+                                                <h3 className={`font-bold text-sm mb-2 ${isCurrent ? 'text-blue-900' : 'text-gray-900'}`}>
+                                                    {task.title}
+                                                </h3>
+                                                <p className="text-xs text-gray-500 line-clamp-3">
+                                                    {task.description}
+                                                </p>
+                                            </div>
+                                            
+                                            {isCurrent && (
+                                                <Button 
+                                                    onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                                    size="sm"
+                                                    className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                                                >
+                                                    התחל עכשיו
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Mobile View - Vertical Graph */}
+                    <div className="md:hidden space-y-0 relative">
+                        <div className="absolute top-4 bottom-4 right-6 w-0.5 bg-gray-100"></div>
+                        
                         {clientTasks.map((task, idx) => {
-                            // First task is "Current", others are "Future"
                             const isCurrent = idx === 0;
                             return (
                                 <motion.div
                                     key={task.id || idx}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ delay: idx * 0.1 }}
-                                    className={`relative flex items-center gap-5 p-5 rounded-2xl border-2 transition-all duration-300 ${
-                                        isCurrent 
-                                        ? 'bg-white border-blue-500 shadow-xl scale-[1.02] z-10' 
-                                        : 'bg-white border-transparent hover:border-gray-200 shadow-sm opacity-80 hover:opacity-100'
-                                    }`}
+                                    className="relative flex gap-6 pb-8 last:pb-0"
                                 >
-                                    {/* Line connector */}
-                                    {idx < clientTasks.length - 1 && (
-                                        <div className="absolute top-1/2 right-[2.25rem] w-0.5 h-[calc(100%+16px)] bg-gray-100 -z-10 translate-y-1/2"></div>
-                                    )}
-
-                                    {/* Number/Icon */}
-                                    <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 text-xl font-bold border-4 ${
-                                        isCurrent 
-                                        ? 'bg-blue-600 border-blue-100 text-white shadow-lg' 
-                                        : 'bg-gray-100 border-white text-gray-400'
-                                    }`}>
-                                        {idx + 1}
+                                    <div className={`
+                                        relative z-10 w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center border-4 transition-all
+                                        ${isCurrent 
+                                            ? 'bg-blue-600 border-blue-100 text-white shadow-lg' 
+                                            : 'bg-white border-gray-100 text-gray-400'
+                                        }
+                                    `}>
+                                        {isCurrent ? <TrendingUp className="w-5 h-5" /> : idx + 1}
                                     </div>
 
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <h3 className={`font-bold text-lg ${isCurrent ? 'text-gray-900' : 'text-gray-600'}`}>
+                                    <div className={`flex-1 p-5 rounded-2xl border transition-all
+                                        ${isCurrent 
+                                            ? 'bg-white border-blue-200 shadow-md ring-1 ring-blue-50' 
+                                            : 'bg-gray-50/50 border-transparent'
+                                        }
+                                    `}>
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className={`font-bold ${isCurrent ? 'text-gray-900' : 'text-gray-500'}`}>
                                                 {task.title}
                                             </h3>
                                             {isCurrent && (
-                                                <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                                                    עכשיו
+                                                <span className="bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                                    שלב נוכחי
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="text-gray-500 text-sm">{task.description}</p>
+                                        <p className="text-sm text-gray-500 mb-4">{task.description}</p>
+                                        
+                                        {isCurrent && (
+                                            <Button 
+                                                onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-9 text-sm"
+                                            >
+                                                התחל משימה
+                                            </Button>
+                                        )}
                                     </div>
-
-                                    {isCurrent ? (
-                                        <Button 
-                                            onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
-                                            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md whitespace-nowrap hidden sm:flex"
-                                        >
-                                            התחל משימה
-                                        </Button>
-                                    ) : (
-                                        <Lock className="w-5 h-5 text-gray-300 hidden sm:block" />
-                                    )}
                                 </motion.div>
                             );
                         })}
