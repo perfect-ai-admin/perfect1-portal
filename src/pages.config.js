@@ -85,7 +85,6 @@ import SitemapArticles from './pages/SitemapArticles';
 import SitemapFAQ from './pages/SitemapFAQ';
 import SitemapGeo from './pages/SitemapGeo';
 import SitemapPages from './pages/SitemapPages';
-import Summary from './pages/Summary';
 import SystemLogicMap from './pages/SystemLogicMap';
 import TakratOsekPatur from './pages/TakratOsekPatur';
 import TaxAdvances from './pages/TaxAdvances';
@@ -195,7 +194,6 @@ export const PAGES = {
     "SitemapFAQ": SitemapFAQ,
     "SitemapGeo": SitemapGeo,
     "SitemapPages": SitemapPages,
-    "Summary": Summary,
     "SystemLogicMap": SystemLogicMap,
     "TakratOsekPatur": TakratOsekPatur,
     "TaxAdvances": TaxAdvances,
