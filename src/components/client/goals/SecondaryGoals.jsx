@@ -30,7 +30,6 @@ export default function SecondaryGoals({ goals, onStatusChange, onEdit, onDelete
       {showHeader && (
         <div className="flex items-center justify-between px-1">
           <p className="text-sm font-bold text-gray-900">מטרות נוספות</p>
-          <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{goals.length}</span>
         </div>
       )}
       

@@ -272,10 +272,11 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       }
     }
     
+    const finalGoalTitle = goalTitle || selectedTemplate.name || 'מטרה חדשה';
     const goalData = {
       id: editingGoal?.id,
       category: selectedTemplate.id,
-      title: goalTitle,
+      title: finalGoalTitle,
       description: selectedTemplate.description,
       current: editingGoal?.current || 0,
       target: 100,

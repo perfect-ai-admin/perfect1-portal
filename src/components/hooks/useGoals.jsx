@@ -67,6 +67,12 @@ export function useGenerateGoalPlan() {
       queryClient.invalidateQueries({ queryKey: ['goals'] });
       queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
     },
+    onError: (err, variables) => {
+      console.error("Failed to generate goal plan:", err);
+      // We can update the UI to show error state if needed, but since it's background, logging is key
+      // and maybe invalidating to ensure we don't show stale loading state if possible
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
+    },
   });
 }
 
