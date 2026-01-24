@@ -51,7 +51,7 @@ const SummaryTab = React.lazy(() => import('../components/client/tabs/SummaryTab
 
 export default function ClientDashboard() {
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('summary');
+  const [activeTab, setActiveTab] = useState('progress');
   const [goalsTabConfig, setGoalsTabConfig] = useState({ openAddGoal: false });
   
   const location = useLocation();
@@ -305,7 +305,6 @@ export default function ClientDashboard() {
             {/* Tab Navigation - Desktop Only */}
              <div className="hidden md:block">
                {typeof TabNavigation === 'function' && <TabNavigation activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
-                    { id: 'summary', label: 'סיכום', icon: 'TrendingUp' },
                     { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
                     permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
                   permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
@@ -357,7 +356,6 @@ export default function ClientDashboard() {
 
         {/* Mobile Bottom Tab Bar */}
          {typeof MobileTabBar === 'function' && <MobileTabBar activeTab={activeTab} onChange={setActiveTab} availableTabs={permissions && [
-            { id: 'summary', label: 'סיכום', icon: TrendingUp },
             { id: 'progress', label: 'התקדמות', icon: MapPin },
             permissions.finance && { id: 'business', label: 'עסק', icon: BarChart3 },
            permissions.finance && { id: 'financial', label: 'כספים', icon: Wallet },
