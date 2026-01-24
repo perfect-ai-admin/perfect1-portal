@@ -60,11 +60,10 @@ export default function JourneyTimeline() {
       todo: [],
       nextAction: 'צפה בסיכום',
       action: () => {
-        // Scroll to top and close modal
         setSelectedStep(null);
-        // Small delay to ensure modal is closed before scrolling
+        // Navigate to Summary page with business state
         setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.location.href = createPageUrl('Summary') + '?view=business-state';
         }, 100);
       }
     }
