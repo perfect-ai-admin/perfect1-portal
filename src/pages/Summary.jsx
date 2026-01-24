@@ -27,6 +27,7 @@ import { useCreateGoal, useGoals } from '@/components/hooks/useGoals';
 import LimitUpgradeDialog from '@/components/client/goals/LimitUpgradeDialog';
 import { useBusinessJourney } from '@/components/hooks/useBusinessJourney';
 import { base44 } from '@/api/base44Client';
+import FirstGoalFlow from '@/components/client/goals/FirstGoalFlow';
 
 export default function Summary() {
   const { data: user, isLoading: isUserLoading } = useAppAuth();
