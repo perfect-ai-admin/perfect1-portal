@@ -448,31 +448,31 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             </div>
           </motion.div>
         ) : (
-          <motion.div className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <motion.div className="space-y-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setSelectedTemplate(null)}
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 mb-2 h-8"
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 mb-1 h-7 text-xs"
             >
-              <ChevronLeft className="w-4 h-4 ml-1" />
+              <ChevronLeft className="w-3.5 h-3.5 ml-1" />
               חזור
             </Button>
 
             {/* Goal Title - Bold and Non-editable */}
-            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-4 border border-purple-200">
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${selectedTemplate.color} flex items-center justify-center flex-shrink-0`}>
-                  <selectedTemplate.icon className="w-6 h-6 text-white" />
+            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-3 border border-purple-200">
+              <div className="flex items-center gap-2.5">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${selectedTemplate.color} flex items-center justify-center flex-shrink-0`}>
+                  <selectedTemplate.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs text-purple-600 font-medium mb-1">המטרה שלך</p>
-                  <h3 className="text-xl font-bold text-gray-900">{selectedTemplate.name}</h3>
+                  <p className="text-[10px] sm:text-xs text-purple-600 font-medium mb-0.5">המטרה שלך</p>
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-tight">{selectedTemplate.name}</h3>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
 
               {/* Two Custom Questions */}
               {selectedTemplate.questions && (
