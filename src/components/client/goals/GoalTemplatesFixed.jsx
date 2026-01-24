@@ -406,25 +406,25 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
   // Main Dialog UI
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-200 rounded-t-2xl flex-shrink-0">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-200 rounded-t-2xl flex-shrink-0">
           <div className="flex items-center justify-between">
             <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
               <X className="w-5 h-5 text-gray-500" />
             </button>
-            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Target className="w-5 h-5 text-purple-600" />
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
               {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
             </h2>
             <div className="w-5"></div>
           </div>
-          {!selectedTemplate && <p className="text-center text-sm text-gray-600 mt-2">בחר מטרה שמשפיעה על העסק שלך</p>}
+          {!selectedTemplate && <p className="text-center text-xs sm:text-sm text-gray-600 mt-2">בחר מטרה שמשפיעה על העסק שלך</p>}
         </div>
 
         {/* Body - scrollable */}
-        <div className="px-6 py-4 flex-1 overflow-y-auto">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 flex-1 overflow-y-auto">
         {!selectedTemplate ? (
           <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="grid grid-cols-2 gap-2.5">
