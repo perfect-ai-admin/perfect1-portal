@@ -4,7 +4,10 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Rocket, Brain, Zap, Award, ArrowRight, Lightbulb, Users, DollarSign, Target, TrendingUp, Crown, Shield, Sparkles } from 'lucide-react';
+import { 
+  Rocket, Brain, Zap, Award, ArrowRight, Lightbulb, Users, DollarSign, Target, TrendingUp, 
+  Crown, Shield, Sparkles, LogOut, HelpCircle, Globe, CreditCard, LogIn
+} from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -14,9 +17,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import TabNavigation from '@/components/client/TabNavigation';
+import NotificationCenter from '@/components/client/NotificationCenter';
+import ShoppingCart from '@/components/client/shared/ShoppingCart';
 
 export default function Summary() {
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('summary');
+  const [language, setLanguage] = useState('he');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +43,23 @@ export default function Summary() {
 
     checkAuth();
   }, []);
+
+  const handleTabChange = (tabId) => {
+    // Navigate to dashboard with specific tab, unless it's the current summary tab which we are on
+    if (tabId === 'summary') return;
+    navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
+  };
+
+  const handleLogout = async () => {
+     await base44.auth.logout();
+  };
+
+  const toggleLanguage = () => {
+    const newLang = language === 'he' ? 'en' : 'he';
+    setLanguage(newLang);
+    document.documentElement.dir = newLang === 'he' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
+  };
 
   if (!user) {
     return (
@@ -86,6 +111,13 @@ export default function Summary() {
     }
   ];
 
+  // Default permissions if not available
+  const permissions = {
+    marketing: true,
+    mentor: true,
+    finance: true
+  };
+
   return (
     <>
       <Helmet>
@@ -93,43 +125,93 @@ export default function Summary() {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
-        {/* Header */}
-        <header className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50">
+      <div className="min-h-screen bg-[#F8F9FA]" dir={language === 'he' ? 'rtl' : 'ltr'}>
+        {/* Header - Replica of Pricing/Dashboard Header */}
+        <header 
+          className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow sticky top-0 z-50"
+          role="banner"
+        >
           <div className="w-full px-3 sm:px-6 lg:px-8">
+            {/* Top Bar - 56px fixed height */}
             <div className="flex items-center justify-between h-14">
               <div className="flex items-center gap-2 flex-1 min-w-0">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => navigate(-1)} 
+                  className="text-white hover:bg-white/10 hover:text-white p-2 h-auto rounded-full transition-colors mr-1"
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
+                
                 <Avatar className="w-9 h-9 border border-white/20 flex-shrink-0">
                   <AvatarFallback className="bg-white/10 text-white text-sm font-semibold">
-                    {user?.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                    {user.full_name?.charAt(0)?.toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium truncate">{user?.full_name || 'משתמש'}</p>
+                  <p className="text-sm font-medium truncate">{user.full_name}</p>
                 </div>
               </div>
 
+              {/* Right Icons */}
               <div className="flex items-center gap-1 flex-shrink-0">
+                <ShoppingCart />
+                
+                <button
+                  onClick={() => navigate(createPageUrl('PricingPerfectBizAI'))}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/90 hover:text-white"
+                  title="מחירון ומסלולים"
+                >
+                  <CreditCard className="w-6 h-6" />
+                </button>
+
+                <NotificationCenter />
+                
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="p-2 hover:bg-white/10 rounded transition-colors">
-                      <Users className="w-5 h-5" />
+                    <button className="p-2 hover:bg-white/10 rounded transition-colors" aria-label="תפריט">
+                      <User className="w-5 h-5" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuItem onClick={() => base44.auth.logout()}>
+                    <DropdownMenuItem onClick={toggleLanguage} className="text-sm">
+                      <Globe className="w-4 h-4 ml-2" />
+                      {language === 'he' ? 'English' : 'עברית'}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-sm">
+                      <HelpCircle className="w-4 h-4 ml-2" />
+                      עזרה
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout} className="text-sm text-red-600">
+                      <LogOut className="w-4 h-4 ml-2" />
                       יציאה
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             </div>
+
+            {/* Tab Navigation - Desktop Only */}
+            <div className="hidden md:block">
+              <TabNavigation 
+                activeTab={activeTab} 
+                onChange={handleTabChange} 
+                availableTabs={[
+                  { id: 'progress', label: 'מסע העסק', icon: 'MapPin' },
+                  permissions.finance && { id: 'business', label: 'נתוני העסק', icon: 'BarChart3' },
+                  permissions.finance && { id: 'financial', label: 'כספים', icon: 'Wallet' },
+                  permissions.mentor && { id: 'goals', label: 'מטרות', icon: 'Target' },
+                  permissions.marketing && { id: 'marketing', label: 'שיווק', icon: 'Megaphone' },
+                  permissions.mentor && { id: 'mentor', label: 'מנטור', icon: 'Lightbulb' }
+                ].filter(Boolean)} 
+              />
+            </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">
-          <div className="max-w-4xl mx-auto w-full">
+        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">          <div className="max-w-4xl mx-auto w-full">
             {/* Hero Section */}
             <motion.div
               initial={{ opacity: 0 }}
