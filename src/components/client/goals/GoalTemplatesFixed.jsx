@@ -476,16 +476,16 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
               {/* Two Custom Questions */}
               {selectedTemplate.questions && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-2.5">
                   {selectedTemplate.questions.map((q) => (
-                    <div key={q.id} className="space-y-1.5">
-                      <Label htmlFor={q.id} className="text-xs font-semibold text-gray-600">{q.label}</Label>
+                    <div key={q.id} className="space-y-1">
+                      <Label htmlFor={q.id} className="text-[11px] sm:text-xs font-semibold text-gray-600">{q.label}</Label>
                       <Input
                         id={q.id}
                         value={customAnswers[q.id] || ''}
                         onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
                         placeholder={q.placeholder}
-                        className="h-9 text-sm"
+                        className="h-8 sm:h-9 text-xs sm:text-sm"
                       />
                     </div>
                   ))}
@@ -494,8 +494,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
               {/* Urgency */}
               <div>
-                <Label className="text-sm font-bold text-gray-700 block mb-2">דחיפות המשימה</Label>
-                <div className="grid grid-cols-3 gap-2">
+                <Label className="text-xs sm:text-sm font-bold text-gray-700 block mb-1.5">דחיפות המשימה</Label>
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                   {[
                     { value: 'low', label: 'נמוכה', desc: 'בזמן שלי' },
                     { value: 'medium', label: 'בינונית', desc: 'חשוב' },
@@ -505,14 +505,14 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                       key={level.value}
                       onClick={() => setUrgency(level.value)}
                       className={cn(
-                        "flex flex-col items-center justify-center py-2.5 px-2 rounded-lg border transition-all",
+                        "flex flex-col items-center justify-center py-2 px-1.5 rounded-lg border transition-all",
                         urgency === level.value
                           ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm"
                           : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
                       )}
                     >
-                      <span className="text-sm font-bold">{level.label}</span>
-                      <span className="text-xs opacity-70">{level.desc}</span>
+                      <span className="text-xs sm:text-sm font-bold">{level.label}</span>
+                      <span className="text-[10px] sm:text-xs opacity-70">{level.desc}</span>
                     </button>
                   ))}
                 </div>
