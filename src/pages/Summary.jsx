@@ -692,6 +692,7 @@ export default function Summary() {
                   onClose={() => setShowGoalDialog(false)}
                   user={user}
                   initialTemplate={recommendedGoal}
+                  existingGoals={goals}
                 />
             )}
           </div>
