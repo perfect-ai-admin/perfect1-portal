@@ -27,6 +27,7 @@ import { toast } from 'sonner';
 import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
 import BusinessRoadmap from '../goals/BusinessRoadmap';
+import FirstGoalFlow from '../goals/FirstGoalFlow';
 
 export default function MentorOverview() {
   const queryClient = useQueryClient();
@@ -41,7 +42,7 @@ export default function MentorOverview() {
     queryFn: async () => await base44.auth.me()
   });
 
-  const { data: goals, isLoading } = useQuery({
+  const { data: goals, isLoading, refetch: refetchGoals } = useQuery({
     queryKey: ['userGoals', 'active'],
     queryFn: async () => {
         const user = await base44.auth.me();
@@ -51,6 +52,13 @@ export default function MentorOverview() {
         });
     }
   });
+
+  // Find active first goal
+  const activeFirstGoal = goals?.find(g => 
+    g.is_first_goal && 
+    (g.status === 'active' || g.status === 'in_progress') &&
+    (g.flow_step || 1) < 8 
+  );
 
   const { data: userPlan } = useQuery({
     queryKey: ['userPlan', user?.plan_id],
@@ -204,6 +212,31 @@ export default function MentorOverview() {
   };
 
   if (isLoading) return <div className="p-8 text-center text-gray-500">טוען נתונים...</div>;
+
+  if (activeFirstGoal) {
+    return (
+      <div className="p-4 md:p-8 max-w-4xl mx-auto" dir="rtl">
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            הצעד הראשון שלך
+          </h1>
+          <p className="text-gray-500">
+            אנחנו מתחילים בצעד אחד, מדויק וממוקד.
+          </p>
+        </div>
+        
+        <Card className="p-6 md:p-10 border-blue-100 bg-white shadow-lg rounded-3xl">
+          <FirstGoalFlow 
+            goal={activeFirstGoal} 
+            onComplete={() => {
+              base44.entities.UserGoal.update(activeFirstGoal.id, { flow_step: 8 });
+              refetchGoals();
+            }} 
+          />
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 p-4 md:p-6 max-w-7xl mx-auto" dir="rtl">
