@@ -96,6 +96,17 @@ export default function Summary() {
     );
   }
 
+  // Check if user has auth
+  if (!user?.id) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 font-medium">נדרשת התחברות מחדש</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
