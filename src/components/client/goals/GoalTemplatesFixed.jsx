@@ -246,13 +246,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
     setCustomAnswers({ q1: '', q2: '' }); // Reset answers
-    if (template.examples?.length > 0) {
-      setGoalTitle(template.examples[0].title);
-    }
-  };
-
-  const handleExampleSelect = (example) => {
-    setGoalTitle(example.title);
+    // Set goal title as template name
+    setGoalTitle(template.name);
   };
 
   const [isCreating, setIsCreating] = useState(false);
