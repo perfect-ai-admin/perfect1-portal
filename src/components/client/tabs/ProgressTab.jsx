@@ -64,6 +64,7 @@ import RecommendedGoalCard from '../goals/RecommendedGoalCard';
 import GoalSelectionConfirmation from '../goals/GoalSelectionConfirmation';
 import { useAppAuth } from '@/components/hooks/useAppAuth';
 import { useGoals, useUpdateGoal, useDeleteGoal, useCreateGoal, useGenerateGoalPlan } from '@/components/hooks/useGoals';
+import { useBusinessJourney, JOURNEY_QUERY_KEY } from '@/components/hooks/useBusinessJourney';
 import { queryKeys } from '@/components/hooks/useQueryKeys';
 
 export default function ProgressTab({ data, onNavigate, user }) {
@@ -72,6 +73,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   
   // Hooks
   const { data: currentUserData } = useAppAuth();
+  const { data: activeJourney } = useBusinessJourney(user?.id);
   
   // Fetch all goals and filter locally (consistent with GoalsTab)
   const { data: allGoals = [] } = useGoals(user?.id ? { user_id: user.id } : {});
@@ -101,10 +103,11 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const [goalTemplateForStep, setGoalTemplateForStep] = useState(null);
   const [showGoalSelectionConfirmation, setShowGoalSelectionConfirmation] = useState(false);
 
-  // Use dynamic tasks if available, otherwise default milestones
-  const activeMilestones = currentUserData?.client_tasks?.length > 0 
-    ? currentUserData.client_tasks 
-    : MILESTONES;
+  // Use dynamic tasks from Active Journey if available
+  // Fallback to User entity (legacy), then to Default Milestones
+  const activeMilestones = activeJourney?.tasks?.length > 0 
+    ? activeJourney.tasks
+    : (currentUserData?.client_tasks?.length > 0 ? currentUserData.client_tasks : MILESTONES);
 
   // Determine current/completed based on status field in tasks
   const currentTask = activeMilestones.find(t => t.status === 'in_progress' || t.status === 'pending');
@@ -153,6 +156,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const handleQuestionnaireComplete = async () => {
     setShowQuestionnaire(false);
     await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+    await queryClient.invalidateQueries({ queryKey: JOURNEY_QUERY_KEY });
     await queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
   };
 
@@ -164,6 +168,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
     try {
       await base44.functions.invoke('resetBusinessJourney');
       await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+      await queryClient.invalidateQueries({ queryKey: JOURNEY_QUERY_KEY });
       await queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
       toast.success('המסע אופס בהצלחה!');
     } catch (error) {
@@ -192,28 +197,40 @@ export default function ProgressTab({ data, onNavigate, user }) {
       ]
     };
 
-    // Specific overrides based on keywords or IDs
-    // We can expand this logic significantly based on Hebrew keywords
+    // Specific overrides based on TASK TYPE (New Architecture)
+    // Fallback to keywords for legacy support
+    const type = task.task_type;
     const title = task.title || '';
-    
-    if (title.includes('לקוח') || title.includes('ראשון')) {
+
+    if (type === 'CUSTOMER_ACQUISITION' || (!type && (title.includes('לקוח') || title.includes('ראשון')))) {
        baseTemplate.name = 'גיוס הלקוח הראשון';
        baseTemplate.icon = Sparkles;
        baseTemplate.questions = [
          { id: 'who', label: 'מי הלקוח האידיאלי הראשון שלך?', placeholder: 'לדוגמה: חברים / משפחה...' },
          { id: 'offer', label: 'מה השירות שאתה הולך להציע לו?', placeholder: 'לדוגמה: ייעוץ במחיר מוזל...' }
        ];
-    } else if (title.includes('עוסק פטור') || title.includes('תיק')) {
+    } 
+    else if (type === 'SETUP' || (!type && (title.includes('עוסק פטור') || title.includes('תיק')))) {
        baseTemplate.name = 'פתיחת תיק עוסק פטור';
        baseTemplate.questions = [
          { id: 'bureaucracy', label: 'האם כבר נרשמת באתר רשות המסים?', placeholder: 'כן / לא / בתהליך' },
          { id: 'date', label: 'מתי אתה מתכנן לסיים את הרישום?', placeholder: 'לדוגמה: יום ראשון הקרוב' }
        ];
-    } else if (title.includes('רעיון') || title.includes('גיבוש')) {
+    } 
+    else if (type === 'STRATEGY' || (!type && (title.includes('רעיון') || title.includes('גיבוש')))) {
        baseTemplate.name = 'גיבוש הרעיון העסקי';
        baseTemplate.questions = [
          { id: 'core_idea', label: 'במשפט אחד, מה הרעיון?', placeholder: 'לדוגמה: עסק לצילום אירועים...' },
          { id: 'validation', label: 'איך תבדוק אם אנשים רוצים את זה?', placeholder: 'לדוגמה: אשאל 5 חברים...' }
+       ];
+    }
+    else if (type === 'MOMENTUM') {
+       baseTemplate.name = 'משימת מומנטום: ' + task.title;
+       baseTemplate.icon = Rocket; // Highlighted icon
+       baseTemplate.color = 'from-orange-500 to-red-600'; // Highlighted color
+       baseTemplate.questions = [
+         { id: 'quick_win', label: 'האם ביצעת את הפעולה המהירה?', placeholder: 'כן, שלחתי / כתבתי / עשיתי...' },
+         { id: 'feeling', label: 'איך ההרגשה לעשות צעד ראשון?', placeholder: 'מעולה / מלחיץ...' }
        ];
     }
 
