@@ -65,8 +65,10 @@ Deno.serve(async (req) => {
                4. **Financial Order:** (Invoicing, Expenses, Cashflow)
                5. **Management & Growth:** (Goals, Routine, Optimization)
 
-               **Step 1: The "Hook" (Immediate Relief)**
-               - Must solve the specific *burning* pain point immediately (e.g. Fear -> Mentor, No Leads -> Campaign/Landing Page, Chaos -> Invoice).
+               **Step 1: The "Momentum" Task (Quick Win)**
+               - THIS IS CRITICAL. The first task MUST be something they can do in 5-10 minutes to get a "quick win".
+               - Examples: "Send a WhatsApp to 5 friends", "Write your pitch", "Sign up for the app".
+               - It must be tagged as `task_type: "MOMENTUM"`.
 
                **Steps 2-6: The "Healthy Business" Roadmap**
                - Don't just list random tasks. Build the business layer by layer.
@@ -131,54 +133,60 @@ Deno.serve(async (req) => {
             
             **Output JSON Structure:**
             {
-                "state_id": "string (one of: idea, new, active, stable, scaling)",
-                "state_name": "string (Creative Hebrew name for their current status)",
-                "state_description": "string (A sharp, 2-sentence diagnosis of where they are and what's holding them back, in Hebrew)",
-                "state_goal": "string (The primary objective for the next 3-6 months in Hebrew)",
-                "recommended_goal": {
-                    "goal_id": "string (one of the goal template IDs above)",
-                    "reason": "string (ONE sentence in Hebrew explaining WHY this goal is perfect for them right now. Max 15 words.)",
-                    "confidence": "string (high/medium/low)"
-                },
-                "tasks": [
-                    {
-                        "title": "string (Actionable, specific step title in Hebrew - max 4 words)",
-                        "description": "string (MAXIMUM 8-10 words in Hebrew. One clear sentence. Mobile-friendly.)",
-                        "is_milestone": boolean (true for steps 1, 3, 6)
-                    }
-                ]
+            "state_id": "string (one of: idea, new, active, stable, scaling)",
+            "state_name": "string (Creative Hebrew name for their current status)",
+            "state_description": "string (A sharp, 2-sentence diagnosis of where they are and what's holding them back, in Hebrew)",
+            "state_goal": "string (The primary objective for the next 3-6 months in Hebrew)",
+            "recommended_goal": {
+                "goal_id": "string (one of the goal template IDs above)",
+                "reason": "string (ONE sentence in Hebrew explaining WHY this goal is perfect for them right now. Max 15 words.)",
+                "confidence": "string (high/medium/low)"
+            },
+            "tasks": [
+                {
+                    "title": "string (Actionable, specific step title in Hebrew - max 4 words)",
+                    "description": "string (MAXIMUM 8-10 words in Hebrew. One clear sentence. Mobile-friendly.)",
+                    "is_milestone": boolean (true for steps 1, 3, 6),
+                    "task_type": "string (Enum: MOMENTUM, SETUP, MARKETING, SALES, FINANCE, STRATEGY, PRODUCT, GENERAL)",
+                    "effort": "string (Low/Medium/High)",
+                    "impact": "string (Low/Medium/High)"
+                }
+            ]
             }
             `,
             response_json_schema: {
-                type: "object",
-                properties: {
-                    state_id: { type: "string" },
-                    state_name: { type: "string" },
-                    state_description: { type: "string" },
-                    state_goal: { type: "string" },
-                    recommended_goal: {
+            type: "object",
+            properties: {
+                state_id: { type: "string" },
+                state_name: { type: "string" },
+                state_description: { type: "string" },
+                state_goal: { type: "string" },
+                recommended_goal: {
+                    type: "object",
+                    properties: {
+                        goal_id: { type: "string" },
+                        reason: { type: "string" },
+                        confidence: { type: "string" }
+                    },
+                    required: ["goal_id", "reason", "confidence"]
+                },
+                tasks: {
+                    type: "array",
+                    items: {
                         type: "object",
                         properties: {
-                            goal_id: { type: "string" },
-                            reason: { type: "string" },
-                            confidence: { type: "string" }
+                            title: { type: "string" },
+                            description: { type: "string" },
+                            is_milestone: { type: "boolean" },
+                            task_type: { type: "string", enum: ["MOMENTUM", "SETUP", "MARKETING", "SALES", "FINANCE", "STRATEGY", "PRODUCT", "GENERAL"] },
+                            effort: { type: "string" },
+                            impact: { type: "string" }
                         },
-                        required: ["goal_id", "reason", "confidence"]
-                    },
-                    tasks: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                title: { type: "string" },
-                                description: { type: "string" },
-                                is_milestone: { type: "boolean" }
-                            },
-                            required: ["title", "description", "is_milestone"]
-                        }
+                        required: ["title", "description", "is_milestone", "task_type"]
                     }
-                },
-                required: ["state_id", "state_name", "tasks", "recommended_goal"]
+                }
+            },
+            required: ["state_id", "state_name", "tasks", "recommended_goal"]
             }
         });
 
@@ -191,20 +199,44 @@ Deno.serve(async (req) => {
             throw new Error('AI failed to generate tasks. Please try again.');
         }
 
-        // Update user entity
+        // Archive previous journeys
+        const existingJourneys = await base44.entities.BusinessJourney.filter({ user_id: user.id, status: 'active' });
+        for (const journey of existingJourneys) {
+            await base44.entities.BusinessJourney.update(journey.id, { status: 'archived' });
+        }
+
+        // Create new BusinessJourney entity
         const tasksWithIds = analysis.tasks.map((task, index) => ({
             id: crypto.randomUUID(),
             title: task.title,
             description: task.description || task.title,
             status: index === 0 ? "in_progress" : "pending",
-            is_milestone: task.is_milestone || false
+            is_milestone: task.is_milestone || false,
+            task_type: task.task_type || "GENERAL",
+            effort: task.effort || "Medium",
+            impact: task.impact || "High"
         }));
 
+        const newJourney = await base44.entities.BusinessJourney.create({
+            user_id: user.id,
+            status: 'active',
+            stage: analysis.state_id,
+            tasks: tasksWithIds,
+            recommended_goal: analysis.recommended_goal,
+            ai_analysis: analysis.state_description,
+            business_metrics: {
+                goal: analysis.state_goal,
+                state_name: analysis.state_name
+            }
+        });
+
+        // Backward compatibility + Flag updates on User
         await base44.auth.updateMe({
             business_journey_completed: true,
             business_journey_answers: answers,
             business_domain: answers.profession_description || null,
             business_journey_completed_date: new Date().toISOString(),
+            // We keep these for now as some components might still rely on them until full migration
             business_state: {
                 id: analysis.state_id,
                 name: analysis.state_name,
@@ -212,10 +244,10 @@ Deno.serve(async (req) => {
                 goal: analysis.state_goal
             },
             recommended_goal: analysis.recommended_goal,
-            client_tasks: tasksWithIds
+            active_journey_id: newJourney.id
         });
 
-        return Response.json({ success: true, analysis: analysis });
+        return Response.json({ success: true, analysis: analysis, journeyId: newJourney.id });
 
     } catch (error) {
         console.error("Error analyzing business journey:", error);
