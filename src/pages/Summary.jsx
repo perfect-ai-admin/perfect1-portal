@@ -630,6 +630,29 @@ export default function Summary() {
               </div>
             </div>
 
+            {/* Desktop Bottom CTA */}
+            <div className="hidden md:block mt-8 mb-16">
+                <div className="bg-[#1E3A5F] rounded-2xl p-10 text-center text-white relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -ml-16 -mb-16"></div>
+                    
+                    <div className="relative z-10 max-w-2xl mx-auto">
+                        <h2 className="text-3xl font-black mb-4">מוכנים לצאת לדרך?</h2>
+                        <p className="text-blue-100 text-lg mb-8">
+                            התוכנית מוכנה, היעדים ברורים. בוא נתחיל את השינוי כבר היום.
+                        </p>
+                        <Button 
+                            onClick={() => setShowGoalDialog(true)}
+                            size="lg"
+                            className="bg-white text-[#1E3A5F] hover:bg-gray-100 font-bold text-lg px-10 h-14 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
+                        >
+                            התחל את המשימה הראשונה
+                            <ArrowRight className="w-5 h-5 mr-2" />
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
             {/* Bottom Sticky CTA on Mobile */}
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 md:hidden z-40">
                 <Button 
