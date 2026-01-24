@@ -511,54 +511,61 @@ export default function Summary() {
                         </div>
                     </div>
 
-                    {/* Mobile View - Vertical Graph */}
-                    <div className="md:hidden space-y-0 relative">
-                        <div className="absolute top-4 bottom-4 right-6 w-0.5 bg-gray-100"></div>
+                    {/* Mobile View - Vertical Graph - Refined UX */}
+                    <div className="md:hidden relative pr-2">
+                        {/* Elegant Connection Line */}
+                        <div className="absolute top-6 bottom-6 right-[27px] w-[2px] bg-gradient-to-b from-blue-600 via-gray-200 to-transparent opacity-20"></div>
                         
                         {clientTasks.map((task, idx) => {
                             const isCurrent = idx === 0;
                             return (
                                 <motion.div
                                     key={task.id || idx}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    className="relative flex gap-6 pb-8 last:pb-0"
+                                    className="relative flex gap-5 mb-6 last:mb-0"
                                 >
+                                    {/* Timeline Node */}
                                     <div className={`
-                                        relative z-10 w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center border-4 transition-all
+                                        relative z-10 w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-500
                                         ${isCurrent 
-                                            ? 'bg-blue-600 border-blue-100 text-white shadow-lg' 
-                                            : 'bg-white border-gray-100 text-gray-400'
+                                            ? 'bg-white border-4 border-blue-50 text-blue-600 shadow-xl shadow-blue-100 scale-100' 
+                                            : 'bg-white border border-gray-100 text-gray-300'
                                         }
                                     `}>
-                                        {isCurrent ? <TrendingUp className="w-5 h-5" /> : idx + 1}
+                                        {isCurrent ? <Target className="w-6 h-6" /> : <span className="text-sm font-medium text-gray-400">{idx + 1}</span>}
+                                        
+                                        {/* Subtle Pulse for Current */}
+                                        {isCurrent && (
+                                            <span className="absolute inset-0 rounded-full border border-blue-100 animate-ping opacity-75"></span>
+                                        )}
                                     </div>
 
-                                    <div className={`flex-1 p-5 rounded-2xl border transition-all
+                                    {/* Content Card */}
+                                    <div className={`flex-1 rounded-2xl p-5 transition-all duration-300
                                         ${isCurrent 
-                                            ? 'bg-white border-blue-200 shadow-md ring-1 ring-blue-50' 
-                                            : 'bg-gray-50/50 border-transparent'
+                                            ? 'bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100' 
+                                            : 'bg-transparent border border-transparent opacity-70 grayscale'
                                         }
                                     `}>
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h3 className={`font-bold ${isCurrent ? 'text-gray-900' : 'text-gray-500'}`}>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <h3 className={`text-base font-bold ${isCurrent ? 'text-gray-900' : 'text-gray-400'}`}>
                                                 {task.title}
                                             </h3>
-                                            {isCurrent && (
-                                                <span className="bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                                                    שלב נוכחי
-                                                </span>
-                                            )}
                                         </div>
-                                        <p className="text-sm text-gray-500 mb-4">{task.description}</p>
+                                        
+                                        <p className={`text-sm leading-relaxed mb-4 ${isCurrent ? 'text-gray-500' : 'text-gray-400 line-clamp-2'}`}>
+                                            {task.description}
+                                        </p>
                                         
                                         {isCurrent && (
                                             <Button 
                                                 onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
-                                                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-9 text-sm"
+                                                className="w-full bg-gray-900 text-white hover:bg-black rounded-xl h-11 text-sm font-medium shadow-lg shadow-gray-200 transition-transform active:scale-95"
                                             >
-                                                התחל משימה
+                                                התחל את המשימה
+                                                <ArrowRight className="w-4 h-4 mr-2" />
                                             </Button>
                                         )}
                                     </div>
