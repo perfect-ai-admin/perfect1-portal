@@ -426,22 +426,22 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         {/* Body - scrollable */}
         <div className="px-4 sm:px-6 py-3 sm:py-4 flex-1 overflow-y-auto">
         {!selectedTemplate ? (
-          <motion.div className="space-y-2.5" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div className="grid grid-cols-2 gap-2.5">
+          <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="grid grid-cols-2 gap-2">
               {GOAL_TEMPLATES.map((template, idx) => (
                 <motion.button
                   key={template.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.03 }}
+                  transition={{ delay: idx * 0.02 }}
                   onClick={() => handleTemplateSelect(template)}
-                  className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-xl p-3 transition-all group"
+                  className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-lg p-2.5 transition-all group"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                      <template.icon className="w-6 h-6 text-white" />
+                  <div className="flex items-center gap-2">
+                    <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                      <template.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 text-sm text-right leading-tight">{template.name}</h3>
+                    <h3 className="font-semibold text-gray-900 text-xs sm:text-sm text-right leading-tight">{template.name}</h3>
                   </div>
                 </motion.button>
               ))}
