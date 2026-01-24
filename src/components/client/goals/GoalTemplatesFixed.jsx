@@ -273,6 +273,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     }
     
     const finalGoalTitle = goalTitle || selectedTemplate.name || 'מטרה חדשה';
+    // Check if this is the first goal ever for this user
+    const isFirstGoalEver = (!existingGoals || existingGoals.length === 0) && !editingGoal;
+
     const goalData = {
       id: editingGoal?.id,
       category: selectedTemplate.id,
@@ -285,7 +288,9 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       status: editingGoal?.status || 'active',
       isPrimary: isPrimary && !hasPrimaryGoal,
       aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
-      actionHint: 'המטרה נוצרת...'
+      actionHint: 'המטרה נוצרת...',
+      is_first_goal: isFirstGoalEver,
+      flow_step: isFirstGoalEver ? 1 : undefined
     };
 
     // Check for duplicates before creating (Client Side Sync Check)

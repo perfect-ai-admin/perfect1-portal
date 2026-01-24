@@ -28,12 +28,20 @@ import LimitUpgradeDialog from '@/components/client/goals/LimitUpgradeDialog';
 import { useBusinessJourney } from '@/components/hooks/useBusinessJourney';
 import { base44 } from '@/api/base44Client';
 import FirstGoalFlow from '@/components/client/goals/FirstGoalFlow';
+import FirstGoalFlow from '@/components/client/goals/FirstGoalFlow';
 
 export default function Summary() {
   const { data: user, isLoading: isUserLoading } = useAppAuth();
   const { data: activeJourney } = useBusinessJourney(user?.id);
-  const { data: goals = [] } = useGoals(user?.id ? { user_id: user.id } : {});
+  const { data: goals = [], refetch: refetchGoals } = useGoals(user?.id ? { user_id: user.id } : {});
   const createGoalMutation = useCreateGoal();
+
+  // Find active first goal
+  const activeFirstGoal = goals.find(g => 
+    g.is_first_goal && 
+    (g.status === 'active' || g.status === 'in_progress') &&
+    (g.flow_step || 1) < 8 // Assuming 8 is done/summary closed
+  );
   const logoutMutation = useLogout();
   
   const [activeTab, setActiveTab] = useState('summary');
@@ -298,26 +306,48 @@ export default function Summary() {
                       )}
                   </div>
 
-                  {unifiedRecommendation?.single_next_action && (
-                      <div className="w-full lg:w-[380px] pt-4">
-                          <div className="bg-gray-50 rounded-xl p-8 border border-gray-100">
-                              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
-                                המהלך האסטרטגי הבא
-                              </h3>
-                              
-                              <div className="text-2xl font-bold text-gray-900 leading-snug mb-6">
-                                  {unifiedRecommendation.single_next_action}
+                  {/* First Goal Flow or Strategic Move */}
+                  {activeFirstGoal ? (
+                      <div className="w-full lg:w-[450px] pt-4">
+                          <div className="bg-white rounded-2xl p-6 border-2 border-blue-100 shadow-lg relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                              <div className="relative z-10">
+                                <h3 className="text-sm font-bold text-blue-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                  <Target className="w-4 h-4" />
+                                  המטרה הראשונה שלך
+                                </h3>
+                                <FirstGoalFlow 
+                                  goal={activeFirstGoal} 
+                                  onComplete={() => {
+                                    base44.entities.UserGoal.update(activeFirstGoal.id, { flow_step: 8 });
+                                    refetchGoals();
+                                  }} 
+                                />
                               </div>
-                              
-                              <Button 
-                                  onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
-                                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg transition-all"
-                              >
-                                  מעבר לביצוע
-                                  <ArrowRight className="w-4 h-4 mr-2" />
-                              </Button>
                           </div>
                       </div>
+                  ) : (
+                      unifiedRecommendation?.single_next_action && (
+                        <div className="w-full lg:w-[380px] pt-4">
+                            <div className="bg-gray-50 rounded-xl p-8 border border-gray-100">
+                                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                  המהלך האסטרטגי הבא
+                                </h3>
+                                
+                                <div className="text-2xl font-bold text-gray-900 leading-snug mb-6">
+                                    {unifiedRecommendation.single_next_action}
+                                </div>
+                                
+                                <Button 
+                                    onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg transition-all"
+                                >
+                                    מעבר לביצוע
+                                    <ArrowRight className="w-4 h-4 mr-2" />
+                                </Button>
+                            </div>
+                        </div>
+                      )
                   )}
               </div>
             </motion.div>
