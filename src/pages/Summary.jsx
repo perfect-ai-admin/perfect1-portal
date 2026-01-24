@@ -273,14 +273,14 @@ export default function Summary() {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">
+        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-4 pb-12">
           <div className="max-w-4xl mx-auto w-full">
-            
+
             {/* 1. Hero Section: Super Minimalist Typography */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="py-12 mb-8"
+              className="pt-2 pb-8 mb-4"
             >
               <div className="flex flex-col lg:flex-row items-start justify-between gap-16">
                   
