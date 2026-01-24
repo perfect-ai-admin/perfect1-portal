@@ -22,10 +22,7 @@ export const GOAL_TEMPLATES = [
       { title: 'להגיע ל־20 לקוחות פעילים' },
       { title: 'להגיע ל־50 לקוחות פעילים' }
     ],
-    questions: [
-      { id: 'q1', label: 'כמה לקוחות פעילים יש לך היום?', placeholder: 'לדוגמה: 3' },
-      { id: 'q2', label: 'מה מקור הלקוחות העיקרי שלך כרגע?', placeholder: 'לדוגמה: המלצות מפה לאוזן' }
-    ]
+    questions: []
   },
   {
     id: 'monthly_income',
@@ -38,10 +35,7 @@ export const GOAL_TEMPLATES = [
       { title: 'הכנסה חודשית של 30,000 ₪' },
       { title: 'הכנסה חודשית של 70,000 ₪' }
     ],
-    questions: [
-      { id: 'q1', label: 'מה ההכנסה החודשית הממוצעת שלך היום?', placeholder: 'לדוגמה: ₪5,000' },
-      { id: 'q2', label: 'איזה שירות/מוצר יביא את הגידול בהכנסה?', placeholder: 'לדוגמה: חבילת ליווי פרימיום' }
-    ]
+    questions: []
   },
   {
     id: 'cashflow_stability',
@@ -54,10 +48,7 @@ export const GOAL_TEMPLATES = [
       { title: 'להישאר חיובי כל חודש בלי מינוס' },
       { title: 'כרית ביטחון של 2–3 חודשי פעילות' }
     ],
-    questions: [
-      { id: 'q1', label: 'מה ההוצאה החודשית הקבועה הכי גדולה שלך?', placeholder: 'לדוגמה: שכירות קליניקה' },
-      { id: 'q2', label: 'האם יש לך כרגע רזרבה בצד? כמה?', placeholder: 'לדוגמה: כן, כ-10,000 ש״ח' }
-    ]
+    questions: []
   },
   {
     id: 'quality_leads',
@@ -70,10 +61,7 @@ export const GOAL_TEMPLATES = [
       { title: '20 פניות איכותיות בחודש' },
       { title: '50 פניות איכותיות בחודש' }
     ],
-    questions: [
-      { id: 'q1', label: 'כמה פניות (לידים) מגיעות אליך בחודש ממוצע?', placeholder: 'לדוגמה: 2-3 בשבוע' },
-      { id: 'q2', label: 'מה מגדיר "ליד איכותי" עבורך?', placeholder: 'לדוגמה: לקוח שמוכן לשלם מראש' }
-    ]
+    questions: []
   },
   {
     id: 'conversion_rate',
@@ -86,10 +74,7 @@ export const GOAL_TEMPLATES = [
       { title: 'לסגור 1 מכל 3 פניות' },
       { title: 'לסגור 50% מהפניות' }
     ],
-    questions: [
-      { id: 'q1', label: 'מתוך 10 שיחות, כמה נסגרות בערך?', placeholder: 'לדוגמה: 1 או 2' },
-      { id: 'q2', label: 'מה הסיבה העיקרית שלקוחות אומרים "לא"?', placeholder: 'לדוגמה: יקר להם' }
-    ]
+    questions: []
   },
   {
     id: 'deal_value',
@@ -102,10 +87,7 @@ export const GOAL_TEMPLATES = [
       { title: 'מכירה של חבילה/שירות יקר יותר' },
       { title: 'מעבר ללקוחות פרימיום בלבד' }
     ],
-    questions: [
-      { id: 'q1', label: 'מתי בפעם האחרונה העלית מחירים?', placeholder: 'לדוגמה: לפני שנה' },
-      { id: 'q2', label: 'איזה ערך נוסף אתה יכול לתת כדי להצדיק מחיר גבוה?', placeholder: 'לדוגמה: זמינות גבוהה יותר בוואטסאפ' }
-    ]
+    questions: []
   },
   {
     id: 'time_saving',
@@ -118,10 +100,7 @@ export const GOAL_TEMPLATES = [
       { title: 'לעבוד עד 40 שעות בשבוע' },
       { title: 'לעבוד פחות מ־30 שעות בשבוע' }
     ],
-    questions: [
-      { id: 'q1', label: 'מהן המשימות שגוזלות ממך הכי הרבה זמן?', placeholder: 'לדוגמה: הצעות מחיר וגבייה' },
-      { id: 'q2', label: 'כמה שעות היית רוצה לעבוד בשבוע אידיאלי?', placeholder: 'לדוגמה: 30 שעות נטו' }
-    ]
+    questions: []
   },
   {
     id: 'business_control',
@@ -134,10 +113,7 @@ export const GOAL_TEMPLATES = [
       { title: 'לסיים שבוע בלי משימות פתוחות' },
       { title: 'לעבוד לפי סדר יום קבוע וברור' }
     ],
-    questions: [
-      { id: 'q1', label: 'איזה תחום בעסק מרגיש הכי מבולגן כרגע?', placeholder: 'לדוגמה: המשימות והפניות בוואטסאפ' },
-      { id: 'q2', label: 'באילו כלים אתה משתמש כרגע לניהול?', placeholder: 'לדוגמה: מחברת ופתקים' }
-    ]
+    questions: []
   },
   {
     id: 'marketing_engine',
@@ -150,10 +126,7 @@ export const GOAL_TEMPLATES = [
       { title: 'מערכת שמביאה פניות כל חודש' },
       { title: 'שיווק שעובד גם כשלא עובדים' }
     ],
-    questions: [
-      { id: 'q1', label: 'איזה ערוץ שיווקי עבד לך הכי טוב בעבר?', placeholder: 'לדוגמה: פייסבוק אורגני' },
-      { id: 'q2', label: 'מה התקציב או הזמן שאתה מוכן להשקיע בשיווק?', placeholder: 'לדוגמה: 500 ש״ח בחודש' }
-    ]
+    questions: []
   },
   {
     id: 'retention',
@@ -166,10 +139,7 @@ export const GOAL_TEMPLATES = [
       { title: 'למכור שוב ללקוחות קיימים' },
       { title: 'לייצור הכנסה חוזרת מאותו לקוח' }
     ],
-    questions: [
-      { id: 'q1', label: 'כל כמה זמן אתה יוצר קשר עם לקוחות עבר?', placeholder: 'לדוגמה: כמעט אף פעם' },
-      { id: 'q2', label: 'מה יש לך להציע להם כרגע?', placeholder: 'לדוגמה: שירות תחזוקה חדש' }
-    ]
+    questions: []
   },
   {
     id: 'reduce_stress',
@@ -182,10 +152,7 @@ export const GOAL_TEMPLATES = [
       { title: 'להרגיש שליטה ולא כיבוי שריפות' },
       { title: 'לשמור על אנרגיה לאורך זמן' }
     ],
-    questions: [
-      { id: 'q1', label: 'מה גורם לך להכי הרבה לחץ בעסק?', placeholder: 'לדוגמה: חוסר ודאות לגבי החודש הבא' },
-      { id: 'q2', label: 'מה הדבר שהכי היה מרגיע אותך עכשיו?', placeholder: 'לדוגמה: לדעת שיש הכנסה קבועה' }
-    ]
+    questions: []
   },
   {
     id: 'focus_direction',
@@ -198,10 +165,7 @@ export const GOAL_TEMPLATES = [
       { title: 'לוותר על לקוחות לא מתאימים' },
       { title: 'לדעת על מה אומרים "לא"' }
     ],
-    questions: [
-      { id: 'q1', label: 'האם יש לך יותר מדי שירותים? מהו "מוצר הדגל"?', placeholder: 'לדוגמה: כן, הטיפול הזוגי הוא העיקרי' },
-      { id: 'q2', label: 'מי הלקוח האידיאלי שאתה רוצה לעבוד רק איתו?', placeholder: 'לדוגמה: זוגות צעירים לפני חתונה' }
-    ]
+    questions: []
   }
 ];
 
@@ -472,23 +436,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
             <div className="space-y-2">
 
-              {/* Two Custom Questions */}
-              {selectedTemplate.questions && (
-                <div className="grid grid-cols-1 gap-2.5">
-                  {selectedTemplate.questions.map((q) => (
-                    <div key={q.id} className="space-y-1">
-                      <Label htmlFor={q.id} className="text-[11px] sm:text-xs font-semibold text-gray-600">{q.label}</Label>
-                      <Input
-                        id={q.id}
-                        value={customAnswers[q.id] || ''}
-                        onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                        placeholder={q.placeholder}
-                        className="h-8 sm:h-9 text-xs sm:text-sm"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
+
 
               {/* Urgency */}
               <div>
