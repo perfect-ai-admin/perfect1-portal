@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   Rocket, Brain, Zap, Award, ArrowRight, Lightbulb, Users, DollarSign, Target, TrendingUp, 
-  Crown, Shield, Sparkles, LogOut, HelpCircle, Globe, CreditCard, LogIn, User
+  Crown, Shield, Sparkles, LogOut, HelpCircle, Globe, CreditCard, LogIn, User, Check, Map, Lock
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -74,6 +74,9 @@ export default function Summary() {
 
   const businessState = user?.business_state || {};
   const stage = businessState?.stage || 'unknown';
+  const primaryChallenge = businessState?.primary_challenge;
+  const unifiedRecommendation = businessState?.unified_recommendation || {};
+  const clientTasks = user?.client_tasks || [];
 
   const stageLabels = {
     pre_revenue: 'לפני הכנסה ראשונה',
@@ -82,6 +85,24 @@ export default function Summary() {
     stable: 'יציב',
     declining: 'בירידה',
     crisis: 'במשבר'
+  };
+
+  const challengeLabels = {
+    no_leads: 'חוסר בלידים איכותיים',
+    low_conversion: 'קושי בסגירת עסקאות',
+    overload: 'עומס ולחץ תפעולי',
+    cash_flow: 'בעיות תזרים מזומנים',
+    retention: 'נטישת לקוחות',
+    focus: 'חוסר מיקוד עסקי'
+  };
+
+  const challengeDescriptions = {
+    no_leads: 'העסק זקוק ליותר פניות רלוונטיות כדי לצמוח.',
+    low_conversion: 'יש פניות, אבל הן לא הופכות לכסף בקופה.',
+    overload: 'אתה עובד קשה מדי ולא מצליח להתפנות לפיתוח העסק.',
+    cash_flow: 'יש פער בין העבודה שנעשית לבין הכסף שנכנס לבנק.',
+    retention: 'לקוחות לא חוזרים או עוזבים מהר מדי.',
+    focus: 'יש המון רעיונות וכיוונים, אבל חסר מסלול אחד ברור.'
   };
 
   const journeyStages = [
@@ -121,7 +142,7 @@ export default function Summary() {
   return (
     <>
       <Helmet>
-        <title>סיכום - {user.full_name} | Perfect One</title>
+        <title>אבחון וסיכום - {user.full_name} | Perfect One</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
@@ -211,177 +232,205 @@ export default function Summary() {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">          <div className="max-w-4xl mx-auto w-full">
-            {/* Hero Section */}
+        <main className="flex-1 overflow-y-auto px-3 sm:px-6 lg:px-8 py-8 pb-12">
+          <div className="max-w-4xl mx-auto w-full">
+            
+            {/* 1. Hero Section: Personal Diagnosis */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 text-white py-16 px-6 sm:px-8 rounded-2xl overflow-hidden mb-12"
+              className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#1E3A5F] text-white py-12 px-6 sm:px-10 rounded-3xl overflow-hidden mb-10 shadow-xl"
             >
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
               </div>
 
-              <div className="relative z-10 text-center">
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6 border border-white/20"
-                >
-                  <Crown className="w-4 h-4 text-amber-300" />
-                  <span className="text-sm font-medium">מצב העסק שלך</span>
-                </motion.div>
-
-                <motion.h1
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-4xl sm:text-5xl font-black mb-4 leading-tight"
-                >
-                  אתה נמצא בשלב:
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 mt-2">
-                    {stageLabels[stage]}
-                  </span>
-                </motion.h1>
-
-                <motion.p
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-lg sm:text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed"
-                >
-                  בהתאם לתשובות שלך, בנינו תוכנית מסודרת שתעזור לך להצליח בשלב זה של העסק
-                </motion.p>
-              </div>
-            </motion.div>
-
-            {/* Journey Timeline */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="mb-12"
-            >
-              <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">המסע שלך להצלחה</h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto text-center mb-8">
-                תהליך מובנה שמוכח שעובד - מהגדרת מטרה ועד להשגת תוצאות
-              </p>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {journeyStages.map((stage, idx) => {
-                  const Icon = stage.icon;
-                  return (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: idx * 0.1 }}
-                    >
-                      <Card className="p-6 h-full border-2 border-blue-200 hover:shadow-xl transition-all duration-300">
-                        <div className="flex flex-col items-center text-center gap-4">
-                          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${stage.color} flex items-center justify-center shadow-lg`}>
-                            <Icon className="w-8 h-8 text-white" />
-                          </div>
-                          <div className="space-y-2">
-                            <div className="text-sm font-bold text-gray-400">שלב {idx + 1}</div>
-                            <h3 className="font-bold text-gray-900 text-lg">{stage.title}</h3>
-                            <p className="text-sm text-gray-600 leading-relaxed">{stage.description}</p>
-                          </div>
+              <div className="relative z-10">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+                    
+                    {/* Stage & Challenge */}
+                    <div className="flex-1 text-center md:text-right">
+                        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full mb-6 border border-white/20">
+                            <Brain className="w-4 h-4 text-amber-300" />
+                            <span className="text-sm font-medium tracking-wide">תוצאות האבחון העסקי שלך</span>
                         </div>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
+
+                        <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
+                            העסק שלך בשלב: <br className="hidden md:block" />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-100">
+                                {stageLabels[stage]}
+                            </span>
+                        </h1>
+
+                        {primaryChallenge && (
+                            <div className="bg-white/10 rounded-2xl p-4 mt-6 border border-white/10 backdrop-blur-sm inline-block w-full md:max-w-xl">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <Target className="w-5 h-5 text-red-200" />
+                                    </div>
+                                    <div className="text-right">
+                                        <h3 className="text-lg font-bold text-white mb-1">
+                                            האתגר המרכזי שזיהינו: {challengeLabels[primaryChallenge]}
+                                        </h3>
+                                        <p className="text-blue-100 text-sm leading-relaxed">
+                                            {challengeDescriptions[primaryChallenge]}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Unified Recommendation Highlight */}
+                    {unifiedRecommendation?.single_next_action && (
+                        <motion.div 
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="w-full md:w-[320px] bg-white text-[#1E3A5F] rounded-2xl p-6 shadow-2xl relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-20 h-20 bg-amber-100 rounded-full blur-2xl -mr-10 -mt-10 opacity-60"></div>
+                            
+                            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">המיקוד שלך כרגע</h3>
+                            <div className="text-2xl font-black leading-tight mb-4">
+                                {unifiedRecommendation.single_next_action}
+                            </div>
+                            
+                            <div className="space-y-3 mb-6">
+                                <div className="flex items-start gap-2">
+                                    <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                    <span className="text-sm font-medium text-gray-700">זה הדבר שיביא לשינוי הגדול ביותר</span>
+                                </div>
+                                <div className="flex items-start gap-2">
+                                    <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                    <span className="text-sm font-medium text-gray-700">כל השאר יכול לחכות כרגע</span>
+                                </div>
+                            </div>
+
+                            <Button 
+                                onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                className="w-full bg-[#1E3A5F] hover:bg-[#162B47] text-white font-bold h-12 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                            >
+                                התחל לפעול עכשיו
+                                <ArrowRight className="w-4 h-4 mr-2" />
+                            </Button>
+                        </motion.div>
+                    )}
+                </div>
               </div>
             </motion.div>
 
-            {/* Why Mentor Section */}
-            <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 py-12 px-6 sm:px-8 rounded-2xl mb-12">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-8"
-              >
+            {/* 2. The Plan: Your Personal Roadmap */}
+            {clientTasks.length > 0 && (
+                <div className="mb-16">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl font-bold text-gray-900">תוכנית הפעולה שבנינו עבורך</h2>
+                        <p className="text-gray-600 mt-2">צעד אחר צעד, מהמצב הנוכחי ועד ליעד</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {clientTasks.map((task, idx) => {
+                            // First task is "Current", others are "Future"
+                            const isCurrent = idx === 0;
+                            return (
+                                <motion.div
+                                    key={task.id || idx}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className={`relative flex items-center gap-5 p-5 rounded-2xl border-2 transition-all duration-300 ${
+                                        isCurrent 
+                                        ? 'bg-white border-blue-500 shadow-xl scale-[1.02] z-10' 
+                                        : 'bg-white border-transparent hover:border-gray-200 shadow-sm opacity-80 hover:opacity-100'
+                                    }`}
+                                >
+                                    {/* Line connector */}
+                                    {idx < clientTasks.length - 1 && (
+                                        <div className="absolute top-1/2 right-[2.25rem] w-0.5 h-[calc(100%+16px)] bg-gray-100 -z-10 translate-y-1/2"></div>
+                                    )}
+
+                                    {/* Number/Icon */}
+                                    <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 text-xl font-bold border-4 ${
+                                        isCurrent 
+                                        ? 'bg-blue-600 border-blue-100 text-white shadow-lg' 
+                                        : 'bg-gray-100 border-white text-gray-400'
+                                    }`}>
+                                        {idx + 1}
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <h3 className={`font-bold text-lg ${isCurrent ? 'text-gray-900' : 'text-gray-600'}`}>
+                                                {task.title}
+                                            </h3>
+                                            {isCurrent && (
+                                                <span className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                                                    עכשיו
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-gray-500 text-sm">{task.description}</p>
+                                    </div>
+
+                                    {isCurrent ? (
+                                        <Button 
+                                            onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md whitespace-nowrap hidden sm:flex"
+                                        >
+                                            התחל משימה
+                                        </Button>
+                                    ) : (
+                                        <Lock className="w-5 h-5 text-gray-300 hidden sm:block" />
+                                    )}
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+
+
+            {/* 3. Why Us Section - Reassurance */}
+            <div className="bg-gradient-to-b from-white to-gray-50 rounded-3xl p-8 md:p-12 text-center border border-gray-100 shadow-sm mb-12">
+              <div className="max-w-2xl mx-auto">
+                <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3">
+                    <Shield className="w-8 h-8 text-green-600" />
+                </div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  למה אתה צריך מנטור עסקי?
+                  אנחנו איתך לאורך כל הדרך
                 </h2>
-                <p className="text-lg text-gray-600">
-                  ההבדל בין עסק שמצליח לעסק שנכשל לא תמיד בעבודה הקשה - אלא בכיוון הנכון
+                <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                  התוכנית שבנינו לך היא לא סתם רשימת משימות. היא מבוססת על ניתוח של אלפי עסקים דומים, 
+                  ומותאמת בדיוק לקצב וליכולות שלך. המנטור שלנו ילווה אותך, יזכיר לך מה חשוב, 
+                  ויעזור לך לקבל החלטות נכונות.
                 </p>
-              </motion.div>
-
-              <div className="grid sm:grid-cols-2 gap-6">
-                {[
-                  { icon: Brain, title: 'החלטות חכמות', desc: 'קבלת החלטות מבוססות נתונים' },
-                  { icon: Target, title: 'מיקוד ברור', desc: 'הפסקת בזבוז זמן על דברים לא חשובים' },
-                  { icon: TrendingUp, title: 'גדילה מהירה', desc: 'קיצור דרך להצלחה' },
-                  { icon: Shield, title: 'תמיכה מקצועית', desc: 'מישהו שתומך בך בכל זמן' }
-                ].map((item, idx) => {
-                  const Icon = item.icon;
-                  return (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: idx * 0.1 }}
-                    >
-                      <Card className="p-6 bg-white border-2 border-purple-200 hover:border-purple-400">
-                        <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
-                            <Icon className="w-6 h-6 text-white" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
-                            <p className="text-sm text-gray-600">{item.desc}</p>
-                          </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    {[
+                        { label: 'ליווי אישי', icon: Users },
+                        { label: 'תוכנית ברורה', icon: Map },
+                        { label: 'מיקוד יומי', icon: Target },
+                        { label: 'תוצאות בשטח', icon: TrendingUp }
+                    ].map((item, i) => (
+                        <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center gap-2">
+                            <item.icon className="w-6 h-6 text-blue-500" />
+                            <span className="font-bold text-gray-700 text-sm">{item.label}</span>
                         </div>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
+                    ))}
+                </div>
               </div>
             </div>
 
-            {/* CTA Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <Card className="p-8 sm:p-12 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 text-white border-0 shadow-2xl relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                  <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '30px 30px' }}></div>
-                </div>
-
-                <div className="relative z-10 text-center">
-                  <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                    <Rocket className="w-4 h-4" />
-                    <span className="text-sm font-semibold">הצעד הראשון שלך</span>
-                  </div>
-
-                  <h2 className="text-3xl sm:text-4xl font-black mb-4">
-                    בואו נתחיל עכשיו
-                  </h2>
-                  <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-                    התחל את המטרה הראשונה שבחרנו עבורך וקבל תוכנית פעולה מפורטת. המנטור שלך ילווה אותך בכל שלב.
-                  </p>
-
-                  <Button
+            {/* Bottom Sticky CTA on Mobile */}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 md:hidden z-40">
+                <Button 
                     onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
-                    size="lg"
-                    className="h-14 px-8 bg-white text-indigo-600 hover:bg-gray-100 font-bold text-lg shadow-xl"
-                  >
-                    <Sparkles className="w-5 h-5 ml-2" />
-                    התחל את המטרה הראשונה
-                    <ArrowRight className="w-5 h-5 mr-2" />
-                  </Button>
-                </div>
-              </Card>
-            </motion.div>
+                    className="w-full bg-[#1E3A5F] text-white font-bold h-12 rounded-xl shadow-lg"
+                >
+                    התחל את המשימה הראשונה
+                </Button>
+            </div>
           </div>
         </main>
       </div>
