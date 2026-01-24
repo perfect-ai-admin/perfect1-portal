@@ -22,6 +22,8 @@ export default function Summary() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [language, setLanguage] = useState('he');
+  const [showGoalDialog, setShowGoalDialog] = useState(false);
+  const [recommendedGoal, setRecommendedGoal] = useState(null);
 
   // Check authentication
   useEffect(() => {
