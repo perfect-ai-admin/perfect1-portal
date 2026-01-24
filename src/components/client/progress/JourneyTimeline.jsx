@@ -61,9 +61,8 @@ export default function JourneyTimeline() {
       nextAction: 'צפה בסיכום',
       action: () => {
         setSelectedStep(null);
-        // Navigate to Summary page with business state
         setTimeout(() => {
-          window.location.href = createPageUrl('Summary') + '?view=business-state';
+          navigate(createPageUrl('Summary'));
         }, 100);
       }
     }
