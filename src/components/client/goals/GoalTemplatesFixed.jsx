@@ -524,11 +524,11 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
         {/* Footer */}
         {selectedTemplate && (
-          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl flex gap-2 flex-shrink-0">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl flex gap-2 flex-shrink-0">
             <Button 
               onClick={handleCreate} 
               disabled={!goalTitle || isCreating}
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white h-11 font-semibold"
+              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white h-10 sm:h-11 font-semibold text-sm sm:text-base"
             >
               {isCreating ? (
                 <>
@@ -545,7 +545,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             <Button 
               variant="outline" 
               onClick={onClose}
-              className="px-4"
+              className="px-3 sm:px-4 text-sm"
             >
               ביטול
             </Button>
