@@ -59,7 +59,14 @@ export default function JourneyTimeline() {
       done: ['ניתחנו את המצב העסקי שלך', 'זיהינו את נקודות החוזק והאתגרים'],
       todo: [],
       nextAction: 'צפה בסיכום',
-      action: () => navigate(createPageUrl('Summary'))
+      action: () => {
+        // Scroll to top and close modal
+        setSelectedStep(null);
+        // Small delay to ensure modal is closed before scrolling
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+      }
     }
   };
 
