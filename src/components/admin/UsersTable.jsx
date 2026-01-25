@@ -80,6 +80,7 @@ export default function UsersTable(props) {
                 <table className="w-full">
                     <thead className="bg-gray-50">
                         <tr>
+                            <th className="text-right p-4 font-semibold text-gray-700">תאריך הצטרפות</th>
                             <th className="text-right p-4 font-semibold text-gray-700">שם</th>
                             <th className="text-right p-4 font-semibold text-gray-700">אימייל</th>
                             <th className="text-right p-4 font-semibold text-gray-700">טלפון</th>
@@ -92,6 +93,9 @@ export default function UsersTable(props) {
                     <tbody>
                         {filteredUsers.map(user => (
                             <tr key={user.id} className="border-b hover:bg-gray-50">
+                                <td className="p-4 text-gray-600">
+                                    {new Date(user.created_date).toLocaleDateString('he-IL')}
+                                </td>
                                 <td className="p-4">
                                     <div className="font-medium">{user.full_name}</div>
                                     {user.is_admin && (

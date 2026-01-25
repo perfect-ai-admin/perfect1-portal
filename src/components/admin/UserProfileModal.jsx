@@ -27,10 +27,39 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
     const [plans, setPlans] = useState([]);
     const [selectedPlan, setSelectedPlan] = useState(user.current_plan_id || '');
     const [saving, setSaving] = useState(false);
+    const [journeyData, setJourneyData] = useState(null);
 
     useEffect(() => {
         loadPlans();
+        loadJourneyStatus();
     }, []);
+
+    const loadJourneyStatus = async () => {
+        try {
+            // Check BusinessJourney entity first (direct user link)
+            const journeys = await base44.entities.BusinessJourney.filter({ user_id: user.id });
+            if (journeys.data && journeys.data.length > 0) {
+                setJourneyData({ started: true, type: 'business_journey', data: journeys.data[0] });
+                return;
+            }
+
+            // Check CRMLead by email as fallback
+            if (user.email) {
+                const leads = await base44.entities.CRMLead.filter({ email: user.email });
+                if (leads.data && leads.data.length > 0) {
+                    const lead = leads.data[0];
+                    const hasStarted = lead.journey_stage !== 'lead_new' || 
+                                     (lead.business_journey_answers && Object.keys(lead.business_journey_answers).length > 0);
+                    
+                    if (hasStarted) {
+                        setJourneyData({ started: true, type: 'crm_lead', data: lead });
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error checking journey status:", error);
+        }
+    };
 
     const loadPlans = async () => {
         const allPlans = await base44.entities.Plan.list();
@@ -141,6 +170,22 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 checked={formData.is_admin}
                                 onCheckedChange={(checked) => setFormData({...formData, is_admin: checked})}
                             />
+                        </div>
+
+                        {/* Journey Status Indicator */}
+                        <div className={`p-4 rounded-lg flex items-center justify-between ${journeyData ? 'bg-blue-50 border border-blue-100' : 'bg-gray-50'}`}>
+                            <div className="flex items-center gap-3">
+                                <Target className={`w-5 h-5 ${journeyData ? 'text-blue-600' : 'text-gray-400'}`} />
+                                <div>
+                                    <div className="font-medium text-gray-900">סטטוס מסע לקוח</div>
+                                    <div className="text-sm text-gray-500">
+                                        {journeyData ? 'התחיל את תהליך המסע הראשוני' : 'טרם התחיל מסע'}
+                                    </div>
+                                </div>
+                            </div>
+                            {journeyData && (
+                                <Badge className="bg-blue-600 hover:bg-blue-700">פעיל</Badge>
+                            )}
                         </div>
                     </TabsContent>
 
