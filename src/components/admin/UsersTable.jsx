@@ -3,7 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Edit, UserCog, Loader2 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare } from 'lucide-react';
 import UserProfileModal from './UserProfileModal';
 
 export default function UsersTable(props) {
@@ -11,6 +13,11 @@ export default function UsersTable(props) {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const [bulkAction, setBulkAction] = useState('');
+    const [bulkStatus, setBulkStatus] = useState('');
+    const [bulkPlan, setBulkPlan] = useState('');
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         loadUsers();
@@ -58,6 +65,75 @@ export default function UsersTable(props) {
         u.phone?.includes(search)
     );
 
+    const toggleSelectAll = () => {
+        if (selectedUserIds.length === filteredUsers.length) {
+            setSelectedUserIds([]);
+        } else {
+            setSelectedUserIds(filteredUsers.map(u => u.id));
+        }
+    };
+
+    const toggleSelectUser = (userId) => {
+        setSelectedUserIds(prev => 
+            prev.includes(userId) 
+                ? prev.filter(id => id !== userId)
+                : [...prev, userId]
+        );
+    };
+
+    const handleBulkAction = async () => {
+        if (selectedUserIds.length === 0) {
+            alert('לא נבחרו משתמשים');
+            return;
+        }
+
+        if (!bulkAction) {
+            alert('בחר פעולה לביצוע');
+            return;
+        }
+
+        if (bulkAction === 'delete') {
+            if (!confirm(`האם אתה בטוח שברצונך למחוק ${selectedUserIds.length} משתמשים?`)) {
+                return;
+            }
+        }
+
+        if (bulkAction === 'status' && !bulkStatus) {
+            alert('בחר סטטוס');
+            return;
+        }
+
+        if (bulkAction === 'plan' && !bulkPlan) {
+            alert('בחר מסלול');
+            return;
+        }
+
+        setIsProcessing(true);
+        try {
+            for (const userId of selectedUserIds) {
+                if (bulkAction === 'delete') {
+                    await base44.entities.User.delete(userId);
+                } else if (bulkAction === 'status') {
+                    await base44.entities.User.update(userId, { status: bulkStatus });
+                } else if (bulkAction === 'plan') {
+                    await base44.entities.User.update(userId, { current_plan_id: bulkPlan });
+                }
+            }
+            
+            alert('הפעולה בוצעה בהצלחה');
+            setSelectedUserIds([]);
+            setBulkAction('');
+            setBulkStatus('');
+            setBulkPlan('');
+            await loadUsers();
+        } catch (error) {
+            console.error('Bulk action error:', error);
+            alert('שגיאה בביצוע הפעולה');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="bg-white rounded-xl shadow-md p-8 flex items-center justify-center">
@@ -68,8 +144,8 @@ export default function UsersTable(props) {
 
     return (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            {/* Search */}
-            <div className="p-6 border-b">
+            {/* Search & Bulk Actions */}
+            <div className="p-6 border-b space-y-4">
                 <div className="relative">
                     <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <Input
@@ -79,6 +155,79 @@ export default function UsersTable(props) {
                         className="pr-10"
                     />
                 </div>
+
+                {/* Bulk Actions Panel */}
+                {selectedUserIds.length > 0 && (
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                            <div className="flex items-center gap-2">
+                                <CheckSquare className="w-5 h-5 text-blue-600" />
+                                <span className="font-bold text-blue-900">
+                                    נבחרו {selectedUserIds.length} משתמשים
+                                </span>
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => setSelectedUserIds([])}
+                                    className="text-blue-600 hover:text-blue-800"
+                                >
+                                    <XSquare className="w-4 h-4 ml-1" />
+                                    בטל בחירה
+                                </Button>
+                            </div>
+
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Select value={bulkAction} onValueChange={setBulkAction}>
+                                    <SelectTrigger className="w-40">
+                                        <SelectValue placeholder="בחר פעולה" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="delete">מחיקה</SelectItem>
+                                        <SelectItem value="status">שינוי סטטוס</SelectItem>
+                                        <SelectItem value="plan">שינוי מסלול</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                {bulkAction === 'status' && (
+                                    <Select value={bulkStatus} onValueChange={setBulkStatus}>
+                                        <SelectTrigger className="w-32">
+                                            <SelectValue placeholder="סטטוס" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="active">פעיל</SelectItem>
+                                            <SelectItem value="paused">מושהה</SelectItem>
+                                            <SelectItem value="blocked">חסום</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+
+                                {bulkAction === 'plan' && (
+                                    <Input
+                                        placeholder="Plan ID"
+                                        value={bulkPlan}
+                                        onChange={(e) => setBulkPlan(e.target.value)}
+                                        className="w-40"
+                                    />
+                                )}
+
+                                <Button
+                                    onClick={handleBulkAction}
+                                    disabled={isProcessing || !bulkAction}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                                >
+                                    {isProcessing ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                                            מעבד...
+                                        </>
+                                    ) : (
+                                        'בצע פעולה'
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Table */}
@@ -86,6 +235,12 @@ export default function UsersTable(props) {
                 <table className="w-full">
                     <thead className="bg-gray-50">
                         <tr>
+                            <th className="p-4 w-12">
+                                <Checkbox
+                                    checked={selectedUserIds.length === filteredUsers.length && filteredUsers.length > 0}
+                                    onCheckedChange={toggleSelectAll}
+                                />
+                            </th>
                             <th className="text-right p-4 font-semibold text-gray-700">תאריך הצטרפות</th>
                             <th className="text-right p-4 font-semibold text-gray-700">שם</th>
                             <th className="text-right p-4 font-semibold text-gray-700">אימייל</th>
@@ -100,6 +255,12 @@ export default function UsersTable(props) {
                     <tbody>
                         {filteredUsers.map(user => (
                             <tr key={user.id} className="border-b hover:bg-gray-50">
+                                <td className="p-4 w-12">
+                                    <Checkbox
+                                        checked={selectedUserIds.includes(user.id)}
+                                        onCheckedChange={() => toggleSelectUser(user.id)}
+                                    />
+                                </td>
                                 <td className="p-4 text-gray-600">
                                     {new Date(user.created_date).toLocaleDateString('he-IL')}
                                 </td>
