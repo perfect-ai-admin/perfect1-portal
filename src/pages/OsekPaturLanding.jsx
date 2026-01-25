@@ -291,7 +291,7 @@ export default function OsekPaturLanding() {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                   <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg shadow-green-900/20 transform hover:-translate-y-1 transition-all">
                     <Target className="ml-2 w-5 h-5" />
-                    השאר פרטים ונפתח לך עסק פטור
+                    פתיחת עוסק פטור בקליק
                   </Button>
                   <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-4 sm:px-8 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white text-[#1E3A5F] hover:bg-white/90 shadow-lg">
