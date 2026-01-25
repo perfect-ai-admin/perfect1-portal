@@ -75,26 +75,34 @@ Deno.serve(async (req) => {
 
         // אם לא נמצא משתמש - יצירת ליד חדש
         if (!user) {
-            console.log('Creating new CRMLead for:', phoneNumber);
-            const newLead = await base44.asServiceRole.entities.CRMLead.create({
-                full_name: senderData.senderName || 'WhatsApp User',
-                phone: phoneNumber,
-                source: 'WhatsApp',
-                journey_stage: 'lead_new',
-                active_handler: 'mentor',
-                chat_history: [{
-                    role: 'user',
-                    content: messageText,
-                    timestamp: new Date().toISOString()
-                }]
-            });
+            console.log('📝 Creating new CRMLead for:', phoneNumber);
+            try {
+                const newLead = await base44.asServiceRole.entities.CRMLead.create({
+                    full_name: senderData?.senderName || 'WhatsApp User',
+                    phone: phoneNumber,
+                    source: 'WhatsApp',
+                    journey_stage: 'lead_new',
+                    active_handler: 'mentor',
+                    chat_history: [{
+                        role: 'user',
+                        content: messageText,
+                        timestamp: new Date().toISOString()
+                    }]
+                });
 
-            // שליחת הודעת ברוכים הבאים
-            await sendWhatsAppMessage(phoneNumber, 
-                'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?'
-            );
+                user = newLead;
+                console.log('✅ New lead created:', newLead.id);
 
-            return Response.json({ status: 'new_lead_created', lead_id: newLead.id });
+                // שליחת הודעת ברוכים הבאים
+                await sendWhatsAppMessage(phoneNumber, 
+                    'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?'
+                );
+
+                return Response.json({ status: 'new_lead_created', lead_id: newLead.id });
+            } catch (err) {
+                console.error('❌ Error creating new lead:', err.message);
+                throw err;
+            }
         }
 
         // בדיקה אם המשתמש במצב 'נא לא ליצור קשר'
