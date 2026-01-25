@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare, Info } from 'lucide-react';
 import UserProfileModal from './UserProfileModal';
 
 export default function UsersTable(props) {
@@ -247,7 +248,24 @@ export default function UsersTable(props) {
                             <th className="text-right p-4 font-semibold text-gray-700">מסע לקוח</th>
                             <th className="text-right p-4 font-semibold text-gray-700">טלפון</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מסלול</th>
-                            <th className="text-right p-4 font-semibold text-gray-700">סטטוס</th>
+                            <th className="text-right p-4 font-semibold text-gray-700">
+                                <div className="flex items-center gap-2 justify-end">
+                                    סטטוס
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger>
+                                                <Info className="w-4 h-4 text-gray-400" />
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-xs">
+                                                <p className="font-bold mb-2">סטטוסים:</p>
+                                                <p className="text-sm mb-1">🟢 <strong>פעיל:</strong> גישה מלאה + הודעות WhatsApp מהמנטורים</p>
+                                                <p className="text-sm mb-1">🟡 <strong>מושהה:</strong> גישה למערכת (שיווק, פיננסים) ללא הודעות WhatsApp</p>
+                                                <p className="text-sm">🔴 <strong>חסום:</strong> ללא גישה למערכת</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
+                            </th>
                             <th className="text-right p-4 font-semibold text-gray-700">מודולים</th>
                             <th className="text-right p-4 font-semibold text-gray-700">פעולות</th>
                         </tr>
@@ -289,16 +307,29 @@ export default function UsersTable(props) {
                                     )}
                                 </td>
                                 <td className="p-4">
-                                    <Badge 
-                                        className={
-                                            user.status === 'active' ? 'bg-green-100 text-green-800' :
-                                            user.status === 'paused' ? 'bg-yellow-100 text-yellow-800' :
-                                            'bg-red-100 text-red-800'
-                                        }
-                                    >
-                                        {user.status === 'active' ? 'פעיל' : 
-                                         user.status === 'paused' ? 'מושהה' : 'חסום'}
-                                    </Badge>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger>
+                                                <Badge 
+                                                    className={
+                                                        user.status === 'active' ? 'bg-green-100 text-green-800 cursor-help' :
+                                                        user.status === 'paused' ? 'bg-yellow-100 text-yellow-800 cursor-help' :
+                                                        'bg-red-100 text-red-800 cursor-help'
+                                                    }
+                                                >
+                                                    {user.status === 'active' ? '🟢 פעיל' : 
+                                                     user.status === 'paused' ? '🟡 מושהה' : '🔴 חסום'}
+                                                </Badge>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p className="text-sm">
+                                                    {user.status === 'active' ? 'גישה מלאה + הודעות WhatsApp' :
+                                                     user.status === 'paused' ? 'גישה למערכת ללא הודעות WhatsApp' :
+                                                     'ללא גישה'}
+                                                </p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                                 </td>
                                 <td className="p-4">
                                     <div className="flex gap-1">
