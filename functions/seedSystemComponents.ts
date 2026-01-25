@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
         }
 
         const components = [
-            // ===== AI AGENTS (BOTS) =====
+            // ===== AI AGENTS (BOTS) - כל 16 הסוכנים =====
             {
                 name: 'idea_formulation',
                 category: 'bots',
@@ -60,6 +60,105 @@ Deno.serve(async (req) => {
                 file_path: 'agents/customer_acquisition.json',
                 dependencies: ['Campaign', 'CRMLead']
             },
+            {
+                name: 'osek_patur_setup',
+                category: 'bots',
+                short_description: 'סוכן להתאמה אישית של עוסק פטור',
+                full_description: 'מייצר תוכנית פעולה מותאמת לפתיחת עוסק פטור. מנחה בשלבים: מילוי פרטים, טפסים, הגשת דוחות. לומד מהמשתמש ומתאים עצמו.',
+                is_active: true,
+                file_path: 'agents/osek_patur_setup.json',
+                dependencies: ['CRMLead', 'Timeline', 'ScheduledEvent']
+            },
+            {
+                name: 'quality_leads',
+                category: 'bots',
+                short_description: 'זיהוי ושיפור איכות לידים',
+                full_description: 'סוכן שמנתח לידים קיימים ומציע דרכים לשפר את איכותם. מזהה דפוסים של לידים איכותיים ומסייע למקד מאמצים.',
+                is_active: true,
+                file_path: 'agents/quality_leads.json',
+                dependencies: ['CRMLead', 'OptimizationSuggestion']
+            },
+            {
+                name: 'recurring_income',
+                category: 'bots',
+                short_description: 'בניית מודלים להכנסה חוזרת',
+                full_description: 'סוכן שמנחה בבניית מוצרים/שירותים עם הכנסה חוזרת. מציע מודלים עסקיים, תמחור, ושיווק למנויים.',
+                is_active: true,
+                file_path: 'agents/recurring_income.json',
+                dependencies: ['UserGoal', 'ScheduledEvent']
+            },
+            {
+                name: 'price_optimization',
+                category: 'bots',
+                short_description: 'אופטימיזציה של מודל התמחור',
+                full_description: 'מנתח מודל תמחור קיים ומציע אופטימיזציה: תמחור מבוסס ערך, תמחור תחרותי, מודלי מנוי. משפר את שולי הרווח.',
+                is_active: true,
+                file_path: 'agents/price_optimization.json',
+                dependencies: ['UserGoal', 'OptimizationSuggestion']
+            },
+            {
+                name: 'conversion_rate',
+                category: 'bots',
+                short_description: 'שיפור יחס ההמרה',
+                full_description: 'סוכן שמנתח את תהליך ההמרה ומציע דרכים לשפרו: דפי נחיתה, מסרים, קריאה לפעולה. משפר את אחוז ההמרה.',
+                is_active: true,
+                file_path: 'agents/conversion_rate.json',
+                dependencies: ['LandingPage', 'OptimizationSuggestion']
+            },
+            {
+                name: 'business_systems',
+                category: 'bots',
+                short_description: 'בניית מערכות ופרוטוקולים לעסק',
+                full_description: 'מנחה בבניית מערכות אוטומטיות ופרוטוקולים לעסק: ניהול לקוחות, שיווק, מכירות, תפעול. משפר יעילות ופיריון.',
+                is_active: true,
+                file_path: 'agents/business_systems.json',
+                dependencies: ['UserGoal', 'ScheduledEvent']
+            },
+            {
+                name: 'time_optimization',
+                category: 'bots',
+                short_description: 'אופטימיזציה של ניהול זמן',
+                full_description: 'סוכן שמסייע למשתמש לייעל את ניהול הזמן: תעדוף משימות, חלוקת זמן, מניעת הסחות דעת. משפר פרודוקטיביות.',
+                is_active: true,
+                file_path: 'agents/time_optimization.json',
+                dependencies: ['DailyFocus', 'ScheduledEvent']
+            },
+            {
+                name: 'marketing_machine',
+                category: 'bots',
+                short_description: 'הפיכת שיווק למכונה אוטומטית',
+                full_description: 'מנחה בהקמת מערך שיווק אוטומטי: משפכים, קמפיינים, אוטומציות. הופך את השיווק לכוח מניע קבוע.',
+                is_active: true,
+                file_path: 'agents/marketing_machine.json',
+                dependencies: ['Campaign', 'ScheduledEvent', 'OptimizationSuggestion']
+            },
+            {
+                name: 'customer_retention',
+                category: 'bots',
+                short_description: 'שימור לקוחות קיימים',
+                full_description: 'סוכן שמציע דרכים לשימור לקוחות: תוכניות נאמנות, תקשורת, שירות לקוחות. מונע נטישה ומגדיל ערך לקוח.',
+                is_active: true,
+                file_path: 'agents/customer_retention.json',
+                dependencies: ['CRMLead', 'Intervention']
+            },
+            {
+                name: 'business_focus',
+                category: 'bots',
+                short_description: 'מיקוד עסקי וניתוח סטרטגיה',
+                full_description: 'סוכן שמסייע למשתמש למקד את העסק: זיהוי נישות, בידול, יתרון תחרותי. מנקה רעשים ומבהיר כיוון.',
+                is_active: true,
+                file_path: 'agents/business_focus.json',
+                dependencies: ['UserGoal', 'Intervention']
+            },
+            {
+                name: 'stress_reduction',
+                category: 'bots',
+                short_description: 'הפחתת סטרס ושיפור רווחה נפשית',
+                full_description: 'סוכן שמציע כלים וטכניקות להפחתת סטרס ושיפור הרווחה הנפשית של המשתמש: תרגילים, מדיטציות, ניהול לחצים.',
+                is_active: true,
+                file_path: 'agents/stress_reduction.json',
+                dependencies: ['UserMemory', 'Intervention']
+            },
 
             // ===== BACKEND FUNCTIONS =====
             {
@@ -88,6 +187,15 @@ Deno.serve(async (req) => {
                 is_active: true,
                 file_path: 'functions/smartMentorEngine.js',
                 dependencies: ['UserMemory', 'ContentBank', 'Timeline', 'UserGoal']
+            },
+            {
+                name: 'qualityLearningBrain',
+                category: 'backend_functions',
+                short_description: 'מנתח את איכות הלמידה וההתקדמות של המשתמש',
+                full_description: 'פונקציה המנתחת את נתוני איכות הלמידה של המשתמש, מזהה דפוסים, נקודות תורפה, ומציעה התאמות למסלול הלמידה. משמש כמנוע אופטימיזציה לשיפור חווית המשתמש והישגיו.',
+                is_active: true,
+                file_path: 'functions/qualityLearningBrain.js',
+                dependencies: ['UserMemory', 'Timeline', 'QualityInsight']
             },
             {
                 name: 'whatsappMiddleware',
@@ -242,6 +350,42 @@ Deno.serve(async (req) => {
                 full_description: 'מתעד את שלב העסק (רעיון, עסק חדש, פעיל, יציב, מתרחב), משימות אסטרטגיות, ומטרה מומלצת. נוצר מניתוח שאלון.',
                 is_active: true,
                 file_path: 'entities/BusinessJourney.json',
+                dependencies: []
+            },
+            {
+                name: 'OptimizationSuggestion',
+                category: 'entities',
+                short_description: 'הצעות לשיפור ואופטימיזציה',
+                full_description: 'מכיל הצעות AI לשיפור המערכת, תהליכים, תוכן, וחוויית משתמש.',
+                is_active: true,
+                file_path: 'entities/OptimizationSuggestion.json',
+                dependencies: []
+            },
+            {
+                name: 'QualityInsight',
+                category: 'entities',
+                short_description: 'תובנות איכות על הלמידה וההתקדמות',
+                full_description: 'מכיל ניתוחי איכות תקופתיים על ההתקדמות, בעיות, והצלחות.',
+                is_active: true,
+                file_path: 'entities/QualityInsight.json',
+                dependencies: []
+            },
+            {
+                name: 'ScheduledEvent',
+                category: 'entities',
+                short_description: 'אירועים מתוזמנים',
+                full_description: 'מנהל אירועים ומשימות מתוזמנים במערכת.',
+                is_active: true,
+                file_path: 'entities/ScheduledEvent.json',
+                dependencies: []
+            },
+            {
+                name: 'Intervention',
+                category: 'entities',
+                short_description: 'התערבויות והתראות',
+                full_description: 'מתעד התערבויות של המערכת כשמזוהה צורך בשינוי או התייחסות מיוחדת.',
+                is_active: true,
+                file_path: 'entities/Intervention.json',
                 dependencies: []
             },
             {
