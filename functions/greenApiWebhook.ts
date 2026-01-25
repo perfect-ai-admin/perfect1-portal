@@ -102,19 +102,24 @@ Deno.serve(async (req) => {
             }
         });
 
-        console.log('Mentor response:', mentorResponse.data);
+        console.log('Smart Mentor Engine response:', mentorResponse.data);
 
-        if (mentorResponse.data?.response) {
+        // extracting the response/insights from the smart mentor engine
+        const smartResponse = mentorResponse.data?.insights?.recommendation || 
+                             mentorResponse.data?.response ||
+                             mentorResponse.data?.suggestion;
+
+        if (smartResponse) {
             console.log('Sending WhatsApp message to:', phoneNumber);
-            await sendWhatsAppMessage(phoneNumber, mentorResponse.data.response);
-            
+            await sendWhatsAppMessage(phoneNumber, smartResponse);
+
             chatHistory.push({
                 role: 'assistant',
-                content: mentorResponse.data.response,
+                content: smartResponse,
                 timestamp: new Date().toISOString()
             });
         } else {
-            console.error('No response from mentor:', mentorResponse);
+            console.error('No response from smart mentor engine:', mentorResponse);
         }
 
         // עדכון היסטוריית השיחה
