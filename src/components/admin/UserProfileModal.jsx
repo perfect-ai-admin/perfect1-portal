@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, X, User, Shield, Target } from 'lucide-react';
+import { Save, X, User, Shield, Target, Info } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function UserProfileModal({ user, onClose, onUpdate }) {
@@ -175,11 +175,22 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="active">פעיל</SelectItem>
-                                        <SelectItem value="paused">מושהה</SelectItem>
-                                        <SelectItem value="blocked">חסום</SelectItem>
+                                        <SelectItem value="active">🟢 פעיל - גישה מלאה + WhatsApp</SelectItem>
+                                        <SelectItem value="paused">🟡 מושהה - גישה למערכת ללא WhatsApp</SelectItem>
+                                        <SelectItem value="blocked">🔴 חסום - ללא גישה</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <div className="flex items-start gap-2">
+                                        <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                                        <div className="text-xs text-blue-800 leading-relaxed">
+                                            <p className="font-bold mb-1">הבדלים בין הסטטוסים:</p>
+                                            <p className="mb-1">🟢 <strong>פעיל:</strong> גישה מלאה למערכת + קבלת הודעות WhatsApp מהמנטורים</p>
+                                            <p className="mb-1">🟡 <strong>מושהה:</strong> גישה מלאה למערכת (שיווק, פיננסים, עיצוב) אך ללא הודעות WhatsApp מהמנטורים</p>
+                                            <p>🔴 <strong>חסום:</strong> חסימה מוחלטת - ללא גישה למערכת</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
