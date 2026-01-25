@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import HeroGoal from '../goals/HeroGoal';
+import FirstGoalFlow from '../goals/FirstGoalFlow';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import BusinessRoadmap from '../goals/BusinessRoadmap';
 import GoalTemplates, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
