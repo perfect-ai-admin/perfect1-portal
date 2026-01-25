@@ -172,7 +172,7 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     }
 
     // פורמט נכון של Green-API
-    const url = `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
+    const url = `https://api.green-api.com/waInstance${instanceId}/sendMessage/${apiToken}`;
     
     const payload = {
         chatId: `${phoneNumber}@c.us`,
