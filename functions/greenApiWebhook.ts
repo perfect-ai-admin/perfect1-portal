@@ -127,11 +127,13 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
-        console.error('Green-API webhook error:', error);
+        console.error('❌ Green-API webhook error:', error.message);
+        console.error('Error stack:', error.stack);
+        // לא זורקים תשובת שגיאה - מחזירים 200 כדי שGreen-API יוותר בשקט
         return Response.json({ 
-            error: error.message,
-            stack: error.stack 
-        }, { status: 500 });
+            status: 'error',
+            error: error.message 
+        }, { status: 200 });
     }
 });
 
