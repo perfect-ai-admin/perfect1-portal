@@ -37,6 +37,19 @@ export default function FirstGoalMentorChat({ goal, onComplete }) {
       });
 
       if (response.data.success) {
+        // שלח הודעת וואצאפ עם ההודעה הראשונה
+        const firstMessage = response.data.messages[0];
+        if (firstMessage) {
+          try {
+            await base44.functions.invoke('smartMentorEngine', {
+              action: 'send_whatsapp',
+              content: firstMessage.content
+            });
+          } catch (whatsappErr) {
+            console.warn('Failed to send WhatsApp message:', whatsappErr);
+          }
+        }
+
         // הצגת ההודעות עם השהיות
         for (const msg of response.data.messages) {
           await displayMessageWithDelay(msg);
