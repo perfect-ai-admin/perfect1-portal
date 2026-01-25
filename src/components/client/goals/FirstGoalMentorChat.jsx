@@ -43,7 +43,8 @@ export default function FirstGoalMentorChat({ goal, onComplete }) {
           try {
             await base44.functions.invoke('smartMentorEngine', {
               action: 'send_whatsapp',
-              content: firstMessage.content
+              content: firstMessage.content,
+              goal_id: goal.id
             });
           } catch (whatsappErr) {
             console.warn('Failed to send WhatsApp message:', whatsappErr);
