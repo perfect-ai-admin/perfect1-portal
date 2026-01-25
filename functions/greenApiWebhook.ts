@@ -184,7 +184,7 @@ async function sendWhatsAppMessage(phoneNumber, message) {
 
     console.log('Attempting to send WhatsApp message:');
     console.log('- To:', phoneNumber);
-    console.log('- URL:', `https://api.green-api.com/waInstance${instanceId}/sendMessage/***`);
+    console.log('- URL:', `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
     console.log('- Payload:', JSON.stringify(payload));
 
     const response = await fetch(url, {
