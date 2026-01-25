@@ -189,6 +189,15 @@ Deno.serve(async (req) => {
                 dependencies: ['UserMemory', 'ContentBank', 'Timeline', 'UserGoal']
             },
             {
+                name: 'firstGoalMentorFlow',
+                category: 'backend_functions',
+                short_description: 'פלואו המנטור למטרה הראשונה עם מנגנון למידה עצמית',
+                full_description: 'מנהל את האינטראקציה הראשונית עם המשתמש במטרה הראשונה. כולל השהיות מתוזמנות, עצירות להמתנה לתגובות, ומנגנון למידה עצמית שמנתח אפקטיביות ומשפר את התבניות לאורך זמן. הפלואו בנוי על עקרונות פסיכולוגיים של בניית אמון וקצב.',
+                is_active: true,
+                file_path: 'functions/firstGoalMentorFlow.js',
+                dependencies: ['UserGoal', 'MentorFlowLog', 'InvokeLLM']
+            },
+            {
                 name: 'qualityLearningBrain',
                 category: 'backend_functions',
                 short_description: 'מנתח את איכות הלמידה וההתקדמות של המשתמש',
@@ -389,6 +398,15 @@ Deno.serve(async (req) => {
                 dependencies: []
             },
             {
+                name: 'MentorFlowLog',
+                category: 'entities',
+                short_description: 'תיעוד ולמידה מפלואו המנטור הראשון',
+                full_description: 'מתעד כל אינטראקציה בפלואו המנטור למטרה הראשונה: הודעות, תגובות, זמני תגובה, סנטימנט, אפקטיביות. משמש למנגנון הלמידה העצמית שמשפר את התבניות והטקסטים לאורך זמן על בסיס נתונים אמיתיים.',
+                is_active: true,
+                file_path: 'entities/MentorFlowLog.json',
+                dependencies: []
+            },
+            {
                 name: 'Plan',
                 category: 'entities',
                 short_description: 'תוכניות תמחור ומנויים',
@@ -484,10 +502,19 @@ Deno.serve(async (req) => {
                 name: 'FirstGoalFlow',
                 category: 'client_features',
                 short_description: 'פלואו להגדרת המטרה הראשונה',
-                full_description: 'תהליך מובנה בשלבים להגדרת המטרה הראשונה: בחירת מטרה, שאלות הבהרה, יצירת תוכנית, אישור והפעלה.',
+                full_description: 'תהליך מובנה בשלבים להגדרת המטרה הראשונה: בחירת מטרה, שאלות הבהרה, יצירת תוכנית, אישור והפעלה. עבור מטרה ראשונה משתמש בצ\'אט מנטור אינטראקטיבי עם פלואו פסיכולוגי.',
                 is_active: true,
                 file_path: 'components/client/goals/FirstGoalFlow.js',
-                dependencies: ['UserGoal', 'generateGoalPlan']
+                dependencies: ['UserGoal', 'generateGoalPlan', 'FirstGoalMentorChat']
+            },
+            {
+                name: 'FirstGoalMentorChat',
+                category: 'client_features',
+                short_description: 'צ\'אט המנטור למטרה הראשונה',
+                full_description: 'ממשק צ\'אט אינטראקטיבי למטרה הראשונה. מציג הודעות עם השהיות מתוזמנות, ממתין לתגובות משתמש, ומתאים את עצמו בזמן אמת. בנוי על עקרונות פסיכולוגיים של בניית אמון, קצב רגוע, ועצירות להבנה.',
+                is_active: true,
+                file_path: 'components/client/goals/FirstGoalMentorChat.js',
+                dependencies: ['firstGoalMentorFlow', 'UserGoal']
             },
             {
                 name: 'BusinessJourneyQuestionnaire',

@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Sparkles, Brain, Target, Flag } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import FirstGoalMentorChat from './FirstGoalMentorChat';
 
 const steps = [
   { id: 1, title: "מודעות ראשונית" },
@@ -20,6 +21,7 @@ const steps = [
 ];
 
 export default function FirstGoalFlow({ goal, onComplete }) {
+  const [useMentorFlow, setUseMentorFlow] = useState(true); // דגל להחלטה איזה פלואו להשתמש
   const [currentStep, setCurrentStep] = useState(goal.flow_step || 1);
   const [formData, setFormData] = useState(goal.flow_data || {
     awareness: { feeling: "", blocker: "" },
@@ -30,6 +32,11 @@ export default function FirstGoalFlow({ goal, onComplete }) {
   });
   
   const queryClient = useQueryClient();
+
+  // אם זו המטרה הראשונה, השתמש בפלואו המנטור החדש
+  if (goal.is_first_goal && useMentorFlow) {
+    return <FirstGoalMentorChat goal={goal} onComplete={onComplete} />;
+  }
 
   // Mutation to save progress
   const updateProgressMutation = useMutation({
