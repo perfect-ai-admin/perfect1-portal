@@ -86,8 +86,31 @@ Deno.serve(async (req) => {
             timestamp: new Date().toISOString()
         });
 
+        // בחר goal פעיל (הראשון או הממוקד)
+        let activeGoal = null;
+        try {
+            const userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
+                $or: [{ user_id: user.id }, { user_id: phoneNumber }],
+                status: 'active'
+            }, '-created_date', 1);
+
+            if (userGoals.length > 0) {
+                activeGoal = userGoals[0];
+            }
+        } catch (err) {
+            console.log('Could not fetch active goal:', err.message);
+        }
+
+        if (!activeGoal) {
+            // אם אין goal פעיל, צור timeline entry זמני או שלח הודעה
+            console.log('⚠️ No active goal for user, sending generic response');
+            await sendWhatsAppMessage(phoneNumber, 'שלום! 👋\n\nנראה שאתה עדיין לא בחרת מטרה. בואנו נגדיר ביחד את הצעד הראשון שלך.');
+            return Response.json({ status: 'no_goal', message: 'User needs to select a goal first' });
+        }
+
         console.log('Calling smartMentorEngine with:', {
-            user_id: phoneNumber,
+            user_id: user.id,
+            goal_id: activeGoal.id,
             message: messageText,
             chat_history_length: chatHistory.length
         });
@@ -95,11 +118,10 @@ Deno.serve(async (req) => {
         // קריאה למנוע המנטור החכם
         const mentorResponse = await base44.asServiceRole.functions.invoke('smartMentorEngine', {
             action: 'analyze_response',
-            user_id: phoneNumber,
-            response: messageText,
-            context: {
-                chat_history: chatHistory.slice(-10)
-            }
+            goal_id: activeGoal.id,
+            content: 'WhatsApp message',
+            client_response: messageText,
+            timeline_entry_id: null // יעודכן אם נצטרך
         });
 
         console.log('Smart Mentor Engine response:', mentorResponse.data);
