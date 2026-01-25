@@ -244,7 +244,7 @@ async function sendWhatsAppMessage(phoneNumber, message) {
 
     const payload = {
         chatId: `${phoneNumber}@c.us`,
-        textMessage: message
+        message: message
     };
 
     console.log('📤 URL:', url.replace(apiToken, '***'));
