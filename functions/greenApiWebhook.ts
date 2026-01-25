@@ -153,7 +153,7 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     
     const payload = {
         chatId: `${phoneNumber}@c.us`,
-        message: message
+        textMessage: message
     };
 
     console.log('Sending to URL:', `https://api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
