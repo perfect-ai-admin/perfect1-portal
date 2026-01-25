@@ -31,23 +31,29 @@ export default function FirstGoalMentorChat({ goal, onComplete }) {
   const startFlow = async () => {
     setIsLoading(true);
     try {
+      console.log('🚀 Starting FirstGoalMentorChat for goal:', goal.id);
+      
       const response = await base44.functions.invoke('firstGoalMentorFlow', {
         action: 'start_flow',
         goal_id: goal.id
       });
 
+      console.log('✅ Flow started, response:', response.data);
+
       if (response.data.success) {
         // שלח הודעת וואצאפ עם ההודעה הראשונה
         const firstMessage = response.data.messages[0];
-        if (firstMessage) {
+        if (firstMessage && firstMessage.content) {
+          console.log('📱 Sending first message to WhatsApp');
           try {
-            await base44.functions.invoke('smartMentorEngine', {
+            const whatsappRes = await base44.functions.invoke('smartMentorEngine', {
               action: 'send_whatsapp',
               content: firstMessage.content,
               goal_id: goal.id
             });
+            console.log('✅ WhatsApp message sent:', whatsappRes.data);
           } catch (whatsappErr) {
-            console.warn('Failed to send WhatsApp message:', whatsappErr);
+            console.warn('⚠️ Failed to send WhatsApp message:', whatsappErr);
           }
         }
 
@@ -63,7 +69,12 @@ export default function FirstGoalMentorChat({ goal, onComplete }) {
         }
       }
     } catch (error) {
-      console.error('Failed to start flow:', error);
+      console.error('❌ Failed to start flow:', error);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'מצטער, אני נתקלתי בבעיה בעת התחלת הפלואו. בוא נסה שוב.',
+        timestamp: new Date().toISOString()
+      }]);
     } finally {
       setIsLoading(false);
     }
