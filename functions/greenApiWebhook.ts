@@ -34,26 +34,23 @@ Deno.serve(async (req) => {
         // חיפוש המשתמש לפי מספר טלפון
         let user = null;
         
-        // חיפוש ב-User entity
-        const users = await base44.asServiceRole.entities.User.filter({ phone: phoneNumber });
-        if (users.length > 0) {
-            user = users[0];
+        // חיפוש ב-CRMLead
+        const leads = await base44.asServiceRole.entities.CRMLead.filter({ phone: phoneNumber });
+        if (leads.length > 0) {
+            user = leads[0];
+            console.log('Found user in CRMLead:', user.id);
         } else {
-            // חיפוש ב-CRMLead
-            const leads = await base44.asServiceRole.entities.CRMLead.filter({ phone: phoneNumber });
-            if (leads.length > 0) {
-                user = leads[0];
-            } else {
-                // חיפוש ב-Lead
-                const basicLeads = await base44.asServiceRole.entities.Lead.filter({ phone: phoneNumber });
-                if (basicLeads.length > 0) {
-                    user = basicLeads[0];
-                }
+            // חיפוש ב-Lead
+            const basicLeads = await base44.asServiceRole.entities.Lead.filter({ phone: phoneNumber });
+            if (basicLeads.length > 0) {
+                user = basicLeads[0];
+                console.log('Found user in Lead:', user.id);
             }
         }
 
         // אם לא נמצא משתמש - יצירת ליד חדש
         if (!user) {
+            console.log('Creating new CRMLead for:', phoneNumber);
             const newLead = await base44.asServiceRole.entities.CRMLead.create({
                 full_name: senderData.senderName || 'WhatsApp User',
                 phone: phoneNumber,
@@ -72,7 +69,13 @@ Deno.serve(async (req) => {
                 'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?'
             );
 
-            return Response.json({ status: 'new_lead_created' });
+            return Response.json({ status: 'new_lead_created', lead_id: newLead.id });
+        }
+
+        // בדיקה אם המשתמש במצב 'נא לא ליצור קשר'
+        if (user.do_not_contact) {
+            console.log(`User ${phoneNumber} has do_not_contact=true. Ignoring message.`);
+            return Response.json({ status: 'do_not_contact_ignored' });
         }
 
         // עדכון היסטוריית השיחה
@@ -83,71 +86,44 @@ Deno.serve(async (req) => {
             timestamp: new Date().toISOString()
         });
 
-        // ניתוב למנטור או לסוכן רלוונטי
-        let response;
-        
-        // בדיקה אם יש מטרה פעילה
-        const activeGoals = await base44.asServiceRole.entities.UserGoal.filter({
-            user_id: user.id || user.email,
-            status: 'active'
+        console.log('Calling mentorChat with:', {
+            user_id: phoneNumber,
+            message: messageText,
+            chat_history_length: chatHistory.length
         });
 
-        if (activeGoals.length > 0 && activeGoals[0].is_first_goal) {
-            // מטרה ראשונה - ניתוב לפלואו המנטור
-            const flowResponse = await base44.asServiceRole.functions.invoke('firstGoalMentorFlow', {
-                action: 'handle_response',
-                goal_id: activeGoals[0].id,
-                user_response: messageText,
-                stage: activeGoals[0].flow_data?.mentor_stage || 'intro'
-            });
+        // קריאה למנטור
+        const mentorResponse = await base44.asServiceRole.functions.invoke('mentorChat', {
+            user_id: phoneNumber,
+            message: messageText,
+            chat_history: chatHistory.slice(-10) // 10 הודעות אחרונות
+        });
 
-            if (flowResponse.data.success && flowResponse.data.messages?.length > 0) {
-                // שליחת ההודעות מהמנטור
-                for (const msg of flowResponse.data.messages) {
-                    if (msg.delay_after) {
-                        await new Promise(resolve => setTimeout(resolve, msg.delay_after));
-                    }
-                    await sendWhatsAppMessage(phoneNumber, msg.content);
-                    
-                    chatHistory.push({
-                        role: 'assistant',
-                        content: msg.content,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-                response = 'mentor_flow_handled';
-            }
+        console.log('Mentor response:', mentorResponse.data);
+
+        if (mentorResponse.data?.response) {
+            console.log('Sending WhatsApp message to:', phoneNumber);
+            await sendWhatsAppMessage(phoneNumber, mentorResponse.data.response);
+            
+            chatHistory.push({
+                role: 'assistant',
+                content: mentorResponse.data.response,
+                timestamp: new Date().toISOString()
+            });
         } else {
-            // שיחה רגילה עם המנטור
-            const mentorResponse = await base44.asServiceRole.functions.invoke('mentorChat', {
-                user_id: user.id || user.email,
-                message: messageText,
-                chat_history: chatHistory.slice(-10) // 10 הודעות אחרונות
-            });
-
-            if (mentorResponse.data.response) {
-                await sendWhatsAppMessage(phoneNumber, mentorResponse.data.response);
-                
-                chatHistory.push({
-                    role: 'assistant',
-                    content: mentorResponse.data.response,
-                    timestamp: new Date().toISOString()
-                });
-                response = 'mentor_handled';
-            }
+            console.error('No response from mentor:', mentorResponse);
         }
 
         // עדכון היסטוריית השיחה
-        if (user.id) {
-            await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                chat_history: chatHistory,
-                last_contact_at: new Date().toISOString()
-            });
-        }
+        await base44.asServiceRole.entities.CRMLead.update(user.id, {
+            chat_history: chatHistory,
+            last_contact_at: new Date().toISOString()
+        });
 
         return Response.json({ 
             status: 'success',
-            response_sent: response 
+            user_id: user.id,
+            response_sent: !!mentorResponse.data?.response
         });
 
     } catch (error) {
@@ -166,15 +142,12 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
     const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
 
-    console.log('Environment variables check:');
-    console.log('- GREENAPI_INSTANCE_ID:', instanceId || 'NOT SET');
-    console.log('- GREENAPI_API_TOKEN:', apiToken ? '***' + apiToken.slice(-4) : 'NOT SET');
+    console.log('Sending WhatsApp message - instanceId:', instanceId ? 'SET' : 'NOT SET');
 
     if (!instanceId || !apiToken) {
-        throw new Error('Green-API credentials not configured in environment variables');
+        throw new Error('Green-API credentials not configured');
     }
 
-    // פורמט ספציפי לחשבון שלך
     const url = `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
     
     const payload = {
@@ -182,10 +155,8 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         message: message
     };
 
-    console.log('Attempting to send WhatsApp message:');
-    console.log('- To:', phoneNumber);
-    console.log('- URL:', `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
-    console.log('- Payload:', JSON.stringify(payload));
+    console.log('Sending to URL:', `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
+    console.log('Payload:', JSON.stringify(payload));
 
     const response = await fetch(url, {
         method: 'POST',
@@ -196,11 +167,11 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     });
 
     const responseText = await response.text();
-    console.log('Green-API HTTP Status:', response.status);
-    console.log('Green-API Response Body:', responseText);
+    console.log('Green-API Status:', response.status);
+    console.log('Green-API Response:', responseText);
 
     if (!response.ok) {
-        throw new Error(`Green-API returned ${response.status}: ${responseText}`);
+        throw new Error(`Green-API error ${response.status}: ${responseText}`);
     }
 
     return JSON.parse(responseText);
