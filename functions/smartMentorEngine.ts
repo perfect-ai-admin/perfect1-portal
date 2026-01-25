@@ -391,6 +391,67 @@ Deno.serve(async (req) => {
             });
         }
 
+        // ==========================================
+        // ACTION: SEND WHATSAPP
+        // ==========================================
+        if (action === 'send_whatsapp') {
+            const { content } = body;
+
+            if (!content) {
+                return Response.json({ error: 'content is required' }, { status: 400 });
+            }
+
+            try {
+                const user = await base44.auth.me();
+                if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+                // Get user's lead to find phone number
+                const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                    $or: [{ created_by: user.email }, { id: user.id }]
+                }, 1);
+
+                if (!leads.data || leads.data.length === 0) {
+                    return Response.json({ success: false, message: 'No lead found for user' });
+                }
+
+                const phone = leads.data[0].phone;
+                const cleanPhone = phone.replace('+', '').replace(/\D/g, '');
+
+                // Send via greenApiWebhook's sendWhatsAppMessage logic
+                const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
+                const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
+
+                if (!instanceId || !apiToken) {
+                    return Response.json({ error: 'Green-API credentials not configured' }, { status: 500 });
+                }
+
+                const url = `https://api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
+                const payload = {
+                    chatId: `${cleanPhone}@c.us`,
+                    message: content
+                };
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.text();
+
+                if (!response.ok) {
+                    console.error('Green-API error:', result);
+                    return Response.json({ success: false, error: result }, { status: 500 });
+                }
+
+                return Response.json({ success: true, message_sent: true });
+            } catch (err) {
+                return Response.json({ error: err.message }, { status: 500 });
+            }
+        }
+
         return Response.json({ error: 'Invalid action' }, { status: 400 });
 
     } catch (error) {
