@@ -35,6 +35,7 @@ export default function FirstGoalFlow({ goal, onComplete }) {
 
   // אם זו המטרה הראשונה, השתמש בפלואו המנטור החדש
   if (goal.is_first_goal && useMentorFlow) {
+    console.log('🚀 FirstGoalFlow: rendering FirstGoalMentorChat for goal:', goal);
     return <FirstGoalMentorChat goal={goal} onComplete={onComplete} />;
   }
 
