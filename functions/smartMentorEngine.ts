@@ -177,6 +177,133 @@ Deno.serve(async (req) => {
         }
 
         // ==========================================
+        // ACTION: ORCHESTRATE JOURNEY (NEW)
+        // ==========================================
+        if (action === 'orchestrate_journey') {
+            const { lead_id, trigger_event, context } = body;
+
+            if (!lead_id) {
+                return Response.json({ error: 'lead_id is required' }, { status: 400 });
+            }
+
+            // 1. Fetch Lead State
+            const lead = await base44.entities.CRMLead.get(lead_id);
+            if (!lead) return Response.json({ error: 'Lead not found' }, { status: 404 });
+
+            let updates = {};
+            let decision = {
+                handler: lead.active_handler || 'LeadRouter_Entry',
+                action: 'continue',
+                reason: 'default flow'
+            };
+
+            const currentState = {
+                stage: lead.journey_stage || 'lead_new',
+                process: lead.active_process || 'none',
+                handler: lead.active_handler,
+                risk: (lead.risk_flags || []).includes('high') ? 'high' : 'low',
+                human_req: lead.journey_stage === 'human_required'
+            };
+
+            // --- RULE 3: Escalation / Human Handoff ---
+            if (currentState.human_req || currentState.risk === 'high') {
+                // Stop everything, assign to human
+                return Response.json({
+                    success: true,
+                    decision: {
+                        handler: 'Human_Agent',
+                        action: 'stop_automation',
+                        reason: 'Escalation required (Risk or Manual Flag)'
+                    },
+                    updates: {
+                        journey_stage: 'human_required',
+                        active_process: 'none',
+                        active_handler: 'Human_Agent'
+                    }
+                });
+            }
+
+            // --- RULE 1: Regulatory Wins ---
+            // If in critical process, block marketing/nurture
+            const criticalProcesses = ['filing', 'onboarding', 'signing_opening'];
+            if (criticalProcesses.includes(currentState.process)) {
+                 // Force handler to be the process owner
+                 let requiredHandler = 'TaxFiling_Manager'; // default for filing
+                 if (currentState.process === 'onboarding') requiredHandler = 'OpeningBot';
+                 if (currentState.process === 'signing_opening') requiredHandler = 'OpeningBot';
+
+                 // If trigger is "sales_pitch" or "marketing", block it
+                 if (trigger_event === 'marketing_blast' || trigger_event === 'warmup') {
+                     return Response.json({
+                         success: true,
+                         decision: {
+                             handler: 'none',
+                             action: 'block',
+                             reason: 'Critical process active'
+                         }
+                     });
+                 }
+
+                 // Allow only process-related queries or urgent support
+                 updates.active_handler = requiredHandler;
+            }
+
+            // --- SCENARIO LOGIC (State Machine) ---
+
+            // Scenario 1: New Lead
+            if (currentState.stage === 'lead_new') {
+                updates.active_handler = 'LeadRouter_Entry';
+                updates.next_best_action = 'qualify_needs';
+                decision.reason = 'New lead entry';
+            }
+
+            // Scenario 2: Post Call Pending
+            else if (currentState.stage === 'post_call_pending') {
+                updates.active_handler = 'SmartSalesAgent';
+                // Scheduler should pick this up for followup
+            }
+
+            // Scenario 3: Nurture (No answer for X days)
+            // This logic is usually triggered by scheduler, here we just validate state
+            else if (currentState.stage === 'nurture') {
+                 updates.active_handler = 'NurtureBot_Reengage';
+            }
+
+            // Scenario 4: Closed / Onboarding
+            else if (currentState.stage === 'deal_closed') {
+                updates.journey_stage = 'onboarding_docs';
+                updates.active_process = 'onboarding';
+                updates.active_handler = 'OpeningBot';
+            }
+
+            // Scenario 5: Filing Period (Regulatory)
+            // Triggered externally by "filing_period_open" event usually
+            if (trigger_event === 'filing_period_open') {
+                updates.active_process = 'filing';
+                updates.journey_stage = 'filing_period_active';
+                updates.active_handler = 'TaxFiling_Manager';
+            }
+
+            // --- RULE 2: Single Handler ---
+            if (updates.active_handler && updates.active_handler !== lead.active_handler) {
+                decision.handler = updates.active_handler;
+                decision.action = 'switch_handler';
+            }
+
+            // Apply Updates
+            if (Object.keys(updates).length > 0) {
+                await base44.entities.CRMLead.update(lead_id, updates);
+            }
+
+            // Return final decision for the caller (Router)
+            return Response.json({
+                success: true,
+                decision,
+                current_state: { ...currentState, ...updates }
+            });
+        }
+
+        // ==========================================
         // ACTION: GET NEXT CONTENT
         // ==========================================
         if (action === 'get_next_content') {
