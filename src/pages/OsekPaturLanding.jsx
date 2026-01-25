@@ -269,7 +269,7 @@ export default function OsekPaturLanding() {
                  </h1>
 
                  <p className="text-lg md:text-2xl text-white/90 mb-6 leading-relaxed font-medium px-2 md:px-0">
-                    אנחנו פותחים לך עוסק פטור בליווי מלא, בלי בירוקרטיה ובלי התעסקות
+                    הדרך המהירה והקלה ביותר לפתוח עוסק פטור - אנחנו נטפל בבירוקרטיה, אתם תתחילו להרוויח
                  </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
