@@ -86,17 +86,20 @@ Deno.serve(async (req) => {
             timestamp: new Date().toISOString()
         });
 
-        console.log('Calling mentorChat with:', {
+        console.log('Calling smartMentorEngine with:', {
             user_id: phoneNumber,
             message: messageText,
             chat_history_length: chatHistory.length
         });
 
-        // קריאה למנטור
-        const mentorResponse = await base44.asServiceRole.functions.invoke('mentorChat', {
+        // קריאה למנוע המנטור החכם
+        const mentorResponse = await base44.asServiceRole.functions.invoke('smartMentorEngine', {
+            action: 'analyze_response',
             user_id: phoneNumber,
-            message: messageText,
-            chat_history: chatHistory.slice(-10) // 10 הודעות אחרונות
+            response: messageText,
+            context: {
+                chat_history: chatHistory.slice(-10)
+            }
         });
 
         console.log('Mentor response:', mentorResponse.data);
