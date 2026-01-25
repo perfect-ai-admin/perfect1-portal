@@ -391,19 +391,35 @@ export default function OsekPaturLanding() {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-[#E8F5E9] rounded-3xl p-8 text-center border border-[#27AE60]/20"
+              whileHover={{ y: -5 }}
+              className="bg-gradient-to-br from-[#E8F5E9] to-[#F1F8E9] rounded-3xl p-8 md:p-12 text-center border-2 border-[#27AE60]/10 shadow-xl relative overflow-hidden group cursor-pointer"
+              onClick={scrollToForm}
             >
-              <h3 className="text-2xl font-bold text-[#1E3A5F] mb-2">
-                במקום לחפש תשובות –
-                <span className="block text-[#27AE60]">אנחנו עושים את זה בשבילך.</span>
-              </h3>
-              <button 
-                onClick={scrollToForm}
-                className="mt-6 inline-flex items-center text-[#27AE60] font-bold text-lg hover:underline hover:text-[#219150] transition-colors"
-              >
-                בואו נתחיל
-                <ArrowLeft className="mr-2 w-5 h-5" />
-              </button>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#27AE60]/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 duration-500"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#27AE60]/5 rounded-tr-[80px] -ml-6 -mb-6 transition-transform group-hover:scale-110 duration-500"></div>
+              
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 text-3xl">
+                  🚀
+                </div>
+                <h3 className="text-2xl md:text-4xl font-black text-[#1E3A5F] mb-4 leading-tight">
+                  במקום לחפש תשובות –
+                  <span className="block text-[#27AE60] mt-2">אנחנו עושים את זה בשבילך.</span>
+                </h3>
+                <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto font-medium">
+                  הצטרפו לאלפי עצמאים שכבר נהנים משקט נפשי וטיפול מקצועי מא' ועד ת'
+                </p>
+                <Button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    scrollToForm();
+                  }}
+                  className="h-14 md:h-16 px-10 md:px-12 text-xl font-bold rounded-full bg-[#27AE60] hover:bg-[#219150] text-white shadow-lg shadow-green-600/30 transform transition-all hover:-translate-y-1 hover:shadow-green-600/50 w-full sm:w-auto flex items-center justify-center gap-3 group-hover:scale-105 duration-300"
+                >
+                  בואו נתחיל
+                  <ArrowLeft className="w-6 h-6 animate-pulse" />
+                </Button>
+              </div>
             </motion.div>
           </div>
         </section>
