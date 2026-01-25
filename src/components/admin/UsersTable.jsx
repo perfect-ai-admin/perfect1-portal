@@ -83,6 +83,7 @@ export default function UsersTable(props) {
                             <th className="text-right p-4 font-semibold text-gray-700">תאריך הצטרפות</th>
                             <th className="text-right p-4 font-semibold text-gray-700">שם</th>
                             <th className="text-right p-4 font-semibold text-gray-700">אימייל</th>
+                            <th className="text-right p-4 font-semibold text-gray-700">מסע לקוח</th>
                             <th className="text-right p-4 font-semibold text-gray-700">טלפון</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מסלול</th>
                             <th className="text-right p-4 font-semibold text-gray-700">סטטוס</th>
@@ -103,6 +104,15 @@ export default function UsersTable(props) {
                                     )}
                                 </td>
                                 <td className="p-4 text-gray-600">{user.email}</td>
+                                <td className="p-4">
+                                    {user.has_started_journey ? (
+                                        <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                                            התחיל תהליך
+                                        </Badge>
+                                    ) : (
+                                        <span className="text-gray-400 text-sm">טרם התחיל</span>
+                                    )}
+                                </td>
                                 <td className="p-4 text-gray-600">{user.phone || '-'}</td>
                                 <td className="p-4">
                                     {user.current_plan_id ? (

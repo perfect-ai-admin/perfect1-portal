@@ -35,40 +35,48 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
     }, []);
 
     const loadJourneyStatus = async () => {
+        // Use data from props if available (from adminListUsers)
+        if (user.has_started_journey !== undefined) {
+            if (user.has_started_journey) {
+                setJourneyData({ 
+                    started: true, 
+                    type: 'enriched', 
+                    details: user.journey_details || 'התחיל תהליך (UserGoal/Journey)' 
+                });
+            } else {
+                setJourneyData(null);
+            }
+            return;
+        }
+
+        // Fallback: Check via API (might be restricted by RLS for UserGoal)
         try {
-            // 1. Check UserGoals (הגדרה: קיבל מטרות ותוכנית)
-            // נבדוק אם יש לפחות מטרה אחת למשתמש
+            // Note: If RLS blocks access to UserGoal for admin, this might return empty even if goals exist.
+            // That's why we prefer the enriched data from adminListUsers.
             const goals = await base44.entities.UserGoal.filter({ user_id: user.id }, 1);
             if (goals.data && goals.data.length > 0) {
                 setJourneyData({ started: true, type: 'goals', details: 'קיבל מטרות ותוכנית עבודה' });
                 return;
             }
 
-            // 2. Check BusinessJourney entity (תהליך רשמי)
             const journeys = await base44.entities.BusinessJourney.filter({ user_id: user.id });
             if (journeys.data && journeys.data.length > 0) {
                 setJourneyData({ started: true, type: 'business_journey', details: 'תהליך מסע עסקי פעיל' });
                 return;
             }
 
-            // 3. Check CRMLead by email as fallback
-            if (user.email) {
+            // Check CRMLead (Service Role needed if RLS blocks, but Lead usually visible to admin)
+             if (user.email) {
                 const leads = await base44.entities.CRMLead.filter({ email: user.email });
                 if (leads.data && leads.data.length > 0) {
                     const lead = leads.data[0];
-                    // אם הסטטוס מתקדם או שיש תשובות לשאלון
                     if (lead.journey_stage && lead.journey_stage !== 'lead_new') {
                         setJourneyData({ started: true, type: 'crm_lead', details: `סטטוס ליד: ${lead.journey_stage}` });
                         return;
                     }
-                    if (lead.business_journey_answers && Object.keys(lead.business_journey_answers).length > 0) {
-                        setJourneyData({ started: true, type: 'crm_lead_answers', details: 'מילא שאלון מסע (טרם קיבל מטרות)' });
-                        return;
-                    }
                 }
             }
-
-            // אם לא נמצא שום אינדיקציה
+            
             setJourneyData(null);
         } catch (error) {
             console.error("Error checking journey status:", error);
