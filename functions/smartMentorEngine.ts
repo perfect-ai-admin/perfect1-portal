@@ -395,7 +395,7 @@ Deno.serve(async (req) => {
         // ACTION: SEND WHATSAPP
         // ==========================================
         if (action === 'send_whatsapp') {
-            const { content } = body;
+            const { content, goal_id } = body;
 
             if (!content) {
                 return Response.json({ error: 'content is required' }, { status: 400 });
@@ -405,16 +405,43 @@ Deno.serve(async (req) => {
                 const user = await base44.auth.me();
                 if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-                // Get user's lead to find phone number
-                const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                    $or: [{ created_by: user.email }, { id: user.id }]
-                }, 1);
+                let phone = null;
 
-                if (!leads.data || leads.data.length === 0) {
-                    return Response.json({ success: false, message: 'No lead found for user' });
+                // Try to get phone from goal if provided
+                if (goal_id) {
+                    try {
+                        const goal = await base44.asServiceRole.entities.UserGoal.get(goal_id);
+                        if (goal) {
+                            const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                                user_id: goal.user_id 
+                            }, 1);
+                            if (leads.data && leads.data.length > 0) {
+                                phone = leads.data[0].phone;
+                            }
+                        }
+                    } catch (err) {
+                        console.warn('Could not fetch goal:', err.message);
+                    }
                 }
 
-                const phone = leads.data[0].phone;
+                // Fallback: get user's lead
+                if (!phone) {
+                    try {
+                        const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                            created_by: user.email
+                        }, 1);
+                        if (leads.data && leads.data.length > 0) {
+                            phone = leads.data[0].phone;
+                        }
+                    } catch (err) {
+                        console.warn('Could not fetch leads:', err.message);
+                    }
+                }
+
+                if (!phone) {
+                    return Response.json({ success: false, message: 'No phone number found' });
+                }
+
                 const cleanPhone = phone.replace('+', '').replace(/\D/g, '');
 
                 // Send via greenApiWebhook's sendWhatsAppMessage logic
@@ -448,6 +475,7 @@ Deno.serve(async (req) => {
 
                 return Response.json({ success: true, message_sent: true });
             } catch (err) {
+                console.error('Send WhatsApp error:', err);
                 return Response.json({ error: err.message }, { status: 500 });
             }
         }
