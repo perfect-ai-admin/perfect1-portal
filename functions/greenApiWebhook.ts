@@ -124,25 +124,31 @@ Deno.serve(async (req) => {
             timeline_entry_id: null // יעודכן אם נצטרך
         });
 
-        console.log('Smart Mentor Engine response:', mentorResponse.data);
+        console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
 
-        // extracting the response/insights from the smart mentor engine
-        const smartResponse = mentorResponse.data?.insights?.recommendation || 
-                             mentorResponse.data?.response ||
-                             mentorResponse.data?.suggestion;
-
-        if (smartResponse) {
-            console.log('Sending WhatsApp message to:', phoneNumber);
-            await sendWhatsAppMessage(phoneNumber, smartResponse);
-
-            chatHistory.push({
-                role: 'assistant',
-                content: smartResponse,
-                timestamp: new Date().toISOString()
-            });
-        } else {
-            console.error('No response from smart mentor engine:', mentorResponse);
+        // smartMentorEngine מחזיר analysis עם deep_meaning והערות
+        const analysis = mentorResponse.data?.analysis;
+        if (!analysis) {
+            console.error('❌ No analysis from smart mentor engine');
+            return Response.json({ status: 'error', message: 'No analysis generated' }, { status: 500 });
         }
+
+        // בנה הודעת מנטור בהתאם ל-analysis
+        const mentorMessage = `
+        ${analysis.deep_meaning}
+
+        ${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
+        ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}
+        `.trim();
+
+        console.log('📤 Sending mentor message to:', phoneNumber);
+        await sendWhatsAppMessage(phoneNumber, mentorMessage);
+
+        chatHistory.push({
+            role: 'assistant',
+            content: mentorMessage,
+            timestamp: new Date().toISOString()
+        });
 
         // עדכון היסטוריית השיחה
         await base44.asServiceRole.entities.CRMLead.update(user.id, {
