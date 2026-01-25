@@ -45,15 +45,26 @@ Deno.serve(async (req) => {
         fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
         for (const lead of activeLeads.data) {
+            // --- ORCHESTRATOR CHECK ---
+            // Don't schedule if DNC or active critical process
+            if (lead.do_not_contact) continue;
+            if (['filing', 'onboarding', 'signing_opening'].includes(lead.active_process)) continue;
+
             if (lead.last_contact_date && new Date(lead.last_contact_date) < fourteenDaysAgo) {
                 // Check if already scheduled
                 // (In a real app, query ScheduledEvent to avoid duplicates)
-                
+
                 // Determine action (Moment Engine logic)
                 const action = "warm_up"; // Logic to decide action based on lead state
 
                 // Schedule it
-                // await base44.entities.ScheduledEvent.create({...})
+                 await base44.entities.ScheduledEvent.create({
+                     user_id: lead.id, // using lead id as user_id for now or fetch user
+                     lead_id: lead.id,
+                     event_type: action,
+                     scheduled_date: new Date().toISOString(), // Immediate or scheduled
+                     status: 'pending'
+                 });
             }
         }
 
