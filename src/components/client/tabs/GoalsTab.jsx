@@ -206,8 +206,10 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       setShowAddGoal(true);
   };
 
-  const heroGoal = goals[0];
-  const secondaryGoals = goals.slice(1);
+  // Find first goal with is_first_goal flag OR just the first goal
+  const firstGoalWithMentorFlow = goals.find(g => g.is_first_goal);
+  const heroGoal = firstGoalWithMentorFlow || goals[0];
+  const secondaryGoals = goals.filter(g => g.id !== heroGoal?.id);
 
   const handleStatusChange = async (goal, nextStatus) => {
     try {
@@ -378,20 +380,29 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
             </div>
           )}
 
-          {/* Hero Goal */}
+          {/* Hero Goal - with First Goal Mentor Flow */}
           {heroGoal && (
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-1">
                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                 <p className="text-xs font-bold text-blue-600 uppercase tracking-wider">הפוקוס העיקרי שלך</p>
               </div>
-              <HeroGoal 
-                goal={heroGoal}
-                onStatusChange={handleStatusChange}
-                onEdit={handleEditGoal}
-                onDelete={handleDeleteGoal}
-                isLoading={heroGoal.isLoading || heroGoal.isOptimistic}
-              />
+              {heroGoal.is_first_goal && heroGoal.flow_step ? (
+                <FirstGoalFlow 
+                  goal={heroGoal}
+                  onComplete={() => {
+                    queryClient.invalidateQueries({ queryKey: ['goals'] });
+                  }}
+                />
+              ) : (
+                <HeroGoal 
+                  goal={heroGoal}
+                  onStatusChange={handleStatusChange}
+                  onEdit={handleEditGoal}
+                  onDelete={handleDeleteGoal}
+                  isLoading={heroGoal.isLoading || heroGoal.isOptimistic}
+                />
+              )}
             </div>
           )}
 
