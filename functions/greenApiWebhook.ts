@@ -148,14 +148,14 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         throw new Error('Green-API credentials not configured');
     }
 
-    const url = `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
+    const url = `https://api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
     
     const payload = {
         chatId: `${phoneNumber}@c.us`,
         message: message
     };
 
-    console.log('Sending to URL:', `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
+    console.log('Sending to URL:', `https://api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
     console.log('Payload:', JSON.stringify(payload));
 
     const response = await fetch(url, {
