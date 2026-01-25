@@ -106,8 +106,8 @@ Deno.serve(async (req) => {
         }
 
         // בדיקה אם המשתמש במצב 'נא לא ליצור קשר'
-        if (user.do_not_contact) {
-            console.log(`User ${phoneNumber} has do_not_contact=true. Ignoring message.`);
+        if (user?.do_not_contact) {
+            console.log(`⛔ User ${phoneNumber} has do_not_contact=true. Ignoring message.`);
             return Response.json({ status: 'do_not_contact_ignored' });
         }
 
