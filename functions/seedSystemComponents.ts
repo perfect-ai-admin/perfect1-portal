@@ -552,6 +552,91 @@ Deno.serve(async (req) => {
                 file_path: 'pages/AdminDashboard.js',
                 dependencies: ['User', 'Plan', 'ActivityLog']
             },
+            
+            // ===== MARKETING TOOLS - כלים שיווקיים =====
+            {
+                name: 'PresentationQuestionnaire',
+                category: 'client_features',
+                short_description: 'שאלון ליצירת מצגת עסקית',
+                full_description: 'שאלון מודרך ליצירת מצגת עסקית מותאמת אישית. שואל על העסק, המטרה, קהל היעד ויוצר מצגת מעוצבת באמצעות AI.',
+                is_active: true,
+                file_path: 'components/client/marketing/PresentationQuestionnaire.js',
+                dependencies: ['InvokeLLM', 'SavedWork']
+            },
+            {
+                name: 'StickerQuestionnaire',
+                category: 'client_features',
+                short_description: 'שאלון ליצירת מדבקות לעסק',
+                full_description: 'שאלון ליצירת מדבקות ממותגות לעסק. כולל בחירת סגנון, גדלים, ותוכן. יוצר עיצובים מותאמים אישית.',
+                is_active: true,
+                file_path: 'components/client/marketing/StickerQuestionnaire.js',
+                dependencies: ['InvokeLLM', 'SavedWork']
+            },
+            {
+                name: 'SocialMediaQuestionnaire',
+                category: 'client_features',
+                short_description: 'שאלון ליצירת תוכן לרשתות חברתיות',
+                full_description: 'שאלון ליצירת פוסטים ותוכן מעוצב לרשתות חברתיות. כולל בחירת פלטפורמה, סגנון, ונושא.',
+                is_active: true,
+                file_path: 'components/client/marketing/SocialMediaQuestionnaire.js',
+                dependencies: ['InvokeLLM', 'SavedWork']
+            },
+            {
+                name: 'BusinessCardQuestionnaire',
+                category: 'client_features',
+                short_description: 'שאלון ליצירת כרטיס ביקור דיגיטלי',
+                full_description: 'שאלון ליצירת כרטיס ביקור דיגיטלי מעוצב. כולל פרטי קשר, עיצוב, והפצה דיגיטלית.',
+                is_active: true,
+                file_path: 'components/client/marketing/BusinessCardQuestionnaire.js',
+                dependencies: ['InvokeLLM', 'SavedWork']
+            },
+            {
+                name: 'EmailSignatureQuestionnaire',
+                category: 'client_features',
+                short_description: 'שאלון ליצירת חתימת מייל מקצועית',
+                full_description: 'שאלון ליצירת חתימת מייל מקצועית ומעוצבת. כולל פרטי קשר, לוגו, ולינקים לרשתות חברתיות.',
+                is_active: true,
+                file_path: 'components/client/marketing/EmailSignatureQuestionnaire.js',
+                dependencies: ['SavedWork']
+            },
+            {
+                name: 'ProposalQuestionnaire',
+                category: 'client_features',
+                short_description: 'שאלון ליצירת הצעת מחיר מותאמת',
+                full_description: 'שאלון ליצירת הצעת מחיר מקצועית ומותאמת אישית. כולל פירוט שירותים, מחירים, ותנאים.',
+                is_active: true,
+                file_path: 'components/client/marketing/ProposalQuestionnaire.js',
+                dependencies: ['InvokeLLM', 'SavedWork']
+            },
+            
+            // ===== CAMPAIGN TEMPLATES - תבניות קמפיינים =====
+            {
+                name: 'SocialCampaign',
+                category: 'client_features',
+                short_description: 'קמפיין ברשתות חברתיות',
+                full_description: 'כלי ליצירת קמפיין שיווקי ברשתות חברתיות: Facebook, Instagram. כולל תכנון תוכן, לוח זמנים, ותקציב.',
+                is_active: true,
+                file_path: 'components/client/marketing/campaigns/SocialCampaign.js',
+                dependencies: ['Campaign', 'InvokeLLM']
+            },
+            {
+                name: 'GoogleCampaign',
+                category: 'client_features',
+                short_description: 'פרסום ב-Google',
+                full_description: 'כלי ליצירת קמפיין פרסום ב-Google Ads: מילות מפתח, מודעות, תקציב, והגדרות טרגוט.',
+                is_active: true,
+                file_path: 'components/client/marketing/campaigns/GoogleCampaign.js',
+                dependencies: ['Campaign', 'InvokeLLM']
+            },
+            {
+                name: 'EmailCampaign',
+                category: 'client_features',
+                short_description: 'שיווק במייל',
+                full_description: 'כלי ליצירת קמפיין שיווק במייל: עיצוב ניוזלטר, רשימת תפוצה, אוטומציות, ומעקב תוצאות.',
+                is_active: true,
+                file_path: 'components/client/marketing/campaigns/EmailCampaign.js',
+                dependencies: ['Campaign', 'SendEmail']
+            },
             {
                 name: 'UsersTable',
                 category: 'client_features',
