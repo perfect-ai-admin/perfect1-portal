@@ -26,11 +26,17 @@ export default function UsersTable(props) {
             });
             
             if (response.data && response.data.users) {
-                setUsers(response.data.users);
+                const sortedUsers = response.data.users.sort((a, b) => 
+                    new Date(b.created_date) - new Date(a.created_date)
+                );
+                setUsers(sortedUsers);
             } else {
                 // Fallback for direct entity access if function fails or returns weird format
                 const allUsers = await base44.entities.User.list();
-                setUsers(allUsers);
+                const sortedUsers = allUsers.sort((a, b) => 
+                    new Date(b.created_date) - new Date(a.created_date)
+                );
+                setUsers(sortedUsers);
             }
         } catch (error) {
             console.error('Error loading users:', error);
