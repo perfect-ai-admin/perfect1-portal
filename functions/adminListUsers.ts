@@ -29,26 +29,15 @@ Deno.serve(async (req) => {
 
         // Fetch all users using service role
         const users = await base44.asServiceRole.entities.User.list();
-        
-        // Fetch indicators for journey start (goals, business journey)
-        // We fetch a larger batch to cover active users. 
-        // Note: In a very large system, this should be paginated or indexed differently.
-        const goals = await base44.asServiceRole.entities.UserGoal.list('-created_date', 1000);
-        const journeys = await base44.asServiceRole.entities.BusinessJourney.list('-created_date', 1000);
-        
-        // Create sets of user IDs who have started
-        const usersWithGoals = new Set(goals.map(g => g.user_id));
-        const usersWithJourney = new Set(journeys.map(j => j.user_id));
 
-        // Enrich users
+        // Enrich users - journey started if phone is saved
         const enrichedUsers = users.map(user => {
-            const hasGoal = usersWithGoals.has(user.id);
-            const hasJourney = usersWithJourney.has(user.id);
+            const hasStartedJourney = !!(user.phone && user.phone.trim() !== '');
             
             return {
                 ...user,
-                has_started_journey: hasGoal || hasJourney,
-                journey_details: hasGoal ? 'Has Goals' : (hasJourney ? 'Has Business Journey' : null)
+                has_started_journey: hasStartedJourney,
+                journey_details: hasStartedJourney ? 'Phone registered - Journey started' : null
             };
         });
         
