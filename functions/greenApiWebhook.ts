@@ -174,8 +174,8 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         throw new Error('Green-API credentials not configured in environment variables');
     }
 
-    // פורמט כללי של Green-API
-    const url = `https://api.green-api.com/waInstance${instanceId}/sendMessage/${apiToken}`;
+    // פורמט ספציפי לחשבון שלך
+    const url = `https://7103.api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
     
     const payload = {
         chatId: `${phoneNumber}@c.us`,
