@@ -20,10 +20,24 @@ Deno.serve(async (req) => {
         const messageData = body.messageData;
         const senderData = body.senderData;
 
-        // שליפת פרטי ההודעה
-        const phoneNumber = senderData.sender.replace('@c.us', ''); // הסרת הסיומת של WhatsApp
-        const messageText = messageData.textMessageData?.textMessage || 
-                           messageData.extendedTextMessageData?.text || '';
+        // שליפת פרטי ההודעה - תמיכה בפורמטים שונים
+        let phoneNumber = '';
+        let messageText = '';
+
+        if (senderData?.sender) {
+            phoneNumber = senderData.sender.replace('@c.us', '').replace('+', '');
+        }
+
+        if (messageData?.textMessageData?.textMessage) {
+            messageText = messageData.textMessageData.textMessage;
+        } else if (messageData?.extendedTextMessageData?.text) {
+            messageText = messageData.extendedTextMessageData.text;
+        } else if (messageData?.textMessage) {
+            messageText = messageData.textMessage;
+        }
+
+        console.log('📱 Message from:', phoneNumber);
+        console.log('📝 Message text:', messageText);
 
         if (!messageText) {
             return Response.json({ status: 'no_text' });
