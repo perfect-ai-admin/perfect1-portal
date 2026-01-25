@@ -36,26 +36,40 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
 
     const loadJourneyStatus = async () => {
         try {
-            // Check BusinessJourney entity first (direct user link)
-            const journeys = await base44.entities.BusinessJourney.filter({ user_id: user.id });
-            if (journeys.data && journeys.data.length > 0) {
-                setJourneyData({ started: true, type: 'business_journey', data: journeys.data[0] });
+            // 1. Check UserGoals (הגדרה: קיבל מטרות ותוכנית)
+            // נבדוק אם יש לפחות מטרה אחת למשתמש
+            const goals = await base44.entities.UserGoal.filter({ user_id: user.id }, 1);
+            if (goals.data && goals.data.length > 0) {
+                setJourneyData({ started: true, type: 'goals', details: 'קיבל מטרות ותוכנית עבודה' });
                 return;
             }
 
-            // Check CRMLead by email as fallback
+            // 2. Check BusinessJourney entity (תהליך רשמי)
+            const journeys = await base44.entities.BusinessJourney.filter({ user_id: user.id });
+            if (journeys.data && journeys.data.length > 0) {
+                setJourneyData({ started: true, type: 'business_journey', details: 'תהליך מסע עסקי פעיל' });
+                return;
+            }
+
+            // 3. Check CRMLead by email as fallback
             if (user.email) {
                 const leads = await base44.entities.CRMLead.filter({ email: user.email });
                 if (leads.data && leads.data.length > 0) {
                     const lead = leads.data[0];
-                    const hasStarted = lead.journey_stage !== 'lead_new' || 
-                                     (lead.business_journey_answers && Object.keys(lead.business_journey_answers).length > 0);
-                    
-                    if (hasStarted) {
-                        setJourneyData({ started: true, type: 'crm_lead', data: lead });
+                    // אם הסטטוס מתקדם או שיש תשובות לשאלון
+                    if (lead.journey_stage && lead.journey_stage !== 'lead_new') {
+                        setJourneyData({ started: true, type: 'crm_lead', details: `סטטוס ליד: ${lead.journey_stage}` });
+                        return;
+                    }
+                    if (lead.business_journey_answers && Object.keys(lead.business_journey_answers).length > 0) {
+                        setJourneyData({ started: true, type: 'crm_lead_answers', details: 'מילא שאלון מסע (טרם קיבל מטרות)' });
+                        return;
                     }
                 }
             }
+
+            // אם לא נמצא שום אינדיקציה
+            setJourneyData(null);
         } catch (error) {
             console.error("Error checking journey status:", error);
         }
@@ -179,7 +193,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 <div>
                                     <div className="font-medium text-gray-900">סטטוס מסע לקוח</div>
                                     <div className="text-sm text-gray-500">
-                                        {journeyData ? 'התחיל את תהליך המסע הראשוני' : 'טרם התחיל מסע'}
+                                        {journeyData ? journeyData.details : 'טרם התחיל מסע'}
                                     </div>
                                 </div>
                             </div>
