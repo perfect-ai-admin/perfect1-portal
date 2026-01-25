@@ -39,11 +39,10 @@ Deno.serve(async (req) => {
         console.log('📱 Message from:', phoneNumber);
         console.log('📝 Message text:', messageText);
 
-        if (!messageText) {
-            return Response.json({ status: 'no_text' });
+        if (!messageText || !phoneNumber) {
+            console.warn('⚠️ Missing message text or phone number');
+            return Response.json({ status: 'invalid_message' });
         }
-
-        console.log(`Message from ${phoneNumber}: ${messageText}`);
 
         // חיפוש המשתמש לפי מספר טלפון
         let user = null;
