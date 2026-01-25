@@ -232,21 +232,24 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
     const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
 
-    console.log('📤 Sending WhatsApp message - instanceId:', instanceId ? 'SET' : 'NOT SET');
+    console.log('📤 Sending WhatsApp message - instanceId:', instanceId);
+    console.log('📤 API Token available:', apiToken ? 'YES' : 'NO');
 
     if (!instanceId || !apiToken) {
         throw new Error('Green-API credentials not configured');
     }
 
+    // URL format: https://api.greenapi.com/waInstance{instanceId}/sendMessage/{apiToken}
     const url = `https://api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
-    
+
     const payload = {
         chatId: `${phoneNumber}@c.us`,
         textMessage: message
     };
 
-    console.log('📤 Sending to URL:', `https://api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
-    console.log('📤 Payload:', JSON.stringify(payload));
+    console.log('📤 URL:', url.replace(apiToken, '***'));
+    console.log('📤 ChatID:', `${phoneNumber}@c.us`);
+    console.log('📤 Message:', message);
 
     try {
         const response = await fetch(url, {
@@ -258,18 +261,18 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         });
 
         const responseText = await response.text();
-        console.log('📤 Green-API Status:', response.status);
+        console.log('📤 Green-API HTTP Status:', response.status);
         console.log('📤 Green-API Response:', responseText);
 
         if (!response.ok) {
-            throw new Error(`Green-API error ${response.status}: ${responseText}`);
+            throw new Error(`Green-API HTTP ${response.status}: ${responseText}`);
         }
 
         const result = JSON.parse(responseText);
-        console.log('✅ Message sent successfully to:', phoneNumber);
+        console.log('✅ Message sent successfully');
         return result;
     } catch (err) {
-        console.error('❌ Failed to send message to Green-API:', err.message);
+        console.error('❌ sendWhatsAppMessage error:', err.message);
         throw err;
     }
 }
