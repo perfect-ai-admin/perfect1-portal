@@ -166,9 +166,12 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
     const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
 
+    console.log('Environment variables check:');
+    console.log('- GREENAPI_INSTANCE_ID:', instanceId || 'NOT SET');
+    console.log('- GREENAPI_API_TOKEN:', apiToken ? '***' + apiToken.slice(-4) : 'NOT SET');
+
     if (!instanceId || !apiToken) {
-        console.error('Missing credentials - instanceId:', !!instanceId, 'apiToken:', !!apiToken);
-        throw new Error('Green-API credentials not configured');
+        throw new Error('Green-API credentials not configured in environment variables');
     }
 
     // פורמט נכון של Green-API
@@ -179,8 +182,10 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         message: message
     };
 
-    console.log('Sending WhatsApp message to:', phoneNumber);
-    console.log('URL:', url.replace(apiToken, '***'));
+    console.log('Attempting to send WhatsApp message:');
+    console.log('- To:', phoneNumber);
+    console.log('- URL:', `https://api.green-api.com/waInstance${instanceId}/sendMessage/***`);
+    console.log('- Payload:', JSON.stringify(payload));
 
     const response = await fetch(url, {
         method: 'POST',
@@ -191,11 +196,11 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     });
 
     const responseText = await response.text();
-    console.log('Green-API response status:', response.status);
-    console.log('Green-API response:', responseText);
+    console.log('Green-API HTTP Status:', response.status);
+    console.log('Green-API Response Body:', responseText);
 
     if (!response.ok) {
-        throw new Error(`Failed to send WhatsApp message (${response.status}): ${responseText}`);
+        throw new Error(`Green-API returned ${response.status}: ${responseText}`);
     }
 
     return JSON.parse(responseText);
