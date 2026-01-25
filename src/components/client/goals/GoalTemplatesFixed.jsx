@@ -278,6 +278,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
     const goalData = {
       id: editingGoal?.id,
+      user_id: user?.id,
       category: selectedTemplate.id,
       title: finalGoalTitle,
       description: selectedTemplate.description,
