@@ -405,40 +405,67 @@ Deno.serve(async (req) => {
                 const user = await base44.auth.me();
                 if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+                console.log('📱 send_whatsapp - user.id:', user.id, 'user.email:', user.email);
+
                 let phone = null;
 
                 // Try to get phone from goal if provided
                 if (goal_id) {
                     try {
+                        console.log('🔍 Fetching goal:', goal_id);
                         const goal = await base44.asServiceRole.entities.UserGoal.get(goal_id);
-                        if (goal) {
+                        console.log('✅ Goal found, user_id:', goal?.user_id);
+                        if (goal && goal.user_id) {
                             const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
                                 user_id: goal.user_id 
                             }, 1);
-                            if (leads.data && leads.data.length > 0) {
+                            console.log('✅ Leads found by goal.user_id:', leads?.data?.length || 0);
+                            if (leads?.data && leads.data.length > 0) {
                                 phone = leads.data[0].phone;
+                                console.log('✅ Phone from goal leads:', phone);
                             }
                         }
                     } catch (err) {
-                        console.warn('Could not fetch goal:', err.message);
+                        console.warn('⚠️ Could not fetch goal:', err.message);
                     }
                 }
 
-                // Fallback: get user's lead
+                // Fallback: get user's lead by created_by
                 if (!phone) {
                     try {
+                        console.log('🔍 Searching leads by created_by:', user.email);
                         const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
                             created_by: user.email
                         }, 1);
-                        if (leads.data && leads.data.length > 0) {
+                        console.log('✅ Leads found by created_by:', leads?.data?.length || 0);
+                        if (leads?.data && leads.data.length > 0) {
                             phone = leads.data[0].phone;
+                            console.log('✅ Phone from created_by:', phone);
                         }
                     } catch (err) {
-                        console.warn('Could not fetch leads:', err.message);
+                        console.warn('⚠️ Could not fetch leads by created_by:', err.message);
+                    }
+                }
+
+                // Fallback 2: get user's lead by user_id
+                if (!phone) {
+                    try {
+                        console.log('🔍 Searching leads by user_id:', user.id);
+                        const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                            user_id: user.id
+                        }, 1);
+                        console.log('✅ Leads found by user_id:', leads?.data?.length || 0);
+                        if (leads?.data && leads.data.length > 0) {
+                            phone = leads.data[0].phone;
+                            console.log('✅ Phone from user_id:', phone);
+                        }
+                    } catch (err) {
+                        console.warn('⚠️ Could not fetch leads by user_id:', err.message);
                     }
                 }
 
                 if (!phone) {
+                    console.error('❌ No phone number found for user');
                     return Response.json({ success: false, message: 'No phone number found' });
                 }
 
@@ -449,6 +476,7 @@ Deno.serve(async (req) => {
                 const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
 
                 if (!instanceId || !apiToken) {
+                    console.error('❌ Green-API credentials not configured');
                     return Response.json({ error: 'Green-API credentials not configured' }, { status: 500 });
                 }
 
@@ -457,6 +485,8 @@ Deno.serve(async (req) => {
                     chatId: `${cleanPhone}@c.us`,
                     message: content
                 };
+
+                console.log('📤 Sending to Green-API:', { phone: cleanPhone, content: content.substring(0, 50) + '...' });
 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -469,13 +499,14 @@ Deno.serve(async (req) => {
                 const result = await response.text();
 
                 if (!response.ok) {
-                    console.error('Green-API error:', result);
+                    console.error('❌ Green-API error:', result);
                     return Response.json({ success: false, error: result }, { status: 500 });
                 }
 
+                console.log('✅ WhatsApp message sent successfully');
                 return Response.json({ success: true, message_sent: true });
             } catch (err) {
-                console.error('Send WhatsApp error:', err);
+                console.error('❌ Send WhatsApp error:', err.message);
                 return Response.json({ error: err.message }, { status: 500 });
             }
         }
