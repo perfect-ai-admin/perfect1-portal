@@ -9,6 +9,7 @@ import UsersTable from '../components/admin/UsersTable';
 import GoalsManager from '../components/admin/GoalsManager';
 import PlansManager from '../components/admin/PlansManager';
 import ActivityLogView from '../components/admin/ActivityLogView';
+import SystemConfigManager from '../components/admin/SystemConfigManager';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
@@ -156,7 +157,11 @@ export default function AdminDashboard() {
                         <TabsContent value="activity">
                             <ActivityLogView />
                         </TabsContent>
-                    </Tabs>
+
+                        <TabsContent value="system">
+                            <SystemConfigManager />
+                        </TabsContent>
+                        </Tabs>
                 </div>
             </div>
         </>
