@@ -142,7 +142,7 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
     const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
 
-    console.log('Sending WhatsApp message - instanceId:', instanceId ? 'SET' : 'NOT SET');
+    console.log('📤 Sending WhatsApp message - instanceId:', instanceId ? 'SET' : 'NOT SET');
 
     if (!instanceId || !apiToken) {
         throw new Error('Green-API credentials not configured');
@@ -155,24 +155,31 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         textMessage: message
     };
 
-    console.log('Sending to URL:', `https://api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
-    console.log('Payload:', JSON.stringify(payload));
+    console.log('📤 Sending to URL:', `https://api.greenapi.com/waInstance${instanceId}/sendMessage/***`);
+    console.log('📤 Payload:', JSON.stringify(payload));
 
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    });
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
 
-    const responseText = await response.text();
-    console.log('Green-API Status:', response.status);
-    console.log('Green-API Response:', responseText);
+        const responseText = await response.text();
+        console.log('📤 Green-API Status:', response.status);
+        console.log('📤 Green-API Response:', responseText);
 
-    if (!response.ok) {
-        throw new Error(`Green-API error ${response.status}: ${responseText}`);
+        if (!response.ok) {
+            throw new Error(`Green-API error ${response.status}: ${responseText}`);
+        }
+
+        const result = JSON.parse(responseText);
+        console.log('✅ Message sent successfully to:', phoneNumber);
+        return result;
+    } catch (err) {
+        console.error('❌ Failed to send message to Green-API:', err.message);
+        throw err;
     }
-
-    return JSON.parse(responseText);
 }
