@@ -46,18 +46,30 @@ Deno.serve(async (req) => {
 
         // חיפוש המשתמש לפי מספר טלפון
         let user = null;
-        
+
+        console.log('🔍 Searching for user with phone:', phoneNumber);
+
         // חיפוש ב-CRMLead
-        const leads = await base44.asServiceRole.entities.CRMLead.filter({ phone: phoneNumber });
-        if (leads.length > 0) {
-            user = leads[0];
-            console.log('Found user in CRMLead:', user.id);
-        } else {
-            // חיפוש ב-Lead
-            const basicLeads = await base44.asServiceRole.entities.Lead.filter({ phone: phoneNumber });
-            if (basicLeads.length > 0) {
-                user = basicLeads[0];
-                console.log('Found user in Lead:', user.id);
+        try {
+            const leads = await base44.asServiceRole.entities.CRMLead.filter({ phone: phoneNumber });
+            if (leads && leads.length > 0) {
+                user = leads[0];
+                console.log('✅ Found user in CRMLead:', user.id);
+            }
+        } catch (err) {
+            console.warn('⚠️ Error searching CRMLead:', err.message);
+        }
+
+        // אם לא נמצא ב-CRMLead, חיפוש ב-Lead
+        if (!user) {
+            try {
+                const basicLeads = await base44.asServiceRole.entities.Lead.filter({ phone: phoneNumber });
+                if (basicLeads && basicLeads.length > 0) {
+                    user = basicLeads[0];
+                    console.log('✅ Found user in Lead:', user.id);
+                }
+            } catch (err) {
+                console.warn('⚠️ Error searching Lead:', err.message);
             }
         }
 
