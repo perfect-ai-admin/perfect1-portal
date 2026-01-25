@@ -43,8 +43,8 @@ export default function Layout({ children, currentPageName }) {
       checkPrivatePageAuth();
     }
 
-    // ClientDashboard / PricingPerfectBizAI / Summary - אל תציג Header רגיל (יש להם Header משלהם)
-    if (currentPageName === 'ClientDashboard' || currentPageName === 'PricingPerfectBizAI' || currentPageName === 'Summary') {
+    // ClientDashboard / AdminDashboard / PricingPerfectBizAI / Summary - אל תציג Header רגיל (יש להם Header משלהם)
+    if (currentPageName === 'ClientDashboard' || currentPageName === 'AdminDashboard' || currentPageName === 'PricingPerfectBizAI' || currentPageName === 'Summary') {
       return (
         <HelmetProvider>
           <CriticalCSS />
