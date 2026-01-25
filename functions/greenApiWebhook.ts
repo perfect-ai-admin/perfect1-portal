@@ -112,12 +112,26 @@ Deno.serve(async (req) => {
         }
 
         // עדכון היסטוריית השיחה
-        const chatHistory = user.chat_history || [];
+        let chatHistory = (user?.chat_history || []);
+        if (!Array.isArray(chatHistory)) {
+            chatHistory = [];
+        }
+
         chatHistory.push({
             role: 'user',
             content: messageText,
             timestamp: new Date().toISOString()
         });
+
+        // שמור עדכון מיידי של ההיסטוריה
+        try {
+            await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                chat_history: chatHistory,
+                last_contact_at: new Date().toISOString()
+            });
+        } catch (err) {
+            console.warn('⚠️ Could not update chat history immediately:', err.message);
+        }
 
         // בחר goal פעיל (הראשון או הממוקד)
         let activeGoal = null;
