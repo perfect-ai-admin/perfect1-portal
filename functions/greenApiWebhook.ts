@@ -197,16 +197,21 @@ Deno.serve(async (req) => {
             timestamp: new Date().toISOString()
         });
 
-        // עדכון היסטוריית השיחה
-        await base44.asServiceRole.entities.CRMLead.update(user.id, {
-            chat_history: chatHistory,
-            last_contact_at: new Date().toISOString()
-        });
+        // עדכון סופי של היסטוריית השיחה
+        try {
+            await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                chat_history: chatHistory,
+                last_contact_at: new Date().toISOString()
+            });
+        } catch (err) {
+            console.warn('⚠️ Could not update final chat history:', err.message);
+        }
 
+        console.log('✅ Webhook completed successfully for user:', user.id);
         return Response.json({ 
             status: 'success',
             user_id: user.id,
-            response_sent: !!mentorResponse.data?.response
+            message_processed: true
         });
 
     } catch (error) {
