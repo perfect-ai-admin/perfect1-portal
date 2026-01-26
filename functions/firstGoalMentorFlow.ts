@@ -365,12 +365,10 @@ Deno.serve(async (req) => {
                     });
                 } else {
                     // הסכים - ממשיכים לגבולות
-                    await new Promise(resolve => setTimeout(resolve, 7500)); // 5-10 שניות
-                    
                     nextMessages.push({
                         role: 'assistant',
                         content: MESSAGE_TEMPLATES.boundaries.default,
-                        delay_after: 12500, // 10-15 שניות
+                        delay_after: 3000,
                         timestamp: new Date().toISOString()
                     });
 
@@ -385,16 +383,16 @@ Deno.serve(async (req) => {
                     nextStage = 'diagnosis';
 
                     // תיעוד שליחת ההודעות
-                    await base44.entities.MentorFlowLog.create({
-                        user_id: user.id,
+                    await logClient.entities.MentorFlowLog.create({
+                        user_id: userId,
                         goal_id: goal_id,
                         flow_stage: 'boundaries',
                         message_sent: MESSAGE_TEMPLATES.boundaries.default,
                         template_used: 'boundaries.default'
                     });
 
-                    await base44.entities.MentorFlowLog.create({
-                        user_id: user.id,
+                    await logClient.entities.MentorFlowLog.create({
+                        user_id: userId,
                         goal_id: goal_id,
                         flow_stage: 'diagnosis',
                         message_sent: MESSAGE_TEMPLATES.diagnosis.default,
@@ -404,10 +402,10 @@ Deno.serve(async (req) => {
             } else if (stage === 'diagnosis') {
                 // שלב פוסט-אבחון: שיקוף + מיקוד + משימה
                 const postDiagnosisPrompt = `
-אתה מנטור עסקי. המשתמש ענה על שאלת האבחון:
-"${user_response}"
+            אתה מנטור עסקי. המשתמש ענה על שאלת האבחון:
+            "${user_response}"
 
-המטרה שלו: ${goal.title}
+            המטרה שלו: ${currentGoal.title}
 
 צור תגובה בפורמט הבא:
 1. שיקוף קצר (1-2 משפטים) - מה הוא אמר, איזו תחושה עולה
@@ -424,7 +422,7 @@ Deno.serve(async (req) => {
 }
 `;
 
-                const postDiagnosis = await base44.integrations.Core.InvokeLLM({
+                const postDiagnosis = await baseClient.integrations.Core.InvokeLLM({
                     prompt: postDiagnosisPrompt,
                     response_json_schema: {
                         type: "object",
@@ -458,8 +456,8 @@ ${postDiagnosis.task}`;
 
                 nextStage = 'post_diagnosis';
 
-                await base44.entities.MentorFlowLog.create({
-                    user_id: user.id,
+                await logClient.entities.MentorFlowLog.create({
+                    user_id: userId,
                     goal_id: goal_id,
                     flow_stage: 'post_diagnosis',
                     message_sent: fullResponse,
@@ -468,9 +466,10 @@ ${postDiagnosis.task}`;
             }
 
             // עדכון המטרה
-            await base44.entities.UserGoal.update(goal_id, {
+            const updateClient = isServiceRole ? base44.asServiceRole : base44;
+            await updateClient.entities.UserGoal.update(goal_id, {
                 flow_data: {
-                    ...goal.flow_data,
+                    ...currentGoal.flow_data,
                     mentor_stage: nextStage,
                     last_message_time: new Date().toISOString(),
                     user_pattern: analysis.user_pattern
