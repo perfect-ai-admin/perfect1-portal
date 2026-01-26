@@ -1,4 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { runAgent, logAgentEvent } from './agentWrapper.js';
+import { sendWhatsAppMessage } from './whatsappWrapper.js';
+import { invokeLLMWithRetry } from './llmWrapper.js';
 
 /**
  * פלואו מנטור ראשון × מטרה ראשונה
@@ -151,7 +154,18 @@ Deno.serve(async (req) => {
             try {
                 const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
                 console.log('📤 Sending WhatsApp to:', phoneNumber);
-                await sendWhatsAppMessage(phoneNumber, whatsappMessage);
+
+                const phoneNorm = normalizePhoneNumber(phoneNumber);
+                await sendWhatsAppMessage({
+                    base44,
+                    phoneNormalized: phoneNorm,
+                    messageText: whatsappMessage,
+                    leadId: leads?.[0]?.id || 'unknown',
+                    userId: goalUser.id,
+                    goalId: goalId,
+                    agentRunId: null
+                });
+
                 console.log('✅ WhatsApp sent successfully for first goal:', goalId);
                 
                 return Response.json({ 
@@ -332,21 +346,38 @@ Deno.serve(async (req) => {
             `;
 
                 const baseClient = isServiceRole ? base44.asServiceRole : base44;
-                const analysis = await baseClient.integrations.Core.InvokeLLM({
-                prompt: analysisPrompt,
-                response_json_schema: {
-                    type: "object",
-                    properties: {
-                        sentiment: { type: "string" },
-                        is_agreement: { type: "boolean" },
-                        effectiveness_score: { type: "number" },
-                        suggested_next_message: { type: "string" },
-                        improvements: { type: "array", items: { type: "string" } },
-                        user_pattern: { type: "string" }
+
+                // שימוש ב-LLM wrapper
+                const llmResult = await invokeLLMWithRetry({
+                    base44: baseClient,
+                    prompt: analysisPrompt,
+                    responseJsonSchema: {
+                        type: "object",
+                        properties: {
+                            sentiment: { type: "string" },
+                            is_agreement: { type: "boolean" },
+                            effectiveness_score: { type: "number" },
+                            suggested_next_message: { type: "string" },
+                            improvements: { type: "array", items: { type: "string" } },
+                            user_pattern: { type: "string" }
+                        },
+                        required: ["sentiment", "effectiveness_score"]
                     },
-                    required: ["sentiment", "effectiveness_score"]
-                }
-            });
+                    agentName: 'FirstGoalMentor',
+                    goalId: goal_id,
+                    fallbackResponse: {
+                        sentiment: 'neutral',
+                        is_agreement: true,
+                        effectiveness_score: 3,
+                        suggested_next_message: 'קיבלתי את תגובתך, תודה.',
+                        improvements: [],
+                        user_pattern: 'unknown'
+                    },
+                    maxRetries: 3,
+                    timeoutMs: 15000
+                });
+
+                const analysis = llmResult.response;
 
             // תיעוד התגובה
             const logClient = isServiceRole ? base44.asServiceRole : base44;
@@ -441,30 +472,33 @@ Deno.serve(async (req) => {
 }
 `;
 
-                let postDiagnosis;
-                try {
-                    postDiagnosis = await baseClient.integrations.Core.InvokeLLM({
-                        prompt: postDiagnosisPrompt,
-                        response_json_schema: {
-                            type: "object",
-                            properties: {
-                                reflection: { type: "string" },
-                                reframe: { type: "string" },
-                                focus: { type: "string" },
-                                task: { type: "string" }
-                            },
-                            required: ["reflection", "task"]
-                        }
-                    });
-                } catch (llmErr) {
-                    console.error('❌ LLM failed for post-diagnosis, using fallback');
-                    postDiagnosis = {
+                // שימוש ב-LLM wrapper
+                const llmResult = await invokeLLMWithRetry({
+                    base44: baseClient,
+                    prompt: postDiagnosisPrompt,
+                    responseJsonSchema: {
+                        type: "object",
+                        properties: {
+                            reflection: { type: "string" },
+                            reframe: { type: "string" },
+                            focus: { type: "string" },
+                            task: { type: "string" }
+                        },
+                        required: ["reflection", "task"]
+                    },
+                    agentName: 'FirstGoalMentor',
+                    goalId: goal_id,
+                    fallbackResponse: {
                         reflection: "אני שומע אותך.",
                         reframe: "זה לגמרי טבעי להרגיש ככה בשלב הזה.",
                         focus: "בוא נתחיל בצעד קטן אחד.",
                         task: "כתוב רשימה של 3 דברים קטנים שאתה יכול לעשות השבוע."
-                    };
-                }
+                    },
+                    maxRetries: 3,
+                    timeoutMs: 15000
+                });
+
+                const postDiagnosis = llmResult.response;
 
                 const fullResponse = `${postDiagnosis.reflection}
 

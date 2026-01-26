@@ -1,4 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { runAgent, logAgentEvent, createDLQEvent } from './agentWrapper.js';
+import { sendWhatsAppMessage } from './whatsappWrapper.js';
 
 /**
  * Green-API Webhook Handler
@@ -6,6 +8,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  */
 
 Deno.serve(async (req) => {
+    let agentRunId = null;
+    
     try {
         const base44 = createClientFromRequest(req);
         const body = await req.json();
@@ -304,60 +308,95 @@ Deno.serve(async (req) => {
         });
 
         let mentorMessage = '';
-        let retryCount = 0;
-        const MAX_LLM_RETRIES = 2;
-        
-        // קריאה למנוע המנטור החכם - עם retry ו-fallback
-        while (retryCount < MAX_LLM_RETRIES && !mentorMessage) {
-            try {
-                const mentorResponse = await Promise.race([
-                    base44.asServiceRole.functions.invoke('smartMentorEngine', {
-                        action: 'analyze_response',
-                        goal_id: activeGoal.id,
-                        content: 'WhatsApp message',
-                        client_response: messageText,
-                        timeline_entry_id: null,
-                        user_id: user.id // העבר במפורש
-                    }),
-                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 30000))
-                ]);
 
-                console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
+        // שימוש ב-runAgent wrapper
+        const agentResult = await runAgent({
+            base44,
+            agentName: 'SmartMentor',
+            handlerName: 'smartMentorEngine',
+            userId: user.user_id || user.id,
+            leadId: user.id,
+            goalId: activeGoal.id,
+            channel: 'whatsapp',
+            stage: 'executing',
+            inputSummary: messageText.substring(0, 100),
+            executeFunction: async (runId) => {
+                agentRunId = runId;
+
+                // לוג אירוע message_in
+                await logAgentEvent({
+                    base44,
+                    agentRunId: runId,
+                    eventType: 'message_in',
+                    summary: 'Received WhatsApp message',
+                    dataJson: { message: messageText.substring(0, 200) }
+                });
+
+                // קריאה ל-smartMentorEngine
+                const mentorResponse = await base44.asServiceRole.functions.invoke('smartMentorEngine', {
+                    action: 'analyze_response',
+                    goal_id: activeGoal.id,
+                    content: 'WhatsApp message',
+                    client_response: messageText,
+                    timeline_entry_id: null,
+                    user_id: user.id
+                });
+
+                // לוג אירוע llm_call
+                await logAgentEvent({
+                    base44,
+                    agentRunId: runId,
+                    eventType: 'llm_call',
+                    summary: 'SmartMentor analysis',
+                    dataJson: { analysis: mentorResponse.data?.analysis }
+                });
 
                 const analysis = mentorResponse.data?.analysis;
                 if (analysis) {
                     mentorMessage = `${analysis.deep_meaning}
 
-${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
-${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}`.trim();
+        ${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
+        ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}`.trim();
+                } else {
+                    mentorMessage = 'קיבלתי את הודעתך, אחזור אליך בהקדם.';
                 }
-                break; // הצלחנו - צא מהלולאה
-            } catch (mentorErr) {
-                retryCount++;
-                console.error(`❌ Smart Mentor attempt ${retryCount} failed:`, mentorErr.message);
-                
-                if (retryCount >= MAX_LLM_RETRIES) {
-                    // Fallback - תגובה בסיסית עם mentorChat
-                    try {
-                        const fallbackRes = await base44.asServiceRole.functions.invoke('mentorChat', {
-                            user_id: user.id,
-                            message: messageText,
-                            chat_history: chatHistory.slice(-10), // רק 10 אחרונות
-                            goal_id: activeGoal.id
-                        });
-                        mentorMessage = fallbackRes.data?.response || 'קיבלתי את הודעתך, אחזור אליך בהקדם.';
-                    } catch (fallbackErr) {
-                        console.error('❌ Fallback also failed:', fallbackErr.message);
-                        mentorMessage = 'קיבלתי את הודעתך 👍 אחזור אליך בהקדם עם תשובה מפורטת.';
-                    }
-                }
-                
-                await new Promise(r => setTimeout(r, 1000)); // המתן שנייה לפני retry
+
+                return {
+                    outputSummary: mentorMessage.substring(0, 100),
+                    waitingUser: false
+                };
             }
+        });
+
+        // אם נכשל - mentorMessage יהיה ריק, נשתמש ב-fallback
+        if (!mentorMessage) {
+            mentorMessage = 'קיבלתי את הודעתך 👍 אחזור אליך בהקדם עם תשובה מפורטת.';
         }
 
         console.log('📤 Sending mentor message to:', phoneNumber);
-        const sendResult = await sendWhatsAppMessage(phoneNumber, mentorMessage);
+
+        // שימוש ב-wrapper
+        const sendResult = await sendWhatsAppMessage({
+            base44,
+            phoneNormalized: normalizePhoneNumber(phoneNumber),
+            messageText: mentorMessage,
+            leadId: user.id,
+            userId: user.user_id || user.id,
+            goalId: activeGoal.id,
+            agentRunId
+        });
+
+        // לוג אירוע message_out
+        if (agentRunId) {
+            await logAgentEvent({
+                base44,
+                agentRunId,
+                eventType: 'message_out',
+                summary: 'Sent WhatsApp message',
+                dataJson: { message: mentorMessage.substring(0, 200) }
+            });
+        }
+
         console.log('✅ WhatsApp send result:', sendResult);
 
         chatHistory.push({
@@ -427,13 +466,31 @@ ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment 
     } catch (error) {
         console.error('❌ Green-API webhook error:', error.message);
         console.error('Error stack:', error.stack);
+
+        // יצירת DLQEvent
+        try {
+            await createDLQEvent({
+                base44,
+                eventType: 'inbound_whatsapp',
+                source: 'greenApiWebhook',
+                severity: 'high',
+                phoneNormalized: body?.messageData?.phone || 'unknown',
+                agentRunId,
+                error,
+                payloadJson: body,
+                contextJson: { handler: 'greenApiWebhook' }
+            });
+        } catch (dlqErr) {
+            console.error('❌ Could not create DLQ:', dlqErr.message);
+        }
+
         // לא זורקים תשובת שגיאה - מחזירים 200 כדי שGreen-API יוותר בשקט
         return Response.json({ 
             status: 'error',
             error: error.message 
         }, { status: 200 });
     }
-});
+    });
 
 /**
  * נרמול מספר טלפון לפורמט בינלאומי
