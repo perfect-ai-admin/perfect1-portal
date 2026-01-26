@@ -117,6 +117,7 @@ Deno.serve(async (req) => {
             
             // שליחת ווטסאפ - קריטי!
             let phoneNumber = goalUser.phone;
+            let leadId = null;
             console.log('📱 Checking phone - User.phone:', phoneNumber);
             
             if (!phoneNumber) {
@@ -128,16 +129,22 @@ Deno.serve(async (req) => {
                     ]
                 }, '-created_date', 1);
                 
-                if (leads && leads.length > 0 && leads[0].phone) {
-                    phoneNumber = leads[0].phone;
-                    console.log('📱 Found phone in CRMLead:', phoneNumber);
+                if (leads && leads.length > 0) {
+                    phoneNumber = leads[0].phone || leads[0].phone_normalized;
+                    leadId = leads[0].id;
+                    console.log('📱 Found phone in CRMLead:', phoneNumber, 'lead_id:', leadId);
                     
-                    // סנכרון - עדכן את ה-Lead עם user_id
+                    // סנכרון - עדכן את ה-Lead עם user_id ו-phone_normalized
+                    const updateData = {};
                     if (!leads[0].user_id) {
-                        await base44.asServiceRole.entities.CRMLead.update(leads[0].id, {
-                            user_id: goalUser.id
-                        });
-                        console.log('🔗 Synced CRMLead user_id');
+                        updateData.user_id = goalUser.id;
+                    }
+                    if (!leads[0].phone_normalized && phoneNumber) {
+                        updateData.phone_normalized = normalizePhoneNumber(phoneNumber);
+                    }
+                    if (Object.keys(updateData).length > 0) {
+                        await base44.asServiceRole.entities.CRMLead.update(leads[0].id, updateData);
+                        console.log('🔗 Synced CRMLead:', Object.keys(updateData).join(', '));
                     }
                 }
             }
@@ -153,14 +160,14 @@ Deno.serve(async (req) => {
             
             try {
                 const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
-                console.log('📤 Sending WhatsApp to:', phoneNumber);
+                console.log('📤 Sending WhatsApp to:', phoneNumber, 'lead_id:', leadId);
 
                 const phoneNorm = normalizePhoneNumber(phoneNumber);
                 await sendWhatsAppMessage({
                     base44,
                     phoneNormalized: phoneNorm,
                     messageText: whatsappMessage,
-                    leadId: leads?.[0]?.id || 'unknown',
+                    leadId: leadId || 'unknown',
                     userId: goalUser.id,
                     goalId: goalId,
                     agentRunId: null
@@ -168,33 +175,38 @@ Deno.serve(async (req) => {
 
                 console.log('✅ WhatsApp sent successfully for first goal:', goalId);
 
-                // עדכון chat_history של CRMLead עם ההודעה היוצאת
-                if (leads && leads.length > 0) {
-                    const leadId = leads[0].id;
+                // עדכון chat_history של CRMLead עם ההודעה היוצאת - חובה
+                if (leadId) {
                     try {
                         const currentLead = await base44.asServiceRole.entities.CRMLead.get(leadId);
                         const updatedHistory = [...(currentLead.chat_history || []), {
                             role: 'assistant',
                             content: whatsappMessage,
                             timestamp: new Date().toISOString(),
-                            agent: 'firstGoalMentorFlow'
+                            agent: 'firstGoalMentorFlow',
+                            message_type: 'intro_agreement'
                         }].slice(-100);
 
                         await base44.asServiceRole.entities.CRMLead.update(leadId, {
                             chat_history: updatedHistory,
                             waiting_for_response: true,
-                            last_outbound_at: new Date().toISOString()
+                            last_outbound_at: new Date().toISOString(),
+                            current_goal_id: goalId
                         });
-                        console.log('✅ Chat history updated with bot messages');
+                        console.log('✅ Chat history updated with bot messages, history length:', updatedHistory.length);
                     } catch (histErr) {
-                        console.warn('⚠️ Could not update chat history:', histErr.message);
+                        console.error('❌ CRITICAL: Could not update chat history:', histErr.message);
+                        throw histErr; // זה קריטי - זרוק שגיאה אם נכשל
                     }
+                } else {
+                    console.error('❌ CRITICAL: No lead_id found, cannot update chat history');
                 }
 
                 return Response.json({ 
                     success: true, 
                     message: 'First goal mentor flow initiated and WhatsApp sent',
-                    phone_used: phoneNumber 
+                    phone_used: phoneNumber,
+                    lead_id: leadId 
                 });
             } catch (err) {
                 console.error('❌ WhatsApp send failed:', err.message);

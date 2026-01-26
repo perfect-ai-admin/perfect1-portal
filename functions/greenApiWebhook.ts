@@ -54,16 +54,33 @@ Deno.serve(async (req) => {
 
         console.log('🔍 Searching for user with phone:', phoneNumber, '-> normalized:', normalizedPhone);
 
-        // חיפוש ב-CRMLead - גם לפי מקור וגם לפי מנורמל
+        // חיפוש ב-CRMLead - קודם לפי phone_normalized, אחר כך fallback
         try {
             const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                $or: [
-                    { phone: phoneNumber },
-                    { phone: normalizedPhone },
-                    { phone: '0' + normalizedPhone.substring(3) } // גם 05...
-                ]
+                phone_normalized: normalizedPhone
             });
-            if (leads && leads.length > 0) {
+            
+            // אם לא נמצא, חפש גם לפי phone מקורי
+            if (!leads || leads.length === 0) {
+                const fallbackLeads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                    $or: [
+                        { phone: phoneNumber },
+                        { phone: normalizedPhone },
+                        { phone: '0' + normalizedPhone.substring(3) }
+                    ]
+                });
+                if (fallbackLeads && fallbackLeads.length > 0) {
+                    user = fallbackLeads[0];
+                    console.log('✅ Found user in CRMLead (fallback):', user.id);
+                    // עדכן phone_normalized אם חסר
+                    if (!user.phone_normalized) {
+                        await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                            phone_normalized: normalizedPhone
+                        });
+                        user.phone_normalized = normalizedPhone;
+                    }
+                }
+            } else {
                 user = leads[0];
                 console.log('✅ Found user in CRMLead:', user.id, user.email);
             }
@@ -111,7 +128,8 @@ Deno.serve(async (req) => {
 
                 const newLead = await base44.asServiceRole.entities.CRMLead.create({
                     full_name: senderData?.senderName || 'WhatsApp User',
-                    phone: normalizedPhone, // שמור בפורמט מנורמל
+                    phone: phoneNumber, // שמור מקורי
+                    phone_normalized: normalizedPhone, // שמור מנורמל
                     source: 'WhatsApp',
                     journey_stage: 'lead_new',
                     active_handler: 'mentor',
@@ -127,10 +145,32 @@ Deno.serve(async (req) => {
                 user = newLead;
                 console.log('✅ New lead created:', newLead.id, 'linked_user:', linkedUserId);
 
-                // שליחת הודעת ברוכים הבאים
-                await sendWhatsAppMessage(phoneNumber, 
-                    'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?'
-                );
+                // שליחת הודעת ברוכים הבאים ועדכון chat_history
+                const welcomeMessage = 'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?';
+                
+                await sendWhatsAppMessage({
+                    base44,
+                    phoneNormalized: normalizedPhone,
+                    messageText: welcomeMessage,
+                    leadId: newLead.id,
+                    userId: linkedUserId || 'new_user',
+                    goalId: null,
+                    agentRunId: null
+                });
+                
+                // עדכן chat_history עם הודעת הברוכים הבאים
+                const updatedHistory = [...(newLead.chat_history || []), {
+                    role: 'assistant',
+                    content: welcomeMessage,
+                    timestamp: new Date().toISOString(),
+                    agent: 'greenApiWebhook',
+                    message_type: 'welcome'
+                }];
+                
+                await base44.asServiceRole.entities.CRMLead.update(newLead.id, {
+                    chat_history: updatedHistory,
+                    last_outbound_at: new Date().toISOString()
+                });
 
                 return Response.json({ status: 'new_lead_created', lead_id: newLead.id });
             } catch (err) {
@@ -182,47 +222,61 @@ Deno.serve(async (req) => {
             }
         }
 
-        // בחר goal פעיל - חיפוש חכם עם קישור User
-        let activeGoal = null;
+        // קישור CRMLead ל-User - חובה לפני חיפוש מטרות
         let effectiveUserId = user.user_id;
-
-        // אם ל-CRMLead אין user_id מקושר, ננסה למצוא User לפי phone_normalized
-        if (!effectiveUserId && user.phone_normalized) {
+        
+        // אם אין user_id, חפש User לפי טלפון
+        if (!effectiveUserId) {
             try {
+                const phoneToSearch = user.phone_normalized || normalizedPhone;
+                console.log('🔍 CRMLead ללא user_id, מחפש User לפי טלפון:', phoneToSearch);
+                
                 const allUsers = await base44.asServiceRole.entities.User.list();
                 const matchingUser = allUsers.find(u => 
-                    u.phone && (normalizePhoneNumber(u.phone) === user.phone_normalized)
+                    u.phone && (normalizePhoneNumber(u.phone) === phoneToSearch)
                 );
+                
                 if (matchingUser) {
                     effectiveUserId = matchingUser.id;
-                    console.log('🔗 נמצא User תואם לפי טלפון, מעדכן CRMLead.user_id:', matchingUser.id);
-                    // נעדכן את ה-CRMLead עם ה-user_id שנמצא
+                    console.log('🔗 נמצא User תואם:', matchingUser.email, '- מעדכן CRMLead');
+                    
                     await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                        user_id: effectiveUserId
+                        user_id: effectiveUserId,
+                        email: matchingUser.email // סנכרון גם email
                     });
                     user.user_id = effectiveUserId;
+                    user.email = matchingUser.email;
+                    console.log('✅ CRMLead מקושר ל-User:', effectiveUserId);
+                } else {
+                    console.warn('⚠️ לא נמצא User עבור הטלפון:', phoneToSearch);
                 }
             } catch (err) {
-                console.warn('⚠️ שגיאה בחיפוש User לפי טלפון:', err.message);
+                console.error('❌ שגיאה בקישור CRMLead ל-User:', err.message);
             }
         }
 
+        // חיפוש מטרות פעילות
+        let activeGoal = null;
         try {
             let userGoals = [];
 
             if (effectiveUserId) {
+                console.log('🔍 מחפש מטרות עבור user_id:', effectiveUserId);
                 userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
                     user_id: effectiveUserId,
                     status: 'active'
-                }, '-created_date', 5);
+                }, '-created_date', 10);
+                console.log('📊 נמצאו', userGoals.length, 'מטרות פעילות');
             }
 
-            // אם לא נמצא, נסה לפי created_by
+            // Fallback: אם לא נמצא, נסה לפי created_by
             if (userGoals.length === 0 && user.email) {
+                console.log('🔍 חיפוש חלופי לפי created_by:', user.email);
                 userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
                     created_by: user.email,
                     status: 'active'
-                }, '-created_date', 5);
+                }, '-created_date', 10);
+                console.log('📊 נמצאו', userGoals.length, 'מטרות פעילות (created_by)');
             }
 
             if (userGoals.length > 0) {
@@ -241,9 +295,34 @@ Deno.serve(async (req) => {
         }
 
         if (!activeGoal) {
-            // אם אין goal פעיל, צור timeline entry זמני או שלח הודעה
             console.log('⚠️ No active goal for user, sending generic response');
-            await sendWhatsAppMessage(phoneNumber, 'שלום! 👋\n\nנראה שאתה עדיין לא בחרת מטרה. בואנו נגדיר ביחד את הצעד הראשון שלך.');
+            const noGoalMessage = 'שלום! 👋\n\nנראה שאתה עדיין לא בחרת מטרה. בואנו נגדיר ביחד את הצעד הראשון שלך.';
+            
+            await sendWhatsAppMessage({
+                base44,
+                phoneNormalized: normalizedPhone,
+                messageText: noGoalMessage,
+                leadId: user.id,
+                userId: effectiveUserId || user.id,
+                goalId: null,
+                agentRunId: null
+            });
+            
+            // עדכן chat_history
+            const freshLead = await base44.asServiceRole.entities.CRMLead.get(user.id);
+            const updatedHistory = [...(freshLead.chat_history || []), {
+                role: 'assistant',
+                content: noGoalMessage,
+                timestamp: new Date().toISOString(),
+                agent: 'greenApiWebhook'
+            }].slice(-100);
+            
+            await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                chat_history: updatedHistory,
+                last_outbound_at: new Date().toISOString(),
+                waiting_for_response: false
+            });
+            
             return Response.json({ status: 'no_goal', message: 'User needs to select a goal first' });
         }
 
@@ -282,30 +361,41 @@ Deno.serve(async (req) => {
 
             console.log('✅ FirstGoalMentorFlow response:', flowResponse.data);
 
-            // שלח את ההודעות שחזרו מהפלואו
+            // שלח את ההודעות שחזרו מהפלואו ועדכן chat_history
             if (flowResponse.data?.messages && flowResponse.data.messages.length > 0) {
                 for (const msg of flowResponse.data.messages) {
-                    const maxDelay = Math.min(msg.delay_after || 0, 8000); // מקסימום 8 שניות
+                    const maxDelay = Math.min(msg.delay_after || 0, 8000);
                     if (maxDelay > 0 && flowResponse.data.messages.indexOf(msg) < flowResponse.data.messages.length - 1) {
                         await new Promise(resolve => setTimeout(resolve, maxDelay));
                     }
                     
-                    await sendWhatsAppMessage(phoneNumber, msg.content);
+                    // שליחה דרך wrapper
+                    await sendWhatsAppMessage({
+                        base44,
+                        phoneNormalized: normalizedPhone,
+                        messageText: msg.content,
+                        leadId: user.id,
+                        userId: effectiveUserId || user.id,
+                        goalId: activeGoal.id,
+                        agentRunId: null
+                    });
                     
                     chatHistory.push({
                         role: 'assistant',
                         content: msg.content,
-                        timestamp: new Date().toISOString()
+                        timestamp: new Date().toISOString(),
+                        agent: 'firstGoalMentorFlow'
                     });
                 }
             }
 
-            // עדכון היסטוריה מוגבלת (שמור רק 50 הודעות אחרונות)
-            const limitedHistory = [...chatHistory].slice(-50);
+            // עדכון היסטוריה מוגבלת
+            const limitedHistory = [...chatHistory].slice(-100);
             
             await base44.asServiceRole.entities.CRMLead.update(user.id, {
                 chat_history: limitedHistory,
                 last_contact_at: new Date().toISOString(),
+                last_outbound_at: new Date().toISOString(),
                 waiting_for_response: flowResponse.data?.next_stage !== 'completed'
             });
 
