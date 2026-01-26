@@ -280,6 +280,14 @@ Deno.serve(async (req) => {
             }
 
             if (userGoals.length > 0) {
+                console.log('📋 Goals found:', userGoals.map(g => ({
+                    id: g.id,
+                    title: g.title,
+                    status: g.status,
+                    is_first_goal: g.is_first_goal,
+                    mentor_stage: g.flow_data?.mentor_stage
+                })));
+                
                 // העדף מטרה ראשונה שעדיין בפלואו
                 const firstGoalInProgress = userGoals.find(g => 
                     g.is_first_goal && 
@@ -287,54 +295,117 @@ Deno.serve(async (req) => {
                     g.flow_data.mentor_stage !== 'completed'
                 );
                 
-                activeGoal = firstGoalInProgress || userGoals[0];
-                console.log('✅ Active goal selected:', activeGoal.id, 'isPrimary:', activeGoal.isPrimary);
+                // אם לא נמצאה מטרה ראשונה בפלואו, קח מטרה עם status='selected' או 'active'
+                if (!firstGoalInProgress) {
+                    const selectedGoal = userGoals.find(g => g.status === 'selected' || g.status === 'active');
+                    activeGoal = selectedGoal || userGoals[0];
+                } else {
+                    activeGoal = firstGoalInProgress;
+                }
+                
+                console.log('✅ Active goal selected:', activeGoal.id, 'title:', activeGoal.title, 'status:', activeGoal.status);
+            } else {
+                console.warn('⚠️ No goals found for effectiveUserId:', effectiveUserId);
             }
         } catch (err) {
-            console.log('Could not fetch active goal:', err.message);
+            console.error('❌ Could not fetch active goal:', err.message);
         }
 
         if (!activeGoal) {
-            console.log('⚠️ No active goal for user, sending generic response');
-            const noGoalMessage = 'שלום! 👋\n\nנראה שאתה עדיין לא בחרת מטרה. בואנו נגדיר ביחד את הצעד הראשון שלך.';
-            
-            await sendWhatsAppMessage({
-                base44,
-                phoneNormalized: normalizedPhone,
-                messageText: noGoalMessage,
-                leadId: user.id,
-                userId: effectiveUserId || user.id,
-                goalId: null,
-                agentRunId: null
+            console.error('❌ NO ACTIVE GOAL FOUND');
+            console.error('Debug info:', {
+                user_id: user.id,
+                user_email: user.email,
+                effectiveUserId: effectiveUserId,
+                has_phone_normalized: !!user.phone_normalized,
+                phone_normalized: user.phone_normalized
             });
             
-            // עדכן chat_history
-            const freshLead = await base44.asServiceRole.entities.CRMLead.get(user.id);
-            const updatedHistory = [...(freshLead.chat_history || []), {
-                role: 'assistant',
-                content: noGoalMessage,
-                timestamp: new Date().toISOString(),
-                agent: 'greenApiWebhook'
-            }].slice(-100);
+            // חיפוש אגרסיבי - כל המטרות של היוזר
+            try {
+                const allUserGoals = await base44.asServiceRole.entities.UserGoal.filter({
+                    user_id: effectiveUserId
+                }, '-created_date', 20);
+                
+                console.log('🔍 ALL goals for user:', allUserGoals.map(g => ({
+                    id: g.id,
+                    title: g.title,
+                    status: g.status,
+                    is_first_goal: g.is_first_goal
+                })));
+                
+                // אם יש מטרה כלשהי - השתמש בה
+                if (allUserGoals.length > 0) {
+                    activeGoal = allUserGoals[0];
+                    console.log('✅ Using first available goal:', activeGoal.id);
+                    
+                    // אם הסטטוס selected, שדרג ל-active
+                    if (activeGoal.status === 'selected') {
+                        await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, {
+                            status: 'active'
+                        });
+                        console.log('🔄 Upgraded goal status to active');
+                    }
+                }
+            } catch (err) {
+                console.error('❌ Error in aggressive goal search:', err.message);
+            }
             
-            await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                chat_history: updatedHistory,
-                last_outbound_at: new Date().toISOString(),
-                waiting_for_response: false
-            });
-            
-            return Response.json({ status: 'no_goal', message: 'User needs to select a goal first' });
+            // אם עדיין אין מטרה
+            if (!activeGoal) {
+                console.log('⚠️ Absolutely no goals found, sending generic response');
+                const noGoalMessage = 'שלום! 👋\n\nנראה שאתה עדיין לא בחרת מטרה. בואנו נגדיר ביחד את הצעד הראשון שלך.';
+                
+                await sendWhatsAppMessage({
+                    base44,
+                    phoneNormalized: normalizedPhone,
+                    messageText: noGoalMessage,
+                    leadId: user.id,
+                    userId: effectiveUserId || user.id,
+                    goalId: null,
+                    agentRunId: null
+                });
+                
+                // עדכן chat_history
+                const freshLead = await base44.asServiceRole.entities.CRMLead.get(user.id);
+                const updatedHistory = [...(freshLead.chat_history || []), {
+                    role: 'assistant',
+                    content: noGoalMessage,
+                    timestamp: new Date().toISOString(),
+                    agent: 'greenApiWebhook'
+                }].slice(-100);
+                
+                await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                    chat_history: updatedHistory,
+                    last_outbound_at: new Date().toISOString(),
+                    waiting_for_response: false
+                });
+                
+                return Response.json({ status: 'no_goal', message: 'User needs to select a goal first' });
+            }
         }
 
-        console.log('🎯 Active goal found:', activeGoal.id, 'is_first_goal:', activeGoal.is_first_goal);
+        console.log('🎯 Active goal found:', activeGoal.id, 'title:', activeGoal.title, 'is_first_goal:', activeGoal.is_first_goal, 'status:', activeGoal.status);
 
-        // סנכרון user_id אם חסר
-        if (activeGoal.user_id !== user.user_id && user.user_id) {
-            await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, {
-                user_id: user.user_id
-            });
-            console.log('🔗 Synced goal user_id:', user.user_id);
+        // סנכרון user_id ו-lead_id אם חסר
+        const syncData = {};
+        if (activeGoal.user_id !== effectiveUserId && effectiveUserId) {
+            syncData.user_id = effectiveUserId;
         }
+        if (!activeGoal.lead_id && user.id) {
+            syncData.lead_id = user.id;
+        }
+        
+        if (Object.keys(syncData).length > 0) {
+            await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, syncData);
+            console.log('🔗 Synced goal:', Object.keys(syncData).join(', '));
+        }
+        
+        // עדכן CRMLead עם current_goal_id
+        await base44.asServiceRole.entities.CRMLead.update(user.id, {
+            current_goal_id: activeGoal.id
+        });
+        console.log('✅ CRMLead.current_goal_id updated:', activeGoal.id);
 
         // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
         const mentorStage = activeGoal.flow_data?.mentor_stage;
