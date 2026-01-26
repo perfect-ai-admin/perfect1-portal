@@ -44,17 +44,24 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'invalid_message' });
         }
 
-        // חיפוש המשתמש לפי מספר טלפון
+        // חיפוש המשתמש לפי מספר טלפון - נרמול קודם
         let user = null;
+        const normalizedPhone = normalizePhoneNumber(phoneNumber);
 
-        console.log('🔍 Searching for user with phone:', phoneNumber);
+        console.log('🔍 Searching for user with phone:', phoneNumber, '-> normalized:', normalizedPhone);
 
-        // חיפוש ב-CRMLead
+        // חיפוש ב-CRMLead - גם לפי מקור וגם לפי מנורמל
         try {
-            const leads = await base44.asServiceRole.entities.CRMLead.filter({ phone: phoneNumber });
+            const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                $or: [
+                    { phone: phoneNumber },
+                    { phone: normalizedPhone },
+                    { phone: '0' + normalizedPhone.substring(3) } // גם 05...
+                ]
+            });
             if (leads && leads.length > 0) {
                 user = leads[0];
-                console.log('✅ Found user in CRMLead:', user.id);
+                console.log('✅ Found user in CRMLead:', user.id, user.email);
             }
         } catch (err) {
             console.warn('⚠️ Error searching CRMLead:', err.message);
@@ -63,7 +70,13 @@ Deno.serve(async (req) => {
         // אם לא נמצא ב-CRMLead, חיפוש ב-Lead
         if (!user) {
             try {
-                const basicLeads = await base44.asServiceRole.entities.Lead.filter({ phone: phoneNumber });
+                const basicLeads = await base44.asServiceRole.entities.Lead.filter({ 
+                    $or: [
+                        { phone: phoneNumber },
+                        { phone: normalizedPhone },
+                        { phone: '0' + normalizedPhone.substring(3) }
+                    ]
+                });
                 if (basicLeads && basicLeads.length > 0) {
                     user = basicLeads[0];
                     console.log('✅ Found user in Lead:', user.id);
@@ -275,6 +288,21 @@ Deno.serve(async (req) => {
         }, { status: 200 });
     }
 });
+
+/**
+ * נרמול מספר טלפון לפורמט בינלאומי
+ */
+function normalizePhoneNumber(phone) {
+    if (!phone) return null;
+    let cleaned = phone.toString().replace(/[\s\-\(\)\+]/g, '');
+    if (cleaned.startsWith('0')) {
+        cleaned = '972' + cleaned.substring(1);
+    }
+    if (!cleaned.startsWith('972')) {
+        cleaned = '972' + cleaned;
+    }
+    return cleaned;
+}
 
 /**
  * שליחת הודעה דרך Green-API
