@@ -90,21 +90,38 @@ Deno.serve(async (req) => {
         if (!user) {
             console.log('📝 Creating new CRMLead for:', phoneNumber);
             try {
+                // חיפוש User קיים לפי טלפון
+                let linkedUserId = null;
+                try {
+                    const allUsers = await base44.asServiceRole.entities.User.list();
+                    const matchingUser = allUsers.find(u => 
+                        u.phone && (normalizePhoneNumber(u.phone) === normalizedPhone)
+                    );
+                    if (matchingUser) {
+                        linkedUserId = matchingUser.id;
+                        console.log('✅ Found existing User to link:', matchingUser.email);
+                    }
+                } catch (err) {
+                    console.warn('⚠️ Could not search for existing user:', err.message);
+                }
+
                 const newLead = await base44.asServiceRole.entities.CRMLead.create({
                     full_name: senderData?.senderName || 'WhatsApp User',
-                    phone: phoneNumber,
+                    phone: normalizedPhone, // שמור בפורמט מנורמל
                     source: 'WhatsApp',
                     journey_stage: 'lead_new',
                     active_handler: 'mentor',
+                    user_id: linkedUserId, // קישור ל-User אם קיים
                     chat_history: [{
                         role: 'user',
                         content: messageText,
                         timestamp: new Date().toISOString()
-                    }]
+                    }],
+                    waiting_for_response: true
                 });
 
                 user = newLead;
-                console.log('✅ New lead created:', newLead.id);
+                console.log('✅ New lead created:', newLead.id, 'linked_user:', linkedUserId);
 
                 // שליחת הודעת ברוכים הבאים
                 await sendWhatsAppMessage(phoneNumber, 
@@ -124,26 +141,41 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'do_not_contact_ignored' });
         }
 
-        // עדכון היסטוריית השיחה
-        let chatHistory = (user?.chat_history || []);
-        if (!Array.isArray(chatHistory)) {
-            chatHistory = [];
-        }
+        // עדכון היסטוריית השיחה עם נעילה אופטימיסטית (מונע race conditions)
+        const MAX_RETRIES = 3;
+        let chatHistory = [];
+        let chatUpdateSuccess = false;
+        
+        for (let attempt = 0; attempt < MAX_RETRIES && !chatUpdateSuccess; attempt++) {
+            try {
+                // קרא מחדש מהדאטאבייס כדי לקבל את הגרסה העדכנית ביותר
+                const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
+                chatHistory = (freshUser?.chat_history || []);
+                if (!Array.isArray(chatHistory)) {
+                    chatHistory = [];
+                }
 
-        chatHistory.push({
-            role: 'user',
-            content: messageText,
-            timestamp: new Date().toISOString()
-        });
+                chatHistory.push({
+                    role: 'user',
+                    content: messageText,
+                    timestamp: new Date().toISOString()
+                });
 
-        // שמור עדכון מיידי של ההיסטוריה
-        try {
-            await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                chat_history: chatHistory,
-                last_contact_at: new Date().toISOString()
-            });
-        } catch (err) {
-            console.warn('⚠️ Could not update chat history immediately:', err.message);
+                await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                    chat_history: chatHistory,
+                    last_contact_at: new Date().toISOString(),
+                    waiting_for_response: true // מצב המתנה
+                });
+                
+                chatUpdateSuccess = true;
+                console.log('✅ Chat history updated (attempt', attempt + 1, ')');
+            } catch (err) {
+                console.warn(`⚠️ Chat update attempt ${attempt + 1} failed:`, err.message);
+                if (attempt === MAX_RETRIES - 1) {
+                    console.error('❌ Failed to update chat history after', MAX_RETRIES, 'attempts');
+                }
+                await new Promise(r => setTimeout(r, 100 * (attempt + 1))); // backoff
+            }
         }
 
         // בחר goal פעיל (הראשון או הממוקד)
@@ -226,34 +258,52 @@ Deno.serve(async (req) => {
             chat_history_length: chatHistory.length
         });
 
-        // קריאה למנוע המנטור החכם
-        const mentorResponse = await base44.asServiceRole.functions.invoke('smartMentorEngine', {
-            action: 'analyze_response',
-            goal_id: activeGoal.id,
-            content: 'WhatsApp message',
-            client_response: messageText,
-            timeline_entry_id: null
-        });
+        let mentorMessage = '';
+        
+        // קריאה למנוע המנטור החכם - עם fallback
+        try {
+            const mentorResponse = await Promise.race([
+                base44.asServiceRole.functions.invoke('smartMentorEngine', {
+                    action: 'analyze_response',
+                    goal_id: activeGoal.id,
+                    content: 'WhatsApp message',
+                    client_response: messageText,
+                    timeline_entry_id: null,
+                    user_id: user.id // העבר במפורש
+                }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 30000))
+            ]);
 
-        console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
+            console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
 
-        // smartMentorEngine מחזיר analysis עם deep_meaning והערות
-        const analysis = mentorResponse.data?.analysis;
-        if (!analysis) {
-            console.error('❌ No analysis from smart mentor engine');
-            return Response.json({ status: 'error', message: 'No analysis generated' }, { status: 500 });
+            const analysis = mentorResponse.data?.analysis;
+            if (analysis) {
+                mentorMessage = `${analysis.deep_meaning}
+
+${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
+${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}`.trim();
+            }
+        } catch (mentorErr) {
+            console.error('❌ Smart Mentor failed, using fallback:', mentorErr.message);
+            
+            // Fallback - תגובה בסיסית עם mentorChat
+            try {
+                const fallbackRes = await base44.asServiceRole.functions.invoke('mentorChat', {
+                    user_id: user.id,
+                    message: messageText,
+                    chat_history: chatHistory,
+                    goal_id: activeGoal.id
+                });
+                mentorMessage = fallbackRes.data?.response || 'קיבלתי את הודעתך, אחזור אליך בהקדם.';
+            } catch (fallbackErr) {
+                console.error('❌ Fallback also failed:', fallbackErr.message);
+                mentorMessage = 'קיבלתי את הודעתך 👍 אחזור אליך בהקדם עם תשובה מפורטת.';
+            }
         }
 
-        // בנה הודעת מנטור בהתאם ל-analysis
-        const mentorMessage = `
-        ${analysis.deep_meaning}
-
-        ${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
-        ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}
-        `.trim();
-
         console.log('📤 Sending mentor message to:', phoneNumber);
-        await sendWhatsAppMessage(phoneNumber, mentorMessage);
+        const sendResult = await sendWhatsAppMessage(phoneNumber, mentorMessage);
+        console.log('✅ WhatsApp send result:', sendResult);
 
         chatHistory.push({
             role: 'assistant',
@@ -261,14 +311,29 @@ Deno.serve(async (req) => {
             timestamp: new Date().toISOString()
         });
 
-        // עדכון סופי של היסטוריית השיחה
-        try {
-            await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                chat_history: chatHistory,
-                last_contact_at: new Date().toISOString()
-            });
-        } catch (err) {
-            console.warn('⚠️ Could not update final chat history:', err.message);
+        // עדכון סופי של היסטוריית השיחה - עם retry
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+            try {
+                const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
+                const finalHistory = [...(freshUser.chat_history || []), {
+                    role: 'assistant',
+                    content: mentorMessage,
+                    timestamp: new Date().toISOString()
+                }];
+                
+                await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                    chat_history: finalHistory,
+                    last_contact_at: new Date().toISOString(),
+                    waiting_for_response: false // אין המתנה - שלחנו תגובה
+                });
+                console.log('✅ Final chat history updated');
+                break;
+            } catch (err) {
+                console.warn(`⚠️ Final update attempt ${attempt + 1} failed:`, err.message);
+                if (attempt < MAX_RETRIES - 1) {
+                    await new Promise(r => setTimeout(r, 100 * (attempt + 1)));
+                }
+            }
         }
 
         console.log('✅ Webhook completed successfully for user:', user.id);
@@ -318,26 +383,33 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         throw new Error('Green-API credentials not configured');
     }
 
-    // URL format: https://api.greenapi.com/waInstance{instanceId}/sendMessage/{apiToken}
+    // נרמול הטלפון לפני שליחה
+    const normalizedPhone = normalizePhoneNumber(phoneNumber);
+    
     const url = `https://api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
 
     const payload = {
-        chatId: `${phoneNumber}@c.us`,
+        chatId: `${normalizedPhone}@c.us`,
         message: message
     };
 
     console.log('📤 URL:', url.replace(apiToken, '***'));
-    console.log('📤 ChatID:', `${phoneNumber}@c.us`);
-    console.log('📤 Message:', message);
+    console.log('📤 ChatID:', `${normalizedPhone}@c.us`);
+    console.log('📤 Message preview:', message.substring(0, 100) + '...');
 
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
+        const response = await Promise.race([
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('WhatsApp send timeout')), 15000)
+            )
+        ]);
 
         const responseText = await response.text();
         console.log('📤 Green-API HTTP Status:', response.status);
@@ -348,7 +420,14 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         }
 
         const result = JSON.parse(responseText);
-        console.log('✅ Message sent successfully');
+        
+        // בדיקת הצלחה
+        if (result.idMessage) {
+            console.log('✅ Message sent successfully, idMessage:', result.idMessage);
+        } else {
+            console.warn('⚠️ Message sent but no idMessage returned:', result);
+        }
+        
         return result;
     } catch (err) {
         console.error('❌ sendWhatsAppMessage error:', err.message);

@@ -25,9 +25,17 @@ Deno.serve(async (req) => {
             agentName 
         } = await req.json();
 
-        // 1. שלוף את זיכרון המשתמש הקיים
-        const memoryList = await base44.entities.UserMemory.filter({ user_id: user.id });
-        let userMemory = memoryList[0];
+        // 1. שלוף את זיכרון המשתמש הקיים (חיפוש חכם למניעת כפילויות)
+        const memoryList = await base44.entities.UserMemory.filter({ user_id: user.id }, '-created_date', 1);
+        let userMemory = memoryList.length > 0 ? memoryList[0] : null;
+        
+        // בדיקה לכפילויות - מחק ישנים
+        if (memoryList.length > 1) {
+            console.warn('⚠️ Found', memoryList.length, 'memory records, keeping only the latest');
+            for (let i = 1; i < memoryList.length; i++) {
+                await base44.entities.UserMemory.delete(memoryList[i].id);
+            }
+        }
 
         // 2. שלוף שיחות אחרונות למידע מצטבר
         const recentConversations = await base44.entities.ConversationLog.filter(

@@ -463,18 +463,30 @@ ${postDiagnosis.task}`;
                     message_sent: fullResponse,
                     personalization_applied: postDiagnosis
                 });
-            }
 
-            // עדכון המטרה
-            const updateClient = isServiceRole ? base44.asServiceRole : base44;
-            await updateClient.entities.UserGoal.update(goal_id, {
+                // סיום הפלואו - עדכן שהמשתמש עבר את השלב הראשון
+                nextStage = 'completed';
+                }
+
+                // עדכון המטרה
+                const updateClient = isServiceRole ? base44.asServiceRole : base44;
+                const updateData = {
                 flow_data: {
                     ...currentGoal.flow_data,
                     mentor_stage: nextStage,
                     last_message_time: new Date().toISOString(),
                     user_pattern: analysis.user_pattern
                 }
-            });
+                };
+
+                // אם סיימנו את הפלואו, עדכן גם את הסטטוס
+                if (nextStage === 'completed') {
+                updateData.is_first_goal = false; // משדרג - לא עוד מטרה ראשונה
+                updateData.status = 'active'; // מעביר למצב פעיל
+                console.log('🎉 First goal flow completed, upgrading goal to active');
+                }
+
+                await updateClient.entities.UserGoal.update(goal_id, updateData);
 
             return Response.json({
                 success: true,
@@ -614,7 +626,6 @@ async function sendWhatsAppMessage(phoneNumber, message) {
         throw new Error('Green-API credentials not configured');
     }
 
-    // נרמל את מספר הטלפון לפורמט בינלאומי
     const normalizedPhone = normalizePhoneNumber(phoneNumber);
     
     if (!normalizedPhone) {
@@ -632,20 +643,36 @@ async function sendWhatsAppMessage(phoneNumber, message) {
 
     console.log('📤 Payload:', JSON.stringify(payload));
 
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    });
+    try {
+        const response = await Promise.race([
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('WhatsApp send timeout')), 15000)
+            )
+        ]);
 
-    const responseText = await response.text();
-    console.log('📤 Green-API Response:', responseText);
+        const responseText = await response.text();
+        console.log('📤 Green-API Response:', responseText);
 
-    if (!response.ok) {
-        throw new Error(`Green-API HTTP ${response.status}: ${responseText}`);
+        if (!response.ok) {
+            throw new Error(`Green-API HTTP ${response.status}: ${responseText}`);
+        }
+
+        const result = JSON.parse(responseText);
+        
+        if (result.idMessage) {
+            console.log('✅ Message delivered, idMessage:', result.idMessage);
+        }
+        
+        return result;
+    } catch (err) {
+        console.error('❌ WhatsApp send failed:', err.message);
+        throw err;
     }
-
-    return JSON.parse(responseText);
 }

@@ -7,17 +7,30 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
+        const body = await req.json();
+        const { purpose, currentGoalId, user_id } = body;
         
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        // תמיכה ב-service role (webhook) וב-user scope (app)
+        let user = null;
+        let isServiceRole = false;
+        let effectiveUserId = null;
+        
+        try {
+            user = await base44.auth.me();
+            effectiveUserId = user.id;
+        } catch (err) {
+            isServiceRole = true;
+            effectiveUserId = user_id;
+            if (!effectiveUserId) {
+                return Response.json({ error: 'user_id required for service role' }, { status: 400 });
+            }
         }
-
-        const { purpose, currentGoalId } = await req.json();
+        
+        const client = isServiceRole ? base44.asServiceRole : base44;
 
         // 1. שלוף זיכרון משתמש
-        const memoryList = await base44.entities.UserMemory.filter({ user_id: user.id });
-        const userMemory = memoryList[0];
+        const memoryList = await client.entities.UserMemory.filter({ user_id: effectiveUserId }, '-created_date', 1);
+        const userMemory = memoryList.length > 0 ? memoryList[0] : null;
 
         if (!userMemory) {
             return Response.json({
@@ -33,13 +46,16 @@ Deno.serve(async (req) => {
         // 2. שלוף מטרה נוכחית אם יש
         let currentGoal = null;
         if (currentGoalId) {
-            const goals = await base44.entities.UserGoal.filter({ id: currentGoalId });
-            currentGoal = goals[0];
+            try {
+                currentGoal = await client.entities.UserGoal.get(currentGoalId);
+            } catch (err) {
+                console.warn('⚠️ Could not fetch goal:', err.message);
+            }
         }
 
         // 3. שלוף שיחות אחרונות
-        const recentConversations = await base44.entities.ConversationLog.filter(
-            { user_id: user.id },
+        const recentConversations = await client.entities.ConversationLog.filter(
+            { user_id: effectiveUserId },
             '-created_date',
             5
         );

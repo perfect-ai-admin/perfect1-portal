@@ -89,10 +89,11 @@ export default function FirstGoalMentorChat({ goal, onComplete }) {
         timestamp: msg.timestamp
       }]);
 
-      // אם יש השהיה - להמתין
+      // אם יש השהיה - להמתין (עם timeout מקסימלי)
       if (msg.delay_after) {
         setIsLoading(true);
-        await new Promise(r => setTimeout(r, msg.delay_after));
+        const maxDelay = Math.min(msg.delay_after, 10000); // מקסימום 10 שניות
+        await new Promise(r => setTimeout(r, maxDelay));
         setIsLoading(false);
       }
 

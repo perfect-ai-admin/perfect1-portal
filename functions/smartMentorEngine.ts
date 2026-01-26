@@ -3,27 +3,39 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
-        
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         const body = await req.json();
-        const { action, goal_id, content, client_response, timeline_entry_id } = body;
+        const { action, goal_id, content, client_response, timeline_entry_id, user_id } = body;
+        
+        // תמיכה ב-service role (מווטסאפ) וב-user scope (מהאפליקציה)
+        let user = null;
+        let isServiceRole = false;
+        
+        try {
+            user = await base44.auth.me();
+        } catch (err) {
+            // אם auth.me נכשל, זו קריאה מ-service role (ווטסאפ)
+            isServiceRole = true;
+            console.log('🔐 Running in service role mode (webhook)');
+        }
+        
+        // אם service role, נדרש user_id מפורש
+        if (isServiceRole && !user_id) {
+            return Response.json({ error: 'user_id required for service role calls' }, { status: 400 });
+        }
 
         if (!goal_id) {
             return Response.json({ error: 'goal_id is required' }, { status: 400 });
         }
 
         // --- Helper: Get Profile ---
-        const getProfile = async () => {
-            const profiles = await base44.entities.ClientProfile.filter({ goal_id }, 1);
-            if (profiles.data.length > 0) return profiles.data[0];
+        const getProfile = async (userId) => {
+            const client = isServiceRole ? base44.asServiceRole : base44;
+            const profiles = await client.entities.ClientProfile.filter({ goal_id }, '-created_date', 1);
+            if (profiles.length > 0) return profiles[0];
             
             // Create default profile if not exists
-            return await base44.entities.ClientProfile.create({
-                user_id: user.id,
+            return await client.entities.ClientProfile.create({
+                user_id: userId,
                 goal_id: goal_id,
                 response_rate_week1: 0,
                 task_completion_rate: 0,
@@ -33,7 +45,8 @@ Deno.serve(async (req) => {
 
         // --- Helper: Get Timeline ---
         const getTimeline = async (limit = 20) => {
-            return await base44.entities.Timeline.filter({ goal_id }, '-created_date', limit);
+            const client = isServiceRole ? base44.asServiceRole : base44;
+            return await client.entities.Timeline.filter({ goal_id }, '-created_date', limit);
         };
 
         // ==========================================
@@ -47,9 +60,12 @@ Deno.serve(async (req) => {
             // אם אין timeline_entry_id, זו תגובה מווטסאפ - נטפל בה בכל זאת
             const isWhatsAppResponse = !timeline_entry_id;
 
-            const profile = await getProfile();
+            const effectiveUserId = isServiceRole ? user_id : user.id;
+            const client = isServiceRole ? base44.asServiceRole : base44;
+            
+            const profile = await getProfile(effectiveUserId);
             const timelineHistory = await getTimeline();
-            const goal = await base44.entities.UserGoal.get(goal_id);
+            const goal = await client.entities.UserGoal.get(goal_id);
 
             // Construct context for AI
             const context = {
@@ -100,7 +116,7 @@ Deno.serve(async (req) => {
             }
             `;
 
-                  const aiRes = await base44.integrations.Core.InvokeLLM({
+                  const aiRes = await client.integrations.Core.InvokeLLM({
                       prompt: prompt,
                       response_json_schema: {
                           type: "object",
@@ -124,7 +140,7 @@ Deno.serve(async (req) => {
 
             // 1. Update Timeline Entry (רק אם יש)
             if (!isWhatsAppResponse && timeline_entry_id) {
-                await base44.entities.Timeline.update(timeline_entry_id, {
+                await client.entities.Timeline.update(timeline_entry_id, {
                     client_response: client_response,
                     ai_analysis: JSON.stringify(analysis),
                     tags: analysis.pattern_detected || [],
@@ -140,7 +156,7 @@ Deno.serve(async (req) => {
             
             if (timelineEntry && timelineEntry.content_id) {
                 // Update content effectiveness (simple weighted average or increment)
-                const contentItem = await base44.entities.ContentBank.get(timelineEntry.content_id);
+                const contentItem = await client.entities.ContentBank.get(timelineEntry.content_id);
                 if (contentItem) {
                     const score = analysis.effectiveness_score || 3; // Default to neutral if not provided
                     const currentRating = contentItem.effectiveness_rating || 0;
@@ -149,7 +165,7 @@ Deno.serve(async (req) => {
                     // Weighted update: 90% history, 10% new score
                     const newRating = currentRating === 0 ? score : (currentRating * 0.9 + score * 0.1);
 
-                    await base44.entities.ContentBank.update(timelineEntry.content_id, {
+                    await client.entities.ContentBank.update(timelineEntry.content_id, {
                         effectiveness_rating: parseFloat(newRating.toFixed(2))
                     });
                 }
@@ -166,13 +182,13 @@ Deno.serve(async (req) => {
             }
 
             if (Object.keys(profileUpdates).length > 0) {
-                await base44.entities.ClientProfile.update(profile.id, profileUpdates);
+                await client.entities.ClientProfile.update(profile.id, profileUpdates);
             }
 
             // 3. Handle Intervention
             if (analysis.intervention_needed) {
-                await base44.entities.Intervention.create({
-                    user_id: user.id,
+                await client.entities.Intervention.create({
+                    user_id: effectiveUserId,
                     goal_id: goal_id,
                     trigger_type: "AI Analysis",
                     intervention_text: analysis.intervention_reason || "AI detected an issue",
@@ -180,10 +196,17 @@ Deno.serve(async (req) => {
                 });
             }
 
-            // 4. עדכון UserMemory - למידה מתמשכת
-            try {
-                const conversationLog = await base44.entities.ConversationLog.create({
-                    user_id: user.id,
+            // 4. עדכון UserMemory - למידה מתמשכת (throttle - max 1 per minute per user)
+            const memoryKey = `memory_update_${effectiveUserId}`;
+            const lastUpdate = global[memoryKey] || 0;
+            const now = Date.now();
+            
+            if (now - lastUpdate > 60000) { // רק אם עברה דקה
+                global[memoryKey] = now;
+                
+                try {
+                    const conversationLog = await client.entities.ConversationLog.create({
+                        user_id: effectiveUserId,
                     agent_name: 'smartMentorEngine',
                     channel: isWhatsAppResponse ? 'whatsapp' : 'web',
                     messages: [
@@ -223,13 +246,14 @@ Deno.serve(async (req) => {
         // ==========================================
         if (action === 'orchestrate_journey') {
             const { lead_id, trigger_event, context } = body;
+            const client = isServiceRole ? base44.asServiceRole : base44;
 
             if (!lead_id) {
                 return Response.json({ error: 'lead_id is required' }, { status: 400 });
             }
 
             // 1. Fetch Lead State
-            const lead = await base44.entities.CRMLead.get(lead_id);
+            const lead = await client.entities.CRMLead.get(lead_id);
             if (!lead) return Response.json({ error: 'Lead not found' }, { status: 404 });
 
             let updates = {};
@@ -334,7 +358,7 @@ Deno.serve(async (req) => {
 
             // Apply Updates
             if (Object.keys(updates).length > 0) {
-                await base44.entities.CRMLead.update(lead_id, updates);
+                await client.entities.CRMLead.update(lead_id, updates);
             }
 
             // Return final decision for the caller (Router)
@@ -349,8 +373,11 @@ Deno.serve(async (req) => {
         // ACTION: GET NEXT CONTENT
         // ==========================================
         if (action === 'get_next_content') {
-            const profile = await getProfile();
-            const goal = await base44.entities.UserGoal.get(goal_id);
+            const effectiveUserId = isServiceRole ? user_id : user.id;
+            const client = isServiceRole ? base44.asServiceRole : base44;
+            
+            const profile = await getProfile(effectiveUserId);
+            const goal = await client.entities.UserGoal.get(goal_id);
             
             if (!goal) return Response.json({ error: 'Goal not found' }, { status: 404 });
 
@@ -362,7 +389,7 @@ Deno.serve(async (req) => {
             
             // Advanced: use 'pattern_detected' from profile to filter content tags
             // For now, get all content for the week and pick one
-            const contentCandidates = await base44.entities.ContentBank.filter(contentQuery, 50);
+            const contentCandidates = await client.entities.ContentBank.filter(contentQuery, '-created_date', 50);
             
             if (contentCandidates.data.length === 0) {
                 return Response.json({ message: "No content available for this week" });
@@ -393,7 +420,7 @@ Deno.serve(async (req) => {
 }
 `;
 
-            const selectionRes = await base44.integrations.Core.InvokeLLM({
+            const selectionRes = await client.integrations.Core.InvokeLLM({
                 prompt: selectionPrompt,
                 response_json_schema: {
                     type: "object",
@@ -410,13 +437,13 @@ Deno.serve(async (req) => {
             const personalizedContent = selectionRes.personalized_content || selected.content;
 
             // Update usage count
-            await base44.entities.ContentBank.update(selected.id, {
+            await client.entities.ContentBank.update(selected.id, {
                 usage_count: (selected.usage_count || 0) + 1
             });
 
             // Create Timeline Entry
-            const newTimelineEntry = await base44.entities.Timeline.create({
-                user_id: user.id,
+            const newTimelineEntry = await client.entities.Timeline.create({
+                user_id: effectiveUserId,
                 goal_id: goal_id,
                 content_id: selected.id, // Link to content for feedback loop
                 week: currentWeek,
