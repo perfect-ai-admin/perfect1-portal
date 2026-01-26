@@ -163,7 +163,12 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 <Input
                                     value={formData.phone}
                                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                    placeholder="0502277087"
+                                    dir="ltr"
                                 />
+                                <p className="text-xs text-gray-500 mt-1">
+                                    המספר ינורמל אוטומטית ל-972...
+                                </p>
                             </div>
                             <div>
                                 <Label>סטטוס</Label>
