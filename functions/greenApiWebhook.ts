@@ -155,6 +155,57 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'no_goal', message: 'User needs to select a goal first' });
         }
 
+        console.log('🎯 Active goal found:', activeGoal.id, 'is_first_goal:', activeGoal.is_first_goal);
+
+        // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
+        const mentorStage = activeGoal.flow_data?.mentor_stage;
+        const isInFirstGoalFlow = activeGoal.is_first_goal && 
+                                   mentorStage && 
+                                   mentorStage !== 'completed';
+
+        if (isInFirstGoalFlow) {
+            console.log('🔄 User is in FirstGoalFlow, stage:', mentorStage);
+            
+            // שלח את התגובה ל-firstGoalMentorFlow
+            const flowResponse = await base44.asServiceRole.functions.invoke('firstGoalMentorFlow', {
+                action: 'handle_response',
+                goal_id: activeGoal.id,
+                user_response: messageText,
+                stage: mentorStage
+            });
+
+            console.log('✅ FirstGoalMentorFlow response:', flowResponse.data);
+
+            // שלח את ההודעות שחזרו מהפלואו
+            if (flowResponse.data?.messages && flowResponse.data.messages.length > 0) {
+                for (const msg of flowResponse.data.messages) {
+                    if (msg.delay_after && flowResponse.data.messages.indexOf(msg) < flowResponse.data.messages.length - 1) {
+                        await new Promise(resolve => setTimeout(resolve, msg.delay_after));
+                    }
+                    
+                    await sendWhatsAppMessage(phoneNumber, msg.content);
+                    
+                    chatHistory.push({
+                        role: 'assistant',
+                        content: msg.content,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+
+            // עדכון היסטוריה
+            await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                chat_history: chatHistory,
+                last_contact_at: new Date().toISOString()
+            });
+
+            return Response.json({ 
+                status: 'success',
+                flow: 'firstGoalMentorFlow',
+                next_stage: flowResponse.data?.next_stage
+            });
+        }
+
         console.log('Calling smartMentorEngine with:', {
             user_id: user.id,
             goal_id: activeGoal.id,
@@ -168,7 +219,7 @@ Deno.serve(async (req) => {
             goal_id: activeGoal.id,
             content: 'WhatsApp message',
             client_response: messageText,
-            timeline_entry_id: null // יעודכן אם נצטרך
+            timeline_entry_id: null
         });
 
         console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
