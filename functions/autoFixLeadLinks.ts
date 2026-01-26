@@ -30,40 +30,48 @@ Deno.serve(async (req) => {
         let userId = lead.user_id;
         let goalId = lead.current_goal_id;
 
-        // תיקון 1: חיפוש וקישור User
+        const normalizedPhone = lead.phone_normalized || normalizePhoneNumber(phone || lead.phone);
+
+        // תיקון 1: חיפוש או יצירת User
         if (!userId) {
             console.log('🔍 Looking for User to link...');
             
-            const normalizedPhone = lead.phone_normalized || normalizePhoneNumber(phone || lead.phone);
-            
-            // חיפוש לפי טלפון
+            // חיפוש לפי טלפון או אימייל
             const allUsers = await base44.asServiceRole.entities.User.list();
             let matchedUser = allUsers.find(u => 
-                u.phone && normalizePhoneNumber(u.phone) === normalizedPhone
+                (u.phone && normalizePhoneNumber(u.phone) === normalizedPhone) ||
+                (lead.email && u.email === lead.email)
             );
-
-            // אם לא נמצא לפי טלפון, חפש לפי אימייל
-            if (!matchedUser && lead.email) {
-                matchedUser = allUsers.find(u => u.email === lead.email);
-            }
 
             if (matchedUser) {
                 userId = matchedUser.id;
-                fixes.push('✅ קישרתי ל-User: ' + matchedUser.email);
-                console.log('✅ Found User:', matchedUser.id);
+                fixes.push('✅ קישרתי ל-User קיים: ' + matchedUser.email);
+                console.log('✅ Found existing User:', matchedUser.id);
             } else {
-                fixes.push('⚠️ לא נמצא User מתאים - אנא צור User או הזמן אותו');
+                // אין User - צור אחד חדש
+                console.log('📝 Creating new User for lead:', lead.id);
+                
+                const newUser = await base44.asServiceRole.entities.User.create({
+                    email: lead.email || `whatsapp_${normalizedPhone}@temp.perfectone.co.il`,
+                    full_name: lead.full_name || 'לקוח WhatsApp',
+                    phone: lead.phone || normalizedPhone,
+                    role: 'user'
+                });
+                
+                userId = newUser.id;
+                fixes.push('✅ יצרתי User חדש: ' + newUser.email);
+                console.log('✅ Created new User:', newUser.id);
             }
         }
 
-        // תיקון 2: חיפוש וקישור מטרה פעילה
+        // תיקון 2: חיפוש או יצירת מטרה פעילה
         if (!goalId && userId) {
-            console.log('🔍 Looking for active goal...');
+            console.log('🔍 Looking for active goal for user:', userId);
             
             const userGoals = await base44.asServiceRole.entities.UserGoal.filter({
                 user_id: userId,
                 status: { $in: ['selected', 'active', 'in_progress'] }
-            }, '-created_date', 5);
+            }, '-created_date', 10);
 
             if (userGoals.length > 0) {
                 // העדף is_first_goal
@@ -71,7 +79,7 @@ Deno.serve(async (req) => {
                 const targetGoal = firstGoal || userGoals[0];
                 
                 goalId = targetGoal.id;
-                fixes.push('✅ קישרתי למטרה: ' + targetGoal.title);
+                fixes.push('✅ קישרתי למטרה קיימת: ' + targetGoal.title);
                 console.log('✅ Found goal:', targetGoal.id);
 
                 // עדכן את המטרה עם lead_id אם חסר
@@ -82,7 +90,28 @@ Deno.serve(async (req) => {
                     fixes.push('✅ עדכנתי את המטרה עם lead_id');
                 }
             } else {
-                fixes.push('⚠️ אין מטרות פעילות למשתמש - אנא צור מטרה');
+                // אין מטרות - צור מטרת ברירת מחדל
+                console.log('📝 Creating default first goal for user:', userId);
+                
+                const newGoal = await base44.asServiceRole.entities.UserGoal.create({
+                    user_id: userId,
+                    lead_id: lead.id,
+                    title: 'קבלת לקוחות איכותיים',
+                    description: 'למשוך לקוחות שמתאימים לעסק שלי ולמכור להם',
+                    category: 'client_acquisition',
+                    status: 'active',
+                    is_first_goal: true,
+                    flow_data: {
+                        mentor_stage: 'intro',
+                        mentor_started_at: new Date().toISOString()
+                    },
+                    urgency: 'high',
+                    isPrimary: true
+                });
+                
+                goalId = newGoal.id;
+                fixes.push('✅ יצרתי מטרה חדשה: ' + newGoal.title);
+                console.log('✅ Created new goal:', newGoal.id);
             }
         }
 
