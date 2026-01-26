@@ -54,21 +54,31 @@ Deno.serve(async (req) => {
         
         // אם זו קריאה מ-automation (entity create)
         if (event?.type === 'create' && event?.entity_name === 'UserGoal') {
+            console.log('🔔 Entity automation triggered for UserGoal create');
+            
             // בדוק אם זו מטרה ראשונה
             if (!data?.is_first_goal) {
+                console.log('⏭️ Not a first goal, skipping. is_first_goal:', data?.is_first_goal);
                 return Response.json({ message: 'Not a first goal, skipping' });
             }
+            
+            console.log('✅ First goal detected, starting mentor flow');
             
             // עכשיו שלח ווטסאפ למשתמש
             const goalId = event.entity_id;
             const goal = await base44.asServiceRole.entities.UserGoal.get(goalId);
-            const goalUser = await base44.asServiceRole.entities.User.filter({ id: goal.user_id }, '', 1);
+            console.log('📌 Goal loaded:', goal.title, 'user_id:', goal.user_id);
             
-            if (!goalUser || goalUser.length === 0) {
+            // מציאת היוזר
+            const allUsers = await base44.asServiceRole.entities.User.list();
+            const goalUser = allUsers.find(u => u.id === goal.user_id);
+            
+            if (!goalUser) {
+                console.error('❌ User not found for goal:', goal.user_id);
                 return Response.json({ error: 'User not found' }, { status: 404 });
             }
             
-            const userObj = goalUser[0];
+            console.log('👤 User found:', goalUser.email, 'phone:', goalUser.phone);
             
             // שליחת הודעות הפתיחה
             const introMessage = MESSAGE_TEMPLATES.intro.default;
@@ -77,7 +87,7 @@ Deno.serve(async (req) => {
             
             // תיעוד
             await base44.asServiceRole.entities.MentorFlowLog.create({
-                user_id: userObj.id,
+                user_id: goalUser.id,
                 goal_id: goalId,
                 flow_stage: 'intro',
                 message_sent: introMessage,
@@ -85,7 +95,7 @@ Deno.serve(async (req) => {
             });
             
             await base44.asServiceRole.entities.MentorFlowLog.create({
-                user_id: userObj.id,
+                user_id: goalUser.id,
                 goal_id: goalId,
                 flow_stage: 'agreement',
                 message_sent: agreementMessage,
@@ -101,35 +111,50 @@ Deno.serve(async (req) => {
                 }
             });
             
-            // שליחת ווטסאפ
-            try {
-                let phoneNumber = userObj.phone;
+            // שליחת ווטסאפ - קריטי!
+            let phoneNumber = goalUser.phone;
+            console.log('📱 Checking phone - User.phone:', phoneNumber);
+            
+            if (!phoneNumber) {
+                console.log('🔍 Phone not in User, searching CRMLead...');
+                const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                    email: goalUser.email
+                }, '-created_date', 1);
                 
-                if (!phoneNumber) {
-                    const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                        $or: [
-                            { user_id: userObj.id },
-                            { email: userObj.email }
-                        ]
-                    }, '-created_date', 1);
-                    
-                    if (leads && leads.length > 0 && leads[0].phone) {
-                        phoneNumber = leads[0].phone;
-                    }
+                if (leads && leads.length > 0 && leads[0].phone) {
+                    phoneNumber = leads[0].phone;
+                    console.log('📱 Found phone in CRMLead:', phoneNumber);
                 }
-                
-                if (phoneNumber) {
-                    const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
-                    await sendWhatsAppMessage(phoneNumber, whatsappMessage);
-                    console.log('✅ WhatsApp sent for first goal:', goalId);
-                } else {
-                    console.warn('⚠️ No phone number found for user:', userObj.id);
-                }
-            } catch (err) {
-                console.error('❌ WhatsApp send failed:', err.message);
             }
             
-            return Response.json({ success: true, message: 'First goal mentor flow initiated' });
+            if (!phoneNumber) {
+                console.error('❌ No phone number found for user:', goalUser.email);
+                return Response.json({ 
+                    success: false, 
+                    error: 'No phone number found',
+                    user_email: goalUser.email 
+                });
+            }
+            
+            try {
+                const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
+                console.log('📤 Sending WhatsApp to:', phoneNumber);
+                await sendWhatsAppMessage(phoneNumber, whatsappMessage);
+                console.log('✅ WhatsApp sent successfully for first goal:', goalId);
+                
+                return Response.json({ 
+                    success: true, 
+                    message: 'First goal mentor flow initiated and WhatsApp sent',
+                    phone_used: phoneNumber 
+                });
+            } catch (err) {
+                console.error('❌ WhatsApp send failed:', err.message);
+                return Response.json({ 
+                    success: false, 
+                    error: 'WhatsApp send failed: ' + err.message,
+                    phone_number: phoneNumber 
+                });
+            }
         }
         
         // קריאה ידנית רגילה
