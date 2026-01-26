@@ -171,18 +171,24 @@ Deno.serve(async (req) => {
                 // עדכון chat_history של CRMLead עם ההודעה היוצאת
                 if (leads && leads.length > 0) {
                     const leadId = leads[0].id;
-                    const currentLead = await base44.asServiceRole.entities.CRMLead.get(leadId);
-                    const updatedHistory = [...(currentLead.chat_history || []), {
-                        role: 'assistant',
-                        content: whatsappMessage,
-                        timestamp: new Date().toISOString(),
-                        agent: 'firstGoalMentorFlow'
-                    }].slice(-100); // הגבל ל-100 הודעות
+                    try {
+                        const currentLead = await base44.asServiceRole.entities.CRMLead.get(leadId);
+                        const updatedHistory = [...(currentLead.chat_history || []), {
+                            role: 'assistant',
+                            content: whatsappMessage,
+                            timestamp: new Date().toISOString(),
+                            agent: 'firstGoalMentorFlow'
+                        }].slice(-100);
 
-                    await base44.asServiceRole.entities.CRMLead.update(leadId, {
-                        chat_history: updatedHistory
-                    });
-                    console.log('✅ Chat history updated with bot messages');
+                        await base44.asServiceRole.entities.CRMLead.update(leadId, {
+                            chat_history: updatedHistory,
+                            waiting_for_response: true,
+                            last_outbound_at: new Date().toISOString()
+                        });
+                        console.log('✅ Chat history updated with bot messages');
+                    } catch (histErr) {
+                        console.warn('⚠️ Could not update chat history:', histErr.message);
+                    }
                 }
 
                 return Response.json({ 
@@ -305,6 +311,29 @@ Deno.serve(async (req) => {
                     const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
                     await sendWhatsAppMessage(phoneNumber, whatsappMessage);
                     console.log('✅ WhatsApp message sent successfully');
+                    
+                    // עדכון chat_history של CRMLead
+                    const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                        $or: [
+                            { user_id: user.id },
+                            { email: user.email }
+                        ]
+                    }, '-created_date', 1);
+                    
+                    if (leads && leads.length > 0) {
+                        const currentLead = await base44.asServiceRole.entities.CRMLead.get(leads[0].id);
+                        const updatedHistory = [...(currentLead.chat_history || []), {
+                            role: 'assistant',
+                            content: whatsappMessage,
+                            timestamp: new Date().toISOString(),
+                            agent: 'firstGoalMentorFlow'
+                        }].slice(-100);
+                        
+                        await base44.asServiceRole.entities.CRMLead.update(leads[0].id, {
+                            chat_history: updatedHistory
+                        });
+                        console.log('✅ Chat history updated with bot message');
+                    }
                 } else {
                     console.warn('⚠️ No phone number found for user:', user.id);
                 }
