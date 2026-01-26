@@ -40,9 +40,12 @@ Deno.serve(async (req) => {
         // ACTION: ANALYZE RESPONSE
         // ==========================================
         if (action === 'analyze_response') {
-            if (!client_response || !timeline_entry_id) {
-                return Response.json({ error: 'client_response and timeline_entry_id required' }, { status: 400 });
+            if (!client_response) {
+                return Response.json({ error: 'client_response is required' }, { status: 400 });
             }
+            
+            // אם אין timeline_entry_id, זו תגובה מווטסאפ - נטפל בה בכל זאת
+            const isWhatsAppResponse = !timeline_entry_id;
 
             const profile = await getProfile();
             const timelineHistory = await getTimeline();
@@ -119,16 +122,22 @@ Deno.serve(async (req) => {
 
             const analysis = aiRes; // InvokeLLM returns the object directly when schema is provided
 
-            // 1. Update Timeline Entry
-            await base44.entities.Timeline.update(timeline_entry_id, {
-                client_response: client_response,
-                ai_analysis: JSON.stringify(analysis),
-                tags: analysis.pattern_detected || [],
-                status: "completed"
-            });
+            // 1. Update Timeline Entry (רק אם יש)
+            if (!isWhatsAppResponse && timeline_entry_id) {
+                await base44.entities.Timeline.update(timeline_entry_id, {
+                    client_response: client_response,
+                    ai_analysis: JSON.stringify(analysis),
+                    tags: analysis.pattern_detected || [],
+                    status: "completed"
+                });
+            }
 
             // 1.1 Learn & Feedback Loop: Update ContentBank and Strategy
-            const timelineEntry = await base44.entities.Timeline.get(timeline_entry_id);
+            let timelineEntry = null;
+            if (!isWhatsAppResponse && timeline_entry_id) {
+                timelineEntry = await base44.entities.Timeline.get(timeline_entry_id);
+            }
+            
             if (timelineEntry && timelineEntry.content_id) {
                 // Update content effectiveness (simple weighted average or increment)
                 const contentItem = await base44.entities.ContentBank.get(timelineEntry.content_id);
@@ -171,8 +180,41 @@ Deno.serve(async (req) => {
                 });
             }
 
-            // 4. Trigger Next Content Selection (Optional - could be separate call)
-            // For now, return analysis
+            // 4. עדכון UserMemory - למידה מתמשכת
+            try {
+                const conversationLog = await base44.entities.ConversationLog.create({
+                    user_id: user.id,
+                    agent_name: 'smartMentorEngine',
+                    channel: isWhatsAppResponse ? 'whatsapp' : 'web',
+                    messages: [
+                        { role: 'user', content: client_response, timestamp: new Date().toISOString() },
+                        { role: 'assistant', content: analysis.deep_meaning, timestamp: new Date().toISOString() }
+                    ],
+                    extracted_insights: [{
+                        type: 'pattern',
+                        content: JSON.stringify(analysis.pattern_detected),
+                        confidence: analysis.confidence_level === 'high' ? 0.9 : analysis.confidence_level === 'medium' ? 0.6 : 0.3
+                    }],
+                    sentiment_analysis: {
+                        overall: analysis.confidence_level === 'high' ? 'positive' : 'neutral',
+                        engagement: 'engaged'
+                    }
+                });
+
+                // קריאה ל-updateUserMemory
+                await base44.asServiceRole.functions.invoke('updateUserMemory', {
+                    conversationLogId: conversationLog.id,
+                    messages: conversationLog.messages,
+                    context: { current_stage: 'mentor_interaction' },
+                    agentName: 'smartMentorEngine'
+                });
+                
+                console.log('✅ User memory updated');
+            } catch (memErr) {
+                console.warn('⚠️ Failed to update memory:', memErr.message);
+            }
+
+            // 5. Return analysis
             return Response.json({ success: true, analysis });
         }
 
