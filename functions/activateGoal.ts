@@ -51,6 +51,19 @@ Deno.serve(async (req) => {
             activated_at: new Date().toISOString()
         });
 
+        // עדכן את CRMLead.current_goal_id
+        if (userGoal.lead_id) {
+            try {
+                await base44.asServiceRole.entities.CRMLead.update(userGoal.lead_id, {
+                    current_goal_id: user_goal_id,
+                    active_handler: userGoal.is_first_goal ? 'firstGoalMentorFlow' : 'smartMentorEngine'
+                });
+                console.log('✅ CRMLead updated with current_goal_id:', user_goal_id);
+            } catch (err) {
+                console.warn('⚠️ Could not update CRMLead:', err.message);
+            }
+        }
+
         return Response.json({
             success: true,
             message: 'המטרה הופעלה בהצלחה'
