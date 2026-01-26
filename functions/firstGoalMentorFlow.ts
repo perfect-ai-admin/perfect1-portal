@@ -149,10 +149,30 @@ Deno.serve(async (req) => {
                 template_used: 'agreement.default'
             });
             
+            // CRITICAL: וידוא שיש leadId לפני עדכון
+            if (!leadId && goalUser.phone) {
+                console.log('❌ No leadId despite having phone - force creating CRMLead');
+                const phoneNorm = normalizePhoneNumber(goalUser.phone);
+                const forcedLead = await base44.asServiceRole.entities.CRMLead.create({
+                    user_id: goalUser.id,
+                    email: goalUser.email,
+                    full_name: goalUser.full_name || 'User',
+                    phone: goalUser.phone,
+                    phone_normalized: phoneNorm,
+                    source: 'FirstGoalFlow',
+                    journey_stage: 'lead_new',
+                    active_handler: 'firstGoalMentorFlow',
+                    current_goal_id: goalId,
+                    chat_history: []
+                });
+                leadId = forcedLead.id;
+                console.log('✅ Forced CRMLead created:', leadId);
+            }
+
             // עדכון המטרה + קישור user_id + lead_id
             await base44.asServiceRole.entities.UserGoal.update(goalId, {
                 user_id: goalUser.id,
-                lead_id: leadId,
+                lead_id: leadId || null,
                 status: 'active', // שדרוג ל-active
                 flow_data: {
                     ...goal.flow_data,
@@ -160,7 +180,18 @@ Deno.serve(async (req) => {
                     mentor_started_at: new Date().toISOString()
                 }
             });
-            console.log('✅ Goal updated: user_id, lead_id, status=active, mentor_stage=agreement');
+            console.log('✅ Goal updated: user_id, lead_id=' + leadId + ', status=active, mentor_stage=agreement');
+            
+            // CRITICAL: עדכן גם את CRMLead עם current_goal_id
+            if (leadId) {
+                await base44.asServiceRole.entities.CRMLead.update(leadId, {
+                    current_goal_id: goalId,
+                    user_id: goalUser.id,
+                    active_handler: 'firstGoalMentorFlow',
+                    waiting_for_response: true
+                });
+                console.log('✅ CRMLead updated with current_goal_id:', goalId);
+            }
             
             // שליחת ווטסאפ - קריטי!
             let phoneNumber = goalUser.phone;
