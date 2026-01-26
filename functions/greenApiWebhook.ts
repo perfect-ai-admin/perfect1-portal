@@ -205,6 +205,13 @@ Deno.serve(async (req) => {
         const effectiveUserId = syncedData.effectiveUserId;
 
         console.log('✅ State synced:', syncedData);
+        console.log('🎯 Active Goal:', activeGoal ? {
+            id: activeGoal.id,
+            title: activeGoal.title,
+            is_first_goal: activeGoal.is_first_goal,
+            status: activeGoal.status,
+            mentor_stage: activeGoal.flow_data?.mentor_stage
+        } : '❌ NULL');
 
         // עדכון chat_history עם הודעת המשתמש
         const chatHistory = await updateChatHistory({
@@ -226,11 +233,27 @@ Deno.serve(async (req) => {
 
         user = syncedLead;
 
+        // בדיקה: האם יש בכלל מטרה פעילה?
+        if (!activeGoal) {
+            console.error('❌ No active goal found! Aborting flow.');
+            await sendWhatsAppMessage({
+                base44,
+                phoneNormalized: normalizedPhone,
+                messageText: 'היי! נראה שאין לך מטרה פעילה כרגע. היכנס לאפליקציה ובחר מטרה כדי שנוכל להתחיל 🎯',
+                leadId: syncedLead.id,
+                userId: effectiveUserId,
+                goalId: null,
+                agentRunId: null
+            });
+            return Response.json({ status: 'no_active_goal' });
+        }
+
         // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
         const isInFirstGoalFlow = syncedData.isFirstGoal;
         const mentorStage = syncedData.mentorStage;
 
         console.log('🔍 Goal routing - isFirstGoal:', isInFirstGoalFlow, 'stage:', mentorStage);
+        console.log('🔍 Active Goal ID:', activeGoal.id, 'Title:', activeGoal.title);
 
         if (isInFirstGoalFlow) {
             console.log('🔄 User is in FirstGoalFlow, stage:', mentorStage);
