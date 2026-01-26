@@ -269,6 +269,20 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
          // Create the goal (Hook handles optimistic update + server create + plan generation if needed)
          const createdGoal = await createGoalMutation.mutateAsync(goalToCreate);
          
+         // If this is the FIRST goal - trigger WhatsApp mentor flow immediately
+         if (isFirstGoalEver && createdGoal?.id && !createdGoal.id.toString().startsWith('temp_')) {
+            console.log('🚀 Starting WhatsApp mentor flow for first goal:', createdGoal.id);
+            try {
+               await base44.functions.invoke('firstGoalMentorFlow', {
+                  action: 'start_flow',
+                  goal_id: createdGoal.id
+               });
+               console.log('✅ WhatsApp mentor flow started successfully');
+            } catch (err) {
+               console.error('❌ Failed to start WhatsApp mentor flow:', err);
+            }
+         }
+         
          // Trigger AI Plan generation in background (if it wasn't part of create logic)
          // Note: The useCreateGoal hook handles invalidation, but we might want to trigger the plan generation separately 
          // if it's a heavy operation that shouldn't block creation.
