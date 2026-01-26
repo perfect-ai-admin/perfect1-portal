@@ -562,6 +562,31 @@ ${logs.slice(0, 10).map(l => `שלב: ${l.flow_stage}, תגובה: ${l.user_resp
 });
 
 /**
+ * נרמול מספר טלפון לפורמט בינלאומי (ישראלי)
+ * מקבל: 0502277087, 972502277087, 502277087, +972502277087
+ * מחזיר: 972502277087
+ */
+function normalizePhoneNumber(phone) {
+    if (!phone) return null;
+    
+    // הסר רווחים, מקפים, סוגריים, ופלוס
+    let cleaned = phone.toString().replace(/[\s\-\(\)\+]/g, '');
+    
+    // אם מתחיל ב-0, החלף ב-972
+    if (cleaned.startsWith('0')) {
+        cleaned = '972' + cleaned.substring(1);
+    }
+    
+    // אם לא מתחיל ב-972, הוסף
+    if (!cleaned.startsWith('972')) {
+        cleaned = '972' + cleaned;
+    }
+    
+    console.log(`📱 Phone normalized: ${phone} -> ${cleaned}`);
+    return cleaned;
+}
+
+/**
  * שליחת הודעה דרך Green-API
  */
 async function sendWhatsAppMessage(phoneNumber, message) {
@@ -569,16 +594,25 @@ async function sendWhatsAppMessage(phoneNumber, message) {
     const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
 
     console.log('📤 Sending WhatsApp - instanceId:', instanceId);
-    console.log('📤 Phone:', phoneNumber);
+    console.log('📤 Original phone:', phoneNumber);
 
     if (!instanceId || !apiToken) {
         throw new Error('Green-API credentials not configured');
     }
 
+    // נרמל את מספר הטלפון לפורמט בינלאומי
+    const normalizedPhone = normalizePhoneNumber(phoneNumber);
+    
+    if (!normalizedPhone) {
+        throw new Error('Invalid phone number');
+    }
+    
+    console.log('📤 Normalized phone:', normalizedPhone);
+
     const url = `https://api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
 
     const payload = {
-        chatId: `${phoneNumber}@c.us`,
+        chatId: `${normalizedPhone}@c.us`,
         message: message
     };
 
