@@ -178,16 +178,37 @@ Deno.serve(async (req) => {
             }
         }
 
-        // בחר goal פעיל (הראשון או הממוקד)
+        // בחר goal פעיל - חיפוש חכם
         let activeGoal = null;
         try {
-            const userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
-                $or: [{ user_id: user.id }, { user_id: phoneNumber }],
-                status: 'active'
-            }, '-created_date', 1);
+            // נסה למצוא לפי user_id אם קיים
+            let userGoals = [];
+            
+            if (user.user_id) {
+                userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
+                    user_id: user.user_id,
+                    status: 'active'
+                }, '-created_date', 5);
+            }
+            
+            // אם לא נמצא, נסה לפי created_by
+            if (userGoals.length === 0 && user.email) {
+                userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
+                    created_by: user.email,
+                    status: 'active'
+                }, '-created_date', 5);
+            }
 
             if (userGoals.length > 0) {
-                activeGoal = userGoals[0];
+                // העדף מטרה ראשונה שעדיין בפלואו
+                const firstGoalInProgress = userGoals.find(g => 
+                    g.is_first_goal && 
+                    g.flow_data?.mentor_stage && 
+                    g.flow_data.mentor_stage !== 'completed'
+                );
+                
+                activeGoal = firstGoalInProgress || userGoals[0];
+                console.log('✅ Active goal selected:', activeGoal.id, 'isPrimary:', activeGoal.isPrimary);
             }
         } catch (err) {
             console.log('Could not fetch active goal:', err.message);
@@ -202,6 +223,14 @@ Deno.serve(async (req) => {
 
         console.log('🎯 Active goal found:', activeGoal.id, 'is_first_goal:', activeGoal.is_first_goal);
 
+        // סנכרון user_id אם חסר
+        if (activeGoal.user_id !== user.user_id && user.user_id) {
+            await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, {
+                user_id: user.user_id
+            });
+            console.log('🔗 Synced goal user_id:', user.user_id);
+        }
+
         // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
         const mentorStage = activeGoal.flow_data?.mentor_stage;
         const isInFirstGoalFlow = activeGoal.is_first_goal && 
@@ -210,6 +239,12 @@ Deno.serve(async (req) => {
 
         if (isInFirstGoalFlow) {
             console.log('🔄 User is in FirstGoalFlow, stage:', mentorStage);
+            
+            // עדכון active_handler
+            await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                active_handler: 'firstGoalMentorFlow',
+                last_contact_at: new Date().toISOString()
+            });
             
             // שלח את התגובה ל-firstGoalMentorFlow
             const flowResponse = await base44.asServiceRole.functions.invoke('firstGoalMentorFlow', {
@@ -224,8 +259,9 @@ Deno.serve(async (req) => {
             // שלח את ההודעות שחזרו מהפלואו
             if (flowResponse.data?.messages && flowResponse.data.messages.length > 0) {
                 for (const msg of flowResponse.data.messages) {
-                    if (msg.delay_after && flowResponse.data.messages.indexOf(msg) < flowResponse.data.messages.length - 1) {
-                        await new Promise(resolve => setTimeout(resolve, msg.delay_after));
+                    const maxDelay = Math.min(msg.delay_after || 0, 8000); // מקסימום 8 שניות
+                    if (maxDelay > 0 && flowResponse.data.messages.indexOf(msg) < flowResponse.data.messages.length - 1) {
+                        await new Promise(resolve => setTimeout(resolve, maxDelay));
                     }
                     
                     await sendWhatsAppMessage(phoneNumber, msg.content);
@@ -238,10 +274,13 @@ Deno.serve(async (req) => {
                 }
             }
 
-            // עדכון היסטוריה
+            // עדכון היסטוריה מוגבלת (שמור רק 50 הודעות אחרונות)
+            const limitedHistory = [...chatHistory].slice(-50);
+            
             await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                chat_history: chatHistory,
-                last_contact_at: new Date().toISOString()
+                chat_history: limitedHistory,
+                last_contact_at: new Date().toISOString(),
+                waiting_for_response: flowResponse.data?.next_stage !== 'completed'
             });
 
             return Response.json({ 
@@ -251,6 +290,12 @@ Deno.serve(async (req) => {
             });
         }
 
+        // עדכון active_handler
+        await base44.asServiceRole.entities.CRMLead.update(user.id, {
+            active_handler: 'smartMentorEngine',
+            last_contact_at: new Date().toISOString()
+        });
+
         console.log('Calling smartMentorEngine with:', {
             user_id: user.id,
             goal_id: activeGoal.id,
@@ -259,45 +304,55 @@ Deno.serve(async (req) => {
         });
 
         let mentorMessage = '';
+        let retryCount = 0;
+        const MAX_LLM_RETRIES = 2;
         
-        // קריאה למנוע המנטור החכם - עם fallback
-        try {
-            const mentorResponse = await Promise.race([
-                base44.asServiceRole.functions.invoke('smartMentorEngine', {
-                    action: 'analyze_response',
-                    goal_id: activeGoal.id,
-                    content: 'WhatsApp message',
-                    client_response: messageText,
-                    timeline_entry_id: null,
-                    user_id: user.id // העבר במפורש
-                }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 30000))
-            ]);
+        // קריאה למנוע המנטור החכם - עם retry ו-fallback
+        while (retryCount < MAX_LLM_RETRIES && !mentorMessage) {
+            try {
+                const mentorResponse = await Promise.race([
+                    base44.asServiceRole.functions.invoke('smartMentorEngine', {
+                        action: 'analyze_response',
+                        goal_id: activeGoal.id,
+                        content: 'WhatsApp message',
+                        client_response: messageText,
+                        timeline_entry_id: null,
+                        user_id: user.id // העבר במפורש
+                    }),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 30000))
+                ]);
 
-            console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
+                console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
 
-            const analysis = mentorResponse.data?.analysis;
-            if (analysis) {
-                mentorMessage = `${analysis.deep_meaning}
+                const analysis = mentorResponse.data?.analysis;
+                if (analysis) {
+                    mentorMessage = `${analysis.deep_meaning}
 
 ${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
 ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}`.trim();
-            }
-        } catch (mentorErr) {
-            console.error('❌ Smart Mentor failed, using fallback:', mentorErr.message);
-            
-            // Fallback - תגובה בסיסית עם mentorChat
-            try {
-                const fallbackRes = await base44.asServiceRole.functions.invoke('mentorChat', {
-                    user_id: user.id,
-                    message: messageText,
-                    chat_history: chatHistory,
-                    goal_id: activeGoal.id
-                });
-                mentorMessage = fallbackRes.data?.response || 'קיבלתי את הודעתך, אחזור אליך בהקדם.';
-            } catch (fallbackErr) {
-                console.error('❌ Fallback also failed:', fallbackErr.message);
-                mentorMessage = 'קיבלתי את הודעתך 👍 אחזור אליך בהקדם עם תשובה מפורטת.';
+                }
+                break; // הצלחנו - צא מהלולאה
+            } catch (mentorErr) {
+                retryCount++;
+                console.error(`❌ Smart Mentor attempt ${retryCount} failed:`, mentorErr.message);
+                
+                if (retryCount >= MAX_LLM_RETRIES) {
+                    // Fallback - תגובה בסיסית עם mentorChat
+                    try {
+                        const fallbackRes = await base44.asServiceRole.functions.invoke('mentorChat', {
+                            user_id: user.id,
+                            message: messageText,
+                            chat_history: chatHistory.slice(-10), // רק 10 אחרונות
+                            goal_id: activeGoal.id
+                        });
+                        mentorMessage = fallbackRes.data?.response || 'קיבלתי את הודעתך, אחזור אליך בהקדם.';
+                    } catch (fallbackErr) {
+                        console.error('❌ Fallback also failed:', fallbackErr.message);
+                        mentorMessage = 'קיבלתי את הודעתך 👍 אחזור אליך בהקדם עם תשובה מפורטת.';
+                    }
+                }
+                
+                await new Promise(r => setTimeout(r, 1000)); // המתן שנייה לפני retry
             }
         }
 
@@ -311,20 +366,28 @@ ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment 
             timestamp: new Date().toISOString()
         });
 
-        // עדכון סופי של היסטוריית השיחה - עם retry
+        // עדכון סופי של היסטוריית השיחה - עם retry והגבלה
         for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
             try {
                 const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
-                const finalHistory = [...(freshUser.chat_history || []), {
+                let finalHistory = [...(freshUser.chat_history || []), {
                     role: 'assistant',
                     content: mentorMessage,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    agent: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
                 }];
+                
+                // הגבל ל-100 הודעות אחרונות
+                if (finalHistory.length > 100) {
+                    finalHistory = finalHistory.slice(-100);
+                    console.log('📊 Chat history trimmed to last 100 messages');
+                }
                 
                 await base44.asServiceRole.entities.CRMLead.update(user.id, {
                     chat_history: finalHistory,
                     last_contact_at: new Date().toISOString(),
-                    waiting_for_response: false // אין המתנה - שלחנו תגובה
+                    waiting_for_response: false, // אין המתנה - שלחנו תגובה
+                    active_handler: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
                 });
                 console.log('✅ Final chat history updated');
                 break;
@@ -336,11 +399,29 @@ ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment 
             }
         }
 
+        // תיעוד ביצועי הסוכן
+        try {
+            await base44.asServiceRole.functions.invoke('agentPerformanceTracker', {
+                action: 'log_interaction',
+                agent_name: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine',
+                user_id: user.user_id || user.id,
+                goal_id: activeGoal.id,
+                outcome: 'message_sent',
+                metadata: {
+                    messages: chatHistory.slice(-2), // 2 אחרונות בלבד
+                    sentiment: { overall: 'neutral' }
+                }
+            });
+        } catch (trackErr) {
+            console.warn('⚠️ Could not track agent performance:', trackErr.message);
+        }
+
         console.log('✅ Webhook completed successfully for user:', user.id);
         return Response.json({ 
             status: 'success',
             user_id: user.id,
-            message_processed: true
+            message_processed: true,
+            agent_used: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
         });
 
     } catch (error) {

@@ -12,34 +12,42 @@ const openai = new OpenAI({
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
+        const body = await req.json();
+        const { conversationLogId, messages, context, agentName, user_id } = body;
         
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        // תמיכה ב-service role וב-user scope
+        let user = null;
+        let isServiceRole = false;
+        let effectiveUserId = null;
+        
+        try {
+            user = await base44.auth.me();
+            effectiveUserId = user.id;
+        } catch (err) {
+            isServiceRole = true;
+            effectiveUserId = user_id;
+            if (!effectiveUserId) {
+                return Response.json({ error: 'user_id required for service role' }, { status: 400 });
+            }
         }
-
-        const { 
-            conversationLogId, 
-            messages, 
-            context,
-            agentName 
-        } = await req.json();
+        
+        const client = isServiceRole ? base44.asServiceRole : base44;
 
         // 1. שלוף את זיכרון המשתמש הקיים (חיפוש חכם למניעת כפילויות)
-        const memoryList = await base44.entities.UserMemory.filter({ user_id: user.id }, '-created_date', 1);
+        const memoryList = await client.entities.UserMemory.filter({ user_id: effectiveUserId }, '-created_date', 5);
         let userMemory = memoryList.length > 0 ? memoryList[0] : null;
         
         // בדיקה לכפילויות - מחק ישנים
         if (memoryList.length > 1) {
             console.warn('⚠️ Found', memoryList.length, 'memory records, keeping only the latest');
             for (let i = 1; i < memoryList.length; i++) {
-                await base44.entities.UserMemory.delete(memoryList[i].id);
+                await client.entities.UserMemory.delete(memoryList[i].id);
             }
         }
 
         // 2. שלוף שיחות אחרונות למידע מצטבר
-        const recentConversations = await base44.entities.ConversationLog.filter(
-            { user_id: user.id },
+        const recentConversations = await client.entities.ConversationLog.filter(
+            { user_id: effectiveUserId },
             '-created_date',
             10
         );
@@ -131,7 +139,7 @@ ${JSON.stringify(context, null, 2)}
 
         // 5. עדכן או צור זיכרון משתמש
         const memoryData = {
-            user_id: user.id,
+            user_id: effectiveUserId,
             total_interactions: (userMemory?.total_interactions || 0) + 1,
             learning_summary: analysis.learning_summary_update || userMemory?.learning_summary,
             personality_traits: {
@@ -176,14 +184,14 @@ ${JSON.stringify(context, null, 2)}
         };
 
         if (userMemory) {
-            await base44.entities.UserMemory.update(userMemory.id, memoryData);
+            await client.entities.UserMemory.update(userMemory.id, memoryData);
         } else {
-            await base44.entities.UserMemory.create(memoryData);
+            await client.entities.UserMemory.create(memoryData);
         }
 
         // 6. עדכן את ה-ConversationLog עם התובנות
         if (conversationLogId) {
-            await base44.entities.ConversationLog.update(conversationLogId, {
+            await client.entities.ConversationLog.update(conversationLogId, {
                 extracted_insights: analysis.new_insights,
                 outcome: analysis.last_context
             });

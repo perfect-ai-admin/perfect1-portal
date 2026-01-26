@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
                 question_asked: content || "Unknown question",
                 profile: profile,
                 strategic_context: goal?.strategic_context || {},
-                history: timelineHistory.data.map(t => ({
+                history: (Array.isArray(timelineHistory) ? timelineHistory : []).map(t => ({
                     q: t.content,
                     a: t.client_response,
                     analysis: t.ai_analysis
@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
             // 1.1 Learn & Feedback Loop: Update ContentBank and Strategy
             let timelineEntry = null;
             if (!isWhatsAppResponse && timeline_entry_id) {
-                timelineEntry = await base44.entities.Timeline.get(timeline_entry_id);
+                timelineEntry = await client.entities.Timeline.get(timeline_entry_id);
             }
             
             if (timelineEntry && timelineEntry.content_id) {
@@ -390,8 +390,9 @@ Deno.serve(async (req) => {
             // Advanced: use 'pattern_detected' from profile to filter content tags
             // For now, get all content for the week and pick one
             const contentCandidates = await client.entities.ContentBank.filter(contentQuery, '-created_date', 50);
+            const candidatesArray = Array.isArray(contentCandidates) ? contentCandidates : [];
             
-            if (contentCandidates.data.length === 0) {
+            if (candidatesArray.length === 0) {
                 return Response.json({ message: "No content available for this week" });
             }
 
@@ -403,7 +404,7 @@ Deno.serve(async (req) => {
             - Client Profile: ${JSON.stringify(profile)}
             - Mentor Strategy Notes (LEARNINGS): ${profile.mentor_strategy_notes || "None yet"}
             - Strategic Context (Business Type, Vision): ${JSON.stringify(goal.strategic_context || {})}
-            - Candidates: ${JSON.stringify(contentCandidates.data.map(c => ({ id: c.id, content: c.content, tags: c.tags, difficulty: c.difficulty, rating: c.effectiveness_rating })))}
+            - Candidates: ${JSON.stringify(candidatesArray.map(c => ({ id: c.id, content: c.content, tags: c.tags, difficulty: c.difficulty, rating: c.effectiveness_rating })))}
 
             TASK:
             בחר את השאלה/משימה הבאה הכי מתאימה מהרשימה.
@@ -433,7 +434,7 @@ Deno.serve(async (req) => {
                 }
             });
 
-            const selected = contentCandidates.data.find(c => c.id === selectionRes.selected_content_id) || contentCandidates.data[0];
+            const selected = candidatesArray.find(c => c.id === selectionRes.selected_content_id) || candidatesArray[0];
             const personalizedContent = selectionRes.personalized_content || selected.content;
 
             // Update usage count

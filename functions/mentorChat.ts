@@ -14,12 +14,19 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Missing required parameters' }, { status: 400 });
         }
 
+        // זיהוי user_id
+        const user = await base44.auth.me();
+        if (!user) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         // שליפת הקשר מותאם אישית
         let personalizedContext = null;
         try {
             const contextRes = await base44.asServiceRole.functions.invoke('getPersonalizedContext', {
                 purpose: 'mentor_chat',
-                currentGoalId: goal_id
+                currentGoalId: goal_id,
+                user_id: user.id
             });
             personalizedContext = contextRes.data?.context;
             console.log('✅ Personalized context loaded');
@@ -91,7 +98,8 @@ ${personalizedContext ? `
                 conversationLogId: null,
                 messages: [...historyMessages, { role: 'user', content: message }, { role: 'assistant', content: result.response }],
                 context: { current_stage: 'mentor_chat', goal_id },
-                agentName: 'mentorChat'
+                agentName: 'mentorChat',
+                user_id: user.id
             });
             console.log('✅ Memory updated after mentor chat');
         } catch (memErr) {

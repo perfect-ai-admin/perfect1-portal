@@ -102,8 +102,9 @@ Deno.serve(async (req) => {
                 template_used: 'agreement.default'
             });
             
-            // עדכון המטרה
+            // עדכון המטרה + קישור user_id
             await base44.asServiceRole.entities.UserGoal.update(goalId, {
+                user_id: goalUser.id, // ודא שיש קישור
                 flow_data: {
                     ...goal.flow_data,
                     mentor_stage: 'agreement',
@@ -118,12 +119,23 @@ Deno.serve(async (req) => {
             if (!phoneNumber) {
                 console.log('🔍 Phone not in User, searching CRMLead...');
                 const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                    email: goalUser.email
+                    $or: [
+                        { email: goalUser.email },
+                        { user_id: goalUser.id }
+                    ]
                 }, '-created_date', 1);
                 
                 if (leads && leads.length > 0 && leads[0].phone) {
                     phoneNumber = leads[0].phone;
                     console.log('📱 Found phone in CRMLead:', phoneNumber);
+                    
+                    // סנכרון - עדכן את ה-Lead עם user_id
+                    if (!leads[0].user_id) {
+                        await base44.asServiceRole.entities.CRMLead.update(leads[0].id, {
+                            user_id: goalUser.id
+                        });
+                        console.log('🔗 Synced CRMLead user_id');
+                    }
                 }
             }
             
@@ -400,6 +412,13 @@ Deno.serve(async (req) => {
                     });
                 }
             } else if (stage === 'diagnosis') {
+                // שמירת תשובת האבחון בflow_data
+                const updatedFlowData = {
+                    ...currentGoal.flow_data,
+                    diagnosis_answer: user_response,
+                    diagnosis_timestamp: new Date().toISOString()
+                };
+                
                 // שלב פוסט-אבחון: שיקוף + מיקוד + משימה
                 const postDiagnosisPrompt = `
             אתה מנטור עסקי. המשתמש ענה על שאלת האבחון:
@@ -422,19 +441,30 @@ Deno.serve(async (req) => {
 }
 `;
 
-                const postDiagnosis = await baseClient.integrations.Core.InvokeLLM({
-                    prompt: postDiagnosisPrompt,
-                    response_json_schema: {
-                        type: "object",
-                        properties: {
-                            reflection: { type: "string" },
-                            reframe: { type: "string" },
-                            focus: { type: "string" },
-                            task: { type: "string" }
-                        },
-                        required: ["reflection", "task"]
-                    }
-                });
+                let postDiagnosis;
+                try {
+                    postDiagnosis = await baseClient.integrations.Core.InvokeLLM({
+                        prompt: postDiagnosisPrompt,
+                        response_json_schema: {
+                            type: "object",
+                            properties: {
+                                reflection: { type: "string" },
+                                reframe: { type: "string" },
+                                focus: { type: "string" },
+                                task: { type: "string" }
+                            },
+                            required: ["reflection", "task"]
+                        }
+                    });
+                } catch (llmErr) {
+                    console.error('❌ LLM failed for post-diagnosis, using fallback');
+                    postDiagnosis = {
+                        reflection: "אני שומע אותך.",
+                        reframe: "זה לגמרי טבעי להרגיש ככה בשלב הזה.",
+                        focus: "בוא נתחיל בצעד קטן אחד.",
+                        task: "כתוב רשימה של 3 דברים קטנים שאתה יכול לעשות השבוע."
+                    };
+                }
 
                 const fullResponse = `${postDiagnosis.reflection}
 
@@ -456,34 +486,78 @@ ${postDiagnosis.task}`;
 
                 nextStage = 'post_diagnosis';
 
+                // שמירת התגובה בflow_data
+                updatedFlowData.post_diagnosis_response = postDiagnosis;
+                updatedFlowData.post_diagnosis_sent_at = new Date().toISOString();
+
                 await logClient.entities.MentorFlowLog.create({
                     user_id: userId,
                     goal_id: goal_id,
                     flow_stage: 'post_diagnosis',
                     message_sent: fullResponse,
+                    user_response: user_response,
                     personalization_applied: postDiagnosis
                 });
 
-                // סיום הפלואו - עדכן שהמשתמש עבר את השלב הראשון
+                // עדכן flow_data זמנית
+                currentGoal.flow_data = updatedFlowData;
+                
+            } else if (stage === 'post_diagnosis') {
+                // המשתמש הגיב למשימה - סיום הפלואו
+                await logClient.entities.MentorFlowLog.create({
+                    user_id: userId,
+                    goal_id: goal_id,
+                    flow_stage: 'completion',
+                    user_response: user_response,
+                    message_sent: 'Flow completed'
+                });
+                
+                nextMessages.push({
+                    role: 'assistant',
+                    content: 'מעולה! ככה מתחילים. עכשיו המנטור ימשיך ללוות אותך בצעדים קטנים ומדויקים. 🚀',
+                    requires_response: false
+                });
+                
                 nextStage = 'completed';
                 }
 
                 // עדכון המטרה
                 const updateClient = isServiceRole ? base44.asServiceRole : base44;
                 const updateData = {
-                flow_data: {
-                    ...currentGoal.flow_data,
-                    mentor_stage: nextStage,
-                    last_message_time: new Date().toISOString(),
-                    user_pattern: analysis.user_pattern
-                }
+                    flow_data: {
+                        ...currentGoal.flow_data,
+                        mentor_stage: nextStage,
+                        last_message_time: new Date().toISOString(),
+                        user_pattern: analysis.user_pattern
+                    }
                 };
 
                 // אם סיימנו את הפלואו, עדכן גם את הסטטוס
                 if (nextStage === 'completed') {
-                updateData.is_first_goal = false; // משדרג - לא עוד מטרה ראשונה
-                updateData.status = 'active'; // מעביר למצב פעיל
-                console.log('🎉 First goal flow completed, upgrading goal to active');
+                    updateData.is_first_goal = false; // משדרג - לא עוד מטרה ראשונה
+                    updateData.status = 'active'; // מעביר למצב פעיל
+                    console.log('🎉 First goal flow completed, upgrading goal to active');
+                    
+                    // עדכון UserMemory אחרי סיום FirstGoalFlow
+                    try {
+                        await base44.asServiceRole.functions.invoke('updateUserMemory', {
+                            conversationLogId: null,
+                            messages: [
+                                { role: 'user', content: user_response, timestamp: new Date().toISOString() },
+                                { role: 'assistant', content: 'First goal flow completed', timestamp: new Date().toISOString() }
+                            ],
+                            context: { 
+                                current_stage: 'first_goal_completed',
+                                goal_id: goal_id,
+                                goal_title: currentGoal.title
+                            },
+                            agentName: 'firstGoalMentorFlow',
+                            user_id: userId
+                        });
+                        console.log('✅ Memory updated after first goal completion');
+                    } catch (memErr) {
+                        console.warn('⚠️ Could not update memory:', memErr.message);
+                    }
                 }
 
                 await updateClient.entities.UserGoal.update(goal_id, updateData);
