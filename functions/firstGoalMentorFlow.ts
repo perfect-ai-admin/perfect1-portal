@@ -285,30 +285,42 @@ Deno.serve(async (req) => {
                 return Response.json({ error: 'user_response and stage required' }, { status: 400 });
             }
 
-            const startTime = goal.flow_data?.last_message_time 
-                ? new Date(goal.flow_data.last_message_time) 
+            // טיפול ב-service role (מווטסאפ) או user scope (מהאפליקציה)
+            const isServiceRole = !user;
+
+            let currentGoal;
+            if (isServiceRole) {
+                currentGoal = await base44.asServiceRole.entities.UserGoal.get(goal_id);
+            } else {
+                currentGoal = goal;
+            }
+
+            const startTime = currentGoal.flow_data?.last_message_time 
+                ? new Date(currentGoal.flow_data.last_message_time) 
                 : new Date();
             const responseTime = (new Date() - startTime) / 1000;
 
             // ניתוח התגובה באמצעות AI
             const analysisPrompt = `
-נתח את התגובה הבאה של משתמש לפלואו המנטור הראשון:
+            נתח את התגובה הבאה של משתמש לפלואו המנטור הראשון:
 
-שלב נוכחי: ${stage}
-תגובת משתמש: "${user_response}"
+            שלב נוכחי: ${stage}
+            תגובת משתמש: "${user_response}"
+            מטרה: "${currentGoal.title}"
 
-החזר JSON עם:
-{
-    "sentiment": "positive/neutral/negative/confused/engaged",
-    "is_agreement": boolean (רלוונטי רק לשלב agreement),
-    "effectiveness_score": number 1-5,
-    "suggested_next_message": "ההודעה הבאה המותאמת",
-    "improvements": ["הצעות שיפור לתבנית"],
-    "user_pattern": "זיהוי דפוס התנהגות"
-}
-`;
+            החזר JSON עם:
+            {
+            "sentiment": "positive/neutral/negative/confused/engaged",
+            "is_agreement": boolean (רלוונטי רק לשלב agreement),
+            "effectiveness_score": number 1-5,
+            "suggested_next_message": "ההודעה הבאה המותאמת",
+            "improvements": ["הצעות שיפור לתבנית"],
+            "user_pattern": "זיהוי דפוס התנהגות"
+            }
+            `;
 
-            const analysis = await base44.integrations.Core.InvokeLLM({
+                const baseClient = isServiceRole ? base44.asServiceRole : base44;
+                const analysis = await baseClient.integrations.Core.InvokeLLM({
                 prompt: analysisPrompt,
                 response_json_schema: {
                     type: "object",
@@ -325,8 +337,11 @@ Deno.serve(async (req) => {
             });
 
             // תיעוד התגובה
-            await base44.entities.MentorFlowLog.create({
-                user_id: user.id,
+            const logClient = isServiceRole ? base44.asServiceRole : base44;
+            const userId = isServiceRole ? (currentGoal.user_id || 'unknown') : user.id;
+
+            await logClient.entities.MentorFlowLog.create({
+                user_id: userId,
                 goal_id: goal_id,
                 flow_stage: stage,
                 user_response: user_response,
