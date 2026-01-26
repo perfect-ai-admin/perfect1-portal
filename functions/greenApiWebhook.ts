@@ -264,9 +264,9 @@ Deno.serve(async (req) => {
                 console.log('🔍 מחפש מטרות עבור user_id:', effectiveUserId);
                 userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
                     user_id: effectiveUserId,
-                    status: 'active'
+                    status: { $in: ['selected', 'active', 'in_progress'] }
                 }, '-created_date', 10);
-                console.log('📊 נמצאו', userGoals.length, 'מטרות פעילות');
+                console.log('📊 נמצאו', userGoals.length, 'מטרות');
             }
 
             // Fallback: אם לא נמצא, נסה לפי created_by
@@ -274,9 +274,9 @@ Deno.serve(async (req) => {
                 console.log('🔍 חיפוש חלופי לפי created_by:', user.email);
                 userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
                     created_by: user.email,
-                    status: 'active'
+                    status: { $in: ['selected', 'active', 'in_progress'] }
                 }, '-created_date', 10);
-                console.log('📊 נמצאו', userGoals.length, 'מטרות פעילות (created_by)');
+                console.log('📊 נמצאו', userGoals.length, 'מטרות (created_by)');
             }
 
             if (userGoals.length > 0) {

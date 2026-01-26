@@ -286,12 +286,16 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       target: 100,
       customAnswers: customAnswers,
       urgency: urgency,
-      status: editingGoal?.status || 'active',
+      status: editingGoal?.status || (isFirstGoalEver ? 'selected' : 'active'),
       isPrimary: isPrimary && !hasPrimaryGoal,
       aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
       actionHint: 'המטרה נוצרת...',
       is_first_goal: isFirstGoalEver,
-      flow_step: isFirstGoalEver ? 1 : undefined
+      flow_step: isFirstGoalEver ? 1 : undefined,
+      flow_data: isFirstGoalEver ? {
+        mentor_stage: 'intro',
+        mentor_started_at: new Date().toISOString()
+      } : undefined
     };
 
     // Check for duplicates before creating (Client Side Sync Check)
