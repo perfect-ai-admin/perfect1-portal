@@ -321,10 +321,8 @@ Deno.serve(async (req) => {
 
                 if (phoneNumber) {
                     const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
-                    await sendWhatsAppMessage(phoneNumber, whatsappMessage);
-                    console.log('✅ WhatsApp message sent successfully');
                     
-                    // עדכון chat_history של CRMLead
+                    // מצא את ה-CRMLead
                     const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
                         $or: [
                             { user_id: user.id },
@@ -332,19 +330,42 @@ Deno.serve(async (req) => {
                         ]
                     }, '-created_date', 1);
                     
-                    if (leads && leads.length > 0) {
-                        const currentLead = await base44.asServiceRole.entities.CRMLead.get(leads[0].id);
-                        const updatedHistory = [...(currentLead.chat_history || []), {
-                            role: 'assistant',
-                            content: whatsappMessage,
-                            timestamp: new Date().toISOString(),
-                            agent: 'firstGoalMentorFlow'
-                        }].slice(-100);
-                        
-                        await base44.asServiceRole.entities.CRMLead.update(leads[0].id, {
-                            chat_history: updatedHistory
-                        });
-                        console.log('✅ Chat history updated with bot message');
+                    const phoneNorm = normalizePhoneNumber(phoneNumber);
+                    const currentLeadId = leads?.[0]?.id;
+                    
+                    await sendWhatsAppMessage({
+                        base44,
+                        phoneNormalized: phoneNorm,
+                        messageText: whatsappMessage,
+                        leadId: currentLeadId || 'unknown',
+                        userId: user.id,
+                        goalId: goal_id,
+                        agentRunId: null
+                    });
+                    console.log('✅ WhatsApp message sent successfully');
+                    
+                    // עדכון chat_history של CRMLead - קריטי
+                    if (currentLeadId) {
+                        try {
+                            const currentLead = await base44.asServiceRole.entities.CRMLead.get(currentLeadId);
+                            const updatedHistory = [...(currentLead.chat_history || []), {
+                                role: 'assistant',
+                                content: whatsappMessage,
+                                timestamp: new Date().toISOString(),
+                                agent: 'firstGoalMentorFlow',
+                                message_type: 'start_flow'
+                            }].slice(-100);
+                            
+                            await base44.asServiceRole.entities.CRMLead.update(currentLeadId, {
+                                chat_history: updatedHistory,
+                                waiting_for_response: true,
+                                last_outbound_at: new Date().toISOString(),
+                                current_goal_id: goal_id
+                            });
+                            console.log('✅ Chat history updated with bot message, length:', updatedHistory.length);
+                        } catch (histErr) {
+                            console.error('❌ Failed to update chat history:', histErr.message);
+                        }
                     }
                 } else {
                     console.warn('⚠️ No phone number found for user:', user.id);
@@ -369,6 +390,8 @@ Deno.serve(async (req) => {
                 return Response.json({ error: 'user_response and stage required' }, { status: 400 });
             }
 
+            const { lead_id, user_id: passedUserId } = body;
+
             // טיפול ב-service role (מווטסאפ) או user scope (מהאפליקציה)
             const isServiceRole = !user;
 
@@ -378,6 +401,8 @@ Deno.serve(async (req) => {
             } else {
                 currentGoal = goal;
             }
+            
+            const userId = passedUserId || (isServiceRole ? currentGoal.user_id : user.id);
 
             const startTime = currentGoal.flow_data?.last_message_time 
                 ? new Date(currentGoal.flow_data.last_message_time) 
@@ -439,7 +464,6 @@ Deno.serve(async (req) => {
 
             // תיעוד התגובה
             const logClient = isServiceRole ? base44.asServiceRole : base44;
-            const userId = isServiceRole ? (currentGoal.user_id || 'unknown') : user.id;
 
             await logClient.entities.MentorFlowLog.create({
                 user_id: userId,
@@ -626,33 +650,61 @@ ${postDiagnosis.task}`;
 
                 // אם סיימנו את הפלואו, עדכן גם את הסטטוס
                 if (nextStage === 'completed') {
-                    updateData.is_first_goal = false; // משדרג - לא עוד מטרה ראשונה
-                    updateData.status = 'active'; // מעביר למצב פעיל
+                    updateData.is_first_goal = false;
+                    updateData.status = 'active';
                     console.log('🎉 First goal flow completed, upgrading goal to active');
-                    
-                    // עדכון UserMemory אחרי סיום FirstGoalFlow
+                }
+
+                await updateClient.entities.UserGoal.update(goal_id, updateData);
+                
+                // עדכון CRMLead chat_history עם ההודעות שנשלחו
+                if (lead_id && nextMessages.length > 0) {
+                    try {
+                        const currentLead = await base44.asServiceRole.entities.CRMLead.get(lead_id);
+                        const newMessages = nextMessages.map(msg => ({
+                            role: 'assistant',
+                            content: msg.content,
+                            timestamp: new Date().toISOString(),
+                            agent: 'firstGoalMentorFlow'
+                        }));
+                        
+                        const updatedHistory = [...(currentLead.chat_history || []), ...newMessages].slice(-100);
+                        
+                        await base44.asServiceRole.entities.CRMLead.update(lead_id, {
+                            chat_history: updatedHistory,
+                            last_outbound_at: new Date().toISOString(),
+                            waiting_for_response: nextStage !== 'completed',
+                            current_goal_id: goal_id
+                        });
+                        console.log('✅ CRMLead chat_history updated with', newMessages.length, 'messages');
+                    } catch (histErr) {
+                        console.error('❌ Failed to update CRMLead chat_history:', histErr.message);
+                    }
+                }
+                
+                // עדכון UserMemory
+                if (userId) {
                     try {
                         await base44.asServiceRole.functions.invoke('updateUserMemory', {
                             conversationLogId: null,
                             messages: [
                                 { role: 'user', content: user_response, timestamp: new Date().toISOString() },
-                                { role: 'assistant', content: 'First goal flow completed', timestamp: new Date().toISOString() }
+                                ...nextMessages
                             ],
                             context: { 
-                                current_stage: 'first_goal_completed',
+                                current_stage: stage,
+                                next_stage: nextStage,
                                 goal_id: goal_id,
                                 goal_title: currentGoal.title
                             },
                             agentName: 'firstGoalMentorFlow',
                             user_id: userId
                         });
-                        console.log('✅ Memory updated after first goal completion');
+                        console.log('✅ Memory updated');
                     } catch (memErr) {
                         console.warn('⚠️ Could not update memory:', memErr.message);
                     }
                 }
-
-                await updateClient.entities.UserGoal.update(goal_id, updateData);
 
             return Response.json({
                 success: true,

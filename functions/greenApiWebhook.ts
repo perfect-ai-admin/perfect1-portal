@@ -341,6 +341,8 @@ Deno.serve(async (req) => {
         const isInFirstGoalFlow = activeGoal.is_first_goal && 
                                    mentorStage && 
                                    mentorStage !== 'completed';
+        
+        console.log('🔍 Goal check - is_first_goal:', activeGoal.is_first_goal, 'mentor_stage:', mentorStage, 'isInFirstGoalFlow:', isInFirstGoalFlow);
 
         if (isInFirstGoalFlow) {
             console.log('🔄 User is in FirstGoalFlow, stage:', mentorStage);
@@ -356,10 +358,12 @@ Deno.serve(async (req) => {
                 action: 'handle_response',
                 goal_id: activeGoal.id,
                 user_response: messageText,
-                stage: mentorStage
+                stage: mentorStage,
+                lead_id: user.id,
+                user_id: effectiveUserId
             });
 
-            console.log('✅ FirstGoalMentorFlow response:', flowResponse.data);
+            console.log('✅ FirstGoalMentorFlow response:', JSON.stringify(flowResponse.data, null, 2));
 
             // שלח את ההודעות שחזרו מהפלואו ועדכן chat_history
             if (flowResponse.data?.messages && flowResponse.data.messages.length > 0) {
@@ -550,16 +554,36 @@ Deno.serve(async (req) => {
             }
         }
 
+        // עדכון UserMemory
+        if (effectiveUserId) {
+            try {
+                await base44.asServiceRole.functions.invoke('updateUserMemory', {
+                    conversationLogId: null,
+                    messages: chatHistory.slice(-2),
+                    context: { 
+                        current_stage: isInFirstGoalFlow ? mentorStage : 'ongoing',
+                        goal_id: activeGoal.id,
+                        goal_title: activeGoal.title
+                    },
+                    agentName: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine',
+                    user_id: effectiveUserId
+                });
+                console.log('✅ Memory updated');
+            } catch (memErr) {
+                console.warn('⚠️ Could not update memory:', memErr.message);
+            }
+        }
+        
         // תיעוד ביצועי הסוכן
         try {
             await base44.asServiceRole.functions.invoke('agentPerformanceTracker', {
                 action: 'log_interaction',
                 agent_name: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine',
-                user_id: user.user_id || user.id,
+                user_id: effectiveUserId || user.id,
                 goal_id: activeGoal.id,
                 outcome: 'message_sent',
                 metadata: {
-                    messages: chatHistory.slice(-2), // 2 אחרונות בלבד
+                    messages: chatHistory.slice(-2),
                     sentiment: { overall: 'neutral' }
                 }
             });
@@ -571,8 +595,10 @@ Deno.serve(async (req) => {
         return Response.json({ 
             status: 'success',
             user_id: user.id,
+            effective_user_id: effectiveUserId,
             message_processed: true,
-            agent_used: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
+            agent_used: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine',
+            goal_found: activeGoal.id
         });
 
     } catch (error) {
