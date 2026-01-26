@@ -167,7 +167,24 @@ Deno.serve(async (req) => {
                 });
 
                 console.log('✅ WhatsApp sent successfully for first goal:', goalId);
-                
+
+                // עדכון chat_history של CRMLead עם ההודעה היוצאת
+                if (leads && leads.length > 0) {
+                    const leadId = leads[0].id;
+                    const currentLead = await base44.asServiceRole.entities.CRMLead.get(leadId);
+                    const updatedHistory = [...(currentLead.chat_history || []), {
+                        role: 'assistant',
+                        content: whatsappMessage,
+                        timestamp: new Date().toISOString(),
+                        agent: 'firstGoalMentorFlow'
+                    }].slice(-100); // הגבל ל-100 הודעות
+
+                    await base44.asServiceRole.entities.CRMLead.update(leadId, {
+                        chat_history: updatedHistory
+                    });
+                    console.log('✅ Chat history updated with bot messages');
+                }
+
                 return Response.json({ 
                     success: true, 
                     message: 'First goal mentor flow initiated and WhatsApp sent',

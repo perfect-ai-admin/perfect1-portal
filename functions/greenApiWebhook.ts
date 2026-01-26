@@ -182,19 +182,41 @@ Deno.serve(async (req) => {
             }
         }
 
-        // בחר goal פעיל - חיפוש חכם
+        // בחר goal פעיל - חיפוש חכם עם קישור User
         let activeGoal = null;
+        let effectiveUserId = user.user_id;
+
+        // אם ל-CRMLead אין user_id מקושר, ננסה למצוא User לפי phone_normalized
+        if (!effectiveUserId && user.phone_normalized) {
+            try {
+                const allUsers = await base44.asServiceRole.entities.User.list();
+                const matchingUser = allUsers.find(u => 
+                    u.phone && (normalizePhoneNumber(u.phone) === user.phone_normalized)
+                );
+                if (matchingUser) {
+                    effectiveUserId = matchingUser.id;
+                    console.log('🔗 נמצא User תואם לפי טלפון, מעדכן CRMLead.user_id:', matchingUser.id);
+                    // נעדכן את ה-CRMLead עם ה-user_id שנמצא
+                    await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                        user_id: effectiveUserId
+                    });
+                    user.user_id = effectiveUserId;
+                }
+            } catch (err) {
+                console.warn('⚠️ שגיאה בחיפוש User לפי טלפון:', err.message);
+            }
+        }
+
         try {
-            // נסה למצוא לפי user_id אם קיים
             let userGoals = [];
-            
-            if (user.user_id) {
+
+            if (effectiveUserId) {
                 userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
-                    user_id: user.user_id,
+                    user_id: effectiveUserId,
                     status: 'active'
                 }, '-created_date', 5);
             }
-            
+
             // אם לא נמצא, נסה לפי created_by
             if (userGoals.length === 0 && user.email) {
                 userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
