@@ -124,6 +124,45 @@ Deno.serve(async (req) => {
                 }
             });
 
+            // שליחת הודעה בווטסאפ
+            console.log('🚀 Attempting to send WhatsApp message for goal:', goal_id);
+            try {
+                // חיפוש מספר הטלפון של המשתמש
+                let phoneNumber = null;
+                
+                // נסה למצוא ב-User
+                if (user.phone) {
+                    phoneNumber = user.phone;
+                    console.log('📱 Found phone in User entity:', phoneNumber);
+                }
+                
+                // אם לא נמצא, חפש ב-CRMLead
+                if (!phoneNumber) {
+                    const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                        $or: [
+                            { user_id: user.id },
+                            { email: user.email }
+                        ]
+                    }, '-created_date', 1);
+                    
+                    if (leads && leads.length > 0 && leads[0].phone) {
+                        phoneNumber = leads[0].phone;
+                        console.log('📱 Found phone in CRMLead:', phoneNumber);
+                    }
+                }
+
+                if (phoneNumber) {
+                    const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
+                    await sendWhatsAppMessage(phoneNumber, whatsappMessage);
+                    console.log('✅ WhatsApp message sent successfully');
+                } else {
+                    console.warn('⚠️ No phone number found for user:', user.id);
+                }
+            } catch (err) {
+                console.error('❌ Failed to send WhatsApp message:', err.message);
+                // לא זורקים שגיאה - ממשיכים גם אם הווטסאפ נכשל
+            }
+
             return Response.json({
                 success: true,
                 messages,
@@ -414,3 +453,44 @@ ${logs.slice(0, 10).map(l => `שלב: ${l.flow_stage}, תגובה: ${l.user_resp
         return Response.json({ error: error.message, stack: error.stack }, { status: 500 });
     }
 });
+
+/**
+ * שליחת הודעה דרך Green-API
+ */
+async function sendWhatsAppMessage(phoneNumber, message) {
+    const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
+    const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
+
+    console.log('📤 Sending WhatsApp - instanceId:', instanceId);
+    console.log('📤 Phone:', phoneNumber);
+
+    if (!instanceId || !apiToken) {
+        throw new Error('Green-API credentials not configured');
+    }
+
+    const url = `https://api.greenapi.com/waInstance${instanceId}/sendMessage/${apiToken}`;
+
+    const payload = {
+        chatId: `${phoneNumber}@c.us`,
+        message: message
+    };
+
+    console.log('📤 Payload:', JSON.stringify(payload));
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const responseText = await response.text();
+    console.log('📤 Green-API Response:', responseText);
+
+    if (!response.ok) {
+        throw new Error(`Green-API HTTP ${response.status}: ${responseText}`);
+    }
+
+    return JSON.parse(responseText);
+}
