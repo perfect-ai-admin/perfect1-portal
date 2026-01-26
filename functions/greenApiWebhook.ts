@@ -288,19 +288,16 @@ Deno.serve(async (req) => {
                     mentor_stage: g.flow_data?.mentor_stage
                 })));
                 
-                // העדף מטרה ראשונה שעדיין בפלואו
-                const firstGoalInProgress = userGoals.find(g => 
-                    g.is_first_goal && 
-                    g.flow_data?.mentor_stage && 
-                    g.flow_data.mentor_stage !== 'completed'
-                );
+                // העדף מטרה ראשונה (גם אם עוד לא התחיל הפלואו!)
+                const firstGoal = userGoals.find(g => g.is_first_goal);
                 
-                // אם לא נמצאה מטרה ראשונה בפלואו, קח מטרה עם status='selected' או 'active'
-                if (!firstGoalInProgress) {
+                if (firstGoal) {
+                    activeGoal = firstGoal;
+                    console.log('✅ Found first goal:', firstGoal.id);
+                } else {
+                    // אחרת, קח מטרה עם status='selected' או 'active'
                     const selectedGoal = userGoals.find(g => g.status === 'selected' || g.status === 'active');
                     activeGoal = selectedGoal || userGoals[0];
-                } else {
-                    activeGoal = firstGoalInProgress;
                 }
                 
                 console.log('✅ Active goal selected:', activeGoal.id, 'title:', activeGoal.title, 'status:', activeGoal.status);
@@ -419,10 +416,8 @@ Deno.serve(async (req) => {
         console.log('✅ CRMLead updated: current_goal_id + waiting_for_response=false');
 
         // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
-        const mentorStage = activeGoal.flow_data?.mentor_stage;
-        const isInFirstGoalFlow = activeGoal.is_first_goal && 
-                                   mentorStage && 
-                                   mentorStage !== 'completed';
+        const mentorStage = activeGoal.flow_data?.mentor_stage || 'agreement';
+        const isInFirstGoalFlow = activeGoal.is_first_goal === true;
         
         console.log('🔍 Goal check - is_first_goal:', activeGoal.is_first_goal, 'mentor_stage:', mentorStage, 'isInFirstGoalFlow:', isInFirstGoalFlow);
 
