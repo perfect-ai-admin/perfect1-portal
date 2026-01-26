@@ -186,6 +186,27 @@ Deno.serve(async (req) => {
                 console.log('📤 Sending WhatsApp to:', phoneNumber, 'lead_id:', leadId);
 
                 const phoneNorm = normalizePhoneNumber(phoneNumber);
+
+                // CRITICAL: עדכן chat_history לפני שליחת הווטסאפ
+                if (leadId) {
+                    const currentLead = await base44.asServiceRole.entities.CRMLead.get(leadId);
+                    const updatedHistory = [...(currentLead.chat_history || []), {
+                        role: 'assistant',
+                        content: whatsappMessage,
+                        timestamp: new Date().toISOString(),
+                        agent: 'firstGoalMentorFlow',
+                        message_type: 'intro_agreement'
+                    }].slice(-100);
+
+                    await base44.asServiceRole.entities.CRMLead.update(leadId, {
+                        chat_history: updatedHistory,
+                        waiting_for_response: true,
+                        last_outbound_at: new Date().toISOString(),
+                        current_goal_id: goalId
+                    });
+                    console.log('✅ Chat history PRE-updated, length:', updatedHistory.length);
+                }
+
                 await sendWhatsAppMessage({
                     base44,
                     phoneNormalized: phoneNorm,
@@ -197,33 +218,6 @@ Deno.serve(async (req) => {
                 });
 
                 console.log('✅ WhatsApp sent successfully for first goal:', goalId);
-
-                // עדכון chat_history של CRMLead עם ההודעה היוצאת - חובה
-                if (leadId) {
-                    try {
-                        const currentLead = await base44.asServiceRole.entities.CRMLead.get(leadId);
-                        const updatedHistory = [...(currentLead.chat_history || []), {
-                            role: 'assistant',
-                            content: whatsappMessage,
-                            timestamp: new Date().toISOString(),
-                            agent: 'firstGoalMentorFlow',
-                            message_type: 'intro_agreement'
-                        }].slice(-100);
-
-                        await base44.asServiceRole.entities.CRMLead.update(leadId, {
-                            chat_history: updatedHistory,
-                            waiting_for_response: true,
-                            last_outbound_at: new Date().toISOString(),
-                            current_goal_id: goalId
-                        });
-                        console.log('✅ Chat history updated with bot messages, history length:', updatedHistory.length);
-                    } catch (histErr) {
-                        console.error('❌ CRITICAL: Could not update chat history:', histErr.message);
-                        throw histErr; // זה קריטי - זרוק שגיאה אם נכשל
-                    }
-                } else {
-                    console.error('❌ CRITICAL: No lead_id found, cannot update chat history');
-                }
 
                 return Response.json({ 
                     success: true, 
