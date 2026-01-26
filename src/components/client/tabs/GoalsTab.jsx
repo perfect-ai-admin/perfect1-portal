@@ -248,10 +248,15 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
          setEditingGoal(null);
          setIsCreatingGoal(false);
       } else {
+         // Check if this is the FIRST goal ever for this user
+         const isFirstGoalEver = goals.length === 0 && !goals.some(g => g.is_first_goal);
+         
          const goalToCreate = { 
            ...newGoal, 
            user_id: user.id,
-           plan_summary: 'בונה את תוכנית הפעולה שלך...' // Initial optimistic state
+           plan_summary: 'בונה את תוכנית הפעולה שלך...', // Initial optimistic state
+           is_first_goal: isFirstGoalEver, // סימון אוטומטי של מטרה ראשונה
+           flow_step: isFirstGoalEver ? 1 : undefined // אם זו המטרה הראשונה, נתחיל את הפלואו
          };
 
          // Show creating state in modal only
