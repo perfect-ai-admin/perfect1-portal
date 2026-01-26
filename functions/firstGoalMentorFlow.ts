@@ -48,14 +48,96 @@ const MESSAGE_TEMPLATES = {
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+        
+        const body = await req.json();
+        const { action, goal_id, user_response, stage, event, data } = body;
+        
+        // אם זו קריאה מ-automation (entity create)
+        if (event?.type === 'create' && event?.entity_name === 'UserGoal') {
+            // בדוק אם זו מטרה ראשונה
+            if (!data?.is_first_goal) {
+                return Response.json({ message: 'Not a first goal, skipping' });
+            }
+            
+            // עכשיו שלח ווטסאפ למשתמש
+            const goalId = event.entity_id;
+            const goal = await base44.asServiceRole.entities.UserGoal.get(goalId);
+            const goalUser = await base44.asServiceRole.entities.User.filter({ id: goal.user_id }, '', 1);
+            
+            if (!goalUser || goalUser.length === 0) {
+                return Response.json({ error: 'User not found' }, { status: 404 });
+            }
+            
+            const userObj = goalUser[0];
+            
+            // שליחת הודעות הפתיחה
+            const introMessage = MESSAGE_TEMPLATES.intro.default;
+            const agreementMessage = MESSAGE_TEMPLATES.agreement.default
+                .replace('{goal_title}', goal.title || 'המטרה שבחרת');
+            
+            // תיעוד
+            await base44.asServiceRole.entities.MentorFlowLog.create({
+                user_id: userObj.id,
+                goal_id: goalId,
+                flow_stage: 'intro',
+                message_sent: introMessage,
+                template_used: 'intro.default'
+            });
+            
+            await base44.asServiceRole.entities.MentorFlowLog.create({
+                user_id: userObj.id,
+                goal_id: goalId,
+                flow_stage: 'agreement',
+                message_sent: agreementMessage,
+                template_used: 'agreement.default'
+            });
+            
+            // עדכון המטרה
+            await base44.asServiceRole.entities.UserGoal.update(goalId, {
+                flow_data: {
+                    ...goal.flow_data,
+                    mentor_stage: 'agreement',
+                    mentor_started_at: new Date().toISOString()
+                }
+            });
+            
+            // שליחת ווטסאפ
+            try {
+                let phoneNumber = userObj.phone;
+                
+                if (!phoneNumber) {
+                    const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                        $or: [
+                            { user_id: userObj.id },
+                            { email: userObj.email }
+                        ]
+                    }, '-created_date', 1);
+                    
+                    if (leads && leads.length > 0 && leads[0].phone) {
+                        phoneNumber = leads[0].phone;
+                    }
+                }
+                
+                if (phoneNumber) {
+                    const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
+                    await sendWhatsAppMessage(phoneNumber, whatsappMessage);
+                    console.log('✅ WhatsApp sent for first goal:', goalId);
+                } else {
+                    console.warn('⚠️ No phone number found for user:', userObj.id);
+                }
+            } catch (err) {
+                console.error('❌ WhatsApp send failed:', err.message);
+            }
+            
+            return Response.json({ success: true, message: 'First goal mentor flow initiated' });
+        }
+        
+        // קריאה ידנית רגילה
         const user = await base44.auth.me();
         
         if (!user) {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
-
-        const body = await req.json();
-        const { action, goal_id, user_response, stage } = body;
 
         if (!goal_id) {
             return Response.json({ error: 'goal_id is required' }, { status: 400 });
