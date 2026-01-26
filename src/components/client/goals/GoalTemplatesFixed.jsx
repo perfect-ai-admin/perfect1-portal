@@ -286,7 +286,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
       target: 100,
       customAnswers: customAnswers,
       urgency: urgency,
-      status: editingGoal?.status || 'selected',
+      status: editingGoal?.status || 'active',
       isPrimary: isPrimary && !hasPrimaryGoal,
       aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
       actionHint: 'המטרה נוצרת...',

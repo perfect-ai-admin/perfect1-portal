@@ -10,10 +10,6 @@ import GoalsManager from '../components/admin/GoalsManager';
 import PlansManager from '../components/admin/PlansManager';
 import ActivityLogView from '../components/admin/ActivityLogView';
 import SystemConfigManager from '../components/admin/SystemConfigManager';
-import AgentPerformanceDashboard from '../components/admin/AgentPerformanceDashboard';
-import DLQMonitor from '../components/admin/DLQMonitor';
-import WaitingRoom from '../components/admin/WaitingRoom';
-import SystemDebugger from '../components/admin/SystemDebugger';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
@@ -127,11 +123,7 @@ export default function AdminDashboard() {
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                        <TabsList className="grid grid-cols-9 gap-2 bg-white p-2 rounded-xl shadow-md">
-                            <TabsTrigger value="debug" className="flex items-center gap-2 bg-red-50">
-                                <Shield className="w-4 h-4 text-red-600" />
-                                דיבאג
-                            </TabsTrigger>
+                        <TabsList className="grid grid-cols-5 gap-4 bg-white p-2 rounded-xl shadow-md">
                             <TabsTrigger value="users" className="flex items-center gap-2">
                                 <Users className="w-4 h-4" />
                                 משתמשים
@@ -152,23 +144,7 @@ export default function AdminDashboard() {
                                 <Shield className="w-4 h-4" />
                                 מערכת
                             </TabsTrigger>
-                            <TabsTrigger value="agents" className="flex items-center gap-2">
-                                <Activity className="w-4 h-4" />
-                                ביצועי סוכנים
-                            </TabsTrigger>
-                            <TabsTrigger value="dlq" className="flex items-center gap-2">
-                                <Activity className="w-4 h-4" />
-                                DLQ
-                            </TabsTrigger>
-                            <TabsTrigger value="waiting" className="flex items-center gap-2">
-                                <Users className="w-4 h-4" />
-                                חדר המתנה
-                            </TabsTrigger>
                         </TabsList>
-
-                        <TabsContent value="debug">
-                            <SystemDebugger />
-                        </TabsContent>
 
                         <TabsContent value="users">
                             <UsersTable loginData={loginData} />
@@ -188,18 +164,6 @@ export default function AdminDashboard() {
 
                         <TabsContent value="system">
                             <SystemConfigManager />
-                        </TabsContent>
-
-                        <TabsContent value="agents">
-                            <AgentPerformanceDashboard />
-                        </TabsContent>
-
-                        <TabsContent value="dlq">
-                            <DLQMonitor />
-                        </TabsContent>
-
-                        <TabsContent value="waiting">
-                            <WaitingRoom />
                         </TabsContent>
                         </Tabs>
                 </div>

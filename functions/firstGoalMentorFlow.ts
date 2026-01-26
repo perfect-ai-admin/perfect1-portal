@@ -1,8 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { runAgent, logAgentEvent } from './agentWrapper.js';
-import { sendWhatsAppMessage } from './whatsappWrapper.js';
-import { invokeLLMWithRetry } from './llmWrapper.js';
-import { syncLeadAndGoal, updateChatHistory, normalizePhoneNumber } from './stateSynchronizer.js';
 
 /**
  * פלואו מנטור ראשון × מטרה ראשונה
@@ -59,73 +55,30 @@ Deno.serve(async (req) => {
         // אם זו קריאה מ-automation (entity create)
         if (event?.type === 'create' && event?.entity_name === 'UserGoal') {
             console.log('🔔 Entity automation triggered for UserGoal create');
-            console.log('🔍 Event data:', {
-                entity_id: event.entity_id,
-                is_first_goal: data?.is_first_goal,
-                status: data?.status,
-                user_id: data?.user_id
-            });
-
+            
             // בדוק אם זו מטרה ראשונה
             if (!data?.is_first_goal) {
                 console.log('⏭️ Not a first goal, skipping. is_first_goal:', data?.is_first_goal);
                 return Response.json({ message: 'Not a first goal, skipping' });
             }
-
+            
             console.log('✅ First goal detected, starting mentor flow');
-
-            // טען את המטרה
+            
+            // עכשיו שלח ווטסאפ למשתמש
             const goalId = event.entity_id;
             const goal = await base44.asServiceRole.entities.UserGoal.get(goalId);
-            console.log('📌 Goal loaded:', {
-                id: goal.id,
-                title: goal.title,
-                user_id: goal.user_id,
-                status: goal.status,
-                is_first_goal: goal.is_first_goal
-            });
+            console.log('📌 Goal loaded:', goal.title, 'user_id:', goal.user_id);
             
             // מציאת היוזר
             const allUsers = await base44.asServiceRole.entities.User.list();
             const goalUser = allUsers.find(u => u.id === goal.user_id);
-
+            
             if (!goalUser) {
                 console.error('❌ User not found for goal:', goal.user_id);
                 return Response.json({ error: 'User not found' }, { status: 404 });
             }
-
+            
             console.log('👤 User found:', goalUser.email, 'phone:', goalUser.phone);
-
-            // וידא שקיים CRMLead - אם לא, צור אחד
-            let existingLeads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                $or: [
-                    { email: goalUser.email },
-                    { user_id: goalUser.id }
-                ]
-            }, '-created_date', 1);
-
-            let leadId = existingLeads?.[0]?.id;
-
-            if (!leadId && goalUser.phone) {
-                console.log('📝 CRMLead לא קיים, יוצר אחד חדש...');
-                const phoneNorm = normalizePhoneNumber(goalUser.phone);
-                const newLead = await base44.asServiceRole.entities.CRMLead.create({
-                    user_id: goalUser.id,
-                    email: goalUser.email,
-                    full_name: goalUser.full_name || 'User',
-                    phone: goalUser.phone,
-                    phone_normalized: phoneNorm,
-                    source: 'FirstGoalFlow',
-                    journey_stage: 'lead_new',
-                    active_handler: 'firstGoalMentorFlow',
-                    current_goal_id: goalId,
-                    chat_history: []
-                });
-                leadId = newLead.id;
-                console.log('✅ CRMLead נוצר:', leadId);
-            } else if (leadId) {
-                console.log('✅ CRMLead קיים:', leadId);
-            }
             
             // שליחת הודעות הפתיחה
             const introMessage = MESSAGE_TEMPLATES.intro.default;
@@ -149,126 +102,62 @@ Deno.serve(async (req) => {
                 template_used: 'agreement.default'
             });
             
-            // CRITICAL: וידוא שיש leadId לפני עדכון
-            if (!leadId && goalUser.phone) {
-                console.log('❌ No leadId despite having phone - force creating CRMLead');
-                const phoneNorm = normalizePhoneNumber(goalUser.phone);
-                const forcedLead = await base44.asServiceRole.entities.CRMLead.create({
-                    user_id: goalUser.id,
-                    email: goalUser.email,
-                    full_name: goalUser.full_name || 'User',
-                    phone: goalUser.phone,
-                    phone_normalized: phoneNorm,
-                    source: 'FirstGoalFlow',
-                    journey_stage: 'lead_new',
-                    active_handler: 'firstGoalMentorFlow',
-                    current_goal_id: goalId,
-                    chat_history: []
-                });
-                leadId = forcedLead.id;
-                console.log('✅ Forced CRMLead created:', leadId);
-            }
-
-            // עדכון המטרה + קישור user_id + lead_id
+            // עדכון המטרה + קישור user_id
             await base44.asServiceRole.entities.UserGoal.update(goalId, {
-                user_id: goalUser.id,
-                lead_id: leadId || null,
-                status: 'active', // שדרוג ל-active
+                user_id: goalUser.id, // ודא שיש קישור
                 flow_data: {
                     ...goal.flow_data,
                     mentor_stage: 'agreement',
                     mentor_started_at: new Date().toISOString()
                 }
             });
-            console.log('✅ Goal updated: user_id, lead_id=' + leadId + ', status=active, mentor_stage=agreement');
-            
-            // CRITICAL: עדכן גם את CRMLead עם current_goal_id
-            if (leadId) {
-                await base44.asServiceRole.entities.CRMLead.update(leadId, {
-                    current_goal_id: goalId,
-                    user_id: goalUser.id,
-                    active_handler: 'firstGoalMentorFlow',
-                    waiting_for_response: true
-                });
-                console.log('✅ CRMLead updated with current_goal_id:', goalId);
-            }
             
             // שליחת ווטסאפ - קריטי!
             let phoneNumber = goalUser.phone;
-            console.log('📱 Phone from User:', phoneNumber, 'leadId:', leadId);
+            console.log('📱 Checking phone - User.phone:', phoneNumber);
             
-            if (!phoneNumber && !leadId) {
-                console.error('❌ No phone number and no CRMLead for user:', goalUser.email);
+            if (!phoneNumber) {
+                console.log('🔍 Phone not in User, searching CRMLead...');
+                const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                    $or: [
+                        { email: goalUser.email },
+                        { user_id: goalUser.id }
+                    ]
+                }, '-created_date', 1);
+                
+                if (leads && leads.length > 0 && leads[0].phone) {
+                    phoneNumber = leads[0].phone;
+                    console.log('📱 Found phone in CRMLead:', phoneNumber);
+                    
+                    // סנכרון - עדכן את ה-Lead עם user_id
+                    if (!leads[0].user_id) {
+                        await base44.asServiceRole.entities.CRMLead.update(leads[0].id, {
+                            user_id: goalUser.id
+                        });
+                        console.log('🔗 Synced CRMLead user_id');
+                    }
+                }
+            }
+            
+            if (!phoneNumber) {
+                console.error('❌ No phone number found for user:', goalUser.email);
                 return Response.json({ 
                     success: false, 
                     error: 'No phone number found',
                     user_email: goalUser.email 
                 });
             }
-
-            // אם אין טלפון ב-User אבל יש leadId, קח מה-CRMLead
-            if (!phoneNumber && leadId) {
-                const leadData = await base44.asServiceRole.entities.CRMLead.get(leadId);
-                phoneNumber = leadData.phone || leadData.phone_normalized;
-                console.log('📱 Took phone from CRMLead:', phoneNumber);
-            }
             
             try {
                 const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
-                console.log('📤 Sending WhatsApp to:', phoneNumber, 'lead_id:', leadId);
-
-                const phoneNorm = normalizePhoneNumber(phoneNumber);
-
-                // CRITICAL: סנכרון מצב מלא לפני שליחה
-                const { lead: syncedLead } = await syncLeadAndGoal({
-                    base44,
-                    leadId: leadId,
-                    userId: goalUser.id,
-                    phoneNormalized: phoneNorm,
-                    goalId: goalId
-                });
-
-                const finalLeadId = syncedLead?.id || leadId;
-
-                // עדכון chat_history + current_goal_id אטומית
-                await updateChatHistory({
-                    base44,
-                    leadId: finalLeadId,
-                    newMessages: [{
-                        role: 'assistant',
-                        content: whatsappMessage,
-                        timestamp: new Date().toISOString(),
-                        agent: 'firstGoalMentorFlow',
-                        message_type: 'intro_agreement'
-                    }]
-                });
-
-                await base44.asServiceRole.entities.CRMLead.update(finalLeadId, {
-                    waiting_for_response: true,
-                    last_outbound_at: new Date().toISOString(),
-                    current_goal_id: goalId,
-                    active_handler: 'firstGoalMentorFlow'
-                });
-
-                console.log('✅ Lead state synced before WhatsApp send');
-
-                await sendWhatsAppMessage({
-                    base44,
-                    phoneNormalized: phoneNorm,
-                    messageText: whatsappMessage,
-                    leadId: finalLeadId,
-                    userId: goalUser.id,
-                    goalId: goalId,
-                    agentRunId: null
-                });
-
+                console.log('📤 Sending WhatsApp to:', phoneNumber);
+                await sendWhatsAppMessage(phoneNumber, whatsappMessage);
                 console.log('✅ WhatsApp sent successfully for first goal:', goalId);
-
+                
                 return Response.json({ 
                     success: true, 
                     message: 'First goal mentor flow initiated and WhatsApp sent',
-                    phone_used: phoneNumber,
-                    lead_id: leadId 
+                    phone_used: phoneNumber 
                 });
             } catch (err) {
                 console.error('❌ WhatsApp send failed:', err.message);
@@ -383,52 +272,8 @@ Deno.serve(async (req) => {
 
                 if (phoneNumber) {
                     const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
-                    
-                    // מצא את ה-CRMLead
-                    const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                        $or: [
-                            { user_id: user.id },
-                            { email: user.email }
-                        ]
-                    }, '-created_date', 1);
-                    
-                    const phoneNorm = normalizePhoneNumber(phoneNumber);
-                    const currentLeadId = leads?.[0]?.id;
-                    
-                    await sendWhatsAppMessage({
-                        base44,
-                        phoneNormalized: phoneNorm,
-                        messageText: whatsappMessage,
-                        leadId: currentLeadId || 'unknown',
-                        userId: user.id,
-                        goalId: goal_id,
-                        agentRunId: null
-                    });
+                    await sendWhatsAppMessage(phoneNumber, whatsappMessage);
                     console.log('✅ WhatsApp message sent successfully');
-                    
-                    // עדכון chat_history של CRMLead - קריטי
-                    if (currentLeadId) {
-                        try {
-                            const currentLead = await base44.asServiceRole.entities.CRMLead.get(currentLeadId);
-                            const updatedHistory = [...(currentLead.chat_history || []), {
-                                role: 'assistant',
-                                content: whatsappMessage,
-                                timestamp: new Date().toISOString(),
-                                agent: 'firstGoalMentorFlow',
-                                message_type: 'start_flow'
-                            }].slice(-100);
-                            
-                            await base44.asServiceRole.entities.CRMLead.update(currentLeadId, {
-                                chat_history: updatedHistory,
-                                waiting_for_response: true,
-                                last_outbound_at: new Date().toISOString(),
-                                current_goal_id: goal_id
-                            });
-                            console.log('✅ Chat history updated with bot message, length:', updatedHistory.length);
-                        } catch (histErr) {
-                            console.error('❌ Failed to update chat history:', histErr.message);
-                        }
-                    }
                 } else {
                     console.warn('⚠️ No phone number found for user:', user.id);
                 }
@@ -452,8 +297,6 @@ Deno.serve(async (req) => {
                 return Response.json({ error: 'user_response and stage required' }, { status: 400 });
             }
 
-            const { lead_id, user_id: passedUserId } = body;
-
             // טיפול ב-service role (מווטסאפ) או user scope (מהאפליקציה)
             const isServiceRole = !user;
 
@@ -463,8 +306,6 @@ Deno.serve(async (req) => {
             } else {
                 currentGoal = goal;
             }
-            
-            const userId = passedUserId || (isServiceRole ? currentGoal.user_id : user.id);
 
             const startTime = currentGoal.flow_data?.last_message_time 
                 ? new Date(currentGoal.flow_data.last_message_time) 
@@ -491,41 +332,25 @@ Deno.serve(async (req) => {
             `;
 
                 const baseClient = isServiceRole ? base44.asServiceRole : base44;
-
-                // שימוש ב-LLM wrapper
-                const llmResult = await invokeLLMWithRetry({
-                    base44: baseClient,
-                    prompt: analysisPrompt,
-                    responseJsonSchema: {
-                        type: "object",
-                        properties: {
-                            sentiment: { type: "string" },
-                            is_agreement: { type: "boolean" },
-                            effectiveness_score: { type: "number" },
-                            suggested_next_message: { type: "string" },
-                            improvements: { type: "array", items: { type: "string" } },
-                            user_pattern: { type: "string" }
-                        },
-                        required: ["sentiment", "effectiveness_score"]
+                const analysis = await baseClient.integrations.Core.InvokeLLM({
+                prompt: analysisPrompt,
+                response_json_schema: {
+                    type: "object",
+                    properties: {
+                        sentiment: { type: "string" },
+                        is_agreement: { type: "boolean" },
+                        effectiveness_score: { type: "number" },
+                        suggested_next_message: { type: "string" },
+                        improvements: { type: "array", items: { type: "string" } },
+                        user_pattern: { type: "string" }
                     },
-                    agentName: 'FirstGoalMentor',
-                    goalId: goal_id,
-                    fallbackResponse: {
-                        sentiment: 'neutral',
-                        is_agreement: true,
-                        effectiveness_score: 3,
-                        suggested_next_message: 'קיבלתי את תגובתך, תודה.',
-                        improvements: [],
-                        user_pattern: 'unknown'
-                    },
-                    maxRetries: 3,
-                    timeoutMs: 15000
-                });
-
-                const analysis = llmResult.response;
+                    required: ["sentiment", "effectiveness_score"]
+                }
+            });
 
             // תיעוד התגובה
             const logClient = isServiceRole ? base44.asServiceRole : base44;
+            const userId = isServiceRole ? (currentGoal.user_id || 'unknown') : user.id;
 
             await logClient.entities.MentorFlowLog.create({
                 user_id: userId,
@@ -616,33 +441,30 @@ Deno.serve(async (req) => {
 }
 `;
 
-                // שימוש ב-LLM wrapper
-                const llmResult = await invokeLLMWithRetry({
-                    base44: baseClient,
-                    prompt: postDiagnosisPrompt,
-                    responseJsonSchema: {
-                        type: "object",
-                        properties: {
-                            reflection: { type: "string" },
-                            reframe: { type: "string" },
-                            focus: { type: "string" },
-                            task: { type: "string" }
-                        },
-                        required: ["reflection", "task"]
-                    },
-                    agentName: 'FirstGoalMentor',
-                    goalId: goal_id,
-                    fallbackResponse: {
+                let postDiagnosis;
+                try {
+                    postDiagnosis = await baseClient.integrations.Core.InvokeLLM({
+                        prompt: postDiagnosisPrompt,
+                        response_json_schema: {
+                            type: "object",
+                            properties: {
+                                reflection: { type: "string" },
+                                reframe: { type: "string" },
+                                focus: { type: "string" },
+                                task: { type: "string" }
+                            },
+                            required: ["reflection", "task"]
+                        }
+                    });
+                } catch (llmErr) {
+                    console.error('❌ LLM failed for post-diagnosis, using fallback');
+                    postDiagnosis = {
                         reflection: "אני שומע אותך.",
                         reframe: "זה לגמרי טבעי להרגיש ככה בשלב הזה.",
                         focus: "בוא נתחיל בצעד קטן אחד.",
                         task: "כתוב רשימה של 3 דברים קטנים שאתה יכול לעשות השבוע."
-                    },
-                    maxRetries: 3,
-                    timeoutMs: 15000
-                });
-
-                const postDiagnosis = llmResult.response;
+                    };
+                }
 
                 const fullResponse = `${postDiagnosis.reflection}
 
@@ -712,61 +534,33 @@ ${postDiagnosis.task}`;
 
                 // אם סיימנו את הפלואו, עדכן גם את הסטטוס
                 if (nextStage === 'completed') {
-                    updateData.is_first_goal = false;
-                    updateData.status = 'active';
+                    updateData.is_first_goal = false; // משדרג - לא עוד מטרה ראשונה
+                    updateData.status = 'active'; // מעביר למצב פעיל
                     console.log('🎉 First goal flow completed, upgrading goal to active');
-                }
-
-                await updateClient.entities.UserGoal.update(goal_id, updateData);
-                
-                // עדכון CRMLead chat_history עם ההודעות שנשלחו
-                if (lead_id && nextMessages.length > 0) {
-                    try {
-                        const currentLead = await base44.asServiceRole.entities.CRMLead.get(lead_id);
-                        const newMessages = nextMessages.map(msg => ({
-                            role: 'assistant',
-                            content: msg.content,
-                            timestamp: new Date().toISOString(),
-                            agent: 'firstGoalMentorFlow'
-                        }));
-                        
-                        const updatedHistory = [...(currentLead.chat_history || []), ...newMessages].slice(-100);
-                        
-                        await base44.asServiceRole.entities.CRMLead.update(lead_id, {
-                            chat_history: updatedHistory,
-                            last_outbound_at: new Date().toISOString(),
-                            waiting_for_response: nextStage !== 'completed',
-                            current_goal_id: goal_id
-                        });
-                        console.log('✅ CRMLead chat_history updated with', newMessages.length, 'messages');
-                    } catch (histErr) {
-                        console.error('❌ Failed to update CRMLead chat_history:', histErr.message);
-                    }
-                }
-                
-                // עדכון UserMemory
-                if (userId) {
+                    
+                    // עדכון UserMemory אחרי סיום FirstGoalFlow
                     try {
                         await base44.asServiceRole.functions.invoke('updateUserMemory', {
                             conversationLogId: null,
                             messages: [
                                 { role: 'user', content: user_response, timestamp: new Date().toISOString() },
-                                ...nextMessages
+                                { role: 'assistant', content: 'First goal flow completed', timestamp: new Date().toISOString() }
                             ],
                             context: { 
-                                current_stage: stage,
-                                next_stage: nextStage,
+                                current_stage: 'first_goal_completed',
                                 goal_id: goal_id,
                                 goal_title: currentGoal.title
                             },
                             agentName: 'firstGoalMentorFlow',
                             user_id: userId
                         });
-                        console.log('✅ Memory updated');
+                        console.log('✅ Memory updated after first goal completion');
                     } catch (memErr) {
                         console.warn('⚠️ Could not update memory:', memErr.message);
                     }
                 }
+
+                await updateClient.entities.UserGoal.update(goal_id, updateData);
 
             return Response.json({
                 success: true,
@@ -867,7 +661,30 @@ ${logs.slice(0, 10).map(l => `שלב: ${l.flow_stage}, תגובה: ${l.user_resp
     }
 });
 
-// normalizePhoneNumber moved to stateSynchronizer.js
+/**
+ * נרמול מספר טלפון לפורמט בינלאומי (ישראלי)
+ * מקבל: 0502277087, 972502277087, 502277087, +972502277087
+ * מחזיר: 972502277087
+ */
+function normalizePhoneNumber(phone) {
+    if (!phone) return null;
+    
+    // הסר רווחים, מקפים, סוגריים, ופלוס
+    let cleaned = phone.toString().replace(/[\s\-\(\)\+]/g, '');
+    
+    // אם מתחיל ב-0, החלף ב-972
+    if (cleaned.startsWith('0')) {
+        cleaned = '972' + cleaned.substring(1);
+    }
+    
+    // אם לא מתחיל ב-972, הוסף
+    if (!cleaned.startsWith('972')) {
+        cleaned = '972' + cleaned;
+    }
+    
+    console.log(`📱 Phone normalized: ${phone} -> ${cleaned}`);
+    return cleaned;
+}
 
 /**
  * שליחת הודעה דרך Green-API

@@ -1,7 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { runAgent, logAgentEvent, createDLQEvent } from './agentWrapper.js';
-import { sendWhatsAppMessage } from './whatsappWrapper.js';
-import { syncLeadAndGoal, updateChatHistory, normalizePhoneNumber } from './stateSynchronizer.js';
 
 /**
  * Green-API Webhook Handler
@@ -9,8 +6,6 @@ import { syncLeadAndGoal, updateChatHistory, normalizePhoneNumber } from './stat
  */
 
 Deno.serve(async (req) => {
-    let agentRunId = null;
-    
     try {
         const base44 = createClientFromRequest(req);
         const body = await req.json();
@@ -55,33 +50,16 @@ Deno.serve(async (req) => {
 
         console.log('🔍 Searching for user with phone:', phoneNumber, '-> normalized:', normalizedPhone);
 
-        // חיפוש ב-CRMLead - קודם לפי phone_normalized, אחר כך fallback
+        // חיפוש ב-CRMLead - גם לפי מקור וגם לפי מנורמל
         try {
             const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                phone_normalized: normalizedPhone
+                $or: [
+                    { phone: phoneNumber },
+                    { phone: normalizedPhone },
+                    { phone: '0' + normalizedPhone.substring(3) } // גם 05...
+                ]
             });
-            
-            // אם לא נמצא, חפש גם לפי phone מקורי
-            if (!leads || leads.length === 0) {
-                const fallbackLeads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                    $or: [
-                        { phone: phoneNumber },
-                        { phone: normalizedPhone },
-                        { phone: '0' + normalizedPhone.substring(3) }
-                    ]
-                });
-                if (fallbackLeads && fallbackLeads.length > 0) {
-                    user = fallbackLeads[0];
-                    console.log('✅ Found user in CRMLead (fallback):', user.id);
-                    // עדכן phone_normalized אם חסר
-                    if (!user.phone_normalized) {
-                        await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                            phone_normalized: normalizedPhone
-                        });
-                        user.phone_normalized = normalizedPhone;
-                    }
-                }
-            } else {
+            if (leads && leads.length > 0) {
                 user = leads[0];
                 console.log('✅ Found user in CRMLead:', user.id, user.email);
             }
@@ -129,8 +107,7 @@ Deno.serve(async (req) => {
 
                 const newLead = await base44.asServiceRole.entities.CRMLead.create({
                     full_name: senderData?.senderName || 'WhatsApp User',
-                    phone: phoneNumber, // שמור מקורי
-                    phone_normalized: normalizedPhone, // שמור מנורמל
+                    phone: normalizedPhone, // שמור בפורמט מנורמל
                     source: 'WhatsApp',
                     journey_stage: 'lead_new',
                     active_handler: 'mentor',
@@ -146,32 +123,10 @@ Deno.serve(async (req) => {
                 user = newLead;
                 console.log('✅ New lead created:', newLead.id, 'linked_user:', linkedUserId);
 
-                // שליחת הודעת ברוכים הבאים ועדכון chat_history
-                const welcomeMessage = 'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?';
-                
-                await sendWhatsAppMessage({
-                    base44,
-                    phoneNormalized: normalizedPhone,
-                    messageText: welcomeMessage,
-                    leadId: newLead.id,
-                    userId: linkedUserId || 'new_user',
-                    goalId: null,
-                    agentRunId: null
-                });
-                
-                // עדכן chat_history עם הודעת הברוכים הבאים
-                const updatedHistory = [...(newLead.chat_history || []), {
-                    role: 'assistant',
-                    content: welcomeMessage,
-                    timestamp: new Date().toISOString(),
-                    agent: 'greenApiWebhook',
-                    message_type: 'welcome'
-                }];
-                
-                await base44.asServiceRole.entities.CRMLead.update(newLead.id, {
-                    chat_history: updatedHistory,
-                    last_outbound_at: new Date().toISOString()
-                });
+                // שליחת הודעת ברוכים הבאים
+                await sendWhatsAppMessage(phoneNumber, 
+                    'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?'
+                );
 
                 return Response.json({ status: 'new_lead_created', lead_id: newLead.id });
             } catch (err) {
@@ -186,74 +141,101 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'do_not_contact_ignored' });
         }
 
-        console.log('🔄 Starting State Sync...');
+        // עדכון היסטוריית השיחה עם נעילה אופטימיסטית (מונע race conditions)
+        const MAX_RETRIES = 3;
+        let chatHistory = [];
+        let chatUpdateSuccess = false;
+        
+        for (let attempt = 0; attempt < MAX_RETRIES && !chatUpdateSuccess; attempt++) {
+            try {
+                // קרא מחדש מהדאטאבייס כדי לקבל את הגרסה העדכנית ביותר
+                const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
+                chatHistory = (freshUser?.chat_history || []);
+                if (!Array.isArray(chatHistory)) {
+                    chatHistory = [];
+                }
 
-        // שימוש ב-State Synchronizer
-        const { lead: syncedLead, user: syncedUser, activeGoal, syncedData } = await syncLeadAndGoal({
-            base44,
-            leadId: user.id,
-            userId: user.user_id,
-            phoneNormalized: normalizedPhone,
-            goalId: null
-        });
+                chatHistory.push({
+                    role: 'user',
+                    content: messageText,
+                    timestamp: new Date().toISOString()
+                });
 
-        if (!syncedLead) {
-            console.error('❌ State sync failed - no lead');
-            return Response.json({ status: 'error', error: 'Lead not found' }, { status: 200 });
+                await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                    chat_history: chatHistory,
+                    last_contact_at: new Date().toISOString(),
+                    waiting_for_response: true // מצב המתנה
+                });
+                
+                chatUpdateSuccess = true;
+                console.log('✅ Chat history updated (attempt', attempt + 1, ')');
+            } catch (err) {
+                console.warn(`⚠️ Chat update attempt ${attempt + 1} failed:`, err.message);
+                if (attempt === MAX_RETRIES - 1) {
+                    console.error('❌ Failed to update chat history after', MAX_RETRIES, 'attempts');
+                }
+                await new Promise(r => setTimeout(r, 100 * (attempt + 1))); // backoff
+            }
         }
 
-        const effectiveUserId = syncedData.effectiveUserId;
+        // בחר goal פעיל - חיפוש חכם
+        let activeGoal = null;
+        try {
+            // נסה למצוא לפי user_id אם קיים
+            let userGoals = [];
+            
+            if (user.user_id) {
+                userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
+                    user_id: user.user_id,
+                    status: 'active'
+                }, '-created_date', 5);
+            }
+            
+            // אם לא נמצא, נסה לפי created_by
+            if (userGoals.length === 0 && user.email) {
+                userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
+                    created_by: user.email,
+                    status: 'active'
+                }, '-created_date', 5);
+            }
 
-        console.log('✅ State synced:', syncedData);
-        console.log('🎯 Active Goal:', activeGoal ? {
-            id: activeGoal.id,
-            title: activeGoal.title,
-            is_first_goal: activeGoal.is_first_goal,
-            status: activeGoal.status,
-            mentor_stage: activeGoal.flow_data?.mentor_stage
-        } : '❌ NULL');
+            if (userGoals.length > 0) {
+                // העדף מטרה ראשונה שעדיין בפלואו
+                const firstGoalInProgress = userGoals.find(g => 
+                    g.is_first_goal && 
+                    g.flow_data?.mentor_stage && 
+                    g.flow_data.mentor_stage !== 'completed'
+                );
+                
+                activeGoal = firstGoalInProgress || userGoals[0];
+                console.log('✅ Active goal selected:', activeGoal.id, 'isPrimary:', activeGoal.isPrimary);
+            }
+        } catch (err) {
+            console.log('Could not fetch active goal:', err.message);
+        }
 
-        // עדכון chat_history עם הודעת המשתמש
-        const chatHistory = await updateChatHistory({
-            base44,
-            leadId: syncedLead.id,
-            newMessages: [{
-                role: 'user',
-                content: messageText,
-                timestamp: new Date().toISOString(),
-                message_id: messageData?.idMessage || null
-            }]
-        });
-
-        // עדכן waiting_for_response=false
-        await base44.asServiceRole.entities.CRMLead.update(syncedLead.id, {
-            last_inbound_at: new Date().toISOString(),
-            waiting_for_response: false
-        });
-
-        user = syncedLead;
-
-        // בדיקה: האם יש בכלל מטרה פעילה?
         if (!activeGoal) {
-            console.error('❌ No active goal found! Aborting flow.');
-            await sendWhatsAppMessage({
-                base44,
-                phoneNormalized: normalizedPhone,
-                messageText: 'היי! נראה שאין לך מטרה פעילה כרגע. היכנס לאפליקציה ובחר מטרה כדי שנוכל להתחיל 🎯',
-                leadId: syncedLead.id,
-                userId: effectiveUserId,
-                goalId: null,
-                agentRunId: null
+            // אם אין goal פעיל, צור timeline entry זמני או שלח הודעה
+            console.log('⚠️ No active goal for user, sending generic response');
+            await sendWhatsAppMessage(phoneNumber, 'שלום! 👋\n\nנראה שאתה עדיין לא בחרת מטרה. בואנו נגדיר ביחד את הצעד הראשון שלך.');
+            return Response.json({ status: 'no_goal', message: 'User needs to select a goal first' });
+        }
+
+        console.log('🎯 Active goal found:', activeGoal.id, 'is_first_goal:', activeGoal.is_first_goal);
+
+        // סנכרון user_id אם חסר
+        if (activeGoal.user_id !== user.user_id && user.user_id) {
+            await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, {
+                user_id: user.user_id
             });
-            return Response.json({ status: 'no_active_goal' });
+            console.log('🔗 Synced goal user_id:', user.user_id);
         }
 
         // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
-        const isInFirstGoalFlow = syncedData.isFirstGoal;
-        const mentorStage = syncedData.mentorStage;
-
-        console.log('🔍 Goal routing - isFirstGoal:', isInFirstGoalFlow, 'stage:', mentorStage);
-        console.log('🔍 Active Goal ID:', activeGoal.id, 'Title:', activeGoal.title);
+        const mentorStage = activeGoal.flow_data?.mentor_stage;
+        const isInFirstGoalFlow = activeGoal.is_first_goal && 
+                                   mentorStage && 
+                                   mentorStage !== 'completed';
 
         if (isInFirstGoalFlow) {
             console.log('🔄 User is in FirstGoalFlow, stage:', mentorStage);
@@ -269,48 +251,35 @@ Deno.serve(async (req) => {
                 action: 'handle_response',
                 goal_id: activeGoal.id,
                 user_response: messageText,
-                stage: mentorStage,
-                lead_id: user.id,
-                user_id: effectiveUserId
+                stage: mentorStage
             });
 
-            console.log('✅ FirstGoalMentorFlow response:', JSON.stringify(flowResponse.data, null, 2));
+            console.log('✅ FirstGoalMentorFlow response:', flowResponse.data);
 
-            // שלח את ההודעות שחזרו מהפלואו ועדכן chat_history
+            // שלח את ההודעות שחזרו מהפלואו
             if (flowResponse.data?.messages && flowResponse.data.messages.length > 0) {
                 for (const msg of flowResponse.data.messages) {
-                    const maxDelay = Math.min(msg.delay_after || 0, 8000);
+                    const maxDelay = Math.min(msg.delay_after || 0, 8000); // מקסימום 8 שניות
                     if (maxDelay > 0 && flowResponse.data.messages.indexOf(msg) < flowResponse.data.messages.length - 1) {
                         await new Promise(resolve => setTimeout(resolve, maxDelay));
                     }
                     
-                    // שליחה דרך wrapper
-                    await sendWhatsAppMessage({
-                        base44,
-                        phoneNormalized: normalizedPhone,
-                        messageText: msg.content,
-                        leadId: user.id,
-                        userId: effectiveUserId || user.id,
-                        goalId: activeGoal.id,
-                        agentRunId: null
-                    });
+                    await sendWhatsAppMessage(phoneNumber, msg.content);
                     
                     chatHistory.push({
                         role: 'assistant',
                         content: msg.content,
-                        timestamp: new Date().toISOString(),
-                        agent: 'firstGoalMentorFlow'
+                        timestamp: new Date().toISOString()
                     });
                 }
             }
 
-            // עדכון היסטוריה מוגבלת
-            const limitedHistory = [...chatHistory].slice(-100);
+            // עדכון היסטוריה מוגבלת (שמור רק 50 הודעות אחרונות)
+            const limitedHistory = [...chatHistory].slice(-50);
             
             await base44.asServiceRole.entities.CRMLead.update(user.id, {
                 chat_history: limitedHistory,
                 last_contact_at: new Date().toISOString(),
-                last_outbound_at: new Date().toISOString(),
                 waiting_for_response: flowResponse.data?.next_stage !== 'completed'
             });
 
@@ -335,95 +304,60 @@ Deno.serve(async (req) => {
         });
 
         let mentorMessage = '';
+        let retryCount = 0;
+        const MAX_LLM_RETRIES = 2;
+        
+        // קריאה למנוע המנטור החכם - עם retry ו-fallback
+        while (retryCount < MAX_LLM_RETRIES && !mentorMessage) {
+            try {
+                const mentorResponse = await Promise.race([
+                    base44.asServiceRole.functions.invoke('smartMentorEngine', {
+                        action: 'analyze_response',
+                        goal_id: activeGoal.id,
+                        content: 'WhatsApp message',
+                        client_response: messageText,
+                        timeline_entry_id: null,
+                        user_id: user.id // העבר במפורש
+                    }),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 30000))
+                ]);
 
-        // שימוש ב-runAgent wrapper
-        const agentResult = await runAgent({
-            base44,
-            agentName: 'SmartMentor',
-            handlerName: 'smartMentorEngine',
-            userId: user.user_id || user.id,
-            leadId: user.id,
-            goalId: activeGoal.id,
-            channel: 'whatsapp',
-            stage: 'executing',
-            inputSummary: messageText.substring(0, 100),
-            executeFunction: async (runId) => {
-                agentRunId = runId;
-
-                // לוג אירוע message_in
-                await logAgentEvent({
-                    base44,
-                    agentRunId: runId,
-                    eventType: 'message_in',
-                    summary: 'Received WhatsApp message',
-                    dataJson: { message: messageText.substring(0, 200) }
-                });
-
-                // קריאה ל-smartMentorEngine
-                const mentorResponse = await base44.asServiceRole.functions.invoke('smartMentorEngine', {
-                    action: 'analyze_response',
-                    goal_id: activeGoal.id,
-                    content: 'WhatsApp message',
-                    client_response: messageText,
-                    timeline_entry_id: null,
-                    user_id: user.id
-                });
-
-                // לוג אירוע llm_call
-                await logAgentEvent({
-                    base44,
-                    agentRunId: runId,
-                    eventType: 'llm_call',
-                    summary: 'SmartMentor analysis',
-                    dataJson: { analysis: mentorResponse.data?.analysis }
-                });
+                console.log('✅ Smart Mentor Engine response:', mentorResponse.data);
 
                 const analysis = mentorResponse.data?.analysis;
                 if (analysis) {
                     mentorMessage = `${analysis.deep_meaning}
 
-        ${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
-        ${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}`.trim();
-                } else {
-                    mentorMessage = 'קיבלתי את הודעתך, אחזור אליך בהקדם.';
+${analysis.strategy_update_for_mentor ? '💡 ' + analysis.strategy_update_for_mentor : ''}
+${analysis.recommended_adjustment ? '\n👉 ' + analysis.recommended_adjustment : ''}`.trim();
                 }
-
-                return {
-                    outputSummary: mentorMessage.substring(0, 100),
-                    waitingUser: false
-                };
+                break; // הצלחנו - צא מהלולאה
+            } catch (mentorErr) {
+                retryCount++;
+                console.error(`❌ Smart Mentor attempt ${retryCount} failed:`, mentorErr.message);
+                
+                if (retryCount >= MAX_LLM_RETRIES) {
+                    // Fallback - תגובה בסיסית עם mentorChat
+                    try {
+                        const fallbackRes = await base44.asServiceRole.functions.invoke('mentorChat', {
+                            user_id: user.id,
+                            message: messageText,
+                            chat_history: chatHistory.slice(-10), // רק 10 אחרונות
+                            goal_id: activeGoal.id
+                        });
+                        mentorMessage = fallbackRes.data?.response || 'קיבלתי את הודעתך, אחזור אליך בהקדם.';
+                    } catch (fallbackErr) {
+                        console.error('❌ Fallback also failed:', fallbackErr.message);
+                        mentorMessage = 'קיבלתי את הודעתך 👍 אחזור אליך בהקדם עם תשובה מפורטת.';
+                    }
+                }
+                
+                await new Promise(r => setTimeout(r, 1000)); // המתן שנייה לפני retry
             }
-        });
-
-        // אם נכשל - mentorMessage יהיה ריק, נשתמש ב-fallback
-        if (!mentorMessage) {
-            mentorMessage = 'קיבלתי את הודעתך 👍 אחזור אליך בהקדם עם תשובה מפורטת.';
         }
 
         console.log('📤 Sending mentor message to:', phoneNumber);
-
-        // שימוש ב-wrapper
-        const sendResult = await sendWhatsAppMessage({
-            base44,
-            phoneNormalized: normalizePhoneNumber(phoneNumber),
-            messageText: mentorMessage,
-            leadId: user.id,
-            userId: user.user_id || user.id,
-            goalId: activeGoal.id,
-            agentRunId
-        });
-
-        // לוג אירוע message_out
-        if (agentRunId) {
-            await logAgentEvent({
-                base44,
-                agentRunId,
-                eventType: 'message_out',
-                summary: 'Sent WhatsApp message',
-                dataJson: { message: mentorMessage.substring(0, 200) }
-            });
-        }
-
+        const sendResult = await sendWhatsAppMessage(phoneNumber, mentorMessage);
         console.log('✅ WhatsApp send result:', sendResult);
 
         chatHistory.push({
@@ -432,50 +366,49 @@ Deno.serve(async (req) => {
             timestamp: new Date().toISOString()
         });
 
-        // עדכון סופי של CRMLead - chat_history כבר מתעדכן בתוך הפונקציות
-        // כאן רק נעדכן מטא-דאטה
-        try {
-            await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                last_contact_at: new Date().toISOString(),
-                last_outbound_at: new Date().toISOString(),
-                waiting_for_response: false,
-                active_handler: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
-            });
-            console.log('✅ CRMLead metadata updated');
-        } catch (err) {
-            console.error('❌ Failed to update CRMLead metadata:', err.message);
-        }
-
-        // עדכון UserMemory
-        if (effectiveUserId) {
+        // עדכון סופי של היסטוריית השיחה - עם retry והגבלה
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
             try {
-                await base44.asServiceRole.functions.invoke('updateUserMemory', {
-                    conversationLogId: null,
-                    messages: chatHistory.slice(-2),
-                    context: { 
-                        current_stage: isInFirstGoalFlow ? mentorStage : 'ongoing',
-                        goal_id: activeGoal.id,
-                        goal_title: activeGoal.title
-                    },
-                    agentName: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine',
-                    user_id: effectiveUserId
+                const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
+                let finalHistory = [...(freshUser.chat_history || []), {
+                    role: 'assistant',
+                    content: mentorMessage,
+                    timestamp: new Date().toISOString(),
+                    agent: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
+                }];
+                
+                // הגבל ל-100 הודעות אחרונות
+                if (finalHistory.length > 100) {
+                    finalHistory = finalHistory.slice(-100);
+                    console.log('📊 Chat history trimmed to last 100 messages');
+                }
+                
+                await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                    chat_history: finalHistory,
+                    last_contact_at: new Date().toISOString(),
+                    waiting_for_response: false, // אין המתנה - שלחנו תגובה
+                    active_handler: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
                 });
-                console.log('✅ Memory updated');
-            } catch (memErr) {
-                console.warn('⚠️ Could not update memory:', memErr.message);
+                console.log('✅ Final chat history updated');
+                break;
+            } catch (err) {
+                console.warn(`⚠️ Final update attempt ${attempt + 1} failed:`, err.message);
+                if (attempt < MAX_RETRIES - 1) {
+                    await new Promise(r => setTimeout(r, 100 * (attempt + 1)));
+                }
             }
         }
-        
+
         // תיעוד ביצועי הסוכן
         try {
             await base44.asServiceRole.functions.invoke('agentPerformanceTracker', {
                 action: 'log_interaction',
                 agent_name: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine',
-                user_id: effectiveUserId || user.id,
+                user_id: user.user_id || user.id,
                 goal_id: activeGoal.id,
                 outcome: 'message_sent',
                 metadata: {
-                    messages: chatHistory.slice(-2),
+                    messages: chatHistory.slice(-2), // 2 אחרונות בלבד
                     sentiment: { overall: 'neutral' }
                 }
             });
@@ -487,42 +420,35 @@ Deno.serve(async (req) => {
         return Response.json({ 
             status: 'success',
             user_id: user.id,
-            effective_user_id: effectiveUserId,
             message_processed: true,
-            agent_used: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine',
-            goal_found: activeGoal.id
+            agent_used: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
         });
 
     } catch (error) {
         console.error('❌ Green-API webhook error:', error.message);
         console.error('Error stack:', error.stack);
-
-        // יצירת DLQEvent
-        try {
-            await createDLQEvent({
-                base44,
-                eventType: 'inbound_whatsapp',
-                source: 'greenApiWebhook',
-                severity: 'high',
-                phoneNormalized: body?.messageData?.phone || 'unknown',
-                agentRunId,
-                error,
-                payloadJson: body,
-                contextJson: { handler: 'greenApiWebhook' }
-            });
-        } catch (dlqErr) {
-            console.error('❌ Could not create DLQ:', dlqErr.message);
-        }
-
         // לא זורקים תשובת שגיאה - מחזירים 200 כדי שGreen-API יוותר בשקט
         return Response.json({ 
             status: 'error',
             error: error.message 
         }, { status: 200 });
     }
-    });
+});
 
-// normalizePhoneNumber moved to stateSynchronizer.js
+/**
+ * נרמול מספר טלפון לפורמט בינלאומי
+ */
+function normalizePhoneNumber(phone) {
+    if (!phone) return null;
+    let cleaned = phone.toString().replace(/[\s\-\(\)\+]/g, '');
+    if (cleaned.startsWith('0')) {
+        cleaned = '972' + cleaned.substring(1);
+    }
+    if (!cleaned.startsWith('972')) {
+        cleaned = '972' + cleaned;
+    }
+    return cleaned;
+}
 
 /**
  * שליחת הודעה דרך Green-API

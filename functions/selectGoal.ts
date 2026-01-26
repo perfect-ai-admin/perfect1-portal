@@ -51,71 +51,15 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        // מציאת/יצירת CRMLead למשתמש
-        let crmLead = null;
-        try {
-            const leads = await base44.asServiceRole.entities.CRMLead.filter({
-                $or: [
-                    { user_id: user.id },
-                    { email: user.email }
-                ]
-            }, '-created_date', 1);
-
-            if (leads && leads.length > 0) {
-                crmLead = leads[0];
-                console.log('✅ Found existing CRMLead:', crmLead.id);
-            } else if (user.phone) {
-                // יצירת CRMLead חדש
-                const phoneNorm = user.phone.replace(/\D/g, '');
-                const finalPhone = phoneNorm.startsWith('972') ? phoneNorm : ('972' + phoneNorm.replace(/^0/, ''));
-                
-                crmLead = await base44.asServiceRole.entities.CRMLead.create({
-                    user_id: user.id,
-                    email: user.email,
-                    full_name: user.full_name,
-                    phone: user.phone,
-                    phone_normalized: finalPhone,
-                    source: 'App',
-                    journey_stage: 'lead_new',
-                    active_handler: 'firstGoalMentorFlow',
-                    chat_history: []
-                });
-                console.log('✅ Created new CRMLead:', crmLead.id);
-            }
-        } catch (err) {
-            console.warn('⚠️ Could not find/create CRMLead:', err.message);
-        }
-
-        // בדיקה אם זו מטרה ראשונה
-        const isFirstGoal = userGoals.length === 0;
-
         // Create UserGoal
         const userGoal = await base44.entities.UserGoal.create({
             user_id: user.id,
-            lead_id: crmLead?.id || null,
             goal_id: goal_id,
-            title: goal.name,
-            description: goal.description,
-            category: goal.category,
             status: activate ? 'active' : 'selected',
             selected_at: new Date().toISOString(),
             activated_at: activate ? new Date().toISOString() : null,
-            progress: 0,
-            is_first_goal: isFirstGoal,
-            flow_data: isFirstGoal ? {
-                mentor_stage: 'intro',
-                mentor_started_at: new Date().toISOString()
-            } : {}
+            progress: 0
         });
-
-        // עדכן CRMLead עם current_goal_id
-        if (crmLead) {
-            await base44.asServiceRole.entities.CRMLead.update(crmLead.id, {
-                current_goal_id: userGoal.id,
-                active_handler: isFirstGoal ? 'firstGoalMentorFlow' : 'smartMentorEngine'
-            });
-            console.log('✅ CRMLead updated with current_goal_id:', userGoal.id);
-        }
 
         // If activating, deactivate other active goals if needed
         if (activate) {
