@@ -207,9 +207,8 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       setShowAddGoal(true);
   };
 
-  // Find first goal with is_first_goal flag OR just the first goal
-  const firstGoalWithMentorFlow = goals.find(g => g.is_first_goal);
-  const heroGoal = firstGoalWithMentorFlow || goals[0];
+  // Hero goal is simply the first goal
+  const heroGoal = goals[0];
   const secondaryGoals = goals.filter(g => g.id !== heroGoal?.id);
 
   const handleStatusChange = async (goal, nextStatus) => {
@@ -255,8 +254,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
            ...newGoal, 
            user_id: user.id,
            plan_summary: 'בונה את תוכנית הפעולה שלך...', // Initial optimistic state
-           is_first_goal: isFirstGoalEver, // סימון אוטומטי של מטרה ראשונה
-           flow_step: isFirstGoalEver ? 1 : undefined // אם זו המטרה הראשונה, נתחיל את הפלואו
+           is_first_goal: isFirstGoalEver // סימון אוטומטי של מטרה ראשונה
          };
 
          // Show creating state in modal only
@@ -400,29 +398,20 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
             </div>
           )}
 
-          {/* Hero Goal - with First Goal Mentor Flow */}
+          {/* Hero Goal */}
           {heroGoal && (
             <div className="space-y-3">
               <div className="flex items-center gap-2 px-1">
                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                 <p className="text-xs font-bold text-blue-600 uppercase tracking-wider">הפוקוס העיקרי שלך</p>
               </div>
-              {heroGoal.is_first_goal && heroGoal.flow_step ? (
-                <FirstGoalFlow 
-                  goal={heroGoal}
-                  onComplete={() => {
-                    queryClient.invalidateQueries({ queryKey: ['goals'] });
-                  }}
-                />
-              ) : (
-                <HeroGoal 
-                  goal={heroGoal}
-                  onStatusChange={handleStatusChange}
-                  onEdit={handleEditGoal}
-                  onDelete={handleDeleteGoal}
-                  isLoading={heroGoal.isLoading || heroGoal.isOptimistic}
-                />
-              )}
+              <HeroGoal 
+                goal={heroGoal}
+                onStatusChange={handleStatusChange}
+                onEdit={handleEditGoal}
+                onDelete={handleDeleteGoal}
+                isLoading={heroGoal.isLoading || heroGoal.isOptimistic}
+              />
             </div>
           )}
 
