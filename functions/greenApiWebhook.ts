@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import { runAgent, logAgentEvent, createDLQEvent } from './agentWrapper.js';
 import { sendWhatsAppMessage } from './whatsappWrapper.js';
+import { syncLeadAndGoal, updateChatHistory, normalizePhoneNumber } from './stateSynchronizer.js';
 
 /**
  * Green-API Webhook Handler
@@ -185,241 +186,51 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'do_not_contact_ignored' });
         }
 
-        console.log('📝 Adding user message to chat_history');
-        
-        // עדכון היסטוריית השיחה עם נעילה אופטימיסטית
-        const MAX_RETRIES = 3;
-        let chatHistory = [];
-        let chatUpdateSuccess = false;
-        
-        for (let attempt = 0; attempt < MAX_RETRIES && !chatUpdateSuccess; attempt++) {
-            try {
-                const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
-                chatHistory = Array.isArray(freshUser?.chat_history) ? freshUser.chat_history : [];
+        console.log('🔄 Starting State Sync...');
 
-                chatHistory.push({
-                    role: 'user',
-                    content: messageText,
-                    timestamp: new Date().toISOString(),
-                    message_id: messageData?.idMessage || null
-                });
-
-                await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                    chat_history: chatHistory.slice(-100), // הגבל ל-100
-                    last_contact_at: new Date().toISOString(),
-                    last_inbound_at: new Date().toISOString(),
-                    waiting_for_response: true
-                });
-                
-                chatUpdateSuccess = true;
-                console.log('✅ User message added to chat_history, total:', chatHistory.length);
-            } catch (err) {
-                console.warn(`⚠️ Chat update attempt ${attempt + 1} failed:`, err.message);
-                if (attempt === MAX_RETRIES - 1) {
-                    console.error('❌ Failed to update chat history after', MAX_RETRIES, 'attempts');
-                }
-                await new Promise(r => setTimeout(r, 100 * (attempt + 1)));
-            }
-        }
-
-        // קישור CRMLead ל-User - חובה לפני חיפוש מטרות
-        let effectiveUserId = user.user_id;
-        
-        // אם אין user_id, חפש User לפי טלפון
-        if (!effectiveUserId) {
-            try {
-                const phoneToSearch = user.phone_normalized || normalizedPhone;
-                console.log('🔍 CRMLead ללא user_id, מחפש User לפי טלפון:', phoneToSearch);
-                
-                const allUsers = await base44.asServiceRole.entities.User.list();
-                const matchingUser = allUsers.find(u => 
-                    u.phone && (normalizePhoneNumber(u.phone) === phoneToSearch)
-                );
-                
-                if (matchingUser) {
-                    effectiveUserId = matchingUser.id;
-                    console.log('🔗 נמצא User תואם:', matchingUser.email, '- מעדכן CRMLead');
-                    
-                    await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                        user_id: effectiveUserId,
-                        email: matchingUser.email // סנכרון גם email
-                    });
-                    user.user_id = effectiveUserId;
-                    user.email = matchingUser.email;
-                    console.log('✅ CRMLead מקושר ל-User:', effectiveUserId);
-                } else {
-                    console.warn('⚠️ לא נמצא User עבור הטלפון:', phoneToSearch);
-                }
-            } catch (err) {
-                console.error('❌ שגיאה בקישור CRMLead ל-User:', err.message);
-            }
-        }
-
-        // חיפוש מטרות פעילות
-        let activeGoal = null;
-        try {
-            let userGoals = [];
-
-            if (effectiveUserId) {
-                console.log('🔍 מחפש מטרות עבור user_id:', effectiveUserId);
-                userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
-                    user_id: effectiveUserId,
-                    status: { $in: ['selected', 'active', 'in_progress'] }
-                }, '-created_date', 10);
-                console.log('📊 נמצאו', userGoals.length, 'מטרות');
-            }
-
-            // Fallback: אם לא נמצא, נסה לפי created_by
-            if (userGoals.length === 0 && user.email) {
-                console.log('🔍 חיפוש חלופי לפי created_by:', user.email);
-                userGoals = await base44.asServiceRole.entities.UserGoal.filter({ 
-                    created_by: user.email,
-                    status: { $in: ['selected', 'active', 'in_progress'] }
-                }, '-created_date', 10);
-                console.log('📊 נמצאו', userGoals.length, 'מטרות (created_by)');
-            }
-
-            if (userGoals.length > 0) {
-                console.log('📋 Goals found:', userGoals.map(g => ({
-                    id: g.id,
-                    title: g.title,
-                    status: g.status,
-                    is_first_goal: g.is_first_goal,
-                    mentor_stage: g.flow_data?.mentor_stage
-                })));
-                
-                // העדף מטרה ראשונה (גם אם עוד לא התחיל הפלואו!)
-                const firstGoal = userGoals.find(g => g.is_first_goal);
-                
-                if (firstGoal) {
-                    activeGoal = firstGoal;
-                    console.log('✅ Found first goal:', firstGoal.id);
-                } else {
-                    // אחרת, קח מטרה עם status='selected' או 'active'
-                    const selectedGoal = userGoals.find(g => g.status === 'selected' || g.status === 'active');
-                    activeGoal = selectedGoal || userGoals[0];
-                }
-                
-                console.log('✅ Active goal selected:', activeGoal.id, 'title:', activeGoal.title, 'status:', activeGoal.status);
-            } else {
-                console.warn('⚠️ No goals found for effectiveUserId:', effectiveUserId);
-            }
-        } catch (err) {
-            console.error('❌ Could not fetch active goal:', err.message);
-        }
-
-        if (!activeGoal) {
-            console.error('❌ NO ACTIVE GOAL FOUND');
-            console.error('Debug info:', {
-                user_id: user.id,
-                user_email: user.email,
-                effectiveUserId: effectiveUserId,
-                has_phone_normalized: !!user.phone_normalized,
-                phone_normalized: user.phone_normalized
-            });
-            
-            // חיפוש אגרסיבי - כל המטרות של היוזר
-            try {
-                const allUserGoals = await base44.asServiceRole.entities.UserGoal.filter({
-                    user_id: effectiveUserId
-                }, '-created_date', 20);
-                
-                console.log('🔍 ALL goals for user:', allUserGoals.map(g => ({
-                    id: g.id,
-                    title: g.title,
-                    status: g.status,
-                    is_first_goal: g.is_first_goal
-                })));
-                
-                // אם יש מטרה כלשהי - השתמש בה
-                if (allUserGoals.length > 0) {
-                    activeGoal = allUserGoals[0];
-                    console.log('✅ Using first available goal:', activeGoal.id);
-                    
-                    // אם הסטטוס selected, שדרג ל-active
-                    if (activeGoal.status === 'selected') {
-                        await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, {
-                            status: 'active'
-                        });
-                        console.log('🔄 Upgraded goal status to active');
-                    }
-                }
-            } catch (err) {
-                console.error('❌ Error in aggressive goal search:', err.message);
-            }
-            
-            // אם עדיין אין מטרה
-            if (!activeGoal) {
-                console.log('⚠️ Absolutely no goals found, sending generic response');
-                const noGoalMessage = 'שלום! 👋\n\nנראה שאתה עדיין לא בחרת מטרה. בואנו נגדיר ביחד את הצעד הראשון שלך.';
-                
-                await sendWhatsAppMessage({
-                    base44,
-                    phoneNormalized: normalizedPhone,
-                    messageText: noGoalMessage,
-                    leadId: user.id,
-                    userId: effectiveUserId || user.id,
-                    goalId: null,
-                    agentRunId: null
-                });
-                
-                // עדכן chat_history
-                const freshLead = await base44.asServiceRole.entities.CRMLead.get(user.id);
-                const updatedHistory = [...(freshLead.chat_history || []), {
-                    role: 'assistant',
-                    content: noGoalMessage,
-                    timestamp: new Date().toISOString(),
-                    agent: 'greenApiWebhook'
-                }].slice(-100);
-                
-                await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                    chat_history: updatedHistory,
-                    last_outbound_at: new Date().toISOString(),
-                    waiting_for_response: false
-                });
-                
-                return Response.json({ status: 'no_goal', message: 'User needs to select a goal first' });
-            }
-        }
-
-        console.log('🎯 Active goal found:', {
-            id: activeGoal.id,
-            title: activeGoal.title,
-            is_first_goal: activeGoal.is_first_goal,
-            status: activeGoal.status,
-            mentor_stage: activeGoal.flow_data?.mentor_stage,
-            user_id: activeGoal.user_id,
-            lead_id: activeGoal.lead_id
+        // שימוש ב-State Synchronizer
+        const { lead: syncedLead, user: syncedUser, activeGoal, syncedData } = await syncLeadAndGoal({
+            base44,
+            leadId: user.id,
+            userId: user.user_id,
+            phoneNormalized: normalizedPhone,
+            goalId: null
         });
 
-        // סנכרון user_id ו-lead_id אם חסר
-        const syncData = {};
-        if (activeGoal.user_id !== effectiveUserId && effectiveUserId) {
-            syncData.user_id = effectiveUserId;
+        if (!syncedLead) {
+            console.error('❌ State sync failed - no lead');
+            return Response.json({ status: 'error', error: 'Lead not found' }, { status: 200 });
         }
-        if (!activeGoal.lead_id && user.id) {
-            syncData.lead_id = user.id;
-        }
-        
-        if (Object.keys(syncData).length > 0) {
-            await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, syncData);
-            activeGoal.user_id = syncData.user_id || activeGoal.user_id;
-            activeGoal.lead_id = syncData.lead_id || activeGoal.lead_id;
-            console.log('🔗 Synced goal:', Object.keys(syncData).join(', '));
-        }
-        
-        // עדכן CRMLead עם current_goal_id + waiting_for_response=false
-        await base44.asServiceRole.entities.CRMLead.update(user.id, {
-            current_goal_id: activeGoal.id,
-            waiting_for_response: false // קיבלנו תגובה מהמשתמש
+
+        const effectiveUserId = syncedData.effectiveUserId;
+
+        console.log('✅ State synced:', syncedData);
+
+        // עדכון chat_history עם הודעת המשתמש
+        const chatHistory = await updateChatHistory({
+            base44,
+            leadId: syncedLead.id,
+            newMessages: [{
+                role: 'user',
+                content: messageText,
+                timestamp: new Date().toISOString(),
+                message_id: messageData?.idMessage || null
+            }]
         });
-        console.log('✅ CRMLead updated: current_goal_id + waiting_for_response=false');
+
+        // עדכן waiting_for_response=false
+        await base44.asServiceRole.entities.CRMLead.update(syncedLead.id, {
+            last_inbound_at: new Date().toISOString(),
+            waiting_for_response: false
+        });
+
+        user = syncedLead;
 
         // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
-        const mentorStage = activeGoal.flow_data?.mentor_stage || 'agreement';
-        const isInFirstGoalFlow = activeGoal.is_first_goal === true;
-        
-        console.log('🔍 Goal check - is_first_goal:', activeGoal.is_first_goal, 'mentor_stage:', mentorStage, 'isInFirstGoalFlow:', isInFirstGoalFlow);
+        const isInFirstGoalFlow = syncedData.isFirstGoal;
+        const mentorStage = syncedData.mentorStage;
+
+        console.log('🔍 Goal routing - isFirstGoal:', isInFirstGoalFlow, 'stage:', mentorStage);
 
         if (isInFirstGoalFlow) {
             console.log('🔄 User is in FirstGoalFlow, stage:', mentorStage);
@@ -688,20 +499,7 @@ Deno.serve(async (req) => {
     }
     });
 
-/**
- * נרמול מספר טלפון לפורמט בינלאומי
- */
-function normalizePhoneNumber(phone) {
-    if (!phone) return null;
-    let cleaned = phone.toString().replace(/[\s\-\(\)\+]/g, '');
-    if (cleaned.startsWith('0')) {
-        cleaned = '972' + cleaned.substring(1);
-    }
-    if (!cleaned.startsWith('972')) {
-        cleaned = '972' + cleaned;
-    }
-    return cleaned;
-}
+// normalizePhoneNumber moved to stateSynchronizer.js
 
 /**
  * שליחת הודעה דרך Green-API

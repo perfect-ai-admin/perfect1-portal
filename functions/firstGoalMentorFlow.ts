@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import { runAgent, logAgentEvent } from './agentWrapper.js';
 import { sendWhatsAppMessage } from './whatsappWrapper.js';
 import { invokeLLMWithRetry } from './llmWrapper.js';
+import { syncLeadAndGoal, updateChatHistory, normalizePhoneNumber } from './stateSynchronizer.js';
 
 /**
  * פלואו מנטור ראשון × מטרה ראשונה
@@ -187,31 +188,44 @@ Deno.serve(async (req) => {
 
                 const phoneNorm = normalizePhoneNumber(phoneNumber);
 
-                // CRITICAL: עדכן chat_history לפני שליחת הווטסאפ
-                if (leadId) {
-                    const currentLead = await base44.asServiceRole.entities.CRMLead.get(leadId);
-                    const updatedHistory = [...(currentLead.chat_history || []), {
+                // CRITICAL: סנכרון מצב מלא לפני שליחה
+                const { lead: syncedLead } = await syncLeadAndGoal({
+                    base44,
+                    leadId: leadId,
+                    userId: goalUser.id,
+                    phoneNormalized: phoneNorm,
+                    goalId: goalId
+                });
+
+                const finalLeadId = syncedLead?.id || leadId;
+
+                // עדכון chat_history + current_goal_id אטומית
+                await updateChatHistory({
+                    base44,
+                    leadId: finalLeadId,
+                    newMessages: [{
                         role: 'assistant',
                         content: whatsappMessage,
                         timestamp: new Date().toISOString(),
                         agent: 'firstGoalMentorFlow',
                         message_type: 'intro_agreement'
-                    }].slice(-100);
+                    }]
+                });
 
-                    await base44.asServiceRole.entities.CRMLead.update(leadId, {
-                        chat_history: updatedHistory,
-                        waiting_for_response: true,
-                        last_outbound_at: new Date().toISOString(),
-                        current_goal_id: goalId
-                    });
-                    console.log('✅ Chat history PRE-updated, length:', updatedHistory.length);
-                }
+                await base44.asServiceRole.entities.CRMLead.update(finalLeadId, {
+                    waiting_for_response: true,
+                    last_outbound_at: new Date().toISOString(),
+                    current_goal_id: goalId,
+                    active_handler: 'firstGoalMentorFlow'
+                });
+
+                console.log('✅ Lead state synced before WhatsApp send');
 
                 await sendWhatsAppMessage({
                     base44,
                     phoneNormalized: phoneNorm,
                     messageText: whatsappMessage,
-                    leadId: leadId || 'unknown',
+                    leadId: finalLeadId,
                     userId: goalUser.id,
                     goalId: goalId,
                     agentRunId: null
@@ -822,30 +836,7 @@ ${logs.slice(0, 10).map(l => `שלב: ${l.flow_stage}, תגובה: ${l.user_resp
     }
 });
 
-/**
- * נרמול מספר טלפון לפורמט בינלאומי (ישראלי)
- * מקבל: 0502277087, 972502277087, 502277087, +972502277087
- * מחזיר: 972502277087
- */
-function normalizePhoneNumber(phone) {
-    if (!phone) return null;
-    
-    // הסר רווחים, מקפים, סוגריים, ופלוס
-    let cleaned = phone.toString().replace(/[\s\-\(\)\+]/g, '');
-    
-    // אם מתחיל ב-0, החלף ב-972
-    if (cleaned.startsWith('0')) {
-        cleaned = '972' + cleaned.substring(1);
-    }
-    
-    // אם לא מתחיל ב-972, הוסף
-    if (!cleaned.startsWith('972')) {
-        cleaned = '972' + cleaned;
-    }
-    
-    console.log(`📱 Phone normalized: ${phone} -> ${cleaned}`);
-    return cleaned;
-}
+// normalizePhoneNumber moved to stateSynchronizer.js
 
 /**
  * שליחת הודעה דרך Green-API
