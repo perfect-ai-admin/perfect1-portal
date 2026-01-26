@@ -14,10 +14,17 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Missing required parameters' }, { status: 400 });
         }
 
-        // זיהוי user_id
-        const user = await base44.auth.me();
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        // תמיכה ב-service role (ווטסאפ) וב-user scope
+        let user = null;
+        let isServiceRole = false;
+        let effectiveUserId = user_id;
+        
+        try {
+            user = await base44.auth.me();
+            effectiveUserId = user.id;
+        } catch (err) {
+            isServiceRole = true;
+            console.log('🔐 Running mentorChat in service role mode');
         }
 
         // שליפת הקשר מותאם אישית
@@ -26,7 +33,7 @@ Deno.serve(async (req) => {
             const contextRes = await base44.asServiceRole.functions.invoke('getPersonalizedContext', {
                 purpose: 'mentor_chat',
                 currentGoalId: goal_id,
-                user_id: user.id
+                user_id: effectiveUserId
             });
             personalizedContext = contextRes.data?.context;
             console.log('✅ Personalized context loaded');
@@ -37,8 +44,12 @@ Deno.serve(async (req) => {
         // שליפת פרטי המשתמש/ליד
         let userProfile = null;
         const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-            $or: [{ id: user_id }, { phone: user_id }] 
-        });
+            $or: [
+                { id: user_id }, 
+                { phone: user_id },
+                { user_id: effectiveUserId }
+            ]
+        }, '-created_date', 1);
         if (leads.length > 0) {
             userProfile = leads[0];
         }
@@ -79,18 +90,35 @@ ${personalizedContext ? `
   "response": "התשובה שלך בעברית..."
 }`;
 
-        // קריאה ל-LLM
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                { role: "system", content: systemPrompt },
-                ...historyMessages,
-                { role: "user", content: message }
-            ],
-            response_format: { type: "json_object" }
-        });
+        // קריאה ל-LLM עם retry
+        let result = null;
+        const MAX_RETRIES = 2;
+        
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+            try {
+                const completion = await openai.chat.completions.create({
+                    model: "gpt-4o-mini",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        ...historyMessages,
+                        { role: "user", content: message }
+                    ],
+                    response_format: { type: "json_object" }
+                });
 
-        const result = JSON.parse(completion.choices[0].message.content);
+                result = JSON.parse(completion.choices[0].message.content);
+                break;
+            } catch (llmErr) {
+                console.error(`❌ OpenAI attempt ${attempt + 1} failed:`, llmErr.message);
+                if (attempt === MAX_RETRIES - 1) {
+                    // fallback response
+                    result = { 
+                        response: 'קיבלתי את שאלתך. אני זקוק לרגע כדי לחשוב על התשובה הטובה ביותר עבורך. אחזור אליך בהקדם.' 
+                    };
+                }
+                await new Promise(r => setTimeout(r, 1000));
+            }
+        }
 
         // עדכון זיכרון לאחר שיחה
         try {
@@ -99,7 +127,7 @@ ${personalizedContext ? `
                 messages: [...historyMessages, { role: 'user', content: message }, { role: 'assistant', content: result.response }],
                 context: { current_stage: 'mentor_chat', goal_id },
                 agentName: 'mentorChat',
-                user_id: user.id
+                user_id: effectiveUserId
             });
             console.log('✅ Memory updated after mentor chat');
         } catch (memErr) {
