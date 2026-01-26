@@ -185,40 +185,40 @@ Deno.serve(async (req) => {
             return Response.json({ status: 'do_not_contact_ignored' });
         }
 
-        // עדכון היסטוריית השיחה עם נעילה אופטימיסטית (מונע race conditions)
+        console.log('📝 Adding user message to chat_history');
+        
+        // עדכון היסטוריית השיחה עם נעילה אופטימיסטית
         const MAX_RETRIES = 3;
         let chatHistory = [];
         let chatUpdateSuccess = false;
         
         for (let attempt = 0; attempt < MAX_RETRIES && !chatUpdateSuccess; attempt++) {
             try {
-                // קרא מחדש מהדאטאבייס כדי לקבל את הגרסה העדכנית ביותר
                 const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
-                chatHistory = (freshUser?.chat_history || []);
-                if (!Array.isArray(chatHistory)) {
-                    chatHistory = [];
-                }
+                chatHistory = Array.isArray(freshUser?.chat_history) ? freshUser.chat_history : [];
 
                 chatHistory.push({
                     role: 'user',
                     content: messageText,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    message_id: messageData?.idMessage || null
                 });
 
                 await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                    chat_history: chatHistory,
+                    chat_history: chatHistory.slice(-100), // הגבל ל-100
                     last_contact_at: new Date().toISOString(),
-                    waiting_for_response: true // מצב המתנה
+                    last_inbound_at: new Date().toISOString(),
+                    waiting_for_response: true
                 });
                 
                 chatUpdateSuccess = true;
-                console.log('✅ Chat history updated (attempt', attempt + 1, ')');
+                console.log('✅ User message added to chat_history, total:', chatHistory.length);
             } catch (err) {
                 console.warn(`⚠️ Chat update attempt ${attempt + 1} failed:`, err.message);
                 if (attempt === MAX_RETRIES - 1) {
                     console.error('❌ Failed to update chat history after', MAX_RETRIES, 'attempts');
                 }
-                await new Promise(r => setTimeout(r, 100 * (attempt + 1))); // backoff
+                await new Promise(r => setTimeout(r, 100 * (attempt + 1)));
             }
         }
 
@@ -385,7 +385,15 @@ Deno.serve(async (req) => {
             }
         }
 
-        console.log('🎯 Active goal found:', activeGoal.id, 'title:', activeGoal.title, 'is_first_goal:', activeGoal.is_first_goal, 'status:', activeGoal.status);
+        console.log('🎯 Active goal found:', {
+            id: activeGoal.id,
+            title: activeGoal.title,
+            is_first_goal: activeGoal.is_first_goal,
+            status: activeGoal.status,
+            mentor_stage: activeGoal.flow_data?.mentor_stage,
+            user_id: activeGoal.user_id,
+            lead_id: activeGoal.lead_id
+        });
 
         // סנכרון user_id ו-lead_id אם חסר
         const syncData = {};
@@ -398,14 +406,17 @@ Deno.serve(async (req) => {
         
         if (Object.keys(syncData).length > 0) {
             await base44.asServiceRole.entities.UserGoal.update(activeGoal.id, syncData);
+            activeGoal.user_id = syncData.user_id || activeGoal.user_id;
+            activeGoal.lead_id = syncData.lead_id || activeGoal.lead_id;
             console.log('🔗 Synced goal:', Object.keys(syncData).join(', '));
         }
         
-        // עדכן CRMLead עם current_goal_id
+        // עדכן CRMLead עם current_goal_id + waiting_for_response=false
         await base44.asServiceRole.entities.CRMLead.update(user.id, {
-            current_goal_id: activeGoal.id
+            current_goal_id: activeGoal.id,
+            waiting_for_response: false // קיבלנו תגובה מהמשתמש
         });
-        console.log('✅ CRMLead.current_goal_id updated:', activeGoal.id);
+        console.log('✅ CRMLead updated: current_goal_id + waiting_for_response=false');
 
         // בדיקה: האם זו מטרה ראשונה בתהליך FirstGoalFlow?
         const mentorStage = activeGoal.flow_data?.mentor_stage;
@@ -592,37 +603,18 @@ Deno.serve(async (req) => {
             timestamp: new Date().toISOString()
         });
 
-        // עדכון סופי של היסטוריית השיחה - עם retry והגבלה
-        for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
-            try {
-                const freshUser = await base44.asServiceRole.entities.CRMLead.get(user.id);
-                let finalHistory = [...(freshUser.chat_history || []), {
-                    role: 'assistant',
-                    content: mentorMessage,
-                    timestamp: new Date().toISOString(),
-                    agent: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
-                }];
-                
-                // הגבל ל-100 הודעות אחרונות
-                if (finalHistory.length > 100) {
-                    finalHistory = finalHistory.slice(-100);
-                    console.log('📊 Chat history trimmed to last 100 messages');
-                }
-                
-                await base44.asServiceRole.entities.CRMLead.update(user.id, {
-                    chat_history: finalHistory,
-                    last_contact_at: new Date().toISOString(),
-                    waiting_for_response: false, // אין המתנה - שלחנו תגובה
-                    active_handler: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
-                });
-                console.log('✅ Final chat history updated');
-                break;
-            } catch (err) {
-                console.warn(`⚠️ Final update attempt ${attempt + 1} failed:`, err.message);
-                if (attempt < MAX_RETRIES - 1) {
-                    await new Promise(r => setTimeout(r, 100 * (attempt + 1)));
-                }
-            }
+        // עדכון סופי של CRMLead - chat_history כבר מתעדכן בתוך הפונקציות
+        // כאן רק נעדכן מטא-דאטה
+        try {
+            await base44.asServiceRole.entities.CRMLead.update(user.id, {
+                last_contact_at: new Date().toISOString(),
+                last_outbound_at: new Date().toISOString(),
+                waiting_for_response: false,
+                active_handler: isInFirstGoalFlow ? 'firstGoalMentorFlow' : 'smartMentorEngine'
+            });
+            console.log('✅ CRMLead metadata updated');
+        } catch (err) {
+            console.error('❌ Failed to update CRMLead metadata:', err.message);
         }
 
         // עדכון UserMemory

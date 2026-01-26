@@ -58,30 +58,73 @@ Deno.serve(async (req) => {
         // אם זו קריאה מ-automation (entity create)
         if (event?.type === 'create' && event?.entity_name === 'UserGoal') {
             console.log('🔔 Entity automation triggered for UserGoal create');
-            
+            console.log('🔍 Event data:', {
+                entity_id: event.entity_id,
+                is_first_goal: data?.is_first_goal,
+                status: data?.status,
+                user_id: data?.user_id
+            });
+
             // בדוק אם זו מטרה ראשונה
             if (!data?.is_first_goal) {
                 console.log('⏭️ Not a first goal, skipping. is_first_goal:', data?.is_first_goal);
                 return Response.json({ message: 'Not a first goal, skipping' });
             }
-            
+
             console.log('✅ First goal detected, starting mentor flow');
-            
-            // עכשיו שלח ווטסאפ למשתמש
+
+            // טען את המטרה
             const goalId = event.entity_id;
             const goal = await base44.asServiceRole.entities.UserGoal.get(goalId);
-            console.log('📌 Goal loaded:', goal.title, 'user_id:', goal.user_id);
+            console.log('📌 Goal loaded:', {
+                id: goal.id,
+                title: goal.title,
+                user_id: goal.user_id,
+                status: goal.status,
+                is_first_goal: goal.is_first_goal
+            });
             
             // מציאת היוזר
             const allUsers = await base44.asServiceRole.entities.User.list();
             const goalUser = allUsers.find(u => u.id === goal.user_id);
-            
+
             if (!goalUser) {
                 console.error('❌ User not found for goal:', goal.user_id);
                 return Response.json({ error: 'User not found' }, { status: 404 });
             }
-            
+
             console.log('👤 User found:', goalUser.email, 'phone:', goalUser.phone);
+
+            // וידא שקיים CRMLead - אם לא, צור אחד
+            let existingLeads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                $or: [
+                    { email: goalUser.email },
+                    { user_id: goalUser.id }
+                ]
+            }, '-created_date', 1);
+
+            let leadId = existingLeads?.[0]?.id;
+
+            if (!leadId && goalUser.phone) {
+                console.log('📝 CRMLead לא קיים, יוצר אחד חדש...');
+                const phoneNorm = normalizePhoneNumber(goalUser.phone);
+                const newLead = await base44.asServiceRole.entities.CRMLead.create({
+                    user_id: goalUser.id,
+                    email: goalUser.email,
+                    full_name: goalUser.full_name || 'User',
+                    phone: goalUser.phone,
+                    phone_normalized: phoneNorm,
+                    source: 'FirstGoalFlow',
+                    journey_stage: 'lead_new',
+                    active_handler: 'firstGoalMentorFlow',
+                    current_goal_id: goalId,
+                    chat_history: []
+                });
+                leadId = newLead.id;
+                console.log('✅ CRMLead נוצר:', leadId);
+            } else if (leadId) {
+                console.log('✅ CRMLead קיים:', leadId);
+            }
             
             // שליחת הודעות הפתיחה
             const introMessage = MESSAGE_TEMPLATES.intro.default;
@@ -105,57 +148,37 @@ Deno.serve(async (req) => {
                 template_used: 'agreement.default'
             });
             
-            // עדכון המטרה + קישור user_id
+            // עדכון המטרה + קישור user_id + lead_id
             await base44.asServiceRole.entities.UserGoal.update(goalId, {
-                user_id: goalUser.id, // ודא שיש קישור
+                user_id: goalUser.id,
+                lead_id: leadId,
+                status: 'active', // שדרוג ל-active
                 flow_data: {
                     ...goal.flow_data,
                     mentor_stage: 'agreement',
                     mentor_started_at: new Date().toISOString()
                 }
             });
+            console.log('✅ Goal updated: user_id, lead_id, status=active, mentor_stage=agreement');
             
             // שליחת ווטסאפ - קריטי!
             let phoneNumber = goalUser.phone;
-            let leadId = null;
-            console.log('📱 Checking phone - User.phone:', phoneNumber);
+            console.log('📱 Phone from User:', phoneNumber, 'leadId:', leadId);
             
-            if (!phoneNumber) {
-                console.log('🔍 Phone not in User, searching CRMLead...');
-                const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
-                    $or: [
-                        { email: goalUser.email },
-                        { user_id: goalUser.id }
-                    ]
-                }, '-created_date', 1);
-                
-                if (leads && leads.length > 0) {
-                    phoneNumber = leads[0].phone || leads[0].phone_normalized;
-                    leadId = leads[0].id;
-                    console.log('📱 Found phone in CRMLead:', phoneNumber, 'lead_id:', leadId);
-                    
-                    // סנכרון - עדכן את ה-Lead עם user_id ו-phone_normalized
-                    const updateData = {};
-                    if (!leads[0].user_id) {
-                        updateData.user_id = goalUser.id;
-                    }
-                    if (!leads[0].phone_normalized && phoneNumber) {
-                        updateData.phone_normalized = normalizePhoneNumber(phoneNumber);
-                    }
-                    if (Object.keys(updateData).length > 0) {
-                        await base44.asServiceRole.entities.CRMLead.update(leads[0].id, updateData);
-                        console.log('🔗 Synced CRMLead:', Object.keys(updateData).join(', '));
-                    }
-                }
-            }
-            
-            if (!phoneNumber) {
-                console.error('❌ No phone number found for user:', goalUser.email);
+            if (!phoneNumber && !leadId) {
+                console.error('❌ No phone number and no CRMLead for user:', goalUser.email);
                 return Response.json({ 
                     success: false, 
                     error: 'No phone number found',
                     user_email: goalUser.email 
                 });
+            }
+
+            // אם אין טלפון ב-User אבל יש leadId, קח מה-CRMLead
+            if (!phoneNumber && leadId) {
+                const leadData = await base44.asServiceRole.entities.CRMLead.get(leadId);
+                phoneNumber = leadData.phone || leadData.phone_normalized;
+                console.log('📱 Took phone from CRMLead:', phoneNumber);
             }
             
             try {
