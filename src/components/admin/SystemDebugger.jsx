@@ -127,6 +127,30 @@ export default function SystemDebugger() {
         }
     };
 
+    const autoFixLead = async () => {
+        if (!debugResult?.lead?.id) {
+            toast.error('לא נמצא ליד לתיקון');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await base44.functions.invoke('autoFixLeadLinks', {
+                lead_id: debugResult.lead.id,
+                phone: debugResult.phone
+            });
+
+            toast.success(response.data.message || 'תיקון הושלם');
+            
+            // רענן את הנתונים
+            await searchUser();
+        } catch (err) {
+            toast.error('שגיאה בתיקון: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <Card>
@@ -163,14 +187,27 @@ export default function SystemDebugger() {
                         </Button>
 
                         {debugResult?.lead && (
-                            <Button 
-                                variant="outline" 
-                                onClick={syncSpecificLead}
-                                className="bg-blue-50 border-blue-200"
-                            >
-                                <Zap className="w-4 h-4 mr-2" />
-                                סנכרן ליד זה
-                            </Button>
+                            <>
+                                <Button 
+                                    variant="outline" 
+                                    onClick={syncSpecificLead}
+                                    className="bg-blue-50 border-blue-200"
+                                >
+                                    <Zap className="w-4 h-4 mr-2" />
+                                    סנכרן ליד זה
+                                </Button>
+                                
+                                {debugResult.issues.length > 0 && (
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={autoFixLead}
+                                        className="bg-green-50 border-green-200"
+                                    >
+                                        <Wrench className="w-4 h-4 mr-2" />
+                                        תקן אוטומטית
+                                    </Button>
+                                )}
+                            </>
                         )}
                     </div>
 
