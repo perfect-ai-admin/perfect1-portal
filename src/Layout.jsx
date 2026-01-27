@@ -15,6 +15,7 @@ import ResourceHints from './components/performance/ResourceHints';
 import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 
 import { Toaster } from "@/components/ui/sonner";
+import AccessibilityMenu from './components/accessibility/AccessibilityMenu';
 
 export default function Layout({ children, currentPageName }) {
     const location = useLocation();
@@ -62,10 +63,11 @@ export default function Layout({ children, currentPageName }) {
               <ClientFooter />
             </div>
           </div>
+          <AccessibilityMenu />
           <Toaster />
-        </HelmetProvider>
-      );
-    }
+          </HelmetProvider>
+          );
+          }
 
     useEffect(() => {
       // Inject GTM script to HEAD if not already there

@@ -372,3 +372,37 @@ body[data-sheet-open] {
 .animate-pulse-glow {
   animation: pulse-glow 2s infinite;
 }
+
+/* Accessibility Menu Styles - תיקון 13 */
+.accessibility-high-contrast {
+  filter: contrast(1.5);
+}
+
+.accessibility-high-contrast * {
+  border-color: currentColor !important;
+}
+
+.accessibility-links-highlight a {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 2px !important;
+}
+
+.accessibility-links-highlight a:hover {
+  background-color: yellow !important;
+  color: black !important;
+}
+
+.accessibility-stop-animations,
+.accessibility-stop-animations * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+.accessibility-readable-font,
+.accessibility-readable-font * {
+  font-family: Arial, sans-serif !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1.8 !important;
+}
