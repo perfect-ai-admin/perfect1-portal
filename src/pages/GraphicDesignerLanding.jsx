@@ -104,22 +104,27 @@ export default function GraphicDesignerLanding() {
               </h2>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-6">
               {[
-                'איך פותחים עוסק כמעצב גרפי?',
-                'עוסק פטור או מורשה לעיצוב גרפי?',
-                'צריך רואה חשבון למעצב גרפי?',
-                'איך מוציאים קבלות ללקוחות?'
-              ].map((question, i) => (
+                { title: 'סגירת עוסק פטור', description: 'לסיום עסקתך בחוקיות', link: '/close-osek-patur', icon: '📋' },
+                { title: 'סגירת תיק במס הכנסה', description: 'ליישוב חובות וסגירה סופית', link: '/close-osek-patur-tax', icon: '💼' }
+              ].map((item, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-6 border-r-4 border-[#27AE60]"
                 >
-                  <p className="text-lg font-bold text-[#1E3A5F]">{question}</p>
+                  <a href={item.link} className="block bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-[#1E3A5F] hover:shadow-lg transition-all group">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <p className="text-2xl font-black text-[#1E3A5F] mb-2 group-hover:text-[#27AE60]">{item.title}</p>
+                        <p className="text-gray-600">{item.description}</p>
+                      </div>
+                      <span className="text-4xl ml-4">{item.icon}</span>
+                    </div>
+                  </a>
                 </motion.div>
               ))}
             </div>
