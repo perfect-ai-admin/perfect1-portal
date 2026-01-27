@@ -1095,7 +1095,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
 
               {createdPageData && (
-                <div className="w-full max-w-5xl mx-auto mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <>
+                  <div className="w-full max-w-5xl mx-auto mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
                   {/* Desktop Preview (Hidden on Mobile) */}
                   <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-2xl overflow-hidden relative group">
@@ -1168,7 +1169,6 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                       </div>
                   </div>
                 </div>
-              )}
 
                   {/* Full Preview Dialog */}
                   <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
