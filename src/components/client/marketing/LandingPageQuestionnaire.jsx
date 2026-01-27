@@ -355,11 +355,24 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const handlePurchase = async () => {
     setIsPublishing(true);
     try {
-      const domain = `${createdPageData?.id}.base44.app`;
-      setPublishedUrl(domain);
-      setIsPublishing(false);
+      // Mark as paid
+      await base44.functions.invoke('publishLandingPage', {
+        landingPageId: createdPageData?.id,
+        action: 'markPaid'
+      });
+
+      // Publish to get real domain
+      const response = await base44.functions.invoke('publishLandingPage', {
+        landingPageId: createdPageData?.id,
+        action: 'publish'
+      });
+
+      if (response.data?.url) {
+        setPublishedUrl(response.data.url);
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error publishing:', error);
+    } finally {
       setIsPublishing(false);
     }
   };
