@@ -107,6 +107,8 @@ export default function LogoCreator({ businessName, onClose }) {
   const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
 
   const handleGenerate = async () => {
+    console.log('🎨 handleGenerate called, formData:', formData);
+    
     if (!formData.businessName || !formData.industry) {
       alert('אנא מלא את שם העסק ותחום העיסוק');
       return;
@@ -122,26 +124,31 @@ export default function LogoCreator({ businessName, onClose }) {
       ];
 
       const generatedLogos = [];
+      console.log('🎨 Starting logo generation for', variations.length, 'variations');
 
       for (const variation of variations) {
         try {
           const prompt = `Professional business logo design - ${variation.description}. Business: "${formData.businessName}", Industry: ${formData.industry}, Vibe: ${formData.vibe || 'professional'}, Icon style: ${formData.iconStyle}, Style: ${variation.style}, Colors: ${formData.colorScheme.colors.join(', ')}. Requirements: Clean, scalable, modern, white/transparent background, vector-style.`;
 
+          console.log('🎨 Generating:', variation.description);
           const result = await base44.integrations.Core.GenerateImage({ prompt });
+          console.log('🎨 Generated:', variation.description, 'URL:', result.url);
           generatedLogos.push({ url: result.url, variant: variation.description });
         } catch (err) {
-          console.error(`Failed to generate ${variation.description}:`, err);
+          console.error(`🎨 Failed to generate ${variation.description}:`, err);
         }
       }
 
+      console.log('🎨 Total generated:', generatedLogos.length);
       if (generatedLogos.length > 0) {
         setLogos(generatedLogos);
         setStep(4);
+        console.log('🎨 Moving to step 4');
       } else {
         alert('שגיאה ביצירת הלוגוים. נסה שוב.');
       }
     } catch (error) {
-      console.error('Logo generation failed:', error);
+      console.error('🎨 Logo generation failed:', error);
       alert('שגיאה ביצירת הלוגו. נסה שוב.');
     } finally {
       setIsGenerating(false);
