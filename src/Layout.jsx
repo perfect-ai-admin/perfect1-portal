@@ -133,9 +133,9 @@ export default function Layout({ children, currentPageName }) {
         prefetchPages={['/Services', '/Pricing', '/Contact', '/OsekPaturLanding', '/Blog']}
       />
       <WebVitalsMonitor />
-      <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
+      <div className="min-h-screen bg-[#F8F9FA] w-screen overflow-x-hidden" dir="rtl">
                 <Header />
-                <main className="w-full">
+                <main className="w-full overflow-x-hidden">
                   {children}
                 </main>
                 <div className="hidden md:block">
