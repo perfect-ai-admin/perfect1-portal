@@ -61,9 +61,16 @@ const StepHeader = ({ icon: Icon, title, description, colorClass = "bg-blue-100 
   </div>
 );
 
-export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitchToLogo }) {
+export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitchToLogo, onStepChange }) {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 8;
+
+  // Notify parent about step changes for layout adjustments
+  useEffect(() => {
+    if (onStepChange) {
+      onStepChange(currentStep);
+    }
+  }, [currentStep, onStepChange]);
   
   const [formData, setFormData] = useState(() => {
     // Load from localStorage if exists

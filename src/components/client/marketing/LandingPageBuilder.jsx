@@ -6,6 +6,7 @@ import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 
 export default function LandingPageBuilder({ onSwitchToLogo }) {
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   const features = [
     'כותרות שיווקיות',
@@ -23,8 +24,13 @@ export default function LandingPageBuilder({ onSwitchToLogo }) {
     <>
       {showQuestionnaire && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center md:bg-black/60 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
-          <div className="bg-white md:rounded-2xl w-full h-full md:h-auto md:max-h-[90vh] md:max-w-5xl overflow-hidden shadow-2xl flex flex-col transition-all duration-500">
-            <LandingPageQuestionnaire onComplete={handleComplete} onClose={() => setShowQuestionnaire(false)} onSwitchToLogo={onSwitchToLogo} />
+          <div className={`bg-white md:rounded-2xl w-full h-full md:h-auto md:max-h-[90vh] overflow-hidden shadow-2xl flex flex-col transition-all duration-500 ease-in-out ${currentStep === 8 ? 'md:max-w-6xl' : 'md:max-w-3xl'}`}>
+            <LandingPageQuestionnaire 
+              onComplete={handleComplete} 
+              onClose={() => setShowQuestionnaire(false)} 
+              onSwitchToLogo={onSwitchToLogo}
+              onStepChange={setCurrentStep}
+            />
           </div>
         </div>
       )}
