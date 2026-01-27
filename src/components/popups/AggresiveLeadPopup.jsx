@@ -36,6 +36,7 @@ export default function AggresiveLeadPopup({ isOpen, onClose }) {
         setFormData({ name: '', phone: '' });
         onClose();
         toast.success('נקלטנו! נחזור אליך בקרוב');
+        navigate(createPageUrl('ThankYou'));
       }
     } catch (error) {
       toast.error('שגיאה בשליחה');
