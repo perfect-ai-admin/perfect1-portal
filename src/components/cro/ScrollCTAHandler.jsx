@@ -5,10 +5,7 @@ import { Input } from '@/components/ui/input';
 import { X, MessageCircle } from 'lucide-react';
 
 const ScrollCTAHandler = () => {
-  const [scrollPercent, setScrollPercent] = useState(0);
-  const [showCTA20, setShowCTA20] = useState(false);
   const [showPopup65, setShowPopup65] = useState(false);
-  const [hasShownCTA20, setHasShownCTA20] = useState(false);
   const [hasShownPopup65, setHasShownPopup65] = useState(false);
   const [formData, setFormData] = useState({ name: '', phone: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,14 +15,6 @@ const ScrollCTAHandler = () => {
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrolled = window.scrollY;
       const percent = docHeight > 0 ? (scrolled / docHeight) * 100 : 0;
-      
-      setScrollPercent(percent);
-
-      // CTA אחרי 20%
-      if (percent >= 20 && !hasShownCTA20) {
-        setShowCTA20(true);
-        setHasShownCTA20(true);
-      }
 
       // Popup אחרי 65%
       if (percent >= 65 && !hasShownPopup65) {
@@ -36,7 +25,7 @@ const ScrollCTAHandler = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasShownCTA20, hasShownPopup65]);
+  }, [hasShownPopup65]);
 
   const handlePopupSubmit = async () => {
     if (!formData.name || !formData.phone) {
@@ -63,43 +52,6 @@ const ScrollCTAHandler = () => {
 
   return (
     <>
-      {/* CTA אחרי 20% גלילה */}
-      <AnimatePresence>
-        {showCTA20 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-4 sm:bottom-6 max-w-sm z-40"
-          >
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 rounded-2xl shadow-2xl p-4 sm:p-6">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex-1">
-                  <h3 className="font-black text-green-900 text-lg mb-1">
-                    בואו נסגור לך את התיק בצורה מסודרת
-                  </h3>
-                  <p className="text-sm text-green-800">
-                    טיפול מלא מול מע"מ, מס הכנסה וביטוח לאומי
-                  </p>
-                </div>
-                <button
-                  onClick={() => setShowCTA20(false)}
-                  className="flex-shrink-0 text-green-600 hover:text-green-900 p-1"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <a href="https://wa.me/972502277087?text=היי, אני רוצה לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold h-10 rounded-lg">
-                  <MessageCircle className="w-4 h-4 ml-2" />
-                  שיחה דרך WhatsApp
-                </Button>
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Popup אחרי 65% גלילה */}
       <AnimatePresence>
         {showPopup65 && (
