@@ -21,15 +21,49 @@ import {
 } from "@/components/ui/accordion";
 
 export default function OsekPaturSteps() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     profession: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    window.location.href = createPageUrl('OsekPaturOnlineLanding');
+    
+    if (!formData.phone.trim() || !formData.name.trim()) {
+      toast.error('נא למלא שם וטלפון');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await base44.functions.invoke('submitLeadToN8N', {
+        name: formData.name,
+        phone: formData.phone,
+        email: '',
+        message: formData.profession || 'לא ציין מקצוע',
+        pageSlug: 'osek-patur-steps',
+        businessName: 'Perfect One - Osek Patur'
+      });
+
+      if (response.data.success) {
+        toast.success('הלידים שלך נקלטו בהצלחה!');
+        setFormData({ name: '', phone: '', profession: '' });
+        // Navigate to thank you page after 1.5s
+        setTimeout(() => {
+          navigate(createPageUrl('ThankYou'));
+        }, 1500);
+      } else {
+        toast.error('שגיאה בשליחת הלידים: ' + (response.data.error || 'שגיאה לא ידועה'));
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      toast.error('שגיאה בשליחה: ' + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const steps = [
