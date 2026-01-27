@@ -67,8 +67,8 @@ export default function OsekPaturSteps() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.phone.trim() || !formData.name.trim() || !formData.email.trim()) {
-      toast.error('נא למלא שם, טלפון ומייל');
+    if (!formData.name.trim() || !formData.phone.trim()) {
+      toast.error('נא למלא שם וטלפון');
       return;
     }
 
