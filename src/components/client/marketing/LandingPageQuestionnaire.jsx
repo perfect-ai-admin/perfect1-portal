@@ -1092,176 +1092,194 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
             </div>
           ) : showSuccess ? (
-             <div className="flex flex-col h-full bg-slate-50 overflow-hidden animate-in fade-in zoom-in duration-300">
-                {/* Success Header - Compact */}
-                <div className="flex-none px-4 md:px-6 py-3 bg-white border-b border-slate-100 flex items-center justify-between z-10 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-green-100 rounded-full flex items-center justify-center shadow-sm">
-                            <Check className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
-                        </div>
-                        <div>
-                            <h2 className="text-base md:text-lg font-black text-slate-900 leading-none">הדף שלך מוכן! 🎉</h2>
-                            <p className="text-[10px] md:text-xs text-slate-500 mt-1 hidden md:block">הנה תצוגה מקדימה של מה שה-AI בנה</p>
-                        </div>
-                    </div>
-                    
-                    {/* Device Switcher */}
-                    <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
-                        <button 
-                            onClick={() => setPreviewDevice('desktop')}
-                            className={cn("p-1.5 rounded-md transition-all flex items-center gap-1.5", previewDevice === 'desktop' ? "bg-white text-blue-600 shadow-sm" : "text-slate-400 hover:text-slate-600")}
-                            title="תצוגת מחשב"
-                        >
-                            <Monitor className="w-4 h-4" />
-                            <span className="text-xs font-medium hidden md:inline">מחשב</span>
-                        </button>
-                        <button 
-                            onClick={() => setPreviewDevice('mobile')}
-                            className={cn("p-1.5 rounded-md transition-all flex items-center gap-1.5", previewDevice === 'mobile' ? "bg-white text-blue-600 shadow-sm" : "text-slate-400 hover:text-slate-600")}
-                            title="תצוגת נייד"
-                        >
-                            <Smartphone className="w-4 h-4" />
-                            <span className="text-xs font-medium hidden md:inline">נייד</span>
-                        </button>
-                    </div>
+            <div className="flex flex-col h-full bg-slate-100 overflow-hidden relative animate-in fade-in zoom-in duration-300">
+              {/* Top Control Bar - Premium & Clean */}
+              <div className="flex-none bg-white border-b border-slate-200 px-4 md:px-6 py-3 flex items-center justify-between z-20 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="bg-green-100 p-2 rounded-full text-green-600 ring-2 ring-green-50">
+                    <Check className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-slate-900 text-sm md:text-base leading-tight">הדף שלך מוכן! 🚀</h2>
+                    <p className="text-[11px] text-slate-500 hidden md:block">ה-AI בנה עבורך דף נחיתה ממיר. צפה בתצוגה המקדימה.</p>
+                  </div>
                 </div>
 
-                {/* Preview Area - "One Window" Feel */}
-                <div className="flex-1 overflow-hidden relative bg-slate-100/50 flex items-center justify-center p-2 md:p-4">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:16px_16px]" />
-
-                    {!createdPageData ? (
-                        <div className="flex flex-col items-center justify-center text-slate-400 gap-2">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-400"></div>
-                            <span className="text-sm">טוען תצוגה מקדימה...</span>
-                        </div>
-                    ) : (
-                        <div className="relative w-full h-full flex items-center justify-center">
-                            {previewDevice === 'desktop' ? (
-                                /* Desktop Mockup */
-                                <div className="w-full max-w-5xl h-full bg-white rounded-lg md:rounded-xl shadow-xl border border-slate-200/60 overflow-hidden relative flex flex-col animate-in zoom-in-95 duration-500">
-                                    {/* Browser Bar */}
-                                    <div className="h-8 md:h-9 bg-slate-50 border-b border-slate-200 flex items-center px-3 md:px-4 gap-3 shrink-0">
-                                        <div className="flex gap-1.5">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-red-400 border border-red-500/20" />
-                                            <div className="w-2.5 h-2.5 rounded-full bg-amber-400 border border-amber-500/20" />
-                                            <div className="w-2.5 h-2.5 rounded-full bg-green-400 border border-green-500/20" />
-                                        </div>
-                                        <div className="flex-1 max-w-[60%] mx-auto">
-                                            <div className="bg-white border border-slate-200 rounded-md h-5 md:h-6 w-full flex items-center justify-center text-[10px] text-slate-400 font-mono shadow-sm">
-                                                <Lock className="w-2.5 h-2.5 mr-1.5 opacity-50" />
-                                                {window.location.host}/LP/{pageSlug}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Content - Scaled with CSS Zoom/Transform */}
-                                    <div className="flex-1 relative bg-white overflow-hidden group cursor-pointer" onClick={() => setIsFullPreviewOpen(true)}>
-                                         <div className="w-[1280px] h-[800px] origin-top-left absolute top-0 left-0 pointer-events-none select-none"
-                                              ref={el => {
-                                                  if (el && el.parentElement) {
-                                                      const resize = () => {
-                                                          const scale = el.parentElement.offsetWidth / 1280;
-                                                          el.style.transform = `scale(${scale})`;
-                                                      };
-                                                      // ResizeObserver is better for fluid layouts
-                                                      const observer = new ResizeObserver(resize);
-                                                      observer.observe(el.parentElement);
-                                                      resize(); // Initial
-                                                  }
-                                              }}
-                                         >
-                                             <DynamicLandingPage data={createdPageData} isThumbnail={true} />
-                                         </div>
-                                         
-                                         {/* Hover Overlay */}
-                                         <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/5 transition-all duration-300 flex items-center justify-center">
-                                            <div className="bg-white/90 backdrop-blur-sm text-slate-900 px-5 py-2.5 rounded-full font-bold shadow-xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 border border-white/20">
-                                                <Maximize2 className="w-4 h-4" />
-                                                תצוגה מלאה
-                                            </div>
-                                         </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                /* Mobile Mockup */
-                                <div className="h-full max-h-[650px] aspect-[9/19] bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] p-2 md:p-3 shadow-2xl border-[4px] md:border-[6px] border-slate-800 relative ring-1 ring-white/10 animate-in zoom-in-95 duration-500">
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-4 md:h-6 w-16 md:w-24 bg-slate-800 rounded-b-xl z-20" />
-                                    <div className="w-full h-full bg-white rounded-[1.5rem] md:rounded-[2rem] overflow-hidden relative cursor-pointer group" onClick={() => setIsFullPreviewOpen(true)}>
-                                        <div className="w-full h-full overflow-y-auto no-scrollbar pointer-events-none select-none">
-                                            <DynamicLandingPage data={createdPageData} isThumbnail={true} />
-                                        </div>
-                                         {/* Hover Overlay */}
-                                         <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-all duration-300 flex items-center justify-center">
-                                            <div className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-xl transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300">
-                                                <Maximize2 className="w-5 h-5 text-slate-900" />
-                                            </div>
-                                         </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+                    <button 
+                        onClick={() => setPreviewDevice('desktop')}
+                        className={cn("px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-2", previewDevice === 'desktop' ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50")}
+                    >
+                        <Monitor className="w-4 h-4" />
+                        <span className="hidden sm:inline">מחשב</span>
+                    </button>
+                    <button 
+                        onClick={() => setPreviewDevice('mobile')}
+                        className={cn("px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-2", previewDevice === 'mobile' ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700 hover:bg-slate-200/50")}
+                    >
+                        <Smartphone className="w-4 h-4" />
+                        <span className="hidden sm:inline">נייד</span>
+                    </button>
                 </div>
+              </div>
 
-                {/* Footer / CTA Area */}
-                <div className="flex-none p-3 md:p-4 bg-white border-t border-slate-100 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-                     <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-3 md:gap-4 items-center justify-between">
-                        
-                        {/* Link Copy (Compact) */}
-                        <div className="flex items-center gap-3 bg-slate-50 p-2 pl-4 rounded-xl border border-slate-200 w-full md:w-auto overflow-hidden">
-                             <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
-                                <Globe className="w-4 h-4" />
-                             </div>
-                             <div className="flex-1 min-w-0">
-                                <div className="text-[10px] text-slate-400 font-medium">הקישור לדף שלך</div>
-                                <div className="text-xs font-bold text-blue-600 truncate dir-ltr">{window.location.host}/LP/{pageSlug}</div>
-                             </div>
-                             <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-white hover:shadow-sm rounded-lg" onClick={() => {
-                                const url = `${window.location.origin}/LandingPagePreview?slug=${pageSlug}`;
-                                navigator.clipboard.writeText(url);
-                             }}>
-                                <Copy className="w-4 h-4" />
-                             </Button>
-                        </div>
+              {/* Main Preview Stage */}
+              <div className="flex-1 overflow-hidden relative flex items-center justify-center bg-slate-100 p-4 md:p-8">
+                {/* Decorative Background */}
+                <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:16px_16px]" />
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl mix-blend-multiply pointer-events-none" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl mix-blend-multiply pointer-events-none" />
 
-                        {/* Main Actions */}
-                        <div className="flex gap-2 md:gap-3 w-full md:w-auto">
-                             <Button variant="outline" onClick={() => onComplete(formData)} className="flex-1 md:flex-none border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50">
-                                דלג לדשבורד
-                             </Button>
-                             <Button 
-                                onClick={handlePurchase}
-                                className="flex-1 md:flex-none bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-200/50 px-6 gap-2"
+                {!createdPageData ? (
+                   <div className="flex flex-col items-center gap-4 z-10 p-8 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl">
+                      <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                      <p className="text-slate-600 font-medium animate-pulse">מכין את התצוגה המקדימה...</p>
+                   </div>
+                ) : (
+                  <div className={cn("relative transition-all duration-500 ease-[cubic-bezier(0.25,0.8,0.25,1)] z-10 shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)]", 
+                      previewDevice === 'desktop' ? "w-full max-w-6xl h-full max-h-[800px]" : "h-full max-h-[700px] aspect-[9/19.5]")}>
+                      
+                      {previewDevice === 'desktop' ? (
+                        /* Desktop Browser Frame */
+                        <div className="w-full h-full bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden ring-1 ring-black/5 animate-in zoom-in-95 duration-500">
+                          {/* Browser Toolbar */}
+                          <div className="h-10 bg-[#F3F4F6] border-b border-slate-200 flex items-center px-4 gap-4 shrink-0">
+                             <div className="flex gap-1.5 group">
+                                <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E] group-hover:brightness-90 transition-all" />
+                                <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123] group-hover:brightness-90 transition-all" />
+                                <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29] group-hover:brightness-90 transition-all" />
+                             </div>
+                             <div className="flex-1 max-w-2xl mx-auto">
+                                <div className="h-7 bg-white border border-slate-200 rounded-md flex items-center justify-center gap-2 text-xs text-slate-400 font-mono shadow-sm hover:border-slate-300 transition-colors">
+                                   <Lock className="w-3 h-3 opacity-50" />
+                                   <span className="opacity-70">https://</span>
+                                   <span className="text-slate-700">{window.location.host}/LP/{pageSlug}</span>
+                                </div>
+                             </div>
+                          </div>
+                          {/* Viewport */}
+                          <div className="flex-1 relative bg-white w-full overflow-hidden group cursor-zoom-in" onClick={() => setIsFullPreviewOpen(true)}>
+                             <div className="absolute inset-0 w-[1280px] h-[800px] origin-top-left transform-gpu pointer-events-none select-none"
+                                  ref={el => {
+                                      if (!el || !el.parentElement) return;
+                                      const resize = () => {
+                                          const parent = el.parentElement;
+                                          if (parent) {
+                                              const scale = parent.offsetWidth / 1280;
+                                              el.style.transform = `scale(${scale})`;
+                                              el.style.height = `${parent.offsetHeight / scale}px`;
+                                          }
+                                      };
+                                      new ResizeObserver(resize).observe(el.parentElement);
+                                      resize();
+                                  }}
                              >
-                                <Sparkles className="w-4 h-4 animate-pulse" />
-                                רכוש ופרסם (₪499)
-                             </Button>
+                                <DynamicLandingPage data={createdPageData} isThumbnail={true} />
+                             </div>
+                             {/* Overlay for Click */}
+                             <div className="absolute inset-0 bg-slate-900/0 hover:bg-slate-900/5 transition-all duration-300 flex items-center justify-center">
+                                <div className="bg-white/90 backdrop-blur-md text-slate-900 px-6 py-3 rounded-full font-bold shadow-2xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 border border-white/20">
+                                   <Maximize2 className="w-4 h-4" />
+                                   לחץ לתצוגה מלאה
+                                </div>
+                             </div>
+                          </div>
                         </div>
-                     </div>
-                </div>
+                      ) : (
+                        /* Mobile Phone Frame */
+                        <div className="w-full h-full bg-slate-900 rounded-[3rem] border-[8px] border-slate-900 relative overflow-hidden ring-4 ring-slate-900/10 shadow-2xl animate-in zoom-in-95 duration-500">
+                           {/* Dynamic Island / Notch */}
+                           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[35%] h-7 bg-slate-900 rounded-b-2xl z-20" />
+                           
+                           <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative cursor-pointer group" onClick={() => setIsFullPreviewOpen(true)}>
+                              {/* Status Bar Mock */}
+                              <div className="h-11 bg-white w-full flex justify-between items-center px-6 pt-2 z-10 absolute top-0 left-0 right-0">
+                                 <span className="text-[12px] font-semibold text-slate-900 pl-2">9:41</span>
+                                 <div className="flex gap-1.5 pr-2">
+                                    <div className="w-4 h-2.5 border border-slate-300 rounded-[2px]" />
+                                    <Zap className="w-3 h-3 text-slate-900" />
+                                 </div>
+                              </div>
+                              
+                              <div className="w-full h-full pt-10 overflow-y-auto no-scrollbar pb-6 select-none pointer-events-none">
+                                 <DynamicLandingPage data={createdPageData} isThumbnail={true} />
+                              </div>
 
-                {/* Full Preview Dialog (Hidden until clicked) */}
-                <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
-                  <DialogContent className="max-w-[95vw] w-[1400px] h-[90vh] p-0 flex flex-col gap-0 overflow-hidden rounded-xl border-0 shadow-2xl bg-gray-100">
+                              {/* Overlay */}
+                              <div className="absolute inset-0 bg-slate-900/0 hover:bg-slate-900/10 transition-all duration-300 flex items-center justify-center">
+                                 <div className="bg-white/90 backdrop-blur-md p-4 rounded-full shadow-2xl transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300">
+                                    <Maximize2 className="w-6 h-6 text-slate-900" />
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                      )}
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Action Bar - High Conversion Design */}
+              <div className="bg-white border-t border-slate-200 z-30 shadow-[0_-8px_30px_rgba(0,0,0,0.08)]">
+                 <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    
+                    {/* Value Prop */}
+                    <div className="flex items-center gap-4 w-full md:w-auto p-3 md:p-0 bg-slate-50 md:bg-transparent rounded-xl md:rounded-none">
+                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200 shrink-0">
+                          <Sparkles className="w-6 h-6" />
+                       </div>
+                       <div>
+                          <div className="text-sm font-bold text-slate-900">חבילת השקה מלאה 🔥</div>
+                          <div className="text-xs text-slate-500">דומיין אישי • אחסון ללא הגבלה • הסרת לוגו</div>
+                       </div>
+                    </div>
+
+                    {/* Pricing & Actions */}
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                       <div className="hidden lg:block text-right ml-2">
+                          <div className="text-xs text-slate-400 line-through">₪990</div>
+                          <div className="text-xl font-black text-slate-900 leading-none">₪499</div>
+                       </div>
+                       
+                       <Button variant="outline" onClick={() => onComplete(formData)} className="flex-1 md:flex-none h-12 border-slate-200 hover:bg-slate-50 hover:text-slate-700 font-medium">
+                          שמור כטיוטה
+                       </Button>
+                       
+                       <Button 
+                          onClick={handlePurchase}
+                          className="flex-[2] md:flex-none h-12 px-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xl shadow-blue-200/50 rounded-xl font-bold text-base flex items-center justify-center gap-2 group transition-all hover:scale-[1.02]"
+                       >
+                          <span>רכוש ופרסם עכשיו</span>
+                          <span className="lg:hidden mx-1 opacity-80">|</span>
+                          <span className="lg:hidden">₪499</span>
+                          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                       </Button>
+                    </div>
+                 </div>
+              </div>
+
+              {/* Full Preview Dialog (Hidden until clicked) */}
+              <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
+                  <DialogContent className="max-w-[98vw] w-[1600px] h-[95vh] p-0 flex flex-col gap-0 overflow-hidden rounded-xl border-0 shadow-2xl bg-gray-100">
                       <div className="bg-white border-b px-4 py-3 flex justify-between items-center shrink-0 z-50">
                            <div className="flex gap-3 items-center">
-                               <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                                  <Globe className="w-4 h-4" />
+                               <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                                  <Globe className="w-5 h-5" />
                                </div>
                                <div className="flex flex-col">
-                                  <span className="text-sm font-bold text-gray-900">{createdPageData?.business_name}</span>
-                                  <span className="text-xs text-gray-500 dir-ltr">{window.location.host}/LP/{pageSlug}</span>
+                                  <span className="text-sm font-bold text-gray-900 leading-tight">{createdPageData?.business_name}</span>
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-xs text-gray-500 dir-ltr font-mono">{window.location.host}/LP/{pageSlug}</span>
+                                  </div>
                                </div>
                            </div>
                            <div className="flex gap-2">
-                               <Button size="sm" variant="outline" className="gap-2 h-9" onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}>
+                               <Button size="sm" variant="outline" className="gap-2 h-9 bg-slate-50 hover:bg-white" onClick={() => window.open(`/LandingPagePreview?slug=${pageSlug}`, '_blank')}>
                                   <ExternalLink className="w-3.5 h-3.5" />
                                   פתח בחלון חדש
                                </Button>
                                <DialogClose asChild>
-                                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-gray-100"><X className="w-5 h-5" /></Button>
+                                  <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-red-50 hover:text-red-500"><X className="w-5 h-5" /></Button>
                                </DialogClose>
                            </div>
                       </div>
@@ -1269,8 +1287,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                           {createdPageData && <DynamicLandingPage data={createdPageData} />}
                       </div>
                   </DialogContent>
-                </Dialog>
-             </div>
+              </Dialog>
+            </div>
           ) : (
             <form onSubmit={handleSubmit} className="w-full">
               <AnimatePresence mode="wait">
