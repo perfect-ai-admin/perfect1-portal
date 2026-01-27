@@ -13,6 +13,7 @@ export default function CheckoutSuccess() {
     const [loading, setLoading] = useState(true);
     const [success, setSuccess] = useState(false);
     const [details, setDetails] = useState(null);
+    const [landingPageData, setLandingPageData] = useState(null);
 
     const sessionId = searchParams.get('session_id');
     const paymentId = searchParams.get('payment_id');
