@@ -139,6 +139,41 @@ export default function CheckoutSuccess() {
                             </div>
                         )}
 
+                        {/* Step 9: Domain Display */}
+                        {details?.product_type === 'landing-page' && landingPageData && (
+                            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border-2 border-purple-200 space-y-4">
+                                <div className="text-center">
+                                    <p className="text-sm text-purple-600 font-semibold mb-2">שלב 9 - הדומיין שלך</p>
+                                    <h2 className="text-3xl font-black text-purple-900 mb-4">🎉 מזל טוב!</h2>
+                                    <p className="text-purple-800 mb-4">זה הדומיין שלך:</p>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 flex items-center justify-between">
+                                    <span className="text-xl font-bold text-gray-900">{landingPageData.domain}</span>
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(landingPageData.domain);
+                                            toast.success('הדומיין הועתק!');
+                                        }}
+                                        className="hover:bg-purple-100"
+                                    >
+                                        <Copy className="w-5 h-5 text-purple-600" />
+                                    </Button>
+                                </div>
+                                <a 
+                                    href={`https://${landingPageData.domain}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="block"
+                                >
+                                    <Button className="w-full h-11 bg-purple-600 hover:bg-purple-700 text-white font-bold">
+                                        לדומיין שלך 🔗
+                                    </Button>
+                                </a>
+                            </div>
+                        )}
+
                         {/* Messages */}
                         <div className="space-y-3">
                             {details?.product_type === 'plan' && (
@@ -158,7 +193,7 @@ export default function CheckoutSuccess() {
                             {details?.product_type === 'landing-page' && (
                                 <div className="bg-green-50 p-4 rounded-lg">
                                     <p className="text-green-900">
-                                        🚀 הדף שלך פורסם לאוויר! מייד תוביל לדומיין המקורי...
+                                        🚀 הדף שלך פורסם לאוויר!
                                     </p>
                                 </div>
                             )}
