@@ -444,8 +444,8 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                 </div>
               </TabsContent>
             </Tabs>
-            <Button onClick={handleSubmit} className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
-              הצור פרויקט וברך עתה
+            <Button onClick={handleGenerate} className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
+              צור וריאציות של לוגו
             </Button>
           </div>
         </div>
@@ -513,11 +513,11 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
           <div className="flex-none pt-2 mt-auto">
             <Button 
-              onClick={handleSubmit} 
+              onClick={handleGenerate} 
               className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg shadow-purple-100"
             >
               <Wand2 className="w-4 h-4 ml-2" />
-              צור פרויקט
+              צור וריאציות
             </Button>
           </div>
         </MobileWizardStep>
