@@ -496,14 +496,14 @@ export default function CloseOsekPaturComprehensive() {
         {/* Lead Form Modal */}
         {showLeadForm && (
           <>
-            <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowLeadForm(false)} />
+            <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center" onClick={() => setShowLeadForm(false)} />
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl shadow-2xl w-11/12 sm:w-full sm:max-w-md"
+              className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
             >
-              <div className="p-8">
+              <div className="bg-white rounded-2xl shadow-2xl w-11/12 sm:w-96 pointer-events-auto p-6 sm:p-8">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-2xl font-black text-[#1E3A5F]">סגירת עוסק פטור</h3>
                   <button
