@@ -16,8 +16,8 @@ const ScrollCTAHandler = () => {
       const scrolled = window.scrollY;
       const percent = docHeight > 0 ? (scrolled / docHeight) * 100 : 0;
 
-      // Popup אחרי 65%
-      if (percent >= 65 && !hasShownPopup65) {
+      // Popup אחרי 25%
+      if (percent >= 25 && !hasShownPopup65) {
         setShowPopup65(true);
         setHasShownPopup65(true);
       }
@@ -62,7 +62,7 @@ const ScrollCTAHandler = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowPopup65(false)}
-              className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+              className="fixed inset-0 bg-black/50 z-50"
             />
 
             {/* Popup */}
@@ -70,7 +70,7 @@ const ScrollCTAHandler = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-sm mx-auto z-50 lg:fixed lg:right-4 lg:bottom-6 lg:top-auto lg:-translate-y-0"
+              className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-sm mx-auto z-50"
             >
               <div className="bg-white rounded-2xl shadow-2xl p-6 space-y-4">
                 <div className="flex items-start justify-between gap-3 mb-2">
