@@ -140,7 +140,7 @@ export default function CheckoutSuccess() {
                         )}
 
                         {/* Step 9: Domain Display */}
-                        {details?.product_type === 'landing-page' && details?.product_id && (
+                        {publishedUrl && (
                             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border-2 border-purple-200 space-y-4">
                                 <div className="text-center">
                                     <p className="text-sm text-purple-600 font-semibold mb-2">שלב 9 - הדומיין שלך</p>
@@ -148,12 +148,12 @@ export default function CheckoutSuccess() {
                                     <p className="text-purple-800 mb-4">זה הדומיין שלך:</p>
                                 </div>
                                 <div className="bg-white rounded-lg p-4 flex items-center justify-between">
-                                    <span className="text-xl font-bold text-gray-900">{details.product_id}.base44.app</span>
+                                    <span className="text-xl font-bold text-gray-900">{publishedUrl}</span>
                                     <Button
                                         size="icon"
                                         variant="ghost"
                                         onClick={() => {
-                                            navigator.clipboard.writeText(`${details.product_id}.base44.app`);
+                                            navigator.clipboard.writeText(publishedUrl);
                                             toast.success('הדומיין הועתק!');
                                         }}
                                         className="hover:bg-purple-100"
@@ -162,7 +162,7 @@ export default function CheckoutSuccess() {
                                     </Button>
                                 </div>
                                 <a 
-                                    href={`https://${details.product_id}.base44.app`} 
+                                    href={publishedUrl} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
                                     className="block"
