@@ -31,6 +31,7 @@ export default function OsekPaturSteps() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [user, setUser] = useState(null);
+  const [focusedField, setFocusedField] = useState(null);
 
   useEffect(() => {
     const loadUser = async () => {
