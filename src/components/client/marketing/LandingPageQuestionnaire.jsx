@@ -1016,70 +1016,95 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     }
   };
 
-  {/* Success Modal - Thank You */}
+  {/* Success Modal - Published to Air */}
   <AnimatePresence>
     {publishedUrl && (
       <Dialog open={!!publishedUrl} onOpenChange={(open) => !open && setPublishedUrl(null)}>
-        <DialogContent className="max-w-lg rounded-3xl border-0 shadow-2xl bg-gradient-to-b from-white to-slate-50">
-          <div className="text-center py-8 px-6 space-y-6">
-            {/* Success Icon */}
-            <div className="relative flex justify-center">
-              <div className="absolute inset-0 bg-green-100 blur-2xl opacity-50 rounded-full" />
-              <div className="relative w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg">
-                <CheckCircle2 className="w-10 h-10" />
+        <DialogContent className="max-w-lg rounded-3xl border-0 shadow-2xl bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 200 }}
+            className="text-center py-8 px-6 space-y-6"
+          >
+            {/* Success Icon with Animation */}
+            <motion.div 
+              className="relative flex justify-center"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring" }}
+            >
+              <div className="absolute inset-0 bg-green-100 blur-2xl opacity-50 rounded-full animate-pulse" />
+              <div className="relative w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                >
+                  <CheckCircle2 className="w-12 h-12" />
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Message */}
-            <div className="space-y-2">
-              <h2 className="text-3xl font-black text-slate-900">תודה על הרכישה! 🎉</h2>
-              <p className="text-slate-600 text-lg">הדף שלך פורסם בהצלחה</p>
-            </div>
+            <motion.div 
+              className="space-y-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <h2 className="text-4xl font-black text-slate-900">הדף שלך באוויר 🚀</h2>
+              <p className="text-slate-600 text-base">מעוניינים שזה קורה? הנה הקישור שלך:</p>
+            </motion.div>
 
             {/* URL Box */}
-            <div className="bg-white border-2 border-green-200 rounded-2xl p-6 space-y-3">
-              <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">הנה הקישור שלך:</div>
-              <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <motion.div 
+              className="bg-white border-2 border-green-200 rounded-2xl p-6 space-y-3"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">קישור ייחודי שלך:</div>
+              <div className="flex items-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <code className="flex-1 font-mono text-sm font-bold text-green-700 break-all">{publishedUrl}</code>
-                <button
+                <motion.button
                   onClick={() => {
                     navigator.clipboard.writeText(publishedUrl);
                     alert('✓ קישור הועתק!');
                   }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                   className="flex-shrink-0 p-3 hover:bg-slate-200 rounded-lg transition-colors"
                   title="העתק קישור"
                 >
                   <Copy className="w-5 h-5 text-slate-600" />
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-3 pt-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
               <Button
-                onClick={() => {
-                  window.open(publishedUrl, '_blank');
-                  setPublishedUrl(null);
-                  setTimeout(() => handlePurchase(), 300);
-                }}
+                onClick={() => window.open(publishedUrl, '_blank')}
                 className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg"
               >
-                צפה בדף
+                פתח את הדף
                 <ExternalLink className="w-4 h-4 mr-2" />
               </Button>
               <Button
-                onClick={() => {
-                  setPublishedUrl(null);
-                  setTimeout(() => handlePurchase(), 300);
-                }}
+                onClick={() => setPublishedUrl(null)}
                 variant="outline"
                 className="flex-1 h-12 rounded-xl font-bold"
               >
-                המשך לתשלום
-                <ChevronLeft className="w-4 h-4 mr-2" />
+                סגור
+                <X className="w-4 h-4 mr-2" />
               </Button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </DialogContent>
       </Dialog>
     )}
@@ -1245,25 +1270,20 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     </div>
 
                     <div className="flex flex-col gap-3 w-full">
-                       {/* URL Display with Copy Button */}
+                       {/* Preview Link */}
                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
-                          <div className="text-[10px] text-slate-500 font-bold mb-2">הדף שלך זמין בכתובת:</div>
+                          <div className="text-[10px] text-slate-500 font-bold mb-2">תצוגה מקדימה (פנימית בלבד):</div>
                           <div className="flex items-center gap-2">
-                            <div className="flex-1 min-w-0 bg-white rounded-lg p-3 border border-blue-100 font-mono text-sm font-bold text-blue-600 truncate">
-                              {(() => {
-                                const url = localStorage.getItem('landingPageUrl') || `${window.location.host}/LP/${pageSlug}`;
-                                return url.replace('https://', '').replace('http://', '');
-                              })()}
+                            <div className="flex-1 min-w-0 bg-white rounded-lg p-3 border border-blue-100 font-mono text-xs font-bold text-blue-600 truncate">
+                              preview-sandbox
                             </div>
                             <Button 
                               onClick={() => {
-                                const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
-                                navigator.clipboard.writeText(url);
-                                alert('✓ קישור הועתק!');
+                                window.open(`/preview/${createdPageData?.id}`, '_blank');
                               }}
-                              className="h-12 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold flex-shrink-0"
+                              className="h-12 px-4 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg font-bold flex-shrink-0"
                             >
-                              <Copy className="w-4 h-4" />
+                              <Eye className="w-4 h-4" />
                             </Button>
                           </div>
                        </div>
