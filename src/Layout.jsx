@@ -55,8 +55,8 @@ export default function Layout({ children, currentPageName }) {
           />
           <WebVitalsMonitor />
 
-          <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
-            <main>
+          <div className="min-h-screen bg-[#F8F9FA] w-screen overflow-x-hidden" dir="rtl">
+            <main className="w-full overflow-x-hidden">
               {children}
             </main>
             <div className="hidden md:block">
