@@ -302,7 +302,6 @@ export default function OsekPaturSteps() {
                    value={formData.email}
                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                    className="h-12 rounded-xl border-2"
-                   required
                  />
                  <Button
                    type="submit"
