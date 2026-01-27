@@ -1119,41 +1119,48 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                         <p>טוען תצוגה...</p>
                       </div>
                    ) : (
-                      <div className="w-full h-full max-w-5xl bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col relative group transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
-                          {/* Browser Mockup Header */}
-                          <div className="h-8 bg-slate-100 border-b border-slate-200 flex items-center px-3 gap-2">
+                      <div className="w-full max-w-5xl aspect-[16/10] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col relative group transition-all hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
+                          {/* Browser Toolbar */}
+                          <div className="h-10 bg-slate-100 border-b border-slate-200 flex items-center px-4 gap-3 shrink-0">
                              <div className="flex gap-1.5">
-                               <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                               <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                               <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                               <div className="w-3 h-3 rounded-full bg-[#ff5f57] border border-[#e0443e]" />
+                               <div className="w-3 h-3 rounded-full bg-[#febc2e] border border-[#d8a126]" />
+                               <div className="w-3 h-3 rounded-full bg-[#28c840] border border-[#1aac2f]" />
                              </div>
-                             <div className="flex-1 text-center">
-                                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-white rounded text-[10px] text-slate-400 border border-slate-200 font-mono">
-                                   <Lock className="w-2.5 h-2.5" />
-                                   {window.location.host}/LP/{pageSlug}
+                             <div className="flex-1 flex justify-center px-4">
+                                <div className="h-7 w-full max-w-lg bg-white border border-slate-200 rounded-md flex items-center justify-center gap-2 text-xs text-slate-500 font-mono shadow-sm">
+                                   <Lock className="w-3 h-3 opacity-50" />
+                                   <span className="opacity-50">https://</span>
+                                   <span>{window.location.host}/LP/{pageSlug}</span>
                                 </div>
                              </div>
                           </div>
                           
-                          {/* Scrollable Preview */}
-                          <div className="flex-1 relative overflow-hidden bg-white cursor-default">
-                             {/* Content Scaler */}
-                             <div className="w-full h-full overflow-y-auto custom-scrollbar relative">
-                                <div className="origin-top-left transform-gpu">
-                                   <DynamicLandingPage data={createdPageData} isThumbnail={true} />
-                                </div>
+                          {/* Viewport */}
+                          <div className="flex-1 relative bg-white w-full overflow-hidden group cursor-zoom-in" onClick={() => setIsFullPreviewOpen(true)}>
+                             <div className="absolute inset-0 w-[1280px] h-[800px] origin-top-left transform-gpu pointer-events-none select-none"
+                                  ref={el => {
+                                      if (!el || !el.parentElement) return;
+                                      const resize = () => {
+                                          const parent = el.parentElement;
+                                          if (parent) {
+                                              const scale = parent.offsetWidth / 1280;
+                                              el.style.transform = `scale(${scale})`;
+                                          }
+                                      };
+                                      new ResizeObserver(resize).observe(el.parentElement);
+                                      resize();
+                                  }}
+                             >
+                                <DynamicLandingPage data={createdPageData} isThumbnail={true} />
                              </div>
 
-                             {/* Hover Overlay with Maximize */}
-                             <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                <Button 
-                                  size="sm" 
-                                  className="bg-slate-900/90 hover:bg-slate-900 text-white shadow-lg backdrop-blur gap-2"
-                                  onClick={() => setIsFullPreviewOpen(true)}
-                                >
-                                  <Maximize2 className="w-4 h-4" />
-                                  הגדל למסך מלא
-                                </Button>
+                             {/* Overlay for Click */}
+                             <div className="absolute inset-0 bg-slate-900/0 hover:bg-slate-900/5 transition-all duration-300 flex items-center justify-center">
+                                <div className="bg-white/90 backdrop-blur-md text-slate-900 px-6 py-3 rounded-full font-bold shadow-2xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 border border-white/20">
+                                   <Maximize2 className="w-4 h-4" />
+                                   לחץ לתצוגה מלאה
+                                </div>
                              </div>
                           </div>
                       </div>
