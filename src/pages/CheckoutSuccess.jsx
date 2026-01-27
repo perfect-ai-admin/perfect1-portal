@@ -64,6 +64,7 @@ export default function CheckoutSuccess() {
 
                               if (publishResult.data.success) {
                                   console.log('Landing page published:', publishResult.data.url);
+                                  setPublishedUrl(publishResult.data.url);
                                   // Fetch landing page details
                                   const pages = await base44.entities.LandingPage.filter({ id: payment.product_id });
                                   if (pages.length > 0) {

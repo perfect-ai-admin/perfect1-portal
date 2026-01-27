@@ -6,8 +6,10 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        console.log('publishLandingPage function invoked by user:', user.email);
 
         const { landingPageId, action = 'publish' } = await req.json();
+        console.log(`Action: ${action}, LandingPageId: ${landingPageId}`);
         
         if (!landingPageId) {
             return Response.json({ error: 'Landing page ID required' }, { status: 400 });
@@ -36,6 +38,7 @@ Deno.serve(async (req) => {
         // Action: publish to air (requires paid status)
         if (action === 'publish' || !action) {
             if (page.status !== 'paid') {
+                console.error(`Attempted to publish unpaid page: ${landingPageId}`);
                 return Response.json({ error: 'Only paid pages can be published' }, { status: 400 });
             }
 
@@ -75,6 +78,7 @@ Deno.serve(async (req) => {
             // Generate the public domain URL
             const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
             const publicUrl = `https://${publicDomain}/${finalSlug}`;
+            console.log(`Final published URL: ${publicUrl}`);
 
             return Response.json({
                 success: true,
