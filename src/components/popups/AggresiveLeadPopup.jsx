@@ -96,7 +96,7 @@ export default function AggresiveLeadPopup({ isOpen, onClose }) {
                 השאר פרטים ואנחנו נטפל בפתיחת העוסק הפטור שלך תוך 48 שעות בלבד
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-3">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   placeholder="שם מלא"
                   value={formData.name}
@@ -104,14 +104,58 @@ export default function AggresiveLeadPopup({ isOpen, onClose }) {
                   className="h-11 rounded-lg border-2"
                   required
                 />
-                <Input
-                  type="tel"
-                  placeholder="טלפון"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="h-11 rounded-lg border-2"
-                  required
-                />
+
+                {/* Phone & Email Row */}
+                {showSuggestions && user ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      className="flex-1 h-11 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg"
+                    />
+                    <div className="flex-1 flex flex-col gap-1 text-center">
+                      <div className="flex items-center justify-center gap-2 text-xs">
+                        <Phone className="w-4 h-4 text-green-600" />
+                        <span className="font-semibold text-gray-800">{user.phone}</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2 text-xs">
+                        <Mail className="w-4 h-4 text-green-600" />
+                        <span className="font-semibold text-gray-800">{user.email}</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData({ ...formData, phone: user.phone, email: user.email });
+                        setShowSuggestions(false);
+                      }}
+                      className="flex-1 h-11 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg"
+                    >
+                      בחר
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <Input
+                      type="tel"
+                      placeholder="טלפון"
+                      value={formData.phone}
+                      onFocus={() => user && setShowSuggestions(true)}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="h-11 rounded-lg border-2"
+                      required
+                    />
+                    <Input
+                      type="email"
+                      placeholder="מייל"
+                      value={formData.email}
+                      onFocus={() => user && setShowSuggestions(true)}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="h-11 rounded-lg border-2"
+                      required
+                    />
+                  </>
+                )}
+
                 <Button
                   type="submit"
                   disabled={isSubmitting}
