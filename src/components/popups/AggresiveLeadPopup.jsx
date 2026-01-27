@@ -56,7 +56,7 @@ export default function AggresiveLeadPopup({ isOpen, onClose }) {
             initial={{ opacity: 0, scale: 0.9, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 50 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md mx-4"
+            className="fixed inset-0 flex items-center justify-center z-50 p-4"
           >
             <div className="bg-white rounded-2xl shadow-2xl p-6 relative">
               <button
