@@ -1,5 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+const N8N_WEBHOOK_URL = 'https://n8n.perfect-1.one/webhook-test/ddaa0a65-743e-4679-8b5a-89be8520f763/webhook';
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -10,7 +12,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Phone is required' }, { status: 400 });
         }
 
-        // Save lead directly to Base44 database
+        // Prepare lead data for Base44
         const leadData = {
             name: name || 'אתר',
             phone: phone.trim(),
@@ -22,20 +24,46 @@ Deno.serve(async (req) => {
             priority: 'medium'
         };
 
-        // Create lead in database
-        const lead = await base44.asServiceRole.entities.Lead.create(leadData);
+        // Prepare data for N8N
+        const n8nData = {
+            name: name || 'אתר',
+            phone,
+            email: email || '',
+            message: message || '',
+            pageSlug,
+            businessName,
+            timestamp: new Date().toISOString(),
+            source: 'landing-page',
+            status: 'new'
+        };
+
+        // Send to both destinations in parallel
+        const [leadResult, n8nResult] = await Promise.all([
+            base44.asServiceRole.entities.Lead.create(leadData),
+            fetch(N8N_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(n8nData)
+            })
+        ]);
+
+        // Check N8N response
+        if (!n8nResult.ok) {
+            console.warn('N8N webhook warning:', n8nResult.status);
+        }
 
         return Response.json({
             success: true,
-            message: 'Lead saved successfully',
-            leadId: lead.id
+            message: 'Lead saved to LeadsAdmin and sent to N8N',
+            leadId: leadResult.id,
+            n8nStatus: n8nResult.status
         });
 
     } catch (error) {
         console.error('submitLeadToN8N error:', error);
         return Response.json({ 
             error: error.message,
-            details: 'Failed to save lead'
+            details: 'Failed to process lead'
         }, { status: 500 });
     }
 });
