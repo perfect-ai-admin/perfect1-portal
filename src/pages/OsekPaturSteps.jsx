@@ -26,10 +26,25 @@ export default function OsekPaturSteps() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    profession: ''
+    email: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        if (currentUser) {
+          setUser(currentUser);
+        }
+      } catch (err) {
+        // User not logged in
+      }
+    };
+    loadUser();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
