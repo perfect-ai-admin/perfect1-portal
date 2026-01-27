@@ -29,8 +29,8 @@ export default function AggresiveLeadPopup({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.phone.trim() || !formData.name.trim()) {
-      toast.error('נא למלא שם וטלפון');
+    if (!formData.phone.trim() || !formData.name.trim() || !formData.email.trim()) {
+      toast.error('נא למלא שם, טלפון ומייל');
       return;
     }
 
@@ -39,14 +39,15 @@ export default function AggresiveLeadPopup({ isOpen, onClose }) {
       const response = await base44.functions.invoke('submitLeadToN8N', {
         name: formData.name,
         phone: formData.phone,
-        email: '',
+        email: formData.email,
         message: 'פתיחת תיק תוך 48 שעות',
         pageSlug: 'osek-patur-steps',
         businessName: 'Perfect One - Osek Patur'
       });
 
       if (response.data.success) {
-        setFormData({ name: '', phone: '' });
+        setFormData({ name: '', phone: '', email: '' });
+        setShowSuggestions(false);
         onClose();
         toast.success('נקלטנו! נחזור אליך בקרוב');
       }
