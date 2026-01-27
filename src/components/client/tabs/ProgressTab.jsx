@@ -3,45 +3,6 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import JourneyTimeline from '../progress/JourneyTimeline';
-
-const MILESTONES = [
-  {
-    id: 'registration',
-    title: 'רישום עוסק פטור',
-    description: 'פתיחת תיק במס הכנסה וביטוח לאומי',
-    order: 1
-  },
-  {
-    id: 'first_invoice',
-    title: 'חשבונית ראשונה',
-    description: 'יצירה והנפקה של החשבונית הראשונה שלך',
-    order: 2
-  },
-  {
-    id: 'first_client_payment',
-    title: 'תשלום ראשון מלקוח',
-    description: 'קבלת התשלום הראשון על העבודה שלך',
-    order: 3
-  },
-  {
-    id: 'monthly_report',
-    title: 'דיווח חודשי ראשון',
-    description: 'השלמת דיווח חודשי ראשון לרשויות',
-    order: 4
-  },
-  {
-    id: 'steady_income',
-    title: 'הכנסה קבועה',
-    description: '3 חודשים רצופים עם הכנסה',
-    order: 5
-  },
-  {
-    id: 'annual_report',
-    title: 'דוח שנתי ראשון',
-    description: 'השלמת דוח שנתי ראשון לרשויות המס',
-    order: 6
-  }
-];
 import NextStepCard from '../progress/NextStepCard';
 import StepImportancePanel from '../progress/StepImportancePanel';
 import QuickStatsBar from '../progress/QuickStatsBar';
