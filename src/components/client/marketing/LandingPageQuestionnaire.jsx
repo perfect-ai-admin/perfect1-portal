@@ -1208,10 +1208,20 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                           </div>
                           <Button 
                              onClick={() => handlePurchase()}
-                             className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold"
+                             disabled={isPublishing}
+                             className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold disabled:opacity-50"
                           >
-                             קנה והפעל
-                             <CreditCard className="w-4 h-4 mr-2" />
+                             {isPublishing ? (
+                                <>
+                                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                   מעבד...
+                                </>
+                             ) : (
+                                <>
+                                   קנה והפעל
+                                   <CreditCard className="w-4 h-4 mr-2" />
+                                </>
+                             )}
                           </Button>
                        </div>
                     </div>
