@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
             // Idempotency: if already published, return existing URL
             if (page.status === 'published' && page.slug) {
                 const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
-                const publicUrl = `https://${publicDomain}/${page.slug}`;
+                const publicUrl = `https://${publicDomain}/lp/${page.slug}`;
                 console.log(`[IDEMPOTENT] Page already published, returning URL: ${publicUrl}`);
                 return Response.json({
                     success: true,
@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
 
             // Generate the public domain URL
             const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
-            const publicUrl = `https://${publicDomain}/${finalSlug}`;
+            const publicUrl = `https://${publicDomain}/lp/${finalSlug}`;
             console.log(`[SUCCESS] Final published URL: ${publicUrl} (slug: ${finalSlug})`);
 
             return Response.json({
