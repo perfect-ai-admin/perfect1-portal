@@ -854,82 +854,133 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 8:
         return (
-          <div className="space-y-4">
+          <div className="flex flex-col h-full">
             <StepHeader 
-              icon={Eye} 
+              icon={CheckCircle2} 
               title="סקירה אחרונה" 
-              description="בדוק שהכל נכון לפני שממשיכים"
+              description="בוא נוודא שכל הפרטים מדויקים לפני שבונים את הדף"
               colorClass="bg-indigo-100 text-indigo-600"
             />
 
-            <div className="space-y-3 max-h-[400px] overflow-y-auto px-1">
+            <div className="flex-1 overflow-y-auto px-1 py-1 space-y-3 max-h-[50vh] scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+              
               {/* Business Info */}
-              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Building2 className="w-4 h-4 text-blue-600" />
-                  <span className="font-bold text-xs text-blue-900">פרטי העסק</span>
+              <div className="bg-blue-50/50 rounded-xl border border-blue-100 p-4 hover:border-blue-300 transition-all duration-200">
+                <div className="flex items-center justify-between mb-3 border-b border-blue-100 pb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                      <Building2 className="w-4 h-4" />
+                    </div>
+                    <span className="font-bold text-sm text-blue-900">פרטי העסק</span>
+                  </div>
+                  <button onClick={() => setCurrentStep(1)} className="text-blue-400 hover:text-blue-600 transition-colors">
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                <div className="space-y-1 text-xs text-gray-700">
-                  <p><strong>שם:</strong> {formData.businessName}</p>
-                  <p><strong>תחום:</strong> {formData.mainField}</p>
-                  <p><strong>קהל יעד:</strong> {formData.targetAudience.join(', ') || formData.targetAudienceOther}</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 text-xs">שם העסק:</span>
+                    <span className="font-medium text-gray-900">{formData.businessName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 text-xs">תחום:</span>
+                    <span className="font-medium text-gray-900">{formData.mainField}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 text-xs">קהל יעד:</span>
+                    <span className="font-medium text-gray-900 text-left truncate max-w-[150px]">{formData.targetAudience.join(', ') || formData.targetAudienceOther}</span>
+                  </div>
                 </div>
               </div>
 
               {/* Pain & Solution */}
-              <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Zap className="w-4 h-4 text-green-600" />
-                  <span className="font-bold text-xs text-green-900">הכאב והפתרון</span>
+              <div className="bg-green-50/50 rounded-xl border border-green-100 p-4 hover:border-green-300 transition-all duration-200">
+                <div className="flex items-center justify-between mb-3 border-b border-green-100 pb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                      <Zap className="w-4 h-4" />
+                    </div>
+                    <span className="font-bold text-sm text-green-900">הכאב והפתרון</span>
+                  </div>
+                  <button onClick={() => setCurrentStep(2)} className="text-green-400 hover:text-green-600 transition-colors">
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                <div className="space-y-1 text-xs text-gray-700">
-                  <p><strong>כאב:</strong> {formData.painPoints}</p>
-                  <p><strong>פתרון:</strong> {formData.serviceOffered}</p>
+                <div className="space-y-3">
+                  <div className="bg-white/60 p-2.5 rounded-lg border border-green-100/50">
+                    <span className="text-[10px] font-bold text-green-700 block mb-1">הכאב של הלקוח</span>
+                    <p className="text-sm text-gray-800 leading-snug">{formData.painPoints}</p>
+                  </div>
+                  <div className="bg-white/60 p-2.5 rounded-lg border border-green-100/50">
+                    <span className="text-[10px] font-bold text-green-700 block mb-1">הפתרון שלך</span>
+                    <p className="text-sm text-gray-800 leading-snug">{formData.serviceOffered}</p>
+                  </div>
                 </div>
               </div>
 
               {/* CTA */}
-              <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Send className="w-4 h-4 text-purple-600" />
-                  <span className="font-bold text-xs text-purple-900">קריאה לפעולה</span>
+              <div className="bg-purple-50/50 rounded-xl border border-purple-100 p-4 hover:border-purple-300 transition-all duration-200">
+                <div className="flex items-center justify-between mb-3 border-b border-purple-100 pb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                      <Send className="w-4 h-4" />
+                    </div>
+                    <span className="font-bold text-sm text-purple-900">קריאה לפעולה</span>
+                  </div>
+                  <button onClick={() => setCurrentStep(5)} className="text-purple-400 hover:text-purple-600 transition-colors">
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-                <div className="space-y-1 text-xs text-gray-700">
-                  <p><strong>סוג:</strong> {formData.ctaTypes.join(', ')}</p>
-                  <p><strong>טקסט:</strong> {formData.ctaText}</p>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-500 text-xs block mb-1">כפתורים</span>
+                    <span className="font-medium text-gray-900 bg-white px-2 py-1 rounded border border-purple-100 inline-block">{formData.ctaTypes.join(', ')}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 text-xs block mb-1">טקסט הנעה</span>
+                    <span className="font-medium text-gray-900 bg-white px-2 py-1 rounded border border-purple-100 inline-block">{formData.ctaText}</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Design */}
-              <div className="bg-pink-50 rounded-lg p-3 border border-pink-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Paintbrush className="w-4 h-4 text-pink-600" />
-                  <span className="font-bold text-xs text-pink-900">עיצוב</span>
+              {/* Design & Tech */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-pink-50/50 rounded-xl border border-pink-100 p-3 hover:border-pink-300 transition-all duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1.5">
+                      <Paintbrush className="w-3.5 h-3.5 text-pink-600" />
+                      <span className="font-bold text-xs text-pink-900">עיצוב</span>
+                    </div>
+                    <button onClick={() => setCurrentStep(6)} className="text-pink-400 hover:text-pink-600">
+                      <Pencil className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-700"><strong>סגנון:</strong> {formData.pageStyle}</p>
+                  <p className="text-xs text-gray-700 mt-1"><strong>לוגו:</strong> {formData.logoStatus === 'uploaded' ? '✅ הועלה' : '⏳ בהמשך'}</p>
                 </div>
-                <div className="space-y-1 text-xs text-gray-700">
-                  <p><strong>סגנון:</strong> {formData.pageStyle}</p>
-                  <p><strong>לוגו:</strong> {formData.logoStatus === 'uploaded' ? 'הועלה' : formData.logoStatus === 'later' ? 'בהמשך' : 'לא הוגדר'}</p>
+
+                <div className="bg-teal-50/50 rounded-xl border border-teal-100 p-3 hover:border-teal-300 transition-all duration-200">
+                   <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5 text-teal-600" />
+                      <span className="font-bold text-xs text-teal-900">הגדרות</span>
+                    </div>
+                    <button onClick={() => setCurrentStep(7)} className="text-teal-400 hover:text-teal-600">
+                      <Pencil className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-700 truncate"><strong>יעד:</strong> {formData.leadDestination}</p>
+                  <p className="text-xs text-gray-700 mt-1 truncate"><strong>שדות:</strong> {formData.formFields.length}</p>
                 </div>
               </div>
 
-              {/* Lead Destination */}
-              <div className="bg-teal-50 rounded-lg p-3 border border-teal-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Layers className="w-4 h-4 text-teal-600" />
-                  <span className="font-bold text-xs text-teal-900">הגדרות טכניות</span>
-                </div>
-                <div className="space-y-1 text-xs text-gray-700">
-                  <p><strong>שדות טופס:</strong> {formData.formFields.join(', ')}</p>
-                  <p><strong>יעד:</strong> {formData.leadDestination}</p>
-                  {formData.destinationPhone && <p><strong>טלפון:</strong> {formData.destinationPhone}</p>}
-                  {formData.destinationEmail && <p><strong>מייל:</strong> {formData.destinationEmail}</p>}
-                </div>
-              </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-blue-900">רוצה לשנות משהו? לחץ על הנקודות למעלה כדי לחזור לשלב מסוים</p>
+            <div className="mt-4 bg-indigo-50 border border-indigo-100 rounded-xl p-3 flex items-center gap-3 animate-pulse-glow">
+              <div className="bg-white p-1.5 rounded-full shadow-sm">
+                <Info className="w-4 h-4 text-indigo-600" />
+              </div>
+              <p className="text-xs text-indigo-900 font-medium">הכל נראה טוב? לחץ על "סיים ובנה" ונתחיל במלאכה! 🚀</p>
             </div>
           </div>
         );
