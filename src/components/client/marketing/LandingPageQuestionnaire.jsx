@@ -137,6 +137,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         if (formData.whyChooseYou.length === 0 && !formData.whyChooseYouOther) newErrors.whyChooseYou = 'מה היתרון שלך?';
         if (!formData.processSteps.trim()) newErrors.processSteps = 'איך זה עובד?';
         break;
+      case 4:
+        // Step 4 is optional - no validation needed
+        break;
       case 5:
         if (formData.ctaTypes.length === 0) newErrors.ctaTypes = 'בחר לפחות דרך אחת ליצירת קשר';
         if (!formData.ctaText) newErrors.ctaText = 'מה כתוב על הכפתור?';
@@ -270,6 +273,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         }
       } catch (error) {
         console.error("Error creating landing page:", error);
+        alert('אירעה שגיאה ביצירת הדף. אנא נסה שוב.');
+        setIsBuilding(false);
+        return;
         setPageSlug('demo-error');
         // Mock data for preview
         setCreatedPageData({
@@ -432,6 +438,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   onChange={(e) => handleInputChange('serviceOffered', e.target.value)} 
                   placeholder="אני עוזר ל... לעשות... כדי ש..." 
                   className={cn("h-9 text-xs", errors.serviceOffered && 'border-red-500')} 
+                  autoFocus
                 />
               </div>
 
@@ -459,6 +466,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} 
                   className="bg-gray-50 h-8 text-xs"
                 />
+                {errors.whyChooseYou && <p className="text-red-500 text-[10px]">{errors.whyChooseYou}</p>}
               </div>
 
               <div className="space-y-1">
@@ -470,6 +478,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   placeholder="שלב 1 -> שלב 2 -> שלב 3" 
                   className={cn("h-9 text-xs", errors.processSteps && 'border-red-500')} 
                 />
+                {errors.processSteps && <p className="text-red-500 text-[10px]">{errors.processSteps}</p>}
               </div>
             </div>
           </div>
@@ -501,6 +510,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     value={formData.experienceYears} 
                     onChange={(e) => handleInputChange('experienceYears', e.target.value)} 
                     className="mr-8 w-[calc(100%-2rem)] h-8 text-xs"
+                    autoFocus
                   />
                 </motion.div>
               )}
@@ -527,10 +537,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     value={formData.testimonialText} 
                     onChange={(e) => handleInputChange('testimonialText', e.target.value)} 
                     className="mr-8 w-[calc(100%-2rem)] min-h-[50px] text-xs"
+                    autoFocus
                   />
                 </motion.div>
               )}
             </div>
+            <p className="text-[10px] text-gray-400 mt-2">* שלב אופציונלי - ניתן לדלג</p>
           </div>
         );
 
@@ -664,14 +676,16 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   </div>
 
                   <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={onSwitchToLogo}
-                      className="flex-1 py-2 px-2 bg-pink-600 text-white rounded-lg text-xs font-bold hover:bg-pink-700 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-                    >
-                      <Paintbrush className="w-3 h-3" />
-                      עצב לוגו
-                    </button>
+                    {onSwitchToLogo && (
+                      <button
+                        type="button"
+                        onClick={onSwitchToLogo}
+                        className="flex-1 py-2 px-2 bg-pink-600 text-white rounded-lg text-xs font-bold hover:bg-pink-700 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                      >
+                        <Paintbrush className="w-3 h-3" />
+                        עצב לוגו
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleInputChange('logoStatus', 'later')}
@@ -822,7 +836,16 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
           </button>
           <div className="flex flex-col">
             <span className="text-xs font-semibold text-blue-600">אשף בניית דף נחיתה</span>
-            <div className="flex gap-1">
+            <span className="text-[10px] text-gray-500">
+              {currentStep === 1 && "בסיס"}
+              {currentStep === 2 && "כאב הלקוח"}
+              {currentStep === 3 && "הפתרון"}
+              {currentStep === 4 && "הוכחות"}
+              {currentStep === 5 && "קריאה לפעולה"}
+              {currentStep === 6 && "עיצוב"}
+              {currentStep === 7 && "הגדרות"}
+            </span>
+            <div className="flex gap-1 mt-0.5">
               {Array.from({ length: totalSteps }).map((_, i) => (
                 <div 
                   key={i} 
