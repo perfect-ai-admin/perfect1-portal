@@ -282,20 +282,47 @@ export default function OsekPaturSteps() {
                    className="h-12 rounded-xl border-2"
                    required
                  />
-                 <Input
-                   type="tel"
-                   placeholder="טלפון"
-                   value={formData.phone}
-                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                   className="h-12 rounded-xl border-2"
-                   required
-                 />
-                 <Input
-                   placeholder="מקצוע (לא חובה)"
-                   value={formData.profession}
-                   onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                   className="h-12 rounded-xl border-2"
-                 />
+
+                 {user?.phone && (
+                   <button
+                     type="button"
+                     onClick={() => setFormData({ ...formData, phone: user.phone })}
+                     className="w-full h-12 px-4 rounded-xl border-2 border-blue-300 bg-blue-50 text-right text-gray-700 hover:bg-blue-100 transition-colors font-medium"
+                   >
+                     {user.phone}
+                   </button>
+                 )}
+                 {!user?.phone && (
+                   <Input
+                     type="tel"
+                     placeholder="טלפון"
+                     value={formData.phone}
+                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                     className="h-12 rounded-xl border-2"
+                     required
+                   />
+                 )}
+
+                 {user?.email && (
+                   <button
+                     type="button"
+                     onClick={() => setFormData({ ...formData, email: user.email })}
+                     className="w-full h-12 px-4 rounded-xl border-2 border-blue-300 bg-blue-50 text-right text-gray-700 hover:bg-blue-100 transition-colors font-medium"
+                   >
+                     {user.email}
+                   </button>
+                 )}
+                 {!user?.email && (
+                   <Input
+                     type="email"
+                     placeholder="מייל"
+                     value={formData.email}
+                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                     className="h-12 rounded-xl border-2"
+                     required
+                   />
+                 )}
+
                  <Button
                    type="submit"
                    disabled={isSubmitting}
