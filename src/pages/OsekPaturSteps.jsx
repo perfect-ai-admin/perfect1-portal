@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import SEOOptimized from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
@@ -11,7 +11,8 @@ import RelatedContent from '../components/seo/RelatedContent';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { CheckCircle, AlertCircle, Phone, MessageCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, AlertCircle, Phone, MessageCircle, ArrowRight, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   Accordion,
   AccordionContent,
