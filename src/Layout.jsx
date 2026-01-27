@@ -135,7 +135,7 @@ export default function Layout({ children, currentPageName }) {
       <WebVitalsMonitor />
       <div className="min-h-screen bg-[#F8F9FA]" dir="rtl">
                 <Header />
-                <main>
+                <main className="w-full">
                   {children}
                 </main>
                 <div className="hidden md:block">
