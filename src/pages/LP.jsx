@@ -15,8 +15,10 @@ export default function LP() {
         queryKey: ['publicLandingPage', slug],
         queryFn: async () => {
             if (!slug) throw new Error("No slug provided");
+            console.log('[LP] Fetching slug:', slug);
             // Use backend function to safely check "published" status bypassing RLS for public
             const res = await base44.functions.invoke('getPublicLandingPage', { slug });
+            console.log('[LP] Fetch result:', { slug, success: !!res.data, hasStatus: res.data?.status });
             return res.data;
         },
         enabled: !!slug,
