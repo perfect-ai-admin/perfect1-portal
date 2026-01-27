@@ -319,6 +319,7 @@ export default function GraphicDesignerLanding() {
             />
           </div>
         </section>
+      </>
       </main>
     </>
   );
