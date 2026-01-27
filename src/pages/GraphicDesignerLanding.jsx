@@ -261,33 +261,43 @@ export default function GraphicDesignerLanding() {
 
         {/* CTA Section */}
         <section className="py-20 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282]">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
+              className="bg-white rounded-3xl p-8 md:p-12"
             >
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-6">
-                רוצה להתחיל לעבוד כמעצב גרפי באופן חוקי?
+              <h2 className="text-2xl md:text-3xl font-black text-[#1E3A5F] text-center mb-2">
+                רוצים עוררה בכל תחליף הטמירה?
               </h2>
-              <p className="text-xl text-white/80 mb-8">
-                השאר פרטים ונחזור אליך תוך שעות עם פתרון מלא
+              <p className="text-center text-gray-600 mb-8">
+                מדרך שלוש לסוגי השקמים
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://wa.me/972502277087?text=היי, אני מעצב גרפי ואשמח לפתוח עוסק" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full sm:w-auto h-20 px-12 text-2xl font-black rounded-3xl bg-[#25D366] hover:bg-[#20b858] text-white shadow-2xl">
-                    <MessageCircle className="ml-3 w-6 h-6" />
-                    פנייה מיידית בווטסאפ
-                  </Button>
-                </a>
-                <a href="tel:0502277087">
-                  <Button variant="outline" className="w-full sm:w-auto h-20 px-12 text-2xl font-black rounded-3xl border-4 border-white bg-white text-[#1E3A5F] hover:bg-white/90 shadow-2xl">
-                    <Phone className="ml-3 w-6 h-6" />
-                    התקשר: 0502277087
-                  </Button>
-                </a>
-              </div>
-              <p className="text-white/60 mt-6">ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום</p>
+              <form className="space-y-4" onSubmit={(e) => {
+                e.preventDefault();
+                const name = e.target.name.value;
+                const phone = e.target.phone.value;
+                window.location.href = `https://wa.me/972502277087?text=שלום, שמי ${name} ומספר הטלפון שלי ${phone}`;
+              }}>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="שם מלא"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1E3A5F]"
+                />
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="מספר טלפון"
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1E3A5F]"
+                />
+                <Button type="submit" className="w-full h-12 bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-black rounded-xl">
+                  שדרג למודרניות הטמירה
+                </Button>
+              </form>
             </motion.div>
           </div>
         </section>
