@@ -61,8 +61,8 @@ export default function OsekPaturSteps() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.phone.trim() || !formData.name.trim()) {
-      toast.error('נא למלא שם וטלפון');
+    if (!formData.phone.trim() || !formData.name.trim() || !formData.email.trim()) {
+      toast.error('נא למלא שם, טלפון ומייל');
       return;
     }
 
@@ -71,15 +71,14 @@ export default function OsekPaturSteps() {
       const response = await base44.functions.invoke('submitLeadToN8N', {
         name: formData.name,
         phone: formData.phone,
-        email: '',
-        message: formData.profession || 'לא ציין מקצוע',
+        email: formData.email,
+        message: 'בקשה לפתיחת עוסק פטור',
         pageSlug: 'osek-patur-steps',
         businessName: 'Perfect One - Osek Patur'
       });
 
       if (response.data.success) {
-        setFormData({ name: '', phone: '', profession: '' });
-        // Navigate to thank you page
+        setFormData({ name: '', phone: '', email: '' });
         navigate(createPageUrl('ThankYou'));
       } else {
         toast.error('שגיאה בשליחת הלידים: ' + (response.data.error || 'שגיאה לא ידועה'));
