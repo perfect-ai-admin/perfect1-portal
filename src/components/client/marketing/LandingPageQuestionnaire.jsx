@@ -855,110 +855,172 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 8:
         return (
-          <div className="flex flex-col h-full">
-            <StepHeader 
-              icon={Sparkles} 
-              title="סיכום ואישור" 
-              description="מבט אחרון לפני שממריאים 🚀"
-              colorClass="bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
-            />
+          <div className="flex flex-col min-h-full bg-slate-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Full Page Header */}
+            <div className="bg-white border-b border-gray-100 sticky top-0 z-20 px-6 py-4 flex items-center justify-between shadow-sm">
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={handlePrev}
+                  className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">סיכום ואישור הזמנה</h2>
+                  <p className="text-sm text-slate-500">הדף שלך מוכן לבנייה 🚀</p>
+                </div>
+              </div>
+              <button 
+                onClick={onClose}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-            <div className="flex-1 overflow-y-auto px-1 py-2 space-y-4 max-h-[50vh] scrollbar-hide">
-              
-              {/* Main Card */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative group">
-                <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600" />
-                <div className="p-4 relative">
-                  <button onClick={() => setCurrentStep(1)} className="absolute top-3 left-3 p-1.5 rounded-full bg-gray-50 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-all opacity-0 group-hover:opacity-100">
-                    <Pencil className="w-3.5 h-3.5" />
-                  </button>
+            <div className="flex-1 p-6 md:p-8 overflow-y-auto">
+              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                {/* Left Column: Summary Details */}
+                <div className="md:col-span-2 space-y-6">
                   
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl shadow-inner shrink-0">
-                      🏢
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900 text-lg leading-tight">{formData.businessName}</h3>
-                      <p className="text-sm text-gray-500 mt-0.5">{formData.mainField}</p>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                          {formData.targetAudience.length > 0 ? formData.targetAudience[0] : 'קהל כללי'}
-                        </span>
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-purple-50 text-purple-700 border border-purple-100">
-                          {formData.pageStyle === 'professional' ? 'סגנון מקצועי' : 'עיצוב מותאם'}
-                        </span>
+                  {/* Business Card */}
+                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative group hover:shadow-md transition-all">
+                    <button onClick={() => setCurrentStep(1)} className="absolute top-4 left-4 p-2 rounded-full bg-gray-50 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100">
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">פרטי העסק</h3>
+                    <div className="flex items-start gap-5">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-blue-200 shrink-0">
+                        {formData.logoFile ? <img src={URL.createObjectURL(formData.logoFile)} alt="Logo" className="w-full h-full object-cover rounded-2xl" /> : '🏢'}
+                      </div>
+                      <div>
+                        <h4 className="text-2xl font-bold text-gray-900">{formData.businessName}</h4>
+                        <p className="text-gray-500 font-medium">{formData.mainField}</p>
+                        <div className="flex gap-2 mt-3">
+                          <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-bold border border-blue-100">
+                            {formData.targetAudience.length > 0 ? formData.targetAudience[0] : 'קהל כללי'}
+                          </span>
+                          <span className="px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-bold border border-purple-100">
+                            עיצוב {formData.pageStyle}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Strategy Card */}
+                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative group hover:shadow-md transition-all">
+                    <button onClick={() => setCurrentStep(2)} className="absolute top-4 left-4 p-2 rounded-full bg-gray-50 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100">
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">אסטרטגיה ומסרים</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="bg-red-50/50 p-4 rounded-xl border border-red-100">
+                        <div className="flex items-center gap-2 mb-2 text-red-600 font-bold">
+                          <AlertCircle className="w-4 h-4" />
+                          <span>הכאב (הבעיה)</span>
+                        </div>
+                        <p className="text-sm text-gray-700 leading-relaxed">{formData.painPoints}</p>
+                      </div>
+                      <div className="bg-green-50/50 p-4 rounded-xl border border-green-100">
+                         <div className="flex items-center gap-2 mb-2 text-green-600 font-bold">
+                          <Zap className="w-4 h-4" />
+                          <span>הפתרון שלך</span>
+                        </div>
+                        <p className="text-sm text-gray-700 leading-relaxed">{formData.serviceOffered}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Technical Specs */}
+                  <div className="grid grid-cols-2 gap-4">
+                     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:border-purple-200 transition-all cursor-pointer group relative" onClick={() => setCurrentStep(5)}>
+                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">הנעה לפעולה</h3>
+                        <div className="flex items-center gap-3">
+                           <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                              <Send className="w-5 h-5" />
+                           </div>
+                           <div>
+                              <div className="font-bold text-gray-900">{formData.ctaText}</div>
+                              <div className="text-xs text-gray-500">{formData.ctaTypes.length} ערוצים פעילים</div>
+                           </div>
+                        </div>
+                     </div>
+                     
+                     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:border-teal-200 transition-all cursor-pointer group relative" onClick={() => setCurrentStep(7)}>
+                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">קליטת לידים</h3>
+                        <div className="flex items-center gap-3">
+                           <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
+                              <Layers className="w-5 h-5" />
+                           </div>
+                           <div>
+                              <div className="font-bold text-gray-900">
+                                {formData.leadDestination === 'whatsapp' ? 'וואטסאפ אישי' : formData.leadDestination === 'email' ? 'דואר אלקטרוני' : 'CRM'}
+                              </div>
+                              <div className="text-xs text-gray-500">{formData.formFields.length} שדות בטופס</div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
                 </div>
+
+                {/* Right Column: Checkout Action */}
+                <div className="md:col-span-1">
+                   <div className="sticky top-24 space-y-6">
+                      
+                      {/* Price / Offer Card */}
+                      <div className="bg-slate-900 text-white rounded-3xl p-6 shadow-2xl shadow-slate-200 relative overflow-hidden">
+                          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-[80px] opacity-20 -mr-16 -mt-16"></div>
+                          <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full blur-[80px] opacity-20 -ml-16 -mb-16"></div>
+                          
+                          <div className="relative z-10">
+                             <div className="flex items-center gap-2 mb-4 opacity-80">
+                               <Sparkles className="w-5 h-5 text-yellow-400" />
+                               <span className="text-sm font-bold uppercase tracking-widest">חבילת פרימיום</span>
+                             </div>
+                             
+                             <h3 className="text-3xl font-black mb-2">דף נחיתה מושלם</h3>
+                             <ul className="space-y-3 mb-8">
+                                <li className="flex items-center gap-3 text-sm text-slate-300">
+                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> עיצוב מותאם אישית ב-AI
+                                </li>
+                                <li className="flex items-center gap-3 text-sm text-slate-300">
+                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> כתיבה שיווקית מלאה
+                                </li>
+                                <li className="flex items-center gap-3 text-sm text-slate-300">
+                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> חיבור ל-CRM ולדומיין
+                                </li>
+                                <li className="flex items-center gap-3 text-sm text-slate-300">
+                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> אחסון ותחזוקה כלולים
+                                </li>
+                             </ul>
+
+                             <div className="space-y-3">
+                                <Button 
+                                  onClick={handleSubmit}
+                                  className="w-full h-14 bg-white text-slate-900 hover:bg-blue-50 hover:scale-[1.02] transition-all font-black text-lg rounded-xl shadow-lg shadow-white/10"
+                                >
+                                  בנה את הדף שלי עכשיו 🚀
+                                </Button>
+                                <p className="text-center text-xs text-slate-400">לחיצה על הכפתור תתחיל את תהליך הבנייה</p>
+                             </div>
+                          </div>
+                      </div>
+
+                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-center">
+                         <p className="text-sm text-gray-500 mb-2">צריך לשנות משהו?</p>
+                         <Button variant="outline" onClick={() => setCurrentStep(1)} className="w-full border-gray-200 hover:bg-gray-50 text-gray-600">
+                            <Pencil className="w-4 h-4 mr-2" />
+                            ערוך פרטים
+                         </Button>
+                      </div>
+
+                   </div>
+                </div>
+
               </div>
-
-              {/* Value Proposition */}
-              <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 p-4 relative group hover:border-gray-200 transition-all">
-                <button onClick={() => setCurrentStep(2)} className="absolute top-3 left-3 p-1.5 rounded-full bg-white shadow-sm text-gray-400 hover:text-green-600 transition-all opacity-0 group-hover:opacity-100">
-                  <Pencil className="w-3.5 h-3.5" />
-                </button>
-                
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">ההצעה שלך</h4>
-                <div className="space-y-3">
-                  <div className="flex gap-3">
-                    <div className="w-1 bg-red-400 rounded-full h-auto" />
-                    <div>
-                      <span className="text-xs font-bold text-gray-900 block mb-0.5">הכאב:</span>
-                      <p className="text-xs text-gray-600 leading-relaxed bg-red-50/50 p-2 rounded-lg">{formData.painPoints}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-1 bg-green-400 rounded-full h-auto" />
-                    <div>
-                      <span className="text-xs font-bold text-gray-900 block mb-0.5">הפתרון:</span>
-                      <p className="text-xs text-gray-600 leading-relaxed bg-green-50/50 p-2 rounded-lg">{formData.serviceOffered}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tech & CTA Grid */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white rounded-2xl border border-gray-100 p-3 flex flex-col items-center text-center hover:border-purple-200 transition-all group relative cursor-pointer" onClick={() => setCurrentStep(5)}>
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mb-2">
-                    <Send className="w-4 h-4" />
-                  </div>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">הנעה לפעולה</span>
-                  <span className="text-xs font-bold text-gray-900 mt-1">{formData.ctaText}</span>
-                  <div className="mt-2 flex gap-1 justify-center">
-                    {formData.ctaTypes.map(t => (
-                      <div key={t} className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-2xl border border-gray-100 p-3 flex flex-col items-center text-center hover:border-teal-200 transition-all group relative cursor-pointer" onClick={() => setCurrentStep(7)}>
-                  <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 mb-2">
-                    <Layers className="w-4 h-4" />
-                  </div>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">קליטת לידים</span>
-                  <span className="text-xs font-bold text-gray-900 mt-1">
-                    {formData.leadDestination === 'whatsapp' ? 'לוואטסאפ' : formData.leadDestination === 'email' ? 'למייל' : 'ל-CRM'}
-                  </span>
-                  <span className="text-[10px] text-gray-500 mt-0.5">{formData.formFields.length} שדות</span>
-                </div>
-              </div>
-
-            </div>
-
-            <div className="mt-4">
-               <div className="bg-gray-900 text-white rounded-xl p-4 shadow-lg shadow-gray-200 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm animate-pulse">
-                      <Sparkles className="w-5 h-5 text-yellow-400" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm">מוכן להמראה?</p>
-                      <p className="text-[10px] text-gray-400">ה-AI שלנו יבנה את הדף תוך שניות</p>
-                    </div>
-                  </div>
-               </div>
             </div>
           </div>
         );
@@ -971,7 +1033,10 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   return (
     <div className="flex flex-col h-full bg-white relative">
       {/* Header */}
-      <div className="flex-none px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-10">
+      <div className={cn(
+        "flex-none px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-10 transition-all duration-500",
+        currentStep === 8 ? "hidden" : "block"
+      )}>
         <div className="flex items-center gap-3">
           <button 
             onClick={onClose}
@@ -1019,12 +1084,18 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         </div>
       </div>
 
-      {/* Main Content - Compact & Centered */}
+      {/* Main Content */}
       <div 
         id="questionnaire-scroll-area"
-        className="flex-1 overflow-y-auto overflow-x-hidden p-4"
+        className={cn(
+          "flex-1 overflow-y-auto overflow-x-hidden transition-all duration-500 scrollbar-hide",
+          currentStep === 8 ? "p-0 bg-slate-50" : "p-4 bg-white"
+        )}
       >
-        <div className="max-w-xl mx-auto min-h-full flex flex-col justify-start pt-2">
+        <div className={cn(
+          "mx-auto min-h-full flex flex-col justify-start transition-all duration-500",
+          currentStep === 8 ? "max-w-full" : "max-w-xl pt-2"
+        )}>
           
           {isBuilding ? (
             <div className="flex flex-col items-center justify-center text-center space-y-6 mt-10">
@@ -1185,7 +1256,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       </div>
 
       {/* Footer Navigation */}
-      {!isBuilding && !showSuccess && (
+      {!isBuilding && !showSuccess && currentStep !== 8 && (
         <div className="flex-none p-4 border-t border-gray-100 bg-white z-10 safe-area-bottom">
           <div className="max-w-2xl mx-auto flex justify-between gap-4">
             <Button
