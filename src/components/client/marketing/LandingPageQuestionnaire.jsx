@@ -355,23 +355,26 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const handlePurchase = async () => {
     setIsPublishing(true);
     try {
-      const response = await base44.functions.invoke('createCheckoutSession', {
-        product_type: 'landing-page',
-        product_id: createdPageData.id,
-        product_name: 'Landing Page Service',
-        amount: 29900,
-        success_url: `${window.location.origin}${createPageUrl('CheckoutSuccess')}?payment_id={CHECKOUT_SESSION_ID}&product_type=landing-page&product_id=${createdPageData.id}`,
-        cancel_url: `${window.location.origin}${createPageUrl('LP')}/${createdPageData.id}`,
+      // Mark as paid
+      await base44.functions.invoke('publishLandingPage', {
+        landingPageId: createdPageData?.id,
+        action: 'markPaid'
       });
 
-      if (response.data.checkoutUrl) {
-        window.location.href = response.data.checkoutUrl;
+      // Publish to get real domain
+      const response = await base44.functions.invoke('publishLandingPage', {
+        landingPageId: createdPageData?.id,
+        action: 'publish'
+      });
+
+      if (response.data?.url) {
+        setPublishedUrl(response.data.url);
       } else {
-        alert('Failed to initiate checkout.');
+        alert('שגיאה בפרסום הדף. אנא נסה שוב.');
       }
     } catch (error) {
-      console.error('Error initiating checkout:', error);
-      alert('אירעה שגיאה ביצירת תשלום. אנא נסה שוב.');
+      console.error('Error publishing:', error);
+      alert('אירעה שגיאה בפרסום. אנא נסה שוב.');
     } finally {
       setIsPublishing(false);
     }
