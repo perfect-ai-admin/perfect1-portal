@@ -1,4 +1,5 @@
 import About from './pages/About';
+import AccessibilityStatement from './pages/AccessibilityStatement';
 import AccountantForOsekMorsha from './pages/AccountantForOsekMorsha';
 import AdminDashboard from './pages/AdminDashboard';
 import AgentCRM from './pages/AgentCRM';
@@ -104,12 +105,12 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import AccessibilityStatement from './pages/AccessibilityStatement';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "About": About,
+    "AccessibilityStatement": AccessibilityStatement,
     "AccountantForOsekMorsha": AccountantForOsekMorsha,
     "AdminDashboard": AdminDashboard,
     "AgentCRM": AgentCRM,
@@ -215,7 +216,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "AccessibilityStatement": AccessibilityStatement,
 }
 
 export const pagesConfig = {

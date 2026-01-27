@@ -348,7 +348,7 @@ export default function Header() {
             </a>
 
             <a
-              href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
+              href="https://wa.me/972559700641?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
               target="_blank"
               rel="noopener noreferrer"
               className="sm:hidden"
@@ -378,7 +378,7 @@ export default function Header() {
             </a>
 
             <a
-              href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
+              href="https://wa.me/972559700641?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex"
@@ -603,7 +603,7 @@ export default function Header() {
                       </Button>
                     </a>
                     <a
-                      href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
+                      href="https://wa.me/972559700641?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block"

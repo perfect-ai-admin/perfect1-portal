@@ -107,7 +107,7 @@ export default function Contact() {
                 </a>
 
                 <a 
-                  href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ" 
+                  href="https://wa.me/972559700641?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="block"
