@@ -644,7 +644,7 @@ export default function LeadsAdmin() {
                   התקשר
                 </a>
                 <a
-                  href={`https://wa.me/972${(lead.phone || '').replace(/^0/, '')}`}
+                  href={`https://wa.me/0559700641?text=${encodeURIComponent(`היי ${lead.name}, אני מפרפקט one. ${lead.profession ? `ראיתי שאת/ה ${lead.profession}` : 'נעים להכיר'} - איך אפשר לעזור לך?`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 bg-[#25D366] text-white rounded-lg py-2.5 flex items-center justify-center gap-2 font-bold text-sm shadow-md active:scale-95 transition-transform"
@@ -1022,7 +1022,7 @@ export default function LeadsAdmin() {
                           <td className="px-2 py-1.5">
                       <div className="flex items-center justify-center gap-1">
                         <a
-                          href={`https://wa.me/972${(lead.phone || '').replace(/^0/, '')}`}
+                          href={`https://wa.me/0559700641?text=${encodeURIComponent(`היי ${lead.name}, אני מפרפקט one. ${lead.profession ? `ראיתי שאת/ה ${lead.profession}` : 'נעים להכיר'} - איך אפשר לעזור לך?`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[#25D366] hover:text-[#128C7E]"
