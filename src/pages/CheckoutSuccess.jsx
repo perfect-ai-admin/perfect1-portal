@@ -47,22 +47,32 @@ export default function CheckoutSuccess() {
                      toast.success('התשלום בוצע בהצלחה!');
 
                      // Auto-publish landing page if landing-page product
-                     if (payment.product_type === 'landing-page') {
-                         try {
-                             const publishResult = await base44.functions.invoke('publishLandingPage', {
-                                 landingPageId: payment.product_id,
-                                 action: 'publish'
-                             });
-                             if (publishResult.data.success) {
-                                 // Redirect to live URL
-                                 setTimeout(() => {
-                                     window.location.href = publishResult.data.url;
-                                 }, 2000);
-                             }
-                         } catch (err) {
-                             console.error('Failed to publish landing page:', err);
-                         }
-                     }
+                      if (payment.product_type === 'landing-page') {
+                          try {
+                              // Step 1: Mark as paid
+                              await base44.functions.invoke('publishLandingPage', {
+                                  landingPageId: payment.product_id,
+                                  action: 'markPaid'
+                              });
+
+                              // Step 2: Publish to air
+                              const publishResult = await base44.functions.invoke('publishLandingPage', {
+                                  landingPageId: payment.product_id,
+                                  action: 'publish'
+                              });
+
+                              if (publishResult.data.success) {
+                                  console.log('Landing page published:', publishResult.data.url);
+                                  // Redirect to live URL
+                                  setTimeout(() => {
+                                      window.location.href = publishResult.data.url;
+                                  }, 2000);
+                              }
+                          } catch (err) {
+                              console.error('Failed to publish landing page:', err);
+                              toast.error('שגיאה בפרסום הדף: ' + err.message);
+                          }
+                      }
                  } else {
                      toast.error('סטטוס התשלום לא ברור');
                  }
