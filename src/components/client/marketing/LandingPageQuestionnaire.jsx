@@ -352,9 +352,15 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     }
   };
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     // Navigate to checkout with landing page ID (not slug - slug is generated on publish)
-    window.location.href = `/Checkout?product_type=landing-page&product_id=${createdPageData?.id || ''}&price=299`;
+    setIsPublishing(true);
+    try {
+      window.location.href = `/Checkout?product_type=landing-page&product_id=${createdPageData?.id || ''}&price=299`;
+    } catch (error) {
+      console.error('Error initiating purchase:', error);
+      setIsPublishing(false);
+    }
   };
 
   const renderStep = () => {
