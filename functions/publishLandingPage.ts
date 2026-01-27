@@ -35,10 +35,25 @@ Deno.serve(async (req) => {
             });
         }
 
-        // Action: publish to air (requires paid status)
+        // Action: publish to air (requires paid status or already published)
         if (action === 'publish' || !action) {
+            // Idempotency: if already published, return existing URL
+            if (page.status === 'published' && page.slug) {
+                const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
+                const publicUrl = `https://${publicDomain}/${page.slug}`;
+                console.log(`[IDEMPOTENT] Page already published, returning URL: ${publicUrl}`);
+                return Response.json({
+                    success: true,
+                    message: 'הדף כבר פורסם',
+                    url: publicUrl,
+                    slug: page.slug,
+                    status: 'published',
+                    isIdempotent: true
+                });
+            }
+
             if (page.status !== 'paid') {
-                console.error(`Attempted to publish unpaid page: ${landingPageId}`);
+                console.error(`Attempted to publish unpaid page: ${landingPageId} (status: ${page.status})`);
                 return Response.json({ error: 'Only paid pages can be published' }, { status: 400 });
             }
 
@@ -78,14 +93,15 @@ Deno.serve(async (req) => {
             // Generate the public domain URL
             const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
             const publicUrl = `https://${publicDomain}/${finalSlug}`;
-            console.log(`Final published URL: ${publicUrl}`);
+            console.log(`[SUCCESS] Final published URL: ${publicUrl} (slug: ${finalSlug})`);
 
             return Response.json({
                 success: true,
                 message: 'הדף שלך באוויר 🎉',
                 url: publicUrl,
                 slug: finalSlug,
-                status: 'published'
+                status: 'published',
+                isIdempotent: false
             });
         }
     } catch (error) {

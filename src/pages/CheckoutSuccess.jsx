@@ -14,6 +14,7 @@ export default function CheckoutSuccess() {
     const [success, setSuccess] = useState(false);
     const [details, setDetails] = useState(null);
     const [landingPageData, setLandingPageData] = useState(null);
+    const [publishedUrl, setPublishedUrl] = useState(null);
 
     const sessionId = searchParams.get('session_id');
     const paymentId = searchParams.get('payment_id');
@@ -63,11 +64,29 @@ export default function CheckoutSuccess() {
                               });
 
                               if (publishResult.data.success) {
-                                  console.log('Landing page published:', publishResult.data.url);
-                                  setPublishedUrl(publishResult.data.url);
-                                  // Fetch landing page details
+                                  // Defensive fallback: try url first, then public_url
+                                  const url = publishResult?.data?.url || publishResult?.data?.public_url;
+                                  if (!url) {
+                                      throw new Error('publishLandingPage returned no public URL in response');
+                                  }
+                                  console.log('[CHECKOUT_SUCCESS] Landing page published:', {
+                                      landingPageId: payment.product_id,
+                                      publishedUrl: url,
+                                      slug: publishResult.data.slug,
+                                      status: publishResult.data.status,
+                                      isIdempotent: publishResult.data.isIdempotent
+                                  });
+                                  setPublishedUrl(url);
+                                  // Fetch landing page details for DB verification
                                   const pages = await base44.entities.LandingPage.filter({ id: payment.product_id });
                                   if (pages.length > 0) {
+                                      console.log('[DB_VERIFY] Page status:', {
+                                          id: pages[0].id,
+                                          status: pages[0].status,
+                                          slug: pages[0].slug,
+                                          published_at: pages[0].published_at,
+                                          paid_at: pages[0].paid_at
+                                      });
                                       setLandingPageData(pages[0]);
                                   }
                               }
