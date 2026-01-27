@@ -334,7 +334,7 @@ export default function Header() {
 
             {/* Mobile CTA Buttons - Show on all screens */}
             <a
-              href="tel:0559244721"
+              href="tel:0502277087"
               className="sm:hidden"
               onClick={() => trackPhoneClick('header_mobile')}
             >
@@ -348,7 +348,7 @@ export default function Header() {
             </a>
 
             <a
-              href="https://wa.me/972559244721?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
+              href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
               target="_blank"
               rel="noopener noreferrer"
               className="sm:hidden"
@@ -364,7 +364,7 @@ export default function Header() {
 
             {/* Desktop CTA Buttons */}
             <a
-              href="tel:0559244721"
+              href="tel:0502277087"
               className="hidden md:flex"
               onClick={() => trackPhoneClick('header')}
             >
@@ -378,7 +378,7 @@ export default function Header() {
             </a>
 
             <a
-              href="https://wa.me/972559244721?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
+              href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex"
@@ -592,18 +592,18 @@ export default function Header() {
                   </nav>
                   
                   <div className="p-6 border-t bg-gray-50 space-y-3">
-                    <a href="tel:0559244721" className="block" onClick={() => trackPhoneClick('mobile_menu')}>
+                    <a href="tel:0502277087" className="block" onClick={() => trackPhoneClick('mobile_menu')}>
                       <Button 
                         variant="outline" 
                         size="lg"
                         className="w-full border-2 border-[#1E3A5F] text-[#1E3A5F] font-bold h-14 text-lg"
                       >
                         <Phone className="w-5 h-5 ml-2" />
-                        0559244721
+                        0502277087
                       </Button>
                     </a>
                     <a
-                      href="https://wa.me/972559244721?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
+                      href="https://wa.me/972502277087?text=היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block"

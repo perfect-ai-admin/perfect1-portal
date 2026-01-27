@@ -38,7 +38,7 @@ export default function WhatsAppButton({ message = "היי, הגעתי מהאת�
     };
   }, []);
 
-  const whatsappUrl = `https://wa.me/972559244721?text=${encodeURIComponent(message)}`;
+  const whatsappUrl = `https://wa.me/972502277087?text=${encodeURIComponent(message)}`;
 
   return (
     <AnimatePresence>
