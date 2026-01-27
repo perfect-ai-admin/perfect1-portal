@@ -7,7 +7,7 @@ Deno.serve(async (req) => {
         const user = await base44.auth.me();
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const { landingPageId } = await req.json();
+        const { landingPageId, action = 'publish' } = await req.json();
         
         if (!landingPageId) {
             return Response.json({ error: 'Landing page ID required' }, { status: 400 });
@@ -20,50 +20,70 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized or page not found' }, { status: 403 });
         }
 
-        // Generate unique slug if not exists
-        let finalSlug = page.slug;
-        if (!finalSlug) {
-            const baseSlug = slugify(page.business_name || 'landing', { lower: true, strict: true, locale: 'he' }) || 'landing';
-            finalSlug = baseSlug;
-            
-            // Check for uniqueness
-            let counter = 2;
-            let slugExists = true;
-            while (slugExists) {
-                try {
-                    const existing = await base44.entities.LandingPage.filter({ slug: finalSlug });
-                    if (!existing || existing.length === 0) {
-                        slugExists = false;
-                    } else {
-                        finalSlug = `${baseSlug}-${counter}`;
-                        counter++;
-                    }
-                } catch (e) {
-                    slugExists = false;
-                }
-            }
+        // Action: mark as paid (after payment)
+        if (action === 'markPaid') {
+            const updatedPage = await base44.entities.LandingPage.update(landingPageId, {
+                status: 'paid',
+                paid_at: new Date().toISOString()
+            });
+            return Response.json({
+                success: true,
+                message: 'תשלום אושר',
+                status: 'paid'
+            });
         }
 
-        // Update status to published + set published_at + ensure slug
-        const updatedPage = await base44.entities.LandingPage.update(landingPageId, {
-            slug: finalSlug,
-            status: 'published',
-            published_at: new Date().toISOString()
-        });
+        // Action: publish to air (requires paid status)
+        if (action === 'publish' || !action) {
+            if (page.status !== 'paid' && page.status !== 'draft') {
+                return Response.json({ error: 'Invalid status for publishing' }, { status: 400 });
+            }
 
-        // Generate the public domain URL
-        const publicDomain = 'perfect1.co.il';
-        const publicUrl = `https://${publicDomain}/${finalSlug}`;
+            // Generate unique slug if not exists
+            let finalSlug = page.slug;
+            if (!finalSlug) {
+                const baseSlug = slugify(page.business_name || 'landing', { lower: true, strict: true, locale: 'he' }) || 'landing';
+                finalSlug = baseSlug;
+                
+                // Check for uniqueness
+                let counter = 2;
+                let slugExists = true;
+                while (slugExists) {
+                    try {
+                        const existing = await base44.asServiceRole.entities.LandingPage.filter({ slug: finalSlug });
+                        if (!existing || existing.length === 0) {
+                            slugExists = false;
+                        } else {
+                            finalSlug = `${baseSlug}-${counter}`;
+                            counter++;
+                        }
+                    } catch (e) {
+                        slugExists = false;
+                    }
+                }
+            }
 
-        return Response.json({
-            success: true,
-            message: 'הדף פורסם בהצלחה',
-            url: publicUrl,
-            slug: finalSlug,
-            status: 'published'
-        });
+            // Update status to published + set published_at + ensure slug
+            const updatedPage = await base44.entities.LandingPage.update(landingPageId, {
+                slug: finalSlug,
+                status: 'published',
+                published_at: new Date().toISOString()
+            });
+
+            // Generate the public domain URL
+            const publicDomain = 'perfect1.co.il';
+            const publicUrl = `https://${publicDomain}/${finalSlug}`;
+
+            return Response.json({
+                success: true,
+                message: 'הדף שלך באוויר 🎉',
+                url: publicUrl,
+                slug: finalSlug,
+                status: 'published'
+            });
+        }
     } catch (error) {
-        console.error('Error publishing landing page:', error);
+        console.error('Error in landing page workflow:', error);
         return Response.json({ error: error.message }, { status: 500 });
     }
 });

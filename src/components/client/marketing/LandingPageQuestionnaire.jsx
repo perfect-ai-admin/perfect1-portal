@@ -117,6 +117,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false);
   const [previewDevice, setPreviewDevice] = useState('desktop');
   const [publishedUrl, setPublishedUrl] = useState(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   useEffect(() => {
     // Auto-detect mobile
@@ -1274,29 +1275,11 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                             <span className="text-xs text-slate-400 line-through">990₪</span>
                           </div>
                           <Button 
-                             onClick={async () => {
-                               try {
-                                 // Call publish function
-                                 const res = await base44.functions.invoke('publishLandingPage', { 
-                                   landingPageId: createdPageData?.id 
-                                 });
-
-                                 if (res.data?.success) {
-                                   // Update localStorage with public URL
-                                   localStorage.setItem('landingPageUrl', res.data.url);
-
-                                   // Show success modal
-                                   setPublishedUrl(res.data.url);
-                                 }
-                               } catch (err) {
-                                 console.error('Error publishing:', err);
-                                 alert('אירעה שגיאה בפרסום הדף');
-                               }
-                             }}
+                             onClick={() => handlePurchase()}
                              className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold"
                           >
-                             פרסם את הדף
-                             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
+                             קנה והפעל
+                             <CreditCard className="w-4 h-4 mr-2" />
                           </Button>
                        </div>
                     </div>
