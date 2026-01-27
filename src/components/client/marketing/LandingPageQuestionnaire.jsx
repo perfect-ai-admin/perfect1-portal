@@ -855,171 +855,272 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 8:
         return (
-          <div className="flex flex-col min-h-full bg-slate-50 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Full Page Header */}
-            <div className="bg-white border-b border-gray-100 sticky top-0 z-20 px-6 py-4 flex items-center justify-between shadow-sm">
-              <div className="flex items-center gap-4">
+          <div className="flex flex-col h-full bg-[#f8fafc] animate-in fade-in zoom-in-95 duration-500 rounded-3xl overflow-hidden">
+            {/* Elegant Header - Minimalistic */}
+            <div className="bg-white/90 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-5">
                 <button 
                   onClick={handlePrev}
-                  className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
+                  className="w-10 h-10 rounded-full bg-slate-50 hover:bg-slate-100 border border-transparent hover:border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-all shadow-sm"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
                 <div>
-                  <h2 className="text-xl font-black text-slate-900">סיכום ואישור הזמנה</h2>
-                  <p className="text-sm text-slate-500">הדף שלך מוכן לבנייה 🚀</p>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">אישור הזמנה</h2>
+                  <p className="text-sm font-medium text-slate-500 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    כל הפרטים מוכנים לבנייה
+                  </p>
                 </div>
               </div>
-              <button 
+              <Button 
                 onClick={onClose}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full"
+                variant="ghost"
+                className="w-10 h-10 rounded-full p-0 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
               >
                 <X className="w-5 h-5" />
-              </button>
+              </Button>
             </div>
 
-            <div className="flex-1 p-6 md:p-8 overflow-y-auto">
-              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                {/* Left Column: Summary Details */}
-                <div className="md:col-span-2 space-y-6">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden">
+              <div className="max-w-6xl mx-auto p-6 lg:p-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
                   
-                  {/* Business Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative group hover:shadow-md transition-all">
-                    <button onClick={() => setCurrentStep(1)} className="absolute top-4 left-4 p-2 rounded-full bg-gray-50 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100">
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">פרטי העסק</h3>
-                    <div className="flex items-start gap-5">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-blue-200 shrink-0">
-                        {formData.logoFile ? <img src={URL.createObjectURL(formData.logoFile)} alt="Logo" className="w-full h-full object-cover rounded-2xl" /> : '🏢'}
-                      </div>
-                      <div>
-                        <h4 className="text-2xl font-bold text-gray-900">{formData.businessName}</h4>
-                        <p className="text-gray-500 font-medium">{formData.mainField}</p>
-                        <div className="flex gap-2 mt-3">
-                          <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-bold border border-blue-100">
-                            {formData.targetAudience.length > 0 ? formData.targetAudience[0] : 'קהל כללי'}
-                          </span>
-                          <span className="px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-bold border border-purple-100">
-                            עיצוב {formData.pageStyle}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Strategy Card */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 relative group hover:shadow-md transition-all">
-                    <button onClick={() => setCurrentStep(2)} className="absolute top-4 left-4 p-2 rounded-full bg-gray-50 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100">
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">אסטרטגיה ומסרים</h3>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-red-50/50 p-4 rounded-xl border border-red-100">
-                        <div className="flex items-center gap-2 mb-2 text-red-600 font-bold">
-                          <AlertCircle className="w-4 h-4" />
-                          <span>הכאב (הבעיה)</span>
-                        </div>
-                        <p className="text-sm text-gray-700 leading-relaxed">{formData.painPoints}</p>
-                      </div>
-                      <div className="bg-green-50/50 p-4 rounded-xl border border-green-100">
-                         <div className="flex items-center gap-2 mb-2 text-green-600 font-bold">
-                          <Zap className="w-4 h-4" />
-                          <span>הפתרון שלך</span>
-                        </div>
-                        <p className="text-sm text-gray-700 leading-relaxed">{formData.serviceOffered}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Technical Specs */}
-                  <div className="grid grid-cols-2 gap-4">
-                     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:border-purple-200 transition-all cursor-pointer group relative" onClick={() => setCurrentStep(5)}>
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">הנעה לפעולה</h3>
-                        <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
-                              <Send className="w-5 h-5" />
-                           </div>
-                           <div>
-                              <div className="font-bold text-gray-900">{formData.ctaText}</div>
-                              <div className="text-xs text-gray-500">{formData.ctaTypes.length} ערוצים פעילים</div>
-                           </div>
-                        </div>
-                     </div>
-                     
-                     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:border-teal-200 transition-all cursor-pointer group relative" onClick={() => setCurrentStep(7)}>
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">קליטת לידים</h3>
-                        <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
-                              <Layers className="w-5 h-5" />
-                           </div>
-                           <div>
-                              <div className="font-bold text-gray-900">
-                                {formData.leadDestination === 'whatsapp' ? 'וואטסאפ אישי' : formData.leadDestination === 'email' ? 'דואר אלקטרוני' : 'CRM'}
-                              </div>
-                              <div className="text-xs text-gray-500">{formData.formFields.length} שדות בטופס</div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-
-                </div>
-
-                {/* Right Column: Checkout Action */}
-                <div className="md:col-span-1">
-                   <div className="sticky top-24 space-y-6">
-                      
-                      {/* Price / Offer Card */}
-                      <div className="bg-slate-900 text-white rounded-3xl p-6 shadow-2xl shadow-slate-200 relative overflow-hidden">
-                          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-[80px] opacity-20 -mr-16 -mt-16"></div>
-                          <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full blur-[80px] opacity-20 -ml-16 -mb-16"></div>
-                          
-                          <div className="relative z-10">
-                             <div className="flex items-center gap-2 mb-4 opacity-80">
-                               <Sparkles className="w-5 h-5 text-yellow-400" />
-                               <span className="text-sm font-bold uppercase tracking-widest">חבילת פרימיום</span>
-                             </div>
-                             
-                             <h3 className="text-3xl font-black mb-2">דף נחיתה מושלם</h3>
-                             <ul className="space-y-3 mb-8">
-                                <li className="flex items-center gap-3 text-sm text-slate-300">
-                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> עיצוב מותאם אישית ב-AI
-                                </li>
-                                <li className="flex items-center gap-3 text-sm text-slate-300">
-                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> כתיבה שיווקית מלאה
-                                </li>
-                                <li className="flex items-center gap-3 text-sm text-slate-300">
-                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> חיבור ל-CRM ולדומיין
-                                </li>
-                                <li className="flex items-center gap-3 text-sm text-slate-300">
-                                  <CheckCircle2 className="w-5 h-5 text-green-400" /> אחסון ותחזוקה כלולים
-                                </li>
-                             </ul>
-
-                             <div className="space-y-3">
-                                <Button 
-                                  onClick={handleSubmit}
-                                  className="w-full h-14 bg-white text-slate-900 hover:bg-blue-50 hover:scale-[1.02] transition-all font-black text-lg rounded-xl shadow-lg shadow-white/10"
-                                >
-                                  בנה את הדף שלי עכשיו 🚀
-                                </Button>
-                                <p className="text-center text-xs text-slate-400">לחיצה על הכפתור תתחיל את תהליך הבנייה</p>
-                             </div>
+                  {/* LEFT CONTENT - Summary (8 Cols) */}
+                  <div className="lg:col-span-7 space-y-8">
+                    
+                    {/* Hero Summary Card */}
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="bg-white rounded-[2rem] p-1 shadow-[0_2px_20px_-12px_rgba(0,0,0,0.1)] border border-slate-100"
+                    >
+                      <div className="bg-gradient-to-br from-slate-50 to-white rounded-[1.7rem] p-6 lg:p-8 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-80" />
+                        
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 relative z-10">
+                          <div className="w-24 h-24 rounded-2xl bg-white shadow-lg shadow-slate-200/50 p-2 flex items-center justify-center shrink-0 border border-slate-50">
+                             {formData.logoFile ? (
+                               <img src={URL.createObjectURL(formData.logoFile)} alt="Logo" className="w-full h-full object-contain rounded-xl" />
+                             ) : (
+                               <div className="text-4xl">🏢</div>
+                             )}
                           </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-3xl font-black text-slate-900 mb-1">{formData.businessName}</h3>
+                            <p className="text-lg text-slate-500 font-medium mb-4">{formData.mainField}</p>
+                            
+                            <div className="flex flex-wrap gap-2">
+                              <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold border border-slate-200">
+                                {formData.targetAudience.length > 0 ? formData.targetAudience[0] : 'קהל כללי'}
+                              </span>
+                              <span className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold border border-blue-100">
+                                סגנון {formData.pageStyle === 'professional' ? 'מקצועי' : 'מותאם אישית'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            onClick={() => setCurrentStep(1)}
+                            className="absolute top-0 left-0 text-slate-300 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    {/* Marketing Strategy Section */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between px-2">
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">אסטרטגיה ומסרים</h3>
+                        <button onClick={() => setCurrentStep(2)} className="text-xs font-bold text-blue-600 hover:underline">עריכה</button>
                       </div>
 
-                      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-center">
-                         <p className="text-sm text-gray-500 mb-2">צריך לשנות משהו?</p>
-                         <Button variant="outline" onClick={() => setCurrentStep(1)} className="w-full border-gray-200 hover:bg-gray-50 text-gray-600">
-                            <Pencil className="w-4 h-4 mr-2" />
-                            ערוך פרטים
-                         </Button>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <motion.div 
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 }}
+                          className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden"
+                        >
+                          <div className="absolute top-0 right-0 w-1 h-full bg-red-400" />
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500">
+                              <AlertCircle className="w-4 h-4" />
+                            </div>
+                            <span className="font-bold text-slate-900">הבעיה (הכאב)</span>
+                          </div>
+                          <p className="text-sm text-slate-600 leading-relaxed pl-2">{formData.painPoints}</p>
+                        </motion.div>
+
+                        <motion.div 
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 }}
+                          className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden"
+                        >
+                          <div className="absolute top-0 right-0 w-1 h-full bg-green-400" />
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-500">
+                              <Zap className="w-4 h-4" />
+                            </div>
+                            <span className="font-bold text-slate-900">הפתרון שלך</span>
+                          </div>
+                          <p className="text-sm text-slate-600 leading-relaxed pl-2">{formData.serviceOffered}</p>
+                        </motion.div>
+                      </div>
+                    </div>
+
+                    {/* Technical Config Section */}
+                    <div className="space-y-4">
+                       <div className="flex items-center justify-between px-2">
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">מערכת והגדרות</h3>
+                        <button onClick={() => setCurrentStep(7)} className="text-xs font-bold text-blue-600 hover:underline">עריכה</button>
                       </div>
 
-                   </div>
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="bg-white rounded-2xl border border-slate-100 shadow-sm divide-y divide-slate-50"
+                      >
+                         <div className="p-4 flex items-center justify-between group hover:bg-slate-50 transition-colors rounded-t-2xl">
+                            <div className="flex items-center gap-4">
+                               <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                                  <Send className="w-5 h-5" />
+                               </div>
+                               <div>
+                                  <div className="font-bold text-slate-900">כפתור הנעה לפעולה</div>
+                                  <div className="text-xs text-slate-500">הטקסט שיופיע על הכפתורים</div>
+                               </div>
+                            </div>
+                            <div className="px-3 py-1 bg-white border rounded-lg text-sm font-bold text-slate-700 shadow-sm">
+                               {formData.ctaText}
+                            </div>
+                         </div>
+
+                         <div className="p-4 flex items-center justify-between group hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-4">
+                               <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600">
+                                  <Layers className="w-5 h-5" />
+                               </div>
+                               <div>
+                                  <div className="font-bold text-slate-900">יעד לידים</div>
+                                  <div className="text-xs text-slate-500">לאן נשלחים הפרטים</div>
+                               </div>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                               {formData.leadDestination === 'whatsapp' ? <MessageSquare className="w-4 h-4 text-green-500" /> : 
+                                formData.leadDestination === 'email' ? <Mail className="w-4 h-4 text-blue-500" /> : <Layers className="w-4 h-4 text-orange-500" />}
+                               {formData.leadDestination === 'whatsapp' ? 'וואטסאפ אישי' : formData.leadDestination === 'email' ? 'אימייל' : 'CRM'}
+                            </div>
+                         </div>
+                         
+                         <div className="p-4 flex items-center justify-between group hover:bg-slate-50 transition-colors rounded-b-2xl">
+                            <div className="flex items-center gap-4">
+                               <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                                  <FileText className="w-5 h-5" />
+                               </div>
+                               <div>
+                                  <div className="font-bold text-slate-900">שדות בטופס</div>
+                                  <div className="text-xs text-slate-500">מידע שנאסוף מהלקוח</div>
+                               </div>
+                            </div>
+                            <div className="flex gap-1">
+                               {formData.formFields.map(field => (
+                                 <span key={field} className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[10px] font-bold rounded uppercase">
+                                   {field}
+                                 </span>
+                               ))}
+                            </div>
+                         </div>
+                      </motion.div>
+                    </div>
+
+                  </div>
+
+                  {/* RIGHT CONTENT - Sticky Action Card (4 Cols) */}
+                  <div className="lg:col-span-5 relative">
+                     <div className="sticky top-24 space-y-6">
+                        
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.5, type: "spring", bounce: 0.4 }}
+                          className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-300"
+                        >
+                            {/* Decorative Background Elements */}
+                            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br from-blue-600/30 to-purple-600/30 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-pink-600/20 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none" />
+                            
+                            <div className="relative z-10 flex flex-col h-full justify-between min-h-[420px]">
+                               <div>
+                                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold text-yellow-300 mb-6">
+                                    <Sparkles className="w-3 h-3" />
+                                    <span>AI POWERED BUILDER</span>
+                                  </div>
+                                  
+                                  <h3 className="text-3xl md:text-4xl font-black mb-4 leading-tight">
+                                    הדף המושלם שלך<br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">מוכן לבנייה</span>
+                                  </h3>
+                                  
+                                  <p className="text-slate-300 text-sm leading-relaxed mb-8 border-l-2 border-white/20 pl-4">
+                                    כל המידע שאספנו יעובד על ידי מנוע ה-AI שלנו ליצירת דף נחיתה ממיר, מעוצב ומותאם אישית לעסק שלך.
+                                  </p>
+                                  
+                                  <div className="space-y-4 mb-8">
+                                     <div className="flex items-center gap-3">
+                                        <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                                          <Check className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="text-sm font-medium">כתיבה שיווקית מלאה</span>
+                                     </div>
+                                     <div className="flex items-center gap-3">
+                                        <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                                          <Check className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="text-sm font-medium">עיצוב רספונסיבי מותאם</span>
+                                     </div>
+                                     <div className="flex items-center gap-3">
+                                        <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                                          <Check className="w-3.5 h-3.5" />
+                                        </div>
+                                        <span className="text-sm font-medium">חיבור מיידי ללידים</span>
+                                     </div>
+                                  </div>
+                               </div>
+
+                               <div>
+                                  <Button 
+                                    onClick={handleSubmit}
+                                    className="w-full h-16 bg-white text-slate-900 hover:bg-blue-50 hover:scale-[1.02] active:scale-[0.98] transition-all font-black text-lg rounded-2xl shadow-xl shadow-white/5 flex items-center justify-center gap-3 group"
+                                  >
+                                    <span>בנה את הדף עכשיו</span>
+                                    <ChevronRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                                  </Button>
+                                  <p className="text-center text-[10px] text-slate-400 mt-3 flex items-center justify-center gap-1.5 opacity-60">
+                                    <Lock className="w-3 h-3" />
+                                    תהליך מאובטח ומהיר
+                                  </p>
+                               </div>
+                            </div>
+                        </motion.div>
+                        
+                        <div className="flex items-center justify-center gap-6 text-slate-400 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+                           {/* Trust Indicators / Logos could go here */}
+                           <div className="text-xs font-bold tracking-widest uppercase">Trusted by 500+ Businesses</div>
+                        </div>
+
+                     </div>
+                  </div>
+
                 </div>
-
               </div>
             </div>
           </div>
