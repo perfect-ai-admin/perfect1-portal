@@ -105,6 +105,8 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import LogoProjectPage from './pages/LogoProjectPage';
+import CreditsPage from './pages/CreditsPage';
 import __Layout from './Layout.jsx';
 
 
@@ -154,7 +156,6 @@ export const PAGES = {
     "IncomeTaxPayment": IncomeTaxPayment,
     "InvoicesAppLanding": InvoicesAppLanding,
     "LP": LP,
-    "lp/:slug": LP,
     "LandingPagePreview": LandingPagePreview,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
@@ -217,6 +218,8 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "LogoProjectPage": LogoProjectPage,
+    "CreditsPage": CreditsPage,
 }
 
 export const pagesConfig = {

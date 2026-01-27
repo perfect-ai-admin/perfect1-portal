@@ -168,6 +168,25 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
     }
   };
 
+  const handleSubmit = async () => {
+    try {
+      const res = await base44.functions.invoke('createLogoProjectFromLogoCreator', {
+        businessName: formData.businessName,
+        industry: formData.industry,
+        style: formData.style,
+        tagline: formData.tagline,
+        vibe: formData.vibe,
+        colorScheme: formData.colorScheme
+      });
+      if (res.ok) {
+        navigate(createPageUrl('LogoProjectPage', `?project_id=${res.project_id}`));
+        onClose();
+      }
+    } catch (err) {
+      alert('Error creating project: ' + err.message);
+    }
+  };
+
   if (step === 1) {
     return (
       <>
@@ -419,8 +438,8 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
                 </div>
               </TabsContent>
             </Tabs>
-            <Button onClick={handleGenerate} className="w-full bg-gradient-to-r from-blue-600 to-purple-600" disabled={isGenerating}>
-              {isGenerating ? 'יוצר לוגו...' : 'צור לוגו ב-AI'}
+            <Button onClick={handleSubmit} className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
+              הצור פרויקט וברך עתה
             </Button>
           </div>
         </div>
@@ -488,21 +507,11 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
           <div className="flex-none pt-2 mt-auto">
             <Button 
-              onClick={handleGenerate} 
+              onClick={handleSubmit} 
               className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg shadow-purple-100"
-              disabled={isGenerating}
             >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
-                  יוצר...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="w-4 h-4 ml-2" />
-                  צור לוגו ב-AI
-                </>
-              )}
+              <Wand2 className="w-4 h-4 ml-2" />
+              צור פרויקט
             </Button>
           </div>
         </MobileWizardStep>
