@@ -62,32 +62,43 @@ const StepHeader = ({ icon: Icon, title, description, colorClass = "bg-blue-100 
 
 export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitchToLogo }) {
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 7;
+  const totalSteps = 8;
   
-  const [formData, setFormData] = useState({
-    businessName: '',
-    mainField: '',
-    targetAudience: [],
-    targetAudienceOther: '',
-    painPoints: '',
-    consequences: '',
-    serviceOffered: '',
-    whyChooseYou: [],
-    whyChooseYouOther: '',
-    experienceYears: '',
-    processSteps: '',
-    proofs: [],
-    testimonialText: '',
-    ctaTypes: [],
-    ctaText: '',
-    pageStyle: '',
-    preferredColors: '',
-    logoStatus: '',
-    logoFile: null,
-    formFields: ['name', 'phone'],
-    leadDestination: '',
-    destinationPhone: '',
-    destinationEmail: '',
+  const [formData, setFormData] = useState(() => {
+    // Load from localStorage if exists
+    const saved = localStorage.getItem('landingPageFormData');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved form data', e);
+      }
+    }
+    return {
+      businessName: '',
+      mainField: '',
+      targetAudience: [],
+      targetAudienceOther: '',
+      painPoints: '',
+      consequences: '',
+      serviceOffered: '',
+      whyChooseYou: [],
+      whyChooseYouOther: '',
+      experienceYears: '',
+      processSteps: '',
+      proofs: [],
+      testimonialText: '',
+      ctaTypes: [],
+      ctaText: '',
+      pageStyle: '',
+      preferredColors: '',
+      logoStatus: '',
+      logoFile: null,
+      formFields: ['name', 'phone'],
+      leadDestination: '',
+      destinationPhone: '',
+      destinationEmail: '',
+    };
   });
 
   const [errors, setErrors] = useState({});
@@ -104,19 +115,32 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   }, [currentStep]);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value };
+      // Save to localStorage (except file)
+      const toSave = { ...updated };
+      delete toSave.logoFile;
+      localStorage.setItem('landingPageFormData', JSON.stringify(toSave));
+      return updated;
+    });
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
   const handleCheckboxChange = (group, value, checked) => {
-    setFormData(prev => ({
-      ...prev,
-      [group]: checked 
-        ? [...prev[group], value]
-        : prev[group].filter(item => item !== value)
-    }));
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [group]: checked 
+          ? [...prev[group], value]
+          : prev[group].filter(item => item !== value)
+      };
+      const toSave = { ...updated };
+      delete toSave.logoFile;
+      localStorage.setItem('landingPageFormData', JSON.stringify(toSave));
+      return updated;
+    });
     if (errors[group]) setErrors(prev => ({ ...prev, [group]: '' }));
   };
 
@@ -153,6 +177,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         if (!formData.leadDestination) newErrors.leadDestination = 'לאן לשלוח את הליד?';
         if (formData.leadDestination === 'whatsapp' && !formData.destinationPhone) newErrors.destinationPhone = 'נא להזין מספר טלפון';
         if (formData.leadDestination === 'email' && !formData.destinationEmail) newErrors.destinationEmail = 'נא להזין כתובת מייל';
+        break;
+      case 8:
+        // Review step - no validation needed
         break;
     }
     setErrors(newErrors);
@@ -244,10 +271,14 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 });
             }
 
+            // Clear saved form data on success
+            localStorage.removeItem('landingPageFormData');
             setShowSuccess(true);
         } else {
             console.error("Failed to create landing page", res);
-            setPageSlug('demo-error');
+            alert('היה קושי ביצירת הדף. אנא נסה שוב או צור קשר עם התמיכה.');
+            setIsBuilding(false);
+            return;
             // Mock data for preview in case of error (so user sees SOMETHING)
             setCreatedPageData({
                 business_name: formData.businessName,
@@ -329,7 +360,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   className={cn("h-9 text-xs", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
                   autoFocus
                 />
-                {errors.businessName && <p className="text-red-500 text-[10px] flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.businessName}</p>}
+                {errors.businessName && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.businessName}</p>}
               </div>
 
               <div className="space-y-1">
@@ -376,7 +407,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                       />
                   </div>
                 </div>
-                {errors.targetAudience && <p className="text-red-500 text-[10px]">{errors.targetAudience}</p>}
+                {errors.targetAudience && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.targetAudience}</p>}
               </div>
             </div>
           </div>
@@ -403,6 +434,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   className={cn("h-20 resize-none text-xs", errors.painPoints && 'border-red-500')} 
                   autoFocus
                 />
+                {errors.painPoints && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.painPoints}</p>}
               </div>
 
               <div className="space-y-1">
@@ -414,6 +446,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   placeholder="לדוגמה: מפסיד כסף, לחץ, מאבד לקוחות..." 
                   className={cn("h-20 resize-none text-xs", errors.consequences && 'border-red-500')} 
                 />
+                {errors.consequences && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.consequences}</p>}
               </div>
             </div>
           </div>
@@ -440,6 +473,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   className={cn("h-9 text-xs", errors.serviceOffered && 'border-red-500')} 
                   autoFocus
                 />
+                {errors.serviceOffered && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.serviceOffered}</p>}
               </div>
 
               <div className="space-y-2">
@@ -576,7 +610,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     />
                   ))}
                 </div>
-                {errors.ctaTypes && <p className="text-red-500 text-[10px] mt-1">{errors.ctaTypes}</p>}
+                {errors.ctaTypes && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200 mt-1"><AlertCircle className="w-4 h-4" /> {errors.ctaTypes}</p>}
               </div>
 
               <div className="space-y-2">
@@ -818,6 +852,88 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
           </div>
         );
 
+      case 8:
+        return (
+          <div className="space-y-4">
+            <StepHeader 
+              icon={Eye} 
+              title="סקירה אחרונה" 
+              description="בדוק שהכל נכון לפני שממשיכים"
+              colorClass="bg-indigo-100 text-indigo-600"
+            />
+
+            <div className="space-y-3 max-h-[400px] overflow-y-auto px-1">
+              {/* Business Info */}
+              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <Building2 className="w-4 h-4 text-blue-600" />
+                  <span className="font-bold text-xs text-blue-900">פרטי העסק</span>
+                </div>
+                <div className="space-y-1 text-xs text-gray-700">
+                  <p><strong>שם:</strong> {formData.businessName}</p>
+                  <p><strong>תחום:</strong> {formData.mainField}</p>
+                  <p><strong>קהל יעד:</strong> {formData.targetAudience.join(', ') || formData.targetAudienceOther}</p>
+                </div>
+              </div>
+
+              {/* Pain & Solution */}
+              <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <Zap className="w-4 h-4 text-green-600" />
+                  <span className="font-bold text-xs text-green-900">הכאב והפתרון</span>
+                </div>
+                <div className="space-y-1 text-xs text-gray-700">
+                  <p><strong>כאב:</strong> {formData.painPoints}</p>
+                  <p><strong>פתרון:</strong> {formData.serviceOffered}</p>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <Send className="w-4 h-4 text-purple-600" />
+                  <span className="font-bold text-xs text-purple-900">קריאה לפעולה</span>
+                </div>
+                <div className="space-y-1 text-xs text-gray-700">
+                  <p><strong>סוג:</strong> {formData.ctaTypes.join(', ')}</p>
+                  <p><strong>טקסט:</strong> {formData.ctaText}</p>
+                </div>
+              </div>
+
+              {/* Design */}
+              <div className="bg-pink-50 rounded-lg p-3 border border-pink-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <Paintbrush className="w-4 h-4 text-pink-600" />
+                  <span className="font-bold text-xs text-pink-900">עיצוב</span>
+                </div>
+                <div className="space-y-1 text-xs text-gray-700">
+                  <p><strong>סגנון:</strong> {formData.pageStyle}</p>
+                  <p><strong>לוגו:</strong> {formData.logoStatus === 'uploaded' ? 'הועלה' : formData.logoStatus === 'later' ? 'בהמשך' : 'לא הוגדר'}</p>
+                </div>
+              </div>
+
+              {/* Lead Destination */}
+              <div className="bg-teal-50 rounded-lg p-3 border border-teal-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <Layers className="w-4 h-4 text-teal-600" />
+                  <span className="font-bold text-xs text-teal-900">הגדרות טכניות</span>
+                </div>
+                <div className="space-y-1 text-xs text-gray-700">
+                  <p><strong>שדות טופס:</strong> {formData.formFields.join(', ')}</p>
+                  <p><strong>יעד:</strong> {formData.leadDestination}</p>
+                  {formData.destinationPhone && <p><strong>טלפון:</strong> {formData.destinationPhone}</p>}
+                  {formData.destinationEmail && <p><strong>מייל:</strong> {formData.destinationEmail}</p>}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-blue-900">רוצה לשנות משהו? לחץ על הנקודות למעלה כדי לחזור לשלב מסוים</p>
+            </div>
+          </div>
+        );
+
       default:
         return null;
     }
@@ -844,15 +960,25 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               {currentStep === 5 && "קריאה לפעולה"}
               {currentStep === 6 && "עיצוב"}
               {currentStep === 7 && "הגדרות"}
+              {currentStep === 8 && "סקירה"}
             </span>
             <div className="flex gap-1 mt-0.5">
               {Array.from({ length: totalSteps }).map((_, i) => (
-                <div 
-                  key={i} 
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => {
+                    if (i + 1 <= currentStep || i + 1 === currentStep + 1) {
+                      setCurrentStep(i + 1);
+                    }
+                  }}
+                  disabled={i + 1 > currentStep + 1}
                   className={cn(
-                    "w-1.5 h-1.5 rounded-full transition-all duration-300", 
-                    i + 1 <= currentStep ? "bg-blue-600" : "bg-gray-200",
-                    i + 1 === currentStep && "w-4"
+                    "h-1.5 rounded-full transition-all duration-300",
+                    i + 1 <= currentStep ? "bg-blue-600 cursor-pointer hover:bg-blue-700" : "bg-gray-200",
+                    i + 1 === currentStep && "w-4",
+                    i + 1 !== currentStep && "w-1.5",
+                    i + 1 > currentStep + 1 && "cursor-not-allowed opacity-50"
                   )} 
                 />
               ))}
