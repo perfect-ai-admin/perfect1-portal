@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/accordion";
 
 export default function CloseOsekPaturComprehensive() {
+  const [showLeadForm, setShowLeadForm] = useState(false);
+
   const faqs = [
     {
       question: "כמה זמן לוקח תהליך הסגירה?",
