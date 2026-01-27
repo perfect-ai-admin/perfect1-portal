@@ -116,6 +116,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [createdPageData, setCreatedPageData] = useState(null);
   const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false);
   const [previewDevice, setPreviewDevice] = useState('desktop');
+  const [publishedUrl, setPublishedUrl] = useState(null);
 
   useEffect(() => {
     // Auto-detect mobile
@@ -1014,6 +1015,75 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     }
   };
 
+  {/* Success Modal - Thank You */}
+  <AnimatePresence>
+    {publishedUrl && (
+      <Dialog open={!!publishedUrl} onOpenChange={(open) => !open && setPublishedUrl(null)}>
+        <DialogContent className="max-w-lg rounded-3xl border-0 shadow-2xl bg-gradient-to-b from-white to-slate-50">
+          <div className="text-center py-8 px-6 space-y-6">
+            {/* Success Icon */}
+            <div className="relative flex justify-center">
+              <div className="absolute inset-0 bg-green-100 blur-2xl opacity-50 rounded-full" />
+              <div className="relative w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                <CheckCircle2 className="w-10 h-10" />
+              </div>
+            </div>
+
+            {/* Message */}
+            <div className="space-y-2">
+              <h2 className="text-3xl font-black text-slate-900">תודה על הרכישה! 🎉</h2>
+              <p className="text-slate-600 text-lg">הדף שלך פורסם בהצלחה</p>
+            </div>
+
+            {/* URL Box */}
+            <div className="bg-white border-2 border-green-200 rounded-2xl p-6 space-y-3">
+              <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">הנה הקישור שלך:</div>
+              <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <code className="flex-1 font-mono text-sm font-bold text-green-700 break-all">{publishedUrl}</code>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(publishedUrl);
+                    alert('✓ קישור הועתק!');
+                  }}
+                  className="flex-shrink-0 p-3 hover:bg-slate-200 rounded-lg transition-colors"
+                  title="העתק קישור"
+                >
+                  <Copy className="w-5 h-5 text-slate-600" />
+                </button>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button
+                onClick={() => {
+                  window.open(publishedUrl, '_blank');
+                  setPublishedUrl(null);
+                  setTimeout(() => handlePurchase(), 300);
+                }}
+                className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg"
+              >
+                צפה בדף
+                <ExternalLink className="w-4 h-4 mr-2" />
+              </Button>
+              <Button
+                onClick={() => {
+                  setPublishedUrl(null);
+                  setTimeout(() => handlePurchase(), 300);
+                }}
+                variant="outline"
+                className="flex-1 h-12 rounded-xl font-bold"
+              >
+                המשך לתשלום
+                <ChevronLeft className="w-4 h-4 mr-2" />
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )}
+  </AnimatePresence>
+
   return (
     <div className="flex flex-col h-full bg-white relative">
       {/* Header */}
@@ -1204,34 +1274,30 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                             <span className="text-xs text-slate-400 line-through">990₪</span>
                           </div>
                           <Button 
-                              onClick={async () => {
-                                try {
-                                  // Call publish function
-                                  const res = await base44.functions.invoke('publishLandingPage', { 
-                                    landingPageId: createdPageData?.id 
-                                  });
+                             onClick={async () => {
+                               try {
+                                 // Call publish function
+                                 const res = await base44.functions.invoke('publishLandingPage', { 
+                                   landingPageId: createdPageData?.id 
+                                 });
 
-                                  if (res.data?.success) {
-                                    // Update localStorage with public URL
-                                    localStorage.setItem('landingPageUrl', res.data.url);
+                                 if (res.data?.success) {
+                                   // Update localStorage with public URL
+                                   localStorage.setItem('landingPageUrl', res.data.url);
 
-                                    // Show success + open page preview
-                                    alert(`✓ ${res.data.message}\n\n${res.data.url}`);
-                                    window.open(res.data.url, '_blank');
-
-                                    // Then go to checkout
-                                    setTimeout(() => handlePurchase(), 500);
-                                  }
-                                } catch (err) {
-                                  console.error('Error publishing:', err);
-                                  alert('אירעה שגיאה בפרסום הדף');
-                                }
-                              }}
-                              className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold"
-                           >
-                              פרסם את הדף
-                              <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-                           </Button>
+                                   // Show success modal
+                                   setPublishedUrl(res.data.url);
+                                 }
+                               } catch (err) {
+                                 console.error('Error publishing:', err);
+                                 alert('אירעה שגיאה בפרסום הדף');
+                               }
+                             }}
+                             className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold"
+                          >
+                             פרסם את הדף
+                             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
+                          </Button>
                        </div>
                     </div>
 

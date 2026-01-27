@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
         });
 
         // Generate the public domain URL
-        const publicDomain = Deno.env.get('PUBLIC_DOMAIN') || 'perfectone.biz';
+        const publicDomain = 'perfect1.co.il';
         const publicUrl = `https://${publicDomain}/${finalSlug}`;
 
         return Response.json({
