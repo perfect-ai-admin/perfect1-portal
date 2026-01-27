@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import DynamicLandingPage from '../components/landing-page/DynamicLandingPage';
 import { Loader2, AlertCircle } from 'lucide-react';
 
 export default function LP() {
-    const [searchParams] = useSearchParams();
-    const slug = searchParams.get('slug');
+    const { slug } = useParams();
 
     // Note: Layout.js handles hiding the header/footer for this page based on the page name.
 
