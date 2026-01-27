@@ -274,10 +274,10 @@ export default function GraphicDesignerLanding() {
               className="bg-white rounded-3xl p-8 md:p-12"
             >
               <h2 className="text-2xl md:text-3xl font-black text-[#1E3A5F] text-center mb-2">
-                מעוניין לפתוח עוסק גרפי?
+                רוצים עוררה בכל תחליף הטמירה?
               </h2>
               <p className="text-center text-gray-600 mb-8">
-                שאר לנו את הפרטים שלך ונחזור אליך תוך שעות
+                מדרך שלוש לסוגי השקמים
               </p>
               <form className="space-y-4" onSubmit={(e) => {
                 e.preventDefault();
@@ -300,7 +300,7 @@ export default function GraphicDesignerLanding() {
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1E3A5F]"
                 />
                 <Button type="submit" className="w-full h-12 bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-black rounded-xl">
-                  שלח פרטים
+                  שדרג למודרניות הטמירה
                 </Button>
               </form>
             </motion.div>
