@@ -288,53 +288,22 @@ export default function OsekPaturSteps() {
                    className="h-12 rounded-xl border-2"
                    required
                  />
-
-                 <div className="space-y-2">
-                   {focusedField === 'phone' && user?.phone ? (
-                     <button
-                       type="button"
-                       onClick={() => setFormData({ ...formData, phone: user.phone })}
-                       className="w-full h-12 px-4 rounded-xl border-2 border-green-400 bg-green-50 text-right text-gray-700 hover:bg-green-100 transition-colors font-semibold animate-pulse"
-                     >
-                       ✓ {user.phone}
-                     </button>
-                   ) : (
-                     <Input
-                       type="tel"
-                       placeholder="טלפון"
-                       value={formData.phone}
-                       onFocus={() => setFocusedField('phone')}
-                       onBlur={() => setFocusedField(null)}
-                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                       className="h-12 rounded-xl border-2"
-                       required
-                     />
-                   )}
-                 </div>
-
-                 <div className="space-y-2">
-                   {focusedField === 'email' && user?.email ? (
-                     <button
-                       type="button"
-                       onClick={() => setFormData({ ...formData, email: user.email })}
-                       className="w-full h-12 px-4 rounded-xl border-2 border-green-400 bg-green-50 text-right text-gray-700 hover:bg-green-100 transition-colors font-semibold animate-pulse"
-                     >
-                       ✓ {user.email}
-                     </button>
-                   ) : (
-                     <Input
-                       type="email"
-                       placeholder="מייל"
-                       value={formData.email}
-                       onFocus={() => setFocusedField('email')}
-                       onBlur={() => setFocusedField(null)}
-                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                       className="h-12 rounded-xl border-2"
-                       required
-                     />
-                   )}
-                 </div>
-
+                 <Input
+                   type="tel"
+                   placeholder="טלפון"
+                   value={formData.phone}
+                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                   required
+                 />
+                 <Input
+                   type="email"
+                   placeholder="מייל"
+                   value={formData.email}
+                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                   className="h-12 rounded-xl border-2"
+                   required
+                 />
                  <Button
                    type="submit"
                    disabled={isSubmitting}
