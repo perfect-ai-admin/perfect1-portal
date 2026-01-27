@@ -890,23 +890,23 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto overflow-x-hidden">
-              <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
+              <div className="max-w-4xl mx-auto p-3 md:p-5 space-y-4">
                   
-                {/* AI Building Promise - "Magic" Section */}
-                <div className="text-center space-y-4 py-2">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl mx-auto flex items-center justify-center text-white shadow-xl shadow-blue-200 animate-pulse">
-                    <Sparkles className="w-8 h-8 md:w-10 md:h-10" />
+                {/* AI Building Promise - "Magic" Section - Compact */}
+                <div className="text-center space-y-2 py-1">
+                  <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl mx-auto flex items-center justify-center text-white shadow-lg shadow-blue-200 animate-pulse">
+                    <Sparkles className="w-6 h-6 md:w-7 md:h-7" />
                   </div>
-                  <h3 className="text-xl md:text-3xl font-black text-slate-900 leading-tight">
-                    אנחנו בונים עבור <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{formData.businessName}</span>
+                  <h3 className="text-lg md:text-2xl font-black text-slate-900 leading-tight">
+                    בונים דף עבור <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">{formData.businessName}</span>
                   </h3>
-                  <p className="text-slate-600 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
-                    אספנו את כל המידע. המערכת תבנה עבורך דף נחיתה מותאם אישית עם כתיבה שיווקית, עיצוב {formData.pageStyle === 'professional' ? 'מקצועי' : 'מותאם'} והנעה לפעולה שמביאה תוצאות.
+                  <p className="text-slate-500 text-xs md:text-sm max-w-md mx-auto leading-relaxed">
+                    המערכת תבנה דף נחיתה מותאם אישית עם עיצוב {formData.pageStyle === 'professional' ? 'מקצועי' : 'מותאם'} ותוכן שיווקי.
                   </p>
                 </div>
 
                 {/* Data Summary Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-3">
                   {/* Branding Card */}
                   <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-100 shadow-sm relative group hover:shadow-md transition-all">
                     <button onClick={() => setCurrentStep(1)} className="absolute top-3 left-3 p-1.5 rounded-full bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all opacity-0 group-hover:opacity-100">
@@ -963,36 +963,36 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   </div>
 
                   {/* AI Technology Card */}
-                  <div className="bg-slate-900 p-4 md:p-5 rounded-2xl border border-slate-700 shadow-sm flex items-center justify-between text-white relative overflow-hidden">
+                  <div className="bg-slate-900 p-3 md:p-4 rounded-2xl border border-slate-700 shadow-sm flex items-center justify-between text-white relative overflow-hidden">
                       <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500 blur-2xl opacity-20 -mr-5 -mt-5" />
                       <div className="relative z-10">
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">טכנולוגיה</div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">טכנולוגיה</div>
                         <div className="font-bold flex items-center gap-2 text-sm">
-                          <Sparkles className="w-4 h-4 text-yellow-400" />
+                          <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
                           בניית AI אוטומטית
                         </div>
                       </div>
-                      <div className="h-10 w-10 bg-white/10 rounded-full flex items-center justify-center border border-white/5 shadow-inner">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
+                      <div className="h-8 w-8 bg-white/10 rounded-full flex items-center justify-center border border-white/5 shadow-inner">
+                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-ping" />
                       </div>
                   </div>
                 </div>
 
-                <div className="h-24"></div> {/* Spacer for sticky footer */}
+                <div className="h-2"></div>
               </div>
             </div>
 
-            {/* Sticky Footer CTA - Always visible at bottom */}
-            <div className="p-4 bg-white border-t border-slate-100 shadow-[0_-5px_30px_rgba(0,0,0,0.05)] z-40 sticky bottom-0 w-full">
-              <div className="max-w-md mx-auto w-full">
+            {/* Sticky Footer CTA */}
+            <div className="p-3 bg-white border-t border-slate-100 shadow-[0_-5px_30px_rgba(0,0,0,0.05)] z-40 sticky bottom-0 w-full">
+              <div className="max-w-sm mx-auto w-full">
                   <Button 
                   onClick={handleSubmit}
-                  className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg shadow-blue-200/50 font-black text-lg flex items-center justify-center gap-3 transition-transform active:scale-95"
+                  className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg shadow-blue-200/50 font-black text-base flex items-center justify-center gap-2 transition-transform active:scale-95"
                   >
-                    <Sparkles className="w-5 h-5 animate-pulse" />
+                    <Sparkles className="w-4 h-4 animate-pulse" />
                     בנה את הדף שלי
                   </Button>
-                  <p className="text-center text-[10px] text-slate-400 mt-2.5">לחיצה תפעיל את מנוע ה-AI לבניית הדף (ללא התחייבות)</p>
+                  <p className="text-center text-[10px] text-slate-400 mt-1.5">ה-AI יבנה את הדף תוך שניות</p>
               </div>
             </div>
             
