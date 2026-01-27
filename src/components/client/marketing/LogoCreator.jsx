@@ -107,48 +107,28 @@ export default function LogoCreator({ businessName, onClose }) {
   const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
 
   const handleGenerate = async () => {
+    if (!formData.businessName || !formData.industry) {
+      alert('אנא מלא את שם העסק ותחום העיסוק');
+      return;
+    }
+
     setIsGenerating(true);
     try {
       const variations = [
-        {
-          style: 'flat minimalist',
-          description: 'מינימליסטי ונקי'
-        },
-        {
-          style: 'modern gradient',
-          description: 'מודרני עם גרדיאנט'
-        },
-        {
-          style: 'bold and striking',
-          description: 'נועז ובולט'
-        },
-        {
-          style: 'elegant and sophisticated',
-          description: 'אלגנטי ומתוחכם'
-        }
+        { style: 'flat minimalist', description: 'מינימליסטי ונקי' },
+        { style: 'modern gradient', description: 'מודרני עם גרדיאנט' },
+        { style: 'bold and striking', description: 'נועז ובולט' },
+        { style: 'elegant and sophisticated', description: 'אלגנטי ומתוחכם' }
       ];
 
       const generatedLogos = [];
 
       for (const variation of variations) {
         try {
-          const prompt = `Professional business logo design - ${variation.description}. 
-Business: "${formData.businessName}"
-Industry: ${formData.industry}
-Vibe: ${formData.vibe ? formData.vibe : 'professional'}
-Icon style: ${formData.iconStyle}
-Style: ${variation.style}
-Color palette: ${formData.colorScheme.colors.join(', ')}
-Requirements: Clean, scalable, modern, suitable for business cards and digital use. White or transparent background. Vector-style appearance. High quality.`;
+          const prompt = `Professional business logo design - ${variation.description}. Business: "${formData.businessName}", Industry: ${formData.industry}, Vibe: ${formData.vibe || 'professional'}, Icon style: ${formData.iconStyle}, Style: ${variation.style}, Colors: ${formData.colorScheme.colors.join(', ')}. Requirements: Clean, scalable, modern, white/transparent background, vector-style.`;
 
-          const result = await base44.integrations.Core.GenerateImage({
-            prompt: prompt
-          });
-
-          generatedLogos.push({
-            url: result.url,
-            variant: variation.description
-          });
+          const result = await base44.integrations.Core.GenerateImage({ prompt });
+          generatedLogos.push({ url: result.url, variant: variation.description });
         } catch (err) {
           console.error(`Failed to generate ${variation.description}:`, err);
         }
