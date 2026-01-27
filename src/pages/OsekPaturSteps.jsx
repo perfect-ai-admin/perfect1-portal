@@ -272,9 +272,17 @@ export default function OsekPaturSteps() {
                  />
                  <Button
                    type="submit"
-                   className="w-full h-11 sm:h-12 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl"
+                   disabled={isSubmitting}
+                   className="w-full h-11 sm:h-12 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl disabled:opacity-50"
                  >
-                   בדיקה מסודרת
+                   {isSubmitting ? (
+                     <>
+                       <Loader2 className="w-4 h-4 ml-2 animate-spin inline" />
+                       שולח...
+                     </>
+                   ) : (
+                     'בדיקה מסודרת'
+                   )}
                  </Button>
                </form>
                <p className="text-xs text-gray-500 text-center mt-4">
