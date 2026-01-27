@@ -353,12 +353,21 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   };
 
   const handlePurchase = async () => {
-    // Navigate to checkout with landing page ID (not slug - slug is generated on publish)
     setIsPublishing(true);
     try {
-      window.location.href = `/Checkout?product_type=landing-page&product_id=${createdPageData?.id || ''}&price=299`;
+      const response = await base44.functions.invoke('createCheckoutSession', {
+        product_type: 'landing-page',
+        product_id: createdPageData?.id
+      });
+
+      if (response.data && response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        throw new Error('Failed to get checkout URL');
+      }
     } catch (error) {
       console.error('Error initiating purchase:', error);
+      alert('שגיאה בעת פתיחת הקופה. אנא נסה שוב.');
       setIsPublishing(false);
     }
   };
