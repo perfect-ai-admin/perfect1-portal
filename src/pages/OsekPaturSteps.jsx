@@ -167,6 +167,7 @@ export default function OsekPaturSteps() {
 
   return (
     <>
+      <AggresiveLeadPopup isOpen={showPopup} onClose={() => setShowPopup(false)} />
       <PageTracker pageUrl="/osek-patur-steps" pageType="guide" />
       <FAQSchema faqs={faqs} />
       <LocalBusinessSchema 
