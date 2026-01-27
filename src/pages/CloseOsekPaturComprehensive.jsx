@@ -465,8 +465,36 @@ export default function CloseOsekPaturComprehensive() {
           </div>
         </section>
 
-        {/* Related */}
-         <RelatedContent pageType="landing" />
+        {/* Related Content */}
+        <section className="py-16 bg-gradient-to-br from-blue-50 to-[#F8F9FA]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-12 text-center">
+              תוכן קשור שעשוי לעניין אותך
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <Link to={createPageUrl('HowToCloseOsekPatur')} className="group">
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all h-full border-r-4 border-[#1E3A5F]">
+                  <h3 className="text-2xl font-bold text-[#1E3A5F] mb-3 group-hover:text-[#2C5282] transition-colors">
+                    איך סוגרים עוסק פטור?
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    מדריך שלב-שלב מלא לסגירת עוסק פטור עם כל הפרטים החשובים
+                  </p>
+                </div>
+              </Link>
+              <Link to={createPageUrl('CloseOsekPaturTaxAuthority')} className="group">
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all h-full border-r-4 border-[#1E3A5F]">
+                  <h3 className="text-2xl font-bold text-[#1E3A5F] mb-3 group-hover:text-[#2C5282] transition-colors">
+                    סגירה ממס הכנסה
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    איך לסגור את עוסקך מול מס הכנסה בצורה תקינה
+                  </p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
 
         {/* Lead Form Modal */}
         {showLeadForm && (
