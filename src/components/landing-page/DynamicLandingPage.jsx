@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Shield, Zap, AlertCircle, Award, TrendingUp, Users, ThumbsUp, Briefcase, MapPin, Mail, Globe } from 'lucide-react';
+import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Shield, Zap, AlertCircle, Award, TrendingUp, Users, ThumbsUp, Briefcase, MapPin, Mail, Globe, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from 'framer-motion';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 // --- Theme & Style Utilities ---
 const getContrastColor = (hexColor) => {
@@ -35,8 +37,12 @@ const staggerContainer = {
 export default function DynamicLandingPage({ data, isThumbnail = false }) {
     if (!data) return null;
 
-    const { primary_color = '#2563EB', sections_json, business_name } = data;
+    const { primary_color = '#2563EB', sections_json, business_name, slug } = data;
     const contrastColor = getContrastColor(primary_color);
+    
+    // Form state
+    const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // CSS Variables for dynamic theming
     const themeStyle = {
@@ -58,6 +64,39 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
     }, [isThumbnail]);
 
     const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+
+    const handleSubmitForm = async (e) => {
+        e.preventDefault();
+        
+        if (!formData.phone.trim()) {
+            toast.error('טלפון הוא שדה חובה');
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const response = await base44.functions.invoke('submitLeadToN8N', {
+                name: formData.name,
+                phone: formData.phone,
+                email: formData.email,
+                message: formData.message,
+                pageSlug: slug,
+                businessName: business_name
+            });
+
+            if (response.data.success) {
+                toast.success('הלידים שלך נשלחו בהצלחה!');
+                setFormData({ name: '', phone: '', email: '', message: '' });
+            } else {
+                toast.error('שגיאה בשליחת הלידים: ' + response.data.error);
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            toast.error('שגיאה בשליחה: ' + error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const getMotionProps = () => ({
         initial: isThumbnail ? "visible" : "hidden",
@@ -269,18 +308,31 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                     </div>
 
                     <Card className="bg-white/5 backdrop-blur-xl border-white/10 p-8 md:p-10 rounded-[2rem] shadow-2xl">
-                        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+                        <form className="space-y-5" onSubmit={handleSubmitForm}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 {section.form_fields?.includes('name') && (
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-slate-300">שם מלא</label>
-                                        <Input className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" placeholder="ישראל ישראלי" />
+                                        <Input 
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                            className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" 
+                                            placeholder="ישראל ישראלי" 
+                                            disabled={isSubmitting}
+                                        />
                                     </div>
                                 )}
                                 {section.form_fields?.includes('phone') && (
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-300">טלפון</label>
-                                        <Input className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" placeholder="050-0000000" />
+                                        <label className="text-sm font-medium text-slate-300">טלפון *</label>
+                                        <Input 
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                            className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" 
+                                            placeholder="050-0000000" 
+                                            disabled={isSubmitting}
+                                            required
+                                        />
                                     </div>
                                 )}
                             </div>
@@ -288,20 +340,46 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                             {section.form_fields?.includes('email') && (
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-slate-300">אימייל</label>
-                                    <Input className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" placeholder="example@mail.com" />
+                                    <Input 
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                        className="h-12 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)]" 
+                                        placeholder="example@mail.com"
+                                        type="email"
+                                        disabled={isSubmitting}
+                                    />
                                 </div>
                             )}
                             
                             {section.form_fields?.includes('message') && (
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-slate-300">הודעה</label>
-                                    <Textarea className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)] resize-none" placeholder="כיצד נוכל לעזור?" />
+                                    <Textarea 
+                                        value={formData.message}
+                                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-[var(--primary)] resize-none" 
+                                        placeholder="כיצד נוכל לעזור?"
+                                        disabled={isSubmitting}
+                                    />
                                 </div>
                             )}
 
-                            <Button className="w-full h-14 text-lg font-bold bg-[var(--primary)] text-[var(--primary-foreground)] hover:brightness-110 rounded-xl mt-4 shadow-lg shadow-[var(--primary)]/25">
-                                {section.ctaText || 'שליחת פרטים'}
-                                <Send className="mr-2 w-5 h-5" />
+                            <Button 
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full h-14 text-lg font-bold bg-[var(--primary)] text-[var(--primary-foreground)] hover:brightness-110 rounded-xl mt-4 shadow-lg shadow-[var(--primary)]/25 disabled:opacity-50"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 w-5 h-5 animate-spin" />
+                                        שולח...
+                                    </>
+                                ) : (
+                                    <>
+                                        {section.ctaText || 'שליחת פרטים'}
+                                        <Send className="mr-2 w-5 h-5" />
+                                    </>
+                                )}
                             </Button>
                         </form>
                     </Card>
