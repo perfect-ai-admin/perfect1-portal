@@ -501,7 +501,7 @@ export default function CloseOsekPaturComprehensive() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl shadow-2xl w-11/12 sm:w-full sm:max-w-md"
             >
               <div className="p-8">
                 <div className="flex justify-between items-center mb-6">
