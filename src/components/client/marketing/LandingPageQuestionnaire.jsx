@@ -1194,7 +1194,11 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                           </div>
                        </div>
                        <Button 
-                          onClick={handlePurchase}
+                          onClick={() => {
+                            const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
+                            window.open(url, '_blank');
+                            setTimeout(() => handlePurchase(), 500);
+                          }}
                           className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold text-base flex-1 md:flex-none"
                        >
                           פרסם את הדף
