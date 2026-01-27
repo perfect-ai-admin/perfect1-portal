@@ -13,7 +13,7 @@ import {
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
   FileText, Calendar, Layers, Share2, Copy, Eye, Maximize2, ExternalLink,
-  CheckCircle2, Pencil, Info, Monitor, Smartphone, Shield
+  CheckCircle2, Pencil, Info, Monitor, Smartphone, Shield, Loader2
 } from 'lucide-react';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
