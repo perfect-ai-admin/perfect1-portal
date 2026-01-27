@@ -154,6 +154,7 @@ export const PAGES = {
     "IncomeTaxPayment": IncomeTaxPayment,
     "InvoicesAppLanding": InvoicesAppLanding,
     "LP": LP,
+    ":slug": LP,
     "LandingPagePreview": LandingPagePreview,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
