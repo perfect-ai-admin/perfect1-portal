@@ -13,6 +13,7 @@ import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
+import ScrollCTAHandler from '../components/cro/ScrollCTAHandler';
 import {
   Accordion,
   AccordionContent,
@@ -71,6 +72,7 @@ export default function CloseOsekPaturComprehensive() {
 
   return (
     <>
+      <ScrollCTAHandler />
       <PageTracker pageUrl="/close-osek-patur" pageType="landing" />
       <FAQSchema faqs={faqs} />
       <LocalBusinessSchema 

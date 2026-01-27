@@ -28,6 +28,7 @@ import ComputerTechnicianLanding from './pages/ComputerTechnicianLanding';
 import ConsultancyLanding from './pages/ConsultancyLanding';
 import Contact from './pages/Contact';
 import CostsOsekMorsha from './pages/CostsOsekMorsha';
+import CreditsPage from './pages/CreditsPage';
 import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
@@ -46,6 +47,7 @@ import LP from './pages/LP';
 import LandingPagePreview from './pages/LandingPagePreview';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
+import LogoProjectPage from './pages/LogoProjectPage';
 import LogoThankYou from './pages/LogoThankYou';
 import MaamatOsekPatur from './pages/MaamatOsekPatur';
 import ManicuristLanding from './pages/ManicuristLanding';
@@ -105,8 +107,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import LogoProjectPage from './pages/LogoProjectPage';
-import CreditsPage from './pages/CreditsPage';
 import __Layout from './Layout.jsx';
 
 
@@ -141,6 +141,7 @@ export const PAGES = {
     "ConsultancyLanding": ConsultancyLanding,
     "Contact": Contact,
     "CostsOsekMorsha": CostsOsekMorsha,
+    "CreditsPage": CreditsPage,
     "EyebrowStylistLanding": EyebrowStylistLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
     "FreelancerLanding": FreelancerLanding,
@@ -159,6 +160,7 @@ export const PAGES = {
     "LandingPagePreview": LandingPagePreview,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
+    "LogoProjectPage": LogoProjectPage,
     "LogoThankYou": LogoThankYou,
     "MaamatOsekPatur": MaamatOsekPatur,
     "ManicuristLanding": ManicuristLanding,
@@ -218,8 +220,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "LogoProjectPage": LogoProjectPage,
-    "CreditsPage": CreditsPage,
 }
 
 export const pagesConfig = {

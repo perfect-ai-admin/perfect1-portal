@@ -1,0 +1,181 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { X, MessageCircle } from 'lucide-react';
+
+const ScrollCTAHandler = () => {
+  const [scrollPercent, setScrollPercent] = useState(0);
+  const [showCTA20, setShowCTA20] = useState(false);
+  const [showPopup65, setShowPopup65] = useState(false);
+  const [hasShownCTA20, setHasShownCTA20] = useState(false);
+  const [hasShownPopup65, setHasShownPopup65] = useState(false);
+  const [formData, setFormData] = useState({ name: '', phone: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = window.scrollY;
+      const percent = docHeight > 0 ? (scrolled / docHeight) * 100 : 0;
+      
+      setScrollPercent(percent);
+
+      // CTA אחרי 20%
+      if (percent >= 20 && !hasShownCTA20) {
+        setShowCTA20(true);
+        setHasShownCTA20(true);
+      }
+
+      // Popup אחרי 65%
+      if (percent >= 65 && !hasShownPopup65) {
+        setShowPopup65(true);
+        setHasShownPopup65(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasShownCTA20, hasShownPopup65]);
+
+  const handlePopupSubmit = async () => {
+    if (!formData.name || !formData.phone) {
+      alert('אנא מלא שם וטלפון');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // שלח ל-WhatsApp
+      const message = `היי, שמי ${formData.name} ומספר הטלפון שלי ${formData.phone}. אני רוצה לסגור את עוסק הפטור שלי`;
+      window.open(
+        `https://wa.me/972502277087?text=${encodeURIComponent(message)}`,
+        '_blank'
+      );
+      setShowPopup65(false);
+      setFormData({ name: '', phone: '' });
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      {/* CTA אחרי 20% גלילה */}
+      <AnimatePresence>
+        {showCTA20 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-4 right-4 left-4 sm:left-auto sm:right-4 sm:bottom-6 max-w-sm z-40"
+          >
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 rounded-2xl shadow-2xl p-4 sm:p-6">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex-1">
+                  <h3 className="font-black text-green-900 text-lg mb-1">
+                    בואו נסגור לך את התיק בצורה מסודרת
+                  </h3>
+                  <p className="text-sm text-green-800">
+                    טיפול מלא מול מע"מ, מס הכנסה וביטוח לאומי
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowCTA20(false)}
+                  className="flex-shrink-0 text-green-600 hover:text-green-900 p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <a href="https://wa.me/972502277087?text=היי, אני רוצה לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
+                <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold h-10 rounded-lg">
+                  <MessageCircle className="w-4 h-4 ml-2" />
+                  שיחה דרך WhatsApp
+                </Button>
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Popup אחרי 65% גלילה */}
+      <AnimatePresence>
+        {showPopup65 && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPopup65(false)}
+              className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+            />
+
+            {/* Popup */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed inset-x-4 top-1/2 -translate-y-1/2 max-w-sm mx-auto z-50 lg:fixed lg:right-4 lg:bottom-6 lg:top-auto lg:-translate-y-0"
+            >
+              <div className="bg-white rounded-2xl shadow-2xl p-6 space-y-4">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <h3 className="font-black text-gray-900 text-xl">
+                    בואו נסגור את התיק
+                  </h3>
+                  <button
+                    onClick={() => setShowPopup65(false)}
+                    className="flex-shrink-0 text-gray-400 hover:text-gray-600 p-1"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <p className="text-sm text-gray-700">
+                  שם וטלפון בלבד - ואנחנו נטפל בהכל
+                </p>
+
+                <div className="space-y-3">
+                  <div>
+                    <Input
+                      placeholder="שמך"
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="h-11 text-base rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <Input
+                      placeholder="מספר הטלפון"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      className="h-11 text-base rounded-lg"
+                      dir="ltr"
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handlePopupSubmit}
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold h-11 rounded-lg disabled:opacity-50"
+                >
+                  {isSubmitting ? 'שולח...' : 'סגור עכשיו'}
+                </Button>
+
+                <p className="text-xs text-gray-500 text-center">
+                  לא נשלח ספאם • תשובה תוך 24 שעות
+                </p>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+export default ScrollCTAHandler;
