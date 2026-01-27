@@ -1016,100 +1016,6 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     }
   };
 
-  {/* Success Modal - Published to Air */}
-  <AnimatePresence>
-    {publishedUrl && (
-      <Dialog open={!!publishedUrl} onOpenChange={(open) => !open && setPublishedUrl(null)}>
-        <DialogContent className="max-w-lg rounded-3xl border-0 shadow-2xl bg-gradient-to-b from-white to-slate-50 overflow-hidden">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 200 }}
-            className="text-center py-8 px-6 space-y-6"
-          >
-            {/* Success Icon with Animation */}
-            <motion.div 
-              className="relative flex justify-center"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-            >
-              <div className="absolute inset-0 bg-green-100 blur-2xl opacity-50 rounded-full animate-pulse" />
-              <div className="relative w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                >
-                  <CheckCircle2 className="w-12 h-12" />
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Message */}
-            <motion.div 
-              className="space-y-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <h2 className="text-4xl font-black text-slate-900">הדף שלך באוויר 🚀</h2>
-              <p className="text-slate-600 text-base">מעוניינים שזה קורה? הנה הקישור שלך:</p>
-            </motion.div>
-
-            {/* URL Box */}
-            <motion.div 
-              className="bg-white border-2 border-green-200 rounded-2xl p-6 space-y-3"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">קישור ייחודי שלך:</div>
-              <div className="flex items-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <code className="flex-1 font-mono text-sm font-bold text-green-700 break-all">{publishedUrl}</code>
-                <motion.button
-                  onClick={() => {
-                    navigator.clipboard.writeText(publishedUrl);
-                    alert('✓ קישור הועתק!');
-                  }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex-shrink-0 p-3 hover:bg-slate-200 rounded-lg transition-colors"
-                  title="העתק קישור"
-                >
-                  <Copy className="w-5 h-5 text-slate-600" />
-                </motion.button>
-              </div>
-            </motion.div>
-
-            {/* CTA Buttons */}
-            <motion.div 
-              className="flex flex-col sm:flex-row gap-3 pt-4"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Button
-                onClick={() => window.open(publishedUrl, '_blank')}
-                className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg"
-              >
-                פתח את הדף
-                <ExternalLink className="w-4 h-4 mr-2" />
-              </Button>
-              <Button
-                onClick={() => setPublishedUrl(null)}
-                variant="outline"
-                className="flex-1 h-12 rounded-xl font-bold"
-              >
-                סגור
-                <X className="w-4 h-4 mr-2" />
-              </Button>
-            </motion.div>
-          </motion.div>
-        </DialogContent>
-      </Dialog>
-    )}
-  </AnimatePresence>
-
   return (
     <div className="flex flex-col h-full bg-white relative">
       {/* Header */}
@@ -1355,6 +1261,100 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
           )}
         </div>
       </div>
+
+      {/* Success Modal - Published to Air */}
+      <AnimatePresence>
+        {publishedUrl && (
+          <Dialog open={!!publishedUrl} onOpenChange={(open) => !open && setPublishedUrl(null)}>
+            <DialogContent className="max-w-lg rounded-3xl border-0 shadow-2xl bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200 }}
+                className="text-center py-8 px-6 space-y-6"
+              >
+                {/* Success Icon with Animation */}
+                <motion.div 
+                  className="relative flex justify-center"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                >
+                  <div className="absolute inset-0 bg-green-100 blur-2xl opacity-50 rounded-full animate-pulse" />
+                  <div className="relative w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 0.6, delay: 0.3 }}
+                    >
+                      <CheckCircle2 className="w-12 h-12" />
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* Message */}
+                <motion.div 
+                  className="space-y-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <h2 className="text-4xl font-black text-slate-900">הדף שלך באוויר 🚀</h2>
+                  <p className="text-slate-600 text-base">תודה על הרכישה! הנה הדומיין שלך:</p>
+                </motion.div>
+
+                {/* URL Box */}
+                <motion.div 
+                  className="bg-white border-2 border-green-200 rounded-2xl p-6 space-y-3"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <div className="text-sm font-bold text-slate-500 uppercase tracking-wider">קישור ייחודי שלך:</div>
+                  <div className="flex items-center gap-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <code className="flex-1 font-mono text-sm font-bold text-green-700 break-all">{publishedUrl}</code>
+                    <motion.button
+                      onClick={() => {
+                        navigator.clipboard.writeText(publishedUrl);
+                        alert('✓ קישור הועתק!');
+                      }}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex-shrink-0 p-3 hover:bg-slate-200 rounded-lg transition-colors"
+                      title="העתק קישור"
+                    >
+                      <Copy className="w-5 h-5 text-slate-600" />
+                    </motion.button>
+                  </div>
+                </motion.div>
+
+                {/* CTA Buttons */}
+                <motion.div 
+                  className="flex flex-col sm:flex-row gap-3 pt-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <Button
+                    onClick={() => window.open(publishedUrl, '_blank')}
+                    className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold shadow-lg"
+                  >
+                    פתח את הדף
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                  </Button>
+                  <Button
+                    onClick={() => setPublishedUrl(null)}
+                    variant="outline"
+                    className="flex-1 h-12 rounded-xl font-bold"
+                  >
+                    סגור
+                    <X className="w-4 h-4 mr-2" />
+                  </Button>
+                </motion.div>
+              </motion.div>
+            </DialogContent>
+          </Dialog>
+        )}
+      </AnimatePresence>
 
       {/* Footer Navigation */}
       {!isBuilding && !showSuccess && currentStep !== 8 && (
