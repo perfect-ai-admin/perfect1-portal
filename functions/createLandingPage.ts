@@ -9,10 +9,9 @@ Deno.serve(async (req) => {
 
         const { data } = await req.json();
 
-        // Generate Slug
-        const baseSlug = slugify(data.business_name || 'site', { lower: true, strict: true }) || 'site';
-        const uniqueId = Math.random().toString(36).substring(2, 7);
-        const slug = `${baseSlug}-${uniqueId}`;
+        // Generate Slug - Clean English slug from Hebrew business name
+        const baseSlug = slugify(data.businessName || 'site', { lower: true, strict: true, locale: 'he' }) || 'site';
+        const slug = baseSlug;
 
         // AI Content Generation
         let generatedContent = null;
@@ -184,7 +183,7 @@ Deno.serve(async (req) => {
         // Note: created_by is automatically set by the backend based on the authenticated user token
         const landingPage = {
             slug,
-            business_name: data.business_name || 'עסק חדש',
+            business_name: data.businessName || 'עסק חדש',
             headline: headline,
             subheadline: subheadline,
             phone: data.phone || '',
@@ -197,7 +196,11 @@ Deno.serve(async (req) => {
 
         const result = await base44.entities.LandingPage.create(landingPage);
 
-        return Response.json({ slug, id: result.id });
+        // Generate the full URL for the landing page
+        const domain = req.headers.get('host') || Deno.env.get('BASE_URL') || 'localhost:3000';
+        const pageUrl = `https://${domain}/LP/${slug}`;
+
+        return Response.json({ slug, id: result.id, pageUrl });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }
