@@ -59,6 +59,13 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
 
     const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
 
+    const getMotionProps = () => ({
+        initial: isThumbnail ? "visible" : "hidden",
+        animate: isThumbnail ? "visible" : undefined,
+        whileInView: isThumbnail ? undefined : "visible",
+        viewport: { once: true }
+    });
+
     // --- Renderers ---
 
     const renderHero = (section, idx) => {
@@ -87,9 +94,7 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                 {/* Content Layer */}
                 <div className="relative z-10 container mx-auto px-6 text-center">
                     <motion.div
-                        initial={isThumbnail ? "visible" : "hidden"}
-                        whileInView="visible"
-                        viewport={{ once: true }}
+                        {...getMotionProps()}
                         variants={staggerContainer}
                         className="max-w-4xl mx-auto"
                     >
@@ -138,10 +143,12 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                     {section.items?.map((stat, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            {...getMotionProps()}
+                            variants={{
+                                hidden: { opacity: 0, y: 20 },
+                                visible: { opacity: 1, y: 0 }
+                            }}
                             transition={{ delay: i * 0.1 }}
-                            viewport={{ once: true }}
                             className="text-center p-6 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors"
                         >
                             <div className="text-4xl md:text-5xl font-black text-[var(--primary)] mb-2">{stat.value}</div>
@@ -165,9 +172,11 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                     {section.items?.map((item, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
+                            {...getMotionProps()}
+                            variants={{
+                                hidden: { opacity: 0, y: 30 },
+                                visible: { opacity: 1, y: 0 }
+                            }}
                             transition={{ delay: i * 0.1 }}
                             className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 group"
                         >
@@ -191,9 +200,11 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                     {section.items?.map((item, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
+                            {...getMotionProps()}
+                            variants={{
+                                hidden: { opacity: 0, scale: 0.95 },
+                                visible: { opacity: 1, scale: 1 }
+                            }}
                             transition={{ delay: i * 0.1 }}
                             className="p-8 rounded-[2rem] bg-slate-50 border border-slate-100 relative"
                         >
@@ -359,7 +370,9 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
             {sections_json?.map((section, idx) => {
                 switch (section.type) {
                     case 'hero': return renderHero(section, idx);
-                    case 'features': return renderFeatures(section, idx);
+                    case 'features': 
+                    case 'pain_points': // Handle pain_points same as features
+                        return renderFeatures(section, idx);
                     case 'stats': return renderStats(section, idx);
                     case 'testimonials': return renderTestimonials(section, idx);
                     case 'contact': return renderContact(section, idx);
