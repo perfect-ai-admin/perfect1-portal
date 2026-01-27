@@ -227,7 +227,13 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         const res = await base44.functions.invoke('createLandingPage', { data: formData });
         if (res.data && res.data.slug) {
             setPageSlug(res.data.slug);
-            
+
+            // Store the full URL if provided by backend
+            if (res.data.pageUrl) {
+              const urlWithoutProtocol = res.data.pageUrl.replace('https://', '').replace('http://', '');
+              localStorage.setItem('landingPageUrl', res.data.pageUrl);
+            }
+
             // Fetch the full page data for preview
             try {
                 // Try to get by ID if available, otherwise filter by slug
@@ -1167,10 +1173,25 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                        </div>
                     </div>
 
-                    <div className="flex items-center gap-4 w-full md:w-auto bg-slate-50 p-2 pr-4 rounded-xl border border-slate-100">
-                       <div className="flex flex-col items-end">
-                          <span className="text-2xl font-black text-slate-900 leading-none">299₪</span>
-                          <span className="text-[10px] text-slate-400 line-through">990₪</span>
+                    <div className="flex items-center gap-3 w-full md:w-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-3 pr-4 rounded-xl border border-blue-200">
+                       <div className="flex flex-col items-end flex-1">
+                          <div className="flex items-center gap-1 mb-0.5">
+                            <span className="text-xs font-bold text-slate-600">הקישור שלך:</span>
+                            <button onClick={() => {
+                              const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
+                              navigator.clipboard.writeText(url);
+                              alert('קישור הועתק בהצלחה!');
+                            }} className="text-xs font-mono font-bold text-blue-600 hover:text-blue-700 transition-colors truncate max-w-[180px] hover:underline">
+                              {(() => {
+                                const url = localStorage.getItem('landingPageUrl') || `${window.location.host}/LP/${pageSlug}`;
+                                return url.replace('https://', '').replace('http://', '');
+                              })()}
+                            </button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl font-black text-slate-900 leading-none">299₪</span>
+                            <span className="text-[10px] text-slate-400 line-through">990₪</span>
+                          </div>
                        </div>
                        <Button 
                           onClick={handlePurchase}
