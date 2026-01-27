@@ -29,6 +29,19 @@ export default function OsekPaturSteps() {
     profession: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      if (scrollPercentage >= 75 && !showPopup) {
+        setShowPopup(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showPopup]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
