@@ -274,10 +274,10 @@ export default function GraphicDesignerLanding() {
               className="bg-white rounded-3xl p-8 md:p-12"
             >
               <h2 className="text-2xl md:text-3xl font-black text-[#1E3A5F] text-center mb-2">
-                רוצים עוררה בכל תחליף הטמירה?
+                מעוניין לפתוח עוסק גרפי?
               </h2>
               <p className="text-center text-gray-600 mb-8">
-                מדרך שלוש לסוגי השקמים
+                שאר לנו את הפרטים שלך ונחזור אליך תוך שעות
               </p>
               <form className="space-y-4" onSubmit={(e) => {
                 e.preventDefault();
