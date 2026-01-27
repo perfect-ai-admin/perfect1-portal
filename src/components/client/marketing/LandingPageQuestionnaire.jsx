@@ -1204,16 +1204,34 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                             <span className="text-xs text-slate-400 line-through">990₪</span>
                           </div>
                           <Button 
-                             onClick={() => {
-                               const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
-                               window.open(url, '_blank');
-                               setTimeout(() => handlePurchase(), 500);
-                             }}
-                             className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold"
-                          >
-                             פרסם את הדף
-                             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-                          </Button>
+                              onClick={async () => {
+                                try {
+                                  // Call publish function
+                                  const res = await base44.functions.invoke('publishLandingPage', { 
+                                    landingPageId: createdPageData?.id 
+                                  });
+
+                                  if (res.data?.success) {
+                                    // Update localStorage with public URL
+                                    localStorage.setItem('landingPageUrl', res.data.url);
+
+                                    // Show success + open page preview
+                                    alert(`✓ ${res.data.message}\n\n${res.data.url}`);
+                                    window.open(res.data.url, '_blank');
+
+                                    // Then go to checkout
+                                    setTimeout(() => handlePurchase(), 500);
+                                  }
+                                } catch (err) {
+                                  console.error('Error publishing:', err);
+                                  alert('אירעה שגיאה בפרסום הדף');
+                                }
+                              }}
+                              className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold"
+                           >
+                              פרסם את הדף
+                              <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
+                           </Button>
                        </div>
                     </div>
 
