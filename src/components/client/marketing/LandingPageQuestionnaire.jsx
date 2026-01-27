@@ -1092,7 +1092,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
             </div>
           ) : showSuccess ? (
-             <div className="absolute inset-0 z-50 bg-slate-50 flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
+             <div className="flex flex-col h-full bg-slate-50 overflow-hidden animate-in fade-in zoom-in duration-300">
                 {/* Success Header - Compact */}
                 <div className="flex-none px-4 md:px-6 py-3 bg-white border-b border-slate-100 flex items-center justify-between z-10 shadow-sm">
                     <div className="flex items-center gap-3">
@@ -1131,7 +1131,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:16px_16px]" />
 
-                    {createdPageData && (
+                    {!createdPageData ? (
+                        <div className="flex flex-col items-center justify-center text-slate-400 gap-2">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-400"></div>
+                            <span className="text-sm">טוען תצוגה מקדימה...</span>
+                        </div>
+                    ) : (
                         <div className="relative w-full h-full flex items-center justify-center">
                             {previewDevice === 'desktop' ? (
                                 /* Desktop Mockup */
