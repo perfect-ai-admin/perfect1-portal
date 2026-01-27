@@ -30,32 +30,50 @@ export default function CheckoutSuccess() {
     }, []);
 
     const verifyPayment = async () => {
-        try {
-            if (!paymentId) {
-                setLoading(false);
-                toast.error('שגיאה - לא נמצא מזהה תשלום');
-                return;
-            }
+         try {
+             if (!paymentId) {
+                 setLoading(false);
+                 toast.error('שגיאה - לא נמצא מזהה תשלום');
+                 return;
+             }
 
-            const payments = await base44.entities.Payment.filter({ id: paymentId });
-            if (payments.length > 0) {
-                const payment = payments[0];
-                setDetails(payment);
+             const payments = await base44.entities.Payment.filter({ id: paymentId });
+             if (payments.length > 0) {
+                 const payment = payments[0];
+                 setDetails(payment);
 
-                if (payment.status === 'completed') {
-                    setSuccess(true);
-                    toast.success('התשלום בוצע בהצלחה!');
-                } else {
-                    toast.error('סטטוס התשלום לא ברור');
-                }
-            }
-        } catch (error) {
-            toast.error('שגיאה בבדיקת התשלום');
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+                 if (payment.status === 'completed') {
+                     setSuccess(true);
+                     toast.success('התשלום בוצע בהצלחה!');
+
+                     // Auto-publish landing page if landing-page product
+                     if (payment.product_type === 'landing-page') {
+                         try {
+                             const publishResult = await base44.functions.invoke('publishLandingPage', {
+                                 landingPageId: payment.product_id,
+                                 action: 'publish'
+                             });
+                             if (publishResult.data.success) {
+                                 // Redirect to live URL
+                                 setTimeout(() => {
+                                     window.location.href = publishResult.data.url;
+                                 }, 2000);
+                             }
+                         } catch (err) {
+                             console.error('Failed to publish landing page:', err);
+                         }
+                     }
+                 } else {
+                     toast.error('סטטוס התשלום לא ברור');
+                 }
+             }
+         } catch (error) {
+             toast.error('שגיאה בבדיקת התשלום');
+             console.error(error);
+         } finally {
+             setLoading(false);
+         }
+     };
 
     if (loading) {
         return (
@@ -122,6 +140,13 @@ export default function CheckoutSuccess() {
                                 <div className="bg-blue-50 p-4 rounded-lg">
                                     <p className="text-blue-900">
                                         🎯 אתה יכול לבחור במטרות נוספות כעת!
+                                    </p>
+                                </div>
+                            )}
+                            {details?.product_type === 'landing-page' && (
+                                <div className="bg-green-50 p-4 rounded-lg">
+                                    <p className="text-green-900">
+                                        🚀 הדף שלך פורסם לאוויר! מייד תוביל לדומיין המקורי...
                                     </p>
                                 </div>
                             )}
