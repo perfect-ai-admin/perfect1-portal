@@ -142,6 +142,7 @@ export default function Layout({ children, currentPageName }) {
                   <Footer />
                 </div>
       </div>
+      <AccessibilityMenu />
       <Toaster />
     </HelmetProvider>
   );
