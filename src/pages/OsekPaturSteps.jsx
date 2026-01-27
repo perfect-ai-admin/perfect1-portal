@@ -31,7 +31,6 @@ export default function OsekPaturSteps() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [user, setUser] = useState(null);
-  const [focusedField, setFocusedField] = useState(null);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -39,6 +38,12 @@ export default function OsekPaturSteps() {
         const currentUser = await base44.auth.me();
         if (currentUser) {
           setUser(currentUser);
+          // Set default values from user profile
+          setFormData(prev => ({
+            ...prev,
+            phone: currentUser.phone || prev.phone,
+            email: currentUser.email || prev.email
+          }));
         }
       } catch (err) {
         // User not logged in
