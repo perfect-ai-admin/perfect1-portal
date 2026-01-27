@@ -466,8 +466,77 @@ export default function CloseOsekPaturComprehensive() {
         </section>
 
         {/* Related */}
-        <RelatedContent pageType="landing" />
-      </main>
-    </>
-  );
-}
+         <RelatedContent pageType="landing" />
+
+        {/* Lead Form Modal */}
+        {showLeadForm && (
+          <>
+            <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowLeadForm(false)} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4"
+            >
+              <div className="p-8">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl font-black text-[#1E3A5F]">סגירת עוסק פטור</h3>
+                  <button
+                    onClick={() => setShowLeadForm(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const name = e.target.name.value;
+                    const phone = e.target.phone.value;
+                    window.location.href = `https://wa.me/972502277087?text=שלום, שמי ${name} ומספר הטלפון שלי ${phone}. אני רוצה לסגור את העוסק שלי.`;
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">שם מלא</label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="הכנס שמך"
+                      className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#1E3A5F] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">מספר טלפון</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      placeholder="05X-XXXXXXX"
+                      className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#1E3A5F] focus:outline-none"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-[#25D366] hover:bg-[#20b858] text-white font-bold rounded-lg mt-6"
+                  >
+                    <MessageCircle className="ml-2 w-5 h-5" />
+                    דברו איתנו בווטסאפ
+                  </Button>
+                </form>
+
+                <p className="text-xs text-gray-500 text-center mt-4">
+                  אנחנו נחזור אליך תוך מספר שעות
+                </p>
+              </div>
+            </motion.div>
+          </>
+        )}
+        </main>
+        </>
+        );
+        }
