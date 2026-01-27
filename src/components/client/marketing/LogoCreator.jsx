@@ -170,6 +170,7 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
 
   const handleSubmit = async () => {
     try {
+      console.log('Submitting:', formData);
       const res = await base44.functions.invoke('createLogoProjectFromLogoCreator', {
         businessName: formData.businessName,
         industry: formData.industry,
@@ -178,13 +179,16 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         vibe: formData.vibe,
         colorScheme: formData.colorScheme
       });
-      if (res.data && res.data.ok) {
+      console.log('Response:', res);
+      if (res.data?.ok) {
         navigate(createPageUrl('LogoProjectPage', `?project_id=${res.data.project_id}`));
         onClose();
       } else {
+        console.error('Invalid response:', res);
         alert('שגיאה ביצירת הפרויקט');
       }
     } catch (err) {
+      console.error('Error:', err);
       alert('שגיאה: ' + err.message);
     }
   };
