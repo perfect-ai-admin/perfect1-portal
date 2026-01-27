@@ -359,8 +359,8 @@ export default function CloseOsekPaturComprehensive() {
 
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-8 border-2 border-red-300 mb-8">
                 <p className="text-lg text-gray-800 leading-relaxed mb-6">
-                  סגירה לא תקינה של עוסק יכולה להיות בעיה מימדית שתעקוב אחריך במשך שנים:
-                </p>
+                   סגירה לא תקינה של עוסק יכולה להיות בעיה משמעותית שתעקוב אחריך במשך שנים:
+                 </p>
 
                 <ul className="space-y-4">
                   {[
