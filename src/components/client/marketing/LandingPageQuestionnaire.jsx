@@ -1173,37 +1173,48 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                        </div>
                     </div>
 
-                    <div className="flex items-center gap-3 w-full md:w-auto bg-gradient-to-r from-blue-50 to-indigo-50 p-3 pr-4 rounded-xl border border-blue-200">
-                       <div className="flex flex-col items-end flex-1">
-                          <div className="flex items-center gap-1 mb-0.5">
-                            <span className="text-xs font-bold text-slate-600">הקישור שלך:</span>
-                            <button onClick={() => {
-                              const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
-                              navigator.clipboard.writeText(url);
-                              alert('קישור הועתק בהצלחה!');
-                            }} className="text-xs font-mono font-bold text-blue-600 hover:text-blue-700 transition-colors truncate max-w-[180px] hover:underline">
+                    <div className="flex flex-col gap-3 w-full">
+                       {/* URL Display with Copy Button */}
+                       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
+                          <div className="text-[10px] text-slate-500 font-bold mb-2">הדף שלך זמין בכתובת:</div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 min-w-0 bg-white rounded-lg p-3 border border-blue-100 font-mono text-sm font-bold text-blue-600 truncate">
                               {(() => {
                                 const url = localStorage.getItem('landingPageUrl') || `${window.location.host}/LP/${pageSlug}`;
                                 return url.replace('https://', '').replace('http://', '');
                               })()}
-                            </button>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl font-black text-slate-900 leading-none">299₪</span>
-                            <span className="text-[10px] text-slate-400 line-through">990₪</span>
+                            </div>
+                            <Button 
+                              onClick={() => {
+                                const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
+                                navigator.clipboard.writeText(url);
+                                alert('✓ קישור הועתק!');
+                              }}
+                              className="h-12 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold flex-shrink-0"
+                            >
+                              <Copy className="w-4 h-4" />
+                            </Button>
                           </div>
                        </div>
-                       <Button 
-                          onClick={() => {
-                            const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
-                            window.open(url, '_blank');
-                            setTimeout(() => handlePurchase(), 500);
-                          }}
-                          className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold text-base flex-1 md:flex-none"
-                       >
-                          פרסם את הדף
-                          <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
-                       </Button>
+
+                       {/* Price & CTA */}
+                       <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-3xl font-black text-slate-900">299₪</span>
+                            <span className="text-xs text-slate-400 line-through">990₪</span>
+                          </div>
+                          <Button 
+                             onClick={() => {
+                               const url = localStorage.getItem('landingPageUrl') || `https://${window.location.host}/LP/${pageSlug}`;
+                               window.open(url, '_blank');
+                               setTimeout(() => handlePurchase(), 500);
+                             }}
+                             className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold"
+                          >
+                             פרסם את הדף
+                             <Sparkles className="w-4 h-4 mr-2 animate-pulse" />
+                          </Button>
+                       </div>
                     </div>
 
                  </div>
