@@ -182,7 +182,6 @@ Deno.serve(async (req) => {
         // Create Entity
         // Note: created_by is automatically set by the backend based on the authenticated user token
         const landingPage = {
-            slug,
             business_name: data.businessName || 'עסק חדש',
             headline: headline,
             subheadline: subheadline,
@@ -191,7 +190,8 @@ Deno.serve(async (req) => {
             primary_color: data.primary_color || '#3B82F6',
             logo_url: data.logo_url || '',
             sections_json: finalSections,
-            status: 'draft'
+            status: 'draft',
+            slug: ''
         };
 
         const result = await base44.entities.LandingPage.create(landingPage);

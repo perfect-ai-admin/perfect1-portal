@@ -35,8 +35,8 @@ Deno.serve(async (req) => {
 
         // Action: publish to air (requires paid status)
         if (action === 'publish' || !action) {
-            if (page.status !== 'paid' && page.status !== 'draft') {
-                return Response.json({ error: 'Invalid status for publishing' }, { status: 400 });
+            if (page.status !== 'paid') {
+                return Response.json({ error: 'Only paid pages can be published' }, { status: 400 });
             }
 
             // Generate unique slug if not exists
@@ -45,21 +45,23 @@ Deno.serve(async (req) => {
                 const baseSlug = slugify(page.business_name || 'landing', { lower: true, strict: true, locale: 'he' }) || 'landing';
                 finalSlug = baseSlug;
                 
-                // Check for uniqueness
+                // Retry logic for uniqueness
                 let counter = 2;
-                let slugExists = true;
-                while (slugExists) {
+                let retries = 0;
+                while (retries < 5) {
                     try {
                         const existing = await base44.asServiceRole.entities.LandingPage.filter({ slug: finalSlug });
                         if (!existing || existing.length === 0) {
-                            slugExists = false;
+                            break;
                         } else {
                             finalSlug = `${baseSlug}-${counter}`;
                             counter++;
                         }
                     } catch (e) {
-                        slugExists = false;
+                        console.error('Slug check error:', e);
+                        break;
                     }
+                    retries++;
                 }
             }
 
@@ -71,7 +73,7 @@ Deno.serve(async (req) => {
             });
 
             // Generate the public domain URL
-            const publicDomain = 'perfect1.co.il';
+            const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
             const publicUrl = `https://${publicDomain}/${finalSlug}`;
 
             return Response.json({
