@@ -431,8 +431,12 @@ export default function LogoCreator({ businessName, onClose }) {
                 </div>
               </TabsContent>
             </Tabs>
-            <Button onClick={handleGenerate} className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
-              צור וריאציות של לוגו
+            <Button 
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 disabled:opacity-50"
+            >
+              {isGenerating ? '⏳ יוצר לוגוים...' : '🎨 צור וריאציות'}
             </Button>
           </div>
         </div>
@@ -500,11 +504,21 @@ export default function LogoCreator({ businessName, onClose }) {
 
           <div className="flex-none pt-2 mt-auto">
             <Button 
-              onClick={handleGenerate} 
-              className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg shadow-purple-100"
+              onClick={handleGenerate}
+              disabled={isGenerating}
+              className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg shadow-purple-100 disabled:opacity-50"
             >
-              <Wand2 className="w-4 h-4 ml-2" />
-              צור וריאציות
+              {isGenerating ? (
+                <>
+                  <RefreshCw className="w-4 h-4 ml-2 animate-spin" />
+                  יוצר...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-4 h-4 ml-2" />
+                  צור וריאציות
+                </>
+              )}
             </Button>
           </div>
         </MobileWizardStep>
