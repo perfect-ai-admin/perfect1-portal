@@ -178,12 +178,14 @@ Requirements: Clean, scalable, modern, suitable for business cards and digital u
         vibe: formData.vibe,
         colorScheme: formData.colorScheme
       });
-      if (res.ok) {
-        navigate(createPageUrl('LogoProjectPage', `?project_id=${res.project_id}`));
+      if (res.data && res.data.ok) {
+        navigate(createPageUrl('LogoProjectPage', `?project_id=${res.data.project_id}`));
         onClose();
+      } else {
+        alert('שגיאה ביצירת הפרויקט');
       }
     } catch (err) {
-      alert('Error creating project: ' + err.message);
+      alert('שגיאה: ' + err.message);
     }
   };
 
