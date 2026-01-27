@@ -346,62 +346,57 @@ export default function CloseOsekPaturComprehensive() {
         </section>
 
         {/* מה קורה אם לא סוגרים נכון */}
-        <section className="py-16 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-12 text-center">
-                מה קורה אם לא סוגרים נכון?
-              </h2>
+         <section className="py-16 bg-white">
+           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-12 text-center">
+                 מה קורה אם לא סוגרים נכון?
+               </h2>
 
-              <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-8 border-2 border-red-300 mb-8">
-                <p className="text-lg text-gray-800 leading-relaxed mb-6">
+               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-8 border-2 border-red-300 mb-8">
+                 <p className="text-lg text-gray-800 leading-relaxed mb-6">
                    סגירה לא תקינה של עוסק יכולה להיות בעיה משמעותית שתעקוב אחריך במשך שנים:
                  </p>
 
-                <ul className="space-y-4">
-                  {[
-                    '💰 חוקים וריבית על חובות שלא שולמו לרשויות',
-                    '📊 קנסות על כל חודש שהעוסק "פעל" אחרי שהיה צריך להיסגור',
-                    '🚫 כשתרצה לפתוח עוסק חדש - תתקל בחסימות ודרישות מס הכנסה',
-                    '⚖️ בעיות משפטיות אם תתגלה תעסוקה לא רשומה לאחר הסגירה',
-                    '🔔 התראות ותביעות מביטוח לאומי ומס הכנסה'
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="text-xl flex-shrink-0">{item.split(' ')[0]}</span>
-                      <span className="text-gray-800 font-medium">{item.split(' ').slice(1).join(' ')}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                 <ul className="space-y-4">
+                   {[
+                     '💰 חוקים וריבית על חובות שלא שולמו לרשויות',
+                     '📊 קנסות על כל חודש שהעוסק "פעל" אחרי שהיה צריך להיסגור',
+                     '🚫 כשתרצה לפתוח עוסק חדש - תתקל בחסימות ודרישות מס הכנסה',
+                     '⚖️ בעיות משפטיות אם תתגלה תעסוקה לא רשומה לאחר הסגירה',
+                     '🔔 התראות ותביעות מביטוח לאומי ומס הכנסה'
+                   ].map((item, i) => (
+                     <li key={i} className="flex items-start gap-3">
+                       <span className="text-xl flex-shrink-0">{item.split(' ')[0]}</span>
+                       <span className="text-gray-800 font-medium">{item.split(' ').slice(1).join(' ')}</span>
+                     </li>
+                   ))}
+                 </ul>
+               </div>
 
-              <div className="bg-blue-50 rounded-2xl p-8 border-l-4 border-[#1E3A5F]">
-                <p className="text-lg text-gray-800">
-                  <strong className="text-[#1E3A5F]">לכן זה כדאי לעשות זה נכון מהפעם הראשונה.</strong> מי שמעדיף ליווי מסודר יכול להיעזר <Link to={createPageUrl('CloseBusinessLanding')} className="text-[#2C5282] font-bold hover:underline">בתהליך סגירה מקצועי ומלא</Link> שדואג שכל שלב נעשה כמו שצריך.
-                </p>
-              </div>
-
-              {/* קישור לCloseBusinessLanding */}
-              <div className="mt-8 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-8 border-2 border-orange-300 text-center">
-                <h3 className="text-2xl font-black text-[#1E3A5F] mb-3">
-                  רוצים עזרה בכל תהליך הסגירה?
-                </h3>
-                <p className="text-lg text-gray-700 mb-6">
-                  מדריך שלם לסגירת כל סוגי העסקים
-                </p>
-                <Link to={createPageUrl('CloseBusinessLanding')}>
-                  <Button className="h-14 px-8 text-lg font-black rounded-xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white shadow-lg">
-                    <FileText className="ml-2 w-5 h-5" />
-                    עבור למדריך הסגירה המלא
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+               {/* CTA */}
+               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-8 border-2 border-amber-300 text-center">
+                 <h3 className="text-2xl font-black text-[#1E3A5F] mb-3">
+                   רוצים לסגור עוסק פטור במהירות?
+                 </h3>
+                 <p className="text-lg text-gray-700 mb-6">
+                   מדריך שלם לסגירת עוסק פטור כל שלב בשלב
+                 </p>
+                 <Button 
+                   onClick={() => setShowLeadForm(true)}
+                   className="h-14 px-8 text-lg font-black rounded-xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white shadow-lg"
+                 >
+                   <FileText className="ml-2 w-5 h-5" />
+                   לחץ כאן
+                 </Button>
+               </div>
+             </motion.div>
+           </div>
+         </section>
 
         {/* FAQ */}
         <section className="py-16 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
