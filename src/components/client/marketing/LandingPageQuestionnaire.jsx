@@ -1095,42 +1095,80 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
 
               {createdPageData && (
-                <>
-                  <div className="w-full border rounded-xl overflow-hidden shadow-sm bg-gray-100 relative group mb-4 transition-all hover:shadow-md">
-                    {/* Browser Header */}
-                    <div className="bg-white border-b border-gray-100 px-3 py-2 flex items-center gap-2">
-                        <div className="flex gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
+                <div className="w-full max-w-5xl mx-auto mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+                  {/* Desktop Preview (Hidden on Mobile) */}
+                  <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-2xl overflow-hidden relative group">
+                    <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                        <div className="flex gap-2">
+                            <div className="w-3 h-3 rounded-full bg-red-400/80 shadow-sm" />
+                            <div className="w-3 h-3 rounded-full bg-amber-400/80 shadow-sm" />
+                            <div className="w-3 h-3 rounded-full bg-green-400/80 shadow-sm" />
                         </div>
-                        <div className="flex-1 text-center">
-                            <div className="bg-gray-50 border border-gray-100 rounded-md text-[10px] text-gray-400 py-1 px-3 mx-auto w-2/3 truncate font-mono">
+                        <div className="flex-1 px-12">
+                            <div className="bg-white border border-slate-200 rounded-md py-1.5 text-center text-xs font-mono text-slate-500 shadow-sm truncate dir-ltr max-w-md mx-auto">
                                 {window.location.host}/LP/{pageSlug}
                             </div>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 ml-1" onClick={() => setIsFullPreviewOpen(true)}>
-                            <Maximize2 className="w-3.5 h-3.5 text-gray-400" />
+                        <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-blue-600" onClick={() => setIsFullPreviewOpen(true)}>
+                            <Maximize2 className="w-4 h-4" />
                         </Button>
                     </div>
-                    
-                    {/* Content Container */}
-                    <div className="relative w-full h-[380px] overflow-hidden bg-white cursor-pointer border-t border-gray-100" onClick={() => setIsFullPreviewOpen(true)}>
-                         {/* The scaled content - simulating desktop view */}
-                         {/* Using a fixed container size and scaling it down to fit */}
-                         <div className="w-[1200px] h-[760px] transform scale-[0.316] origin-top-left pointer-events-none select-none bg-white">
+
+                    {/* Responsive Scaled Desktop View */}
+                    <div className="relative w-full aspect-[16/10] bg-white overflow-hidden cursor-pointer border-t border-slate-100" onClick={() => setIsFullPreviewOpen(true)}>
+                         <div className="w-[1280px] h-[800px] origin-top-left bg-white pointer-events-none select-none"
+                              ref={el => {
+                                  if (el && el.parentElement) {
+                                      const resize = () => {
+                                          const scale = el.parentElement.offsetWidth / 1280;
+                                          el.style.transform = `scale(${scale})`;
+                                      };
+                                      resize();
+                                      // Add resize listener only once per element lifecycle ideally, 
+                                      // but for this simple component mounting/unmounting is fine.
+                                      const observer = new ResizeObserver(resize);
+                                      observer.observe(el.parentElement);
+                                  }
+                              }}
+                         >
                              <DynamicLandingPage data={createdPageData} isThumbnail={true} />
                          </div>
 
                          {/* Hover Overlay */}
-                         <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-[1px]">
-                             <Button className="gap-2 rounded-full shadow-2xl pointer-events-none bg-slate-900 hover:bg-black text-white px-6 py-6 font-bold transform scale-100 group-hover:scale-105 transition-transform">
-                                 <Maximize2 className="w-5 h-5" />
-                                 תצוגה מלאה
-                             </Button>
+                         <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/5 transition-all duration-300 flex items-center justify-center">
+                             <div className="bg-white/90 backdrop-blur-sm text-slate-900 px-6 py-3 rounded-full font-bold shadow-xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 border border-white/20">
+                                 <Eye className="w-4 h-4" />
+                                 לחץ לתצוגה מלאה
+                             </div>
                          </div>
                     </div>
                   </div>
+
+                  {/* Mobile Preview (Visible ONLY on Mobile) */}
+                  <div className="md:hidden mx-auto max-w-[280px]">
+                      <div className="bg-slate-900 rounded-[2.5rem] p-3 shadow-2xl border-[6px] border-slate-800 relative ring-1 ring-white/10">
+                          {/* Notch */}
+                          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-6 w-24 bg-slate-800 rounded-b-xl z-20" />
+
+                          <div className="bg-white rounded-[2rem] overflow-hidden relative aspect-[9/19] cursor-pointer group" onClick={() => setIsFullPreviewOpen(true)}>
+                              <div className="w-full h-full overflow-y-auto no-scrollbar pointer-events-none select-none bg-white">
+                                  <DynamicLandingPage data={createdPageData} isThumbnail={true} />
+                              </div>
+                              {/* Mobile Overlay */}
+                              <div className="absolute inset-0 bg-slate-900/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]">
+                                  <div className="bg-white/90 p-3 rounded-full shadow-lg animate-in zoom-in duration-200">
+                                      <Maximize2 className="w-6 h-6 text-slate-900" />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div className="text-center mt-4">
+                          <p className="text-xs text-slate-400 font-medium">תצוגת מובייל משוערת</p>
+                      </div>
+                  </div>
+                </div>
+              )}
 
                   {/* Full Preview Dialog */}
                   <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
