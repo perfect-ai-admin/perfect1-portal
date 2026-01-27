@@ -300,7 +300,7 @@ export default function GraphicDesignerLanding() {
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1E3A5F]"
                 />
                 <Button type="submit" className="w-full h-12 bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-black rounded-xl">
-                  שדרג למודרניות הטמירה
+                  שלח פרטים
                 </Button>
               </form>
             </motion.div>
