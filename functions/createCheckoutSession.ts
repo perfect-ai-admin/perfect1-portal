@@ -36,6 +36,14 @@ Deno.serve(async (req) => {
             product = goals[0];
             amount = 9900; // Default 99 ILS for additional goals
             description = `מטרה נוספת - ${product.name}`;
+        } else if (product_type === 'landing-page') {
+            const pages = await base44.asServiceRole.entities.LandingPage.filter({ id: product_id });
+            if (!pages || pages.length === 0) {
+                return Response.json({ error: 'Landing page not found' }, { status: 404 });
+            }
+            product = pages[0];
+            amount = 29900; // 299 ILS in cents
+            description = `דף נחיתה - ${product.business_name}`;
         }
 
         // Create Payment record

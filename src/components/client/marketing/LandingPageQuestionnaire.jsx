@@ -353,8 +353,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   };
 
   const handlePurchase = () => {
-    // Navigate to checkout with the special price
-    window.location.href = `/Checkout?product=landing-page&price=299&slug=${pageSlug || ''}`;
+    // Navigate to checkout with landing page ID (not slug - slug is generated on publish)
+    window.location.href = `/Checkout?product_type=landing-page&product_id=${createdPageData?.id || ''}&price=299`;
   };
 
   const renderStep = () => {

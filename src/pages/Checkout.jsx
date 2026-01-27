@@ -23,13 +23,6 @@ export default function Checkout() {
         loadData();
     }, []);
 
-    useEffect(() => {
-      // Auto-checkout for landing page on mount
-      if (productType === 'landing-page') {
-        handleCheckout();
-      }
-    }, [productType]);
-
     const loadData = async () => {
         try {
             const currentUser = await base44.auth.me();
@@ -52,13 +45,9 @@ export default function Checkout() {
     const handleCheckout = async () => {
         setProcessing(true);
         try {
-            // For landing pages, map to correct format
-            const product_type = productType === 'landing-page' ? 'landing-page' : productType;
-            const product_id = productType === 'landing-page' ? searchParams.get('slug') : productId;
-
             const response = await base44.functions.invoke('createCheckoutSession', {
-                product_type: product_type,
-                product_id: product_id
+                product_type: productType,
+                product_id: productId
             });
 
             if (response.data.success && response.data.url) {
