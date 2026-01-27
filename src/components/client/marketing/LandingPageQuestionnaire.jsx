@@ -1088,10 +1088,10 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
             </div>
           ) : showSuccess ? (
-            <div className="flex flex-col h-full bg-[#F8FAFC] overflow-hidden animate-in fade-in zoom-in duration-500">
+            <div className="flex flex-col h-full bg-[#F8FAFC] overflow-y-auto animate-in fade-in zoom-in duration-500">
               
-              {/* Top Header - Reassuring & Clean */}
-              <div className="flex-none bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between shadow-sm z-20">
+              {/* Header */}
+              <div className="flex-none bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
                 <div>
                   <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
                     הדף שלך מוכן 🎉
@@ -1100,136 +1100,129 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     זו טיוטה ראשונית. ניתן לערוך, לשפר ולהתאים גם אחרי הרכישה.
                   </p>
                 </div>
-                <div className="hidden md:flex gap-2">
-                   {/* Optional: Device toggles if needed, but prompt focuses on 'Preview Experience' */}
+                <div className="flex gap-2">
+                   <Button variant="ghost" onClick={onClose} size="icon"><X className="w-5 h-5 text-slate-400" /></Button>
                 </div>
               </div>
 
-              {/* Main Content Area - Split View */}
-              <div className="flex-1 overflow-hidden relative flex flex-col md:flex-row">
+              {/* Main Scrollable Content */}
+              <div className="flex-1 w-full max-w-4xl mx-auto p-4 md:p-8 flex flex-col gap-12 pb-20">
                 
-                {/* Center/Left: The Preview (Hero) */}
-                <div className="flex-1 bg-slate-50 p-4 md:p-8 overflow-hidden flex flex-col items-center justify-center relative">
-                   {/* Background Decor */}
-                   <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:16px_16px]" />
-                   
-                   {!createdPageData ? (
-                      <div className="flex flex-col items-center justify-center gap-4 text-slate-400">
-                        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                        <p>טוען תצוגה...</p>
-                      </div>
-                   ) : (
-                      <div className="w-full max-w-5xl aspect-[16/10] bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col relative group transition-all hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
-                          {/* Browser Toolbar */}
-                          <div className="h-10 bg-slate-100 border-b border-slate-200 flex items-center px-4 gap-3 shrink-0">
-                             <div className="flex gap-1.5">
-                               <div className="w-3 h-3 rounded-full bg-[#ff5f57] border border-[#e0443e]" />
-                               <div className="w-3 h-3 rounded-full bg-[#febc2e] border border-[#d8a126]" />
-                               <div className="w-3 h-3 rounded-full bg-[#28c840] border border-[#1aac2f]" />
-                             </div>
-                             <div className="flex-1 flex justify-center px-4">
-                                <div className="h-7 w-full max-w-lg bg-white border border-slate-200 rounded-md flex items-center justify-center gap-2 text-xs text-slate-500 font-mono shadow-sm">
-                                   <Lock className="w-3 h-3 opacity-50" />
-                                   <span className="opacity-50">https://</span>
-                                   <span>{window.location.host}/LP/{pageSlug}</span>
-                                </div>
-                             </div>
-                          </div>
-                          
-                          {/* Viewport */}
-                          <div className="flex-1 relative bg-white w-full overflow-hidden group cursor-zoom-in" onClick={() => setIsFullPreviewOpen(true)}>
-                             <div className="absolute inset-0 w-[1280px] h-[800px] origin-top-left transform-gpu pointer-events-none select-none"
-                                  ref={el => {
-                                      if (!el || !el.parentElement) return;
-                                      const resize = () => {
-                                          const parent = el.parentElement;
-                                          if (parent) {
-                                              const scale = parent.offsetWidth / 1280;
-                                              el.style.transform = `scale(${scale})`;
-                                          }
-                                      };
-                                      new ResizeObserver(resize).observe(el.parentElement);
-                                      resize();
-                                  }}
-                             >
-                                <DynamicLandingPage data={createdPageData} isThumbnail={true} />
-                             </div>
+                {/* 1. Preview Section - Clickable Card */}
+                <div className="w-full space-y-4">
+                   <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-slate-700">תצוגה מקדימה</h3>
+                      <button onClick={() => setIsFullPreviewOpen(true)} className="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1">
+                        <Maximize2 className="w-4 h-4" />
+                        פתח מסך מלא
+                      </button>
+                   </div>
 
-                             {/* Overlay for Click */}
-                             <div className="absolute inset-0 bg-slate-900/0 hover:bg-slate-900/5 transition-all duration-300 flex items-center justify-center">
-                                <div className="bg-white/90 backdrop-blur-md text-slate-900 px-6 py-3 rounded-full font-bold shadow-2xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 border border-white/20">
-                                   <Maximize2 className="w-4 h-4" />
-                                   לחץ לתצוגה מלאה
-                                </div>
-                             </div>
-                          </div>
+                   <div 
+                      onClick={() => setIsFullPreviewOpen(true)}
+                      className="group relative w-full aspect-[16/10] bg-white rounded-2xl shadow-xl hover:shadow-2xl border border-slate-200 overflow-hidden cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
+                   >
+                      {/* Browser Toolbar Mock */}
+                      <div className="h-10 bg-slate-50 border-b border-slate-100 flex items-center px-4 gap-3 shrink-0">
+                         <div className="flex gap-1.5 opacity-60">
+                           <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+                           <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+                           <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+                         </div>
+                         <div className="flex-1 flex justify-center">
+                            <div className="h-6 w-1/2 bg-white rounded-md shadow-sm border border-slate-100 flex items-center justify-center text-[10px] text-slate-400 font-mono">
+                               {window.location.host}/LP/{pageSlug}
+                            </div>
+                         </div>
                       </div>
-                   )}
+
+                      {/* Content Preview */}
+                      <div className="relative w-full h-full overflow-hidden bg-white">
+                         {!createdPageData ? (
+                            <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400 bg-slate-50">
+                              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                              <p className="text-sm">טוען תצוגה...</p>
+                            </div>
+                         ) : (
+                            <div className="w-full h-full opacity-50 blur-[1px] group-hover:blur-[2px] transition-all duration-500 scale-100 group-hover:scale-105 origin-top">
+                               {/* We use a static image or a very simple representation here to avoid heavy rendering in small scale if needed, but keeping dynamic for accuracy */}
+                               <div className="w-[1280px] h-[800px] origin-top-left transform scale-[0.5] sm:scale-[0.6] md:scale-[0.75] pointer-events-none">
+                                  <DynamicLandingPage data={createdPageData} isThumbnail={true} />
+                               </div>
+                            </div>
+                         )}
+
+                         {/* Overlay Action Button */}
+                         <div className="absolute inset-0 flex items-center justify-center bg-slate-900/10 group-hover:bg-slate-900/20 transition-all duration-300">
+                            <div className="bg-white/90 backdrop-blur-md text-slate-900 px-8 py-4 rounded-full font-bold shadow-2xl transform scale-90 group-hover:scale-100 transition-all duration-300 flex items-center gap-3 border border-white/40">
+                               <Eye className="w-5 h-5 text-blue-600" />
+                               לחץ לצפייה בדף המלא
+                            </div>
+                         </div>
+                      </div>
+                   </div>
                 </div>
 
-                {/* Right/Sidebar: The Sales Pitch (Sticky) */}
-                <div className="w-full md:w-[380px] bg-white border-r border-slate-200 flex flex-col z-10 shadow-xl md:shadow-none">
-                   <div className="p-6 flex-1 overflow-y-auto">
-                      
-                      <div className="mb-8 text-center">
-                         <div className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full mb-3">
-                            הצעה מיוחדת למצטרפים חדשים
-                         </div>
-                         <div className="flex items-baseline justify-center gap-1 dir-ltr">
-                            <span className="text-5xl font-black text-slate-900">299₪</span>
-                            <span className="text-lg text-slate-400 line-through">990₪</span>
-                         </div>
-                         <p className="text-slate-600 text-sm mt-2 font-medium">כולל פרסום הדף + מערכת עריכה מלאה</p>
-                      </div>
-
-                      <div className="space-y-4 mb-8">
-                         {[
-                           "דומיין אישי במתנה",
-                           "אחסון מהיר ומאובטח",
-                           "הסרת פרסומות ולוגו המערכת",
-                           "מערכת ניהול לידים מובנית",
-                           "אפשרות לעריכת תוכן חופשית"
-                         ].map((item, i) => (
-                           <div key={i} className="flex items-center gap-3">
-                              <div className="w-5 h-5 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                                <Check className="w-3 h-3" />
-                              </div>
-                              <span className="text-sm text-slate-700">{item}</span>
-                           </div>
-                         ))}
-                      </div>
-
-                      <Button 
-                        onClick={handlePurchase}
-                        className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg shadow-blue-200/50 text-lg font-bold flex items-center justify-center gap-2 group transition-all hover:scale-[1.02]"
-                      >
-                        רוצה לפרסם את הדף 🚀
-                      </Button>
-                      
-                      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-                         <div className="flex flex-col items-center gap-1">
-                            <Shield className="w-4 h-4 text-slate-400" />
-                            <span className="text-[10px] text-slate-500 leading-tight">רכישה מאובטחת</span>
-                         </div>
-                         <div className="flex flex-col items-center gap-1">
-                            <Zap className="w-4 h-4 text-slate-400" />
-                            <span className="text-[10px] text-slate-500 leading-tight">פרסום מיידי</span>
-                         </div>
-                         <div className="flex flex-col items-center gap-1">
-                            <Target className="w-4 h-4 text-slate-400" />
-                            <span className="text-[10px] text-slate-500 leading-tight">ללא התחייבות</span>
-                         </div>
-                      </div>
-
-                   </div>
+                {/* 2. Pricing & CTA Section */}
+                <div className="w-full bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden relative">
+                   <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
                    
-                   <div className="p-4 border-t border-slate-100 bg-slate-50 text-center">
-                      <button 
-                        onClick={() => onComplete(formData)}
-                        className="text-slate-400 hover:text-slate-600 text-sm underline decoration-slate-300 underline-offset-4 transition-colors"
-                      >
-                        שמור כטיוטה (ללא פרסום)
-                      </button>
+                   <div className="p-8 md:p-10 flex flex-col md:flex-row gap-10 items-center">
+                      
+                      <div className="flex-1 space-y-6 text-center md:text-right">
+                         <div>
+                            <div className="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full mb-3">
+                               הצעה מיוחדת למצטרפים חדשים
+                            </div>
+                            <h3 className="text-3xl font-black text-slate-900 mb-2">מוכן לצאת לדרך?</h3>
+                            <p className="text-slate-500 text-lg">קבל את הדף המלא כולל דומיין, אחסון ומערכת ניהול.</p>
+                         </div>
+
+                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                             {[
+                               "דומיין אישי במתנה",
+                               "אחסון מהיר ומאובטח",
+                               "הסרת פרסומות ולוגו",
+                               "מערכת ניהול לידים",
+                               "עריכה מלאה ללא הגבלה",
+                               "חיבור לוואטסאפ אישי"
+                             ].map((item, i) => (
+                               <div key={i} className="flex items-center gap-3 bg-slate-50 p-2 rounded-lg">
+                                  <div className="w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                                    <Check className="w-3 h-3" />
+                                  </div>
+                                  <span className="text-sm font-medium text-slate-700">{item}</span>
+                               </div>
+                             ))}
+                         </div>
+                      </div>
+
+                      <div className="w-full md:w-80 bg-slate-50 rounded-2xl p-6 border border-slate-100 flex flex-col items-center justify-center shrink-0">
+                          <div className="flex items-baseline gap-1 dir-ltr mb-4">
+                             <span className="text-5xl font-black text-slate-900">299₪</span>
+                             <span className="text-lg text-slate-400 line-through">990₪</span>
+                          </div>
+                          
+                          <Button 
+                            onClick={handlePurchase}
+                            className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg shadow-blue-200/50 text-lg font-bold flex items-center justify-center gap-2 group transition-all hover:scale-[1.02] mb-4"
+                          >
+                            רוצה לפרסם את הדף 🚀
+                          </Button>
+
+                          <div className="flex items-center gap-4 text-[10px] text-slate-400">
+                             <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> מאובטח</span>
+                             <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> מיידי</span>
+                          </div>
+
+                          <button 
+                            onClick={() => onComplete(formData)}
+                            className="mt-6 text-slate-400 hover:text-slate-600 text-sm underline decoration-slate-300 underline-offset-4 transition-colors"
+                          >
+                            שמור כטיוטה כרגע
+                          </button>
+                      </div>
+
                    </div>
                 </div>
 
