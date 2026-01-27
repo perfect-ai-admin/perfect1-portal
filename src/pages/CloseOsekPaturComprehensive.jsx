@@ -505,10 +505,10 @@ export default function CloseOsekPaturComprehensive() {
             >
               <div className="bg-white rounded-2xl shadow-2xl w-11/12 sm:w-96 pointer-events-auto p-6 sm:p-8">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-black text-[#1E3A5F]">סגירת עוסק פטור</h3>
+                  <h3 className="text-xl sm:text-2xl font-black text-[#1E3A5F]">סגירת עוסק פטור</h3>
                   <button
                     onClick={() => setShowLeadForm(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
                   >
                     ✕
                   </button>
