@@ -49,12 +49,9 @@ export default function OsekPaturSteps() {
       });
 
       if (response.data.success) {
-        toast.success('הלידים שלך נקלטו בהצלחה!');
         setFormData({ name: '', phone: '', profession: '' });
-        // Navigate to thank you page after 1.5s
-        setTimeout(() => {
-          navigate(createPageUrl('ThankYou'));
-        }, 1500);
+        // Navigate to thank you page
+        navigate(createPageUrl('ThankYou'));
       } else {
         toast.error('שגיאה בשליחת הלידים: ' + (response.data.error || 'שגיאה לא ידועה'));
       }
