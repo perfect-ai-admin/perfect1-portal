@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Loader2, CheckCircle, Home, Target } from 'lucide-react';
+import { Loader2, CheckCircle, Home, Target, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import canvas from 'canvas-confetti';
 
