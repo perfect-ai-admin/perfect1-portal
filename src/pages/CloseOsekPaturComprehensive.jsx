@@ -383,11 +383,8 @@ export default function CloseOsekPaturComprehensive() {
                {/* CTA */}
                <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-8 border-2 border-amber-300 text-center">
                  <h3 className="text-2xl font-black text-[#1E3A5F] mb-3">
-                   רוצים לסגור עוסק פטור במהירות?
+                    רוצים לסגור עוסק פטור במהירות?
                  </h3>
-                 <p className="text-lg text-gray-700 mb-6">
-                   מדריך שלם לסגירת עוסק פטור כל שלב בשלב
-                 </p>
                  <Button 
                    onClick={() => setShowLeadForm(true)}
                    className="h-14 px-8 text-lg font-black rounded-xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white shadow-lg"
