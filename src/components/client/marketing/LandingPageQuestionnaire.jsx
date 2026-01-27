@@ -355,19 +355,11 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const handlePurchase = async () => {
     setIsPublishing(true);
     try {
-      const response = await base44.functions.invoke('createCheckoutSession', {
-        product_type: 'landing-page',
-        product_id: createdPageData?.id
-      });
-
-      if (response.data && response.data.url) {
-        window.location.href = response.data.url;
-      } else {
-        throw new Error('Failed to get checkout URL');
-      }
+      const domain = `${createdPageData?.id}.base44.app`;
+      setPublishedUrl(domain);
+      setIsPublishing(false);
     } catch (error) {
-      console.error('Error initiating purchase:', error);
-      alert('שגיאה בעת פתיחת הקופה. אנא נסה שוב.');
+      console.error('Error:', error);
       setIsPublishing(false);
     }
   };
