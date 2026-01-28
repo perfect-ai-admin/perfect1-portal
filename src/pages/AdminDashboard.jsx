@@ -10,6 +10,7 @@ import GoalsManager from '../components/admin/GoalsManager';
 import PlansManager from '../components/admin/PlansManager';
 import ActivityLogView from '../components/admin/ActivityLogView';
 import SystemConfigManager from '../components/admin/SystemConfigManager';
+import InviteUserDialog from '../components/admin/InviteUserDialog';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
@@ -109,13 +110,16 @@ export default function AdminDashboard() {
                                     <p className="text-white/80">שלום, {user?.full_name}</p>
                                 </div>
                             </div>
-                            <Button 
-                                variant="outline" 
-                                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                                onClick={() => window.location.href = '/'}
-                            >
-                                חזרה לאתר
-                            </Button>
+                            <div className="flex items-center gap-3">
+                                <InviteUserDialog />
+                                <Button 
+                                    variant="outline" 
+                                    className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                                    onClick={() => window.location.href = '/'}
+                                >
+                                    חזרה לאתר
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
