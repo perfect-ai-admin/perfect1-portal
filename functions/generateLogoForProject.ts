@@ -39,21 +39,15 @@ Deno.serve(async (req) => {
     });
 
     // Check and reserve credit
-    const creditRes = await fetch(new URL(req.url).origin + '/functions/checkAndReserveCredit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': req.headers.get('Authorization')
-      },
-      body: JSON.stringify({})
-    });
-
-    if (!creditRes.ok) {
+    let creditData;
+    try {
+      creditData = await base44.asServiceRole.functions.invoke('checkAndReserveCredit', {});
+    } catch (err) {
+      console.error('[GENERATE] Credit check failed:', err);
       await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
         status: 'failed'
       });
-      const creditErr = await creditRes.json();
-      return Response.json(creditErr, { status: creditRes.status });
+      return Response.json({ error: err.message }, { status: 400 });
     }
 
     // Build prompt
