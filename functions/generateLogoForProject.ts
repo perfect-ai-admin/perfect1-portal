@@ -9,7 +9,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { project_id, variation_mode } = await req.json();
+    const body = await req.json();
+    const { project_id, variation_mode } = body;
+
+    console.log('[GENERATE] Request received:', { project_id, variation_mode });
 
     if (!project_id) {
       return Response.json({ error: 'project_id required' }, { status: 400 });
