@@ -21,62 +21,22 @@ Deno.serve(async (req) => {
 
         console.log('[getPublicLandingPage] Searching for slug:', slug);
         
-        // Get the current app ID from environment or request context
-        const appId = Deno.env.get('BASE44_APP_ID');
-        console.log('[getPublicLandingPage] App ID:', appId);
+        // List all pages (asServiceRole bypasses RLS) and find the matching published page
+        const allPages = await base44.asServiceRole.entities.LandingPage.list(undefined, 100);
+        console.log('[getPublicLandingPage] Total pages available:', allPages.length);
         
-        if (!appId) {
-            return Response.json({ error: 'App ID not configured' }, { status: 500 });
+        const page = allPages.find(p => p.slug === slug && p.status === 'published');
+        console.log('[getPublicLandingPage] Found matching published page:', !!page);
+
+        if (!page) {
+            console.error('[getPublicLandingPage] Page not found for slug:', slug, 'status needed: published');
+            // Debug: log what pages exist with this slug
+            const allWithSlug = allPages.filter(p => p.slug === slug);
+            console.log('[getPublicLandingPage] Pages with slug "' + slug + '":', allWithSlug.map(p => ({ status: p.status, id: p.id })));
+            return Response.json({ error: 'Page not found' }, { status: 404 });
         }
 
-        try {
-            // Use rawQuery to bypass RLS restrictions for public landing pages
-            const response = await fetch(`https://api.base44.com/v1/entities/LandingPage/query`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY') || ''}`,
-                    'X-App-Id': appId
-                },
-                body: JSON.stringify({
-                    filter: { slug: slug, status: 'published' }
-                })
-            });
-
-            if (!response.ok) {
-                // Fallback: try simple list and find
-                const allPages = await base44.asServiceRole.entities.LandingPage.list();
-                const page = allPages.find(p => p.slug === slug && p.status === 'published');
-                
-                if (!page) {
-                    console.error('[getPublicLandingPage] Page not found for slug:', slug);
-                    return Response.json({ error: 'Page not found' }, { status: 404 });
-                }
-                
-                return Response.json(page);
-            }
-
-            const data = await response.json();
-            const page = data.data ? data.data[0] : null;
-
-            if (!page) {
-                console.error('[getPublicLandingPage] Page not found for slug:', slug);
-                return Response.json({ error: 'Page not found' }, { status: 404 });
-            }
-
-            return Response.json(page);
-        } catch (fetchError) {
-            console.error('[getPublicLandingPage] Fetch error:', fetchError.message);
-            // Fallback: try to get all pages
-            const allPages = await base44.asServiceRole.entities.LandingPage.list();
-            const page = allPages.find(p => p.slug === slug && p.status === 'published');
-            
-            if (!page) {
-                return Response.json({ error: 'Page not found' }, { status: 404 });
-            }
-            
-            return Response.json(page);
-        }
+        return Response.json(page);
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }
