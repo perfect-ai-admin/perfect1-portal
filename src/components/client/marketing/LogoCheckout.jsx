@@ -20,13 +20,13 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
   });
 
   const product = {
-    name: 'חבילת מיתוג עסקי',
-    description: 'לוגו מקצועי וקבצים לשימוש מלא',
+    name: 'לוגו מקצועי',
+    description: 'לוגו איכות גבוהה לשימוש מלא',
     features: [
-      'קבצי מקור (SVG, PDF) להדפסה',
-      'קבצי תמונה (PNG, JPG) לדיגיטל',
       'זכויות יוצרים מלאות לשימוש מסחרי',
-      'רזולוציה גבוהה לכל שימוש'
+      'רזולוציה גבוהה לכל שימוש',
+      'משלוח מיידי לאימייל',
+      'תמונה נקייה ללא סימן מים'
     ]
   };
 
