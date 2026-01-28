@@ -1,6 +1,7 @@
 import React from 'react';
 import { Download, Lock, ChevronLeft, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import WatermarkedLogo from './WatermarkedLogo';
 
 export default function LogoPreview({ 
   businessName, 
@@ -18,23 +19,13 @@ export default function LogoPreview({
           <div className="grid grid-cols-2 gap-0">
             {/* Left - Logo Preview */}
             <div className="relative bg-gradient-to-br from-blue-50 to-gray-50 min-h-96 flex items-center justify-center p-8">
-              {/* Main Logo Image */}
-              <img 
-                src={logoUrl} 
+              {/* Main Logo Image with Watermark */}
+              <WatermarkedLogo
+                src={logoUrl}
                 alt={`${businessName} logo`}
                 className="max-h-64 w-auto object-contain relative z-10"
+                businessName={businessName}
               />
-              {/* Subtle Watermark */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="text-center space-y-2">
-                  <p className="text-gray-200 text-lg font-bold opacity-20 rotate-45 tracking-wider">
-                    PREVIEW
-                  </p>
-                  <p className="text-gray-200 text-sm opacity-15">
-                    Unlock to download
-                  </p>
-                </div>
-              </div>
               {/* Badge */}
               <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 z-20">
                 <Lock className="w-3 h-3" />
@@ -113,12 +104,13 @@ export default function LogoPreview({
 
         {/* Logo Preview with Badge */}
         <div className="flex-1 flex items-center justify-center overflow-y-auto p-4 min-h-[300px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl mx-4 my-4 relative">
-          <img 
-            src={logoUrl} 
+          <WatermarkedLogo
+            src={logoUrl}
             alt={`${businessName} logo`}
             className="max-w-xs h-auto object-contain"
+            businessName={businessName}
           />
-          <div className="absolute top-3 right-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+          <div className="absolute top-3 right-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 z-20">
             <Lock className="w-3 h-3" />
             תצוגה
           </div>
