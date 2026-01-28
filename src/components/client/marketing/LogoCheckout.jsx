@@ -127,11 +127,11 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
         
         {/* Logo Preview */}
         {logoUrl && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-center min-h-[200px]">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-center min-h-[220px] md:min-h-[280px] sticky top-0 z-10">
             <WatermarkedLogo 
               src={logoUrl} 
               alt="Logo" 
-              className="max-h-[180px] max-w-full object-contain"
+              className="max-h-[200px] md:max-h-[260px] max-w-full object-contain"
             />
           </div>
         )}
