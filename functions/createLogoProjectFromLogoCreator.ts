@@ -15,8 +15,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Create LogoProject from questionnaire answers
-    const project = await base44.asServiceRole.entities.LogoProject.create({
+    // Create LogoProject from questionnaire answers using user's own token (not service role)
+    const project = await base44.entities.LogoProject.create({
       user_id: user.email,
       source_form: 'LogoCreator',
       brand_name: businessName,
@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
       status: 'draft'
     });
 
-    // Get or create UserAccount for credits
+    // Get or create UserAccount for credits (service role is OK for this)
     const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: user.email });
     let account = accounts[0];
 
