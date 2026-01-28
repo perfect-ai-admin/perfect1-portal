@@ -534,40 +534,77 @@ export default function LogoCreator({ businessName, onClose }) {
     // Preview step - show logo with options
     if (!showCheckout) {
       return (
-        <LogoPreview 
-          businessName={formData.businessName}
-          logoUrl={generatedLogoUrl}
-          onBack={() => setStep(3)}
-          onSaveToCart={() => {
-            // Save to cart logic here (future implementation)
-            alert('לוגו נשמר בסל! 🎉');
-          }}
-          onProceedToCheckout={() => setShowCheckout(true)}
-        />
+        <>
+          <div className="hidden lg:block">
+            <LogoPreview 
+              businessName={formData.businessName}
+              logoUrl={generatedLogoUrl}
+              onBack={() => setStep(3)}
+              onSaveToCart={() => {
+                alert('לוגו נשמר בסל! 🎉');
+              }}
+              onProceedToCheckout={() => setShowCheckout(true)}
+            />
+          </div>
+          
+          <div className="lg:hidden h-full">
+            <LogoPreview 
+              businessName={formData.businessName}
+              logoUrl={generatedLogoUrl}
+              onBack={() => setStep(3)}
+              onSaveToCart={() => {
+                alert('לוגו נשמר בסל! 🎉');
+              }}
+              onProceedToCheckout={() => setShowCheckout(true)}
+            />
+          </div>
+        </>
       );
     }
 
     // Checkout step
     return (
-      <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6 relative">
-        {generatedLogoUrl && (
-          <LogoCheckout 
-            businessName={formData.businessName}
-            logoUrl={generatedLogoUrl}
-            onBack={() => setShowCheckout(false)}
-            onClose={onClose}
-            onSuccess={(data) => {
-              onClose();
-              navigate(createPageUrl('LogoThankYou'), { 
-                state: { 
-                  businessName: formData.businessName,
-                  email: data?.email 
-                } 
-              });
-            }}
-          />
-        )}
-      </div>
+      <>
+        <div className="hidden lg:block lg:space-y-6 lg:py-6">
+          {generatedLogoUrl && (
+            <LogoCheckout 
+              businessName={formData.businessName}
+              logoUrl={generatedLogoUrl}
+              onBack={() => setShowCheckout(false)}
+              onClose={onClose}
+              onSuccess={(data) => {
+                onClose();
+                navigate(createPageUrl('LogoThankYou'), { 
+                  state: { 
+                    businessName: formData.businessName,
+                    email: data?.email 
+                  } 
+                });
+              }}
+            />
+          )}
+        </div>
+        
+        <div className="lg:hidden h-full">
+          {generatedLogoUrl && (
+            <LogoCheckout 
+              businessName={formData.businessName}
+              logoUrl={generatedLogoUrl}
+              onBack={() => setShowCheckout(false)}
+              onClose={onClose}
+              onSuccess={(data) => {
+                onClose();
+                navigate(createPageUrl('LogoThankYou'), { 
+                  state: { 
+                    businessName: formData.businessName,
+                    email: data?.email 
+                  } 
+                });
+              }}
+            />
+          )}
+        </div>
+      </>
     );
   }
 
