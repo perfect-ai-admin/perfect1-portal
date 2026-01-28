@@ -5,14 +5,22 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!user || !user.email) {
+      return Response.json({ 
+        ok: false,
+        error_code: 'NO_AUTH',
+        message: 'User not authenticated'
+      });
     }
 
     const { generation_id } = await req.json();
 
     if (!generation_id) {
-      return Response.json({ error: 'generation_id required' }, { status: 400 });
+      return Response.json({ 
+        ok: false,
+        error_code: 'MISSING_GENERATION_ID',
+        message: 'generation_id is required'
+      });
     }
 
     // Load generation
@@ -20,11 +28,21 @@ Deno.serve(async (req) => {
     const generation = generations[0];
 
     if (!generation) {
-      return Response.json({ error: 'Generation not found' }, { status: 404 });
+      console.log('[APPROVE] Generation not found:', generation_id);
+      return Response.json({ 
+        ok: false,
+        error_code: 'GENERATION_NOT_FOUND',
+        message: 'Logo not found'
+      });
     }
 
     if (generation.user_id !== user.email) {
-      return Response.json({ error: 'Unauthorized' }, { status: 403 });
+      console.log('[APPROVE] Ownership check failed:', generation.user_id, 'vs', user.email);
+      return Response.json({ 
+        ok: false,
+        error_code: 'UNAUTHORIZED',
+        message: 'Not authorized to approve this logo'
+      });
     }
 
     // Update generation status
@@ -36,6 +54,15 @@ Deno.serve(async (req) => {
     const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: generation.project_id });
     const project = projects[0];
 
+    if (!project) {
+      console.error('[APPROVE] Project not found:', generation.project_id);
+      return Response.json({ 
+        ok: false,
+        error_code: 'PROJECT_NOT_FOUND',
+        message: 'Associated project not found'
+      });
+    }
+
     await base44.asServiceRole.entities.LogoProject.update(project.id, {
       approved_generation_id: generation.id,
       approved_logo_url: generation.external_url,
@@ -43,10 +70,16 @@ Deno.serve(async (req) => {
     });
 
     return Response.json({
-      success: true,
-      approved_url: generation.external_url
+      ok: true,
+      approved_url: generation.external_url,
+      generation_id: generation.id
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('[APPROVE] Error:', error.message);
+    return Response.json({ 
+      ok: false,
+      error_code: 'APPROVE_FAILED',
+      message: 'Failed to approve logo'
+    });
   }
 });

@@ -41,49 +41,72 @@ Deno.serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[STOCKIMG] Error response:', response.status, errorText);
-      console.error('[STOCKIMG] API Key last 4:', apiKey ? apiKey.slice(-4) : 'NO KEY');
-      console.error('[STOCKIMG] Payload was:', JSON.stringify(payload));
+      console.error('[STOCKIMG] API error:', response.status, errorText.slice(0, 200));
       return Response.json({ 
-        error: `Stockimg API error (${response.status})`, 
-        details: errorText,
-        payload: payload
-      }, { status: 400 });
+        ok: false,
+        error_code: 'STOCKIMG_API_ERROR',
+        message: 'Image generation service error'
+      });
     }
 
     const data = await response.json();
 
-    if (!data.data || !data.data.images || !data.data.images[0] || !data.data.images[0].url) {
-      return Response.json({ error: 'Invalid API response format' }, { status: 500 });
+    if (!data || !data.data || !data.data.images || !Array.isArray(data.data.images) || data.data.images.length === 0) {
+      console.error('[STOCKIMG] Invalid response format:', JSON.stringify(data).slice(0, 200));
+      return Response.json({ 
+        ok: false,
+        error_code: 'STOCKIMG_INVALID_RESPONSE',
+        message: 'Image service returned invalid response'
+      });
     }
 
     const hasNsfw = data.data.has_nsfw_concepts && data.data.has_nsfw_concepts[0];
 
     if (hasNsfw) {
+      console.log('[STOCKIMG] NSFW content detected');
       return Response.json({ 
-        error: 'NSFW_CONTENT',
-        message: 'Could not generate this concept. Try different wording.',
+        ok: false,
+        error_code: 'NSFW_BLOCKED',
+        message: 'Generation blocked by safety filter',
         nsfw_flag: true
-      }, { status: 400 });
+      });
     }
 
     const image = data.data.images[0];
 
+    if (!image.url) {
+      console.error('[STOCKIMG] No URL in image data');
+      return Response.json({ 
+        ok: false,
+        error_code: 'STOCKIMG_INVALID_RESPONSE',
+        message: 'Image service returned invalid response'
+      });
+    }
+
     return Response.json({
-      success: true,
+      ok: true,
       image_url: image.url,
       seed: data.data.seed,
       content_type: image.content_type,
       width: image.width || 1024,
       height: image.height || 1024,
       timings: data.data.timings,
-      nsfw_flag: false,
-      prompt_used: prompt
+      nsfw_flag: false
     });
   } catch (error) {
     if (error.name === 'AbortError') {
-      return Response.json({ error: 'Request timeout' }, { status: 408 });
+      console.error('[STOCKIMG] Request timeout');
+      return Response.json({ 
+        ok: false,
+        error_code: 'STOCKIMG_TIMEOUT',
+        message: 'Image generation timed out'
+      });
     }
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('[STOCKIMG] Error:', error.message);
+    return Response.json({ 
+      ok: false,
+      error_code: 'STOCKIMG_ERROR',
+      message: 'Image generation failed'
+    });
   }
 });

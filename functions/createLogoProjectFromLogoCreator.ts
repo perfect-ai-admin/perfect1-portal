@@ -5,18 +5,25 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!user || !user.email) {
+      return Response.json({ 
+        ok: false,
+        error_code: 'NO_AUTH',
+        message: 'User not authenticated'
+      });
     }
 
     const { businessName, industry, style, tagline, vibe, colorScheme } = await req.json();
 
     if (!businessName || !industry) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 });
+      return Response.json({ 
+        ok: false,
+        error_code: 'MISSING_FIELDS',
+        message: 'Missing required fields: businessName, industry'
+      });
     }
 
     // Create LogoProject from questionnaire answers
-    // Must match user_id in RLS policy, service role bypasses validation
     const project = await base44.asServiceRole.entities.LogoProject.create({
       user_id: user.email,
       source_form: 'LogoCreator',
@@ -31,12 +38,12 @@ Deno.serve(async (req) => {
       status: 'draft'
     });
 
-    // Get or create UserAccount for credits (service role is OK for this)
+    // Get or create UserAccount
     const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: user.email });
     let account = accounts[0];
 
     if (!account) {
-      // Give new user 1 free credit for first generation
+      console.log('[CREATE_PROJECT] Creating UserAccount for:', user.email);
       account = await base44.asServiceRole.entities.UserAccount.create({
         user_id: user.email,
         logo_credits: 1,
@@ -50,7 +57,11 @@ Deno.serve(async (req) => {
       credits: account.logo_credits
     });
   } catch (error) {
-    console.error('createLogoProjectFromLogoCreator error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('[CREATE_PROJECT] Error:', error.message);
+    return Response.json({ 
+      ok: false,
+      error_code: 'PROJECT_CREATE_FAILED',
+      message: 'Failed to create project'
+    });
   }
 });

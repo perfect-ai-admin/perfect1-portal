@@ -5,8 +5,12 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!user || !user.email) {
+      return Response.json({ 
+        ok: false,
+        error_code: 'NO_AUTH',
+        message: 'User not authenticated'
+      });
     }
 
     // Find or create UserAccount
@@ -14,6 +18,7 @@ Deno.serve(async (req) => {
     let account = accounts[0];
 
     if (!account) {
+      console.log('[RESERVE_CREDIT] Creating UserAccount for:', user.email);
       account = await base44.asServiceRole.entities.UserAccount.create({
         user_id: user.email,
         logo_credits: 0,
@@ -22,7 +27,12 @@ Deno.serve(async (req) => {
     }
 
     if (account.logo_credits <= 0) {
-      return Response.json({ error: 'NO_CREDITS', message: 'You have no logo credits' }, { status: 402 });
+      console.log('[RESERVE_CREDIT] No credits for user:', user.email);
+      return Response.json({ 
+        ok: false,
+        error_code: 'NO_CREDITS',
+        message: 'No logo credits available'
+      });
     }
 
     // Deduct 1 credit
@@ -40,10 +50,15 @@ Deno.serve(async (req) => {
     });
 
     return Response.json({ 
-      success: true, 
+      ok: true,
       remaining_credits: updated.logo_credits 
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('[RESERVE_CREDIT] Error:', error.message);
+    return Response.json({ 
+      ok: false,
+      error_code: 'CREDIT_RESERVE_FAILED',
+      message: 'Could not reserve credit'
+    });
   }
 });

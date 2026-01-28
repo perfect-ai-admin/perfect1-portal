@@ -1,10 +1,13 @@
 Deno.serve(async (req) => {
   try {
-
     const { brand_name, business_type, style, slogan, icon_hint } = await req.json();
 
     if (!brand_name || !business_type || !style) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 });
+      return Response.json({ 
+        ok: false,
+        error_code: 'MISSING_FIELDS',
+        message: 'Missing required fields: brand_name, business_type, style'
+      });
     }
 
     let prompt = `Create a professional vector-style logo for ${brand_name}. `;
@@ -14,20 +17,28 @@ Deno.serve(async (req) => {
     prompt += `Clean lines, professional, scalable. `;
     prompt += `No background, no mockups, no 3D effects. `;
 
-    if (slogan) {
+    if (slogan && typeof slogan === 'string') {
       prompt += `Include text: "${slogan}". `;
     }
 
-    if (icon_hint) {
+    if (icon_hint && typeof icon_hint === 'string') {
       prompt += `Icon concept: ${icon_hint}. `;
     }
 
     prompt += `High quality, ready for production.`;
 
-    console.log('[BUILD_PROMPT] Generated:', prompt);
+    console.log('[BUILD_PROMPT] Generated prompt successfully');
 
-    return Response.json({ prompt });
+    return Response.json({ 
+      ok: true,
+      prompt 
+    });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('[BUILD_PROMPT] Error:', error.message);
+    return Response.json({ 
+      ok: false,
+      error_code: 'PROMPT_BUILD_FAILED',
+      message: 'Failed to build logo prompt'
+    });
   }
 });
