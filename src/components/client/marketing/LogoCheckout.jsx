@@ -123,7 +123,7 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
       </div>
 
       {/* Main Scrollable Content - with bottom padding for fixed footer */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-40 md:pb-32">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 pb-56 md:pb-48">
         
         {/* Logo Preview */}
         {logoUrl && (
