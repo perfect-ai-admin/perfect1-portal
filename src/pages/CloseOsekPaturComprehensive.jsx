@@ -127,7 +127,7 @@ export default function CloseOsekPaturComprehensive() {
                 <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
                   <Button className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-2xl hover:shadow-3xl transition-all">
                     <MessageCircle className="ml-3 w-6 h-6" />
-                    דבר בווטסאפ
+                    בדיקה חינמית לסגירת עוסק פטור – בווצאפ
                   </Button>
                 </a>
               </div>
@@ -447,7 +447,7 @@ export default function CloseOsekPaturComprehensive() {
                <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
                  <Button className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-6 sm:px-10 lg:px-12 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg">
                    <MessageCircle className="ml-2 w-5 h-5" />
-                   WhatsApp
+                   בדיקה חינמית – בווצאפ
                  </Button>
                </a>
                <a href="tel:0502277087">
