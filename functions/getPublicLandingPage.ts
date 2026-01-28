@@ -18,9 +18,13 @@ Deno.serve(async (req) => {
 
         // List all pages and find the published one with matching slug
         const allPages = await base44.asServiceRole.entities.LandingPage.list(undefined, 1000);
+        console.log('[DEBUG] Total pages:', allPages.length);
+        console.log('[DEBUG] Pages slugs:', allPages.map(p => ({ slug: p.slug, status: p.status })));
+        
         const page = allPages.find(p => p.slug === slug && p.status === 'published');
 
         if (!page) {
+            console.log('[DEBUG] No published page found for slug:', slug);
             return Response.json({ error: 'Page not found' }, { status: 404 });
         }
 
