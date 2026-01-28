@@ -124,8 +124,8 @@ export default function LogoCreator({ businessName, onClose }) {
         colorScheme: formData.colorScheme
       });
 
-      if (!projectRes.data.ok) {
-        alert('שגיאה ביצירת הפרויקט');
+      if (!projectRes.data?.ok) {
+        alert(projectRes.data?.message || 'שגיאה ביצירת הפרויקט');
         return;
       }
 
@@ -137,12 +137,12 @@ export default function LogoCreator({ businessName, onClose }) {
         variation_mode: false
       });
 
-      if (genRes.data.success) {
+      if (genRes.data?.ok) {
         // Redirect to project page instead of showing gallery here
         navigate(createPageUrl('LogoProjectPage', `?project_id=${projectId}`));
         onClose();
       } else {
-        alert(genRes.data.error || 'שגיאה ביצירת הלוגו');
+        alert(genRes.data?.message || 'שגיאה ביצירת הלוגו');
       }
     } catch (error) {
       alert('שגיאה: ' + error.message);
@@ -155,21 +155,19 @@ export default function LogoCreator({ businessName, onClose }) {
     try {
       console.log('Submitting:', formData);
       const res = await base44.functions.invoke('createLogoProjectFromLogoCreator', {
-        businessName: formData.businessName,
-        industry: formData.industry,
-        style: formData.style,
-        tagline: formData.tagline,
-        vibe: formData.vibe,
-        colorScheme: formData.colorScheme
-      });
-      console.log('Response:', res);
-      if (res.data?.ok) {
-        navigate(createPageUrl('LogoProjectPage', `?project_id=${res.data.project_id}`));
-        onClose();
-      } else {
-        console.error('Invalid response:', res);
-        alert('שגיאה ביצירת הפרויקט');
-      }
+          businessName: formData.businessName,
+          industry: formData.industry,
+          style: formData.style,
+          tagline: formData.tagline,
+          vibe: formData.vibe,
+          colorScheme: formData.colorScheme
+        });
+        if (res.data?.ok && res.data?.project_id) {
+          navigate(createPageUrl('LogoProjectPage', `?project_id=${res.data.project_id}`));
+          onClose();
+        } else {
+          alert(res.data?.message || 'שגיאה ביצירת הפרויקט');
+        }
     } catch (err) {
       console.error('Error:', err);
       alert('שגיאה: ' + err.message);
