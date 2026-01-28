@@ -584,6 +584,3 @@ export default function LogoCreator({ businessName, onClose }) {
 
   return null;
 }
-
-  return null;
-}
