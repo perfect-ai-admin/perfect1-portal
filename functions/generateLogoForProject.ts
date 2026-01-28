@@ -106,17 +106,17 @@ Deno.serve(async (req) => {
         icon_hint: (logoProject.icon_hint || '') + (variation_mode ? ' Create a different concept while keeping brand identity consistent.' : '')
       });
       promptResult = promptRes.data || promptRes;
-      if (!promptResult.ok) {
-        throw new Error(promptResult.message || 'Prompt build failed');
+      if (!promptResult || !promptResult.ok) {
+        throw new Error((promptResult?.message) || 'Prompt build failed');
       }
     } catch (err) {
-      console.error('[GENERATE] Prompt build failed:', err.message);
+      console.error('[GENERATE] Prompt build failed:', err.message, err.response?.data);
       await updateProjectStatus(base44, logoProject.id, 'failed');
       return Response.json({ 
         ok: false,
         error_code: 'PROMPT_BUILD_FAILED',
-        message: 'Failed to build logo prompt'
-      });
+        message: 'Failed to build logo prompt: ' + err.message
+      }, { status: 400 });
     }
 
     const prompt = promptResult.prompt;
