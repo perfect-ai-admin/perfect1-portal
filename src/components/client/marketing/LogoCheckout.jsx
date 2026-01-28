@@ -94,36 +94,38 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-50/50 flex flex-col z-50" dir="rtl">
-      {/* Header */}
-      <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm">
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} className="p-1 -mr-2 text-gray-400 hover:text-gray-700 transition-colors">
-            <ChevronRight className="w-6 h-6" />
-          </button>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900 leading-none">סיום והורדה</h2>
-            <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-blue-200 shadow-sm">
-            ₪{price}
-          </div>
-          {onClose && (
-            <button 
-              onClick={onClose}
-              className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="סגור"
-            >
-              <X className="w-5 h-5" />
+    <div className="fixed inset-0 bg-gray-50/50 flex flex-col z-50 lg:items-center lg:justify-center" dir="rtl">
+      {/* Modal Container */}
+      <div className="w-full h-full lg:h-auto lg:max-h-[90vh] lg:max-w-2xl lg:rounded-2xl lg:shadow-2xl flex flex-col bg-white lg:bg-white">
+        {/* Header */}
+        <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm lg:rounded-t-2xl">
+          <div className="flex items-center gap-3">
+            <button onClick={onBack} className="p-1 -mr-2 text-gray-400 hover:text-gray-700 transition-colors">
+              <ChevronRight className="w-6 h-6" />
             </button>
-          )}
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 leading-none">סיום והורדה</h2>
+              <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-blue-200 shadow-sm">
+              ₪{price}
+            </div>
+            {onClose && (
+              <button 
+                onClick={onClose}
+                className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="סגור"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Main Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        {/* Main Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 lg:max-h-[calc(90vh-200px)]">
         
         {/* Logo Preview */}
         {logoUrl && (
