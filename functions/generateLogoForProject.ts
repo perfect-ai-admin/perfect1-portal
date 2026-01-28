@@ -18,13 +18,31 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'project_id required' }, { status: 400 });
     }
 
-    // Load project - use list instead of filter
+    // Load project - try all available methods
     console.log('[GENERATE] Attempting to load project...');
     let logoProject;
     try {
+      // First try list
       const projects = await base44.asServiceRole.entities.LogoProject.list('', 100);
-      console.log('[GENERATE] Total projects available:', projects?.length);
-      logoProject = projects.find(p => p.id === project_id);
+      console.log('[GENERATE] Total projects available via list:', projects?.length);
+      logoProject = projects?.find(p => p.id === project_id);
+      
+      // If not found, try filter without query
+      if (!logoProject) {
+        console.log('[GENERATE] Not found in list, trying filter...');
+        const filtered = await base44.asServiceRole.entities.LogoProject.filter({});
+        console.log('[GENERATE] Filter returned:', filtered?.length, 'projects');
+        logoProject = filtered?.find(p => p.id === project_id);
+      }
+      
+      // Also try with user filter if still not found
+      if (!logoProject) {
+        console.log('[GENERATE] Still not found, trying user filter...');
+        const userProjects = await base44.asServiceRole.entities.LogoProject.filter({ user_id: user.email });
+        console.log('[GENERATE] User projects:', userProjects?.length);
+        logoProject = userProjects?.find(p => p.id === project_id);
+      }
+      
       console.log('[GENERATE] Project found:', !!logoProject, 'ID:', logoProject?.id);
       
       if (!logoProject) {
