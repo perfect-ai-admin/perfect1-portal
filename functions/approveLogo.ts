@@ -60,6 +60,25 @@ Deno.serve(async (req) => {
       status: 'approved'
     });
 
+    // Load project to get details
+    const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: generation.project_id });
+    const project = projects[0];
+
+    // Record this approval for future learning
+    try {
+      await base44.functions.invoke('recordLogoApproval', {
+        project_id: generation.project_id,
+        generation_id: generation.id,
+        brand_name: project?.brand_name || '',
+        business_type: project?.business_type || '',
+        style: project?.style || '',
+        colors_used: project?.colors || [],
+        prompt_used: generation.prompt_used || ''
+      });
+    } catch (e) {
+      console.log('[APPROVE] Could not record learning, continuing anyway');
+    }
+
     return Response.json({
       ok: true,
       approved_url: generation.external_url,
