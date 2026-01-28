@@ -237,7 +237,7 @@ Deno.serve(async (req) => {
             logo_url: data.logo_url || '',
             sections_json: finalSections,
             status: 'draft',
-            slug: ''
+            slug: slug
         };
 
         const result = await base44.entities.LandingPage.create(landingPage);
