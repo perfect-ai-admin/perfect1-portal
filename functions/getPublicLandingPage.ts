@@ -12,10 +12,13 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Slug required' }, { status: 400 });
         }
 
+        console.log('[getPublicLandingPage] Searching for slug:', slug);
         const pages = await base44.asServiceRole.entities.LandingPage.filter({ slug });
+        console.log('[getPublicLandingPage] Found pages:', pages.length, pages.map(p => ({ slug: p.slug, status: p.status })));
         const page = pages[0];
 
         if (!page) {
+            console.error('[getPublicLandingPage] Page not found for slug:', slug);
             return Response.json({ error: 'Page not found' }, { status: 404 });
         }
 
