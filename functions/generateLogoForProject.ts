@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Failed to build prompt' }, { status: 400 });
     }
 
-    const prompt = promptResult.prompt;
+    const prompt = promptResult.data.prompt;
 
     // Call Stockimg API
     const apiPayload = {
@@ -91,17 +91,19 @@ Deno.serve(async (req) => {
 
     console.log('[GENERATE] Calling Stockimg with:', apiPayload);
 
-    let apiData;
+    let apiResponse;
     try {
-      apiData = await base44.asServiceRole.functions.invoke('callStockimgLogoAPI', apiPayload);
+      apiResponse = await base44.asServiceRole.functions.invoke('callStockimgLogoAPI', apiPayload);
     } catch (err) {
       console.error('[GENERATE] Stockimg call failed:', err);
-      apiData = { error: err.message };
+      apiResponse = { data: { error: err.message } };
     }
 
+    const apiData = apiResponse.data || {};
+
     if (!apiData.success) {
-      console.error('[GENERATE] API failed:', apiRes.status, apiData);
-      
+      console.error('[GENERATE] API failed:', apiData);
+
       // Refund credit on failure
       try {
         await base44.asServiceRole.functions.invoke('refundCredit', {
