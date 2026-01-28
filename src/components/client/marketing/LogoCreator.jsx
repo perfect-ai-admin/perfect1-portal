@@ -528,21 +528,8 @@ export default function LogoCreator({ businessName, onClose }) {
   }
 
   if (step === 4) {
-    const saveLogo = (logoUrl, variant) => {
-      const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
-      if (!allSaved[formData.businessName]) {
-        allSaved[formData.businessName] = [];
-      }
-      allSaved[formData.businessName].push({
-        url: logoUrl,
-        variant: variant,
-        savedAt: new Date().toISOString()
-      });
-      localStorage.setItem('saved_logos', JSON.stringify(allSaved));
-      alert(`הלוגו נשמר בהצלחה! ✓`);
-    };
-
-    const currentLogo = logos[currentLogoIndex];
+    // Handle the generated logo from project
+    const generatedLogoUrl = selectedLogo?.url || logos[currentLogoIndex]?.url;
 
     return (
       <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6 relative">
