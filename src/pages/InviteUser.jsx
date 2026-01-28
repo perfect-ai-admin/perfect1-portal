@@ -26,7 +26,12 @@ export default function InviteUser() {
     setMessage(null);
 
     try {
+      // Invite user to the system
       await base44.users.inviteUser(email, role);
+      
+      // Send email invitation via Gmail
+      await base44.functions.invoke('sendInviteEmail', { email, role });
+      
       setMessage({ 
         type: 'success', 
         text: `הזמנה נשלחה בהצלחה ל-${email}` 
