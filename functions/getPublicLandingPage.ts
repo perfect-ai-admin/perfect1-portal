@@ -21,18 +21,13 @@ Deno.serve(async (req) => {
 
         console.log('[getPublicLandingPage] Searching for slug:', slug);
         
-        // List all pages (asServiceRole bypasses RLS) and find the matching published page
-        const allPages = await base44.asServiceRole.entities.LandingPage.list(undefined, 100);
-        console.log('[getPublicLandingPage] Total pages available:', allPages.length);
-        
-        const page = allPages.find(p => p.slug === slug && p.status === 'published');
-        console.log('[getPublicLandingPage] Found matching published page:', !!page);
+        // With RLS updated to allow published pages, we can filter normally
+        const pages = await base44.entities.LandingPage.filter({ slug });
+        console.log('[getPublicLandingPage] Found pages with slug:', pages.length);
+        const page = pages.find(p => p.status === 'published');
 
         if (!page) {
-            console.error('[getPublicLandingPage] Page not found for slug:', slug, 'status needed: published');
-            // Debug: log what pages exist with this slug
-            const allWithSlug = allPages.filter(p => p.slug === slug);
-            console.log('[getPublicLandingPage] Pages with slug "' + slug + '":', allWithSlug.map(p => ({ status: p.status, id: p.id })));
+            console.error('[getPublicLandingPage] Published page not found for slug:', slug);
             return Response.json({ error: 'Page not found' }, { status: 404 });
         }
 
