@@ -164,18 +164,6 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
 
           {/* Main Scrollable Content */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        
-        {/* Logo Preview */}
-        {logoUrl && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-center min-h-[180px] md:min-h-[220px]">
-            <WatermarkedLogo 
-              src={logoUrl} 
-              alt="Logo" 
-              className="max-h-[150px] md:max-h-[180px] max-w-full object-contain"
-            />
-          </div>
-        )}
-
         {/* Product Summary Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <div className="flex gap-4 mb-4">
