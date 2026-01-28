@@ -355,6 +355,5 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
         </div>
       </div>
     </div>
-    </div>
   );
 }
