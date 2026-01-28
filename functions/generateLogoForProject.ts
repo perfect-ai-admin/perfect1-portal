@@ -18,10 +18,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'project_id required' }, { status: 400 });
     }
 
-    // Load project using filter (no read method available)
+    // Load project using filter
     let logoProject;
     try {
-      const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id }, '', 1);
+      console.log('[GENERATE] Looking for project:', project_id);
+      const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id });
+      console.log('[GENERATE] Found projects:', projects?.length);
       if (!projects || projects.length === 0) {
         return Response.json({ error: 'Project not found' }, { status: 404 });
       }
@@ -29,7 +31,7 @@ Deno.serve(async (req) => {
       console.log('[GENERATE] Loaded project:', logoProject?.id, 'user_id:', logoProject?.user_id);
     } catch (err) {
       console.error('[GENERATE] Project load failed:', err.message);
-      return Response.json({ error: 'Project not found: ' + err.message }, { status: 404 });
+      return Response.json({ error: 'Project load error: ' + err.message }, { status: 500 });
     }
 
     // Check ownership
