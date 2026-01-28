@@ -67,14 +67,16 @@ Deno.serve(async (req) => {
     }
 
     // ========================================
-    // STEP 2: Get remaining credits for response
+    // STEP 2: Check free preview limit
     // ========================================
-    let remainingCredits = 0;
-    try {
-      const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: user.email });
-      remainingCredits = accounts[0]?.logo_credits || 0;
-    } catch (err) {
-      console.log('[GENERATE] Could not fetch remaining credits');
+    const previewCheckRes = await base44.functions.invoke('canGenerateFreePreview', { project_id });
+    if (!previewCheckRes.data?.ok) {
+      console.log('[GENERATE] Preview check failed:', previewCheckRes.data?.error_code);
+      return Response.json({
+        ok: false,
+        error_code: previewCheckRes.data?.error_code || 'PREVIEW_CHECK_FAILED',
+        message: previewCheckRes.data?.message || 'Cannot generate preview'
+      });
     }
 
     // ========================================
@@ -82,7 +84,8 @@ Deno.serve(async (req) => {
     // ========================================
     try {
       await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
-        status: 'generating'
+        status: 'generating',
+        last_generation_at: new Date().toISOString()
       });
     } catch (err) {
       console.error('[GENERATE] Failed to mark generating:', err.message);
@@ -111,7 +114,7 @@ Deno.serve(async (req) => {
       }
     } catch (err) {
       console.error('[GENERATE] Prompt build failed:', err.message, err.response?.data);
-      await updateProjectStatus(base44, logoProject.id, 'failed');
+      await updateProjectStatus(base44, logoProject.id, 'ready');
       return Response.json({ 
         ok: false,
         error_code: 'PROMPT_BUILD_FAILED',
@@ -122,7 +125,7 @@ Deno.serve(async (req) => {
     const prompt = promptResult.prompt;
     if (!prompt || typeof prompt !== 'string') {
       console.error('[GENERATE] Invalid prompt received');
-      await updateProjectStatus(base44, logoProject.id, 'failed');
+      await updateProjectStatus(base44, logoProject.id, 'ready');
       return Response.json({ 
         ok: false,
         error_code: 'INVALID_PROMPT',
@@ -144,8 +147,7 @@ Deno.serve(async (req) => {
       apiResponse = res.data || res;
     } catch (err) {
       console.error('[GENERATE] Stockimg invoke failed:', err.message);
-      await updateProjectStatus(base44, logoProject.id, 'failed');
-      await refundCredit(base44, user.email, logoProject.id, 'api_error');
+      await updateProjectStatus(base44, logoProject.id, 'ready');
       return Response.json({ 
         ok: false,
         error_code: 'GENERATION_FAILED',
@@ -158,8 +160,7 @@ Deno.serve(async (req) => {
     // ========================================
     if (!apiResponse || !apiResponse.ok) {
       console.error('[GENERATE] API returned error:', apiResponse?.error_code);
-      await updateProjectStatus(base44, logoProject.id, 'failed');
-      await refundCredit(base44, user.email, logoProject.id, apiResponse?.error_code || 'api_error');
+      await updateProjectStatus(base44, logoProject.id, 'ready');
 
       // Save failed generation
       try {
@@ -170,7 +171,9 @@ Deno.serve(async (req) => {
           colors_used: logoProject.colors,
           status: 'failed',
           error_message: apiResponse?.message || 'Generation failed',
-          nsfw_flag: apiResponse?.error_code === 'NSFW_BLOCKED' ? true : false
+          nsfw_flag: apiResponse?.error_code === 'NSFW_BLOCKED' ? true : false,
+          is_preview: true,
+          is_unlocked: false
         });
       } catch (err) {
         console.error('[GENERATE] Failed to save error generation:', err.message);
@@ -185,8 +188,7 @@ Deno.serve(async (req) => {
 
     if (!apiResponse.image_url || typeof apiResponse.image_url !== 'string') {
       console.error('[GENERATE] No image URL in response');
-      await updateProjectStatus(base44, logoProject.id, 'failed');
-      await refundCredit(base44, user.email, logoProject.id, 'invalid_response');
+      await updateProjectStatus(base44, logoProject.id, 'ready');
       return Response.json({ 
         ok: false,
         error_code: 'INVALID_RESPONSE',
@@ -195,7 +197,7 @@ Deno.serve(async (req) => {
     }
 
     // ========================================
-    // STEP 7: Save successful generation
+    // STEP 7: Save successful generation (as preview)
     // ========================================
     let generation;
     try {
@@ -211,40 +213,47 @@ Deno.serve(async (req) => {
         height: apiResponse.height,
         timings: apiResponse.timings,
         status: 'generated',
+        is_preview: true,
+        is_unlocked: false,
+        watermark_applied: false,
         nsfw_flag: false
       });
     } catch (err) {
       console.error('[GENERATE] Failed to save generation:', err.message);
       // Image was created but save failed - still return it
-      // User can still use the image URL
       return Response.json({
         ok: true,
         generation_id: 'unsaved_' + Date.now(),
         image_url: apiResponse.image_url,
+        is_preview: true,
+        free_previews_left: logoProject.free_previews_limit - logoProject.free_previews_used - 1,
         project_status: 'ready',
-        credits_left: remainingCredits,
-        warning: 'Image generated but failed to save to database. You can still download it.'
+        warning: 'Image generated but failed to save to database.'
       });
     }
 
     // ========================================
-    // STEP 8: Update project status to ready
+    // STEP 8: Update project with new preview count
     // ========================================
+    const newPreviewsUsed = logoProject.free_previews_used + 1;
     try {
       await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
-        status: 'ready'
+        status: 'ready',
+        free_previews_used: newPreviewsUsed
       });
     } catch (err) {
       console.error('[GENERATE] Failed to update project status:', err.message);
-      // Don't fail here, generation was successful
     }
+
+    console.log('[GENERATE] Success:', { generation_id: generation.id, previews_used: newPreviewsUsed });
 
     return Response.json({
       ok: true,
       generation_id: generation.id,
       image_url: generation.external_url,
-      project_status: 'ready',
-      credits_left: remainingCredits
+      is_preview: true,
+      free_previews_left: logoProject.free_previews_limit - newPreviewsUsed,
+      project_status: 'ready'
     });
   } catch (error) {
     console.error('[GENERATE] Fatal error:', error.message);
@@ -261,26 +270,5 @@ async function updateProjectStatus(base44, projectId, status) {
     await base44.asServiceRole.entities.LogoProject.update(projectId, { status });
   } catch (err) {
     console.error('[GENERATE] Failed to update project status:', err.message);
-  }
-}
-
-async function refundCredit(base44, userId, projectId, reason) {
-  try {
-    const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: userId });
-    if (accounts[0]) {
-      await base44.asServiceRole.entities.UserAccount.update(accounts[0].id, {
-        logo_credits: accounts[0].logo_credits + 1
-      });
-      await base44.asServiceRole.entities.CreditLedger.create({
-        user_id: userId,
-        event_type: 'refund',
-        amount: 1,
-        reason: reason,
-        related_project_id: projectId
-      });
-      console.log('[GENERATE] Refunded credit to:', userId);
-    }
-  } catch (err) {
-    console.error('[GENERATE] Refund failed:', err.message);
   }
 }
