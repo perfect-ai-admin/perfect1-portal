@@ -15,6 +15,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Email is required' }, { status: 400 });
     }
 
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendApiKey) {
+      return Response.json({ error: 'RESEND_API_KEY not configured' }, { status: 500 });
+    }
+
     // Create password reset email content
     const subject = 'איפוס סיסמה - Perfect One';
     const resetUrl = `${Deno.env.get('BASE_URL') || 'https://perfect1.co.il'}/login`;
@@ -57,17 +62,32 @@ Deno.serve(async (req) => {
       </div>
     `;
 
-    // Send email using Base44 built-in integration
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      from_name: 'Perfect One',
-      to: email,
-      subject: subject,
-      body: htmlBody
+    // Send email using Resend
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: 'Perfect One <onboarding@perfect1.co.il>',
+        to: email,
+        subject: subject,
+        html: htmlBody
+      })
     });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Resend API error: ${error}`);
+    }
+
+    const result = await response.json();
 
     return Response.json({ 
       success: true, 
-      message: 'Password reset email sent successfully' 
+      message: 'Password reset email sent successfully',
+      emailId: result.id
     });
 
   } catch (error) {
