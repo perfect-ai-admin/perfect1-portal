@@ -39,12 +39,19 @@ Deno.serve(async (req) => {
           </p>
 
           <p style="color: #2C3E50; font-size: 16px; line-height: 1.8; margin-bottom: 30px;">
-            תקבל בקרוב אימייל נוסף מהמערכת עם קישור להגדרת סיסמה אישית.
+            כדי להתחיל, לחץ על הכפתור למטה כדי להגדיר את הסיסמה שלך ולהיכנס:
           </p>
+
+          <div style="text-align: center; margin: 40px 0;">
+            <a href="${Deno.env.get('BASE_URL') || 'https://perfect1.co.il'}/login?email=${encodeURIComponent(email)}" 
+               style="display: inline-block; background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);">
+              הגדר סיסמה והיכנס
+            </a>
+          </div>
 
           <div style="background: #E8F4FD; padding: 20px; border-radius: 8px; margin-top: 30px; border-right: 4px solid #1E3A5F;">
             <p style="color: #1E3A5F; font-size: 14px; margin: 0; line-height: 1.6;">
-              <strong>שים לב:</strong> חפש באימייל שלך הודעה נוספת מהמערכת עם קישור להגדרת סיסמה.
+              <strong>טיפ:</strong> בפעם הראשונה תתבקש להגדיר סיסמה ייחודית.
               <br/>
               אפשר גם להיכנס דרך חשבון Google אם יש לך.
             </p>
