@@ -100,17 +100,14 @@ Deno.serve(async (req) => {
       console.error('[GENERATE] API failed:', apiRes.status, apiData);
       
       // Refund credit on failure
-      await fetch(new URL(req.url).origin + '/functions/refundCredit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': req.headers.get('Authorization')
-        },
-        body: JSON.stringify({
+      try {
+        await base44.asServiceRole.functions.invoke('refundCredit', {
           reason: apiData.error || 'api_failure',
           related_project_id: logoProject.id
-        })
-      });
+        });
+      } catch (err) {
+        console.error('[GENERATE] Refund failed:', err);
+      }
 
       // Save failed generation
       await base44.asServiceRole.entities.LogoGeneration.create({
