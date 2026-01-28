@@ -107,8 +107,6 @@ export default function LogoCreator({ businessName, onClose }) {
   const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
 
   const handleGenerate = async () => {
-    console.log('🎨 handleGenerate called, formData:', formData);
-    
     if (!formData.businessName || !formData.industry) {
       alert('אנא מלא את שם העסק ותחום העיסוק');
       return;
@@ -116,40 +114,38 @@ export default function LogoCreator({ businessName, onClose }) {
 
     setIsGenerating(true);
     try {
-      const variations = [
-        { style: 'flat minimalist', description: 'מינימליסטי ונקי' },
-        { style: 'modern gradient', description: 'מודרני עם גרדיאנט' },
-        { style: 'bold and striking', description: 'נועז ובולט' },
-        { style: 'elegant and sophisticated', description: 'אלגנטי ומתוחכם' }
-      ];
+      // Create project first
+      const projectRes = await base44.functions.invoke('createLogoProjectFromLogoCreator', {
+        businessName: formData.businessName,
+        industry: formData.industry,
+        style: formData.style,
+        tagline: formData.tagline,
+        vibe: formData.vibe,
+        colorScheme: formData.colorScheme
+      });
 
-      const generatedLogos = [];
-      console.log('🎨 Starting logo generation for', variations.length, 'variations');
-
-      for (const variation of variations) {
-        try {
-          const prompt = `Professional business logo design - ${variation.description}. Business: "${formData.businessName}", Industry: ${formData.industry}, Vibe: ${formData.vibe || 'professional'}, Icon style: ${formData.iconStyle}, Style: ${variation.style}, Colors: ${formData.colorScheme.colors.join(', ')}. Requirements: Clean, scalable, modern, white/transparent background, vector-style.`;
-
-          console.log('🎨 Generating:', variation.description);
-          const result = await base44.integrations.Core.GenerateImage({ prompt });
-          console.log('🎨 Generated:', variation.description, 'URL:', result.url);
-          generatedLogos.push({ url: result.url, variant: variation.description });
-        } catch (err) {
-          console.error(`🎨 Failed to generate ${variation.description}:`, err);
-        }
+      if (!projectRes.data.ok) {
+        alert('שגיאה ביצירת הפרויקט');
+        return;
       }
 
-      console.log('🎨 Total generated:', generatedLogos.length);
-      if (generatedLogos.length > 0) {
-        setLogos(generatedLogos);
-        setStep(4);
-        console.log('🎨 Moving to step 4');
+      const projectId = projectRes.data.project_id;
+      
+      // Now generate logo from project
+      const genRes = await base44.functions.invoke('generateLogoForProject', { 
+        project_id: projectId,
+        variation_mode: false
+      });
+
+      if (genRes.data.success) {
+        // Redirect to project page instead of showing gallery here
+        navigate(createPageUrl('LogoProjectPage', `?project_id=${projectId}`));
+        onClose();
       } else {
-        alert('שגיאה ביצירת הלוגוים. נסה שוב.');
+        alert(genRes.data.error || 'שגיאה ביצירת הלוגו');
       }
     } catch (error) {
-      console.error('🎨 Logo generation failed:', error);
-      alert('שגיאה ביצירת הלוגו. נסה שוב.');
+      alert('שגיאה: ' + error.message);
     } finally {
       setIsGenerating(false);
     }
