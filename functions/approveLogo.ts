@@ -45,34 +45,26 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Update generation status
-    await base44.asServiceRole.entities.LogoGeneration.update(generation.id, {
-      status: 'approved'
-    });
-
-    // Load project and update
-    const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: generation.project_id });
-    const project = projects[0];
-
-    if (!project) {
-      console.error('[APPROVE] Project not found:', generation.project_id);
-      return Response.json({ 
+    // Approve requires unlock - call unlockLogo internally
+    const unlockRes = await base44.functions.invoke('unlockLogo', { generation_id });
+    if (!unlockRes.data?.ok) {
+      return Response.json({
         ok: false,
-        error_code: 'PROJECT_NOT_FOUND',
-        message: 'Associated project not found'
+        error_code: unlockRes.data?.error_code || 'UNLOCK_FAILED',
+        message: unlockRes.data?.message || 'Failed to unlock logo before approval'
       });
     }
 
-    await base44.asServiceRole.entities.LogoProject.update(project.id, {
-      approved_generation_id: generation.id,
-      approved_logo_url: generation.external_url,
+    // Generation is now unlocked, ensure it's marked as approved
+    await base44.asServiceRole.entities.LogoGeneration.update(generation_id, {
       status: 'approved'
     });
 
     return Response.json({
       ok: true,
       approved_url: generation.external_url,
-      generation_id: generation.id
+      generation_id: generation.id,
+      credits_left: unlockRes.data?.credits_left
     });
   } catch (error) {
     console.error('[APPROVE] Error:', error.message);
