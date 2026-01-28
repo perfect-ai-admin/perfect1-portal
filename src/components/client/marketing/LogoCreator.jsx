@@ -10,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { base44 } from '@/api/base44Client';
 import LogoSelectorMobile from './LogoSelectorMobile';
-import LogoCheckout from './LogoCheckout';
+      import LogoCheckout from './LogoCheckout';
+      import LogoPreview from './LogoPreview';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
