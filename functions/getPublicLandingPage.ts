@@ -16,17 +16,12 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Slug required' }, { status: 400 });
         }
 
-        // Use asServiceRole to bypass RLS and get published pages
-        const pages = await base44.asServiceRole.entities.LandingPage.filter({ slug });
-        
-        if (!pages || pages.length === 0) {
+        // List all pages and find the published one with matching slug
+        const allPages = await base44.asServiceRole.entities.LandingPage.list(undefined, 1000);
+        const page = allPages.find(p => p.slug === slug && p.status === 'published');
+
+        if (!page) {
             return Response.json({ error: 'Page not found' }, { status: 404 });
-        }
-
-        const page = pages[0];
-
-        if (page.status !== 'published') {
-            return Response.json({ error: 'Page is not published' }, { status: 403 });
         }
 
         return Response.json(page);
