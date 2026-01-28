@@ -215,12 +215,15 @@ Deno.serve(async (req) => {
       });
     } catch (err) {
       console.error('[GENERATE] Failed to save generation:', err.message);
-      await updateProjectStatus(base44, logoProject.id, 'failed');
-      await refundCredit(base44, user.email, logoProject.id, 'save_failed');
-      return Response.json({ 
-        ok: false,
-        error_code: 'SAVE_FAILED',
-        message: 'Failed to save generated image'
+      // Image was created but save failed - still return it
+      // User can still use the image URL
+      return Response.json({
+        ok: true,
+        generation_id: 'unsaved_' + Date.now(),
+        image_url: apiResponse.image_url,
+        project_status: 'ready',
+        credits_left: remainingCredits,
+        warning: 'Image generated but failed to save to database. You can still download it.'
       });
     }
 
