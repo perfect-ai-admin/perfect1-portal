@@ -65,23 +65,18 @@ Deno.serve(async (req) => {
 
     console.log('[GENERATE] Building prompt with:', promptData);
 
-    const promptRes = await fetch(new URL(req.url).origin + '/functions/buildLogoPrompt', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': req.headers.get('Authorization')
-      },
-      body: JSON.stringify(promptData)
-    });
-
-    if (!promptRes.ok) {
+    let promptResult;
+    try {
+      promptResult = await base44.asServiceRole.functions.invoke('buildLogoPrompt', promptData);
+    } catch (err) {
+      console.error('[GENERATE] Prompt build failed:', err);
       await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
         status: 'failed'
       });
-      return Response.json({ error: 'Failed to build prompt' }, { status: 500 });
+      return Response.json({ error: 'Failed to build prompt' }, { status: 400 });
     }
 
-    const { prompt } = await promptRes.json();
+    const prompt = promptResult.prompt;
 
     // Call Stockimg API
     const apiPayload = {
