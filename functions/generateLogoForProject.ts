@@ -5,202 +5,292 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!user || !user.email) {
+      return Response.json({ 
+        ok: false,
+        error_code: 'NO_AUTH',
+        message: 'User not authenticated'
+      });
     }
 
     const body = await req.json();
     const { project_id, variation_mode } = body;
 
-    console.log('[GENERATE] Request received:', { project_id, variation_mode, user_email: user.email });
+    console.log('[GENERATE] Request:', { project_id, user_email: user.email });
 
     if (!project_id) {
-      return Response.json({ error: 'project_id required' }, { status: 400 });
+      return Response.json({ 
+        ok: false,
+        error_code: 'MISSING_PROJECT_ID',
+        message: 'project_id is required'
+      });
     }
 
-    // Load project - try all available methods
-    console.log('[GENERATE] Attempting to load project...');
+    // ========================================
+    // STEP 1: Load and validate project
+    // ========================================
     let logoProject;
     try {
-      // First try list
-      const projects = await base44.asServiceRole.entities.LogoProject.list('', 100);
-      console.log('[GENERATE] Total projects available via list:', projects?.length);
-      logoProject = projects?.find(p => p.id === project_id);
-      
-      // If not found, try filter without query
-      if (!logoProject) {
-        console.log('[GENERATE] Not found in list, trying filter...');
-        const filtered = await base44.asServiceRole.entities.LogoProject.filter({});
-        console.log('[GENERATE] Filter returned:', filtered?.length, 'projects');
-        logoProject = filtered?.find(p => p.id === project_id);
-      }
-      
-      // Also try with user filter if still not found
-      if (!logoProject) {
-        console.log('[GENERATE] Still not found, trying user filter...');
-        const userProjects = await base44.asServiceRole.entities.LogoProject.filter({ user_id: user.email });
-        console.log('[GENERATE] User projects:', userProjects?.length);
-        logoProject = userProjects?.find(p => p.id === project_id);
-      }
-      
-      console.log('[GENERATE] Project found:', !!logoProject, 'ID:', logoProject?.id);
-      
-      if (!logoProject) {
-        return Response.json({ error: 'Project not found' }, { status: 404 });
-      }
+      const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id });
+      logoProject = projects[0];
     } catch (err) {
       console.error('[GENERATE] Project load error:', err.message);
-      return Response.json({ error: 'Failed to load project: ' + err.message }, { status: 500 });
     }
 
-    // Check ownership
+    if (!logoProject) {
+      console.log('[GENERATE] Project not found:', project_id);
+      return Response.json({ 
+        ok: false,
+        error_code: 'PROJECT_NOT_FOUND',
+        message: 'Project not found'
+      });
+    }
+
+    // Ownership check
     if (logoProject.user_id !== user.email) {
-      console.error('[GENERATE] Ownership check failed:', logoProject.user_id, 'vs', user.email);
-      return Response.json({ error: 'Unauthorized' }, { status: 403 });
+      console.log('[GENERATE] Ownership check failed');
+      return Response.json({ 
+        ok: false,
+        error_code: 'UNAUTHORIZED',
+        message: 'Not authorized to generate for this project'
+      });
     }
 
-    // Check if already generating
+    // Status check
     if (logoProject.status === 'generating') {
-      return Response.json({ error: 'Already generating' }, { status: 409 });
+      console.log('[GENERATE] Already generating');
+      return Response.json({ 
+        ok: false,
+        error_code: 'ALREADY_GENERATING',
+        message: 'Logo is already being generated'
+      });
     }
 
-    // Update status to generating
-    await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
-      status: 'generating'
-    });
-
-    // Check and reserve credit
+    // ========================================
+    // STEP 2: Check and reserve credits
+    // ========================================
     let creditData;
     try {
-      const creditRes = await base44.asServiceRole.functions.invoke('checkAndReserveCredit', {});
+      const creditRes = await base44.functions.invoke('checkAndReserveCredit', {});
       creditData = creditRes.data || creditRes;
-      if (!creditData.success) {
-        throw new Error(creditData.error || creditData.message || 'Credit check failed');
+      if (!creditData.ok) {
+        console.log('[GENERATE] No credits:', creditData.error_code);
+        return Response.json({ 
+          ok: false,
+          error_code: creditData.error_code || 'NO_CREDITS',
+          message: creditData.message || 'No logo credits available'
+        });
       }
-      console.log('[GENERATE] Credit reserved:', creditData);
     } catch (err) {
       console.error('[GENERATE] Credit check failed:', err.message);
-      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
-        status: 'failed'
+      return Response.json({ 
+        ok: false,
+        error_code: 'CREDIT_CHECK_FAILED',
+        message: 'Failed to check credits'
       });
-      return Response.json({ error: 'NO_CREDITS', message: err.message }, { status: 402 });
     }
 
-    // Build prompt
-    let promptData = {
-      brand_name: logoProject.brand_name || 'Business',
-      business_type: logoProject.business_type || 'professional',
-      style: logoProject.style || 'modern',
-      slogan: logoProject.slogan || '',
-      icon_hint: logoProject.icon_hint || ''
-    };
-
-    if (variation_mode) {
-      promptData.icon_hint = (promptData.icon_hint || '') + ' Create a different concept while keeping brand identity consistent.';
+    // ========================================
+    // STEP 3: Mark as generating
+    // ========================================
+    try {
+      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
+        status: 'generating'
+      });
+    } catch (err) {
+      console.error('[GENERATE] Failed to mark generating:', err.message);
+      return Response.json({ 
+        ok: false,
+        error_code: 'PROJECT_UPDATE_FAILED',
+        message: 'Failed to start generation'
+      });
     }
 
-    console.log('[GENERATE] Building prompt with:', promptData);
-
+    // ========================================
+    // STEP 4: Build prompt
+    // ========================================
     let promptResult;
     try {
-      const promptRes = await base44.asServiceRole.functions.invoke('buildLogoPrompt', promptData);
+      const promptRes = await base44.functions.invoke('buildLogoPrompt', {
+        brand_name: logoProject.brand_name || 'Business',
+        business_type: logoProject.business_type || 'professional',
+        style: logoProject.style || 'modern',
+        slogan: logoProject.slogan || '',
+        icon_hint: (logoProject.icon_hint || '') + (variation_mode ? ' Create a different concept while keeping brand identity consistent.' : '')
+      });
       promptResult = promptRes.data || promptRes;
-      if (!promptResult.prompt) {
-        throw new Error('No prompt in response');
+      if (!promptResult.ok) {
+        throw new Error(promptResult.message || 'Prompt build failed');
       }
-      console.log('[GENERATE] Prompt built successfully');
     } catch (err) {
       console.error('[GENERATE] Prompt build failed:', err.message);
-      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
-        status: 'failed'
+      await updateProjectStatus(base44, logoProject.id, 'failed');
+      return Response.json({ 
+        ok: false,
+        error_code: 'PROMPT_BUILD_FAILED',
+        message: 'Failed to build logo prompt'
       });
-      return Response.json({ error: 'Failed to build prompt: ' + err.message }, { status: 500 });
     }
 
     const prompt = promptResult.prompt;
-
-    // Call Stockimg API
-    const apiPayload = {
-      prompt,
-      colors: Array.isArray(logoProject.colors) ? logoProject.colors.filter(c => c && typeof c === 'string' && c.startsWith('#')) : ['#1E3A5F', '#3B82F6'],
-      width: logoProject.image_width || 1024,
-      height: logoProject.image_height || 1024
-    };
-
-    console.log('[GENERATE] Calling Stockimg with:', apiPayload);
-
-    let apiResponse;
-    try {
-      const res = await base44.asServiceRole.functions.invoke('callStockimgLogoAPI', apiPayload);
-      apiResponse = res.data || res;
-      console.log('[GENERATE] Stockimg response success:', apiResponse.success);
-    } catch (err) {
-      console.error('[GENERATE] Stockimg call failed:', err.message);
-      apiResponse = { error: err.message };
+    if (!prompt || typeof prompt !== 'string') {
+      console.error('[GENERATE] Invalid prompt received');
+      await updateProjectStatus(base44, logoProject.id, 'failed');
+      return Response.json({ 
+        ok: false,
+        error_code: 'INVALID_PROMPT',
+        message: 'Invalid prompt generated'
+      });
     }
 
-    const apiData = apiResponse;
+    // ========================================
+    // STEP 5: Call Stockimg API
+    // ========================================
+    let apiResponse;
+    try {
+      const res = await base44.functions.invoke('callStockimgLogoAPI', {
+        prompt,
+        colors: Array.isArray(logoProject.colors) ? logoProject.colors.filter(c => c && typeof c === 'string' && c.startsWith('#')) : ['#1E3A5F', '#3B82F6'],
+        width: logoProject.image_width || 1024,
+        height: logoProject.image_height || 1024
+      });
+      apiResponse = res.data || res;
+    } catch (err) {
+      console.error('[GENERATE] Stockimg invoke failed:', err.message);
+      await updateProjectStatus(base44, logoProject.id, 'failed');
+      await refundCredit(base44, user.email, logoProject.id, 'api_error');
+      return Response.json({ 
+        ok: false,
+        error_code: 'GENERATION_FAILED',
+        message: 'Image generation failed'
+      });
+    }
 
-    if (!apiData.success) {
-      console.error('[GENERATE] API failed:', apiData);
-
-      // Refund credit on failure
-      try {
-        await base44.asServiceRole.functions.invoke('refundCredit', {
-          reason: apiData.error || 'api_failure',
-          related_project_id: logoProject.id
-        });
-      } catch (err) {
-        console.error('[GENERATE] Refund failed:', err);
-      }
+    // ========================================
+    // STEP 6: Validate API response
+    // ========================================
+    if (!apiResponse || !apiResponse.ok) {
+      console.error('[GENERATE] API returned error:', apiResponse?.error_code);
+      await updateProjectStatus(base44, logoProject.id, 'failed');
+      await refundCredit(base44, user.email, logoProject.id, apiResponse?.error_code || 'api_error');
 
       // Save failed generation
-      await base44.asServiceRole.entities.LogoGeneration.create({
+      try {
+        await base44.asServiceRole.entities.LogoGeneration.create({
+          project_id: logoProject.id,
+          user_id: user.email,
+          prompt_used: prompt,
+          colors_used: logoProject.colors,
+          status: 'failed',
+          error_message: apiResponse?.message || 'Generation failed',
+          nsfw_flag: apiResponse?.error_code === 'NSFW_BLOCKED' ? true : false
+        });
+      } catch (err) {
+        console.error('[GENERATE] Failed to save error generation:', err.message);
+      }
+
+      return Response.json({ 
+        ok: false,
+        error_code: apiResponse?.error_code || 'GENERATION_FAILED',
+        message: apiResponse?.message || 'Image generation failed'
+      });
+    }
+
+    if (!apiResponse.image_url || typeof apiResponse.image_url !== 'string') {
+      console.error('[GENERATE] No image URL in response');
+      await updateProjectStatus(base44, logoProject.id, 'failed');
+      await refundCredit(base44, user.email, logoProject.id, 'invalid_response');
+      return Response.json({ 
+        ok: false,
+        error_code: 'INVALID_RESPONSE',
+        message: 'Invalid image data received'
+      });
+    }
+
+    // ========================================
+    // STEP 7: Save successful generation
+    // ========================================
+    let generation;
+    try {
+      generation = await base44.asServiceRole.entities.LogoGeneration.create({
         project_id: logoProject.id,
         user_id: user.email,
         prompt_used: prompt,
         colors_used: logoProject.colors,
-        status: 'failed',
-        error_message: apiData.details || apiData.message || apiData.error || 'Unknown error',
-        nsfw_flag: apiData.nsfw_flag || false
+        seed: apiResponse.seed,
+        external_url: apiResponse.image_url,
+        content_type: apiResponse.content_type,
+        width: apiResponse.width,
+        height: apiResponse.height,
+        timings: apiResponse.timings,
+        status: 'generated',
+        nsfw_flag: false
       });
-
-      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
-        status: 'failed'
+    } catch (err) {
+      console.error('[GENERATE] Failed to save generation:', err.message);
+      await updateProjectStatus(base44, logoProject.id, 'failed');
+      await refundCredit(base44, user.email, logoProject.id, 'save_failed');
+      return Response.json({ 
+        ok: false,
+        error_code: 'SAVE_FAILED',
+        message: 'Failed to save generated image'
       });
-
-      return Response.json({ error: apiData.error || 'Generation failed', details: apiData.details }, { status: 400 });
     }
 
-    // Save successful generation
-    const generation = await base44.asServiceRole.entities.LogoGeneration.create({
-      project_id: logoProject.id,
-      user_id: user.email,
-      prompt_used: prompt,
-      colors_used: logoProject.colors,
-      seed: apiData.seed,
-      external_url: apiData.image_url,
-      content_type: apiData.content_type,
-      width: apiData.width,
-      height: apiData.height,
-      timings: apiData.timings,
-      status: 'generated'
-    });
-
-    // Update project status
-    await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
-      status: 'ready'
-    });
+    // ========================================
+    // STEP 8: Update project status to ready
+    // ========================================
+    try {
+      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
+        status: 'ready'
+      });
+    } catch (err) {
+      console.error('[GENERATE] Failed to update project status:', err.message);
+      // Don't fail here, generation was successful
+    }
 
     return Response.json({
-      success: true,
+      ok: true,
       generation_id: generation.id,
       image_url: generation.external_url,
-      created_at: generation.created_at
+      project_status: 'ready',
+      credits_left: creditData.remaining_credits
     });
   } catch (error) {
     console.error('[GENERATE] Fatal error:', error.message);
-    console.error('[GENERATE] Stack:', error.stack);
-    return Response.json({ error: error.message, type: error.constructor.name }, { status: 500 });
+    return Response.json({ 
+      ok: false,
+      error_code: 'INTERNAL_ERROR',
+      message: 'An unexpected error occurred'
+    });
   }
 });
+
+async function updateProjectStatus(base44, projectId, status) {
+  try {
+    await base44.asServiceRole.entities.LogoProject.update(projectId, { status });
+  } catch (err) {
+    console.error('[GENERATE] Failed to update project status:', err.message);
+  }
+}
+
+async function refundCredit(base44, userId, projectId, reason) {
+  try {
+    const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: userId });
+    if (accounts[0]) {
+      await base44.asServiceRole.entities.UserAccount.update(accounts[0].id, {
+        logo_credits: accounts[0].logo_credits + 1
+      });
+      await base44.asServiceRole.entities.CreditLedger.create({
+        user_id: userId,
+        event_type: 'refund',
+        amount: 1,
+        reason: reason,
+        related_project_id: projectId
+      });
+      console.log('[GENERATE] Refunded credit to:', userId);
+    }
+  } catch (err) {
+    console.error('[GENERATE] Refund failed:', err.message);
+  }
+}
