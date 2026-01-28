@@ -245,122 +245,57 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         if (res.data && res.data.slug) {
             setPageSlug(res.data.slug);
 
-            // Store the full URL if provided by backend
-            if (res.data.pageUrl) {
-              const urlWithoutProtocol = res.data.pageUrl.replace('https://', '').replace('http://', '');
-              localStorage.setItem('landingPageUrl', res.data.pageUrl);
-            }
-
             // Fetch the full page data for preview
-            try {
-                // Try to get by ID if available, otherwise filter by slug
-                let pageData = null;
-                if (res.data.id) {
-                    try {
-                        pageData = await base44.entities.LandingPage.get(res.data.id);
-                    } catch (e) {
-                        console.log("Could not get by ID, trying filter...");
-                    }
+            let pageData = null;
+            if (res.data.id) {
+                try {
+                    pageData = await base44.entities.LandingPage.get(res.data.id);
+                } catch (e) {
+                    console.log("Could not get by ID, trying filter...");
                 }
-                
-                if (!pageData) {
-                    const pages = await base44.entities.LandingPage.filter({ slug: res.data.slug });
-                    if (pages && pages.length > 0) {
-                        pageData = pages[0];
-                    }
+            }
+            
+            if (!pageData) {
+                const pages = await base44.entities.LandingPage.filter({ slug: res.data.slug });
+                if (pages && pages.length > 0) {
+                    pageData = pages[0];
                 }
-
-                if (pageData) {
-                    setCreatedPageData(pageData);
-                } else {
-                    throw new Error("Page not found after creation");
-                }
-            } catch (err) {
-                console.error("Failed to fetch page details, using fallback", err);
-                // Fallback: Construct preview data from local state so user sees something
-                setCreatedPageData({
-                    business_name: formData.businessName,
-                    primary_color: '#3B82F6', // Default blue
-                    headline: formData.businessName,
-                    subheadline: 'הדף שלך מוכן!',
-                    sections_json: [
-                        {
-                            type: 'hero',
-                            title: formData.businessName,
-                            subtitle: formData.serviceOffered || 'הפתרון המושלם עבורך',
-                            ctaText: formData.ctaText || 'צור קשר',
-                            image_prompt: 'abstract modern business background blue and white professional'
-                        },
-                        {
-                            type: 'features',
-                            title: 'היתרונות שלנו',
-                            items: formData.whyChooseYou.map(id => ({ 
-                                title: id === 'price' ? 'מחיר משתלם' : id === 'experience' ? 'ניסיון ומקצועיות' : 'שירות אישי', 
-                                description: 'אנחנו כאן כדי לתת לך את הטוב ביותר' 
-                            }))
-                        },
-                        {
-                            type: 'contact',
-                            title: 'צור קשר',
-                            subtitle: 'השאר פרטים ונחזור אליך',
-                            form_fields: formData.formFields,
-                            phone: formData.destinationPhone
-                        }
-                    ]
-                });
             }
 
-            // Clear saved form data on success
-            localStorage.removeItem('landingPageFormData');
-            setShowSuccess(true);
+            if (pageData) {
+                setCreatedPageData(pageData);
+            } else {
+                throw new Error("Page not found after creation");
+            }
+
+            // Auto-publish immediately
+            setIsPublishing(true);
+            try {
+              const publishRes = await base44.functions.invoke('publishLandingPage', {
+                landingPageId: pageData?.id || res.data.id,
+                action: 'publish'
+              });
+
+              if (publishRes.data?.url) {
+                setPublishedUrl(publishRes.data.url);
+                localStorage.removeItem('landingPageFormData');
+                setShowSuccess(false);
+              } else {
+                throw new Error("Failed to get published URL");
+              }
+            } catch (err) {
+              console.error('Error publishing:', err);
+              alert('היה קושי בפרסום הדף. אנא נסה שוב.');
+            } finally {
+              setIsPublishing(false);
+            }
         } else {
             console.error("Failed to create landing page", res);
             alert('היה קושי ביצירת הדף. אנא נסה שוב או צור קשר עם התמיכה.');
-            setIsBuilding(false);
-            return;
-            // Mock data for preview in case of error (so user sees SOMETHING)
-            setCreatedPageData({
-                business_name: formData.businessName,
-                primary_color: '#3B82F6',
-                sections_json: [
-                    {
-                        type: 'hero',
-                        title: formData.businessName,
-                        subtitle: 'הדף שלך כמעט מוכן (מצב הדגמה)',
-                        ctaText: 'צור קשר',
-                    },
-                    {
-                        type: 'features',
-                        title: 'השירותים שלנו',
-                        items: [
-                            { title: 'שירות מקצועי', description: 'תיאור השירות שלך יופיע כאן' },
-                            { title: 'זמינות מלאה', description: 'פרטים נוספים יופיעו כאן' }
-                        ]
-                    }
-                ]
-            });
-            setShowSuccess(true);
         }
       } catch (error) {
         console.error("Error creating landing page:", error);
         alert('אירעה שגיאה ביצירת הדף. אנא נסה שוב.');
-        setIsBuilding(false);
-        return;
-        setPageSlug('demo-error');
-        // Mock data for preview
-        setCreatedPageData({
-            business_name: formData.businessName,
-            primary_color: '#3B82F6',
-            sections_json: [
-                {
-                    type: 'hero',
-                    title: formData.businessName,
-                    subtitle: 'הדף שלך כמעט מוכן (מצב הדגמה - אירעה שגיאה)',
-                    ctaText: 'נסה שוב',
-                }
-            ]
-        });
-        setShowSuccess(true);
       } finally {
         setIsBuilding(false);
       }
