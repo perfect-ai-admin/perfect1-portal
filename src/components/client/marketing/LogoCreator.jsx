@@ -114,6 +114,13 @@ export default function LogoCreator({ businessName, onClose }) {
 
     setIsGenerating(true);
     try {
+      // Ensure user has credits first
+      const creditRes = await base44.functions.invoke('ensureUserHasCredits', {});
+      if (!creditRes.data?.ok) {
+        alert('שגיאה בהכנת קרדיטים');
+        return;
+      }
+
       // Create project first
       const projectRes = await base44.functions.invoke('createLogoProjectFromLogoCreator', {
         businessName: formData.businessName,
