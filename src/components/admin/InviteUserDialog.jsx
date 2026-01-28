@@ -156,7 +156,7 @@ export default function InviteUserDialog() {
                 </p>
                 {message.type === 'success' && (
                   <p className="text-xs text-green-700 mt-1">
-                    המשתמש יקבל אימייל עם קישור למערכת
+                    המשתמש יקבל אימייל עם קישור להגדרת סיסמה וכניסה למערכת
                   </p>
                 )}
               </div>
@@ -166,7 +166,7 @@ export default function InviteUserDialog() {
 
         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-xs text-gray-700">
-            <strong>איך זה עובד?</strong> המשתמש יקבל אימייל הזמנה, יקליק על הקישור ויגדיר סיסמה. אפשר גם להיכנס דרך Google.
+            <strong>איך זה עובד?</strong> המשתמש יקבל אימייל עם קישור להגדרת סיסמה, יגדיר סיסמה ייחודית, ויוכל להיכנס עם המייל והסיסמה שלו.
           </p>
         </div>
       </DialogContent>
