@@ -15,9 +15,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    if (!resendApiKey) {
-      return Response.json({ error: 'RESEND_API_KEY not configured' }, { status: 500 });
+    // Get Gmail access token
+    const accessToken = await base44.asServiceRole.connectors.getAccessToken("gmail");
+    
+    if (!accessToken) {
+      return Response.json({ error: 'Gmail not connected' }, { status: 500 });
     }
 
     // Create password reset email content
@@ -62,24 +64,38 @@ Deno.serve(async (req) => {
       </div>
     `;
 
-    // Send email using Resend
-    const response = await fetch('https://api.resend.com/emails', {
+    // Create raw email in RFC 2822 format
+    const emailLines = [
+      'Content-Type: text/html; charset=utf-8',
+      'MIME-Version: 1.0',
+      `To: ${email}`,
+      `Subject: ${subject}`,
+      '',
+      htmlBody
+    ];
+    const rawEmail = emailLines.join('\r\n');
+    
+    // Base64url encode
+    const base64Email = btoa(unescape(encodeURIComponent(rawEmail)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    // Send via Gmail API
+    const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${resendApiKey}`,
+        'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Perfect One <onboarding@resend.dev>',
-        to: email,
-        subject: subject,
-        html: htmlBody
+        raw: base64Email
       })
     });
 
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`Resend API error: ${error}`);
+      throw new Error(`Gmail API error: ${error}`);
     }
 
     const result = await response.json();
@@ -87,7 +103,7 @@ Deno.serve(async (req) => {
     return Response.json({ 
       success: true, 
       message: 'Password reset email sent successfully',
-      emailId: result.id
+      messageId: result.id
     });
 
   } catch (error) {
