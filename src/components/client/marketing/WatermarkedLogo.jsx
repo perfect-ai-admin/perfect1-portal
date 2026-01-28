@@ -6,40 +6,44 @@ export default function WatermarkedLogo({
   className = "max-h-56 w-auto object-contain"
 }) {
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block w-full h-full">
       <img 
         src={src}
         alt={alt}
         className={className}
+        style={{ display: 'block' }}
       />
       
-      {/* Watermark Overlay - Canvas-based diagonal pattern */}
+      {/* Grid Watermark Pattern */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
           backgroundImage: `
-            linear-gradient(-45deg, transparent 48%, rgba(170, 170, 170, 0.15) 48%, rgba(170, 170, 170, 0.15) 52%, transparent 52%),
-            linear-gradient(45deg, transparent 48%, rgba(170, 170, 170, 0.15) 48%, rgba(170, 170, 170, 0.15) 52%, transparent 52%)
-          `,
-          backgroundSize: '60px 60px, 60px 60px',
-          backgroundPosition: '0 0, 30px 30px'
+            repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(160, 160, 160, 0.18) 30px, rgba(160, 160, 160, 0.18) 31px),
+            repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(160, 160, 160, 0.18) 30px, rgba(160, 160, 160, 0.18) 31px)
+          `
         }}
       />
       
-      {/* PREVIEW Text - Diagonal */}
-      <div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{
-          transform: 'rotate(-45deg)',
-          fontSize: '48px',
-          fontWeight: 'bold',
-          color: 'rgba(100, 100, 100, 0.22)',
-          letterSpacing: '4px',
-          textShadow: '0 1px 2px rgba(0,0,0,0.1)',
-          whiteSpace: 'nowrap'
-        }}
-      >
-        PREVIEW
+      {/* Diagonal PREVIEW Text - Multiple instances for full coverage */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(9)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-gray-500 font-bold whitespace-nowrap"
+            style={{
+              transform: 'rotate(-45deg)',
+              fontSize: '52px',
+              color: 'rgba(120, 120, 120, 0.25)',
+              letterSpacing: '3px',
+              fontWeight: 'bold',
+              left: `${(i % 3) * 50 - 25}%`,
+              top: `${Math.floor(i / 3) * 50 - 25}%`,
+            }}
+          >
+            PREVIEW
+          </div>
+        ))}
       </div>
     </div>
   );
