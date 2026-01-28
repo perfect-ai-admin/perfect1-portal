@@ -527,41 +527,30 @@ export default function LogoCreator({ businessName, onClose }) {
   }
 
   if (step === 4) {
+    // Preview step - show logo with options
+    if (!showCheckout) {
+      return (
+        <LogoPreview 
+          businessName={formData.businessName}
+          logoUrl={generatedLogoUrl}
+          onBack={() => setStep(3)}
+          onSaveToCart={() => {
+            // Save to cart logic here (future implementation)
+            alert('לוגו נשמר בסל! 🎉');
+          }}
+          onProceedToCheckout={() => setShowCheckout(true)}
+        />
+      );
+    }
+
+    // Checkout step
     return (
       <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6 relative">
-        {/* Desktop View - Logo Preview & Checkout */}
-        <div className="hidden lg:block">
-           {generatedLogoUrl ? (
-             <LogoCheckout 
-               businessName={formData.businessName}
-               logoUrl={generatedLogoUrl}
-               onBack={() => setStep(3)}
-               onClose={onClose}
-               onSuccess={(data) => {
-                 onClose();
-                 navigate(createPageUrl('LogoThankYou'), { 
-                   state: { 
-                     businessName: formData.businessName,
-                     email: data?.email 
-                   } 
-                 });
-               }}
-             />
-           ) : (
-             <div className="text-center px-4 py-8">
-               <Wand2 className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-               <p className="text-gray-500 text-base">טוען לוגו...</p>
-             </div>
-           )}
-        </div>
-
-
-        {/* Mobile View - Direct to checkout after generation */}
         {generatedLogoUrl && (
           <LogoCheckout 
             businessName={formData.businessName}
             logoUrl={generatedLogoUrl}
-            onBack={() => setStep(3)}
+            onBack={() => setShowCheckout(false)}
             onClose={onClose}
             onSuccess={(data) => {
               onClose();
