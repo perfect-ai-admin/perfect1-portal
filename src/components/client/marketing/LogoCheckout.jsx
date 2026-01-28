@@ -94,76 +94,48 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 md:p-6" dir="rtl">
-      {/* Desktop & Mobile Container */}
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col md:flex-row">
-        
-        {/* Left Section - Logo Preview (Desktop Only) */}
-        <div className="hidden md:flex md:w-2/5 bg-gradient-to-br from-slate-50 to-slate-100 flex-col items-center justify-center p-8 border-l border-gray-100 relative">
-          <button 
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-white transition-colors"
-            aria-label="סגור"
-          >
-            <X className="w-5 h-5" />
+    <div className="fixed inset-0 bg-gray-50/50 flex flex-col z-50" dir="rtl">
+      {/* Header */}
+      <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="p-1 -mr-2 text-gray-400 hover:text-gray-700 transition-colors">
+            <ChevronRight className="w-6 h-6" />
           </button>
-          
-          {logoUrl && (
-            <div className="space-y-4 text-center">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 flex items-center justify-center min-h-[300px]">
-                <WatermarkedLogo 
-                  src={logoUrl} 
-                  alt="Logo" 
-                  className="max-h-[250px] max-w-full object-contain"
-                />
-              </div>
-              <div className="text-sm text-gray-600">
-                <p className="font-semibold text-gray-900">{businessName}</p>
-                <p className="text-xs mt-1">לוגו מקצועי בעיצוב סופי</p>
-              </div>
-            </div>
+          <div>
+            <h2 className="text-lg font-bold text-gray-900 leading-none">סיום והורדה</h2>
+            <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-blue-200 shadow-sm">
+            ₪{price}
+          </div>
+          {onClose && (
+            <button 
+              onClick={onClose}
+              className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="סגור"
+            >
+              <X className="w-5 h-5" />
+            </button>
           )}
         </div>
+      </div>
 
-        {/* Right Section - Form */}
-        <div className="flex-1 flex flex-col md:w-3/5">
-          {/* Header */}
-          <div className="flex-none px-6 py-5 bg-white border-b border-gray-100 flex items-center justify-between md:border-b-0">
-            <div>
-              <h2 className="text-2xl md:text-xl font-bold text-gray-900">סיום הזמנה</h2>
-              <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">
-                ₪{price}
-              </div>
-              {onClose && (
-                <button 
-                  onClick={onClose}
-                  className="md:hidden p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
-                  aria-label="סגור"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              )}
-            </div>
+      {/* Main Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        
+        {/* Logo Preview */}
+        {logoUrl && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-center min-h-[180px] md:min-h-[220px]">
+            <WatermarkedLogo 
+              src={logoUrl} 
+              alt="Logo" 
+              className="max-h-[150px] md:max-h-[180px] max-w-full object-contain"
+            />
           </div>
+        )}
 
-          {/* Mobile Logo Preview */}
-          {logoUrl && (
-            <div className="md:hidden px-4 pt-4 flex justify-center">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-center max-h-[120px]">
-                <WatermarkedLogo 
-                  src={logoUrl} 
-                  alt="Logo" 
-                  className="max-h-[100px] max-w-full object-contain"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Main Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {/* Product Summary Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <div className="flex gap-4 mb-4">
@@ -334,54 +306,52 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
           )}
         </AnimatePresence>
 
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-red-50 text-red-600 p-3 rounded-xl text-sm flex items-center gap-2"
-            >
-              <X className="w-4 h-4" />
-              {error}
-            </motion.div>
-          )}
-          </div>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-50 text-red-600 p-3 rounded-xl text-sm flex items-center gap-2"
+          >
+            <X className="w-4 h-4" />
+            {error}
+          </motion.div>
+        )}
+      </div>
 
-          {/* Footer Actions - Desktop */}
-          <div className="flex-none p-6 bg-white border-t border-gray-100 space-y-3">
-            <Button
-              onClick={handleSubmit}
-              disabled={isProcessing}
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-200 text-base"
-            >
-              {isProcessing ? (
-                <span className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  מעבד תשלום...
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  שלם וקבל את הלוגו - ₪{price}
-                </span>
-              )}
-            </Button>
-            
-            <div className="text-center">
-              <button 
-                onClick={onBack}
-                className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                חזור לעריכה
-              </button>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
-              <Lock className="w-3 h-3" />
-              <span>SSL מאובטח</span>
-              <span>•</span>
-              <span>חשבונית מס מיידית</span>
-            </div>
-          </div>
+      {/* Footer Actions */}
+      <div className="flex-none p-4 bg-white border-t border-gray-100 space-y-3">
+        <Button
+          onClick={handleSubmit}
+          disabled={isProcessing}
+          className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-200 text-base"
+        >
+          {isProcessing ? (
+            <span className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              מעבד תשלום...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Lock className="w-4 h-4" />
+              שלם וקבל את הלוגו - ₪{price}
+            </span>
+          )}
+        </Button>
+        
+        <div className="text-center">
+          <button 
+            onClick={onBack}
+            className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            חזור לעריכה
+          </button>
+        </div>
+        
+        <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
+          <Lock className="w-3 h-3" />
+          <span>SSL מאובטח</span>
+          <span>•</span>
+          <span>חשבונית מס מיידית</span>
         </div>
       </div>
     </div>
