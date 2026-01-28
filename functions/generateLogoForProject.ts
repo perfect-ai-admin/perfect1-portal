@@ -111,6 +111,8 @@ Deno.serve(async (req) => {
     const apiData = await apiRes.json();
 
     if (!apiRes.ok) {
+      console.error('[GENERATE] API failed:', apiRes.status, apiData);
+      
       // Refund credit on failure
       await fetch(new URL(req.url).origin + '/functions/refundCredit', {
         method: 'POST',
@@ -131,7 +133,7 @@ Deno.serve(async (req) => {
         prompt_used: prompt,
         colors_used: logoProject.colors,
         status: 'failed',
-        error_message: apiData.message || apiData.error,
+        error_message: apiData.details || apiData.message || apiData.error || 'Unknown error',
         nsfw_flag: apiData.nsfw_flag || false
       });
 
@@ -139,7 +141,7 @@ Deno.serve(async (req) => {
         status: 'failed'
       });
 
-      return Response.json({ error: apiData.message || 'Generation failed' }, { status: 400 });
+      return Response.json({ error: apiData.error || 'Generation failed', details: apiData.details }, { status: 400 });
     }
 
     // Save successful generation
