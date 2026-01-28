@@ -1,10 +1,6 @@
 Deno.serve(async (req) => {
   try {
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { brand_name, business_type, style, slogan, icon_hint } = await req.json();
 
     if (!brand_name || !business_type || !style) {
