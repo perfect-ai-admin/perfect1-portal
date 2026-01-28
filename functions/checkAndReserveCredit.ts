@@ -21,8 +21,14 @@ Deno.serve(async (req) => {
       console.log('[RESERVE_CREDIT] Creating UserAccount for:', user.email);
       account = await base44.asServiceRole.entities.UserAccount.create({
         user_id: user.email,
-        logo_credits: 0,
+        logo_credits: 1,
         total_logo_runs: 0
+      });
+      await base44.asServiceRole.entities.CreditLedger.create({
+        user_id: user.email,
+        event_type: 'topup',
+        amount: 1,
+        reason: 'free_credit_for_new_user'
       });
     }
 
