@@ -88,18 +88,15 @@ Deno.serve(async (req) => {
 
     console.log('[GENERATE] Calling Stockimg with:', apiPayload);
 
-    const apiRes = await fetch(new URL(req.url).origin + '/functions/callStockimgLogoAPI', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': req.headers.get('Authorization')
-      },
-      body: JSON.stringify(apiPayload)
-    });
+    let apiData;
+    try {
+      apiData = await base44.asServiceRole.functions.invoke('callStockimgLogoAPI', apiPayload);
+    } catch (err) {
+      console.error('[GENERATE] Stockimg call failed:', err);
+      apiData = { error: err.message };
+    }
 
-    const apiData = await apiRes.json();
-
-    if (!apiRes.ok) {
+    if (!apiData.success) {
       console.error('[GENERATE] API failed:', apiRes.status, apiData);
       
       // Refund credit on failure
