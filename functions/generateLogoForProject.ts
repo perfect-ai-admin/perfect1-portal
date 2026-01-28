@@ -16,12 +16,12 @@ Deno.serve(async (req) => {
     }
 
     // Load project
-    const project = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id });
-    if (!project[0]) {
+    let logoProject;
+    try {
+      logoProject = await base44.asServiceRole.entities.LogoProject.read(project_id);
+    } catch (err) {
       return Response.json({ error: 'Project not found' }, { status: 404 });
     }
-
-    const logoProject = project[0];
 
     // Check ownership
     if (logoProject.user_id !== user.email) {
