@@ -94,9 +94,9 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50/50" dir="rtl">
+    <div className="fixed inset-0 bg-gray-50/50 flex flex-col z-50" dir="rtl">
       {/* Header */}
-      <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm z-10">
+      <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm">
         <div className="flex items-center gap-3">
           <button onClick={onBack} className="p-1 -mr-2 text-gray-400 hover:text-gray-700 transition-colors">
             <ChevronRight className="w-6 h-6" />
@@ -122,8 +122,8 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
         </div>
       </div>
 
-      {/* Main Scrollable Content - with bottom padding for fixed footer */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 pb-56 md:pb-48">
+      {/* Main Scrollable Content */}
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
         
         {/* Logo Preview */}
         {logoUrl && (
