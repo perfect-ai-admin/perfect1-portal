@@ -58,16 +58,18 @@ Deno.serve(async (req) => {
 
     // Build prompt
     let promptData = {
-      brand_name: logoProject.brand_name,
-      business_type: logoProject.business_type,
-      style: logoProject.style,
-      slogan: logoProject.slogan,
-      icon_hint: logoProject.icon_hint
+      brand_name: logoProject.brand_name || 'Business',
+      business_type: logoProject.business_type || 'professional',
+      style: logoProject.style || 'modern',
+      slogan: logoProject.slogan || '',
+      icon_hint: logoProject.icon_hint || ''
     };
 
     if (variation_mode) {
       promptData.icon_hint = (promptData.icon_hint || '') + ' Create a different concept while keeping brand identity consistent.';
     }
+
+    console.log('[GENERATE] Building prompt with:', promptData);
 
     const promptRes = await fetch(new URL(req.url).origin + '/functions/buildLogoPrompt', {
       method: 'POST',
@@ -88,18 +90,22 @@ Deno.serve(async (req) => {
     const { prompt } = await promptRes.json();
 
     // Call Stockimg API
+    const apiPayload = {
+      prompt,
+      colors: Array.isArray(logoProject.colors) ? logoProject.colors.filter(c => c && typeof c === 'string' && c.startsWith('#')) : ['#1E3A5F', '#3B82F6'],
+      width: logoProject.image_width || 1024,
+      height: logoProject.image_height || 1024
+    };
+
+    console.log('[GENERATE] Calling Stockimg with:', apiPayload);
+
     const apiRes = await fetch(new URL(req.url).origin + '/functions/callStockimgLogoAPI', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': req.headers.get('Authorization')
       },
-      body: JSON.stringify({
-        prompt,
-        colors: logoProject.colors,
-        width: logoProject.image_width,
-        height: logoProject.image_height
-      })
+      body: JSON.stringify(apiPayload)
     });
 
     const apiData = await apiRes.json();
