@@ -21,14 +21,17 @@ Deno.serve(async (req) => {
     }
 
     const payload = {
-      prompt,
-      colors: colors || [],
+      prompt: prompt.trim(),
+      colors: (Array.isArray(colors) && colors.length > 0) ? colors.filter(c => c && c.startsWith('#')) : ['#1E3A5F', '#3B82F6'],
       image_size: {
-        width: width || 1024,
-        height: height || 1024
+        width: parseInt(width) || 1024,
+        height: parseInt(height) || 1024
       },
       safety_checker: true
     };
+
+    console.log('[STOCKIMG] Request payload:', JSON.stringify(payload, null, 2));
+    console.log('[STOCKIMG] API Key present:', !!apiKey);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
@@ -47,7 +50,8 @@ Deno.serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      return Response.json({ error: `API error: ${errorText}` }, { status: response.status });
+      console.error('[STOCKIMG] Error response:', errorText);
+      return Response.json({ error: `API error (${response.status}): ${errorText}` }, { status: response.status });
     }
 
     const data = await response.json();
