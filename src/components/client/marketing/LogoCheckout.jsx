@@ -94,9 +94,9 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-50/50 flex flex-col z-50 lg:items-center lg:justify-center" dir="rtl">
+    <div className="w-full h-full lg:h-auto lg:max-h-[90vh] lg:rounded-2xl flex flex-col bg-white" dir="rtl">
       {/* Modal Container */}
-      <div className="w-full h-full lg:h-auto lg:max-h-[90vh] lg:max-w-2xl lg:rounded-2xl lg:shadow-2xl flex flex-col bg-white lg:bg-white">
+      <div className="w-full h-full lg:h-auto flex flex-col bg-white">
         {/* Header */}
         <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm lg:rounded-t-2xl">
           <div className="flex items-center gap-3">
