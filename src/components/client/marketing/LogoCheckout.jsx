@@ -346,7 +346,7 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
           )}
           </div>
 
-          {/* Footer Actions */}
+          {/* Footer Actions - Desktop */}
           <div className="flex-none p-6 bg-white border-t border-gray-100 space-y-3">
             <Button
               onClick={handleSubmit}
