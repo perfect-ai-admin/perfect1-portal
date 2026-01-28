@@ -534,39 +534,44 @@ export default function LogoCreator({ businessName, onClose }) {
     // Preview step - show logo with options
     if (!showCheckout) {
       return (
-        <LogoPreview 
-          businessName={formData.businessName}
-          logoUrl={generatedLogoUrl}
-          onBack={() => setStep(3)}
-          onSaveToCart={() => {
-            // Save to cart logic here (future implementation)
-            alert('לוגו נשמר בסל! 🎉');
-          }}
-          onProceedToCheckout={() => setShowCheckout(true)}
-        />
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6 fixed inset-0 z-50 overflow-y-auto">
+          <div className="w-full max-w-2xl">
+            <LogoPreview 
+              businessName={formData.businessName}
+              logoUrl={generatedLogoUrl}
+              onBack={() => setStep(3)}
+              onSaveToCart={() => {
+                alert('לוגו נשמר בסל! 🎉');
+              }}
+              onProceedToCheckout={() => setShowCheckout(true)}
+            />
+          </div>
+        </div>
       );
     }
 
     // Checkout step
     return (
-      <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6 relative">
-        {generatedLogoUrl && (
-          <LogoCheckout 
-            businessName={formData.businessName}
-            logoUrl={generatedLogoUrl}
-            onBack={() => setShowCheckout(false)}
-            onClose={onClose}
-            onSuccess={(data) => {
-              onClose();
-              navigate(createPageUrl('LogoThankYou'), { 
-                state: { 
-                  businessName: formData.businessName,
-                  email: data?.email 
-                } 
-              });
-            }}
-          />
-        )}
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-6 overflow-y-auto">
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl">
+          {generatedLogoUrl && (
+            <LogoCheckout 
+              businessName={formData.businessName}
+              logoUrl={generatedLogoUrl}
+              onBack={() => setShowCheckout(false)}
+              onClose={onClose}
+              onSuccess={(data) => {
+                onClose();
+                navigate(createPageUrl('LogoThankYou'), { 
+                  state: { 
+                    businessName: formData.businessName,
+                    email: data?.email 
+                  } 
+                });
+              }}
+            />
+          )}
+        </div>
       </div>
     );
   }
