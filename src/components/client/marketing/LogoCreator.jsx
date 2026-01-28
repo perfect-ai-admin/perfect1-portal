@@ -558,39 +558,7 @@ export default function LogoCreator({ businessName, onClose }) {
              </div>
            )}
         </div>
-           
-           <div className="grid grid-cols-4 gap-4 mb-8">
-             {logos.map((logo, index) => (
-               <motion.div
-                 key={index}
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 transition={{ delay: index * 0.08 }}
-                 className={`flex flex-col rounded-xl overflow-hidden transition-all border-2 ${
-                   currentLogoIndex === index ? 'border-blue-500 ring-2 ring-blue-300 shadow-lg' : 'border-gray-200 hover:border-gray-300 shadow-sm'
-                 }`}
-               >
-                 <button onClick={() => setCurrentLogoIndex(index)} className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 hover:bg-gray-100 transition-colors">
-                   <img src={logo.url} alt={`Logo ${index + 1}`} className="h-24 w-auto object-contain" />
-                 </button>
-                 <div className="p-3 space-y-2">
-                   <p className="text-xs font-semibold text-gray-700 text-center">{logo.variant}</p>
-                   <div className="flex gap-2">
-                     <button onClick={() => setSelectedLogo(logo)} className="flex-1 py-2 px-2 bg-blue-600 text-white text-xs font-medium rounded-lg">הורדה</button>
-                     <button onClick={() => saveLogo(logo.url, logo.variant)} className="flex-1 py-2 px-2 border border-gray-300 text-gray-700 text-xs font-medium rounded-lg">שמור</button>
-                   </div>
-                 </div>
-               </motion.div>
-             ))}
-           </div>
 
-           <div className="flex gap-3 justify-center">
-             <Button onClick={() => { setStep(1); setLogos([]); setSelectedLogo(null); }} variant="outline" className="border-2 border-gray-300 h-11 px-6">⚡ לוגו חדש</Button>
-             <Button onClick={() => handleGenerate()} disabled={isGenerating} className="bg-blue-600 text-white h-11 px-6">
-               {isGenerating ? <><RefreshCw className="w-4 h-4 ml-2 animate-spin" />יוצר...</> : <><Wand2 className="w-4 h-4 ml-2" />וריאציות נוספות</>}
-             </Button>
-           </div>
-        </div>
 
         {/* Mobile View */}
         <LogoSelectorMobile 
