@@ -578,9 +578,12 @@ export default function LogoCreator({ businessName, onClose }) {
             }}
           />
         )}
-        </div>
-        );
-        }
+      </div>
+    );
+  }
+
+  return null;
+}
 
   return null;
 }
