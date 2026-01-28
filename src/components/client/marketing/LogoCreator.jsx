@@ -102,8 +102,9 @@ export default function LogoCreator({ businessName, onClose }) {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedLogoUrl, setGeneratedLogoUrl] = useState(null);
+  const [showCheckout, setShowCheckout] = useState(false);
 
-  const handleGenerate = async () => {
+    const handleGenerate = async () => {
     if (!formData.businessName || !formData.industry) {
       alert('אנא מלא את שם העסק ותחום העיסוק');
       return;
