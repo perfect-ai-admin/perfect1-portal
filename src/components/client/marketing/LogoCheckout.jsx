@@ -321,7 +321,7 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
       </div>
 
       {/* Footer Actions */}
-      <div className="flex-none p-4 bg-white border-t border-gray-100 space-y-3">
+      <div className="flex-none p-4 bg-white border-t border-gray-100 space-y-3 lg:rounded-b-2xl">
         <Button
           onClick={handleSubmit}
           disabled={isProcessing}
@@ -339,7 +339,7 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
             </span>
           )}
         </Button>
-        
+
         <div className="text-center">
           <button 
             onClick={onBack}
@@ -348,7 +348,7 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
             חזור לעריכה
           </button>
         </div>
-        
+
         <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
           <Lock className="w-3 h-3" />
           <span>SSL מאובטח</span>
@@ -356,6 +356,7 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
           <span>חשבונית מס מיידית</span>
         </div>
       </div>
-    </div>
-  );
-}
+      </div>
+      </div>
+      );
+      }
