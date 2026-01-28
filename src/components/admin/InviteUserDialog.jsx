@@ -30,8 +30,13 @@ export default function InviteUserDialog() {
       // Invite user to the system
       await base44.users.inviteUser(email, role);
       
-      // Send email invitation via Gmail
-      await base44.functions.invoke('sendInviteEmail', { email, role });
+      // Send email invitation
+      const emailResponse = await base44.functions.invoke('sendInviteEmail', { email, role });
+      
+      // Check if email function returned an error
+      if (emailResponse.data?.error) {
+        throw new Error(emailResponse.data.error);
+      }
       
       setMessage({ 
         type: 'success', 
@@ -46,10 +51,21 @@ export default function InviteUserDialog() {
         setMessage(null);
       }, 2000);
     } catch (error) {
-      setMessage({ 
-        type: 'error', 
-        text: error.message || 'שגיאה בשליחת ההזמנה' 
-      });
+      // Even if email sending failed but user was invited, show partial success
+      const errorMsg = error.message || 'שגיאה בשליחת ההזמנה';
+      
+      // Check if this is only an email error (user was already invited)
+      if (errorMsg.includes('Resend') || errorMsg.includes('email')) {
+        setMessage({ 
+          type: 'success', 
+          text: `המשתמש הוזמן למערכת (שליחת המייל נכשלה)` 
+        });
+      } else {
+        setMessage({ 
+          type: 'error', 
+          text: errorMsg
+        });
+      }
     } finally {
       setLoading(false);
     }
