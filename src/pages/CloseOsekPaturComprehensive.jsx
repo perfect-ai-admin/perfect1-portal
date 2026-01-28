@@ -125,9 +125,9 @@ export default function CloseOsekPaturComprehensive() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-2xl hover:shadow-3xl transition-all">
-                    <MessageCircle className="ml-3 w-6 h-6" />
-                    בדיקה חינמית לסגירת עוסק פטור – בווצאפ
+                  <Button className="w-full sm:w-auto h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg transition-all">
+                    <MessageCircle className="ml-2 w-5 h-5" />
+                    ייעוץ חינם בווצאפ
                   </Button>
                 </a>
               </div>
