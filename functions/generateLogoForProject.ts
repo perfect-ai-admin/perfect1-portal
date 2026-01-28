@@ -22,8 +22,10 @@ Deno.serve(async (req) => {
     let logoProject;
     try {
       logoProject = await base44.asServiceRole.entities.LogoProject.read(project_id);
+      console.log('[GENERATE] Loaded project:', logoProject?.id, 'user_id:', logoProject?.user_id);
     } catch (err) {
-      return Response.json({ error: 'Project not found' }, { status: 404 });
+      console.error('[GENERATE] Project read failed:', err.message);
+      return Response.json({ error: 'Project not found: ' + err.message }, { status: 404 });
     }
 
     // Check ownership
