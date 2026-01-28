@@ -560,68 +560,27 @@ export default function LogoCreator({ businessName, onClose }) {
         </div>
 
 
-        {/* Mobile View */}
-        <LogoSelectorMobile 
-          logos={logos} 
-          formData={formData} 
-          onNext={() => setStep(5)}
-          onReset={() => { setStep(1); setLogos([]); setSelectedLogo(null); }}
-          onGenerateMore={() => handleGenerate()}
-          isGenerating={isGenerating}
-          onClose={onClose}
-        />
-
-        {/* Desktop Dialog (Hidden on mobile inside LogoSelectorMobile but kept here for desktop flow) */}
-        <Dialog open={!!selectedLogo} onOpenChange={(open) => !open && setSelectedLogo(null)}>
-          <DialogContent className="sm:max-w-sm">
-            <DialogHeader>
-              <DialogTitle className="text-base font-bold">הלוגו שלך מוכן להורדה</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-2 py-2">
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white">
-                <div className="flex items-center gap-3"><Image className="w-5 h-5 text-blue-600" /><span className="font-medium text-gray-900">PNG</span></div>
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white">
-                 <div className="flex items-center gap-3"><Code className="w-5 h-5 text-purple-600" /><span className="font-medium text-gray-900">SVG</span></div>
-                 <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 bg-white">
-                 <div className="flex items-center gap-3"><FileJson className="w-5 h-5 text-red-600" /><span className="font-medium text-gray-900">PDF</span></div>
-                 <CheckCircle2 className="w-5 h-5 text-green-500" />
-              </div>
-              <button onClick={() => { setSelectedLogo(null); setStep(5); }} className="w-full mt-3 flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-lg">
-                <span className="font-bold text-gray-900 text-sm">המשך לרכישה</span>
-                <Wand2 className="w-5 h-5 text-green-600" />
-              </button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    );
-  }
-
-  // Checkout page - Integrated Component
-  if (step === 5) {
-    return (
-      <div className="h-full w-full bg-white overflow-hidden md:h-[650px] lg:h-[700px] flex flex-col">
-        <LogoCheckout 
-          businessName={formData.businessName}
-          onBack={() => setStep(4)}
-          onClose={onClose}
-          onSuccess={(data) => {
-            onClose();
-            navigate(createPageUrl('LogoThankYou'), { 
-              state: { 
-                businessName: formData.businessName,
-                email: data?.email 
-              } 
-            });
-          }}
-        />
-      </div>
-    );
-  }
+        {/* Mobile View - Direct to checkout after generation */}
+        {generatedLogoUrl && (
+          <LogoCheckout 
+            businessName={formData.businessName}
+            logoUrl={generatedLogoUrl}
+            onBack={() => setStep(3)}
+            onClose={onClose}
+            onSuccess={(data) => {
+              onClose();
+              navigate(createPageUrl('LogoThankYou'), { 
+                state: { 
+                  businessName: formData.businessName,
+                  email: data?.email 
+                } 
+              });
+            }}
+          />
+        )}
+        </div>
+        );
+        }
 
   return null;
 }
