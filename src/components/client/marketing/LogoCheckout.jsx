@@ -334,52 +334,54 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
           )}
         </AnimatePresence>
 
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-red-50 text-red-600 p-3 rounded-xl text-sm flex items-center gap-2"
-          >
-            <X className="w-4 h-4" />
-            {error}
-          </motion.div>
-        )}
-      </div>
-
-      {/* Footer Actions */}
-      <div className="flex-none p-4 bg-white border-t border-gray-100 space-y-3">
-        <Button
-          onClick={handleSubmit}
-          disabled={isProcessing}
-          className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-200 text-base"
-        >
-          {isProcessing ? (
-            <span className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              מעבד תשלום...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <Lock className="w-4 h-4" />
-              שלם וקבל את הלוגו - ₪{price}
-            </span>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-50 text-red-600 p-3 rounded-xl text-sm flex items-center gap-2"
+            >
+              <X className="w-4 h-4" />
+              {error}
+            </motion.div>
           )}
-        </Button>
-        
-        <div className="text-center">
-          <button 
-            onClick={onBack}
-            className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            חזור לעריכה
-          </button>
-        </div>
-        
-        <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
-          <Lock className="w-3 h-3" />
-          <span>SSL מאובטח</span>
-          <span>•</span>
-          <span>חשבונית מס מיידית</span>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="flex-none p-6 bg-white border-t border-gray-100 space-y-3">
+            <Button
+              onClick={handleSubmit}
+              disabled={isProcessing}
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-200 text-base"
+            >
+              {isProcessing ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  מעבד תשלום...
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <Lock className="w-4 h-4" />
+                  שלם וקבל את הלוגו - ₪{price}
+                </span>
+              )}
+            </Button>
+            
+            <div className="text-center">
+              <button 
+                onClick={onBack}
+                className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                חזור לעריכה
+              </button>
+            </div>
+            
+            <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
+              <Lock className="w-3 h-3" />
+              <span>SSL מאובטח</span>
+              <span>•</span>
+              <span>חשבונית מס מיידית</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
