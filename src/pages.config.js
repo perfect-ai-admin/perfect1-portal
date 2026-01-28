@@ -32,6 +32,7 @@ import CreditsPage from './pages/CreditsPage';
 import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
+import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
 import Home from './pages/Home';
 import HowMuchOsekMorshaPayNI from './pages/HowMuchOsekMorshaPayNI';
@@ -106,7 +107,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import __Layout from './Layout.jsx';
 
 
@@ -145,6 +145,7 @@ export const PAGES = {
     "EyebrowStylistLanding": EyebrowStylistLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
     "FreelancerLanding": FreelancerLanding,
+    "GraphicDesignerLanding": GraphicDesignerLanding,
     "HairStylistLanding": HairStylistLanding,
     "Home": Home,
     "HowMuchOsekMorshaPayNI": HowMuchOsekMorshaPayNI,
@@ -219,7 +220,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "GraphicDesignerLanding": GraphicDesignerLanding,
 }
 
 export const pagesConfig = {

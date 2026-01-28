@@ -550,7 +550,7 @@ export default function CloseOsekPaturComprehensive() {
                     className="w-full h-12 bg-[#25D366] hover:bg-[#20b858] text-white font-bold rounded-lg mt-6"
                   >
                     <MessageCircle className="ml-2 w-5 h-5" />
-                    דברו איתנו בווטסאפ
+                    בדיקה חינמית לסגירת עוסק פטור – בווצאפ
                   </Button>
                 </form>
 
