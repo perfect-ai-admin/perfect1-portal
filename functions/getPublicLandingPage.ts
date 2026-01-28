@@ -16,21 +16,18 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Slug required' }, { status: 400 });
         }
 
-        // List all pages and find the published one with matching slug
+        // Use service role to list all pages and find published one
         const allPages = await base44.asServiceRole.entities.LandingPage.list(undefined, 1000);
-        console.log('[DEBUG] Total pages:', allPages.length);
-        console.log('[DEBUG] Pages slugs:', allPages.map(p => ({ slug: p.slug, status: p.status })));
-        
         const page = allPages.find(p => p.slug === slug && p.status === 'published');
 
         if (!page) {
-            console.log('[DEBUG] No published page found for slug:', slug);
             return Response.json({ error: 'Page not found' }, { status: 404 });
         }
 
+        // Return only the page data (not the full entity wrapper)
         return Response.json(page);
     } catch (error) {
-        console.error('[getPublicLandingPage] Error:', error);
+        console.error('[getPublicLandingPage] Error:', error.message);
         return Response.json({ error: error.message }, { status: 500 });
     }
 });
