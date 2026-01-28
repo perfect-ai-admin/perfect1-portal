@@ -20,9 +20,11 @@ Deno.serve(async (req) => {
         }
 
         console.log('[getPublicLandingPage] Searching for slug:', slug);
-        const pages = await base44.asServiceRole.entities.LandingPage.filter({ slug });
-        console.log('[getPublicLandingPage] Found pages:', pages.length, pages.map(p => ({ slug: p.slug, status: p.status })));
-        const page = pages[0];
+        // List all pages and filter manually since filter() doesn't work properly with RLS
+        const allPages = await base44.asServiceRole.entities.LandingPage.list();
+        console.log('[getPublicLandingPage] Total pages in DB:', allPages.length);
+        const page = allPages.find(p => p.slug === slug);
+        console.log('[getPublicLandingPage] Found matching page:', !!page);
 
         if (!page) {
             console.error('[getPublicLandingPage] Page not found for slug:', slug);
