@@ -226,7 +226,22 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     if (validateStep(currentStep)) {
       setIsBuilding(true);
       try {
-        const res = await base44.functions.invoke('createLandingPage', { data: formData });
+        // Auto-generate slug from business name in English
+        const transliterate = (text) => {
+          const hebrewToEnglish = {
+            'א': 'a', 'ב': 'b', 'ג': 'g', 'ד': 'd', 'ה': 'h', 'ו': 'v', 'ז': 'z', 'ח': 'ch', 'ט': 't',
+            'י': 'y', 'כ': 'k', 'ל': 'l', 'מ': 'm', 'נ': 'n', 'ס': 's', 'ע': 'a', 'פ': 'p', 'צ': 'ts',
+            'ק': 'k', 'ר': 'r', 'ש': 'sh', 'ת': 't'
+          };
+          return text.toLowerCase().split('').map(char => hebrewToEnglish[char] || char).join('');
+        };
+        
+        const slug = transliterate(formData.businessName)
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          .slice(0, 50);
+        
+        const res = await base44.functions.invoke('createLandingPage', { data: { ...formData, slug } });
         if (res.data && res.data.slug) {
             setPageSlug(res.data.slug);
 
