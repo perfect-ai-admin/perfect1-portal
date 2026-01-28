@@ -61,17 +61,21 @@ Deno.serve(async (req) => {
       </div>
     `;
 
-    // Encode email in base64
+    // Encode email in base64 (proper UTF-8 handling for Hebrew)
     const message = [
       `To: ${email}`,
-      `Subject: ${subject}`,
+      `Subject: =?UTF-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`,
       'MIME-Version: 1.0',
       'Content-Type: text/html; charset=utf-8',
       '',
       htmlBody
     ].join('\n');
 
-    const encodedMessage = btoa(unescape(encodeURIComponent(message)))
+    // Proper base64url encoding
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+    const base64 = btoa(String.fromCharCode(...data));
+    const encodedMessage = base64
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=+$/, '');
