@@ -50,8 +50,13 @@ Deno.serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[STOCKIMG] Error response:', errorText);
-      return Response.json({ error: `API error (${response.status}): ${errorText}` }, { status: response.status });
+      console.error('[STOCKIMG] Error response:', response.status, errorText);
+      console.error('[STOCKIMG] Payload was:', JSON.stringify(payload));
+      return Response.json({ 
+        error: `Stockimg API error (${response.status})`, 
+        details: errorText,
+        payload: payload
+      }, { status: response.status });
     }
 
     const data = await response.json();
