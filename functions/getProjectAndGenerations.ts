@@ -15,29 +15,30 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'project_id required' }, { status: 400 });
     }
 
-    // Verify ownership
+    // Load project
     const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id });
-    if (!projects[0] || projects[0].user_id !== user.email) {
-      return Response.json({ error: 'Unauthorized' }, { status: 403 });
+    const project = projects[0];
+
+    if (!project || project.user_id !== user.email) {
+      return Response.json({ error: 'Not found or unauthorized' }, { status: 404 });
     }
 
-    // Get all generations
+    // Load generations
     const generations = await base44.asServiceRole.entities.LogoGeneration.filter(
       { project_id },
       '-created_at',
-      100
+      50
     );
 
+    // Load user credits
+    const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: user.email });
+    const account = accounts[0];
+    const credits = account ? account.logo_credits : 0;
+
     return Response.json({
-      success: true,
-      generations: generations.map(g => ({
-        id: g.id,
-        image_url: g.external_url,
-        status: g.status,
-        created_at: g.created_at,
-        nsfw_flag: g.nsfw_flag,
-        error_message: g.error_message
-      }))
+      project,
+      generations,
+      credits
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

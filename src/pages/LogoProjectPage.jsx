@@ -1,279 +1,197 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
+import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Loader2, Wand2, Zap, CreditCard, Copy, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertCircle, Loader2, Download, Copy, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LogoProjectPage() {
-    const { project_id } = useParams();
-    const navigate = useNavigate();
+  const { id } = useParams();
+  const [project, setProject] = useState(null);
+  const [generations, setGenerations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [credits, setCredits] = useState(0);
+  const [message, setMessage] = useState(null);
+  const [copied, setCopied] = useState(null);
 
-    const [project, setProject] = useState(null);
-    const [credits, setCredits] = useState(0);
-    const [generations, setGenerations] = useState([]);
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [generationStep, setGenerationStep] = useState('');
+  useEffect(() => {
+    loadProjectData();
+  }, [id]);
 
-    useEffect(() => {
-        loadData();
-    }, [project_id]);
-
-    const loadData = async () => {
-        try {
-            setLoading(true);
-            const [projectRes, creditsRes, genRes] = await Promise.all([
-                base44.functions.invoke('getOrCreateUserAccount', {}),
-                base44.functions.invoke('getCredits', {}),
-                base44.functions.invoke('listProjectGenerations', { project_id })
-            ]);
-
-            const proj = await base44.entities.LogoProject.get(project_id);
-            setProject(proj);
-            setCredits(creditsRes.logo_credits);
-            setGenerations(genRes.generations || []);
-        } catch (err) {
-            toast.error('Failed to load project');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleGenerate = async (variationMode = false) => {
-        setIsGenerating(true);
-        setGenerationStep('Preparing...');
-        try {
-            setGenerationStep('Generating logo...');
-            const res = await base44.functions.invoke('generateLogoForProject', {
-                project_id,
-                variation_mode: variationMode
-            });
-
-            if (res.ok) {
-                setGenerationStep('Finishing...');
-                await new Promise(r => setTimeout(r, 500));
-                toast.success('Logo generated!');
-                await loadData();
-            } else {
-                if (res.error === 'NO_CREDITS') {
-                    toast.error('No credits left');
-                    navigate('/credits');
-                } else if (res.error === 'NSFW') {
-                    toast.error('Could not generate this concept. Try different wording.');
-                } else {
-                    toast.error(res.message || 'Generation failed');
-                }
-                setCredits(0);
-            }
-        } catch (err) {
-            toast.error('Error: ' + err.message);
-        } finally {
-            setIsGenerating(false);
-            setGenerationStep('');
-        }
-    };
-
-    const handleApprove = async (generation_id) => {
-        try {
-            await base44.functions.invoke('approveLogo', { generation_id });
-            toast.success('Logo approved!');
-            await loadData();
-        } catch (err) {
-            toast.error('Error: ' + err.message);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-            </div>
-        );
+  const loadProjectData = async () => {
+    try {
+      const res = await base44.functions.invoke('getProjectAndGenerations', { project_id: id });
+      setProject(res.data.project);
+      setGenerations(res.data.generations);
+      setCredits(res.data.credits);
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message });
+    } finally {
+      setLoading(false);
     }
+  };
 
-    if (!project) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-gray-600">Project not found</p>
-                    <Button onClick={() => navigate('/')} className="mt-4">Go Home</Button>
-                </div>
-            </div>
-        );
+  const handleGenerate = async () => {
+    if (generating) return;
+    setGenerating(true);
+    setMessage(null);
+
+    try {
+      const res = await base44.functions.invoke('generateLogoForProject', { project_id: id });
+      setGenerations([res.data, ...generations]);
+      setProject(prev => ({ ...prev, status: 'ready' }));
+      setCredits(prev => prev - 1);
+      setMessage({ type: 'success', text: 'Logo generated!' });
+    } catch (error) {
+      setMessage({ type: 'error', text: error.response?.data?.message || error.message });
+    } finally {
+      setGenerating(false);
     }
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-50 p-4 md:p-8" dir="rtl">
-            <div className="max-w-5xl mx-auto space-y-8">
-                {/* Header */}
-                <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">{project.brand_name}</h1>
-                            <p className="text-gray-600 mt-1">{project.business_type} • {project.style}</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="bg-blue-100 px-4 py-2 rounded-lg">
-                                <p className="text-xs text-gray-600">Credits Left</p>
-                                <p className="text-2xl font-bold text-blue-600">{credits}</p>
-                            </div>
-                            <div className={`px-4 py-2 rounded-lg ${
-                                project.status === 'approved' ? 'bg-green-100' : 'bg-yellow-100'
-                            }`}>
-                                <p className="text-xs text-gray-600">Status</p>
-                                <p className="text-sm font-bold capitalize">{project.status}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  const handleApprove = async (generation_id) => {
+    try {
+      const res = await base44.functions.invoke('approveLogo', { generation_id });
+      setProject(prev => ({ ...prev, status: 'approved', approved_logo_url: res.data.approved_url }));
+      setGenerations(prev => prev.map(g => ({ ...g, status: g.id === generation_id ? 'approved' : g.status })));
+      setMessage({ type: 'success', text: 'Logo approved!' });
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message });
+    }
+  };
 
-                {/* Actions */}
-                <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-                    {credits === 0 ? (
-                        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 text-center">
-                            <p className="text-yellow-800 mb-4">No credits left. Add credits to generate logos.</p>
-                            <Button 
-                                onClick={() => navigate('/credits')}
-                                className="w-full bg-blue-600 hover:bg-blue-700"
-                            >
-                                Go to Credits
-                            </Button>
-                        </div>
-                    ) : isGenerating ? (
-                        <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 text-center">
-                            <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" />
-                            <p className="text-blue-900 font-semibold">{generationStep || 'Generating...'}</p>
-                        </div>
-                    ) : (
-                        <div className="flex gap-3 flex-wrap">
-                            <Button 
-                                onClick={() => handleGenerate(false)}
-                                className="flex-1 h-12 bg-blue-600 hover:bg-blue-700"
-                                disabled={isGenerating}
-                            >
-                                <Wand2 className="w-4 h-4 ml-2" />
-                                Generate Logo
-                            </Button>
-                            <Button 
-                                onClick={() => handleGenerate(true)}
-                                variant="outline"
-                                className="flex-1 h-12"
-                                disabled={isGenerating}
-                            >
-                                <Zap className="w-4 h-4 ml-2" />
-                                Generate Variation
-                            </Button>
-                        </div>
-                    )}
-                </div>
+  const copyToClipboard = (url, id) => {
+    navigator.clipboard.writeText(url);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
+  };
 
-                {/* Approved Logo */}
-                {project.approved_logo_url && (
-                    <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-                        <h2 className="text-xl font-bold text-gray-900">✓ Approved Logo</h2>
-                        <div className="bg-gray-100 rounded-lg p-8 flex items-center justify-center min-h-64">
-                            <img 
-                                src={project.approved_logo_url} 
-                                alt="Approved logo"
-                                className="max-h-64 max-w-full object-contain"
-                            />
-                        </div>
-                        <div className="flex gap-3">
-                            <Button 
-                                onClick={() => window.open(project.approved_logo_url)}
-                                variant="outline"
-                                className="flex-1"
-                            >
-                                Open Image
-                            </Button>
-                            <Button 
-                                onClick={() => {
-                                    navigator.clipboard.writeText(project.approved_logo_url);
-                                    toast.success('Link copied!');
-                                }}
-                                variant="outline"
-                                className="flex-1"
-                            >
-                                <Copy className="w-4 h-4 ml-2" />
-                                Copy Link
-                            </Button>
-                        </div>
-                        {credits > 0 && (
-                            <Button 
-                                onClick={() => handleGenerate(true)}
-                                className="w-full"
-                            >
-                                Generate More Variations
-                            </Button>
-                        )}
-                    </div>
-                )}
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin" /></div>;
+  }
 
-                {/* Gallery */}
-                <div className="space-y-4">
-                    <h2 className="text-xl font-bold text-gray-900">
-                        Gallery {generations.length > 0 && `(${generations.length})`}
-                    </h2>
-                    
-                    {generations.length === 0 ? (
-                        <div className="bg-white rounded-xl shadow-sm p-12 text-center text-gray-500">
-                            <p>Click "Generate Logo" to create your first logo.</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {generations.map((gen) => (
-                                <motion.div
-                                    key={gen.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="bg-white rounded-xl shadow-sm overflow-hidden border-2 border-transparent hover:border-gray-300 transition-all"
-                                >
-                                    {gen.external_url ? (
-                                        <div className="bg-gray-100 aspect-square flex items-center justify-center p-4">
-                                            <img 
-                                                src={gen.external_url}
-                                                alt="Generated logo"
-                                                className="max-h-full max-w-full object-contain"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="bg-red-50 aspect-square flex items-center justify-center">
-                                            <div className="text-center p-4">
-                                                <p className="text-xs text-red-600">{gen.error_message}</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div className="p-4 space-y-3">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs text-gray-500">
-                                                {new Date(gen.created_at).toLocaleDateString()}
-                                            </span>
-                                            {gen.status === 'approved' && (
-                                                <span className="flex items-center gap-1 text-xs text-green-600 font-semibold">
-                                                    <CheckCircle2 className="w-4 h-4" />
-                                                    Approved
-                                                </span>
-                                            )}
-                                        </div>
-                                        {gen.status === 'generated' && gen.external_url && (
-                                            <Button 
-                                                onClick={() => handleApprove(gen.id)}
-                                                className="w-full h-9 bg-green-600 hover:bg-green-700"
-                                                size="sm"
-                                            >
-                                                Approve This Logo
-                                            </Button>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
+  if (!project) {
+    return <div className="p-6 text-center text-red-600">Project not found</div>;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-6" dir="rtl">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">{project.brand_name}</h1>
+          <p className="text-gray-600">{project.business_type} • {project.style}</p>
+          <div className="mt-4 flex items-center gap-4">
+            <span className="text-sm font-bold text-blue-600">Credits: {credits}</span>
+            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">{project.status}</span>
+          </div>
         </div>
-    );
+
+        {/* Messages */}
+        <AnimatePresence>
+          {message && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className={`mb-6 p-4 rounded-lg ${message.type === 'error' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}
+            >
+              {message.text}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Generate Button */}
+        {credits > 0 && project.status !== 'approved' && (
+          <Button
+            onClick={handleGenerate}
+            disabled={generating}
+            className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-lg font-bold"
+          >
+            {generating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              'Generate Logo'
+            )}
+          </Button>
+        )}
+
+        {credits === 0 && (
+          <div className="mb-8 p-4 bg-yellow-100 border border-yellow-300 rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold text-yellow-800">No Credits</p>
+              <p className="text-sm text-yellow-700">You need credits to generate logos. Contact admin.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Approved Logo */}
+        {project.status === 'approved' && project.approved_logo_url && (
+          <Card className="mb-8 border-2 border-green-400 bg-green-50">
+            <CardHeader>
+              <CardTitle className="text-green-800">Approved Logo</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <img src={project.approved_logo_url} alt="Approved logo" className="w-64 h-64 object-cover mb-4 rounded" />
+              <div className="flex gap-2">
+                <a href={project.approved_logo_url} download className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                  <Download className="w-4 h-4" /> Download
+                </a>
+                <button
+                  onClick={() => copyToClipboard(project.approved_logo_url, 'approved')}
+                  className="flex items-center gap-2 px-4 py-2 border border-green-600 text-green-600 rounded hover:bg-green-50"
+                >
+                  {copied === 'approved' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {copied === 'approved' ? 'Copied' : 'Copy Link'}
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Gallery */}
+        {generations.length > 0 && (
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Generation History</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {generations.map(gen => (
+                <Card key={gen.id} className={gen.status === 'approved' ? 'border-green-400 bg-green-50' : ''}>
+                  <CardContent className="pt-4">
+                    {gen.status === 'failed' ? (
+                      <div className="w-full h-48 bg-gray-200 rounded flex items-center justify-center mb-4">
+                        <div className="text-center">
+                          <AlertCircle className="w-8 h-8 text-red-600 mx-auto mb-2" />
+                          <p className="text-sm text-red-600">{gen.error_message}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <img src={gen.image_url} alt="Generated logo" className="w-full h-48 object-cover rounded mb-4" />
+                    )}
+                    <p className="text-xs text-gray-500 mb-3">{new Date(gen.created_at).toLocaleDateString()}</p>
+                    {gen.status !== 'failed' && gen.status !== 'approved' && (
+                      <Button
+                        onClick={() => handleApprove(gen.id)}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        Approve This Logo
+                      </Button>
+                    )}
+                    {gen.status === 'approved' && (
+                      <div className="text-center text-green-700 font-bold">✓ Approved</div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

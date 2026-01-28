@@ -1,149 +1,168 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-    try {
-        const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
 
-        const { project_id, variation_mode } = await req.json();
-
-        if (!project_id) {
-            return Response.json({ error: 'project_id required' }, { status: 400 });
-        }
-
-        // Load project
-        const project = await base44.entities.LogoProject.get(project_id);
-        if (!project) {
-            return Response.json({ error: 'NOT_FOUND' }, { status: 404 });
-        }
-
-        if (project.user_id !== user.id) {
-            return Response.json({ error: 'FORBIDDEN' }, { status: 403 });
-        }
-
-        // Check if already generating
-        if (project.status === 'generating') {
-            return Response.json({ error: 'ALREADY_GENERATING' }, { status: 400 });
-        }
-
-        // Set generating state
-        await base44.entities.LogoProject.update(project_id, { status: 'generating' });
-
-        // Reserve credit
-        const creditRes = await base44.functions.invoke('reserveCredit', { project_id });
-        if (!creditRes.ok) {
-            await base44.entities.LogoProject.update(project_id, { status: 'failed' });
-            return Response.json({ error: creditRes.error || 'NO_CREDITS' }, { status: 400 });
-        }
-
-        // Build prompt
-        const promptRes = await base44.functions.invoke('buildLogoPrompt', {
-            project,
-            variation_mode: variation_mode || false
-        });
-        const prompt = promptRes.prompt;
-
-        // Call Stockimg API
-        const apiRes = await base44.functions.invoke('callStockimgLogo', {
-            prompt: prompt,
-            colors: project.colors,
-            width: project.image_width || 1024,
-            height: project.image_height || 1024
-        });
-
-        // Handle NSFW
-        if (apiRes.error === 'NSFW') {
-            await base44.entities.LogoGeneration.create({
-                project_id: project_id,
-                user_id: user.id,
-                prompt_used: prompt,
-                colors_used: project.colors,
-                nsfw_flag: true,
-                status: 'failed',
-                error_message: 'NSFW flagged by safety checker'
-            });
-
-            await base44.functions.invoke('refundCredit', {
-                project_id: project_id,
-                reason: 'nsfw_flagged'
-            });
-
-            await base44.entities.LogoProject.update(project_id, { status: 'ready' });
-
-            return Response.json({ 
-                error: 'NSFW',
-                message: 'Could not generate this concept. Try different wording.'
-            }, { status: 400 });
-        }
-
-        // Handle API errors
-        if (!apiRes.ok || apiRes.error) {
-            const errorMsg = apiRes.error || 'API call failed';
-            
-            await base44.entities.LogoGeneration.create({
-                project_id: project_id,
-                user_id: user.id,
-                prompt_used: prompt,
-                colors_used: project.colors,
-                nsfw_flag: false,
-                status: 'failed',
-                error_message: `API Error: ${errorMsg}`
-            });
-
-            await base44.functions.invoke('refundCredit', {
-                project_id: project_id,
-                reason: errorMsg === 'MISSING_URL' ? 'missing_url' : 'api_failed'
-            });
-
-            await base44.entities.LogoProject.update(project_id, { status: 'ready' });
-
-            return Response.json({ 
-                error: 'GENERATION_FAILED',
-                message: `Generation failed: ${errorMsg}`
-            }, { status: 400 });
-        }
-
-        // Success: create generation record
-        const generation = await base44.entities.LogoGeneration.create({
-            project_id: project_id,
-            user_id: user.id,
-            prompt_used: prompt,
-            colors_used: project.colors,
-            seed: apiRes.seed || null,
-            external_url: apiRes.image_url,
-            content_type: apiRes.content_type,
-            width: apiRes.width,
-            height: apiRes.height,
-            timings: apiRes.timings || null,
-            nsfw_flag: false,
-            status: 'generated'
-        });
-
-        // Update project to ready
-        await base44.entities.LogoProject.update(project_id, { status: 'ready' });
-
-        // Get updated credits
-        const accountRes = await base44.functions.invoke('getCredits', {});
-
-        return Response.json({
-            ok: true,
-            generation_id: generation.id,
-            image_url: apiRes.image_url,
-            seed: apiRes.seed,
-            credits_left: accountRes.logo_credits,
-            project_status: 'ready'
-        });
-    } catch (error) {
-        console.error('generateLogoForProject error:', error);
-        try {
-            const projectId = (await req.json()).project_id;
-            if (projectId) {
-                await base44.entities.LogoProject.update(projectId, { status: 'failed' });
-            }
-        } catch {}
-        return Response.json({ error: error.message }, { status: 500 });
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { project_id, variation_mode } = await req.json();
+
+    if (!project_id) {
+      return Response.json({ error: 'project_id required' }, { status: 400 });
+    }
+
+    // Load project
+    const project = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id });
+    if (!project[0]) {
+      return Response.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    const logoProject = project[0];
+
+    // Check ownership
+    if (logoProject.user_id !== user.email) {
+      return Response.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    // Check if already generating
+    if (logoProject.status === 'generating') {
+      return Response.json({ error: 'Already generating' }, { status: 409 });
+    }
+
+    // Update status to generating
+    await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
+      status: 'generating'
+    });
+
+    // Check and reserve credit
+    const creditRes = await fetch(new URL(req.url).origin + '/functions/checkAndReserveCredit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': req.headers.get('Authorization')
+      },
+      body: JSON.stringify({})
+    });
+
+    if (!creditRes.ok) {
+      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
+        status: 'failed'
+      });
+      const creditErr = await creditRes.json();
+      return Response.json(creditErr, { status: creditRes.status });
+    }
+
+    // Build prompt
+    let promptData = {
+      brand_name: logoProject.brand_name,
+      business_type: logoProject.business_type,
+      style: logoProject.style,
+      slogan: logoProject.slogan,
+      icon_hint: logoProject.icon_hint
+    };
+
+    if (variation_mode) {
+      promptData.icon_hint = (promptData.icon_hint || '') + ' Create a different concept while keeping brand identity consistent.';
+    }
+
+    const promptRes = await fetch(new URL(req.url).origin + '/functions/buildLogoPrompt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': req.headers.get('Authorization')
+      },
+      body: JSON.stringify(promptData)
+    });
+
+    if (!promptRes.ok) {
+      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
+        status: 'failed'
+      });
+      return Response.json({ error: 'Failed to build prompt' }, { status: 500 });
+    }
+
+    const { prompt } = await promptRes.json();
+
+    // Call Stockimg API
+    const apiRes = await fetch(new URL(req.url).origin + '/functions/callStockimgLogoAPI', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': req.headers.get('Authorization')
+      },
+      body: JSON.stringify({
+        prompt,
+        colors: logoProject.colors,
+        width: logoProject.image_width,
+        height: logoProject.image_height
+      })
+    });
+
+    const apiData = await apiRes.json();
+
+    if (!apiRes.ok) {
+      // Refund credit on failure
+      await fetch(new URL(req.url).origin + '/functions/refundCredit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': req.headers.get('Authorization')
+        },
+        body: JSON.stringify({
+          reason: apiData.error || 'api_failure',
+          related_project_id: logoProject.id
+        })
+      });
+
+      // Save failed generation
+      await base44.asServiceRole.entities.LogoGeneration.create({
+        project_id: logoProject.id,
+        user_id: user.email,
+        prompt_used: prompt,
+        colors_used: logoProject.colors,
+        status: 'failed',
+        error_message: apiData.message || apiData.error,
+        nsfw_flag: apiData.nsfw_flag || false
+      });
+
+      await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
+        status: 'failed'
+      });
+
+      return Response.json({ error: apiData.message || 'Generation failed' }, { status: 400 });
+    }
+
+    // Save successful generation
+    const generation = await base44.asServiceRole.entities.LogoGeneration.create({
+      project_id: logoProject.id,
+      user_id: user.email,
+      prompt_used: prompt,
+      colors_used: logoProject.colors,
+      seed: apiData.seed,
+      external_url: apiData.image_url,
+      content_type: apiData.content_type,
+      width: apiData.width,
+      height: apiData.height,
+      timings: apiData.timings,
+      status: 'generated'
+    });
+
+    // Update project status
+    await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
+      status: 'ready'
+    });
+
+    return Response.json({
+      success: true,
+      generation_id: generation.id,
+      image_url: generation.external_url,
+      created_at: generation.created_at
+    });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
 });
