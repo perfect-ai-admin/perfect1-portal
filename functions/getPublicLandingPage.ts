@@ -6,7 +6,14 @@ Deno.serve(async (req) => {
         // This function is public, so no auth check required for the caller.
         // We use asServiceRole to fetch the page ONLY if it is published.
 
-        const { slug } = await req.json();
+        let slug;
+        try {
+            const body = await req.json();
+            slug = body.slug;
+        } catch (e) {
+            console.error('[getPublicLandingPage] JSON parse error:', e.message);
+            return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+        }
 
         if (!slug) {
             return Response.json({ error: 'Slug required' }, { status: 400 });
