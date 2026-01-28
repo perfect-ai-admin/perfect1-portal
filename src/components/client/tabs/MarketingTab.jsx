@@ -7,7 +7,6 @@ import CampaignSection from '../marketing/CampaignSection';
 import GoogleSection from '../marketing/GoogleSection';
 import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
-import LogoCreator from '../marketing/LogoCreator';
 import CampaignBuilder from '../marketing/CampaignBuilder';
 
 import BarChart from '../business/BarChart';
