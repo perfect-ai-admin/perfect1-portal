@@ -38,29 +38,11 @@ Deno.serve(async (req) => {
       status: 'draft'
     });
 
-    // Get or create UserAccount
-            const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: user.email });
-            let account = accounts[0];
 
-            if (!account) {
-              console.log('[CREATE_PROJECT] Creating UserAccount for:', user.email);
-              account = await base44.asServiceRole.entities.UserAccount.create({
-                user_id: user.email,
-                logo_credits: 1,
-                total_logo_runs: 0
-              });
-            } else if (account.logo_credits === 0) {
-              // Give 1 free credit on first project creation
-              console.log('[CREATE_PROJECT] Adding free credit for:', user.email);
-              account = await base44.asServiceRole.entities.UserAccount.update(account.id, {
-                logo_credits: 1
-              });
-            }
 
     return Response.json({
       ok: true,
-      project_id: project.id,
-      credits: account.logo_credits
+      project_id: project.id
     });
   } catch (error) {
     console.error('[CREATE_PROJECT] Error:', error.message);

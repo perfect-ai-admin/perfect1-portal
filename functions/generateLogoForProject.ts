@@ -67,27 +67,14 @@ Deno.serve(async (req) => {
     }
 
     // ========================================
-    // STEP 2: Check and reserve credits
+    // STEP 2: Get remaining credits for response
     // ========================================
-    let creditData;
+    let remainingCredits = 0;
     try {
-      const creditRes = await base44.functions.invoke('checkAndReserveCredit', {});
-      creditData = creditRes.data || creditRes;
-      if (!creditData.ok) {
-        console.log('[GENERATE] No credits:', creditData.error_code);
-        return Response.json({ 
-          ok: false,
-          error_code: creditData.error_code || 'NO_CREDITS',
-          message: creditData.message || 'No logo credits available'
-        });
-      }
+      const accounts = await base44.asServiceRole.entities.UserAccount.filter({ user_id: user.email });
+      remainingCredits = accounts[0]?.logo_credits || 0;
     } catch (err) {
-      console.error('[GENERATE] Credit check failed:', err.message);
-      return Response.json({ 
-        ok: false,
-        error_code: 'CREDIT_CHECK_FAILED',
-        message: 'Failed to check credits'
-      });
+      console.log('[GENERATE] Could not fetch remaining credits');
     }
 
     // ========================================
@@ -254,7 +241,7 @@ Deno.serve(async (req) => {
       generation_id: generation.id,
       image_url: generation.external_url,
       project_status: 'ready',
-      credits_left: creditData.remaining_credits
+      credits_left: remainingCredits
     });
   } catch (error) {
     console.error('[GENERATE] Fatal error:', error.message);
