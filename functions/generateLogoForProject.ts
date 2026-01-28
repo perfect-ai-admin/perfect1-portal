@@ -169,6 +169,7 @@ Deno.serve(async (req) => {
       created_at: generation.created_at
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('[GENERATE] Fatal error:', error);
+    return Response.json({ error: error.message, stack: error.stack }, { status: 500 });
   }
 });
