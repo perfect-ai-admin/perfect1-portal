@@ -100,11 +100,8 @@ export default function LogoCreator({ businessName, onClose }) {
     style: 'minimal',
     iconStyle: 'geometric'
   });
-  const [logos, setLogos] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedLogo, setSelectedLogo] = useState(null);
-  const [selectedPayment, setSelectedPayment] = useState('bit');
-  const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
+  const [generatedLogoUrl, setGeneratedLogoUrl] = useState(null);
 
   const handleGenerate = async () => {
     if (!formData.businessName || !formData.industry) {
@@ -144,10 +141,10 @@ export default function LogoCreator({ businessName, onClose }) {
         variation_mode: false
       });
 
-      if (genRes.data?.ok) {
-        // Redirect to project page instead of showing gallery here
-        navigate(createPageUrl('LogoProjectPage', `?project_id=${projectId}`));
-        onClose();
+      if (genRes.data?.ok && genRes.data?.image_url) {
+        // Save logo and move to step 4 (checkout)
+        setGeneratedLogoUrl(genRes.data.image_url);
+        setStep(4);
       } else {
         alert(genRes.data?.message || 'שגיאה ביצירת הלוגו');
       }
@@ -528,9 +525,6 @@ export default function LogoCreator({ businessName, onClose }) {
   }
 
   if (step === 4) {
-    // Handle the generated logo from project
-    const generatedLogoUrl = selectedLogo?.url || logos[currentLogoIndex]?.url;
-
     return (
       <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6 relative">
         {/* Desktop View - Logo Preview & Checkout */}
