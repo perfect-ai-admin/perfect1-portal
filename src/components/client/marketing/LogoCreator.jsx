@@ -533,12 +533,31 @@ export default function LogoCreator({ businessName, onClose }) {
 
     return (
       <div className="w-full lg:h-auto flex flex-col bg-white lg:space-y-6 lg:py-6 relative">
-        {/* Desktop View */}
+        {/* Desktop View - Logo Preview & Checkout */}
         <div className="hidden lg:block">
-           <div className="text-center px-4 py-4">
-             <h2 className="text-3xl font-bold text-gray-900">בחר את הלוגו המושלם שלך 🎨</h2>
-             <p className="text-gray-500 text-base mt-1">4 וריאציות מעוצבות בעבורך</p>
-           </div>
+           {generatedLogoUrl ? (
+             <LogoCheckout 
+               businessName={formData.businessName}
+               logoUrl={generatedLogoUrl}
+               onBack={() => setStep(3)}
+               onClose={onClose}
+               onSuccess={(data) => {
+                 onClose();
+                 navigate(createPageUrl('LogoThankYou'), { 
+                   state: { 
+                     businessName: formData.businessName,
+                     email: data?.email 
+                   } 
+                 });
+               }}
+             />
+           ) : (
+             <div className="text-center px-4 py-8">
+               <Wand2 className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+               <p className="text-gray-500 text-base">טוען לוגו...</p>
+             </div>
+           )}
+        </div>
            
            <div className="grid grid-cols-4 gap-4 mb-8">
              {logos.map((logo, index) => (
