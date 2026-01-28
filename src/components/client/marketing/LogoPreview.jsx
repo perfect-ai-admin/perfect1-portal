@@ -11,30 +11,35 @@ export default function LogoPreview({
 }) {
   return (
     <>
-      {/* Desktop View */}
-      <div className="hidden lg:block space-y-6">
-        <Button variant="ghost" onClick={onBack}>← חזור</Button>
-        
-        <div className="bg-white rounded-xl shadow-lg p-8 space-y-6">
+      {/* Desktop View - Full page centered layout */}
+      <div className="hidden lg:flex h-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 space-y-6">
+          <button 
+            onClick={onBack}
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm mb-2"
+          >
+            ← חזור
+          </button>
+          
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">לוגו שלך מוכן! 🎉</h2>
-            <p className="text-gray-600">בחר מה שתרצה לעשות עכשיו</p>
+            <p className="text-gray-600 text-sm">בחר מה שתרצה לעשות</p>
           </div>
 
           {/* Logo Preview */}
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-8 flex items-center justify-center min-h-[300px]">
+          <div className="bg-gradient-to-br from-blue-50 to-gray-50 rounded-xl p-6 flex items-center justify-center h-48">
             <img 
               src={logoUrl} 
               alt={`${businessName} logo`}
-              className="max-w-sm h-auto object-contain"
+              className="max-h-40 w-auto object-contain"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-3 pt-2">
             <Button 
               onClick={onProceedToCheckout}
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg shadow-blue-100"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg shadow-blue-100 text-base font-bold"
             >
               <Download className="w-5 h-5 ml-2" />
               המשך לרכישה
@@ -42,14 +47,14 @@ export default function LogoPreview({
             <Button 
               onClick={onSaveToCart}
               variant="outline"
-              className="w-full h-12 border-2 border-blue-200 hover:border-blue-300 text-blue-600"
+              className="w-full h-12 border-2 border-blue-200 hover:border-blue-300 text-blue-600 font-semibold"
             >
               <ShoppingCart className="w-5 h-5 ml-2" />
               שמור בסל
             </Button>
           </div>
 
-          <div className="text-center text-sm text-gray-500 pt-4">
+          <div className="text-center text-xs text-gray-500 pt-2">
             <p>הלוגו בפורמט PNG יישלח לאימייל שלך אחרי הרכישה</p>
           </div>
         </div>
