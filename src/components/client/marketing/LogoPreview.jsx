@@ -27,35 +27,48 @@ export default function LogoPreview({
             <p className="text-gray-600 text-sm">זו תצוגה מקדימה - נדרש אישור להורדה</p>
           </div>
 
-          {/* Logo Preview with Badge */}
-          <div className="relative">
-            <div className="bg-gradient-to-br from-blue-50 to-gray-50 rounded-xl p-6 flex items-center justify-center h-56">
+          {/* Logo Preview with Badge and Watermark */}
+          <div className="relative bg-gradient-to-br from-blue-50 to-gray-50 rounded-xl p-8 flex flex-col items-center justify-center h-64">
+            {/* Main Logo Image with Watermark */}
+            <div className="relative w-full h-full flex items-center justify-center">
               <img 
                 src={logoUrl} 
                 alt={`${businessName} logo`}
-                className="max-h-48 w-auto object-contain"
+                className="max-h-56 w-auto object-contain z-10 relative"
               />
+              {/* Subtle Watermark */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-center">
+                  <p className="text-gray-300 text-sm font-semibold opacity-40 rotate-45 tracking-wider">
+                    PREVIEW ONLY
+                  </p>
+                  <p className="text-gray-300 text-xs opacity-30 tracking-wide">
+                    Unlock to download
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+            {/* Badge */}
+            <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 z-20">
               <Lock className="w-3 h-3" />
               תצוגה מקדימה
             </div>
           </div>
 
-          {/* Warning Box */}
+          {/* Info Box */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3">
             <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-blue-900">
-              <p className="font-semibold mb-1">תצוגה מקדימה עם סימן מים</p>
-              <p className="text-xs opacity-85">להורדה ללא סימן מים, אשר את הלוגו והוסף קרדיט הורדה</p>
+            <div className="text-sm">
+              <p className="font-semibold text-blue-900 mb-1">תצוגה מקדימה עם סימן מים</p>
+              <p className="text-xs text-blue-800 opacity-90">אשר את הלוגו, השתמש בקרדיט הורדה אחד, והוריד PNG ללא סימן מים באיכות גבוהה</p>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="space-y-3 pt-2">
+          <div className="space-y-3 pt-4">
             <Button 
               onClick={onProceedToCheckout}
-              className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-lg shadow-purple-100 text-base font-bold flex items-center justify-center gap-2"
+              className="w-full h-13 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-lg shadow-purple-200 text-base font-bold flex items-center justify-center gap-2 transition-all"
             >
               <Zap className="w-5 h-5" />
               אישור והורדה
@@ -69,9 +82,10 @@ export default function LogoPreview({
             </Button>
           </div>
 
-          <div className="text-center text-xs text-gray-500 pt-2 space-y-1">
-            <p>✓ שימוש 1 קרדיט הורדה</p>
-            <p>✓ PNG באיכות גבוהה יישלח לאימייל</p>
+          <div className="text-center text-xs text-gray-600 pt-3 space-y-1 bg-gray-50 rounded-lg p-3">
+            <p className="font-semibold">✓ שימוש 1 קרדיט הורדה בלבד</p>
+            <p className="opacity-75">✓ PNG באיכות גבוהה (2400x2400px)</p>
+            <p className="opacity-75">✓ משלוח מיידי לאימייל</p>
           </div>
         </div>
       </div>
