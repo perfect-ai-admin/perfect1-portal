@@ -143,13 +143,16 @@ export default function LogoCreator({ businessName, onClose }) {
         variation_mode: false
       });
 
-      if (genRes.data?.ok && genRes.data?.image_url) {
-        // Save logo and move to step 4 (checkout)
-        setGeneratedLogoUrl(genRes.data.image_url);
-        setStep(4);
-      } else {
-        alert(genRes.data?.message || 'שגיאה ביצירת הלוגו');
-      }
+      console.log('[GENERATE] Response:', genRes);
+              if (genRes.data?.ok && genRes.data?.image_url) {
+                // Save logo and move to step 4 (checkout)
+                setGeneratedLogoUrl(genRes.data.image_url);
+                setStep(4);
+              } else {
+                const errorMsg = genRes.data?.message || genRes?.message || 'שגיאה ביצירת הלוגו';
+                console.error('[GENERATE] Error:', errorMsg);
+                alert(errorMsg);
+              }
     } catch (error) {
       alert('שגיאה: ' + error.message);
     } finally {
