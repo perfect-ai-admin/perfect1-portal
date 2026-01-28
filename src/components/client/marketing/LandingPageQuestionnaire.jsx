@@ -271,6 +271,13 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
             // Auto-publish immediately
             setIsPublishing(true);
             try {
+              // First mark as paid
+              await base44.functions.invoke('publishLandingPage', {
+                landingPageId: pageData?.id || res.data.id,
+                action: 'markPaid'
+              });
+
+              // Then publish to air
               const publishRes = await base44.functions.invoke('publishLandingPage', {
                 landingPageId: pageData?.id || res.data.id,
                 action: 'publish'
