@@ -14,7 +14,7 @@ export default function LogoProjectPage() {
   const [generations, setGenerations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
-  const [credits, setCredits] = useState(0);
+  const [downloadCredits, setDownloadCredits] = useState(0);
   const [message, setMessage] = useState(null);
   const [copied, setCopied] = useState(null);
 
@@ -29,7 +29,7 @@ export default function LogoProjectPage() {
       const res = await base44.functions.invoke('getProjectAndGenerations', { project_id: projectId });
       setProject(res.data.project);
       setGenerations(res.data.generations || []);
-      setCredits(res.data.credits || 0);
+      setDownloadCredits(res.data.download_credits || 0);
     } catch (error) {
       setMessage({ type: 'error', text: error.message || 'Failed to load project' });
     } finally {
@@ -38,24 +38,40 @@ export default function LogoProjectPage() {
   };
 
   const handleGenerate = async () => {
-    if (generating || credits <= 0) return;
+    if (generating) return;
     setGenerating(true);
     setMessage(null);
 
     try {
       const res = await base44.functions.invoke('generateLogoForProject', { project_id: projectId, variation_mode: false });
-      if (res.data.success) {
+      if (res.data?.ok) {
         setGenerations([{
           id: res.data.generation_id,
+          external_url: res.data.image_url,
           image_url: res.data.image_url,
           status: 'generated',
-          created_at: res.data.created_at,
+          is_preview: true,
+          is_unlocked: false,
+          created_at: new Date().toISOString(),
           nsfw_flag: false,
           error_message: null
         }, ...generations]);
-        setProject(prev => ({ ...prev, status: 'ready' }));
-        setCredits(prev => Math.max(0, prev - 1));
-        setMessage({ type: 'success', text: '✓ Logo generated!' });
+        setProject(prev => ({ 
+          ...prev, 
+          status: 'ready',
+          free_previews_used: prev.free_previews_used + 1
+        }));
+        setMessage({ type: 'success', text: `✓ Preview generated! (${res.data.free_previews_left} left)` });
+      } else if (res.data?.error_code === 'PREVIEW_LIMIT_REACHED') {
+        setMessage({ 
+          type: 'error', 
+          text: 'Free previews used. Unlock a logo to continue generating.',
+          action: 'buyCredits'
+        });
+      } else if (res.data?.error_code === 'RATE_LIMIT') {
+        setMessage({ type: 'error', text: `Please wait ${res.data.wait_seconds}s before generating again.` });
+      } else {
+        throw new Error(res.data?.message || 'Generation failed');
       }
     } catch (error) {
       const errMsg = error.response?.data?.message || error.message;
@@ -65,17 +81,39 @@ export default function LogoProjectPage() {
     }
   };
 
+  const handleUnlock = async (generation_id) => {
+    try {
+      const res = await base44.functions.invoke('unlockLogo', { generation_id });
+      if (res.data?.ok) {
+        setDownloadCredits(res.data.credits_left);
+        setGenerations(prev => prev.map(g => 
+          g.id === generation_id 
+            ? { ...g, is_unlocked: true, status: 'approved' } 
+            : g
+        ));
+        setMessage({ type: 'success', text: '✓ Logo unlocked!' });
+      } else {
+        setMessage({ type: 'error', text: res.data?.message || 'Failed to unlock logo' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message });
+    }
+  };
+
   const handleApprove = async (generation_id) => {
     try {
       const res = await base44.functions.invoke('approveLogo', { generation_id });
-      setProject(prev => ({ 
-        ...prev, 
-        status: 'approved', 
-        approved_logo_url: res.data.approved_url,
-        approved_generation_id: generation_id
-      }));
-      setGenerations(prev => prev.map(g => ({ ...g, status: g.id === generation_id ? 'approved' : g.status })));
-      setMessage({ type: 'success', text: '✓ Logo approved!' });
+      if (res.data?.ok) {
+        setDownloadCredits(res.data.credits_left);
+        setProject(prev => ({ 
+          ...prev, 
+          status: 'approved', 
+          approved_logo_url: res.data.approved_url || res.data.approved_url,
+          approved_generation_id: generation_id
+        }));
+        setGenerations(prev => prev.map(g => ({ ...g, is_unlocked: g.id === generation_id ? true : g.is_unlocked, status: g.id === generation_id ? 'approved' : g.status })));
+        setMessage({ type: 'success', text: '✓ Logo approved!' });
+      }
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
     }
@@ -120,10 +158,13 @@ export default function LogoProjectPage() {
           <p className="text-gray-600 text-lg">{project.business_type} • {project.style}</p>
           <div className="mt-4 flex items-center gap-4 flex-wrap">
             <span className={`px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 ${
-              credits > 0 ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
+              downloadCredits > 0 ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
             }`}>
               <Zap className="w-4 h-4" />
-              Credits: {credits}
+              Download Credits: {downloadCredits}
+            </span>
+            <span className="px-3 py-1 bg-gradient-to-r from-green-100 to-blue-100 text-green-800 rounded-full text-sm font-semibold">
+              Previews: {project.free_previews_limit - (project.free_previews_used || 0)}
             </span>
             <span className="px-3 py-1 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 rounded-full text-sm font-semibold capitalize">{project.status}</span>
           </div>
@@ -136,20 +177,25 @@ export default function LogoProjectPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className={`mb-6 p-4 rounded-lg font-medium flex items-center gap-2 ${
+              className={`mb-6 p-4 rounded-lg font-medium flex items-center justify-between gap-2 ${
                 message.type === 'error' 
                   ? 'bg-red-100 text-red-800 border border-red-300' 
                   : 'bg-green-100 text-green-800 border border-green-300'
               }`}
             >
-              {message.type === 'success' ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
-              {message.text}
+              <div className="flex items-center gap-2">
+                {message.type === 'success' ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                {message.text}
+              </div>
+              {message.action === 'buyCredits' && (
+                <a href="/credits" className="ml-2 underline hover:no-underline font-bold">Buy Credits →</a>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
         {/* Generate Button */}
-        {credits > 0 && project.status !== 'approved' && (
+        {project.status !== 'approved' && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -168,24 +214,10 @@ export default function LogoProjectPage() {
               ) : (
                 <>
                   <Zap className="w-5 h-5 mr-2" />
-                  Generate Logo
+                  Generate Preview (Free)
                 </>
               )}
             </Button>
-          </motion.div>
-        )}
-
-        {credits === 0 && project.status !== 'approved' && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-8 p-4 bg-yellow-100 border-2 border-yellow-300 rounded-lg flex items-start gap-3"
-          >
-            <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-bold text-yellow-800">No Credits</p>
-              <p className="text-sm text-yellow-700">You need credits to generate logos.</p>
-            </div>
           </motion.div>
         )}
 
@@ -266,16 +298,32 @@ export default function LogoProjectPage() {
                       )}
                       <div className="p-4 space-y-3">
                         <p className="text-xs text-gray-500 font-medium">{new Date(gen.created_at).toLocaleDateString()}</p>
-                        {gen.status !== 'failed' && gen.status !== 'approved' && (
-                          <Button
-                            onClick={() => handleApprove(gen.id)}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg"
-                          >
-                            Approve This Logo
-                          </Button>
+                        {gen.is_preview && !gen.is_unlocked && gen.status !== 'failed' && (
+                          <div className="space-y-2">
+                            <span className="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">Preview</span>
+                            <Button
+                              onClick={() => handleUnlock(gen.id)}
+                              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg"
+                            >
+                              Unlock & Download
+                            </Button>
+                            <Button
+                              onClick={() => handleApprove(gen.id)}
+                              variant="outline"
+                              className="w-full border-purple-200 text-purple-600 hover:bg-purple-50 font-bold rounded-lg"
+                            >
+                              Approve (Unlock)
+                            </Button>
+                          </div>
                         )}
-                        {gen.status === 'approved' && (
-                          <div className="text-center text-green-700 font-bold text-lg">✓ Approved</div>
+                        {gen.is_unlocked && gen.status === 'approved' && (
+                          <div className="space-y-2">
+                            <span className="inline-block bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Unlocked</span>
+                            <div className="text-center text-green-700 font-bold text-lg">✓ Ready to Download</div>
+                          </div>
+                        )}
+                        {gen.status === 'failed' && (
+                          <span className="inline-block text-red-600 text-xs font-bold">Failed</span>
                         )}
                       </div>
                     </CardContent>
