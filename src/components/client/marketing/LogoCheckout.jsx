@@ -318,12 +318,12 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
         )}
       </div>
 
-      {/* Footer Actions */}
-      <div className="flex-none p-4 bg-white border-t border-gray-100 space-y-3">
+      {/* Footer Actions - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 space-y-3 z-20" dir="rtl">
         <Button
           onClick={handleSubmit}
           disabled={isProcessing}
-          className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-100 text-base"
+          className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-200 text-base"
         >
           {isProcessing ? (
             <span className="flex items-center gap-2">
@@ -337,15 +337,6 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
             </span>
           )}
         </Button>
-        
-        <div className="text-center">
-          <button 
-            onClick={onBack}
-            className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            חזור לעריכה
-          </button>
-        </div>
         
         <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
           <Lock className="w-3 h-3" />
