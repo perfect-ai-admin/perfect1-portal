@@ -12,30 +12,32 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { project_id, variation_mode } = body;
 
-    console.log('[GENERATE] Request received:', { project_id, variation_mode });
+    console.log('[GENERATE] Request received:', { project_id, variation_mode, user_email: user.email });
 
     if (!project_id) {
       return Response.json({ error: 'project_id required' }, { status: 400 });
     }
 
-    // Load project using filter
+    // Load project - use list instead of filter
+    console.log('[GENERATE] Attempting to load project...');
     let logoProject;
     try {
-      console.log('[GENERATE] Looking for project:', project_id);
-      const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id });
-      console.log('[GENERATE] Found projects:', projects?.length);
-      if (!projects || projects.length === 0) {
+      const projects = await base44.asServiceRole.entities.LogoProject.list('', 100);
+      console.log('[GENERATE] Total projects available:', projects?.length);
+      logoProject = projects.find(p => p.id === project_id);
+      console.log('[GENERATE] Project found:', !!logoProject, 'ID:', logoProject?.id);
+      
+      if (!logoProject) {
         return Response.json({ error: 'Project not found' }, { status: 404 });
       }
-      logoProject = projects[0];
-      console.log('[GENERATE] Loaded project:', logoProject?.id, 'user_id:', logoProject?.user_id);
     } catch (err) {
-      console.error('[GENERATE] Project load failed:', err.message);
-      return Response.json({ error: 'Project load error: ' + err.message }, { status: 500 });
+      console.error('[GENERATE] Project load error:', err.message);
+      return Response.json({ error: 'Failed to load project: ' + err.message }, { status: 500 });
     }
 
     // Check ownership
     if (logoProject.user_id !== user.email) {
+      console.error('[GENERATE] Ownership check failed:', logoProject.user_id, 'vs', user.email);
       return Response.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
