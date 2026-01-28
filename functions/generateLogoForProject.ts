@@ -44,13 +44,18 @@ Deno.serve(async (req) => {
     // Check and reserve credit
     let creditData;
     try {
-      creditData = await base44.asServiceRole.functions.invoke('checkAndReserveCredit', {});
+      const creditRes = await base44.asServiceRole.functions.invoke('checkAndReserveCredit', {});
+      creditData = creditRes.data || creditRes;
+      if (!creditData.success) {
+        throw new Error(creditData.error || creditData.message || 'Credit check failed');
+      }
+      console.log('[GENERATE] Credit reserved:', creditData);
     } catch (err) {
-      console.error('[GENERATE] Credit check failed:', err);
+      console.error('[GENERATE] Credit check failed:', err.message);
       await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
         status: 'failed'
       });
-      return Response.json({ error: err.message }, { status: 400 });
+      return Response.json({ error: 'NO_CREDITS', message: err.message }, { status: 402 });
     }
 
     // Build prompt
@@ -70,16 +75,21 @@ Deno.serve(async (req) => {
 
     let promptResult;
     try {
-      promptResult = await base44.asServiceRole.functions.invoke('buildLogoPrompt', promptData);
+      const promptRes = await base44.asServiceRole.functions.invoke('buildLogoPrompt', promptData);
+      promptResult = promptRes.data || promptRes;
+      if (!promptResult.prompt) {
+        throw new Error('No prompt in response');
+      }
+      console.log('[GENERATE] Prompt built successfully');
     } catch (err) {
-      console.error('[GENERATE] Prompt build failed:', err);
+      console.error('[GENERATE] Prompt build failed:', err.message);
       await base44.asServiceRole.entities.LogoProject.update(logoProject.id, {
         status: 'failed'
       });
-      return Response.json({ error: 'Failed to build prompt' }, { status: 400 });
+      return Response.json({ error: 'Failed to build prompt: ' + err.message }, { status: 500 });
     }
 
-    const prompt = promptResult.data.prompt;
+    const prompt = promptResult.prompt;
 
     // Call Stockimg API
     const apiPayload = {
@@ -93,13 +103,15 @@ Deno.serve(async (req) => {
 
     let apiResponse;
     try {
-      apiResponse = await base44.asServiceRole.functions.invoke('callStockimgLogoAPI', apiPayload);
+      const res = await base44.asServiceRole.functions.invoke('callStockimgLogoAPI', apiPayload);
+      apiResponse = res.data || res;
+      console.log('[GENERATE] Stockimg response success:', apiResponse.success);
     } catch (err) {
-      console.error('[GENERATE] Stockimg call failed:', err);
-      apiResponse = { data: { error: err.message } };
+      console.error('[GENERATE] Stockimg call failed:', err.message);
+      apiResponse = { error: err.message };
     }
 
-    const apiData = apiResponse.data || {};
+    const apiData = apiResponse;
 
     if (!apiData.success) {
       console.error('[GENERATE] API failed:', apiData);
