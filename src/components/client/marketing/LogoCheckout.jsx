@@ -94,36 +94,76 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-50/50 flex flex-col z-50" dir="rtl">
-      {/* Header */}
-      <div className="flex-none px-4 py-4 bg-white border-b border-gray-100 flex items-center justify-between relative shadow-sm">
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} className="p-1 -mr-2 text-gray-400 hover:text-gray-700 transition-colors">
-            <ChevronRight className="w-6 h-6" />
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 md:p-6" dir="rtl">
+      {/* Desktop & Mobile Container */}
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col md:flex-row">
+        
+        {/* Left Section - Logo Preview (Desktop Only) */}
+        <div className="hidden md:flex md:w-2/5 bg-gradient-to-br from-slate-50 to-slate-100 flex-col items-center justify-center p-8 border-l border-gray-100 relative">
+          <button 
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-white transition-colors"
+            aria-label="סגור"
+          >
+            <X className="w-5 h-5" />
           </button>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900 leading-none">סיום והורדה</h2>
-            <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-blue-200 shadow-sm">
-            ₪{price}
-          </div>
-          {onClose && (
-            <button 
-              onClick={onClose}
-              className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="סגור"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          
+          {logoUrl && (
+            <div className="space-y-4 text-center">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 flex items-center justify-center min-h-[300px]">
+                <WatermarkedLogo 
+                  src={logoUrl} 
+                  alt="Logo" 
+                  className="max-h-[250px] max-w-full object-contain"
+                />
+              </div>
+              <div className="text-sm text-gray-600">
+                <p className="font-semibold text-gray-900">{businessName}</p>
+                <p className="text-xs mt-1">לוגו מקצועי בעיצוב סופי</p>
+              </div>
+            </div>
           )}
         </div>
-      </div>
 
-      {/* Main Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        {/* Right Section - Form */}
+        <div className="flex-1 flex flex-col md:w-3/5">
+          {/* Header */}
+          <div className="flex-none px-6 py-5 bg-white border-b border-gray-100 flex items-center justify-between md:border-b-0">
+            <div>
+              <h2 className="text-2xl md:text-xl font-bold text-gray-900">סיום הזמנה</h2>
+              <p className="text-xs text-gray-500 mt-1">מאובטח בסטנדרט PCI-DSS</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold">
+                ₪{price}
+              </div>
+              {onClose && (
+                <button 
+                  onClick={onClose}
+                  className="md:hidden p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+                  aria-label="סגור"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Mobile Logo Preview */}
+          {logoUrl && (
+            <div className="md:hidden px-4 pt-4 flex justify-center">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex items-center justify-center max-h-[120px]">
+                <WatermarkedLogo 
+                  src={logoUrl} 
+                  alt="Logo" 
+                  className="max-h-[100px] max-w-full object-contain"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Main Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
         
         {/* Logo Preview */}
         {logoUrl && (
