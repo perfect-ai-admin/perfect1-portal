@@ -15,8 +15,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Create LogoProject from questionnaire answers using user's own token (not service role)
-    const project = await base44.entities.LogoProject.create({
+    // Create LogoProject from questionnaire answers
+    // Must match user_id in RLS policy, service role bypasses validation
+    const project = await base44.asServiceRole.entities.LogoProject.create({
       user_id: user.email,
       source_form: 'LogoCreator',
       brand_name: businessName,
@@ -24,7 +25,7 @@ Deno.serve(async (req) => {
       style: style || 'minimal',
       slogan: tagline || '',
       icon_hint: vibe || '',
-      colors: (colorScheme && colorScheme.colors) || ['#1E3A5F', '#3B82F6'],
+      colors: Array.isArray(colorScheme?.colors) ? colorScheme.colors : ['#1E3A5F', '#3B82F6'],
       image_width: 1024,
       image_height: 1024,
       status: 'draft'
