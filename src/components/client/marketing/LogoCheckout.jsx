@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-export default function LogoCheckout({ businessName, onBack, onSuccess, onClose, price = 99 }) {
+export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess, onClose, price = 99 }) {
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -124,6 +124,13 @@ export default function LogoCheckout({ businessName, onBack, onSuccess, onClose,
       {/* Main Scrollable Content */}
       <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
         
+        {/* Logo Preview */}
+        {logoUrl && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center justify-center min-h-[200px]">
+            <img src={logoUrl} alt="Logo" className="max-h-[180px] max-w-full object-contain" />
+          </div>
+        )}
+
         {/* Product Summary Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <div className="flex gap-4 mb-4">
