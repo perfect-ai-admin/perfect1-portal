@@ -18,13 +18,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'project_id required' }, { status: 400 });
     }
 
-    // Load project
+    // Load project using filter (no read method available)
     let logoProject;
     try {
-      logoProject = await base44.asServiceRole.entities.LogoProject.read(project_id);
+      const projects = await base44.asServiceRole.entities.LogoProject.filter({ id: project_id }, '', 1);
+      if (!projects || projects.length === 0) {
+        return Response.json({ error: 'Project not found' }, { status: 404 });
+      }
+      logoProject = projects[0];
       console.log('[GENERATE] Loaded project:', logoProject?.id, 'user_id:', logoProject?.user_id);
     } catch (err) {
-      console.error('[GENERATE] Project read failed:', err.message);
+      console.error('[GENERATE] Project load failed:', err.message);
       return Response.json({ error: 'Project not found: ' + err.message }, { status: 404 });
     }
 
