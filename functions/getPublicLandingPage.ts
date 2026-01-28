@@ -21,14 +21,28 @@ Deno.serve(async (req) => {
 
         console.log('[getPublicLandingPage] Searching for slug:', slug);
         
-        // With RLS updated to allow published pages, we can filter normally
-        const pages = await base44.entities.LandingPage.filter({ slug });
-        console.log('[getPublicLandingPage] Found pages with slug:', pages.length);
-        const page = pages.find(p => p.status === 'published');
+        // Use both regular and service role to debug
+        try {
+            const userPages = await base44.entities.LandingPage.filter({ slug });
+            console.log('[getPublicLandingPage] User-scoped pages found:', userPages.length);
+        } catch (e) {
+            console.log('[getPublicLandingPage] User-scoped filter failed:', e.message);
+        }
+        
+        const servicePages = await base44.asServiceRole.entities.LandingPage.filter({ slug });
+        console.log('[getPublicLandingPage] Service-role pages found:', servicePages.length);
+        
+        if (servicePages.length === 0) {
+            console.error('[getPublicLandingPage] No pages found for slug:', slug);
+            return Response.json({ error: 'Page not found' }, { status: 404 });
+        }
+        
+        const page = servicePages.find(p => p.status === 'published');
 
         if (!page) {
             console.error('[getPublicLandingPage] Published page not found for slug:', slug);
-            return Response.json({ error: 'Page not found' }, { status: 404 });
+            console.log('[getPublicLandingPage] Found statuses:', servicePages.map(p => p.status));
+            return Response.json({ error: 'Page is not published' }, { status: 403 });
         }
 
         return Response.json(page);
