@@ -15,9 +15,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    // Get Gmail access token
-    const accessToken = await base44.asServiceRole.connectors.getAccessToken('gmail');
-
     // Create password reset email content
     const subject = 'איפוס סיסמה - Perfect One';
     const resetUrl = `${Deno.env.get('BASE_URL') || 'https://perfect1.co.il'}/login`;
@@ -60,43 +57,13 @@ Deno.serve(async (req) => {
       </div>
     `;
 
-    // Create properly formatted email message
-    const rawMessage = [
-      `To: ${email}`,
-      `From: me`,
-      `Subject: =?UTF-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`,
-      'MIME-Version: 1.0',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Transfer-Encoding: base64',
-      '',
-      btoa(unescape(encodeURIComponent(htmlBody)))
-    ].join('\r\n');
-
-    // Encode to base64url
-    const encoder = new TextEncoder();
-    const uint8Array = encoder.encode(rawMessage);
-    const binaryString = Array.from(uint8Array, byte => String.fromCharCode(byte)).join('');
-    const encodedMessage = btoa(binaryString)
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
-
-    // Send email via Gmail API
-    const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        raw: encodedMessage
-      })
+    // Send email using Base44 built-in integration
+    await base44.asServiceRole.integrations.Core.SendEmail({
+      from_name: 'Perfect One',
+      to: email,
+      subject: subject,
+      body: htmlBody
     });
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Gmail API error: ${error}`);
-    }
 
     return Response.json({ 
       success: true, 
