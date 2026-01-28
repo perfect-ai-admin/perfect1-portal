@@ -547,10 +547,10 @@ export default function CloseOsekPaturComprehensive() {
 
                   <Button
                     type="submit"
-                    className="w-full h-12 bg-[#25D366] hover:bg-[#20b858] text-white font-bold rounded-lg mt-6"
+                    className="w-full h-14 sm:h-12 bg-[#25D366] hover:bg-[#20b858] text-white font-bold rounded-lg mt-6 text-sm sm:text-base px-4"
                   >
-                    <MessageCircle className="ml-2 w-5 h-5" />
-                    בדיקה חינמית לסגירת עוסק פטור – בווצאפ
+                    <MessageCircle className="ml-2 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                    <span className="leading-tight">בדיקה חינמית לסגירת עוסק פטור – בווצאפ</span>
                   </Button>
                 </form>
 
