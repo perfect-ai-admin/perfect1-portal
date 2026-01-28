@@ -10,28 +10,57 @@ Deno.serve(async (req) => {
       });
     }
 
-    let prompt = `Create a professional vector-style logo for ${brand_name}. `;
-    prompt += `Business type: ${business_type}. `;
-    prompt += `Design style: ${style}. `;
-    prompt += `Modern, minimalist, flat design, icon + wordmark layout. `;
-    prompt += `Clean lines, professional, scalable. `;
-    prompt += `No background, no mockups, no 3D effects. `;
+    // זהיית שפה - בדיקה אם יש תווי עברית
+    const hasHebrew = /[\u0590-\u05FF]/.test(brand_name + business_type + style + (slogan || '') + (icon_hint || ''));
+    
+    let prompt;
 
-    if (slogan && typeof slogan === 'string') {
-      prompt += `Include text: "${slogan}". `;
+    if (hasHebrew) {
+      // פרומפט בעברית
+      prompt = `צור לוגו וקטורי מקצועי לחברה בשם "${brand_name}". `;
+      prompt += `תחום עיסוק: ${business_type}. `;
+      prompt += `סגנון עיצובי: ${style}. `;
+      prompt += `עיצוב מינימליסטי שטוח, צבעים אחידים, דיוק גיאומטרי. `;
+      prompt += `פריסה של אייקון + כיתוב, קווים חדים, חד-צבעי או צבעים מעטים. `;
+      prompt += `רקע לבן נקי בלבד, אין גרדיאנטים, אין אפקטים תלת-מימדיים. `;
+      prompt += `איכות גבוהה, במצב מוגן וסקיצה בסגנון Adobe Illustrator. `;
+      
+      if (icon_hint && typeof icon_hint === 'string') {
+        prompt += `קונספט האייקון: ${icon_hint}. `;
+      }
+
+      if (slogan && typeof slogan === 'string') {
+        prompt += `כלול טקסט: "${slogan}". `;
+      }
+
+      prompt += `מרכוז בתמונה, חד וברור, מוכן לייצור.`;
+    } else {
+      // פרומפט באנגלית
+      prompt = `Create a premium professional vector logo for "${brand_name}". `;
+      prompt += `Business type: ${business_type}. `;
+      prompt += `Design style: ${style}. `;
+      prompt += `Minimalist flat design, solid colors, geometric precision. `;
+      prompt += `Icon + wordmark layout, sharp edges, limited color palette. `;
+      prompt += `Pure white background only, no gradients, no 3D effects. `;
+      prompt += `4k quality, Adobe Illustrator style, scalable and production-ready. `;
+      
+      if (icon_hint && typeof icon_hint === 'string') {
+        prompt += `Icon concept: ${icon_hint}. `;
+      }
+
+      if (slogan && typeof slogan === 'string') {
+        prompt += `Include text: "${slogan}". `;
+      }
+
+      prompt += `Centered composition, clean and sharp, award-winning design quality.`;
     }
 
-    if (icon_hint && typeof icon_hint === 'string') {
-      prompt += `Icon concept: ${icon_hint}. `;
-    }
-
-    prompt += `High quality, ready for production.`;
-
-    console.log('[BUILD_PROMPT] Generated prompt successfully');
+    console.log('[BUILD_PROMPT] Generated prompt successfully, language:', hasHebrew ? 'Hebrew' : 'English');
 
     return Response.json({ 
       ok: true,
-      prompt 
+      prompt,
+      language: hasHebrew ? 'he' : 'en'
     });
   } catch (error) {
     console.error('[BUILD_PROMPT] Error:', error.message);
