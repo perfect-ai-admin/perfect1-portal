@@ -1,67 +1,64 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function WatermarkedLogo({ 
   src, 
   alt, 
-  className = "max-h-56 w-auto object-contain",
-  businessName 
+  className = "max-h-56 w-auto object-contain"
 }) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-flex items-center justify-center">
       <img 
         src={src}
         alt={alt}
         className={className}
-        onLoad={() => setImageLoaded(true)}
       />
       
       {/* Watermark Overlay */}
       <svg 
         className="absolute inset-0 w-full h-full pointer-events-none"
         viewBox="0 0 1000 1000"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMid meet"
+        style={{ width: '100%', height: '100%' }}
       >
-        {/* Pattern of diagonal lines with text */}
         <defs>
           <pattern 
             id="watermark-pattern" 
             patternUnits="userSpaceOnUse" 
-            width="200" 
-            height="200"
-            patternTransform="rotate(-45)"
+            width="250" 
+            height="250"
           >
-            {/* Grid of subtle squares */}
+            {/* Subtle Grid */}
             <rect 
               x="0" 
               y="0" 
-              width="180" 
-              height="180" 
+              width="220" 
+              height="220" 
               fill="none" 
-              stroke="#999999" 
-              strokeWidth="1.5"
-              opacity="0.15"
+              stroke="#BBBBBB" 
+              strokeWidth="2"
+              opacity="0.12"
             />
             
-            {/* Watermark Text */}
-            <text 
-              x="90" 
-              y="100" 
-              fontSize="28"
-              fontWeight="bold"
-              textAnchor="middle"
-              fill="#666666"
-              opacity="0.18"
-              fontFamily="Arial, sans-serif"
-              letterSpacing="2"
-            >
-              PREVIEW
-            </text>
+            {/* Diagonal Text */}
+            <g transform="translate(125, 125) rotate(-45)">
+              <text 
+                x="0" 
+                y="0" 
+                fontSize="32"
+                fontWeight="bold"
+                textAnchor="middle"
+                fill="#999999"
+                opacity="0.16"
+                fontFamily="Arial, sans-serif"
+                letterSpacing="3"
+              >
+                PREVIEW
+              </text>
+            </g>
           </pattern>
         </defs>
         
-        {/* Apply pattern */}
+        {/* Apply pattern across entire image */}
         <rect 
           width="1000" 
           height="1000" 
