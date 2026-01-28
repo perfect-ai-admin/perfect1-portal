@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Mail, Download, ArrowLeft, Star, ExternalLink } from 'lucide-react';
+import { CheckCircle2, Mail, Download, ArrowLeft, Star, ExternalLink, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
 import confetti from 'canvas-confetti';
@@ -78,7 +78,7 @@ export default function LogoThankYou() {
           <div className="p-8 md:p-12 pt-0 space-y-8">
             
             {/* Status Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 flex items-start gap-4">
                 <div className="bg-white p-2 rounded-xl shadow-sm">
                   <Mail className="w-6 h-6 text-blue-600" />
@@ -86,7 +86,7 @@ export default function LogoThankYou() {
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">נשלח למייל</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    קבצי הלוגו (PNG, SVG, PDF) נשלחו לכתובת:
+                    קבצי הלוגו נשלחו לכתובת:
                     <br/>
                     <span className="font-semibold text-gray-900 dir-ltr inline-block">{email || 'האימייל שלך'}</span>
                   </p>
@@ -98,9 +98,21 @@ export default function LogoThankYou() {
                   <Download className="w-6 h-6 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 mb-1">הורדה מיידית</h3>
+                  <h3 className="font-bold text-gray-900 mb-1">הורדה ללא סימן מים</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    ניתן להוריד את הקבצים גם ישירות מאזור "הנכסים שלי" בדשבורד.
+                    אתה יכול להוריד את הקבצים בקליק אחד בדשבורד.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-5 flex items-start gap-4">
+                <div className="bg-white p-2 rounded-xl shadow-sm">
+                  <Zap className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">1 קרדיט הורדה</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    אתה קנית 1 קרדיט - אפשר להוריד לוגו אחד זה בלי תשלום נוסף.
                   </p>
                 </div>
               </div>
