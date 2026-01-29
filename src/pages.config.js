@@ -158,6 +158,7 @@ import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import LPDynamic from './pages/LPDynamic';
+import lp from './pages/lp';
 import __Layout from './Layout.jsx';
 
 
@@ -273,6 +274,7 @@ export const PAGES = {
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "LPDynamic": LPDynamic,
+    "lp": lp,
 }
 
 export const pagesConfig = {
