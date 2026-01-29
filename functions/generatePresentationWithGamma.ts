@@ -42,29 +42,56 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Prepare Gamma API v1.0 payload with required fields
-    const payload = {
-      inputText: inputText,
-      textMode: 'generate',
-      numCards: numCardsMap[formData.length] || 10
-    };
+    // Use gammaDirectCall instead since it works
+    const directResponse = await base44.asServiceRole.functions.invoke('gammaDirectCall', {
+      formData
+    });
 
-    // Add theme if selected
-    if (formData.gammaTheme) {
-      payload.themeId = formData.gammaTheme;
+    if (!directResponse.success) {
+      throw new Error(directResponse.error || 'Failed to generate presentation');
     }
 
-    console.log('🔵 Sending to Gamma API v1.0...');
-    console.log('Request payload:', JSON.stringify(payload, null, 2));
-
-    const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
-      method: 'POST',
-      headers: {
-        'X-API-KEY': Deno.env.get('GAMMA_API_KEY'),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
+    // Send event to n8n
+    await n8nWebhookClient.presentationCompleted(user.email, {
+      businessName: formData.businessName,
+      presentationUrl: directResponse.presentationUrl,
+      generationId: directResponse.generationId,
+      userId: user.id,
+      businessField: formData.businessField
     });
+
+    return Response.json({
+      success: true,
+      presentationUrl: directResponse.presentationUrl,
+      generationId: directResponse.generationId,
+      message: 'המצגה שלך נוצרה בהצלחה!'
+    });
+
+  } catch (error) {
+    console.error('❌ Error generating presentation:', error);
+    return Response.json({
+      error: error.message,
+      details: 'Failed to generate presentation with Gamma'
+    }, { status: 500 });
+  }
+});
+
+async function oldApproach(req) {
+  // OLD CODE - Keeping for reference
+  const payload = {
+    inputText: '',
+    textMode: 'generate',
+    numCards: 10
+  };
+
+  const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
+    method: 'POST',
+    headers: {
+      'X-API-KEY': Deno.env.get('GAMMA_API_KEY'),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 
     if (!gammaResponse.ok) {
       const errorText = await gammaResponse.text();
