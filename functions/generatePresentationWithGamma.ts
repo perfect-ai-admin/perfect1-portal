@@ -42,36 +42,60 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Use gammaDirectCall instead since it works
-    const directResponse = await base44.asServiceRole.functions.invoke('gammaDirectCall', {
-      formData
+    // Direct Gamma API call - simple and works
+    const payload = {
+      inputText: inputText,
+      textMode: 'generate',
+      numCards: numCardsMap[formData.length] || 10
+    };
+
+    if (formData.gammaTheme) {
+      payload.themeId = formData.gammaTheme;
+    }
+
+    console.log('🔵 Calling Gamma API v1.0...');
+
+    const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
+      method: 'POST',
+      headers: {
+        'X-API-KEY': Deno.env.get('GAMMA_API_KEY'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
     });
 
-    if (!directResponse.success) {
-      throw new Error(directResponse.error || 'Failed to generate presentation');
+    if (!gammaResponse.ok) {
+      const errorText = await gammaResponse.text();
+      console.error('❌ Gamma API Error:', gammaResponse.status, errorText);
+      throw new Error(`Gamma API failed: ${gammaResponse.status} - ${errorText}`);
     }
+
+    const gammaData = await gammaResponse.json();
+    console.log('✅ Gamma success');
+
+    const presentationUrl = `https://gamma.app/generations/${gammaData.generationId}`;
 
     // Send event to n8n
     await n8nWebhookClient.presentationCompleted(user.email, {
       businessName: formData.businessName,
-      presentationUrl: directResponse.presentationUrl,
-      generationId: directResponse.generationId,
+      presentationUrl,
+      generationId: gammaData.generationId,
       userId: user.id,
       businessField: formData.businessField
     });
 
     return Response.json({
       success: true,
-      presentationUrl: directResponse.presentationUrl,
-      generationId: directResponse.generationId,
+      presentationUrl,
+      generationId: gammaData.generationId,
       message: 'המצגה שלך נוצרה בהצלחה!'
     });
 
   } catch (error) {
-    console.error('❌ Error generating presentation:', error);
+    console.error('❌ Error:', error);
     return Response.json({
       error: error.message,
-      details: 'Failed to generate presentation with Gamma'
+      details: 'Failed to generate presentation'
     }, { status: 500 });
   }
 });
