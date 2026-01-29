@@ -118,7 +118,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [previewDevice, setPreviewDevice] = useState('desktop');
   const [publishedUrl, setPublishedUrl] = useState(null);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(60);
 
   useEffect(() => {
     // Auto-detect mobile
@@ -136,7 +136,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   // Countdown timer during building
   useEffect(() => {
     if (!isBuilding) {
-      setCountdown(30);
+      setCountdown(60);
       return;
     }
     const timer = setInterval(() => {
@@ -1140,8 +1140,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                       stroke="#3b82f6"
                       strokeWidth="3"
                       strokeLinecap="round"
-                      strokeDasharray={`${(countdown / 30) * 283} 283`}
-                      animate={{ strokeDasharray: [`${(countdown / 30) * 283} 283`] }}
+                      strokeDasharray={`${(countdown / 60) * 283} 283`}
+                      animate={{ strokeDasharray: [`${(countdown / 60) * 283} 283`] }}
                       transition={{ duration: 0.5 }}
                     />
                   </svg>
