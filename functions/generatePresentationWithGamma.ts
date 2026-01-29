@@ -42,9 +42,10 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Prepare minimal Gamma API v1.0 payload - ONLY essential fields
+    // Prepare Gamma API v1.0 payload with required fields
     const payload = {
       inputText: inputText,
+      textMode: 'generate',
       numCards: numCardsMap[formData.length] || 10
     };
 
