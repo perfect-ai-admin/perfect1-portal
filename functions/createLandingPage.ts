@@ -47,10 +47,19 @@ Deno.serve(async (req) => {
 
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
-                ROLE:
-                אתה **מומחה עולמי בבניית דפי נחיתה** (World-Class Landing Page Expert) - קופירייטר בוגר, ארט-דירקטור וספציאליסט UX/UI.
-                התמחותך: פסיכולוגיה צרכנית, בניית אמון, CRO, וצור חוויות דיגיטליות מרשימות.
-                המשימה שלך: לקחת את המידע הבסיסי שהמשתמש סיפד, ולהמציא **דף נחיתה מושלם בתכנים עשירים, משכנעים, עמוקים, אנושיים וראציונליים** שכל חלק בו תואם בעיצוב וברמה איכותית.
+🎯 MISSION CRITICAL: Your response must have EXACTLY 8 sections in EXACT order or the system FAILS.
+
+ROLE: אתה מומחה עולמי בדפי נחיתה - קופירייטר בוגר, ארט-דירקטור, UX/UI specialist.
+
+MANDATORY STRUCTURE: 8 סקשנים בדיוק בסדר זה:
+1. HERO
+2. SUITED_FOR  
+3. PAIN_EXPANSION
+4. HOW_IT_WORKS
+5. WHY_US
+6. HUMAN_VOICE
+7. FAQ
+8. CONTACT
 
                 ⚠️ **שלב 1: DEEP ANALYSIS (לפני כתיבה כלשהי)** ⚠️
 
@@ -124,39 +133,105 @@ Deno.serve(async (req) => {
                 4. **הבחנה גרפית בין סקשנים:** כל סקשן צריך צבע רקע שונה או מבנה ויזואלי ברור.
                 5. **image_prompt עשיר וגבוה:** תיאורים מלאים של 1-2 משפטים לכל ויזואל, עם פרטים על אווירה, סגנון, ורגש.
 
-                **מבנה הדף המנצח (Mandatory Structure):**
-                1. **HERO:** כותרת קיימת + hero_expansion = פסקה קצרה שמבהירה (למי זה? איזו בעיה? מה התוצאה?).
-                2. **SUITED_FOR (סינון קהל - חובה):** בלוק קצר עם:
-                   - "למי זה כן מתאים" (3-5 בולטים)
-                   - "למי זה פחות מתאים" (2-3 בולטים)
-                   המטרה: להרגיש "זה בדיוק אני"
-                3. **PAIN_EXPANSION (הרחבת כאבים - חובה):** פסקה שמחברת רגשית:
-                   - איך זה מרגיש ביום-יום
-                   - למה זה נשאר תקוע
-                   - מה המחיר של לא לטפל (לא להפחיד - לשקף)
-                4. **HOW_IT_WORKS (תהליך - חובה):** בלוק 3 שלבים:
-                   - שלב 1: מה המשתמש עושה (הפעולה שלו)
-                   - שלב 2: מה קורה מאחורי הקלעים (העבודה שלנו)
-                   - שלב 3: מה הוא מקבל בפועל (התוצאה המוחשית)
-                5. **WHY_US (בידול - חובה):** השוואה עדינה מול:
-                   - פתרון לבד / אדם "רגיל" / חד-פעמי
-                   בלי לתקוף - רק להבהיר יתרון
-                6. **HUMAN_VOICE (קול אנושי - חובה):** עד 3 פריטים מגוונים:
-                   - **ציטוט לקוח:** עדות אותנטית ומפורטת, כולל שם הלקוח ותיאור קצר (למשל, 'בעל עסק בתחום ה-X')
-                   - **מסר ממייסד/ת:** פסקה אישית המביעה את הערכים, החזון והמחויבות של העסק ללקוחותיו, עם דגש על אותנטיות ורגש
-                   - **סיפור אנושי:** חוויה עמוקה וקונקרטית של משהו שקרה ללקוח או לעסק
-                   זרז מגוון בקולות האנושיים המתקבלים כדי להעביר בטחון ואמינות רחבה
-                7. **FAQ (שאלות ותשובות - חובה):** 5-7 שאלות:
-                   - מחיר/התחייבות
-                   - למי לא מתאים
-                   - זמן
-                   - סיכון
-                   - מה קורה אחרי השארת פרטים
-                   - שאלות נוספות לפי הקשר
-                8. **CONTACT (יצירת קשר - חובה):** טופס + מיקרו-טקסט:
-                   - "בלי התחייבות"
-                   - "שיחה אחת בלבד"
-                   - "לא נשלח ספאם"
+                **📋 EXACT STRUCTURE - NO FLEXIBILITY:**
+
+SECTION 1 - HERO:
+{
+  "type": "hero",
+  "title": "כותרת משכנעת (5-10 מילים בדיוק)",
+  "subtitle": "תת-כותרת (10-15 מילים בדיוק)",
+  "hero_expansion": "פסקה 2-3 משפטים בדיוק: למי זה, איזו בעיה, מה התוצאה",
+  "ctaText": "כתוב כפתור (4-6 מילים בדיוק)",
+  "image_prompt": "תיאור ויזואלי עשיר 30-50 מילים בדיוק"
+}
+
+SECTION 2 - SUITED_FOR:
+{
+  "type": "suited_for",
+  "title": "למי זה מתאים / לא מתאים",
+  "suited": ["משפט 1", "משפט 2", "משפט 3"],
+  "not_suited": ["משפט 1", "משפט 2", "משפט 3"]
+}
+⚠️ MUST: בדיוק 3 suited AND בדיוק 3 not_suited - לא יותר, לא פחות
+
+SECTION 3 - PAIN_EXPANSION:
+{
+  "type": "pain_expansion",
+  "title": "מה הבעיה שלך?",
+  "description": "3-4 משפטים בדיוק",
+  "items": [
+    {"title": "כותרת קצרה", "description": "2-3 משפטים"},
+    {"title": "כותרת קצרה", "description": "2-3 משפטים"},
+    {"title": "כותרת קצרה", "description": "2-3 משפטים"},
+    {"title": "כותרת קצרה", "description": "2-3 משפטים"}
+  ]
+}
+⚠️ MUST: בדיוק 4 items בarray
+
+SECTION 4 - HOW_IT_WORKS:
+{
+  "type": "how_it_works",
+  "title": "איך זה עובד",
+  "steps": [
+    {"step": 1, "title": "אתה עושה...", "description": "2-3 משפטים"},
+    {"step": 2, "title": "אנחנו עושים...", "description": "2-3 משפטים"},
+    {"step": 3, "title": "אתה מקבל...", "description": "2-3 משפטים"}
+  ]
+}
+⚠️ MUST: בדיוק 3 steps בסדר הזה: משתמש → אנחנו → תוצאה
+
+SECTION 5 - WHY_US:
+{
+  "type": "why_us",
+  "title": "למה זה שונה",
+  "description": "2-3 משפטים בדיוק",
+  "items": [
+    {"title": "יתרון 1", "description": "2-3 משפטים"},
+    {"title": "יתרון 2", "description": "2-3 משפטים"},
+    {"title": "יתרון 3", "description": "2-3 משפטים"},
+    {"title": "יתרון 4", "description": "2-3 משפטים"}
+  ]
+}
+⚠️ MUST: בדיוק 4 items בarrayI כל אחד שונה משמעותית
+
+SECTION 6 - HUMAN_VOICE:
+{
+  "type": "human_voice",
+  "title": "מה אומרים עלינו",
+  "items": [
+    {"type": "testimonial", "content": "ציטוט לקוח, 2-3 משפטים", "author": "שם", "role": "בעל עסק בתחום ה-X"},
+    {"type": "founder_message", "content": "מסר מייסד, 2-3 משפטים", "author": "שם", "role": "מייסד/ת"},
+    {"type": "customer_story", "content": "סיפור אנושי, 2-3 משפטים", "author": "שם", "role": "לקוח"}
+  ]
+}
+⚠️ MUST: בדיוק 3 items בדיוק בסדר הזה: testimonial → founder_message → customer_story
+
+SECTION 7 - FAQ:
+{
+  "type": "faq",
+  "title": "שאלות נפוצות",
+  "items": [
+    {"question": "כמה זה עולה?", "answer": "2-4 משפטים"},
+    {"question": "למי זה לא מתאים?", "answer": "2-4 משפטים"},
+    {"question": "כמה זמן לוקח?", "answer": "2-4 משפטים"},
+    {"question": "מה אם לא אהבתי?", "answer": "2-4 משפטים"},
+    {"question": "מה קורה אחרי?", "answer": "2-4 משפטים"},
+    {"question": "[שאלה 6 לפי הקשר]", "answer": "2-4 משפטים"},
+    {"question": "[שאלה 7 לפי הקשר]", "answer": "2-4 משפטים"}
+  ]
+}
+⚠️ MUST: בדיוק 7 items בarrayI כל תשובה קונקרטית וברורה
+
+SECTION 8 - CONTACT:
+{
+  "type": "contact",
+  "title": "בואו נדבר",
+  "subtitle": "תיאור קצר 1 משפט",
+  "cta_micro_text": "בלי התחייבות • שיחה אחת בלבד • לא נשלח ספאם",
+  "form_fields": ["name", "phone", "email"],
+  "phone": "מספר טלפון",
+  "whatsapp": "מספר וואטסאפ"
+}
 
                 DATA FROM USER (השתמש בנתונים אלו כבסיס, אך תרחיב אותם פי 10):
                 ${promptContext}
@@ -167,34 +242,21 @@ Deno.serve(async (req) => {
                 ה-CTA יפגע בדיוק ברגש הנכון.
                 הדף ירגיש אנושי, לא תבניתי.
 
-                ⚠️ **שלב 3: QA וביקורת עצמית (STRICT)** ⚠️
-                זה ה-QA הכי חשוב. לפני שתגיש את התשובה, בדוק בקפדנות:
+                🔴 **VALIDATION - BEFORE RETURNING CHECK THESE EXACTLY:**
 
-                **מבנה סימטרי:**
-                - [ ] SUITED_FOR: בדיוק 3 כן + בדיוק 3 לא? (לא יותר, לא פחות)
-                - [ ] PAIN_EXPANSION: בדיוק 4 כאבים?
-                - [ ] HOW_IT_WORKS: בדיוק 3 שלבים בסדר הנכון?
-                - [ ] WHY_US: בדיוק 4 יתרונות?
-                - [ ] HUMAN_VOICE: בדיוק 3 פריטים (testimonial + founder_message + customer_story)?
-                - [ ] FAQ: בדיוק 7 שאלות?
+                ❌ אם לא מדויק - אל תחזור תשובה. חזור שגיאה.
 
-                **תוכן עשיר:**
-                - [ ] כל פריט ב-SUITED_FOR קבל תיאור עמוק? (לא רק מילה)
-                - [ ] כל כאב ב-PAIN_EXPANSION יש רגשיות וחיות? 
-                - [ ] כל יתרון ב-WHY_US שונה משמעותית מהאחרים?
-                - [ ] כל human_voice קבל עומק רגשי ואותנטיות?
-                - [ ] כל תשובה ב-FAQ היא קונקרטית וברורה?
+                if (sections_json.length !== 8) → ERROR
+                if (sections_json[0].type !== "hero" || !sections_json[0].hero_expansion) → ERROR
+                if (sections_json[1].type !== "suited_for" || sections_json[1].suited.length !== 3 || sections_json[1].not_suited.length !== 3) → ERROR
+                if (sections_json[2].type !== "pain_expansion" || sections_json[2].items.length !== 4) → ERROR
+                if (sections_json[3].type !== "how_it_works" || sections_json[3].steps.length !== 3 || sections_json[3].steps[0].step !== 1 || sections_json[3].steps[1].step !== 2 || sections_json[3].steps[2].step !== 3) → ERROR
+                if (sections_json[4].type !== "why_us" || sections_json[4].items.length !== 4) → ERROR
+                if (sections_json[5].type !== "human_voice" || sections_json[5].items.length !== 3 || sections_json[5].items[0].type !== "testimonial" || sections_json[5].items[1].type !== "founder_message" || sections_json[5].items[2].type !== "customer_story") → ERROR
+                if (sections_json[6].type !== "faq" || sections_json[6].items.length !== 7) → ERROR
+                if (sections_json[7].type !== "contact" || !sections_json[7].cta_micro_text) → ERROR
 
-                **עיצוב וטון:**
-                - [ ] כל כותרת משכנעת וברורה?
-                - [ ] טון = ביטחון שקט, אנושיות, בוגרות (לא אגרסיביות)?
-                - [ ] אין "AI-ית" או שיווק פוסע?
-                - [ ] כל התשובות בעברית מושלמת וטבעית?
-                - [ ] image_prompt עשירים ומלאי פרטים?
-
-                **סיום:**
-                - [ ] DYN כל סעיף רגיש כמו יחידה קומפלטית וברורה?
-                - [ ] הדף ככלל אלגנטי, מרשים, ברמה עולמית?
+                ⚠️ כל שגיאה = אל תחזור תוצאה חלקית. זה ייכשל את הדף.
 
                 TASK:
                 Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW.
@@ -339,21 +401,12 @@ Deno.serve(async (req) => {
             // We will fallback to basic content if AI fails
         }
 
-        // ⚠️ STRICT FALLBACK - אם LLM נכשלה, יש לנו סקסטון חלקי ולא שלם
-        // זה לעולם לא אמור להיקרא אם הפרומפט עובד כמו שצריך
-        const fallbackSections = [
-            {
-                type: 'hero',
-                title: data.headline || data.businessName || 'עסק חדש',
-                subtitle: data.subheadline || 'הפתרון המושלם עבורך',
-                hero_expansion: 'שדה זה צריך להיות מוגדר בפרומפט. אם אתה קורא זאת, הפרומפט נכשל.',
-                ctaText: 'בואו נדבר',
-                image_prompt: 'professional business image'
-            }
-            // ⚠️ אם זה נתקע כאן, LLM לא יצרה את כל 8 הסקשנים כמו שדרוש
-        ];
+        // 🔴 NO FALLBACK - אם LLM כשלה זה שגיאה שצריך להיחשף
+        if (!generatedContent?.sections_json || generatedContent.sections_json.length !== 8) {
+            throw new Error('LLM failed to generate exactly 8 sections with required structure. Check prompt compliance.');
+        }
 
-        const finalSections = generatedContent?.sections_json || fallbackSections;
+        const finalSections = generatedContent.sections_json;
         const headline = generatedContent?.headline || data.headline || data.business_name;
         const subheadline = generatedContent?.subheadline || data.subheadline || '';
 
