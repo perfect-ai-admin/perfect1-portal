@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
                         },
                         { 
                             "type": "stats", 
-                            "items": [{ "value": "500+", "label": "לקוחות מרוצים" }, { "value": "100%", "label": "אחריות" }, { "value": "24/7", "label": "זמינות" }] 
+                            "items": [{ "value": "500+", "label": "לקוחות מרוצים" }, { "value": "100%", "label": "אחריות" }, { "value": "24/7", "label": "זמינות" }, { "value": "10+", "label": "שנות ניסיון" }] 
                         },
                         { "type": "pain_points", "title": "...", "items": [{ "title": "...", "description": "..." }] },
                         { "type": "features", "title": "...", "items": [{ "title": "...", "description": "...", "icon": "Shield" }] },
