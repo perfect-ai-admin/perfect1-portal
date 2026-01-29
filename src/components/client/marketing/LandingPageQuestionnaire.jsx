@@ -241,12 +241,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     if (!validateStep(currentStep)) return;
 
     setIsBuilding(true);
-    
+
     try {
       // Step 1: Create the landing page
       console.log('[STEP 1] Creating landing page...');
       const createRes = await base44.functions.invoke('createLandingPage', { data: formData });
-      
+
       if (!createRes?.data?.id) {
         throw new Error('Failed to create page - no ID returned');
       }
@@ -270,20 +270,33 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       setCreatedPageData(pageData);
       setPageSlug(pageData.slug || pageId);
+      setPreviewPageId(pageId);
       console.log('[STEP 2] ✓ Page data loaded');
 
-      // Step 3: Mark as paid
-      console.log('[STEP 3] Marking as paid...');
+      // Show preview first (don't publish yet)
+      setShowingPreview(true);
+      localStorage.removeItem('landingPageFormData');
+
+    } catch (error) {
+      console.error('❌ Landing page creation failed:', error);
+      alert(`שגיאה: ${error.message || 'אנא נסה שוב'}`);
+    } finally {
+      setIsBuilding(false);
+    }
+  };
+
+  const handlePublishToLive = async () => {
+    setIsPublishing(true);
+    try {
+      // Mark as paid
       await base44.functions.invoke('publishLandingPage', {
-        landingPageId: pageId,
+        landingPageId: previewPageId,
         action: 'markPaid'
       });
-      console.log('[STEP 3] ✓ Marked as paid');
 
-      // Step 4: Publish to live
-      console.log('[STEP 4] Publishing to live...');
+      // Publish to live
       const publishRes = await base44.functions.invoke('publishLandingPage', {
-        landingPageId: pageId,
+        landingPageId: previewPageId,
         action: 'publish'
       });
 
@@ -291,18 +304,13 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         throw new Error('Failed to get published URL');
       }
 
-      console.log('[STEP 4] ✓ Published! URL:', publishRes.data.url);
-
-      // Success - show the URL
       setPublishedUrl(publishRes.data.url);
-      setShowSuccess(false); // Ensure we don't show success message
-      localStorage.removeItem('landingPageFormData');
-      
+      setShowingPreview(false);
     } catch (error) {
-      console.error('❌ Landing page creation failed:', error);
-      alert(`שגיאה: ${error.message || 'אנא נסה שוב'}`);
+      console.error('Error publishing:', error);
+      alert('אירעה שגיאה בפרסום. אנא נסה שוב.');
     } finally {
-      setIsBuilding(false);
+      setIsPublishing(false);
     }
   };
 
