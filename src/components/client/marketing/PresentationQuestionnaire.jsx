@@ -620,32 +620,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                  )}
                </div>
 
-               <div className="space-y-2">
-                 <Label className="block text-xs font-semibold">בחר תיקייה (Gamma Folders)</Label>
-                 {folders.length > 0 ? (
-                   <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
-                     {folders.map(folder => (
-                       <div
-                         key={folder.id}
-                         onClick={() => {
-                           setSelectedFolder(folder.id);
-                           handleInputChange('gammaFolder', folder.id);
-                         }}
-                         className={cn(
-                           "p-2 rounded-lg border cursor-pointer transition-all text-center",
-                           selectedFolder === folder.id
-                             ? "border-pink-500 bg-pink-50 ring-1 ring-pink-500/20"
-                             : "border-gray-200 hover:border-pink-200"
-                         )}
-                       >
-                         <div className="text-xs font-bold text-gray-900">{folder.name}</div>
-                       </div>
-                     ))}
-                   </div>
-                 ) : (
-                   <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">טוען תיקיות...</div>
-                 )}
-               </div>
+
               <div className="space-y-2">
                 <Label className="block text-xs font-semibold">סגנון מועדף</Label>
                 <div className="grid grid-cols-2 gap-2">
