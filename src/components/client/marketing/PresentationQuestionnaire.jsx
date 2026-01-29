@@ -104,6 +104,46 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   const [showSuccess, setShowSuccess] = useState(false);
   const [presentationUrl, setPresentationUrl] = useState(null);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [themes, setThemes] = useState([]);
+  const [folders, setFolders] = useState([]);
+  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+
+  // Fetch themes from Gamma API
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const response = await fetch('https://public-api.gamma.app/v1.0/themes', {
+          headers: {
+            'X-API-KEY': Deno.env.get('GAMMA_API_KEY') || ''
+          }
+        });
+        const data = await response.json();
+        setThemes(data.data || []);
+      } catch (error) {
+        console.error('Error fetching themes:', error);
+      }
+    };
+    fetchThemes();
+  }, []);
+
+  // Fetch folders from Gamma API
+  useEffect(() => {
+    const fetchFolders = async () => {
+      try {
+        const response = await fetch('https://public-api.gamma.app/v1.0/folders', {
+          headers: {
+            'X-API-KEY': Deno.env.get('GAMMA_API_KEY') || ''
+          }
+        });
+        const data = await response.json();
+        setFolders(data.data || []);
+      } catch (error) {
+        console.error('Error fetching folders:', error);
+      }
+    };
+    fetchFolders();
+  }, []);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
