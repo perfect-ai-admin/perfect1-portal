@@ -177,6 +177,15 @@ export default function Footer() {
 
 
 
+      {/* Disclaimer */}
+      <div className="border-t border-white/10 bg-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-5">
+          <p className="text-gray-300 text-xs md:text-sm leading-relaxed">
+            <strong>הבהרה חשובה:</strong> פרפקט וואן היא חברה פרטית המספקת ייעוץ וליווי לעצמאים בפתיחת עסקים בישראל. איננו גוף ממשלתי ואיננו מספקים מסמכים רשמיים או שירותים מטעם רשויות המדינה. השירות ניתן ע״י גורם פרטי בלבד.
+          </p>
+        </div>
+      </div>
+
       {/* Bottom Bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
