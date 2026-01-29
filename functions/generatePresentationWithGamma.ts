@@ -75,20 +75,3 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
     }, { status: 500 });
   }
 });
-
-async function oldApproach(req) {
-  // OLD CODE - Keeping for reference
-  const payload = {
-    inputText: '',
-    textMode: 'generate',
-    numCards: 10
-  };
-
-  const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
-    method: 'POST',
-    headers: {
-      'X-API-KEY': Deno.env.get('GAMMA_API_KEY'),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
