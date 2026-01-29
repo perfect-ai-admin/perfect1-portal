@@ -42,17 +42,13 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Prepare minimal Gamma API v1.0 payload (no imageOptions, no unsupported fields)
+    // Prepare minimal Gamma API v1.0 payload - ONLY essential fields
     const payload = {
       inputText: inputText,
-      textMode: 'generate',
-      format: 'presentation',
-      numCards: numCardsMap[formData.length] || 10,
-      cardSplit: 'auto',
-      additionalInstructions: `Create a professional business presentation. Style: ${formData.style}. Colors: ${formData.colors}. Make it persuasive and clear.`
+      numCards: numCardsMap[formData.length] || 10
     };
 
-    // Add themeId if selected
+    // Add theme if selected
     if (formData.gammaTheme) {
       payload.themeId = formData.gammaTheme;
     }
