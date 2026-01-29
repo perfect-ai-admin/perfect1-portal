@@ -42,31 +42,23 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Prepare Gamma API v1.0 payload (imageOptions removed - not supported)
+    // Prepare minimal Gamma API v1.0 payload
     const payload = {
       inputText: inputText,
       textMode: 'generate',
       format: 'presentation',
       numCards: numCardsMap[formData.length] || 10,
       cardSplit: 'auto',
-      additionalInstructions: `Create a professional business presentation. Style: ${formData.style}. Colors: ${formData.colors}. Make it persuasive and clear.`,
-      textOptions: {
-        language: formData.language === 'hebrew' ? 'he' : 'en'
-      }
+      additionalInstructions: `Create a professional business presentation. Style: ${formData.style}. Colors: ${formData.colors}. Make it persuasive and clear.`
     };
 
     // Add themeId if selected from Gamma themes
-    if (formData.gammaTheme) {
+    if (formData.gammaTheme && formData.gammaTheme !== '') {
       payload.themeId = formData.gammaTheme;
     }
 
-    // Add folderIds if selected from Gamma folders
-    if (formData.gammaFolder) {
-      payload.folderIds = [formData.gammaFolder];
-    }
-
     console.log('🔵 Sending to Gamma API v1.0...');
-    console.log('Payload:', JSON.stringify(payload, null, 2));
+    console.log('API Key available:', !!Deno.env.get('GAMMA_API_KEY'));
 
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
