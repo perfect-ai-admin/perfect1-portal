@@ -110,6 +110,9 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   const [folders, setFolders] = useState([]);
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [selectedFolder, setSelectedFolder] = useState(null);
+  const [showDraftPreview, setShowDraftPreview] = useState(false);
+  const [draftPreviewUrl, setDraftPreviewUrl] = useState(null);
+  const [fullscreenPreview, setFullscreenPreview] = useState(false);
 
   // Set predefined professional themes
   useEffect(() => {
