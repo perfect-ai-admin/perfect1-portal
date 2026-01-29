@@ -11,69 +11,73 @@ Deno.serve(async (req) => {
 
     const { formData } = await req.json();
 
-    // Build comprehensive prompt for Gamma API
-    const prompt = `
-    בואו נבנה מצגת עסקית מקצועית בעברית.
+    // Build inputText from form data for Gamma API v1.0
+    const inputText = `Business: ${formData.businessName}
+Industry: ${formData.businessField}
+Description: ${formData.businessDescription}
 
-    פרטי העסק:
-    - שם: ${formData.businessName}
-    - תחום: ${formData.businessField}
-    - תיאור: ${formData.businessDescription}
+Problem: ${formData.painPoint}
+Why it matters: ${formData.whyPainful.join(', ')}
 
-    הבעיה:
-    - הבעיה הכואבת: ${formData.painPoint}
-    - גורם המשקל: ${formData.whyPainful.join(', ')}
+Solution: ${formData.solution}
+How it works: ${formData.solutionSteps.step1} → ${formData.solutionSteps.step2} → ${formData.solutionSteps.step3}
 
-    הפתרון:
-    - הפתרון: ${formData.solution}
-    - שלבי העבודה: ${formData.solutionSteps.step1} → ${formData.solutionSteps.step2} → ${formData.solutionSteps.step3}
+Unique Advantages: ${formData.uniqueAdvantage.join(', ')}
+Why we're different: ${formData.advantageExplanation}
 
-    היתרון תחרותי:
-    - היתרונות: ${formData.uniqueAdvantage.join(', ')}
-    - הסבר: ${formData.advantageExplanation}
+Proofs: ${formData.proofs.join(', ')}
+Key metric: ${formData.strongMetric || 'Strong results'}
 
-    הוכחות:
-    - סוגי הוכחות: ${formData.proofs.join(', ')}
-    - מטריקה חזקה: ${formData.strongMetric || 'ללא'}
+Value Proposition: ${formData.valueProposition}
+After picture: ${formData.afterPicture}
 
-    הצעת ערך:
-    - מה מקבל הלקוח: ${formData.valueProposition}
-    - איך החיים יראו: ${formData.afterPicture}
+Call to action: ${formData.cta.join(', ')}
+CTA button text: ${formData.ctaText || 'Get Started'}`;
 
-    קריאה לפעולה:
-    - סוג ה-CTA: ${formData.cta.join(', ')}
-    - טקסט כפתור: ${formData.ctaText || 'בואו נתחיל'}
+    // Map length to numCards
+    const numCardsMap = {
+      'short': 8,
+      'medium': 12,
+      'full': 18
+    };
 
-    עיצוב:
-    - סגנון: ${formData.style}
-    - צבעים: ${formData.colors}
+    // Prepare Gamma API v1.0 payload
+    const payload = {
+      inputText: inputText,
+      textMode: 'generate',
+      format: 'presentation',
+      numCards: numCardsMap[formData.length] || 10,
+      cardSplit: 'auto',
+      additionalInstructions: `Create a professional business presentation. Style: ${formData.style}. Colors: ${formData.colors}. Make it persuasive and clear.`,
+      textOptions: {
+        language: formData.language === 'hebrew' ? 'he' : 'en'
+      },
+      imageOptions: {
+        model: 'dall-e-3',
+        generateImage: true
+      }
+    };
 
-    טכני:
-    - שפה: ${formData.language === 'hebrew' ? 'עברית' : 'אנגלית'}
-    - אורך: ${
-      formData.length === 'short' ? '6-8 שקפים קצרים ולעניין' : 
-      formData.length === 'medium' ? '10-12 שקפים סטנדרטיים' : 
-      '15-20 שקפים מקיפים ומלאים'
+    // Add themeId if selected from Gamma themes
+    if (formData.gammaTheme) {
+      payload.themeId = formData.gammaTheme;
     }
 
-    יצור מצגת עסקית מקצועית שממכרת את הרעיון בצורה חזקה וברורה. 
-    כל שקף צריך להיות ברור, קוהרנטי ומוקד על הקהל שלנו.
-    `;
+    // Add folderIds if selected from Gamma folders
+    if (formData.gammaFolder) {
+      payload.folderIds = [formData.gammaFolder];
+    }
 
-    console.log('🔵 Sending to Gamma API...');
+    console.log('🔵 Sending to Gamma API v1.0...');
     console.log('Token available:', !!Deno.env.get('GAMMA_API_KEY'));
 
-    const gammaResponse = await fetch('https://api.gamma.app/presentations', {
+    const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('GAMMA_API_KEY')}`,
+        'X-API-KEY': Deno.env.get('GAMMA_API_KEY'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        prompt: prompt,
-        title: formData.businessName + ' - Business Presentation',
-        language: formData.language === 'hebrew' ? 'he' : 'en',
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!gammaResponse.ok) {
@@ -85,8 +89,8 @@ Deno.serve(async (req) => {
     const gammaData = await gammaResponse.json();
     console.log('✅ Gamma response:', gammaData);
 
-    // Extract the presentation URL
-    const presentationUrl = gammaData.id || gammaData.url || `https://gamma.app/presentations/${gammaData.id}`;
+    // Extract presentation URL using generationId
+    const presentationUrl = `https://gamma.app/generations/${gammaData.generationId}`;
 
     return Response.json({
       success: true,
