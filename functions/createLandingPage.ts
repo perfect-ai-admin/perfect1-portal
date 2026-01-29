@@ -392,6 +392,17 @@ Return ONLY the JSON object with these keys:
         console.log(`  - Sections: ${sections.length} (hero, suited_for, pain_expansion, how_it_works, why_us, human_voice, faq, contact)`);
         console.log(`  - URL: ${pageUrl}\n`);
 
+        // Send event to n8n
+        await n8nWebhookClient.landingPageCreated(user.email, {
+          businessName: data.businessName,
+          slug,
+          pageId: result.id,
+          pageUrl,
+          userId: user.id,
+          businessField: data.businessField,
+          sections: sections.length
+        });
+
         return Response.json({ slug, id: result.id, pageUrl });
     } catch (error) {
         console.error("\n❌ QA FAILED:", error.message);
