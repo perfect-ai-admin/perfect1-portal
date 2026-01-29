@@ -193,14 +193,14 @@ export default function GoalMentorChat({ goalCode, goalData, customerGoalId, onG
       <AnimatePresence>
         {mentor.goalState?.status === 'completed' && (
           <GoalCompletionModal
-            goalName={goalName || `מטרה: ${mentor.goalState?.goal_code}`}
+            goalName={goalData?.goal_name_he || `מטרה: ${mentor.goalState?.goal_code}`}
             pointsEarned={100}
             nextGoalName="המטרה הבאה שלך"
             onContinue={() => {
               window.location.href = '/journey';
             }}
             onLater={() => {
-              setShowCompletion(false);
+              window.location.href = '/journey';
             }}
           />
         )}
