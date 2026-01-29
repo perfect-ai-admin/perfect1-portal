@@ -95,8 +95,8 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
     return Response.json({
       success: true,
       presentationUrl,
-      presentationId: gammaData.id,
-      message: 'מצגתך נוצרה בהצלחה!'
+      generationId: gammaData.generationId,
+      message: 'המצגה שלך נוצרה בהצלחה!'
     });
 
   } catch (error) {
