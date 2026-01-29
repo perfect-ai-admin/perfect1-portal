@@ -15,13 +15,13 @@ export default function LP() {
         queryKey: ['publicLandingPage', pageId, legacySlug],
         queryFn: async () => {
             if (pageId) {
-                // Fetch by ID (preferred)
+                // Fetch by ID using public function (bypasses RLS)
                 console.log('[LP] Fetching by ID:', pageId);
-                const pageData = await base44.entities.LandingPage.get(pageId);
-                if (pageData?.status !== 'published') {
-                    throw new Error('Page not published');
+                const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
+                if (!res?.data) {
+                    throw new Error('Page not found');
                 }
-                return pageData;
+                return res.data;
             } else if (legacySlug) {
                 // Fallback to slug
                 console.log('[LP] Fetching by slug:', legacySlug);
@@ -32,7 +32,7 @@ export default function LP() {
             }
         },
         enabled: !!(pageId || legacySlug),
-        retry: false
+        retry: 1
     });
 
     if (isLoading) {

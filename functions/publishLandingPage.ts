@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
         // Action: publish to air (requires paid status or already published)
         if (action === 'publish' || !action) {
             // Idempotency: if already published, return existing URL
-            if (page.status === 'published' && page.slug) {
+            if (page.status === 'published') {
                 const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
                 const publicUrl = `https://${publicDomain}/LP?id=${landingPageId}`;
                 console.log(`[IDEMPOTENT] Page already published, returning URL: ${publicUrl}`);
@@ -46,6 +46,7 @@ Deno.serve(async (req) => {
                     success: true,
                     message: 'הדף כבר פורסם',
                     url: publicUrl,
+                    pageId: landingPageId,
                     slug: page.slug,
                     status: 'published',
                     isIdempotent: true
@@ -57,43 +58,51 @@ Deno.serve(async (req) => {
                 return Response.json({ error: 'Only paid pages can be published' }, { status: 400 });
             }
 
+            console.log(`[PUBLISHING] Page ID: ${landingPageId}, Business: ${page.business_name}`);
+
             // Generate unique slug if not exists
             let finalSlug = page.slug;
             if (!finalSlug) {
                 const baseSlug = slugify(page.business_name || 'landing', { lower: true, strict: true, locale: 'he' }) || 'landing';
                 finalSlug = baseSlug;
                 
-                // Retry logic for uniqueness
+                console.log(`[SLUG] Base slug: ${baseSlug}`);
+                
+                // Check uniqueness
                 let counter = 2;
-                let retries = 0;
-                while (retries < 5) {
+                let attempts = 0;
+                while (attempts < 5) {
                     try {
-                        const existing = await base44.asServiceRole.entities.LandingPage.filter({ slug: finalSlug });
+                        const existing = await base44.asServiceRole.entities.LandingPage.filter({ slug: finalSlug, status: 'published' });
                         if (!existing || existing.length === 0) {
+                            console.log(`[SLUG] ✓ Unique slug found: ${finalSlug}`);
                             break;
                         } else {
                             finalSlug = `${baseSlug}-${counter}`;
                             counter++;
+                            console.log(`[SLUG] Collision detected, trying: ${finalSlug}`);
                         }
                     } catch (e) {
-                        console.error('Slug check error:', e);
+                        console.error('[SLUG] Check error:', e);
                         break;
                     }
-                    retries++;
+                    attempts++;
                 }
             }
 
-            // Update status to published + set published_at + ensure slug
-            const updatedPage = await base44.entities.LandingPage.update(landingPageId, {
+            // Update status to published
+            console.log(`[UPDATE] Setting status=published, slug=${finalSlug}`);
+            await base44.entities.LandingPage.update(landingPageId, {
                 slug: finalSlug,
                 status: 'published',
                 published_at: new Date().toISOString()
             });
 
-            // Generate the public domain URL using page ID for reliability
+            // Generate the public URL
             const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
             const publicUrl = `https://${publicDomain}/LP?id=${landingPageId}`;
-            console.log(`[SUCCESS] Final published URL: ${publicUrl} (id: ${landingPageId}, slug: ${finalSlug})`);
+            
+            console.log(`[SUCCESS] ✓ Published! URL: ${publicUrl}`);
 
             return Response.json({
                 success: true,

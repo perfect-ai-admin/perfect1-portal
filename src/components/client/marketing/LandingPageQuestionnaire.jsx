@@ -223,85 +223,64 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateStep(currentStep)) {
-      setIsBuilding(true);
-      try {
-        // Auto-generate slug from business name in English
-        const transliterate = (text) => {
-          const hebrewToEnglish = {
-            'א': 'a', 'ב': 'b', 'ג': 'g', 'ד': 'd', 'ה': 'h', 'ו': 'v', 'ז': 'z', 'ח': 'ch', 'ט': 't',
-            'י': 'y', 'כ': 'k', 'ל': 'l', 'מ': 'm', 'נ': 'n', 'ס': 's', 'ע': 'a', 'פ': 'p', 'צ': 'ts',
-            'ק': 'k', 'ר': 'r', 'ש': 'sh', 'ת': 't'
-          };
-          return text.toLowerCase().split('').map(char => hebrewToEnglish[char] || char).join('');
-        };
-        
-        const slug = transliterate(formData.businessName)
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '')
-          .slice(0, 50);
-        
-        const res = await base44.functions.invoke('createLandingPage', { data: { ...formData, slug } });
-        if (res.data && res.data.slug) {
-            setPageSlug(res.data.slug);
+    if (!validateStep(currentStep)) return;
 
-            // Fetch the full page data for preview
-            let pageData = null;
-            if (res.data.id) {
-                try {
-                    pageData = await base44.entities.LandingPage.get(res.data.id);
-                } catch (e) {
-                    console.log("Could not get by ID, trying filter...");
-                }
-            }
-            
-            if (!pageData) {
-                const pages = await base44.entities.LandingPage.filter({ slug: res.data.slug });
-                if (pages && pages.length > 0) {
-                    pageData = pages[0];
-                }
-            }
-
-            if (pageData) {
-                setCreatedPageData(pageData);
-            } else {
-                throw new Error("Page not found after creation");
-            }
-
-            // Auto-publish immediately
-            try {
-              // First mark as paid
-              await base44.functions.invoke('publishLandingPage', {
-                landingPageId: pageData?.id || res.data.id,
-                action: 'markPaid'
-              });
-
-              // Then publish to air
-              const publishRes = await base44.functions.invoke('publishLandingPage', {
-                landingPageId: pageData?.id || res.data.id,
-                action: 'publish'
-              });
-
-              if (publishRes.data?.url) {
-                setPublishedUrl(publishRes.data.url);
-                localStorage.removeItem('landingPageFormData');
-              } else {
-                throw new Error("Failed to get published URL");
-              }
-            } catch (err) {
-              console.error('Error publishing:', err);
-              alert('היה קושי בפרסום הדף. אנא נסה שוב.');
-            }
-        } else {
-            console.error("Failed to create landing page", res);
-            alert('היה קושי ביצירת הדף. אנא נסה שוב או צור קשר עם התמיכה.');
-        }
-      } catch (error) {
-        console.error("Error creating landing page:", error);
-        alert('אירעה שגיאה ביצירת הדף. אנא נסה שוב.');
-      } finally {
-        setIsBuilding(false);
+    setIsBuilding(true);
+    
+    try {
+      // Step 1: Create the landing page
+      console.log('[STEP 1] Creating landing page...');
+      const createRes = await base44.functions.invoke('createLandingPage', { data: formData });
+      
+      if (!createRes?.data?.id) {
+        throw new Error('Failed to create page - no ID returned');
       }
+
+      const pageId = createRes.data.id;
+      console.log('[STEP 1] ✓ Page created with ID:', pageId);
+
+      // Step 2: Fetch the full page data
+      console.log('[STEP 2] Fetching page data...');
+      const pageData = await base44.entities.LandingPage.get(pageId);
+      
+      if (!pageData) {
+        throw new Error('Failed to fetch created page');
+      }
+      
+      setCreatedPageData(pageData);
+      setPageSlug(pageData.slug || pageId);
+      console.log('[STEP 2] ✓ Page data loaded');
+
+      // Step 3: Mark as paid
+      console.log('[STEP 3] Marking as paid...');
+      await base44.functions.invoke('publishLandingPage', {
+        landingPageId: pageId,
+        action: 'markPaid'
+      });
+      console.log('[STEP 3] ✓ Marked as paid');
+
+      // Step 4: Publish to live
+      console.log('[STEP 4] Publishing to live...');
+      const publishRes = await base44.functions.invoke('publishLandingPage', {
+        landingPageId: pageId,
+        action: 'publish'
+      });
+
+      if (!publishRes?.data?.url) {
+        throw new Error('Failed to get published URL');
+      }
+
+      console.log('[STEP 4] ✓ Published! URL:', publishRes.data.url);
+      
+      // Success - show the URL
+      setPublishedUrl(publishRes.data.url);
+      localStorage.removeItem('landingPageFormData');
+      
+    } catch (error) {
+      console.error('❌ Landing page creation failed:', error);
+      alert(`שגיאה: ${error.message || 'אנא נסה שוב'}`);
+    } finally {
+      setIsBuilding(false);
     }
   };
 
