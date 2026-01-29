@@ -156,15 +156,25 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
       setIsBuilding(true);
-      setTimeout(() => {
+      try {
+        const response = await base44.functions.invoke('generatePresentationWithGamma', { formData });
+        
+        if (response.data.success) {
+          setPresentationUrl(response.data.presentationUrl);
+          toast.success('מצגתך נוצרה בהצלחה! 🎉');
+        } else {
+          toast.error('שגיאה ביצירת המצגת');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('שגיאה: ' + error.message);
+      } finally {
         setIsBuilding(false);
-        // setShowSuccess(true); // Or call onComplete directly
-        onComplete(formData);
-      }, 2500);
+      }
     }
   };
 
