@@ -111,20 +111,15 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [selectedFolder, setSelectedFolder] = useState(null);
 
-  // Fetch themes from backend
+  // Set predefined professional themes
   useEffect(() => {
-    const fetchThemes = async () => {
-      try {
-        const response = await base44.functions.invoke('getGammaThemes', {});
-        if (response.data.success) {
-          setThemes(response.data.themes);
-        }
-      } catch (error) {
-        console.error('Error fetching themes:', error);
-        setThemes([]);
-      }
-    };
-    fetchThemes();
+    const predefinedThemes = [
+      { id: 'minimal', name: 'מינימליסטי', type: 'modern' },
+      { id: 'corporate', name: 'קורפוראטיבי', type: 'professional' },
+      { id: 'creative', name: 'יצירתי', type: 'bold' },
+      { id: 'startup', name: 'סטארטאפ', type: 'trendy' }
+    ];
+    setThemes(predefinedThemes);
   }, []);
 
   // Fetch folders from backend
