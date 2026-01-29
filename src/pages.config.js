@@ -158,6 +158,7 @@ import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
 import JourneyDashboard from './pages/JourneyDashboard';
+import GoalPage from './pages/GoalPage';
 import __Layout from './Layout.jsx';
 
 
@@ -273,6 +274,7 @@ export const PAGES = {
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
     "JourneyDashboard": JourneyDashboard,
+    "GoalPage": GoalPage,
 }
 
 export const pagesConfig = {
