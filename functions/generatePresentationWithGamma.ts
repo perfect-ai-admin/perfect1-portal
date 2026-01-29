@@ -93,6 +93,15 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
     // Extract presentation URL using generationId
     const presentationUrl = `https://gamma.app/generations/${gammaData.generationId}`;
 
+    // Send event to n8n
+    await n8nWebhookClient.presentationCompleted(user.email, {
+      businessName: formData.businessName,
+      presentationUrl,
+      generationId: gammaData.generationId,
+      userId: user.id,
+      businessField: formData.businessField
+    });
+
     return Response.json({
       success: true,
       presentationUrl,
