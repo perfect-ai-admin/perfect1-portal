@@ -189,19 +189,21 @@ export default function GoalMentorChat({ goalCode, onGoalComplete }) {
         </form>
       )}
 
-      {/* Completion Message */}
+      {/* Completion Modal */}
       {mentor.goalState?.status === 'completed' && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border-t border-green-200 flex items-center gap-3"
-        >
-          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-          <div className="flex-1">
-            <p className="font-bold text-green-900">כל הכבוד! סיימת את המטרה</p>
-            <p className="text-sm text-green-700">עבור למטרה הבאה כדי להמשיך בצמיחה</p>
-          </div>
-        </motion.div>
+        <GoalCompletionModal
+          goalName={`מטרה: ${mentor.goalState?.goal_code}`}
+          pointsEarned={100}
+          nextGoalName="המטרה הבאה שלך"
+          onContinue={() => {
+            // Refresh journey and navigate
+            window.location.href = '/journey';
+          }}
+          onLater={() => {
+            // Just close modal, user can navigate later
+            mentor.setShowCompletion?.(false);
+          }}
+        />
       )}
     </div>
   );
