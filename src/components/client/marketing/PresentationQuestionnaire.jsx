@@ -198,7 +198,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     if (validateStep(currentStep)) {
       setIsBuilding(true);
       try {
-        const response = await base44.functions.invoke('generatePresentationWithGamma', { formData });
+        // Use gammaDirectCall which works without caching issues
+        const response = await base44.functions.invoke('gammaDirectCall', { formData });
 
         if (response.data.success) {
           setPresentationUrl(response.data.presentationUrl);
