@@ -1217,6 +1217,135 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 </motion.div>
               </motion.div>
             </div>
+          ) : showingPreview ? (
+            <div className="flex flex-col h-full bg-slate-50 animate-in fade-in zoom-in duration-500 relative overflow-hidden">
+
+              {/* Header */}
+              <div className="flex-none bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between z-20 shadow-sm">
+                <div>
+                  <h2 className="text-lg md:text-xl font-black text-slate-900 flex items-center gap-2">
+                    הטיוטה שלך מוכנה ✨
+                  </h2>
+                  <p className="text-xs md:text-sm text-slate-500">
+                    זו תצוגה זמנית. בחר אם את רוצה להמשיך או לערוך.
+                  </p>
+                </div>
+                <Button variant="ghost" onClick={() => setShowingPreview(false)} size="icon" className="text-slate-400 hover:text-slate-600 hover:bg-slate-100"><X className="w-5 h-5" /></Button>
+              </div>
+
+              {/* Main Content - Centered Preview Trigger */}
+              <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-10 overflow-hidden relative">
+                 <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#475569_1px,transparent_1px)] [background-size:20px_20px]" />
+
+                 <div className="relative z-10 w-full max-w-2xl group cursor-pointer" onClick={() => setIsFullPreviewOpen(true)}>
+                    {/* Floating Badge */}
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-blue-200 z-20 animate-bounce">
+                       לחץ כאן לתצוגה מלאה 👇
+                    </div>
+
+                    {/* The Card */}
+                    <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transition-all duration-500 transform group-hover:scale-[1.02] group-hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)]">
+                        {/* Browser Header */}
+                        <div className="bg-slate-100 border-b border-slate-200 p-3 flex items-center gap-3">
+                           <div className="flex gap-1.5">
+                             <div className="w-3 h-3 rounded-full bg-red-400" />
+                             <div className="w-3 h-3 rounded-full bg-amber-400" />
+                             <div className="w-3 h-3 rounded-full bg-green-400" />
+                           </div>
+                           <div className="flex-1 bg-white h-6 rounded-md shadow-sm border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-mono">
+                              preview-{pageSlug.slice(0, 8)}
+                           </div>
+                        </div>
+
+                        {/* Preview Placeholder Area */}
+                        <div className="aspect-[16/9] bg-slate-50 relative overflow-hidden flex items-center justify-center">
+                           {!createdPageData ? (
+                              <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                           ) : (
+                              <>
+                                 <div className="absolute inset-0 opacity-40 blur-[2px] group-hover:blur-sm transition-all duration-500 scale-[0.6] origin-top pointer-events-none select-none">
+                                    <DynamicLandingPage data={createdPageData} isThumbnail={true} />
+                                 </div>
+                                 <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                 {/* Big Play Button */}
+                                 <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-20 h-20 bg-white/90 backdrop-blur-xl rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300 border border-white/50">
+                                       <Eye className="w-8 h-8 text-blue-600 ml-1" />
+                                    </div>
+                                 </div>
+                              </>
+                           )}
+                        </div>
+                    </div>
+                 </div>
+              </div>
+
+              {/* Bottom Sticky Action Bar */}
+              <div className="flex-none bg-white border-t border-slate-100 p-4 md:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-20">
+                 <div className="max-w-4xl mx-auto">
+                    <div className="flex flex-col gap-3 mb-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                      <div className="text-sm font-bold text-slate-900">💡 מה זה שלב זה?</div>
+                      <ul className="text-xs text-slate-600 space-y-1">
+                        <li>✅ <span className="font-semibold">הטיוטה</span> שלך בדומיין זמני בלבד</li>
+                        <li>✅ אפשר <span className="font-semibold">לצפות</span> בדף המלא</li>
+                        <li>✅ אם אוהב - <span className="font-semibold">המשך</span> לדומיין אמיתי</li>
+                        <li>✅ אם רוצה לשנות - <span className="font-semibold">חזור</span> לעריכה</li>
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3">
+                       <Button
+                         onClick={() => setShowingPreview(false)}
+                         variant="outline"
+                         className="h-12 rounded-xl font-bold flex-1"
+                       >
+                         ✏️ חזור לעריכה
+                       </Button>
+                       <Button
+                         onClick={handlePublishToLive}
+                         disabled={isPublishing}
+                         className="h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-blue-200 font-bold flex-1 flex items-center justify-center gap-2"
+                       >
+                         {isPublishing ? (
+                            <>
+                               <Loader2 className="w-4 h-4 animate-spin" />
+                               מעבד...
+                            </>
+                         ) : (
+                            <>
+                               🚀 המשך לדומיין אמיתי
+                            </>
+                         )}
+                       </Button>
+                    </div>
+                 </div>
+              </div>
+
+              {/* Full Preview Dialog */}
+              <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
+                  <DialogContent className="max-w-[98vw] w-[1600px] h-[95vh] p-0 flex flex-col gap-0 overflow-hidden rounded-xl border-0 shadow-2xl bg-gray-100">
+                      <div className="bg-white border-b px-4 py-3 flex justify-between items-center shrink-0 z-50">
+                           <div className="flex gap-3 items-center">
+                               <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                                  <Globe className="w-5 h-5" />
+                               </div>
+                               <div className="flex flex-col">
+                                  <span className="text-sm font-bold text-gray-900 leading-tight">{createdPageData?.business_name}</span>
+                                  <span className="text-xs text-slate-500 dir-ltr font-mono">preview-{pageSlug.slice(0, 8)}</span>
+                               </div>
+                           </div>
+                           <DialogClose asChild>
+                              <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100"><X className="w-5 h-5" /></Button>
+                           </DialogClose>
+                      </div>
+                      <div className="flex-1 overflow-auto bg-white relative">
+                          {createdPageData && <DynamicLandingPage data={createdPageData} />}
+                      </div>
+                  </DialogContent>
+              </Dialog>
+
+            </div>
           ) : publishedUrl ? (
             <div className="flex flex-col h-full bg-slate-50 animate-in fade-in zoom-in duration-500 relative overflow-hidden">
               
