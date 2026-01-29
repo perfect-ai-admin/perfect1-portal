@@ -94,6 +94,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     colors: '',
     logoStatus: '',
     logoFile: null,
+    gammaTheme: null,
+    gammaFolder: null,
     // Step 10
     language: 'hebrew',
     length: ''
