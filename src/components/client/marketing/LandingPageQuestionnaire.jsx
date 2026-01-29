@@ -1157,28 +1157,39 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                        </div>
 
                        {/* Price & CTA */}
-                       <div className="flex items-center justify-between">
+                       <div className="flex items-center justify-between gap-4">
                           <div className="flex items-center gap-2">
                             <span className="text-3xl font-black text-slate-900">299₪</span>
                             <span className="text-xs text-slate-400 line-through">990₪</span>
                           </div>
-                          <Button 
-                             onClick={() => handlePurchase()}
-                             disabled={isPublishing}
-                             className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold disabled:opacity-50"
-                          >
-                             {isPublishing ? (
-                                <>
-                                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                   מעבד...
-                                </>
-                             ) : (
-                                <>
-                                   קנה והפעל
-                                   <CreditCard className="w-4 h-4 mr-2" />
-                                </>
-                             )}
-                          </Button>
+                          <div className="flex gap-3">
+                            <Button 
+                               onClick={() => {
+                                 // Add to cart (mock implementation)
+                                 alert('הדף נוסף לסל! 🛒');
+                               }}
+                               className="h-12 px-6 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-bold flex-shrink-0"
+                            >
+                               הוסף לסל
+                            </Button>
+                            <Button 
+                               onClick={() => handlePurchase()}
+                               disabled={isPublishing}
+                               className="h-12 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg shadow-blue-200 font-bold disabled:opacity-50"
+                            >
+                               {isPublishing ? (
+                                  <>
+                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                     מעבד...
+                                  </>
+                               ) : (
+                                  <>
+                                     המשך לרכישה
+                                     <CreditCard className="w-4 h-4 mr-2" />
+                                  </>
+                               )}
+                            </Button>
+                          </div>
                        </div>
                     </div>
 
