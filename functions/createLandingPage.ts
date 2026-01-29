@@ -148,7 +148,7 @@ Deno.serve(async (req) => {
                         { "type": "pain_points", "title": "...", "items": [{ "title": "...", "description": "..." }] },
                         { "type": "features", "title": "...", "items": [{ "title": "...", "description": "...", "icon": "Shield" }] },
                         { "type": "process", "title": "...", "steps": [{ "number": 1, "title": "...", "description": "..." }] },
-                        { "type": "testimonials", "title": "...", "items": [{ "name": "...", "text": "...", "role": "..." }] },
+                        { "type": "testimonials", "title": "...", "items": [{ "name": "...", "text": "...", "role": "..." }, { "name": "...", "text": "...", "role": "..." }, { "name": "...", "text": "...", "role": "..." }] },
                         { "type": "faq", "title": "...", "items": [{ "question": "...", "answer": "..." }] },
                         { 
                             "type": "contact", 
