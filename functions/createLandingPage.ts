@@ -174,70 +174,70 @@ Deno.serve(async (req) => {
                 8. contact (with title, subtitle, cta_micro_text)
 
                 OUTPUT FORMAT:
-                Return a JSON object with the following structure:
+                Return a JSON object with ALL 8 sections in EXACT order:
                 {
                     "headline": "Main Hero Headline",
                     "subheadline": "Main Hero Subheadline",
                     "sections_json": [
                         { 
                             "type": "hero", 
-                            "title": "...", 
-                            "subtitle": "...",
-                            "hero_expansion": "פסקה קצרה שמבהירה: למי זה מיועד, איזו בעיה נפתרת, מה התוצאה המקובלת.",
-                            "ctaText": "...", 
-                            "image_prompt": "..." 
+                            "title": "כותרת ראשית",
+                            "subtitle": "תת-כותרת",
+                            "hero_expansion": "פסקה קצרה: למי זה? איזו בעיה? מה התוצאה?",
+                            "ctaText": "טקסט כפתור", 
+                            "image_prompt": "תיאור ויזואלי" 
                         },
                         {
                             "type": "suited_for",
                             "title": "למי זה מתאים / לא מתאים",
-                            "suited": ["...", "...", "..."],
-                            "not_suited": ["...", "..."]
+                            "suited": ["בולט 1", "בולט 2", "בולט 3"],
+                            "not_suited": ["לא מתאים אם 1", "לא מתאים אם 2"]
                         },
                         { 
-                            "type": "pain_points", 
-                            "title": "...", 
-                            "items": [{ "title": "...", "description": "..." }],
-                            "pain_expansion": "פסקה שמחברת רגשית: איך זה מרגיש ביום-יום, למה זה נשאר תקוע, מה המחיר של לא לטפל."
+                            "type": "pain_expansion", 
+                            "title": "מה הבעיה שלך?",
+                            "description": "פסקה שמחברת רגשית: איך זה מרגיש, למה נשאר תקוע, המחיר של כושל",
+                            "items": [{ "title": "כאב 1", "description": "..." }]
                         },
                         { 
                             "type": "how_it_works", 
-                            "title": "...", 
+                            "title": "איך זה עובד",
                             "steps": [
-                                { "step": 1, "title": "מה אתה עושה", "description": "..." },
-                                { "step": 2, "title": "מה קורה מאחורי הקלעים", "description": "..." },
-                                { "step": 3, "title": "מה אתה מקבל", "description": "..." }
+                                { "step": 1, "title": "מה אתה עושה", "description": "הפעולה שלך" },
+                                { "step": 2, "title": "מה קורה בשלנו", "description": "העבודה מאחוריי הקלעים" },
+                                { "step": 3, "title": "מה אתה מקבל", "description": "התוצאה המוחשית" }
                             ]
                         },
                         { 
                             "type": "why_us", 
-                            "title": "...",
-                            "description": "השוואה עדינה מול פתרונות קיימים (לבד / איש מקצוע רגיל / פתרון חד-פעמי)",
-                            "items": [{ "title": "...", "description": "..." }]
+                            "title": "למה זה שונה",
+                            "description": "השוואה עדינה מול לבד / אדם רגיל / חד-פעמי",
+                            "items": [{ "title": "יתרון 1", "description": "..." }]
                         },
                         { 
                             "type": "human_voice", 
-                            "title": "...",
-                            "content": "ציטוט לקוח או פסקה בגוף ראשון או סיפור קצר וספציפי"
+                            "title": "מה אומרים עלינו",
+                            "content": "ציטוט לקוח או פסקה בגוף ראשון אנושית"
                         },
                         { 
                             "type": "faq", 
-                            "title": "...", 
+                            "title": "שאלות נפוצות",
                             "items": [
-                                { "question": "...(מחיר/התחייבות)", "answer": "..." }, 
-                                { "question": "...(למי לא מתאים)", "answer": "..." }, 
-                                { "question": "...(זמן)", "answer": "..." }, 
-                                { "question": "...(סיכון)", "answer": "..." }, 
-                                { "question": "...(מה קורה אחרי)", "answer": "..." }
+                                { "question": "כמה זה עולה? יש התחייבות?", "answer": "..." }, 
+                                { "question": "למי זה לא מתאים?", "answer": "..." }, 
+                                { "question": "כמה זמן זה לוקח?", "answer": "..." }, 
+                                { "question": "מה אם לא אהבתי?", "answer": "..." }, 
+                                { "question": "מה קורה אחרי שאני משאיר פרטים?", "answer": "..." }
                             ] 
                         },
                         { 
                             "type": "contact", 
-                            "title": "...", 
-                            "subtitle": "...",
-                            "cta_micro_text": "בלי התחייבות / שיחה אחת בלבד / אנחנו כאן לשמוע",
-                            "form_fields": ["name", "phone", ...], 
-                            "phone": "...", 
-                            "whatsapp": "..." 
+                            "title": "בואו נדבר",
+                            "subtitle": "אנחנו כאן לעזור",
+                            "cta_micro_text": "בלי התחייבות • שיחה אחת בלבד • לא נשלח ספאם",
+                            "form_fields": ["name", "phone", "email"], 
+                            "phone": "מספר טלפון",
+                            "whatsapp": "מספר וואטסאפ"
                         }
                     ]
                 }
@@ -283,30 +283,18 @@ Deno.serve(async (req) => {
             // We will fallback to basic content if AI fails
         }
 
-        // Fallback Content
+        // ⚠️ STRICT FALLBACK - אם LLM נכשלה, יש לנו סקסטון חלקי ולא שלם
+        // זה לעולם לא אמור להיקרא אם הפרומפט עובד כמו שצריך
         const fallbackSections = [
             {
                 type: 'hero',
-                title: data.headline || data.business_name,
+                title: data.headline || data.businessName || 'עסק חדש',
                 subtitle: data.subheadline || 'הפתרון המושלם עבורך',
-                ctaText: 'צור קשר',
-                ctaLink: '#contact'
-            },
-            {
-                type: 'features',
-                title: 'למה לבחור בנו?',
-                items: [
-                    { title: 'שירות מקצועי', description: 'אנו מתמחים במתן שירות ברמה הגבוהה ביותר' },
-                    { title: 'זמינות גבוהה', description: 'אנחנו כאן בשבילך כמעט בכל שעה' },
-                    { title: 'מחירים הוגנים', description: 'תמורה מעולה למחיר ללא הפתעות' }
-                ]
-            },
-            {
-                type: 'contact',
-                title: 'דברו איתנו',
-                phone: data.phone,
-                whatsapp: data.whatsapp || data.phone
+                hero_expansion: 'שדה זה צריך להיות מוגדר בפרומפט. אם אתה קורא זאת, הפרומפט נכשל.',
+                ctaText: 'בואו נדבר',
+                image_prompt: 'professional business image'
             }
+            // ⚠️ אם זה נתקע כאן, LLM לא יצרה את כל 8 הסקשנים כמו שדרוש
         ];
 
         const finalSections = generatedContent?.sections_json || fallbackSections;
