@@ -906,6 +906,9 @@ export default function OsekPaturLanding() {
             <h3 className="text-xl md:text-2xl font-black text-[#1E3A5F] mb-3 pr-8">
               רגע לפני שממשיכים 👋
             </h3>
+            <p className="text-blue-700 font-semibold mb-3 text-sm md:text-base bg-blue-50 p-3 rounded-lg">
+              שירות פרטי לפתיחת עוסק פטור, לא גוף ממשלתי.
+            </p>
             <p className="text-gray-600 mb-6 leading-relaxed text-sm md:text-base">
               מתלבטים אם עוסק פטור מתאים לכם? השאירו פרטים ומומחה שלנו יעשה לכם סדר בחינם.
             </p>
