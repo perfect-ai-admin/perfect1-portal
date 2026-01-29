@@ -97,14 +97,24 @@ Deno.serve(async (req) => {
 
     // Update BusinessJourney if we got state updates
     if (n8nResult.goal_update && journey) {
-      await base44.entities.BusinessJourney.update(journey.id, {
+      const updateData = {
         current_goal_code: n8nResult.goal_update.goal_code,
         journey_progress_percent: Math.floor((n8nResult.goal_update.progress_percent || 0)),
-        ...(n8nResult.goal_update.complete_goal && {
-          completed_goals: [...(journey.completed_goals || []), n8nResult.goal_update.goal_code]
-        }),
         last_webhook_sync: new Date().toISOString()
-      });
+      };
+
+      // Handle goal completion
+      if (n8nResult.goal_update.complete_goal || n8nResult.goal_update.status === 'completed') {
+        const completedGoals = journey.completed_goals || [];
+        if (!completedGoals.includes(n8nResult.goal_update.goal_code)) {
+          completedGoals.push(n8nResult.goal_update.goal_code);
+        }
+        updateData.completed_goals = completedGoals;
+        updateData.current_goal_code = null;
+        updateData.journey_progress_percent = Math.round((completedGoals.length / 7) * 100);
+      }
+
+      await base44.entities.BusinessJourney.update(journey.id, updateData);
     }
 
     return Response.json({
