@@ -57,8 +57,8 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       payload.themeId = formData.gammaTheme;
     }
 
-    console.log('🔵 Sending to Gamma API v1.0...');
-    console.log('API Key available:', !!Deno.env.get('GAMMA_API_KEY'));
+    console.log('🔵 Sending to Gamma API v1.0 - Clean payload...');
+    console.log('Payload keys:', Object.keys(payload));
 
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
