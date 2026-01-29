@@ -204,13 +204,13 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
           setPresentationUrl(response.data.presentationUrl);
           setDraftPreviewUrl(response.data.presentationUrl);
           setShowDraftPreview(true);
-          toast.success('המצגה עוברת בדיקה... 🎉');
+          toast.success('המצגה שלך מוכנה! 🎉');
         } else {
-          toast.error('שגיאה ביצירת המצגת');
+          toast.error('שגיאה: ' + (response.data.error || 'לא הצלח ליצור מצגה'));
         }
       } catch (error) {
         console.error('Error:', error);
-        toast.error('שגיאה: ' + error.message);
+        toast.error('שגיאה בחיבור לשרת. בדוק את הגדרות ה-API.');
       } finally {
         setIsBuilding(false);
       }
