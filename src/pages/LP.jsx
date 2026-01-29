@@ -6,20 +6,32 @@ import DynamicLandingPage from '../components/landing-page/DynamicLandingPage';
 import { Loader2, AlertCircle } from 'lucide-react';
 
 export default function LP() {
-    // Extract slug from URL query parameter (?s=slug)
+    // Extract ID from URL query parameter (?id=xxx)
     const urlParams = new URLSearchParams(window.location.search);
-    const slug = urlParams.get('s');
+    const pageId = urlParams.get('id');
+    const legacySlug = urlParams.get('s');
 
     const { data: page, isLoading, error } = useQuery({
-        queryKey: ['publicLandingPage', slug],
+        queryKey: ['publicLandingPage', pageId, legacySlug],
         queryFn: async () => {
-            if (!slug) throw new Error("No slug provided");
-            console.log('[LP] Fetching slug:', slug);
-            const res = await base44.functions.invoke('getPublicLandingPage', { slug });
-            console.log('[LP] Fetch result:', { slug, success: !!res.data, hasStatus: res.data?.status });
-            return res.data;
+            if (pageId) {
+                // Fetch by ID (preferred)
+                console.log('[LP] Fetching by ID:', pageId);
+                const pageData = await base44.entities.LandingPage.get(pageId);
+                if (pageData?.status !== 'published') {
+                    throw new Error('Page not published');
+                }
+                return pageData;
+            } else if (legacySlug) {
+                // Fallback to slug
+                console.log('[LP] Fetching by slug:', legacySlug);
+                const res = await base44.functions.invoke('getPublicLandingPage', { slug: legacySlug });
+                return res.data;
+            } else {
+                throw new Error("No page identifier provided");
+            }
         },
-        enabled: !!slug,
+        enabled: !!(pageId || legacySlug),
         retry: false
     });
 

@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
             // Idempotency: if already published, return existing URL
             if (page.status === 'published' && page.slug) {
                 const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
-                const publicUrl = `https://${publicDomain}/LP?s=${page.slug}`;
+                const publicUrl = `https://${publicDomain}/LP?id=${landingPageId}`;
                 console.log(`[IDEMPOTENT] Page already published, returning URL: ${publicUrl}`);
                 return Response.json({
                     success: true,
@@ -90,15 +90,16 @@ Deno.serve(async (req) => {
                 published_at: new Date().toISOString()
             });
 
-            // Generate the public domain URL
+            // Generate the public domain URL using page ID for reliability
             const publicDomain = Deno.env.get('LANDING_PAGE_PUBLIC_DOMAIN') || 'perfect1.co.il';
-            const publicUrl = `https://${publicDomain}/LP?s=${finalSlug}`;
-            console.log(`[SUCCESS] Final published URL: ${publicUrl} (slug: ${finalSlug})`);
+            const publicUrl = `https://${publicDomain}/LP?id=${landingPageId}`;
+            console.log(`[SUCCESS] Final published URL: ${publicUrl} (id: ${landingPageId}, slug: ${finalSlug})`);
 
             return Response.json({
                 success: true,
                 message: 'הדף שלך באוויר 🎉',
                 url: publicUrl,
+                pageId: landingPageId,
                 slug: finalSlug,
                 status: 'published',
                 isIdempotent: false

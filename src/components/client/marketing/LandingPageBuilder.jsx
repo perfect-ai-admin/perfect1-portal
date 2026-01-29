@@ -14,33 +14,10 @@ export default function LandingPageBuilder({ onSwitchToLogo }) {
     'טופס לליידים'
   ];
 
-  const handleComplete = async (formData) => {
-    console.log('Landing page data:', formData);
+  const handleComplete = async (result) => {
+    // This is called from questionnaire with the published URL
+    console.log('Landing page completed:', result);
     setShowQuestionnaire(false);
-    
-    try {
-      // Create landing page with AI
-      const { base44 } = await import('@/api/base44Client');
-      const createRes = await base44.functions.invoke('createLandingPage', { data: formData });
-      const { id, slug } = createRes.data;
-      
-      // Auto mark as paid (skip payment for now)
-      await base44.functions.invoke('publishLandingPage', { 
-        landingPageId: id, 
-        action: 'markPaid' 
-      });
-      
-      // Auto publish
-      const publishRes = await base44.functions.invoke('publishLandingPage', { 
-        landingPageId: id, 
-        action: 'publish' 
-      });
-      
-      const { url } = publishRes.data;
-      window.open(url, '_blank');
-    } catch (error) {
-      console.error('Landing page creation failed:', error);
-    }
   };
 
   return (
