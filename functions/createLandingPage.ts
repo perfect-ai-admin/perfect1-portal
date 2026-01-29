@@ -323,15 +323,18 @@ Return ONLY the JSON object with these keys:
 
         // Validation 8: Human_Voice must have exactly 3 items with correct types in order
         if (!Array.isArray(sections[5].items) || sections[5].items.length !== 3) {
+            console.error("❌ V8a Debug - HV Items:", JSON.stringify(sections[5], null, 2));
             throw new Error(`❌ V8a Failed: Human_Voice has ${sections[5].items?.length || 0} items, need 3`);
         }
         const hvTypes = ["testimonial", "founder_message", "customer_story"];
         for (let i = 0; i < 3; i++) {
             if (sections[5].items[i].type !== hvTypes[i]) {
+                console.error(`❌ V8b Debug - Item ${i}:`, JSON.stringify(sections[5].items[i], null, 2));
                 throw new Error(`❌ V8b Failed: Human_Voice item ${i + 1} is "${sections[5].items[i].type}", need "${hvTypes[i]}"`);
             }
         }
         console.log("✅ V8 passed: Human_Voice has 3 items (testimonial→founder_message→customer_story)");
+        console.log("📝 Full HV Section:", JSON.stringify(sections[5], null, 2));
 
         // Validation 9: FAQ must have exactly 7 items
         if (!Array.isArray(sections[6].items) || sections[6].items.length !== 7) {
