@@ -42,7 +42,7 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Prepare Gamma API v1.0 payload
+    // Prepare Gamma API v1.0 payload (without generateImage)
     const payload = {
       inputText: inputText,
       textMode: 'generate',
@@ -54,8 +54,7 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
         language: formData.language === 'hebrew' ? 'he' : 'en'
       },
       imageOptions: {
-        model: 'dall-e-3',
-        generateImage: true
+        model: 'dall-e-3'
       }
     };
 
@@ -70,12 +69,7 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
     }
 
     console.log('🔵 Sending to Gamma API v1.0...');
-    console.log('Token available:', !!Deno.env.get('GAMMA_API_KEY'));
-
-    // Remove generateImage from imageOptions as Gamma API doesn't accept it
-    if (payload.imageOptions) {
-      delete payload.imageOptions.generateImage;
-    }
+    console.log('Payload:', JSON.stringify(payload, null, 2));
 
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
