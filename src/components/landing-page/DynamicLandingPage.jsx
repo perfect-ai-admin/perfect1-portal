@@ -292,17 +292,52 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
     );
 
     const renderHumanVoice = (section, idx) => (
-        <section key={idx} className="py-24 bg-white">
-            <div className="container mx-auto px-6 max-w-3xl">
-                <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-12">{section.title}</h2>
-                <motion.div {...getMotionProps()} className="p-8 bg-gradient-to-br from-[var(--primary)]/5 to-slate-50 rounded-3xl border-2 border-[var(--primary)]/20">
-                    <blockquote className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed italic">
-                        "{section.content}"
-                    </blockquote>
-                </motion.div>
-            </div>
-        </section>
-    );
+         <section key={idx} className="py-32 bg-gradient-to-b from-white via-slate-50 to-white">
+             <div className="container mx-auto px-6">
+                 <h2 className="text-4xl md:text-5xl font-black text-center text-slate-900 mb-4">{section.title}</h2>
+                 <p className="text-center text-slate-600 mb-20 text-lg max-w-2xl mx-auto">קולות אמיתיים של אנשים שהתחיל עם אנחנו</p>
+
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                     {section.items?.map((item, i) => {
+                         const bgColor = i === 0 ? 'from-blue-50 to-blue-100/50' : i === 1 ? 'from-purple-50 to-purple-100/50' : 'from-green-50 to-green-100/50';
+                         const borderColor = i === 0 ? 'border-blue-200' : i === 1 ? 'border-purple-200' : 'border-green-200';
+                         const badgeColor = i === 0 ? 'bg-blue-100 text-blue-700' : i === 1 ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700';
+
+                         return (
+                             <motion.div
+                                 key={i}
+                                 {...getMotionProps()}
+                                 variants={{
+                                     hidden: { opacity: 0, y: 40 },
+                                     visible: { opacity: 1, y: 0 }
+                                 }}
+                                 transition={{ delay: i * 0.15 }}
+                                 className={`p-8 rounded-3xl border-2 ${borderColor} bg-gradient-to-br ${bgColor} hover:shadow-xl transition-all duration-300`}
+                             >
+                                 <div className="flex items-start justify-between mb-4">
+                                     <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${badgeColor} uppercase tracking-wide`}>
+                                         {item.type === 'testimonial' ? 'לקוח' : item.type === 'founder_message' ? 'מייסד' : 'סיפור'}
+                                     </span>
+                                     {i === 0 && <span className="text-2xl">⭐</span>}
+                                     {i === 1 && <span className="text-2xl">💡</span>}
+                                     {i === 2 && <span className="text-2xl">❤️</span>}
+                                 </div>
+
+                                 <p className="text-slate-800 text-base leading-relaxed mb-6 font-medium min-h-[100px]">
+                                     "{item.content}"
+                                 </p>
+
+                                 <div className="pt-4 border-t-2 border-current border-opacity-20">
+                                     <p className="font-bold text-slate-900 text-sm">{item.author}</p>
+                                     <p className="text-xs text-slate-600 mt-1">{item.role}</p>
+                                 </div>
+                             </motion.div>
+                         );
+                     })}
+                 </div>
+             </div>
+         </section>
+     );
 
     const renderFeatures = (section, idx) => (
         <section key={idx} id="features" className="py-24 bg-slate-50 overflow-hidden">
@@ -557,7 +592,7 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                     case 'pain_expansion': return renderPainExpansion(section, idx);
                     case 'how_it_works': return renderHowItWorks(section, idx);
                     case 'why_us': return renderWhyUs(section, idx);
-                    case 'human_voice': return renderHumanVoice(section, idx);
+                    case 'human_voice': return section.items && section.items.length > 0 ? renderHumanVoice(section, idx) : null;
                     case 'features': 
                     case 'pain_points': // Handle pain_points same as features
                         return renderFeatures(section, idx);
