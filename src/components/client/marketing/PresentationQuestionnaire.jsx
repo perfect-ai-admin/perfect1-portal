@@ -199,10 +199,12 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
       setIsBuilding(true);
       try {
         const response = await base44.functions.invoke('generatePresentationWithGamma', { formData });
-        
+
         if (response.data.success) {
           setPresentationUrl(response.data.presentationUrl);
-          toast.success('מצגתך נוצרה בהצלחה! 🎉');
+          setDraftPreviewUrl(response.data.presentationUrl);
+          setShowDraftPreview(true);
+          toast.success('המצגה עוברת בדיקה... 🎉');
         } else {
           toast.error('שגיאה ביצירת המצגת');
         }
