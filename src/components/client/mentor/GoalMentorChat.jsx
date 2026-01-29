@@ -19,11 +19,9 @@ import { cn } from '@/lib/utils';
  * Goal Mentor Chat Component
  * Communicates with N8N webhook for AI-powered goal tracking
  */
-export default function GoalMentorChat({ goalCode, goalData, onGoalComplete }) {
+export default function GoalMentorChat({ goalCode, goalData, customerGoalId, onGoalComplete }) {
   const [user, setUser] = useState(null);
   const [messageText, setMessageText] = useState('');
-  const [showCompletion, setShowCompletion] = useState(false);
-  const [goalName] = useState(goalData?.name || '');
   const messagesEndRef = useRef(null);
 
   const mentor = useGoalMentorWebhook(user?.phone, user?.email, user?.full_name);
