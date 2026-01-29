@@ -41,10 +41,11 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Send ONLY the minimum required fields
+    // Send with required fields
     const payload = {
       inputText: inputText,
-      numCards: numCardsMap[formData.length] || 10
+      numCards: numCardsMap[formData.length] || 10,
+      textMode: 'generate'
     };
 
     console.log('📤 Direct API Call - Minimal Payload');
