@@ -118,6 +118,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [previewDevice, setPreviewDevice] = useState('desktop');
   const [publishedUrl, setPublishedUrl] = useState(null);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [countdown, setCountdown] = useState(30);
 
   useEffect(() => {
     // Auto-detect mobile
@@ -131,6 +132,18 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     const scrollArea = document.getElementById('questionnaire-scroll-area');
     if (scrollArea) scrollArea.scrollTop = 0;
   }, [currentStep]);
+
+  // Countdown timer during building
+  useEffect(() => {
+    if (!isBuilding) {
+      setCountdown(30);
+      return;
+    }
+    const timer = setInterval(() => {
+      setCountdown(prev => prev > 0 ? prev - 1 : 0);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isBuilding]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => {
@@ -1109,11 +1122,49 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </motion.div>
 
               {/* Loading steps */}
+              {/* Countdown Timer */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="relative z-10 mt-10 mb-8"
+              >
+                <div className="relative w-28 h-28">
+                  <svg className="absolute inset-0 transform -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" strokeWidth="2" />
+                    <motion.circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(countdown / 30) * 283} 283`}
+                      animate={{ strokeDasharray: [`${(countdown / 30) * 283} 283`] }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.div
+                      key={countdown}
+                      initial={{ scale: 1.2, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-4xl font-black text-blue-600"
+                    >
+                      {countdown}
+                    </motion.div>
+                    <span className="text-xs text-slate-500 mt-1">שניות</span>
+                  </div>
+                </div>
+              </motion.div>
+
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="relative z-10 mt-12 space-y-3 text-sm"
+                className="relative z-10 space-y-3 text-sm"
               >
                 <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="flex items-center gap-2 text-slate-700">
                   <CheckCircle2 className="w-4 h-4 text-green-600" /> ניתוח העסק שלך
