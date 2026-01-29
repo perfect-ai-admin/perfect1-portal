@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { useQuery } from '@tanstack/react-query';
 
 // Custom specialized card selector component for better UX
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
