@@ -584,16 +584,70 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
         );
 
       case 9: // Design & Logo
-        return (
-          <div className="space-y-3">
-            <StepHeader 
-              icon={Paintbrush} 
-              title="עיצוב ולוגו" 
-              description="איך זה יראה?"
-              colorClass="bg-pink-100 text-pink-600"
-            />
+         return (
+           <div className="space-y-3">
+             <StepHeader 
+               icon={Paintbrush} 
+               title="עיצוב ולוגו" 
+               description="איך זה יראה?"
+               colorClass="bg-pink-100 text-pink-600"
+             />
 
-            <div className="space-y-3">
+             <div className="space-y-3">
+               <div className="space-y-2">
+                 <Label className="block text-xs font-semibold">בחר עיצוב (Gamma Themes)</Label>
+                 {themes.length > 0 ? (
+                   <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                     {themes.map(theme => (
+                       <div
+                         key={theme.id}
+                         onClick={() => {
+                           setSelectedTheme(theme.id);
+                           handleInputChange('gammaTheme', theme.id);
+                         }}
+                         className={cn(
+                           "p-2 rounded-lg border cursor-pointer transition-all text-center",
+                           selectedTheme === theme.id
+                             ? "border-pink-500 bg-pink-50 ring-1 ring-pink-500/20"
+                             : "border-gray-200 hover:border-pink-200"
+                         )}
+                       >
+                         <div className="text-xs font-bold text-gray-900">{theme.name}</div>
+                         <div className="text-[10px] text-gray-500">{theme.type}</div>
+                       </div>
+                     ))}
+                   </div>
+                 ) : (
+                   <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">טוען עיצובים...</div>
+                 )}
+               </div>
+
+               <div className="space-y-2">
+                 <Label className="block text-xs font-semibold">בחר תיקייה (Gamma Folders)</Label>
+                 {folders.length > 0 ? (
+                   <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                     {folders.map(folder => (
+                       <div
+                         key={folder.id}
+                         onClick={() => {
+                           setSelectedFolder(folder.id);
+                           handleInputChange('gammaFolder', folder.id);
+                         }}
+                         className={cn(
+                           "p-2 rounded-lg border cursor-pointer transition-all text-center",
+                           selectedFolder === folder.id
+                             ? "border-pink-500 bg-pink-50 ring-1 ring-pink-500/20"
+                             : "border-gray-200 hover:border-pink-200"
+                         )}
+                       >
+                         <div className="text-xs font-bold text-gray-900">{folder.name}</div>
+                       </div>
+                     ))}
+                   </div>
+                 ) : (
+                   <div className="text-xs text-gray-500 p-3 bg-gray-50 rounded-lg">טוען תיקיות...</div>
+                 )}
+               </div>
               <div className="space-y-2">
                 <Label className="block text-xs font-semibold">סגנון מועדף</Label>
                 <div className="grid grid-cols-2 gap-2">
