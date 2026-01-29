@@ -16,8 +16,8 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Slug required' }, { status: 400 });
         }
 
-        // Use service role to list all pages and find published one
-        const allPages = await base44.asServiceRole.entities.LandingPage.list(undefined, 1000);
+        // Use service role to list all pages and find published one (most recent first)
+        const allPages = await base44.asServiceRole.entities.LandingPage.list('-created_date', 1000);
         const page = allPages.find(p => p.slug === slug && p.status === 'published');
 
         if (!page) {
