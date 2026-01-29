@@ -42,7 +42,7 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Prepare minimal Gamma API v1.0 payload
+    // Prepare minimal Gamma API v1.0 payload (no imageOptions, no unsupported fields)
     const payload = {
       inputText: inputText,
       textMode: 'generate',
@@ -52,13 +52,13 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       additionalInstructions: `Create a professional business presentation. Style: ${formData.style}. Colors: ${formData.colors}. Make it persuasive and clear.`
     };
 
-    // Add themeId if selected from Gamma themes
-    if (formData.gammaTheme && formData.gammaTheme !== '') {
+    // Add themeId if selected
+    if (formData.gammaTheme) {
       payload.themeId = formData.gammaTheme;
     }
 
-    console.log('🔵 Sending to Gamma API v1.0 - Clean payload...');
-    console.log('Payload keys:', Object.keys(payload));
+    console.log('🔵 Sending to Gamma API v1.0...');
+    console.log('Request payload:', JSON.stringify(payload, null, 2));
 
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
