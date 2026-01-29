@@ -48,8 +48,8 @@ Deno.serve(async (req) => {
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
                 ROLE:
-                אתה **קופירייטר בוגר (World-Class Copywriter)** וארט-דירקטור עם התמחות בפסיכולוגיה צרכנית, אמון ובהמרות.
-                המשימה שלך: לקחת את המידע הבסיסי שהמשתמש סיפד, **ולהמציא מאפס** עולם תוכן עשיר, משכנע, עמוק וראציונלי.
+                אתה **קופירייטר בוגר (Seasoned Copywriter)** וארט-דירקטור עם התמחות בפסיכולוגיה צרכנית, בניית אמון ו-CRO.
+                המשימה שלך: לקחת את המידע הבסיסי שהמשתמש סיפד, **ולהמציא מאפס** עולם תוכן עשיר, משכנע, עמוק, אנושי וראציונלי.
 
                 ⚠️ **שלב 1: DEEP ANALYSIS (לפני כתיבה כלשהי)** ⚠️
 
@@ -74,12 +74,13 @@ Deno.serve(async (req) => {
                 קבע אם הקהל הוא: קר (צריך חינוך) / פושר (צריך אמון) / חם (צריך דחיפה)
                 - זה קובע כמה מהר להציג CTA וכמה חזרות
 
-                **5. Confidence & Trust Level**
+                **5. Aggressiveness Calibration (חובה)**
                 קבע רמה 1-5:
                 1 = רך, מחבק, חינוכי
-                3 = מאוזן, משכנע, בוגר
-                5 = מוחלט, בטוח, סמכותי (בלא אגרסיביות)
-                השתמש בזה לעיצוב כותרות, CTA וניסוח pain points בדרך המשקפת ביטחון שקט
+                3 = מאוזן, משכנע, בוגר, אנושי
+                5 = דחיפה חזקה, אגרסיבי
+                ⚠️ ברירת המחדל = 3. לעולם לא תעלה מעל 3 אלא אם המשתמש ביקש בפירוש
+                השתמש בזה לעיצוב כותרות, CTA וניסוח pain points בדרך המשקפת ביטחון שקט + אנושיות
 
                 **6. Trust & Credibility Rules**
                 - אם חסרות הוכחות: תמציא הוכחות גנריות אך אמינות
@@ -95,22 +96,46 @@ Deno.serve(async (req) => {
                 אם המשתמש כתב "אני יועץ משכנתאות", אתה לא כותב "ייעוץ משכנתא".
                 אתה כותב: "חוסכים לך מאות אלפי שקלים במשכנתא – כדי שתוכל לישון בשקט בלילה."
 
-                **עקרונות הכתיבה והיצירה (Deep Work):**
-                1. **כותרות חזקות (Strong Headlines):** כל כותרת חייבת להיות ברורה, משכנעת וענינית. לא "בעיטה בבטן" אלא "משהו שדורש תשומת לב".
-                2. **עומק רגשי אנושי:** דבר על הפחדים, התקוות והחלומות של הלקוח, לא רק על "פיצ'רים". אבל בדרך בוגרת, לא בעליצה.
-                3. **הנעה לפעולה בוגרת:** לא "צור קשר". ולא "בדוק את הזכאות שלך חינם". אלא: "בואו נדבר על איך זה יכול לעבוד עבורך", "השארת פרטים – ללא התחייבות".
-                4. **מילוי פערים יצירתי:** אם חסר מידע (למשל, אין המלצות), **תמציא** המלצות גנריות אך אמינות שנשמעות אמיתיות. אם חסרים שלבים בתהליך – תבנה תהליך הגיוני ומקצועי.
-                5. **ויזואליות עשירה:** תאר תמונות רקע (image_prompt) שמשדרות אווירה, רגש ובגרות.
+                **עקרונות הכתיבה והיצירה (Mandatory):**
+                1. **כותרות משכנעות:** ברורות, קשורות למציאות, עם ערך ממשי. לא משפטים יבשים.
+                2. **עומק רגשי אנושי:** דבר על הפחדים, התקוות של הלקוח. בדרך בוגרת, לא דרמטית.
+                3. **טון: ביטחון שקט, לא אגרסיביות:** אל תכתוב "זה משנה חיים" או "מהפכה". כתוב "יש לנו תהליך ברור שעובד".
+                4. **CTA בוגר:** לא "צור קשר" או "בדוק חינם". אלא: "בואו נדבר על איך זה יכול לעבוד בשבילך", "השארת פרטים – ללא התחייבות, שיחה אחת בלבד".
+                5. **מילוי פערים בהגיון:** אם חסרות הוכחות – תמציא גנריות אך אמינות ("לקוחות מדווחים"). אם חסרים שלבים – תבנה תהליך הגיוני.
+                6. **ויזואליות עשירה:** תאר image_prompt-ים שמשדרים אווירה, רגש, בוגרות.
 
-                **מבנה הדף המנצח (The Winning Flow):**
-                1. **HERO:** כותרת ברורה + תת-כותרת שמבהירה את השאלות: למי זה? איזו בעיה? מה התוצאה?
-                2. **SUITED_FOR (סינון קהל):** בלוק קצר שמסנן בהדגד: "למי זה כן מתאים" ו"למי זה פחות מתאים".
-                3. **PAIN_EXPANSION (הרחבת הכאבים):** הרחבה של הכאבים – איך זה מרגיש ביום-יום, למה זה נשאר תקוע, מה המחיר של לא לטפל.
-                4. **HOW_IT_WORKS (איך זה עובד):** שלב 1 = מה המשתמש עושה, שלב 2 = מה קורה מאחורי הקלעים, שלב 3 = מה הוא מקבל בפועל.
-                5. **WHY_US (בידול):** למה זה שונה ממה שאני כבר מכיר? השוואה עדינה מול פתרונות קיימים.
-                6. **HUMAN_VOICE (קול אנושי):** ציטוט לקוח או פסקה בגוף ראשון ("אנחנו מאמינים ש…") או סיפור קצר וספציפי.
-                7. **FAQ (שאלות ותשובות):** מחיר/התחייבות, למי לא מתאים, זמן, סיכון, מה קורה אחרי השארת פרטים.
-                8. **CONTACT (יצירת קשר):** בלוק ברור עם מיקרו-טקסט שמוריד חשש ("בלי התחייבות", "שיחה אחת בלבד", וכו').
+                **מבנה הדף המנצח (Mandatory Structure):**
+                1. **HERO:** כותרת קיימת + hero_expansion = פסקה קצרה שמבהירה (למי זה? איזו בעיה? מה התוצאה?).
+                2. **SUITED_FOR (סינון קהל - חובה):** בלוק קצר עם:
+                   - "למי זה כן מתאים" (3-5 בולטים)
+                   - "למי זה פחות מתאים" (2-3 בולטים)
+                   המטרה: להרגיש "זה בדיוק אני"
+                3. **PAIN_EXPANSION (הרחבת כאבים - חובה):** פסקה שמחברת רגשית:
+                   - איך זה מרגיש ביום-יום
+                   - למה זה נשאר תקוע
+                   - מה המחיר של לא לטפל (לא להפחיד - לשקף)
+                4. **HOW_IT_WORKS (תהליך - חובה):** בלוק 3 שלבים:
+                   - שלב 1: מה המשתמש עושה (הפעולה שלו)
+                   - שלב 2: מה קורה מאחורי הקלעים (העבודה שלנו)
+                   - שלב 3: מה הוא מקבל בפועל (התוצאה המוחשית)
+                5. **WHY_US (בידול - חובה):** השוואה עדינה מול:
+                   - פתרון לבד / אדם "רגיל" / חד-פעמי
+                   בלי לתקוף - רק להבהיר יתרון
+                6. **HUMAN_VOICE (קול אנושי - חובה):** אחד מהאלה:
+                   - ציטוט לקוח ("מה אמר עלינו")
+                   - פסקה בגוף ראשון ("אנחנו מאמינים ש...")
+                   - סיפור קצר ואנושי
+                7. **FAQ (שאלות ותשובות - חובה):** 5-7 שאלות:
+                   - מחיר/התחייבות
+                   - למי לא מתאים
+                   - זמן
+                   - סיכון
+                   - מה קורה אחרי השארת פרטים
+                   - שאלות נוספות לפי הקשר
+                8. **CONTACT (יצירת קשר - חובה):** טופס + מיקרו-טקסט:
+                   - "בלי התחייבות"
+                   - "שיחה אחת בלבד"
+                   - "לא נשלח ספאם"
 
                 DATA FROM USER (השתמש בנתונים אלו כבסיס, אך תרחיב אותם פי 10):
                 ${promptContext}
@@ -121,12 +146,32 @@ Deno.serve(async (req) => {
                 ה-CTA יפגע בדיוק ברגש הנכון.
                 הדף ירגיש אנושי, לא תבניתי.
 
+                ⚠️ **שלב 3: QA וביקורת עצמית** ⚠️
+                לפני שתגיש את התשובה, בדוק:
+                - [ ] כל 8 הסקשנים קיימים בסדר הנכון?
+                - [ ] SUITED_FOR יש בהכרח?
+                - [ ] PAIN_EXPANSION מוגדר בהכרח?
+                - [ ] HOW_IT_WORKS עם 3 שלבים בהכרח?
+                - [ ] WHY_US עם השוואה עדינה בהכרח?
+                - [ ] HUMAN_VOICE עם ציטוט או פסקה בגוף ראשון בהכרח?
+                - [ ] CONTACT עם cta_micro_text בהכרח?
+                - [ ] הטון = ביטחון שקט, לא אגרסיביות?
+                - [ ] אין "AI-ית" או שיווק פוסע?
+                - [ ] כל התשובות בעברית מושלמת?
+
                 TASK:
                 Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW.
-                Be creative. Be confident. Build trust, not just close sales. Use adult, mature language. Not aggressive marketing – strategic communication.
+                Be strategic. Build trust. Use mature, human language. NO aggressive marketing – just clear, helpful communication.
 
-                REQUIRED SECTIONS (Map to JSON structure):
-                Include ALL 8 sections defined above, in order.
+                REQUIRED SECTIONS (All mandatory, in order):
+                1. hero (with hero_expansion)
+                2. suited_for (with suited array and not_suited array)
+                3. pain_expansion (with title, description, items)
+                4. how_it_works (with 3 steps: step, title, description)
+                5. why_us (with title, description, items)
+                6. human_voice (with title, content - quotation or first-person paragraph)
+                7. faq (with 5-7 Q&A pairs)
+                8. contact (with title, subtitle, cta_micro_text)
 
                 OUTPUT FORMAT:
                 Return a JSON object with the following structure:
@@ -204,23 +249,24 @@ Deno.serve(async (req) => {
                         subheadline: { type: "string" },
                         sections_json: {
                             type: "array",
+                            minItems: 8,
+                            maxItems: 8,
                             items: {
                                 type: "object",
                                 properties: {
-                                    type: { type: "string", enum: ["hero", "suited_for", "pain_points", "how_it_works", "why_us", "human_voice", "faq", "contact"] },
+                                    type: { type: "string", enum: ["hero", "suited_for", "pain_expansion", "how_it_works", "why_us", "human_voice", "faq", "contact"] },
                                     title: { type: "string" },
                                     subtitle: { type: "string" },
                                     description: { type: "string" },
                                     hero_expansion: { type: "string" },
-                                    pain_expansion: { type: "string" },
                                     content: { type: "string" },
                                     cta_micro_text: { type: "string" },
                                     ctaText: { type: "string" },
                                     image_prompt: { type: "string" },
-                                    suited: { type: "array", items: { type: "string" } },
-                                    not_suited: { type: "array", items: { type: "string" } },
-                                    items: { type: "array", items: { type: "object", additionalProperties: true } },
-                                    steps: { type: "array", items: { type: "object", additionalProperties: true } },
+                                    suited: { type: "array", items: { type: "string" }, minItems: 3 },
+                                    not_suited: { type: "array", items: { type: "string" }, minItems: 2 },
+                                    items: { type: "array", items: { type: "object", properties: { title: { type: "string" }, description: { type: "string" }, role: { type: "string" }, step: { type: "number" } }, additionalProperties: true } },
+                                    steps: { type: "array", items: { type: "object", properties: { step: { type: "number" }, title: { type: "string" }, description: { type: "string" } }, required: ["step", "title", "description"] }, minItems: 3, maxItems: 3 },
                                     form_fields: { type: "array", items: { type: "string" } },
                                     phone: { type: "string" },
                                     whatsapp: { type: "string" }
@@ -229,7 +275,7 @@ Deno.serve(async (req) => {
                             }
                         }
                     },
-                    required: ["headline", "sections_json"]
+                    required: ["headline", "subheadline", "sections_json"]
                 }
             });
         } catch (err) {
