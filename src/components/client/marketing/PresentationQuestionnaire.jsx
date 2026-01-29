@@ -101,6 +101,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   const [errors, setErrors] = useState({});
   const [isBuilding, setIsBuilding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [presentationUrl, setPresentationUrl] = useState(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
