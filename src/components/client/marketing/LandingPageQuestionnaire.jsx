@@ -119,6 +119,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
   const [publishedUrl, setPublishedUrl] = useState(null);
   const [isPublishing, setIsPublishing] = useState(false);
   const [countdown, setCountdown] = useState(60);
+  const [showingPreview, setShowingPreview] = useState(false);
+  const [previewPageId, setPreviewPageId] = useState(null);
 
   useEffect(() => {
     // Auto-detect mobile
