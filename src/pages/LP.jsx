@@ -14,21 +14,28 @@ export default function LP() {
     const { data: page, isLoading, error } = useQuery({
         queryKey: ['publicLandingPage', pageId, legacySlug],
         queryFn: async () => {
-            if (pageId) {
-                // Fetch by ID using public function (bypasses RLS)
-                console.log('[LP] Fetching by ID:', pageId);
-                const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
-                if (!res?.data) {
-                    throw new Error('Page not found');
+            try {
+                if (pageId) {
+                    console.log('[LP] Fetching by ID:', pageId);
+                    const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
+                    console.log('[LP] Response:', res);
+                    if (!res?.data) {
+                        throw new Error('Page not found');
+                    }
+                    return res.data;
+                } else if (legacySlug) {
+                    console.log('[LP] Fetching by slug:', legacySlug);
+                    const res = await base44.functions.invoke('getPublicLandingPage', { slug: legacySlug });
+                    if (!res?.data) {
+                        throw new Error('Page not found');
+                    }
+                    return res.data;
+                } else {
+                    throw new Error("No page identifier provided");
                 }
-                return res.data;
-            } else if (legacySlug) {
-                // Fallback to slug
-                console.log('[LP] Fetching by slug:', legacySlug);
-                const res = await base44.functions.invoke('getPublicLandingPage', { slug: legacySlug });
-                return res.data;
-            } else {
-                throw new Error("No page identifier provided");
+            } catch (err) {
+                console.error('[LP] Query error:', err);
+                throw err;
             }
         },
         enabled: !!(pageId || legacySlug),
