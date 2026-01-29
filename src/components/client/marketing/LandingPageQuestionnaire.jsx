@@ -241,12 +241,18 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       // Step 2: Fetch the full page data
       console.log('[STEP 2] Fetching page data...');
-      const pageData = await base44.entities.LandingPage.get(pageId);
-      
+      let pageData;
+      try {
+        pageData = await base44.entities.LandingPage.get(pageId);
+      } catch (err) {
+        console.warn('[STEP 2] RLS blocked fetch, using creation response');
+        pageData = createRes.data;
+      }
+
       if (!pageData) {
         throw new Error('Failed to fetch created page');
       }
-      
+
       setCreatedPageData(pageData);
       setPageSlug(pageData.slug || pageId);
       console.log('[STEP 2] ✓ Page data loaded');
@@ -271,9 +277,10 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       }
 
       console.log('[STEP 4] ✓ Published! URL:', publishRes.data.url);
-      
+
       // Success - show the URL
       setPublishedUrl(publishRes.data.url);
+      setShowSuccess(false); // Ensure we don't show success message
       localStorage.removeItem('landingPageFormData');
       
     } catch (error) {
@@ -1050,7 +1057,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 <p className="text-gray-500 text-sm">הבינה המלאכותית מחברת את כל החלקים</p>
               </div>
             </div>
-          ) : showSuccess ? (
+          ) : publishedUrl ? (
             <div className="flex flex-col h-full bg-slate-50 animate-in fade-in zoom-in duration-500 relative overflow-hidden">
               
               {/* Header */}
