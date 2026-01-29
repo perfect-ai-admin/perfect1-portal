@@ -269,7 +269,6 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
             }
 
             // Auto-publish immediately
-            setIsPublishing(true);
             try {
               // First mark as paid
               await base44.functions.invoke('publishLandingPage', {
@@ -286,15 +285,12 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               if (publishRes.data?.url) {
                 setPublishedUrl(publishRes.data.url);
                 localStorage.removeItem('landingPageFormData');
-                setShowSuccess(false);
               } else {
                 throw new Error("Failed to get published URL");
               }
             } catch (err) {
               console.error('Error publishing:', err);
               alert('היה קושי בפרסום הדף. אנא נסה שוב.');
-            } finally {
-              setIsPublishing(false);
             }
         } else {
             console.error("Failed to create landing page", res);
