@@ -268,6 +268,10 @@ export default function OsekPaturLanding() {
                     <span className="text-[#27AE60] block md:inline">פתיחת עוסק פטור</span> פשוט, מהיר וחוקי
                  </h1>
 
+                 <p className="text-base md:text-lg text-white/95 font-semibold bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg mb-4 inline-block">
+                   שירות פרטי לפתיחת עוסק פטור, לא גוף ממשלתי.
+                 </p>
+
                  <p className="text-lg md:text-2xl text-white/90 mb-6 leading-relaxed font-medium px-2 md:px-0">
                     הדרך המהירה והקלה ביותר לפתוח עוסק פטור - אנחנו נטפל בבירוקרטיה, אתם תתחילו להרוויח
                  </p>
