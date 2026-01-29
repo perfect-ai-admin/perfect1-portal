@@ -1,298 +1,250 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, Target, TrendingUp, Flame, RefreshCw } from 'lucide-react';
-import GoalCard from '@/components/client/journey/GoalCard';
+import { useQuery } from '@tanstack/react-query';
+import { Loader2, Target, Zap, Flame } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+
 import JourneyProgress from '@/components/client/journey/JourneyProgress';
-import SEOOptimized from './SEOOptimized';
+import CurrentGoalCard from '@/components/client/journey/CurrentGoalCard';
+import StatCard from '@/components/client/journey/StatCard';
 
 export default function JourneyDashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [journey, setJourney] = useState(null);
-  const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
 
-  // Load user and journey data
+  // Load user
   useEffect(() => {
-    const loadData = async () => {
+    const loadUser = async () => {
       try {
-        // Get current user
         const currentUser = await base44.auth.me();
         if (!currentUser) {
-          navigate('/login');
+          navigate('/');
           return;
         }
         setUser(currentUser);
-
-        // Fetch journey state
-        const journeyData = await base44.entities.BusinessJourney.filter(
-          { user_id: currentUser.email },
-          '-updated_date',
-          1
-        );
-
-        if (journeyData && journeyData.length > 0) {
-          setJourney(journeyData[0]);
-        } else {
-          // Initialize journey if not exists
-          const newJourney = await base44.entities.BusinessJourney.create({
-            user_id: currentUser.email,
-            status: 'active',
-            stage: 'idea',
-            journey_progress_percent: 0,
-            completed_goals: []
-          });
-          setJourney(newJourney);
-        }
-
-        // Fetch goals with status
-        const goalsData = await base44.entities.Goal.list('-display_order', 7);
-        if (goalsData && goalsData.length > 0) {
-          setGoals(goalsData);
-        }
       } catch (err) {
-        console.error('Error loading journey:', err);
-      } finally {
-        setLoading(false);
+        console.error('Auth error:', err);
+        navigate('/');
       }
     };
-
-    loadData();
+    loadUser();
   }, [navigate]);
 
-  const handleStartGoal = (goalCode) => {
-    navigate(`/goal/${goalCode}`);
-  };
+  // Fetch journey state
+  const { data: journeyState, isLoading: journeyLoading } = useQuery({
+    queryKey: ['journeyState', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      
+      // In production, fetch from Supabase
+      // For now, return mock data
+      return {
+        journey_progress_percent: 14,
+        total_goals_completed: 1,
+        total_goals_assigned: 7,
+        total_points: 100,
+        streak_days: 3,
+        current_goal_id: 'idea_development'
+      };
+    },
+    enabled: !!user?.id
+  });
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    try {
-      const journeyData = await base44.entities.BusinessJourney.filter(
-        { user_id: user?.email },
-        '-updated_date',
-        1
-      );
-      if (journeyData && journeyData.length > 0) {
-        setJourney(journeyData[0]);
-      }
-    } catch (err) {
-      console.error('Error refreshing:', err);
-    } finally {
-      setRefreshing(false);
+  // Fetch goals
+  const { data: goals = [], isLoading: goalsLoading } = useQuery({
+    queryKey: ['customerGoals', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      
+      // In production, fetch from Supabase with proper join
+      // Mock data structure:
+      return [
+        {
+          id: '1',
+          status: 'completed',
+          progress_percent: 100,
+          current_step: 5,
+          goals: {
+            id: 'goal_1',
+            goal_code: 'business_status',
+            goal_name_he: 'תמונת מצב העסק שלך',
+            description_he: 'תיאור המטרה',
+            sort_order: 1,
+            points_value: 100
+          }
+        },
+        {
+          id: '2',
+          status: 'in_progress',
+          progress_percent: 25,
+          current_step: 2,
+          goals: {
+            id: 'goal_2',
+            goal_code: 'idea_development',
+            goal_name_he: 'גיבוש הרעיון',
+            description_he: 'השתמש במנטור AI שלנו כדי להבהיר את הרעיון שלך',
+            sort_order: 2,
+            points_value: 100
+          }
+        },
+        {
+          id: '3',
+          status: 'not_started',
+          progress_percent: 0,
+          current_step: 1,
+          goals: {
+            id: 'goal_3',
+            goal_code: 'first_customer',
+            goal_name_he: 'גיוס לקוח ראשון',
+            description_he: 'תיאור המטרה',
+            sort_order: 3,
+            points_value: 100
+          }
+        },
+        {
+          id: '4',
+          status: 'not_started',
+          progress_percent: 0,
+          current_step: 1,
+          goals: {
+            id: 'goal_4',
+            goal_code: 'open_business',
+            goal_name_he: 'פתיחת עוסק פטור',
+            description_he: 'תיאור המטרה',
+            sort_order: 4,
+            points_value: 100
+          }
+        },
+        {
+          id: '5',
+          status: 'not_started',
+          progress_percent: 0,
+          current_step: 1,
+          goals: {
+            id: 'goal_5',
+            goal_code: 'product_portfolio',
+            goal_name_he: 'יצירת תיק מוצרים',
+            description_he: 'תיאור המטרה',
+            sort_order: 5,
+            points_value: 100
+          }
+        },
+        {
+          id: '6',
+          status: 'not_started',
+          progress_percent: 0,
+          current_step: 1,
+          goals: {
+            id: 'goal_6',
+            goal_code: 'marketing_campaign',
+            goal_name_he: 'הקמת קמפיין שיווקי',
+            description_he: 'תיאור המטרה',
+            sort_order: 6,
+            points_value: 100
+          }
+        },
+        {
+          id: '7',
+          status: 'not_started',
+          progress_percent: 0,
+          current_step: 1,
+          goals: {
+            id: 'goal_7',
+            goal_code: 'weekly_target',
+            goal_name_he: 'קביעת יעד שבועי',
+            description_he: 'תיאור המטרה',
+            sort_order: 7,
+            points_value: 100
+          }
+        }
+      ];
+    },
+    enabled: !!user?.id
+  });
+
+  const isLoading = journeyLoading || goalsLoading;
+  const currentGoal = goals.find(g => g.status === 'in_progress');
+
+  const handleStartGoal = () => {
+    if (currentGoal) {
+      navigate(`/goal/${currentGoal.goals.goal_code}`);
     }
   };
 
-  if (loading) {
+  if (!user) {
     return (
-      <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-[#1E3A5F] mx-auto mb-4" />
-          <p className="text-gray-600 font-medium">טוען את המסע שלך...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
   }
 
-  const currentGoal = goals.find(g => 
-    journey?.current_goal_code === g.goal_code
-  );
-
   return (
     <>
-      <SEOOptimized
-        title="המסע שלך - מטרות עסקיות | Perfect One"
-        description="עקוב אחרי התקדמותך בהשגת מטרות העסק שלך עם AI Mentor אישי"
-        canonical="https://perfect1.co.il/journey"
-      />
+      <Helmet>
+        <title>דאשבורד | המסע שלך</title>
+        <meta name="description" content="עקוב אחר התקדמותך בדרך להקמת העסק שלך" />
+      </Helmet>
 
-      <main className="min-h-screen bg-[#F8F9FA] py-12 md:py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 md:p-8">
+        <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-12"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-2">
-                  🚀 המסע שלך
-                </h1>
-                <p className="text-gray-600 font-medium">
-                  עקוב אחרי התקדמותך בהשגת מטרות העסק שלך
-                </p>
-              </div>
-              <Button
-                onClick={handleRefresh}
-                disabled={refreshing}
-                variant="outline"
-                size="icon"
-                className="rounded-full"
-              >
-                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              </Button>
-            </div>
-          </motion.div>
+          <div className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              דאשבורד
+            </h1>
+            <p className="text-gray-600">
+              שלום {user.full_name}, ברוכים הבאים חזרה! 👋
+            </p>
+          </div>
 
           {/* Stats Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <StatCard
-              icon={<Target className="w-6 h-6" />}
               label="מטרות פעילות"
-              value={Math.max(0, (journey?.journey_progress_percent ? 7 - Math.round(7 * (journey.journey_progress_percent / 100)) : 6))}
+              value={journeyState?.total_goals_assigned - journeyState?.total_goals_completed || 0}
+              icon={Target}
               color="blue"
             />
             <StatCard
-              icon={<TrendingUp className="w-6 h-6" />}
               label="נקודות"
-              value={(journey?.total_points || 0)}
-              color="green"
+              value={journeyState?.total_points || 0}
+              icon={Zap}
+              color="amber"
             />
             <StatCard
-              icon={<Flame className="w-6 h-6" />}
               label="רצף ימים"
-              value={(journey?.total_streak_days || 0)}
-              color="orange"
+              value={journeyState?.streak_days || 0}
+              icon={Flame}
+              color="green"
             />
-          </motion.div>
+          </div>
 
-          {/* Recommendation Box */}
-          {currentGoal && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mb-12 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl border-2 border-[#1E3A5F]/10"
-            >
-              <div className="flex items-start gap-4 mb-4">
-                <Sparkles className="w-8 h-8 text-[#1E3A5F] flex-shrink-0 mt-1" />
-                <div>
-                  <h2 className="text-xl font-bold text-[#1E3A5F] mb-2">
-                    🎯 המלצה אישית עבורך
-                  </h2>
-                  <p className="text-gray-700 mb-4">
-                    המטרה הבאה שלך היא <span className="font-bold">{currentGoal.name}</span>. זה הזמן המושלם להתחיל!
-                  </p>
-                  <Button
-                    onClick={() => handleStartGoal(currentGoal.goal_code)}
-                    className="h-12 px-6 bg-[#27AE60] hover:bg-[#229954] text-white font-bold rounded-xl"
-                  >
-                    התחל את המטרה הזו
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
+          {/* Current Goal Recommendation */}
+          {!isLoading && currentGoal && (
+            <CurrentGoalCard goal={currentGoal} onStart={handleStartGoal} />
           )}
 
           {/* Journey Progress */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mb-12"
-          >
+          {!isLoading && (
             <JourneyProgress
-              progress={journey?.journey_progress_percent || 0}
-              completed={journey?.completed_goals?.length || 0}
-              total={7}
+              progress={journeyState?.journey_progress_percent || 0}
+              completed={journeyState?.total_goals_completed || 0}
+              total={journeyState?.total_goals_assigned || 0}
               goals={goals}
             />
-          </motion.div>
+          )}
 
-          {/* Goals Grid */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <h2 className="text-2xl font-bold text-[#1E3A5F] mb-6">כל המטרות שלך</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {goals.map((goal, index) => {
-                const isCurrentGoal = journey?.current_goal_code === goal.goal_code;
-                const isCompleted = journey?.completed_goals?.includes(goal.goal_code);
-
-                return (
-                  <GoalCard
-                    key={goal.id}
-                    goal={{
-                      goals: {
-                        goal_name_he: goal.name,
-                        description_he: goal.description,
-                        points_value: goal.points_value || 100,
-                        estimated_duration_days: goal.estimated_duration_days || 7
-                      },
-                      status: isCompleted ? 'completed' : isCurrentGoal ? 'in_progress' : 'not_started',
-                      progress_percent: isCurrentGoal ? 25 : (isCompleted ? 100 : 0),
-                      current_step: isCurrentGoal ? 2 : (isCompleted ? 5 : 1)
-                    }}
-                    isCurrentGoal={isCurrentGoal}
-                    isCompleted={isCompleted}
-                    onStart={() => handleStartGoal(goal.goal_code)}
-                    index={index}
-                  />
-                );
-              })}
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-8 h-8 animate-spin text-blue-600 mr-2" />
+              <span className="text-gray-600">טוען את המסע שלך...</span>
             </div>
-          </motion.div>
-
-          {/* Motivation Message */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-16 text-center"
-          >
-            <p className="text-lg text-gray-600 mb-2">
-              💪 כל צעד קטן הוא צעד גדול לעבר ההצלחה שלך
-            </p>
-            <p className="text-sm text-gray-500">
-              המנטור שלך בחכה לך כדי לעזור בכל צעד
-            </p>
-          </motion.div>
-        </div>
-      </main>
-    </>
-  );
-}
-
-function StatCard({ icon, label, value, color = 'blue' }) {
-  const colorClasses = {
-    blue: 'from-blue-50 to-indigo-50 border-blue-200',
-    green: 'from-green-50 to-emerald-50 border-green-200',
-    orange: 'from-orange-50 to-amber-50 border-orange-200'
-  };
-
-  const iconColorClasses = {
-    blue: 'text-blue-600',
-    green: 'text-green-600',
-    orange: 'text-orange-600'
-  };
-
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className={`bg-gradient-to-br ${colorClasses[color]} border-2 rounded-2xl p-6`}
-    >
-      <div className="flex items-center gap-4">
-        <div className={`${iconColorClasses[color]} p-3 bg-white rounded-xl`}>
-          {icon}
-        </div>
-        <div>
-          <p className="text-gray-600 text-sm font-medium">{label}</p>
-          <p className="text-3xl font-black text-gray-900">{value}</p>
+          )}
         </div>
       </div>
-    </motion.div>
+    </>
   );
 }

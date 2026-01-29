@@ -81,6 +81,7 @@ import CreditsPage from './pages/CreditsPage';
 import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
+import GoalPage from './pages/GoalPage';
 import GraphicDesignerLanding from './pages/GraphicDesignerLanding';
 import HairStylistLanding from './pages/HairStylistLanding';
 import Home from './pages/Home';
@@ -93,6 +94,7 @@ import IncomeTaxOsekMorsha from './pages/IncomeTaxOsekMorsha';
 import IncomeTaxPayment from './pages/IncomeTaxPayment';
 import InviteUser from './pages/InviteUser';
 import InvoicesAppLanding from './pages/InvoicesAppLanding';
+import JourneyDashboard from './pages/JourneyDashboard';
 import LP from './pages/LP';
 import LandingPagePreview from './pages/LandingPagePreview';
 import LashArtistLanding from './pages/LashArtistLanding';
@@ -157,8 +159,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import JourneyDashboard from './pages/JourneyDashboard';
-import GoalPage from './pages/GoalPage';
 import __Layout from './Layout.jsx';
 
 
@@ -197,6 +197,7 @@ export const PAGES = {
     "EyebrowStylistLanding": EyebrowStylistLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
     "FreelancerLanding": FreelancerLanding,
+    "GoalPage": GoalPage,
     "GraphicDesignerLanding": GraphicDesignerLanding,
     "HairStylistLanding": HairStylistLanding,
     "Home": Home,
@@ -209,6 +210,7 @@ export const PAGES = {
     "IncomeTaxPayment": IncomeTaxPayment,
     "InviteUser": InviteUser,
     "InvoicesAppLanding": InvoicesAppLanding,
+    "JourneyDashboard": JourneyDashboard,
     "LP": LP,
     "LandingPagePreview": LandingPagePreview,
     "LashArtistLanding": LashArtistLanding,
@@ -273,8 +275,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "JourneyDashboard": JourneyDashboard,
-    "GoalPage": GoalPage,
 }
 
 export const pagesConfig = {
