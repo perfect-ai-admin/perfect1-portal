@@ -13,38 +13,50 @@ Deno.serve(async (req) => {
         const baseSlug = slugify(data.businessName || 'site', { lower: true, strict: true, locale: 'he' }) || 'site';
         const slug = baseSlug;
 
+        // === QA STEP 1: VALIDATE INPUT DATA ===
+        console.log("🔍 QA Step 1: Validating input data...");
+        const requiredFields = ['businessName'];
+        for (const field of requiredFields) {
+            if (!data[field]) {
+                throw new Error(`Missing required field: ${field}`);
+            }
+        }
+        console.log("✅ QA Step 1 passed: Input data valid");
+
         // AI Content Generation
         let generatedContent = null;
         try {
-            console.log("Generating landing page content with AI...");
+            console.log("🔍 QA Step 2: Building context from questionnaire...");
             // Construct a rich, detailed prompt based on questionnaire inputs
             const promptContext = `
             BUSINESS PROFILE:
-            - Name: ${data.businessName}
-            - Field: ${data.mainField}
-            - Target Audience: ${data.targetAudience?.join(', ') || data.targetAudienceOther}
+            - Name: ${data.businessName || 'לא צוין'}
+            - Field: ${data.mainField || 'לא צוין'}
+            - Target Audience: ${data.targetAudience?.join(', ') || data.targetAudienceOther || 'לא צוין'}
             
             PSYCHOLOGY & STRATEGY:
-            - Customer Pain Points: ${data.painPoints}
-            - Consequences of Inaction: ${data.consequences}
-            - Unique Value Proposition: ${data.serviceOffered}
-            - Why Choose Us: ${data.whyChooseYou?.join(', ')} ${data.whyChooseYouOther ? `(${data.whyChooseYouOther})` : ''}
-            - Process: ${data.processSteps}
+            - Customer Pain Points: ${data.painPoints || 'לא צוין'}
+            - Consequences of Inaction: ${data.consequences || 'לא צוין'}
+            - Unique Value Proposition: ${data.serviceOffered || 'לא צוין'}
+            - Why Choose Us: ${data.whyChooseYou?.join(', ') || 'לא צוין'} ${data.whyChooseYouOther ? `(${data.whyChooseYouOther})` : ''}
+            - Process: ${data.processSteps || 'לא צוין'}
             
             TRUST & PROOF:
-            - Experience: ${data.experienceYears} years
-            - Proof Elements: ${data.proofs?.join(', ')}
-            - Testimonial: "${data.testimonialText}"
+            - Experience: ${data.experienceYears || 'לא צוין'} years
+            - Proof Elements: ${data.proofs?.join(', ') || 'לא צוין'}
+            - Testimonial: "${data.testimonialText || 'לא צוין'}"
             
             CONVERSION GOALS:
-            - Desired Action: ${data.ctaTypes?.join(', ')}
-            - CTA Button Text: ${data.ctaText}
-            - Form Fields Needed: ${data.formFields?.join(', ')}
+            - Desired Action: ${data.ctaTypes?.join(', ') || 'לא צוין'}
+            - CTA Button Text: ${data.ctaText || 'צור קשר'}
+            - Form Fields Needed: ${data.formFields?.join(', ') || 'name, phone, email'}
             
             DESIGN & TONE:
-            - Style Preference: ${data.pageStyle}
+            - Style Preference: ${data.pageStyle || 'professional'}
             `;
+            console.log("✅ QA Step 2 passed: Context built successfully");
 
+            console.log("🔍 QA Step 3: Invoking LLM with structured prompt...");
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
 🎯 MISSION CRITICAL: Return EXACTLY 8 sections in EXACT order, or system FAILS.
@@ -223,11 +235,14 @@ Return ONLY the JSON object with these keys:
                 }
             });
         } catch (err) {
-            console.error("LLM Generation failed:", err);
-            throw err;
+            console.error("❌ QA Step 3 failed: LLM Generation error:", err.message);
+            throw new Error(`LLM Generation failed: ${err.message}`);
         }
 
+        console.log("✅ QA Step 3 passed: LLM response received");
+
         // 🔴 STRICT SERVER-SIDE VALIDATION - NO FALLBACK
+        console.log("🔍 QA Step 4: Validating LLM response structure...");
         if (!generatedContent?.sections_json) {
             throw new Error('LLM returned invalid response: missing sections_json');
         }
@@ -236,74 +251,82 @@ Return ONLY the JSON object with these keys:
         
         // Validation 1: Exactly 8 sections
         if (sections.length !== 8) {
-            throw new Error(`Validation Failed: Expected exactly 8 sections, got ${sections.length}`);
+            throw new Error(`❌ V1 Failed: Expected exactly 8 sections, got ${sections.length}`);
         }
+        console.log("✅ V1 passed: Exactly 8 sections");
 
         // Validation 2: Correct order
         const expectedOrder = ["hero", "suited_for", "pain_expansion", "how_it_works", "why_us", "human_voice", "faq", "contact"];
         sections.forEach((section, idx) => {
             if (section.type !== expectedOrder[idx]) {
-                throw new Error(`Validation Failed: Section ${idx + 1} has type "${section.type}", expected "${expectedOrder[idx]}"`);
+                throw new Error(`❌ V2 Failed: Section ${idx + 1} type is "${section.type}", expected "${expectedOrder[idx]}"`);
             }
         });
+        console.log("✅ V2 passed: Correct section order");
 
         // Validation 3: Hero must have hero_expansion
         if (!sections[0].hero_expansion || sections[0].hero_expansion.trim() === '') {
-            throw new Error('Validation Failed: Hero section missing hero_expansion');
+            throw new Error('❌ V3 Failed: Hero section missing hero_expansion');
         }
+        console.log("✅ V3 passed: Hero has hero_expansion");
 
         // Validation 4: Suited_For must have exactly 3 suited and 3 not_suited
         if (!Array.isArray(sections[1].suited) || sections[1].suited.length !== 3) {
-            throw new Error(`Validation Failed: Suited_For section has ${sections[1].suited?.length || 0} suited items, expected 3`);
+            throw new Error(`❌ V4a Failed: Suited_For has ${sections[1].suited?.length || 0} suited items, need 3`);
         }
         if (!Array.isArray(sections[1].not_suited) || sections[1].not_suited.length !== 3) {
-            throw new Error(`Validation Failed: Suited_For section has ${sections[1].not_suited?.length || 0} not_suited items, expected 3`);
+            throw new Error(`❌ V4b Failed: Suited_For has ${sections[1].not_suited?.length || 0} not_suited items, need 3`);
         }
+        console.log("✅ V4 passed: Suited_For has 3+3 items");
 
         // Validation 5: Pain_Expansion must have exactly 4 items
         if (!Array.isArray(sections[2].items) || sections[2].items.length !== 4) {
-            throw new Error(`Validation Failed: Pain_Expansion section has ${sections[2].items?.length || 0} items, expected 4`);
+            throw new Error(`❌ V5 Failed: Pain_Expansion has ${sections[2].items?.length || 0} items, need 4`);
         }
+        console.log("✅ V5 passed: Pain_Expansion has 4 items");
 
         // Validation 6: How_It_Works must have exactly 3 steps with correct numbering
         if (!Array.isArray(sections[3].steps) || sections[3].steps.length !== 3) {
-            throw new Error(`Validation Failed: How_It_Works section has ${sections[3].steps?.length || 0} steps, expected 3`);
+            throw new Error(`❌ V6a Failed: How_It_Works has ${sections[3].steps?.length || 0} steps, need 3`);
         }
         if (sections[3].steps[0].step !== 1 || sections[3].steps[1].step !== 2 || sections[3].steps[2].step !== 3) {
-            throw new Error('Validation Failed: How_It_Works steps must be numbered 1, 2, 3');
+            throw new Error(`❌ V6b Failed: How_It_Works steps are [${sections[3].steps[0].step}, ${sections[3].steps[1].step}, ${sections[3].steps[2].step}], need [1, 2, 3]`);
         }
+        console.log("✅ V6 passed: How_It_Works has 3 steps (1,2,3)");
 
         // Validation 7: Why_Us must have exactly 4 items
         if (!Array.isArray(sections[4].items) || sections[4].items.length !== 4) {
-            throw new Error(`Validation Failed: Why_Us section has ${sections[4].items?.length || 0} items, expected 4`);
+            throw new Error(`❌ V7 Failed: Why_Us has ${sections[4].items?.length || 0} items, need 4`);
         }
+        console.log("✅ V7 passed: Why_Us has 4 items");
 
         // Validation 8: Human_Voice must have exactly 3 items with correct types in order
         if (!Array.isArray(sections[5].items) || sections[5].items.length !== 3) {
-            throw new Error(`Validation Failed: Human_Voice section has ${sections[5].items?.length || 0} items, expected 3`);
+            throw new Error(`❌ V8a Failed: Human_Voice has ${sections[5].items?.length || 0} items, need 3`);
         }
-        if (sections[5].items[0].type !== "testimonial") {
-            throw new Error(`Validation Failed: Human_Voice item 1 has type "${sections[5].items[0].type}", expected "testimonial"`);
+        const hvTypes = ["testimonial", "founder_message", "customer_story"];
+        for (let i = 0; i < 3; i++) {
+            if (sections[5].items[i].type !== hvTypes[i]) {
+                throw new Error(`❌ V8b Failed: Human_Voice item ${i + 1} is "${sections[5].items[i].type}", need "${hvTypes[i]}"`);
+            }
         }
-        if (sections[5].items[1].type !== "founder_message") {
-            throw new Error(`Validation Failed: Human_Voice item 2 has type "${sections[5].items[1].type}", expected "founder_message"`);
-        }
-        if (sections[5].items[2].type !== "customer_story") {
-            throw new Error(`Validation Failed: Human_Voice item 3 has type "${sections[5].items[2].type}", expected "customer_story"`);
-        }
+        console.log("✅ V8 passed: Human_Voice has 3 items (testimonial→founder_message→customer_story)");
 
         // Validation 9: FAQ must have exactly 7 items
         if (!Array.isArray(sections[6].items) || sections[6].items.length !== 7) {
-            throw new Error(`Validation Failed: FAQ section has ${sections[6].items?.length || 0} items, expected 7`);
+            throw new Error(`❌ V9 Failed: FAQ has ${sections[6].items?.length || 0} items, need 7`);
         }
+        console.log("✅ V9 passed: FAQ has 7 items");
 
         // Validation 10: Contact must have cta_micro_text
         if (!sections[7].cta_micro_text || sections[7].cta_micro_text.trim() === '') {
-            throw new Error('Validation Failed: Contact section missing cta_micro_text');
+            throw new Error('❌ V10 Failed: Contact section missing cta_micro_text');
         }
+        console.log("✅ V10 passed: Contact has cta_micro_text");
 
-        console.log("✅ All validations passed. Creating landing page entity...");
+        console.log("\n🎉 QA Step 4 Complete: All 10 validations PASSED!\n");
 
+        console.log("🔍 QA Step 5: Preparing entity data...");
         const headline = generatedContent?.headline || data.businessName;
         const subheadline = generatedContent?.subheadline || '';
 
@@ -320,18 +343,32 @@ Return ONLY the JSON object with these keys:
             status: 'draft',
             slug: slug
         };
+        console.log("✅ QA Step 5 passed: Entity data prepared");
 
+        console.log("🔍 QA Step 6: Creating landing page entity in database...");
         const result = await base44.entities.LandingPage.create(landingPage);
+        console.log("✅ QA Step 6 passed: Entity created with ID:", result.id);
 
         // Generate the full URL for the landing page
         const domain = req.headers.get('host') || Deno.env.get('BASE_URL') || 'localhost:3000';
         const pageUrl = `https://${domain}/LP/${slug}`;
+        console.log("✅ Page URL generated:", pageUrl);
 
-        console.log("✅ Landing page created successfully:", result.id);
+        console.log("\n✨ QA COMPLETE: Landing page generated successfully!\n");
+        console.log("📊 Summary:");
+        console.log(`  - Business: ${data.businessName}`);
+        console.log(`  - Slug: ${slug}`);
+        console.log(`  - ID: ${result.id}`);
+        console.log(`  - Sections: ${sections.length} (hero, suited_for, pain_expansion, how_it_works, why_us, human_voice, faq, contact)`);
+        console.log(`  - URL: ${pageUrl}\n`);
 
         return Response.json({ slug, id: result.id, pageUrl });
     } catch (error) {
-        console.error("❌ Error:", error.message);
-        return Response.json({ error: error.message }, { status: 500 });
+        console.error("\n❌ QA FAILED:", error.message);
+        console.error("Stack:", error.stack);
+        return Response.json({ 
+            error: error.message,
+            details: "Landing page generation failed. Check logs for details."
+        }, { status: 500 });
     }
 });
