@@ -199,6 +199,111 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
         </section>
     );
 
+    const renderSuitedFor = (section, idx) => (
+        <section key={idx} className="py-20 bg-gradient-to-b from-white to-slate-50">
+            <div className="container mx-auto px-6">
+                <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-16">{section.title}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                    <motion.div {...getMotionProps()} className="space-y-4">
+                        <h3 className="text-lg font-bold text-green-600 flex items-center gap-2">
+                            <Check className="w-5 h-5" /> למי זה כן מתאים
+                        </h3>
+                        {section.suited?.map((item, i) => (
+                            <div key={i} className="flex gap-3 p-3 rounded-lg bg-green-50 border border-green-100">
+                                <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                <span className="text-slate-700">{item}</span>
+                            </div>
+                        ))}
+                    </motion.div>
+                    <motion.div {...getMotionProps()} className="space-y-4">
+                        <h3 className="text-lg font-bold text-red-600 flex items-center gap-2">
+                            <AlertCircle className="w-5 h-5" /> למי זה פחות מתאים
+                        </h3>
+                        {section.not_suited?.map((item, i) => (
+                            <div key={i} className="flex gap-3 p-3 rounded-lg bg-red-50 border border-red-100">
+                                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                                <span className="text-slate-700">{item}</span>
+                            </div>
+                        ))}
+                    </motion.div>
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderPainExpansion = (section, idx) => (
+        <section key={idx} className="py-24 bg-slate-50 overflow-hidden">
+            <div className="container mx-auto px-6">
+                <div className="max-w-3xl mx-auto">
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">{section.title}</h2>
+                    <motion.p {...getMotionProps()} className="text-lg text-slate-700 mb-12 leading-relaxed">
+                        {section.description}
+                    </motion.p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {section.items?.map((item, i) => (
+                            <motion.div key={i} {...getMotionProps()} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} transition={{ delay: i * 0.1 }} className="p-6 bg-white rounded-2xl border border-slate-200">
+                                <h3 className="font-bold text-slate-900 mb-2">{item.title}</h3>
+                                <p className="text-slate-600 text-sm">{item.description}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderHowItWorks = (section, idx) => (
+        <section key={idx} className="py-24 bg-white">
+            <div className="container mx-auto px-6">
+                <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-16">{section.title}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto relative">
+                    <div className="hidden md:block absolute top-1/3 left-0 w-full h-1 bg-gradient-to-r from-[var(--primary)] via-[var(--primary)]/50 to-transparent -z-0" />
+                    {section.steps?.map((step, i) => (
+                        <motion.div key={i} {...getMotionProps()} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} transition={{ delay: i * 0.1 }} className="relative z-10">
+                            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[var(--primary)] to-[var(--primary)]/80 rounded-full flex items-center justify-center text-white text-3xl font-black mb-6 shadow-lg">
+                                {step.step}
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 text-center mb-3">{step.title}</h3>
+                            <p className="text-slate-600 text-center text-sm">{step.description}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderWhyUs = (section, idx) => (
+        <section key={idx} className="py-24 bg-gradient-to-b from-slate-50 to-white">
+            <div className="container mx-auto px-6">
+                <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-6">{section.title}</h2>
+                {section.description && (
+                    <p className="text-center text-lg text-slate-600 mb-12 max-w-2xl mx-auto">{section.description}</p>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    {section.items?.map((item, i) => (
+                        <motion.div key={i} {...getMotionProps()} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} transition={{ delay: i * 0.1 }} className="p-8 bg-white rounded-2xl border-2 border-[var(--primary)]/10 hover:border-[var(--primary)]/30 transition-all">
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">{item.title}</h3>
+                            <p className="text-slate-600">{item.description}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+
+    const renderHumanVoice = (section, idx) => (
+        <section key={idx} className="py-24 bg-white">
+            <div className="container mx-auto px-6 max-w-3xl">
+                <h2 className="text-3xl md:text-4xl font-bold text-center text-slate-900 mb-12">{section.title}</h2>
+                <motion.div {...getMotionProps()} className="p-8 bg-gradient-to-br from-[var(--primary)]/5 to-slate-50 rounded-3xl border-2 border-[var(--primary)]/20">
+                    <blockquote className="text-lg md:text-xl text-slate-800 font-medium leading-relaxed italic">
+                        "{section.content}"
+                    </blockquote>
+                </motion.div>
+            </div>
+        </section>
+    );
+
     const renderFeatures = (section, idx) => (
         <section key={idx} id="features" className="py-24 bg-slate-50 overflow-hidden">
             <div className="container mx-auto px-6">
@@ -448,6 +553,11 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
             {sections_json?.map((section, idx) => {
                 switch (section.type) {
                     case 'hero': return renderHero(section, idx);
+                    case 'suited_for': return renderSuitedFor(section, idx);
+                    case 'pain_expansion': return renderPainExpansion(section, idx);
+                    case 'how_it_works': return renderHowItWorks(section, idx);
+                    case 'why_us': return renderWhyUs(section, idx);
+                    case 'human_voice': return renderHumanVoice(section, idx);
                     case 'features': 
                     case 'pain_points': // Handle pain_points same as features
                         return renderFeatures(section, idx);
