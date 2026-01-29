@@ -48,8 +48,8 @@ Deno.serve(async (req) => {
             generatedContent = await base44.integrations.Core.InvokeLLM({
                 prompt: `
                 ROLE:
-                אתה **קופירייטר על (World-Class Copywriter)** וארט-דירקטור עם התמחות בפסיכולוגיה צרכנית והמרה (CRO).
-                המשימה שלך: לקחת את המידע הבסיסי שהמשתמש סיפד, **ולהמציא מאפס** עולם תוכן עשיר, משכנע, עמוק וסקסי.
+                אתה **קופירייטר בוגר (World-Class Copywriter)** וארט-דירקטור עם התמחות בפסיכולוגיה צרכנית, אמון ובהמרות.
+                המשימה שלך: לקחת את המידע הבסיסי שהמשתמש סיפד, **ולהמציא מאפס** עולם תוכן עשיר, משכנע, עמוק וראציונלי.
 
                 ⚠️ **שלב 1: DEEP ANALYSIS (לפני כתיבה כלשהי)** ⚠️
 
@@ -74,12 +74,12 @@ Deno.serve(async (req) => {
                 קבע אם הקהל הוא: קר (צריך חינוך) / פושר (צריך אמון) / חם (צריך דחיפה)
                 - זה קובע כמה מהר להציג CTA וכמה חזרות
 
-                **5. Aggressiveness Calibration**
+                **5. Confidence & Trust Level**
                 קבע רמה 1-5:
                 1 = רך, מחבק, חינוכי
-                3 = מאוזן, משכנע
-                5 = חד, דוחף לפעולה
-                השתמש בזה לעיצוב כותרות, CTA וניסוח pain points
+                3 = מאוזן, משכנע, בוגר
+                5 = מוחלט, בטוח, סמכותי (בלא אגרסיביות)
+                השתמש בזה לעיצוב כותרות, CTA וניסוח pain points בדרך המשקפת ביטחון שקט
 
                 **6. Trust & Credibility Rules**
                 - אם חסרות הוכחות: תמציא הוכחות גנריות אך אמינות
@@ -96,21 +96,21 @@ Deno.serve(async (req) => {
                 אתה כותב: "חוסכים לך מאות אלפי שקלים במשכנתא – כדי שתוכל לישון בשקט בלילה."
 
                 **עקרונות הכתיבה והיצירה (Deep Work):**
-                1. **משפטי מחץ (Punch Lines):** כל כותרת חייבת להיות "בעיטה בבטן" או "חיבוק חם". בלי משפטים יבשים.
-                2. **עומק רגשי:** דבר על הפחדים, התקוות והחלומות של הלקוח, לא רק על "פיצ'רים".
-                3. **הנעה לפעולה (Call to Action) אגרסיבית אך אלגנטית:** לא "צור קשר". אלא: "אני רוצה לחסוך כסף עכשיו", "בדוק את הזכאות שלך חינם".
-                4. **מילוי פערים יצירתי:** אם חסר מידע (למשל, אין המלצות), **תמציא** המלצות גנריות אך אמינות שנשמעות אמיתיות (כמו "שירות מעולה ששינה לי את העסק"). אם חסרים שלבים בתהליך – תבנה תהליך הגיוני ומקצועי.
-                5. **ויזואליות עשירה:** תאר תמונות רקע (image_prompt) שמשדרות אווירה, רגש ויוקרה.
+                1. **כותרות חזקות (Strong Headlines):** כל כותרת חייבת להיות ברורה, משכנעת וענינית. לא "בעיטה בבטן" אלא "משהו שדורש תשומת לב".
+                2. **עומק רגשי אנושי:** דבר על הפחדים, התקוות והחלומות של הלקוח, לא רק על "פיצ'רים". אבל בדרך בוגרת, לא בעליצה.
+                3. **הנעה לפעולה בוגרת:** לא "צור קשר". ולא "בדוק את הזכאות שלך חינם". אלא: "בואו נדבר על איך זה יכול לעבוד עבורך", "השארת פרטים – ללא התחייבות".
+                4. **מילוי פערים יצירתי:** אם חסר מידע (למשל, אין המלצות), **תמציא** המלצות גנריות אך אמינות שנשמעות אמיתיות. אם חסרים שלבים בתהליך – תבנה תהליך הגיוני ומקצועי.
+                5. **ויזואליות עשירה:** תאר תמונות רקע (image_prompt) שמשדרות אווירה, רגש ובגרות.
 
                 **מבנה הדף המנצח (The Winning Flow):**
-                1. **HERO:** הבטחה ענקית + תמונה עוצרת נשימה.
-                2. **STATS (הוכחה חברתית):** מספרים שמשדרים גודל והצלחה (גם אם צריך "להעריך" מספרים הגיוניים לתחום).
-                3. **PAIN POINTS (הזדהות):** "למה קשה לך היום?" – כרטיסיות שמראות שאנחנו מבינים את הכאב.
-                4. **THE SOLUTION (הפתרון):** איך אנחנו פותרים את זה? (עם אייקונים יפים).
-                5. **PROCESS (הדרך להצלחה):** 3 שלבים פשוטים מ"כאב" ל"פתרון".
-                6. **TESTIMONIALS (מה אומרים עלינו):** הוכחה חברתית חזקה.
-                7. **FAQ (טיפול בהתנגדויות):** שאלות קשות ותשובות מרגיעות.
-                8. **FINAL CTA:** סגירה חזקה ודחופה.
+                1. **HERO:** כותרת ברורה + תת-כותרת שמבהירה את השאלות: למי זה? איזו בעיה? מה התוצאה?
+                2. **SUITED_FOR (סינון קהל):** בלוק קצר שמסנן בהדגד: "למי זה כן מתאים" ו"למי זה פחות מתאים".
+                3. **PAIN_EXPANSION (הרחבת הכאבים):** הרחבה של הכאבים – איך זה מרגיש ביום-יום, למה זה נשאר תקוע, מה המחיר של לא לטפל.
+                4. **HOW_IT_WORKS (איך זה עובד):** שלב 1 = מה המשתמש עושה, שלב 2 = מה קורה מאחורי הקלעים, שלב 3 = מה הוא מקבל בפועל.
+                5. **WHY_US (בידול):** למה זה שונה ממה שאני כבר מכיר? השוואה עדינה מול פתרונות קיימים.
+                6. **HUMAN_VOICE (קול אנושי):** ציטוט לקוח או פסקה בגוף ראשון ("אנחנו מאמינים ש…") או סיפור קצר וספציפי.
+                7. **FAQ (שאלות ותשובות):** מחיר/התחייבות, למי לא מתאים, זמן, סיכון, מה קורה אחרי השארת פרטים.
+                8. **CONTACT (יצירת קשר):** בלוק ברור עם מיקרו-טקסט שמוריד חשש ("בלי התחייבות", "שיחה אחת בלבד", וכו').
 
                 DATA FROM USER (השתמש בנתונים אלו כבסיס, אך תרחיב אותם פי 10):
                 ${promptContext}
@@ -123,10 +123,10 @@ Deno.serve(async (req) => {
 
                 TASK:
                 Generate the JSON structure for this landing page in PERFECT NATIVE HEBREW.
-                Be creative. Be bold. Sell the dream, not just the product.
+                Be creative. Be confident. Build trust, not just close sales. Use adult, mature language. Not aggressive marketing – strategic communication.
 
                 REQUIRED SECTIONS (Map to JSON structure):
-                Include all 8 sections defined above.
+                Include ALL 8 sections defined above, in order.
 
                 OUTPUT FORMAT:
                 Return a JSON object with the following structure:
@@ -137,23 +137,59 @@ Deno.serve(async (req) => {
                         { 
                             "type": "hero", 
                             "title": "...", 
-                            "subtitle": "...", 
+                            "subtitle": "...",
+                            "hero_expansion": "פסקה קצרה שמבהירה: למי זה מיועד, איזו בעיה נפתרת, מה התוצאה המקובלת.",
                             "ctaText": "...", 
-                            "image_prompt": "modern office with happy people working, cinematic lighting, 4k" 
+                            "image_prompt": "..." 
+                        },
+                        {
+                            "type": "suited_for",
+                            "title": "למי זה מתאים / לא מתאים",
+                            "suited": ["...", "...", "..."],
+                            "not_suited": ["...", "..."]
                         },
                         { 
-                            "type": "stats", 
-                            "items": [{ "value": "500+", "label": "לקוחות מרוצים" }, { "value": "100%", "label": "אחריות" }, { "value": "24/7", "label": "זמינות" }, { "value": "10+", "label": "שנות ניסיון" }] 
+                            "type": "pain_points", 
+                            "title": "...", 
+                            "items": [{ "title": "...", "description": "..." }],
+                            "pain_expansion": "פסקה שמחברת רגשית: איך זה מרגיש ביום-יום, למה זה נשאר תקוע, מה המחיר של לא לטפל."
                         },
-                        { "type": "pain_points", "title": "...", "items": [{ "title": "...", "description": "..." }] },
-                        { "type": "features", "title": "...", "items": [{ "title": "...", "description": "...", "icon": "Shield" }] },
-                        { "type": "process", "title": "...", "steps": [{ "number": 1, "title": "...", "description": "..." }] },
-                        { "type": "testimonials", "title": "...", "items": [{ "name": "...", "text": "...", "role": "..." }, { "name": "...", "text": "...", "role": "..." }, { "name": "...", "text": "...", "role": "..." }] },
-                        { "type": "faq", "title": "...", "items": [{ "question": "...", "answer": "..." }, { "question": "...", "answer": "..." }, { "question": "...", "answer": "..." }, { "question": "...", "answer": "..." }, { "question": "...", "answer": "..." }, { "question": "...", "answer": "..." }, { "question": "...", "answer": "..." }] },
+                        { 
+                            "type": "how_it_works", 
+                            "title": "...", 
+                            "steps": [
+                                { "step": 1, "title": "מה אתה עושה", "description": "..." },
+                                { "step": 2, "title": "מה קורה מאחורי הקלעים", "description": "..." },
+                                { "step": 3, "title": "מה אתה מקבל", "description": "..." }
+                            ]
+                        },
+                        { 
+                            "type": "why_us", 
+                            "title": "...",
+                            "description": "השוואה עדינה מול פתרונות קיימים (לבד / איש מקצוע רגיל / פתרון חד-פעמי)",
+                            "items": [{ "title": "...", "description": "..." }]
+                        },
+                        { 
+                            "type": "human_voice", 
+                            "title": "...",
+                            "content": "ציטוט לקוח או פסקה בגוף ראשון או סיפור קצר וספציפי"
+                        },
+                        { 
+                            "type": "faq", 
+                            "title": "...", 
+                            "items": [
+                                { "question": "...(מחיר/התחייבות)", "answer": "..." }, 
+                                { "question": "...(למי לא מתאים)", "answer": "..." }, 
+                                { "question": "...(זמן)", "answer": "..." }, 
+                                { "question": "...(סיכון)", "answer": "..." }, 
+                                { "question": "...(מה קורה אחרי)", "answer": "..." }
+                            ] 
+                        },
                         { 
                             "type": "contact", 
                             "title": "...", 
-                            "subtitle": "...", 
+                            "subtitle": "...",
+                            "cta_micro_text": "בלי התחייבות / שיחה אחת בלבד / אנחנו כאן לשמוע",
                             "form_fields": ["name", "phone", ...], 
                             "phone": "...", 
                             "whatsapp": "..." 
@@ -171,12 +207,18 @@ Deno.serve(async (req) => {
                             items: {
                                 type: "object",
                                 properties: {
-                                    type: { type: "string", enum: ["hero", "stats", "pain_points", "features", "process", "testimonials", "faq", "contact"] },
+                                    type: { type: "string", enum: ["hero", "suited_for", "pain_points", "how_it_works", "why_us", "human_voice", "faq", "contact"] },
                                     title: { type: "string" },
                                     subtitle: { type: "string" },
                                     description: { type: "string" },
+                                    hero_expansion: { type: "string" },
+                                    pain_expansion: { type: "string" },
+                                    content: { type: "string" },
+                                    cta_micro_text: { type: "string" },
                                     ctaText: { type: "string" },
                                     image_prompt: { type: "string" },
+                                    suited: { type: "array", items: { type: "string" } },
+                                    not_suited: { type: "array", items: { type: "string" } },
                                     items: { type: "array", items: { type: "object", additionalProperties: true } },
                                     steps: { type: "array", items: { type: "object", additionalProperties: true } },
                                     form_fields: { type: "array", items: { type: "string" } },
