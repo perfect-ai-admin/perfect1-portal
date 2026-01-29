@@ -12,35 +12,44 @@ export default function LP() {
     const legacySlug = urlParams.get('s');
 
     const { data: page, isLoading, error } = useQuery({
-        queryKey: ['publicLandingPage', pageId, legacySlug],
-        queryFn: async () => {
-            try {
-                if (pageId) {
-                    console.log('[LP] Fetching by ID:', pageId);
-                    const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
-                    console.log('[LP] Response:', res);
-                    if (!res?.data) {
-                        throw new Error('Page not found');
+            queryKey: ['publicLandingPage', pageId, legacySlug],
+            queryFn: async () => {
+                try {
+                    if (pageId) {
+                        console.log('[LP] Fetching by ID:', pageId);
+                        const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
+                        console.log('[LP] Response status:', res?.status, 'Data:', res?.data);
+
+                        if (res?.status >= 400) {
+                            console.error('[LP] Backend error:', res?.data);
+                            throw new Error(res?.data?.error || 'Failed to fetch page');
+                        }
+
+                        if (!res?.data) {
+                            throw new Error('Invalid response format');
+                        }
+
+                        console.log('[LP] ✓ Page loaded successfully:', { id: res.data.id, business_name: res.data.business_name, status: res.data.status, sections: res.data.sections_json?.length });
+                        return res.data;
+                    } else if (legacySlug) {
+                        console.log('[LP] Fetching by slug:', legacySlug);
+                        const res = await base44.functions.invoke('getPublicLandingPage', { slug: legacySlug });
+                        if (!res?.data) {
+                            throw new Error('Page not found');
+                        }
+                        return res.data;
+                    } else {
+                        throw new Error("No page identifier provided");
                     }
-                    return res.data;
-                } else if (legacySlug) {
-                    console.log('[LP] Fetching by slug:', legacySlug);
-                    const res = await base44.functions.invoke('getPublicLandingPage', { slug: legacySlug });
-                    if (!res?.data) {
-                        throw new Error('Page not found');
-                    }
-                    return res.data;
-                } else {
-                    throw new Error("No page identifier provided");
+                } catch (err) {
+                    console.error('[LP] Query error:', err.message, err);
+                    throw err;
                 }
-            } catch (err) {
-                console.error('[LP] Query error:', err);
-                throw err;
-            }
-        },
-        enabled: !!(pageId || legacySlug),
-        retry: 1
-    });
+            },
+            enabled: !!(pageId || legacySlug),
+            retry: 2,
+            retryDelay: 500
+        });
 
     if (isLoading) {
         return (
