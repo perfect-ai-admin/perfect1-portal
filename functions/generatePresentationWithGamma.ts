@@ -72,6 +72,11 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
     console.log('🔵 Sending to Gamma API v1.0...');
     console.log('Token available:', !!Deno.env.get('GAMMA_API_KEY'));
 
+    // Remove generateImage from imageOptions as Gamma API doesn't accept it
+    if (payload.imageOptions) {
+      delete payload.imageOptions.generateImage;
+    }
+
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
       headers: {
