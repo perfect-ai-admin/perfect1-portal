@@ -23,17 +23,19 @@ Deno.serve(async (req) => {
         }
 
         // Action: mark as paid (after payment)
-        if (action === 'markPaid') {
-            const updatedPage = await base44.entities.LandingPage.update(landingPageId, {
-                status: 'paid',
-                paid_at: new Date().toISOString()
-            });
-            return Response.json({
-                success: true,
-                message: 'תשלום אושר',
-                status: 'paid'
-            });
-        }
+         if (action === 'markPaid') {
+             console.log('[markPaid] Updating page to paid status:', landingPageId);
+             const updatedPage = await base44.entities.LandingPage.update(landingPageId, {
+                 status: 'paid',
+                 paid_at: new Date().toISOString()
+             });
+             console.log('[markPaid] ✓ Page marked as paid, status:', updatedPage.status);
+             return Response.json({
+                 success: true,
+                 message: 'תשלום אושר',
+                 status: 'paid'
+             });
+         }
 
         // Action: publish to air (requires paid status or already published)
         if (action === 'publish' || !action) {
