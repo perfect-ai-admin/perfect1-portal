@@ -778,11 +778,101 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     }
   };
 
+  if (showDraftPreview && draftPreviewUrl) {
+    return (
+      <div className="flex flex-col h-full bg-gray-50">
+        {/* Preview Header */}
+        <div className="flex-none px-4 py-3 border-b border-gray-200 bg-white flex items-center justify-between z-10">
+          <div>
+            <h3 className="font-bold text-gray-900">טיוטת המצגה</h3>
+            <p className="text-xs text-gray-500">בדוק את המצגה לפני קבלה</p>
+          </div>
+          <button 
+            onClick={() => setShowDraftPreview(false)}
+            className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Preview Content */}
+        <div className="flex-1 flex flex-col items-center justify-center p-6 overflow-y-auto">
+          <div className="w-full max-w-2xl space-y-4">
+            {/* Thumbnail Preview */}
+            <div 
+              onClick={() => setFullscreenPreview(true)}
+              className="cursor-pointer group relative bg-white rounded-xl shadow-md overflow-hidden border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all"
+            >
+              <iframe
+                src={draftPreviewUrl}
+                className="w-full h-96 border-0"
+                title="Draft Preview"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                <div className="bg-white/90 px-4 py-2 rounded-lg flex items-center gap-2 text-gray-900 font-semibold">
+                  <MonitorPlay className="w-4 h-4" />
+                  הגדל לתצוגה מלאה
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                onClick={() => {
+                  window.open(draftPreviewUrl, '_blank');
+                }}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <ExternalLink className="w-4 h-4 ml-2" />
+                פתח במחשב
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowDraftPreview(false);
+                  setShowSuccess(true);
+                  setPresentationUrl(draftPreviewUrl);
+                }}
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Check className="w-4 h-4 ml-2" />
+                קבל את המצגה
+              </Button>
+            </div>
+
+            <p className="text-center text-xs text-gray-500 pt-2">
+              אתה יכול לערוך את המצגה עוד יותר בעורך של Gamma
+            </p>
+          </div>
+        </div>
+
+        {/* Fullscreen Preview Modal */}
+        {fullscreenPreview && (
+          <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+            <div className="relative w-full h-full max-w-6xl">
+              <button
+                onClick={() => setFullscreenPreview(false)}
+                className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors"
+              >
+                <X className="w-8 h-8" />
+              </button>
+              <iframe
+                src={draftPreviewUrl}
+                className="w-full h-full rounded-lg border-0"
+                title="Full Preview"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if (presentationUrl) {
     return (
-      <div className="flex flex-col h-full bg-gradient-to-b from-blue-50 to-indigo-50">
+      <div className="flex flex-col h-full bg-gradient-to-b from-green-50 to-emerald-50">
         {/* Success Header */}
-        <div className="flex-none px-4 py-3 border-b border-blue-100 bg-white/80 backdrop-blur-md z-10">
+        <div className="flex-none px-4 py-3 border-b border-green-100 bg-white/80 backdrop-blur-md z-10">
           <button 
             onClick={onClose}
             className="p-2 -mr-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all"
@@ -798,14 +888,14 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200 }}
-              className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-600 rounded-full flex items-center justify-center text-white shadow-lg mx-auto"
+              className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg mx-auto"
             >
               <Check className="w-8 h-8" />
             </motion.div>
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">המצגת שלך מוכנה! 🎉</h2>
-              <p className="text-gray-600">Gamma יצר מצגה עסקית מקצועית בעבורך</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">המצגה שלך אושרה! ✨</h2>
+              <p className="text-gray-600">המצגה העסקית שלך מוכנה לשימוש</p>
             </div>
 
             <div className="bg-white rounded-xl p-4 border border-gray-200">
@@ -821,23 +911,12 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               </a>
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button
-                onClick={() => {
-                  window.open(presentationUrl, '_blank');
-                }}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                צפה במצגה
-              </Button>
-              <Button
-                onClick={onClose}
-                variant="outline"
-                className="flex-1"
-              >
-                סגור
-              </Button>
-            </div>
+            <Button
+              onClick={onClose}
+              className="w-full bg-green-600 hover:bg-green-700 text-white"
+            >
+              סגור
+            </Button>
           </div>
         </div>
       </div>
