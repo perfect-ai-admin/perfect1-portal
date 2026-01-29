@@ -18,18 +18,18 @@ export default function LP() {
                     if (pageId) {
                         console.log('[LP] Fetching by ID:', pageId);
                         const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
-                        console.log('[LP] Response status:', res?.status, 'Data:', res?.data);
+                        console.log('[LP] Response:', res);
 
-                        if (res?.status >= 400) {
-                            console.error('[LP] Backend error:', res?.data);
+                        if (!res?.data) {
                             throw new Error(res?.data?.error || 'Failed to fetch page');
                         }
 
-                        if (!res?.data) {
-                            throw new Error('Invalid response format');
-                        }
-
-                        console.log('[LP] ✓ Page loaded successfully:', { id: res.data.id, business_name: res.data.business_name, status: res.data.status, sections: res.data.sections_json?.length });
+                        console.log('[LP] ✓ Page loaded:', { 
+                            id: res.data.id, 
+                            business_name: res.data.business_name, 
+                            status: res.data.status, 
+                            sections: res.data.sections_json?.length 
+                        });
                         return res.data;
                     } else if (legacySlug) {
                         console.log('[LP] Fetching by slug:', legacySlug);
@@ -42,13 +42,13 @@ export default function LP() {
                         throw new Error("No page identifier provided");
                     }
                 } catch (err) {
-                    console.error('[LP] Query error:', err.message, err);
+                    console.error('[LP] Query error:', err);
                     throw err;
                 }
             },
             enabled: !!(pageId || legacySlug),
-            retry: 2,
-            retryDelay: 500
+            retry: 1,
+            retryDelay: 1000
         });
 
     if (isLoading) {
@@ -74,7 +74,7 @@ export default function LP() {
     }
 
     return (
-        <div className="fixed inset-0 z-[9999] bg-white overflow-auto">
+        <div className="w-full min-h-screen bg-white overflow-auto">
             <DynamicLandingPage data={page} />
         </div>
     );
