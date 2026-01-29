@@ -190,21 +190,21 @@ export default function GoalMentorChat({ goalCode, onGoalComplete }) {
       )}
 
       {/* Completion Modal */}
-      {mentor.goalState?.status === 'completed' && (
-        <GoalCompletionModal
-          goalName={`מטרה: ${mentor.goalState?.goal_code}`}
-          pointsEarned={100}
-          nextGoalName="המטרה הבאה שלך"
-          onContinue={() => {
-            // Refresh journey and navigate
-            window.location.href = '/journey';
-          }}
-          onLater={() => {
-            // Just close modal, user can navigate later
-            mentor.setShowCompletion?.(false);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {mentor.goalState?.status === 'completed' && (
+          <GoalCompletionModal
+            goalName={goalName || `מטרה: ${mentor.goalState?.goal_code}`}
+            pointsEarned={100}
+            nextGoalName="המטרה הבאה שלך"
+            onContinue={() => {
+              window.location.href = '/journey';
+            }}
+            onLater={() => {
+              setShowCompletion(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
