@@ -122,6 +122,7 @@ export default function GoalPage() {
             <GoalMentorChat 
               goalCode={goalCode}
               goalData={goal}
+              customerGoalId={null}
             />
           </motion.div>
 
