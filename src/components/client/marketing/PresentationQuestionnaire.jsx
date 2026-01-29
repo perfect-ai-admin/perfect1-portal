@@ -710,6 +710,72 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     }
   };
 
+  if (presentationUrl) {
+    return (
+      <div className="flex flex-col h-full bg-gradient-to-b from-blue-50 to-indigo-50">
+        {/* Success Header */}
+        <div className="flex-none px-4 py-3 border-b border-blue-100 bg-white/80 backdrop-blur-md z-10">
+          <button 
+            onClick={onClose}
+            className="p-2 -mr-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Success Content */}
+        <div className="flex-1 flex flex-col items-center justify-center p-6">
+          <div className="text-center space-y-6 max-w-sm">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-600 rounded-full flex items-center justify-center text-white shadow-lg mx-auto"
+            >
+              <Check className="w-8 h-8" />
+            </motion.div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">המצגת שלך מוכנה! 🎉</h2>
+              <p className="text-gray-600">Gamma יצר מצגה עסקית מקצועית בעבורך</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-4 border border-gray-200">
+              <p className="text-xs text-gray-500 mb-3">הקישור למצגת:</p>
+              <a 
+                href={presentationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-700 font-semibold text-sm break-all flex items-center justify-center gap-2"
+              >
+                פתח את המצגה
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                onClick={() => {
+                  window.open(presentationUrl, '_blank');
+                }}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                צפה במצגה
+              </Button>
+              <Button
+                onClick={onClose}
+                variant="outline"
+                className="flex-1"
+              >
+                סגור
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-full bg-white relative">
       {/* Header */}
@@ -759,7 +825,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">מייצר את המצגת...</h3>
-                <p className="text-gray-500 text-sm">הבינה המלאכותית בונה את השקפים עבורך</p>
+                <p className="text-gray-500 text-sm">Gamma בונה את השקפים עבורך</p>
               </div>
             </div>
           ) : (
@@ -808,10 +874,20 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
             ) : (
               <Button 
                 onClick={handleSubmit}
-                className="bg-green-600 hover:bg-green-700 text-white min-w-[100px] shadow-lg shadow-green-100 h-9 text-xs"
+                disabled={isBuilding}
+                className="bg-green-600 hover:bg-green-700 text-white min-w-[100px] shadow-lg shadow-green-100 h-9 text-xs disabled:opacity-50"
               >
-                צור מצגת
-                <Sparkles className="w-4 h-4 mr-2" />
+                {isBuilding ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    בעדכון...
+                  </>
+                ) : (
+                  <>
+                    צור מצגת
+                    <Sparkles className="w-4 h-4 mr-2" />
+                  </>
+                )}
               </Button>
             )}
           </div>
