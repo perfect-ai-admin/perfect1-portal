@@ -21,7 +21,7 @@ export default function Layout({ children, currentPageName }) {
     const location = useLocation();
 
     // עמודים עצמאיים ללא Header/Footer
-    if (['SystemLogicMap', 'LP', 'LandingPagePreview'].includes(currentPageName)) {
+    if (['SystemLogicMap', 'LP', 'LandingPagePreview', 'LPDynamic'].includes(currentPageName)) {
       return children;
     }
 
