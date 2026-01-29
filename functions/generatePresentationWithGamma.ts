@@ -42,7 +42,7 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Prepare Gamma API v1.0 payload (without generateImage)
+    // Prepare Gamma API v1.0 payload (imageOptions removed - not supported)
     const payload = {
       inputText: inputText,
       textMode: 'generate',
@@ -52,9 +52,6 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
       additionalInstructions: `Create a professional business presentation. Style: ${formData.style}. Colors: ${formData.colors}. Make it persuasive and clear.`,
       textOptions: {
         language: formData.language === 'hebrew' ? 'he' : 'en'
-      },
-      imageOptions: {
-        model: 'dall-e-3'
       }
     };
 
