@@ -16,9 +16,12 @@ Deno.serve(async (req) => {
     const inputText = `Business: ${formData.businessName}
 Industry: ${formData.businessField}
 Description: ${formData.businessDescription}
+Presentation Type: ${formData.presentationType.join(', ')}
+Target Audience: ${formData.targetAudience.join(', ')}
 
 Problem: ${formData.painPoint}
 Why it matters: ${formData.whyPainful.join(', ')}
+Current Solutions: ${formData.currentSolutions || 'N/A'}
 
 Solution: ${formData.solution}
 How it works: ${formData.solutionSteps.step1} → ${formData.solutionSteps.step2} → ${formData.solutionSteps.step3}
@@ -33,7 +36,12 @@ Value Proposition: ${formData.valueProposition}
 After picture: ${formData.afterPicture}
 
 Call to action: ${formData.cta.join(', ')}
-CTA button text: ${formData.ctaText || 'Get Started'}`;
+CTA button text: ${formData.ctaText || 'Get Started'}
+
+Design Preferences:
+Style: ${formData.style || 'professional'}
+Colors: ${formData.colors || 'brand colors'}
+Language: ${formData.language === 'hebrew' ? 'Hebrew - write all content in Hebrew' : 'English'}`;
 
     // Map length to numCards
     const numCardsMap = {
