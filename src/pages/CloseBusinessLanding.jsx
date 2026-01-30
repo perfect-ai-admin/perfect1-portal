@@ -541,12 +541,7 @@ export default function CloseBusinessLanding() {
                     {isSubmitting ? 'שולח...' : 'בדיקת מצב וסגירת תיק'}
                   </Button>
 
-                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mt-6">
-                    <p className="text-xs text-gray-700 leading-relaxed">
-                      <strong className="text-yellow-800">חשוב:</strong> השירות ניתן על ידי גורם פרטי לצורך ייעוץ וליווי בלבד. 
-                      אתה תבצע את סגירת התיק בעצמך מול הרשויות - אנחנו נדריך אותך לאורך הדרך.
-                    </p>
-                  </div>
+
 
                   <p className="text-xs text-gray-500 text-center mt-4">
                     ללא התחייבות • טיפול מסודר • ליווי מקצועי
