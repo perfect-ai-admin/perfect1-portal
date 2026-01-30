@@ -88,6 +88,7 @@ ${formData.ctaText ? `CTA text: ${formData.ctaText}` : ''}`;
     }
 
     console.log('🔵 Calling Gamma API v1.0...');
+    console.log('Payload:', JSON.stringify(payload, null, 2));
 
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
