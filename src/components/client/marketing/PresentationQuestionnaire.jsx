@@ -825,28 +825,28 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
-              <Button
-                onClick={() => {
-                  window.open(draftPreviewUrl, '_blank');
-                }}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <ExternalLink className="w-4 h-4 ml-2" />
-                פתח במחשב
-              </Button>
-              <Button
-                onClick={() => {
-                  setShowDraftPreview(false);
-                  setShowSuccess(true);
-                  setPresentationUrl(draftPreviewUrl);
-                }}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-              >
-                <Check className="w-4 h-4 ml-2" />
-                קבל את המצגה
-              </Button>
-            </div>
+             <div className="flex gap-3 pt-4 flex-col sm:flex-row">
+               <Button
+                 onClick={() => {
+                   setShowDraftPreview(false);
+                   setShowSuccess(true);
+                   setPresentationUrl(draftPreviewUrl);
+                 }}
+                 className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+               >
+                 <Check className="w-4 h-4 ml-2" />
+                 קבל את המצגה
+               </Button>
+               <Button
+                 onClick={() => {
+                   window.open(draftPreviewUrl, '_blank');
+                 }}
+                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+               >
+                 <ExternalLink className="w-4 h-4 ml-2" />
+                 עריכה נוספת
+               </Button>
+             </div>
 
             <p className="text-center text-xs text-gray-500 pt-2">
               אתה יכול לערוך את המצגה עוד יותר בעורך של Gamma
