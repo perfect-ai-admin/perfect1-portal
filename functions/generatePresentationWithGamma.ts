@@ -71,9 +71,10 @@ CTA button text: ${formData.ctaText || 'Get Started'}`;
     }
 
     const gammaData = await gammaResponse.json();
-    console.log('✅ Gamma success');
+    console.log('✅ Gamma response:', JSON.stringify(gammaData));
 
-    const presentationUrl = `https://gamma.app/generations/${gammaData.generationId}`;
+    // Gamma returns the URL directly in the response
+    const presentationUrl = gammaData.url || `https://gamma.app/docs/${gammaData.generationId}`;
 
     // Send event to n8n
     await n8nWebhookClient.presentationCompleted(user.email, {
