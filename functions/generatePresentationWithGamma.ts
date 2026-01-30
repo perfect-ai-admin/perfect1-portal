@@ -30,14 +30,30 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
 
     console.log('🔵 Calling Gamma API...');
 
-    const gammaResponse = await fetch('https://api.gamma.app/v1beta/generation', {
+    const numCards = {
+      'short': 7,
+      'medium': 11,
+      'full': 17
+    }[formData.length || 'medium'];
+
+    const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${Deno.env.get('GAMMA_API_KEY')}`
+        'X-API-KEY': Deno.env.get('GAMMA_API_KEY')
       },
       body: JSON.stringify({
-        prompt: inputText
+        inputText,
+        textMode: 'generate',
+        format: 'presentation',
+        themeId: formData.gammaTheme,
+        numCards,
+        folderIds: formData.gammaFolder ? [formData.gammaFolder] : [],
+        textOptions: {
+          language: formData.language,
+          tone: 'professional, persuasive',
+          audience: 'business professionals'
+        }
       }),
     });
 
