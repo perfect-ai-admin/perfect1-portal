@@ -36,17 +36,8 @@ Deno.serve(async (req) => {
 
 כתוב רק את התוכן, ללא הסברים נוספים.`;
 
-    let inputText;
-    try {
-      const aiResponse = await base44.integrations.Core.InvokeLLM({
-        prompt: aiPromptRequest
-      });
-      
-      inputText = typeof aiResponse === 'string' ? aiResponse : (aiResponse.output || aiResponse.text || String(aiResponse));
-      console.log('✅ AI-generated prompt ready');
-    } catch (aiError) {
-      console.error('⚠️ AI prompt generation failed, using fallback:', aiError);
-      inputText = `Create a professional ${formData.language === 'hebrew' ? 'Hebrew' : 'English'} business presentation for ${formData.businessName}.
+    // Skip AI - use simple direct prompt
+    const inputText = `Create a professional ${formData.language === 'hebrew' ? 'Hebrew' : 'English'} business presentation for ${formData.businessName}.
 
 Business: ${formData.businessName}
 Industry: ${formData.businessField}
@@ -54,20 +45,13 @@ Description: ${formData.businessDescription}
 
 Problem: ${formData.painPoint}
 Solution: ${formData.solution}
-How it works: ${formData.solutionSteps.step1}, ${formData.solutionSteps.step2}, ${formData.solutionSteps.step3}
 
 Unique advantages: ${formData.uniqueAdvantage.join(', ')}
-Why different: ${formData.advantageExplanation}
-
-Proofs: ${formData.proofs.join(', ')}
-${formData.strongMetric ? `Key metric: ${formData.strongMetric}` : ''}
+Why: ${formData.advantageExplanation}
 
 Value: ${formData.valueProposition}
-After picture: ${formData.afterPicture}
 
-Call to action: ${formData.cta.join(', ')}
-${formData.ctaText ? `CTA text: ${formData.ctaText}` : ''}`;
-    }
+Call to action: ${formData.ctaText || 'Get Started'}`;
 
     // Map length to numCards
     const numCardsMap = {
