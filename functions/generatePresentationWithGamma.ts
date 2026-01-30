@@ -66,13 +66,46 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
     const gammaData = await gammaResponse.json();
     console.log('✅ Gamma response:', JSON.stringify(gammaData));
 
-    // Extract URL from Gamma response
-    const presentationUrl = gammaData.url || gammaData.link || `https://gamma.app/docs/${gammaData.generationId}`;
+    const generationId = gammaData.generationId;
+    if (!generationId) {
+      throw new Error('No generationId returned from Gamma API');
+    }
+
+    // Poll for completion (Gamma API is async)
+    let presentationUrl = null;
+    let attempts = 0;
+    const maxAttempts = 60; // 60 * 2 seconds = 2 minutes max
+
+    while (attempts < maxAttempts && !presentationUrl) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      const statusResponse = await fetch(`https://public-api.gamma.app/v1.0/generations/${generationId}`, {
+        method: 'GET',
+        headers: {
+          'X-API-KEY': Deno.env.get('GAMMA_API_KEY')
+        }
+      });
+
+      const statusData = await statusResponse.json();
+      console.log(`📊 Status check ${attempts + 1}:`, statusData.status);
+
+      if (statusData.status === 'completed') {
+        presentationUrl = statusData.gammaUrl;
+        console.log('✅ Presentation ready:', presentationUrl);
+        break;
+      }
+
+      attempts++;
+    }
+
+    if (!presentationUrl) {
+      throw new Error('Gamma generation timed out');
+    }
 
     return Response.json({
       success: true,
       presentationUrl,
-      generationId: gammaData.generationId,
+      generationId,
       message: 'המצגה שלך נוצרה בהצלחה!'
     });
 
