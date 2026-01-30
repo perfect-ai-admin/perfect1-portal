@@ -21,7 +21,7 @@ export default function SafeCtaBar({
 
   return (
     <div className={cn(
-      "fixed bottom-0 left-0 right-0 z-30 md:bottom-auto md:right-4 md:top-2/3 md:-translate-y-1/2 md:w-80",
+      "fixed bottom-0 left-0 right-0 z-30 md:bottom-auto md:right-4 md:top-4/5 md:-translate-y-1/2 md:w-80",
       "border-t md:border-t-0 md:border border-gray-200 bg-white shadow-lg md:rounded-2xl"
     )}>
       {/* Header */}
