@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SafeCtaBar from '../components/cro/SafeCtaBar';
-import SafeLeadInline from '../components/cro/SafeLeadInline';
+
 import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
@@ -707,18 +707,7 @@ export default function OsekPaturLanding() {
          </div>
         </section>
 
-        {/* Safe Inline Lead Form */}
-        <section className="py-16 bg-white">
-         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-           <SafeLeadInline 
-             title="בדיקה אישית ללא התחייבות"
-             subtitle="גלו אם עוסק פטור זה הפתרון המושלם לכם"
-             description="שם + טלפון בלבד. אנחנו נחזור אליך עם ייעוץ מעמיק תוך 24 שעות."
-             sourcePage="OsekPaturLanding - Inline Section"
-             variant="highlight"
-           />
-         </div>
-        </section>
+
 
         {/* Testimonials Section - NEW */}
         <section className="py-12 md:py-20 bg-[#F8F9FA]">
