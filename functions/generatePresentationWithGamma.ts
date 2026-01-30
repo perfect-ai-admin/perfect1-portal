@@ -60,12 +60,9 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Build payload for Gamma API
+    // Build payload for Gamma API - minimal payload only
     const payload = {
-      text: inputText,
-      imageOptions: {
-        generateImage: false
-      }
+      text: inputText
     };
 
     console.log('🔵 Calling Gamma API...');
