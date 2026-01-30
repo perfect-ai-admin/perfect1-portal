@@ -71,12 +71,29 @@ Deno.serve(async (req) => {
 
 כתוב **רק** את הפרומפט הסופי, ללא הסברים נוספים.`;
 
-    const aiResponse = await base44.integrations.Core.InvokeLLM({
-      prompt: aiPromptRequest
-    });
+    let inputText;
+    try {
+      const aiResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: aiPromptRequest
+      });
+      
+      // InvokeLLM returns the text directly as a string
+      inputText = typeof aiResponse === 'string' ? aiResponse : aiResponse.output || aiResponse.text || JSON.stringify(aiResponse);
+      console.log('✅ AI-generated prompt ready:', inputText.substring(0, 200) + '...');
+    } catch (aiError) {
+      console.error('⚠️ AI prompt generation failed, using fallback:', aiError);
+      // Fallback to basic prompt if AI fails
+      inputText = `Create a professional business presentation for ${formData.businessName} in ${formData.language === 'hebrew' ? 'Hebrew' : 'English'}.
+      
+Business: ${formData.businessName}
+Industry: ${formData.businessField}
+Description: ${formData.businessDescription}
 
-    const inputText = aiResponse;
-    console.log('✅ AI-generated prompt ready');
+Problem: ${formData.painPoint}
+Solution: ${formData.solution}
+Value: ${formData.valueProposition}
+CTA: ${formData.ctaText || 'Get Started'}`;
+    }
 
     // Map length to numCards
     const numCardsMap = {
