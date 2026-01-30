@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { n8nWebhookClient } from './n8nWebhookClient.js';
 
 Deno.serve(async (req) => {
   try {
@@ -12,58 +11,22 @@ Deno.serve(async (req) => {
 
     const { formData } = await req.json();
 
-    // Step 1: Generate professional prompt using AI
-    console.log('🤖 Generating professional prompt using AI...');
-    
-    const aiPromptRequest = `אתה כותב תוכן מקצועי למצגות עסקיות.
-קיבלת את הנתונים הבאות על עסק:
-
-עסק: ${formData.businessName || ''}
-תחום: ${formData.businessField || ''}
-תיאור: ${formData.businessDescription || ''}
-
-הבעיה שהעסק פותר: ${formData.painPoint || ''}
-הפתרון: ${formData.solution || ''}
-יתרונות: ${(formData.uniqueAdvantage || []).join(', ')} - ${formData.advantageExplanation || ''}
-הוכחות: ${(formData.proofs || []).join(', ')}${formData.strongMetric ? `, ${formData.strongMetric}` : ''}
-הצעת ערך: ${formData.valueProposition || ''}
-תוצאה: ${formData.afterPicture || ''}
-קריאה לפעולה: ${(formData.cta || []).join(', ')}
-
-כתוב תוכן למצגת עסקית ${formData.language === 'hebrew' ? 'בעברית' : 'באנגלית'}.
-הפלט שלך צריך להיות **טקסט חופשי בלבד** - לא JSON, לא קוד, רק תוכן טקסטואלי.
-התוכן צריך להיות מובנה, משכנע ומקצועי, מתאים למצגת ${formData.length === 'short' ? 'קצרה' : formData.length === 'medium' ? 'בינונית' : 'מקיפה'}.
-
-כתוב רק את התוכן, ללא הסברים נוספים.`;
-
-    // Skip AI - use simple direct prompt
+    // Build prompt for presentation
     const inputText = `Create a professional ${formData.language === 'hebrew' ? 'Hebrew' : 'English'} business presentation for ${formData.businessName}.
 
-Business: ${formData.businessName}
-Industry: ${formData.businessField}
-Description: ${formData.businessDescription}
+Business: ${formData.businessName || ''}
+Industry: ${formData.businessField || ''}
+Description: ${formData.businessDescription || ''}
 
-Problem: ${formData.painPoint}
-Solution: ${formData.solution}
+Problem: ${formData.painPoint || ''}
+Solution: ${formData.solution || ''}
 
-Unique advantages: ${formData.uniqueAdvantage.join(', ')}
-Why: ${formData.advantageExplanation}
+Unique advantages: ${(formData.uniqueAdvantage || []).join(', ')}
+Why: ${formData.advantageExplanation || ''}
 
-Value: ${formData.valueProposition}
+Value: ${formData.valueProposition || ''}
 
 Call to action: ${formData.ctaText || 'Get Started'}`;
-
-    // Map length to numCards
-    const numCardsMap = {
-      'short': 8,
-      'medium': 12,
-      'full': 18
-    };
-
-    // Build payload for Gamma API - minimal payload only
-    const payload = {
-      text: inputText
-    };
 
     console.log('🔵 Calling Gamma API...');
 
@@ -73,7 +36,9 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Deno.env.get('GAMMA_API_KEY')}`
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        text: inputText
+      }),
     });
 
     if (!gammaResponse.ok) {
@@ -85,17 +50,8 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
     const gammaData = await gammaResponse.json();
     console.log('✅ Gamma response:', JSON.stringify(gammaData));
 
-    // Gamma returns the URL directly in the response
-    const presentationUrl = gammaData.url || `https://gamma.app/docs/${gammaData.generationId}`;
-
-    // Send event to n8n
-    await n8nWebhookClient.presentationCompleted(user.email, {
-      businessName: formData.businessName,
-      presentationUrl,
-      generationId: gammaData.generationId,
-      userId: user.id,
-      businessField: formData.businessField
-    });
+    // Extract URL from Gamma response
+    const presentationUrl = gammaData.url || gammaData.link || `https://gamma.app/docs/${gammaData.generationId}`;
 
     return Response.json({
       success: true,
