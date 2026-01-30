@@ -121,11 +121,13 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
         }
 
         const statusData = await statusResponse.json();
-        console.log(`📊 Poll #${attempts}: Status = ${statusData.status}, URL = ${statusData.gammaUrl || 'pending'}`);
+        console.log(`📊 Poll #${attempts}:`, JSON.stringify(statusData, null, 2));
 
         if (statusData.status === 'completed') {
           presentationUrl = statusData.gammaUrl;
-          console.log('✅ Presentation ready:', presentationUrl);
+          console.log('✅ Full status object:', statusData);
+          console.log('✅ Presentation URL extracted:', presentationUrl);
+          console.log('✅ Presentation URL type:', typeof presentationUrl);
           break;
         }
 
