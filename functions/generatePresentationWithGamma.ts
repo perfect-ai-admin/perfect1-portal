@@ -15,61 +15,26 @@ Deno.serve(async (req) => {
     // Step 1: Generate professional prompt using AI
     console.log('🤖 Generating professional prompt using AI...');
     
-    const aiPromptRequest = `אתה מנהל מוצר מומחה שבונה מצגות עסקיות מקצועיות.
-קיבלת את התשובות הבאות משאלון לקוח:
+    const aiPromptRequest = `אתה כותב תוכן מקצועי למצגות עסקיות.
+קיבלת את הנתונים הבאות על עסק:
 
-**פרטי העסק:**
-- שם העסק: ${formData.businessName}
-- תחום פעילות: ${formData.businessField}
-- תיאור: ${formData.businessDescription}
-- סוג המצגת: ${formData.presentationType.join(', ')}
-- קהל יעד: ${formData.targetAudience.join(', ')}
+עסק: ${formData.businessName}
+תחום: ${formData.businessField}
+תיאור: ${formData.businessDescription}
 
-**הבעיה:**
-- הכאב של הקהל: ${formData.painPoint}
-- למה זה קריטי: ${formData.whyPainful.join(', ')}
-- פתרונות קיימים: ${formData.currentSolutions || 'לא צוין'}
+הבעיה שהעסק פותר: ${formData.painPoint}
+הפתרון: ${formData.solution}
+יתרונות: ${formData.uniqueAdvantage.join(', ')} - ${formData.advantageExplanation}
+הוכחות: ${formData.proofs.join(', ')}${formData.strongMetric ? `, ${formData.strongMetric}` : ''}
+הצעת ערך: ${formData.valueProposition}
+תוצאה: ${formData.afterPicture}
+קריאה לפעולה: ${formData.cta.join(', ')}
 
-**הפתרון:**
-- הפתרון המוצע: ${formData.solution}
-- איך זה עובד:
-  1. ${formData.solutionSteps.step1}
-  2. ${formData.solutionSteps.step2}
-  3. ${formData.solutionSteps.step3}
+כתוב תוכן למצגת עסקית ${formData.language === 'hebrew' ? 'בעברית' : 'באנגלית'}.
+הפלט שלך צריך להיות **טקסט חופשי בלבד** - לא JSON, לא קוד, רק תוכן טקסטואלי.
+התוכן צריך להיות מובנה, משכנע ומקצועי, מתאים למצגת ${formData.length === 'short' ? 'קצרה' : formData.length === 'medium' ? 'בינונית' : 'מקיפה'}.
 
-**יתרונות:**
-- במה שונים: ${formData.uniqueAdvantage.join(', ')}
-- למה עדיף: ${formData.advantageExplanation}
-
-**הוכחות:**
-- מה יש להציג: ${formData.proofs.join(', ')}
-- נתון מרכזי: ${formData.strongMetric || 'לא צוין'}
-
-**הצעת ערך:**
-- מה מקבלים: ${formData.valueProposition}
-- תמונת "אחרי": ${formData.afterPicture}
-
-**קריאה לפעולה:**
-- מה רוצים שיקרה: ${formData.cta.join(', ')}
-- טקסט כפתור: ${formData.ctaText || 'לא צוין'}
-
-**עיצוב:**
-- סגנון: ${formData.style || 'מקצועי'}
-- צבעים: ${formData.colors || 'צבעי המותג'}
-- שפה: ${formData.language === 'hebrew' ? 'עברית' : 'אנגלית'}
-- אורך: ${formData.length === 'short' ? 'קצר (6-8 שקפים)' : formData.length === 'medium' ? 'סטנדרטי (10-12 שקפים)' : 'מקיף (15-20 שקפים)'}
-
----
-
-**המשימה שלך:**
-כתוב פרומפט מקצועי ומדויק ל-Gamma AI שייצור מצגת עסקית מושלמת.
-הפרומפט חייב להיות:
-1. ברור ומפורט - כולל את כל המידע החשוב
-2. מובנה היטב - עם סדר לוגי של מידע
-3. בשפה ${formData.language === 'hebrew' ? 'עברית' : 'אנגלית'} - כל התוכן במצגת יהיה בשפה זו
-4. מכוון תוצאות - ממוקד ביצירת מצגת משכנעת ומקצועית
-
-כתוב **רק** את הפרומפט הסופי, ללא הסברים נוספים.`;
+כתוב רק את התוכן, ללא הסברים נוספים.`;
 
     let inputText;
     try {
@@ -77,22 +42,31 @@ Deno.serve(async (req) => {
         prompt: aiPromptRequest
       });
       
-      // InvokeLLM returns the text directly as a string
-      inputText = typeof aiResponse === 'string' ? aiResponse : aiResponse.output || aiResponse.text || JSON.stringify(aiResponse);
-      console.log('✅ AI-generated prompt ready:', inputText.substring(0, 200) + '...');
+      inputText = typeof aiResponse === 'string' ? aiResponse : (aiResponse.output || aiResponse.text || String(aiResponse));
+      console.log('✅ AI-generated prompt ready');
     } catch (aiError) {
       console.error('⚠️ AI prompt generation failed, using fallback:', aiError);
-      // Fallback to basic prompt if AI fails
-      inputText = `Create a professional business presentation for ${formData.businessName} in ${formData.language === 'hebrew' ? 'Hebrew' : 'English'}.
-      
+      inputText = `Create a professional ${formData.language === 'hebrew' ? 'Hebrew' : 'English'} business presentation for ${formData.businessName}.
+
 Business: ${formData.businessName}
 Industry: ${formData.businessField}
 Description: ${formData.businessDescription}
 
 Problem: ${formData.painPoint}
 Solution: ${formData.solution}
+How it works: ${formData.solutionSteps.step1}, ${formData.solutionSteps.step2}, ${formData.solutionSteps.step3}
+
+Unique advantages: ${formData.uniqueAdvantage.join(', ')}
+Why different: ${formData.advantageExplanation}
+
+Proofs: ${formData.proofs.join(', ')}
+${formData.strongMetric ? `Key metric: ${formData.strongMetric}` : ''}
+
 Value: ${formData.valueProposition}
-CTA: ${formData.ctaText || 'Get Started'}`;
+After picture: ${formData.afterPicture}
+
+Call to action: ${formData.cta.join(', ')}
+${formData.ctaText ? `CTA text: ${formData.ctaText}` : ''}`;
     }
 
     // Map length to numCards
