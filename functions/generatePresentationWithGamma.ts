@@ -46,13 +46,20 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
         inputText,
         textMode: 'generate',
         format: 'presentation',
-        themeId: formData.gammaTheme,
+        themeId: formData.gammaTheme || undefined,
         numCards,
+        cardSplit: 'auto',
         folderIds: formData.gammaFolder ? [formData.gammaFolder] : [],
         textOptions: {
-          language: formData.language,
+          amount: 'detailed',
           tone: 'professional, persuasive',
-          audience: 'business professionals'
+          audience: 'business professionals',
+          language: formData.language || 'en'
+        },
+        imageOptions: {
+          source: 'aiGenerated',
+          model: 'imagen-4-pro',
+          style: 'photorealistic'
         }
       }),
     });
