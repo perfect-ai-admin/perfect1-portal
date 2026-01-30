@@ -198,23 +198,30 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     if (validateStep(currentStep)) {
       setIsBuilding(true);
       try {
-        // Call the correct function name
-        const response = await base44.functions.invoke('generatePresentationWithGamma', { formData });
+         // Call the correct function name
+         const response = await base44.functions.invoke('generatePresentationWithGamma', { formData });
 
-        if (response.data.success) {
-          setPresentationUrl(response.data.presentationUrl);
-          setDraftPreviewUrl(response.data.presentationUrl);
-          setShowDraftPreview(true);
-          toast.success('המצגה שלך מוכנה! 🎉');
-        } else {
-          toast.error('שגיאה: ' + (response.data.error || 'לא הצלח ליצור מצגה'));
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        toast.error('שגיאה בחיבור לשרת. בדוק את הגדרות ה-API.');
-      } finally {
-        setIsBuilding(false);
-      }
+         console.log('🔵 Full response object:', response);
+         console.log('🔵 response.data:', response.data);
+         console.log('🔵 response.data.presentationUrl:', response.data?.presentationUrl);
+
+         if (response.data.success) {
+           const url = response.data.presentationUrl;
+           console.log('✅ Setting presentation URL:', url);
+           setPresentationUrl(url);
+           setDraftPreviewUrl(url);
+           setShowDraftPreview(true);
+           toast.success('המצגה שלך מוכנה! 🎉');
+         } else {
+           console.error('❌ API returned error:', response.data);
+           toast.error('שגיאה: ' + (response.data.error || 'לא הצלח ליצור מצגה'));
+         }
+       } catch (error) {
+         console.error('❌ Exception error:', error);
+         toast.error('שגיאה בחיבור לשרת. בדוק את הגדרות ה-API.');
+       } finally {
+         setIsBuilding(false);
+       }
     }
   };
 
