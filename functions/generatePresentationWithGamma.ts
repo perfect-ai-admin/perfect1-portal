@@ -98,32 +98,48 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
     // Poll for completion (Gamma API is async)
     let presentationUrl = null;
     let attempts = 0;
-    const maxAttempts = 60; // 60 * 2 seconds = 2 minutes max
+    const maxAttempts = 120; // 120 * 1 second = 2 minutes max
+
+    console.log(`⏳ Starting polling for generation ${generationId}...`);
 
     while (attempts < maxAttempts && !presentationUrl) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      const statusResponse = await fetch(`https://public-api.gamma.app/v1.0/generations/${generationId}`, {
-        method: 'GET',
-        headers: {
-          'X-API-KEY': Deno.env.get('GAMMA_API_KEY')
-        }
-      });
-
-      const statusData = await statusResponse.json();
-      console.log(`📊 Status check ${attempts + 1}:`, statusData.status);
-
-      if (statusData.status === 'completed') {
-        presentationUrl = statusData.gammaUrl;
-        console.log('✅ Presentation ready:', presentationUrl);
-        break;
-      }
-
+      await new Promise(resolve => setTimeout(resolve, 1000));
       attempts++;
+
+      try {
+        const statusResponse = await fetch(`https://public-api.gamma.app/v1.0/generations/${generationId}`, {
+          method: 'GET',
+          headers: {
+            'X-API-KEY': Deno.env.get('GAMMA_API_KEY')
+          }
+        });
+
+        if (!statusResponse.ok) {
+          const errorText = await statusResponse.text();
+          console.error(`❌ Status check failed (${statusResponse.status}):`, errorText);
+          continue;
+        }
+
+        const statusData = await statusResponse.json();
+        console.log(`📊 Poll #${attempts}: Status = ${statusData.status}, URL = ${statusData.gammaUrl || 'pending'}`);
+
+        if (statusData.status === 'completed') {
+          presentationUrl = statusData.gammaUrl;
+          console.log('✅ Presentation ready:', presentationUrl);
+          break;
+        }
+
+        if (statusData.status === 'failed') {
+          throw new Error(`Gamma generation failed: ${statusData.error || 'Unknown error'}`);
+        }
+      } catch (pollError) {
+        console.error(`❌ Poll error at attempt ${attempts}:`, pollError.message);
+        if (attempts >= maxAttempts) throw pollError;
+      }
     }
 
     if (!presentationUrl) {
-      throw new Error('Gamma generation timed out');
+      throw new Error(`Gamma generation timed out after ${maxAttempts} attempts (${maxAttempts}s)`);
     }
 
     return Response.json({
