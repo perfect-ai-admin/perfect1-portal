@@ -12,36 +12,71 @@ Deno.serve(async (req) => {
 
     const { formData } = await req.json();
 
-    // Build inputText from form data for Gamma API v1.0
-    const inputText = `Business: ${formData.businessName}
-Industry: ${formData.businessField}
-Description: ${formData.businessDescription}
-Presentation Type: ${formData.presentationType.join(', ')}
-Target Audience: ${formData.targetAudience.join(', ')}
+    // Step 1: Generate professional prompt using AI
+    console.log('🤖 Generating professional prompt using AI...');
+    
+    const aiPromptRequest = `אתה מנהל מוצר מומחה שבונה מצגות עסקיות מקצועיות.
+קיבלת את התשובות הבאות משאלון לקוח:
 
-Problem: ${formData.painPoint}
-Why it matters: ${formData.whyPainful.join(', ')}
-Current Solutions: ${formData.currentSolutions || 'N/A'}
+**פרטי העסק:**
+- שם העסק: ${formData.businessName}
+- תחום פעילות: ${formData.businessField}
+- תיאור: ${formData.businessDescription}
+- סוג המצגת: ${formData.presentationType.join(', ')}
+- קהל יעד: ${formData.targetAudience.join(', ')}
 
-Solution: ${formData.solution}
-How it works: ${formData.solutionSteps.step1} → ${formData.solutionSteps.step2} → ${formData.solutionSteps.step3}
+**הבעיה:**
+- הכאב של הקהל: ${formData.painPoint}
+- למה זה קריטי: ${formData.whyPainful.join(', ')}
+- פתרונות קיימים: ${formData.currentSolutions || 'לא צוין'}
 
-Unique Advantages: ${formData.uniqueAdvantage.join(', ')}
-Why we're different: ${formData.advantageExplanation}
+**הפתרון:**
+- הפתרון המוצע: ${formData.solution}
+- איך זה עובד:
+  1. ${formData.solutionSteps.step1}
+  2. ${formData.solutionSteps.step2}
+  3. ${formData.solutionSteps.step3}
 
-Proofs: ${formData.proofs.join(', ')}
-Key metric: ${formData.strongMetric || 'Strong results'}
+**יתרונות:**
+- במה שונים: ${formData.uniqueAdvantage.join(', ')}
+- למה עדיף: ${formData.advantageExplanation}
 
-Value Proposition: ${formData.valueProposition}
-After picture: ${formData.afterPicture}
+**הוכחות:**
+- מה יש להציג: ${formData.proofs.join(', ')}
+- נתון מרכזי: ${formData.strongMetric || 'לא צוין'}
 
-Call to action: ${formData.cta.join(', ')}
-CTA button text: ${formData.ctaText || 'Get Started'}
+**הצעת ערך:**
+- מה מקבלים: ${formData.valueProposition}
+- תמונת "אחרי": ${formData.afterPicture}
 
-Design Preferences:
-Style: ${formData.style || 'professional'}
-Colors: ${formData.colors || 'brand colors'}
-Language: ${formData.language === 'hebrew' ? 'Hebrew - write all content in Hebrew' : 'English'}`;
+**קריאה לפעולה:**
+- מה רוצים שיקרה: ${formData.cta.join(', ')}
+- טקסט כפתור: ${formData.ctaText || 'לא צוין'}
+
+**עיצוב:**
+- סגנון: ${formData.style || 'מקצועי'}
+- צבעים: ${formData.colors || 'צבעי המותג'}
+- שפה: ${formData.language === 'hebrew' ? 'עברית' : 'אנגלית'}
+- אורך: ${formData.length === 'short' ? 'קצר (6-8 שקפים)' : formData.length === 'medium' ? 'סטנדרטי (10-12 שקפים)' : 'מקיף (15-20 שקפים)'}
+
+---
+
+**המשימה שלך:**
+כתוב פרומפט מקצועי ומדויק ל-Gamma AI שייצור מצגת עסקית מושלמת.
+הפרומפט חייב להיות:
+1. ברור ומפורט - כולל את כל המידע החשוב
+2. מובנה היטב - עם סדר לוגי של מידע
+3. בשפה ${formData.language === 'hebrew' ? 'עברית' : 'אנגלית'} - כל התוכן במצגת יהיה בשפה זו
+4. מכוון תוצאות - ממוקד ביצירת מצגת משכנעת ומקצועית
+
+כתוב **רק** את הפרומפט הסופי, ללא הסברים נוספים.`;
+
+    const aiResponse = await base44.integrations.Core.InvokeLLM({
+      prompt: aiPromptRequest
+    });
+
+    const inputText = aiResponse;
+    console.log('✅ AI-generated prompt ready');
 
     // Map length to numCards
     const numCardsMap = {
