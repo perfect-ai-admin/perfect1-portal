@@ -30,14 +30,14 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
 
     console.log('🔵 Calling Gamma API...');
 
-    const gammaResponse = await fetch('https://api.gamma.app/api/generate', {
+    const gammaResponse = await fetch('https://api.gamma.app/v1beta/generation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Deno.env.get('GAMMA_API_KEY')}`
       },
       body: JSON.stringify({
-        text: inputText
+        prompt: inputText
       }),
     });
 
