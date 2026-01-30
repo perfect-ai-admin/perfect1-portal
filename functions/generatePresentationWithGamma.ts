@@ -36,32 +36,40 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
       'full': 17
     }[formData.length || 'medium'];
 
+    const payload = {
+      inputText,
+      textMode: 'generate',
+      format: 'presentation',
+      numCards,
+      cardSplit: 'auto',
+      textOptions: {
+        amount: 'detailed',
+        tone: 'professional, persuasive',
+        audience: 'business professionals',
+        language: formData.language === 'hebrew' ? 'he' : 'en'
+      },
+      imageOptions: {
+        source: 'aiGenerated',
+        model: 'imagen-4-pro',
+        style: 'photorealistic'
+      }
+    };
+
+    // Add optional fields only if they have values
+    if (formData.gammaTheme) {
+      payload.themeId = formData.gammaTheme;
+    }
+    if (formData.gammaFolder) {
+      payload.folderIds = [formData.gammaFolder];
+    }
+
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-API-KEY': Deno.env.get('GAMMA_API_KEY')
       },
-      body: JSON.stringify({
-        inputText,
-        textMode: 'generate',
-        format: 'presentation',
-        themeId: formData.gammaTheme || undefined,
-        numCards,
-        cardSplit: 'auto',
-        folderIds: formData.gammaFolder ? [formData.gammaFolder] : [],
-        textOptions: {
-          amount: 'detailed',
-          tone: 'professional, persuasive',
-          audience: 'business professionals',
-          language: formData.language || 'en'
-        },
-        imageOptions: {
-          source: 'aiGenerated',
-          model: 'imagen-4-pro',
-          style: 'photorealistic'
-        }
-      }),
+      body: JSON.stringify(payload)
     });
 
     if (!gammaResponse.ok) {
