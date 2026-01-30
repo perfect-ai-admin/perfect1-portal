@@ -124,10 +124,18 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
         console.log(`📊 Poll #${attempts}:`, JSON.stringify(statusData, null, 2));
 
         if (statusData.status === 'completed') {
-          presentationUrl = statusData.gammaUrl;
-          console.log('✅ Full status object:', statusData);
-          console.log('✅ Presentation URL extracted:', presentationUrl);
-          console.log('✅ Presentation URL type:', typeof presentationUrl);
+          // Try different URL field names that Gamma might use
+          presentationUrl = statusData.gammaUrl || statusData.url || statusData.presentationUrl || statusData.outputUrl;
+          
+          console.log('✅ Full status object:', JSON.stringify(statusData, null, 2));
+          console.log('✅ All available fields:', Object.keys(statusData));
+          console.log('✅ gammaUrl field:', statusData.gammaUrl);
+          console.log('✅ url field:', statusData.url);
+          console.log('✅ Final URL extracted:', presentationUrl);
+          
+          if (!presentationUrl) {
+            console.warn('⚠️ No URL found in response. Full object:', statusData);
+          }
           break;
         }
 
