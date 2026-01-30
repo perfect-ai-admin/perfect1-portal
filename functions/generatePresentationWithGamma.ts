@@ -76,15 +76,15 @@ ${formData.ctaText ? `CTA text: ${formData.ctaText}` : ''}`;
       'full': 18
     };
 
-    // Direct Gamma API call - simple and works
+    // Build clean payload for Gamma API
     const payload = {
-      inputText: inputText,
-      textMode: 'generate',
-      numCards: numCardsMap[formData.length] || 10
+      text: inputText,
+      cards: numCardsMap[formData.length] || 10
     };
 
+    // Only add theme if specified
     if (formData.gammaTheme) {
-      payload.themeId = formData.gammaTheme;
+      payload.theme = formData.gammaTheme;
     }
 
     console.log('🔵 Calling Gamma API v1.0...');
@@ -93,8 +93,9 @@ ${formData.ctaText ? `CTA text: ${formData.ctaText}` : ''}`;
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
       headers: {
-        'X-API-KEY': Deno.env.get('GAMMA_API_KEY'),
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Deno.env.get('GAMMA_API_KEY')}`
       },
       body: JSON.stringify(payload),
     });
