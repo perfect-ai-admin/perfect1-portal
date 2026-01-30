@@ -18,17 +18,17 @@ Deno.serve(async (req) => {
     const aiPromptRequest = `אתה כותב תוכן מקצועי למצגות עסקיות.
 קיבלת את הנתונים הבאות על עסק:
 
-עסק: ${formData.businessName}
-תחום: ${formData.businessField}
-תיאור: ${formData.businessDescription}
+עסק: ${formData.businessName || ''}
+תחום: ${formData.businessField || ''}
+תיאור: ${formData.businessDescription || ''}
 
-הבעיה שהעסק פותר: ${formData.painPoint}
-הפתרון: ${formData.solution}
-יתרונות: ${formData.uniqueAdvantage.join(', ')} - ${formData.advantageExplanation}
-הוכחות: ${formData.proofs.join(', ')}${formData.strongMetric ? `, ${formData.strongMetric}` : ''}
-הצעת ערך: ${formData.valueProposition}
-תוצאה: ${formData.afterPicture}
-קריאה לפעולה: ${formData.cta.join(', ')}
+הבעיה שהעסק פותר: ${formData.painPoint || ''}
+הפתרון: ${formData.solution || ''}
+יתרונות: ${(formData.uniqueAdvantage || []).join(', ')} - ${formData.advantageExplanation || ''}
+הוכחות: ${(formData.proofs || []).join(', ')}${formData.strongMetric ? `, ${formData.strongMetric}` : ''}
+הצעת ערך: ${formData.valueProposition || ''}
+תוצאה: ${formData.afterPicture || ''}
+קריאה לפעולה: ${(formData.cta || []).join(', ')}
 
 כתוב תוכן למצגת עסקית ${formData.language === 'hebrew' ? 'בעברית' : 'באנגלית'}.
 הפלט שלך צריך להיות **טקסט חופשי בלבד** - לא JSON, לא קוד, רק תוכן טקסטואלי.
