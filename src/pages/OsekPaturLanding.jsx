@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import SafeCtaBar from '../components/cro/SafeCtaBar';
+import SafeLeadInline from '../components/cro/SafeLeadInline';
 import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
@@ -109,27 +111,8 @@ export default function OsekPaturLanding() {
     }
   };
 
-  // Sticky CTA Logic & Popup Trigger
-  const [showStickyCTA, setShowStickyCTA] = useState(false);
-  const [popupShown, setPopupShown] = useState(false);
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight;
-      const scrollPosition = window.scrollY + window.innerHeight;
-      const scrollPercentage = (scrollPosition / scrollHeight) * 100;
-      
-      setShowStickyCTA(window.scrollY > 500);
-      
-      // Show popup at 35% scroll
-      if (scrollPercentage >= 35 && !popupShown) {
-        setShowPopup(true);
-        setPopupShown(true);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [popupShown]);
+  // DEPRECATED: Auto-scroll popups removed for Google Ads compliance
+  // Use SafeCtaBar + SafeLeadInline instead
 
   const faqs = [
     {
@@ -748,6 +731,19 @@ export default function OsekPaturLanding() {
          </div>
         </section>
 
+        {/* Safe Inline Lead Form */}
+        <section className="py-16 bg-white">
+         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+           <SafeLeadInline 
+             title="בדיקה אישית ללא התחייבות"
+             subtitle="גלו אם עוסק פטור זה הפתרון המושלם לכם"
+             description="שם + טלפון בלבד. אנחנו נחזור אליך עם ייעוץ מעמיק תוך 24 שעות."
+             sourcePage="OsekPaturLanding - Inline Section"
+             variant="highlight"
+           />
+         </div>
+        </section>
+
         {/* Testimonials Section - NEW */}
         <section className="py-12 md:py-20 bg-[#F8F9FA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -879,96 +875,12 @@ export default function OsekPaturLanding() {
         </section>
       </main>
 
-      {/* Popup Modal - 35% Scroll */}
-      {showPopup && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-          onClick={() => setShowPopup(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-6 md:p-8 max-w-md w-full relative"
-          >
-            <button
-              onClick={() => setShowPopup(false)}
-              className="absolute top-4 right-4 p-2 bg-gray-100 rounded-full text-gray-500 hover:text-gray-800 hover:bg-gray-200 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-
-            <h3 className="text-xl md:text-2xl font-black text-[#1E3A5F] mb-3 pr-8">
-              רגע לפני שממשיכים 👋
-            </h3>
-            <p className="text-blue-700 font-semibold mb-3 text-sm md:text-base bg-blue-50 p-3 rounded-lg">
-              שירות פרטי לפתיחת עוסק פטור, לא גוף ממשלתי.
-            </p>
-            <p className="text-gray-600 mb-6 leading-relaxed text-sm md:text-base">
-              מתלבטים אם עוסק פטור מתאים לכם? השאירו פרטים ומומחה שלנו יעשה לכם סדר בחינם.
-            </p>
-
-            <form onSubmit={handlePopupSubmit} className="space-y-3">
-              <div>
-                <Input
-                  placeholder="שם מלא *"
-                  value={popupFormData.name}
-                  onChange={(e) => setPopupFormData({ ...popupFormData, name: e.target.value })}
-                  className="h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
-                  required
-                />
-              </div>
-
-              <div>
-                <Input
-                  type="tel"
-                  placeholder="טלפון *"
-                  value={popupFormData.phone}
-                  onChange={(e) => setPopupFormData({ ...popupFormData, phone: e.target.value })}
-                  className="h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
-                  required
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-12 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg shadow-green-900/10"
-              >
-                לפתיחת עוסק פטור
-              </Button>
-
-              <p className="text-xs text-gray-500 text-center mt-2">
-                * ללא עלות וללא התחייבות
-              </p>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* Sticky Mobile CTA */}
-      <motion.div
-        initial={{ y: 100 }}
-        animate={{ y: showStickyCTA ? 0 : 100 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-50 md:hidden flex gap-3 safe-area-bottom"
-      >
-        <Button 
-          onClick={scrollToForm}
-          className="flex-1 h-12 text-lg font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-md"
-        >
-          פתיחת עוסק פטור
-        </Button>
-        <a href="https://wa.me/972502277087?text=היי, אשמח לפרטים על פתיחת עוסק פטור" target="_blank" rel="noopener noreferrer" className="flex-none">
-          <Button variant="outline" className="h-12 w-12 rounded-xl border-2 border-[#25D366] text-[#25D366] hover:bg-[#25D366]/10 p-0 flex items-center justify-center">
-            <MessageCircle className="w-6 h-6" />
-          </Button>
-        </a>
-      </motion.div>
+      {/* Safe CTA Solutions - Google Compliant */}
+      <SafeCtaBar 
+        title="בדיקה אישית ללא התחייבות"
+        subtitle="שם + טלפון בלבד"
+        sourcePage="OsekPaturLanding - SafeCtaBar"
+      />
     </>
   );
 }
