@@ -30,7 +30,7 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
 
     console.log('🔵 Calling Gamma API...');
 
-    const gammaResponse = await fetch('https://api.gamma.app/api/v1/generate', {
+    const gammaResponse = await fetch('https://api.gamma.app/api/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
