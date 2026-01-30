@@ -14,6 +14,7 @@ import Breadcrumbs from '../components/seo/Breadcrumbs';
 import RelatedContent from '../components/seo/RelatedContent';
 import PageTracker from '../components/seo/PageTracker';
 import ScrollCTAHandler from '../components/cro/ScrollCTAHandler';
+import SafeCtaBar from '../components/cro/SafeCtaBar';
 import {
   Accordion,
   AccordionContent,
@@ -492,6 +493,13 @@ export default function CloseOsekPaturComprehensive() {
             </div>
           </div>
         </section>
+
+        {/* Safe CTA Bar - Google Compliant */}
+        <SafeCtaBar 
+          title="בדיקת מצב וסגירת תיק"
+          subtitle="שם + טלפון בלבד"
+          sourcePage="CloseOsekPaturComprehensive - SafeCtaBar"
+        />
 
         {/* Lead Form Modal */}
         {showLeadForm && (
