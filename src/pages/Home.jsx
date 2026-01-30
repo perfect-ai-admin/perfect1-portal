@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import HeroNewSection from '../components/home/HeroNewSection';
 import SEOOptimized, { seoPresets } from './SEOOptimized';
 import LocalBusinessSchema from '../components/seo/LocalBusinessSchema';
+import SafeCtaBar from '../components/cro/SafeCtaBar';
+import SafeLeadInline from '../components/cro/SafeLeadInline';
 
 // Lazy Load sections below the fold
 const BusinessTypesSection = React.lazy(() => import('../components/home/BusinessTypesSection'));
@@ -111,6 +113,26 @@ export default function Home() {
           
           <CTASection />
         </Suspense>
+
+        {/* Safe CTA Solutions - Google Compliant */}
+        <div className="py-16 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SafeLeadInline 
+              title="בדיקה אישית ללא התחייבות"
+              subtitle="גלו אם עוסק פטור זה הפתרון המושלם לכם"
+              description="שם + טלפון בלבד. אנחנו נחזור אליך עם ייעוץ מעמיק תוך 24 שעות."
+              sourcePage="Home - Inline Section"
+              variant="highlight"
+            />
+          </div>
+        </div>
+
+        {/* Sticky Bar - Mobile/Desktop */}
+        <SafeCtaBar 
+          title="בדיקה אישית ללא התחייבות"
+          subtitle="שם + טלפון בלבד"
+          sourcePage="Home - SafeCtaBar"
+        />
       </main>
     </>
   );
