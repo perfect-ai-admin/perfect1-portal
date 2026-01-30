@@ -50,9 +50,7 @@ function FAQItem({ question, answer }) {
 export default function OsekPaturLanding() {
    const [formData, setFormData] = useState({
     name: '',
-    phone: '',
-    email: '',
-    profession: ''
+    phone: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -687,28 +685,6 @@ export default function OsekPaturLanding() {
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
                           required
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1.5">מייל *</label>
-                        <Input
-                          type="email"
-                          placeholder="example@gmail.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1.5">סוג עיסוק (לא חובה)</label>
-                        <Input
-                          placeholder="למשל: צלם, מעצב..."
-                          value={formData.profession}
-                          onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                          className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
                         />
                       </div>
 
