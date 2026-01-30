@@ -63,8 +63,7 @@ export default function SafeCtaBar({
             fields={["name", "phone"]}
             sourcePage={sourcePage}
             onSuccess={() => {
-              setIsExpanded(false);
-              setTimeout(() => setIsDismissed(true), 2000);
+              window.location.href = '/ThankYou';
             }}
           />
         </div>
