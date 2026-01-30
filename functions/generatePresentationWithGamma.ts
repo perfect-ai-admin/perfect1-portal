@@ -75,7 +75,16 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
     if (!gammaResponse.ok) {
       const errorText = await gammaResponse.text();
       console.error('❌ Gamma API Error:', gammaResponse.status, errorText);
-      throw new Error(`Gamma API failed: ${gammaResponse.status} - ${errorText}`);
+      console.error('📤 Payload sent:', JSON.stringify(payload, null, 2));
+      
+      let errorMsg = `Gamma API Error ${gammaResponse.status}`;
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMsg = errorData.message || errorMsg;
+      } catch (e) {
+        errorMsg = errorText || errorMsg;
+      }
+      throw new Error(errorMsg);
     }
 
     const gammaData = await gammaResponse.json();
