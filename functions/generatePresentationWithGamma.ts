@@ -60,24 +60,16 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
       'full': 18
     };
 
-    // Build clean payload for Gamma API
+    // Build minimal payload for Gamma API
     const payload = {
-      text: inputText,
-      cards: numCardsMap[formData.length] || 10
+      text: inputText
     };
 
-    // Only add theme if specified
-    if (formData.gammaTheme) {
-      payload.theme = formData.gammaTheme;
-    }
+    console.log('🔵 Calling Gamma API...');
 
-    console.log('🔵 Calling Gamma API v1.0...');
-    console.log('Payload:', JSON.stringify(payload, null, 2));
-
-    const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
+    const gammaResponse = await fetch('https://api.gamma.app/api/v1/generate', {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${Deno.env.get('GAMMA_API_KEY')}`
       },
