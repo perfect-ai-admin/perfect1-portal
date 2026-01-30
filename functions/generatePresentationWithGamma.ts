@@ -144,6 +144,14 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
       throw new Error(`Gamma generation timed out after ${maxAttempts} attempts (${maxAttempts}s)`);
     }
 
+    console.log('📤 Final response:', {
+      success: true,
+      presentationUrl,
+      presentationUrlType: typeof presentationUrl,
+      generationId,
+      message: 'המצגה שלך נוצרה בהצלחה!'
+    });
+
     return Response.json({
       success: true,
       presentationUrl,
