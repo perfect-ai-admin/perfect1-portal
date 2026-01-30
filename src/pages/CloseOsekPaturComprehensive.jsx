@@ -229,10 +229,10 @@ export default function CloseOsekPaturComprehensive() {
              viewport={{ once: true }}
            >
              <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-4">
-               צריך לסגור את התיק בקצר?
+               צריך לסגור את התיק במהירות?
              </h3>
              <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-               אנחנו נטפל בכל פרטי הסגירה - פשוט תתן לנו את הפרטים שלך
+               אנחנו נטפל בכל פרטי הסגירה במהירות - פשוט תתן לנו את הפרטים שלך
              </p>
              <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
                <Button className="h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg">
