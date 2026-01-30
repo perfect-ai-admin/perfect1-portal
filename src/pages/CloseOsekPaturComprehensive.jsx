@@ -220,6 +220,30 @@ export default function CloseOsekPaturComprehensive() {
           </div>
         </section>
 
+        {/* CTA Section - Close Business */}
+        <section className="py-12 bg-gradient-to-br from-orange-50 to-red-50">
+         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+           <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+           >
+             <h3 className="text-2xl md:text-3xl font-black text-[#1E3A5F] mb-4">
+               צריך לסגור את התיק בקצר?
+             </h3>
+             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+               אנחנו נטפל בכל פרטי הסגירה - פשוט תתן לנו את הפרטים שלך
+             </p>
+             <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
+               <Button className="h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg">
+                 <MessageCircle className="ml-2 w-5 h-5" />
+                 סגירת תיק בווצאפ
+               </Button>
+             </a>
+           </motion.div>
+         </div>
+        </section>
+
         {/* שלבי הסגירה */}
         <section className="py-16 bg-white">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
