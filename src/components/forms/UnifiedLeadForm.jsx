@@ -185,14 +185,7 @@ export default function UnifiedLeadForm({
       )}
 
       <form onSubmit={handleSubmit} className={`space-y-${variant === 'compact' ? '2' : '3'}`}>
-        {/* Important Disclosure */}
-        <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3">
-          <p className="text-xs text-gray-700 leading-relaxed">
-            <strong className="text-yellow-800">הבהרה:</strong> זהו שירות פרטי לייעוץ בלבד. האתר אינו ממשלתי ואינו מהווה ייעוץ חשבונאי רשמי.
-          </p>
-        </div>
-
-        {/* Name */}
+         {/* Name */}
          {fields.includes('name') && (
            <div>
              <label htmlFor="form-name" className="text-sm font-semibold text-gray-700 mb-2 block">שם מלא *</label>
