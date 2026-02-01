@@ -59,6 +59,13 @@ body {
   }
 }
 
+/* Prevent iOS zoom on focus */
+@media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
 @layer utilities {
   .gradient-primary {
     background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%);
