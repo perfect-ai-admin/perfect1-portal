@@ -9,8 +9,8 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2, Sticker, Smile, Shield, Download, ExternalLink
-} from 'lucide-react';
+  FileText, Calendar, Layers, Share2, Sticker, Smile, Shield, Download, ExternalLink, Loader2, CheckCircle2
+  } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -90,6 +90,19 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
   const [generatedStickerUrl, setGeneratedStickerUrl] = useState(null);
   const [aiBrief, setAiBrief] = useState(null);
   const [aiPrompt, setAiPrompt] = useState(null);
+  const [countdown, setCountdown] = useState(30);
+
+  // Countdown timer during building
+  useEffect(() => {
+    if (!isBuilding) {
+      setCountdown(30);
+      return;
+    }
+    const timer = setInterval(() => {
+      setCountdown(prev => prev > 0 ? prev - 1 : 0);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isBuilding]);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
@@ -633,16 +646,105 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
         <div className="max-w-xl mx-auto min-h-full flex flex-col justify-start pt-2">
           
           {isBuilding ? (
-            <div className="flex flex-col items-center justify-center text-center space-y-6 mt-10">
-              <div className="relative w-20 h-20">
-                <div className="absolute inset-0 border-4 border-gray-100 rounded-full"></div>
-                <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-                <Sparkles className="absolute inset-0 m-auto text-blue-600 animate-pulse" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">מעצב את הסטיקר...</h3>
-                <p className="text-gray-500 text-sm">הבינה המלאכותית יוצרת סטיקר מותאם אישית</p>
-              </div>
+            <div className="flex flex-col items-center justify-center h-full bg-gradient-to-b from-blue-50 to-white relative overflow-hidden rounded-xl py-10">
+              {/* Animated background elements */}
+              <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+              <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }} />
+
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8, type: "spring" }}
+                className="relative z-10 mb-8"
+              >
+                <div className="relative w-32 h-32">
+                  {/* Outer rotating ring */}
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 border-4 border-transparent border-t-blue-600 border-r-blue-400 rounded-full"
+                  />
+                  {/* Middle pulsing ring */}
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute inset-4 border-2 border-blue-300 rounded-full"
+                  />
+                  {/* Center icon */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Sparkles className="w-12 h-12 text-blue-600" />
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="relative z-10 text-center space-y-3"
+              >
+                <h3 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
+                  מעצב את הסטיקר... ✨
+                </h3>
+                <p className="text-slate-600 text-sm md:text-base max-w-xs mx-auto">
+                  הבינה המלאכותית יוצרת סטיקר מותאם אישית
+                </p>
+              </motion.div>
+
+              {/* Countdown Timer */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="relative z-10 mt-10 mb-8"
+              >
+                <div className="relative w-28 h-28">
+                  <svg className="absolute inset-0 transform -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" strokeWidth="2" />
+                    <motion.circle
+                      cx="50"
+                      cy="50"
+                      r="45"
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(countdown / 30) * 283} 283`}
+                      animate={{ strokeDasharray: [`${(countdown / 30) * 283} 283`] }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.div
+                      key={countdown}
+                      initial={{ scale: 1.2, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-4xl font-black text-blue-600"
+                    >
+                      {countdown}
+                    </motion.div>
+                    <span className="text-xs text-slate-500 mt-1">שניות</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="relative z-10 space-y-3 text-sm"
+              >
+                <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="flex items-center gap-2 text-slate-700">
+                  <CheckCircle2 className="w-4 h-4 text-green-600" /> מעבד את הבקשה שלך
+                </motion.div>
+                <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }} className="flex items-center gap-2 text-slate-700">
+                  <CheckCircle2 className="w-4 h-4 text-green-600" /> בונה קומפוזיציה ויזואלית
+                </motion.div>
+                <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }} className="flex items-center gap-2 text-slate-700">
+                  <Loader2 className="w-4 h-4 text-blue-600 animate-spin" /> מחדד פרטים אחרונים
+                </motion.div>
+              </motion.div>
             </div>
           ) : showSuccess ? (
              <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-4">
