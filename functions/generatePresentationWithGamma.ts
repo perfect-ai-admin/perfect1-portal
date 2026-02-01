@@ -55,13 +55,7 @@ Call to action: ${formData.ctaText || 'Get Started'}`;
       }
     };
 
-    // Add optional fields only if they have values
-    if (formData.gammaTheme) {
-      payload.themeId = formData.gammaTheme;
-    }
-    if (formData.gammaFolder) {
-      payload.folderIds = [formData.gammaFolder];
-    }
+    // Don't add theme/folder - let Gamma use defaults
 
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
