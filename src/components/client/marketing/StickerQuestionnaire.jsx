@@ -9,7 +9,7 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2, Sticker, Smile, Shield
+  FileText, Calendar, Layers, Share2, Sticker, Smile, Shield, Download, ExternalLink
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -85,6 +85,32 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
   const [errors, setErrors] = useState({});
   const [isBuilding, setIsBuilding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [generatedStickerUrl, setGeneratedStickerUrl] = useState(null);
+  
+  // Translation maps for prompt generation
+  const fieldMap = {
+    service: 'Service provider',
+    shop: 'Retail shop',
+    digital: 'Digital/Online business',
+    therapy: 'Therapy/Coaching',
+    other: 'General business'
+  };
+
+  const styleMap = {
+    professional: 'professional, clean, sharp',
+    light: 'light, fun, casual',
+    warm: 'warm, welcoming, friendly',
+    sharp: 'sharp, assertive, bold',
+    humorous: 'humorous, funny, witty'
+  };
+
+  const vibeMap = {
+    confidence: 'confident, strong',
+    comfort: 'comfortable, cozy',
+    smile: 'happy, smiling, joyful',
+    serious: 'serious, trustworthy',
+    trust: 'reliable, secure'
+  };
 
   // Scroll to top on step change for mobile
   useEffect(() => {
@@ -141,15 +167,72 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
       setIsBuilding(true);
-      setTimeout(() => {
+      
+      try {
+        // Construct prompt
+        let prompt = `A high quality sticker design for a business named "${formData.businessName}". `;
+        
+        if (formData.field && fieldMap[formData.field]) {
+          prompt += `Business type: ${fieldMap[formData.field]}. `;
+        }
+        
+        if (formData.style && styleMap[formData.style]) {
+          prompt += `Style: ${styleMap[formData.style]}. `;
+        }
+        
+        if (formData.vibe && vibeMap[formData.vibe]) {
+          prompt += `Vibe: ${vibeMap[formData.vibe]}. `;
+        }
+        
+        if (formData.hasText === 'yes' || formData.hasText === 'combined') {
+           const textToUse = formData.exampleSentence || formData.businessName;
+           if (textToUse) {
+             prompt += `Include text: "${textToUse}". `;
+           }
+        } else if (formData.hasText === 'no') {
+           prompt += `No text, icon only. `;
+        }
+
+        if (formData.colors === 'fixed') {
+            // If user said "fixed colors" but we don't have a color picker in this simplified form (except the logic assumes it might exist or they type it)
+            // The form has 'colors' input/select. If it's a string, we might add it.
+            // But looking at the code, colors is just a selection ID in this form version.
+            // Let's assume we rely on the Vibe/Style for colors unless specific input exists.
+            // Actually, step 5 has "colors" selection: fixed, you_choose, open.
+            // If 'fixed', we might need to ask for colors, but currently the form doesn't seem to have a text input for colors when 'fixed' is selected?
+            // Ah, I see "colors" state is just the ID. 
+            // We'll just stick to style/vibe for now as the prompt driver.
+        }
+
+        prompt += "Sticker style, die-cut, white border, vector art, high resolution, isolated on white background.";
+
+        console.log('Generating sticker with prompt:', prompt);
+
+        const response = await base44.functions.invoke('generateSticker', { 
+            prompt,
+            width: 1024,
+            height: 1024
+        });
+
+        if (response.data && response.data.ok) {
+            setGeneratedStickerUrl(response.data.image_url);
+            setShowSuccess(true);
+            toast.success('הסטיקר נוצר בהצלחה!');
+        } else {
+            console.error('Sticker generation failed:', response.data);
+            toast.error('שגיאה ביצירת הסטיקר. נסה שנית.');
+        }
+
+      } catch (error) {
+        console.error('Error generating sticker:', error);
+        toast.error('שגיאה בתקשורת עם השרת');
+      } finally {
         setIsBuilding(false);
-        setShowSuccess(true);
-        // onComplete(formData); // Can call parent callback if needed
-      }, 2500);
+      }
     }
   };
 
@@ -594,25 +677,50 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
             </div>
           ) : showSuccess ? (
              <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-4">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2 shadow-lg shadow-green-200">
-                <Check className="w-10 h-10 text-green-600" />
-              </div>
+              {generatedStickerUrl ? (
+                  <div className="relative w-64 h-64 bg-gray-100 rounded-xl overflow-hidden shadow-lg border-4 border-white">
+                      <img 
+                          src={generatedStickerUrl} 
+                          alt="Generated Sticker" 
+                          className="w-full h-full object-contain p-4"
+                      />
+                  </div>
+              ) : (
+                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2 shadow-lg shadow-green-200">
+                    <Check className="w-10 h-10 text-green-600" />
+                  </div>
+              )}
               
               <div className="space-y-2">
-                <h2 className="text-2xl font-black text-gray-900">הסטיקר שלך בדרך! 🎉</h2>
+                <h2 className="text-2xl font-black text-gray-900">הסטיקר שלך מוכן! 🎉</h2>
                 <p className="text-gray-600 text-sm max-w-xs mx-auto">
-                    תקבל סטיקר ממותג, מותאם לעסק שלך,
-                    מוכן לשימוש מיידי בוואטסאפ / רשתות
-                    כזה שנעים לשלוח – ונעים לקבל.
+                    הנה הסטיקר הממותג שלך,
+                    מוכן לשימוש מיידי בוואטסאפ / רשתות.
                 </p>
               </div>
 
-               <Button 
-                onClick={() => onComplete(formData)}
-                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[200px] shadow-lg shadow-blue-100 mt-4"
-              >
-                חזרה למרכז השליטה
-              </Button>
+               <div className="flex flex-col gap-3 w-full max-w-xs">
+                   {generatedStickerUrl && (
+                       <a 
+                           href={generatedStickerUrl} 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           download="sticker.png"
+                           className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-lg font-bold shadow-lg shadow-green-100 transition-all"
+                       >
+                           <Download className="w-4 h-4" />
+                           הורד סטיקר
+                       </a>
+                   )}
+                   
+                   <Button 
+                    onClick={() => onComplete(formData)}
+                    variant="outline"
+                    className="border-gray-200 hover:bg-gray-50 text-gray-700"
+                  >
+                    חזרה למרכז השליטה
+                  </Button>
+               </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="w-full">
