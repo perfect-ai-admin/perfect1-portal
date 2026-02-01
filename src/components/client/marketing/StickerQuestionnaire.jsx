@@ -540,30 +540,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                   </div>
               </div>
 
-               <div className="space-y-2">
-                 <Label className="block text-xs font-semibold">צבעים מועדפים?</Label>
-                  <div className="grid grid-cols-1 gap-2">
-                   {[
-                      {id: 'fixed', label: 'יש לי צבעים קבועים'},
-                      {id: 'you_choose', label: 'אין, תבחרו אתם'},
-                      {id: 'open', label: 'פתוח להצעה'},
-                   ].map(option => (
-                       <div 
-                        key={option.id}
-                        onClick={() => handleInputChange('colors', option.id)}
-                        className={cn(
-                          "cursor-pointer p-2 rounded-xl border flex items-center gap-2 transition-all",
-                          formData.colors === option.id 
-                            ? "border-indigo-500 bg-indigo-50 text-indigo-900 font-bold" 
-                            : "border-gray-200 text-gray-700 hover:bg-gray-50"
-                        )}
-                      >
-                        <div className={cn("w-3 h-3 rounded-full border", formData.colors === option.id ? "bg-indigo-500 border-indigo-600" : "bg-gray-100 border-gray-300")} />
-                        <span className="text-xs">{option.label}</span>
-                      </div>
-                   ))}
-                  </div>
-              </div>
+
             </div>
            </div>
         );
