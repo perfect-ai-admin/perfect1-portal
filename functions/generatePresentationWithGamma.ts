@@ -11,7 +11,33 @@ Deno.serve(async (req) => {
 
     const { formData } = await req.json();
 
+    // Analyze uploaded file if present
+    let fileAnalysis = '';
+    if (formData.uploadedFileUrl) {
+      console.log('🔍 Analyzing uploaded file...');
+      try {
+        const analysisResponse = await base44.integrations.Core.InvokeLLM({
+          prompt: "Analyze this file and extract key business insights, financial data, value propositions, and relevant information for a business presentation. Summarize the findings clearly.",
+          file_urls: [formData.uploadedFileUrl],
+          add_context_from_internet: false
+        });
+        
+        fileAnalysis = typeof analysisResponse === 'string' ? analysisResponse : JSON.stringify(analysisResponse);
+        console.log('✅ File analysis complete');
+      } catch (err) {
+        console.error('❌ File analysis failed:', err);
+      }
+    }
+
     // Build prompt for presentation
+    let additionalInfo = '';
+    if (formData.additionalDetails) {
+        additionalInfo += `\nAdditional Details: ${formData.additionalDetails}\n`;
+    }
+    if (fileAnalysis) {
+        additionalInfo += `\nInsights from uploaded file: ${fileAnalysis}\n`;
+    }
+
     const inputText = `Create a professional ${formData.language === 'hebrew' ? 'Hebrew' : 'English'} business presentation for ${formData.businessName}.
 
 Business: ${formData.businessName || ''}
@@ -26,7 +52,9 @@ Why: ${formData.advantageExplanation || ''}
 
 Value: ${formData.valueProposition || ''}
 
-Call to action: ${formData.ctaText || 'Get Started'}`;
+${additionalInfo}
+
+Call to action: Contact Us`;
 
     console.log('🔵 Calling Gamma API...');
 
