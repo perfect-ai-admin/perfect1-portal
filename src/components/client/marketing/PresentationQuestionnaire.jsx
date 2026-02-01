@@ -789,21 +789,25 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
           <div className="w-full max-w-5xl mx-auto space-y-4">
             {/* Iframe Preview with Watermark Overlay */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 relative">
-              {/* Mobile: taller for better scrolling, Desktop: standard 16:9 */}
-              <div className="relative w-full md:pb-[56.25%] pb-[120%] md:h-auto h-[600px]">
+              {/* Mobile: full screen height for better viewing, Desktop: standard 16:9 */}
+              <div className="relative w-full md:pb-[56.25%]" style={{ height: 'calc(100vh - 250px)', minHeight: '500px' }}>
                 <iframe
                   src={embedUrl}
-                  className="absolute inset-0 w-full h-full border-0"
+                  className="absolute inset-0 w-full h-full border-0 md:static md:w-full md:h-full"
                   title="Presentation Preview"
                   allow="fullscreen"
                   loading="lazy"
+                  style={{
+                    width: '100%',
+                    height: '100%'
+                  }}
                 />
                 
                 {/* Watermark Overlay - visible but doesn't block interaction */}
                 <div className="absolute inset-0 pointer-events-none z-20">
                   {/* Diagonal Watermarks - only 3 instances, smaller on mobile */}
                   <div
-                    className="absolute text-red-500/30 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
+                    className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
                     style={{
                       top: '20%',
                       left: '50%',
@@ -815,7 +819,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     טיוטה
                   </div>
                   <div
-                    className="absolute text-red-500/30 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
+                    className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
                     style={{
                       top: '50%',
                       left: '50%',
@@ -827,7 +831,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     טיוטה
                   </div>
                   <div
-                    className="absolute text-red-500/30 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
+                    className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
                     style={{
                       top: '80%',
                       left: '50%',
