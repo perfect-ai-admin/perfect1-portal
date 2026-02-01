@@ -73,7 +73,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
     hasText: '',
     textType: '',
     
-    language: '',
+    language: 'english',
     vibe: '',
     
     hasLogo: '',
@@ -408,9 +408,9 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                           ))}
                         </div>
                         {formData.hasText !== 'no' && (
-                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 text-[11px] text-yellow-800 flex items-start gap-2 mt-2">
-                                <AlertCircle className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                                <span>שים לב: אם תבחר טקסט בעברית, המערכת תיצור מקום/בועה לטקסט, אך הטקסט עצמו יוסף ידנית על ידך (בינה מלאכותית עדיין מתקשה עם עברית).</span>
+                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-2 text-[11px] text-blue-800 flex items-start gap-2 mt-2">
+                                <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                                <span>שים לב: המערכת תומכת כרגע בטקסט באנגלית בלבד לקבלת תוצאה מושלמת.</span>
                             </div>
                         )}
                     </motion.div>
@@ -433,27 +433,18 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
              <div className="space-y-3">
                 <div className="space-y-2">
                  <Label className="block text-xs font-semibold">שפת הסטיקר</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                   {[
-                      {id: 'hebrew', label: 'עברית'},
-                      {id: 'hebrew_english', label: 'עברית + אנגלית'},
-                      {id: 'english', label: 'אנגלית'},
-                   ].map(option => (
-                       <div 
-                        key={option.id}
-                        onClick={() => handleInputChange('language', option.id)}
-                        className={cn(
-                          "cursor-pointer p-2 rounded-xl border text-center transition-all",
-                          formData.language === option.id 
-                            ? "border-teal-500 bg-teal-50 text-teal-900 font-bold" 
-                            : "border-gray-200 text-gray-500 hover:bg-gray-50"
-                        )}
-                      >
-                        <span className="text-xs">{option.label}</span>
-                      </div>
-                   ))}
-                  </div>
-              </div>
+                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-3">
+                     <div className="bg-blue-100 p-1.5 rounded-full">
+                         <Globe className="w-4 h-4 text-blue-600" />
+                     </div>
+                     <div>
+                         <div className="text-xs font-bold text-blue-900">אנגלית בלבד (English Only)</div>
+                         <div className="text-[10px] text-blue-700 leading-tight mt-1">
+                             כרגע המערכת תומכת ביצירת סטיקרים עם טקסט באנגלית בלבד לקבלת התוצאה הטובה ביותר.
+                         </div>
+                     </div>
+                 </div>
+                </div>
 
                <div className="space-y-2">
                  <Label className="block text-xs font-semibold">איך היית רוצה שהלקוח ירגיש?</Label>
