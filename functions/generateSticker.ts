@@ -45,7 +45,11 @@ Deno.serve(async (req) => {
              - **DO NOT** ask for the specific Hebrew words in the "image_prompt_english".
              - **INSTEAD**: Ask for a "blank white speech bubble", "empty sign", or "space for text" in the composition.
              - In the "product_brief_hebrew", clearly state: "הטקסט יוסף ידנית על גבי הבועה/השלט הריק (בינה מלאכותית עדיין לא תומכת בטקסט עברי תקין)."
-           - **IF LANGUAGE IS ENGLISH**: You can include the specific text in the prompt (e.g., "with text 'Sale'").
+           - **IF LANGUAGE IS ENGLISH**: 
+             - You MUST include the text in the prompt.
+             - Use the format: "with the word '${formData.exampleSentence || 'Sticker'}' written in bold, clear, bubble typography".
+             - Ensure the text is large, legible, and central to the design.
+             - If no text provided, choose a relevant short word based on the purpose (e.g., "WOW", "YES", "DEAL").
         8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.
         9. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes (e.g., Confidence = Blue/Gold, Strong lines; Comfort = Pastels, Round shapes).
         10. **Logo/Colors**: If specific colors are mentioned, use them as the primary palette.

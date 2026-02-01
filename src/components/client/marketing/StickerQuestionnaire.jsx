@@ -358,12 +358,11 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
               </div>
 
               <div className="space-y-2">
-                 <Label className="block text-xs font-semibold">האם אתה רוצה טקסט בסטיקר?</Label>
-                  <div className="grid grid-cols-3 gap-2">
+                 <Label className="block text-xs font-semibold">תצוגת טקסט בסטיקר (חובה)</Label>
+                  <div className="grid grid-cols-2 gap-2">
                    {[
-                      {id: 'yes', label: 'כן'},
-                      {id: 'no', label: 'לא'},
-                      {id: 'combined', label: 'טקסט + אייקון'},
+                      {id: 'combined', label: 'אייקון + טקסט'},
+                      {id: 'yes', label: 'טקסט מרכזי'},
                    ].map(option => (
                        <div 
                         key={option.id}
@@ -382,7 +381,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
               </div>
 
               <AnimatePresence>
-                {(formData.hasText === 'yes' || formData.hasText === 'combined') && (
+                {(formData.hasText === 'yes' || formData.hasText === 'combined' || !formData.hasText) && (
                     <motion.div 
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
@@ -560,12 +559,12 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
             />
              <div className="space-y-3">
                 <div className="space-y-1">
-                    <Label className="text-xs font-semibold">תן דוגמה למשפט שאתה שולח הרבה ללקוחות (אופציונלי)</Label>
-                    <Textarea 
+                    <Label className="text-xs font-semibold">מה לכתוב בסטיקר? (באנגלית בלבד)</Label>
+                    <Input 
                       value={formData.exampleSentence} 
                       onChange={(e) => handleInputChange('exampleSentence', e.target.value)} 
-                      placeholder="טקסט חופשי..." 
-                      className="h-20 text-xs resize-none"
+                      placeholder="e.g. Approved, Sale, Good Job..." 
+                      className="h-9 text-xs"
                     />
                 </div>
 
