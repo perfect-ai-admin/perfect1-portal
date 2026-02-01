@@ -22,23 +22,41 @@ Deno.serve(async (req) => {
     console.log('[GenerateSticker] Processing form data with LLM...');
     
     const analysisResponse = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are an expert Product Manager and AI Art Director specialized in sticker design.
+        prompt: `You are an expert Product Manager and AI Art Director specialized in sticker design for messaging apps (WhatsApp/Telegram).
         
-        Analyze the following user requirements from a sticker questionnaire:
+        Analyze the following user requirements from a sticker questionnaire deeply:
         ${JSON.stringify(formData, null, 2)}
         
-        Your tasks:
-        1. "product_brief_hebrew": Write a professional product characterization (אפיון) in Hebrew. 
-           - Summarize the business essence, the target audience, the desired vibe, and specific elements.
-           - Ensure NO detail from the input is missed.
-           - Format it as a structured paragraph.
+        Your Goal: Create a perfect specification (Product Brief) and a precise Image Generation Prompt.
         
-        2. "image_prompt_english": Write a highly optimized prompt for an AI Image Generator (specifically for stickers).
-           - Start with: "A high quality die-cut sticker design of..."
-           - Incorporate the business type, style, and vibe visuals.
-           - If 'hasText' is yes/combined and 'exampleSentence' or 'businessName' exists, include: text "${formData.exampleSentence || formData.businessName}".
-           - Include technical keywords: "white border, vector art, flat design, isolated on white background, high resolution, professional vector illustration".
-           - Exclude anything mentioned in 'excludeText'.
+        STRICTLY FOLLOW THESE 10 POINTS in your analysis:
+        1. **Business Name**: Verify the name provided. If language is Hebrew, note that image generators struggle with Hebrew text. 
+        2. **Field/Industry**: Translate the field into specific visual imagery (e.g., "Digital" -> pixels, screens, abstract nodes; "Therapy" -> soft shapes, plants, hands).
+        3. **Target Audience**: Adjust the complexity. Kids/Teens -> Colorful, Bold. Business -> Clean, Minimal, Sophisticated.
+        4. **Purpose**: 
+           - "Closing deal" -> Handshake, Checkmark, Thumbs up.
+           - "Service" -> Headset, Smile, Heart.
+           - "Funny" -> Exaggerated expressions, caricatures.
+        5. **Platform**: WhatsApp stickers need clear silhouettes and thick white borders.
+        6. **Style**: Define the artistic style clearly (e.g., "Professional" -> Flat Vector, Geometric; "Warm" -> Watercolor, Soft edges; "Funny" -> Cartoon, Pop Art).
+        7. **Text Content**: 
+           - If 'hasText' is YES: Decide if the text should be inside the image. *Crucial*: If the requested language is HEBREW, image models often fail. In the prompt, prioritize the *visuals* over complex text rendering, or suggest/request specific typography style if the model supports it.
+           - If 'textType' is specified, match the visual weight to it.
+        8. **Language**: Check 'language' field. If Hebrew is requested, ensure the "product_brief_hebrew" mentions it clearly.
+        9. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes (e.g., Confidence = Blue/Gold, Strong lines; Comfort = Pastels, Round shapes).
+        10. **Logo/Colors**: If specific colors are mentioned, use them as the primary palette.
+        
+        TASKS:
+        
+        1. **"product_brief_hebrew"**: Write a detailed, structured product specification in Hebrew for the user (The Product Manager).
+           - Structure it with bullet points corresponding to the analysis (Business, Visual Concept, Vibe, Colors, Text Strategy).
+           - Explain *why* certain visual choices were made based on their answers.
+           - If Hebrew text was requested, add a small note that AI might struggle with Hebrew letters perfectly.
+        
+        2. **"image_prompt_english"**: Write the FINAL optimized prompt for StockImg/Stable Diffusion.
+           - Format: "Die-cut sticker design of [MAIN SUBJECT], [ACTION/POSE], [STYLE DESCRIPTORS], [VIBE VISUALS], [COLORS], white border, vector art, isolated on white background, high quality, 4k".
+           - **TEXT HANDLING**: If text is required, add: "holding a sign saying '[TEXT]'" or "with text '[TEXT]' in bold typography". *Note*: If Hebrew, write the Hebrew text in the prompt but expect mixed results.
+           - **EXCLUSIONS**: If 'excludeText' exists, add "no [excludeText]" to negative prompt logic implies avoiding it in description.
            
         Return ONLY the JSON object.`,
         response_json_schema: {
