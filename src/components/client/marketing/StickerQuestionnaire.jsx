@@ -12,6 +12,8 @@ import {
   FileText, Calendar, Layers, Share2, Sticker, Smile, Shield, Download, ExternalLink
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 // Custom specialized card selector component for better UX
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
