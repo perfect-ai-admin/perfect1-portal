@@ -30,15 +30,20 @@ Deno.serve(async (req) => {
         Your Goal: Create a perfect specification (Product Brief) and a precise Image Generation Prompt.
         
         STRICTLY FOLLOW THESE 10 POINTS in your analysis:
-        1. **Business Name**: Verify the name provided. If language is Hebrew, note that image generators struggle with Hebrew text. 
-        2. **Field/Industry**: Translate the field into specific visual imagery (e.g., "Digital" -> pixels, screens, abstract nodes; "Therapy" -> soft shapes, plants, hands).
-        3. **Target Audience**: Adjust the complexity. Kids/Teens -> Colorful, Bold. Business -> Clean, Minimal, Sophisticated.
-        4. **Purpose**: 
-           - "Closing deal" -> Handshake, Checkmark, Thumbs up.
-           - "Service" -> Headset, Smile, Heart.
-           - "Funny" -> Exaggerated expressions, caricatures.
+        1. **Business Name**: Verify the name provided.
+        2. **Field/Industry**: Translate the field ("${formData.field === 'other' ? formData.customField : formData.field}") into specific visual imagery.
+        3. **Target Audience**: Adjust complexity based on "${formData.targetAudience}".
+        
+        4. **PURPOSE (CRITICAL - PRIMARY VISUAL DRIVER)**: 
+           The user selected purpose: "${formData.purpose}". THIS MUST DICTATE THE MAIN ICONOGRAPHY:
+           - "closing" (Closing Deal/Coordination) -> MUST feature: Handshake, Checkmark, Thumbs up, or Contract. Vibe: Decisive, Trust.
+           - "service" (Customer Service) -> MUST feature: Headset, Friendly Support Agent, Smile, Heart, or Chat bubble. Vibe: Welcoming.
+           - "branding" (Branding/Presence) -> MUST feature: The Business Name/Logo as the HERO element, Shield, Star, or Crown. Vibe: Premium.
+           - "quick" (Quick Reply) -> MUST feature: Speed lines, Flash, "Like" hand, or Clock. Vibe: Energetic.
+           - "fun" (Fun/Humor) -> MUST feature: Mascot winking, Exaggerated expression, Party popper, or Cool sunglasses. Vibe: Playful.
+           
         5. **Platform**: WhatsApp stickers need clear silhouettes and thick white borders.
-        6. **Style**: Define the artistic style clearly (e.g., "Professional" -> Flat Vector, Geometric; "Warm" -> Watercolor, Soft edges; "Funny" -> Cartoon, Pop Art).
+        6. **Style**: Strictly adhere to "${formData.style}" (e.g., "professional" -> Clean Vector; "light" -> Airy, Pastel; "warm" -> Organic; "sharp" -> Bold lines; "humorous" -> Caricature).
         7. **Text Content & Language**: 
            - **CRITICAL RULE FOR HEBREW**: Image generators CANNOT render Hebrew text. It comes out as gibberish. 
            - **IF LANGUAGE IS HEBREW**: 
