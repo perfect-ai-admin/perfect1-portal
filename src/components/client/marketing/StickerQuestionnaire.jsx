@@ -88,31 +88,8 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
   const [isBuilding, setIsBuilding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [generatedStickerUrl, setGeneratedStickerUrl] = useState(null);
-  
-  // Translation maps for prompt generation
-  const fieldMap = {
-    service: 'Service provider',
-    shop: 'Retail shop',
-    digital: 'Digital/Online business',
-    therapy: 'Therapy/Coaching',
-    other: 'General business'
-  };
-
-  const styleMap = {
-    professional: 'professional, clean, sharp',
-    light: 'light, fun, casual',
-    warm: 'warm, welcoming, friendly',
-    sharp: 'sharp, assertive, bold',
-    humorous: 'humorous, funny, witty'
-  };
-
-  const vibeMap = {
-    confidence: 'confident, strong',
-    comfort: 'comfortable, cozy',
-    smile: 'happy, smiling, joyful',
-    serious: 'serious, trustworthy',
-    trust: 'reliable, secure'
-  };
+  const [aiBrief, setAiBrief] = useState(null);
+  const [aiPrompt, setAiPrompt] = useState(null);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
@@ -175,53 +152,26 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
       setIsBuilding(true);
       
       try {
-        // Construct prompt
-        let prompt = `A high quality sticker design for a business named "${formData.businessName}". `;
-        
-        if (formData.field && fieldMap[formData.field]) {
-          prompt += `Business type: ${fieldMap[formData.field]}. `;
-        }
-        
-        if (formData.style && styleMap[formData.style]) {
-          prompt += `Style: ${styleMap[formData.style]}. `;
-        }
-        
-        if (formData.vibe && vibeMap[formData.vibe]) {
-          prompt += `Vibe: ${vibeMap[formData.vibe]}. `;
-        }
-        
-        if (formData.hasText === 'yes' || formData.hasText === 'combined') {
-           const textToUse = formData.exampleSentence || formData.businessName;
-           if (textToUse) {
-             prompt += `Include text: "${textToUse}". `;
-           }
-        } else if (formData.hasText === 'no') {
-           prompt += `No text, icon only. `;
-        }
-
-        if (formData.colors === 'fixed') {
-            // If user said "fixed colors" but we don't have a color picker in this simplified form (except the logic assumes it might exist or they type it)
-            // The form has 'colors' input/select. If it's a string, we might add it.
-            // But looking at the code, colors is just a selection ID in this form version.
-            // Let's assume we rely on the Vibe/Style for colors unless specific input exists.
-            // Actually, step 5 has "colors" selection: fixed, you_choose, open.
-            // If 'fixed', we might need to ask for colors, but currently the form doesn't seem to have a text input for colors when 'fixed' is selected?
-            // Ah, I see "colors" state is just the ID. 
-            // We'll just stick to style/vibe for now as the prompt driver.
-        }
-
-        prompt += "Sticker style, die-cut, white border, vector art, high resolution, isolated on white background.";
-
-        console.log('Generating sticker with prompt:', prompt);
+        // We now send the RAW form data to the backend.
+        // The backend uses an LLM to analyze "field", "vibe", "style", etc.,
+        // ensuring no nuance is lost.
+        console.log('Sending sticker request with data:', formData);
 
         const response = await base44.functions.invoke('generateSticker', { 
-            prompt,
+            formData: formData,
             width: 1024,
             height: 1024
         });
 
         if (response.data && response.data.ok) {
             setGeneratedStickerUrl(response.data.image_url);
+            setAiBrief(response.data.ai_brief);
+            setAiPrompt(response.data.used_prompt);
+            
+            // Console log for transparency as requested
+            console.log('🔵 AI Product Brief (Hebrew):', response.data.ai_brief);
+            console.log('🔵 Generated Prompt (English):', response.data.used_prompt);
+            
             setShowSuccess(true);
             toast.success('הסטיקר נוצר בהצלחה!');
         } else {
@@ -700,6 +650,28 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                     מוכן לשימוש מיידי בוואטסאפ / רשתות.
                 </p>
               </div>
+              
+              {/* AI Details Expansion */}
+              {aiBrief && (
+                  <div className="w-full max-w-sm bg-gray-50 rounded-lg p-3 text-right text-xs border border-gray-100 mb-2">
+                      <details className="group">
+                          <summary className="cursor-pointer font-bold text-gray-700 flex items-center justify-between">
+                              <span>📝 אפיון מוצר ופרומפט</span>
+                              <span className="text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                          </summary>
+                          <div className="mt-2 space-y-3 text-gray-600 leading-relaxed">
+                              <div>
+                                  <span className="block font-bold text-gray-800 mb-1">אפיון (Product Brief):</span>
+                                  {aiBrief}
+                              </div>
+                              <div className="border-t pt-2" dir="ltr">
+                                  <span className="block font-bold text-gray-800 mb-1">Prompt Generated:</span>
+                                  <span className="font-mono text-[10px] bg-white p-1 block rounded border">{aiPrompt}</span>
+                              </div>
+                          </div>
+                      </details>
+                  </div>
+              )}
 
                <div className="flex flex-col gap-3 w-full max-w-xs">
                    {generatedStickerUrl && (
