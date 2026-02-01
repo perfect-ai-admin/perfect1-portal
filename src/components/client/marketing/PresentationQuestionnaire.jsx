@@ -1141,7 +1141,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   מייצר את המצגת... ✨
                 </h3>
                 <p className="text-slate-600 text-sm md:text-base max-w-xs mx-auto">
-                  Gamma בונה את השקפים עבורך בחוכמה
+                  בונים לך את המצגת!
                 </p>
                 <div className="flex gap-2 justify-center pt-2">
                   <motion.div
