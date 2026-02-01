@@ -259,9 +259,21 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                         />
                     </div>
                 )}
-              </div>
+                </div>
 
-               <div className="space-y-2 pt-1">
+                <div className="space-y-1 pt-1">
+                  <Label htmlFor="mainSubject" className="text-xs font-semibold">סמל/חפץ מרכזי (אופציונלי אך מומלץ)</Label>
+                  <Input 
+                      id="mainSubject" 
+                      value={formData.mainSubject} 
+                      onChange={(e) => handleInputChange('mainSubject', e.target.value)} 
+                      placeholder="למשל: מצלמה, רכב, פיצה, מחשב, או 'דמות שלי'..." 
+                      className="h-9 text-xs"
+                  />
+                  <p className="text-[10px] text-gray-500">עוזר ל-AI להבין מה לצייר במרכז הסטיקר</p>
+                </div>
+
+                <div className="space-y-2 pt-1">
                 <Label className="block text-xs font-semibold">קהל היעד העיקרי שלך</Label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
@@ -350,14 +362,14 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label className="block text-xs font-semibold">איזה סגנון הכי מתאים לך?</Label>
+                <Label className="block text-xs font-semibold">איזה סגנון ויזואלי?</Label>
                  <div className="grid grid-cols-2 gap-2">
                   {[
-                    { id: 'professional', label: 'מקצועי', icon: Briefcase },
-                    { id: 'light', label: 'קליל', icon: Smile },
-                    { id: 'warm', label: 'חמים', icon: Users },
-                    { id: 'sharp', label: 'חד / אסרטיבי', icon: Zap },
-                    { id: 'humorous', label: 'הומוריסטי', icon: Smile },
+                    { id: '3d_cute', label: 'דמות תלת-מימד חמודה (Pixar Style)', icon: Smile },
+                    { id: 'flat_vector', label: 'איור שטוח ונקי (Flat Vector)', icon: Briefcase },
+                    { id: 'elegant', label: 'יוקרתי ומינימליסטי', icon: Shield },
+                    { id: 'pop_art', label: 'פופ-ארט צבעוני ונועז', icon: Zap },
+                    { id: 'realistic', label: 'ריאליסטי / מצולם', icon: Users },
                   ].map(option => (
                     <SelectionCard
                       key={option.id}
