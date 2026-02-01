@@ -800,30 +800,42 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                 
                 {/* Watermark Overlay - visible but doesn't block interaction */}
                 <div className="absolute inset-0 pointer-events-none z-20">
-                  {/* Diagonal Watermarks */}
-                  {Array.from({ length: 20 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute text-red-500/40 font-black text-5xl md:text-7xl whitespace-nowrap select-none"
-                      style={{
-                        top: `${(i * 12) % 100}%`,
-                        left: `${(i * 20) % 100}%`,
-                        transform: 'rotate(-45deg)',
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none',
-                        textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
-                      }}
-                    >
-                      טיוטה
-                    </div>
-                  ))}
-                  
-                  {/* Corner Watermarks */}
-                  <div className="absolute top-4 right-4 text-red-600 font-black text-2xl bg-white/60 px-4 py-2 rounded-lg">
-                    🎨 טיוטה
+                  {/* Diagonal Watermarks - only 3 instances */}
+                  <div
+                    className="absolute text-red-500/30 font-black text-6xl md:text-8xl whitespace-nowrap select-none"
+                    style={{
+                      top: '20%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%) rotate(-45deg)',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none'
+                    }}
+                  >
+                    טיוטה
                   </div>
-                  <div className="absolute bottom-4 left-4 text-red-600 font-black text-xl bg-white/60 px-3 py-1 rounded-lg">
-                    DRAFT • גרסת תצוגה
+                  <div
+                    className="absolute text-red-500/30 font-black text-6xl md:text-8xl whitespace-nowrap select-none"
+                    style={{
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%) rotate(-45deg)',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none'
+                    }}
+                  >
+                    טיוטה
+                  </div>
+                  <div
+                    className="absolute text-red-500/30 font-black text-6xl md:text-8xl whitespace-nowrap select-none"
+                    style={{
+                      top: '80%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%) rotate(-45deg)',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none'
+                    }}
+                  >
+                    טיוטה
                   </div>
                 </div>
               </div>
