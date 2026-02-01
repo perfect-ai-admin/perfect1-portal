@@ -847,25 +847,34 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                 <span className="text-xs font-bold max-w-0 overflow-hidden group-hover/btn:max-w-[100px] transition-all duration-300 whitespace-nowrap">הגדל</span>
               </button>
 
-              {/* Desktop View: Standard Aspect Ratio */}
-              <div className="hidden md:block relative w-full aspect-video">
-                <iframe
-                  src={embedUrl}
-                  className="absolute inset-0 w-full h-full border-0"
-                  title="Presentation Preview Desktop"
-                  allow="fullscreen"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
-                  {[20, 50, 80].map((top) => (
-                    <div
-                      key={top}
-                      className="absolute text-red-500/15 font-black text-8xl whitespace-nowrap select-none"
-                      style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
-                    >
-                      טיוטה
-                    </div>
-                  ))}
+              {/* Desktop View: High Fidelity Scaled */}
+              <div className="hidden md:block relative w-full aspect-video overflow-hidden bg-gray-50">
+                <div 
+                  className="absolute top-0 left-0 origin-top-left"
+                  style={{
+                    width: '150%', 
+                    height: '150%', 
+                    transform: 'scale(0.66667)', // Scale back to fit
+                  }}
+                >
+                  <iframe
+                    src={embedUrl}
+                    className="w-full h-full border-0"
+                    title="Presentation Preview Desktop"
+                    allow="fullscreen"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+                    {[20, 50, 80].map((top) => (
+                      <div
+                        key={top}
+                        className="absolute text-red-500/15 font-black text-9xl whitespace-nowrap select-none"
+                        style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
+                      >
+                        טיוטה
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -979,6 +988,18 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                       title="Full Presentation Preview"
                       allow="fullscreen"
                     />
+                    {/* Watermark Overlay for Full Screen */}
+                    <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden">
+                      {[15, 35, 55, 75, 95].map((top) => (
+                        <div
+                          key={top}
+                          className="absolute text-red-500/10 font-black text-[10rem] whitespace-nowrap select-none"
+                          style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-30deg)' }}
+                        >
+                          טיוטה
+                        </div>
+                      ))}
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>
