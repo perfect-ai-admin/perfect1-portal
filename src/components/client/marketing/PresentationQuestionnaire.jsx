@@ -87,8 +87,9 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     valueProposition: '',
     afterPicture: '',
     // Step 8
-    cta: [],
-    ctaText: '',
+    additionalDetails: '',
+    uploadedFileUrl: null,
+    uploadedFileName: '',
     // Step 9
     style: '',
     colors: '',
@@ -175,6 +176,25 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     const file = e.target.files[0];
     if (file) {
       setFormData(prev => ({ ...prev, logoFile: file, logoStatus: 'uploaded' }));
+    }
+  };
+
+  const handleAdditionalFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      toast.info('מעלה קובץ...');
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setFormData(prev => ({ 
+        ...prev, 
+        uploadedFileUrl: file_url, 
+        uploadedFileName: file.name 
+      }));
+      toast.success('הקובץ הועלה בהצלחה!');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('שגיאה בהעלאת הקובץ');
     }
   };
 
@@ -545,45 +565,57 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
           </div>
         );
 
-      case 8: // CTA
+      case 8: // Additional Details
         return (
           <div className="space-y-3">
             <StepHeader 
-              icon={Send} 
-              title="קריאה לפעולה" 
-              description="מה הצעד הבא?"
+              icon={FileText} 
+              title="מידע נוסף" 
+              description="פרטים נוספים ומסמכים"
               colorClass="bg-purple-100 text-purple-600"
             />
 
             <div className="space-y-3">
-              <div className="space-y-2">
-                <Label className="block text-xs font-semibold">מה אתם רוצים שיקרה?</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { id: 'meeting', label: 'שיחת היכרות', icon: Users },
-                    { id: 'contact', label: 'השארת פרטים', icon: FileText },
-                    { id: 'appointment', label: 'פגישה', icon: Calendar },
-                    { id: 'investment', label: 'השקעה', icon: Wallet }
-                  ].map(option => (
-                    <SelectionCard
-                      key={option.id}
-                      selected={formData.cta.includes(option.id)}
-                      onClick={() => handleCheckboxChange('cta', option.id, !formData.cta.includes(option.id))}
-                      icon={option.icon}
-                      title={option.label}
-                    />
-                  ))}
-                </div>
+              <div className="space-y-1">
+                <Label htmlFor="additionalDetails" className="text-xs font-semibold">פרטים נוספים (טקסט חופשי)</Label>
+                <Textarea 
+                  id="additionalDetails"
+                  value={formData.additionalDetails} 
+                  onChange={(e) => handleInputChange('additionalDetails', e.target.value)} 
+                  placeholder="הוסיפו כל פרט רלוונטי נוסף שיעזור לנו לבנות את המצגת..." 
+                  className="h-32 text-xs resize-none"
+                />
               </div>
 
-              <div className="space-y-1">
-                <Label className="text-xs font-semibold">טקסט לכפתור (אופציונלי)</Label>
-                <Input 
-                  value={formData.ctaText} 
-                  onChange={(e) => handleInputChange('ctaText', e.target.value)} 
-                  placeholder="למשל: בואו נתחיל" 
-                  className="h-9 text-xs"
-                />
+              <div className="space-y-2">
+                <Label className="block text-xs font-semibold">העלאת קובץ (אופציונלי - אקסל, PDF, וכו')</Label>
+                <div 
+                  className={cn(
+                    "border border-dashed rounded-xl p-4 transition-all text-center cursor-pointer relative",
+                    formData.uploadedFileUrl ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-purple-400 hover:bg-purple-50"
+                  )}
+                >
+                  <input 
+                    type="file" 
+                    onChange={handleAdditionalFileUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <div className="flex flex-col items-center gap-1 pointer-events-none">
+                    {formData.uploadedFileUrl ? (
+                      <>
+                        <Check className="w-5 h-5 text-green-600" />
+                        <span className="text-xs font-bold text-green-700">הקובץ הועלה בהצלחה!</span>
+                        <span className="text-[10px] text-green-600">{formData.uploadedFileName}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-5 h-5 text-gray-400" />
+                        <span className="text-xs font-bold text-gray-700">לחץ להעלאת קובץ</span>
+                        <span className="text-[10px] text-gray-500">אקסל, PDF, תמונה או כל קובץ אחר</span>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
