@@ -46,25 +46,25 @@ Deno.serve(async (req) => {
              - **INSTEAD**: Ask for a "blank white speech bubble", "empty sign", or "space for text" in the composition.
              - In the "product_brief_hebrew", clearly state: "הטקסט יוסף ידנית על גבי הבועה/השלט הריק (בינה מלאכותית עדיין לא תומכת בטקסט עברי תקין)."
            - **IF LANGUAGE IS ENGLISH**: 
-             - **TEXT MANDATORY**: The prompt MUST explicitly demand text rendering.
-             - **CONTENT**: Use the exact text: "${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}". 
-             - **FORMAT**: "A centered die-cut sticker design featuring the text '${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}' in bold, 3D, expressive typography."
-             - **PRIORITY**: If the user typed a specific sentence, use it. If not, YOU MUST USE THE BUSINESS NAME ("${formData.businessName}"). Do not invent random words if a business name exists.
-             - **FIELD**: If the field is 'other', use the custom description: "${formData.field === 'other' ? formData.customField : formData.field}".
-             - **STYLE**: Strictly adhere to the selected style: "${formData.style}".
-        8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.
-        9. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes (e.g., Confidence = Blue/Gold, Strong lines; Comfort = Pastels, Round shapes).
-        10. **Logo/Colors**: If specific colors are mentioned, use them as the primary palette.
-        
-        TASKS:
-        
-        1. **"product_brief_hebrew"**: Write a detailed, structured product specification in Hebrew for the user (The Product Manager).
+           - **TEXT MANDATORY**: The prompt MUST explicitly demand text rendering.
+           - **CONTENT**: Use the exact text: "${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}". 
+           - **FORMAT**: "A centered die-cut sticker design featuring the text '${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}' in bold, 3D, expressive typography."
+           - **PRIORITY**: If the user typed a specific sentence, use it. If not, YOU MUST USE THE BUSINESS NAME ("${formData.businessName}"). Do not invent random words if a business name exists.
+           - **FIELD**: If the field is 'other', use the custom description: "${formData.field === 'other' ? formData.customField : formData.field}".
+           - **STYLE**: Strictly adhere to the selected style: "${formData.style}".
+           8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.
+           9. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes (e.g., Confidence = Blue/Gold, Strong lines; Comfort = Pastels, Round shapes).
+           10. **Logo/Colors**: If specific colors are mentioned, use them as the primary palette.
+
+           TASKS:
+
+           1. **"product_brief_hebrew"**: Write a detailed, structured product specification in Hebrew for the user (The Product Manager).
            - Structure it with bullet points corresponding to the analysis (Business, Visual Concept, Vibe, Colors, Text Strategy).
            - Explain *why* certain visual choices were made based on their answers.
            - If Hebrew text was requested, add a small note that AI might struggle with Hebrew letters perfectly.
-        
-        2. **"image_prompt_english"**: Write the FINAL optimized prompt for StockImg/Stable Diffusion.
-           - Format: "Die-cut sticker design of [MAIN SUBJECT], [ACTION/POSE], [STYLE DESCRIPTORS], [VIBE VISUALS], [COLORS], white border, vector art, isolated on white background, high quality, 4k".
+
+           2. **"image_prompt_english"**: Write the FINAL optimized prompt for StockImg/Stable Diffusion.
+           - Format: "Die-cut sticker design of [MAIN SUBJECT], [ACTION/POSE], [STYLE DESCRIPTORS], [VIBE VISUALS], [COLORS], white border, vector art, isolated on white background, high quality, 4k, text '${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}' clearly visible".
            - **TEXT HANDLING**: If text is required, add: "holding a sign saying '[TEXT]'" or "with text '[TEXT]' in bold typography". *Note*: If Hebrew, write the Hebrew text in the prompt but expect mixed results.
            - **EXCLUSIONS**: If 'excludeText' exists, add "no [excludeText]" to negative prompt logic implies avoiding it in description.
            
