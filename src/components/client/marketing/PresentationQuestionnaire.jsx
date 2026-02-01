@@ -924,7 +924,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full mb-3">
                   <FileText className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="text-xl font-black text-gray-900 mb-2">מוצא לך? קבל את המצגת המלאה!</h4>
+                <h4 className="text-xl font-black text-gray-900 mb-2">אהבת? קבל את המצגת המלאה !</h4>
                 <p className="text-sm text-gray-600 mb-1">
                   לאחר התשלום תקבל:
                 </p>
@@ -933,10 +933,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     <Check className="w-4 h-4 text-green-600" />
                     <span className="font-semibold">קובץ PDF איכותי ללא סימני מים</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-green-600" />
-                    <span className="font-semibold">גישה מלאה לעריכה ב-Gamma</span>
-                  </div>
+
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-600" />
                     <span className="font-semibold">אפשרות להורדה והדפסה</span>
@@ -953,12 +950,12 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-black text-lg h-14 shadow-lg"
                 >
                   <Wallet className="w-5 h-5 ml-2" />
-                  אשר ושלם עכשיו
+                  לקבלת המצגת המלאה
                 </Button>
               </div>
               
               <p className="text-xs text-center text-gray-600">
-                💳 תשלום מאובטח • קבלה מיידית • הורדת PDF תוך דקות
+                קבלה מיידית • הורדת PDF תוך דקות
               </p>
             </div>
           </div>
