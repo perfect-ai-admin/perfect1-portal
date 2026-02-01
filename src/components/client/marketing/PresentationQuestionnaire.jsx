@@ -761,61 +761,77 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   };
 
   if (showDraftPreview && draftPreviewUrl) {
+    const embedUrl = draftPreviewUrl.replace('gamma.app/docs/', 'gamma.app/embed/');
+    
     return (
-      <div className="flex flex-col h-full bg-gradient-to-b from-green-50 to-emerald-50">
-        {/* Success Header */}
-        <div className="flex-none px-4 py-3 border-b border-green-100 bg-white/80 backdrop-blur-md z-10">
+      <div className="flex flex-col h-full bg-gray-50">
+        {/* Preview Header */}
+        <div className="flex-none px-4 py-3 border-b border-gray-200 bg-white flex items-center justify-between z-10">
+          <div>
+            <h3 className="font-bold text-gray-900">תצוגה מקדימה - טיוטה חינמית</h3>
+            <p className="text-xs text-gray-500">עיין במצגה ואשר לפני תשלום</p>
+          </div>
           <button 
-            onClick={onClose}
-            className="p-2 -mr-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all"
+            onClick={() => {
+              setShowDraftPreview(false);
+              setShowSuccess(false);
+              setPresentationUrl(null);
+              setDraftPreviewUrl(null);
+            }}
+            className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Success Content */}
-        <div className="flex-1 flex flex-col items-center justify-center p-6">
-          <div className="text-center space-y-6 max-w-sm">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg mx-auto"
-            >
-              <Check className="w-8 h-8" />
-            </motion.div>
-
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">המצגה שלך מוכנה! ✨</h2>
-              <p className="text-gray-600">המצגה העסקית שלך נוצרה בהצלחה</p>
+        {/* Preview Content */}
+        <div className="flex-1 flex flex-col p-4 overflow-y-auto">
+          <div className="w-full max-w-5xl mx-auto space-y-4">
+            {/* Iframe Preview */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200">
+              <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+                <iframe
+                  src={embedUrl}
+                  className="absolute inset-0 w-full h-full border-0"
+                  title="Presentation Preview"
+                  allow="fullscreen"
+                  loading="lazy"
+                />
+              </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 border border-gray-200">
-              <p className="text-xs text-gray-500 mb-3">לחץ כאן לפתיחת המצגת:</p>
-              <a 
-                href={draftPreviewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-lg transition-all shadow-md hover:shadow-lg"
-              >
-                <ExternalLink className="w-4 h-4" />
-                פתח את המצגה ב-Gamma
-              </a>
-            </div>
-
-            <div className="bg-blue-50 rounded-lg p-3 text-right">
-              <p className="text-xs text-gray-700 leading-relaxed">
-                💡 המצגה נפתחת באתר Gamma שם תוכל לערוך ולהתאים אותה בקלות
+            {/* Action Buttons */}
+            <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
+              <div className="text-center">
+                <h4 className="text-lg font-bold text-gray-900 mb-2">מוצא לך?</h4>
+                <p className="text-sm text-gray-600">אשר את המצגה והמשך לתשלום או פתח בטאב חדש לתצוגה מלאה</p>
+              </div>
+              
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => window.open(draftPreviewUrl, '_blank')}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <ExternalLink className="w-4 h-4 ml-2" />
+                  פתח בטאב חדש
+                </Button>
+                <Button
+                  onClick={() => {
+                    toast.success('מעביר לתשלום...');
+                    // כאן תוסיף redirect לעמוד תשלום
+                  }}
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold"
+                >
+                  <Check className="w-4 h-4 ml-2" />
+                  מושלם! אני רוצה
+                </Button>
+              </div>
+              
+              <p className="text-xs text-center text-gray-500 border-t border-gray-100 pt-3">
+                💡 לאחר התשלום תקבל גישה מלאה לעריכה ב-Gamma
               </p>
             </div>
-
-            <Button
-              onClick={onClose}
-              variant="outline"
-              className="w-full"
-            >
-              סגור
-            </Button>
           </div>
         </div>
       </div>
