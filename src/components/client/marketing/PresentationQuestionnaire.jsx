@@ -844,14 +844,15 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                 </div>
               </div>
 
-              {/* Mobile View: Forced Scale for Better Readability */}
-              <div className="md:hidden relative w-full h-[70vh] overflow-hidden bg-gray-50">
+              {/* Mobile View: High Fidelity Desktop Simulation */}
+              {/* Using 300% width and scaling down to 0.333 forces desktop layout rendering on mobile */}
+              <div className="md:hidden relative w-full bg-gray-50" style={{ paddingTop: '56.25%' /* Force 16:9 Aspect Ratio Container */ }}>
                 <div 
-                  className="absolute top-0 left-0 origin-top-left"
+                  className="absolute top-0 left-0 origin-top-left overflow-hidden"
                   style={{
-                    width: '200%',  // Simulate double width (tablet size)
-                    height: '200%', 
-                    transform: 'scale(0.5)', // Scale back down to fit
+                    width: '300%',  // Simulate wide desktop screen (~1100-1200px on mobile)
+                    height: '300%', 
+                    transform: 'scale(0.33333)', // Scale back to fit mobile width exactly
                   }}
                 >
                   <iframe
@@ -865,7 +866,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     {[20, 50, 80].map((top) => (
                       <div
                         key={top}
-                        className="absolute text-red-500/15 font-black text-6xl whitespace-nowrap select-none"
+                        className="absolute text-red-500/15 font-black text-9xl whitespace-nowrap select-none"
                         style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
                       >
                         טיוטה
