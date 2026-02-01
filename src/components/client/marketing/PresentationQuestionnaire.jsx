@@ -821,38 +821,56 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
           <div className="w-full max-w-5xl mx-auto space-y-0 md:space-y-4">
             {/* Iframe Preview with Watermark Overlay */}
             <div className="bg-white md:rounded-xl md:shadow-lg overflow-hidden border-b md:border-2 border-gray-200 relative">
-              {/* Mobile: Edge-to-edge full height, Desktop: standard container */}
-              <div className="relative w-full">
-                {/* Desktop Wrapper for Aspect Ratio */}
-                <div className="h-[75vh] md:h-auto md:aspect-video w-full relative">
+
+              {/* Desktop View: Standard Aspect Ratio */}
+              <div className="hidden md:block relative w-full aspect-video">
+                <iframe
+                  src={embedUrl}
+                  className="absolute inset-0 w-full h-full border-0"
+                  title="Presentation Preview Desktop"
+                  allow="fullscreen"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+                  {[20, 50, 80].map((top) => (
+                    <div
+                      key={top}
+                      className="absolute text-red-500/15 font-black text-8xl whitespace-nowrap select-none"
+                      style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
+                    >
+                      טיוטה
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mobile View: Forced Scale for Better Readability */}
+              <div className="md:hidden relative w-full h-[70vh] overflow-hidden bg-gray-50">
+                <div 
+                  className="absolute top-0 left-0 origin-top-left"
+                  style={{
+                    width: '200%',  // Simulate double width (tablet size)
+                    height: '200%', 
+                    transform: 'scale(0.5)', // Scale back down to fit
+                  }}
+                >
                   <iframe
                     src={embedUrl}
-                    className="w-full h-full border-0 absolute inset-0"
-                    title="Presentation Preview"
+                    className="w-full h-full border-0"
+                    title="Presentation Preview Mobile"
                     allow="fullscreen"
                     loading="lazy"
                   />
-
-                  {/* Watermark Overlay */}
                   <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
-                    <div
-                      className="absolute text-red-500/15 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
-                      style={{ top: '20%', left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
-                    >
-                      טיוטה
-                    </div>
-                    <div
-                      className="absolute text-red-500/15 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
-                      style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
-                    >
-                      טיוטה
-                    </div>
-                    <div
-                      className="absolute text-red-500/15 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
-                      style={{ top: '80%', left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
-                    >
-                      טיוטה
-                    </div>
+                    {[20, 50, 80].map((top) => (
+                      <div
+                        key={top}
+                        className="absolute text-red-500/15 font-black text-6xl whitespace-nowrap select-none"
+                        style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
+                      >
+                        טיוטה
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
