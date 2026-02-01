@@ -768,8 +768,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
         {/* Preview Header */}
         <div className="flex-none px-4 py-3 border-b border-gray-200 bg-white flex items-center justify-between z-10">
           <div>
-            <h3 className="font-bold text-gray-900">תצוגה מקדימה - טיוטה חינמית</h3>
-            <p className="text-xs text-gray-500">עיין במצגה ואשר לפני תשלום</p>
+            <h3 className="font-bold text-gray-900">תצוגה מקדימה - טיוטה</h3>
+            <p className="text-xs text-gray-500">לאחר תשלום תקבל PDF איכותי ללא סימני מים</p>
           </div>
           <button 
             onClick={() => {
@@ -787,49 +787,99 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
         {/* Preview Content */}
         <div className="flex-1 flex flex-col p-4 overflow-y-auto">
           <div className="w-full max-w-5xl mx-auto space-y-4">
-            {/* Iframe Preview */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200">
+            {/* Iframe Preview with Watermark Overlay */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 relative">
               <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
                 <iframe
                   src={embedUrl}
-                  className="absolute inset-0 w-full h-full border-0"
+                  className="absolute inset-0 w-full h-full border-0 blur-[1px] opacity-80"
                   title="Presentation Preview"
                   allow="fullscreen"
                   loading="lazy"
+                />
+                
+                {/* Watermark Overlay - prevents screenshots and copying */}
+                <div className="absolute inset-0 pointer-events-none z-20">
+                  {/* Diagonal Watermarks */}
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute text-gray-400/30 font-black text-4xl md:text-6xl whitespace-nowrap select-none"
+                      style={{
+                        top: `${(i * 15) % 100}%`,
+                        left: `${(i * 25) % 100}%`,
+                        transform: 'rotate(-45deg)',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none'
+                      }}
+                    >
+                      טיוטה • DRAFT
+                    </div>
+                  ))}
+                  
+                  {/* Center Watermark */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-300 shadow-2xl">
+                      <div className="text-3xl md:text-4xl font-black text-gray-700 mb-2">
+                        🎨 טיוטה
+                      </div>
+                      <div className="text-sm text-gray-600 font-medium">
+                        גרסת תצוגה בלבד
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Block right-click and selection */}
+                <div 
+                  className="absolute inset-0 z-10"
+                  onContextMenu={(e) => e.preventDefault()}
+                  style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
                 />
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="bg-white rounded-xl p-6 shadow-md space-y-4">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 shadow-md space-y-4 border-2 border-blue-200">
               <div className="text-center">
-                <h4 className="text-lg font-bold text-gray-900 mb-2">מוצא לך?</h4>
-                <p className="text-sm text-gray-600">אשר את המצגה והמשך לתשלום או פתח בטאב חדש לתצוגה מלאה</p>
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full mb-3">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                <h4 className="text-xl font-black text-gray-900 mb-2">מוצא לך? קבל את המצגת המלאה!</h4>
+                <p className="text-sm text-gray-600 mb-1">
+                  לאחר התשלום תקבל:
+                </p>
+                <div className="text-xs text-right bg-white/60 rounded-lg p-3 space-y-1 inline-block">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-600" />
+                    <span className="font-semibold">קובץ PDF איכותי ללא סימני מים</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-600" />
+                    <span className="font-semibold">גישה מלאה לעריכה ב-Gamma</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-600" />
+                    <span className="font-semibold">אפשרות להורדה והדפסה</span>
+                  </div>
+                </div>
               </div>
               
               <div className="flex gap-3">
                 <Button
-                  onClick={() => window.open(draftPreviewUrl, '_blank')}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  <ExternalLink className="w-4 h-4 ml-2" />
-                  פתח בטאב חדש
-                </Button>
-                <Button
                   onClick={() => {
                     toast.success('מעביר לתשלום...');
-                    // כאן תוסיף redirect לעמוד תשלום
+                    // TODO: redirect לעמוד תשלום
                   }}
-                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold"
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-black text-lg h-14 shadow-lg"
                 >
-                  <Check className="w-4 h-4 ml-2" />
-                  מושלם! אני רוצה
+                  <Wallet className="w-5 h-5 ml-2" />
+                  אשר ושלם עכשיו
                 </Button>
               </div>
               
-              <p className="text-xs text-center text-gray-500 border-t border-gray-100 pt-3">
-                💡 לאחר התשלום תקבל גישה מלאה לעריכה ב-Gamma
+              <p className="text-xs text-center text-gray-600">
+                💳 תשלום מאובטח • קבלה מיידית • הורדת PDF תוך דקות
               </p>
             </div>
           </div>
