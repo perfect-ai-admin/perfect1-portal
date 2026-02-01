@@ -47,9 +47,10 @@ Deno.serve(async (req) => {
              - In the "product_brief_hebrew", clearly state: "הטקסט יוסף ידנית על גבי הבועה/השלט הריק (בינה מלאכותית עדיין לא תומכת בטקסט עברי תקין)."
            - **IF LANGUAGE IS ENGLISH**: 
              - You MUST include the text in the prompt.
-             - Use the format: "with the word '${formData.exampleSentence || 'Sticker'}' written in bold, clear, bubble typography".
+             - Use the format: "with the text '${formData.exampleSentence || formData.businessName || 'Sticker'}' written in bold, clear, bubble typography".
              - Ensure the text is large, legible, and central to the design.
-             - If no text provided, choose a relevant short word based on the purpose (e.g., "WOW", "YES", "DEAL").
+             - If the user provided both a specific sentence and a business name, prioritize the specific sentence ('${formData.exampleSentence}'), but if it's empty, USE THE BUSINESS NAME ('${formData.businessName}').
+             - If no text provided at all, choose a relevant short word based on the purpose.
         8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.
         9. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes (e.g., Confidence = Blue/Gold, Strong lines; Comfort = Pastels, Round shapes).
         10. **Logo/Colors**: If specific colors are mentioned, use them as the primary palette.
