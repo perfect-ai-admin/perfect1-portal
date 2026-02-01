@@ -46,11 +46,12 @@ Deno.serve(async (req) => {
              - **INSTEAD**: Ask for a "blank white speech bubble", "empty sign", or "space for text" in the composition.
              - In the "product_brief_hebrew", clearly state: "הטקסט יוסף ידנית על גבי הבועה/השלט הריק (בינה מלאכותית עדיין לא תומכת בטקסט עברי תקין)."
            - **IF LANGUAGE IS ENGLISH**: 
-             - You MUST include the text in the prompt.
-             - Use the format: "with the text '${formData.exampleSentence || formData.businessName || 'Sticker'}' written in bold, clear, bubble typography".
-             - Ensure the text is large, legible, and central to the design.
-             - If the user provided both a specific sentence and a business name, prioritize the specific sentence ('${formData.exampleSentence}'), but if it's empty, USE THE BUSINESS NAME ('${formData.businessName}').
-             - If no text provided at all, choose a relevant short word based on the purpose.
+             - **TEXT MANDATORY**: The prompt MUST explicitly demand text rendering.
+             - **CONTENT**: Use the exact text: "${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}". 
+             - **FORMAT**: "A centered die-cut sticker design featuring the text '${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}' in bold, 3D, expressive typography."
+             - **PRIORITY**: If the user typed a specific sentence, use it. If not, YOU MUST USE THE BUSINESS NAME ("${formData.businessName}"). Do not invent random words if a business name exists.
+             - **FIELD**: If the field is 'other', use the custom description: "${formData.field === 'other' ? formData.customField : formData.field}".
+             - **STYLE**: Strictly adhere to the selected style: "${formData.style}".
         8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.
         9. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes (e.g., Confidence = Blue/Gold, Strong lines; Comfort = Pastels, Round shapes).
         10. **Logo/Colors**: If specific colors are mentioned, use them as the primary palette.

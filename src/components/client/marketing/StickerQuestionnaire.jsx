@@ -246,6 +246,19 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                       />
                   ))}
                 </div>
+                {formData.field === 'other' && (
+                    <div className="pt-2 animate-in fade-in slide-in-from-top-1">
+                        <Label htmlFor="customField" className="text-xs font-semibold">פרט את התחום</Label>
+                        <Input 
+                          id="customField" 
+                          value={formData.customField} 
+                          onChange={(e) => handleInputChange('customField', e.target.value)} 
+                          placeholder="למשל: אדריכלות, אינסטלציה..." 
+                          className="h-9 text-xs mt-1"
+                          autoFocus
+                        />
+                    </div>
+                )}
               </div>
 
                <div className="space-y-2 pt-1">
@@ -282,7 +295,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label className="block text-xs font-semibold">למה ישמש הסטיקר? (עד 2)</Label>
+                <Label className="block text-xs font-semibold">למה ישמש הסטיקר? (בחירה אחת)</Label>
                 <div className="grid grid-cols-1 gap-2">
                   {[
                     { id: 'closing', label: 'סגירת עסקה / תיאום', icon: Check },
@@ -293,8 +306,8 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                   ].map(option => (
                     <SelectionCard
                       key={option.id}
-                      selected={formData.purposes.includes(option.id)}
-                      onClick={() => handleCheckboxChange('purposes', option.id, !formData.purposes.includes(option.id), 2)}
+                      selected={formData.purpose === option.id}
+                      onClick={() => handleInputChange('purpose', option.id)}
                       icon={option.icon}
                       title={option.label}
                     />
@@ -388,30 +401,12 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                         exit={{ opacity: 0, height: 0 }}
                         className="space-y-2 overflow-hidden"
                     >
-                        <Label className="block text-xs font-semibold">איזה סוג טקסט אתה מעדיף?</Label>
-                         <div className="grid grid-cols-1 gap-2">
-                          {[
-                            { id: 'short', label: 'קצר וברור', desc: 'לדוגמה: "סגור", "מעולה"' },
-                            { id: 'marketing', label: 'שיווקי', desc: 'לדוגמה: "יאללה מתקדמים"' },
-                            { id: 'service', label: 'שירותי', desc: 'לדוגמה: "בודק וחוזר אליך"' },
-                            { id: 'you_decide', label: 'אתם תחליטו בשבילי', desc: '' },
-                            ].map(option => (
-                            <SelectionCard
-                              key={option.id}
-                              selected={formData.textType === option.id}
-                              onClick={() => handleInputChange('textType', option.id)}
-                              icon={FileText}
-                              title={option.label}
-                              description={option.desc}
-                            />
-                          ))}
+                        {/* Text Type Selection Removed */}
+                        
+                        <div className="bg-blue-50 border border-blue-100 rounded-lg p-2 text-[11px] text-blue-800 flex items-start gap-2 mt-2">
+                            <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                            <span>שים לב: המערכת תומכת כרגע בטקסט באנגלית בלבד לקבלת תוצאה מושלמת.</span>
                         </div>
-                        {formData.hasText !== 'no' && (
-                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-2 text-[11px] text-blue-800 flex items-start gap-2 mt-2">
-                                <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                                <span>שים לב: המערכת תומכת כרגע בטקסט באנגלית בלבד לקבלת תוצאה מושלמת.</span>
-                            </div>
-                        )}
                     </motion.div>
                 )}
               </AnimatePresence>
