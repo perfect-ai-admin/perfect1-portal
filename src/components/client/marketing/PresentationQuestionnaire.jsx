@@ -789,56 +789,54 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
           <div className="w-full max-w-5xl mx-auto space-y-4">
             {/* Iframe Preview with Watermark Overlay */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 relative">
-              {/* Mobile: aspect ratio container, Desktop: standard 16:9 */}
-              <div className="relative w-full" style={{ paddingTop: 'min(177.78%, calc(100vh - 200px))', maxHeight: 'calc(100vh - 200px)' }}>
-                <div className="absolute inset-0">
-                  <iframe
-                    src={embedUrl}
-                    className="w-full h-full border-0"
-                    title="Presentation Preview"
-                    allow="fullscreen"
-                    loading="lazy"
-                  />
-                  
-                  {/* Watermark Overlay - visible but doesn't block interaction */}
-                  <div className="absolute inset-0 pointer-events-none z-20">
-                    {/* Diagonal Watermarks - only 3 instances, smaller on mobile */}
-                    <div
-                      className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
-                      style={{
-                        top: '20%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%) rotate(-45deg)',
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none'
-                      }}
-                    >
-                      טיוטה
-                    </div>
-                    <div
-                      className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
-                      style={{
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%) rotate(-45deg)',
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none'
-                      }}
-                    >
-                      טיוטה
-                    </div>
-                    <div
-                      className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
-                      style={{
-                        top: '80%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%) rotate(-45deg)',
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none'
-                      }}
-                    >
-                      טיוטה
-                    </div>
+              {/* Mobile: full height for clear viewing, Desktop: standard aspect ratio */}
+              <div className="relative w-full h-[80vh] md:h-auto md:pb-[56.25%] overflow-auto">
+                <iframe
+                  src={embedUrl}
+                  className="w-full h-full border-0 md:absolute md:inset-0"
+                  title="Presentation Preview"
+                  allow="fullscreen"
+                  loading="lazy"
+                />
+                
+                {/* Watermark Overlay - visible but doesn't block interaction */}
+                <div className="absolute inset-0 pointer-events-none z-20">
+                  {/* Diagonal Watermarks - only 3 instances, smaller on mobile */}
+                  <div
+                    className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
+                    style={{
+                      top: '20%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%) rotate(-45deg)',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none'
+                    }}
+                  >
+                    טיוטה
+                  </div>
+                  <div
+                    className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
+                    style={{
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%) rotate(-45deg)',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none'
+                    }}
+                  >
+                    טיוטה
+                  </div>
+                  <div
+                    className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
+                    style={{
+                      top: '80%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%) rotate(-45deg)',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none'
+                    }}
+                  >
+                    טיוטה
                   </div>
                 </div>
               </div>
