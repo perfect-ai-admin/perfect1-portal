@@ -785,67 +785,48 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
         </div>
 
         {/* Preview Content */}
-        <div className="flex-1 flex flex-col p-4 overflow-y-auto">
-          <div className="w-full max-w-5xl mx-auto space-y-4">
+        <div className="flex-1 flex flex-col p-0 md:p-4 overflow-y-auto bg-white md:bg-gray-50">
+          <div className="w-full max-w-5xl mx-auto space-y-0 md:space-y-4">
             {/* Iframe Preview with Watermark Overlay */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 relative">
-              {/* Mobile: scrollable container, Desktop: standard 16:9 */}
-              <div className="relative w-full overflow-y-auto overflow-x-hidden md:overflow-visible" style={{ height: 'calc(100vh - 200px)', maxHeight: 'calc(100vh - 200px)' }}>
-                <div className="md:relative md:w-full md:pb-[56.25%]">
+            <div className="bg-white md:rounded-xl md:shadow-lg overflow-hidden border-b md:border-2 border-gray-200 relative">
+              {/* Mobile: Edge-to-edge full height, Desktop: standard container */}
+              <div className="relative w-full">
+                {/* Desktop Wrapper for Aspect Ratio */}
+                <div className="h-[75vh] md:h-auto md:aspect-video w-full relative">
                   <iframe
                     src={embedUrl}
-                    className="w-full border-0 md:absolute md:inset-0 md:h-full"
-                    style={{ minHeight: '100vh' }}
+                    className="w-full h-full border-0 absolute inset-0"
                     title="Presentation Preview"
                     allow="fullscreen"
                     loading="lazy"
                   />
-                  
-                  {/* Watermark Overlay - visible but doesn't block interaction */}
-                  <div className="absolute inset-0 pointer-events-none z-20" style={{ height: '100vh' }}>
-                    {/* Diagonal Watermarks - only 3 instances, smaller on mobile */}
+
+                  {/* Watermark Overlay */}
+                  <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
                     <div
-                      className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
-                      style={{
-                        top: '20%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%) rotate(-45deg)',
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none'
-                      }}
+                      className="absolute text-red-500/15 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
+                      style={{ top: '20%', left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
                     >
                       טיוטה
                     </div>
                     <div
-                      className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
-                      style={{
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%) rotate(-45deg)',
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none'
-                      }}
+                      className="absolute text-red-500/15 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
+                      style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
                     >
                       טיוטה
                     </div>
                     <div
-                      className="absolute text-red-500/25 font-black text-3xl md:text-8xl whitespace-nowrap select-none"
-                      style={{
-                        top: '80%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%) rotate(-45deg)',
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none'
-                      }}
+                      className="absolute text-red-500/15 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
+                      style={{ top: '80%', left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
                     >
                       טיוטה
                     </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Info banner */}
-              <div className="bg-yellow-50 border-t-2 border-yellow-200 px-4 py-2 text-center">
+
+              {/* Info banner - hidden on mobile to save space, visible on desktop */}
+              <div className="hidden md:block bg-yellow-50 border-t-2 border-yellow-200 px-4 py-2 text-center">
                 <p className="text-xs text-yellow-800 font-semibold">
                   💡 גלול בין השקפים לצפייה מלאה • לאחר תשלום תקבל PDF נקי ללא סימני מים
                 </p>
@@ -853,7 +834,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
             </div>
 
             {/* Action Buttons */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 shadow-md space-y-4 border-2 border-blue-200">
+            <div className="p-4 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 md:rounded-xl md:shadow-md space-y-4 border-t md:border-2 border-blue-200">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full mb-3">
                   <FileText className="w-6 h-6 text-white" />
