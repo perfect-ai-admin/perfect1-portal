@@ -785,24 +785,28 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
         </div>
 
         {/* Preview Content */}
-        <div className="flex-1 flex flex-col p-4 overflow-y-auto">
+        <div className="flex-1 flex flex-col p-2 md:p-4 overflow-y-auto">
           <div className="w-full max-w-5xl mx-auto space-y-4">
             {/* Iframe Preview with Watermark Overlay */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 relative">
-              <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+              <div className="relative w-full" style={{ paddingTop: '75%', minHeight: '500px' }}>
                 <iframe
                   src={embedUrl}
                   className="absolute inset-0 w-full h-full border-0"
                   title="Presentation Preview"
                   allow="fullscreen"
                   loading="lazy"
+                  style={{ 
+                    minHeight: '500px',
+                    touchAction: 'pan-y'
+                  }}
                 />
                 
                 {/* Watermark Overlay - visible but doesn't block interaction */}
                 <div className="absolute inset-0 pointer-events-none z-20">
                   {/* Diagonal Watermarks - only 3 instances */}
                   <div
-                    className="absolute text-red-500/30 font-black text-6xl md:text-8xl whitespace-nowrap select-none"
+                    className="absolute text-red-500/30 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
                     style={{
                       top: '20%',
                       left: '50%',
@@ -814,7 +818,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     טיוטה
                   </div>
                   <div
-                    className="absolute text-red-500/30 font-black text-6xl md:text-8xl whitespace-nowrap select-none"
+                    className="absolute text-red-500/30 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
                     style={{
                       top: '50%',
                       left: '50%',
@@ -826,7 +830,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     טיוטה
                   </div>
                   <div
-                    className="absolute text-red-500/30 font-black text-6xl md:text-8xl whitespace-nowrap select-none"
+                    className="absolute text-red-500/30 font-black text-4xl md:text-8xl whitespace-nowrap select-none"
                     style={{
                       top: '80%',
                       left: '50%',
@@ -841,7 +845,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               </div>
               
               {/* Info banner */}
-              <div className="bg-yellow-50 border-t-2 border-yellow-200 px-4 py-2 text-center">
+              <div className="bg-yellow-50 border-t-2 border-yellow-200 px-2 md:px-4 py-2 text-center">
                 <p className="text-xs text-yellow-800 font-semibold">
                   💡 גלול בין השקפים לצפייה מלאה • לאחר תשלום תקבל PDF נקי ללא סימני מים
                 </p>
