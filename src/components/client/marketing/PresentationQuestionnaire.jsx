@@ -792,50 +792,47 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
                 <iframe
                   src={embedUrl}
-                  className="absolute inset-0 w-full h-full border-0 blur-[1px] opacity-80"
+                  className="absolute inset-0 w-full h-full border-0"
                   title="Presentation Preview"
                   allow="fullscreen"
                   loading="lazy"
                 />
                 
-                {/* Watermark Overlay - prevents screenshots and copying */}
+                {/* Watermark Overlay - visible but doesn't block interaction */}
                 <div className="absolute inset-0 pointer-events-none z-20">
                   {/* Diagonal Watermarks */}
-                  {Array.from({ length: 12 }).map((_, i) => (
+                  {Array.from({ length: 20 }).map((_, i) => (
                     <div
                       key={i}
-                      className="absolute text-gray-400/30 font-black text-4xl md:text-6xl whitespace-nowrap select-none"
+                      className="absolute text-red-500/40 font-black text-5xl md:text-7xl whitespace-nowrap select-none"
                       style={{
-                        top: `${(i * 15) % 100}%`,
-                        left: `${(i * 25) % 100}%`,
+                        top: `${(i * 12) % 100}%`,
+                        left: `${(i * 20) % 100}%`,
                         transform: 'rotate(-45deg)',
                         userSelect: 'none',
-                        WebkitUserSelect: 'none'
+                        WebkitUserSelect: 'none',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
                       }}
                     >
-                      טיוטה • DRAFT
+                      טיוטה
                     </div>
                   ))}
                   
-                  {/* Center Watermark */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-300 shadow-2xl">
-                      <div className="text-3xl md:text-4xl font-black text-gray-700 mb-2">
-                        🎨 טיוטה
-                      </div>
-                      <div className="text-sm text-gray-600 font-medium">
-                        גרסת תצוגה בלבד
-                      </div>
-                    </div>
+                  {/* Corner Watermarks */}
+                  <div className="absolute top-4 right-4 text-red-600 font-black text-2xl bg-white/60 px-4 py-2 rounded-lg">
+                    🎨 טיוטה
+                  </div>
+                  <div className="absolute bottom-4 left-4 text-red-600 font-black text-xl bg-white/60 px-3 py-1 rounded-lg">
+                    DRAFT • גרסת תצוגה
                   </div>
                 </div>
-
-                {/* Block right-click and selection */}
-                <div 
-                  className="absolute inset-0 z-10"
-                  onContextMenu={(e) => e.preventDefault()}
-                  style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
-                />
+              </div>
+              
+              {/* Info banner */}
+              <div className="bg-yellow-50 border-t-2 border-yellow-200 px-4 py-2 text-center">
+                <p className="text-xs text-yellow-800 font-semibold">
+                  💡 גלול בין השקפים לצפייה מלאה • לאחר תשלום תקבל PDF נקי ללא סימני מים
+                </p>
               </div>
             </div>
 
