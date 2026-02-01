@@ -152,13 +152,25 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
       setIsBuilding(true);
       
       try {
-        // We now send the RAW form data to the backend.
-        // The backend uses an LLM to analyze "field", "vibe", "style", etc.,
-        // ensuring no nuance is lost.
-        console.log('Sending sticker request with data:', formData);
+        let finalFormData = { ...formData };
+
+        // 1. Upload Logo if exists
+        if (formData.logoFile) {
+            try {
+                toast.info('מעלה את הלוגו שלך...');
+                const { file_url } = await base44.integrations.Core.UploadFile({ file: formData.logoFile });
+                finalFormData.logoUrl = file_url;
+                delete finalFormData.logoFile; // Don't send the blob
+            } catch (uploadError) {
+                console.error('Logo upload failed:', uploadError);
+                toast.warning('לא הצלחנו להעלות את הלוגו, ממשיכים בלי...');
+            }
+        }
+
+        console.log('Sending sticker request with data:', finalFormData);
 
         const response = await base44.functions.invoke('generateSticker', { 
-            formData: formData,
+            formData: finalFormData,
             width: 1024,
             height: 1024
         });
@@ -384,7 +396,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                             { id: 'marketing', label: 'שיווקי', desc: 'לדוגמה: "יאללה מתקדמים"' },
                             { id: 'service', label: 'שירותי', desc: 'לדוגמה: "בודק וחוזר אליך"' },
                             { id: 'you_decide', label: 'אתם תחליטו בשבילי', desc: '' },
-                          ].map(option => (
+                            ].map(option => (
                             <SelectionCard
                               key={option.id}
                               selected={formData.textType === option.id}
@@ -395,6 +407,12 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                             />
                           ))}
                         </div>
+                        {formData.hasText !== 'no' && (
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-2 text-[11px] text-yellow-800 flex items-start gap-2 mt-2">
+                                <AlertCircle className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                                <span>שים לב: אם תבחר טקסט בעברית, המערכת תיצור מקום/בועה לטקסט, אך הטקסט עצמו יוסף ידנית על ידך (בינה מלאכותית עדיין מתקשה עם עברית).</span>
+                            </div>
+                        )}
                     </motion.div>
                 )}
               </AnimatePresence>

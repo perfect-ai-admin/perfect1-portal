@@ -39,10 +39,14 @@ Deno.serve(async (req) => {
            - "Funny" -> Exaggerated expressions, caricatures.
         5. **Platform**: WhatsApp stickers need clear silhouettes and thick white borders.
         6. **Style**: Define the artistic style clearly (e.g., "Professional" -> Flat Vector, Geometric; "Warm" -> Watercolor, Soft edges; "Funny" -> Cartoon, Pop Art).
-        7. **Text Content**: 
-           - If 'hasText' is YES: Decide if the text should be inside the image. *Crucial*: If the requested language is HEBREW, image models often fail. In the prompt, prioritize the *visuals* over complex text rendering, or suggest/request specific typography style if the model supports it.
-           - If 'textType' is specified, match the visual weight to it.
-        8. **Language**: Check 'language' field. If Hebrew is requested, ensure the "product_brief_hebrew" mentions it clearly.
+        7. **Text Content & Language**: 
+           - **CRITICAL RULE FOR HEBREW**: Image generators CANNOT render Hebrew text. It comes out as gibberish. 
+           - **IF LANGUAGE IS HEBREW**: 
+             - **DO NOT** ask for the specific Hebrew words in the "image_prompt_english".
+             - **INSTEAD**: Ask for a "blank white speech bubble", "empty sign", or "space for text" in the composition.
+             - In the "product_brief_hebrew", clearly state: "הטקסט יוסף ידנית על גבי הבועה/השלט הריק (בינה מלאכותית עדיין לא תומכת בטקסט עברי תקין)."
+           - **IF LANGUAGE IS ENGLISH**: You can include the specific text in the prompt (e.g., "with text 'Sale'").
+        8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.
         9. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes (e.g., Confidence = Blue/Gold, Strong lines; Comfort = Pastels, Round shapes).
         10. **Logo/Colors**: If specific colors are mentioned, use them as the primary palette.
         
