@@ -181,7 +181,9 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
       } catch (error) {
         console.error('Error generating sticker:', error);
-        toast.error('שגיאה בתקשורת עם השרת');
+        // Show detailed error if available
+        const msg = error.response?.data?.error || error.response?.data?.message || 'שגיאה בתקשורת עם השרת';
+        toast.error(msg);
       } finally {
         setIsBuilding(false);
       }
