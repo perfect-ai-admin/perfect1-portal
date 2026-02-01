@@ -9,9 +9,10 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Layers, FileText, MonitorPlay, BarChart3, Star,
-  Lightbulb, Trophy, Presentation, Calendar, Loader2, ExternalLink, CheckCircle2
+  Lightbulb, Trophy, Presentation, Calendar, Loader2, ExternalLink, CheckCircle2, Maximize2, Globe
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
@@ -114,6 +115,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   const [showDraftPreview, setShowDraftPreview] = useState(false);
   const [draftPreviewUrl, setDraftPreviewUrl] = useState(null);
   const [fullscreenPreview, setFullscreenPreview] = useState(false);
+  const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false);
   const [countdown, setCountdown] = useState(60);
 
   // Countdown timer during building
@@ -833,7 +835,17 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
         <div className="flex-1 flex flex-col p-0 md:p-4 overflow-y-auto bg-white md:bg-gray-50">
           <div className="w-full max-w-5xl mx-auto space-y-0 md:space-y-4">
             {/* Iframe Preview with Watermark Overlay */}
-            <div className="bg-white md:rounded-xl md:shadow-lg overflow-hidden border-b md:border-2 border-gray-200 relative">
+            <div className="bg-white md:rounded-xl md:shadow-lg overflow-hidden border-b md:border-2 border-gray-200 relative group">
+              
+              {/* Maximize Button */}
+              <button
+                onClick={() => setIsFullPreviewOpen(true)}
+                className="absolute top-4 right-4 z-30 bg-white/90 hover:bg-white text-gray-700 hover:text-blue-600 p-2 rounded-full shadow-md border border-gray-200 transition-all transform hover:scale-110 flex items-center gap-2 group/btn"
+                title="הגדל לתצוגה מלאה"
+              >
+                <Maximize2 className="w-5 h-5" />
+                <span className="text-xs font-bold max-w-0 overflow-hidden group-hover/btn:max-w-[100px] transition-all duration-300 whitespace-nowrap">הגדל</span>
+              </button>
 
               {/* Desktop View: Standard Aspect Ratio */}
               <div className="hidden md:block relative w-full aspect-video">
@@ -942,6 +954,34 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
             </div>
           </div>
         </div>
+
+        {/* Full Preview Dialog */}
+        <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
+            <DialogContent className="max-w-[98vw] w-[1600px] h-[95vh] p-0 flex flex-col gap-0 overflow-hidden rounded-xl border-0 shadow-2xl bg-gray-100">
+                <div className="bg-white border-b px-4 py-3 flex justify-between items-center shrink-0 z-50">
+                      <div className="flex gap-3 items-center">
+                          <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100">
+                            <Presentation className="w-5 h-5" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-gray-900 leading-tight">{formData.businessName}</span>
+                            <span className="text-xs text-slate-500 dir-ltr font-mono">Gamma Preview</span>
+                          </div>
+                      </div>
+                      <DialogClose asChild>
+                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full hover:bg-slate-100"><X className="w-5 h-5" /></Button>
+                      </DialogClose>
+                </div>
+                <div className="flex-1 overflow-hidden bg-gray-100 relative">
+                    <iframe
+                      src={embedUrl}
+                      className="w-full h-full border-0"
+                      title="Full Presentation Preview"
+                      allow="fullscreen"
+                    />
+                </div>
+            </DialogContent>
+        </Dialog>
       </div>
     );
   }
