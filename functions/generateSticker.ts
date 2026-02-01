@@ -46,10 +46,11 @@ Deno.serve(async (req) => {
              - **INSTEAD**: Ask for a "blank white speech bubble", "empty sign", or "space for text" in the composition.
              - In the "product_brief_hebrew", clearly state: "הטקסט יוסף ידנית על גבי הבועה/השלט הריק (בינה מלאכותית עדיין לא תומכת בטקסט עברי תקין)."
            - **IF LANGUAGE IS ENGLISH**: 
-           - **TEXT MANDATORY**: The prompt MUST explicitly demand text rendering.
+           - **BRANDING CRITICAL**: The design MUST act as the business branding/logo sticker.
+           - **MANDATORY TEXT**: The text "${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}" MUST be the MAIN FOCUS.
            - **CONTENT**: Use the exact text: "${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}". 
-           - **FORMAT**: "A centered die-cut sticker design featuring the text '${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}' in bold, 3D, expressive typography."
-           - **PRIORITY**: If the user typed a specific sentence, use it. If not, YOU MUST USE THE BUSINESS NAME ("${formData.businessName}"). Do not invent random words if a business name exists.
+           - **FORMAT**: "A high-quality die-cut sticker logo design, featuring the text '${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}' as the central logotype, bold and legible typography, integrated with [VISUAL_ELEMENTS]".
+           - **PRIORITY**: If specific text is provided, use it. If not, YOU MUST USE THE BUSINESS NAME ("${formData.businessName}") as the logo text. It MUST be clearly visible.
            - **FIELD**: If the field is 'other', use the custom description: "${formData.field === 'other' ? formData.customField : formData.field}".
            - **STYLE**: Strictly adhere to the selected style: "${formData.style}".
            8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.
