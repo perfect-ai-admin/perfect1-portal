@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -175,25 +176,26 @@ export default function ShoppingCartButton() {
       </button>
 
       {/* Cart Drawer/Sheet */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
-            />
+      {createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              {/* Overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsOpen(false)}
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[99]"
+              />
 
-            {/* Responsive Container */}
-            <motion.div
-              initial={isMobile ? { y: '100%' } : { x: '100%' }}
-              animate={isMobile ? { y: 0 } : { x: 0 }}
-              exit={isMobile ? { y: '100%' } : { x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className={`fixed z-[70] bg-white shadow-2xl flex flex-col overflow-hidden
+              {/* Responsive Container */}
+              <motion.div
+                initial={isMobile ? { y: '100%' } : { x: '100%' }}
+                animate={isMobile ? { y: 0 } : { x: 0 }}
+                exit={isMobile ? { y: '100%' } : { x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                className={`fixed z-[100] bg-white shadow-2xl flex flex-col overflow-hidden
                 ${isMobile 
                   ? 'bottom-0 left-0 right-0 h-[92vh] rounded-t-[1.5rem]' 
                   : 'right-0 top-0 h-full w-full max-w-md border-l border-gray-100'
@@ -406,7 +408,9 @@ export default function ShoppingCartButton() {
             </motion.div>
           </>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
 
       {/* Landing Page Preview Modal */}
       <Dialog open={!!previewPage || isPreviewLoading} onOpenChange={(open) => !open && closePreview()}>
