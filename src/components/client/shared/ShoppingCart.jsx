@@ -193,7 +193,7 @@ export default function ShoppingCartButton() {
               animate={isMobile ? { y: 0 } : { x: 0 }}
               exit={isMobile ? { y: '100%' } : { x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className={`fixed z-[70] bg-white shadow-2xl flex flex-col overflow-hidden
+              className={`fixed z-[100] bg-white shadow-2xl flex flex-col overflow-hidden
                 ${isMobile 
                   ? 'bottom-0 left-0 right-0 h-[85vh] rounded-t-[2rem]' 
                   : 'right-0 top-0 h-full w-full max-w-md border-l border-gray-100'
@@ -271,22 +271,22 @@ export default function ShoppingCartButton() {
                               : 'ring-1 ring-gray-100 shadow-sm hover:shadow-md hover:ring-blue-200'
                           }`}
                         >
-                          <div className="flex p-4 gap-4">
+                          <div className="flex p-3 sm:p-4 gap-3 sm:gap-4">
                             {/* Selection Indicator */}
                             <div className="flex items-center self-center">
-                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                                <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
                                     isSelected 
                                         ? 'bg-blue-500 border-blue-500' 
                                         : 'bg-transparent border-gray-200 group-hover:border-blue-300'
                                 }`}>
-                                    {isSelected && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
+                                    {isSelected && <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white stroke-[3]" />}
                                 </div>
                             </div>
 
                             {/* Image Area */}
                             {(item.preview_image || item.type === 'presentation') && (
                                 <div 
-                                    className="relative w-24 h-24 sm:w-32 sm:h-32 bg-gray-50 rounded-xl flex-shrink-0 overflow-hidden border border-gray-100 group-hover:border-blue-100 transition-colors"
+                                    className="relative w-20 h-20 sm:w-32 sm:h-32 bg-gray-50 rounded-xl flex-shrink-0 overflow-hidden border border-gray-100 group-hover:border-blue-100 transition-colors"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setEnlargedImage(item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop');
@@ -299,7 +299,7 @@ export default function ShoppingCartButton() {
                                     />
                                     {/* Watermark Overlay */}
                                     <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
-                                        <div className="text-red-500/40 font-black text-xl rotate-[-45deg] whitespace-nowrap select-none border-2 border-red-500/30 px-2 py-0.5 rounded backdrop-blur-[1px]">
+                                        <div className="text-red-500/40 font-black text-sm sm:text-xl rotate-[-45deg] whitespace-nowrap select-none border-2 border-red-500/30 px-1.5 py-0.5 rounded backdrop-blur-[1px]">
                                             טיוטה
                                         </div>
                                     </div>
@@ -312,12 +312,12 @@ export default function ShoppingCartButton() {
 
                             {/* Details Area */}
                             <div className="flex-1 flex flex-col min-w-0 py-0.5">
-                              <div className="flex justify-between items-start gap-3">
-                                  <div className="space-y-1">
-                                    <h3 className={`font-bold text-gray-900 truncate text-lg leading-tight transition-colors ${isSelected ? 'text-blue-700' : ''}`}>
+                              <div className="flex justify-between items-start gap-2 sm:gap-3">
+                                  <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                                    <h3 className={`font-bold text-gray-900 truncate text-base sm:text-lg leading-tight transition-colors ${isSelected ? 'text-blue-700' : ''}`}>
                                         {item.title}
                                     </h3>
-                                    <p className="text-sm text-gray-500 font-medium leading-tight line-clamp-2 pl-2">
+                                    <p className="text-xs sm:text-sm text-gray-500 font-medium leading-tight line-clamp-2 pl-2">
                                         {item.description}
                                     </p>
                                   </div>
@@ -326,14 +326,14 @@ export default function ShoppingCartButton() {
                                           e.stopPropagation();
                                           removeItem(item.id);
                                       }}
-                                      className="text-gray-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all flex-shrink-0"
+                                      className="text-gray-300 hover:text-red-500 hover:bg-red-50 p-1.5 sm:p-2 rounded-lg transition-all flex-shrink-0 -mt-1 -ml-1 sm:mt-0 sm:ml-0"
                                       title="הסר מהעגלה"
                                   >
-                                      <Trash2 className="w-4.5 h-4.5" />
+                                      <Trash2 className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
                                   </button>
                               </div>
 
-                              <div className="mt-auto pt-3 flex items-end justify-between">
+                              <div className="mt-auto pt-2 sm:pt-3 flex items-end justify-between">
                                 <div className="space-y-2">
                                     <div className="flex gap-2">
                                         {item.type === 'landing_page' && item.data?.landingPageId && (
@@ -342,10 +342,10 @@ export default function ShoppingCartButton() {
                                                     e.stopPropagation();
                                                     handlePreview(item.data.landingPageId);
                                                 }}
-                                                className="text-xs font-bold flex items-center gap-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg transition-colors"
+                                                className="text-[10px] sm:text-xs font-bold flex items-center gap-1 text-blue-600 bg-blue-50 hover:bg-blue-100 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg transition-colors"
                                             >
-                                                <Eye className="w-3.5 h-3.5" />
-                                                צפה בטיוטה
+                                                <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                                                צפה
                                             </button>
                                         )}
                                         {item.type === 'presentation' && item.data?.presentationUrl && (
@@ -354,18 +354,18 @@ export default function ShoppingCartButton() {
                                                     e.stopPropagation();
                                                     handlePresentationPreview(item.data.presentationUrl);
                                                 }}
-                                                className="text-xs font-bold flex items-center gap-1.5 text-purple-600 bg-purple-50 hover:bg-purple-100 px-2.5 py-1.5 rounded-lg transition-colors"
+                                                className="text-[10px] sm:text-xs font-bold flex items-center gap-1 text-purple-600 bg-purple-50 hover:bg-purple-100 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg transition-colors"
                                             >
-                                                <Eye className="w-3.5 h-3.5" />
-                                                צפה במצגת
+                                                <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                                                צפה
                                             </button>
                                         )}
                                     </div>
                                 </div>
                                 
                                 <div className="text-left">
-                                    <span className="block text-xs text-gray-400 font-medium line-through mb-0.5">₪{(item.price || ITEM_PRICE) * 2}</span>
-                                    <div className="text-xl font-black text-gray-900 flex items-center gap-1">
+                                    <span className="block text-[10px] text-gray-400 font-medium line-through mb-0.5">₪{(item.price || ITEM_PRICE) * 2}</span>
+                                    <div className="text-lg sm:text-xl font-black text-gray-900 flex items-center gap-1">
                                         ₪{item.price || ITEM_PRICE}
                                     </div>
                                 </div>
