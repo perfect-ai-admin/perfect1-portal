@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from 'react-router-dom';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -20,7 +22,8 @@ export default function PartnershipForm() {
     phone: '',
     profession: '',
     profession_text: '',
-    experience: ''
+    experience: '',
+    consent: false
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -43,6 +46,12 @@ export default function PartnershipForm() {
       // ולידציה בסיסית
       if (!formData.name || !formData.phone || !formData.profession || !formData.experience) {
         setError('נא למלא את כל השדות');
+        setLoading(false);
+        return;
+      }
+
+      if (!formData.consent) {
+        setError('חובה לאשר את תנאי השימוש ומדיניות הפרטיות');
         setLoading(false);
         return;
       }
@@ -76,7 +85,8 @@ export default function PartnershipForm() {
         phone: '',
         profession: '',
         profession_text: '',
-        experience: ''
+        experience: '',
+        consent: false
       });
 
       // הסתר הצלחה אחרי 5 שניות
@@ -187,6 +197,23 @@ export default function PartnershipForm() {
           disabled={loading}
         />
         <p className="text-xs text-gray-500 mt-1">500 תווים מקסימום</p>
+      </div>
+
+      <div className="flex items-start space-x-3 space-x-reverse">
+        <Checkbox 
+            id="terms-partnership" 
+            checked={formData.consent}
+            onCheckedChange={(checked) => handleChange('consent', checked)}
+            className="mt-1 border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+        />
+        <div className="grid gap-1.5 leading-none">
+            <label
+                htmlFor="terms-partnership"
+                className="text-xs text-gray-600 font-medium leading-relaxed"
+            >
+                אני מאשר/ת את <Link to="/Terms" className="underline hover:text-blue-600" target="_blank">תנאי השימוש</Link> ו<Link to="/Privacy" className="underline hover:text-blue-600" target="_blank">מדיניות הפרטיות</Link> ומסכימ/ה לקבלת פניות.
+            </label>
+        </div>
       </div>
 
       <Button

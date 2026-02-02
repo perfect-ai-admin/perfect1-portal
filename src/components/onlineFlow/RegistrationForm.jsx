@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from 'react-router-dom';
 import StepIndicator from '../../components/common/StepIndicator';
 
 export default function RegistrationForm({ onSubmit, onBack }) {
@@ -16,7 +18,8 @@ export default function RegistrationForm({ onSubmit, onBack }) {
       id: '',
       phone: '',
       email: '',
-      profession: ''
+      profession: '',
+      consent: false
     };
   });
   const [errors, setErrors] = useState({});
@@ -45,6 +48,10 @@ export default function RegistrationForm({ onSubmit, onBack }) {
        newErrors.email = 'אנא הכנס כתובת מייל';
      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
        newErrors.email = 'אנא הכנס מייל תקין (דוגמה: name@example.com)';
+     }
+
+     if (!formData.consent) {
+        newErrors.consent = 'חובה לאשר את תנאי השימוש ומדיניות הפרטיות';
      }
 
      return newErrors;
@@ -230,6 +237,30 @@ export default function RegistrationForm({ onSubmit, onBack }) {
             <li>📧 {formData.email}</li>
             <li>💼 {formData.profession}</li>
           </ul>
+        </motion.div>
+
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-start space-x-3 space-x-reverse py-2 bg-gray-50 p-3 rounded-lg border border-gray-100"
+        >
+            <Checkbox 
+                id="terms-registration"
+                checked={formData.consent}
+                onCheckedChange={(checked) => setFormData({...formData, consent: checked})}
+                className="mt-1 border-gray-300 data-[state=checked]:bg-[#27AE60] data-[state=checked]:border-[#27AE60]"
+            />
+            <div className="grid gap-1.5 leading-none">
+                <label
+                    htmlFor="terms-registration"
+                    className="text-xs text-gray-600 font-medium leading-relaxed"
+                >
+                    אני מאשר/ת את <Link to="/Terms" className="underline hover:text-[#27AE60]" target="_blank">תנאי השימוש</Link> ו<Link to="/Privacy" className="underline hover:text-[#27AE60]" target="_blank">מדיניות הפרטיות</Link> ומסכימ/ה לקבלת פניות.
+                </label>
+                {errors.consent && (
+                    <p className="text-red-500 text-xs">{errors.consent}</p>
+                )}
+            </div>
         </motion.div>
         )}
 
