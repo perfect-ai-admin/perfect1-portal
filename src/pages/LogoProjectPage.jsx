@@ -19,6 +19,7 @@ export default function LogoProjectPage() {
   const [message, setMessage] = useState(null);
   const [copied, setCopied] = useState(null);
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [downloadUrl, setDownloadUrl] = useState(null);
 
   useEffect(() => {
     if (projectId) {
