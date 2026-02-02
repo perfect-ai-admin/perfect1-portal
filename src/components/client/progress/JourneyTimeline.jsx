@@ -24,7 +24,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
-export default function JourneyTimeline() {
+export default function JourneyTimeline({ onStartTask }) {
   const navigate = useNavigate();
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -76,6 +76,7 @@ export default function JourneyTimeline() {
           icon: getIconForTask(task.title),
           status: isCompleted ? 'completed' : isCurrent ? 'current' : 'locked',
           is_milestone: task.is_milestone,
+          originalTask: task,
           details: {
             done: isCompleted ? [task.description] : [],
             todo: !isCompleted ? ['השלם משימה זו כדי להמשיך'] : [],
@@ -323,10 +324,15 @@ export default function JourneyTimeline() {
                     className="w-full h-14 text-lg font-bold rounded-2xl mt-4 bg-blue-600 hover:bg-blue-700"
                     size="lg"
                     onClick={() => {
-                      setSelectedStep(null);
-                      setTimeout(() => {
-                        navigate('/Summary');
-                      }, 300);
+                      if (onStartTask && selectedStep.originalTask) {
+                        onStartTask(selectedStep.originalTask);
+                        setSelectedStep(null);
+                      } else {
+                        setSelectedStep(null);
+                        setTimeout(() => {
+                          navigate('/Summary');
+                        }, 300);
+                      }
                     }}
                   >
                     {selectedStep.details.nextAction || 'המשך לשלב הבא'}

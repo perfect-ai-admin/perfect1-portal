@@ -242,6 +242,13 @@ export default function ProgressTab({ data, onNavigate, user }) {
     setShowGoalCreation(true);
   };
 
+  const handleStartTask = (task) => {
+    if (!task) return;
+    const template = getGoalTemplateForTask(task);
+    setGoalTemplateForStep(template);
+    setShowGoalCreation(true);
+  };
+
   const handleGoalCreated = async (newGoal) => {
     // Close dialog IMMEDIATELY
     setShowGoalCreation(false);
@@ -393,19 +400,19 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
       {/* Journey Timeline - Mobile */}
       <div className="lg:hidden mb-3">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">המסע שלך</h2>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={handleResetJourney}
-            className="text-xs"
-          >
-            <RefreshCcw className="w-3.5 h-3.5 ml-1.5" />
-            רענן מסע
-          </Button>
-        </div>
-        <JourneyTimeline />
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-bold text-gray-900">המסע שלך</h2>
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={handleResetJourney}
+          className="text-xs"
+        >
+          <RefreshCcw className="w-3.5 h-3.5 ml-1.5" />
+          רענן מסע
+        </Button>
+      </div>
+      <JourneyTimeline onStartTask={handleStartTask} />
       </div>
 
       {/* Recommended Goal - Mobile */}
@@ -485,7 +492,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
              </Button>
            </div>
            <div>
-            <JourneyTimeline />
+            <JourneyTimeline onStartTask={handleStartTask} />
            </div>
         </div>
 
