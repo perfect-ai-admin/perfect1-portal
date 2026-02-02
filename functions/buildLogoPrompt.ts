@@ -110,10 +110,10 @@ Deno.serve(async (req) => {
 
     // Always construct prompt in English
     prompt = `Create a premium professional vector logo symbol for "${translatedInputs.brand_name}". `;
-    prompt += `Business type: ${translatedInputs.business_type}. `;
+    prompt += `The logo must clearly represent the business profession: ${translatedInputs.business_type}. `;
     prompt += `Design style: ${translatedInputs.style}. ${styleEnhancement}`;
     prompt += `Minimalist flat design, solid colors, geometric precision. `;
-    prompt += `Icon only, NO TEXT, NO LETTERS. Visual symbol representing the brand. ${colorEnhancement}`;
+    prompt += `Icon only, NO TEXT, NO LETTERS. Visual symbol representing a ${translatedInputs.business_type}. ${colorEnhancement}`;
     prompt += `Pure white background only, no gradients, no 3D effects. `;
     prompt += `4k quality, Adobe Illustrator style, scalable and production-ready. `;
     

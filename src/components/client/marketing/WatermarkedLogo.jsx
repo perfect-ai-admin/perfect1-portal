@@ -22,15 +22,15 @@ export default function WatermarkedLogo({
       if (!canvas) return;
 
       // Make canvas slightly taller to accommodate text if needed
-      // But usually user wants to see the logo as is. 
-      // Let's add padding at bottom for the text.
-      const textHeight = businessName ? (img.height * 0.25) : 0; // 25% of height for text
+      // We calculate a tighter layout by overlapping the text slightly with the bottom whitespace of the logo
+      const overlap = businessName ? (img.height * 0.15) : 0; // 15% overlap
+      const textHeight = businessName ? (img.height * 0.25) : 0; // 25% of height for text area
       
       canvas.width = img.width;
-      canvas.height = img.height + textHeight;
+      canvas.height = img.height + textHeight - overlap; // Reduce total height by overlap amount
       const ctx = canvas.getContext('2d');
 
-      // Fill background white (since we are extending canvas)
+      // Fill background white
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -48,15 +48,16 @@ export default function WatermarkedLogo({
         ctx.font = `bold ${fontSize}px Heebo, Arial, sans-serif`;
         ctx.fillStyle = '#1E3A5F'; // Dark Blue standard
         
-        // Draw Business Name
-        ctx.fillText(businessName, canvas.width / 2, img.height);
+        // Draw Business Name - positioned higher (overlapping bottom of image)
+        const textStartY = img.height - overlap;
+        ctx.fillText(businessName, canvas.width / 2, textStartY);
         
         // Draw Slogan
         if (slogan) {
           const sloganSize = Math.floor(fontSize * 0.5);
           ctx.font = `${sloganSize}px Heebo, Arial, sans-serif`;
           ctx.fillStyle = '#64748B'; // Slate 500
-          ctx.fillText(slogan, canvas.width / 2, img.height + fontSize + (fontSize * 0.2));
+          ctx.fillText(slogan, canvas.width / 2, textStartY + fontSize + (fontSize * 0.2));
         }
         ctx.restore();
       }
