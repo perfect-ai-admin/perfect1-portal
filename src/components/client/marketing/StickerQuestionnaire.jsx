@@ -89,6 +89,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
   const [isBuilding, setIsBuilding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [generatedStickerUrl, setGeneratedStickerUrl] = useState(null);
+  const [finalStickerUrl, setFinalStickerUrl] = useState(null);
   const [aiBrief, setAiBrief] = useState(null);
   const [aiPrompt, setAiPrompt] = useState(null);
   const [countdown, setCountdown] = useState(30);
@@ -734,8 +735,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                           text={formData.exampleSentence || formData.businessName}
                           className="w-full h-full object-contain p-4"
                           onImageReady={(url) => {
-                            // Update the download link with the new watermarked URL
-                            setGeneratedStickerUrl(url); 
+                            setFinalStickerUrl(url);
                           }}
                       />
                   </div>
@@ -776,9 +776,9 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
               )}
 
                <div className="flex flex-col gap-3 w-full max-w-xs">
-                   {generatedStickerUrl && (
+                   {(finalStickerUrl || generatedStickerUrl) && (
                        <a 
-                           href={generatedStickerUrl} 
+                           href={finalStickerUrl || generatedStickerUrl} 
                            target="_blank" 
                            rel="noopener noreferrer"
                            download="sticker.png"
