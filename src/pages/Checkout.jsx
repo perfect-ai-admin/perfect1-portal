@@ -109,22 +109,6 @@ export default function Checkout() {
                 toast.error('שגיאה ביצירת ההזמנה');
             }
         } catch (error) {
-                // Set landing page to "paid" status if checkout is for landing page
-                if (productType === 'landing-page' && productId) {
-                    try {
-                        await base44.functions.invoke('publishLandingPage', {
-                            landingPageId: productId,
-                            action: 'markPaid'
-                        });
-                    } catch (err) {
-                        console.error('Failed to mark as paid:', err);
-                    }
-                }
-                window.location.href = response.data.url;
-            } else {
-                toast.error('שגיאה ביצירת ההזמנה');
-            }
-        } catch (error) {
             toast.error('שגיאה בעיבוד התשלום');
             console.error(error);
         } finally {
