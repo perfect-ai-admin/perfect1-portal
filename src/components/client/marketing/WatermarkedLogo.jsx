@@ -3,7 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 export default function WatermarkedLogo({ 
   src, 
   alt, 
-  className = "max-h-56 w-auto object-contain"
+  className = "max-h-56 w-auto object-contain",
+  businessName,
+  slogan
 }) {
   const canvasRef = useRef(null);
   const [watermarkedUrl, setWatermarkedUrl] = useState(null);
@@ -17,14 +19,47 @@ export default function WatermarkedLogo({
       const canvas = canvasRef.current;
       if (!canvas) return;
 
+      // Make canvas slightly taller to accommodate text if needed
+      // But usually user wants to see the logo as is. 
+      // Let's add padding at bottom for the text.
+      const textHeight = businessName ? (img.height * 0.25) : 0; // 25% of height for text
+      
       canvas.width = img.width;
-      canvas.height = img.height;
+      canvas.height = img.height + textHeight;
       const ctx = canvas.getContext('2d');
+
+      // Fill background white (since we are extending canvas)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Draw image
       ctx.drawImage(img, 0, 0);
 
-      // Draw grid pattern
+      // Draw Text (Business Name)
+      if (businessName) {
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        
+        // Dynamic font size based on image width
+        const fontSize = Math.floor(img.width * 0.1); 
+        ctx.font = `bold ${fontSize}px Heebo, Arial, sans-serif`;
+        ctx.fillStyle = '#1E3A5F'; // Dark Blue standard
+        
+        // Draw Business Name
+        ctx.fillText(businessName, canvas.width / 2, img.height);
+        
+        // Draw Slogan
+        if (slogan) {
+          const sloganSize = Math.floor(fontSize * 0.5);
+          ctx.font = `${sloganSize}px Heebo, Arial, sans-serif`;
+          ctx.fillStyle = '#64748B'; // Slate 500
+          ctx.fillText(slogan, canvas.width / 2, img.height + fontSize + (fontSize * 0.2));
+        }
+        ctx.restore();
+      }
+
+      // Draw grid pattern (Watermark)
       const gridSize = 35;
       ctx.strokeStyle = 'rgba(160, 160, 160, 0.25)';
       ctx.lineWidth = 1;
@@ -63,7 +98,7 @@ export default function WatermarkedLogo({
       setWatermarkedUrl(watermarkedImage);
     };
     img.src = src;
-  }, [src]);
+  }, [src, businessName, slogan]);
 
   return (
     <>

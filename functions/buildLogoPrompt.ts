@@ -64,43 +64,64 @@ Deno.serve(async (req) => {
       }
     }
 
+    let translatedInputs = {
+      brand_name: brand_name,
+      business_type: business_type,
+      style: style,
+      slogan: slogan || '',
+      icon_hint: icon_hint || ''
+    };
+
     if (hasHebrew) {
-      prompt = `צור לוגו וקטורי מקצועי לחברה בשם "${brand_name}". `;
-      prompt += `תחום עיסוק: ${business_type}. `;
-      prompt += `סגנון עיצובי: ${style}. ${styleEnhancement}`;
-      prompt += `עיצוב מינימליסטי שטוח, צבעים אחידים, דיוק גיאומטרי. `;
-      prompt += `פריסה של אייקון + כיתוב, קווים חדים, חד-צבעי או צבעים מעטים. ${colorEnhancement}`;
-      prompt += `רקע לבן נקי בלבד, אין גרדיאנטים, אין אפקטים תלת-מימדיים. `;
-      prompt += `איכות גבוהה, במצב מוגן וסקיצה בסגנון Adobe Illustrator. `;
-      
-      if (icon_hint && typeof icon_hint === 'string') {
-        prompt += `קונספט האייקון: ${icon_hint}. `;
+      try {
+        console.log('[BUILD_PROMPT] Translating Hebrew inputs...');
+        const translationRes = await base44.integrations.Core.InvokeLLM({
+          prompt: `Translate the following logo design inputs from Hebrew to English. Return ONLY a JSON object with keys: brand_name, business_type, style, slogan, icon_hint.
+          Inputs:
+          brand_name: "${brand_name}"
+          business_type: "${business_type}"
+          style: "${style}"
+          slogan: "${slogan || ''}"
+          icon_hint: "${icon_hint || ''}"
+          
+          Note: Translate the meaning effectively for a logo designer. For brand_name, if it's a name, keep phonetic or translate if meaningful.
+          `,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              brand_name: { type: "string" },
+              business_type: { type: "string" },
+              style: { type: "string" },
+              slogan: { type: "string" },
+              icon_hint: { type: "string" }
+            }
+          }
+        });
+        
+        if (translationRes && typeof translationRes === 'object') {
+             translatedInputs = { ...translatedInputs, ...translationRes };
+             console.log('[BUILD_PROMPT] Translation success:', translatedInputs);
+        }
+      } catch (err) {
+        console.error('[BUILD_PROMPT] Translation failed:', err);
+        // Fallback to original inputs if translation fails
       }
-
-      if (slogan && typeof slogan === 'string') {
-        prompt += `כלול טקסט: "${slogan}". `;
-      }
-
-      prompt += `מרכוז בתמונה, חד וברור, מוכן לייצור.`;
-    } else {
-      prompt = `Create a premium professional vector logo for "${brand_name}". `;
-      prompt += `Business type: ${business_type}. `;
-      prompt += `Design style: ${style}. ${styleEnhancement}`;
-      prompt += `Minimalist flat design, solid colors, geometric precision. `;
-      prompt += `Icon + wordmark layout, sharp edges, limited color palette. ${colorEnhancement}`;
-      prompt += `Pure white background only, no gradients, no 3D effects. `;
-      prompt += `4k quality, Adobe Illustrator style, scalable and production-ready. `;
-      
-      if (icon_hint && typeof icon_hint === 'string') {
-        prompt += `Icon concept: ${icon_hint}. `;
-      }
-
-      if (slogan && typeof slogan === 'string') {
-        prompt += `Include text: "${slogan}". `;
-      }
-
-      prompt += `Centered composition, clean and sharp, award-winning design quality.`;
     }
+
+    // Always construct prompt in English
+    prompt = `Create a premium professional vector logo symbol for "${translatedInputs.brand_name}". `;
+    prompt += `Business type: ${translatedInputs.business_type}. `;
+    prompt += `Design style: ${translatedInputs.style}. ${styleEnhancement}`;
+    prompt += `Minimalist flat design, solid colors, geometric precision. `;
+    prompt += `Icon only, NO TEXT, NO LETTERS. Visual symbol representing the brand. ${colorEnhancement}`;
+    prompt += `Pure white background only, no gradients, no 3D effects. `;
+    prompt += `4k quality, Adobe Illustrator style, scalable and production-ready. `;
+    
+    if (translatedInputs.icon_hint) {
+      prompt += `Icon concept: ${translatedInputs.icon_hint}. `;
+    }
+
+    prompt += `Centered composition, clean and sharp, award-winning design quality.`;
 
     console.log('[BUILD_PROMPT] Generated prompt with learning enhancement from', learningHistory.length, 'approved logos');
 
