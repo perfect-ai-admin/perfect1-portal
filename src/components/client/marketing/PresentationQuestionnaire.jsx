@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { addToCart } from '../shared/cartUtils';
 import { useQuery } from '@tanstack/react-query';
 
 // Custom specialized card selector component for better UX
@@ -942,6 +943,19 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               </div>
               
               <div className="flex gap-3">
+                <Button
+                  onClick={() => addToCart({
+                    type: 'presentation',
+                    data: { presentationUrl: draftPreviewUrl, businessName: formData.businessName },
+                    price: 199,
+                    title: `מצגת: ${formData.businessName}`,
+                    preview_image: 'https://cdn.dribbble.com/users/5031392/screenshots/15467520/media/c8d1c611531868a8677c7c32d483730e.png' // Placeholder
+                  })}
+                  variant="outline"
+                  className="flex-1 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-bold h-14"
+                >
+                  הוסף לסל
+                </Button>
                 <Button
                   onClick={() => {
                     toast.success('מעביר לתשלום...');
