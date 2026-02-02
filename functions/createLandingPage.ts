@@ -380,7 +380,7 @@ Return ONLY the JSON object with these keys:
         console.log("✅ QA Step 6 passed: Entity created with ID:", result.id);
 
         // Generate the full URL for the landing page
-        const domain = req.headers.get('host') || Deno.env.get('BASE_URL') || 'localhost:3000';
+        const domain = 'one-pai.com';
         const pageUrl = `https://${domain}/LP/${slug}`;
         console.log("✅ Page URL generated:", pageUrl);
 
