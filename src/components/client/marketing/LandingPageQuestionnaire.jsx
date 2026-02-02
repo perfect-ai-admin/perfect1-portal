@@ -1383,7 +1383,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                              <div className="w-3 h-3 rounded-full bg-green-400" />
                            </div>
                            <div className="flex-1 bg-white h-6 rounded-md shadow-sm border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-mono">
-                              {window.location.host}/LP/{pageSlug}
+                              one-pai.com/LP/{pageSlug}
                            </div>
                         </div>
                         
@@ -1506,7 +1506,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                </div>
                                <div className="flex flex-col">
                                   <span className="text-sm font-bold text-gray-900 leading-tight">{createdPageData?.business_name}</span>
-                                  <span className="text-xs text-slate-500 dir-ltr font-mono">{window.location.host}/LP/{pageSlug}</span>
+                                  <span className="text-xs text-slate-500 dir-ltr font-mono">one-pai.com/LP/{pageSlug}</span>
                                </div>
                            </div>
                            <DialogClose asChild>
