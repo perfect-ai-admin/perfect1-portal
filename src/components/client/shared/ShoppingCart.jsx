@@ -231,32 +231,30 @@ export default function ShoppingCartButton() {
               </div>
 
               {/* Content */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-gray-50/50 space-y-4">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50/50 scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300">
                 {cartItems.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
-                    <div className="relative">
-                        <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center animate-pulse">
-                            <ShoppingCart className="w-10 h-10 text-blue-200" />
-                        </div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <ShoppingCart className="w-10 h-10 text-blue-500" />
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-fade-in-up">
+                    <div className="relative group">
+                        <div className="absolute inset-0 bg-blue-200 rounded-full blur-xl opacity-20 group-hover:opacity-30 transition-opacity" />
+                        <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl shadow-blue-100 border-4 border-white relative z-10">
+                            <ShoppingCart className="w-12 h-12 text-blue-500 opacity-80" />
                         </div>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-gray-900 font-bold text-xl">העגלה שלך ריקה</p>
-                      <p className="text-gray-500 text-sm max-w-[200px] mx-auto leading-relaxed">
-                        עדיין לא שמרת מוצרים. זה הזמן להתחיל ליצור משהו מדהים!
+                    <div className="space-y-3 max-w-[280px]">
+                      <h3 className="text-gray-900 font-black text-2xl">העגלה שלך ריקה</h3>
+                      <p className="text-gray-500 font-medium leading-relaxed">
+                        זה הזמן להתחיל ליצור משהו מדהים לעסק שלך!
                       </p>
                     </div>
                     <Button 
                         onClick={() => setIsOpen(false)} 
-                        className="bg-gray-900 text-white hover:bg-gray-800 rounded-full px-8"
+                        className="h-12 px-8 bg-gray-900 text-white hover:bg-gray-800 rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                     >
                         חזור לעצב
                     </Button>
                   </div>
                 ) : (
-                  <div className="space-y-4 pb-4">
+                  <div className="space-y-4 pb-24 md:pb-6"> {/* Added padding bottom for mobile footer */}
                     {cartItems.map((item) => {
                       const isSelected = selectedIds.has(item.id);
                       return (
@@ -266,104 +264,119 @@ export default function ShoppingCartButton() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className={`group relative bg-white rounded-2xl border transition-all duration-200 overflow-hidden ${
+                          onClick={() => toggleSelection(item.id)}
+                          className={`group relative bg-white rounded-2xl transition-all duration-300 cursor-pointer overflow-hidden ${
                             isSelected 
-                              ? 'border-blue-500 shadow-lg shadow-blue-500/10' 
-                              : 'border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-md'
+                              ? 'ring-2 ring-blue-500 shadow-xl shadow-blue-500/10 scale-[1.01]' 
+                              : 'ring-1 ring-gray-100 shadow-sm hover:shadow-md hover:ring-blue-200'
                           }`}
                         >
-                          <div className="flex p-3 gap-3 sm:gap-4">
-                            {/* Checkbox Area */}
-                            <div className="flex items-center pl-1">
-                                <Checkbox 
-                                    checked={isSelected}
-                                    onCheckedChange={() => toggleSelection(item.id)}
-                                    className="w-5 h-5 border-2 border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 rounded-lg transition-all"
-                                />
+                          <div className="flex p-4 gap-4">
+                            {/* Selection Indicator */}
+                            <div className="flex items-center self-center">
+                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
+                                    isSelected 
+                                        ? 'bg-blue-500 border-blue-500' 
+                                        : 'bg-transparent border-gray-200 group-hover:border-blue-300'
+                                }`}>
+                                    {isSelected && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
+                                </div>
                             </div>
 
                             {/* Image Area */}
                             {(item.preview_image || item.type === 'presentation') && (
                                 <div 
-                                    className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100"
-                                    onClick={() => setEnlargedImage(item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop')}
+                                    className="relative w-24 h-24 sm:w-32 sm:h-32 bg-gray-50 rounded-xl flex-shrink-0 overflow-hidden border border-gray-100 group-hover:border-blue-100 transition-colors"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEnlargedImage(item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop');
+                                    }}
                                 >
                                     <img
                                       src={item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop'}
                                       alt={item.title}
-                                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
-                                    {/* Watermark Overlay for List View */}
+                                    {/* Watermark Overlay */}
                                     <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
-                                        <div className="text-red-500/30 font-black text-2xl rotate-[-45deg] whitespace-nowrap select-none border-2 border-red-500/20 px-2 py-1 rounded">
+                                        <div className="text-red-500/40 font-black text-xl rotate-[-45deg] whitespace-nowrap select-none border-2 border-red-500/30 px-2 py-0.5 rounded backdrop-blur-[1px]">
                                             טיוטה
                                         </div>
                                     </div>
-                                    <div className="absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 hover:opacity-100 z-20">
-                                        <Maximize2 className="w-5 h-5 text-gray-700 drop-shadow-sm" />
+                                    {/* Hover Overlay */}
+                                    <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 hover:opacity-100 z-20 cursor-zoom-in">
+                                        <Maximize2 className="w-5 h-5 text-white drop-shadow-md" />
                                     </div>
                                 </div>
                             )}
 
                             {/* Details Area */}
-                            <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
-                              <div>
-                                <div className="flex justify-between items-start gap-2">
-                                    <h3 className="font-bold text-gray-900 truncate text-base leading-tight">
+                            <div className="flex-1 flex flex-col min-w-0 py-0.5">
+                              <div className="flex justify-between items-start gap-3">
+                                  <div className="space-y-1">
+                                    <h3 className={`font-bold text-gray-900 truncate text-lg leading-tight transition-colors ${isSelected ? 'text-blue-700' : ''}`}>
                                         {item.title}
                                     </h3>
-                                    <button
-                                        onClick={() => removeItem(item.id)}
-                                        className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all -mt-2 -ml-2"
-                                        title="הסר מהעגלה"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <p className="text-sm text-gray-500 font-medium mt-1">{item.description}</p>
-                                
-                                {item.type === 'landing_page' && item.data?.landingPageId && (
-                                    <div className="mt-2">
-                                        <button 
-                                            onClick={() => handlePreview(item.data.landingPageId)}
-                                            className="text-xs flex items-center gap-1 text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-blue-100"
-                                        >
-                                            <Eye className="w-3 h-3" />
-                                            צפה בטיוטה
-                                        </button>
-                                    </div>
-                                )}
-                                {item.type === 'presentation' && item.data?.presentationUrl && (
-                                    <div className="mt-2">
-                                        <button 
-                                            onClick={() => handlePresentationPreview(item.data.presentationUrl)}
-                                            className="text-xs flex items-center gap-1 text-purple-600 hover:underline bg-purple-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-purple-100"
-                                        >
-                                            <Eye className="w-3 h-3" />
-                                            צפה במצגת
-                                        </button>
-                                    </div>
-                                )}
+                                    <p className="text-sm text-gray-500 font-medium leading-tight line-clamp-2 pl-2">
+                                        {item.description}
+                                    </p>
+                                  </div>
+                                  <button
+                                      onClick={(e) => {
+                                          e.stopPropagation();
+                                          removeItem(item.id);
+                                      }}
+                                      className="text-gray-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all flex-shrink-0"
+                                      title="הסר מהעגלה"
+                                  >
+                                      <Trash2 className="w-4.5 h-4.5" />
+                                  </button>
                               </div>
-                              
-                              <div className="flex items-end justify-between mt-2">
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] text-gray-400 font-medium line-through">₪{(item.price || ITEM_PRICE) * 2}</span>
-                                    <div className="text-lg font-bold text-gray-900 flex items-center gap-1">
+
+                              <div className="mt-auto pt-3 flex items-end justify-between">
+                                <div className="space-y-2">
+                                    <div className="flex gap-2">
+                                        {item.type === 'landing_page' && item.data?.landingPageId && (
+                                            <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handlePreview(item.data.landingPageId);
+                                                }}
+                                                className="text-xs font-bold flex items-center gap-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg transition-colors"
+                                            >
+                                                <Eye className="w-3.5 h-3.5" />
+                                                צפה בטיוטה
+                                            </button>
+                                        )}
+                                        {item.type === 'presentation' && item.data?.presentationUrl && (
+                                            <button 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handlePresentationPreview(item.data.presentationUrl);
+                                                }}
+                                                className="text-xs font-bold flex items-center gap-1.5 text-purple-600 bg-purple-50 hover:bg-purple-100 px-2.5 py-1.5 rounded-lg transition-colors"
+                                            >
+                                                <Eye className="w-3.5 h-3.5" />
+                                                צפה במצגת
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                                
+                                <div className="text-left">
+                                    <span className="block text-xs text-gray-400 font-medium line-through mb-0.5">₪{(item.price || ITEM_PRICE) * 2}</span>
+                                    <div className="text-xl font-black text-gray-900 flex items-center gap-1">
                                         ₪{item.price || ITEM_PRICE}
                                     </div>
                                 </div>
-                                {isSelected ? (
-                                    <span className="text-xs bg-blue-50 text-blue-700 font-bold px-2 py-1 rounded-md flex items-center gap-1">
-                                        <Check className="w-3 h-3" />
-                                        נבחר
-                                    </span>
-                                ) : (
-                                    <span className="text-xs text-gray-400 px-2 py-1">לא נבחר</span>
-                                )}
                               </div>
                             </div>
                           </div>
+                          
+                          {/* Selection Overlay Effect */}
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-blue-50/30 pointer-events-none" />
+                          )}
                         </motion.div>
                       );
                     })}
