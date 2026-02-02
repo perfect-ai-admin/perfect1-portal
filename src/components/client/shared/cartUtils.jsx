@@ -5,6 +5,14 @@ export const addToCart = async ({ type, data, price, title, description, preview
   try {
     const user = await base44.auth.me().catch(() => null);
     
+    if (!user) {
+        toast.error('יש להתחבר כדי להוסיף מוצרים לעגלה');
+        setTimeout(() => {
+            base44.auth.redirectToLogin(window.location.href);
+        }, 1500);
+        return false;
+    }
+
     // Create entity record
     await base44.entities.CartItem.create({
       type,
