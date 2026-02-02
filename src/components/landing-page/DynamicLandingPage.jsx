@@ -45,6 +45,7 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
     // Form state
     const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '', consent: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const uniqueId = React.useId();
 
     // CSS Variables for dynamic theming
     const themeStyle = {
@@ -513,14 +514,14 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
 
                             <div className="flex items-start space-x-3 space-x-reverse">
                                 <Checkbox 
-                                    id="terms" 
+                                    id={`terms-${uniqueId}`}
                                     checked={formData.consent}
                                     onCheckedChange={(checked) => setFormData({...formData, consent: checked})}
                                     className="mt-1 border-white/30 data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]"
                                 />
                                 <div className="grid gap-1.5 leading-none">
                                     <label
-                                        htmlFor="terms"
+                                        htmlFor={`terms-${uniqueId}`}
                                         className="text-xs text-slate-300 font-medium leading-relaxed"
                                     >
                                         אני מאשר/ת את <Link to="/Terms" className="underline hover:text-white" target="_blank">תנאי השימוש</Link> ו<Link to="/Privacy" className="underline hover:text-white" target="_blank">מדיניות הפרטיות</Link> ומסכימ/ה לקבלת פניות ותוכן שיווקי.
