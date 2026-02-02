@@ -145,7 +145,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
         
         {/* Right Side - Summary & Items */}
-        <div className="w-full md:w-1/2 bg-gray-50 p-6 md:p-8 border-l border-gray-100 flex flex-col order-first md:order-last">
+        <div className="w-full md:w-1/2 bg-gray-50 p-6 md:p-8 border-b md:border-b-0 md:border-l border-gray-100 flex flex-col order-first md:order-last">
             {/* Mobile Header / Toggle */}
             <div 
                 className="flex items-center justify-between gap-3 mb-4 md:mb-6 cursor-pointer md:cursor-default"
@@ -200,7 +200,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
                 ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
+            <div className={`mt-6 pt-6 border-t border-gray-200 space-y-3 transition-all duration-300 ${isSummaryOpen ? 'block' : 'hidden md:block'}`}>
                 <div className="flex justify-between text-gray-600">
                     <span>סכום ביניים</span>
                     <span>₪{totalPrice}</span>

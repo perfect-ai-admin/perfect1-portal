@@ -272,7 +272,14 @@ export default function ShoppingCartButton() {
                               : 'border-gray-100 shadow-sm hover:border-blue-200 hover:shadow-md'
                           }`}
                         >
-                          <div className="flex p-3 gap-3 sm:gap-4">
+                          <div className="flex p-3 gap-3 sm:gap-4 relative">
+                            <button
+                                onClick={() => removeItem(item.id)}
+                                className="absolute top-2 left-2 text-gray-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-all z-10 bg-white/80 backdrop-blur-sm shadow-sm opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                                title="הסר מהעגלה"
+                            >
+                                <Trash2 className="w-3.5 h-3.5" />
+                            </button>
                             {/* Checkbox Area */}
                             <div className="flex items-center pl-1">
                                 <Checkbox 
@@ -312,13 +319,7 @@ export default function ShoppingCartButton() {
                                     <h3 className="font-bold text-gray-900 truncate text-sm sm:text-base leading-tight">
                                         {item.title}
                                     </h3>
-                                    <button
-                                        onClick={() => removeItem(item.id)}
-                                        className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all -mt-2 -ml-2"
-                                        title="הסר מהעגלה"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+
                                 </div>
                                 <p className="text-sm text-gray-500 font-medium mt-1 hidden sm:block">{item.description}</p>
                                 
