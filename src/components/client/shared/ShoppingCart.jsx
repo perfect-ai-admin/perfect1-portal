@@ -293,7 +293,13 @@ export default function ShoppingCartButton() {
                                       alt={item.title}
                                       className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                                     />
-                                    <div className="absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+                                    {/* Watermark Overlay for List View */}
+                                    <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
+                                        <div className="text-red-500/30 font-black text-2xl rotate-[-45deg] whitespace-nowrap select-none border-2 border-red-500/20 px-2 py-1 rounded">
+                                            טיוטה
+                                        </div>
+                                    </div>
+                                    <div className="absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 hover:opacity-100 z-20">
                                         <Maximize2 className="w-5 h-5 text-gray-700 drop-shadow-sm" />
                                     </div>
                                 </div>
@@ -476,11 +482,25 @@ export default function ShoppingCartButton() {
                     <X className="w-6 h-6 text-white" />
                 </button>
                 {enlargedImage && (
-                    <img 
-                        src={enlargedImage} 
-                        alt="Zoomed Logo" 
-                        className="max-w-full max-h-[70vh] object-contain rounded-2xl bg-gray-50"
-                    />
+                    <div className="relative">
+                        <img 
+                            src={enlargedImage} 
+                            alt="Zoomed Logo" 
+                            className="max-w-full max-h-[70vh] object-contain rounded-2xl bg-gray-50"
+                        />
+                        {/* Watermark Overlay for Enlarged View */}
+                        <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden rounded-2xl">
+                            {[20, 50, 80].map((top) => (
+                                <div
+                                    key={top}
+                                    className="absolute text-red-500/20 font-black text-6xl md:text-8xl whitespace-nowrap select-none"
+                                    style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
+                                >
+                                    טיוטה
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 )}
             </motion.div>
         </DialogContent>

@@ -156,8 +156,14 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
                 {items.map((item, idx) => (
                     <div key={idx} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4">
                         {item.preview_image ? (
-                            <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100">
+                            <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 relative">
                                 <img src={item.preview_image} alt={item.title} className="w-full h-full object-contain" />
+                                {/* Watermark Overlay */}
+                                <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
+                                    <div className="text-red-500/30 font-black text-xs rotate-[-45deg] whitespace-nowrap select-none border border-red-500/20 px-1 rounded">
+                                        טיוטה
+                                    </div>
+                                </div>
                             </div>
                         ) : (
                             <div className="w-16 h-16 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 text-blue-500">
