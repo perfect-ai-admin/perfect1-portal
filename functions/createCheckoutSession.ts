@@ -12,51 +12,94 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { product_type, product_id } = await req.json();
+        const payload = await req.json();
+        const { product_type, product_id, items } = payload;
 
-        if (!product_type || !product_id) {
-            return Response.json({ error: 'Missing product_type or product_id' }, { status: 400 });
+        if (!product_type) {
+            return Response.json({ error: 'Missing product_type' }, { status: 400 });
         }
 
-        let product, amount, description;
+        let product, amount, description, paymentAmount;
+        let lineItems = [];
 
-        if (product_type === 'plan') {
-            const plans = await base44.asServiceRole.entities.Plan.filter({ id: product_id });
-            if (!plans || plans.length === 0) {
-                return Response.json({ error: 'Plan not found' }, { status: 404 });
+        if (product_type === 'cart') {
+            if (!items || items.length === 0) {
+                return Response.json({ error: 'Cart is empty' }, { status: 400 });
             }
-            product = plans[0];
-            amount = Math.round(product.price * 100); // Convert to cents
-            description = `מסלול ${product.name}`;
-        } else if (product_type === 'goal') {
-            const goals = await base44.asServiceRole.entities.Goal.filter({ id: product_id });
-            if (!goals || goals.length === 0) {
-                return Response.json({ error: 'Goal not found' }, { status: 404 });
+            
+            // Build line items for cart
+            items.forEach((item, index) => {
+                lineItems.push([`line_items[${index}][price_data][currency]`, 'ils']);
+                lineItems.push([`line_items[${index}][price_data][unit_amount]`, Math.round((item.price || 99) * 100).toString()]);
+                lineItems.push([`line_items[${index}][price_data][product_data][name]`, item.title || 'מוצר']);
+                lineItems.push([`line_items[${index}][quantity]`, '1']);
+            });
+
+            paymentAmount = items.reduce((sum, item) => sum + (item.price || 99), 0);
+            product = { name: 'עגלת קניות' }; // Generic name for payment record
+            
+        } else {
+            // Single product logic
+            if (product_type === 'plan') {
+                const plans = await base44.asServiceRole.entities.Plan.filter({ id: product_id });
+                if (!plans || plans.length === 0) return Response.json({ error: 'Plan not found' }, { status: 404 });
+                product = plans[0];
+                amount = Math.round(product.price * 100);
+                description = `מסלול ${product.name}`;
+            } else if (product_type === 'goal') {
+                const goals = await base44.asServiceRole.entities.Goal.filter({ id: product_id });
+                if (!goals || goals.length === 0) return Response.json({ error: 'Goal not found' }, { status: 404 });
+                product = goals[0];
+                amount = 9900;
+                description = `מטרה נוספת - ${product.name}`;
+            } else if (product_type === 'landing-page') {
+                const pages = await base44.asServiceRole.entities.LandingPage.filter({ id: product_id });
+                if (!pages || pages.length === 0) return Response.json({ error: 'Landing page not found' }, { status: 404 });
+                product = pages[0];
+                amount = 29900;
+                description = `דף נחיתה - ${product.business_name}`;
             }
-            product = goals[0];
-            amount = 9900; // Default 99 ILS for additional goals
-            description = `מטרה נוספת - ${product.name}`;
-        } else if (product_type === 'landing-page') {
-            const pages = await base44.asServiceRole.entities.LandingPage.filter({ id: product_id });
-            if (!pages || pages.length === 0) {
-                return Response.json({ error: 'Landing page not found' }, { status: 404 });
-            }
-            product = pages[0];
-            amount = 29900; // 299 ILS in cents
-            description = `דף נחיתה - ${product.business_name}`;
+
+            lineItems.push(['line_items[0][price_data][currency]', 'ils']);
+            lineItems.push(['line_items[0][price_data][unit_amount]', amount.toString()]);
+            lineItems.push(['line_items[0][price_data][product_data][name]', description]);
+            lineItems.push(['line_items[0][quantity]', '1']);
+            
+            paymentAmount = amount / 100;
         }
 
         // Create Payment record
-        const payment = await base44.entities.Payment.create({
+        const paymentData = {
             user_id: user.id,
             product_type: product_type,
-            product_id: product_id,
+            product_id: product_id || 'cart_checkout',
             product_name: product.name,
-            amount: product_type === 'plan' ? product.price : 99,
+            amount: paymentAmount,
             currency: 'ILS',
             payment_method: 'stripe',
             status: 'pending'
+        };
+
+        if (product_type === 'cart') {
+            paymentData.items = items;
+        }
+
+        const payment = await base44.entities.Payment.create(paymentData);
+
+        // Prepare Stripe Body
+        const stripeBody = new URLSearchParams({
+            'mode': 'payment',
+            'success_url': `${BASE_URL}/CheckoutSuccess?session_id={CHECKOUT_SESSION_ID}&payment_id=${payment.id}`,
+            'cancel_url': `${BASE_URL}/Checkout?cancelled=true`,
+            'customer_email': user.email,
+            'metadata[user_id]': user.id,
+            'metadata[product_type]': product_type,
+            'metadata[product_id]': product_id || '',
+            'metadata[payment_id]': payment.id
         });
+
+        // Append line items
+        lineItems.forEach(([key, value]) => stripeBody.append(key, value));
 
         // Create Stripe Checkout Session
         const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
@@ -65,21 +108,7 @@ Deno.serve(async (req) => {
                 'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: new URLSearchParams({
-                'payment_method_types[]': 'card',
-                'line_items[0][price_data][currency]': 'ils',
-                'line_items[0][price_data][unit_amount]': amount.toString(),
-                'line_items[0][price_data][product_data][name]': description,
-                'line_items[0][quantity]': '1',
-                'mode': 'payment',
-                'success_url': `${BASE_URL}/CheckoutSuccess?session_id={CHECKOUT_SESSION_ID}&payment_id=${payment.id}`,
-                'cancel_url': `${BASE_URL}/Checkout?cancelled=true`,
-                'customer_email': user.email,
-                'metadata[user_id]': user.id,
-                'metadata[product_type]': product_type,
-                'metadata[product_id]': product_id,
-                'metadata[payment_id]': payment.id
-            })
+            body: stripeBody
         });
 
         const session = await stripeResponse.json();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,13 +11,16 @@ import { toast } from 'sonner';
 export default function Checkout() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const [user, setUser] = useState(null);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
 
+    // Support both single product (URL) and Cart (State)
     const productType = searchParams.get('type'); // 'plan' or 'goal'
     const productId = searchParams.get('id');
+    const cartItems = location.state?.items;
 
     useEffect(() => {
         loadData();
@@ -28,14 +31,33 @@ export default function Checkout() {
             const currentUser = await base44.auth.me();
             setUser(currentUser);
 
-            if (productType === 'plan') {
+            if (cartItems && cartItems.length > 0) {
+                // Cart Checkout
+                const total = cartItems.reduce((sum, item) => sum + (item.price || 99), 0);
+                setProduct({
+                    name: `עגלת קניות (${cartItems.length} פריטים)`,
+                    description: cartItems.map(i => i.title).join(', '),
+                    price: total,
+                    isCart: true
+                });
+            } else if (productType === 'plan') {
                 const plans = await base44.entities.Plan.filter({ id: productId });
                 if (plans.length > 0) setProduct(plans[0]);
             } else if (productType === 'goal') {
                 const goals = await base44.entities.Goal.filter({ id: productId });
                 if (goals.length > 0) setProduct(goals[0]);
+            } else if (productType === 'landing-page') {
+                // Direct landing page checkout support
+                const pages = await base44.entities.LandingPage.get(productId);
+                if (pages) setProduct({
+                    name: `דף נחיתה: ${pages.business_name}`,
+                    description: 'דף נחיתה ממותג',
+                    price: 299,
+                    isLandingPage: true
+                });
             }
         } catch (error) {
+            console.error(error);
             toast.error('שגיאה בטעינת הנתונים');
         } finally {
             setLoading(false);
@@ -45,12 +67,48 @@ export default function Checkout() {
     const handleCheckout = async () => {
         setProcessing(true);
         try {
-            const response = await base44.functions.invoke('createCheckoutSession', {
+            let payload = {
                 product_type: productType,
                 product_id: productId
-            });
+            };
+
+            if (cartItems && cartItems.length > 0) {
+                payload = {
+                    product_type: 'cart',
+                    items: cartItems.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        price: item.price || 99,
+                        type: item.type,
+                        data: item.data
+                    }))
+                };
+            } else if (productType === 'landing-page') {
+                payload = {
+                    product_type: 'landing-page',
+                    product_id: productId
+                };
+            }
+
+            const response = await base44.functions.invoke('createCheckoutSession', payload);
 
             if (response.data.success && response.data.url) {
+                // Optimistic update for landing pages if single checkout
+                if (productType === 'landing-page' && productId) {
+                    try {
+                        await base44.functions.invoke('publishLandingPage', {
+                            landingPageId: productId,
+                            action: 'markPaid'
+                        });
+                    } catch (err) {
+                        console.error('Failed to mark as paid:', err);
+                    }
+                }
+                window.location.href = response.data.url;
+            } else {
+                toast.error('שגיאה ביצירת ההזמנה');
+            }
+        } catch (error) {
                 // Set landing page to "paid" status if checkout is for landing page
                 if (productType === 'landing-page' && productId) {
                     try {
