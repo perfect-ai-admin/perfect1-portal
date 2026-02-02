@@ -10,7 +10,8 @@ import {
   Mail, 
   FileText,
   X,
-  Smile
+  Smile,
+  Bot
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +26,7 @@ import SocialMediaQuestionnaire from './SocialMediaQuestionnaire';
 import BusinessCardQuestionnaire from './BusinessCardQuestionnaire';
 import EmailSignatureQuestionnaire from './EmailSignatureQuestionnaire';
 import ProposalQuestionnaire from './ProposalQuestionnaire';
+import UnifiedLeadForm from '@/components/forms/UnifiedLeadForm';
 
 const tools = [
   {
@@ -76,12 +78,12 @@ const tools = [
     features: ['תמונה מקצועית', 'שירותים', 'קישורים']
   },
   {
-    id: 'email-signature',
-    title: 'חתימה מקצועית',
-    description: 'חתימה ממותג למייל וואטסאפ',
-    icon: Mail,
+    id: 'avatar-ai',
+    title: 'Avatar AI מותאם לעסק',
+    description: 'יצירת דמות וירטואלית שתייצג את המותג שלך',
+    icon: Bot,
     color: 'from-teal-500 to-blue-500',
-    features: ['לוגו משובץ', 'לינקים חברתיים', 'דיוק טיפוגרפי']
+    features: ['פרזנטור דיגיטלי', 'סרטונים אוטומטיים', 'מותאם אישית']
   },
   {
     id: 'proposal',
@@ -251,12 +253,13 @@ export default function BrandingTools({ businessName = 'העסק שלי' }) {
         </DialogContent>
       </Dialog>
 
-      {/* Modal for Email Signature */}
-      <Dialog open={activeFlowId === 'email-signature'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <EmailSignatureQuestionnaire 
-            onComplete={() => setActiveFlowId(null)} 
-            onClose={() => setActiveFlowId(null)}
+      {/* Modal for Avatar AI */}
+      <Dialog open={activeFlowId === 'avatar-ai'} onOpenChange={(open) => !open && setActiveFlowId(null)}>
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto p-6">
+          <UnifiedLeadForm 
+            title="שיפור VIP - השאר פרטים ונחזור אלייך"
+            sourcePage="branding_tools_avatar_ai"
+            onSuccess={() => setActiveFlowId(null)}
           />
         </DialogContent>
       </Dialog>
