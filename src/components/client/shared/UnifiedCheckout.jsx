@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Lock, X, ChevronRight, CreditCard, Smartphone, Building, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Check, Lock, X, ChevronRight, ChevronDown, CreditCard, Smartphone, Building, ShoppingBag, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -13,6 +13,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   
   const [cardData, setCardData] = useState({
     fullName: '',
@@ -144,15 +145,28 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
         
         {/* Right Side - Summary & Items */}
-        <div className="w-full md:w-1/2 bg-gray-50 p-6 md:p-8 border-l border-gray-100 flex flex-col">
-            <div className="flex items-center gap-3 mb-6">
-                <button onClick={onBack} className="p-2 -mr-2 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
-                    <ArrowRight className="w-5 h-5" />
-                </button>
-                <h2 className="text-2xl font-bold text-gray-900">סיכום הזמנה</h2>
+        <div className="w-full md:w-1/2 bg-gray-50 p-6 md:p-8 border-l border-gray-100 flex flex-col order-first md:order-last">
+            {/* Mobile Header / Toggle */}
+            <div 
+                className="flex items-center justify-between gap-3 mb-4 md:mb-6 cursor-pointer md:cursor-default"
+                onClick={() => setIsSummaryOpen(!isSummaryOpen)}
+            >
+                <div className="flex items-center gap-3">
+                    <button onClick={(e) => { e.stopPropagation(); onBack(); }} className="p-2 -mr-2 hover:bg-gray-200 rounded-full transition-colors text-gray-500 md:hidden">
+                        <ArrowRight className="w-5 h-5" />
+                    </button>
+                    <button onClick={onBack} className="p-2 -mr-2 hover:bg-gray-200 rounded-full transition-colors text-gray-500 hidden md:block">
+                        <ArrowRight className="w-5 h-5" />
+                    </button>
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900">סיכום הזמנה</h2>
+                </div>
+                <div className="flex items-center gap-2 md:hidden">
+                    <span className="font-bold text-blue-600">₪{totalPrice}</span>
+                    {isSummaryOpen ? <ChevronDown className="w-5 h-5 text-gray-500" /> : <ChevronRight className="w-5 h-5 text-gray-500" />}
+                </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-4 pr-1 scrollbar-thin">
+            <div className={`flex-1 overflow-y-auto space-y-4 pr-1 scrollbar-thin transition-all duration-300 ${isSummaryOpen ? 'max-h-[50vh] opacity-100' : 'max-h-0 md:max-h-none opacity-0 md:opacity-100 overflow-hidden'}`}>
                 {items.map((item, idx) => (
                     <div key={idx} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4">
                         {(item.preview_image || item.type === 'presentation') ? (

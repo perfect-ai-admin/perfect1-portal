@@ -195,7 +195,7 @@ export default function ShoppingCartButton() {
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className={`fixed z-[70] bg-white shadow-2xl flex flex-col overflow-hidden
                 ${isMobile 
-                  ? 'bottom-0 left-0 right-0 h-[85vh] rounded-t-[2rem]' 
+                  ? 'bottom-0 left-0 right-0 h-[92vh] rounded-t-[1.5rem]' 
                   : 'right-0 top-0 h-full w-full max-w-md border-l border-gray-100'
                 }`}
             >
@@ -285,7 +285,7 @@ export default function ShoppingCartButton() {
                             {/* Image Area */}
                             {(item.preview_image || item.type === 'presentation') && (
                                 <div 
-                                    className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100"
+                                    className="relative w-20 h-20 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100"
                                     onClick={() => setEnlargedImage(item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop')}
                                 >
                                     <img
@@ -309,7 +309,7 @@ export default function ShoppingCartButton() {
                             <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
                               <div>
                                 <div className="flex justify-between items-start gap-2">
-                                    <h3 className="font-bold text-gray-900 truncate text-base leading-tight">
+                                    <h3 className="font-bold text-gray-900 truncate text-sm sm:text-base leading-tight">
                                         {item.title}
                                     </h3>
                                     <button
@@ -320,7 +320,7 @@ export default function ShoppingCartButton() {
                                         <Trash2 className="w-4 h-4" />
                                     </button>
                                 </div>
-                                <p className="text-sm text-gray-500 font-medium mt-1">{item.description}</p>
+                                <p className="text-sm text-gray-500 font-medium mt-1 hidden sm:block">{item.description}</p>
                                 
                                 {item.type === 'landing_page' && item.data?.landingPageId && (
                                     <div className="mt-2">
