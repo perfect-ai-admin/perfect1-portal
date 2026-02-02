@@ -13,8 +13,9 @@ import {
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
   FileText, Calendar, Layers, Share2, Copy, Eye, Maximize2, ExternalLink,
-  CheckCircle2, Pencil, Info, Monitor, Smartphone, Shield, Loader2
+  CheckCircle2, Pencil, Info, Monitor, Smartphone, Shield, Loader2, ShoppingCart
 } from 'lucide-react';
+import { toast } from 'sonner';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -1302,6 +1303,30 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                          className="h-12 rounded-xl font-bold flex-1"
                        >
                          ✏️ חזור לעריכה
+                       </Button>
+                       <Button
+                         onClick={() => {
+                            addToCart({
+                                type: 'landing_page',
+                                data: {
+                                    landingPageId: createdPageData?.id,
+                                    slug: pageSlug,
+                                    businessName: formData.businessName,
+                                    sections: createdPageData?.sections_json
+                                },
+                                price: 299,
+                                title: `דף נחיתה: ${formData.businessName}`,
+                                preview_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60',
+                                description: 'דף נחיתה ממותג כולל תוכן ועיצוב'
+                            });
+                            toast.success('נוסף לסל בהצלחה!');
+                            onClose(); // Close the modal after adding to cart
+                         }}
+                         variant="secondary"
+                         className="h-12 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-xl font-bold flex-1 flex items-center justify-center gap-2"
+                       >
+                         <ShoppingCart className="w-4 h-4" />
+                         הוסף לסל
                        </Button>
                        <Button
                          onClick={handlePublishToLive}
