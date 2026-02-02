@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { brand_name, business_type, style, slogan, icon_hint, colors = [] } = await req.json();
+    const { brand_name, business_type, style, slogan, icon_hint, vibe, colors = [] } = await req.json();
 
     if (!brand_name || !business_type || !style) {
       return Response.json({ 
@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
       console.log('[BUILD_PROMPT] Could not fetch learning history');
     }
 
-    // Extract patterns from approved logos
+    // Extract patterns from approved logos for context
     let successfulStyles = {};
     let successfulColors = {};
     
@@ -42,17 +42,10 @@ Deno.serve(async (req) => {
       }
     });
 
-    // זהיית שפה
-    const hasHebrew = /[\u0590-\u05FF]/.test(brand_name + business_type + style + (slogan || '') + (icon_hint || ''));
-    
-    let prompt;
-    let styleEnhancement = '';
-    let colorEnhancement = '';
-
-    // Add enhancements from learned patterns
+    let learningContext = '';
     if (learningHistory.length > 0) {
       if (successfulStyles[style]) {
-        styleEnhancement = `(Style "${style}" has been successful before in your designs). `;
+        learningContext += `(User previously liked style "${style}"). `;
       }
       if (Object.keys(successfulColors).length > 0) {
         const topColors = Object.entries(successfulColors)
@@ -60,77 +53,75 @@ Deno.serve(async (req) => {
           .slice(0, 3)
           .map(e => e[0])
           .join(', ');
-        colorEnhancement = `(Inspired by your previous successful color palettes: ${topColors}). `;
+        learningContext += `(User previously liked these colors: ${topColors}). `;
       }
     }
 
-    let translatedInputs = {
-      brand_name: brand_name,
-      business_type: business_type,
-      style: style,
-      slogan: slogan || '',
-      icon_hint: icon_hint || ''
-    };
-
-    if (hasHebrew) {
-      try {
-        console.log('[BUILD_PROMPT] Translating Hebrew inputs...');
-        const translationRes = await base44.integrations.Core.InvokeLLM({
-          prompt: `Translate the following logo design inputs from Hebrew to English. Return ONLY a JSON object with keys: brand_name, business_type, style, slogan, icon_hint.
-          Inputs:
-          brand_name: "${brand_name}"
-          business_type: "${business_type}"
-          style: "${style}"
-          slogan: "${slogan || ''}"
-          icon_hint: "${icon_hint || ''}"
-          
-          Note: Translate the meaning effectively for a logo designer. For brand_name, if it's a name, keep phonetic or translate if meaningful.
-          `,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              brand_name: { type: "string" },
-              business_type: { type: "string" },
-              style: { type: "string" },
-              slogan: { type: "string" },
-              icon_hint: { type: "string" }
-            }
-          }
-        });
-        
-        if (translationRes && typeof translationRes === 'object') {
-             translatedInputs = { ...translatedInputs, ...translationRes };
-             console.log('[BUILD_PROMPT] Translation success:', translatedInputs);
-        }
-      } catch (err) {
-        console.error('[BUILD_PROMPT] Translation failed:', err);
-        // Fallback to original inputs if translation fails
-      }
-    }
-
-    // Always construct prompt in English
-    prompt = `Create a premium professional vector logo symbol for "${translatedInputs.brand_name}". `;
-    prompt += `The logo must clearly represent the business profession: ${translatedInputs.business_type}. `;
-    prompt += `Design style: ${translatedInputs.style}. ${styleEnhancement}`;
-    prompt += `Minimalist flat design, solid colors, geometric precision. `;
-    prompt += `Icon only, NO TEXT, NO LETTERS. Visual symbol representing a ${translatedInputs.business_type}. ${colorEnhancement}`;
-    prompt += `Pure white background only, no gradients, no 3D effects. `;
-    prompt += `4k quality, Adobe Illustrator style, scalable and production-ready. `;
+    // Use LLM to generate the perfect prompt
+    console.log('[BUILD_PROMPT] Generating prompt via LLM...');
     
-    if (translatedInputs.icon_hint) {
-      prompt += `Icon concept: ${translatedInputs.icon_hint}. `;
+    const llmRes = await base44.integrations.Core.InvokeLLM({
+      prompt: `
+      You are an expert prompt engineer for AI image generators (like Stable Diffusion / StockImg).
+      Your task is to create a SINGLE, highly optimized English prompt to generate a professional logo.
+      
+      INPUTS (may be in Hebrew or English):
+      - Brand Name: "${brand_name}"
+      - Business Type: "${business_type}"
+      - Design Style (Step 3 choice): "${style}"
+      - Desired Atmosphere/Vibe: "${vibe || 'Professional'}"
+      - Slogan: "${slogan || ''}"
+      - Icon/Symbol Preference: "${icon_hint || ''}"
+      - Learning Context: ${learningContext}
+      
+      INSTRUCTIONS:
+      1. Analyze the "Business Type" and "Atmosphere/Vibe" to determine the best visual subject for the logo.
+      2. Analyze the "Design Style" to determine the artistic technique (e.g., minimalist, abstract, playful).
+      3. Construct a prompt that describes the VISUAL SYMBOL only.
+      
+      CRITICAL CONSTRAINTS:
+      - The logo must be an ICON / SYMBOL ONLY. 
+      - NO TEXT, NO LETTERS, NO WORDS in the image. (Text is added later by code).
+      - Style must be: Vector, Flat, Minimalist, Clean lines.
+      - Background: Pure White (#FFFFFF).
+      - High quality: 4k, trending on dribbble, vector graphics.
+      - Do NOT include the brand name in the visual description, only the symbol representing it.
+      
+      OUTPUT FORMAT:
+      Return ONLY a JSON object with a single key "prompt".
+      Example: {"prompt": "minimalist vector logo of a coffee bean, flat design, orange and brown colors, professional, clean white background, 4k vector graphics"}
+      `,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          prompt: { type: "string" }
+        }
+      }
+    });
+
+    let finalPrompt = '';
+    if (llmRes && typeof llmRes === 'object' && llmRes.prompt) {
+      finalPrompt = llmRes.prompt;
+    } else {
+      // Fallback if LLM fails
+      console.error('[BUILD_PROMPT] LLM failed to return prompt, using fallback');
+      finalPrompt = `vector logo symbol for ${business_type}, ${style} style, ${vibe || ''}, minimalist, flat design, white background, no text`;
     }
 
-    prompt += `Centered composition, clean and sharp, award-winning design quality.`;
+    // Enforce critical keywords at the end just in case
+    if (!finalPrompt.toLowerCase().includes('white background')) finalPrompt += ', white background';
+    if (!finalPrompt.toLowerCase().includes('no text')) finalPrompt += ', no text';
+    if (!finalPrompt.toLowerCase().includes('vector')) finalPrompt += ', vector style';
 
-    console.log('[BUILD_PROMPT] Generated prompt with learning enhancement from', learningHistory.length, 'approved logos');
+    console.log('[BUILD_PROMPT] Final Prompt:', finalPrompt);
 
     return Response.json({ 
       ok: true,
-      prompt,
-      language: hasHebrew ? 'he' : 'en',
+      prompt: finalPrompt,
+      language: 'en', // Prompt is always English
       learning_applied: learningHistory.length > 0
     });
+
   } catch (error) {
     console.error('[BUILD_PROMPT] Error:', error.message);
     return Response.json({ 
