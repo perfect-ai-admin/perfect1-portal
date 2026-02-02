@@ -664,7 +664,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                   מעצב את הסטיקר... ✨
                 </h3>
                 <p className="text-slate-600 text-sm md:text-base max-w-xs mx-auto">
-                  הבינה המלאכותית יוצרת סטיקר מותאם אישית
+                  יוצרים לך...
                 </p>
               </motion.div>
 
