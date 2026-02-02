@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
     console.log('[STOCKIMG] API Key present:', !!apiKey);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
 
     const response = await fetch('https://api.stockimg.ai/v1/text-to-image/logo', {
       method: 'POST',
