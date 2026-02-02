@@ -6,9 +6,12 @@ import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { Loader2, AlertCircle, ShoppingCart, ArrowRight, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useSearchParams } from 'react-router-dom';
 
 export default function LandingPagePreview() {
-    const { landing_id } = useParams();
+    const { landing_id: paramsId } = useParams();
+    const [searchParams] = useSearchParams();
+    const landing_id = paramsId || searchParams.get('id');
 
     const { data: page, isLoading, error } = useQuery({
         queryKey: ['landingPagePreview', landing_id],

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck } from 'lucide-react';
+import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -281,6 +281,20 @@ export default function ShoppingCartButton() {
                                     </button>
                                 </div>
                                 <p className="text-sm text-gray-500 font-medium mt-1">{item.description}</p>
+                                
+                                {item.type === 'landing_page' && item.data?.landingPageId && (
+                                    <div className="mt-2">
+                                        <a 
+                                            href={`/LandingPagePreview?id=${item.data.landingPageId}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-xs flex items-center gap-1 text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded inline-block"
+                                        >
+                                            <Eye className="w-3 h-3" />
+                                            צפה בטיוטה
+                                        </a>
+                                    </div>
+                                )}
                               </div>
                               
                               <div className="flex items-end justify-between mt-2">
