@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
