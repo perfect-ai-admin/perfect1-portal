@@ -407,7 +407,7 @@ export default function ShoppingCartButton() {
 
       {/* Landing Page Preview Modal */}
       <Dialog open={!!previewPage || isPreviewLoading} onOpenChange={(open) => !open && closePreview()}>
-        <DialogContent overlayClassName="z-[150]" className="z-[151] max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
+        <DialogContent overlayClassName="z-[150]" className="z-[151] w-full h-full sm:max-w-6xl sm:w-[95vw] sm:h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none sm:rounded-xl">
             <div className="flex items-center justify-between p-4 border-b bg-white z-50 shadow-sm shrink-0" dir="rtl">
                 <h3 className="font-bold text-lg text-gray-800">
                     {isPreviewLoading ? 'טוען תצוגה מקדימה...' : `תצוגה מקדימה: ${previewPage?.business_name || ''}`}
@@ -438,7 +438,7 @@ export default function ShoppingCartButton() {
 
       {/* Presentation Preview Modal */}
       <Dialog open={!!previewPresentation} onOpenChange={(open) => !open && closePreview()}>
-        <DialogContent overlayClassName="z-[150]" className="z-[151] max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
+        <DialogContent overlayClassName="z-[150]" className="z-[151] w-full h-full sm:max-w-6xl sm:w-[95vw] sm:h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none sm:rounded-xl">
             <div className="flex items-center justify-between p-4 border-b bg-white z-50 shadow-sm shrink-0" dir="rtl">
                 <h3 className="font-bold text-lg text-gray-800">
                     תצוגה מקדימה: מצגת עסקית
