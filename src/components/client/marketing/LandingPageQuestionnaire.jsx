@@ -18,6 +18,7 @@ import {
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { addToCart } from '../shared/cartUtils';
 
 // Custom specialized card selector component for better UX
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -1453,10 +1454,14 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                           </div>
                           <div className="flex gap-3">
                             <Button 
-                               onClick={() => {
-                                 // Add to cart (mock implementation)
-                                 alert('הדף נוסף לסל! 🛒');
-                               }}
+                               onClick={() => addToCart({
+                                 type: 'landing_page',
+                                 data: { pageId: createdPageData?.id, slug: pageSlug, businessName: formData.businessName },
+                                 price: 299,
+                                 title: `דף נחיתה: ${formData.businessName}`,
+                                 description: 'דף נחיתה ממותג',
+                                 preview_image: 'https://cdn.dribbble.com/users/1615584/screenshots/15710288/media/7847c075727463697274636972746369.jpg' // Placeholder or use screenshot service if available
+                               })}
                                className="h-12 px-6 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-bold flex-shrink-0"
                             >
                                הוסף לסל
