@@ -37,6 +37,7 @@ import NotificationCenter from '../components/client/NotificationCenter';
 import FloatingActionButton from '../components/client/FloatingActionButton';
 import Breadcrumbs from '../components/client/Breadcrumbs';
 import ShoppingCart from '../components/client/shared/ShoppingCart';
+import UnifiedCheckout from '../components/client/shared/UnifiedCheckout';
 
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
 
@@ -315,6 +316,21 @@ export default function ClientDashboard() {
                  {/* Tabs - Dynamic based on permissions */}
                  <React.Suspense fallback={<div className="pt-8"><SkeletonTabContent /></div>}>
                    {activeTab === 'summary' && <SummaryTab data={enrichedData} />}
+                   {activeTab === 'checkout' && (
+                     <div className="py-8">
+                         <UnifiedCheckout 
+                             items={location.state?.items || []} 
+                             totalPrice={location.state?.totalPrice || 0}
+                             onBack={() => {
+                                 if (window.history.length > 1) {
+                                     navigate(-1);
+                                 } else {
+                                     setActiveTab('progress');
+                                 }
+                             }}
+                         />
+                     </div>
+                   )}
                    {activeTab === 'progress' && <ProgressTab data={enrichedData} user={enrichedData} onNavigate={(tab, config) => {
                      setActiveTab(tab);
                      if (tab === 'goals' && config) {
