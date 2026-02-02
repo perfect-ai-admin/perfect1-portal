@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import DynamicLandingPage from '../components/landing-page/DynamicLandingPage';
 import { Loader2, AlertCircle } from 'lucide-react';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 export default function LP() {
     // Extract ID from URL query parameter (?id=xxx)
@@ -73,9 +74,33 @@ export default function LP() {
         );
     }
 
+    // Extract SEO Data
+    const businessName = page?.business_name || 'דף נחיתה';
+    const sections = typeof page?.sections_json === 'string' 
+        ? JSON.parse(page.sections_json) 
+        : (page?.sections_json || []);
+    
+    const heroSection = sections.find(s => s.type === 'hero');
+    const description = heroSection?.data?.subtitle || heroSection?.data?.description || 'ברוכים הבאים';
+    const image = heroSection?.data?.image || '';
+
     return (
-        <div className="w-full min-h-screen bg-white overflow-auto">
-            <DynamicLandingPage data={page} />
-        </div>
+        <HelmetProvider>
+            <Helmet>
+                <title>{businessName}</title>
+                <meta name="description" content={description} />
+                
+                <meta property="og:title" content={businessName} />
+                <meta property="og:description" content={description} />
+                <meta property="og:type" content="website" />
+                {image && <meta property="og:image" content={image} />}
+                
+                {/* Reset default site name if exists */}
+                <meta property="og:site_name" content={businessName} />
+            </Helmet>
+            <div className="w-full min-h-screen bg-white overflow-auto">
+                <DynamicLandingPage data={page} />
+            </div>
+        </HelmetProvider>
     );
 }
