@@ -9,9 +9,9 @@ import { createPageUrl } from '@/utils';
 
 export default function ShoppingCartButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const [savedLogos, setSavedLogos] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const [isBouncing, setIsBouncing] = useState(false);
-  const [selectedIndices, setSelectedItems] = useState(new Set());
+  const [selectedIds, setSelectedItems] = useState(new Set());
   const [enlargedImage, setEnlargedImage] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
@@ -25,15 +25,17 @@ export default function ShoppingCartButton() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const updateCart = () => {
-    const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
-    const flat = Object.entries(allSaved).flatMap(([name, items]) =>
-      items.map((item, originalIndex) => ({ ...item, businessName: name, originalIndex, key: `${name}-${originalIndex}-${item.savedAt}` }))
-    );
-    setSavedLogos(flat);
-    // Select all by default if new items added or on first load
-    if (selectedIndices.size === 0 && flat.length > 0) {
-      setSelectedItems(new Set(flat.map((_, i) => i)));
+  const updateCart = async () => {
+    try {
+      const items = await base44.entities.CartItem.list({ status: 'active' });
+      setCartItems(items);
+      
+      // Select all by default if new items added or on first load
+      if (selectedIds.size === 0 && items.length > 0) {
+        setSelectedItems(new Set(items.map(item => item.id)));
+      }
+    } catch (error) {
+      console.error('Error fetching cart:', error);
     }
   };
 
@@ -57,66 +59,54 @@ export default function ShoppingCartButton() {
     };
   }, []);
 
-  // Update selection when logos change (e.g. removed)
+  // Update selection when items change (e.g. removed)
   useEffect(() => {
     const newSelection = new Set();
-    savedLogos.forEach((_, i) => {
-        if (selectedIndices.has(i)) newSelection.add(i);
+    cartItems.forEach((item) => {
+        if (selectedIds.has(item.id)) newSelection.add(item.id);
     });
-  }, [savedLogos.length]);
+    setSelectedItems(newSelection);
+  }, [cartItems]);
 
-  const toggleSelection = (index) => {
-    const newSelection = new Set(selectedIndices);
-    if (newSelection.has(index)) {
-      newSelection.delete(index);
+  const toggleSelection = (id) => {
+    const newSelection = new Set(selectedIds);
+    if (newSelection.has(id)) {
+      newSelection.delete(id);
     } else {
-      newSelection.add(index);
+      newSelection.add(id);
     }
     setSelectedItems(newSelection);
   };
 
-  const removeItem = (indexToRemove) => {
-    const itemToRemove = savedLogos[indexToRemove];
-    if (!itemToRemove) return;
-
-    const allSaved = JSON.parse(localStorage.getItem('saved_logos') || '{}');
-    if (allSaved[itemToRemove.businessName]) {
-      // Filter out the specific item based on savedAt and url to be precise
-      allSaved[itemToRemove.businessName] = allSaved[itemToRemove.businessName].filter(
-        (item) => item.savedAt !== itemToRemove.savedAt || item.url !== itemToRemove.url
-      );
-      
-      // Clean up empty keys
-      if (allSaved[itemToRemove.businessName].length === 0) {
-        delete allSaved[itemToRemove.businessName];
-      }
-
-      localStorage.setItem('saved_logos', JSON.stringify(allSaved));
+  const removeItem = async (idToRemove) => {
+    try {
+      await base44.entities.CartItem.delete(idToRemove);
       updateCart();
-      
-      const newSelection = new Set();
-      const remainingCount = savedLogos.length - 1;
-      for(let i=0; i<remainingCount; i++) newSelection.add(i);
-      setSelectedItems(newSelection);
+      toast.success('פריט הוסר מהעגלה');
+    } catch (error) {
+      console.error('Error removing item:', error);
+      toast.error('שגיאה בהסרת הפריט');
     }
   };
 
   const handleCheckout = () => {
-    const itemsToCheckout = savedLogos.filter((_, i) => selectedIndices.has(i));
+    const itemsToCheckout = cartItems.filter((item) => selectedIds.has(item.id));
     if (itemsToCheckout.length === 0) return;
     
     setIsOpen(false);
     navigate(createPageUrl('Checkout'), { 
       state: { 
         items: itemsToCheckout,
-        totalPrice: itemsToCheckout.length * ITEM_PRICE
+        totalPrice: itemsToCheckout.reduce((sum, item) => sum + (item.price || ITEM_PRICE), 0)
       } 
     });
   };
 
-  const itemCount = savedLogos.length;
-  const selectedCount = selectedIndices.size;
-  const totalPrice = selectedCount * ITEM_PRICE;
+  const itemCount = cartItems.length;
+  const selectedCount = selectedIds.size;
+  const totalPrice = cartItems
+    .filter(item => selectedIds.has(item.id))
+    .reduce((sum, item) => sum + (item.price || ITEM_PRICE), 0);
 
   return (
     <>
@@ -206,7 +196,7 @@ export default function ShoppingCartButton() {
 
               {/* Content */}
               <div className="flex-1 overflow-y-auto p-4 sm:p-5 bg-gray-50/50 space-y-4">
-                {savedLogos.length === 0 ? (
+                {cartItems.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
                     <div className="relative">
                         <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center animate-pulse">
@@ -219,7 +209,7 @@ export default function ShoppingCartButton() {
                     <div className="space-y-2">
                       <p className="text-gray-900 font-bold text-xl">העגלה שלך ריקה</p>
                       <p className="text-gray-500 text-sm max-w-[200px] mx-auto leading-relaxed">
-                        עדיין לא שמרת עיצובים. זה הזמן להתחיל ליצור משהו מדהים!
+                        עדיין לא שמרת מוצרים. זה הזמן להתחיל ליצור משהו מדהים!
                       </p>
                     </div>
                     <Button 
@@ -231,12 +221,12 @@ export default function ShoppingCartButton() {
                   </div>
                 ) : (
                   <div className="space-y-4 pb-4">
-                    {savedLogos.map((logo, idx) => {
-                      const isSelected = selectedIndices.has(idx);
+                    {cartItems.map((item) => {
+                      const isSelected = selectedIds.has(item.id);
                       return (
                         <motion.div
                           layout
-                          key={logo.key || idx}
+                          key={item.id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95 }}
@@ -251,49 +241,51 @@ export default function ShoppingCartButton() {
                             <div className="flex items-center pl-1">
                                 <Checkbox 
                                     checked={isSelected}
-                                    onCheckedChange={() => toggleSelection(idx)}
+                                    onCheckedChange={() => toggleSelection(item.id)}
                                     className="w-5 h-5 border-2 border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 rounded-lg transition-all"
                                 />
                             </div>
 
                             {/* Image Area */}
-                            <div 
-                                className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100"
-                                onClick={() => setEnlargedImage(logo.url)}
-                            >
-                                <img
-                                  src={logo.url}
-                                  alt={logo.businessName}
-                                  className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
-                                />
-                                <div className="absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-                                    <Maximize2 className="w-5 h-5 text-gray-700 drop-shadow-sm" />
+                            {item.preview_image && (
+                                <div 
+                                    className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100"
+                                    onClick={() => setEnlargedImage(item.preview_image)}
+                                >
+                                    <img
+                                      src={item.preview_image}
+                                      alt={item.title}
+                                      className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+                                        <Maximize2 className="w-5 h-5 text-gray-700 drop-shadow-sm" />
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             {/* Details Area */}
                             <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
                               <div>
                                 <div className="flex justify-between items-start gap-2">
                                     <h3 className="font-bold text-gray-900 truncate text-base leading-tight">
-                                        {logo.businessName}
+                                        {item.title}
                                     </h3>
                                     <button
-                                        onClick={() => removeItem(idx)}
+                                        onClick={() => removeItem(item.id)}
                                         className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all -mt-2 -ml-2"
                                         title="הסר מהעגלה"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>
                                 </div>
-                                <p className="text-sm text-gray-500 font-medium mt-1">{logo.variant || 'לוגו מעוצב'}</p>
+                                <p className="text-sm text-gray-500 font-medium mt-1">{item.description}</p>
                               </div>
                               
                               <div className="flex items-end justify-between mt-2">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-gray-400 font-medium line-through">₪199</span>
+                                    <span className="text-[10px] text-gray-400 font-medium line-through">₪{(item.price || ITEM_PRICE) * 2}</span>
                                     <div className="text-lg font-bold text-gray-900 flex items-center gap-1">
-                                        ₪{ITEM_PRICE}
+                                        ₪{item.price || ITEM_PRICE}
                                     </div>
                                 </div>
                                 {isSelected ? (
