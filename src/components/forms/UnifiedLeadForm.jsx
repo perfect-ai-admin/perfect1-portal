@@ -52,6 +52,7 @@ export default function UnifiedLeadForm({
     profession: defaultProfession,
     consent: false,
   });
+  const uniqueId = React.useId();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -285,14 +286,14 @@ export default function UnifiedLeadForm({
 
         <div className="flex items-start space-x-3 space-x-reverse py-2">
             <Checkbox 
-                id={`terms-${Math.random()}`} // unique id for multiple forms
+                id={`terms-${uniqueId}`}
                 checked={formData.consent}
                 onCheckedChange={(checked) => setFormData({...formData, consent: checked})}
                 className={`mt-1 ${invertColors ? 'border-white/30 data-[state=checked]:bg-white data-[state=checked]:text-green-600' : ''}`}
             />
             <div className="grid gap-1.5 leading-none">
                 <label
-                    htmlFor="terms"
+                    htmlFor={`terms-${uniqueId}`}
                     className={`text-xs font-medium leading-relaxed ${invertColors ? 'text-white/90' : 'text-gray-500'}`}
                 >
                     אני מאשר/ת את <Link to="/Terms" className="underline hover:text-current" target="_blank">תנאי השימוש</Link> ו<Link to="/Privacy" className="underline hover:text-current" target="_blank">מדיניות הפרטיות</Link> ומסכימ/ה לקבלת פניות ותוכן שיווקי.
