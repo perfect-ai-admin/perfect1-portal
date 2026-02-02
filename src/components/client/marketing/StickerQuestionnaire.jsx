@@ -813,6 +813,22 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                    )}
                    
                    <Button 
+                    onClick={async () => {
+                      const { addToCart } = await import('@/components/client/shared/cartUtils');
+                      addToCart({
+                        type: 'sticker',
+                        data: { businessName: formData.businessName, exampleSentence: formData.exampleSentence, stickerUrl: finalStickerUrl || generatedStickerUrl },
+                        price: 99,
+                        title: `סטיקר: ${formData.businessName}`,
+                        preview_image: finalStickerUrl || generatedStickerUrl
+                      });
+                    }}
+                    variant="outline"
+                    className="border-gray-200 hover:bg-gray-50 text-gray-700"
+                  >
+                    הוסף לסל
+                  </Button>
+                   <Button 
                     onClick={() => onComplete(formData)}
                     variant="outline"
                     className="border-gray-200 hover:bg-gray-50 text-gray-700"
