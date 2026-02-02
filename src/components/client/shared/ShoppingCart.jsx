@@ -407,7 +407,7 @@ export default function ShoppingCartButton() {
 
       {/* Landing Page Preview Modal */}
       <Dialog open={!!previewPage || isPreviewLoading} onOpenChange={(open) => !open && closePreview()}>
-        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
+        <DialogContent overlayClassName="z-[150]" className="z-[151] max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
             <div className="flex items-center justify-between p-4 border-b bg-white z-50 shadow-sm shrink-0" dir="rtl">
                 <h3 className="font-bold text-lg text-gray-800">
                     {isPreviewLoading ? 'טוען תצוגה מקדימה...' : `תצוגה מקדימה: ${previewPage?.business_name || ''}`}
@@ -438,7 +438,7 @@ export default function ShoppingCartButton() {
 
       {/* Presentation Preview Modal */}
       <Dialog open={!!previewPresentation} onOpenChange={(open) => !open && closePreview()}>
-        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
+        <DialogContent overlayClassName="z-[150]" className="z-[151] max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
             <div className="flex items-center justify-between p-4 border-b bg-white z-50 shadow-sm shrink-0" dir="rtl">
                 <h3 className="font-bold text-lg text-gray-800">
                     תצוגה מקדימה: מצגת עסקית
@@ -480,7 +480,7 @@ export default function ShoppingCartButton() {
 
       {/* Image Zoom Modal */}
       <Dialog open={!!enlargedImage} onOpenChange={() => setEnlargedImage(null)}>
-        <DialogContent className="max-w-3xl w-full p-0 bg-transparent border-0 shadow-none overflow-hidden flex items-center justify-center">
+        <DialogContent overlayClassName="z-[150]" className="z-[151] max-w-3xl w-full p-0 bg-transparent border-0 shadow-none overflow-hidden flex items-center justify-center">
             <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
