@@ -112,6 +112,7 @@ export default function Layout({ children, currentPageName }) {
         <Helmet>
           {/* Performance optimizations */}
           <meta httpEquiv="x-dns-prefetch-control" content="on" />
+          <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
 
           {/* Google Ads Conversion Tracking */}
