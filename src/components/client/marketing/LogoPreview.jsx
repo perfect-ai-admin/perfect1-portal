@@ -2,6 +2,7 @@ import React from 'react';
 import { Download, Lock, ChevronLeft, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import WatermarkedLogo from './WatermarkedLogo';
+import { addToCart } from '../shared/cartUtils';
 
 export default function LogoPreview({ 
   businessName, 
@@ -73,11 +74,17 @@ export default function LogoPreview({
                   אישור והורדה
                 </Button>
                 <Button 
-                  onClick={onSaveToCart}
+                  onClick={() => addToCart({
+                    type: 'logo',
+                    data: { businessName, slogan, logoUrl },
+                    price: 99,
+                    title: `לוגו: ${businessName}`,
+                    preview_image: logoUrl
+                  })}
                   variant="outline"
                   className="w-full h-11 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold"
                 >
-                  שמור בסל לאחר
+                  שמור בסל לאחר כך
                 </Button>
               </div>
 
@@ -138,7 +145,13 @@ export default function LogoPreview({
             אישור והורדה
           </Button>
           <Button 
-            onClick={onSaveToCart}
+            onClick={() => addToCart({
+              type: 'logo',
+              data: { businessName, slogan, logoUrl },
+              price: 99,
+              title: `לוגו: ${businessName}`,
+              preview_image: logoUrl
+            })}
             variant="outline"
             className="w-full h-11 border-2 border-gray-300 hover:border-gray-400 text-gray-700"
           >
