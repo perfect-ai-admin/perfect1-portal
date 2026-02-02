@@ -283,15 +283,15 @@ export default function ShoppingCartButton() {
                             </div>
 
                             {/* Image Area */}
-                            {item.preview_image && (
+                            {(item.preview_image || item.type === 'presentation') && (
                                 <div 
                                     className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100"
-                                    onClick={() => setEnlargedImage(item.preview_image)}
+                                    onClick={() => setEnlargedImage(item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop')}
                                 >
                                     <img
-                                      src={item.preview_image}
+                                      src={item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop'}
                                       alt={item.title}
-                                      className="w-full h-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     {/* Watermark Overlay for List View */}
                                     <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
