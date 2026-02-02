@@ -496,11 +496,18 @@ export default function ShoppingCartButton() {
                     <X className="w-6 h-6 text-white" />
                 </button>
                 {enlargedImage && (
-                    <div className="relative">
+                    <div 
+                        className="relative"
+                        onContextMenu={(e) => { e.preventDefault(); return false; }}
+                    >
+                        {/* Transparent overlay to capture clicks/drags */}
+                        <div className="absolute inset-0 z-40 bg-transparent" />
+                        
                         <img 
                             src={enlargedImage} 
                             alt="Zoomed Logo" 
-                            className="max-w-full max-h-[70vh] object-contain rounded-2xl bg-gray-50"
+                            className="max-w-full max-h-[70vh] object-contain rounded-2xl bg-gray-50 pointer-events-none select-none"
+                            draggable="false"
                         />
                         {/* Watermark Overlay for Enlarged View */}
                         <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden rounded-2xl">
