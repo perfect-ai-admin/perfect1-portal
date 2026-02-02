@@ -1320,7 +1320,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                 description: 'דף נחיתה ממותג כולל תוכן ועיצוב'
                             });
                             toast.success('נוסף לסל בהצלחה!');
-                            onClose(); // Close the modal after adding to cart
+                            // Stay on page to allow continuing the process
                          }}
                          variant="secondary"
                          className="h-12 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-xl font-bold flex-1 flex items-center justify-center gap-2"
