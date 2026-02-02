@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import WatermarkedLogo from './WatermarkedLogo';
 
-export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess, onClose, price = 99 }) {
+export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, onSuccess, onClose, price = 99 }) {
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
@@ -133,6 +133,8 @@ export default function LogoCheckout({ businessName, logoUrl, onBack, onSuccess,
             <WatermarkedLogo 
               src={logoUrl} 
               alt="Logo" 
+              businessName={businessName}
+              slogan={slogan}
               className="max-h-[150px] md:max-h-[180px] max-w-full object-contain"
             />
           </div>

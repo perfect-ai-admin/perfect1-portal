@@ -688,6 +688,7 @@ export default function LogoCreator({ businessName, onClose }) {
           {generatedLogoUrl && (
             <LogoCheckout 
               businessName={formData.businessName}
+              slogan={formData.tagline}
               logoUrl={generatedLogoUrl}
               onBack={() => setShowCheckout(false)}
               onClose={onClose}
@@ -708,6 +709,7 @@ export default function LogoCreator({ businessName, onClose }) {
           {generatedLogoUrl && (
             <LogoCheckout 
               businessName={formData.businessName}
+              slogan={formData.tagline}
               logoUrl={generatedLogoUrl}
               onBack={() => setShowCheckout(false)}
               onClose={onClose}
