@@ -19,6 +19,7 @@ export default function ShoppingCartButton() {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
   const [previewPage, setPreviewPage] = useState(null);
+  const [previewPresentation, setPreviewPresentation] = useState(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
   const ITEM_PRICE = 99;
@@ -43,7 +44,14 @@ export default function ShoppingCartButton() {
 
   const closePreview = () => {
     setPreviewPage(null);
+    setPreviewPresentation(null);
     setIsPreviewLoading(false);
+  };
+
+  const handlePresentationPreview = (url) => {
+    if (!url) return;
+    const embedUrl = url.replace('gamma.app/docs/', 'gamma.app/embed/');
+    setPreviewPresentation(embedUrl);
   };
 
   useEffect(() => {
@@ -319,6 +327,17 @@ export default function ShoppingCartButton() {
                                         </button>
                                     </div>
                                 )}
+                                {item.type === 'presentation' && item.data?.presentationUrl && (
+                                    <div className="mt-2">
+                                        <button 
+                                            onClick={() => handlePresentationPreview(item.data.presentationUrl)}
+                                            className="text-xs flex items-center gap-1 text-purple-600 hover:underline bg-purple-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-purple-100"
+                                        >
+                                            <Eye className="w-3 h-3" />
+                                            צפה במצגת
+                                        </button>
+                                    </div>
+                                )}
                               </div>
                               
                               <div className="flex items-end justify-between mt-2">
@@ -408,6 +427,34 @@ export default function ShoppingCartButton() {
                             <DynamicLandingPage data={previewPage} isThumbnail={false} />
                         </div>
                     )
+                )}
+            </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Presentation Preview Modal */}
+      <Dialog open={!!previewPresentation} onOpenChange={(open) => !open && closePreview()}>
+        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
+            <div className="flex items-center justify-between p-4 border-b bg-white z-50 shadow-sm shrink-0" dir="rtl">
+                <h3 className="font-bold text-lg text-gray-800">
+                    תצוגה מקדימה: מצגת עסקית
+                </h3>
+                <button 
+                    onClick={closePreview}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                    <X className="w-5 h-5 text-gray-500" />
+                </button>
+            </div>
+            
+            <div className="flex-1 overflow-hidden relative bg-slate-100">
+                {previewPresentation && (
+                    <iframe
+                        src={previewPresentation}
+                        className="w-full h-full border-0"
+                        title="Presentation Preview"
+                        allow="fullscreen"
+                    />
                 )}
             </div>
         </DialogContent>
