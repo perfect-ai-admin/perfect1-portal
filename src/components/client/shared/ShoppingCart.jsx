@@ -27,7 +27,7 @@ export default function ShoppingCartButton() {
 
   const updateCart = async () => {
     try {
-      const items = await base44.entities.CartItem.list({ status: 'active' });
+      const items = await base44.entities.CartItem.filter({ status: 'active' }, '-created_date');
       setCartItems(items);
       
       // Select all by default if new items added or on first load
