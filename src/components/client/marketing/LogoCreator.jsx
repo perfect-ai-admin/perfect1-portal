@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Wand2, Download, RefreshCw, FileJson, Image, Code, CheckCircle2, ChevronRight, LayoutGrid, Type, X } from 'lucide-react';
+import { Palette, Wand2, Download, RefreshCw, FileJson, Image, Code, CheckCircle2, ChevronRight, LayoutGrid, Type, X, Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -104,6 +104,18 @@ export default function LogoCreator({ businessName, onClose }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedLogoUrl, setGeneratedLogoUrl] = useState(null);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [countdown, setCountdown] = useState(30);
+
+  useEffect(() => {
+    if (!isGenerating) {
+      setCountdown(30);
+      return;
+    }
+    const timer = setInterval(() => {
+      setCountdown(prev => prev > 0 ? prev - 1 : 0);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [isGenerating]);
 
     const handleGenerate = async () => {
     if (!formData.businessName || !formData.industry) {
@@ -383,6 +395,111 @@ export default function LogoCreator({ businessName, onClose }) {
   }
 
   if (step === 3) {
+    if (isGenerating) {
+        return (
+          <div className="flex flex-col items-center justify-center min-h-[500px] h-full bg-gradient-to-b from-blue-50 to-white relative overflow-hidden rounded-xl py-10 w-full">
+            {/* Animated background elements */}
+            <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+            <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }} />
+
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8, type: "spring" }}
+              className="relative z-10 mb-8"
+            >
+              <div className="relative w-32 h-32">
+                {/* Outer rotating ring */}
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 border-4 border-transparent border-t-blue-600 border-r-blue-400 rounded-full"
+                />
+                {/* Middle pulsing ring */}
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute inset-4 border-2 border-blue-300 rounded-full"
+                />
+                {/* Center icon */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Sparkles className="w-12 h-12 text-blue-600" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="relative z-10 text-center space-y-3"
+            >
+              <h3 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight">
+                מעצב את הלוגו שלך... ✨
+              </h3>
+              <p className="text-slate-600 text-sm md:text-base max-w-xs mx-auto">
+                בונה את הזהות הויזואלית החדשה שלך
+              </p>
+            </motion.div>
+
+            {/* Countdown Timer */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="relative z-10 mt-10 mb-8"
+            >
+              <div className="relative w-28 h-28">
+                <svg className="absolute inset-0 transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" strokeWidth="2" />
+                  <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray={`${(countdown / 30) * 283} 283`}
+                    animate={{ strokeDasharray: [`${(countdown / 30) * 283} 283`] }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <motion.div
+                    key={countdown}
+                    initial={{ scale: 1.2, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-4xl font-black text-blue-600"
+                  >
+                    {countdown}
+                  </motion.div>
+                  <span className="text-xs text-slate-500 mt-1">שניות</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="relative z-10 space-y-3 text-sm"
+            >
+              <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="flex items-center gap-2 text-slate-700">
+                <CheckCircle2 className="w-4 h-4 text-green-600" /> מנתח את נתוני העסק
+              </motion.div>
+              <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }} className="flex items-center gap-2 text-slate-700">
+                <CheckCircle2 className="w-4 h-4 text-green-600" /> יוצר סקיצות ראשוניות
+              </motion.div>
+              <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }} className="flex items-center gap-2 text-slate-700">
+                <Loader2 className="w-4 h-4 text-blue-600 animate-spin" /> מחדד צבעים וקומפוזיציה
+              </motion.div>
+            </motion.div>
+          </div>
+        );
+    }
+
     return (
       <>
         <div className="hidden lg:block space-y-6">
