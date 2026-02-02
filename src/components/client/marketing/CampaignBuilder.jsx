@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Megaphone, 
   Target, 
@@ -14,7 +14,9 @@ import {
   Globe, 
   ChevronRight, 
   X,
-  LayoutGrid
+  LayoutGrid,
+  Clock,
+  Sparkles
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,6 +62,7 @@ const TEMPLATES = [
 
 export default function CampaignBuilder({ onClose, onCampaignCreated }) {
   const [step, setStep] = useState(1);
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [campaignData, setCampaignData] = useState({
     name: '',
@@ -110,8 +113,9 @@ export default function CampaignBuilder({ onClose, onCampaignCreated }) {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
                 onClick={() => {
-                  setSelectedTemplate(template);
-                  setStep(2);
+                  // setSelectedTemplate(template);
+                  // setStep(2);
+                  setShowComingSoon(true);
                 }}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 cursor-pointer hover:shadow-xl hover:border-blue-200 transition-all group h-full flex flex-col"
               >
@@ -142,6 +146,50 @@ export default function CampaignBuilder({ onClose, onCampaignCreated }) {
             );
           })}
         </div>
+
+        <AnimatePresence>
+            {showComingSoon && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+                    onClick={() => setShowComingSoon(false)}
+                >
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="bg-white rounded-3xl p-8 max-w-sm w-full text-center relative overflow-hidden shadow-2xl"
+                    >
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500" />
+                        
+                        <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 relative group">
+                            <div className="absolute inset-0 bg-blue-200 rounded-full animate-ping opacity-20" />
+                            <Clock className="w-10 h-10 text-blue-600 relative z-10" />
+                            <div className="absolute -top-1 -right-1 bg-gradient-to-br from-yellow-400 to-orange-500 p-2 rounded-full border-4 border-white shadow-sm z-20">
+                                <Sparkles className="w-3.5 h-3.5 text-white" />
+                            </div>
+                        </div>
+
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">
+                            בקרוב... 🚀
+                        </h3>
+                        <p className="text-gray-500 mb-8 leading-relaxed text-sm">
+                            אנחנו עובדים מסביב לשעון כדי להביא לך את חווית הקמפיינים המתקדמת ביותר. המערכת תהיה זמינה לשימוש מלא בזמן הקרוב.
+                        </p>
+
+                        <Button 
+                            onClick={() => setShowComingSoon(false)}
+                            className="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-xl h-12 font-medium text-base shadow-xl shadow-gray-200"
+                        >
+                            הבנתי, תודה
+                        </Button>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
       </div>
     );
   }
