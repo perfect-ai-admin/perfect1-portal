@@ -191,16 +191,16 @@ export default function ShoppingCartButton() {
 
               {/* Responsive Container */}
               <motion.div
-                initial={isMobile ? { y: '100%' } : { x: '100%' }}
+                initial={isMobile ? { y: '100%' } : { x: '-100%' }}
                 animate={isMobile ? { y: 0 } : { x: 0 }}
-                exit={isMobile ? { y: '100%' } : { x: '100%' }}
+                exit={isMobile ? { y: '100%' } : { x: '-100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                 className={`fixed z-[100] bg-white shadow-2xl flex flex-col overflow-hidden
-                ${isMobile 
-                  ? 'bottom-0 left-0 right-0 h-[92vh] rounded-t-[1.5rem]' 
-                  : 'right-0 top-0 h-full w-full max-w-md border-l border-gray-100'
-                }`}
-            >
+                  ${isMobile 
+                    ? 'bottom-0 left-0 right-0 h-[92vh] rounded-t-[1.5rem]' 
+                    : 'left-0 top-0 h-full w-full max-w-md border-r border-gray-100'
+                  }`}
+              >
               {/* Mobile Handle */}
               {isMobile && (
                 <div 
