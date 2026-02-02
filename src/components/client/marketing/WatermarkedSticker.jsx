@@ -5,6 +5,7 @@ export default function WatermarkedSticker({
   alt, 
   className = "w-full h-full object-contain",
   text,
+  secondaryText,
   onImageReady
 }) {
   const canvasRef = useRef(null);
@@ -31,39 +32,58 @@ export default function WatermarkedSticker({
       ctx.drawImage(img, 0, 0);
 
       // Draw Text if provided
-      if (text) {
+      if (text || secondaryText) {
         ctx.save();
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'bottom';
         
-        // Font settings
-        // Adjust font size based on text length to fit
-        const baseFontSize = Math.floor(img.width * 0.12); 
-        const fontSize = text.length > 15 ? Math.floor(baseFontSize * 0.7) : baseFontSize;
-        
-        ctx.font = `900 ${fontSize}px Heebo, Arial, sans-serif`;
-        
-        // Positioning - slightly above bottom
-        const x = canvas.width / 2;
-        const y = canvas.height - (img.height * 0.05);
+        // Main Text (Sentence)
+        if (text) {
+            ctx.textBaseline = 'bottom';
+            const baseFontSize = Math.floor(img.width * 0.12); 
+            const fontSize = text.length > 15 ? Math.floor(baseFontSize * 0.7) : baseFontSize;
+            
+            ctx.font = `900 ${fontSize}px Heebo, Arial, sans-serif`;
+            
+            // If secondary text exists, move main text up a bit
+            const bottomPadding = secondaryText ? (img.height * 0.15) : (img.height * 0.05);
+            const x = canvas.width / 2;
+            const y = canvas.height - bottomPadding;
 
-        // 1. Thick white stroke (Sticker border effect)
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = fontSize * 0.25;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-        ctx.strokeText(text, x, y);
+            // 1. Stroke
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = fontSize * 0.25;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeText(text, x, y);
 
-        // 2. Black stroke for definition (optional, but good for legibility)
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = fontSize * 0.02;
-        ctx.strokeText(text, x, y);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = fontSize * 0.02;
+            ctx.strokeText(text, x, y);
 
-        // 3. Main Text Fill
-        // Detect if text contains Hebrew
-        const isHebrew = /[\u0590-\u05FF]/.test(text);
-        ctx.fillStyle = isHebrew ? '#1E3A5F' : '#333333'; // Deep Blue for Hebrew (matching logo scheme) or Dark Grey
-        ctx.fillText(text, x, y);
+            // 2. Fill
+            const isHebrew = /[\u0590-\u05FF]/.test(text);
+            ctx.fillStyle = isHebrew ? '#1E3A5F' : '#333333';
+            ctx.fillText(text, x, y);
+        }
+
+        // Secondary Text (Business Name)
+        if (secondaryText) {
+            ctx.textBaseline = 'bottom';
+            const secFontSize = Math.floor(img.width * 0.06); // Smaller
+            ctx.font = `bold ${secFontSize}px Heebo, Arial, sans-serif`;
+            
+            const x = canvas.width / 2;
+            const y = canvas.height - (img.height * 0.02); // Very bottom
+
+            // Stroke
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = secFontSize * 0.25;
+            ctx.strokeText(secondaryText, x, y);
+
+            // Fill
+            ctx.fillStyle = '#666666';
+            ctx.fillText(secondaryText, x, y);
+        }
 
         ctx.restore();
       }

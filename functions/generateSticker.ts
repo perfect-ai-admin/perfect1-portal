@@ -55,14 +55,16 @@ Deno.serve(async (req) => {
            - **CRITICAL RULE FOR HEBREW**: Image generators CANNOT render Hebrew text. It comes out as gibberish. 
            - **IF LANGUAGE IS HEBREW**: 
              - **DO NOT** ask for the specific Hebrew words in the "image_prompt_english".
-             - **INSTEAD**: Ask for a "blank white speech bubble", "empty sign", or "space for text" in the composition.
+             - **INSTEAD**: Ask for a "blank white speech bubble", "empty board", or "clean space for text" in the center of the composition.
+             - **COMPOSITION**: Make sure there is a clear, white, empty area where text can be overlaid later.
              - In the "product_brief_hebrew", clearly state: "הטקסט יוסף ידנית על גבי הבועה/השלט הריק (בינה מלאכותית עדיין לא תומכת בטקסט עברי תקין)."
            - **IF LANGUAGE IS ENGLISH**: 
            - **BRANDING CRITICAL**: The design MUST act as the business branding/logo sticker.
-           - **MANDATORY TEXT**: The text "${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}" MUST be the MAIN FOCUS.
-           - **CONTENT**: Use the exact text: "${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}". 
-           - **FORMAT**: "A high-quality die-cut sticker logo design, featuring the text '${formData.exampleSentence ? formData.exampleSentence : (formData.businessName || 'Sticker')}' as the central logotype, bold and legible typography, integrated with [VISUAL_ELEMENTS]".
-           - **PRIORITY**: If specific text is provided, use it. If not, YOU MUST USE THE BUSINESS NAME ("${formData.businessName}") as the logo text. It MUST be clearly visible.
+           - **MANDATORY TEXT**: The text "${formData.exampleSentence || ''}" AND "${formData.businessName || ''}" MUST be visible.
+           - **CONTENT**: Use the exact text: "${formData.exampleSentence || ''}" (Primary) and "${formData.businessName || ''}" (Secondary/Branding).
+           - **FORMAT**: "A high-quality die-cut sticker logo design, featuring the text '${formData.exampleSentence || formData.businessName}' as the central logotype, bold and legible typography, integrated with [VISUAL_ELEMENTS]".
+           - **PRIORITY**: If 'exampleSentence' exists, it is the MAIN text. 'businessName' should be smaller or secondary.
+           - **NOTE**: If only business name exists, make it the main text.
            - **FIELD**: If the field is 'other', use the custom description: "${formData.field === 'other' ? formData.customField : formData.field}".
            - **STYLE**: Strictly adhere to the selected style: "${formData.style}".
            8. **Vibe/Feeling**: Translate abstract feelings (Confidence, Comfort) into color palettes and shapes.

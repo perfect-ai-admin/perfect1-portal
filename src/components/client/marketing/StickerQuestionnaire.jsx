@@ -746,7 +746,8 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                         <WatermarkedSticker 
                             src={generatedStickerUrl} 
                             alt="Generated Sticker" 
-                            text={formData.exampleSentence || formData.businessName}
+                            text={formData.exampleSentence}
+                            secondaryText={formData.businessName}
                             className="w-full h-full object-contain p-4"
                             onImageReady={(url) => {
                               setFinalStickerUrl(url);
