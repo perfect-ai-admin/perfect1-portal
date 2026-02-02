@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertCircle, Loader2, Download, Copy, Check, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import WatermarkedLogo from '@/components/client/marketing/WatermarkedLogo';
 
 export default function LogoProjectPage() {
   const [searchParams] = useSearchParams();
