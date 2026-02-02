@@ -165,6 +165,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
     e.preventDefault();
     if (validateStep(currentStep)) {
       setIsBuilding(true);
+      setFinalStickerUrl(null); // Reset previous final image
       
       try {
         let finalFormData = { ...formData };
