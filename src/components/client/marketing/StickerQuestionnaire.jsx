@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import WatermarkedSticker from './WatermarkedSticker';
 
 // Custom specialized card selector component for better UX
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -430,7 +431,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                         
                         <div className="bg-blue-50 border border-blue-100 rounded-lg p-2 text-[11px] text-blue-800 flex items-start gap-2 mt-2">
                             <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                            <span>שים לב: המערכת תומכת כרגע בטקסט באנגלית בלבד לקבלת תוצאה מושלמת.</span>
+                            <span>טיפ: אנו נוסיף את הטקסט שלך (גם בעברית) בצורה איכותית על גבי הסטיקר.</span>
                         </div>
                     </motion.div>
                 )}
@@ -451,18 +452,18 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
              <div className="space-y-3">
                 <div className="space-y-2">
-                 <Label className="block text-xs font-semibold">שפת הסטיקר</Label>
-                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-3">
-                     <div className="bg-blue-100 p-1.5 rounded-full">
-                         <Globe className="w-4 h-4 text-blue-600" />
-                     </div>
-                     <div>
-                         <div className="text-xs font-bold text-blue-900">אנגלית בלבד (English Only)</div>
-                         <div className="text-[10px] text-blue-700 leading-tight mt-1">
-                             כרגע המערכת תומכת ביצירת סטיקרים עם טקסט באנגלית בלבד לקבלת התוצאה הטובה ביותר.
-                         </div>
-                     </div>
-                 </div>
+                <Label className="block text-xs font-semibold">שפה</Label>
+                <div className="bg-green-50 border border-green-100 rounded-xl p-3 flex items-start gap-3">
+                    <div className="bg-green-100 p-1.5 rounded-full">
+                        <Check className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div>
+                        <div className="text-xs font-bold text-green-900">תמיכה מלאה בעברית</div>
+                        <div className="text-[10px] text-green-700 leading-tight mt-1">
+                            המערכת תדע לשלב כיתוב בעברית בצורה איכותית ומקצועית על גבי הסטיקר.
+                        </div>
+                    </div>
+                </div>
                 </div>
 
                <div className="space-y-2">
@@ -556,11 +557,11 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
             />
              <div className="space-y-3">
                 <div className="space-y-1">
-                    <Label className="text-xs font-semibold">מה לכתוב בסטיקר? (באנגלית בלבד)</Label>
+                    <Label className="text-xs font-semibold">מה לכתוב בסטיקר? (עברית או אנגלית)</Label>
                     <Input 
                       value={formData.exampleSentence} 
                       onChange={(e) => handleInputChange('exampleSentence', e.target.value)} 
-                      placeholder="e.g. Approved, Sale, Good Job..." 
+                      placeholder="למשל: תודה רבה, מאושר, מבצע..." 
                       className="h-9 text-xs"
                     />
                 </div>
@@ -727,10 +728,15 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
              <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-4">
               {generatedStickerUrl ? (
                   <div className="relative w-64 h-64 bg-gray-100 rounded-xl overflow-hidden shadow-lg border-4 border-white">
-                      <img 
+                      <WatermarkedSticker 
                           src={generatedStickerUrl} 
                           alt="Generated Sticker" 
+                          text={formData.exampleSentence || formData.businessName}
                           className="w-full h-full object-contain p-4"
+                          onImageReady={(url) => {
+                            // Update the download link with the new watermarked URL
+                            setGeneratedStickerUrl(url); 
+                          }}
                       />
                   </div>
               ) : (
