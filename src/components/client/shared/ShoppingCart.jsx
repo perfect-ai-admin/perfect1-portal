@@ -26,7 +26,7 @@ export default function ShoppingCartButton() {
   const handlePreview = async (landingPageId) => {
     setIsPreviewLoading(true);
     try {
-        const response = await base44.functions.invoke('getPublicLandingPageById', { id: landingPageId });
+        const response = await base44.functions.invoke('getPublicLandingPageById', { pageId: landingPageId });
         if (response.data) {
             setPreviewPage(response.data);
             setIsPreviewLoading(false);
