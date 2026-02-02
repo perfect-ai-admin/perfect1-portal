@@ -73,12 +73,12 @@ export default function Footer() {
                   צור קשר
                 </Link>
               </li>
-              <li className="hidden md:block">
+              <li>
                 <Link to={createPageUrl('Terms')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   תנאי שימוש
                 </Link>
               </li>
-              <li className="hidden md:block">
+              <li>
                 <Link to={createPageUrl('Privacy')} className="text-gray-300 hover:text-white transition-colors text-sm md:text-base">
                   פרטיות
                 </Link>

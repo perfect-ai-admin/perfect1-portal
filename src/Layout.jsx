@@ -16,6 +16,7 @@ import WebVitalsMonitor from './components/performance/WebVitalsMonitor';
 
 import { Toaster } from "@/components/ui/sonner";
 import AccessibilityMenu from './components/accessibility/AccessibilityMenu';
+import CookieConsent from './components/common/CookieConsent';
 
 export default function Layout({ children, currentPageName }) {
     const location = useLocation();
@@ -143,6 +144,7 @@ export default function Layout({ children, currentPageName }) {
                 </div>
       </div>
       <AccessibilityMenu />
+      <CookieConsent />
       <Toaster />
     </HelmetProvider>
   );
