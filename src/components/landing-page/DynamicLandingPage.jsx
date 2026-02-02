@@ -3,6 +3,8 @@ import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from 'react-router-dom';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -41,7 +43,7 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
     const contrastColor = getContrastColor(primary_color);
     
     // Form state
-    const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
+    const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '', consent: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // CSS Variables for dynamic theming
@@ -70,6 +72,11 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
         
         if (!formData.phone.trim()) {
             toast.error('טלפון הוא שדה חובה');
+            return;
+        }
+
+        if (!formData.consent) {
+            toast.error('חובה לאשר את תנאי השימוש ומדיניות הפרטיות');
             return;
         }
 
@@ -503,6 +510,23 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                                     />
                                 </div>
                             )}
+
+                            <div className="flex items-start space-x-3 space-x-reverse">
+                                <Checkbox 
+                                    id="terms" 
+                                    checked={formData.consent}
+                                    onCheckedChange={(checked) => setFormData({...formData, consent: checked})}
+                                    className="mt-1 border-white/30 data-[state=checked]:bg-[var(--primary)] data-[state=checked]:border-[var(--primary)]"
+                                />
+                                <div className="grid gap-1.5 leading-none">
+                                    <label
+                                        htmlFor="terms"
+                                        className="text-xs text-slate-300 font-medium leading-relaxed"
+                                    >
+                                        אני מאשר/ת את <Link to="/Terms" className="underline hover:text-white" target="_blank">תנאי השימוש</Link> ו<Link to="/Privacy" className="underline hover:text-white" target="_blank">מדיניות הפרטיות</Link> ומסכימ/ה לקבלת פניות ותוכן שיווקי.
+                                    </label>
+                                </div>
+                            </div>
 
                             <Button 
                                 type="submit"

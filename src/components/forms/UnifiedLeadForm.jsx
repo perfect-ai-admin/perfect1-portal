@@ -3,7 +3,9 @@ import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from "@/components/ui/checkbox";
 import { User, Phone, Mail, Loader2, CheckCircle, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { trackLeadSubmit } from '../tracking/EventTracker';
 
@@ -48,6 +50,7 @@ export default function UnifiedLeadForm({
     phone: '',
     email: '',
     profession: defaultProfession,
+    consent: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -65,6 +68,11 @@ export default function UnifiedLeadForm({
     if (fields.includes('email') && !formData.email) {
       setError('נא למלא מייל');
       return;
+    }
+
+    if (!formData.consent) {
+        setError('חובה לאשר את תנאי השימוש ומדיניות הפרטיות');
+        return;
     }
 
     setIsSubmitting(true);
@@ -274,6 +282,23 @@ export default function UnifiedLeadForm({
              <p className="text-red-700 text-sm font-medium">⚠️ {error}</p>
            </div>
          )}
+
+        <div className="flex items-start space-x-3 space-x-reverse py-2">
+            <Checkbox 
+                id={`terms-${Math.random()}`} // unique id for multiple forms
+                checked={formData.consent}
+                onCheckedChange={(checked) => setFormData({...formData, consent: checked})}
+                className={`mt-1 ${invertColors ? 'border-white/30 data-[state=checked]:bg-white data-[state=checked]:text-green-600' : ''}`}
+            />
+            <div className="grid gap-1.5 leading-none">
+                <label
+                    htmlFor="terms"
+                    className={`text-xs font-medium leading-relaxed ${invertColors ? 'text-white/90' : 'text-gray-500'}`}
+                >
+                    אני מאשר/ת את <Link to="/Terms" className="underline hover:text-current" target="_blank">תנאי השימוש</Link> ו<Link to="/Privacy" className="underline hover:text-current" target="_blank">מדיניות הפרטיות</Link> ומסכימ/ה לקבלת פניות ותוכן שיווקי.
+                </label>
+            </div>
+        </div>
 
         {/* Submit Button */}
         <Button
