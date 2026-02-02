@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye } from 'lucide-react';
+import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -17,8 +18,33 @@ export default function ShoppingCartButton() {
   const [enlargedImage, setEnlargedImage] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+  const [previewPage, setPreviewPage] = useState(null);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
   const ITEM_PRICE = 99;
+
+  const handlePreview = async (landingPageId) => {
+    setIsPreviewLoading(true);
+    try {
+        const response = await base44.functions.invoke('getPublicLandingPageById', { id: landingPageId });
+        if (response.data) {
+            setPreviewPage(response.data);
+            setIsPreviewLoading(false);
+        } else {
+            toast.error('לא ניתן לטעון את התצוגה המקדימה');
+            setIsPreviewLoading(false);
+        }
+    } catch (error) {
+        console.error('Preview fetch error:', error);
+        toast.error('שגיאה בטעינת התצוגה המקדימה');
+        setIsPreviewLoading(false);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewPage(null);
+    setIsPreviewLoading(false);
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -284,15 +310,13 @@ export default function ShoppingCartButton() {
                                 
                                 {item.type === 'landing_page' && item.data?.landingPageId && (
                                     <div className="mt-2">
-                                        <a 
-                                            href={`/LandingPagePreview?id=${item.data.landingPageId}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-xs flex items-center gap-1 text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded inline-block"
+                                        <button 
+                                            onClick={() => handlePreview(item.data.landingPageId)}
+                                            className="text-xs flex items-center gap-1 text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-blue-100"
                                         >
                                             <Eye className="w-3 h-3" />
                                             צפה בטיוטה
-                                        </a>
+                                        </button>
                                     </div>
                                 )}
                               </div>
@@ -357,6 +381,37 @@ export default function ShoppingCartButton() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Landing Page Preview Modal */}
+      <Dialog open={!!previewPage || isPreviewLoading} onOpenChange={(open) => !open && closePreview()}>
+        <DialogContent className="max-w-6xl w-[95vw] h-[90vh] p-0 overflow-hidden bg-slate-50 flex flex-col border-none">
+            <div className="flex items-center justify-between p-4 border-b bg-white z-50 shadow-sm shrink-0" dir="rtl">
+                <h3 className="font-bold text-lg text-gray-800">
+                    {isPreviewLoading ? 'טוען תצוגה מקדימה...' : `תצוגה מקדימה: ${previewPage?.business_name || ''}`}
+                </h3>
+                <button 
+                    onClick={closePreview}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                    <X className="w-5 h-5 text-gray-500" />
+                </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto relative bg-slate-100">
+                {isPreviewLoading ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white">
+                        <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+                    </div>
+                ) : (
+                    previewPage && (
+                        <div className="w-full h-full">
+                            <DynamicLandingPage data={previewPage} isThumbnail={false} />
+                        </div>
+                    )
+                )}
+            </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Image Zoom Modal */}
       <Dialog open={!!enlargedImage} onOpenChange={() => setEnlargedImage(null)}>
