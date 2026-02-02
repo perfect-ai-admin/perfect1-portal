@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye, Loader2 } from 'lucide-react';
+import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye, Loader2, Presentation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -455,12 +455,26 @@ export default function ShoppingCartButton() {
             
             <div className="flex-1 overflow-hidden relative bg-slate-100">
                 {previewPresentation && (
-                    <iframe
-                        src={previewPresentation}
-                        className="w-full h-full border-0"
-                        title="Presentation Preview"
-                        allow="fullscreen"
-                    />
+                    <div className="relative w-full h-full">
+                        <iframe
+                            src={previewPresentation}
+                            className="w-full h-full border-0"
+                            title="Presentation Preview"
+                            allow="fullscreen"
+                        />
+                        {/* Watermark Overlay for Presentation */}
+                        <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden">
+                            {[15, 35, 55, 75, 95].map((top) => (
+                                <div
+                                    key={top}
+                                    className="absolute text-red-500/10 font-black text-[8rem] whitespace-nowrap select-none"
+                                    style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-30deg)' }}
+                                >
+                                    טיוטה
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 )}
             </div>
         </DialogContent>
