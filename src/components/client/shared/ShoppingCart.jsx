@@ -375,35 +375,28 @@ export default function ShoppingCartButton() {
               </div>
 
               {/* Footer */}
-              <div className="p-5 border-t border-gray-100 bg-white space-y-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-20 pb-safe">
-                <div className="space-y-3">
-                    <div className="flex justify-between items-center text-sm text-gray-600">
-                        <span>פריטים שנבחרו:</span>
-                        <span className="font-medium bg-gray-100 px-2 py-0.5 rounded text-gray-900">{selectedCount}</span>
+              <div className="p-3 sm:p-4 border-t border-gray-100 bg-white space-y-3 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-20 pb-safe">
+                <div className="flex justify-between items-end px-1">
+                    <div>
+                        <div className="text-xs text-gray-500 mb-0.5">סה״כ לתשלום ({selectedCount} פריטים):</div>
+                        <div className="text-xl sm:text-2xl font-black text-blue-600 leading-none">₪{totalPrice}</div>
                     </div>
-                    <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-gray-900">סה״כ לתשלום:</span>
-                        <div className="text-right">
-                            <span className="text-2xl font-black text-blue-600">₪{totalPrice}</span>
-                        </div>
+                    <div className="flex items-center gap-1.5 text-[10px] text-gray-400 mb-1 bg-gray-50 px-2 py-1 rounded-full">
+                         <ShieldCheck className="w-3 h-3 text-green-500" />
+                         <span>רכישה מאובטחת</span>
                     </div>
                 </div>
 
                 <Button
                   onClick={handleCheckout}
                   disabled={selectedCount === 0}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold h-14 rounded-2xl text-lg shadow-xl shadow-blue-200 disabled:opacity-50 disabled:shadow-none transition-all active:scale-[0.98] flex items-center justify-between px-6 group"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold h-11 sm:h-12 rounded-xl text-base sm:text-lg shadow-lg shadow-blue-200 disabled:opacity-50 disabled:shadow-none transition-all active:scale-[0.98] flex items-center justify-between px-4 sm:px-6 group"
                 >
                   <span>{selectedCount > 0 ? 'המשך לתשלום' : 'בחר פריטים'}</span>
-                  <div className="bg-white/20 p-2 rounded-xl group-hover:bg-white/30 transition-colors">
-                    <ArrowRight className="w-5 h-5" />
+                  <div className="bg-white/20 p-1.5 rounded-lg group-hover:bg-white/30 transition-colors">
+                    <ArrowRight className="w-4 h-4" />
                   </div>
                 </Button>
-                
-                <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
-                    <ShieldCheck className="w-3 h-3 text-green-500" />
-                    <span>רכישה מאובטחת בתקן PCI-DSS</span>
-                </div>
               </div>
             </motion.div>
           </>
