@@ -655,6 +655,7 @@ export default function LogoCreator({ businessName, onClose }) {
           <div className="hidden lg:block">
             <LogoPreview 
               businessName={formData.businessName}
+              slogan={formData.tagline}
               logoUrl={generatedLogoUrl}
               onBack={() => setStep(3)}
               onSaveToCart={() => {
@@ -667,6 +668,7 @@ export default function LogoCreator({ businessName, onClose }) {
           <div className="lg:hidden h-full">
             <LogoPreview 
               businessName={formData.businessName}
+              slogan={formData.tagline}
               logoUrl={generatedLogoUrl}
               onBack={() => setStep(3)}
               onSaveToCart={() => {

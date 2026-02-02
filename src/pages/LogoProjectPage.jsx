@@ -17,6 +17,7 @@ export default function LogoProjectPage() {
   const [downloadCredits, setDownloadCredits] = useState(0);
   const [message, setMessage] = useState(null);
   const [copied, setCopied] = useState(null);
+  const [downloadUrl, setDownloadUrl] = useState(null);
 
   useEffect(() => {
     if (projectId) {
@@ -236,18 +237,28 @@ export default function LogoProjectPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <img src={project.approved_logo_url} alt="Approved logo" className="w-80 h-80 object-contain mb-6" />
-                <div className="flex gap-3 flex-wrap">
+                <div className="flex justify-center mb-6">
+                  <WatermarkedLogo
+                    src={project.approved_logo_url}
+                    alt="Approved logo"
+                    className="w-auto h-80 object-contain shadow-lg rounded-lg bg-white"
+                    businessName={project.brand_name}
+                    slogan={project.slogan}
+                    watermark={false}
+                    onImageReady={(url) => setDownloadUrl(url)}
+                  />
+                </div>
+                <div className="flex gap-3 flex-wrap justify-center">
                   <a 
-                    href={project.approved_logo_url} 
-                    download 
+                    href={downloadUrl || project.approved_logo_url} 
+                    download={`${project.brand_name}_logo.png`}
                     className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-colors"
                   >
                     <Download className="w-5 h-5" />
                     Download
                   </a>
                   <button
-                    onClick={() => copyToClipboard(project.approved_logo_url, 'approved')}
+                    onClick={() => copyToClipboard(downloadUrl || project.approved_logo_url, 'approved')}
                     className="flex items-center gap-2 px-6 py-3 border-2 border-green-600 text-green-600 hover:bg-green-50 rounded-lg font-bold transition-colors"
                   >
                     {copied === 'approved' ? (

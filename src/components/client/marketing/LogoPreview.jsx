@@ -5,6 +5,7 @@ import WatermarkedLogo from './WatermarkedLogo';
 
 export default function LogoPreview({ 
   businessName, 
+  slogan,
   logoUrl, 
   onSaveToCart, 
   onProceedToCheckout,
@@ -25,6 +26,7 @@ export default function LogoPreview({
                 alt={`${businessName} logo`}
                 className="max-h-64 w-auto object-contain relative z-10"
                 businessName={businessName}
+                slogan={slogan}
               />
               {/* Badge */}
               <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 z-20">
@@ -109,6 +111,7 @@ export default function LogoPreview({
             alt={`${businessName} logo`}
             className="max-w-xs h-auto object-contain"
             businessName={businessName}
+            slogan={slogan}
           />
           <div className="absolute top-3 right-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 z-20">
             <Lock className="w-3 h-3" />
