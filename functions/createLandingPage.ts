@@ -381,7 +381,7 @@ Return ONLY the JSON object with these keys:
 
         // Generate the full URL for the landing page
         const domain = 'one-pai.com';
-        const pageUrl = `https://${domain}/LP/${slug}`;
+        const pageUrl = `https://${domain}/LP?id=${result.id}`;
         console.log("✅ Page URL generated:", pageUrl);
 
         console.log("\n✨ QA COMPLETE: Landing page generated successfully!\n");
