@@ -453,18 +453,31 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
              <div className="space-y-3">
                 <div className="space-y-2">
-                <Label className="block text-xs font-semibold">שפה</Label>
-                <div className="bg-green-50 border border-green-100 rounded-xl p-3 flex items-start gap-3">
-                    <div className="bg-green-100 p-1.5 rounded-full">
-                        <Check className="w-4 h-4 text-green-600" />
+                 <Label className="block text-xs font-semibold">שפת הסטיקר</Label>
+                 <div className="grid grid-cols-2 gap-2">
+                   {[
+                      {id: 'hebrew', label: 'עברית', icon: Globe},
+                      {id: 'english', label: 'אנגלית', icon: Globe},
+                   ].map(option => (
+                      <SelectionCard
+                          key={option.id}
+                          selected={formData.language === option.id}
+                          onClick={() => handleInputChange('language', option.id)}
+                          icon={option.icon}
+                          title={option.label}
+                        />
+                   ))}
+                 </div>
+                 {formData.language === 'hebrew' && (
+                    <div className="text-[10px] text-green-600 bg-green-50 p-2 rounded border border-green-100">
+                        ✨ בעברית: המערכת תוסיף את הטקסט בצורה גרפית איכותית על גבי הסטיקר.
                     </div>
-                    <div>
-                        <div className="text-xs font-bold text-green-900">תמיכה מלאה בעברית</div>
-                        <div className="text-[10px] text-green-700 leading-tight mt-1">
-                            המערכת תדע לשלב כיתוב בעברית בצורה איכותית ומקצועית על גבי הסטיקר.
-                        </div>
+                 )}
+                 {formData.language === 'english' && (
+                    <div className="text-[10px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100">
+                        ✨ באנגלית: הטקסט יוטמע ישירות בתוך העיצוב על ידי ה-AI.
                     </div>
-                </div>
+                 )}
                 </div>
 
                <div className="space-y-2">
@@ -729,15 +742,23 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
              <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-4">
               {generatedStickerUrl ? (
                   <div className="relative w-64 h-64 bg-gray-100 rounded-xl overflow-hidden shadow-lg border-4 border-white">
-                      <WatermarkedSticker 
-                          src={generatedStickerUrl} 
-                          alt="Generated Sticker" 
-                          text={formData.exampleSentence || formData.businessName}
-                          className="w-full h-full object-contain p-4"
-                          onImageReady={(url) => {
-                            setFinalStickerUrl(url);
-                          }}
-                      />
+                      {formData.language === 'hebrew' ? (
+                        <WatermarkedSticker 
+                            src={generatedStickerUrl} 
+                            alt="Generated Sticker" 
+                            text={formData.exampleSentence || formData.businessName}
+                            className="w-full h-full object-contain p-4"
+                            onImageReady={(url) => {
+                              setFinalStickerUrl(url);
+                            }}
+                        />
+                      ) : (
+                        <img 
+                            src={generatedStickerUrl} 
+                            alt="Generated Sticker" 
+                            className="w-full h-full object-contain p-4"
+                        />
+                      )}
                   </div>
               ) : (
                   <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2 shadow-lg shadow-green-200">
