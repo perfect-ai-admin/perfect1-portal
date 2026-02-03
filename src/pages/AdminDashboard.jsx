@@ -4,15 +4,19 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Users, Shield } from 'lucide-react';
+import { Search, Users, Shield, LayoutDashboard, CreditCard, FileText, Activity } from 'lucide-react';
 import UsersTable from '../components/admin/UsersTable';
 import SystemConfigManager from '../components/admin/SystemConfigManager';
 import InviteUserDialog from '../components/admin/InviteUserDialog';
+import DashboardOverview from '../components/admin/DashboardOverview';
+import PaymentsManager from '../components/admin/PaymentsManager';
+import LandingPagesManager from '../components/admin/LandingPagesManager';
+import ActivityLogView from '../components/admin/ActivityLogView';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('users');
+    const [activeTab, setActiveTab] = useState('overview');
     const [loginData, setLoginData] = useState({ phone: '', code: '' });
 
     useEffect(() => {
@@ -124,19 +128,51 @@ export default function AdminDashboard() {
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                        <TabsList className="grid grid-cols-2 gap-4 bg-white p-2 rounded-xl shadow-md">
+                        <TabsList className="grid grid-cols-6 gap-2 bg-white p-2 rounded-xl shadow-md overflow-x-auto">
+                            <TabsTrigger value="overview" className="flex items-center gap-2">
+                                <LayoutDashboard className="w-4 h-4" />
+                                <span className="hidden sm:inline">ראשי</span>
+                            </TabsTrigger>
                             <TabsTrigger value="users" className="flex items-center gap-2">
                                 <Users className="w-4 h-4" />
-                                משתמשים
+                                <span className="hidden sm:inline">משתמשים</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="payments" className="flex items-center gap-2">
+                                <CreditCard className="w-4 h-4" />
+                                <span className="hidden sm:inline">תשלומים ומסלולים</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="landing_pages" className="flex items-center gap-2">
+                                <FileText className="w-4 h-4" />
+                                <span className="hidden sm:inline">דפי נחיתה</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="activity" className="flex items-center gap-2">
+                                <Activity className="w-4 h-4" />
+                                <span className="hidden sm:inline">פעילות</span>
                             </TabsTrigger>
                             <TabsTrigger value="system" className="flex items-center gap-2">
                                 <Shield className="w-4 h-4" />
-                                מערכת
+                                <span className="hidden sm:inline">מערכת</span>
                             </TabsTrigger>
                         </TabsList>
 
+                        <TabsContent value="overview">
+                            <DashboardOverview />
+                        </TabsContent>
+
                         <TabsContent value="users">
                             <UsersTable loginData={loginData} />
+                        </TabsContent>
+
+                        <TabsContent value="payments">
+                            <PaymentsManager />
+                        </TabsContent>
+
+                        <TabsContent value="landing_pages">
+                            <LandingPagesManager />
+                        </TabsContent>
+
+                        <TabsContent value="activity">
+                            <ActivityLogView />
                         </TabsContent>
 
                         <TabsContent value="system">

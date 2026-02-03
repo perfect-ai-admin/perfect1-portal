@@ -8,8 +8,10 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, X, User, Shield, Target, Info } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Save, X, User, Shield, Target, CreditCard, FileText, Activity, MousePointerClick } from 'lucide-react';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 export default function UserProfileModal({ user, onClose, onUpdate }) {
     const [formData, setFormData] = useState({
@@ -27,59 +29,25 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
     const [plans, setPlans] = useState([]);
     const [selectedPlan, setSelectedPlan] = useState(user.current_plan_id || '');
     const [saving, setSaving] = useState(false);
-    const [journeyData, setJourneyData] = useState(null);
+    const [extendedData, setExtendedData] = useState(null);
+    const [loadingDetails, setLoadingDetails] = useState(true);
 
     useEffect(() => {
         loadPlans();
-        loadJourneyStatus();
+        loadFullDetails();
     }, []);
 
-    const loadJourneyStatus = async () => {
-        // Use data from props if available (from adminListUsers)
-        if (user.has_started_journey !== undefined) {
-            if (user.has_started_journey) {
-                setJourneyData({ 
-                    started: true, 
-                    type: 'enriched', 
-                    details: user.journey_details || 'התחיל תהליך (UserGoal/Journey)' 
-                });
-            } else {
-                setJourneyData(null);
-            }
-            return;
-        }
-
-        // Fallback: Check via API (might be restricted by RLS for UserGoal)
+    const loadFullDetails = async () => {
+        setLoadingDetails(true);
         try {
-            // Note: If RLS blocks access to UserGoal for admin, this might return empty even if goals exist.
-            // That's why we prefer the enriched data from adminListUsers.
-            const goals = await base44.entities.UserGoal.filter({ user_id: user.id }, 1);
-            if (goals.data && goals.data.length > 0) {
-                setJourneyData({ started: true, type: 'goals', details: 'קיבל מטרות ותוכנית עבודה' });
-                return;
+            const response = await base44.functions.invoke('adminGetUserFullDetails', { user_id: user.id });
+            if (response.data) {
+                setExtendedData(response.data);
             }
-
-            const journeys = await base44.entities.BusinessJourney.filter({ user_id: user.id });
-            if (journeys.data && journeys.data.length > 0) {
-                setJourneyData({ started: true, type: 'business_journey', details: 'תהליך מסע עסקי פעיל' });
-                return;
-            }
-
-            // Check CRMLead (Service Role needed if RLS blocks, but Lead usually visible to admin)
-             if (user.email) {
-                const leads = await base44.entities.CRMLead.filter({ email: user.email });
-                if (leads.data && leads.data.length > 0) {
-                    const lead = leads.data[0];
-                    if (lead.journey_stage && lead.journey_stage !== 'lead_new') {
-                        setJourneyData({ started: true, type: 'crm_lead', details: `סטטוס ליד: ${lead.journey_stage}` });
-                        return;
-                    }
-                }
-            }
-            
-            setJourneyData(null);
         } catch (error) {
-            console.error("Error checking journey status:", error);
+            console.error("Failed to load user details", error);
+        } finally {
+            setLoadingDetails(false);
         }
     };
 
@@ -91,9 +59,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
     const handleSave = async () => {
         setSaving(true);
         try {
-            // Clean up formData before sending
             const updates = { ...formData };
-            // Ensure nulls are handled correctly or removed if your backend prefers undefined
             if (updates.goals_limit_override === '') updates.goals_limit_override = null;
             if (updates.max_active_goals_override === '') updates.max_active_goals_override = null;
 
@@ -102,11 +68,6 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                 updates: updates
             });
             
-            // Check for logical error from backend even if HTTP 200 (though invoke throws on non-2xx usually, 
-            // but if backend returns {error: ...} with 200, we need to catch it. 
-            // Base44 functions usually return the data directly in response.data)
-            
-            // If the wrapper function returns { error: ... } inside data
             if (response.data?.error) {
                 throw new Error(response.data.error);
             }
@@ -133,7 +94,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
             });
             toast.success('המסלול שויך בהצלחה');
             onUpdate();
-            onClose();
+            loadFullDetails(); // Reload to reflect changes
         } catch (error) {
             toast.error('שגיאה בשיוך המסלול');
             console.error(error);
@@ -144,7 +105,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
 
     return (
         <Dialog open={true} onOpenChange={onClose}>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" dir="rtl">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" dir="rtl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-2xl">
                         <User className="w-6 h-6" />
@@ -153,10 +114,13 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                 </DialogHeader>
 
                 <Tabs defaultValue="info" className="mt-4">
-                    <TabsList className="grid grid-cols-3 w-full">
-                        <TabsTrigger value="info">מידע בסיסי</TabsTrigger>
+                    <TabsList className="grid grid-cols-6 w-full">
+                        <TabsTrigger value="info">פרטים</TabsTrigger>
                         <TabsTrigger value="permissions">הרשאות</TabsTrigger>
                         <TabsTrigger value="plan">מסלול</TabsTrigger>
+                        <TabsTrigger value="financial">פיננסי</TabsTrigger>
+                        <TabsTrigger value="marketing">שיווק</TabsTrigger>
+                        <TabsTrigger value="activity">פעילות</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="info" className="space-y-4 mt-4">
@@ -183,9 +147,6 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                     placeholder="0502277087"
                                     dir="ltr"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">
-                                    המספר ינורמל אוטומטית ל-972...
-                                </p>
                             </div>
                             <div>
                                 <Label>סטטוס</Label>
@@ -197,15 +158,14 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="active">🟢 פעיל - גישה מלאה + WhatsApp</SelectItem>
-                                        <SelectItem value="paused">🟡 מושהה - גישה למערכת ללא WhatsApp</SelectItem>
-                                        <SelectItem value="blocked">🔴 חסום - ללא גישה</SelectItem>
+                                        <SelectItem value="active">🟢 פעיל</SelectItem>
+                                        <SelectItem value="paused">🟡 מושהה</SelectItem>
+                                        <SelectItem value="blocked">🔴 חסום</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
-
-                        <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
+                         <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
                             <div className="flex items-center gap-2">
                                 <Shield className="w-5 h-5 text-orange-600" />
                                 <Label>הרשאות מנהל</Label>
@@ -214,22 +174,6 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 checked={formData.is_admin}
                                 onCheckedChange={(checked) => setFormData({...formData, is_admin: checked})}
                             />
-                        </div>
-
-                        {/* Journey Status Indicator */}
-                        <div className={`p-4 rounded-lg flex items-center justify-between ${journeyData ? 'bg-blue-50 border border-blue-100' : 'bg-gray-50'}`}>
-                            <div className="flex items-center gap-3">
-                                <Target className={`w-5 h-5 ${journeyData ? 'text-blue-600' : 'text-gray-400'}`} />
-                                <div>
-                                    <div className="font-medium text-gray-900">סטטוס מסע לקוח</div>
-                                    <div className="text-sm text-gray-500">
-                                        {journeyData ? journeyData.details : 'טרם התחיל מסע'}
-                                    </div>
-                                </div>
-                            </div>
-                            {journeyData && (
-                                <Badge className="bg-blue-600 hover:bg-blue-700">פעיל</Badge>
-                            )}
                         </div>
                     </TabsContent>
 
@@ -257,33 +201,6 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 />
                             </div>
                         </div>
-
-                        <div className="border-t pt-4">
-                            <h3 className="font-semibold mb-3 flex items-center gap-2">
-                                <Target className="w-5 h-5" />
-                                עקיפת מכסות מטרות
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <Label>מכסת מטרות (Override)</Label>
-                                    <Input
-                                        type="number"
-                                        placeholder={`ברירת מחדל: ${user.goals_limit || 1}`}
-                                        value={formData.goals_limit_override || ''}
-                                        onChange={(e) => setFormData({...formData, goals_limit_override: e.target.value ? parseInt(e.target.value) : null})}
-                                    />
-                                </div>
-                                <div>
-                                    <Label>מקסימום מטרות פעילות (Override)</Label>
-                                    <Input
-                                        type="number"
-                                        placeholder={`ברירת מחדל: ${user.max_active_goals || 1}`}
-                                        value={formData.max_active_goals_override || ''}
-                                        onChange={(e) => setFormData({...formData, max_active_goals_override: e.target.value ? parseInt(e.target.value) : null})}
-                                    />
-                                </div>
-                            </div>
-                        </div>
                     </TabsContent>
 
                     <TabsContent value="plan" className="space-y-4 mt-4">
@@ -295,7 +212,6 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 <p className="text-gray-500">אין מסלול פעיל</p>
                             )}
                         </div>
-
                         <div>
                             <Label>שיוך מסלול חדש</Label>
                             <Select value={selectedPlan} onValueChange={setSelectedPlan}>
@@ -318,6 +234,150 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 שייך מסלול
                             </Button>
                         </div>
+                    </TabsContent>
+
+                    <TabsContent value="financial" className="mt-4">
+                        {loadingDetails ? <p>טוען נתונים...</p> : (
+                            <div className="space-y-4">
+                                <div className="p-4 bg-green-50 rounded-lg border border-green-100">
+                                    <h3 className="font-bold text-green-800">LTV: ₪{extendedData?.ltv?.toLocaleString()}</h3>
+                                    <p className="text-sm text-green-600">סך הכנסות מצטברות מהלקוח</p>
+                                </div>
+                                <h3 className="font-semibold flex items-center gap-2">
+                                    <CreditCard className="w-4 h-4" />
+                                    היסטוריית תשלומים
+                                </h3>
+                                <div className="border rounded-md">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-right">תאריך</TableHead>
+                                                <TableHead className="text-right">מוצר</TableHead>
+                                                <TableHead className="text-right">סכום</TableHead>
+                                                <TableHead className="text-right">סטטוס</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {extendedData?.payments?.length === 0 ? (
+                                                <TableRow><TableCell colSpan={4} className="text-center">אין תשלומים</TableCell></TableRow>
+                                            ) : (
+                                                extendedData?.payments?.map(p => (
+                                                    <TableRow key={p.id}>
+                                                        <TableCell>{format(new Date(p.created_date), 'dd/MM/yyyy')}</TableCell>
+                                                        <TableCell>{p.product_name}</TableCell>
+                                                        <TableCell>₪{p.amount}</TableCell>
+                                                        <TableCell><Badge>{p.status}</Badge></TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </div>
+                        )}
+                    </TabsContent>
+
+                    <TabsContent value="marketing" className="mt-4">
+                         {loadingDetails ? <p>טוען נתונים...</p> : (
+                            <div className="space-y-6">
+                                <div>
+                                    <h3 className="font-semibold flex items-center gap-2 mb-2">
+                                        <FileText className="w-4 h-4" />
+                                        דפי נחיתה
+                                    </h3>
+                                    <div className="border rounded-md">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead className="text-right">שם העסק</TableHead>
+                                                    <TableHead className="text-right">סטטוס</TableHead>
+                                                    <TableHead className="text-right">תאריך</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {extendedData?.landingPages?.length === 0 ? (
+                                                    <TableRow><TableCell colSpan={3} className="text-center">אין דפי נחיתה</TableCell></TableRow>
+                                                ) : (
+                                                    extendedData?.landingPages?.map(lp => (
+                                                        <TableRow key={lp.id}>
+                                                            <TableCell>{lp.business_name}</TableCell>
+                                                            <TableCell><Badge>{lp.status}</Badge></TableCell>
+                                                            <TableCell>{format(new Date(lp.created_date), 'dd/MM/yyyy')}</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-semibold flex items-center gap-2 mb-2">
+                                        <MousePointerClick className="w-4 h-4" />
+                                        לידים אחרונים
+                                    </h3>
+                                    <div className="border rounded-md">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead className="text-right">שם</TableHead>
+                                                    <TableHead className="text-right">טלפון</TableHead>
+                                                    <TableHead className="text-right">תאריך</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {extendedData?.leads?.length === 0 ? (
+                                                    <TableRow><TableCell colSpan={3} className="text-center">אין לידים</TableCell></TableRow>
+                                                ) : (
+                                                    extendedData?.leads?.map(lead => (
+                                                        <TableRow key={lead.id}>
+                                                            <TableCell>{lead.name}</TableCell>
+                                                            <TableCell>{lead.phone}</TableCell>
+                                                            <TableCell>{format(new Date(lead.created_date), 'dd/MM/yyyy')}</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </TabsContent>
+
+                    <TabsContent value="activity" className="mt-4">
+                         {loadingDetails ? <p>טוען נתונים...</p> : (
+                            <div className="space-y-4">
+                                <h3 className="font-semibold flex items-center gap-2">
+                                    <Activity className="w-4 h-4" />
+                                    יומן פעילות
+                                </h3>
+                                <div className="border rounded-md max-h-60 overflow-y-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-right">פעולה</TableHead>
+                                                <TableHead className="text-right">פרטים</TableHead>
+                                                <TableHead className="text-right">תאריך</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {extendedData?.activityLog?.length === 0 ? (
+                                                <TableRow><TableCell colSpan={3} className="text-center">אין פעילות</TableCell></TableRow>
+                                            ) : (
+                                                extendedData?.activityLog?.map(log => (
+                                                    <TableRow key={log.id}>
+                                                        <TableCell>{log.action}</TableCell>
+                                                        <TableCell>{log.details}</TableCell>
+                                                        <TableCell dir="ltr" className="text-left">{format(new Date(log.created_date), 'dd/MM/yyyy HH:mm')}</TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </div>
+                        )}
                     </TabsContent>
                 </Tabs>
 
