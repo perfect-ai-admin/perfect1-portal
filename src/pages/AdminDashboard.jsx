@@ -156,7 +156,7 @@ export default function AdminDashboard() {
                         </TabsList>
 
                         <TabsContent value="overview">
-                            <DashboardOverview />
+                            <DashboardOverview loginData={loginData} />
                         </TabsContent>
 
                         <TabsContent value="users">

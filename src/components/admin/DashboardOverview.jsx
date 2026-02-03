@@ -5,7 +5,7 @@ import { Users, CreditCard, MousePointerClick, FileText, Activity } from 'lucide
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 
-export default function DashboardOverview() {
+export default function DashboardOverview({ loginData }) {
     const [stats, setStats] = useState(null);
     const [recentActivity, setRecentActivity] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -13,7 +13,13 @@ export default function DashboardOverview() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await base44.functions.invoke('adminGetDashboardStats');
+                // Pass bypass details if available
+                const payload = loginData ? { 
+                    bypassCode: loginData.code, 
+                    phone: loginData.phone 
+                } : {};
+
+                const response = await base44.functions.invoke('adminGetDashboardStats', payload);
                 if (response.data) {
                     setStats(response.data.stats);
                     setRecentActivity(response.data.recentActivity || []);
