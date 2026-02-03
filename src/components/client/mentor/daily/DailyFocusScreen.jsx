@@ -244,7 +244,7 @@ export default function DailyFocusScreen({ focus, onSave }) {
                       type="number"
                       value={estimatedTime}
                       onChange={(e) => setEstimatedTime(e.target.value)}
-                      className="w-20 text-center font-bold text-lg bg-white border-gray-200"
+                      className="w-20 text-center font-bold text-lg bg-white border-gray-200 text-base"
                     />
                     <span className="text-gray-500">דקות</span>
                   </div>
@@ -293,7 +293,7 @@ export default function DailyFocusScreen({ focus, onSave }) {
                     value={newSubTask}
                     onChange={(e) => setNewSubTask(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addSubTask()}
-                    className="bg-gray-50 border-0 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                    className="bg-gray-50 border-0 focus-visible:ring-1 focus-visible:ring-indigo-500 text-base"
                   />
                   <Button onClick={addSubTask} size="icon" variant="secondary">
                     <ArrowRight className="w-4 h-4" />

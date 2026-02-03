@@ -115,7 +115,7 @@ export default function Layout({ children, currentPageName }) {
           <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
           <meta name="referrer" content="strict-origin-when-cross-origin" />
           <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
           {/* Google Ads Conversion Tracking */}
           <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085" />
