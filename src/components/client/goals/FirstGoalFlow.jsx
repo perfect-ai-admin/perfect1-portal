@@ -33,10 +33,6 @@ export default function FirstGoalFlow({ goal, onComplete }) {
   
   const queryClient = useQueryClient();
 
-  if (showPlanOverview && goal.is_first_goal && currentStep < 2) {
-    return <GoalSuccessPlan goal={goal} onStart={() => setShowPlanOverview(false)} />;
-  }
-
   // Mutation to save progress
   const updateProgressMutation = useMutation({
     mutationFn: async (newData) => {
@@ -57,6 +53,10 @@ export default function FirstGoalFlow({ goal, onComplete }) {
       queryClient.invalidateQueries({ queryKey: ['goals'] });
     }
   });
+
+  if (showPlanOverview && goal.is_first_goal && currentStep < 2) {
+    return <GoalSuccessPlan goal={goal} onStart={() => setShowPlanOverview(false)} />;
+  }
 
   const handleNext = async () => {
     // Save current step data before moving
