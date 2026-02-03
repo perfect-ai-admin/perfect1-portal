@@ -1,7 +1,7 @@
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
-export const addToCart = async ({ type, data, price, title, description, preview_image }) => {
+export const addToCart = async ({ type, data, price, title, description, preview_image, openCart = true }) => {
   try {
     const user = await base44.auth.me().catch(() => null);
     
@@ -26,7 +26,9 @@ export const addToCart = async ({ type, data, price, title, description, preview
 
     // Dispatch event for UI update
     window.dispatchEvent(new Event('cart-updated'));
-    window.dispatchEvent(new Event('open-cart')); // Open cart to show item
+    if (openCart) {
+        window.dispatchEvent(new Event('open-cart')); // Open cart to show item
+    }
     
     toast.success('המוצר נוסף לעגלה! 🛒');
     return true;

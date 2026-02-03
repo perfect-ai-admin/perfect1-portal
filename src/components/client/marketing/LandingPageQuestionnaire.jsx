@@ -1317,8 +1317,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                 price: 299,
                                 title: `דף נחיתה: ${formData.businessName}`,
                                 preview_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60',
-                                description: 'דף נחיתה ממותג כולל תוכן ועיצוב'
-                            });
+                                description: 'דף נחיתה ממותג כולל תוכן ועיצוב',
+                                openCart: false
+                                });
                             toast.success('נוסף לסל בהצלחה!');
                             // Stay on page to allow continuing the process
                          }}
@@ -1485,7 +1486,8 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                  price: 299,
                                  title: `דף נחיתה: ${formData.businessName}`,
                                  description: 'דף נחיתה ממותג',
-                                 preview_image: 'https://cdn.dribbble.com/users/1615584/screenshots/15710288/media/7847c075727463697274636972746369.jpg' // Placeholder or use screenshot service if available
+                                 preview_image: 'https://cdn.dribbble.com/users/1615584/screenshots/15710288/media/7847c075727463697274636972746369.jpg', // Placeholder or use screenshot service if available
+                                 openCart: false
                                })}
                                className="h-12 px-6 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-bold flex-shrink-0"
                             >

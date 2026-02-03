@@ -820,7 +820,8 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                         data: { businessName: formData.businessName, exampleSentence: formData.exampleSentence, stickerUrl: finalStickerUrl || generatedStickerUrl },
                         price: 99,
                         title: `סטיקר: ${formData.businessName}`,
-                        preview_image: finalStickerUrl || generatedStickerUrl
+                        preview_image: finalStickerUrl || generatedStickerUrl,
+                        openCart: false
                       });
                     }}
                     variant="outline"

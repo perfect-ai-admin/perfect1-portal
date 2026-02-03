@@ -79,7 +79,8 @@ export default function LogoPreview({
                     data: { businessName, slogan, logoUrl },
                     price: 99,
                     title: `לוגו: ${businessName}`,
-                    preview_image: logoUrl
+                    preview_image: logoUrl,
+                    openCart: false
                   })}
                   variant="outline"
                   className="w-full h-11 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold"
@@ -150,7 +151,8 @@ export default function LogoPreview({
               data: { businessName, slogan, logoUrl },
               price: 99,
               title: `לוגו: ${businessName}`,
-              preview_image: logoUrl
+              preview_image: logoUrl,
+              openCart: false
             })}
             variant="outline"
             className="w-full h-11 border-2 border-gray-300 hover:border-gray-400 text-gray-700"

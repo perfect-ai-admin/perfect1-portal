@@ -949,7 +949,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     data: { presentationUrl: draftPreviewUrl, businessName: formData.businessName },
                     price: 199,
                     title: `מצגת: ${formData.businessName}`,
-                    preview_image: 'https://cdn.dribbble.com/users/5031392/screenshots/15467520/media/c8d1c611531868a8677c7c32d483730e.png' // Placeholder
+                    preview_image: 'https://cdn.dribbble.com/users/5031392/screenshots/15467520/media/c8d1c611531868a8677c7c32d483730e.png', // Placeholder
+                    openCart: false
                   })}
                   variant="outline"
                   className="flex-1 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-bold h-14"
