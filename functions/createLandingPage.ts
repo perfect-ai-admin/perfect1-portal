@@ -471,9 +471,11 @@ Return ONLY the JSON object with these keys:
         const headline = generatedContent?.headline || data.businessName;
         const subheadline = generatedContent?.subheadline || '';
 
-        // Inject form_fields into contact section
+        // Inject form_fields and contact info into contact section
         if (sections[7] && sections[7].type === 'contact') {
             sections[7].form_fields = data.formFields || ['name', 'phone', 'email'];
+            sections[7].phone = data.contactPhone || data.phone || '';
+            sections[7].whatsapp = data.contactPhone || data.phone || '';
         }
 
         // Create Entity
@@ -481,8 +483,8 @@ Return ONLY the JSON object with these keys:
             business_name: data.businessName || 'עסק חדש',
             headline: headline,
             subheadline: subheadline,
-            phone: data.phone || data.destinationPhone || '',
-            whatsapp: data.whatsapp || data.destinationPhone || data.phone || '',
+            phone: data.contactPhone || data.phone || '',
+            whatsapp: data.contactPhone || data.whatsapp || data.phone || '',
             primary_color: data.primary_color || '#3B82F6',
             logo_url: data.logo_url || '',
             sections_json: sections,

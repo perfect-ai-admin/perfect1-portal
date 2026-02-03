@@ -208,9 +208,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         if (!formData.logoStatus) newErrors.logoStatus = 'האם יש לוגו?';
         break;
       case 7:
+        if (!formData.contactPhone) newErrors.contactPhone = 'נא להזין טלפון ליצירת קשר';
         if (formData.formFields.length === 0) newErrors.formFields = 'איזה פרטים לקלוט?';
         if (!formData.leadDestination) newErrors.leadDestination = 'לאן לשלוח את הליד?';
-        if (formData.leadDestination === 'whatsapp' && !formData.destinationPhone) newErrors.destinationPhone = 'נא להזין מספר טלפון';
         if (formData.leadDestination === 'email' && !formData.destinationEmail) newErrors.destinationEmail = 'נא להזין כתובת מייל';
         break;
       case 8:
@@ -786,11 +786,25 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 </div>
               </div>
 
+              {/* Public Contact Phone */}
+              <div className="space-y-2">
+                <Label className="block font-bold text-xs">טלפון ליצירת קשר (יופיע באתר)</Label>
+                <div className="relative bg-white rounded-md">
+                  <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                  <Input 
+                    placeholder="050-0000000"
+                    value={formData.contactPhone}
+                    onChange={(e) => handleInputChange('contactPhone', e.target.value)}
+                    className={cn("pr-8 h-9 text-xs border-gray-200 focus-visible:ring-teal-500 w-full", errors.contactPhone && "border-red-500")}
+                  />
+                </div>
+                {errors.contactPhone && <p className="text-red-500 text-[10px]">{errors.contactPhone}</p>}
+              </div>
+
               <div className="space-y-2">
                 <Label className="block font-bold text-xs">לאן הליד יגיע?</Label>
                 <div className="grid grid-cols-1 gap-2">
                   {[
-                    { value: 'whatsapp', label: 'וואטסאפ שלי', icon: MessageSquare },
                     { value: 'email', label: 'מייל שלי', icon: Mail },
                     { value: 'crm', label: 'מערכת CRM', icon: Layers }
                   ].map(option => (
@@ -803,30 +817,6 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                       />
                       
                       <AnimatePresence>
-                        {formData.leadDestination === option.value && option.value === 'whatsapp' && (
-                          <motion.div 
-                            key="whatsapp-input"
-                            initial={{ opacity: 0, height: 0, marginTop: 0 }} 
-                            animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
-                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                            className="overflow-hidden w-full"
-                          >
-                            <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                              <Label className="text-[10px] text-gray-500 mb-1.5 block">לאיזה מספר לשלוח את ההודעות?</Label>
-                              <div className="relative bg-white rounded-md">
-                                <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                <Input 
-                                  placeholder="050-0000000"
-                                  value={formData.destinationPhone}
-                                  onChange={(e) => handleInputChange('destinationPhone', e.target.value)}
-                                  className="pr-8 h-9 text-xs border-gray-200 focus-visible:ring-teal-500 w-full"
-                                  autoFocus
-                                />
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-
                         {formData.leadDestination === option.value && option.value === 'email' && (
                           <motion.div 
                             key="email-input"
