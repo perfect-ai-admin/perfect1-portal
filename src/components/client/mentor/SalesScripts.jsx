@@ -1,85 +1,130 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Play, BookMarked, MessageCircle, Phone, VideoIcon, Plus } from 'lucide-react';
+import { Copy, Play, BookMarked, MessageCircle, Phone, VideoIcon, Plus, Wand2, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
 import SalesInteractionForm from '../sales/SalesInteractionForm';
+import CreateScriptDialog from './sales/CreateScriptDialog';
 
-const SALES_SCRIPTS = [
+const DEFAULT_SCRIPTS = [
   {
-    id: '1',
-    title: 'טלפון ראשון עם לקוח פוטנציאלי',
+    id: 'default_1',
+    title: 'שיחת היכרות ופתיחה (Cold/Warm Call)',
     duration: '2-3 דקות',
-    type: 'phone',
-    scenario: 'לקוח חדש קרא לך',
-    script: `שלום! אני [שמך] מ-[שם העסק].\n\nתודה שקראת! אני שמח שאתה מעוניין.\n\nלפני שאני מספר על הטרנג - אפשר שתגיד לי:\n1. מה הביא אותך אלי בדיוק?\n2. מה הגדול ביותר שאתה מחפש עזרה בו?\n\n[האזן בעיון]\n\nבדיוק! אני מכיר את הבעיה הזו. להרבה אנשים זה קצה קשה.\n\nאנחנו עוזרים לעסקים בדיוק בממצב שלך על ידי [benefit כללי].\n\nיש לי כמה דקות עכשיו - אפשר לך?\n\n[כן] → "בואו נראה אם זה הפתרון הנכון לך"\n[לא] → "בוא נתאם זמן שנוח לך עוד השבוע"`,
+    type: 'opening',
+    scenario: 'לקוח חדש, או ליד שהשאיר פרטים',
+    script: `שלום! אני [שמך] מ-[שם העסק].\n\nראיתי שהשארת פרטים לגבי [נושא] / אני פונה אליך כי [סיבה].\n\nלפני שאני מספר על מה שאנחנו עושים - חשוב לי להבין:\n1. מה הדבר העיקרי שגרם לך לחפש פתרון עכשיו?\n2. מה האתגר הכי גדול שלך כרגע בתחום הזה?\n\n[האזן בעיון - אל תקטע]\n\n"אני מבין לגמרי. זה הגיוני מאוד."\n\nיש לי כמה דקות עכשיו - זה זמן נוח להבין אם אנחנו יכולים לעזור?`,
     tips: [
-      '🎯 שמור על הקו רך ותופעל - לא מכונה',
-      '👂 האזן יותר מדברת (70% האזנה, 30% דבור)',
-      '❓ שאל שאלות פתוחות - לא סגורות',
-      '⏱️ שמור על זמן - לא תפעל יותר מ-3 דקות בשיחה ראשונה'
+      '🎯 המטרה: ליצור אמון ראשוני, לא למכור מיד',
+      '👂 האזן 80% מהזמן',
+      '❓ שאל שאלות פתוחות ("מה", "איך", "למה")',
+      '🚫 הימנע מפירוט יתר על המוצר בשלב זה'
     ],
-    keywords: ['יצירת קשר', 'טלפוני', 'חימום']
+    keywords: ['פתיחה', 'סינון', 'היכרות']
   },
   {
-    id: '2',
-    title: 'אחרי השתמעות הצרכים - הצעה קלה',
-    duration: '1-2 דקות',
-    type: 'phone',
-    scenario: 'שמעת את הצרכים של הלקוח',
-    script: `בהתבסס על מה שחיכינו - נראה לי שיש לנו פתרון טוב בשבילך.\n\nעכשיו, יש לנו שתי דרכים לעבוד:\n\nאפשרות 1: התייעצות חד-פעמית [מחיר]\n- בדיוק מה שאתה צריך עכשיו\n- זה לוקח [זמן]\n\nאפשרות 2: תוכנית שלנו המלאה [מחיר גבוה יותר]\n- עזרה ממשיכה\n- שינוי ממשי בתוך [אורך זמן]\n\nמה שקולים בעינייך?\n\n[אם הוא בוחר] → "מעולה! בואו נתחיל"\n[אם הוא מהסס] → "אני יודע זה החלטה - בואו נדבר עוד על זה"`,
+    id: 'default_2',
+    title: 'בירור צרכים מעמיק',
+    duration: '5-10 דקות',
+    type: 'discovery',
+    scenario: 'אחרי שהלקוח הביע עניין ראשוני',
+    script: `"אוקיי, כדי שאוכל להתאים לך את הפתרון המדויק ביותר, ספר לי קצת יותר:\n\n1. כמה זמן אתה סובל מהבעיה הזו?\n2. מה ניסית לעשות עד היום כדי לפתור אותה?\n3. אם הייתה לך מטה קסמים, איך הפתרון האידיאלי היה נראה?\n\n[המתן לתשובות]\n\n"ומה יקרה אם לא תפתור את זה בחודש הקרוב? איזו השפעה תהיה לזה?"`,
     tips: [
-      '💰 אל תאמור מחיר לפני שתשמע צרכים',
-      '✅ כל אפשרות צריכה להיות "עדיפה"',
-      '🚫 אל תתחרות בעצמך - תשאל מה חשוב להם',
-      '📊 תן choices - לא תנו ultimatum'
+      '🔍 חפש את ה"כאב" האמיתי מאחורי הבקשה',
+      '💡 המטרה היא שהלקוח יבין בעצמו שהוא חייב פתרון',
+      '📝 רשום את המילים המדויקות של הלקוח'
     ],
-    keywords: ['הצעה', 'סגירה רכה', 'מחיר']
+    keywords: ['צרכים', 'כאב', 'עומק']
   },
   {
-    id: '3',
-    title: 'טיפול בהתנגדויות',
+    id: 'default_3',
+    title: 'הצגת הפתרון (הפיץ\')',
+    duration: '3-5 דקות',
+    type: 'pitch',
+    scenario: 'אחרי שהבנת את הצורך',
+    script: `"בהתבסס על מה שסיפרת לי - שיש לך אתגר עם [הבעיה שלו] ושאתה מחפש [הפתרון שרצה]...\n\nיש לנו בדיוק את מה שאתה צריך.\n\nהתוכנית שלנו כוללת:\n1. [תועלת 1 שקשורה לכאב שלו]\n2. [תועלת 2]\n3. [תועלת 3]\n\nמה שמיוחד אצלנו זה שאנחנו לא רק נותנים [מוצר], אלא גם מוודאים ש-[תוצאה].\n\nאיך זה נשמע לך עד כה?"`,
+    tips: [
+      '🔗 קשר כל תכונה של המוצר לצורך ספציפי שעלה',
+      '✅ וודא הבנה והסכמה אחרי כל נקודה חשובה',
+      '🗣️ דבר בשפה של "תוצאות" ולא "פיצ׳רים"'
+    ],
+    keywords: ['הצעה', 'פתרון', 'ערך']
+  },
+  {
+    id: 'default_4',
+    title: 'טיפול בהתנגדות: "זה יקר לי"',
     duration: '2-3 דקות',
     type: 'objection',
-    scenario: 'הלקוח אומר "זה יקר מדי"',
-    script: `[אם אמר "יקר"]
-"אני מבין! זה השקעה. בואו נחזור רגע...\nאתה אמרת שהבעיה הגדולה שלך היא [בעיה].\nכמה זה עולה לך כל חודש - לא לפתור את זה?"\n\n[בחשבו משהו]\n\n"בדיוק! אז בעצם, ההשקעה שלנו היא בעצם חיסכון בשבילך.\nבנוסף, אנחנו עובדים עם [מס'] לקוחות שחסכו [סכום] בחצי שנה"`,
+    scenario: 'הלקוח נרתע מהמחיר',
+    script: `"אני מבין לגמרי. זו השקעה לא קטנה.\n\nאבל בוא נסתכל על זה רגע מזווית אחרת:\nאמרת מקודם שהבעיה הזו עולה לך [סכום/זמן/כאב] כל חודש, נכון?\n\nאם הפתרון הזה יפתור את הבעיה אחת ולתמיד - האם זה עדיין נראה יקר לעומת המחיר של *לא* לפתור את זה?\n\nבנוסף, המחיר כולל [ערך נוסף], מה שהופך את זה למשתלם יותר בטווח הארוך."`,
     tips: [
-      '🎯 תמיד חזור לערך - לא על המחיר',
-      '🏆 תן דוגמאות מלקוחות אחרים',
-      '⏰ תנחה - "בואו נתחיל עם [חלק קטן יותר]"',
-      '🔄 התנגדות = עניין - לא סיבה לשלוח להודעה'
+      '🤝 אל תתווכח - תזדהה ("אני מבין")',
+      '⚖️ החזר את הפוקוס לערך ולעלות של הבעיה',
+      '🔄 הפוך את ההתנגדות לשאלה ("האם זה יקר, או שאתה לא בטוח שזה יעבוד?")'
     ],
-    keywords: ['התנגדויות', 'מחיר', 'שיקום']
+    keywords: ['התנגדויות', 'מחיר', 'ערך']
   },
   {
-    id: '4',
-    title: 'סגירה וקביעת המפגש הבא',
-    duration: '1 דקה',
+    id: 'default_5',
+    title: 'סגירת העסקה (Closing)',
+    duration: '1-2 דקות',
     type: 'closing',
-    scenario: 'הלקוח מעוניין',
-    script: `"מעולה! אני שמח שנהיה עובדים ביחד.\n\nאז הנה מה שנעשה:\n1. בשבוע הקרוב אנחנו נחתום על [מסמך]\n2. אנחנו נדבר ב- [יום/שעה] עבור [מה שנעשה בפגישה הראשונה]\n3. והתוצאה הראשונה שאתה תראה ב- [שבועות]\n\nיום טוב? [כן] → "מעולה, עד [יום]"`,
+    scenario: 'הלקוח נראה מוכן',
+    script: `"מעולה, אני רואה שזה מתאים לך בול.\n\nאז כדי שנתחיל לראות תוצאות כבר ב[זמן הקרוב], הצעד הבא הוא פשוט:\nאנחנו נסדיר את התשלום, אני אשלח לך את הסכם העבודה, ונתאם את פגישת ההתנעה שלנו ליום [יום].\n\nאיזה אמצעי תשלום עדיף לך - אשראי או העברה?"`,
     tips: [
-      '✅ תמיד סגור עם שלוש צעדים ברורים',
-      '📅 קבע בדיוק: יום, שעה, מה',
-      '📧 שלח בדוא"ל: אישור של מה שנאמר',
-      '🔔 תזכיר שעה לפני הפגישה'
+      '🚀 הנח שהמכירה קרתה (Assumptive Close)',
+      '🗺️ תן מפת דרכים ברורה לצעדים הבאים',
+      '💳 שאל שאלת סגירה טכנית (אמצעי תשלום/מועד התחלה)'
     ],
-    keywords: ['סגירה', 'עסקה', 'אישור']
+    keywords: ['סגירה', 'תשלום', 'התחלה']
   }
 ];
 
-export default function SalesScripts() {
+const TYPE_CONFIG = {
+  opening: { label: 'פתיחה וסינון', icon: Phone, color: 'bg-blue-100 text-blue-700' },
+  discovery: { label: 'בירור צרכים', icon: Lightbulb, color: 'bg-yellow-100 text-yellow-700' },
+  pitch: { label: 'הצגת פתרון', icon: VideoIcon, color: 'bg-purple-100 text-purple-700' },
+  objection: { label: 'טיפול בהתנגדות', icon: MessageCircle, color: 'bg-orange-100 text-orange-700' },
+  closing: { label: 'סגירה', icon: BookMarked, color: 'bg-green-100 text-green-700' },
+  followup: { label: 'פולואו-אפ', icon: Copy, color: 'bg-gray-100 text-gray-700' },
+  general: { label: 'כללי', icon: MessageCircle, color: 'bg-slate-100 text-slate-700' }
+};
+
+export default function SalesScriptsLibrary() {
   const [selectedScript, setSelectedScript] = useState(null);
-  const [formOpen, setFormOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [interactionFormOpen, setInteractionFormOpen] = useState(false);
+  const [filterType, setFilterType] = useState('all');
+  const queryClient = useQueryClient();
+
+  const { data: customScripts, isLoading } = useQuery({
+    queryKey: ['salesScripts'],
+    queryFn: () => base44.entities.SalesScript.list('-created_date'),
+    initialData: []
+  });
+
+  const allScripts = [...(customScripts || []).map(s => ({...s, id: s.id})), ...DEFAULT_SCRIPTS];
+
+  const filteredScripts = filterType === 'all' 
+    ? allScripts 
+    : allScripts.filter(s => s.type === filterType);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     toast.success('הסקריפט הועתק!');
   };
 
+  const handleScriptCreated = (newScript) => {
+    queryClient.invalidateQueries({ queryKey: ['salesScripts'] });
+    setSelectedScript(newScript);
+  };
+
   if (selectedScript) {
+    const TypeIcon = TYPE_CONFIG[selectedScript.type]?.icon || MessageCircle;
+    
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -94,75 +139,75 @@ export default function SalesScripts() {
             ← חזור לרשימה
           </button>
           <Button 
-            onClick={() => setFormOpen(true)} 
+            onClick={() => setInteractionFormOpen(true)} 
             className="gap-2"
           >
             <Plus className="w-4 h-4" />
-            תעד שיחה שעשיתי
+            תעד שיחה ביומן
           </Button>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6 border border-gray-100">
           <div>
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900">{selectedScript.title}</h2>
-                <p className="text-gray-600 mt-2">סיטואציה: {selectedScript.scenario}</p>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{selectedScript.title}</h2>
+                <p className="text-gray-600 mt-2 text-lg">סיטואציה: {selectedScript.scenario}</p>
               </div>
-              <div className="flex gap-2">
-                <Badge>{selectedScript.type === 'phone' ? '☎️ טלפוני' : selectedScript.type === 'objection' ? '⚠️ התנגדויות' : '✅ סגירה'}</Badge>
-                <Badge variant="secondary">{selectedScript.duration}</Badge>
+              <div className="flex gap-2 flex-wrap">
+                <Badge className={TYPE_CONFIG[selectedScript.type]?.color || 'bg-gray-100 text-gray-800'}>
+                  {TYPE_CONFIG[selectedScript.type]?.label || selectedScript.type}
+                </Badge>
+                {selectedScript.duration && <Badge variant="secondary">{selectedScript.duration}</Badge>}
+                {selectedScript.is_custom && <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50">נוצר ב-AI ✨</Badge>}
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-6 border-2 border-gray-200">
+          <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-200 shadow-inner">
             <div className="flex items-start justify-between mb-4">
-              <h3 className="font-bold text-gray-900">הסקריפט:</h3>
+              <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                <MessageCircle className="w-5 h-5 text-indigo-500" />
+                התסריט:
+              </h3>
               <Button
                 size="sm"
-                variant="outline"
-                onClick={() => copyToClipboard(selectedScript.script)}
-                className="gap-2"
+                variant="ghost"
+                onClick={() => copyToClipboard(selectedScript.content || selectedScript.script)}
+                className="gap-2 text-gray-500 hover:text-indigo-600"
               >
                 <Copy className="w-4 h-4" />
                 העתק
               </Button>
             </div>
-            <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono leading-relaxed">
-              {selectedScript.script}
-            </pre>
+            <div className="text-base text-gray-800 whitespace-pre-wrap font-sans leading-loose">
+              {selectedScript.content || selectedScript.script}
+            </div>
           </div>
 
-          <div className="bg-blue-50 rounded-lg p-6 border-2 border-blue-200">
-            <h3 className="font-bold text-blue-900 mb-4">💡 טיפים חשובים:</h3>
-            <ul className="space-y-2">
-              {selectedScript.tips.map((tip, idx) => (
-                <li key={idx} className="text-blue-800 flex items-start gap-2">
-                  <span className="mt-1">•</span>
-                  <span>{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            <Button size="lg" className="gap-2">
-              <Play className="w-5 h-5" />
-              תרגול עם AI
-            </Button>
-            <Button size="lg" variant="outline" className="gap-2">
-              <VideoIcon className="w-5 h-5" />
-              ראה וידאו דוגמה
-            </Button>
-          </div>
+          {(selectedScript.tips && selectedScript.tips.length > 0) && (
+            <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-100">
+              <h3 className="font-bold text-yellow-800 mb-4 flex items-center gap-2">
+                <Lightbulb className="w-5 h-5" />
+                דגשים וטיפים:
+              </h3>
+              <ul className="space-y-3">
+                {selectedScript.tips.map((tip, idx) => (
+                  <li key={idx} className="text-yellow-900 flex items-start gap-3 bg-white/50 p-2 rounded-lg">
+                    <span className="mt-1 text-yellow-600 font-bold">•</span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <SalesInteractionForm 
-          open={formOpen} 
-          onOpenChange={setFormOpen}
+          open={interactionFormOpen} 
+          onOpenChange={setInteractionFormOpen}
           onSuccess={() => {
-            toast.success('שיחה נתועדה! הנתונים שלך מעודכנים כעת');
+            toast.success('שיחה נתועדה!');
           }}
         />
       </motion.div>
@@ -170,57 +215,124 @@ export default function SalesScripts() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <CreateScriptDialog 
+        open={createDialogOpen} 
+        onOpenChange={setCreateDialogOpen}
+        onScriptCreated={handleScriptCreated}
+      />
+      
       <SalesInteractionForm 
-        open={formOpen} 
-        onOpenChange={setFormOpen}
+        open={interactionFormOpen} 
+        onOpenChange={setInteractionFormOpen}
         onSuccess={() => {
-          toast.success('שיחה נתועדה! 📊 הנתונים שלך עודכנו');
+          toast.success('שיחה נתועדה!');
         }}
       />
 
-      <div className="flex justify-end mb-4">
-        <Button 
-          onClick={() => setFormOpen(true)} 
-          className="gap-2 bg-green-600 hover:bg-green-700"
-        >
-          <Plus className="w-4 h-4" />
-          📝 תעד שיחה חדשה
-        </Button>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+        <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 hide-scrollbar">
+          <Button 
+            variant={filterType === 'all' ? 'default' : 'ghost'} 
+            onClick={() => setFilterType('all')}
+            size="sm"
+            className="rounded-full"
+          >
+            הכל
+          </Button>
+          {Object.entries(TYPE_CONFIG).map(([key, config]) => (
+            <Button
+              key={key}
+              variant={filterType === key ? 'secondary' : 'ghost'}
+              onClick={() => setFilterType(key)}
+              size="sm"
+              className={`rounded-full whitespace-nowrap ${filterType === key ? config.color : ''}`}
+            >
+              {config.label}
+            </Button>
+          ))}
+        </div>
+
+        <div className="flex gap-2 w-full md:w-auto">
+          <Button 
+            onClick={() => setCreateDialogOpen(true)} 
+            className="gap-2 bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-200 w-full md:w-auto"
+          >
+            <Wand2 className="w-4 h-4" />
+            צור תסריט ב-AI
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={() => setInteractionFormOpen(true)} 
+            className="gap-2 w-full md:w-auto"
+          >
+            <Plus className="w-4 h-4" />
+            תיעוד שיחה
+          </Button>
+        </div>
       </div>
 
-      {SALES_SCRIPTS.map((script, idx) => (
-        <motion.div
-          key={script.id}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.1 }}
-          onClick={() => setSelectedScript(script)}
-          className="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-blue-500 cursor-pointer hover:shadow-lg transition-all"
-        >
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                {script.type === 'phone' && <Phone className="w-5 h-5 text-blue-600" />}
-                {script.type === 'objection' && <MessageCircle className="w-5 h-5 text-orange-600" />}
-                {script.type === 'closing' && <BookMarked className="w-5 h-5 text-green-600" />}
-                <h3 className="font-bold text-gray-900">{script.title}</h3>
-              </div>
-              <p className="text-sm text-gray-600 mb-3">{script.scenario}</p>
-              <div className="flex gap-2">
-                {script.keywords.map(kw => (
-                  <Badge key={kw} variant="secondary" className="text-xs">
-                    {kw}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredScripts.map((script, idx) => {
+          const TypeIcon = TYPE_CONFIG[script.type]?.icon || MessageCircle;
+          const typeColor = TYPE_CONFIG[script.type]?.color || 'bg-gray-100 text-gray-700';
+          
+          return (
+            <motion.div
+              key={script.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              onClick={() => setSelectedScript(script)}
+              className="bg-white rounded-xl p-5 border border-gray-200 hover:border-purple-400 hover:shadow-md cursor-pointer transition-all group relative overflow-hidden"
+            >
+              {script.is_custom && (
+                <div className="absolute top-0 left-0 bg-purple-500 text-white text-[10px] px-2 py-0.5 rounded-br-lg font-bold">
+                  AI
+                </div>
+              )}
+              
+              <div className="flex items-start justify-between mb-3">
+                <div className={`p-2 rounded-lg ${typeColor} bg-opacity-20`}>
+                  <TypeIcon className="w-5 h-5" />
+                </div>
+                {script.duration && (
+                  <Badge variant="outline" className="text-gray-500 border-gray-200 text-xs">
+                    {script.duration}
                   </Badge>
-                ))}
+                )}
               </div>
-            </div>
-            <div className="text-right ml-4">
-              <Badge>{script.duration}</Badge>
-            </div>
-          </div>
-        </motion.div>
-      ))}
+              
+              <h3 className="font-bold text-gray-900 mb-2 group-hover:text-purple-700 transition-colors line-clamp-1">
+                {script.title}
+              </h3>
+              
+              <p className="text-sm text-gray-500 mb-4 line-clamp-2 min-h-[40px]">
+                {script.scenario}
+              </p>
+              
+              <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-50">
+                <span className="text-xs text-gray-400 font-medium">
+                  {TYPE_CONFIG[script.type]?.label}
+                </span>
+                <span className="text-xs text-purple-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                  צפה בתסריט
+                  <span className="block rtl:rotate-180">←</span>
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+      
+      {filteredScripts.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          <p>לא נמצאו תסריטים בקטגוריה זו</p>
+          <Button variant="link" onClick={() => setFilterType('all')} className="mt-2">
+            הצג הכל
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
