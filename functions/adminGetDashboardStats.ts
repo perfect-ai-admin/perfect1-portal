@@ -33,11 +33,6 @@ Deno.serve(async (req) => {
             .filter(p => new Date(p.created_date) >= firstDayOfMonth)
             .reduce((sum, p) => sum + (p.amount || 0), 0);
 
-        // Leads Stats
-        const leads = await base44.asServiceRole.entities.Lead.list({ limit: 1000 });
-        stats.leads.total = leads.length;
-        stats.leads.new_this_month = leads.filter(l => new Date(l.created_date) >= firstDayOfMonth).length;
-
         // Landing Pages Stats
         const landingPages = await base44.asServiceRole.entities.LandingPage.list({ limit: 1000 });
         stats.landingPages.total = landingPages.length;

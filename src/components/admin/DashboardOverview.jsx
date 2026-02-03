@@ -61,26 +61,13 @@ export default function DashboardOverview() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">הכנסות</CardTitle>
+                        <CardTitle className="text-sm font-medium">הכנסות (החודש)</CardTitle>
                         <CreditCard className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">₪{stats.revenue.total.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">₪{stats.revenue.this_month.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
-                            ₪{stats.revenue.this_month.toLocaleString()} החודש
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">לידים</CardTitle>
-                        <MousePointerClick className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats.leads.total}</div>
-                        <p className="text-xs text-muted-foreground">
-                            +{stats.leads.new_this_month} החודש
+                            סה״כ בכל הזמנים: ₪{stats.revenue.total.toLocaleString()}
                         </p>
                     </CardContent>
                 </Card>
