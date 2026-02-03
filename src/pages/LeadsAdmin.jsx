@@ -46,7 +46,10 @@ export default function LeadsAdmin() {
 
   const { data: leads, isLoading } = useQuery({
     queryKey: ['leads'],
-    queryFn: () => base44.entities.Lead.list('-created_date', 1000),
+    queryFn: async () => {
+      const response = await base44.functions.invoke('adminListLeads');
+      return response.data || [];
+    },
     initialData: []
   });
 
@@ -65,7 +68,10 @@ export default function LeadsAdmin() {
   });
 
   const updateLeadMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
+    mutationFn: async ({ id, data }) => {
+      const response = await base44.functions.invoke('adminUpdateLead', { id, data });
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setSelectedLead(null);
