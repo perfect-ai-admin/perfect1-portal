@@ -19,9 +19,9 @@ const DEFAULT_SCRIPTS = [
     script: `שלום! אני [שמך] מ-[שם העסק].\n\nראיתי שהשארת פרטים לגבי [נושא] / אני פונה אליך כי [סיבה].\n\nלפני שאני מספר על מה שאנחנו עושים - חשוב לי להבין:\n1. מה הדבר העיקרי שגרם לך לחפש פתרון עכשיו?\n2. מה האתגר הכי גדול שלך כרגע בתחום הזה?\n\n[האזן בעיון - אל תקטע]\n\n"אני מבין לגמרי. זה הגיוני מאוד."\n\nיש לי כמה דקות עכשיו - זה זמן נוח להבין אם אנחנו יכולים לעזור?`,
     tips: [
       '🎯 המטרה: ליצור אמון ראשוני, לא למכור מיד',
-      '👂 האזן 80% מהזמן',
+      '👂 האזן 80% מהזמן - תן ללקוח לדבר',
       '❓ שאל שאלות פתוחות ("מה", "איך", "למה")',
-      '🚫 הימנע מפירוט יתר על המוצר בשלב זה'
+      '🚫 הימנע מפירוט יתר על המוצר בשלב זה - זה מוקדם מדי'
     ],
     keywords: ['פתיחה', 'סינון', 'היכרות']
   },
@@ -256,18 +256,18 @@ export default function SalesScriptsLibrary() {
         <div className="flex gap-2 w-full md:w-auto">
           <Button 
             onClick={() => setCreateDialogOpen(true)} 
-            className="gap-2 bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-200 w-full md:w-auto"
+            className="gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg shadow-purple-200 w-full md:w-auto transform hover:scale-105 transition-all duration-200 text-white font-bold"
           >
-            <Wand2 className="w-4 h-4" />
-            צור תסריט ב-AI
+            <Wand2 className="w-4 h-4 animate-pulse" />
+            צור תסריט חדש ב-AI
           </Button>
           <Button 
             variant="outline"
             onClick={() => setInteractionFormOpen(true)} 
-            className="gap-2 w-full md:w-auto"
+            className="gap-2 w-full md:w-auto border-gray-300 hover:bg-gray-50"
           >
-            <Plus className="w-4 h-4" />
-            תיעוד שיחה
+            <Plus className="w-4 h-4 text-green-600" />
+            תיעוד שיחה ידני
           </Button>
         </div>
       </div>

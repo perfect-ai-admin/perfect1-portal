@@ -16,14 +16,14 @@ import SalesSimulator from './SalesSimulator';
 import SalesAnalyticsDashboard from '../../sales/SalesAnalyticsDashboard';
 
 export default function SalesCenter() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('scripts');
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">מרכז המכירות</h2>
-          <p className="text-gray-500">כל הכלים לסגירת העסקה הבאה שלך</p>
+          <h2 className="text-2xl font-bold text-gray-900">מרכז המכירות המתקדם</h2>
+          <p className="text-gray-500">כלים חכמים, תסריטי AI וסימולציות לסגירת עסקאות</p>
         </div>
       </div>
 
