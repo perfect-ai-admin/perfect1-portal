@@ -176,6 +176,56 @@ export default function DailyFocusScreen({ focus, onSave }) {
                         </div>
                     )}
                   </div>
+
+                  {/* Selected Goal Context & Tasks */}
+                  <AnimatePresence mode="wait">
+                    {selectedGoalId && activeGoals.find(g => g.id === selectedGoalId) && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            key={selectedGoalId}
+                            className="bg-indigo-50/50 rounded-xl p-4 border border-indigo-100 mb-4 space-y-3"
+                        >
+                            {/* Plan Summary / Context */}
+                            {activeGoals.find(g => g.id === selectedGoalId).plan_summary && (
+                                <div className="text-sm text-indigo-800 bg-indigo-100/50 p-3 rounded-lg flex gap-2 items-start">
+                                    <Sparkles className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                                    <div>
+                                        <span className="font-bold block text-xs uppercase tracking-wider text-indigo-500 mb-1">האסטרטגיה למטרה זו:</span>
+                                        <p className="leading-relaxed">{activeGoals.find(g => g.id === selectedGoalId).plan_summary}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Goal Pending Tasks */}
+                            {activeGoals.find(g => g.id === selectedGoalId).tasks?.filter(t => t.status !== 'done').length > 0 ? (
+                                <div>
+                                    <span className="text-xs font-bold text-gray-500 mb-2 block px-1">משימות פתוחות מהתוכנית:</span>
+                                    <div className="flex flex-wrap gap-2">
+                                        {activeGoals.find(g => g.id === selectedGoalId).tasks
+                                            .filter(t => t.status !== 'done')
+                                            .slice(0, 5) // Show top 5
+                                            .map(task => (
+                                                <button
+                                                    key={task.id}
+                                                    onClick={() => setPrimaryFocus(task.title)}
+                                                    className="text-xs bg-white hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 text-gray-700 hover:text-indigo-700 px-3 py-1.5 rounded-full transition-colors text-right truncate max-w-[200px]"
+                                                    title={task.title}
+                                                >
+                                                    {task.title}
+                                                </button>
+                                            ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-xs text-gray-400 italic px-1">
+                                    אין משימות פתוחות למטרה זו כרגע. זה הזמן ליצור חדשות!
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+                  </AnimatePresence>
                   <Textarea
                     placeholder="למשל: לסגור את העסקה עם יוסי..."
                     value={primaryFocus}
