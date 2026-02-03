@@ -114,9 +114,8 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                 </DialogHeader>
 
                 <Tabs defaultValue="info" className="mt-4">
-                    <TabsList className="grid grid-cols-6 w-full">
+                    <TabsList className="grid grid-cols-5 w-full">
                         <TabsTrigger value="info">פרטים</TabsTrigger>
-                        <TabsTrigger value="permissions">הרשאות</TabsTrigger>
                         <TabsTrigger value="plan">מסלול</TabsTrigger>
                         <TabsTrigger value="financial">פיננסי</TabsTrigger>
                         <TabsTrigger value="marketing">שיווק</TabsTrigger>
@@ -166,42 +165,50 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                             </div>
                         </div>
                          <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
-                            <div className="flex items-center gap-2">
-                                <Shield className="w-5 h-5 text-orange-600" />
-                                <Label>הרשאות מנהל</Label>
-                            </div>
-                            <Switch
-                                checked={formData.is_admin}
-                                onCheckedChange={(checked) => setFormData({...formData, is_admin: checked})}
-                            />
-                        </div>
-                    </TabsContent>
+                             <div className="flex items-center gap-2">
+                                 <Shield className="w-5 h-5 text-orange-600" />
+                                 <Label>הרשאות מנהל</Label>
+                             </div>
+                             <Switch
+                                 checked={formData.is_admin}
+                                 onCheckedChange={(checked) => setFormData({...formData, is_admin: checked})}
+                             />
+                         </div>
 
-                    <TabsContent value="permissions" className="space-y-4 mt-4">
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
-                                <Label>מודול שיווק</Label>
-                                <Switch
-                                    checked={formData.marketing_enabled}
-                                    onCheckedChange={(checked) => setFormData({...formData, marketing_enabled: checked})}
-                                />
-                            </div>
-                            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                                <Label>מודול מנטור</Label>
-                                <Switch
-                                    checked={formData.mentor_enabled}
-                                    onCheckedChange={(checked) => setFormData({...formData, mentor_enabled: checked})}
-                                />
-                            </div>
-                            <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                                <Label>מודול פיננסים</Label>
-                                <Switch
-                                    checked={formData.finance_enabled}
-                                    onCheckedChange={(checked) => setFormData({...formData, finance_enabled: checked})}
-                                />
-                            </div>
-                        </div>
-                    </TabsContent>
+                         {/* Module Permissions moved from separate tab */}
+                         <div className="space-y-4 pt-4 border-t mt-4">
+                             <Label className="text-lg font-semibold block mb-2">הרשאות מודולים</Label>
+                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                 <div className="flex flex-col gap-2 p-4 bg-purple-50 rounded-lg">
+                                     <div className="flex items-center justify-between">
+                                         <Label>מודול שיווק</Label>
+                                         <Switch
+                                             checked={formData.marketing_enabled}
+                                             onCheckedChange={(checked) => setFormData({...formData, marketing_enabled: checked})}
+                                         />
+                                     </div>
+                                 </div>
+                                 <div className="flex flex-col gap-2 p-4 bg-blue-50 rounded-lg">
+                                     <div className="flex items-center justify-between">
+                                         <Label>מודול מנטור</Label>
+                                         <Switch
+                                             checked={formData.mentor_enabled}
+                                             onCheckedChange={(checked) => setFormData({...formData, mentor_enabled: checked})}
+                                         />
+                                     </div>
+                                 </div>
+                                 <div className="flex flex-col gap-2 p-4 bg-green-50 rounded-lg">
+                                     <div className="flex items-center justify-between">
+                                         <Label>מודול פיננסים</Label>
+                                         <Switch
+                                             checked={formData.finance_enabled}
+                                             onCheckedChange={(checked) => setFormData({...formData, finance_enabled: checked})}
+                                         />
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         </TabsContent>
 
                     <TabsContent value="plan" className="space-y-4 mt-4">
                         <div className="bg-gray-50 p-4 rounded-lg">
