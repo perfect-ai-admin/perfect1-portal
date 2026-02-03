@@ -91,16 +91,33 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
     const handleSave = async () => {
         setSaving(true);
         try {
-            await base44.functions.invoke('adminUpdateUser', {
+            // Clean up formData before sending
+            const updates = { ...formData };
+            // Ensure nulls are handled correctly or removed if your backend prefers undefined
+            if (updates.goals_limit_override === '') updates.goals_limit_override = null;
+            if (updates.max_active_goals_override === '') updates.max_active_goals_override = null;
+
+            const response = await base44.functions.invoke('adminUpdateUser', {
                 user_id: user.id,
-                updates: formData
+                updates: updates
             });
+            
+            // Check for logical error from backend even if HTTP 200 (though invoke throws on non-2xx usually, 
+            // but if backend returns {error: ...} with 200, we need to catch it. 
+            // Base44 functions usually return the data directly in response.data)
+            
+            // If the wrapper function returns { error: ... } inside data
+            if (response.data?.error) {
+                throw new Error(response.data.error);
+            }
+
             toast.success('המשתמש עודכן בהצלחה');
             onUpdate();
             onClose();
         } catch (error) {
-            toast.error('שגיאה בעדכון המשתמש');
-            console.error(error);
+            console.error('Update failed:', error);
+            const errorMessage = error.response?.data?.error || error.message || 'שגיאה לא ידועה';
+            toast.error(`שגיאה בעדכון המשתמש: ${errorMessage}`);
         } finally {
             setSaving(false);
         }

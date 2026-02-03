@@ -16,6 +16,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing user_id or updates' }, { status: 400 });
     }
 
+    // Sync role with is_admin
+    if (typeof updates.is_admin === 'boolean') {
+        updates.role = updates.is_admin ? 'admin' : 'user';
+    }
+
     // Update user using service role
     await base44.asServiceRole.entities.User.update(user_id, updates);
 
