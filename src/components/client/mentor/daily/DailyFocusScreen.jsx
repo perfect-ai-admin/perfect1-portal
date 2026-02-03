@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   CheckCircle2, 
   Clock, 
@@ -21,7 +22,8 @@ import { base44 } from '@/api/base44Client';
 
 export default function DailyFocusScreen({ focus, onSave }) {
   const [primaryFocus, setPrimaryFocus] = useState(focus?.primary_focus || '');
-  const [primaryGoal, setPrimaryGoal] = useState(null);
+  const [selectedGoalId, setSelectedGoalId] = useState(focus?.goal_id || '');
+  const [activeGoals, setActiveGoals] = useState([]);
   const [estimatedTime, setEstimatedTime] = useState(focus?.estimated_time || 60);
   const [subTasks, setSubTasks] = useState(focus?.sub_tasks || []);
   const [newSubTask, setNewSubTask] = useState('');
@@ -32,19 +34,25 @@ export default function DailyFocusScreen({ focus, onSave }) {
         setPrimaryFocus(focus.primary_focus || '');
         setEstimatedTime(focus.estimated_time || 60);
         setStatus(focus.status || 'pending');
+        setSelectedGoalId(focus.goal_id || '');
     }
 
-    const loadPrimaryGoal = async () => {
+    const loadGoals = async () => {
         try {
-            const goals = await base44.entities.UserGoal.filter({ isPrimary: true, status: 'active' }, '-created_date', 1);
-            if (goals && goals.length > 0) {
-                setPrimaryGoal(goals[0]);
+            const goals = await base44.entities.UserGoal.filter({ status: 'active' }, '-created_date', 20);
+            if (goals) {
+                setActiveGoals(goals);
+                // If no goal selected and there are goals, default to primary or first one
+                if (!focus?.goal_id && !selectedGoalId) {
+                    const primary = goals.find(g => g.isPrimary) || goals[0];
+                    if (primary) setSelectedGoalId(primary.id);
+                }
             }
         } catch (error) {
-            console.error('Failed to load primary goal:', error);
+            console.error('Failed to load goals:', error);
         }
     };
-    loadPrimaryGoal();
+    loadGoals();
   }, [focus]);
 
   const handleComplete = () => {
@@ -56,6 +64,7 @@ export default function DailyFocusScreen({ focus, onSave }) {
     setStatus('completed');
     onSave({ 
       primary_focus: primaryFocus, 
+      goal_id: selectedGoalId,
       estimated_time: estimatedTime, 
       sub_tasks: subTasks,
       status: 'completed' 
@@ -139,17 +148,31 @@ export default function DailyFocusScreen({ focus, onSave }) {
               
               <div className="relative z-10 space-y-6">
                 <div>
-                  <div className="flex justify-between items-end mb-2">
-                    <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                        <Target className="w-4 h-4 text-indigo-600" />
-                        הגדר את המשימה העיקרית
-                    </label>
-                    {primaryGoal && (
-                        <div className="flex items-center gap-1.5 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100">
-                            <Link className="w-3 h-3 text-blue-600" />
-                            <span className="text-xs text-blue-800">
-                                עבור המטרה: <span className="font-semibold">{primaryGoal.title}</span>
-                            </span>
+                  <div className="flex flex-col gap-4 mb-4">
+                    <div className="flex justify-between items-center">
+                        <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                            <Target className="w-4 h-4 text-indigo-600" />
+                            הגדר את המשימה העיקרית
+                        </label>
+                    </div>
+                    
+                    {activeGoals.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {activeGoals.map(goal => (
+                                <button
+                                    key={goal.id}
+                                    onClick={() => setSelectedGoalId(goal.id)}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all ${
+                                        selectedGoalId === goal.id
+                                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
+                                            : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300'
+                                    }`}
+                                >
+                                    {selectedGoalId === goal.id && <CheckCircle2 className="w-3 h-3" />}
+                                    {goal.title}
+                                    {goal.isPrimary && <span className="bg-white/20 px-1.5 rounded-full text-[10px] ml-1">ראשי</span>}
+                                </button>
+                            ))}
                         </div>
                     )}
                   </div>
