@@ -33,8 +33,8 @@ Deno.serve(async (req) => {
         };
 
         // Users Stats
-        // Using null for sort to rely on default sorting, ensuring we get data.
-        const users = await base44.asServiceRole.entities.User.list(null, 1000); 
+        // Using -created_date for sort to ensure we get data.
+        const users = await base44.asServiceRole.entities.User.list('-created_date', 1000); 
         stats.users.total = users.length;
         const now = new Date();
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
