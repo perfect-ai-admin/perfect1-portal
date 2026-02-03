@@ -334,7 +334,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.businessName} 
                   onChange={(e) => handleInputChange('businessName', e.target.value)} 
                   placeholder="למשל: Perfect One" 
-                  className="h-9 text-xs"
+                  className="h-10 text-base md:h-9 md:text-xs"
                 />
               </div>
 
@@ -345,7 +345,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.businessField} 
                   onChange={(e) => handleInputChange('businessField', e.target.value)} 
                   placeholder="למשל: ייעוץ עסקי" 
-                  className="h-9 text-xs"
+                  className="h-10 text-base md:h-9 md:text-xs"
                 />
               </div>
 
@@ -356,7 +356,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.businessDescription} 
                   onChange={(e) => handleInputChange('businessDescription', e.target.value)} 
                   placeholder="אנחנו עוזרים ל... לעשות... כדי ש..." 
-                  className="h-20 text-xs resize-none"
+                  className="h-20 text-base md:text-xs resize-none"
                 />
               </div>
             </div>
@@ -381,7 +381,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.painPoint} 
                   onChange={(e) => handleInputChange('painPoint', e.target.value)} 
                   placeholder="תארו את הבעיה בפרטים..." 
-                  className="h-20 text-xs resize-none"
+                  className="h-20 text-base md:text-xs resize-none"
                 />
               </div>
 
@@ -426,7 +426,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.solution} 
                   onChange={(e) => handleInputChange('solution', e.target.value)} 
                   placeholder="תארו את הפתרון בקצרה" 
-                  className="h-16 text-xs resize-none"
+                  className="h-16 text-base md:text-xs resize-none"
                 />
               </div>
 
@@ -437,19 +437,19 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     value={formData.solutionSteps.step1} 
                     onChange={(e) => handleNestedInputChange('solutionSteps', 'step1', e.target.value)} 
                     placeholder="שלב 1" 
-                    className="h-8 text-xs"
+                    className="h-10 text-base md:h-8 md:text-xs"
                   />
                   <Input 
                     value={formData.solutionSteps.step2} 
                     onChange={(e) => handleNestedInputChange('solutionSteps', 'step2', e.target.value)} 
                     placeholder="שלב 2" 
-                    className="h-8 text-xs"
+                    className="h-10 text-base md:h-8 md:text-xs"
                   />
                   <Input 
                     value={formData.solutionSteps.step3} 
                     onChange={(e) => handleNestedInputChange('solutionSteps', 'step3', e.target.value)} 
                     placeholder="שלב 3" 
-                    className="h-8 text-xs"
+                    className="h-10 text-base md:h-8 md:text-xs"
                   />
                 </div>
               </div>
@@ -496,7 +496,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.advantageExplanation} 
                   onChange={(e) => handleInputChange('advantageExplanation', e.target.value)} 
                   placeholder="הסבירו בקצרה..." 
-                  className="h-14 text-xs resize-none"
+                  className="h-14 text-base md:text-xs resize-none"
                 />
               </div>
             </div>
@@ -540,7 +540,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.strongMetric} 
                   onChange={(e) => handleInputChange('strongMetric', e.target.value)} 
                   placeholder="למשל: 5000+ לקוחות, 98% הצלחה" 
-                  className="h-9 text-xs"
+                  className="h-10 text-base md:h-9 md:text-xs"
                 />
               </div>
             </div>
@@ -564,7 +564,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.valueProposition} 
                   onChange={(e) => handleInputChange('valueProposition', e.target.value)} 
                   placeholder="תוצאה ברורה ולא רק 'שירות'..." 
-                  className="h-20 text-xs resize-none"
+                  className="h-20 text-base md:text-xs resize-none"
                 />
               </div>
 
@@ -574,7 +574,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.afterPicture} 
                   onChange={(e) => handleInputChange('afterPicture', e.target.value)} 
                   placeholder="תארו את המצב החדש והטוב יותר..." 
-                  className="h-20 text-xs resize-none"
+                  className="h-20 text-base md:text-xs resize-none"
                 />
               </div>
             </div>
@@ -599,7 +599,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.additionalDetails} 
                   onChange={(e) => handleInputChange('additionalDetails', e.target.value)} 
                   placeholder="הוסיפו כל פרט רלוונטי נוסף שיעזור לנו לבנות את המצגת..." 
-                  className="h-32 text-xs resize-none"
+                  className="h-32 text-base md:text-xs resize-none"
                 />
               </div>
 
@@ -683,7 +683,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   value={formData.colors} 
                   onChange={(e) => handleInputChange('colors', e.target.value)} 
                   placeholder="למשל: כחול וזהב" 
-                  className="h-9 text-xs"
+                  className="h-10 text-base md:h-9 md:text-xs"
                 />
               </div>
 

@@ -238,7 +238,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                   value={formData.businessName} 
                   onChange={(e) => handleInputChange('businessName', e.target.value)} 
                   placeholder="הזן טקסט חופשי..." 
-                  className="h-9 text-xs"
+                  className="h-10 text-base md:h-9 md:text-xs"
                   autoFocus
                 />
               </div>
@@ -270,7 +270,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                           value={formData.customField} 
                           onChange={(e) => handleInputChange('customField', e.target.value)} 
                           placeholder="למשל: אדריכלות, אינסטלציה..." 
-                          className="h-9 text-xs mt-1"
+                          className="h-10 text-base md:h-9 md:text-xs mt-1"
                           autoFocus
                         />
                     </div>
@@ -284,7 +284,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                       value={formData.mainSubject} 
                       onChange={(e) => handleInputChange('mainSubject', e.target.value)} 
                       placeholder="למשל: מצלמה, רכב, פיצה, מחשב, או 'דמות שלי'..." 
-                      className="h-9 text-xs"
+                      className="h-10 text-base md:h-9 md:text-xs"
                   />
                   <p className="text-[10px] text-gray-500">עוזר ל-AI להבין מה לצייר במרכז הסטיקר</p>
                 </div>
@@ -577,7 +577,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                       value={formData.exampleSentence} 
                       onChange={(e) => handleInputChange('exampleSentence', e.target.value)} 
                       placeholder="למשל: תודה רבה, מאושר, מבצע..." 
-                      className="h-9 text-xs"
+                      className="h-10 text-base md:h-9 md:text-xs"
                     />
                 </div>
 
@@ -587,7 +587,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                       value={formData.excludeText} 
                       onChange={(e) => handleInputChange('excludeText', e.target.value)} 
                       placeholder="טקסט חופשי..." 
-                      className="h-20 text-xs resize-none"
+                      className="h-20 text-base md:text-xs resize-none"
                     />
                 </div>
              </div>
