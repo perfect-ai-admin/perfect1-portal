@@ -116,7 +116,11 @@ export default function DashboardOverview() {
                                 <div key={log.id} className="flex items-center justify-between border-b pb-2 last:border-0 last:pb-0">
                                     <div>
                                         <p className="text-sm font-medium">{log.action}</p>
-                                        <p className="text-xs text-muted-foreground">{log.entity_name} • {log.details}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            {log.entity_name} • {typeof log.details === 'object' && log.details !== null 
+                                                ? JSON.stringify(log.details) 
+                                                : log.details}
+                                        </p>
                                     </div>
                                     <div className="text-xs text-muted-foreground text-left" dir="ltr">
                                         {format(new Date(log.created_date), 'dd/MM/yyyy HH:mm')}

@@ -368,7 +368,11 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                                 extendedData?.activityLog?.map(log => (
                                                     <TableRow key={log.id}>
                                                         <TableCell>{log.action}</TableCell>
-                                                        <TableCell>{log.details}</TableCell>
+                                                        <TableCell>
+                                                            {typeof log.details === 'object' && log.details !== null 
+                                                                ? JSON.stringify(log.details) 
+                                                                : log.details}
+                                                        </TableCell>
                                                         <TableCell dir="ltr" className="text-left">{format(new Date(log.created_date), 'dd/MM/yyyy HH:mm')}</TableCell>
                                                     </TableRow>
                                                 ))
