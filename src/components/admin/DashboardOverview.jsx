@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, CreditCard, MousePointerClick, FileText, Activity } from 'lucide-react';
+import { Users, CreditCard, MousePointerClick, FileText, Activity, Image, Presentation, Smile } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 
@@ -84,9 +84,48 @@ export default function DashboardOverview({ loginData }) {
                         <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.landingPages.total}</div>
+                        <div className="text-2xl font-bold">{stats.landingPages.published}</div>
                         <p className="text-xs text-muted-foreground">
-                            {stats.landingPages.published} מפורסמים
+                            מתוך {stats.landingPages.total} סה״כ
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">לוגואים</CardTitle>
+                        <Image className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.products.logos}</div>
+                        <p className="text-xs text-muted-foreground">
+                            נרכשו בהצלחה
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">מצגות</CardTitle>
+                        <Presentation className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.products.presentations}</div>
+                        <p className="text-xs text-muted-foreground">
+                            נרכשו בהצלחה
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">סטיקרים</CardTitle>
+                        <Smile className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.products.stickers}</div>
+                        <p className="text-xs text-muted-foreground">
+                            נרכשו בהצלחה
                         </p>
                     </CardContent>
                 </Card>
