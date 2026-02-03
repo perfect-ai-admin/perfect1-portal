@@ -97,7 +97,7 @@ export default function DashboardOverview({ loginData }) {
                         <Image className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.products.logos}</div>
+                        <div className="text-2xl font-bold">{stats.products?.logos || 0}</div>
                         <p className="text-xs text-muted-foreground">
                             נרכשו בהצלחה
                         </p>
@@ -110,7 +110,7 @@ export default function DashboardOverview({ loginData }) {
                         <Presentation className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.products.presentations}</div>
+                        <div className="text-2xl font-bold">{stats.products?.presentations || 0}</div>
                         <p className="text-xs text-muted-foreground">
                             נרכשו בהצלחה
                         </p>
@@ -123,7 +123,7 @@ export default function DashboardOverview({ loginData }) {
                         <Smile className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.products.stickers}</div>
+                        <div className="text-2xl font-bold">{stats.products?.stickers || 0}</div>
                         <p className="text-xs text-muted-foreground">
                             נרכשו בהצלחה
                         </p>
