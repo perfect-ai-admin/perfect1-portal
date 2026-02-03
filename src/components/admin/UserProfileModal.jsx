@@ -175,39 +175,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                              />
                          </div>
 
-                         {/* Module Permissions moved from separate tab */}
-                         <div className="space-y-4 pt-4 border-t mt-4">
-                             <Label className="text-lg font-semibold block mb-2">הרשאות מודולים</Label>
-                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                 <div className="flex flex-col gap-2 p-4 bg-purple-50 rounded-lg">
-                                     <div className="flex items-center justify-between">
-                                         <Label>מודול שיווק</Label>
-                                         <Switch
-                                             checked={formData.marketing_enabled}
-                                             onCheckedChange={(checked) => setFormData({...formData, marketing_enabled: checked})}
-                                         />
-                                     </div>
-                                 </div>
-                                 <div className="flex flex-col gap-2 p-4 bg-blue-50 rounded-lg">
-                                     <div className="flex items-center justify-between">
-                                         <Label>מודול מנטור</Label>
-                                         <Switch
-                                             checked={formData.mentor_enabled}
-                                             onCheckedChange={(checked) => setFormData({...formData, mentor_enabled: checked})}
-                                         />
-                                     </div>
-                                 </div>
-                                 <div className="flex flex-col gap-2 p-4 bg-green-50 rounded-lg">
-                                     <div className="flex items-center justify-between">
-                                         <Label>מודול פיננסים</Label>
-                                         <Switch
-                                             checked={formData.finance_enabled}
-                                             onCheckedChange={(checked) => setFormData({...formData, finance_enabled: checked})}
-                                         />
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
+
                          </TabsContent>
 
                     <TabsContent value="plan" className="space-y-4 mt-4">
