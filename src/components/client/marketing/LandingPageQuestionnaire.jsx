@@ -113,6 +113,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
   const [errors, setErrors] = useState({});
   const [isBuilding, setIsBuilding] = useState(false);
+  const [creationError, setCreationError] = useState(null); // Add error state
   const [showSuccess, setShowSuccess] = useState(false);
   const [pageSlug, setPageSlug] = useState('');
   const [createdPageData, setCreatedPageData] = useState(null);
@@ -281,10 +282,10 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
     } catch (error) {
       console.error('❌ Landing page creation failed:', error);
-      alert(`שגיאה: ${error.message || 'אנא נסה שוב'}`);
-    } finally {
-      setIsBuilding(false);
+      setCreationError(error.message || 'אירעה שגיאה בבניית הדף');
+      // Do NOT set isBuilding to false immediately so we can show the error state inside the building view
     }
+    // Only turn off building if we're not showing an error state (handled in UI)
   };
 
   const handlePublishToLive = async () => {
@@ -1153,61 +1154,100 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                 </div>
               </motion.div>
 
-              {/* Loading steps */}
-              {/* Countdown Timer */}
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="relative z-10 mt-10 mb-8"
-              >
-                <div className="relative w-28 h-28">
-                  <svg className="absolute inset-0 transform -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" strokeWidth="2" />
-                    <motion.circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      stroke="#3b82f6"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeDasharray={`${(countdown / 60) * 283} 283`}
-                      animate={{ strokeDasharray: [`${(countdown / 60) * 283} 283`] }}
-                      transition={{ duration: 0.5 }}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <motion.div
-                      key={countdown}
-                      initial={{ scale: 1.2, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-4xl font-black text-blue-600"
-                    >
-                      {countdown}
-                    </motion.div>
-                    <span className="text-xs text-slate-500 mt-1">שניות</span>
+              {/* Loading steps or Error View */}
+              {creationError ? (
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="relative z-10 mt-10 mb-8 flex flex-col items-center max-w-sm text-center"
+                >
+                  <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <AlertCircle className="w-10 h-10 text-red-600" />
                   </div>
-                </div>
-              </motion.div>
+                  <h4 className="text-xl font-bold text-slate-900 mb-2">אופס, משהו השתבש</h4>
+                  <p className="text-slate-600 text-sm mb-6">
+                    נתקלנו בבעיה קטנה בבניית הדף. אל דאגה, זה קורה לפעמים בגלל עומס.
+                  </p>
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={() => {
+                        setCreationError(null);
+                        setIsBuilding(false);
+                      }}
+                      variant="outline"
+                      className="border-red-200 hover:bg-red-50 text-red-700"
+                    >
+                      חזור לעריכה
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setCreationError(null);
+                        handleSubmit({ preventDefault: () => {} });
+                      }}
+                      className="bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-200"
+                    >
+                      נסה שוב
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : (
+                <>
+                  {/* Countdown Timer */}
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                    className="relative z-10 mt-10 mb-8"
+                  >
+                    <div className="relative w-28 h-28">
+                      <svg className="absolute inset-0 transform -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" strokeWidth="2" />
+                        <motion.circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          fill="none"
+                          stroke="#3b82f6"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeDasharray={`${(countdown / 60) * 283} 283`}
+                          animate={{ strokeDasharray: [`${(countdown / 60) * 283} 283`] }}
+                          transition={{ duration: 0.5 }}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <motion.div
+                          key={countdown}
+                          initial={{ scale: 1.2, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="text-4xl font-black text-blue-600"
+                        >
+                          {countdown}
+                        </motion.div>
+                        <span className="text-xs text-slate-500 mt-1">שניות</span>
+                      </div>
+                    </div>
+                  </motion.div>
 
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="relative z-10 space-y-3 text-sm"
-              >
-                <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="flex items-center gap-2 text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" /> ניתוח העסק שלך
-                </motion.div>
-                <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }} className="flex items-center gap-2 text-slate-700">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" /> יצירת תוכן עמוק
-                </motion.div>
-                <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }} className="flex items-center gap-2 text-slate-700">
-                  <Loader2 className="w-4 h-4 text-blue-600 animate-spin" /> שיפור עיצובים
-                </motion.div>
-              </motion.div>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    className="relative z-10 space-y-3 text-sm"
+                  >
+                    <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="flex items-center gap-2 text-slate-700">
+                      <CheckCircle2 className="w-4 h-4 text-green-600" /> ניתוח העסק שלך
+                    </motion.div>
+                    <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }} className="flex items-center gap-2 text-slate-700">
+                      <CheckCircle2 className="w-4 h-4 text-green-600" /> יצירת תוכן עמוק
+                    </motion.div>
+                    <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }} className="flex items-center gap-2 text-slate-700">
+                      <Loader2 className="w-4 h-4 text-blue-600 animate-spin" /> שיפור עיצובים
+                    </motion.div>
+                  </motion.div>
+                </>
+              )}
             </div>
           ) : showingPreview ? (
             <div className="flex flex-col h-full bg-slate-50 animate-in fade-in zoom-in duration-500 relative overflow-hidden">
