@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { FileText, Plus, BarChart3, DollarSign, Search } from 'lucide-react';
+import { FileText, Plus, BarChart3, DollarSign, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +31,28 @@ export default function QuickActionsBar({ onActionComplete, user }) {
     return true;
   };
 
+  const handleDisconnect = async () => {
+    if (!window.confirm('האם אתה בטוח שברצונך להתנתק ממערכת הנהלת החשבונות?')) return;
+    
+    try {
+      await base44.auth.updateMe({
+        accounting_software: null
+      });
+      toast.success('התנתקת בהצלחה');
+      window.location.reload();
+    } catch (error) {
+      console.error('Disconnect error:', error);
+      toast.error('שגיאה בהתנתקות');
+    }
+  };
+
+  const softwareLogos = {
+    morning: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/c4ed41c81_image.png',
+    finbot: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/bad1e678a_Logo-Finbot-2048x470.png',
+    icount: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/14f110f3a_image.png',
+    sumit: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/ee666d319_image.png',
+  };
+
   const handleAction = (actionType, subType = null) => {
     if (checkConnection()) {
         setShowCreateModal({ type: actionType, subType });
@@ -47,6 +71,31 @@ export default function QuickActionsBar({ onActionComplete, user }) {
     <>
       {/* Desktop Bar */}
       <div className="hidden md:flex items-center gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4 shadow-sm">
+        {user?.accounting_software?.is_active && (
+          <div className="flex items-center gap-2 pl-4 ml-2 border-l border-blue-200">
+            <div className="relative group">
+              <div className="h-8 w-auto px-2 bg-white rounded-md border border-blue-100 flex items-center justify-center shadow-sm">
+                 <img 
+                   src={softwareLogos[user.accounting_software.provider]} 
+                   alt={user.accounting_software.provider}
+                   className="h-5 w-auto object-contain"
+                 />
+              </div>
+              <button 
+                onClick={handleDisconnect}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                title="התנתק"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] text-gray-500 leading-tight">מחובר ל-</span>
+              <span className="text-xs font-bold text-gray-700 leading-tight capitalize">{user.accounting_software.provider}</span>
+            </div>
+          </div>
+        )}
+
         {/* Create Document */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
