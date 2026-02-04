@@ -9,10 +9,30 @@ export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, on
   const [connectingTo, setConnectingTo] = useState(null);
 
   const softwareOptions = [
-    { id: 'morning', name: 'Morning', color: 'bg-[#00c853]', textColor: 'text-white' },
-    { id: 'finbot', name: 'Finbot', color: 'bg-[#2979ff]', textColor: 'text-white' },
-    { id: 'icount', name: 'iCount', color: 'bg-[#4caf50]', textColor: 'text-white' },
-    { id: 'sumit', name: 'Sumit', color: 'bg-[#ff6d00]', textColor: 'text-white' },
+    { 
+      id: 'morning', 
+      name: 'Morning', 
+      logo: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/c4ed41c81_image.png',
+      color: 'bg-[#00c853]' 
+    },
+    { 
+      id: 'finbot', 
+      name: 'Finbot', 
+      logo: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/bad1e678a_Logo-Finbot-2048x470.png',
+      color: 'bg-[#2979ff]' 
+    },
+    { 
+      id: 'icount', 
+      name: 'iCount', 
+      logo: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/43ec7cbf1_image.png',
+      color: 'bg-[#4caf50]' 
+    },
+    { 
+      id: 'sumit', 
+      name: 'Sumit', 
+      logo: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/ee666d319_image.png',
+      color: 'bg-[#ff6d00]' 
+    },
   ];
 
   const handleConnect = async (softwareId) => {
@@ -70,10 +90,13 @@ export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, on
                 <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
               ) : (
                 <>
-                  <div className={`w-12 h-12 rounded-lg ${software.color} flex items-center justify-center text-xl font-bold ${software.textColor} shadow-inner`}>
-                    {software.name.charAt(0)}
+                  <div className="h-12 flex items-center justify-center px-4">
+                    <img 
+                      src={software.logo} 
+                      alt={software.name} 
+                      className="max-h-full max-w-full object-contain"
+                    />
                   </div>
-                  <span className="font-semibold text-gray-700">{software.name}</span>
                 </>
               )}
             </button>
