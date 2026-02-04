@@ -578,7 +578,13 @@ Return ONLY the JSON object with these keys:
           sections: sections.length
         });
 
-        return Response.json({ slug, id: result.id, pageUrl });
+        // Return FULL entity data so client doesn't need to fetch it again
+        return Response.json({ 
+            ...result, // Includes business_name, sections_json, etc.
+            slug, 
+            id: result.id, 
+            pageUrl 
+        });
     } catch (error) {
         console.error("\n❌ QA FAILED:", error.message);
         console.error("Stack:", error.stack);
