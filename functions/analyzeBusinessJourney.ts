@@ -238,11 +238,6 @@ Deno.serve(async (req) => {
             business_journey_completed_date: new Date().toISOString(),
         };
 
-        // If user has a phone number, activate them immediately
-        if (user.phone) {
-            updates.status = 'active';
-        }
-
         await base44.auth.updateMe({
             ...updates,
             // We keep these for now as some components might still rely on them until full migration

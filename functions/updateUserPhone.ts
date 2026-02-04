@@ -20,8 +20,14 @@ Deno.serve(async (req) => {
         // ID is user.id
         const updates = { phone };
         
-        // If user has completed business journey, activate them
-        if (user.business_journey_completed) {
+        // Check if user has activated any goal
+        const activeGoals = await base44.entities.UserGoal.filter({
+            user_id: user.id,
+            status: 'active'
+        });
+
+        // If user has active goals and is paused, activate them
+        if (activeGoals.length > 0 && user.status === 'paused') {
             updates.status = 'active';
         }
 

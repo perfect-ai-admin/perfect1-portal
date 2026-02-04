@@ -51,6 +51,11 @@ Deno.serve(async (req) => {
             activated_at: new Date().toISOString()
         });
 
+        // Activate user if they have a phone number (and are currently paused)
+        if (user.status === 'paused' && user.phone) {
+             await base44.asServiceRole.entities.User.update(user.id, { status: 'active' });
+        }
+
         return Response.json({
             success: true,
             message: 'המטרה הופעלה בהצלחה'
