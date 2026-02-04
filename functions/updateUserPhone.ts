@@ -18,7 +18,14 @@ Deno.serve(async (req) => {
         // Update user using service role to ensure it persists
         // Note: We use asServiceRole.entities.User.update because we are updating a specific user record
         // ID is user.id
-        await base44.asServiceRole.entities.User.update(user.id, { phone });
+        const updates = { phone };
+        
+        // If user has completed business journey, activate them
+        if (user.business_journey_completed) {
+            updates.status = 'active';
+        }
+
+        await base44.asServiceRole.entities.User.update(user.id, updates);
 
         return Response.json({ success: true });
 

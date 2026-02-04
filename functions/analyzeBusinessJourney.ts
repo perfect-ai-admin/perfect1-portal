@@ -231,11 +231,20 @@ Deno.serve(async (req) => {
         });
 
         // Backward compatibility + Flag updates on User
-        await base44.auth.updateMe({
+        const updates = {
             business_journey_completed: true,
             business_journey_answers: answers,
             business_domain: answers.profession_description || null,
             business_journey_completed_date: new Date().toISOString(),
+        };
+
+        // If user has a phone number, activate them immediately
+        if (user.phone) {
+            updates.status = 'active';
+        }
+
+        await base44.auth.updateMe({
+            ...updates,
             // We keep these for now as some components might still rely on them until full migration
             business_state: {
                 id: analysis.state_id,
