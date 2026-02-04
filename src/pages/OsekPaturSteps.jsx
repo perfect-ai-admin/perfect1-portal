@@ -448,6 +448,20 @@ export default function OsekPaturSteps() {
         {/* Related */}
         <RelatedContent pageType="guide" />
       </main>
+
+      <Dialog open={isLeadDialogOpen} onOpenChange={setIsLeadDialogOpen}>
+        <DialogContent className="sm:max-w-[450px] p-0 bg-transparent border-none shadow-none text-right" dir="rtl">
+          <UnifiedLeadForm 
+            variant="card" 
+            title="בוא נתחיל ברגל ימין"
+            subtitle="השאר פרטים ונחזור אליך בהקדם עם כל המידע"
+            sourcePage="OsekPaturSteps - Bottom CTA"
+            onSuccess={() => {
+              setTimeout(() => setIsLeadDialogOpen(false), 2500);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
