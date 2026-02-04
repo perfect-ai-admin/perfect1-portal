@@ -12,7 +12,7 @@ import AggresiveLeadPopup from '../components/popups/AggresiveLeadPopup';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { CheckCircle, AlertCircle, Phone, MessageCircle, ArrowRight, Loader2 } from 'lucide-react';
+import { CheckCircle, AlertCircle, Phone, MessageCircle, ArrowRight, Loader2, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Accordion,
@@ -20,6 +20,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
 
 export default function OsekPaturSteps() {
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ export default function OsekPaturSteps() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [isLeadDialogOpen, setIsLeadDialogOpen] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
