@@ -20,7 +20,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
 
 export default function OsekPaturSteps() {
@@ -32,7 +31,6 @@ export default function OsekPaturSteps() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [isLeadDialogOpen, setIsLeadDialogOpen] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -399,26 +397,15 @@ export default function OsekPaturSteps() {
         {/* New Lead CTA */}
         <section className="py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border-l-4 border-[#1E3A5F]"
-            >
-              <h2 className="text-3xl font-black text-[#1E3A5F] mb-4">
-                רוצה שנעשה סדר ונעזור לך בפתיחה?
-              </h2>
-              <p className="text-gray-700 mb-6 text-lg">
-                אל תשבור את הראש לבד. הצוות שלנו כאן כדי ללוות אותך יד ביד בתהליך הפתיחה, לוודא שהכל תקין ולחסוך לך זמן יקר.
-              </p>
-              <Button 
-                onClick={() => setIsLeadDialogOpen(true)}
-                className="h-14 px-8 text-lg bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold rounded-xl flex items-center gap-3 shadow-lg shadow-blue-900/20 transform transition-transform active:scale-95"
-              >
-                <FileText className="w-5 h-5" />
-                לחץ כאן להשארת פרטים
-              </Button>
-            </motion.div>
+            <div className="max-w-2xl mx-auto">
+              <UnifiedLeadForm 
+                variant="card" 
+                title="בוא נתחיל ברגל ימין"
+                subtitle="השאר פרטים ונחזור אליך בהקדם עם כל המידע"
+                sourcePage="OsekPaturSteps - Bottom Form"
+                ctaText="דברו איתי"
+              />
+            </div>
           </div>
         </section>
 
