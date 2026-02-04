@@ -247,6 +247,8 @@ export default function UsersTable(props) {
                             <th className="text-right p-4 font-semibold text-gray-700">אימייל</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מסע לקוח</th>
                             <th className="text-right p-4 font-semibold text-gray-700">טלפון</th>
+                            <th className="text-right p-4 font-semibold text-gray-700">מקור הגעה</th>
+                            <th className="text-right p-4 font-semibold text-gray-700">UTM</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מסלול</th>
                             <th className="text-right p-4 font-semibold text-gray-700">
                                 <div className="flex items-center gap-2 justify-end">
@@ -299,6 +301,29 @@ export default function UsersTable(props) {
                                     )}
                                 </td>
                                 <td className="p-4 text-gray-600">{user.phone || '-'}</td>
+                                <td className="p-4 text-gray-600 text-sm">
+                                    {user.acquisition_source?.ref_page ? (
+                                        <div className="max-w-[150px] truncate" title={user.acquisition_source.ref_page}>
+                                            {user.acquisition_source.ref_page}
+                                        </div>
+                                    ) : '-'}
+                                </td>
+                                <td className="p-4 text-gray-600 text-sm">
+                                    {user.acquisition_source ? (
+                                        <div className="flex flex-col gap-1">
+                                            {user.acquisition_source.utm_source && (
+                                                <Badge variant="outline" className="w-fit bg-blue-50">
+                                                    Source: {user.acquisition_source.utm_source}
+                                                </Badge>
+                                            )}
+                                            {user.acquisition_source.utm_campaign && (
+                                                <span className="text-xs text-gray-500 truncate max-w-[150px]" title={user.acquisition_source.utm_campaign}>
+                                                    Camp: {user.acquisition_source.utm_campaign}
+                                                </span>
+                                            )}
+                                        </div>
+                                    ) : '-'}
+                                </td>
                                 <td className="p-4">
                                     {user.current_plan_id ? (
                                         <Badge variant="outline">פלאן פעיל</Badge>
