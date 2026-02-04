@@ -257,20 +257,17 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       const pageId = createRes.data.id;
       console.log('[STEP 1] ✓ Page created with ID:', pageId);
 
-      // Step 2: Fetch the full page data
-      console.log('[STEP 2] Fetching page data...');
-      let pageData;
-      try {
-        pageData = await base44.entities.LandingPage.get(pageId);
-      } catch (err) {
-        console.warn('[STEP 2] RLS blocked fetch, using creation response');
-        pageData = createRes.data;
+      // Step 2: Use the returned data directly (Fastest & Most Reliable)
+      // This avoids DB replication lag/RLS issues where the page exists but isn't readable yet
+      const pageData = createRes.data;
+      
+      // Validate critical data exists
+      if (!pageData.sections_json || pageData.sections_json.length === 0) {
+         console.error('❌ Critical: Created page missing sections_json', pageData);
+         throw new Error('הדף נוצר אך התוכן חסר. אנא נסה שוב.');
       }
 
-      if (!pageData) {
-        throw new Error('Failed to fetch created page');
-      }
-
+      console.log('[STEP 2] ✓ Using returned page data immediately');
       setCreatedPageData(pageData);
       setPageSlug(pageData.slug || pageId);
       setPreviewPageId(pageId);

@@ -579,8 +579,11 @@ Return ONLY the JSON object with these keys:
         });
 
         // Return FULL entity data so client doesn't need to fetch it again
+        // We merge 'landingPage' (the input) with 'result' (the DB output) to ensure
+        // we send back the full data structure even if the DB response is partial
         return Response.json({ 
-            ...result, // Includes business_name, sections_json, etc.
+            ...landingPage, // Contains sections_json guaranteed
+            ...result,      // Contains generated ID and dates
             slug, 
             id: result.id, 
             pageUrl 
