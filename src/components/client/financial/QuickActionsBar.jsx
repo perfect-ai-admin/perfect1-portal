@@ -3,6 +3,8 @@ import { FileText, Plus, BarChart3, DollarSign, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '../../hooks/useQueryKeys';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +23,7 @@ export default function QuickActionsBar({ onActionComplete, user }) {
   const [showCreateModal, setShowCreateModal] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
   const [showConnectDialog, setShowConnectDialog] = useState(false);
+  const queryClient = useQueryClient();
 
   const checkConnection = () => {
     // Check if user has an active accounting software connection
@@ -39,7 +42,8 @@ export default function QuickActionsBar({ onActionComplete, user }) {
         accounting_software: null
       });
       toast.success('התנתקת בהצלחה');
-      window.location.reload();
+      await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+      onActionComplete && onActionComplete();
     } catch (error) {
       console.error('Disconnect error:', error);
       toast.error('שגיאה בהתנתקות');
@@ -192,8 +196,8 @@ export default function QuickActionsBar({ onActionComplete, user }) {
         onOpenChange={setShowConnectDialog}
         user={user}
         onConnect={() => {
-            // Optional: Reload data or just let the UI update via standard methods
-            window.location.reload(); // Simple refresh to ensure all state is synced
+            queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+            onActionComplete && onActionComplete();
         }}
       />
 
