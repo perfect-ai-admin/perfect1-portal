@@ -154,9 +154,31 @@ export default function Terms() {
                 </p>
               </div>
 
-              {/* Section 8 - Contact */}
+              {/* Section 8 - Cancellation Policy */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">8. פרטי החברה</h2>
+                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">8. מדיניות ביטולים והחזרים</h2>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  אנו בפרפקט וואן שואפים לספק ללקוחותינו את השירות הטוב ביותר. בהתאם לחוק הגנת הצרכן ומדיניות החברה:
+                </p>
+                <ul className="space-y-2 ml-6">
+                  {[
+                    'ניתן לבטל מנוי חודשי בכל עת. הביטול ייכנס לתוקף בסיום מחזור החיוב הנוכחי.',
+                    'לא יינתן החזר כספי רטרואקטיבי על תקופות בהן השירות היה פעיל.',
+                    'במקרה של רכישת מוצר דיגיטלי (כגון לוגו או מצגת) שלא סופק עדיין, ניתן לבטל את העסקה ולקבל החזר מלא.',
+                    'לא ניתן לבטל רכישה של מוצר דיגיטלי לאחר שסופק או הורד למחשב הלקוח, בהתאם לחוק הגנת הצרכן למוצרים הניתנים לשעתוק או שכפול.',
+                    'בקשות לביטול יש לשלוח בכתב דרך הוואטסאפ או במייל, והן יטופלו בתוך 2 ימי עסקים.'
+                  ].map((item, i) => (
+                    <li key={i} className="text-gray-700 flex gap-3">
+                      <span>•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Section 9 - Contact */}
+              <div>
+                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">9. פרטי החברה</h2>
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border-l-4 border-[#1E3A5F]">
                   <p className="text-gray-800 font-bold mb-3">פרפקט וואן</p>
                   <p className="text-gray-700 mb-2">
