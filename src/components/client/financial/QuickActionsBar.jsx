@@ -13,10 +13,27 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import ConnectAccountingSoftwareDialog from './ConnectAccountingSoftwareDialog';
 
-export default function QuickActionsBar({ onActionComplete }) {
+export default function QuickActionsBar({ onActionComplete, user }) {
   const [showCreateModal, setShowCreateModal] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
+  const [showConnectDialog, setShowConnectDialog] = useState(false);
+
+  const checkConnection = () => {
+    // Check if user has an active accounting software connection
+    if (!user?.accounting_software?.is_active) {
+      setShowConnectDialog(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleAction = (actionType, subType = null) => {
+    if (checkConnection()) {
+        setShowCreateModal({ type: actionType, subType });
+    }
+  };
 
   const documentTypes = [
     { id: 'invoice', label: 'חשבונית מס', icon: '🧾' },
@@ -42,7 +59,7 @@ export default function QuickActionsBar({ onActionComplete }) {
             {documentTypes.map(type => (
               <DropdownMenuItem
                 key={type.id}
-                onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
+                onClick={() => handleAction('document', type.id)}
                 className="cursor-pointer"
               >
                 <span className="mr-2">{type.icon}</span>
@@ -55,7 +72,7 @@ export default function QuickActionsBar({ onActionComplete }) {
         {/* Add Expense */}
         <Button
           size="sm"
-          onClick={() => setShowCreateModal({ type: 'expense' })}
+          onClick={() => handleAction('expense')}
           className="gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold"
         >
           <Plus className="w-4 h-4" />
@@ -65,7 +82,7 @@ export default function QuickActionsBar({ onActionComplete }) {
         {/* Add Customer */}
         <Button
           size="sm"
-          onClick={() => setShowCreateModal({ type: 'customer' })}
+          onClick={() => handleAction('customer')}
           className="gap-2 hidden lg:flex border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-semibold"
           variant="outline"
         >
@@ -99,7 +116,7 @@ export default function QuickActionsBar({ onActionComplete }) {
                {documentTypes.map(type => (
                  <DropdownMenuItem
                    key={type.id}
-                   onClick={() => setShowCreateModal({ type: 'document', subType: type.id })}
+                   onClick={() => handleAction('document', type.id)}
                    className="cursor-pointer"
                  >
                    <span className="mr-2">{type.icon}</span>
@@ -107,18 +124,29 @@ export default function QuickActionsBar({ onActionComplete }) {
                  </DropdownMenuItem>
                ))}
              </DropdownMenuContent>
-           </DropdownMenu>
+             </DropdownMenu>
 
-           {/* Add Expense Button */}
-           <button
-             onClick={() => setShowCreateModal({ type: 'expense' })}
+             {/* Add Expense Button */}
+             <button
+             onClick={() => handleAction('expense')}
              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white rounded-lg font-bold text-sm transition-all active:scale-95 shadow-lg hover:shadow-xl"
-           >
+             >
              <Plus className="w-5 h-5" />
              קליטת הוצאה
-           </button>
+             </button>
          </div>
        </div>
+
+      {/* Connection Dialog */}
+      <ConnectAccountingSoftwareDialog 
+        open={showConnectDialog} 
+        onOpenChange={setShowConnectDialog}
+        user={user}
+        onConnect={() => {
+            // Optional: Reload data or just let the UI update via standard methods
+            window.location.reload(); // Simple refresh to ensure all state is synced
+        }}
+      />
 
       {/* Modals */}
       {showCreateModal && (
