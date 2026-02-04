@@ -65,6 +65,47 @@ export default function ClientDashboard() {
     if (tabParam) {
       setActiveTab(tabParam);
     }
+
+    // Handle Marketing Parameters (UTM & ref_page)
+    const handleMarketingParams = async () => {
+      try {
+        const utmSource = params.get('utm_source');
+        const utmMedium = params.get('utm_medium');
+        const utmCampaign = params.get('utm_campaign');
+        const refPage = params.get('ref_page');
+
+        // Only proceed if we have at least one marketing parameter
+        if (utmSource || utmMedium || utmCampaign || refPage) {
+          const marketingData = {
+            utm_source: utmSource || null,
+            utm_medium: utmMedium || null,
+            utm_campaign: utmCampaign || null,
+            ref_page: refPage || null,
+            timestamp: new Date().toISOString()
+          };
+
+          // Get current user to check if acquisition source exists
+          const currentUser = await base44.auth.me();
+          if (currentUser) {
+            const updates = {
+              last_visit_source: marketingData
+            };
+
+            // Set acquisition source only if it doesn't exist
+            if (!currentUser.acquisition_source) {
+              updates.acquisition_source = marketingData;
+            }
+
+            await base44.auth.updateMe(updates);
+            console.log('Marketing data updated:', marketingData);
+          }
+        }
+      } catch (error) {
+        console.error('Error updating marketing data:', error);
+      }
+    };
+
+    handleMarketingParams();
   }, [location.search]);
 
   // Reset goalsTabConfig when leaving goals tab
