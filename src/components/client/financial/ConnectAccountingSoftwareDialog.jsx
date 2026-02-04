@@ -24,7 +24,7 @@ export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, on
     { 
       id: 'icount', 
       name: 'iCount', 
-      logo: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/43ec7cbf1_image.png',
+      logo: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/14f110f3a_image.png',
       color: 'bg-[#4caf50]' 
     },
     { 
