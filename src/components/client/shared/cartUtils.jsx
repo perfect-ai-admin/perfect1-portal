@@ -17,7 +17,7 @@ export const addToCart = async ({ type, data, price, title, description, preview
     await base44.entities.CartItem.create({
       type,
       data,
-      price: price || 99, // Default price if not specified
+      price: price || 39, // Default price if not specified
       status: 'active',
       title: title || getTypeTitle(type),
       description: description || getTypeDescription(type),

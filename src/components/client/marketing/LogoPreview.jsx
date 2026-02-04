@@ -77,7 +77,7 @@ export default function LogoPreview({
                   onClick={() => addToCart({
                     type: 'logo',
                     data: { businessName, slogan, logoUrl },
-                    price: 99,
+                    price: 39,
                     title: `לוגו: ${businessName}`,
                     preview_image: logoUrl,
                     openCart: false

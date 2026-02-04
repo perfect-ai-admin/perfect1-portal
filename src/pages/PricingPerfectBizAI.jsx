@@ -139,7 +139,7 @@ export default function PricingPerfectBizAI() {
     {
       name: 'יצירת לוגו ומיתוג',
       dbNames: ['Logo', 'לוגו', 'Logo Design'],
-      price: 99,
+      price: 39,
       icon: Palette,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',

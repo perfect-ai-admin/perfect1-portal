@@ -30,12 +30,12 @@ Deno.serve(async (req) => {
             // Build line items for cart
             items.forEach((item, index) => {
                 lineItems.push([`line_items[${index}][price_data][currency]`, 'ils']);
-                lineItems.push([`line_items[${index}][price_data][unit_amount]`, Math.round((item.price || 99) * 100).toString()]);
+                lineItems.push([`line_items[${index}][price_data][unit_amount]`, Math.round((item.price || 39) * 100).toString()]);
                 lineItems.push([`line_items[${index}][price_data][product_data][name]`, item.title || 'מוצר']);
                 lineItems.push([`line_items[${index}][quantity]`, '1']);
             });
 
-            paymentAmount = items.reduce((sum, item) => sum + (item.price || 99), 0);
+            paymentAmount = items.reduce((sum, item) => sum + (item.price || 39), 0);
             product = { name: 'עגלת קניות' }; // Generic name for payment record
             
         } else {
