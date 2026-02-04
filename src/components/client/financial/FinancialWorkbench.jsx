@@ -39,7 +39,7 @@ export default function FinancialWorkbench({ data }) {
       className="space-y-4 pb-24 md:pb-0"
     >
       {/* Quick Actions Bar */}
-      <QuickActionsBar onActionComplete={handleQuickAction} />
+      <QuickActionsBar onActionComplete={handleQuickAction} user={data} />
 
       {/* Finance Inbox */}
       <FinanceInbox key={refreshKey} data={data} />
