@@ -396,27 +396,28 @@ export default function OsekPaturSteps() {
           </div>
         </section>
 
-        {/* Online CTA */}
-        <section className="py-16 bg-gradient-to-r from-green-50 to-blue-50">
+        {/* New Lead CTA */}
+        <section className="py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border-l-4 border-green-600"
+              className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border-l-4 border-[#1E3A5F]"
             >
               <h2 className="text-3xl font-black text-[#1E3A5F] mb-4">
-                מצב כל זה מילא בעוד שבוע?
+                רוצה שנעשה סדר ונעזור לך בפתיחה?
               </h2>
-              <p className="text-gray-700 mb-6">
-                אפשר גם לבצע <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-green-600 font-bold hover:text-green-800 underline">פתיחת עוסק פטור אונליין</Link> בתהליך סדור ודיגיטלי לחלוטין - בלי ללכת למשרדים, בלי טלטול.
+              <p className="text-gray-700 mb-6 text-lg">
+                אל תשבור את הראש לבד. הצוות שלנו כאן כדי ללוות אותך יד ביד בתהליך הפתיחה, לוודא שהכל תקין ולחסוך לך זמן יקר.
               </p>
-              <Link to={createPageUrl('OsekPaturOnlineLanding')}>
-                <Button className="h-11 sm:h-12 px-4 sm:px-6 text-sm sm:text-base bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl flex items-center gap-2">
-                  <ArrowRight className="w-4 h-4" />
-                  אונליין
-                </Button>
-              </Link>
+              <Button 
+                onClick={() => setIsLeadDialogOpen(true)}
+                className="h-14 px-8 text-lg bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold rounded-xl flex items-center gap-3 shadow-lg shadow-blue-900/20 transform transition-transform active:scale-95"
+              >
+                <FileText className="w-5 h-5" />
+                לחץ כאן להשארת פרטים
+              </Button>
             </motion.div>
           </div>
         </section>
