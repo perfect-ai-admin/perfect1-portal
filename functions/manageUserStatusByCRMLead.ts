@@ -47,12 +47,22 @@ Deno.serve(async (req) => {
 
         console.log('👤 Found user:', matchingUser.email, 'status:', matchingUser.status);
 
-        // תנאי הפעלה: יוזר מושהה + השלים מסע + יש טלפון
+        // תנאי הפעלה החדשים: יוזר מושהה + יש מטרה פעילה + יש טלפון
+
+        // בדיקת מטרות פעילות
+        const activeGoals = await base44.asServiceRole.entities.UserGoal.filter({
+            user_id: matchingUser.id,
+            status: 'active'
+        });
+
+        // שימוש בטלפון מהליד או מהיוזר
+        const phoneToUse = lead.phone || matchingUser.phone;
+
         if (matchingUser.status === 'paused' && 
-            matchingUser.business_journey_completed && 
-            matchingUser.phone) {
+            activeGoals.length > 0 && 
+            phoneToUse) {
             
-            const normalizedPhone = normalizePhoneNumber(matchingUser.phone);
+            const normalizedPhone = normalizePhoneNumber(phoneToUse);
             
             await base44.asServiceRole.entities.User.update(matchingUser.id, {
                 status: 'active',
