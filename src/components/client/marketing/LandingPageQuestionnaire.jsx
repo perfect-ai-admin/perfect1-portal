@@ -362,7 +362,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.businessName} 
                   onChange={(e) => handleInputChange('businessName', e.target.value)} 
                   placeholder="לדוגמה: דיגיטל פרו" 
-                  className={cn("h-9 text-xs", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
+                  className={cn("h-9 text-base md:text-xs", errors.businessName && 'border-red-500 focus-visible:ring-red-500')} 
                   autoFocus
                 />
                 {errors.businessName && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.businessName}</p>}
@@ -375,7 +375,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.mainField} 
                   onChange={(e) => handleInputChange('mainField', e.target.value)} 
                   placeholder="לדוגמה: שיווק דיגיטלי" 
-                  className={cn("h-9 text-xs", errors.mainField && 'border-red-500 focus-visible:ring-red-500')} 
+                  className={cn("h-9 text-base md:text-xs", errors.mainField && 'border-red-500 focus-visible:ring-red-500')} 
                 />
               </div>
 
@@ -408,7 +408,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                         placeholder="אחר..." 
                         value={formData.targetAudienceOther} 
                         onChange={(e) => handleInputChange('targetAudienceOther', e.target.value)} 
-                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full text-xs"
+                        className="border-0 bg-transparent shadow-none focus-visible:ring-0 px-0 h-full text-base md:text-xs"
                       />
                   </div>
                 </div>
@@ -436,7 +436,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.painPoints} 
                   onChange={(e) => handleInputChange('painPoints', e.target.value)} 
                   placeholder="לדוגמה: מבזבז המון זמן על בירוקרטיה..." 
-                  className={cn("h-20 resize-none text-xs", errors.painPoints && 'border-red-500')} 
+                  className={cn("h-20 resize-none text-base md:text-xs", errors.painPoints && 'border-red-500')} 
                   autoFocus
                 />
                 {errors.painPoints && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.painPoints}</p>}
@@ -449,7 +449,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.consequences} 
                   onChange={(e) => handleInputChange('consequences', e.target.value)} 
                   placeholder="לדוגמה: מפסיד כסף, לחץ, מאבד לקוחות..." 
-                  className={cn("h-20 resize-none text-xs", errors.consequences && 'border-red-500')} 
+                  className={cn("h-20 resize-none text-base md:text-xs", errors.consequences && 'border-red-500')} 
                 />
                 {errors.consequences && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.consequences}</p>}
               </div>
@@ -475,7 +475,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.serviceOffered} 
                   onChange={(e) => handleInputChange('serviceOffered', e.target.value)} 
                   placeholder="אני עוזר ל... לעשות... כדי ש..." 
-                  className={cn("h-9 text-xs", errors.serviceOffered && 'border-red-500')} 
+                  className={cn("h-9 text-base md:text-xs", errors.serviceOffered && 'border-red-500')} 
                   autoFocus
                 />
                 {errors.serviceOffered && <p className="text-red-600 text-xs font-semibold flex items-center gap-1 bg-red-50 p-2 rounded-lg border border-red-200"><AlertCircle className="w-4 h-4" /> {errors.serviceOffered}</p>}
@@ -503,7 +503,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   placeholder="סיבה אחרת..." 
                   value={formData.whyChooseYouOther} 
                   onChange={(e) => handleInputChange('whyChooseYouOther', e.target.value)} 
-                  className="bg-gray-50 h-8 text-xs"
+                  className="bg-gray-50 h-8 text-base md:text-xs"
                 />
                 {errors.whyChooseYou && <p className="text-red-500 text-[10px]">{errors.whyChooseYou}</p>}
               </div>
@@ -515,7 +515,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   value={formData.processSteps} 
                   onChange={(e) => handleInputChange('processSteps', e.target.value)} 
                   placeholder="שלב 1 -> שלב 2 -> שלב 3" 
-                  className={cn("h-9 text-xs", errors.processSteps && 'border-red-500')} 
+                  className={cn("h-9 text-base md:text-xs", errors.processSteps && 'border-red-500')} 
                 />
                 {errors.processSteps && <p className="text-red-500 text-[10px]">{errors.processSteps}</p>}
               </div>
@@ -548,7 +548,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     placeholder="כמה שנות ניסיון?" 
                     value={formData.experienceYears} 
                     onChange={(e) => handleInputChange('experienceYears', e.target.value)} 
-                    className="mr-8 w-[calc(100%-2rem)] h-8 text-xs"
+                    className="mr-8 w-[calc(100%-2rem)] h-8 text-base md:text-xs"
                     autoFocus
                   />
                 </motion.div>
@@ -575,7 +575,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     placeholder="כתוב כאן את ההמלצה..." 
                     value={formData.testimonialText} 
                     onChange={(e) => handleInputChange('testimonialText', e.target.value)} 
-                    className="mr-8 w-[calc(100%-2rem)] min-h-[50px] text-xs"
+                    className="mr-8 w-[calc(100%-2rem)] min-h-[50px] text-base md:text-xs"
                     autoFocus
                   />
                 </motion.div>
@@ -793,7 +793,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     placeholder="050-0000000"
                     value={formData.contactPhone}
                     onChange={(e) => handleInputChange('contactPhone', e.target.value)}
-                    className={cn("pr-8 h-9 text-xs border-gray-200 focus-visible:ring-teal-500 w-full", errors.contactPhone && "border-red-500")}
+                    className={cn("pr-8 h-9 text-base md:text-xs border-gray-200 focus-visible:ring-teal-500 w-full", errors.contactPhone && "border-red-500")}
                   />
                 </div>
                 {errors.contactPhone && <p className="text-red-500 text-[10px]">{errors.contactPhone}</p>}
@@ -831,7 +831,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                   placeholder="your@email.com"
                                   value={formData.destinationEmail}
                                   onChange={(e) => handleInputChange('destinationEmail', e.target.value)}
-                                  className="pr-8 h-9 text-xs border-gray-200 focus-visible:ring-teal-500 w-full"
+                                  className="pr-8 h-9 text-base md:text-xs border-gray-200 focus-visible:ring-teal-500 w-full"
                                   autoFocus
                                 />
                               </div>
