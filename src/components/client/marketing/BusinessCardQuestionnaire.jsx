@@ -326,73 +326,14 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                     </div>
                 </div>
 
-                {/* Dynamic Inputs based on selection */}
-                <div className="space-y-3 pt-2">
-                    {formData.socialNetworks.includes('instagram') && (
-                        <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
-                            <Label className="text-xs font-semibold">קישור לאינסטגרם</Label>
-                            <div className="relative">
-                                <Instagram className="absolute right-2.5 top-2.5 w-4 h-4 text-pink-500" />
-                                <Input 
-                                    value={formData.instagram_url}
-                                    onChange={(e) => handleInputChange('instagram_url', e.target.value)}
-                                    placeholder="https://instagram.com/..." 
-                                    className="h-9 text-xs pr-9"
-                                    dir="ltr"
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {formData.socialNetworks.includes('facebook') && (
-                        <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
-                            <Label className="text-xs font-semibold">קישור לפייסבוק</Label>
-                            <div className="relative">
-                                <Facebook className="absolute right-2.5 top-2.5 w-4 h-4 text-blue-600" />
-                                <Input 
-                                    value={formData.facebook_url}
-                                    onChange={(e) => handleInputChange('facebook_url', e.target.value)}
-                                    placeholder="https://facebook.com/..." 
-                                    className="h-9 text-xs pr-9"
-                                    dir="ltr"
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {formData.socialNetworks.includes('website') && (
-                        <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
-                            <Label className="text-xs font-semibold">קישור לאתר</Label>
-                            <div className="relative">
-                                <Globe className="absolute right-2.5 top-2.5 w-4 h-4 text-blue-400" />
-                                <Input 
-                                    value={formData.website_url}
-                                    onChange={(e) => handleInputChange('website_url', e.target.value)}
-                                    placeholder="https://mysite.co.il" 
-                                    className="h-9 text-xs pr-9"
-                                    dir="ltr"
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    {formData.socialNetworks.includes('waze') && (
-                        <div className="space-y-1 animate-in fade-in slide-in-from-top-2">
-                            <Label className="text-xs font-semibold">קישור ל-Waze</Label>
-                            <div className="relative">
-                                <Navigation className="absolute right-2.5 top-2.5 w-4 h-4 text-blue-500" />
-                                <Input 
-                                    value={formData.waze_url}
-                                    onChange={(e) => handleInputChange('waze_url', e.target.value)}
-                                    placeholder="https://waze.com/ul?ll=..." 
-                                    className="h-9 text-xs pr-9"
-                                    dir="ltr"
-                                />
-                            </div>
-                            <p className="text-[10px] text-gray-400">ניתן להעתיק קישור שיתוף מתוך אפליקציית Waze</p>
-                        </div>
-                    )}
-                </div>
+                {/* Info Message */}
+                {formData.socialNetworks.length > 0 && (
+                    <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl text-center animate-in fade-in slide-in-from-top-2">
+                        <p className="text-xs text-blue-700 font-medium">
+                            לאחר אישור הכרטיס ביקור ניתן יהיה לקשר אינסטגרם, פייסבוק, אתר ו-Waze.
+                        </p>
+                    </div>
+                )}
             </div>
           </div>
         );
