@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 function lightenColor(hex, amount = 30) {
   const num = parseInt(hex.replace('#', ''), 16);
@@ -7,8 +8,6 @@ function lightenColor(hex, amount = 30) {
   const b = Math.min(255, (num & 0x0000FF) + amount);
   return `rgb(${r}, ${g}, ${b})`;
 }
-
-import { motion } from 'framer-motion';
 
 export default function CardHeader({ card, primaryColor }) {
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -74,14 +73,6 @@ export default function CardHeader({ card, primaryColor }) {
             </p>
           )}
         </motion.div>
-          {card.full_name}
-        </h1>
-        {card.profession && (
-          <p className="text-sm font-medium text-white/75 mt-1.5">
-            {card.profession}
-          </p>
-        )}
-        </motion.div>
 
         {/* Services tags */}
         {card.services?.length > 0 && (
@@ -97,6 +88,6 @@ export default function CardHeader({ card, primaryColor }) {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
