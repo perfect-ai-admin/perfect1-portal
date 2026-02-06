@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
-import BusinessCardPreview from './BusinessCardPreview';
 import BusinessCardResult from './BusinessCardResult';
 
 // Custom specialized card selector component
