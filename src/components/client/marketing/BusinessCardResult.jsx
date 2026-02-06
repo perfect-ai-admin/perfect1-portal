@@ -1,23 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Check, Copy, Share2, ShoppingCart, Lock } from 'lucide-react';
+import { Sparkles, Check, Copy, Share2, ShoppingCart, Lock, Smartphone, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import CardHeader from '@/components/digital-card/CardHeader';
 import ActionButtons from '@/components/digital-card/ActionButtons';
+import confetti from 'canvas-confetti';
+import { cn } from '@/lib/utils';
 
 export default function BusinessCardResult({ formData, cardResult, onPurchase, onBack }) {
   const [copied, setCopied] = useState(false);
+  const [showQR, setShowQR] = useState(false);
+
+  useEffect(() => {
+    // Celebration confetti on mount
+    const duration = 3 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Construct card object for preview components
   const card = {
     full_name: formData.fullName,
     profession: formData.profession,
-    // Use data URLs for preview if available (from creation step), otherwise result URLs
     logo_url: formData.logoDataUrl || cardResult.logo_url, 
     cover_image_url: formData.coverDataUrl || cardResult.cover_image_url,
     phone: formData.phone,
-    whatsapp: formData.phone, // Assuming phone is used for WA as per logic
+    whatsapp: formData.phone,
     email: formData.email,
     social_networks: formData.socialNetworks || [],
     website_url: formData.website_url,
@@ -27,7 +52,9 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
     linkedin_url: formData.linkedin_url,
     waze_url: formData.waze_url,
     qr_image_url: cardResult.qr_image_url,
-    vcf_url: cardResult.vcf_url
+    vcf_url: cardResult.vcf_url,
+    services: [formData.service1, formData.service2, formData.service3].filter(Boolean),
+    presentationStyle: formData.presentationStyle // Ensure this is passed for subtitle logic
   };
 
   const actions = {
@@ -60,142 +87,123 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
   };
 
   return (
-    <div className="flex flex-col items-center w-full space-y-6 pb-6">
-      {/* Success Header */}
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-2">
-        <motion.div 
-          initial={{ scale: 0 }} 
-          animate={{ scale: 1 }} 
-          transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.2 }}
-          className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-green-100"
+    <div className="flex flex-col w-full h-full relative pb-24">
+      
+      {/* Top Bar with Status */}
+      <div className="flex items-center justify-between mb-6 px-2">
+        <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center shadow-sm">
+                <Sparkles className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+                <h2 className="font-bold text-gray-900 text-sm">הכרטיס מוכן!</h2>
+                <p className="text-xs text-gray-500">תצוגה מקדימה ללקוחות</p>
+            </div>
+        </div>
+        <div className="flex gap-2">
+            <button 
+                onClick={handleCopyLink}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
+                title="העתק קישור"
+            >
+                {copied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
+            </button>
+        </div>
+      </div>
+
+      {/* Main Preview Stage */}
+      <div className="flex-1 flex flex-col items-center justify-center relative">
+        {/* Background Ambient Glow */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent rounded-3xl -z-10" />
+        
+        {/* Phone Frame */}
+        <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="relative w-full max-w-[340px] aspect-[9/18] bg-[#121212] rounded-[40px] shadow-2xl border-[8px] border-gray-900 overflow-hidden ring-1 ring-white/10"
         >
-          <Sparkles className="w-8 h-8 text-green-600" />
-        </motion.div>
-        <h2 className="text-xl font-black text-gray-900">הכרטיס שלך נוצר! 🎉</h2>
-        <p className="text-xs text-gray-500">הנה התוצאה הסופית כפי שתראה ללקוחות</p>
-      </motion.div>
-
-      {/* Card Preview Container */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="w-full max-w-[380px] mx-auto relative rounded-[32px] overflow-hidden shadow-2xl bg-[#121212] text-white"
-        dir="rtl"
-      >
-
-
-        {/* Content */}
-        <div className="pb-10 relative z-10">
-            <CardHeader card={card} primaryColor="#1E3A5F" />
-            
-            <div className="mt-2">
-                 <ActionButtons card={card} actions={actions} />
+            {/* Dynamic Island / Notch area */}
+            <div className="absolute top-0 left-0 right-0 h-7 bg-gray-900 z-50 flex justify-center">
+                <div className="w-24 h-5 bg-black rounded-b-xl" />
             </div>
 
-            {/* Save Contact Button Preview */}
-            <div className="px-6 mt-8">
-              <button
-                className="w-full bg-[#00E5FF] text-black font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 pointer-events-none opacity-90"
-              >
-                <span className="text-lg">שמור אותי באנשי קשר</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="8.5" cy="7" r="4"></circle>
-                  <line x1="20" y1="8" x2="20" y2="14"></line>
-                  <line x1="23" y1="11" x2="17" y2="11"></line>
-                </svg>
-              </button>
-            </div>
-
-            {/* QR Code Preview */}
-            {card.qr_image_url && (
-              <div className="px-6 mt-10 flex flex-col items-center">
-                <div className="bg-white p-3 rounded-xl shadow-2xl">
-                  <img 
-                    src={card.qr_image_url} 
-                    alt="QR Code" 
-                    className="w-32 h-32 object-contain"
-                  />
+            {/* Scrollable Content Area */}
+            <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide bg-[#121212] text-white pb-20 relative">
+                
+                {/* Draft Watermark - Subtle */}
+                <div className="absolute top-20 inset-x-0 flex justify-center pointer-events-none z-0 opacity-10">
+                    <span className="text-6xl font-black rotate-[-15deg] uppercase tracking-widest">Draft</span>
                 </div>
-                <p className="text-gray-500 text-xs mt-3">סרוק לשמירה</p>
-              </div>
-            )}
-            
-            <div className="text-center pt-8 pb-4">
-              <span className="text-[10px] text-gray-600 tracking-widest uppercase">DigitalBcard</span>
+
+                <div className="relative z-10">
+                    <CardHeader card={card} primaryColor="#1E3A5F" />
+                    
+                    <div className="mt-2 relative z-20">
+                        <ActionButtons card={card} actions={actions} />
+                    </div>
+
+                    {/* Save Contact Preview */}
+                    <div className="px-6 mt-8">
+                        <div className="w-full bg-[#00E5FF] text-black font-bold py-3.5 rounded-xl shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 opacity-90">
+                            <span className="text-sm">שמור איש קשר</span>
+                        </div>
+                    </div>
+
+                    {/* QR Preview */}
+                    {card.qr_image_url && (
+                        <div className="px-6 mt-8 pb-8 flex flex-col items-center">
+                            <div className="bg-white p-2 rounded-xl shadow-lg">
+                                <img 
+                                    src={card.qr_image_url} 
+                                    alt="QR Code" 
+                                    className="w-24 h-24 object-contain"
+                                />
+                            </div>
+                            <p className="text-gray-500 text-[10px] mt-2 font-medium">סרוק אותי</p>
+                        </div>
+                    )}
+                    
+                    {/* Footer Brand */}
+                    <div className="text-center pb-6 pt-2 opacity-30">
+                        <span className="text-[9px] tracking-widest uppercase">DigitalBcard</span>
+                    </div>
+                </div>
             </div>
+        </motion.div>
+      </div>
+
+      {/* Floating Bottom Bar (Sticky) */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-lg border-t border-gray-200 z-[100] safe-area-bottom shadow-[0_-5px_30px_rgba(0,0,0,0.08)]">
+        <div className="max-w-xl mx-auto flex items-center gap-3">
+             <div className="hidden sm:block">
+                 <div className="text-xs text-gray-500">מחיר חד פעמי</div>
+                 <div className="flex items-baseline gap-1">
+                     <span className="text-lg font-bold text-gray-900">₪49</span>
+                     <span className="text-xs text-gray-400 line-through">₪98</span>
+                 </div>
+             </div>
+             
+             <div className="flex-1 flex gap-3">
+                 <Button 
+                    variant="outline" 
+                    onClick={onBack}
+                    className="flex-1 h-12 text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-xl"
+                 >
+                    ערוך
+                 </Button>
+                 
+                 <Button
+                    onClick={onPurchase}
+                    className="flex-[2] h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-xl shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+                 >
+                    <ShoppingCart className="w-5 h-5" />
+                    <span>רכוש ופרסם (₪49)</span>
+                 </Button>
+             </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Quick Actions for Share */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="w-full max-w-sm mx-auto grid grid-cols-2 gap-3"
-      >
-        <button 
-          onClick={handleCopyLink}
-          className="flex flex-col items-center gap-1.5 bg-white border border-gray-200 rounded-xl py-3 px-2 hover:bg-gray-50 transition-all active:scale-95"
-        >
-          {copied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-blue-600" />}
-          <span className="text-[10px] font-medium text-gray-600">{copied ? 'הועתק!' : 'העתק קישור'}</span>
-        </button>
-        <button
-          onClick={handleShare}
-          className="flex flex-col items-center gap-1.5 bg-white border border-gray-200 rounded-xl py-3 px-2 hover:bg-gray-50 transition-all active:scale-95"
-        >
-          <Share2 className="w-5 h-5 text-teal-600" />
-          <span className="text-[10px] font-medium text-gray-600">שתף</span>
-        </button>
-      </motion.div>
-
-      {/* Purchase CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="w-full max-w-sm mx-auto"
-      >
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-4 space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="bg-blue-100 p-2 rounded-xl flex-shrink-0">
-              <Lock className="w-5 h-5 text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-gray-900 text-sm">שדרג לכרטיס מלא</h3>
-              <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                הסר סימן מים, קבל דומיין אישי וכפתורים פעילים לכל הלקוחות שלך.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400 line-through">₪98</span>
-            <span className="text-2xl font-black text-blue-600">₪49</span>
-            <span className="text-xs text-gray-500">חד פעמי</span>
-          </div>
-
-          <Button
-            onClick={onPurchase}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold h-12 rounded-xl text-base shadow-lg shadow-blue-200 gap-2"
-          >
-            <ShoppingCart className="w-5 h-5" />
-            רכוש ופרסם – ₪49
-          </Button>
-
-          <div className="flex items-center justify-center gap-3 text-[10px] text-gray-400">
-             <span>✓ ללא סימן מים</span>
-             <span>✓ כפתורים פעילים</span>
-             <span>✓ קישור קבוע</span>
-          </div>
-        </div>
-      </motion.div>
-
-      <button onClick={onBack} className="text-sm text-gray-400 hover:text-gray-600 transition-colors py-2">
-        חזרה לעריכה
-      </button>
     </div>
   );
 }
