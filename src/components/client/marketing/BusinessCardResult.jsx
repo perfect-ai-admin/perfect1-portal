@@ -183,14 +183,26 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
                     {/* QR Section */}
                     {card.qr_image_url && (
                         <div className="px-6 mt-10 flex flex-col items-center opacity-90">
-                            <div className="bg-white p-3 rounded-2xl shadow-xl">
+                            <div className="bg-white p-3 rounded-2xl shadow-xl relative overflow-hidden">
                                 <img 
                                     src={card.qr_image_url} 
                                     alt="QR Code" 
-                                    className="w-28 h-28 object-contain"
+                                    className={cn(
+                                        "w-28 h-28 object-contain",
+                                        !isPurchased && "blur-sm opacity-40"
+                                    )}
                                 />
+                                {!isPurchased && (
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="bg-white/80 p-2 rounded-full shadow-sm">
+                                            <Lock className="w-6 h-6 text-gray-600" />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                            <p className="text-gray-400 text-[10px] mt-3 font-medium tracking-wide uppercase">Scan to connect</p>
+                            <p className="text-gray-400 text-[10px] mt-3 font-medium tracking-wide uppercase">
+                                {isPurchased ? 'Scan to connect' : 'QR זמין לאחר רכישה'}
+                            </p>
                         </div>
                     )}
                     
