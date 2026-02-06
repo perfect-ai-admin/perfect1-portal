@@ -172,27 +172,26 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
                     <div key={idx} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4">
                         <div className="w-16 h-16 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 relative flex items-center justify-center">
                             {(() => {
-                                const presentationFallback = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=400';
-                                const imgSrc = item.preview_image || item.data?.url || (item.type === 'presentation' ? presentationFallback : null);
-                                const isFailed = failedImages[item.id] && imgSrc !== presentationFallback;
+                                const presentationFallback = 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400';
+                                const imgSrc = item.preview_image || item.data?.preview_image || item.data?.logoUrl || item.data?.data?.logoUrl || (item.type === 'presentation' ? presentationFallback : null);
 
-                                if (imgSrc && !isFailed) {
+                                if (imgSrc && !failedImages[idx]) {
                                     return (
                                         <img 
                                             src={imgSrc} 
                                             alt={item.title} 
                                             className="w-full h-full object-cover"
-                                            onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
+                                            onError={() => setFailedImages(prev => ({ ...prev, [idx]: true }))}
                                         />
                                     );
                                 }
                                 
                                 return (
                                     <div className="text-gray-400">
-                                        {item.type === 'logo' ? <Palette className="w-8 h-8" /> :
-                                         item.type === 'presentation' ? <Presentation className="w-8 h-8" /> :
-                                         item.type === 'landing_page' ? <Globe className="w-8 h-8" /> :
-                                         <ShoppingBag className="w-8 h-8" />}
+                                        {item.type === 'logo' ? <Palette className="w-6 h-6" /> :
+                                         item.type === 'presentation' ? <Presentation className="w-6 h-6" /> :
+                                         item.type === 'landing_page' ? <Globe className="w-6 h-6" /> :
+                                         <ShoppingBag className="w-6 h-6" />}
                                     </div>
                                 );
                             })()}
