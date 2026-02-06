@@ -297,21 +297,32 @@ export default function ShoppingCartButton() {
                                 className="relative w-20 h-20 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100 flex items-center justify-center"
                                 onClick={() => setEnlargedImage(item.preview_image || 'fallback')}
                             >
-                                {item.preview_image && !failedImages[item.id] ? (
-                                    <img
-                                      src={item.preview_image}
-                                      alt={item.title}
-                                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                      onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
-                                    />
-                                ) : (
-                                    <div className="text-gray-400">
-                                        {item.type === 'logo' ? <Palette className="w-8 h-8" /> :
-                                         item.type === 'presentation' ? <Presentation className="w-8 h-8" /> :
-                                         item.type === 'landing_page' ? <Globe className="w-8 h-8" /> :
-                                         <ImageIcon className="w-8 h-8" />}
-                                    </div>
-                                )}
+                                {(() => {
+                                    const presentationFallback = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=400';
+                                    // For logos, we want the real image. For presentations, if missing, use fallback.
+                                    const imgSrc = item.preview_image || item.data?.url || (item.type === 'presentation' ? presentationFallback : null);
+                                    const isFailed = failedImages[item.id] && imgSrc !== presentationFallback; // Only fail if not already using fallback
+
+                                    if (imgSrc && !isFailed) {
+                                        return (
+                                            <img
+                                              src={imgSrc}
+                                              alt={item.title}
+                                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                              onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
+                                            />
+                                        );
+                                    }
+
+                                    return (
+                                        <div className="text-gray-400">
+                                            {item.type === 'logo' ? <Palette className="w-8 h-8" /> :
+                                             item.type === 'presentation' ? <Presentation className="w-8 h-8" /> :
+                                             item.type === 'landing_page' ? <Globe className="w-8 h-8" /> :
+                                             <ImageIcon className="w-8 h-8" />}
+                                        </div>
+                                    );
+                                })()}
                                 
                                 {/* Watermark Overlay for List View */}
                                 <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
