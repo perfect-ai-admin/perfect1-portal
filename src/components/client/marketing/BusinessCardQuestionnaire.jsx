@@ -442,23 +442,13 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                   </div>
 
                   {formData.hasCover === 'yes' && (
-                      <div className="mt-2 p-3 border border-dashed border-purple-200 rounded-xl bg-purple-50/50 flex flex-col items-center justify-center relative animate-in fade-in slide-in-from-top-1">
-                          <input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={handleCoverUpload}
-                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                          />
-                          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-                              <Image className="w-4 h-4 text-purple-600" />
+                      <div className="mt-2 p-4 border border-blue-100 rounded-xl bg-blue-50/50 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-top-1">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                              <Image className="w-4 h-4 text-blue-600" />
                           </div>
-                          <p className="text-xs font-medium text-purple-900">
-                              {formData.coverFile ? "התמונה נבחרה בהצלחה!" : "לחץ כאן להעלאת התמונה"}
+                          <p className="text-xs font-medium text-blue-900">
+                              מעולה! לאחר בחירת הכרטיס תהיה אפשרות להעלות תמונת נושא (Cover) אישית ומותאמת.
                           </p>
-                          <p className="text-[10px] text-purple-400">
-                              {formData.coverFile ? formData.coverFile.name : "JPG, PNG עד 5MB"}
-                          </p>
-                          {formData.coverFile && <Check className="w-4 h-4 text-green-500 absolute top-2 right-2" />}
                       </div>
                   )}
               </div>
