@@ -845,7 +845,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-bold text-xs text-gray-500 leading-tight">מערכת CRM</div>
-                      <div className="text-[10px] text-gray-400 leading-tight mt-0.5">זמין לאחר קבלת הדף והרכישה</div>
+                      <div className="text-[10px] text-gray-400 leading-tight mt-0.5">לאחר קבלת הדף יהיה ניתן לחבר למערכות CRM</div>
                     </div>
                     <Lock className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
                   </div>
