@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye, Loader2, Presentation } from 'lucide-react';
+import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye, Loader2, Presentation, Palette, Globe, Layout, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -22,6 +22,7 @@ export default function ShoppingCartButton() {
   const [previewPage, setPreviewPage] = useState(null);
   const [previewPresentation, setPreviewPresentation] = useState(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [failedImages, setFailedImages] = useState({});
 
   const ITEM_PRICE = 99;
 
@@ -292,27 +293,36 @@ export default function ShoppingCartButton() {
                             </div>
 
                             {/* Image Area */}
-                            {(item.preview_image || item.type === 'presentation') && (
-                                <div 
-                                    className="relative w-20 h-20 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100"
-                                    onClick={() => setEnlargedImage(item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop')}
-                                >
+                            <div 
+                                className="relative w-20 h-20 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100 flex items-center justify-center"
+                                onClick={() => setEnlargedImage(item.preview_image || 'fallback')}
+                            >
+                                {item.preview_image && !failedImages[item.id] ? (
                                     <img
-                                      src={item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop'}
+                                      src={item.preview_image}
                                       alt={item.title}
                                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                      onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
                                     />
-                                    {/* Watermark Overlay for List View */}
-                                    <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
-                                        <div className="text-red-500/30 font-black text-2xl rotate-[-45deg] whitespace-nowrap select-none border-2 border-red-500/20 px-2 py-1 rounded">
-                                            טיוטה
-                                        </div>
+                                ) : (
+                                    <div className="text-gray-400">
+                                        {item.type === 'logo' ? <Palette className="w-8 h-8" /> :
+                                         item.type === 'presentation' ? <Presentation className="w-8 h-8" /> :
+                                         item.type === 'landing_page' ? <Globe className="w-8 h-8" /> :
+                                         <ImageIcon className="w-8 h-8" />}
                                     </div>
-                                    <div className="absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 hover:opacity-100 z-20">
-                                        <Maximize2 className="w-5 h-5 text-gray-700 drop-shadow-sm" />
+                                )}
+                                
+                                {/* Watermark Overlay for List View */}
+                                <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
+                                    <div className="text-red-500/30 font-black text-2xl rotate-[-45deg] whitespace-nowrap select-none border-2 border-red-500/20 px-2 py-1 rounded">
+                                        טיוטה
                                     </div>
                                 </div>
-                            )}
+                                <div className="absolute inset-0 bg-black/0 hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 hover:opacity-100 z-20">
+                                    <Maximize2 className="w-5 h-5 text-gray-700 drop-shadow-sm" />
+                                </div>
+                            </div>
 
                             {/* Details Area */}
                             <div className="flex-1 flex flex-col justify-between py-1 min-w-0">

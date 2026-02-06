@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Lock, X, ChevronRight, ChevronDown, CreditCard, Smartphone, Building, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Check, Lock, X, ChevronRight, ChevronDown, CreditCard, Smartphone, Building, ShoppingBag, ArrowRight, Palette, Presentation, Globe, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -14,6 +14,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [failedImages, setFailedImages] = useState({});
   
   const [cardData, setCardData] = useState({
     fullName: '',
@@ -169,25 +170,30 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
             <div className={`flex-1 overflow-y-auto space-y-4 pr-1 scrollbar-thin transition-all duration-300 ${isSummaryOpen ? 'max-h-[50vh] opacity-100' : 'max-h-0 md:max-h-none opacity-0 md:opacity-100 overflow-hidden'}`}>
                 {items.map((item, idx) => (
                     <div key={idx} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4">
-                        {(item.preview_image || item.type === 'presentation') ? (
-                            <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 relative">
+                        <div className="w-16 h-16 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 relative flex items-center justify-center">
+                            {item.preview_image && !failedImages[item.id] ? (
                                 <img 
-                                    src={item.preview_image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=400&fit=crop'} 
+                                    src={item.preview_image} 
                                     alt={item.title} 
-                                    className="w-full h-full object-cover" 
+                                    className="w-full h-full object-cover"
+                                    onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
                                 />
-                                {/* Watermark Overlay */}
-                                <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
-                                    <div className="text-red-500/30 font-black text-xs rotate-[-45deg] whitespace-nowrap select-none border border-red-500/20 px-1 rounded">
-                                        טיוטה
-                                    </div>
+                            ) : (
+                                <div className="text-gray-400">
+                                    {item.type === 'logo' ? <Palette className="w-8 h-8" /> :
+                                     item.type === 'presentation' ? <Presentation className="w-8 h-8" /> :
+                                     item.type === 'landing_page' ? <Globe className="w-8 h-8" /> :
+                                     <ShoppingBag className="w-8 h-8" />}
+                                </div>
+                            )}
+                            
+                            {/* Watermark Overlay */}
+                            <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center overflow-hidden">
+                                <div className="text-red-500/30 font-black text-xs rotate-[-45deg] whitespace-nowrap select-none border border-red-500/20 px-1 rounded">
+                                    טיוטה
                                 </div>
                             </div>
-                        ) : (
-                            <div className="w-16 h-16 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 text-blue-500">
-                                <ShoppingBag className="w-8 h-8" />
-                            </div>
-                        )}
+                        </div>
                         <div className="flex-1 min-w-0">
                             <h3 className="font-bold text-gray-900 truncate">{item.title}</h3>
                             <p className="text-sm text-gray-500 line-clamp-2">{item.description}</p>
