@@ -58,13 +58,16 @@ Deno.serve(async (req) => {
       'END:VCARD'
     ].filter(Boolean).join('\r\n');
 
-    // Upload VCF file
-    const vcfBlob = new Blob([vcfContent], { type: 'text/vcard' });
-    const vcfUpload = await base44.integrations.Core.UploadFile({ file: vcfBlob });
+    // Write VCF to temp file and upload
+    const vcfPath = `/tmp/card_${slug}.vcf`;
+    await Deno.writeTextFile(vcfPath, vcfContent);
+    const vcfBytes = await Deno.readFile(vcfPath);
+    const vcfFile = new File([vcfBytes], `${slug}.vcf`, { type: 'text/vcard' });
+    const vcfUpload = await base44.integrations.Core.UploadFile({ file: vcfFile });
     const vcfUrl = vcfUpload.file_url;
 
     // Generate QR Code using external API
-    const publicUrl = `${Deno.env.get('BASE_URL') || 'https://app.base44.com'}/card/${slug}`;
+    const publicUrl = `${Deno.env.get('BASE_URL') || 'https://app.base44.com'}/DigitalCard?slug=${slug}`;
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(publicUrl)}&format=png`;
     
     let qrImageUrl = qrApiUrl; // fallback: use the API URL directly
@@ -72,7 +75,8 @@ Deno.serve(async (req) => {
       const qrRes = await fetch(qrApiUrl);
       if (qrRes.ok) {
         const qrBlob = await qrRes.blob();
-        const qrUpload = await base44.integrations.Core.UploadFile({ file: qrBlob });
+        const qrFile = new File([qrBlob], `qr_${slug}.png`, { type: 'image/png' });
+        const qrUpload = await base44.integrations.Core.UploadFile({ file: qrFile });
         qrImageUrl = qrUpload.file_url;
       }
     } catch (e) {
