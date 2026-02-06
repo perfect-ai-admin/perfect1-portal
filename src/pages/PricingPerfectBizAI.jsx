@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Check, X, ArrowRight, Star, Lock, AlertTriangle, 
   Palette, MonitorPlay, Rocket, Loader2, LogIn, CreditCard, ShieldCheck,
-  LogOut, HelpCircle, User, Globe, Sparkles
+  LogOut, HelpCircle, User, Globe, Sparkles, Sticker, Layout
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -157,6 +157,28 @@ export default function PricingPerfectBizAI() {
       description: 'בניית מצגת שיווקית או עסקית שתשכנע כל לקוח או משקיע',
       cta: 'הכן מצגת',
       micro: 'מתאים לזום, פגישות וכנסים'
+    },
+    {
+      name: 'סטיקר ממותג לעסק',
+      dbNames: ['Sticker', 'סטיקר'],
+      price: 29,
+      icon: Sticker,
+      color: 'text-pink-600',
+      bgColor: 'bg-pink-50',
+      description: 'סטיקר מעוצב ומותאם אישית לוואטסאפ ורשתות חברתיות – מחזק נוכחות ומיתוג',
+      cta: 'צור סטיקר עכשיו',
+      micro: 'תשלום חד־פעמי · מוכן תוך דקות'
+    },
+    {
+      name: 'דף נחיתה עסקי',
+      dbNames: ['LandingPage', 'דף נחיתה', 'Landing Page'],
+      price: 299,
+      icon: Layout,
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
+      description: 'דף נחיתה מקצועי וממיר שמותאם לעסק שלך – עם טופס לידים, עיצוב מרשים וטקסטים שיווקיים',
+      cta: 'בנה דף נחיתה',
+      micro: 'כולל אחסון ודומיין · מוכן לשימוש'
     },
     {
       name: 'הזנקת קמפיין שיווקי',
