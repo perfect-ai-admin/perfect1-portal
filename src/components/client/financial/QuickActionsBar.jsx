@@ -103,23 +103,25 @@ export default function QuickActionsBar({ onActionComplete, user }) {
         {/* Create Document */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+            <Button size="sm" onClick={(e) => { if (!checkConnection()) { e.preventDefault(); e.stopPropagation(); } }} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold">
               <FileText className="w-4 h-4" />
               הפקת מסמך
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            {documentTypes.map(type => (
-              <DropdownMenuItem
-                key={type.id}
-                onClick={() => handleAction('document', type.id)}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">{type.icon}</span>
-                {type.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
+          {user?.accounting_software?.is_active && (
+            <DropdownMenuContent align="start">
+              {documentTypes.map(type => (
+                <DropdownMenuItem
+                  key={type.id}
+                  onClick={() => handleAction('document', type.id)}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">{type.icon}</span>
+                  {type.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          )}
         </DropdownMenu>
 
         {/* Add Expense */}
@@ -160,23 +162,25 @@ export default function QuickActionsBar({ onActionComplete, user }) {
            {/* Hacked Document Button */}
            <DropdownMenu>
              <DropdownMenuTrigger asChild>
-               <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg font-bold text-sm transition-all active:scale-95 shadow-lg hover:shadow-xl">
+               <button onClick={(e) => { if (!checkConnection()) { e.preventDefault(); e.stopPropagation(); } }} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg font-bold text-sm transition-all active:scale-95 shadow-lg hover:shadow-xl">
                  <FileText className="w-5 h-5" />
                  הפקת מסמך
                </button>
              </DropdownMenuTrigger>
-             <DropdownMenuContent align="start" side="top" className="mb-2">
-               {documentTypes.map(type => (
-                 <DropdownMenuItem
-                   key={type.id}
-                   onClick={() => handleAction('document', type.id)}
-                   className="cursor-pointer"
-                 >
-                   <span className="mr-2">{type.icon}</span>
-                   {type.label}
-                 </DropdownMenuItem>
-               ))}
-             </DropdownMenuContent>
+             {user?.accounting_software?.is_active && (
+               <DropdownMenuContent align="start" side="top" className="mb-2">
+                 {documentTypes.map(type => (
+                   <DropdownMenuItem
+                     key={type.id}
+                     onClick={() => handleAction('document', type.id)}
+                     className="cursor-pointer"
+                   >
+                     <span className="mr-2">{type.icon}</span>
+                     {type.label}
+                   </DropdownMenuItem>
+                 ))}
+               </DropdownMenuContent>
+             )}
              </DropdownMenu>
 
              {/* Add Expense Button */}
