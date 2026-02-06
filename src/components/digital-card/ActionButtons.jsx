@@ -88,19 +88,19 @@ export default function ActionButtons({ card, actions }) {
   if (waNumber) {
     buttons.push({ icon: Icons.WhatsApp, label: 'וואטסאפ', onClick: actions.whatsapp });
   }
-  if (hasSocial('instagram') && card.instagram_url) {
+  if (hasSocial('instagram')) {
     buttons.push({ icon: Icons.Instagram, label: 'אינסטגרם', onClick: actions.instagram });
   }
-  if (hasSocial('facebook') && card.facebook_url) {
+  if (hasSocial('facebook')) {
     buttons.push({ icon: Icons.Facebook, label: 'פייסבוק', onClick: actions.facebook });
   }
-  if (hasSocial('website') && card.website_url) {
+  if (hasSocial('website')) {
     buttons.push({ icon: Icons.Website, label: 'אתר', onClick: actions.website });
   }
   if (card.email) {
     buttons.push({ icon: Icons.Email, label: 'מייל', onClick: actions.email });
   }
-  if ((hasSocial('waze') || card.waze_url)) {
+  if (hasSocial('waze')) {
     buttons.push({ icon: Icons.WazeBrand, label: 'Waze', onClick: actions.waze });
   }
 

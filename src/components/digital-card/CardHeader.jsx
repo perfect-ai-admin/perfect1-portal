@@ -91,6 +91,20 @@ export default function CardHeader({ card, primaryColor }) {
             </div>
           )}
         </motion.div>
+
+        {/* Services tags */}
+        {card.services?.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-2 mt-4 px-2 w-full">
+            {card.services.map((s, i) => (
+              <span 
+                key={i} 
+                className="text-[13px] font-medium px-4 py-1.5 rounded-full bg-[#2A2A2A] text-[#00E5FF] border border-[#00E5FF]/20 shadow-[0_0_10px_rgba(0,229,255,0.05)]"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </motion.div>
   );
