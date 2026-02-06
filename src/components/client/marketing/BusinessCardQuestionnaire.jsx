@@ -406,38 +406,44 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
               </div>
 
               <div className="space-y-2">
-                 <Label className="block text-xs font-semibold">יש לך תמונת נושא (Cover)?</Label>
-                  <div className="grid grid-cols-1 gap-2">
-                     <div 
-                        className={cn(
-                          "cursor-pointer p-3 rounded-xl border flex items-center justify-between transition-all relative overflow-hidden",
-                          formData.hasCover === 'yes'
-                            ? "border-purple-500 bg-purple-50" 
-                            : "border-gray-200 hover:bg-gray-50"
-                        )}
-                      >
-                         <input 
-                          type="file" 
-                          accept="image/*" 
-                          onChange={handleCoverUpload}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        />
-                        <div className="flex items-center gap-2">
-                             <Image className={cn("w-4 h-4", formData.hasCover === 'yes' ? "text-purple-600" : "text-gray-400")} />
-                             <span className={cn("text-xs font-medium", formData.hasCover === 'yes' ? "text-purple-900" : "text-gray-700")}>
-                                 {formData.coverFile ? "כן (קובץ הועלה)" : "כן (לחץ להעלאה)"}
-                             </span>
-                        </div>
-                        {formData.hasCover === 'yes' && <Check className="w-4 h-4 text-purple-600" />}
-                    </div>
-                    
+                 <Label className="block text-xs font-semibold">האם תרצה להוסיף תמונת נושא (Cover)?</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                     <SelectionCard
+                      selected={formData.hasCover === 'yes'}
+                      onClick={() => handleInputChange('hasCover', 'yes')}
+                      icon={Image}
+                      title="כן, הוסף תמונה"
+                      description="תמונה בחלק העליון"
+                    />
                      <SelectionCard
                       selected={formData.hasCover === 'no'}
                       onClick={() => handleInputChange('hasCover', 'no')}
                       icon={X}
-                      title="לא – השתמש ברקע כהה"
+                      title="לא, ללא תמונה"
+                      description="עיצוב נקי עם צבע"
                     />
                   </div>
+
+                  {formData.hasCover === 'yes' && (
+                      <div className="mt-2 p-3 border border-dashed border-purple-200 rounded-xl bg-purple-50/50 flex flex-col items-center justify-center relative animate-in fade-in slide-in-from-top-1">
+                          <input 
+                              type="file" 
+                              accept="image/*" 
+                              onChange={handleCoverUpload}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                          />
+                          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                              <Image className="w-4 h-4 text-purple-600" />
+                          </div>
+                          <p className="text-xs font-medium text-purple-900">
+                              {formData.coverFile ? "התמונה נבחרה בהצלחה!" : "לחץ כאן להעלאת התמונה"}
+                          </p>
+                          <p className="text-[10px] text-purple-400">
+                              {formData.coverFile ? formData.coverFile.name : "JPG, PNG עד 5MB"}
+                          </p>
+                          {formData.coverFile && <Check className="w-4 h-4 text-green-500 absolute top-2 right-2" />}
+                      </div>
+                  )}
               </div>
 
                <div className="space-y-2">
