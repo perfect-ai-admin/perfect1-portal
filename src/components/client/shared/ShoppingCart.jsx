@@ -33,10 +33,15 @@ export default function ShoppingCartButton() {
 
   const getItemImage = (item) => {
     const type = getItemField(item, 'type');
-    // Try all possible image locations
-    const img = item?.preview_image || item?.data?.preview_image || item?.data?.logoUrl || item?.data?.data?.logoUrl || item?.data?.data?.preview_image;
-    if (img) return img;
-    // Fallback for presentations
+    // The entity API wraps all fields inside item.data
+    // So preview_image lives at item.data.preview_image
+    // And logoUrl lives at item.data.data.logoUrl  
+    const img = item?.data?.preview_image 
+      || item?.data?.data?.logoUrl 
+      || item?.data?.data?.preview_image
+      || item?.preview_image;
+    if (img && !img.startsWith('data:')) return img; // skip base64 broken thumbnails
+    // Fallback for presentations - business meeting image
     if (type === 'presentation') return 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400';
     return null;
   };
