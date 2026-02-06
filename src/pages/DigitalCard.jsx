@@ -72,57 +72,55 @@ export default function DigitalCard() {
       <Helmet>
         <title>{card.full_name} | כרטיס ביקור דיגיטלי</title>
         <meta name="description" content={`${card.full_name} - ${card.profession}`} />
-        <meta name="theme-color" content={primaryColor} />
+        <meta name="theme-color" content="#121212" />
       </Helmet>
 
-      <div className="min-h-screen bg-[#F8FAFC]" dir="rtl">
+      <div className="min-h-screen bg-[#121212] text-white" dir="rtl">
         <motion.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           transition={{ duration: 0.5 }}
-          className="max-w-[440px] mx-auto pb-28"
+          className="max-w-[440px] mx-auto pb-24"
         >
           
           <CardHeader card={card} primaryColor={primaryColor} />
           
-          <div className="px-5 -mt-6 relative z-10 space-y-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-            >
-              <ActionButtons card={card} actions={actions} primaryColor={primaryColor} />
-            </motion.div>
-
+          <div className="relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.4 }}
             >
-              <ContactInfo card={card} primaryColor={primaryColor} />
+              <ActionButtons card={card} actions={actions} />
             </motion.div>
 
+            {/* Keep other sections if needed, but styled dark, or hidden if minimal */}
+            {/* For now, keeping them minimal/hidden based on "Just display the icons" preference, 
+                but keeping structure in case user wants them back. 
+                Applying dark styles just in case. */}
+             
+             {/* 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.4 }}
+              className="px-5 mt-4"
             >
-              <QRSection card={card} actions={actions} primaryColor={primaryColor} />
+               <ContactInfo card={card} primaryColor={primaryColor} theme="dark" />
             </motion.div>
+            */}
 
             {/* Footer Branding */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="text-center pt-4 pb-2"
+              className="text-center pt-8 pb-4"
             >
-              <span className="text-[10px] text-gray-300 tracking-wide">Perfect Biz AI</span>
+              <span className="text-[10px] text-gray-600 tracking-widest uppercase">DigitalBcard</span>
             </motion.div>
           </div>
         </motion.div>
-
-        <StickyFooter card={card} actions={actions} primaryColor={primaryColor} />
       </div>
     </>
   );

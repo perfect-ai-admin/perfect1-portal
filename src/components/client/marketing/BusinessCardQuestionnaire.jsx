@@ -79,6 +79,8 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
     // Step 4
     hasLogo: '',
     logoFile: null,
+    hasCover: '',
+    coverFile: null,
     preferredStyle: '',
     // Step 5
     primaryUsage: ''
@@ -122,6 +124,13 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
     }
   };
 
+  const handleCoverUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, coverFile: file, hasCover: 'yes' }));
+    }
+  };
+
   const validateStep = (step) => {
     const newErrors = {};
     if (step === 1 && !formData.fullName) newErrors.fullName = 'שדה חובה';
@@ -158,8 +167,18 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
         });
       }
 
+      // Convert cover file to data URL if exists
+      let coverDataUrl = null;
+      if (formData.coverFile) {
+        coverDataUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(formData.coverFile);
+        });
+      }
+
       const res = await base44.functions.invoke('createDigitalCard', {
-        formData: { ...formData, logoFile: undefined, logoDataUrl }
+        formData: { ...formData, logoFile: undefined, logoDataUrl, coverFile: undefined, coverDataUrl }
       });
       
       if (res.data?.success) {
@@ -380,6 +399,41 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                       onClick={() => handleInputChange('hasLogo', 'no')}
                       icon={X}
                       title="לא – תבנו לי עיצוב נקי"
+                    />
+                  </div>
+              </div>
+
+              <div className="space-y-2">
+                 <Label className="block text-xs font-semibold">יש לך תמונת נושא (Cover)?</Label>
+                  <div className="grid grid-cols-1 gap-2">
+                     <div 
+                        className={cn(
+                          "cursor-pointer p-3 rounded-xl border flex items-center justify-between transition-all relative overflow-hidden",
+                          formData.hasCover === 'yes'
+                            ? "border-purple-500 bg-purple-50" 
+                            : "border-gray-200 hover:bg-gray-50"
+                        )}
+                      >
+                         <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={handleCoverUpload}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <div className="flex items-center gap-2">
+                             <Image className={cn("w-4 h-4", formData.hasCover === 'yes' ? "text-purple-600" : "text-gray-400")} />
+                             <span className={cn("text-xs font-medium", formData.hasCover === 'yes' ? "text-purple-900" : "text-gray-700")}>
+                                 {formData.coverFile ? "כן (קובץ הועלה)" : "כן (לחץ להעלאה)"}
+                             </span>
+                        </div>
+                        {formData.hasCover === 'yes' && <Check className="w-4 h-4 text-purple-600" />}
+                    </div>
+                    
+                     <SelectionCard
+                      selected={formData.hasCover === 'no'}
+                      onClick={() => handleInputChange('hasCover', 'no')}
+                      icon={X}
+                      title="לא – השתמש ברקע כהה"
                     />
                   </div>
               </div>

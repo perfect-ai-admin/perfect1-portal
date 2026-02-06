@@ -49,6 +49,19 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Upload cover if provided
+    let coverUrl = null;
+    if (formData.coverDataUrl) {
+      try {
+        const coverRes = await fetch(formData.coverDataUrl);
+        const coverBlob = await coverRes.blob();
+        const coverUpload = await base44.integrations.Core.UploadFile({ file: coverBlob });
+        coverUrl = coverUpload.file_url;
+      } catch (e) {
+        console.log('Cover upload failed, continuing without:', e.message);
+      }
+    }
+
     // Build VCF content
     const vcfContent = [
       'BEGIN:VCARD',
@@ -96,6 +109,7 @@ Deno.serve(async (req) => {
       email: formData.email || '',
       social_networks: formData.socialNetworks || [],
       logo_url: logoUrl || '',
+      cover_image_url: coverUrl || '',
       preferred_style: formData.preferredStyle || 'professional',
       primary_color: '#1E3A5F',
       primary_usage: formData.primaryUsage || '',

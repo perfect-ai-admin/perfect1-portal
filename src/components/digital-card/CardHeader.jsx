@@ -19,41 +19,55 @@ export default function CardHeader({ card, primaryColor }) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative rounded-b-[28px] overflow-hidden"
-      style={{ background: `linear-gradient(145deg, ${primaryColor}, ${lighterColor})` }}
+      className="relative rounded-b-[32px] overflow-hidden bg-[#1A1A1A]"
     >
-      {/* Subtle pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
-        backgroundImage: `radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)`,
-        backgroundSize: '60px 60px'
-      }} />
+      {/* Cover Image or Gradient */}
+      <div className="h-[200px] w-full relative">
+        {card.cover_image_url ? (
+          <img 
+            src={card.cover_image_url} 
+            alt="Cover" 
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div 
+            className="w-full h-full"
+            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${lighterColor})` }}
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-80" />
+      </div>
 
-      <div className="relative px-6 pt-10 pb-12 flex flex-col items-center text-center">
-        {/* Avatar / Logo */}
+      {/* Avatar - Overlapping */}
+      <div className="relative -mt-16 px-6 pb-8 flex flex-col items-center text-center">
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-          className="relative mb-4"
+          className="relative mb-5"
         >
           {card.logo_url ? (
             <div className="relative">
               {!imgLoaded && (
-                <div className="w-[88px] h-[88px] rounded-full bg-white/20 animate-pulse" />
+                <div className="w-[110px] h-[110px] rounded-full bg-white/10 animate-pulse absolute inset-0" />
               )}
-              <img 
-                src={card.logo_url} 
-                alt={card.full_name} 
-                className={`w-[88px] h-[88px] rounded-full object-cover border-[3px] border-white/30 shadow-lg ${imgLoaded ? 'block' : 'hidden'}`}
-                onLoad={() => setImgLoaded(true)}
-              />
+              <div className="p-1 rounded-full bg-[#1A1A1A]">
+                <img 
+                  src={card.logo_url} 
+                  alt={card.full_name} 
+                  className={`w-[102px] h-[102px] rounded-full object-cover border-2 border-white/10 ${imgLoaded ? 'block' : 'hidden'}`}
+                  onLoad={() => setImgLoaded(true)}
+                />
+              </div>
             </div>
           ) : (
-            <div 
-              className="w-[88px] h-[88px] rounded-full flex items-center justify-center text-2xl font-black text-white border-[3px] border-white/30 shadow-lg"
-              style={{ background: `rgba(255,255,255,0.15)`, backdropFilter: 'blur(10px)' }}
-            >
-              {initials}
+            <div className="p-1 rounded-full bg-[#1A1A1A]">
+              <div 
+                className="w-[102px] h-[102px] rounded-full flex items-center justify-center text-3xl font-black text-white border-2 border-white/10"
+                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${lighterColor})` }}
+              >
+                {initials}
+              </div>
             </div>
           )}
         </motion.div>
@@ -63,30 +77,17 @@ export default function CardHeader({ card, primaryColor }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
+          className="space-y-1"
         >
-          <h1 className="text-[22px] font-extrabold text-white leading-tight tracking-tight">
+          <h1 className="text-2xl font-bold text-white tracking-wide">
             {card.full_name}
           </h1>
           {card.profession && (
-            <p className="text-sm font-medium text-white/75 mt-1.5">
+            <p className="text-base text-gray-400 font-medium">
               {card.profession}
             </p>
           )}
         </motion.div>
-
-        {/* Services tags */}
-        {card.services?.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-2 mt-4">
-            {card.services.map((s, i) => (
-              <span 
-                key={i} 
-                className="text-[11px] font-medium px-3 py-1 rounded-full bg-white/15 text-white/90 backdrop-blur-sm border border-white/10"
-              >
-                {s}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
     </motion.div>
   );
