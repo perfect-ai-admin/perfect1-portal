@@ -15,6 +15,17 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
   const [user, setUser] = useState(null);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   const [failedImages, setFailedImages] = useState({});
+
+  const getCheckoutItemImage = (item) => {
+    const img = item?.preview_image || item?.data?.logoUrl || item?.data?.preview_image;
+    if (img && !img.startsWith('data:')) return img;
+    const fallbacks = {
+      logo: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=400',
+      presentation: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400',
+      landing_page: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400',
+    };
+    return fallbacks[item?.type] || null;
+  };
   
   const [cardData, setCardData] = useState({
     fullName: '',
@@ -172,8 +183,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
                     <div key={idx} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex gap-4">
                         <div className="w-16 h-16 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 relative flex items-center justify-center">
                             {(() => {
-                                const presentationFallback = 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400';
-                                const imgSrc = item.preview_image || item.data?.preview_image || item.data?.logoUrl || item.data?.data?.logoUrl || (item.type === 'presentation' ? presentationFallback : null);
+                                const imgSrc = getCheckoutItemImage(item);
 
                                 if (imgSrc && !failedImages[idx]) {
                                     return (
