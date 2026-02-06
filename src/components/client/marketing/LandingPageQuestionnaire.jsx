@@ -1257,25 +1257,29 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               </div>
 
               {/* Bottom Sticky Action Bar */}
-              <div className="flex-none bg-white border-t border-slate-100 p-4 md:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-20">
-                 <div className="max-w-4xl mx-auto">
-                    <div className="flex flex-col gap-3 mb-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
-                      <div className="text-sm font-bold text-slate-900">💡 מה זה שלב זה?</div>
-                      <ul className="text-xs text-slate-600 space-y-1">
-                        <li>✅ <span className="font-semibold">הטיוטה</span> שלך בדומיין זמני בלבד</li>
-                        <li>✅ אפשר <span className="font-semibold">לצפות</span> בדף המלא</li>
-                        <li>✅ אם אוהב - <span className="font-semibold">המשך</span> לדומיין אמיתי</li>
-                        <li>✅ אם רוצה לשנות - <span className="font-semibold">חזור</span> לעריכה</li>
-                      </ul>
+              <div className="flex-none bg-white border-t border-slate-100 p-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-20">
+                 <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+                    
+                    {/* Right side - Price */}
+                    <div className="flex flex-col items-end flex-shrink-0">
+                       <span className="text-xs text-gray-500 font-medium">מחיר השקה מיוחד</span>
+                       <div className="flex items-baseline gap-2">
+                         <span className="text-2xl font-black text-gray-900">49 ₪</span>
+                         <span className="text-sm text-gray-400 line-through">98₪</span>
+                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Left side - Buttons */}
+                    <div className="flex items-center gap-3">
                        <Button
-                         onClick={() => setShowingPreview(false)}
+                         onClick={() => {
+                           setShowingPreview(false);
+                           setIsBuilding(false);
+                         }}
                          variant="outline"
-                         className="h-12 rounded-xl font-bold flex-1"
+                         className="h-12 px-6 rounded-xl font-bold border-gray-200 text-gray-700 hover:bg-gray-50"
                        >
-                         ✏️ חזור לעריכה
+                         ערוך עיצוב
                        </Button>
                        <Button
                          onClick={() => {
@@ -1287,36 +1291,18 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                     businessName: formData.businessName,
                                     sections: createdPageData?.sections_json
                                 },
-                                price: 299,
+                                price: 49,
                                 title: `דף נחיתה: ${formData.businessName}`,
                                 preview_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60',
                                 description: 'דף נחיתה ממותג כולל תוכן ועיצוב',
-                                openCart: false
+                                openCart: true
                                 });
-                            toast.success('נוסף לסל בהצלחה!');
-                            // Stay on page to allow continuing the process
+                            toast.success('נוסף לסל!');
                          }}
-                         variant="secondary"
-                         className="h-12 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-xl font-bold flex-1 flex items-center justify-center gap-2"
+                         className="h-12 px-6 bg-gray-900 hover:bg-black text-white rounded-xl font-bold flex items-center gap-2 shadow-lg"
                        >
                          <ShoppingCart className="w-4 h-4" />
-                         הוסף לסל
-                       </Button>
-                       <Button
-                         onClick={handlePublishToLive}
-                         disabled={isPublishing}
-                         className="h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow-lg shadow-blue-200 font-bold flex-1 flex items-center justify-center gap-2"
-                       >
-                         {isPublishing ? (
-                            <>
-                               <Loader2 className="w-4 h-4 animate-spin" />
-                               מעבד...
-                            </>
-                         ) : (
-                            <>
-                               🚀 המשך לדומיין אמיתי
-                            </>
-                         )}
+                         רכוש ופרסם
                        </Button>
                     </div>
                  </div>
