@@ -26,6 +26,21 @@ export default function ShoppingCartButton() {
 
   const ITEM_PRICE = 99;
 
+  // Helper to extract nested CartItem fields (data is nested under item.data)
+  const getItemField = (item, field) => {
+    return item?.[field] || item?.data?.[field] || item?.data?.data?.[field];
+  };
+
+  const getItemImage = (item) => {
+    const type = getItemField(item, 'type');
+    // Try all possible image locations
+    const img = item?.preview_image || item?.data?.preview_image || item?.data?.logoUrl || item?.data?.data?.logoUrl || item?.data?.data?.preview_image;
+    if (img) return img;
+    // Fallback for presentations
+    if (type === 'presentation') return 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400';
+    return null;
+  };
+
   const handlePreview = async (landingPageId) => {
     setIsPreviewLoading(true);
     try {
