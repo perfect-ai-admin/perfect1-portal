@@ -79,12 +79,7 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
         className="w-full max-w-[380px] mx-auto relative rounded-[32px] overflow-hidden shadow-2xl bg-[#121212] text-white"
         dir="rtl"
       >
-        {/* Draft watermark */}
-        <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center">
-          <div className="text-white/20 font-black text-6xl rotate-[-30deg] whitespace-nowrap select-none border-4 border-white/10 px-8 py-4 rounded-3xl backdrop-blur-sm">
-            טיוטה
-          </div>
-        </div>
+
 
         {/* Content */}
         <div className="pb-10 relative z-10">
