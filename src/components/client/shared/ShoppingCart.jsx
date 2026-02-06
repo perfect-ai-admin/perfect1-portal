@@ -33,16 +33,15 @@ export default function ShoppingCartButton() {
 
   const getItemImage = (item) => {
     const type = getItemField(item, 'type');
-    // The entity API wraps all fields inside item.data
-    // So preview_image lives at item.data.preview_image
-    // And logoUrl lives at item.data.data.logoUrl  
     const img = item?.data?.preview_image 
       || item?.data?.data?.logoUrl 
       || item?.data?.data?.preview_image
       || item?.preview_image;
-    if (img && !img.startsWith('data:')) return img; // skip base64 broken thumbnails
-    // Fallback for presentations - business meeting image
+    if (img && !img.startsWith('data:')) return img;
+    // Fallback images by type
+    if (type === 'logo') return 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=400';
     if (type === 'presentation') return 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400';
+    if (type === 'landing_page') return 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400';
     return null;
   };
 
@@ -327,7 +326,27 @@ export default function ShoppingCartButton() {
                                               src={imgSrc}
                                               alt={getItemField(item, 'title')}
                                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                              onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
+                                              onError={() => {
+                                                // If primary image fails, try fallback by type
+                                                setFailedImages(prev => ({ ...prev, [item.id]: true }));
+                                              }}
+                                            />
+                                        );
+                                    }
+                                    
+                                    // Show fallback image for known types even after error
+                                    const fallbacks = {
+                                      logo: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=400',
+                                      presentation: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400',
+                                      landing_page: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400',
+                                    };
+                                    const fallbackImg = fallbacks[itemType];
+                                    if (fallbackImg) {
+                                        return (
+                                            <img
+                                              src={fallbackImg}
+                                              alt={getItemField(item, 'title')}
+                                              className="w-full h-full object-cover"
                                             />
                                         );
                                     }
