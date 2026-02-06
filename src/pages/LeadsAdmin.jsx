@@ -78,6 +78,11 @@ export default function LeadsAdmin() {
     mutationFn: (id) => base44.entities.Lead.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
+      toast.success('הליד נמחק בהצלחה');
+    },
+    onError: (error) => {
+      console.error('Failed to delete lead:', error);
+      toast.error('שגיאה במחיקת הליד. ייתכן ואין לך הרשאות מתאימות.');
     }
   });
 
