@@ -173,11 +173,13 @@ CTA: ${ctx.cta}. טקסט כפתור: ${ctx.ctaText}. סגנון: ${ctx.style}.
             }).catch(err => console.log("n8n webhook failed (non-blocking):", err.message));
         }
 
+        // CRITICAL: result from DB may not include sections_json (too large / stripped)
+        // Always merge landingPage AFTER result to ensure sections_json is present
         return Response.json({
-            ...landingPage,
             ...result,
-            slug,
+            ...landingPage,
             id: result.id,
+            slug,
             pageUrl
         });
     } catch (error) {
