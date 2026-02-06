@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, User, Briefcase, 
-  Layout, Phone, Mail, Globe, Instagram, Facebook, 
+  Layout, Phone, Mail, Globe, Instagram, Facebook, Linkedin, Music,
   Image, Share2, Check, Smartphone, Link as LinkIcon, Users, Navigation
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
