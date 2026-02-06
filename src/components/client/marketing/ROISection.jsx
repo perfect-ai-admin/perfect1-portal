@@ -86,6 +86,13 @@ export default function ROISection() {
           💡 <strong>טיפ:</strong> ערוצים עם ROI גבוה זה המקום להשקיע יותר
         </p>
       </div>
+
+      {/* Disclaimer */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+        <p className="text-xs text-gray-400">
+          * הנתונים המוצגים הם להמחשה בלבד ואינם משקפים נתונים אמיתיים
+        </p>
+      </div>
     </motion.div>
   );
 }
