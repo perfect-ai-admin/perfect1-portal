@@ -1,51 +1,42 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Phone, Mail, Globe, Instagram, Facebook, MessageCircle, 
-  Share2, Download, ShoppingCart, Lock, Sparkles, QrCode, 
-  Copy, Check, ExternalLink
-} from 'lucide-react';
+import { Sparkles, Check, Copy, Share2, ShoppingCart, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-
-const STYLE_THEMES = {
-  professional: {
-    bg: 'from-slate-900 via-slate-800 to-slate-900',
-    accent: '#3B82F6',
-    text: 'text-white',
-    subtitleText: 'text-blue-300',
-    cardBg: 'bg-white/10 backdrop-blur-sm border-white/10',
-    serviceBg: 'bg-white/5 border-white/10',
-    divider: 'border-white/10',
-  },
-  light: {
-    bg: 'from-blue-50 via-white to-indigo-50',
-    accent: '#6366F1',
-    text: 'text-gray-900',
-    subtitleText: 'text-indigo-600',
-    cardBg: 'bg-white/80 backdrop-blur-sm border-gray-200 shadow-lg',
-    serviceBg: 'bg-indigo-50/50 border-indigo-100',
-    divider: 'border-gray-200',
-  },
-  warm: {
-    bg: 'from-amber-50 via-orange-50 to-rose-50',
-    accent: '#F59E0B',
-    text: 'text-gray-900',
-    subtitleText: 'text-amber-700',
-    cardBg: 'bg-white/80 backdrop-blur-sm border-amber-200 shadow-lg',
-    serviceBg: 'bg-amber-50/50 border-amber-100',
-    divider: 'border-amber-200',
-  },
-};
+import CardHeader from '@/components/digital-card/CardHeader';
+import ActionButtons from '@/components/digital-card/ActionButtons';
 
 export default function BusinessCardResult({ formData, cardResult, onPurchase, onBack }) {
   const [copied, setCopied] = useState(false);
-  const [showQR, setShowQR] = useState(false);
 
-  const theme = STYLE_THEMES[formData.preferredStyle] || STYLE_THEMES.professional;
-  const services = [formData.service1, formData.service2, formData.service3].filter(Boolean);
-  const initials = (formData.fullName || 'א').split(' ').map(w => w[0]).join('').slice(0, 2);
+  // Construct card object for preview components
+  const card = {
+    full_name: formData.fullName,
+    profession: formData.profession,
+    // Use data URLs for preview if available (from creation step), otherwise result URLs
+    logo_url: formData.logoDataUrl || cardResult.logo_url, 
+    cover_image_url: formData.coverDataUrl || cardResult.cover_image_url,
+    phone: formData.phone,
+    whatsapp: formData.phone, // Assuming phone is used for WA as per logic
+    email: formData.email,
+    social_networks: formData.socialNetworks || [],
+    website_url: formData.website_url,
+    instagram_url: formData.instagram_url,
+    facebook_url: formData.facebook_url,
+    waze_url: formData.waze_url,
+    qr_image_url: cardResult.qr_image_url,
+    vcf_url: cardResult.vcf_url
+  };
+
+  const actions = {
+    call: () => toast.info('הדגמה: חיוג'),
+    whatsapp: () => toast.info('הדגמה: וואטסאפ'),
+    email: () => toast.info('הדגמה: אימייל'),
+    website: () => toast.info('הדגמה: אתר'),
+    instagram: () => toast.info('הדגמה: אינסטגרם'),
+    facebook: () => toast.info('הדגמה: פייסבוק'),
+    waze: () => toast.info('הדגמה: Waze'),
+  };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(cardResult.public_url);
@@ -65,7 +56,7 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
   };
 
   return (
-    <div className="flex flex-col items-center w-full space-y-5 pb-6">
+    <div className="flex flex-col items-center w-full space-y-6 pb-6">
       {/* Success Header */}
       <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-2">
         <motion.div 
@@ -77,82 +68,73 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
           <Sparkles className="w-8 h-8 text-green-600" />
         </motion.div>
         <h2 className="text-xl font-black text-gray-900">הכרטיס שלך נוצר! 🎉</h2>
-        <p className="text-xs text-gray-500">כרטיס ביקור דיגיטלי מקצועי עם קישור ייחודי</p>
+        <p className="text-xs text-gray-500">הנה התוצאה הסופית כפי שתראה ללקוחות</p>
       </motion.div>
 
-      {/* Card Preview (draft with watermark) */}
+      {/* Card Preview Container */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="w-full max-w-sm mx-auto relative"
+        className="w-full max-w-[380px] mx-auto relative rounded-[32px] overflow-hidden shadow-2xl bg-[#121212] text-white"
+        dir="rtl"
       >
         {/* Draft watermark */}
-        <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center overflow-hidden rounded-2xl">
-          <div className="text-white/15 font-black text-4xl rotate-[-30deg] whitespace-nowrap select-none border-2 border-white/10 px-4 py-2 rounded-xl">
+        <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center">
+          <div className="text-white/20 font-black text-6xl rotate-[-30deg] whitespace-nowrap select-none border-4 border-white/10 px-8 py-4 rounded-3xl backdrop-blur-sm">
             טיוטה
           </div>
         </div>
 
-        <div className={cn("rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br", theme.bg)}>
-          <div className="h-1.5 w-full" style={{ background: `linear-gradient(90deg, ${theme.accent}, transparent)` }} />
-          <div className="p-5 space-y-4">
-            {/* Avatar + Name */}
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-black text-white shadow-lg flex-shrink-0"
-                style={{ background: `linear-gradient(135deg, ${theme.accent}, ${theme.accent}99)` }}
-              >
-                {initials}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className={cn("text-lg font-black leading-tight truncate", theme.text)}>{formData.fullName}</h2>
-                <p className={cn("text-sm font-medium mt-0.5", theme.subtitleText)}>{formData.profession}</p>
-              </div>
+        {/* Content */}
+        <div className="pb-10 relative z-10">
+            <CardHeader card={card} primaryColor="#1E3A5F" />
+            
+            <div className="mt-2">
+                 <ActionButtons card={card} actions={actions} />
             </div>
 
-            <div className={cn("border-t", theme.divider)} />
+            {/* Save Contact Button Preview */}
+            <div className="px-6 mt-8">
+              <button
+                className="w-full bg-[#00E5FF] text-black font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 pointer-events-none opacity-90"
+              >
+                <span className="text-lg">שמור אותי באנשי קשר</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <line x1="20" y1="8" x2="20" y2="14"></line>
+                  <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+              </button>
+            </div>
 
-            {/* Services mini */}
-            {services.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {services.map((s, i) => (
-                  <span key={i} className={cn("text-[11px] px-2.5 py-1 rounded-full border", theme.serviceBg, theme.text, "opacity-80")}>{s}</span>
-                ))}
+            {/* QR Code Preview */}
+            {card.qr_image_url && (
+              <div className="px-6 mt-10 flex flex-col items-center">
+                <div className="bg-white p-3 rounded-xl shadow-2xl">
+                  <img 
+                    src={card.qr_image_url} 
+                    alt="QR Code" 
+                    className="w-32 h-32 object-contain"
+                  />
+                </div>
+                <p className="text-gray-500 text-xs mt-3">סרוק לשמירה</p>
               </div>
             )}
-
-            {/* Contact buttons mini */}
-            <div className="grid grid-cols-3 gap-2">
-              {formData.phone && (
-                <div className={cn("flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl border text-center", theme.cardBg, theme.text)}>
-                  <Phone className="w-4 h-4" style={{ color: theme.accent }} />
-                  <span className="text-[9px] opacity-70">חייג</span>
-                </div>
-              )}
-              {formData.phone && (
-                <div className={cn("flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl border text-center", theme.cardBg, theme.text)}>
-                  <MessageCircle className="w-4 h-4 text-green-400" />
-                  <span className="text-[9px] opacity-70">WhatsApp</span>
-                </div>
-              )}
-              {formData.email && (
-                <div className={cn("flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl border text-center", theme.cardBg, theme.text)}>
-                  <Mail className="w-4 h-4" style={{ color: theme.accent }} />
-                  <span className="text-[9px] opacity-70">מייל</span>
-                </div>
-              )}
+            
+            <div className="text-center pt-8 pb-4">
+              <span className="text-[10px] text-gray-600 tracking-widest uppercase">DigitalBcard</span>
             </div>
-          </div>
         </div>
       </motion.div>
 
-      {/* Quick Actions Row */}
+      {/* Quick Actions for Share */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="w-full max-w-sm mx-auto grid grid-cols-3 gap-2"
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-sm mx-auto grid grid-cols-2 gap-3"
       >
         <button 
           onClick={handleCopyLink}
@@ -160,13 +142,6 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
         >
           {copied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5 text-blue-600" />}
           <span className="text-[10px] font-medium text-gray-600">{copied ? 'הועתק!' : 'העתק קישור'}</span>
-        </button>
-        <button
-          onClick={() => setShowQR(!showQR)}
-          className="flex flex-col items-center gap-1.5 bg-white border border-gray-200 rounded-xl py-3 px-2 hover:bg-gray-50 transition-all active:scale-95"
-        >
-          <QrCode className="w-5 h-5 text-purple-600" />
-          <span className="text-[10px] font-medium text-gray-600">QR Code</span>
         </button>
         <button
           onClick={handleShare}
@@ -177,43 +152,11 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
         </button>
       </motion.div>
 
-      {/* QR Code popup */}
-      {showQR && cardResult.qr_image_url && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          className="w-full max-w-sm mx-auto bg-white rounded-2xl border border-gray-100 p-5 flex flex-col items-center gap-3 shadow-lg"
-        >
-          <img src={cardResult.qr_image_url} alt="QR Code" className="w-40 h-40 rounded-xl" />
-          <p className="text-xs text-gray-500">סרוק כדי לפתוח את הכרטיס</p>
-          <a href={cardResult.qr_image_url} download className="text-xs text-blue-600 font-medium underline">הורד QR</a>
-        </motion.div>
-      )}
-
-      {/* Save Contact */}
-      {cardResult.vcf_url && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="w-full max-w-sm mx-auto"
-        >
-          <a
-            href={cardResult.vcf_url}
-            download
-            className="flex items-center justify-center gap-2 w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 rounded-xl text-sm transition-all"
-          >
-            <Download className="w-4 h-4" />
-            הורד כרטיס איש קשר (VCF)
-          </a>
-        </motion.div>
-      )}
-
       {/* Purchase CTA */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        transition={{ delay: 0.5 }}
         className="w-full max-w-sm mx-auto"
       >
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-4 space-y-3">
@@ -224,7 +167,7 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
             <div className="flex-1">
               <h3 className="font-bold text-gray-900 text-sm">שדרג לכרטיס מלא</h3>
               <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                פרסם את הכרטיס, הסר סימן מים, קבל קישור שיתוף פעיל וכפתורים שעובדים.
+                הסר סימן מים, קבל דומיין אישי וכפתורים פעילים לכל הלקוחות שלך.
               </p>
             </div>
           </div>
@@ -244,16 +187,15 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
           </Button>
 
           <div className="flex items-center justify-center gap-3 text-[10px] text-gray-400">
-            <span>✓ ללא סימן מים</span>
-            <span>✓ כפתורים פעילים</span>
-            <span>✓ QR + VCF</span>
+             <span>✓ ללא סימן מים</span>
+             <span>✓ כפתורים פעילים</span>
+             <span>✓ קישור קבוע</span>
           </div>
         </div>
       </motion.div>
 
-      {/* Back */}
       <button onClick={onBack} className="text-sm text-gray-400 hover:text-gray-600 transition-colors py-2">
-        חזרה למרכז השליטה
+        חזרה לעריכה
       </button>
     </div>
   );
