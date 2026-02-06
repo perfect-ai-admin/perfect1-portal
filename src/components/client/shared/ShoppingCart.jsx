@@ -159,7 +159,7 @@ export default function ShoppingCartButton() {
   const selectedCount = selectedIds.size;
   const totalPrice = cartItems
     .filter(item => selectedIds.has(item.id))
-    .reduce((sum, item) => sum + (item.price || item.data?.price || ITEM_PRICE), 0);
+    .reduce((sum, item) => sum + (getItemField(item, 'price') || ITEM_PRICE), 0);
 
   return (
     <>
@@ -310,18 +310,17 @@ export default function ShoppingCartButton() {
                             {/* Image Area */}
                             <div 
                                 className="relative w-20 h-20 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100 flex items-center justify-center"
-                                onClick={() => setEnlargedImage(item.preview_image || item.data?.preview_image || item.data?.logoUrl || item.data?.data?.logoUrl)}
+                                onClick={() => setEnlargedImage(getItemImage(item))}
                             >
                                 {(() => {
-                                    const presentationFallback = 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400';
-                                    const itemType = item.type || item.data?.type;
-                                    const imgSrc = item.preview_image || item.data?.preview_image || item.data?.logoUrl || item.data?.data?.logoUrl || (itemType === 'presentation' ? presentationFallback : null);
+                                    const imgSrc = getItemImage(item);
+                                    const itemType = getItemField(item, 'type');
 
                                     if (imgSrc && !failedImages[item.id]) {
                                         return (
                                             <img
                                               src={imgSrc}
-                                              alt={item.title || item.data?.title}
+                                              alt={getItemField(item, 'title')}
                                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                               onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
                                             />
@@ -354,16 +353,16 @@ export default function ShoppingCartButton() {
                               <div>
                                 <div className="flex justify-between items-start gap-2">
                                     <h3 className="font-bold text-gray-900 truncate text-sm sm:text-base leading-tight">
-                                        {item.title || item.data?.title}
+                                        {getItemField(item, 'title')}
                                     </h3>
 
                                 </div>
-                                <p className="text-sm text-gray-500 font-medium mt-1 hidden sm:block">{item.description || item.data?.description}</p>
+                                <p className="text-sm text-gray-500 font-medium mt-1 hidden sm:block">{getItemField(item, 'description')}</p>
                                 
-                                {(item.type === 'landing_page' || item.data?.type === 'landing_page') && (item.data?.landingPageId || item.data?.data?.landingPageId) && (
+                                {getItemField(item, 'type') === 'landing_page' && getItemField(item, 'landingPageId') && (
                                     <div className="mt-2">
                                         <button 
-                                            onClick={() => handlePreview(item.data?.landingPageId || item.data?.data?.landingPageId)}
+                                            onClick={() => handlePreview(getItemField(item, 'landingPageId'))}
                                             className="text-xs flex items-center gap-1 text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-blue-100"
                                         >
                                             <Eye className="w-3 h-3" />
@@ -371,10 +370,10 @@ export default function ShoppingCartButton() {
                                         </button>
                                     </div>
                                 )}
-                                {(item.type === 'presentation' || item.data?.type === 'presentation') && (item.data?.presentationUrl || item.data?.data?.presentationUrl) && (
+                                {getItemField(item, 'type') === 'presentation' && getItemField(item, 'presentationUrl') && (
                                     <div className="mt-2">
                                         <button 
-                                            onClick={() => handlePresentationPreview(item.data?.presentationUrl || item.data?.data?.presentationUrl)}
+                                            onClick={() => handlePresentationPreview(getItemField(item, 'presentationUrl'))}
                                             className="text-xs flex items-center gap-1 text-purple-600 hover:underline bg-purple-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-purple-100"
                                         >
                                             <Eye className="w-3 h-3" />
@@ -386,9 +385,9 @@ export default function ShoppingCartButton() {
                               
                               <div className="flex items-end justify-between mt-2">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-gray-400 font-medium line-through">₪{(item.price || item.data?.price || ITEM_PRICE) * 2}</span>
+                                    <span className="text-[10px] text-gray-400 font-medium line-through">₪{(getItemField(item, 'price') || ITEM_PRICE) * 2}</span>
                                     <div className="text-lg font-bold text-gray-900 flex items-center gap-1">
-                                        ₪{item.price || item.data?.price || ITEM_PRICE}
+                                        ₪{getItemField(item, 'price') || ITEM_PRICE}
                                     </div>
                                 </div>
                                 {isSelected ? (
