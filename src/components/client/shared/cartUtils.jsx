@@ -1,6 +1,24 @@
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
+// Re-upload external image URLs to Base44 storage so they don't expire
+const persistImage = async (imageUrl) => {
+  if (!imageUrl || imageUrl.startsWith('data:')) return imageUrl;
+  // Already on Base44 storage - no need to re-upload
+  if (imageUrl.includes('base44') || imageUrl.includes('supabase')) return imageUrl;
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) return imageUrl;
+    const blob = await response.blob();
+    const file = new File([blob], 'image.png', { type: blob.type || 'image/png' });
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    return file_url;
+  } catch (err) {
+    console.warn('Failed to persist image, using original URL:', err);
+    return imageUrl;
+  }
+};
+
 export const addToCart = async ({ type, data, price, title, description, preview_image, openCart = true }) => {
   try {
     const user = await base44.auth.me().catch(() => null);
@@ -13,15 +31,30 @@ export const addToCart = async ({ type, data, price, title, description, preview
         return false;
     }
 
+    // For logos and stickers, persist the image to Base44 storage
+    // so the URL doesn't expire (stockimg.ai URLs expire)
+    let persistedPreview = preview_image;
+    let persistedData = { ...data };
+    if (type === 'logo' || type === 'sticker') {
+      toast.info('שומר תמונה...', { duration: 2000 });
+      persistedPreview = await persistImage(preview_image);
+      if (persistedData.logoUrl) {
+        persistedData.logoUrl = await persistImage(persistedData.logoUrl);
+      }
+      if (persistedData.stickerUrl) {
+        persistedData.stickerUrl = await persistImage(persistedData.stickerUrl);
+      }
+    }
+
     // Create entity record
     await base44.entities.CartItem.create({
       type,
-      data,
-      price: price || 39, // Default price if not specified
+      data: persistedData,
+      price: price || 39,
       status: 'active',
       title: title || getTypeTitle(type),
       description: description || getTypeDescription(type),
-      preview_image: preview_image
+      preview_image: persistedPreview
     });
 
     // Dispatch event for UI update
