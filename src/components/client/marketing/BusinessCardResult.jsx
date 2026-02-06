@@ -54,8 +54,40 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
     qr_image_url: cardResult.qr_image_url,
     vcf_url: cardResult.vcf_url,
     services: [formData.service1, formData.service2, formData.service3].filter(Boolean),
-    presentationStyle: formData.presentationStyle // Ensure this is passed for subtitle logic
+    presentationStyle: formData.presentationStyle,
+    preferred_style: formData.preferredStyle, // Pass style choice
+    primary_color: formData.primaryColor // Pass specific color if chosen
   };
+
+  // AI Styling Logic - Determine colors based on style choice
+  const getThemeStyles = (style) => {
+    switch(style) {
+        case 'light':
+            return {
+                bgColor: '#F3F4F6', // Light gray bg for card header
+                textColor: '#1F2937', // Dark text
+                accentColor: '#3B82F6', // Blue accent
+                gradient: 'linear-gradient(135deg, #F3F4F6 0%, #FFFFFF 100%)'
+            };
+        case 'warm':
+            return {
+                bgColor: '#2D1B1B', // Dark warm brown/red
+                textColor: '#FFFFFF',
+                accentColor: '#D4AF37', // Gold
+                gradient: 'linear-gradient(135deg, #4A2C2C 0%, #2D1B1B 100%)'
+            };
+        case 'professional':
+        default:
+            return {
+                bgColor: '#1A1A1A', // Dark gray/black
+                textColor: '#FFFFFF',
+                accentColor: '#00E5FF', // Cyan accent
+                gradient: 'linear-gradient(135deg, #1E3A5F 0%, #1A1A1A 100%)'
+            };
+    }
+  };
+
+  const theme = getThemeStyles(formData.preferredStyle);
 
   const actions = {
     call: () => toast.info('הדגמה: חיוג'),
@@ -137,7 +169,11 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
                 </div>
 
                 <div className="relative z-10">
-                    <CardHeader card={card} primaryColor="#1E3A5F" />
+                    <CardHeader 
+                        card={card} 
+                        primaryColor={theme.accentColor} 
+                        themeStyles={theme}
+                    />
                     
                     <div className="mt-2 relative z-20">
                         <ActionButtons card={card} actions={actions} />

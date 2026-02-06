@@ -9,17 +9,23 @@ function lightenColor(hex, amount = 30) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-export default function CardHeader({ card, primaryColor }) {
+export default function CardHeader({ card, primaryColor, themeStyles }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const initials = (card.full_name || 'א').split(' ').map(w => w[0]).join('').slice(0, 2);
-  const lighterColor = lightenColor(primaryColor, 40);
+  
+  // Default fallbacks if themeStyles is missing
+  const bgStyle = themeStyles?.bgColor || '#1A1A1A';
+  const textColor = themeStyles?.textColor || '#FFFFFF';
+  const subTextColor = themeStyles?.textColor === '#1F2937' ? '#4B5563' : '#D1D5DB'; // Gray-600 vs Gray-300
+  const lighterColor = lightenColor(primaryColor || '#1E3A5F', 40);
 
   return (
     <motion.div 
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="relative rounded-b-[32px] overflow-hidden bg-[#1A1A1A]"
+      className="relative rounded-b-[32px] overflow-hidden transition-colors duration-500"
+      style={{ backgroundColor: bgStyle }}
     >
       {/* Cover Image or Gradient */}
       <div className="h-[200px] w-full relative">
@@ -79,13 +85,22 @@ export default function CardHeader({ card, primaryColor }) {
           transition={{ delay: 0.3 }}
           className="space-y-2 mt-2"
         >
-          <h1 className="text-[26px] font-bold text-white tracking-normal leading-tight">
+          <h1 
+            className="text-[26px] font-bold tracking-normal leading-tight transition-colors duration-300"
+            style={{ color: textColor }}
+          >
             {card.full_name}
           </h1>
           {card.profession && (
             <div className="flex flex-col items-center">
-                <span className="h-0.5 w-10 bg-[#00E5FF] mb-2 rounded-full opacity-70"></span>
-                <p className="text-[15px] text-gray-300 font-medium tracking-wide">
+                <span 
+                    className="h-0.5 w-10 mb-2 rounded-full opacity-70 transition-colors duration-300"
+                    style={{ backgroundColor: primaryColor }}
+                ></span>
+                <p 
+                    className="text-[15px] font-medium tracking-wide transition-colors duration-300"
+                    style={{ color: subTextColor }}
+                >
                 {card.profession}
                 </p>
             </div>
@@ -98,7 +113,12 @@ export default function CardHeader({ card, primaryColor }) {
             {card.services.map((s, i) => (
               <span 
                 key={i} 
-                className="text-[13px] font-medium px-4 py-1.5 rounded-full bg-[#2A2A2A] text-[#00E5FF] border border-[#00E5FF]/20 shadow-[0_0_10px_rgba(0,229,255,0.05)]"
+                className="text-[13px] font-medium px-4 py-1.5 rounded-full border shadow-sm transition-all duration-300"
+                style={{ 
+                    backgroundColor: themeStyles?.textColor === '#1F2937' ? '#FFFFFF' : '#2A2A2A',
+                    color: primaryColor,
+                    borderColor: `${primaryColor}40` // 25% opacity
+                }}
               >
                 {s}
               </span>
