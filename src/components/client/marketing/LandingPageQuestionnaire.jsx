@@ -274,15 +274,15 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       console.log('[STEP 2] ✓ Page data loaded');
 
       // Show preview first (don't publish yet)
+      setIsBuilding(false);
       setShowingPreview(true);
       localStorage.removeItem('landingPageFormData');
 
     } catch (error) {
       console.error('❌ Landing page creation failed:', error);
       setCreationError(error.message || 'אירעה שגיאה בבניית הדף');
-      // Do NOT set isBuilding to false immediately so we can show the error state inside the building view
+      // Keep isBuilding true so we show the error state inside the building view
     }
-    // Only turn off building if we're not showing an error state (handled in UI)
   };
 
   const handlePublishToLive = async () => {
