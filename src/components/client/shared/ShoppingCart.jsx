@@ -144,7 +144,7 @@ export default function ShoppingCartButton() {
   const selectedCount = selectedIds.size;
   const totalPrice = cartItems
     .filter(item => selectedIds.has(item.id))
-    .reduce((sum, item) => sum + (item.price || ITEM_PRICE), 0);
+    .reduce((sum, item) => sum + (item.price || item.data?.price || ITEM_PRICE), 0);
 
   return (
     <>
@@ -295,19 +295,18 @@ export default function ShoppingCartButton() {
                             {/* Image Area */}
                             <div 
                                 className="relative w-20 h-20 sm:w-28 sm:h-28 bg-gray-50 rounded-xl flex-shrink-0 cursor-zoom-in overflow-hidden border border-gray-100 flex items-center justify-center"
-                                onClick={() => setEnlargedImage(item.preview_image || 'fallback')}
+                                onClick={() => setEnlargedImage(item.preview_image || item.data?.preview_image || item.data?.logoUrl || item.data?.data?.logoUrl)}
                             >
                                 {(() => {
-                                    const presentationFallback = 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=400';
-                                    // For logos, we want the real image. For presentations, if missing, use fallback.
-                                    const imgSrc = item.preview_image || item.data?.url || (item.type === 'presentation' ? presentationFallback : null);
-                                    const isFailed = failedImages[item.id] && imgSrc !== presentationFallback; // Only fail if not already using fallback
+                                    const presentationFallback = 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400';
+                                    const itemType = item.type || item.data?.type;
+                                    const imgSrc = item.preview_image || item.data?.preview_image || item.data?.logoUrl || item.data?.data?.logoUrl || (itemType === 'presentation' ? presentationFallback : null);
 
-                                    if (imgSrc && !isFailed) {
+                                    if (imgSrc && !failedImages[item.id]) {
                                         return (
                                             <img
                                               src={imgSrc}
-                                              alt={item.title}
+                                              alt={item.title || item.data?.title}
                                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                               onError={() => setFailedImages(prev => ({ ...prev, [item.id]: true }))}
                                             />
@@ -316,9 +315,9 @@ export default function ShoppingCartButton() {
 
                                     return (
                                         <div className="text-gray-400">
-                                            {item.type === 'logo' ? <Palette className="w-8 h-8" /> :
-                                             item.type === 'presentation' ? <Presentation className="w-8 h-8" /> :
-                                             item.type === 'landing_page' ? <Globe className="w-8 h-8" /> :
+                                            {itemType === 'logo' ? <Palette className="w-8 h-8" /> :
+                                             itemType === 'presentation' ? <Presentation className="w-8 h-8" /> :
+                                             itemType === 'landing_page' ? <Globe className="w-8 h-8" /> :
                                              <ImageIcon className="w-8 h-8" />}
                                         </div>
                                     );
@@ -340,16 +339,16 @@ export default function ShoppingCartButton() {
                               <div>
                                 <div className="flex justify-between items-start gap-2">
                                     <h3 className="font-bold text-gray-900 truncate text-sm sm:text-base leading-tight">
-                                        {item.title}
+                                        {item.title || item.data?.title}
                                     </h3>
 
                                 </div>
-                                <p className="text-sm text-gray-500 font-medium mt-1 hidden sm:block">{item.description}</p>
+                                <p className="text-sm text-gray-500 font-medium mt-1 hidden sm:block">{item.description || item.data?.description}</p>
                                 
-                                {item.type === 'landing_page' && item.data?.landingPageId && (
+                                {(item.type === 'landing_page' || item.data?.type === 'landing_page') && (item.data?.landingPageId || item.data?.data?.landingPageId) && (
                                     <div className="mt-2">
                                         <button 
-                                            onClick={() => handlePreview(item.data.landingPageId)}
+                                            onClick={() => handlePreview(item.data?.landingPageId || item.data?.data?.landingPageId)}
                                             className="text-xs flex items-center gap-1 text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-blue-100"
                                         >
                                             <Eye className="w-3 h-3" />
@@ -357,10 +356,10 @@ export default function ShoppingCartButton() {
                                         </button>
                                     </div>
                                 )}
-                                {item.type === 'presentation' && item.data?.presentationUrl && (
+                                {(item.type === 'presentation' || item.data?.type === 'presentation') && (item.data?.presentationUrl || item.data?.data?.presentationUrl) && (
                                     <div className="mt-2">
                                         <button 
-                                            onClick={() => handlePresentationPreview(item.data.presentationUrl)}
+                                            onClick={() => handlePresentationPreview(item.data?.presentationUrl || item.data?.data?.presentationUrl)}
                                             className="text-xs flex items-center gap-1 text-purple-600 hover:underline bg-purple-50 px-2 py-1 rounded inline-block cursor-pointer border-none transition-colors hover:bg-purple-100"
                                         >
                                             <Eye className="w-3 h-3" />
@@ -372,9 +371,9 @@ export default function ShoppingCartButton() {
                               
                               <div className="flex items-end justify-between mt-2">
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-gray-400 font-medium line-through">₪{(item.price || ITEM_PRICE) * 2}</span>
+                                    <span className="text-[10px] text-gray-400 font-medium line-through">₪{(item.price || item.data?.price || ITEM_PRICE) * 2}</span>
                                     <div className="text-lg font-bold text-gray-900 flex items-center gap-1">
-                                        ₪{item.price || ITEM_PRICE}
+                                        ₪{item.price || item.data?.price || ITEM_PRICE}
                                     </div>
                                 </div>
                                 {isSelected ? (
