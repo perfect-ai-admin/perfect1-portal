@@ -10,8 +10,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing slug' }, { status: 400 });
     }
 
-    // Use service role to read public cards
-    const cards = await base44.asServiceRole.entities.DigitalCard.filter({ slug, status: 'published' });
+    // Use service role to read cards (both draft for preview and published for public)
+    const cards = await base44.asServiceRole.entities.DigitalCard.filter({ slug });
 
     if (!cards || cards.length === 0) {
       return Response.json({ error: 'Card not found' }, { status: 404 });
