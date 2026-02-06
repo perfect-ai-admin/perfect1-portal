@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
 import BusinessCardPreview from './BusinessCardPreview';
-import BusinessCardResult from './BusinessCardResult.jsx';
+import BusinessCardResult from '@/components/client/marketing/BusinessCardResult';
 
 // Custom specialized card selector component
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
