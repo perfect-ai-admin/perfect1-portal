@@ -486,8 +486,18 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">מכין את הכרטיס שלך...</h3>
-                <p className="text-gray-500 text-sm">הבינה המלאכותית מרכיבה כרטיס ביקור מנצח</p>
+                <p className="text-gray-500 text-sm">יוצר QR Code, קובץ איש קשר וכתובת ייחודית</p>
               </div>
+            </div>
+          ) : buildError ? (
+            <div className="flex flex-col items-center justify-center text-center space-y-4 mt-10">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                <X className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900">{buildError}</h3>
+              <Button onClick={() => { setBuildError(null); setCurrentStep(totalSteps); }} variant="outline" className="text-sm">
+                חזור ונסה שוב
+              </Button>
             </div>
           ) : showSuccess && cardResult ? (
             <BusinessCardResult
