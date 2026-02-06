@@ -94,21 +94,45 @@ export default function DigitalCard() {
               <ActionButtons card={card} actions={actions} />
             </motion.div>
 
-            {/* Keep other sections if needed, but styled dark, or hidden if minimal */}
-            {/* For now, keeping them minimal/hidden based on "Just display the icons" preference, 
-                but keeping structure in case user wants them back. 
-                Applying dark styles just in case. */}
-             
-             {/* 
+            {/* Save Contact Button */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.4 }}
-              className="px-5 mt-4"
+              className="px-6 mt-8"
             >
-               <ContactInfo card={card} primaryColor={primaryColor} theme="dark" />
+              <button
+                onClick={actions.saveContact}
+                className="w-full bg-[#00E5FF] hover:bg-[#00cce6] text-black font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 transition-all transform active:scale-95"
+              >
+                <span className="text-lg">שמור אותי באנשי קשר</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <line x1="20" y1="8" x2="20" y2="14"></line>
+                  <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+              </button>
             </motion.div>
-            */}
+
+            {/* QR Code */}
+            {card.qr_image_url && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+                className="px-6 mt-10 flex flex-col items-center"
+              >
+                <div className="bg-white p-3 rounded-xl shadow-2xl">
+                  <img 
+                    src={card.qr_image_url} 
+                    alt="QR Code" 
+                    className="w-40 h-40 object-contain"
+                  />
+                </div>
+                <p className="text-gray-500 text-xs mt-3">סרוק לשמירה</p>
+              </motion.div>
+            )}
 
             {/* Footer Branding */}
             <motion.div 
