@@ -56,6 +56,20 @@ export default function LeadsAdmin() {
     initialData: []
   });
 
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const user = await base44.auth.me();
+        if (!user || user.role !== 'admin') {
+          toast.error('שים לב: אינך מחובר כמנהל, חלק מהפעולות (כגון מחיקה) יהיו חסומות');
+        }
+      } catch (e) {
+        console.error('Auth check failed', e);
+      }
+    };
+    checkAdmin();
+  }, []);
+
   const createLeadMutation = useMutation({
     mutationFn: (data) => base44.entities.Lead.create(data),
     onSuccess: () => {
