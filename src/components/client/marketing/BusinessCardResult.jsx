@@ -84,10 +84,10 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
   };
 
   return (
-    <div className="flex flex-col w-full h-full relative min-h-screen bg-gray-50/50">
+    <div className="flex flex-col w-full min-h-full bg-gray-50/50">
       
       {/* Premium Header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 shadow-sm">
+      <div className="flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-40 shadow-sm rounded-t-xl">
         <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
                 <Sparkles className="w-5 h-5 text-white" />
@@ -107,14 +107,14 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
       </div>
 
       {/* Main Preview Area */}
-      <div className="flex-1 flex flex-col items-center justify-start pt-8 pb-32 overflow-y-auto">
+      <div className="flex-1 flex flex-col items-center justify-start pt-8 pb-8">
         
         {/* Phone Frame Container */}
         <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-            className="relative w-full max-w-[320px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] rounded-[45px] border-[8px] border-gray-900 bg-gray-900 z-10"
+            className="relative w-full max-w-[300px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] rounded-[40px] border-[6px] border-gray-900 bg-gray-900 z-10"
         >
             {/* Glossy Reflection overlay */}
             <div className="absolute inset-0 rounded-[38px] pointer-events-none ring-1 ring-white/10 z-50 shadow-inner" />
@@ -175,36 +175,33 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
         <div className="w-[280px] h-4 bg-black/20 blur-xl rounded-full mt-[-20px] z-0" />
       </div>
 
-      {/* Clean Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
-             <div className="hidden sm:flex flex-col">
+      {/* Clean Bottom Action Bar - Static Position */}
+      <div className="w-full bg-white border-t border-gray-100 z-40 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] rounded-b-xl mt-4">
+        <div className="px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+             <div className="flex flex-col w-full sm:w-auto text-center sm:text-right">
                  <span className="text-xs text-gray-500 font-medium">מחיר השקה מיוחד</span>
-                 <div className="flex items-baseline gap-2">
+                 <div className="flex items-baseline justify-center sm:justify-start gap-2">
                      <span className="text-xl font-black text-gray-900">₪49</span>
                      <span className="text-sm text-gray-400 line-through font-medium">₪98</span>
                  </div>
              </div>
              
-             <div className="flex-1 flex gap-3 max-w-md ml-auto sm:ml-0">
+             <div className="flex gap-3 w-full sm:w-auto sm:max-w-md">
                  <Button 
                     variant="outline" 
                     onClick={onBack}
-                    className="flex-1 h-14 text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-2xl font-medium"
+                    className="flex-1 h-12 text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium"
                  >
                     ערוך עיצוב
                  </Button>
                  
                  <Button
                     onClick={onPurchase}
-                    className="flex-[2] h-14 bg-gray-900 hover:bg-black text-white font-bold rounded-2xl shadow-xl shadow-gray-200 flex items-center justify-center gap-3 transition-all hover:scale-[1.02]"
+                    className="flex-[2] h-12 bg-gray-900 hover:bg-black text-white font-bold rounded-xl shadow-xl shadow-gray-200 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
                  >
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                        <ShoppingCart className="w-4 h-4" />
-                    </div>
+                    <ShoppingCart className="w-4 h-4" />
                     <div className="flex flex-col items-start leading-tight">
-                        <span className="text-sm">רכוש ופרסם עכשיו</span>
-                        <span className="text-[10px] opacity-80 font-normal sm:hidden">מחיר חד פעמי ₪49</span>
+                        <span className="text-sm">רכוש ופרסם</span>
                     </div>
                  </Button>
              </div>
