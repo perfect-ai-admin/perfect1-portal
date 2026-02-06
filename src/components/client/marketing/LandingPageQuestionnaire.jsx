@@ -1259,24 +1259,30 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               {/* Bottom Sticky Action Bar */}
               <div className="flex-none bg-white border-t border-slate-100 p-4 md:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-20">
                  <div className="max-w-4xl mx-auto">
-                    <div className="flex flex-col gap-3 mb-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
-                      <div className="text-sm font-bold text-slate-900">💡 מה זה שלב זה?</div>
-                      <ul className="text-xs text-slate-600 space-y-1">
-                        <li>✅ <span className="font-semibold">הטיוטה</span> שלך בדומיין זמני בלבד</li>
-                        <li>✅ אפשר <span className="font-semibold">לצפות</span> בדף המלא</li>
-                        <li>✅ אם אוהב - <span className="font-semibold">המשך</span> לדומיין אמיתי</li>
-                        <li>✅ אם רוצה לשנות - <span className="font-semibold">חזור</span> לעריכה</li>
-                      </ul>
+                    <div className="mb-4 p-5 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl border border-slate-700/50 shadow-lg">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 bg-white/10 backdrop-blur rounded-lg flex items-center justify-center">
+                          <Sparkles className="w-4 h-4 text-amber-400" />
+                        </div>
+                        <span className="text-sm font-bold text-white">הטיוטה שלך מוכנה לתצוגה</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2.5 text-slate-300 text-xs">
+                          <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-emerald-400" /></div>
+                          <span>צפה בדף המלא בדומיין זמני</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-slate-300 text-xs">
+                          <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-emerald-400" /></div>
+                          <span>המשך לדומיין אמיתי עם רכישה</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-slate-300 text-xs">
+                          <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0"><Check className="w-3 h-3 text-emerald-400" /></div>
+                          <span>לאחר הרכישה — עריכה מלאה, חיבור CRM ואנליטיקס</span>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-3">
-                       <Button
-                         onClick={() => setShowingPreview(false)}
-                         variant="outline"
-                         className="h-12 rounded-xl font-bold flex-1"
-                       >
-                         ✏️ חזור לעריכה
-                       </Button>
                        <Button
                          onClick={() => {
                             addToCart({
