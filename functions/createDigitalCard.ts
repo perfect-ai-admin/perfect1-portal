@@ -14,16 +14,18 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing form data' }, { status: 400 });
     }
 
-    // Build slug
+    // Build slug - use only ASCII-safe chars
     const baseName = (formData.fullName || 'card')
       .trim()
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9\u0590-\u05FF\s-]/g, '')
+      .replace(/[^a-zA-Z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
-      .replace(/-+/g, '-');
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
 
     // Simple slug - add timestamp for uniqueness
-    const slug = `${baseName}-${Date.now().toString(36)}`;
+    const slugBase = baseName || 'card';
+    const slug = `${slugBase}-${Date.now().toString(36)}`;
 
     // Clean phone
     const cleanPhone = (formData.phone || '').replace(/[^0-9+]/g, '');
@@ -59,10 +61,11 @@ Deno.serve(async (req) => {
     ].filter(Boolean).join('\r\n');
 
     // Write VCF to temp file and upload
-    const vcfPath = `/tmp/card_${slug}.vcf`;
+    const safeSlug = slug.replace(/[^a-zA-Z0-9-]/g, '');
+    const vcfPath = `/tmp/card_${safeSlug}.vcf`;
     await Deno.writeTextFile(vcfPath, vcfContent);
     const vcfBytes = await Deno.readFile(vcfPath);
-    const vcfFile = new File([vcfBytes], `${slug}.vcf`, { type: 'text/vcard' });
+    const vcfFile = new File([vcfBytes], `${safeSlug}.vcf`, { type: 'text/vcard' });
     const vcfUpload = await base44.integrations.Core.UploadFile({ file: vcfFile });
     const vcfUrl = vcfUpload.file_url;
 
