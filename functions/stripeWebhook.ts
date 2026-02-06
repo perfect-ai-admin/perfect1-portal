@@ -109,19 +109,72 @@ Deno.serve(async (req) => {
                 const payment = await base44.asServiceRole.entities.Payment.get(paymentId);
                 const items = payment.items || [];
                 
+                const deliverableLinks = [];
+                
                 for (const item of items) {
                     if (item.type === 'landing_page' && item.data?.landingPageId) {
                         await activateLandingPage(item.data.landingPageId);
                     }
-                    // Handle other item types if needed
                     
-                    // Mark cart item as purchased (optional but good practice)
+                    // Collect original image URLs for logos and stickers
+                    if (item.type === 'logo' || item.type === 'sticker') {
+                        const originalUrl = item.data?.logoUrl || item.data?.stickerUrl || item.preview_image || item.data?.preview_image;
+                        if (originalUrl) {
+                            deliverableLinks.push({
+                                title: item.title || (item.type === 'logo' ? 'לוגו' : 'סטיקר'),
+                                url: originalUrl,
+                                type: item.type
+                            });
+                        }
+                    }
+                    
+                    // Mark cart item as purchased
                     if (item.id) {
                         try {
                             await base44.asServiceRole.entities.CartItem.update(item.id, { status: 'purchased' });
                         } catch (e) {
                             console.log('Failed to update cart item status', e);
                         }
+                    }
+                }
+                
+                // Save deliverable links on payment record so CheckoutSuccess can show them
+                if (deliverableLinks.length > 0) {
+                    await base44.asServiceRole.entities.Payment.update(paymentId, {
+                        deliverables: deliverableLinks
+                    });
+                    
+                    // Send email with download links
+                    try {
+                        const user = await base44.asServiceRole.entities.User.get(userId);
+                        if (user?.email) {
+                            const linksHtml = deliverableLinks.map(d => 
+                                `<tr><td style="padding:8px 0;border-bottom:1px solid #eee;"><strong>${d.title}</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:left;"><a href="${d.url}" style="color:#2563eb;font-weight:bold;text-decoration:none;">הורד קובץ ⬇️</a></td></tr>`
+                            ).join('');
+                            
+                            await base44.asServiceRole.integrations.Core.SendEmail({
+                                to: user.email,
+                                subject: '🎉 הקבצים שלך מוכנים להורדה - Perfect One',
+                                body: `
+                                    <div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+                                        <div style="background:linear-gradient(135deg,#1E3A5F,#2C5282);padding:30px;border-radius:16px 16px 0 0;text-align:center;">
+                                            <h1 style="color:white;margin:0;font-size:24px;">🎉 תודה על הרכישה!</h1>
+                                        </div>
+                                        <div style="background:white;padding:30px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 16px 16px;">
+                                            <p style="color:#374151;font-size:16px;line-height:1.6;">שלום ${user.full_name || ''},</p>
+                                            <p style="color:#374151;font-size:16px;line-height:1.6;">הרכישה שלך בוצעה בהצלחה! הנה הקבצים שלך להורדה:</p>
+                                            <table style="width:100%;margin:20px 0;border-collapse:collapse;">
+                                                ${linksHtml}
+                                            </table>
+                                            <p style="color:#6b7280;font-size:14px;margin-top:20px;">הקבצים שלך באיכות מלאה, ללא סימן מים.</p>
+                                            <p style="color:#6b7280;font-size:14px;">בהצלחה! 🚀</p>
+                                        </div>
+                                    </div>
+                                `
+                            });
+                        }
+                    } catch (emailErr) {
+                        console.error('Failed to send deliverable email:', emailErr);
                     }
                 }
             }
