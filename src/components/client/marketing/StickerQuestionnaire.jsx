@@ -14,6 +14,9 @@ import {
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { addToCart } from '@/components/client/shared/cartUtils';
 import WatermarkedSticker from './WatermarkedSticker';
 
 // Custom specialized card selector component for better UX
@@ -59,8 +62,10 @@ const StepHeader = ({ icon: Icon, title, description, colorClass = "bg-blue-100 
 );
 
 export default function StickerQuestionnaire({ onComplete, onClose }) {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 6;
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   
   const [formData, setFormData] = useState({
     businessName: '',
@@ -800,35 +805,61 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
                <div className="flex flex-col gap-3 w-full max-w-xs">
                    {(finalStickerUrl || generatedStickerUrl) && (
-                       <a 
-                           href={finalStickerUrl || generatedStickerUrl} 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           download="sticker.png"
-                           className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-lg font-bold shadow-lg shadow-green-100 transition-all"
+                       <Button
+                           onClick={async () => {
+                             setIsAddingToCart(true);
+                             try {
+                               const stickerImageUrl = finalStickerUrl || generatedStickerUrl;
+                               const success = await addToCart({
+                                 type: 'sticker',
+                                 data: { businessName: formData.businessName, exampleSentence: formData.exampleSentence, stickerUrl: stickerImageUrl },
+                                 price: 29,
+                                 title: `סטיקר: ${formData.businessName || 'ממותג'}`,
+                                 preview_image: stickerImageUrl,
+                                 openCart: false
+                               });
+                               if (success) {
+                                 // Navigate to checkout with the sticker item
+                                 const items = [{
+                                   type: 'sticker',
+                                   title: `סטיקר: ${formData.businessName || 'ממותג'}`,
+                                   price: 29,
+                                   data: { businessName: formData.businessName, exampleSentence: formData.exampleSentence, stickerUrl: stickerImageUrl },
+                                   preview_image: stickerImageUrl
+                                 }];
+                                 navigate(createPageUrl('ClientDashboard') + '?tab=checkout', {
+                                   state: { items, totalPrice: 29 }
+                                 });
+                               }
+                             } catch (err) {
+                               console.error(err);
+                               toast.error('שגיאה, נסה שוב');
+                             } finally {
+                               setIsAddingToCart(false);
+                             }
+                           }}
+                           disabled={isAddingToCart}
+                           className="bg-green-600 hover:bg-green-700 text-white py-2.5 px-4 rounded-lg font-bold shadow-lg shadow-green-100 transition-all h-11 text-sm"
                        >
-                           <Download className="w-4 h-4" />
-                           הורד סטיקר
-                       </a>
+                           {isAddingToCart ? (
+                             <span className="flex items-center gap-2">
+                               <Loader2 className="w-4 h-4 animate-spin" />
+                               מעביר לתשלום...
+                             </span>
+                           ) : (
+                             <span className="flex items-center gap-2">
+                               <CreditCard className="w-4 h-4" />
+                               רכוש סטיקר – ₪29
+                             </span>
+                           )}
+                       </Button>
                    )}
+
+                   <p className="text-[11px] text-gray-400 text-center flex items-center justify-center gap-1">
+                     <Lock className="w-3 h-3" />
+                     לאחר תשלום תקבל את הסטיקר באיכות מלאה ללא סימן מים
+                   </p>
                    
-                   <Button 
-                    onClick={async () => {
-                      const { addToCart } = await import('@/components/client/shared/cartUtils');
-                      addToCart({
-                        type: 'sticker',
-                        data: { businessName: formData.businessName, exampleSentence: formData.exampleSentence, stickerUrl: finalStickerUrl || generatedStickerUrl },
-                        price: 99,
-                        title: `סטיקר: ${formData.businessName}`,
-                        preview_image: finalStickerUrl || generatedStickerUrl,
-                        openCart: false
-                      });
-                    }}
-                    variant="outline"
-                    className="border-gray-200 hover:bg-gray-50 text-gray-700"
-                  >
-                    הוסף לסל
-                  </Button>
                    <Button 
                     onClick={() => onComplete(formData)}
                     variant="outline"
