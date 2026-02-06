@@ -802,45 +802,53 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
               <div className="space-y-2">
                 <Label className="block font-bold text-xs">לאן הליד יגיע?</Label>
                 <div className="grid grid-cols-1 gap-2">
-                  {[
-                    { value: 'email', label: 'מייל שלי', icon: Mail },
-                    { value: 'crm', label: 'מערכת CRM', icon: Layers }
-                  ].map(option => (
-                    <div key={option.value} className="space-y-2">
-                       <SelectionCard
-                        selected={formData.leadDestination === option.value}
-                        onClick={() => handleInputChange('leadDestination', option.value)}
-                        icon={option.icon}
-                        title={option.label}
-                      />
-                      
-                      <AnimatePresence>
-                        {formData.leadDestination === option.value && option.value === 'email' && (
-                          <motion.div 
-                            key="email-input"
-                            initial={{ opacity: 0, height: 0, marginTop: 0 }} 
-                            animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
-                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                            className="overflow-hidden w-full"
-                          >
-                             <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                               <Label className="text-[10px] text-gray-500 mb-1.5 block">לאיזה מייל לשלוח את הלידים?</Label>
-                               <div className="relative bg-white rounded-md">
-                                <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
-                                <Input 
-                                  placeholder="your@email.com"
-                                  value={formData.destinationEmail}
-                                  onChange={(e) => handleInputChange('destinationEmail', e.target.value)}
-                                  className="pr-8 h-9 text-base md:text-xs border-gray-200 focus-visible:ring-teal-500 w-full"
-                                  autoFocus
-                                />
-                              </div>
+                  <div className="space-y-2">
+                    <SelectionCard
+                      selected={formData.leadDestination === 'email'}
+                      onClick={() => handleInputChange('leadDestination', 'email')}
+                      icon={Mail}
+                      title="מייל שלי"
+                    />
+                    
+                    <AnimatePresence>
+                      {formData.leadDestination === 'email' && (
+                        <motion.div 
+                          key="email-input"
+                          initial={{ opacity: 0, height: 0, marginTop: 0 }} 
+                          animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          className="overflow-hidden w-full"
+                        >
+                           <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                             <Label className="text-[10px] text-gray-500 mb-1.5 block">לאיזה מייל לשלוח את הלידים?</Label>
+                             <div className="relative bg-white rounded-md">
+                              <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                              <Input 
+                                placeholder="your@email.com"
+                                value={formData.destinationEmail}
+                                onChange={(e) => handleInputChange('destinationEmail', e.target.value)}
+                                className="pr-8 h-9 text-base md:text-xs border-gray-200 focus-visible:ring-teal-500 w-full"
+                                autoFocus
+                              />
                             </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  <div 
+                    className="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/80 cursor-default opacity-70"
+                  >
+                    <div className="p-1.5 rounded-lg bg-gray-100 text-gray-400 flex-shrink-0">
+                      <Layers className="w-3.5 h-3.5" />
                     </div>
-                  ))}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-xs text-gray-500 leading-tight">מערכת CRM</div>
+                      <div className="text-[10px] text-gray-400 leading-tight mt-0.5">זמין לאחר קבלת הדף והרכישה</div>
+                    </div>
+                    <Lock className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                  </div>
                 </div>
               </div>
             </div>
