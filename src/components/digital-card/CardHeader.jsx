@@ -77,15 +77,18 @@ export default function CardHeader({ card, primaryColor }) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="space-y-1"
+          className="space-y-2 mt-2"
         >
-          <h1 className="text-2xl font-bold text-white tracking-wide">
+          <h1 className="text-[26px] font-bold text-white tracking-normal leading-tight">
             {card.full_name}
           </h1>
           {card.profession && (
-            <p className="text-base text-gray-400 font-medium">
-              {card.profession}
-            </p>
+            <div className="flex flex-col items-center">
+                <span className="h-0.5 w-10 bg-[#00E5FF] mb-2 rounded-full opacity-70"></span>
+                <p className="text-[15px] text-gray-300 font-medium tracking-wide">
+                {card.profession}
+                </p>
+            </div>
           )}
         </motion.div>
       </div>
