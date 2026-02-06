@@ -9,7 +9,9 @@ import {
   Image, Share2, Check, Smartphone, Link as LinkIcon, Users
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { base44 } from '@/api/base44Client';
 import BusinessCardPreview from './BusinessCardPreview';
+import BusinessCardResult from './BusinessCardResult';
 
 // Custom specialized card selector component
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -81,6 +83,8 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
   const [errors, setErrors] = useState({});
   const [isBuilding, setIsBuilding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [cardResult, setCardResult] = useState(null);
+  const [buildError, setBuildError] = useState(null);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
@@ -132,15 +136,39 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateStep(currentStep)) {
-      setIsBuilding(true);
-      setTimeout(() => {
-        setIsBuilding(false);
+    if (!validateStep(currentStep)) return;
+    
+    setIsBuilding(true);
+    setBuildError(null);
+    
+    try {
+      // Convert logo file to data URL if exists
+      let logoDataUrl = null;
+      if (formData.logoFile) {
+        logoDataUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(formData.logoFile);
+        });
+      }
+
+      const res = await base44.functions.invoke('createDigitalCard', {
+        formData: { ...formData, logoFile: undefined, logoDataUrl }
+      });
+      
+      if (res.data?.success) {
+        setCardResult(res.data);
         setShowSuccess(true);
-        // onComplete(formData);
-      }, 2500);
+      } else {
+        setBuildError('אירעה שגיאה ביצירת הכרטיס');
+      }
+    } catch (err) {
+      console.error('Card creation error:', err);
+      setBuildError('אירעה שגיאה ביצירת הכרטיס. נסה שוב.');
+    } finally {
+      setIsBuilding(false);
     }
   };
 
@@ -461,10 +489,11 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                 <p className="text-gray-500 text-sm">הבינה המלאכותית מרכיבה כרטיס ביקור מנצח</p>
               </div>
             </div>
-          ) : showSuccess ? (
-            <BusinessCardPreview 
-              data={formData}
-              onPurchase={() => onComplete({ ...formData, action: 'purchase' })}
+          ) : showSuccess && cardResult ? (
+            <BusinessCardResult
+              formData={formData}
+              cardResult={cardResult}
+              onPurchase={() => onComplete({ ...formData, ...cardResult, action: 'purchase' })}
               onBack={() => onComplete(formData)}
             />
           ) : (
