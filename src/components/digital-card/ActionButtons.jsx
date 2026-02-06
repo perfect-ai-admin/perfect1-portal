@@ -42,6 +42,18 @@ const Icons = {
         <path d="M485.4 207.2c-29.3-64-102.6-111-193.3-111C152 96.2 38.8 171.4 38.8 264.1c0 30.6 12.5 59.2 34.6 84 2.8 3.1 3.5 7.6 1.8 11.4l-14.8 33.4c-2.8 6.2 3.2 12.7 9.7 10.6l37.2-12c3.5-1.1 7.3-.4 10.3 1.8 38.8 28.5 89.2 45.4 144.1 45.4 17.5 0 34.6-1.7 51.3-4.8 11.5 28.7 39.5 49 72.4 49 43.1 0 78.1-35 78.1-78.1 0-31.1-18-58-44.4-70.8 7.4-23.3 35.8-21.6 47.9-19.1 5.4 1.1 10.8-2.2 12.1-7.6l10.8-48.4c1.6-6.8-4.2-12.8-11.1-11.4-19 3.8-59.5 9-86.7-16-16-14.7-22.9-35.8-17.7-55.9zm-261.3 22.1c25.4 0 46 20.6 46 46s-20.6 46-46 46-46-20.6-46-46 20.6-46 46-46zm164.7 92c-25.4 0-46-20.6-46-46s20.6-46 46-46 46 20.6 46 46-20.6 46-46 46z"/>
      </svg>
   ),
+  TikTok: (props) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+    </svg>
+  ),
+  LinkedIn: (props) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  ),
   Email: (props) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -93,6 +105,12 @@ export default function ActionButtons({ card, actions }) {
   }
   if (hasSocial('facebook')) {
     buttons.push({ icon: Icons.Facebook, label: 'פייסבוק', onClick: actions.facebook });
+  }
+  if (hasSocial('tiktok')) {
+    buttons.push({ icon: Icons.TikTok, label: 'טיקטוק', onClick: actions.tiktok });
+  }
+  if (hasSocial('linkedin')) {
+    buttons.push({ icon: Icons.LinkedIn, label: 'לינקדאין', onClick: actions.linkedin });
   }
   if (hasSocial('website')) {
     buttons.push({ icon: Icons.Website, label: 'אתר', onClick: actions.website });

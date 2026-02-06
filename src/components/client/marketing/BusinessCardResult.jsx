@@ -23,6 +23,8 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
     website_url: formData.website_url,
     instagram_url: formData.instagram_url,
     facebook_url: formData.facebook_url,
+    tiktok_url: formData.tiktok_url,
+    linkedin_url: formData.linkedin_url,
     waze_url: formData.waze_url,
     qr_image_url: cardResult.qr_image_url,
     vcf_url: cardResult.vcf_url
@@ -35,6 +37,8 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
     website: () => toast.info('הדגמה: אתר'),
     instagram: () => toast.info('הדגמה: אינסטגרם'),
     facebook: () => toast.info('הדגמה: פייסבוק'),
+    tiktok: () => toast.info('הדגמה: טיקטוק'),
+    linkedin: () => toast.info('הדגמה: לינקדאין'),
     waze: () => toast.info('הדגמה: Waze'),
   };
 

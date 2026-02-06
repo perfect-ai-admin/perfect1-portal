@@ -331,6 +331,8 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                         {[
                             {id: 'instagram', label: 'אינסטגרם', icon: Instagram},
                             {id: 'facebook', label: 'פייסבוק', icon: Facebook},
+                            {id: 'tiktok', label: 'טיקטוק', icon: Music},
+                            {id: 'linkedin', label: 'לינקדאין', icon: Linkedin},
                             {id: 'website', label: 'אתר', icon: Globe},
                             {id: 'waze', label: 'Waze', icon: Navigation},
                         ].map(option => (
@@ -349,7 +351,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                 {formData.socialNetworks.length > 0 && (
                     <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl text-center animate-in fade-in slide-in-from-top-2">
                         <p className="text-xs text-blue-700 font-medium">
-                            לאחר אישור הכרטיס ביקור ניתן יהיה לקשר אינסטגרם, פייסבוק, אתר ו-Waze.
+                            לאחר אישור הכרטיס ביקור ניתן יהיה לקשר את הרשתות שבחרת.
                         </p>
                     </div>
                 )}
