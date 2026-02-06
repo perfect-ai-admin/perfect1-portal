@@ -9,35 +9,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const SAMPLE_NOTIFICATIONS = [
+const INITIAL_NOTIFICATIONS = [
   {
-    id: '1',
-    type: 'success',
-    title: 'חשבונית שולמה!',
-    message: 'הלקוח "אבי כהן" שילם ₪2,500',
-    time: 'לפני 5 דקות',
-    unread: true
-  },
-  {
-    id: '2',
-    type: 'warning',
-    title: 'תזכורת: מטרה חודשית',
-    message: 'נותרו 7 ימים להגיע ליעד ההכנסות החודשי',
-    time: 'לפני שעה',
-    unread: true
-  },
-  {
-    id: '3',
+    id: 'welcome',
     type: 'info',
-    title: 'המלצה חדשה',
-    message: 'המנטור החכם שלך יש לו עצה לשיפור הרווחיות',
-    time: 'לפני 3 שעות',
-    unread: false
+    title: 'ברוך הבא! 👋',
+    message: 'מערכת Perfect Biz AI מוכנה בשבילך. התחל לחקור את הכלים ולקדם את העסק שלך.',
+    time: 'עכשיו',
+    unread: true
   }
 ];
 
 export default function NotificationCenter() {
-  const [notifications, setNotifications] = useState(SAMPLE_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [isOpen, setIsOpen] = useState(false);
 
   const unreadCount = notifications.filter(n => n.unread).length;
