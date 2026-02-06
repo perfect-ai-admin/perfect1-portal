@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Copy, ShoppingCart, Sparkles } from 'lucide-react';
+import { Check, Copy, ShoppingCart, Sparkles, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import CardHeader from '@/components/digital-card/CardHeader';
 import ActionButtons from '@/components/digital-card/ActionButtons';
+import confetti from 'canvas-confetti';
 import { cn } from '@/lib/utils';
 
 export default function BusinessCardResult({ formData, cardResult, onPurchase, onBack, isPurchased = false }) {
   const [copied, setCopied] = useState(false);
+
+  // Handle confetti for purchased state
+  useEffect(() => {
+    if (isPurchased) {
+        const duration = 3 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+        const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+        const interval = setInterval(function() {
+          const timeLeft = animationEnd - Date.now();
+          if (timeLeft <= 0) return clearInterval(interval);
+          const particleCount = 50 * (timeLeft / duration);
+          confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+          confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+        }, 250);
+        return () => clearInterval(interval);
+    }
+  }, [isPurchased]);
 
   // Construct card object for preview components
   const card = {
@@ -93,12 +113,15 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
       {/* Premium Header */}
       <div className="flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-40 shadow-sm rounded-t-xl">
         <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
-                <Sparkles className="w-5 h-5 text-white" />
+            <div className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center shadow-lg",
+                isPurchased ? "bg-gradient-to-br from-green-500 to-emerald-600 shadow-green-200" : "bg-gradient-to-br from-gray-700 to-gray-900 shadow-gray-400"
+            )}>
+                {isPurchased ? <Sparkles className="w-5 h-5 text-white" /> : <Lock className="w-5 h-5 text-white" />}
             </div>
             <div>
-                <h2 className="font-bold text-gray-900 text-base">הכרטיס שלך מוכן!</h2>
-                <p className="text-xs text-gray-500 font-medium">כך הלקוחות שלך יראו אותו</p>
+                <h2 className="font-bold text-gray-900 text-base">{isPurchased ? 'הכרטיס פעיל!' : 'מצב טיוטה'}</h2>
+                <p className="text-xs text-gray-500 font-medium">{isPurchased ? 'הכרטיס שלך זמין לשיתוף' : 'לצפייה בלבד - לא ניתן לשיתוף'}</p>
             </div>
         </div>
         <button 

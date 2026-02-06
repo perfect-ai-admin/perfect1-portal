@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
 import BusinessCardPreview from './BusinessCardPreview';
 import BusinessCardResult from '@/components/client/marketing/BusinessCardResult';
+import BusinessCardSummary from '@/components/client/marketing/BusinessCardSummary';
 
 // Custom specialized card selector component
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -88,7 +89,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
 
   const [errors, setErrors] = useState({});
   const [isBuilding, setIsBuilding] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [viewState, setViewState] = useState('questionnaire'); // 'questionnaire', 'summary', 'result', 'building'
   const [cardResult, setCardResult] = useState(null);
   const [buildError, setBuildError] = useState(null);
 
@@ -149,10 +150,14 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = (e) => {
+    if (e) e.preventDefault();
     if (!validateStep(currentStep)) return;
-    
+    setViewState('summary');
+  };
+
+  const handleGenerateCard = async () => {
+    setViewState('building');
     setIsBuilding(true);
     setBuildError(null);
     
@@ -177,19 +182,31 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
         });
       }
 
+      // Ensure we pass the updated formData with data URLs if needed, 
+      // but actually createDigitalCard expects "formData" which might contain files, 
+      // wait, the original code converted them. 
+      // We need to store these data URLs in state if we want to pass them to Result without re-reading
+      
+      // Update state with dataUrls so Result component can use them for preview
+      if (logoDataUrl || coverDataUrl) {
+          setFormData(prev => ({...prev, logoDataUrl, coverDataUrl}));
+      }
+
       const res = await base44.functions.invoke('createDigitalCard', {
         formData: { ...formData, logoFile: undefined, logoDataUrl, coverFile: undefined, coverDataUrl }
       });
       
       if (res.data?.success) {
         setCardResult(res.data);
-        setShowSuccess(true);
+        setViewState('result');
       } else {
         setBuildError('אירעה שגיאה ביצירת הכרטיס');
+        setViewState('questionnaire'); // Or stay in building but show error
       }
     } catch (err) {
       console.error('Card creation error:', err);
       setBuildError('אירעה שגיאה ביצירת הכרטיס. נסה שוב.');
+      setViewState('questionnaire');
     } finally {
       setIsBuilding(false);
     }
@@ -513,6 +530,47 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
     }
   };
 
+  // Render Logic based on viewState
+  if (viewState === 'summary') {
+      return (
+          <BusinessCardSummary 
+              formData={formData}
+              onConfirm={handleGenerateCard}
+              onEdit={() => setViewState('questionnaire')}
+          />
+      );
+  }
+
+  if (viewState === 'result' && cardResult) {
+      return (
+        <BusinessCardResult
+            formData={formData}
+            cardResult={cardResult}
+            onPurchase={() => onComplete({ ...formData, ...cardResult, action: 'purchase' })}
+            onBack={() => setViewState('questionnaire')}
+            isPurchased={false} // Draft mode initially
+        />
+      );
+  }
+
+  // Loading Screen
+  if (viewState === 'building' || isBuilding) {
+    return (
+        <div className="flex flex-col h-full bg-white items-center justify-center p-4">
+            <div className="relative w-24 h-24 mb-6">
+                <div className="absolute inset-0 border-4 border-gray-100 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-gray-900 rounded-full border-t-transparent animate-spin"></div>
+                <Sparkles className="absolute inset-0 m-auto text-gray-900 animate-pulse w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">יוצר את הכרטיס שלך...</h3>
+            <p className="text-gray-500 text-sm text-center max-w-xs">
+                מייצר QR Code ייחודי, קובץ איש קשר חכם ומעצב את הכרטיס
+            </p>
+        </div>
+    );
+  }
+
+  // Default: Questionnaire
   return (
     <div className="flex flex-col h-full bg-white relative">
       {/* Header */}
@@ -552,19 +610,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
       >
         <div className="max-w-xl mx-auto min-h-full flex flex-col justify-start pt-2">
           
-          {isBuilding ? (
-            <div className="flex flex-col items-center justify-center text-center space-y-6 mt-10">
-              <div className="relative w-20 h-20">
-                <div className="absolute inset-0 border-4 border-gray-100 rounded-full"></div>
-                <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-                <Sparkles className="absolute inset-0 m-auto text-blue-600 animate-pulse" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">מכין את הכרטיס שלך...</h3>
-                <p className="text-gray-500 text-sm">יוצר QR Code, קובץ איש קשר וכתובת ייחודית</p>
-              </div>
-            </div>
-          ) : buildError ? (
+          {buildError ? (
             <div className="flex flex-col items-center justify-center text-center space-y-4 mt-10">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
                 <X className="w-8 h-8 text-red-500" />
@@ -574,15 +620,8 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                 חזור ונסה שוב
               </Button>
             </div>
-          ) : showSuccess && cardResult ? (
-            <BusinessCardResult
-              formData={formData}
-              cardResult={cardResult}
-              onPurchase={() => onComplete({ ...formData, ...cardResult, action: 'purchase' })}
-              onBack={() => onComplete(formData)}
-            />
           ) : (
-            <form onSubmit={handleSubmit} className="w-full">
+            <form onSubmit={handleFormSubmit} className="w-full">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}
@@ -601,7 +640,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
       </div>
 
       {/* Footer Navigation */}
-      {!isBuilding && !showSuccess && (
+      {!isBuilding && !buildError && (
         <div className="flex-none p-4 border-t border-gray-100 bg-white z-10 safe-area-bottom">
           <div className="max-w-2xl mx-auto flex justify-between gap-4">
             <Button
@@ -626,10 +665,10 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
               </Button>
             ) : (
               <Button 
-                onClick={handleSubmit}
+                onClick={handleFormSubmit}
                 className="bg-green-600 hover:bg-green-700 text-white min-w-[100px] shadow-lg shadow-green-100 h-9 text-xs"
               >
-                צור כרטיס
+                סיכום וסיום
                 <Sparkles className="w-4 h-4 mr-2" />
               </Button>
             )}
