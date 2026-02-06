@@ -106,6 +106,7 @@ import ManicuristLanding from './pages/ManicuristLanding';
 import MasHaKnasaOsekPatur from './pages/MasHaKnasaOsekPatur';
 import Methodology from './pages/Methodology';
 import MonthlyReportOsekPatur from './pages/MonthlyReportOsekPatur';
+import MyProducts from './pages/MyProducts';
 import NationalInsuranceAdvances from './pages/NationalInsuranceAdvances';
 import NationalInsuranceOsekMorsha from './pages/NationalInsuranceOsekMorsha';
 import NeedAccountantOsekPatur from './pages/NeedAccountantOsekPatur';
@@ -159,7 +160,7 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import MyProducts from './pages/MyProducts';
+import DigitalCard from './pages/DigitalCard';
 import __Layout from './Layout.jsx';
 
 
@@ -223,6 +224,7 @@ export const PAGES = {
     "MasHaKnasaOsekPatur": MasHaKnasaOsekPatur,
     "Methodology": Methodology,
     "MonthlyReportOsekPatur": MonthlyReportOsekPatur,
+    "MyProducts": MyProducts,
     "NationalInsuranceAdvances": NationalInsuranceAdvances,
     "NationalInsuranceOsekMorsha": NationalInsuranceOsekMorsha,
     "NeedAccountantOsekPatur": NeedAccountantOsekPatur,
@@ -276,7 +278,7 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "MyProducts": MyProducts,
+    "DigitalCard": DigitalCard,
 }
 
 export const pagesConfig = {
