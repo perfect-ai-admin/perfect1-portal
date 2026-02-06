@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Check, X, ArrowRight, Star, Lock, AlertTriangle, 
   Palette, MonitorPlay, Rocket, Loader2, LogIn, CreditCard, ShieldCheck,
-  LogOut, HelpCircle, User, Globe, Sparkles, Sticker, Layout
+  LogOut, HelpCircle, User, Globe, Sparkles, Sticker, Layout, Smartphone
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -136,6 +136,17 @@ export default function PricingPerfectBizAI() {
   }, [location.search]);
 
   const oneTimeServices = React.useMemo(() => [
+    {
+      name: 'כרטיס ביקור דיגיטלי',
+      dbNames: ['DigitalCard', 'כרטיס ביקור', 'Digital Business Card'],
+      price: 149,
+      icon: Smartphone,
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+      description: 'כרטיס חכם עם URL קבוע, QR, שמירה לאנשי קשר וכפתורי פעולה',
+      cta: 'בחר בשירות זה',
+      micro: 'כולל עיצוב ועריכה חופשית'
+    },
     {
       name: 'יצירת לוגו ומיתוג',
       dbNames: ['Logo', 'לוגו', 'Logo Design'],
