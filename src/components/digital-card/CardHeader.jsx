@@ -8,13 +8,18 @@ function lightenColor(hex, amount = 30) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
+import { motion } from 'framer-motion';
+
 export default function CardHeader({ card, primaryColor }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const initials = (card.full_name || 'א').split(' ').map(w => w[0]).join('').slice(0, 2);
   const lighterColor = lightenColor(primaryColor, 40);
 
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className="relative rounded-b-[28px] overflow-hidden"
       style={{ background: `linear-gradient(145deg, ${primaryColor}, ${lighterColor})` }}
     >
@@ -26,7 +31,12 @@ export default function CardHeader({ card, primaryColor }) {
 
       <div className="relative px-6 pt-10 pb-12 flex flex-col items-center text-center">
         {/* Avatar / Logo */}
-        <div className="relative mb-4">
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          className="relative mb-4"
+        >
           {card.logo_url ? (
             <div className="relative">
               {!imgLoaded && (
@@ -47,10 +57,23 @@ export default function CardHeader({ card, primaryColor }) {
               {initials}
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* Name & Role */}
-        <h1 className="text-[22px] font-extrabold text-white leading-tight tracking-tight">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <h1 className="text-[22px] font-extrabold text-white leading-tight tracking-tight">
+            {card.full_name}
+          </h1>
+          {card.profession && (
+            <p className="text-sm font-medium text-white/75 mt-1.5">
+              {card.profession}
+            </p>
+          )}
+        </motion.div>
           {card.full_name}
         </h1>
         {card.profession && (
@@ -58,6 +81,7 @@ export default function CardHeader({ card, primaryColor }) {
             {card.profession}
           </p>
         )}
+        </motion.div>
 
         {/* Services tags */}
         {card.services?.length > 0 && (

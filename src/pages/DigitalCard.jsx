@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 import CardLoading from '@/components/digital-card/CardLoading';
 import CardNotFound from '@/components/digital-card/CardNotFound';
@@ -54,6 +55,7 @@ export default function DigitalCard() {
     website: () => { trackClick(card.id, 'website'); window.open(card.website_url, '_blank'); },
     instagram: () => { trackClick(card.id, 'instagram'); window.open(card.instagram_url, '_blank'); },
     facebook: () => { trackClick(card.id, 'facebook'); window.open(card.facebook_url, '_blank'); },
+    waze: () => { trackClick(card.id, 'waze'); window.open(card.waze_url, '_blank'); },
     saveContact: () => { trackClick(card.id, 'save_contact'); window.open(card.vcf_url, '_blank'); },
     share: async () => {
       trackClick(card.id, 'share');
@@ -74,21 +76,51 @@ export default function DigitalCard() {
       </Helmet>
 
       <div className="min-h-screen bg-[#F8FAFC]" dir="rtl">
-        <div className="max-w-[440px] mx-auto pb-28">
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ duration: 0.5 }}
+          className="max-w-[440px] mx-auto pb-28"
+        >
           
           <CardHeader card={card} primaryColor={primaryColor} />
           
           <div className="px-5 -mt-6 relative z-10 space-y-4">
-            <ActionButtons card={card} actions={actions} primaryColor={primaryColor} />
-            <ContactInfo card={card} primaryColor={primaryColor} />
-            <QRSection card={card} actions={actions} primaryColor={primaryColor} />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
+              <ActionButtons card={card} actions={actions} primaryColor={primaryColor} />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+            >
+              <ContactInfo card={card} primaryColor={primaryColor} />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
+            >
+              <QRSection card={card} actions={actions} primaryColor={primaryColor} />
+            </motion.div>
 
             {/* Footer Branding */}
-            <div className="text-center pt-4 pb-2">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-center pt-4 pb-2"
+            >
               <span className="text-[10px] text-gray-300 tracking-wide">Perfect Biz AI</span>
-            </div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         <StickyFooter card={card} actions={actions} primaryColor={primaryColor} />
       </div>
