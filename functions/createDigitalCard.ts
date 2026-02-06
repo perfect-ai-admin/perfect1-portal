@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
 
     // Generate QR Code using external API
     const domain = 'one-pai.com';
-    const publicUrl = `https://${domain}/DigitalCard?slug=${slug}`;
+    const publicUrl = `https://${slug}.${domain}`;
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(publicUrl)}&format=png`;
     
     let qrImageUrl = qrApiUrl; // fallback: use the API URL directly
