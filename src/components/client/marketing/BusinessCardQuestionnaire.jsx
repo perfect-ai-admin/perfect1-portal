@@ -9,6 +9,7 @@ import {
   Image, Share2, Check, Smartphone, Link as LinkIcon, Users
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import BusinessCardPreview from './BusinessCardPreview';
 
 // Custom specialized card selector component
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -461,27 +462,11 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
               </div>
             </div>
           ) : showSuccess ? (
-             <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-4">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-2 shadow-lg shadow-green-200">
-                <Check className="w-10 h-10 text-green-600" />
-              </div>
-              
-              <div className="space-y-2">
-                <h2 className="text-2xl font-black text-gray-900">הכרטיס מוכן לשיתוף! 🎉</h2>
-                <div className="text-gray-600 text-sm max-w-xs mx-auto space-y-1">
-                    <p>כרטיס ביקור דיגיטלי ממותג,</p>
-                    <p>מוכן לשיתוף בוואטסאפ,</p>
-                    <p>עם כפתורי יצירת קשר בלחיצה אחת.</p>
-                </div>
-              </div>
-
-               <Button 
-                onClick={() => onComplete(formData)}
-                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[200px] shadow-lg shadow-blue-100 mt-4"
-              >
-                חזרה למרכז השליטה
-              </Button>
-            </div>
+            <BusinessCardPreview 
+              data={formData}
+              onPurchase={() => onComplete({ ...formData, action: 'purchase' })}
+              onBack={() => onComplete(formData)}
+            />
           ) : (
             <form onSubmit={handleSubmit} className="w-full">
               <AnimatePresence mode="wait">
