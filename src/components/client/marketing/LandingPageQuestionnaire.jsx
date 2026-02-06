@@ -849,167 +849,113 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       case 8:
         return (
-          <div className="flex flex-col h-full bg-gradient-to-b from-slate-50 via-blue-50 to-indigo-50 animate-in fade-in zoom-in-95 duration-500 rounded-3xl overflow-hidden relative">
-            {/* Decorative background elements */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-10 -mr-48 -mt-48" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-10 -ml-48 -mb-48" />
+          <div className="flex flex-col h-full bg-white animate-in fade-in duration-500 rounded-3xl overflow-hidden relative">
 
-            {/* Header */}
-            <div className="bg-white/70 backdrop-blur-xl border-b border-white sticky top-0 z-30 px-4 md:px-6 py-4 md:py-5 flex items-center justify-between shadow-sm shrink-0 relative">
+            {/* Minimal Header */}
+            <div className="bg-white border-b border-gray-100 sticky top-0 z-30 px-5 py-4 flex items-center justify-between shrink-0">
               <button 
                 onClick={handlePrev}
-                className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-50 hover:from-slate-200 hover:to-slate-100 flex items-center justify-center text-slate-600 transition-all shadow-sm"
+                className="w-9 h-9 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-500 transition-colors"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
-              <div className="flex-1 text-center">
-                <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">בואו בונים את הדף שלך 🚀</h2>
-              </div>
               <Button 
                 onClick={onClose}
                 variant="ghost"
                 size="icon"
-                className="text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full"
+                className="text-gray-400 hover:text-gray-600 rounded-full"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </Button>
             </div>
 
-            {/* Scrollable Content */}
+            {/* Scrollable Content - Clean & Minimal */}
             <div className="flex-1 overflow-y-auto overflow-x-hidden">
-              <div className="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6 relative z-10">
+              <div className="max-w-lg mx-auto px-5 py-10 space-y-8">
 
-                {/* Hero Section */}
+                {/* Hero - Simple & Premium */}
                 <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-center space-y-3"
+                  className="text-center space-y-4"
                 >
-                  <motion.div
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                    className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl"
-                  >
-                    <Sparkles className="w-8 h-8" />
-                  </motion.div>
+                  <div className="w-14 h-14 mx-auto bg-gray-900 rounded-2xl flex items-center justify-center text-white">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight mb-1">
+                    <h3 className="text-2xl font-black text-gray-900 leading-tight">
                       {formData.businessName}
                     </h3>
-                    <p className="text-slate-600 text-sm md:text-base">דף נחיתה חדש וחדשני עומד להיוולד ✨</p>
+                    <p className="text-gray-500 text-sm mt-1">הדף שלך מוכן לבנייה</p>
                   </div>
                 </motion.div>
 
-                {/* Process Flow */}
+                {/* What we build - Compact List */}
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-white/60 backdrop-blur border border-white rounded-2xl p-6 shadow-sm"
+                  transition={{ delay: 0.15 }}
+                  className="space-y-2"
                 >
-                  <h4 className="font-bold text-slate-900 mb-4 text-center">מה בונים?</h4>
-                  <div className="space-y-3">
-                    {[
-                      { icon: '🎯', title: 'כותרת משכנעת', desc: 'שמושכת תשומת לב' },
-                      { icon: '💬', title: '3 סקשנים חזקים', desc: 'כאב → פתרון → הוכחות' },
-                      { icon: '📱', title: 'טופס לידים', desc: `שדות: ${formData.formFields.join(', ')}` },
-                      { icon: '🎨', title: `עיצוב ${formData.pageStyle || 'מקצועי'}`, desc: 'צבעים ותמונות' },
-                    ].map((item, idx) => (
-                      <motion.div 
-                        key={idx}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * idx }}
-                        className="flex items-start gap-3 p-3 rounded-xl bg-gradient-to-r from-slate-50 to-blue-50 hover:shadow-sm transition-all"
-                      >
-                        <span className="text-xl flex-shrink-0">{item.icon}</span>
-                        <div>
-                          <div className="font-bold text-slate-900 text-sm">{item.title}</div>
-                          <div className="text-xs text-slate-500">{item.desc}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                  {[
+                    { label: 'כותרות שיווקיות', detail: 'קופי מקצועי בעברית' },
+                    { label: '8 סקשנים משכנעים', detail: 'כאב → פתרון → הוכחות → טופס' },
+                    { label: `עיצוב ${formData.pageStyle || 'מקצועי'}`, detail: 'צבעים, תמונות ואנימציות' },
+                  ].map((item, idx) => (
+                    <motion.div 
+                      key={idx}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 * idx + 0.2 }}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-gray-50"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                        <Check className="w-3 h-3 text-white" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-bold text-gray-900 text-sm">{item.label}</div>
+                        <div className="text-xs text-gray-400">{item.detail}</div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </motion.div>
 
-                {/* Summary Cards - 2x2 Grid */}
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-3"
-                >
-                  {/* Card 1 - Business */}
-                  <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-200 rounded-2xl p-4 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center">🏢</div>
-                      <span className="text-[10px] font-bold text-blue-600 uppercase">עסק</span>
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm line-clamp-1">{formData.mainField}</div>
-                    <div className="text-xs text-slate-600 mt-1">{formData.targetAudience[0] || 'קהל כללי'}</div>
-                  </div>
-
-                  {/* Card 2 - Strategy */}
-                  <div className="bg-gradient-to-br from-purple-500/10 to-indigo-600/10 border border-purple-200 rounded-2xl p-4 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center">⚡</div>
-                      <span className="text-[10px] font-bold text-purple-600 uppercase">אסטרטגיה</span>
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm line-clamp-2">{formData.serviceOffered}</div>
-                  </div>
-
-                  {/* Card 3 - CTA */}
-                  <div className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border border-green-200 rounded-2xl p-4 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-green-500 text-white flex items-center justify-center">📨</div>
-                      <span className="text-[10px] font-bold text-green-600 uppercase">קריאה לפעולה</span>
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">{formData.ctaText}</div>
-                    <div className="text-xs text-slate-600 mt-1">{formData.leadDestination === 'whatsapp' ? '💬 וואטסאפ' : formData.leadDestination === 'email' ? '📧 מייל' : '🔗 CRM'}</div>
-                  </div>
-
-                  {/* Card 4 - Status */}
-                  <div className="bg-gradient-to-br from-amber-500/10 to-orange-600/10 border border-amber-200 rounded-2xl p-4 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center">🤖</div>
-                      <span className="text-[10px] font-bold text-amber-600 uppercase">AI מוכן</span>
-                    </div>
-                    <div className="font-bold text-slate-900 text-sm">בנייה מלאה</div>
-                    <div className="flex items-center gap-1 text-xs text-slate-600 mt-1">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                      מיד הולכים
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Final CTA Preview */}
+                {/* KEY Message - Editable after purchase */}
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-center text-white shadow-lg"
+                  className="bg-blue-50 border border-blue-100 rounded-2xl p-5 text-center"
                 >
-                  <div className="text-sm mb-2">🎯 מה קורה עכשיו?</div>
-                  <div className="text-sm leading-relaxed">
-                    <span className="font-bold">AI יצור תוכן</span> ייחודי עם קופירייטינג מקצועי, סקשנים משכנעים וטופס שמקנה ערך לחוזק של הדף שלך
+                  <div className="flex justify-center mb-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <Pencil className="w-5 h-5 text-blue-600" />
+                    </div>
                   </div>
+                  <p className="text-sm font-bold text-gray-900 leading-relaxed">
+                    לאחר הבחירה והתשלום, תוכל לערוך את כל התוכן והעיצוב של הדף בקלות.
+                  </p>
+                  <p className="text-xs text-gray-500 mt-2">
+                    שנה טקסטים, תמונות, צבעים וכל מה שתרצה — בלי מגבלות.
+                  </p>
                 </motion.div>
+
               </div>
             </div>
 
-            {/* Sticky Footer CTA */}
-            <div className="p-4 md:p-5 bg-white/70 backdrop-blur border-t border-white shadow-[0_-10px_40px_rgba(59,130,246,0.1)] z-40 sticky bottom-0 w-full relative">
-              <div className="max-w-2xl mx-auto w-full">
+            {/* Sticky Footer CTA - Clean */}
+            <div className="p-5 bg-white border-t border-gray-100 z-40 sticky bottom-0 w-full">
+              <div className="max-w-lg mx-auto w-full">
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                     onClick={handleSubmit}
-                    className="w-full h-14 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:via-indigo-700 hover:to-blue-700 text-white rounded-xl shadow-lg shadow-blue-300/50 font-black text-base flex items-center justify-center gap-2 transition-all"
+                    className="w-full h-13 py-4 bg-gray-900 hover:bg-black text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors shadow-lg"
                   >
-                    <Sparkles className="w-5 h-5 animate-pulse" />
-                    בנה את הדף שלי עכשיו
+                    <Sparkles className="w-4 h-4" />
+                    בנה את הדף שלי
                   </motion.button>
-                  <p className="text-center text-xs text-slate-500 mt-2">⏱️ תהליך הבנייה לוקח כ-60 שניות | ללא התחייבות</p>
+                  <p className="text-center text-[11px] text-gray-400 mt-2.5">כ-60 שניות · ללא התחייבות</p>
               </div>
             </div>
 
