@@ -138,6 +138,46 @@ Deno.serve(async (req) => {
                     }
                 }
                 
+                // Create PurchasedProduct records for each item
+                for (const item of items) {
+                    try {
+                        const purchasedData = {
+                            user_id: userId,
+                            product_type: item.type || 'other',
+                            product_name: item.title || 'מוצר',
+                            status: 'active',
+                            payment_id: paymentId,
+                            purchase_price: item.price || 0,
+                            preview_image: item.preview_image || item.data?.logoUrl || item.data?.preview_image || '',
+                            metadata: item.data || {}
+                        };
+                        
+                        if (item.type === 'landing_page' && item.data?.landingPageId) {
+                            purchasedData.linked_entity_id = item.data.landingPageId;
+                            // Try to get published URL
+                            try {
+                                const pages = await base44.asServiceRole.entities.LandingPage.filter({ id: item.data.landingPageId });
+                                if (pages.length > 0 && pages[0].slug) {
+                                    purchasedData.published_url = `https://perfect-one.co.il/LP?slug=${pages[0].slug}`;
+                                }
+                            } catch (e) { console.log('Could not fetch LP url'); }
+                        }
+                        
+                        if ((item.type === 'logo' || item.type === 'sticker') && deliverableLinks.length > 0) {
+                            const link = deliverableLinks.find(d => d.type === item.type);
+                            if (link) purchasedData.download_url = link.url;
+                        }
+                        
+                        if (item.type === 'presentation' && item.data?.presentationUrl) {
+                            purchasedData.download_url = item.data.presentationUrl;
+                        }
+                        
+                        await base44.asServiceRole.entities.PurchasedProduct.create(purchasedData);
+                    } catch (ppErr) {
+                        console.error('Failed to create PurchasedProduct:', ppErr);
+                    }
+                }
+
                 // Save deliverable links on payment record so CheckoutSuccess can show them
                 if (deliverableLinks.length > 0) {
                     await base44.asServiceRole.entities.Payment.update(paymentId, {
