@@ -60,12 +60,10 @@ Deno.serve(async (req) => {
       'END:VCARD'
     ].filter(Boolean).join('\r\n');
 
-    // Write VCF to temp file and upload
-    const safeSlug = slug.replace(/[^a-zA-Z0-9-]/g, '');
-    const vcfPath = `/tmp/card_${safeSlug}.vcf`;
-    await Deno.writeTextFile(vcfPath, vcfContent);
-    const vcfBytes = await Deno.readFile(vcfPath);
-    const vcfFile = new File([vcfBytes], `${safeSlug}.vcf`, { type: 'text/vcard' });
+    // Upload VCF from memory
+    const vcfEncoder = new TextEncoder();
+    const vcfBytes = vcfEncoder.encode(vcfContent);
+    const vcfFile = new File([vcfBytes], `${slug}.vcf`, { type: 'text/vcard' });
     const vcfUpload = await base44.integrations.Core.UploadFile({ file: vcfFile });
     const vcfUrl = vcfUpload.file_url;
 
