@@ -1,39 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Check, Copy, Share2, ShoppingCart, Lock, Smartphone, Eye } from 'lucide-react';
+import { Check, Copy, ShoppingCart, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import CardHeader from '@/components/digital-card/CardHeader';
 import ActionButtons from '@/components/digital-card/ActionButtons';
-import confetti from 'canvas-confetti';
 import { cn } from '@/lib/utils';
 
 export default function BusinessCardResult({ formData, cardResult, onPurchase, onBack }) {
   const [copied, setCopied] = useState(false);
-  const [showQR, setShowQR] = useState(false);
-
-  useEffect(() => {
-    // Celebration confetti on mount
-    const duration = 3 * 1000;
-    const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-    const randomInRange = (min, max) => Math.random() * (max - min) + min;
-
-    const interval = setInterval(function() {
-      const timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
-
-      const particleCount = 50 * (timeLeft / duration);
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-    }, 250);
-
-    return () => clearInterval(interval);
-  }, []);
 
   // Construct card object for preview components
   const card = {
@@ -55,8 +30,8 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
     vcf_url: cardResult.vcf_url,
     services: [formData.service1, formData.service2, formData.service3].filter(Boolean),
     presentationStyle: formData.presentationStyle,
-    preferred_style: formData.preferredStyle, // Pass style choice
-    primary_color: formData.primaryColor // Pass specific color if chosen
+    preferred_style: formData.preferredStyle,
+    primary_color: formData.primaryColor
   };
 
   // AI Styling Logic - Determine colors based on style choice
@@ -108,133 +83,129 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: formData.fullName, url: cardResult.public_url });
-      } catch {}
-    } else {
-      handleCopyLink();
-    }
-  };
-
   return (
-    <div className="flex flex-col w-full h-full relative pb-24">
+    <div className="flex flex-col w-full h-full relative min-h-screen bg-gray-50/50">
       
-      {/* Top Bar with Status */}
-      <div className="flex items-center justify-between mb-6 px-2">
+      {/* Premium Header */}
+      <div className="flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center shadow-sm">
-                <Sparkles className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
+                <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-                <h2 className="font-bold text-gray-900 text-sm">הכרטיס מוכן!</h2>
-                <p className="text-xs text-gray-500">תצוגה מקדימה ללקוחות</p>
+                <h2 className="font-bold text-gray-900 text-base">הכרטיס שלך מוכן!</h2>
+                <p className="text-xs text-gray-500 font-medium">כך הלקוחות שלך יראו אותו</p>
             </div>
         </div>
-        <div className="flex gap-2">
-            <button 
-                onClick={handleCopyLink}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
-                title="העתק קישור"
-            >
-                {copied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
-            </button>
-        </div>
+        <button 
+            onClick={handleCopyLink}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors text-xs font-medium text-gray-700"
+        >
+            {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>העתק קישור</span>
+        </button>
       </div>
 
-      {/* Main Preview Stage */}
-      <div className="flex-1 flex flex-col items-center justify-center relative">
-        {/* Background Ambient Glow */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent rounded-3xl -z-10" />
+      {/* Main Preview Area */}
+      <div className="flex-1 flex flex-col items-center justify-start pt-8 pb-32 overflow-y-auto">
         
-        {/* Phone Frame */}
+        {/* Phone Frame Container */}
         <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="relative w-full max-w-[340px] aspect-[9/18] bg-[#121212] rounded-[40px] shadow-2xl border-[8px] border-gray-900 overflow-hidden ring-1 ring-white/10"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+            className="relative w-full max-w-[320px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] rounded-[45px] border-[8px] border-gray-900 bg-gray-900 z-10"
         >
-            {/* Dynamic Island / Notch area */}
-            <div className="absolute top-0 left-0 right-0 h-7 bg-gray-900 z-50 flex justify-center">
-                <div className="w-24 h-5 bg-black rounded-b-xl" />
-            </div>
+            {/* Glossy Reflection overlay */}
+            <div className="absolute inset-0 rounded-[38px] pointer-events-none ring-1 ring-white/10 z-50 shadow-inner" />
+            
+            {/* Dynamic Island */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-black rounded-b-xl z-50" />
 
-            {/* Scrollable Content Area */}
-            <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide bg-[#121212] text-white pb-20 relative">
+            {/* Screen Content */}
+            <div className="w-full h-[650px] bg-[#121212] rounded-[38px] overflow-hidden overflow-y-auto scrollbar-hide relative flex flex-col">
                 
-                {/* Draft Watermark - Subtle */}
-                <div className="absolute top-20 inset-x-0 flex justify-center pointer-events-none z-0 opacity-10">
-                    <span className="text-6xl font-black rotate-[-15deg] uppercase tracking-widest">Draft</span>
-                </div>
-
-                <div className="relative z-10">
+                {/* Content */}
+                <div className="relative z-10 min-h-full pb-10">
                     <CardHeader 
                         card={card} 
                         primaryColor={theme.accentColor} 
                         themeStyles={theme}
                     />
                     
-                    <div className="mt-2 relative z-20">
+                    <div className="mt-4 relative z-20 px-2">
                         <ActionButtons card={card} actions={actions} />
                     </div>
 
-                    {/* Save Contact Preview */}
+                    {/* Save Contact Button */}
                     <div className="px-6 mt-8">
-                        <div className="w-full bg-[#00E5FF] text-black font-bold py-3.5 rounded-xl shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 opacity-90">
+                        <div className="w-full bg-[#00E5FF] text-black font-bold py-3.5 rounded-xl shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] transition-transform active:scale-95">
                             <span className="text-sm">שמור איש קשר</span>
                         </div>
                     </div>
 
-                    {/* QR Preview */}
+                    {/* QR Section */}
                     {card.qr_image_url && (
-                        <div className="px-6 mt-8 pb-8 flex flex-col items-center">
-                            <div className="bg-white p-2 rounded-xl shadow-lg">
+                        <div className="px-6 mt-10 flex flex-col items-center opacity-90">
+                            <div className="bg-white p-3 rounded-2xl shadow-xl">
                                 <img 
                                     src={card.qr_image_url} 
                                     alt="QR Code" 
-                                    className="w-24 h-24 object-contain"
+                                    className="w-28 h-28 object-contain"
                                 />
                             </div>
-                            <p className="text-gray-500 text-[10px] mt-2 font-medium">סרוק אותי</p>
+                            <p className="text-gray-400 text-[10px] mt-3 font-medium tracking-wide uppercase">Scan to connect</p>
                         </div>
                     )}
                     
-                    {/* Footer Brand */}
-                    <div className="text-center pb-6 pt-2 opacity-30">
-                        <span className="text-[9px] tracking-widest uppercase">DigitalBcard</span>
+                    {/* Brand Footer in Phone */}
+                    <div className="text-center mt-8 pb-8 opacity-20">
+                        <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-white">DigitalBcard</span>
                     </div>
                 </div>
             </div>
+
+            {/* Side Buttons (Visual only) */}
+            <div className="absolute top-24 -right-2.5 w-1 h-8 bg-gray-800 rounded-r-md shadow-sm" />
+            <div className="absolute top-40 -right-2.5 w-1 h-12 bg-gray-800 rounded-r-md shadow-sm" />
+            <div className="absolute top-24 -left-2.5 w-1 h-6 bg-gray-800 rounded-l-md shadow-sm" />
         </motion.div>
+        
+        {/* Shadow/Reflections under phone */}
+        <div className="w-[280px] h-4 bg-black/20 blur-xl rounded-full mt-[-20px] z-0" />
       </div>
 
-      {/* Floating Bottom Bar (Sticky) */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-lg border-t border-gray-200 z-[100] safe-area-bottom shadow-[0_-5px_30px_rgba(0,0,0,0.08)]">
-        <div className="max-w-xl mx-auto flex items-center gap-3">
-             <div className="hidden sm:block">
-                 <div className="text-xs text-gray-500">מחיר חד פעמי</div>
-                 <div className="flex items-baseline gap-1">
-                     <span className="text-lg font-bold text-gray-900">₪49</span>
-                     <span className="text-xs text-gray-400 line-through">₪98</span>
+      {/* Clean Bottom Action Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+             <div className="hidden sm:flex flex-col">
+                 <span className="text-xs text-gray-500 font-medium">מחיר השקה מיוחד</span>
+                 <div className="flex items-baseline gap-2">
+                     <span className="text-xl font-black text-gray-900">₪49</span>
+                     <span className="text-sm text-gray-400 line-through font-medium">₪98</span>
                  </div>
              </div>
              
-             <div className="flex-1 flex gap-3">
+             <div className="flex-1 flex gap-3 max-w-md ml-auto sm:ml-0">
                  <Button 
                     variant="outline" 
                     onClick={onBack}
-                    className="flex-1 h-12 text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-xl"
+                    className="flex-1 h-14 text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-2xl font-medium"
                  >
-                    ערוך
+                    ערוך עיצוב
                  </Button>
                  
                  <Button
                     onClick={onPurchase}
-                    className="flex-[2] h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-xl shadow-lg shadow-blue-200 flex items-center justify-center gap-2"
+                    className="flex-[2] h-14 bg-gray-900 hover:bg-black text-white font-bold rounded-2xl shadow-xl shadow-gray-200 flex items-center justify-center gap-3 transition-all hover:scale-[1.02]"
                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    <span>רכוש ופרסם (₪49)</span>
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                        <ShoppingCart className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col items-start leading-tight">
+                        <span className="text-sm">רכוש ופרסם עכשיו</span>
+                        <span className="text-[10px] opacity-80 font-normal sm:hidden">מחיר חד פעמי ₪49</span>
+                    </div>
                  </Button>
              </div>
         </div>
