@@ -7,7 +7,7 @@ import CardHeader from '@/components/digital-card/CardHeader';
 import ActionButtons from '@/components/digital-card/ActionButtons';
 import { cn } from '@/lib/utils';
 
-export default function BusinessCardResult({ formData, cardResult, onPurchase, onBack }) {
+export default function BusinessCardResult({ formData, cardResult, onPurchase, onBack, isPurchased = false }) {
   const [copied, setCopied] = useState(false);
 
   // Construct card object for preview components
@@ -77,6 +77,10 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
   };
 
   const handleCopyLink = () => {
+    if (!isPurchased) {
+        toast.error('העתקת הקישור זמינה רק לאחר רכישת הכרטיס');
+        return;
+    }
     navigator.clipboard.writeText(cardResult.public_url);
     setCopied(true);
     toast.success('הקישור הועתק!');
@@ -99,10 +103,19 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
         </div>
         <button 
             onClick={handleCopyLink}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors text-xs font-medium text-gray-700"
+            className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-full transition-colors text-xs font-medium",
+                isPurchased 
+                    ? "bg-gray-100 hover:bg-gray-200 text-gray-700" 
+                    : "bg-gray-50 text-gray-400 cursor-not-allowed"
+            )}
         >
-            {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>העתק קישור</span>
+            {isPurchased ? (
+                copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />
+            ) : (
+                <Lock className="w-3.5 h-3.5" />
+            )}
+            <span>{isPurchased ? 'העתק קישור' : 'קישור נעול'}</span>
         </button>
       </div>
 
