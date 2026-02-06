@@ -10,7 +10,7 @@ import GeneralErrorBoundary from '../components/GeneralErrorBoundary';
 import { DialogStateProvider } from '../components/DialogStateContext';
 import { 
   LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
-  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard
+  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard, Package
 } from 'lucide-react';
 import {
   Tooltip,
@@ -289,6 +289,14 @@ export default function ClientDashboard() {
             {/* Right Icons */}
             <div className="flex items-center gap-1 flex-shrink-0">
               {typeof ShoppingCart === 'function' && <ShoppingCart />}
+
+              <button
+                onClick={() => navigate(createPageUrl('MyProducts'))}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/90 hover:text-white"
+                title="המוצרים שלי"
+              >
+                <Package className="w-6 h-6" />
+              </button>
               
               <button
                 onClick={() => navigate(createPageUrl('PricingPerfectBizAI'))}
