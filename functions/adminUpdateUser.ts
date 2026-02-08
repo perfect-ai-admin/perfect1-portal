@@ -10,7 +10,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized - Admin only' }, { status: 403 });
     }
 
-    const { user_id, updates } = await req.json();
+    const { user_id, updates, delete_goal_id } = await req.json();
+
+    // Handle goal deletion from admin
+    if (delete_goal_id) {
+      if (!user_id) {
+        return Response.json({ error: 'Missing user_id' }, { status: 400 });
+      }
+      await base44.asServiceRole.entities.UserGoal.delete(delete_goal_id);
+      return Response.json({ success: true, deleted_goal: delete_goal_id });
+    }
 
     if (!user_id || !updates) {
       return Response.json({ error: 'Missing user_id or updates' }, { status: 400 });

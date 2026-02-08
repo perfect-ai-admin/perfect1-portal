@@ -42,6 +42,7 @@ Deno.serve(async (req) => {
             landingPages,
             leads,
             activityLog,
+            goals: userGoals,
             userGoals,
             ltv
         });
