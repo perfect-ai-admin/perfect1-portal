@@ -164,19 +164,113 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                 </Select>
                             </div>
                         </div>
-                         <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
-                             <div className="flex items-center gap-2">
-                                 <Shield className="w-5 h-5 text-orange-600" />
-                                 <Label>הרשאות מנהל</Label>
-                             </div>
-                             <Switch
-                                 checked={formData.is_admin}
-                                 onCheckedChange={(checked) => setFormData({...formData, is_admin: checked})}
-                             />
-                         </div>
+                        <div className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
+                            <div className="flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-orange-600" />
+                                <Label>הרשאות מנהל</Label>
+                            </div>
+                            <Switch
+                                checked={formData.is_admin}
+                                onCheckedChange={(checked) => setFormData({...formData, is_admin: checked})}
+                            />
+                        </div>
 
+                        {/* Goals Limits */}
+                        <div className="bg-blue-50 p-4 rounded-lg space-y-4">
+                            <h3 className="font-semibold flex items-center gap-2 text-blue-800">
+                                <Target className="w-4 h-4" />
+                                מגבלות מטרות
+                            </h3>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label className="text-xs">מכסת מטרות (Override)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.goals_limit_override ?? ''}
+                                        onChange={(e) => setFormData({...formData, goals_limit_override: e.target.value === '' ? null : parseInt(e.target.value)})}
+                                        placeholder={`ברירת מחדל מהמסלול: ${user.goals_limit || 1}`}
+                                        min={0}
+                                    />
+                                    <p className="text-[10px] text-gray-500 mt-1">השאר ריק כדי להשתמש בלימיט מהמסלול</p>
+                                </div>
+                                <div>
+                                    <Label className="text-xs">מקס מטרות פעילות (Override)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.max_active_goals_override ?? ''}
+                                        onChange={(e) => setFormData({...formData, max_active_goals_override: e.target.value === '' ? null : parseInt(e.target.value)})}
+                                        placeholder={`ברירת מחדל מהמסלול: ${user.max_active_goals || 1}`}
+                                        min={0}
+                                    />
+                                    <p className="text-[10px] text-gray-500 mt-1">השאר ריק כדי להשתמש בלימיט מהמסלול</p>
+                                </div>
+                            </div>
+                            <div className="text-xs text-blue-700 bg-blue-100 p-2 rounded">
+                                <strong>לימיט בפועל:</strong> {formData.goals_limit_override ?? user.goals_limit ?? 1} מטרות | 
+                                <strong> מקס פעילות:</strong> {formData.max_active_goals_override ?? user.max_active_goals ?? 1}
+                            </div>
+                        </div>
 
-                         </TabsContent>
+                        {/* User Goals List */}
+                        {!loadingDetails && extendedData?.goals?.length > 0 && (
+                            <div className="space-y-2">
+                                <h3 className="font-semibold flex items-center gap-2">
+                                    <Target className="w-4 h-4" />
+                                    מטרות המשתמש ({extendedData.goals.length})
+                                </h3>
+                                <div className="border rounded-md max-h-48 overflow-y-auto">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-right">שם מטרה</TableHead>
+                                                <TableHead className="text-right">סטטוס</TableHead>
+                                                <TableHead className="text-right">התקדמות</TableHead>
+                                                <TableHead className="text-right">פעולות</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {extendedData.goals.map(g => (
+                                                <TableRow key={g.id}>
+                                                    <TableCell className="font-medium">{g.title}</TableCell>
+                                                    <TableCell>
+                                                        <Badge className={
+                                                            g.status === 'active' ? 'bg-green-100 text-green-800' :
+                                                            g.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                                                            'bg-gray-100 text-gray-800'
+                                                        }>{g.status}</Badge>
+                                                    </TableCell>
+                                                    <TableCell>{g.progress || 0}%</TableCell>
+                                                    <TableCell>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            className="text-red-500 hover:text-red-700 hover:bg-red-50 h-7 px-2"
+                                                            onClick={async () => {
+                                                                if (!confirm(`למחוק את המטרה "${g.title}"?`)) return;
+                                                                try {
+                                                                    await base44.functions.invoke('adminUpdateUser', {
+                                                                        user_id: user.id,
+                                                                        delete_goal_id: g.id
+                                                                    });
+                                                                    toast.success('המטרה נמחקה');
+                                                                    loadFullDetails();
+                                                                } catch (e) {
+                                                                    toast.error('שגיאה במחיקה');
+                                                                }
+                                                            }}
+                                                        >
+                                                            מחק
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </div>
+                        )}
+
+                        </TabsContent>
 
                     <TabsContent value="plan" className="space-y-4 mt-4">
                         <div className="bg-gray-50 p-4 rounded-lg">
