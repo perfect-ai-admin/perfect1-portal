@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
             // Idempotency: if already published, return existing URL
             if (page.status === 'published') {
                 const publicDomain = 'one-pai.com';
-                const publicUrl = `https://${publicDomain}/LP?id=${landingPageId}`;
+                const publicUrl = `https://${publicDomain}/LP?s=${page.slug || landingPageId}`;
                 console.log(`[IDEMPOTENT] Page already published, returning URL: ${publicUrl}`);
                 return Response.json({
                     success: true,
@@ -100,9 +100,9 @@ Deno.serve(async (req) => {
                 published_at: new Date().toISOString()
             });
 
-            // Generate the public URL
+            // Generate the public URL using slug
             const publicDomain = 'one-pai.com';
-            const publicUrl = `https://${publicDomain}/LP?id=${landingPageId}`;
+            const publicUrl = `https://${publicDomain}/LP?s=${finalSlug}`;
             
             console.log(`[SUCCESS] ✓ Published! URL: ${publicUrl}`);
 

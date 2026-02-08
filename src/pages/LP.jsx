@@ -7,36 +7,27 @@ import { Loader2, AlertCircle } from 'lucide-react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 export default function LP() {
-    // Extract ID from URL query parameter (?id=xxx)
+    // Extract slug or ID from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const pageId = urlParams.get('id');
-    const legacySlug = urlParams.get('s');
+    const slug = urlParams.get('s');
+    const pageId = urlParams.get('id'); // legacy support
 
     const { data: page, isLoading, error } = useQuery({
-            queryKey: ['publicLandingPage', pageId, legacySlug],
+            queryKey: ['publicLandingPage', slug, pageId],
             queryFn: async () => {
                 try {
-                    if (pageId) {
-                        console.log('[LP] Fetching by ID:', pageId);
-                        const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
-                        console.log('[LP] Response:', res);
-
-                        if (!res?.data) {
-                            throw new Error(res?.data?.error || 'Failed to fetch page');
-                        }
-
-                        console.log('[LP] ✓ Page loaded:', { 
-                            id: res.data.id, 
-                            business_name: res.data.business_name, 
-                            status: res.data.status, 
-                            sections: res.data.sections_json?.length 
-                        });
-                        return res.data;
-                    } else if (legacySlug) {
-                        console.log('[LP] Fetching by slug:', legacySlug);
-                        const res = await base44.functions.invoke('getPublicLandingPage', { slug: legacySlug });
+                    if (slug) {
+                        console.log('[LP] Fetching by slug:', slug);
+                        const res = await base44.functions.invoke('getPublicLandingPage', { slug });
                         if (!res?.data) {
                             throw new Error('Page not found');
+                        }
+                        return res.data;
+                    } else if (pageId) {
+                        console.log('[LP] Fetching by ID (legacy):', pageId);
+                        const res = await base44.functions.invoke('getPublicLandingPageById', { pageId });
+                        if (!res?.data) {
+                            throw new Error(res?.data?.error || 'Failed to fetch page');
                         }
                         return res.data;
                     } else {
@@ -47,7 +38,7 @@ export default function LP() {
                     throw err;
                 }
             },
-            enabled: !!(pageId || legacySlug),
+            enabled: !!(slug || pageId),
             retry: 1,
             retryDelay: 1000
         });
