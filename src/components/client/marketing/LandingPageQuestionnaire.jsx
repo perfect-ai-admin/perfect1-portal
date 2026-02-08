@@ -1396,7 +1396,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                              <div className="w-3 h-3 rounded-full bg-green-400" />
                            </div>
                            <div className="flex-1 bg-white h-6 rounded-md shadow-sm border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-mono">
-                              one-pai.com/LP/{pageSlug}
+                              one-pai.com/LP?s={pageSlug}
                            </div>
                         </div>
                         
