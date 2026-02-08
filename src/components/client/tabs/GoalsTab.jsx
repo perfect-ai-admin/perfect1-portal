@@ -93,6 +93,24 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
     }
   }, [openAddGoal]);
 
+  // Centralized limit check: override > plan limit > default 1
+  const getEffectiveGoalsLimit = () => {
+    const override = user?.goals_limit_override;
+    if (override !== null && override !== undefined) return override;
+    const planLimit = user?.goals_limit;
+    if (planLimit !== null && planLimit !== undefined) return planLimit;
+    return 1; // default
+  };
+
+  const effectiveGoalsLimit = getEffectiveGoalsLimit();
+  const isUnlimited = effectiveGoalsLimit === null || effectiveGoalsLimit === 0;
+
+  const checkGoalLimit = () => {
+    if (isUnlimited) return true;
+    const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
+    return activeGoalsCount < effectiveGoalsLimit;
+  };
+
   const handleShowAddGoal = () => {
     // Log override if recommendation exists and not taken
     if (recommendedGoal && !hasStartedRecommendedGoal) {
@@ -102,36 +120,18 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
        });
     }
 
-    const limit = user?.goals_limit;
-    
-    // Check if unlimited (Full plan has null)
-    const isUnlimited = limit === null;
-    
-    // If not unlimited, check if reached limit
-    if (!isUnlimited) {
-      const actualLimit = limit || 1; // Default to 1 if undefined
-      const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
-      if (activeGoalsCount >= actualLimit) {
-        setShowUpgradeDialog(true);
-        return;
-      }
+    if (!checkGoalLimit()) {
+      setShowUpgradeDialog(true);
+      return;
     }
     
     setShowAddGoal(true);
   };
 
   const handleStartRecommended = () => {
-    // Check limit before starting
-    const limit = user?.goals_limit;
-    const isUnlimited = limit === null;
-    if (!isUnlimited) {
-      const actualLimit = limit || 1;
-      const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
-      
-      if (activeGoalsCount >= actualLimit) {
-        setShowUpgradeDialog(true);
-        return;
-      }
+    if (!checkGoalLimit()) {
+      setShowUpgradeDialog(true);
+      return;
     }
 
     if (resolvedRecommendedTemplate) {
@@ -175,16 +175,9 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       if (isActive) return;
 
       // Check limit
-      const limit = user?.goals_limit;
-      const isUnlimited = limit === null;
-      if (!isUnlimited) {
-         const actualLimit = limit || 1;
-         const activeGoalsCount = goals.filter(g => ['active', 'in_progress', 'selected'].includes(g.status)).length;
-
-         if (activeGoalsCount >= actualLimit) {
-           setShowUpgradeDialog(true);
-           return;
-         }
+      if (!checkGoalLimit()) {
+        setShowUpgradeDialog(true);
+        return;
       }
 
       const taskTemplate = {
@@ -304,7 +297,7 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
       <LimitUpgradeDialog 
         isOpen={showUpgradeDialog} 
         onClose={() => setShowUpgradeDialog(false)} 
-        limit={user?.goals_limit || 1}
+        limit={effectiveGoalsLimit || 1}
       />
 
       <div className="container mx-auto max-w-4xl p-0 md:p-4">
