@@ -154,7 +154,7 @@ CTA: ${ctx.cta}. טקסט כפתור: ${ctx.ctaText}. סגנון: ${ctx.style}.
         const result = await base44.entities.LandingPage.create(landingPage);
         console.log(`✅ Created with ID: ${result.id}`);
 
-        const pageUrl = `https://one-pai.com/LP?id=${result.id}`;
+        const pageUrl = `https://one-pai.com/LP?s=${slug}`;
 
         // Send n8n webhook (fire and forget, don't block response)
         const n8nUrl = Deno.env.get("N8N_WEBHOOK_URL");
