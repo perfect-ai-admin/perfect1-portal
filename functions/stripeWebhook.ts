@@ -95,12 +95,18 @@ Deno.serve(async (req) => {
                     plan_id: productId
                 });
             } else if (productType === 'goal') {
-                const user = await base44.asServiceRole.entities.User.filter({ id: userId });
-                if (user.length > 0) {
-                    const override = (user[0].goals_limit_override || user[0].goals_limit || 1) + 1;
+                const userArr = await base44.asServiceRole.entities.User.filter({ id: userId });
+                if (userArr.length > 0) {
+                    const u = userArr[0];
+                    // Calculate effective current limit
+                    const currentEffective = (u.goals_limit_override !== null && u.goals_limit_override !== undefined)
+                        ? u.goals_limit_override
+                        : (u.goals_limit || 1);
+                    const newOverride = currentEffective + 1;
                     await base44.asServiceRole.entities.User.update(userId, {
-                        goals_limit_override: override
+                        goals_limit_override: newOverride
                     });
+                    console.log(`✅ Goal purchase: goals_limit_override updated ${currentEffective} -> ${newOverride} for user ${userId}`);
                 }
             } else if (productType === 'landing-page') {
                 await activateLandingPage(productId);
