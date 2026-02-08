@@ -29,10 +29,13 @@ Deno.serve(async (req) => {
             status: { $in: ['selected', 'active'] }
         });
 
-        // Check goals limit (considering override)
-        const goalsLimit = user.goals_limit_override ?? user.goals_limit;
+        // Check goals limit (considering override > plan limit > default)
+        const goalsLimit = user.goals_limit_override !== null && user.goals_limit_override !== undefined
+            ? user.goals_limit_override 
+            : (user.goals_limit !== null && user.goals_limit !== undefined ? user.goals_limit : 1);
         
-        if (goalsLimit !== null && userGoals.length >= goalsLimit) {
+        // goalsLimit === 0 means unlimited
+        if (goalsLimit !== 0 && goalsLimit !== null && userGoals.length >= goalsLimit) {
             return Response.json({ 
                 error: 'goals_limit_reached',
                 message: `הגעת למכסת המטרות (${goalsLimit})`,
