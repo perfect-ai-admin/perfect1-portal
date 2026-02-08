@@ -24,17 +24,43 @@ Deno.serve(async (req) => {
 
     const plan = plans[0];
 
-    // Update user with plan details and modules
-    await base44.asServiceRole.entities.User.update(user_id, {
+    // Get current user to check for override
+    const currentUser = await base44.asServiceRole.entities.User.get(user_id);
+
+    const updateData = {
       current_plan_id: plan_id,
       marketing_enabled: plan.marketing_enabled || false,
       mentor_enabled: plan.mentor_enabled || false,
       finance_enabled: plan.finance_enabled || false,
-      goals_limit: plan.goals_limit || 1,
-      max_active_goals: plan.max_active_goals || 1
-    });
+      goals_limit: plan.goals_limit ?? 1,
+      max_active_goals: plan.max_active_goals ?? 1
+    };
 
-    return Response.json({ success: true });
+    // If the new plan has higher limits than existing override, clear the override
+    // so the plan limit takes effect
+    if (currentUser?.goals_limit_override !== null && currentUser?.goals_limit_override !== undefined) {
+      const planLimit = plan.goals_limit ?? 1;
+      if (planLimit >= currentUser.goals_limit_override) {
+        updateData.goals_limit_override = null;
+      }
+    }
+    if (currentUser?.max_active_goals_override !== null && currentUser?.max_active_goals_override !== undefined) {
+      const planMax = plan.max_active_goals ?? 1;
+      if (planMax >= currentUser.max_active_goals_override) {
+        updateData.max_active_goals_override = null;
+      }
+    }
+
+    await base44.asServiceRole.entities.User.update(user_id, updateData);
+
+    console.log(`✅ Plan "${plan.name}" assigned to user ${user_id}. Goals limit: ${updateData.goals_limit}, Max active: ${updateData.max_active_goals}`);
+
+    return Response.json({ 
+      success: true,
+      plan_name: plan.name,
+      goals_limit: updateData.goals_limit,
+      max_active_goals: updateData.max_active_goals
+    });
   } catch (error) {
     console.error('Error assigning plan:', error);
     return Response.json({ error: error.message }, { status: 500 });
