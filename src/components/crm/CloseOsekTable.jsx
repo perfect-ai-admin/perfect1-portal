@@ -62,9 +62,15 @@ export default function CloseOsekTable({ records, onEdit, onDelete, onStatusChan
                   {rec.phone}
                 </a>
               </TableCell>
-              <TableCell className="text-center"><CloseOsekStatusBadge status={rec.income_tax_status} /></TableCell>
-              <TableCell className="text-center"><CloseOsekStatusBadge status={rec.vat_status} /></TableCell>
-              <TableCell className="text-center"><CloseOsekStatusBadge status={rec.national_insurance_status} /></TableCell>
+              <TableCell className="text-center">
+                <InlineStatusSelect value={rec.income_tax_status || 'not_started'} onChange={val => onStatusChange(rec.id, 'income_tax_status', val)} />
+              </TableCell>
+              <TableCell className="text-center">
+                <InlineStatusSelect value={rec.vat_status || 'not_started'} onChange={val => onStatusChange(rec.id, 'vat_status', val)} />
+              </TableCell>
+              <TableCell className="text-center">
+                <InlineStatusSelect value={rec.national_insurance_status || 'not_started'} onChange={val => onStatusChange(rec.id, 'national_insurance_status', val)} />
+              </TableCell>
               <TableCell className="text-gray-600 text-sm max-w-[200px] truncate">{rec.notes || '—'}</TableCell>
               <TableCell>
                 <div className="flex items-center justify-center gap-1">
