@@ -25,6 +25,9 @@ import {
 
 export default function CloseOsekPaturComprehensive() {
   const [showLeadForm, setShowLeadForm] = useState(false);
+  const [showCTAForm, setShowCTAForm] = useState(false);
+  const [ctaSubmitting, setCtaSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const faqs = [
     {
