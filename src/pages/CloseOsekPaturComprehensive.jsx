@@ -414,14 +414,12 @@ export default function CloseOsekPaturComprehensive() {
                  <h3 className="text-2xl font-black text-[#1E3A5F] mb-3">
                     רוצים לסגור עוסק פטור במהירות?
                  </h3>
-                 <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                   <Button 
-                     className="h-14 px-8 text-lg font-black rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
-                   >
-                     <MessageCircle className="ml-2 w-5 h-5" />
-                     סגירת תיק בווצאפ
-                   </Button>
-                 </a>
+                 <Button 
+                   onClick={() => setShowCTAForm(true)}
+                   className="h-14 px-8 text-lg font-black rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
+                 >
+                   השאירו פרטים ונחזור אליכם
+                 </Button>
                </div>
              </motion.div>
            </div>
