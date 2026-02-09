@@ -46,7 +46,7 @@ export default function Layout({ children, currentPageName }) {
     }
 
     // ClientDashboard / AdminDashboard / PricingPerfectBizAI / Summary - אל תציג Header רגיל (יש להם Header משלהם)
-    if (currentPageName === 'ClientDashboard' || currentPageName === 'AdminDashboard' || currentPageName === 'PricingPerfectBizAI' || currentPageName === 'Summary' || currentPageName === 'MyProducts') {
+    if (currentPageName === 'ClientDashboard' || currentPageName === 'AdminDashboard' || currentPageName === 'PricingPerfectBizAI' || currentPageName === 'Summary' || currentPageName === 'MyProducts' || currentPageName === 'CloseOsekPaturCRM') {
       return (
         <HelmetProvider>
           <CriticalCSS />
