@@ -69,6 +69,7 @@ import CloseOsekMorsha from './pages/CloseOsekMorsha';
 import CloseOsekMorshaIncomeTax from './pages/CloseOsekMorshaIncomeTax';
 import CloseOsekMorshaVat from './pages/CloseOsekMorshaVat';
 import CloseOsekPaturBituachLeumi from './pages/CloseOsekPaturBituachLeumi';
+import CloseOsekPaturCRM from './pages/CloseOsekPaturCRM';
 import CloseOsekPaturComprehensive from './pages/CloseOsekPaturComprehensive';
 import CloseOsekPaturTaxAuthority from './pages/CloseOsekPaturTaxAuthority';
 import CommonMistakesOsekMorsha from './pages/CommonMistakesOsekMorsha';
@@ -161,7 +162,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import CloseOsekPaturCRM from './pages/CloseOsekPaturCRM';
 import __Layout from './Layout.jsx';
 
 
@@ -188,6 +188,7 @@ export const PAGES = {
     "CloseOsekMorshaIncomeTax": CloseOsekMorshaIncomeTax,
     "CloseOsekMorshaVat": CloseOsekMorshaVat,
     "CloseOsekPaturBituachLeumi": CloseOsekPaturBituachLeumi,
+    "CloseOsekPaturCRM": CloseOsekPaturCRM,
     "CloseOsekPaturComprehensive": CloseOsekPaturComprehensive,
     "CloseOsekPaturTaxAuthority": CloseOsekPaturTaxAuthority,
     "CommonMistakesOsekMorsha": CommonMistakesOsekMorsha,
@@ -280,7 +281,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "CloseOsekPaturCRM": CloseOsekPaturCRM,
 }
 
 export const pagesConfig = {

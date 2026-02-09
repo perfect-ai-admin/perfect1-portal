@@ -128,7 +128,7 @@ export default function CloseOsekPaturComprehensive() {
                 <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
                   <Button className="w-full sm:w-auto h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg transition-all">
                     <MessageCircle className="ml-2 w-5 h-5" />
-                    ייעוץ חינם בווצאפ
+                    לסגירת תיק בווצאפ
                   </Button>
                 </a>
               </div>
