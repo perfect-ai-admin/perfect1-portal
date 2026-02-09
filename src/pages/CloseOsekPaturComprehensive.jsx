@@ -557,10 +557,10 @@ export default function CloseOsekPaturComprehensive() {
                       setCtaSubmitting(true);
                       const name = e.target.fullName.value;
                       const phone = e.target.phone.value;
-                      await base44.entities.CloseOsekPaturCRM.create({
-                        full_name: name,
-                        phone: phone,
-                        notes: 'הגיע מדף סגירת עוסק פטור - מדריך מלא'
+                      await base44.functions.invoke('submitCloseOsekLead', {
+                        name,
+                        phone,
+                        source_page: 'CloseOsekPaturComprehensive'
                       });
                       setCtaSubmitting(false);
                       setShowCTAForm(false);
