@@ -1,11 +1,12 @@
 import React, { useState, forwardRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
 import {
   CheckCircle, AlertCircle, Phone, MessageCircle, 
-  FileText, DollarSign, Shield, AlertTriangle, HelpCircle, Clock, Building2
+  FileText, DollarSign, Shield, AlertTriangle, HelpCircle, Clock, Building2, X, Loader2
 } from 'lucide-react';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
