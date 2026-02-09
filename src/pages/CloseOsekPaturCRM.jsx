@@ -140,7 +140,12 @@ export default function CloseOsekPaturCRM() {
         {isLoading ? (
           <div className="text-center py-16 text-gray-400">טוען...</div>
         ) : (
-          <CloseOsekTable records={filtered} onEdit={handleEdit} onDelete={setDeleteTarget} />
+          <CloseOsekTable
+            records={filtered}
+            onEdit={handleEdit}
+            onDelete={setDeleteTarget}
+            onStatusChange={(id, field, value) => updateMutation.mutate({ id, data: { [field]: value } })}
+          />
         )}
 
         {/* Form Dialog */}
