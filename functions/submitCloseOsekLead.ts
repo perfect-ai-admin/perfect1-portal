@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Name and phone are required' }, { status: 400 });
         }
 
-        // Create record in CloseOsekPaturCRM using service role (public page, no auth)
+        // Create record in CloseOsekPaturCRM using service role
         const record = await base44.asServiceRole.entities.CloseOsekPaturCRM.create({
             full_name: payload.name,
             phone: payload.phone,
@@ -22,6 +22,22 @@ Deno.serve(async (req) => {
             vat_status: 'not_started',
             national_insurance_status: 'not_started'
         });
+
+        // Also create a Lead record so it shows in LeadsAdmin CRM
+        try {
+            await base44.asServiceRole.entities.Lead.create({
+                name: payload.name,
+                phone: payload.phone,
+                source_page: payload.source_page || 'סגירת עוסק פטור',
+                category: 'other',
+                status: 'new',
+                priority: 'medium',
+                interaction_type: 'form',
+                notes: 'סגירת עוסק פטור'
+            });
+        } catch (leadErr) {
+            console.error('Failed to create Lead record:', leadErr);
+        }
 
         // Send notification email
         try {
