@@ -1,10 +1,34 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Edit2, Trash2, Phone } from 'lucide-react';
-import CloseOsekStatusBadge from './CloseOsekStatusBadge';
+import { STATUS_CONFIG } from './CloseOsekStatusBadge';
 
-export default function CloseOsekTable({ records, onEdit, onDelete }) {
+const STATUS_OPTIONS = [
+  { value: 'not_started', label: 'טרם התחיל' },
+  { value: 'power_of_attorney_sent', label: 'נשלח ייפוי כוח' },
+  { value: 'in_process', label: 'בתהליך סגירה' },
+  { value: 'completed', label: 'הושלם' },
+];
+
+function InlineStatusSelect({ value, onChange }) {
+  const config = STATUS_CONFIG[value] || STATUS_CONFIG.not_started;
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className={`h-7 text-[11px] font-semibold border rounded-full px-2 min-w-0 w-auto ${config.color}`}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {STATUS_OPTIONS.map(opt => (
+          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+export default function CloseOsekTable({ records, onEdit, onDelete, onStatusChange }) {
   if (!records || records.length === 0) {
     return (
       <div className="text-center py-16 text-gray-400">
