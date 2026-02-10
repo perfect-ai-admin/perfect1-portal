@@ -94,7 +94,7 @@ export default function CloseOsekPaturComprehensive() {
       />
 
       <main className="bg-[#F8F9FA]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-2">
           <Breadcrumbs items={[
             { label: 'דף הבית', url: 'Home' },
             { label: 'שירותים', url: 'Services' },
