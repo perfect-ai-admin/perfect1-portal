@@ -151,7 +151,7 @@ export default function LeadsAdmin() {
 
     for (const leadId of selectedLeads) {
       try {
-        await base44.entities.Lead.delete(leadId);
+        await base44.functions.invoke('adminDeleteLead', { leadId });
         deletedCount++;
       } catch (error) {
         console.error(`Failed to delete lead ${leadId}:`, error);
