@@ -129,12 +129,13 @@ export default function CloseOsekPaturComprehensive() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://wa.me/972502277087?text=היי, אני צריך לסגור את העוסק שלי" target="_blank" rel="noopener noreferrer">
-                  <Button className="w-full sm:w-auto h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg transition-all">
-                    <MessageCircle className="ml-2 w-5 h-5" />
-                    לסגירת תיק בווצאפ
-                  </Button>
-                </a>
+                <Button 
+                  onClick={() => setShowCTAForm(true)}
+                  className="w-full sm:w-auto h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg transition-all"
+                >
+                  <CheckCircle className="ml-2 w-5 h-5" />
+                  לסגירת התיק בקליק
+                </Button>
               </div>
             </motion.div>
           </div>
