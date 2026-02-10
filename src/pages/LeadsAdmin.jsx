@@ -89,7 +89,7 @@ export default function LeadsAdmin() {
   });
 
   const deleteLeadMutation = useMutation({
-    mutationFn: (id) => base44.entities.Lead.delete(id),
+    mutationFn: (id) => base44.functions.invoke('adminDeleteLead', { leadId: id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       toast.success('הליד נמחק בהצלחה');
