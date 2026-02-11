@@ -223,7 +223,7 @@ Deno.serve(async (req) => {
                 user_id: user.id,
                 action: 'finbot.create_document',
                 request_data: finbotPayload,
-                response_data: finbotResult,
+                response_data: typeof finbotResult === 'object' ? finbotResult : { raw: String(finbotResult) },
                 success: false
             });
             return Response.json({ 
@@ -264,7 +264,7 @@ Deno.serve(async (req) => {
             entity_type: 'FinbotDocument',
             entity_id: localDocument.id,
             request_data: finbotPayload,
-            response_data: finbotResult,
+            response_data: typeof finbotResult === 'object' ? finbotResult : { raw: String(finbotResult) },
             success: true
         });
 
