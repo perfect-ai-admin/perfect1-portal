@@ -18,6 +18,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import ConnectAccountingSoftwareDialog from './ConnectAccountingSoftwareDialog';
+import ProviderSelectionDialog from './ProviderSelectionDialog';
+import ConnectProviderDialog from './ConnectProviderDialog';
 
 export default function QuickActionsBar({ onActionComplete, user }) {
   const [showCreateModal, setShowCreateModal] = useState(null);
