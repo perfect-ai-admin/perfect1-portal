@@ -160,36 +160,31 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Build URL-encoded form data (iCount processes this correctly for nested arrays)
-    const formParams = new URLSearchParams();
-    
-    formParams.append('sid', jsonPayload.sid);
-    formParams.append('doctype', jsonPayload.doctype);
-    if (jsonPayload.doc_date) formParams.append('doc_date', jsonPayload.doc_date);
-    if (jsonPayload.currency_code) formParams.append('currency_code', jsonPayload.currency_code);
-    if (jsonPayload.comment) formParams.append('comment', jsonPayload.comment);
-    if (jsonPayload.client_id) formParams.append('client_id', String(jsonPayload.client_id));
-    
-    // Items
-    jsonPayload.items.forEach((item, i) => {
-      formParams.append(`items[${i}][description]`, item.description);
-      formParams.append(`items[${i}][unitprice]`, String(item.unitprice));
-      formParams.append(`items[${i}][quantity]`, String(item.quantity));
-      if (item.vat_rate !== undefined) formParams.append(`items[${i}][vat_rate]`, String(item.vat_rate));
-    });
-    
-    // Payment fields
-    for (const [key, value] of Object.entries(paymentFields)) {
-      formParams.append(key, String(value));
+    // Add payment to JSON payload
+    if (hasPayment) {
+      const effPaySource = effectivePayment[0];
+      const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
+      const effPayType = PAYMENT_TYPE_MAP[effPayTypeKey] || 1;
+      const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
+      
+      if (effPayType === 3) {
+        jsonPayload.cc_payment = [{ sum: effPaySum, cc_type: 3 }];
+      } else if (effPayType === 2) {
+        jsonPayload.cheque_payment = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
+      } else if (effPayType === 4) {
+        jsonPayload.bank_transfer_payment = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
+      } else {
+        jsonPayload.cash_payment = [{ sum: effPaySum }];
+      }
     }
 
-    console.log('iCount form payload:', formParams.toString().substring(0, 1000));
+    console.log('iCount JSON payload:', JSON.stringify(jsonPayload));
 
-    // Create document in iCount
+    // Create document in iCount using JSON
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formParams.toString()
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jsonPayload)
     });
 
     const data = await res.json();
