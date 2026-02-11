@@ -15,23 +15,13 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
         }
 
-        console.log('Attempting to delete lead:', leadId);
+        console.log('Deleting lead:', leadId);
+        await base44.asServiceRole.entities.Lead.delete(leadId);
+        console.log('Lead deleted successfully');
 
-        // First verify the lead exists
-        try {
-            const lead = await base44.asServiceRole.entities.Lead.get(leadId);
-            console.log('Found lead:', lead?.name || lead?.id);
-        } catch (getErr) {
-            console.error('Lead not found via get:', getErr.message);
-        }
-
-        // Try deleteMany as alternative
-        const result = await base44.asServiceRole.entities.Lead.deleteMany({ id: leadId });
-        console.log('DeleteMany result:', result);
-
-        return Response.json({ success: true, result });
+        return Response.json({ success: true });
     } catch (error) {
-        console.error('Delete error:', error.message);
+        console.error('Delete error:', error.message, JSON.stringify(error));
         return Response.json({ error: error.message }, { status: 500 });
     }
 });
