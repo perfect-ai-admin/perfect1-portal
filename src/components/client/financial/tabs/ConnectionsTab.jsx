@@ -144,9 +144,16 @@ export default function ConnectionsTab({ data }) {
       {/* Step 1: Intro / Software Selection Dialog */}
       <ConnectAccountingSoftwareDialog
         open={showSoftwareDialog}
-        onOpenChange={setShowSoftwareDialog}
+        onOpenChange={(val) => {
+          if (!val) {
+            setShowSoftwareDialog(false);
+            // If closed via X button, also clear provider
+            setConnectProvider(null);
+          }
+        }}
         selectedProvider={connectProvider}
         onContinue={() => {
+          // Close intro dialog, ConnectProviderDialog will open since connectProvider is still set
           setShowSoftwareDialog(false);
         }}
       />
