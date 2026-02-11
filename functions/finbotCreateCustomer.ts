@@ -74,11 +74,18 @@ Deno.serve(async (req) => {
         console.log('Finbot response:', response.status, responseText);
 
         let finbotResult;
-        try { finbotResult = JSON.parse(responseText); }
-        catch { finbotResult = { raw_response: responseText.substring(0, 500) }; }
-        // Ensure finbotResult is always a plain object
-        if (typeof finbotResult !== 'object' || finbotResult === null || Array.isArray(finbotResult)) {
-            finbotResult = { value: String(finbotResult) };
+        try { 
+            const parsed = JSON.parse(responseText);
+            // Ensure it's a plain object (not array)
+            if (Array.isArray(parsed)) {
+                finbotResult = { items: parsed };
+            } else if (typeof parsed === 'object' && parsed !== null) {
+                finbotResult = parsed;
+            } else {
+                finbotResult = { value: String(parsed) };
+            }
+        } catch { 
+            finbotResult = { raw_response: responseText.substring(0, 500) }; 
         }
 
         const isSuccess = finbotResult?.status === 1;
