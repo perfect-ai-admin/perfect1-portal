@@ -120,7 +120,10 @@ export default function ConnectionsTab({ data }) {
               loading={loading && provider.status === 'available'}
               syncLoading={getSyncLoadingForProvider(provider.id)}
               disconnectLoading={disconnectLoading[provider.id]}
-              onConnect={() => setConnectProvider(provider)}
+              onConnect={() => {
+                setConnectProvider(provider);
+                setShowSoftwareDialog(true);
+              }}
               onDisconnect={() => handleDisconnect(provider.id)}
               onSync={(resource) => handleSync(provider.id, resource)}
             />
