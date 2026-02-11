@@ -165,10 +165,11 @@ export default function DocumentsTab({ data }) {
 const PAYMENT_TYPE_OPTIONS = [
   { value: 'cash', label: 'מזומן' },
   { value: 'bank_transfer', label: 'העברה בנקאית' },
-  { value: 'credit_card', label: 'כרטיס אשראי' },
+  { value: 'credit_card', label: 'אשראי' },
   { value: 'cheque', label: 'צ׳ק' },
   { value: 'paypal', label: 'PayPal' },
-  { value: 'payment_app', label: 'אפליקציית תשלום (ביט/פייבוקס)' },
+  { value: 'bit', label: 'ביט' },
+  { value: 'paybox', label: 'פייבוקס' },
   { value: 'other', label: 'אחר' },
 ];
 
