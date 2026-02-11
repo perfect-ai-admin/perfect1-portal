@@ -5,10 +5,10 @@ const ICOUNT_BASE_URL = Deno.env.get("ICOUNT_BASE_URL") || "https://api.icount.c
 // iCount document type mapping
 const DOC_TYPE_MAP = {
   'receipt': 'receipt',
-  'invoice_receipt': 'invoice_receipt',
+  'invoice_receipt': 'invrec',
   'invoice': 'invoice',
-  'credit': 'credit_invoice',
-  'tax-receipt': 'invoice_receipt',  // alias from UI
+  'credit': 'creditinv',
+  'tax-receipt': 'invrec',
   'draft': 'order'
 };
 
@@ -38,6 +38,18 @@ async function ensureSession(base44, userId) {
   return { sid: loginData.sid, cid: conn.provider_account_id, conn: { ...conn, sid: loginData.sid } };
 }
 
+// Map UI payment type to iCount cc_type / pay_type
+const PAYMENT_TYPE_MAP = {
+  'cash': 1,
+  'cheque': 2,
+  'credit_card': 3,
+  'bank_transfer': 4,
+  'paypal': 11,
+  'bit': 10,
+  'paybox': 10,
+  'other': 0
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -45,7 +57,7 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { type, customer_id, customer_provider_id, issue_date, currency, items, notes } = body;
+    const { type, customer_id, customer_provider_id, issue_date, currency, items, notes, payment, payment_type } = body;
 
     if (!type) return Response.json({ error: 'סוג מסמך הוא שדה חובה' }, { status: 400 });
     if (!items || !items.length) return Response.json({ error: 'נדרש לפחות פריט אחד' }, { status: 400 });
@@ -72,16 +84,41 @@ Deno.serve(async (req) => {
       ...(notes && { comment: notes })
     };
 
+    // Add payment info (required by iCount for receipt/invrec)
+    if (payment && payment.length > 0) {
+      const total = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
+      const payType = PAYMENT_TYPE_MAP[payment[0].type] || PAYMENT_TYPE_MAP[payment_type] || 1;
+      
+      if (payType === 3) {
+        // Credit card
+        payload.cc_payments = [{ sum: payment[0].price || total, cc_type: 3 }];
+      } else if (payType === 2) {
+        // Cheque
+        payload.cheque_payments = [{ sum: payment[0].price || total, date: payment[0].date || issue_date }];
+      } else if (payType === 4) {
+        // Bank transfer
+        payload.bank_payments = [{ sum: payment[0].price || total, date: payment[0].date || issue_date }];
+      } else {
+        // Cash and others
+        payload.cash_payments = [{ sum: payment[0].price || total }];
+      }
+    } else {
+      // Default cash payment
+      const total = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
+      payload.cash_payments = [{ sum: total }];
+    }
+
     // Customer identification
     if (customer_provider_id) {
       payload.client_id = parseInt(customer_provider_id);
     } else if (customer_id) {
-      // Lookup local customer to get provider ID
       const customers = await base44.asServiceRole.entities.FinbotCustomer.filter({ id: customer_id });
       if (customers?.length && customers[0].finbot_customer_id) {
         payload.client_id = parseInt(customers[0].finbot_customer_id);
       }
     }
+
+    console.log('iCount create doc payload:', JSON.stringify(payload));
 
     // Create document in iCount
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
@@ -91,24 +128,28 @@ Deno.serve(async (req) => {
     });
 
     const data = await res.json();
+    console.log('iCount response:', JSON.stringify(data));
 
     // Audit log
     await base44.asServiceRole.entities.FinbotAuditLog.create({
       user_id: user.id,
       action: 'icount.create_document',
       entity_type: 'FinbotDocument',
-      request_data: { type, customer_provider_id, items_count: items.length },
+      request_data: { type, doctype: icountDoctype, customer_provider_id, items_count: items.length },
       response_data: data,
       success: !!data.status
     });
 
     if (!data.status) {
-      return Response.json({ error: data.error_description || 'שגיאה ביצירת מסמך ב-iCount' });
+      const errMsg = data.error_description || data.reason || JSON.stringify(data.errors || {});
+      return Response.json({ error: errMsg || 'שגיאה ביצירת מסמך ב-iCount', icount_response: data });
     }
 
     // Get PDF link
     let pdfUrl = null;
-    if (data.doctype && data.docnum) {
+    if (data.doc_url) {
+      pdfUrl = data.doc_url;
+    } else if (data.doctype && data.docnum) {
       try {
         const infoRes = await fetch(`${ICOUNT_BASE_URL}/doc/info`, {
           method: 'POST',
@@ -117,6 +158,7 @@ Deno.serve(async (req) => {
         });
         const infoData = await infoRes.json();
         if (infoData.pdf_link) pdfUrl = infoData.pdf_link;
+        if (infoData.doc_url) pdfUrl = infoData.doc_url;
       } catch (_) { /* ignore */ }
     }
 
@@ -125,12 +167,20 @@ Deno.serve(async (req) => {
     const vat = data.total_vat || 0;
     const total = data.total_with_vat || subtotal + vat;
 
+    // Find customer name
+    let customerName = '';
+    if (customer_id) {
+      const customers = await base44.asServiceRole.entities.FinbotCustomer.filter({ id: customer_id });
+      if (customers?.length) customerName = customers[0].name;
+    }
+
     // Save locally
     const localDoc = await base44.asServiceRole.entities.FinbotDocument.create({
       user_id: user.id,
       finbot_document_id: data.docnum ? `${data.doctype}_${data.docnum}` : '',
       type: type === 'tax-receipt' ? 'invoice_receipt' : type,
       customer_finbot_id: String(payload.client_id || ''),
+      customer_name: customerName,
       issue_date: issue_date || new Date().toISOString().split('T')[0],
       currency: currency || 'ILS',
       subtotal,
@@ -153,6 +203,7 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
+    console.error('icountCreateDocument error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
