@@ -89,14 +89,14 @@ export default function LeadsAdmin() {
   });
 
   const deleteLeadMutation = useMutation({
-    mutationFn: (id) => base44.functions.invoke('adminDeleteLead', { leadId: id }),
+    mutationFn: (id) => base44.entities.Lead.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       toast.success('הליד נמחק בהצלחה');
     },
     onError: (error) => {
       console.error('Failed to delete lead:', error);
-      toast.error('שגיאה במחיקת הליד. ייתכן ואין לך הרשאות מתאימות.');
+      toast.error('שגיאה במחיקת הליד.');
     }
   });
 
@@ -151,7 +151,7 @@ export default function LeadsAdmin() {
 
     for (const leadId of selectedLeads) {
       try {
-        await base44.functions.invoke('adminDeleteLead', { leadId });
+        await base44.entities.Lead.delete(leadId);
         deletedCount++;
       } catch (error) {
         console.error(`Failed to delete lead ${leadId}:`, error);
