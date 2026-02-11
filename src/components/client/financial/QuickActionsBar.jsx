@@ -237,15 +237,27 @@ export default function QuickActionsBar({ onActionComplete, user }) {
          </div>
        </div>
 
-      {/* Connection Dialog */}
+      {/* Step 1: Intro Dialog */}
       <ConnectAccountingSoftwareDialog 
         open={showConnectDialog} 
         onOpenChange={setShowConnectDialog}
-        user={user}
-        onConnect={() => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
-            onActionComplete && onActionComplete();
-        }}
+        onContinue={handleIntroContinue}
+      />
+
+      {/* Step 2: Provider Selection Dialog */}
+      <ProviderSelectionDialog
+        open={showProviderSelection}
+        onOpenChange={setShowProviderSelection}
+        onSelectProvider={handleProviderSelected}
+      />
+
+      {/* Step 3: Provider-specific Connection Dialog (API Key etc.) */}
+      <ConnectProviderDialog
+        open={showProviderConnect}
+        onClose={() => { setShowProviderConnect(false); setSelectedProvider(null); }}
+        provider={selectedProvider}
+        onConnect={handleProviderConnect}
+        loading={connectLoading}
       />
 
       {/* Modals */}
