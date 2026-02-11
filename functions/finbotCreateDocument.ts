@@ -223,20 +223,26 @@ Deno.serve(async (req) => {
         // Finbot returns status=1 for success
         const isSuccess = finbotResult?.status === 1 || response.ok;
 
+        // Wrap finbotResult for safe DB storage (response_data must be an object)
+        const safeResponseData = { result: finbotResult };
+
         if (!isSuccess) {
             await base44.entities.FinbotAuditLog.create({
                 user_id: user.id,
                 action: 'finbot.create_document',
-                request_data: finbotPayload,
-                response_data: typeof finbotResult === 'object' ? finbotResult : { raw: String(finbotResult) },
+                request_data: { payload: finbotPayload },
+                response_data: safeResponseData,
                 success: false
             });
             return Response.json({ 
                 error: finbotResult?.message || `שגיאה מ-Finbot`,
-                errors: finbotResult?.errors || finbotResult?.['[]'] || [],
+                errors: finbotResult?.errors || [],
                 details: finbotResult
             }, { status: 400 });
         }
+
+        // Extract PDF URL - Finbot returns the link in "data" field on success
+        const pdfUrl = (typeof finbotResult.data === 'string') ? finbotResult.data : null;
 
         // Calculate totals for local storage
         const subtotal = finbotPayload.items.reduce((sum, item) => sum + (item.amount * item.price), 0);
@@ -246,7 +252,7 @@ Deno.serve(async (req) => {
         // Save to local database
         const localDocument = await base44.entities.FinbotDocument.create({
             user_id: user.id,
-            finbot_document_id: String(finbotResult.data?.id || finbotResult.id || ''),
+            finbot_document_id: String(finbotResult.id || ''),
             type,
             customer_finbot_id: resolvedCustomerFinbotId ? String(resolvedCustomerFinbotId) : null,
             customer_name: resolvedCustomerName || finbotPayload.customer?.name,
@@ -256,10 +262,10 @@ Deno.serve(async (req) => {
             vat,
             total,
             status: 'created',
-            pdf_url: finbotResult.data || null, // data contains the PDF link on success
+            pdf_url: pdfUrl,
             items: finbotPayload.items,
             notes,
-            raw: finbotResult,
+            raw: safeResponseData,
             synced_at: new Date().toISOString()
         });
 
@@ -268,15 +274,15 @@ Deno.serve(async (req) => {
             action: 'finbot.create_document',
             entity_type: 'FinbotDocument',
             entity_id: localDocument.id,
-            request_data: finbotPayload,
-            response_data: typeof finbotResult === 'object' ? finbotResult : { raw: String(finbotResult) },
+            request_data: { payload: finbotPayload },
+            response_data: safeResponseData,
             success: true
         });
 
         return Response.json({ 
             document: localDocument,
             finbot_response: finbotResult,
-            pdf_url: finbotResult.data || null
+            pdf_url: pdfUrl
         });
     } catch (error) {
         console.error('Error creating document:', error.message);
