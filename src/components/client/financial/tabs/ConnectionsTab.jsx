@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { ACCOUNTING_PROVIDERS, getProvider } from '../accountingProviders';
 import ProviderCard from '../ProviderCard';
+import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
 import ConnectProviderDialog from '../ConnectProviderDialog';
 
 export default function ConnectionsTab({ data }) {
