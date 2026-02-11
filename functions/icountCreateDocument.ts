@@ -84,16 +84,21 @@ Deno.serve(async (req) => {
       ...(notes && { comment: notes })
     };
 
+    // Determine if business is VAT exempt (osek patur)
+    const connections = await base44.asServiceRole.entities.AccountingConnection.filter({ user_id: user.id, provider: 'icount', status: 'connected' });
+    const connConfig = connections?.[0]?.config || {};
+    const isVatExempt = !!(connConfig.is_tax_exempt || connConfig.is_vat_exempt);
+    const vatMultiplier = isVatExempt ? 1 : 1.17;
+
     // Add payment info (required by iCount for receipt/invrec)
-    // iCount requires the payment sum to include VAT (17%)
     const subtotalCalc = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
-    const totalWithVat = Math.round(subtotalCalc * 1.17 * 100) / 100;
+    const totalWithVat = Math.round(subtotalCalc * vatMultiplier * 100) / 100;
     
     const paymentSource = (payment && payment.length > 0) ? payment[0] : null;
     const payTypeKey = paymentSource?.type || payment_type || 'cash';
     const payType = PAYMENT_TYPE_MAP[payTypeKey] || 1;
-    // Use explicit payment price if provided, otherwise calculate total with VAT
-    const paySum = paymentSource?.price ? Math.round(paymentSource.price * 1.17 * 100) / 100 : totalWithVat;
+    // If explicit payment amount provided, use as-is (already includes VAT if relevant)
+    const paySum = paymentSource?.price ? Number(paymentSource.price) : totalWithVat;
 
     // Customer identification
     if (customer_provider_id) {
