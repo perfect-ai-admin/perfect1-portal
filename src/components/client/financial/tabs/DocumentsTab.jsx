@@ -25,7 +25,7 @@ export default function DocumentsTab({ data }) {
   const [showConnectDialog, setShowConnectDialog] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
-  const { fn, isConnected, isLoading: providerLoading } = useActiveAccountingProvider();
+  const { fn, isConnected, isLoading: providerLoading, isVatExempt } = useActiveAccountingProvider();
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents'],
@@ -151,6 +151,7 @@ export default function DocumentsTab({ data }) {
         customers={customers}
         queryClient={queryClient}
         createDocFn={fn?.createDocument}
+        isVatExempt={isVatExempt}
       />
 
       {/* Connect Accounting Dialog */}
@@ -175,7 +176,7 @@ const PAYMENT_TYPE_OPTIONS = [
   { value: 'other', label: 'אחר' },
 ];
 
-function CreateDocumentDialog({ open, onClose, customers, queryClient, createDocFn }) {
+function CreateDocumentDialog({ open, onClose, customers, queryClient, createDocFn, isVatExempt }) {
   const [form, setForm] = useState({
     type: 'receipt',
     customer_id: '',
@@ -297,9 +298,19 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
               ))}
             </div>
             <div className="text-left mt-2 pt-2 border-t">
-              <span className="text-sm text-gray-600">סה״כ לפני מע״מ: </span>
-              <span className="font-bold">₪{total.toLocaleString()}</span>
-              <span className="text-xs text-gray-400 mr-2">(+ מע״מ ₪{(total * 0.17).toLocaleString()})</span>
+              {isVatExempt ? (
+                <>
+                  <span className="text-sm text-gray-600">סה״כ: </span>
+                  <span className="font-bold">₪{total.toLocaleString()}</span>
+                  <span className="text-xs text-gray-400 mr-2">(עוסק פטור - ללא מע״מ)</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-sm text-gray-600">סה״כ לפני מע״מ: </span>
+                  <span className="font-bold">₪{total.toLocaleString()}</span>
+                  <span className="text-xs text-gray-400 mr-2">(+ מע״מ ₪{(total * 0.17).toLocaleString()})</span>
+                </>
+              )}
             </div>
           </div>
 
@@ -317,12 +328,14 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">סכום ששולם</label>
+                <label className="block text-sm font-medium mb-1">סכום ששולם {isVatExempt ? '' : '(כולל מע״מ)'}</label>
                 <Input 
                   type="number" 
                   min="0" 
                   step="0.01" 
-                  placeholder={`₪${total.toLocaleString()} (סה״כ לפני מע״מ)`}
+                  placeholder={isVatExempt 
+                    ? `₪${total.toLocaleString()} (סה״כ)` 
+                    : `₪${Math.round(total * 1.17).toLocaleString()} (כולל מע״מ)`}
                   value={form.payment_amount} 
                   onChange={e => setForm(p => ({...p, payment_amount: e.target.value}))} 
                   className="text-sm"

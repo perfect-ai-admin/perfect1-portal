@@ -48,6 +48,11 @@ export default function useActiveAccountingProvider() {
   const providerConfig = providerId ? getProvider(providerId) : null;
   const functions = providerId ? (FUNCTION_MAP[providerId] || FUNCTION_MAP.finbot) : null;
 
+  // Determine VAT status from connection config
+  const config = connection?.config || {};
+  const isVatExempt = !!(config.is_tax_exempt || config.is_vat_exempt);
+  const businessType = isVatExempt ? 'patur' : 'morasha'; // patur = no VAT, morasha = with VAT
+
   return {
     isLoading,
     isConnected: !!connection,
@@ -57,5 +62,7 @@ export default function useActiveAccountingProvider() {
     providerConfig,
     fn: functions,
     ready: !isLoading && !!functions,
+    isVatExempt,
+    businessType,
   };
 }
