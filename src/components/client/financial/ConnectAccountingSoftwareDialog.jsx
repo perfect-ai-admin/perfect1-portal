@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { ShieldCheck, Lock, Eye } from 'lucide-react';
 
 export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, selectedProvider, onContinue }) {
-  if (!selectedProvider) return null;
+  const providerName = selectedProvider?.name || '';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md" dir="rtl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">🔗 חיבור ל-{selectedProvider.name}</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-center">🔗 חיבור ל-{providerName}</DialogTitle>
         </DialogHeader>
 
         <div className="py-4 space-y-4 text-sm text-gray-700 leading-relaxed">
