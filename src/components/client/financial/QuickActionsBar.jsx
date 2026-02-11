@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import ConnectAccountingSoftwareDialog from './ConnectAccountingSoftwareDialog';
 import ProviderSelectionDialog from './ProviderSelectionDialog';
 import ConnectProviderDialog from './ConnectProviderDialog';
 
