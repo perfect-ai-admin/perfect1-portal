@@ -55,7 +55,7 @@ export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, se
           </p>
         </div>
 
-        <Button onClick={onContinue} className="w-full gap-2 text-base py-5">
+        <Button onClick={() => { if (onContinue) onContinue(); }} className="w-full gap-2 text-base py-5">
           👉 המשך בצורה מאובטחת
         </Button>
       </DialogContent>
