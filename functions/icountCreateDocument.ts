@@ -160,44 +160,36 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Build multipart form-data (iCount requires form-data for nested arrays like payment)
-    const boundary = '----iCountBoundary' + Date.now();
-    let mpBody = '';
+    // Build URL-encoded form data (iCount processes this correctly for nested arrays)
+    const formParams = new URLSearchParams();
     
-    function addField(name, value) {
-      mpBody += `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`;
-    }
-
-    // Add all JSON fields as form fields
-    addField('sid', jsonPayload.sid);
-    addField('doctype', jsonPayload.doctype);
-    if (jsonPayload.doc_date) addField('doc_date', jsonPayload.doc_date);
-    if (jsonPayload.currency_code) addField('currency_code', jsonPayload.currency_code);
-    if (jsonPayload.comment) addField('comment', jsonPayload.comment);
-    if (jsonPayload.client_id) addField('client_id', jsonPayload.client_id);
+    formParams.append('sid', jsonPayload.sid);
+    formParams.append('doctype', jsonPayload.doctype);
+    if (jsonPayload.doc_date) formParams.append('doc_date', jsonPayload.doc_date);
+    if (jsonPayload.currency_code) formParams.append('currency_code', jsonPayload.currency_code);
+    if (jsonPayload.comment) formParams.append('comment', jsonPayload.comment);
+    if (jsonPayload.client_id) formParams.append('client_id', String(jsonPayload.client_id));
     
-    // Items as form-data arrays
+    // Items
     jsonPayload.items.forEach((item, i) => {
-      addField(`items[${i}][description]`, item.description);
-      addField(`items[${i}][unitprice]`, item.unitprice);
-      addField(`items[${i}][quantity]`, item.quantity);
-      if (item.vat_rate !== undefined) addField(`items[${i}][vat_rate]`, item.vat_rate);
+      formParams.append(`items[${i}][description]`, item.description);
+      formParams.append(`items[${i}][unitprice]`, String(item.unitprice));
+      formParams.append(`items[${i}][quantity]`, String(item.quantity));
+      if (item.vat_rate !== undefined) formParams.append(`items[${i}][vat_rate]`, String(item.vat_rate));
     });
     
     // Payment fields
     for (const [key, value] of Object.entries(paymentFields)) {
-      addField(key, value);
+      formParams.append(key, String(value));
     }
-    
-    mpBody += `--${boundary}--\r\n`;
 
-    console.log('iCount form-data payload:', mpBody.substring(0, 1000));
+    console.log('iCount form payload:', formParams.toString().substring(0, 1000));
 
     // Create document in iCount
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': `multipart/form-data; boundary=${boundary}` },
-      body: mpBody
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formParams.toString()
     });
 
     const data = await res.json();
