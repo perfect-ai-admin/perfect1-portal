@@ -60,8 +60,8 @@ Deno.serve(async (req) => {
             vatType: false,
             rounding: true,
             customer: customerObj,
-            items: [{ name: 'רישום לקוח', amount: 1, price: 0 }],
-            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 0 }]
+            items: [{ name: 'רישום לקוח', amount: 1, price: 1 }],
+            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 1.17 }]
         };
 
         console.log('Finbot create customer payload:', JSON.stringify(finbotPayload));
