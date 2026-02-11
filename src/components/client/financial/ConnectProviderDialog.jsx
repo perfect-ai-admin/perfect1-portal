@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link2, Key, Loader2, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Link2, Loader2, ExternalLink, ShieldCheck, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 
 export default function ConnectProviderDialog({ open, onClose, provider, onConnect, loading }) {
   const [apiKey, setApiKey] = useState('');
+  const [showGuide, setShowGuide] = useState(false);
 
   if (!provider) return null;
 
@@ -30,15 +31,6 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
         </DialogHeader>
 
         <div className="space-y-4" dir="rtl">
-          {/* Info box */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex gap-2">
-            <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-            <div className="text-xs text-blue-800">
-              <p className="font-medium mb-1">איפה מוצאים את ה-API Key?</p>
-              <p>היכנס לחשבון {provider.name} שלך ← הגדרות העסק ← מפתח API להפקת הכנסות ← לחץ "יצירת מפתח API"</p>
-            </div>
-          </div>
-
           {/* API Key input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">מפתח API (טוקן)</label>
@@ -53,17 +45,42 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
             <p className="text-xs text-gray-500 mt-1">המפתח נשמר באופן מאובטח ומשמש רק לחשבון שלך</p>
           </div>
 
-          {/* Link to Finbot */}
-          {provider.id === 'finbot' && (
-            <a 
-              href="https://app.finbotai.co.il" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 hover:underline"
-            >
-              <ExternalLink className="w-4 h-4" />
-              פתח את חשבון Finbot שלי
-            </a>
+          {/* How to get API Key - expandable guide */}
+          <button
+            type="button"
+            onClick={() => setShowGuide(!showGuide)}
+            className="w-full flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors py-2"
+          >
+            <HelpCircle className="w-4 h-4 flex-shrink-0" />
+            <span>איך מוצאים את ה-API Key?</span>
+            {showGuide ? <ChevronUp className="w-4 h-4 mr-auto" /> : <ChevronDown className="w-4 h-4 mr-auto" />}
+          </button>
+
+          {showGuide && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3 text-sm text-blue-900 animate-in fade-in duration-200">
+              <div className="flex items-start gap-2">
+                <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <p className="font-medium">הדרכה שלב אחרי שלב:</p>
+              </div>
+              <ol className="list-decimal list-inside space-y-2 pr-2 text-blue-800">
+                <li>היכנס לחשבון ה-{provider.name} שלך</li>
+                <li>לך ל<strong>הגדרות העסק</strong></li>
+                <li>בחר <strong>מפתח API להפקת הכנסות</strong></li>
+                <li>לחץ על <strong>"יצירת מפתח API"</strong></li>
+                <li>העתק את המפתח שנוצר והדבק אותו למעלה</li>
+              </ol>
+              <div className="pt-1 border-t border-blue-200">
+                <a 
+                  href="https://app.finbotai.co.il" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  פתח את חשבון Finbot שלי
+                </a>
+              </div>
+            </div>
           )}
         </div>
 
