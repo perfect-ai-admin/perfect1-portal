@@ -104,45 +104,39 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Build PHP-style nested form data for iCount
-    const formData = new URLSearchParams();
-    
-    formData.append('sid', payload.sid);
-    formData.append('doctype', payload.doctype);
-    if (payload.doc_date) formData.append('doc_date', payload.doc_date);
-    if (payload.currency_code) formData.append('currency_code', payload.currency_code);
-    if (payload.comment) formData.append('comment', payload.comment);
-    if (payload.client_id) formData.append('client_id', String(payload.client_id));
+    // Customer identification
+    // (already handled above)
 
-    // Items - PHP array format
-    icountItems.forEach((item, i) => {
-      formData.append(`items[${i}][description]`, item.description);
-      formData.append(`items[${i}][unitprice]`, String(item.unitprice));
-      formData.append(`items[${i}][quantity]`, String(item.quantity));
-      if (item.vat_rate !== undefined) formData.append(`items[${i}][vat_rate]`, String(item.vat_rate));
-    });
+    // Restructure payload for iCount JSON API
+    // iCount expects payment as nested objects with numeric string keys
+    const icountPayload = {
+      sid: payload.sid,
+      doctype: payload.doctype,
+      ...(payload.doc_date && { doc_date: payload.doc_date }),
+      ...(payload.currency_code && { currency_code: payload.currency_code }),
+      ...(payload.comment && { comment: payload.comment }),
+      ...(payload.client_id && { client_id: payload.client_id }),
+      items: icountItems
+    };
 
-    // Payment - PHP array format
+    // Payment info - use the correct iCount field names
     if (payType === 3) {
-      formData.append('cc_payment[0][sum]', String(paySum));
-      formData.append('cc_payment[0][cc_type]', '3');
+      icountPayload.cc_payment = { "0": { sum: paySum, cc_type: 3 } };
     } else if (payType === 2) {
-      formData.append('cheque_payment[0][sum]', String(paySum));
-      formData.append('cheque_payment[0][date]', paymentSource?.date || issue_date);
+      icountPayload.cheque_payment = { "0": { sum: paySum, date: paymentSource?.date || issue_date } };
     } else if (payType === 4) {
-      formData.append('bank_transfer_payment[0][sum]', String(paySum));
-      formData.append('bank_transfer_payment[0][date]', paymentSource?.date || issue_date);
+      icountPayload.bank_transfer_payment = { "0": { sum: paySum, date: paymentSource?.date || issue_date } };
     } else {
-      formData.append('cash_payment[0][sum]', String(paySum));
+      icountPayload.cash_payment = { "0": { sum: paySum } };
     }
 
-    console.log('iCount form payload:', formData.toString());
+    console.log('iCount JSON payload:', JSON.stringify(icountPayload));
 
     // Create document in iCount
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formData.toString()
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(icountPayload)
     });
 
     const data = await res.json();
