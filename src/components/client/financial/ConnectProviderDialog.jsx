@@ -3,12 +3,25 @@ import { Link2, Loader2, ExternalLink, ShieldCheck, HelpCircle, ChevronDown, Che
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import ConnectIcountDialog from './ConnectIcountDialog';
 
 export default function ConnectProviderDialog({ open, onClose, provider, onConnect, loading }) {
   const [apiKey, setApiKey] = useState('');
   const [showGuide, setShowGuide] = useState(false);
 
   if (!provider) return null;
+
+  // iCount uses credentials (cid + user + pass), not API key
+  if (provider.id === 'icount') {
+    return (
+      <ConnectIcountDialog
+        open={open}
+        onClose={onClose}
+        onConnect={onConnect}
+        loading={loading}
+      />
+    );
+  }
 
   const handleConnect = () => {
     onConnect(provider.id, 'apikey', { api_key: apiKey });
