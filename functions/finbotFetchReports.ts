@@ -58,8 +58,10 @@ Deno.serve(async (req) => {
             try { reportData = JSON.parse(responseText); }
             catch { reportData = { raw_response: responseText }; }
 
+            // If Finbot API fails (403/etc), fall back to local data only
             if (!response.ok) {
-                throw new Error(reportData?.message || `שגיאה בשליפת דוח (${response.status})`);
+                console.log('Finbot API not available, using local data only');
+                reportData = null;
             }
 
             // Enrich with local data
@@ -71,7 +73,7 @@ Deno.serve(async (req) => {
             const totalExpenses = localExpenses.reduce((s, e) => s + (e.amount || 0), 0);
 
             const enrichedResult = {
-                finbot_data: reportData,
+                finbot_data: reportData || {},
                 local_summary: {
                     total_income: totalIncome,
                     total_expenses: totalExpenses,

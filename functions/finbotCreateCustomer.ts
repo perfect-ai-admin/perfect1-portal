@@ -75,7 +75,11 @@ Deno.serve(async (req) => {
 
         let finbotResult;
         try { finbotResult = JSON.parse(responseText); }
-        catch { finbotResult = { raw_response: responseText }; }
+        catch { finbotResult = { raw_response: responseText.substring(0, 500) }; }
+        // Ensure finbotResult is always a plain object
+        if (typeof finbotResult !== 'object' || finbotResult === null || Array.isArray(finbotResult)) {
+            finbotResult = { value: String(finbotResult) };
+        }
 
         const isSuccess = finbotResult?.status === 1;
 
@@ -86,7 +90,7 @@ Deno.serve(async (req) => {
             name, id_number: id_number || null, email: email || null,
             phone: phone || null, address: address || null, city: city || null,
             zip: zip || null, notes: notes || null,
-            raw: (typeof finbotResult === 'object' && finbotResult !== null) ? finbotResult : { raw_value: String(finbotResult) },
+            raw: finbotResult,
             synced_at: new Date().toISOString()
         });
 
@@ -94,7 +98,7 @@ Deno.serve(async (req) => {
             user_id: user.id, action: 'finbot.create_customer',
             entity_type: 'FinbotCustomer', entity_id: localCustomer.id,
             request_data: { payload: finbotPayload },
-            response_data: typeof finbotResult === 'object' ? { result: finbotResult } : { raw: String(finbotResult) },
+            response_data: { result: finbotResult },
             success: isSuccess
         });
 
