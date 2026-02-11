@@ -104,31 +104,20 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Customer identification
-    // (already handled above)
-
-    // Restructure payload for iCount JSON API
-    // iCount expects payment as nested objects with numeric string keys
+    // Build iCount payload with flat payment fields
     const icountPayload = {
       sid: payload.sid,
       doctype: payload.doctype,
+      items: icountItems,
       ...(payload.doc_date && { doc_date: payload.doc_date }),
       ...(payload.currency_code && { currency_code: payload.currency_code }),
       ...(payload.comment && { comment: payload.comment }),
       ...(payload.client_id && { client_id: payload.client_id }),
-      items: icountItems
+      // Flat payment fields
+      pay_type: payType,
+      pay_price: paySum,
+      pay_date: paymentSource?.date || issue_date || new Date().toISOString().split('T')[0],
     };
-
-    // Payment info - use the correct iCount field names
-    if (payType === 3) {
-      icountPayload.cc_payment = { "0": { sum: paySum, cc_type: 3 } };
-    } else if (payType === 2) {
-      icountPayload.cheque_payment = { "0": { sum: paySum, date: paymentSource?.date || issue_date } };
-    } else if (payType === 4) {
-      icountPayload.bank_transfer_payment = { "0": { sum: paySum, date: paymentSource?.date || issue_date } };
-    } else {
-      icountPayload.cash_payment = { "0": { sum: paySum } };
-    }
 
     console.log('iCount JSON payload:', JSON.stringify(icountPayload));
 
