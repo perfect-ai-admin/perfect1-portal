@@ -263,7 +263,7 @@ Deno.serve(async (req) => {
             total,
             status: 'created',
             pdf_url: pdfUrl,
-            items: finbotPayload.items,
+            items: finbotPayload.items.map(i => ({ description: i.name, quantity: i.amount, unit_price: i.price, total: i.amount * i.price })),
             notes,
             raw: safeResponseData,
             synced_at: new Date().toISOString()
