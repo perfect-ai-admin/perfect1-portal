@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
 
 const TYPE_LABELS = { receipt: 'קבלה', invoice_receipt: 'חשבונית מס/קבלה', credit: 'זיכוי' };
 const STATUS_COLORS = {
@@ -23,8 +24,10 @@ const STATUS_COLORS = {
 
 export default function DocumentsTab({ data }) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showConnectDialog, setShowConnectDialog] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
+  const isConnected = data?.accounting_software?.is_active;
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents'],
@@ -58,7 +61,9 @@ export default function DocumentsTab({ data }) {
             {syncMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
             <span className="hidden md:inline">סנכרן</span>
           </Button>
-          <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700" onClick={() => setShowCreateDialog(true)}>
+          <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700" onClick={() => {
+            if (!isConnected) { setShowConnectDialog(true); } else { setShowCreateDialog(true); }
+          }}>
             <Plus className="w-4 h-4" />
             <span className="hidden md:inline">הפק מסמך</span>
           </Button>
@@ -144,6 +149,14 @@ export default function DocumentsTab({ data }) {
         onClose={() => setShowCreateDialog(false)}
         customers={customers}
         queryClient={queryClient}
+      />
+
+      {/* Connect Accounting Dialog */}
+      <ConnectAccountingSoftwareDialog
+        open={showConnectDialog}
+        onOpenChange={setShowConnectDialog}
+        user={data}
+        onConnect={() => queryClient.invalidateQueries()}
       />
     </motion.div>
   );
