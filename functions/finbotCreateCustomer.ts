@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
             date: todayDDMMYYYY(),
             language: 'HE',
             currency: 'ILS',
-            vatType: true,
+            vatType: false,
             rounding: true,
             customer: customerObj,
             items: [{ name: 'רישום לקוח', amount: 1, price: 1 }]
