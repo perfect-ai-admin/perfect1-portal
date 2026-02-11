@@ -92,7 +92,8 @@ Deno.serve(async (req) => {
     const paymentSource = (payment && payment.length > 0) ? payment[0] : null;
     const payTypeKey = paymentSource?.type || payment_type || 'cash';
     const payType = PAYMENT_TYPE_MAP[payTypeKey] || 1;
-    const paySum = totalWithVat;
+    // Use explicit payment price if provided, otherwise calculate total with VAT
+    const paySum = paymentSource?.price ? Math.round(paymentSource.price * 1.17 * 100) / 100 : totalWithVat;
 
     // Customer identification
     if (customer_provider_id) {
