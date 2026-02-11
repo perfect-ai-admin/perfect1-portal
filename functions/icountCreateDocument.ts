@@ -104,9 +104,17 @@ Deno.serve(async (req) => {
     if (customer_provider_id) {
       payload.client_id = parseInt(customer_provider_id);
     } else if (customer_id) {
-      const customers = await base44.asServiceRole.entities.FinbotCustomer.filter({ id: customer_id });
-      if (customers?.length && customers[0].finbot_customer_id) {
-        payload.client_id = parseInt(customers[0].finbot_customer_id);
+      try {
+        const customer = await base44.asServiceRole.entities.FinbotCustomer.get(customer_id);
+        if (customer?.finbot_customer_id) {
+          payload.client_id = parseInt(customer.finbot_customer_id);
+        }
+      } catch (_) {
+        // Fallback: try filter by finbot_customer_id directly
+        const customers = await base44.asServiceRole.entities.FinbotCustomer.filter({ finbot_customer_id: customer_id });
+        if (customers?.length && customers[0].finbot_customer_id) {
+          payload.client_id = parseInt(customers[0].finbot_customer_id);
+        }
       }
     }
 
