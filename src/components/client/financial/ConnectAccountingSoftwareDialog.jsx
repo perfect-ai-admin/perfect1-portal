@@ -3,19 +3,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { ShieldCheck, Lock, Eye } from 'lucide-react';
 
-export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, selectedProvider, onContinue }) {
-  const providerName = selectedProvider?.name || '';
-
+export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, onContinue }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md" dir="rtl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">🔗 חיבור ל-{providerName}</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-center">🔗 חיבור מערכת הנהלת חשבונות</DialogTitle>
         </DialogHeader>
 
         <div className="py-4 space-y-4 text-sm text-gray-700 leading-relaxed">
           <p className="text-center">
-            החיבור מאפשר לנו לנתח את הנתונים הפיננסיים שלך ולהציג לך תובנות מותאמות אישית.
+            חבר את מערכת הנהלת החשבונות שלך כדי להפיק מסמכים, לסנכרן לקוחות ולנהל הוצאות — הכל ממקום אחד.
           </p>
 
           <div className="space-y-3 bg-gray-50 rounded-xl p-4">
@@ -56,7 +54,7 @@ export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, se
         </div>
 
         <Button onClick={() => { if (onContinue) onContinue(); }} className="w-full gap-2 text-base py-5">
-          👉 המשך בצורה מאובטחת
+          👉 הבא — בחירת מערכת
         </Button>
       </DialogContent>
     </Dialog>
