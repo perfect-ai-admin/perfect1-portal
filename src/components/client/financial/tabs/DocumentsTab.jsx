@@ -195,8 +195,18 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
       const itemsTotal = data.items.reduce((sum, i) => sum + (i.quantity * i.unit_price), 0);
       const fullAmount = isVatExempt ? itemsTotal : Math.round(itemsTotal * 1.17 * 100) / 100;
       const payAmount = data.payment_amount ? Number(data.payment_amount) : fullAmount;
+      
+      // Find iCount customer ID from selected customer
+      const selectedCustomer = data.customer_id ? customers.find(c => c.id === data.customer_id) : null;
+      const customerProviderId = selectedCustomer?.finbot_customer_id || null;
+      
       const payload = {
-        ...data,
+        type: data.type,
+        customer_id: data.customer_id,
+        customer_provider_id: customerProviderId,
+        issue_date: data.issue_date,
+        items: data.items,
+        notes: data.notes,
         ...(docNeedsPayment && {
           payment: [{
             date: data.issue_date,
@@ -205,8 +215,6 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
           }]
         })
       };
-      delete payload.payment_type;
-      delete payload.payment_amount;
       return base44.functions.invoke(createDocFn, payload);
     },
     onSuccess: (res) => {
