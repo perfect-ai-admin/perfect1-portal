@@ -25,6 +25,10 @@ export default function QuickActionsBar({ onActionComplete, user }) {
   const [showCreateModal, setShowCreateModal] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
   const [showConnectDialog, setShowConnectDialog] = useState(false);
+  const [showProviderSelection, setShowProviderSelection] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [showProviderConnect, setShowProviderConnect] = useState(false);
+  const [connectLoading, setConnectLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const checkConnection = () => {
@@ -34,6 +38,43 @@ export default function QuickActionsBar({ onActionComplete, user }) {
       return false;
     }
     return true;
+  };
+
+  // Step 1 -> Step 2: Intro done, show provider selection
+  const handleIntroContinue = () => {
+    setShowConnectDialog(false);
+    setShowProviderSelection(true);
+  };
+
+  // Step 2 -> Step 3: Provider selected, show connection dialog
+  const handleProviderSelected = (provider) => {
+    setSelectedProvider(provider);
+    setShowProviderSelection(false);
+    setShowProviderConnect(true);
+  };
+
+  // Step 3: Connect to provider
+  const handleProviderConnect = async (providerId, strategy, credentials) => {
+    const provider = selectedProvider;
+    if (!provider?.completeFunction) return;
+
+    setConnectLoading(true);
+    const completeRes = await base44.functions.invoke(provider.completeFunction, credentials);
+    setConnectLoading(false);
+
+    if (completeRes.data?.status === 'connected') {
+      toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
+      setShowProviderConnect(false);
+      setSelectedProvider(null);
+      // Save provider info on user
+      await base44.auth.updateMe({
+        accounting_software: { provider: provider.id, is_active: true }
+      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+      onActionComplete && onActionComplete();
+    } else {
+      toast.error(completeRes.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
+    }
   };
 
   const handleDisconnect = async () => {
