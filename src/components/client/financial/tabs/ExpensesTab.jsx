@@ -31,7 +31,7 @@ export default function ExpensesTab({ data }) {
         <h2 className="text-lg font-bold text-gray-900">הוצאות</h2>
         <Button size="sm" variant="outline" className="gap-2" onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending}>
           {syncMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-          <span className="hidden md:inline">סנכרן מ-Finbot</span>
+          <span className="hidden md:inline">סנכרן ממערכת חשבונות</span>
           <span className="md:hidden">סנכרן</span>
         </Button>
       </div>
@@ -48,7 +48,7 @@ export default function ExpensesTab({ data }) {
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>
       ) : expenses.length === 0 ? (
         <div className="text-center py-8 text-gray-500 text-sm">
-          אין הוצאות עדיין. התחבר ל-Finbot וסנכרן הוצאות.
+          אין הוצאות עדיין. חבר מערכת חשבונות וסנכרן הוצאות.
         </div>
       ) : (
         <>

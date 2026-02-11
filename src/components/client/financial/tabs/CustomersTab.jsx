@@ -88,7 +88,7 @@ export default function CustomersTab({ data }) {
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>
       ) : filteredCustomers.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-600 text-sm">{customers.length === 0 ? 'אין לקוחות עדיין. התחבר ל-Finbot וסנכרן או הוסף לקוח חדש.' : 'אין תוצאות לחיפוש'}</p>
+          <p className="text-gray-600 text-sm">{customers.length === 0 ? 'אין לקוחות עדיין. חבר מערכת חשבונות וסנכרן, או הוסף לקוח חדש.' : 'אין תוצאות לחיפוש'}</p>
         </div>
       ) : (
         <div className="space-y-2">

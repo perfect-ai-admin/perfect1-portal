@@ -77,7 +77,7 @@ export default function DocumentsTab({ data }) {
       {isLoading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 text-sm">{documents.length === 0 ? 'אין מסמכים עדיין. סנכרן מ-Finbot או הפק מסמך חדש.' : 'אין מסמכים מסוג זה'}</div>
+        <div className="text-center py-8 text-gray-500 text-sm">{documents.length === 0 ? 'אין מסמכים עדיין. סנכרן ממערכת החשבונות או הפק מסמך חדש.' : 'אין מסמכים מסוג זה'}</div>
       ) : (
         <>
           {/* Desktop Table */}

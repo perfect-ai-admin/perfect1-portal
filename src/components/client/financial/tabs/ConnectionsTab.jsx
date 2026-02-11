@@ -139,7 +139,7 @@ export default function ConnectionsTab({ data }) {
         <p className="text-xs text-blue-800">
           💡 <span className="font-medium">טיפ:</span> אין לך עדיין מערכת חשבונות? {' '}
           <a href="https://www.finbot.co.il" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">
-            לחץ כאן לפתיחה מהירה ↗
+            לחץ כאן לפתיחה מהירה של מערכת חשבונות ↗
           </a>
         </p>
       </div>
