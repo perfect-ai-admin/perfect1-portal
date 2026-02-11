@@ -1,57 +1,76 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 /**
- * Create an income document in Finbot (receipt, invoice_receipt, credit)
- * Based on Finbot API docs: POST https://api.finbot.co.il/api/v2/income
- * Headers: Content-Type: application/json, secret: <API_TOKEN>
+ * Create an income document in Finbot
+ * API docs: https://finbot.helpjuice.com/he_IL/api-docs-create-income
  * 
- * Input: {
- *   type: "receipt" | "invoice_receipt" | "credit",
- *   customer_id: (local) OR customer_finbot_id,
- *   issue_date,
- *   currency: "ILS",
- *   items: [{description, quantity, unit_price, vat_rate?}],
- *   payment: [{date, type, price, currency?, currency_rate?, bank_name?, branch?, account?, cheque_num?, card_type?, card_num?, deal_type?, num_payments?}],
- *   lang?: "he" | "en",
- *   notes?
- * }
+ * URL: POST https://api.finbotai.co.il/income
+ * Header: secret: <API_TOKEN>
+ * 
+ * Document types: 0=חשבונית מס, 1=קבלה, 2=חשבונית מס קבלה, 3=דרישת תשלום, 4=חשבונית זיכוי, 5=הזמנה, 6=תעודת משלוח, 7=הצעת מחיר, 8=חשבונית
+ * Payment types: 0=מזומן, 1=העברה בנקאית, 2=אשראי, 3=צ'ק, 4=ניכוי במקור, 5=פייפאל, 8=ביט, 9=פייבוקס
+ * Date format: DD/MM/YYYY
  */
 
-// Finbot document type mapping to API values
+const FINBOT_API_URL = 'https://api.finbotai.co.il/income';
+
+// Map our internal types to Finbot numeric types
 const DOCUMENT_TYPE_MAP = {
-    receipt: 405,              // קבלה
-    invoice_receipt: 320,      // חשבונית מס / קבלה
-    credit: 330                // זיכוי
+    invoice: '0',              // חשבונית מס
+    receipt: '1',              // קבלה
+    invoice_receipt: '2',      // חשבונית מס / קבלה
+    payment_request: '3',      // דרישת תשלום
+    credit: '4',               // חשבונית זיכוי
+    order: '5',                // הזמנה
+    delivery: '6',             // תעודת משלוח
+    quote: '7',                // הצעת מחיר
+    bill: '8'                  // חשבונית
 };
 
-// Payment type mapping
+// Map our payment types to Finbot numeric types
 const PAYMENT_TYPE_MAP = {
-    cash: 1,
-    cheque: 2,
-    bank_transfer: 3,
-    credit_card: 4,
-    other: 10,
-    paypal: 11,
-    payment_app: 12
+    cash: '0',
+    bank_transfer: '1',
+    credit_card: '2',
+    cheque: '3',
+    withholding: '4',
+    paypal: '5',
+    bitcoin: '6',
+    other: '7',
+    bit: '8',
+    paybox: '9',
+    other_deductions: '10',
+    ethereum: '11',
+    equivalent: '12',
+    gift_card: '13',
+    google_pay: '14',
+    apple_pay: '15'
 };
 
-const FINBOT_API_BASE = 'https://api.finbot.co.il/api/v2';
-
-async function getFinbotAuth(base44, userId) {
-    // First check if user has a personal connection
-    const connections = await base44.entities.FinbotConnection.filter({ user_id: userId });
-    
-    if (connections && connections.length > 0 && connections[0].status === 'connected') {
-        const connection = connections[0];
-        // Use the user's personal token if available
-        if (connection.api_key_ref) return connection.api_key_ref;
-        if (connection.access_token_ref) return connection.access_token_ref;
+function formatDateDDMMYYYY(dateStr) {
+    if (!dateStr) {
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
     }
+    // If already in DD/MM/YYYY format
+    if (dateStr.includes('/')) return dateStr;
+    // Convert from YYYY-MM-DD
+    const parts = dateStr.split('-');
+    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    return dateStr;
+}
 
-    // Fallback to global API token
+async function getFinbotToken(base44, userId) {
+    const connections = await base44.entities.FinbotConnection.filter({ user_id: userId });
+    if (connections && connections.length > 0 && connections[0].status === 'connected') {
+        if (connections[0].api_key_ref) return connections[0].api_key_ref;
+        if (connections[0].access_token_ref) return connections[0].access_token_ref;
+    }
     const globalToken = Deno.env.get('FINBOT_API_TOKEN');
     if (globalToken) return globalToken;
-
     throw new Error('לא נמצא טוקן Finbot. יש להתחבר למערכת חשבונות.');
 }
 
@@ -59,110 +78,128 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
-        
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
         const body = await req.json();
-        const { type, customer_id, customer_finbot_id, issue_date, currency, items, payment, lang, notes } = body;
+        const { 
+            type, customer_id, customer_finbot_id, issue_date, currency, 
+            items, payment, lang, notes, description,
+            vatType, rounding, customer_name, customer_email, customer_phone,
+            customer_address, customer_tax, customer_save,
+            discountAmount, discountType, email_to, email_subject, email_body,
+            linked_document_id
+        } = body;
 
-        // Validate document type
+        // Validate
         if (!type || !DOCUMENT_TYPE_MAP[type]) {
-            return Response.json({ error: 'סוג מסמך לא תקין. אפשרויות: receipt, invoice_receipt, credit' }, { status: 400 });
+            return Response.json({ 
+                error: 'סוג מסמך לא תקין', 
+                valid_types: Object.keys(DOCUMENT_TYPE_MAP) 
+            }, { status: 400 });
         }
 
         if (!items || !Array.isArray(items) || items.length === 0) {
             return Response.json({ error: 'חובה להוסיף לפחות פריט אחד' }, { status: 400 });
         }
 
-        const apiToken = await getFinbotAuth(base44, user.id);
+        const apiToken = await getFinbotToken(base44, user.id);
+        const formattedDate = formatDateDDMMYYYY(issue_date);
 
-        // Resolve customer info
+        // Resolve customer from local DB if needed
+        let resolvedCustomerName = customer_name;
         let resolvedCustomerFinbotId = customer_finbot_id;
-        let customerName = null;
-        
         if (customer_id && !customer_finbot_id) {
-            const customers = await base44.entities.FinbotCustomer.filter({ 
-                user_id: user.id,
-                id: customer_id 
-            });
+            const customers = await base44.entities.FinbotCustomer.filter({ user_id: user.id, id: customer_id });
             if (customers && customers.length > 0) {
                 resolvedCustomerFinbotId = customers[0].finbot_customer_id;
-                customerName = customers[0].name;
+                resolvedCustomerName = customers[0].name;
             }
         }
 
-        // Build items array per Finbot API spec
-        const finbotItems = items.map(item => {
+        // Build Finbot payload per official API spec
+        const finbotPayload = {
+            type: DOCUMENT_TYPE_MAP[type],
+            date: formattedDate,
+            language: lang || 'he',
+            currency: currency || 'ILS',
+            vatType: vatType !== undefined ? vatType : false, // false = prices before VAT
+            rounding: rounding !== undefined ? rounding : true,
+        };
+
+        // Customer
+        finbotPayload.customer = {};
+        if (resolvedCustomerFinbotId) {
+            finbotPayload.customer.id = Number(resolvedCustomerFinbotId);
+        } else if (resolvedCustomerName) {
+            finbotPayload.customer.name = resolvedCustomerName;
+        }
+        if (customer_email) finbotPayload.customer.email = customer_email;
+        if (customer_phone) finbotPayload.customer.phone = customer_phone;
+        if (customer_address) finbotPayload.customer.address = customer_address;
+        if (customer_tax) finbotPayload.customer.tax = customer_tax;
+        if (customer_save !== undefined) finbotPayload.customer.save = customer_save;
+
+        // Items
+        finbotPayload.items = items.map(item => {
             const row = {
-                description: item.description,
-                quantity: item.quantity || 1,
+                name: item.description || item.name,
+                amount: item.quantity || item.amount || 1,
                 price: item.unit_price || item.price || 0,
             };
-            // vat_type: 0 = default VAT, 1 = exempt, 2 = no VAT
-            if (item.vat_type !== undefined) row.vat_type = item.vat_type;
-            if (item.item_id) row.item_id = item.item_id;
+            if (item.id || item.item_id) row.id = String(item.id || item.item_id);
+            if (item.save !== undefined) row.save = item.save;
             return row;
         });
 
-        // Build payment array per Finbot API spec
-        let finbotPayment = [];
-        if (payment && Array.isArray(payment) && payment.length > 0) {
-            finbotPayment = payment.map(p => {
-                const payRow = {
-                    date: p.date || issue_date || new Date().toISOString().split('T')[0],
-                    type: typeof p.type === 'number' ? p.type : (PAYMENT_TYPE_MAP[p.type] || 1),
-                    price: p.price || 0,
-                };
-                if (p.currency) payRow.currency = p.currency;
-                if (p.currency_rate) payRow.currency_rate = p.currency_rate;
-                // Cheque fields
-                if (p.bank_name) payRow.bank_name = p.bank_name;
-                if (p.branch) payRow.branch = p.branch;
-                if (p.account) payRow.account = p.account;
-                if (p.cheque_num) payRow.cheque_num = p.cheque_num;
-                // Credit card fields
-                if (p.card_type) payRow.card_type = p.card_type;
-                if (p.card_num) payRow.card_num = p.card_num;
-                if (p.deal_type) payRow.deal_type = p.deal_type;
-                if (p.num_payments) payRow.num_payments = p.num_payments;
-                return payRow;
-            });
-        } else {
-            // Default payment: cash, full amount, today
-            const totalAmount = finbotItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-            finbotPayment = [{
-                date: issue_date || new Date().toISOString().split('T')[0],
-                type: 1, // cash
-                price: totalAmount
-            }];
+        // Payments (required for receipt and invoice_receipt)
+        if (type === 'receipt' || type === 'invoice_receipt') {
+            if (payment && Array.isArray(payment) && payment.length > 0) {
+                finbotPayload.payments = payment.map(p => {
+                    const payRow = {
+                        type: typeof p.type === 'string' ? (PAYMENT_TYPE_MAP[p.type] || p.type) : String(p.type),
+                        date: formatDateDDMMYYYY(p.date || issue_date),
+                        sum: p.price || p.sum || 0,
+                    };
+                    if (p.bankName) payRow.bankName = p.bankName;
+                    if (p.bankBranch) payRow.bankBranch = p.bankBranch;
+                    if (p.bankAccount) payRow.bankAccount = p.bankAccount;
+                    if (p.chequeNum) payRow.chequeNum = p.chequeNum;
+                    if (p.cardType) payRow.cardType = p.cardType;
+                    if (p.cardNum) payRow.cardNum = p.cardNum;
+                    if (p.dealType) payRow.dealType = p.dealType;
+                    if (p.numPayments) payRow.numPayments = p.numPayments;
+                    return payRow;
+                });
+            } else {
+                // Default: cash for total amount
+                const totalAmount = finbotPayload.items.reduce((sum, item) => sum + (item.amount * item.price), 0);
+                finbotPayload.payments = [{
+                    type: '0', // cash
+                    date: formattedDate,
+                    sum: totalAmount
+                }];
+            }
         }
 
-        // Build the Finbot API payload
-        const finbotPayload = {
-            type: DOCUMENT_TYPE_MAP[type],
-            lang: lang || 'he',
-            currency: currency || 'ILS',
-            date: issue_date || new Date().toISOString().split('T')[0],
-            item: finbotItems,
-            payment: finbotPayment,
-        };
+        // Optional fields
+        if (description) finbotPayload.description = description;
+        if (notes) finbotPayload.remark = notes;
+        if (discountAmount) finbotPayload.discountAmount = discountAmount;
+        if (discountType) finbotPayload.discountType = discountType;
+        if (linked_document_id) finbotPayload.linkedDocumentId = linked_document_id;
 
-        // Add customer if resolved
-        if (resolvedCustomerFinbotId) {
-            finbotPayload.client_id = resolvedCustomerFinbotId;
-        }
-
-        // Add description/notes if provided
-        if (notes) {
-            finbotPayload.comment = notes;
+        // Email sending
+        if (email_to || email_subject || email_body) {
+            finbotPayload.email = {};
+            if (email_to) finbotPayload.email.to = email_to;
+            if (email_subject) finbotPayload.email.subject = email_subject;
+            if (email_body) finbotPayload.email.body = email_body;
         }
 
         console.log('Finbot payload:', JSON.stringify(finbotPayload));
 
         // Call Finbot API
-        const response = await fetch(`${FINBOT_API_BASE}/income`, {
+        const response = await fetch(FINBOT_API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -175,54 +212,52 @@ Deno.serve(async (req) => {
         console.log('Finbot response status:', response.status, 'body:', responseText);
 
         let finbotResult;
-        try {
-            finbotResult = JSON.parse(responseText);
-        } catch {
-            finbotResult = { raw_response: responseText };
-        }
+        try { finbotResult = JSON.parse(responseText); } 
+        catch { finbotResult = { raw_response: responseText }; }
 
-        if (!response.ok) {
-            // Log error
+        // Finbot returns status=1 for success
+        const isSuccess = finbotResult?.status === 1 || response.ok;
+
+        if (!isSuccess) {
             await base44.entities.FinbotAuditLog.create({
                 user_id: user.id,
                 action: 'finbot.create_document',
-                entity_type: 'FinbotDocument',
                 request_data: finbotPayload,
                 response_data: finbotResult,
                 success: false
             });
             return Response.json({ 
-                error: finbotResult?.message || finbotResult?.error || `שגיאה מ-Finbot (${response.status})`,
+                error: finbotResult?.message || `שגיאה מ-Finbot`,
+                errors: finbotResult?.errors || finbotResult?.['[]'] || [],
                 details: finbotResult
             }, { status: 400 });
         }
 
         // Calculate totals for local storage
-        const subtotal = finbotItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+        const subtotal = finbotPayload.items.reduce((sum, item) => sum + (item.amount * item.price), 0);
         const vat = subtotal * 0.17;
         const total = subtotal + vat;
 
         // Save to local database
         const localDocument = await base44.entities.FinbotDocument.create({
             user_id: user.id,
-            finbot_document_id: String(finbotResult.id || finbotResult.document_id || finbotResult.doc_id || ''),
+            finbot_document_id: String(finbotResult.data?.id || finbotResult.id || ''),
             type,
-            customer_finbot_id: resolvedCustomerFinbotId,
-            customer_name: customerName || finbotResult.client_name,
-            issue_date: finbotPayload.date,
+            customer_finbot_id: resolvedCustomerFinbotId ? String(resolvedCustomerFinbotId) : null,
+            customer_name: resolvedCustomerName || finbotPayload.customer?.name,
+            issue_date: issue_date || new Date().toISOString().split('T')[0],
             currency: finbotPayload.currency,
-            subtotal: finbotResult.sub_total || subtotal,
-            vat: finbotResult.vat_total || vat,
-            total: finbotResult.total || total,
+            subtotal,
+            vat,
+            total,
             status: 'created',
-            pdf_url: finbotResult.pdf_link || finbotResult.pdf_url || finbotResult.link || null,
-            items: finbotItems,
+            pdf_url: finbotResult.data || null, // data contains the PDF link on success
+            items: finbotPayload.items,
             notes,
             raw: finbotResult,
             synced_at: new Date().toISOString()
         });
 
-        // Log success
         await base44.entities.FinbotAuditLog.create({
             user_id: user.id,
             action: 'finbot.create_document',
@@ -235,7 +270,8 @@ Deno.serve(async (req) => {
 
         return Response.json({ 
             document: localDocument,
-            finbot_response: finbotResult
+            finbot_response: finbotResult,
+            pdf_url: finbotResult.data || null
         });
     } catch (error) {
         console.error('Error creating document:', error.message);
