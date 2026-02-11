@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Download, FileText, Loader2, BarChart3, Receipt, Users } from 'lucide-react';
+import { Download, FileText, Loader2, BarChart3, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
 
 const REPORT_TYPES = [
-  { id: 'dashboard', name: 'סיכום חודשי', description: 'הכנסות, הוצאות ורווח - סיכום מ-Finbot', icon: BarChart3, color: 'from-blue-500 to-indigo-500' },
+  { id: 'dashboard', name: 'סיכום חודשי', description: 'הכנסות, הוצאות ורווח', icon: BarChart3, color: 'from-blue-500 to-indigo-500' },
   { id: 'customers', name: 'דוח לקוחות', description: 'רשימת לקוחות מסונכרנים', icon: Users, color: 'from-green-500 to-teal-500' },
 ];
 
@@ -21,9 +22,10 @@ export default function ReportsTab({ data }) {
   const [periodEnd, setPeriodEnd] = useState(today);
   const [reportResult, setReportResult] = useState(null);
   const [activeReportType, setActiveReportType] = useState(null);
+  const { fn } = useActiveAccountingProvider();
 
   const fetchMutation = useMutation({
-    mutationFn: ({ report_type }) => base44.functions.invoke('finbotFetchReports', { report_type, period_start: periodStart, period_end: periodEnd }),
+    mutationFn: ({ report_type }) => base44.functions.invoke(fn.fetchReports, { report_type, period_start: periodStart, period_end: periodEnd }),
     onSuccess: (res, variables) => {
       const result = res.data?.reportRun;
       if (result?.status === 'success') {
@@ -71,7 +73,6 @@ export default function ReportsTab({ data }) {
           <label className="block text-xs font-medium text-gray-600 mb-1">עד תאריך</label>
           <Input type="date" value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} className="w-40 h-9 text-sm" />
         </div>
-        {/* Quick period buttons */}
         <div className="flex gap-1">
           {[
             { label: 'חודש נוכחי', start: firstOfMonth, end: today },
@@ -136,7 +137,6 @@ export default function ReportsTab({ data }) {
           </div>
           <p className="text-xs text-gray-500">{periodStart} — {periodEnd}</p>
 
-          {/* Local summary cards */}
           {reportResult?.local_summary && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               <div className="bg-green-50 rounded-lg p-3">
@@ -158,7 +158,6 @@ export default function ReportsTab({ data }) {
             </div>
           )}
 
-          {/* Finbot data or raw results */}
           {renderReportResult(reportResult?.finbot_data || reportResult)}
         </motion.div>
       )}
@@ -169,7 +168,6 @@ export default function ReportsTab({ data }) {
 function renderReportResult(result) {
   if (!result) return null;
 
-  // If array, render as table
   const rows = Array.isArray(result) ? result : (result.rows || result.items || null);
   
   if (rows && rows.length > 0) {
@@ -192,7 +190,6 @@ function renderReportResult(result) {
     );
   }
 
-  // If object (summary), render as key-value
   if (typeof result === 'object') {
     const entries = Object.entries(result).filter(([_, v]) => typeof v !== 'object');
     return (

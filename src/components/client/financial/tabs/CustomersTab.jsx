@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Phone, Mail, FileText, Bell, MoreVertical, Search, RefreshCw, Loader2 } from 'lucide-react';
+import { Plus, Phone, Mail, Search, RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
@@ -7,18 +7,9 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
+import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
 
 export default function CustomersTab({ data }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,6 +17,7 @@ export default function CustomersTab({ data }) {
   const [showAddCustomer, setShowAddCustomer] = useState(false);
   const [newCustomer, setNewCustomer] = useState({ name: '', phone: '', email: '', id_number: '', address: '', city: '' });
   const queryClient = useQueryClient();
+  const { fn, providerId } = useActiveAccountingProvider();
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['finbot-customers'],
@@ -33,7 +25,7 @@ export default function CustomersTab({ data }) {
   });
 
   const syncMutation = useMutation({
-    mutationFn: () => base44.functions.invoke('finbotSyncPull', { resource: 'customers' }),
+    mutationFn: () => base44.functions.invoke(fn.syncPull, { resource: 'customers' }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} לקוחות`);
@@ -42,7 +34,7 @@ export default function CustomersTab({ data }) {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.functions.invoke('finbotCreateCustomer', data),
+    mutationFn: (data) => base44.functions.invoke(fn.createCustomer, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
       toast.success('לקוח נוצר בהצלחה');

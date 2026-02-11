@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
-import { FileText, Download, Plus, Send, MoreVertical, Filter, Loader2, RefreshCw, Receipt, CreditCard } from 'lucide-react';
+import { FileText, Download, Plus, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
@@ -15,6 +12,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
+import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
 
 const TYPE_LABELS = { receipt: 'קבלה', invoice_receipt: 'חשבונית מס/קבלה', credit: 'זיכוי' };
 const STATUS_COLORS = {
@@ -27,7 +25,7 @@ export default function DocumentsTab({ data }) {
   const [showConnectDialog, setShowConnectDialog] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
-  const isConnected = data?.accounting_software?.is_active;
+  const { fn, isConnected } = useActiveAccountingProvider();
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents'],
@@ -40,7 +38,7 @@ export default function DocumentsTab({ data }) {
   });
 
   const syncMutation = useMutation({
-    mutationFn: () => base44.functions.invoke('finbotSyncPull', { resource: 'documents' }),
+    mutationFn: () => base44.functions.invoke(fn.syncPull, { resource: 'documents' }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} מסמכים`);
@@ -149,6 +147,7 @@ export default function DocumentsTab({ data }) {
         onClose={() => setShowCreateDialog(false)}
         customers={customers}
         queryClient={queryClient}
+        createDocFn={fn.createDocument}
       />
 
       {/* Connect Accounting Dialog */}
@@ -173,7 +172,7 @@ const PAYMENT_TYPE_OPTIONS = [
   { value: 'other', label: 'אחר' },
 ];
 
-function CreateDocumentDialog({ open, onClose, customers, queryClient }) {
+function CreateDocumentDialog({ open, onClose, customers, queryClient, createDocFn }) {
   const [form, setForm] = useState({
     type: 'receipt',
     customer_id: '',
@@ -185,7 +184,6 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient }) {
 
   const createMutation = useMutation({
     mutationFn: (data) => {
-      // Build payment array from form
       const total = data.items.reduce((sum, i) => sum + (i.quantity * i.unit_price), 0);
       const payload = {
         ...data,
@@ -196,11 +194,11 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient }) {
         }]
       };
       delete payload.payment_type;
-      return base44.functions.invoke('finbotCreateDocument', payload);
+      return base44.functions.invoke(createDocFn, payload);
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
-      const pdfUrl = res.data?.finbot_response?.pdf_link || res.data?.document?.pdf_url;
+      const pdfUrl = res.data?.finbot_response?.pdf_link || res.data?.document?.pdf_url || res.data?.pdf_url;
       if (pdfUrl) {
         toast.success('מסמך הופק בהצלחה!', { 
           action: { label: 'פתח PDF', onClick: () => window.open(pdfUrl, '_blank') }

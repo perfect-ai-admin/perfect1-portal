@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { RefreshCw, Loader2, Tag } from 'lucide-react';
+import React from 'react';
+import { RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
 
 export default function ExpensesTab({ data }) {
   const queryClient = useQueryClient();
+  const { fn } = useActiveAccountingProvider();
 
   const { data: expenses = [], isLoading } = useQuery({
     queryKey: ['finbot-expenses'],
@@ -15,7 +17,7 @@ export default function ExpensesTab({ data }) {
   });
 
   const syncMutation = useMutation({
-    mutationFn: () => base44.functions.invoke('finbotSyncPull', { resource: 'expenses' }),
+    mutationFn: () => base44.functions.invoke(fn.syncPull, { resource: 'expenses' }),
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} הוצאות`);
