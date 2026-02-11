@@ -215,6 +215,11 @@ Deno.serve(async (req) => {
         try { finbotResult = JSON.parse(responseText); } 
         catch { finbotResult = { raw_response: responseText }; }
 
+        // Ensure finbotResult is always an object for DB storage
+        if (typeof finbotResult !== 'object' || finbotResult === null) {
+            finbotResult = { raw_value: String(finbotResult) };
+        }
+
         // Finbot returns status=1 for success
         const isSuccess = finbotResult?.status === 1 || response.ok;
 
