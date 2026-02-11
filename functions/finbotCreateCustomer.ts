@@ -45,8 +45,10 @@ Deno.serve(async (req) => {
         const apiToken = await getFinbotToken(base44Client, user.id);
         const dateStr = todayFormatted();
 
-        // Build customer object with save=true to persist in Finbot
-        const customerObj = { name, save: true };
+        // Build customer object
+        // save=true persists customer in Finbot's customer list
+        // save=false creates a one-time (מזדמן) customer
+        const customerObj = { name, save: false };
         if (email) customerObj.email = email;
         if (phone) customerObj.phone = phone;
         if (address) customerObj.address = address;
