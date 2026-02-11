@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
             name, id_number: id_number || null, email: email || null,
             phone: phone || null, address: address || null, city: city || null,
             zip: zip || null, notes: notes || null,
-            raw: typeof finbotResult === 'object' ? finbotResult : { raw: String(finbotResult) },
+            raw: (typeof finbotResult === 'object' && finbotResult !== null) ? finbotResult : { raw_value: String(finbotResult) },
             synced_at: new Date().toISOString()
         });
 

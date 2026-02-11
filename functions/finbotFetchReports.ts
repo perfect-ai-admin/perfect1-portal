@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
 
         const reportRun = await base44sdk.entities.FinbotReportRun.create({
             user_id: user.id, report_type: report_type || 'dashboard',
-            period_start: period_start || null, period_end: period_end || null,
+            period_start: period_start || '', period_end: period_end || '',
             status: 'running'
         });
 
