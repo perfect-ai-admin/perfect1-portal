@@ -171,12 +171,14 @@ Deno.serve(async (req) => {
                     return payRow;
                 });
             } else {
-                // Default: cash for total amount
-                const totalAmount = finbotPayload.items.reduce((sum, item) => sum + (item.amount * item.price), 0);
+                // Default: cash for total amount (including VAT)
+                const subtotalAmount = finbotPayload.items.reduce((sum, item) => sum + (item.amount * item.price), 0);
+                // vatType=false means prices are BEFORE VAT, so total = subtotal * 1.17
+                const totalWithVat = finbotPayload.vatType ? subtotalAmount : Math.round(subtotalAmount * 1.17 * 100) / 100;
                 finbotPayload.payments = [{
                     type: '0', // cash
                     date: formattedDate,
-                    sum: totalAmount
+                    sum: totalWithVat
                 }];
             }
         }
