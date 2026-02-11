@@ -53,10 +53,9 @@ Deno.serve(async (req) => {
         if (address) customerObj.address = address;
         if (id_number) customerObj.tax = id_number;
 
-        // For Osek Patur: vatType=false, prices are before VAT
-        // Finbot calculates total with VAT: price * 1.17
-        // Payment sum must equal total with VAT after rounding
-        // Using price=100, total with VAT = 117
+        // For Osek Patur: vatType=false, no VAT is actually charged
+        // The successful document creation test showed price=100, sum=100 works
+        // Payment sum must equal items sum exactly
         const finbotPayload = {
             type: '1',
             date: todayDDMMYYYY(),
@@ -66,7 +65,7 @@ Deno.serve(async (req) => {
             rounding: true,
             customer: customerObj,
             items: [{ name: 'רישום לקוח', amount: 1, price: 100 }],
-            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 117 }]
+            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 100 }]
         };
 
         console.log('PAYLOAD:', JSON.stringify(finbotPayload));
