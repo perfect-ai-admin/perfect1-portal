@@ -2,19 +2,16 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 /**
  * Fetch reports from Finbot
- * Input: {report_type: "pnl" | "vat" | "customers", period_start, period_end}
  * 
- * Uses Finbot API: https://api.finbotai.co.il/
+ * Real Finbot API (from Swagger):
+ * - GET /reports/app-dashboard-data-current-month → dashboard summary with income/expense data
+ * - GET /user-income/{id} → single income doc
+ * - GET /customer/{id} → single customer
+ * 
  * Header: secret: <token>
  */
 
 const FINBOT_API_BASE = 'https://api.finbotai.co.il';
-
-const REPORT_ENDPOINTS = {
-    pnl: '/reports/profit-loss',
-    vat: '/reports/vat',
-    customers: '/reports/customers'
-};
 
 async function getFinbotToken(base44, userId) {
     const connections = await base44.entities.FinbotConnection.filter({ user_id: userId });
@@ -29,54 +26,85 @@ async function getFinbotToken(base44, userId) {
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
+        const base44sdk = createClientFromRequest(req);
+        const user = await base44sdk.auth.me();
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const { report_type, period_start, period_end } = await req.json();
+        const body = await req.json();
+        const { report_type, period_start, period_end } = body;
 
-        if (!report_type || !REPORT_ENDPOINTS[report_type]) {
-            return Response.json({ error: 'סוג דוח לא תקין' }, { status: 400 });
-        }
-        if (!period_start || !period_end) {
-            return Response.json({ error: 'חובה לציין תאריך התחלה וסיום' }, { status: 400 });
-        }
+        const apiToken = await getFinbotToken(base44sdk, user.id);
 
-        const reportRun = await base44.entities.FinbotReportRun.create({
-            user_id: user.id, report_type, period_start, period_end, status: 'running'
+        const reportRun = await base44sdk.entities.FinbotReportRun.create({
+            user_id: user.id, report_type: report_type || 'dashboard',
+            period_start: period_start || null, period_end: period_end || null,
+            status: 'running'
         });
 
         try {
-            const apiToken = await getFinbotToken(base44, user.id);
-            const url = `${FINBOT_API_BASE}${REPORT_ENDPOINTS[report_type]}?from=${period_start}&to=${period_end}`;
-            
+            // Use the real dashboard endpoint
+            const url = `${FINBOT_API_BASE}/reports/app-dashboard-data-current-month`;
+            console.log('Fetching Finbot report:', url);
+
             const response = await fetch(url, {
+                method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'secret': apiToken }
             });
 
             const responseText = await response.text();
+            console.log('Finbot report response:', response.status, responseText.substring(0, 500));
+
             let reportData;
-            try { reportData = JSON.parse(responseText); } 
+            try { reportData = JSON.parse(responseText); }
             catch { reportData = { raw_response: responseText }; }
 
             if (!response.ok) {
                 throw new Error(reportData?.message || `שגיאה בשליפת דוח (${response.status})`);
             }
 
-            await base44.entities.FinbotReportRun.update(reportRun.id, { status: 'success', result: reportData });
+            // Enrich with local data
+            const localDocs = await base44sdk.entities.FinbotDocument.filter({ user_id: user.id });
+            const localExpenses = await base44sdk.entities.FinbotExpense.filter({ user_id: user.id });
+            const localCustomers = await base44sdk.entities.FinbotCustomer.filter({ user_id: user.id });
 
-            await base44.entities.FinbotAuditLog.create({
+            const totalIncome = localDocs.reduce((s, d) => s + (d.total || 0), 0);
+            const totalExpenses = localExpenses.reduce((s, e) => s + (e.amount || 0), 0);
+
+            const enrichedResult = {
+                finbot_data: reportData,
+                local_summary: {
+                    total_income: totalIncome,
+                    total_expenses: totalExpenses,
+                    profit: totalIncome - totalExpenses,
+                    documents_count: localDocs.length,
+                    expenses_count: localExpenses.length,
+                    customers_count: localCustomers.length
+                }
+            };
+
+            await base44sdk.entities.FinbotReportRun.update(reportRun.id, {
+                status: 'success',
+                result: enrichedResult
+            });
+
+            await base44sdk.entities.FinbotAuditLog.create({
                 user_id: user.id, action: 'finbot.fetch_report',
                 entity_type: 'FinbotReportRun', entity_id: reportRun.id,
                 request_data: { report_type, period_start, period_end }, success: true
             });
 
-            return Response.json({ reportRun: { ...reportRun, status: 'success', result: reportData } });
+            return Response.json({
+                reportRun: { ...reportRun, status: 'success', result: enrichedResult }
+            });
         } catch (apiError) {
-            await base44.entities.FinbotReportRun.update(reportRun.id, { status: 'error', last_error: apiError.message });
+            console.error('Report error:', apiError.message);
+            await base44sdk.entities.FinbotReportRun.update(reportRun.id, {
+                status: 'error', last_error: apiError.message
+            });
             throw apiError;
         }
     } catch (error) {
+        console.error('Error fetching report:', error.message);
         return Response.json({ error: error.message }, { status: 500 });
     }
 });
