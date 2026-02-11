@@ -94,17 +94,6 @@ Deno.serve(async (req) => {
     const payType = PAYMENT_TYPE_MAP[payTypeKey] || 1;
     const paySum = totalWithVat;
 
-    // iCount payment structure
-    if (payType === 3) {
-      payload.cc_payment = [{ sum: paySum, cc_type: 3 }];
-    } else if (payType === 2) {
-      payload.cheque_payment = [{ sum: paySum, date: paymentSource?.date || issue_date }];
-    } else if (payType === 4) {
-      payload.bank_transfer_payment = [{ sum: paySum, date: paymentSource?.date || issue_date }];
-    } else {
-      payload.cash_payment = [{ sum: paySum }];
-    }
-
     // Customer identification
     if (customer_provider_id) {
       payload.client_id = parseInt(customer_provider_id);
@@ -115,13 +104,50 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log('iCount create doc payload:', JSON.stringify(payload));
+    // Build form-urlencoded body (iCount requires this format for nested arrays)
+    const formParts = [];
+    
+    function encodeField(key, value) {
+      formParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+    }
 
-    // Create document in iCount
+    encodeField('sid', payload.sid);
+    encodeField('doctype', payload.doctype);
+    if (payload.doc_date) encodeField('doc_date', payload.doc_date);
+    if (payload.currency_code) encodeField('currency_code', payload.currency_code);
+    if (payload.comment) encodeField('comment', payload.comment);
+    if (payload.client_id) encodeField('client_id', payload.client_id);
+
+    // Items
+    icountItems.forEach((item, i) => {
+      encodeField(`items[${i}][description]`, item.description);
+      encodeField(`items[${i}][unitprice]`, item.unitprice);
+      encodeField(`items[${i}][quantity]`, item.quantity);
+      if (item.vat_rate !== undefined) encodeField(`items[${i}][vat_rate]`, item.vat_rate);
+    });
+
+    // Payment
+    if (payType === 3) {
+      encodeField('cc_payment[0][sum]', paySum);
+      encodeField('cc_payment[0][cc_type]', 3);
+    } else if (payType === 2) {
+      encodeField('cheque_payment[0][sum]', paySum);
+      encodeField('cheque_payment[0][date]', paymentSource?.date || issue_date);
+    } else if (payType === 4) {
+      encodeField('bank_transfer_payment[0][sum]', paySum);
+      encodeField('bank_transfer_payment[0][date]', paymentSource?.date || issue_date);
+    } else {
+      encodeField('cash_payment[0][sum]', paySum);
+    }
+
+    const formBody = formParts.join('&');
+    console.log('iCount form body:', formBody);
+
+    // Create document in iCount using form-urlencoded
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody
     });
 
     const data = await res.json();
