@@ -6,7 +6,10 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  * Header: secret: <token>
  */
 
-const FINBOT_VALIDATE_URL = 'https://api.finbotai.co.il/reports/app-dashboard-data-current-month';
+const FINBOT_VALIDATE_URLS = [
+    'https://api.finbotai.co.il/reports/app-dashboard-data-current-month',
+    'https://api.finbotai.co.il/customers'
+];
 
 Deno.serve(async (req) => {
     try {
@@ -33,19 +36,31 @@ Deno.serve(async (req) => {
         }
 
         try {
-            // Validate with a safe GET request
-            const testResponse = await fetch(FINBOT_VALIDATE_URL, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json', 'secret': api_key }
-            });
+            // Try multiple validation endpoints
+            let validated = false;
+            let lastStatus = 0;
+            let lastResponseText = '';
 
-            console.log('Finbot validation:', testResponse.status);
+            for (const url of FINBOT_VALIDATE_URLS) {
+                const testResponse = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json', 'secret': api_key }
+                });
+                lastStatus = testResponse.status;
+                lastResponseText = await testResponse.text();
+                console.log(`Finbot validation [${url}]:`, testResponse.status, lastResponseText.substring(0, 200));
 
-            if (testResponse.status === 401 || testResponse.status === 403) {
-                throw new Error('API Key לא תקין. בדוק את הטוקן ונסה שוב.');
+                if (testResponse.ok || testResponse.status === 200) {
+                    validated = true;
+                    break;
+                }
             }
-            if (!testResponse.ok) {
-                throw new Error(`שגיאה בבדיקת החיבור (${testResponse.status})`);
+
+            if (!validated) {
+                if (lastStatus === 401 || lastStatus === 403) {
+                    throw new Error('API Key לא תקין. בדוק את הטוקן ונסה שוב.');
+                }
+                throw new Error(`שגיאה בבדיקת החיבור (${lastStatus})`);
             }
 
             await base44.entities.FinbotConnection.update(connection.id, {
