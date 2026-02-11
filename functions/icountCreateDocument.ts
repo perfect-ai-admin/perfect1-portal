@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
 
     // For invrec (invoice+receipt) which requires payment,
     // create as invoice first, then iCount handles it
-    const needsPayment = ['invrec', 'receipt'].includes(icountDoctype);
+    const needsPayment = ['invrec', 'receipt'].includes(icountDoctype) && payment && payment.length > 0;
 
     // Build multipart/form-data for nested array support  
     const boundary = '----iCountBoundary' + Date.now();
