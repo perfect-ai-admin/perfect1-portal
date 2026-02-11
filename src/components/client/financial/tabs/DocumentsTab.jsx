@@ -25,7 +25,7 @@ export default function DocumentsTab({ data }) {
   const [showConnectDialog, setShowConnectDialog] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
-  const { fn, isConnected } = useActiveAccountingProvider();
+  const { fn, isConnected, isLoading: providerLoading } = useActiveAccountingProvider();
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents'],
@@ -38,7 +38,10 @@ export default function DocumentsTab({ data }) {
   });
 
   const syncMutation = useMutation({
-    mutationFn: () => base44.functions.invoke(fn.syncPull, { resource: 'documents' }),
+    mutationFn: () => {
+      if (!fn?.syncPull) throw new Error('אין חיבור למערכת חשבונות');
+      return base44.functions.invoke(fn.syncPull, { resource: 'documents' });
+    },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} מסמכים`);
@@ -147,7 +150,7 @@ export default function DocumentsTab({ data }) {
         onClose={() => setShowCreateDialog(false)}
         customers={customers}
         queryClient={queryClient}
-        createDocFn={fn.createDocument}
+        createDocFn={fn?.createDocument}
       />
 
       {/* Connect Accounting Dialog */}

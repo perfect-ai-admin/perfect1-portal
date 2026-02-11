@@ -25,7 +25,10 @@ export default function ReportsTab({ data }) {
   const { fn } = useActiveAccountingProvider();
 
   const fetchMutation = useMutation({
-    mutationFn: ({ report_type }) => base44.functions.invoke(fn.fetchReports, { report_type, period_start: periodStart, period_end: periodEnd }),
+    mutationFn: ({ report_type }) => {
+      if (!fn?.fetchReports) throw new Error('אין חיבור למערכת חשבונות');
+      return base44.functions.invoke(fn.fetchReports, { report_type, period_start: periodStart, period_end: periodEnd });
+    },
     onSuccess: (res, variables) => {
       const result = res.data?.reportRun;
       if (result?.status === 'success') {

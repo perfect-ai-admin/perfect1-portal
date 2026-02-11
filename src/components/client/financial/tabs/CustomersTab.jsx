@@ -25,7 +25,10 @@ export default function CustomersTab({ data }) {
   });
 
   const syncMutation = useMutation({
-    mutationFn: () => base44.functions.invoke(fn.syncPull, { resource: 'customers' }),
+    mutationFn: () => {
+      if (!fn?.syncPull) throw new Error('אין חיבור למערכת חשבונות');
+      return base44.functions.invoke(fn.syncPull, { resource: 'customers' });
+    },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} לקוחות`);
@@ -34,7 +37,10 @@ export default function CustomersTab({ data }) {
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.functions.invoke(fn.createCustomer, data),
+    mutationFn: (data) => {
+      if (!fn?.createCustomer) throw new Error('אין חיבור למערכת חשבונות');
+      return base44.functions.invoke(fn.createCustomer, data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
       toast.success('לקוח נוצר בהצלחה');

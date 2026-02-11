@@ -17,7 +17,10 @@ export default function ExpensesTab({ data }) {
   });
 
   const syncMutation = useMutation({
-    mutationFn: () => base44.functions.invoke(fn.syncPull, { resource: 'expenses' }),
+    mutationFn: () => {
+      if (!fn?.syncPull) throw new Error('אין חיבור למערכת חשבונות');
+      return base44.functions.invoke(fn.syncPull, { resource: 'expenses' });
+    },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} הוצאות`);
