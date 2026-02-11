@@ -1,267 +1,157 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Clock, Link2, ExternalLink, XCircle, RefreshCw, Loader2, Wifi, WifiOff, AlertCircle, Settings, Key, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+import { ACCOUNTING_PROVIDERS, getProvider } from '../accountingProviders';
+import ProviderCard from '../ProviderCard';
+import ConnectProviderDialog from '../ConnectProviderDialog';
 
 export default function ConnectionsTab({ data }) {
-  const [finbotStatus, setFinbotStatus] = useState(null);
+  const [statuses, setStatuses] = useState({}); // {finbot: {connected, ...}, ...}
   const [loading, setLoading] = useState(true);
   const [connectLoading, setConnectLoading] = useState(false);
-  const [disconnectLoading, setDisconnectLoading] = useState(false);
+  const [disconnectLoading, setDisconnectLoading] = useState({});
   const [syncLoading, setSyncLoading] = useState({});
-  const [showConnectDialog, setShowConnectDialog] = useState(false);
-  const [strategy, setStrategy] = useState('apikey');
-  const [credentials, setCredentials] = useState({ api_key: '', username: '', password: '' });
+  const [connectProvider, setConnectProvider] = useState(null); // provider to connect
 
-  const fetchStatus = async () => {
+  // Fetch status for all available providers
+  const fetchAllStatuses = async () => {
     setLoading(true);
-    const res = await base44.functions.invoke('finbotGetConnectionStatus');
-    setFinbotStatus(res.data);
+    const newStatuses = {};
+
+    for (const provider of ACCOUNTING_PROVIDERS) {
+      if (provider.status === 'available' && provider.statusFunction) {
+        const res = await base44.functions.invoke(provider.statusFunction);
+        newStatuses[provider.id] = res.data;
+      }
+    }
+
+    setStatuses(newStatuses);
     setLoading(false);
   };
 
-  useEffect(() => { fetchStatus(); }, []);
+  useEffect(() => { fetchAllStatuses(); }, []);
 
-  const handleConnect = async () => {
+  const handleConnect = async (providerId, strategy, credentials) => {
+    const provider = getProvider(providerId);
+    if (!provider?.connectFunction || !provider?.completeFunction) return;
+
     setConnectLoading(true);
-    // Step 1: Start connection
-    const startRes = await base44.functions.invoke('finbotStartConnect', { strategy });
-    
+
+    // Step 1: Start
+    const startRes = await base44.functions.invoke(provider.connectFunction, { strategy });
+
     if (strategy === 'oauth' && startRes.data?.redirect_url) {
       window.location.href = startRes.data.redirect_url;
       return;
     }
 
-    // Step 2: Complete connection with credentials
-    const payload = strategy === 'apikey'
-      ? { api_key: credentials.api_key }
-      : { username: credentials.username, password: credentials.password };
-
-    const completeRes = await base44.functions.invoke('finbotCompleteConnect', payload);
+    // Step 2: Complete
+    const completeRes = await base44.functions.invoke(provider.completeFunction, credentials);
     setConnectLoading(false);
 
     if (completeRes.data?.status === 'connected') {
-      toast.success('התחברת ל-Finbot בהצלחה!');
-      setShowConnectDialog(false);
-      setCredentials({ api_key: '', username: '', password: '' });
-      fetchStatus();
+      toast.success(`התחברת ל-${provider.name} בהצלחה!`);
+      setConnectProvider(null);
+      fetchAllStatuses();
     } else {
       toast.error(completeRes.data?.message || 'שגיאה בהתחברות');
     }
   };
 
-  const handleDisconnect = async () => {
-    if (!confirm('בטוח שברצונך להתנתק מ-Finbot?')) return;
-    setDisconnectLoading(true);
-    await base44.functions.invoke('finbotDisconnect');
-    setDisconnectLoading(false);
-    toast.success('התנתקת מ-Finbot');
-    fetchStatus();
+  const handleDisconnect = async (providerId) => {
+    const provider = getProvider(providerId);
+    if (!provider?.disconnectFunction) return;
+    if (!confirm(`בטוח שברצונך להתנתק מ-${provider.name}?`)) return;
+
+    setDisconnectLoading(p => ({ ...p, [providerId]: true }));
+    await base44.functions.invoke(provider.disconnectFunction);
+    setDisconnectLoading(p => ({ ...p, [providerId]: false }));
+    toast.success(`התנתקת מ-${provider.name}`);
+    fetchAllStatuses();
   };
 
-  const handleSync = async (resource) => {
-    setSyncLoading(prev => ({ ...prev, [resource]: true }));
-    const res = await base44.functions.invoke('finbotSyncPull', { resource });
-    setSyncLoading(prev => ({ ...prev, [resource]: false }));
-    
+  const handleSync = async (providerId, resource) => {
+    const provider = getProvider(providerId);
+    if (!provider?.syncFunction) return;
+
+    const key = `${providerId}_${resource}`;
+    setSyncLoading(p => ({ ...p, [key]: true }));
+
+    const res = await base44.functions.invoke(provider.syncFunction, { resource });
+    setSyncLoading(p => ({ ...p, [key]: false }));
+
     if (res.data?.status === 'success') {
-      toast.success(`סונכרנו ${res.data.synced_count || 0} רשומות`);
-      fetchStatus();
+      toast.success(`סונכרנו ${res.data.synced_count || 0} רשומות מ-${provider.name}`);
+      fetchAllStatuses();
     } else {
       toast.error(res.data?.error || 'שגיאה בסנכרון');
     }
   };
 
-  const isConnected = finbotStatus?.connected;
-
-  const otherConnections = [
-    { id: 'bank', name: 'סנכרון בנק', description: 'עדכון עסקאות בנק בזמן אמת', status: 'coming_soon', icon: '🏦' },
-    { id: 'processing', name: 'סליקה', description: 'קישור למעבדי סליקה וחיובים', status: 'coming_soon', icon: '💳' },
-  ];
+  // Build sync loading map per provider
+  const getSyncLoadingForProvider = (providerId) => {
+    const result = {};
+    for (const [key, val] of Object.entries(syncLoading)) {
+      if (key.startsWith(`${providerId}_`)) {
+        const resource = key.replace(`${providerId}_`, '');
+        result[resource] = val;
+      }
+    }
+    return result;
+  };
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-      <h2 className="text-lg font-bold text-gray-900">חיבורים</h2>
-      <p className="text-sm text-gray-600">חבר שירותים חיצוניים כדי לשפר את זרימת העבודה הפיננסית</p>
-
-      {/* Finbot Connection Card */}
-      <div className={`border-2 rounded-xl p-5 transition-all ${isConnected ? 'border-green-300 bg-green-50/50' : 'border-blue-300 bg-blue-50/50'}`}>
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3 flex-1">
-            <div className="text-3xl mt-0.5">🤖</div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <p className="text-base font-bold text-gray-900">FinBot</p>
-                {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
-                ) : isConnected ? (
-                  <span className="flex items-center gap-1 text-xs font-medium text-green-700 bg-green-100 px-2 py-0.5 rounded-full">
-                    <Wifi className="w-3 h-3" /> מחובר
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                    <WifiOff className="w-3 h-3" /> לא מחובר
-                  </span>
-                )}
-              </div>
-              <p className="text-sm text-gray-600 mt-1">ניהול מסמכים, הוצאות ודוחות עם AI</p>
-              
-              {finbotStatus?.last_sync_at && (
-                <p className="text-xs text-gray-500 mt-2">
-                  סנכרון אחרון: {new Date(finbotStatus.last_sync_at).toLocaleString('he-IL')}
-                </p>
-              )}
-              {finbotStatus?.last_error && (
-                <div className="flex items-start gap-1.5 mt-2 text-xs text-red-600 bg-red-50 rounded p-2">
-                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-                  <span>{finbotStatus.last_error}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {!isConnected ? (
-            <Button size="sm" className="gap-2" onClick={() => setShowConnectDialog(true)}>
-              <Link2 className="w-4 h-4" /> התחבר ל-Finbot
-            </Button>
-          ) : (
-            <>
-              {['customers', 'documents', 'expenses'].map(resource => (
-                <Button
-                  key={resource}
-                  size="sm"
-                  variant="outline"
-                  className="gap-2 h-8 text-xs"
-                  disabled={syncLoading[resource]}
-                  onClick={() => handleSync(resource)}
-                >
-                  {syncLoading[resource] ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
-                  {resource === 'customers' ? 'סנכרן לקוחות' : resource === 'documents' ? 'סנכרן מסמכים' : 'סנכרן הוצאות'}
-                </Button>
-              ))}
-              <Button
-                size="sm"
-                variant="ghost"
-                className="gap-2 h-8 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
-                disabled={disconnectLoading}
-                onClick={handleDisconnect}
-              >
-                {disconnectLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <XCircle className="w-3 h-3" />}
-                התנתק
-              </Button>
-            </>
-          )}
-        </div>
+      <div>
+        <h2 className="text-lg font-bold text-gray-900">חיבור למערכת הנהלת חשבונות</h2>
+        <p className="text-sm text-gray-600 mt-0.5">
+          חבר את מערכת החשבונות שלך כדי לסנכרן לקוחות, מסמכים והוצאות אוטומטית
+        </p>
       </div>
 
-      {/* Other Connections */}
-      {otherConnections.map((conn, idx) => (
-        <div key={conn.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50/50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{conn.icon}</span>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">{conn.name}</p>
-                <p className="text-xs text-gray-600">{conn.description}</p>
-              </div>
-            </div>
-            <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-1 rounded">בקרוב</span>
-          </div>
-        </div>
-      ))}
+      {/* Provider Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {ACCOUNTING_PROVIDERS.map((provider, idx) => (
+          <motion.div
+            key={provider.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.05 }}
+          >
+            <ProviderCard
+              provider={provider}
+              connectionStatus={statuses[provider.id]}
+              loading={loading && provider.status === 'available'}
+              syncLoading={getSyncLoadingForProvider(provider.id)}
+              disconnectLoading={disconnectLoading[provider.id]}
+              onConnect={() => setConnectProvider(provider)}
+              onDisconnect={() => handleDisconnect(provider.id)}
+              onSync={(resource) => handleSync(provider.id, resource)}
+            />
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Info */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <p className="text-xs text-blue-800">
+          💡 <span className="font-medium">טיפ:</span> אין לך עדיין מערכת חשבונות? {' '}
+          <a href="https://www.finbot.co.il" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">
+            לחץ כאן לפתיחה מהירה ↗
+          </a>
+        </p>
+      </div>
 
       {/* Connect Dialog */}
-      <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl">התחברות ל-Finbot</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4" dir="rtl">
-            {/* Strategy Selector */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">שיטת התחברות</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setStrategy('apikey')}
-                  className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all text-sm ${
-                    strategy === 'apikey' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <Key className="w-4 h-4" />
-                  <span className="font-medium">API Key</span>
-                </button>
-                <button
-                  onClick={() => setStrategy('credentials')}
-                  className={`flex items-center gap-2 p-3 rounded-lg border-2 transition-all text-sm ${
-                    strategy === 'credentials' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <User className="w-4 h-4" />
-                  <span className="font-medium">שם משתמש</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Credentials Input */}
-            {strategy === 'apikey' ? (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">API Key</label>
-                <Input
-                  type="password"
-                  placeholder="הכנס את ה-API Key שלך מ-Finbot"
-                  value={credentials.api_key}
-                  onChange={e => setCredentials(prev => ({ ...prev, api_key: e.target.value }))}
-                />
-                <p className="text-xs text-gray-500 mt-1">ניתן למצוא את ה-API Key בהגדרות חשבון Finbot שלך</p>
-              </div>
-            ) : (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">שם משתמש</label>
-                  <Input
-                    placeholder="שם משתמש ב-Finbot"
-                    value={credentials.username}
-                    onChange={e => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">סיסמה</label>
-                  <Input
-                    type="password"
-                    placeholder="סיסמה"
-                    value={credentials.password}
-                    onChange={e => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setShowConnectDialog(false)}>ביטול</Button>
-            <Button
-              onClick={handleConnect}
-              disabled={connectLoading || (strategy === 'apikey' ? !credentials.api_key : !credentials.username || !credentials.password)}
-            >
-              {connectLoading ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Link2 className="w-4 h-4 ml-2" />}
-              התחבר
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConnectProviderDialog
+        open={!!connectProvider}
+        onClose={() => setConnectProvider(null)}
+        provider={connectProvider}
+        onConnect={handleConnect}
+        loading={connectLoading}
+      />
     </motion.div>
   );
 }
