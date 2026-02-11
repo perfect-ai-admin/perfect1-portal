@@ -94,18 +94,15 @@ Deno.serve(async (req) => {
     const payType = PAYMENT_TYPE_MAP[payTypeKey] || 1;
     const paySum = totalWithVat;
 
-    // iCount expects payment arrays with specific key names
+    // iCount payment structure
     if (payType === 3) {
-      payload['cc_payment[0][sum]'] = paySum;
-      payload['cc_payment[0][cc_type]'] = 3;
+      payload.cc_payment = [{ sum: paySum, cc_type: 3 }];
     } else if (payType === 2) {
-      payload['cheque_payment[0][sum]'] = paySum;
-      payload['cheque_payment[0][date]'] = paymentSource?.date || issue_date;
+      payload.cheque_payment = [{ sum: paySum, date: paymentSource?.date || issue_date }];
     } else if (payType === 4) {
-      payload['bank_transfer_payment[0][sum]'] = paySum;
-      payload['bank_transfer_payment[0][date]'] = paymentSource?.date || issue_date;
+      payload.bank_transfer_payment = [{ sum: paySum, date: paymentSource?.date || issue_date }];
     } else {
-      payload['cash_payment[0][sum]'] = paySum;
+      payload.cash_payment = [{ sum: paySum }];
     }
 
     // Customer identification
