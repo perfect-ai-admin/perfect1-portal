@@ -35,28 +35,20 @@ export default function ConnectionsTab({ data }) {
 
   const handleConnect = async (providerId, strategy, credentials) => {
     const provider = getProvider(providerId);
-    if (!provider?.connectFunction || !provider?.completeFunction) return;
+    if (!provider?.completeFunction) return;
 
     setConnectLoading(true);
 
-    // Step 1: Start
-    const startRes = await base44.functions.invoke(provider.connectFunction, { strategy });
-
-    if (strategy === 'oauth' && startRes.data?.redirect_url) {
-      window.location.href = startRes.data.redirect_url;
-      return;
-    }
-
-    // Step 2: Complete
+    // Direct connect - send API key to complete function
     const completeRes = await base44.functions.invoke(provider.completeFunction, credentials);
     setConnectLoading(false);
 
     if (completeRes.data?.status === 'connected') {
-      toast.success(`התחברת ל-${provider.name} בהצלחה!`);
+      toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
       setConnectProvider(null);
       fetchAllStatuses();
     } else {
-      toast.error(completeRes.data?.message || 'שגיאה בהתחברות');
+      toast.error(completeRes.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
     }
   };
 
