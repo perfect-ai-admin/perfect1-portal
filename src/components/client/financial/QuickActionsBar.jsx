@@ -59,21 +59,26 @@ export default function QuickActionsBar({ onActionComplete, user }) {
     if (!provider?.completeFunction) return;
 
     setConnectLoading(true);
-    const completeRes = await base44.functions.invoke(provider.completeFunction, credentials);
-    setConnectLoading(false);
+    try {
+      const completeRes = await base44.functions.invoke(provider.completeFunction, credentials);
 
-    if (completeRes.data?.status === 'connected') {
-      toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
-      setShowProviderConnect(false);
-      setSelectedProvider(null);
-      // Save provider info on user
-      await base44.auth.updateMe({
-        accounting_software: { provider: provider.id, is_active: true }
-      });
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
-      onActionComplete && onActionComplete();
-    } else {
-      toast.error(completeRes.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
+      if (completeRes.data?.status === 'connected') {
+        toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
+        setShowProviderConnect(false);
+        setSelectedProvider(null);
+        await base44.auth.updateMe({
+          accounting_software: { provider: provider.id, is_active: true }
+        });
+        queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+        onActionComplete && onActionComplete();
+      } else {
+        toast.error(completeRes.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
+      }
+    } catch (error) {
+      const msg = error?.response?.data?.error || error?.response?.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.';
+      toast.error(msg);
+    } finally {
+      setConnectLoading(false);
     }
   };
 
