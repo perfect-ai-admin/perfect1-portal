@@ -150,13 +150,13 @@ Deno.serve(async (req) => {
       const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
       
       if (effPayType === 3) {
-        paymentFields = { 'cc_payment[0][sum]': effPaySum, 'cc_payment[0][cc_type]': '3' };
+        paymentFields = { 'cc_payment[sum]': effPaySum, 'cc_payment[cc_type]': '3' };
       } else if (effPayType === 2) {
-        paymentFields = { 'cheque_payment[0][sum]': effPaySum, 'cheque_payment[0][date]': effPaySource?.date || issue_date };
+        paymentFields = { 'cheque_payment[sum]': effPaySum, 'cheque_payment[date]': effPaySource?.date || issue_date };
       } else if (effPayType === 4) {
-        paymentFields = { 'bank_transfer_payment[0][sum]': effPaySum, 'bank_transfer_payment[0][date]': effPaySource?.date || issue_date };
+        paymentFields = { 'bank_transfer_payment[sum]': effPaySum, 'bank_transfer_payment[date]': effPaySource?.date || issue_date };
       } else {
-        paymentFields = { 'cash_payment[0][sum]': effPaySum };
+        paymentFields = { 'cash_payment': effPaySum };
       }
     }
 
