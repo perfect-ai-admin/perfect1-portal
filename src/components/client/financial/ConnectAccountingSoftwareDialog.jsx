@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, onConnect, user }) {
   const [connectingTo, setConnectingTo] = useState(null);
+  const [showIntro, setShowIntro] = useState(true);
 
   const softwareOptions = [
     { 
@@ -62,59 +63,90 @@ export default function ConnectAccountingSoftwareDialog({ open, onOpenChange, on
     }
   };
 
+  const handleOpenChange = (val) => {
+    if (!val) setShowIntro(true);
+    onOpenChange(val);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-md" dir="rtl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">חיבור למערכת הנהלת חשבונות</DialogTitle>
-          <DialogDescription className="text-center">
-            כדי לבצע פעולה זו, עליך לחבר תחילה את מערכת הנהלת החשבונות שלך
-          </DialogDescription>
-        </DialogHeader>
+        {showIntro ? (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-center">🔗 חיבור למערכת הנהלת חשבונות</DialogTitle>
+            </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-4 py-6">
-          {softwareOptions.map((software) => (
-            <button
-              key={software.id}
-              onClick={() => handleConnect(software.id)}
-              disabled={!!connectingTo}
-              className={`
-                relative h-24 rounded-xl shadow-sm hover:shadow-md transition-all 
-                flex flex-col items-center justify-center gap-2
-                ${connectingTo && connectingTo !== software.id ? 'opacity-50 cursor-not-allowed' : ''}
-                ${connectingTo === software.id ? 'ring-2 ring-offset-2 ring-blue-500' : 'hover:scale-105'}
-                bg-white border border-gray-100
-              `}
-            >
-              {connectingTo === software.id ? (
-                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-              ) : (
-                <>
-                  <div className="h-12 flex items-center justify-center px-4">
-                    <img 
-                      src={software.logo} 
-                      alt={software.name} 
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                </>
-              )}
-            </button>
-          ))}
-        </div>
+            <div className="py-4 space-y-4 text-sm text-gray-700 leading-relaxed text-center">
+              <p>
+                החיבור מאפשר לנו לנתח את הנתונים הפיננסיים שלך ולהציג לך תובנות מותאמות אישית.
+              </p>
+              <p>
+                תוכל גם להפיק חשבוניות ומסמכים ישירות דרך המערכת —
+                <br />
+                <span className="font-medium text-gray-900">אך ורק באישור ובפעולה יזומה שלך.</span>
+              </p>
+              <p>
+                החיבור מאובטח ומוצפן, ואינו מבצע שום פעולה ללא אישורך.
+              </p>
+            </div>
 
-        <div className="text-center pt-2 border-t mt-2">
-          <p className="text-sm text-gray-600 mb-2">אין לך עדיין מערכת חשבוניות?</p>
-          <a 
-            href="https://www.morning.co.il/join?ref=perfectone" // Placeholder link
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-blue-600 font-medium hover:underline"
-          >
-            לחץ כאן לפתיחה מהירה
-            <ExternalLink className="w-3 h-3" />
-          </a>
-        </div>
+            <Button onClick={() => setShowIntro(false)} className="w-full gap-2 text-base py-5">
+              👉 המשך בצורה מאובטחת
+            </Button>
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-center">חיבור למערכת הנהלת חשבונות</DialogTitle>
+              <DialogDescription className="text-center">
+                בחר את מערכת הנהלת החשבונות שלך
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-2 gap-4 py-6">
+              {softwareOptions.map((software) => (
+                <button
+                  key={software.id}
+                  onClick={() => handleConnect(software.id)}
+                  disabled={!!connectingTo}
+                  className={`
+                    relative h-24 rounded-xl shadow-sm hover:shadow-md transition-all 
+                    flex flex-col items-center justify-center gap-2
+                    ${connectingTo && connectingTo !== software.id ? 'opacity-50 cursor-not-allowed' : ''}
+                    ${connectingTo === software.id ? 'ring-2 ring-offset-2 ring-blue-500' : 'hover:scale-105'}
+                    bg-white border border-gray-100
+                  `}
+                >
+                  {connectingTo === software.id ? (
+                    <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                  ) : (
+                    <div className="h-12 flex items-center justify-center px-4">
+                      <img 
+                        src={software.logo} 
+                        alt={software.name} 
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="text-center pt-2 border-t mt-2">
+              <p className="text-sm text-gray-600 mb-2">אין לך עדיין מערכת חשבוניות?</p>
+              <a 
+                href="https://www.morning.co.il/join?ref=perfectone"
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-600 font-medium hover:underline"
+              >
+                לחץ כאן לפתיחה מהירה
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
