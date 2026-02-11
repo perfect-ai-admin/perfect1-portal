@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { ACCOUNTING_PROVIDERS, getProvider } from '../accountingProviders';
 import ProviderCard from '../ProviderCard';
 import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
+import ProviderSelectionDialog from '../ProviderSelectionDialog';
 import ConnectProviderDialog from '../ConnectProviderDialog';
 
 export default function ConnectionsTab({ data }) {
