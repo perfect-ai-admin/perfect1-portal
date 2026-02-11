@@ -85,27 +85,23 @@ Deno.serve(async (req) => {
     };
 
     // Add payment info (required by iCount for receipt/invrec)
-    if (payment && payment.length > 0) {
-      const total = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
-      const payType = PAYMENT_TYPE_MAP[payment[0].type] || PAYMENT_TYPE_MAP[payment_type] || 1;
-      
-      if (payType === 3) {
-        // Credit card
-        payload.cc_payments = [{ sum: payment[0].price || total, cc_type: 3 }];
-      } else if (payType === 2) {
-        // Cheque
-        payload.cheque_payments = [{ sum: payment[0].price || total, date: payment[0].date || issue_date }];
-      } else if (payType === 4) {
-        // Bank transfer
-        payload.bank_payments = [{ sum: payment[0].price || total, date: payment[0].date || issue_date }];
-      } else {
-        // Cash and others
-        payload.cash_payments = [{ sum: payment[0].price || total }];
-      }
+    // iCount requires the payment sum to include VAT (17%)
+    const subtotalCalc = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
+    const totalWithVat = Math.round(subtotalCalc * 1.17 * 100) / 100;
+    
+    const paymentSource = (payment && payment.length > 0) ? payment[0] : null;
+    const payTypeKey = paymentSource?.type || payment_type || 'cash';
+    const payType = PAYMENT_TYPE_MAP[payTypeKey] || 1;
+    const paySum = totalWithVat;
+
+    if (payType === 3) {
+      payload.cc_payments = [{ sum: paySum, cc_type: 3 }];
+    } else if (payType === 2) {
+      payload.cheque_payments = [{ sum: paySum, date: paymentSource?.date || issue_date }];
+    } else if (payType === 4) {
+      payload.bank_payments = [{ sum: paySum, date: paymentSource?.date || issue_date }];
     } else {
-      // Default cash payment
-      const total = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
-      payload.cash_payments = [{ sum: total }];
+      payload.cash_payments = [{ sum: paySum }];
     }
 
     // Customer identification
