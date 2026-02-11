@@ -110,9 +110,12 @@ Deno.serve(async (req) => {
       }
     }
 
-    // For invrec (invoice+receipt) which requires payment,
-    // create as invoice first, then iCount handles it
-    const needsPayment = ['invrec', 'receipt'].includes(icountDoctype) && payment && payment.length > 0;
+    // For invrec (invoice+receipt) and receipt, payment info is required by iCount
+    const needsPayment = ['invrec', 'receipt'].includes(icountDoctype);
+    
+    // If needsPayment but no payment data provided, auto-generate default cash payment
+    const effectivePayment = (payment && payment.length > 0) ? payment : (needsPayment ? [{ date: issue_date || new Date().toISOString().split('T')[0], type: 'cash', price: totalWithVat }] : []);
+    const hasPayment = effectivePayment.length > 0;
 
     // Build multipart/form-data for nested array support  
     const boundary = '----iCountBoundary' + Date.now();
@@ -137,19 +140,24 @@ Deno.serve(async (req) => {
       if (item.vat_rate !== undefined) addField(`items[${i}][vat_rate]`, item.vat_rate);
     });
 
-    // Payment
-    if (needsPayment) {
-      if (payType === 3) {
-        addField('cc_payment[0][sum]', paySum);
+    // Payment - recalculate from effective payment
+    if (hasPayment) {
+      const effPaySource = effectivePayment[0];
+      const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
+      const effPayType = PAYMENT_TYPE_MAP[effPayTypeKey] || 1;
+      const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
+      
+      if (effPayType === 3) {
+        addField('cc_payment[0][sum]', effPaySum);
         addField('cc_payment[0][cc_type]', '3');
-      } else if (payType === 2) {
-        addField('cheque_payment[0][sum]', paySum);
-        addField('cheque_payment[0][date]', paymentSource?.date || issue_date);
-      } else if (payType === 4) {
-        addField('bank_transfer_payment[0][sum]', paySum);
-        addField('bank_transfer_payment[0][date]', paymentSource?.date || issue_date);
+      } else if (effPayType === 2) {
+        addField('cheque_payment[0][sum]', effPaySum);
+        addField('cheque_payment[0][date]', effPaySource?.date || issue_date);
+      } else if (effPayType === 4) {
+        addField('bank_transfer_payment[0][sum]', effPaySum);
+        addField('bank_transfer_payment[0][date]', effPaySource?.date || issue_date);
       } else {
-        addField('cash_payment[0][sum]', paySum);
+        addField('cash_payment[0][sum]', effPaySum);
       }
     }
 
