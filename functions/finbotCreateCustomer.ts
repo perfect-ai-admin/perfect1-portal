@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
             payments: [{ type: '0', date: todayDDMMYYYY(), sum: 117 }]
         };
 
-        console.log('Finbot create customer payload:', JSON.stringify(finbotPayload));
+        console.log('PAYLOAD:', JSON.stringify(finbotPayload));
 
         const response = await fetch(FINBOT_API_URL, {
             method: 'POST',
@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
         });
 
         const responseText = await response.text();
-        console.log('Finbot response:', response.status, responseText);
+        console.log('RESPONSE:', response.status, responseText);
 
         let finbotResult;
         try { 
