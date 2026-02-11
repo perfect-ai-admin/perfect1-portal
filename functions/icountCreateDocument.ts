@@ -137,25 +137,29 @@ Deno.serve(async (req) => {
     if (payload.comment) jsonPayload.comment = payload.comment;
     if (payload.client_id) jsonPayload.client_id = payload.client_id;
 
-    // Use multipart FormData - iCount is PHP-based and FormData creates proper multipart
-    // which PHP natively parses into nested arrays via $_POST
-    const formData = new FormData();
-    formData.append('sid', jsonPayload.sid);
-    formData.append('doctype', jsonPayload.doctype);
-    if (jsonPayload.doc_date) formData.append('doc_date', jsonPayload.doc_date);
-    if (jsonPayload.currency_code) formData.append('currency_code', jsonPayload.currency_code);
-    if (jsonPayload.comment) formData.append('comment', jsonPayload.comment);
-    if (jsonPayload.client_id) formData.append('client_id', String(jsonPayload.client_id));
+    // Build the payload manually using PHP-style URL encoding
+    // URLSearchParams encodes brackets, but PHP needs literal brackets
+    const parts = [];
+    function addParam(key, value) {
+      parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+    }
     
-    // Items as PHP-style array
+    addParam('sid', jsonPayload.sid);
+    addParam('doctype', jsonPayload.doctype);
+    if (jsonPayload.doc_date) addParam('doc_date', jsonPayload.doc_date);
+    if (jsonPayload.currency_code) addParam('currency_code', jsonPayload.currency_code);
+    if (jsonPayload.comment) addParam('comment', jsonPayload.comment);
+    if (jsonPayload.client_id) addParam('client_id', String(jsonPayload.client_id));
+    
+    // Items
     icountItems.forEach((item, i) => {
-      formData.append(`items[${i}][description]`, item.description);
-      formData.append(`items[${i}][unitprice]`, String(item.unitprice));
-      formData.append(`items[${i}][quantity]`, String(item.quantity));
-      if (item.vat_rate !== undefined) formData.append(`items[${i}][vat_rate]`, String(item.vat_rate));
+      addParam(`items[${i}][description]`, item.description);
+      addParam(`items[${i}][unitprice]`, String(item.unitprice));
+      addParam(`items[${i}][quantity]`, String(item.quantity));
+      if (item.vat_rate !== undefined) addParam(`items[${i}][vat_rate]`, String(item.vat_rate));
     });
 
-    // Payment as PHP-style array using FormData
+    // Payment
     if (hasPayment) {
       const effPaySource = effectivePayment[0];
       const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
@@ -163,25 +167,31 @@ Deno.serve(async (req) => {
       const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
       
       if (effPayType === 3) {
-        formData.append('cc_payment[0][sum]', String(effPaySum));
-        formData.append('cc_payment[0][cc_type]', '3');
+        addParam('cc_payment[0][sum]', String(effPaySum));
+        addParam('cc_payment[0][cc_type]', '3');
       } else if (effPayType === 2) {
-        formData.append('cheque_payment[0][sum]', String(effPaySum));
-        formData.append('cheque_payment[0][date]', effPaySource?.date || issue_date);
+        addParam('cheque_payment[0][sum]', String(effPaySum));
+        addParam('cheque_payment[0][date]', effPaySource?.date || issue_date);
       } else if (effPayType === 4) {
-        formData.append('bank_transfer_payment[0][sum]', String(effPaySum));
-        formData.append('bank_transfer_payment[0][date]', effPaySource?.date || issue_date);
+        addParam('bank_transfer_payment[0][sum]', String(effPaySum));
+        addParam('bank_transfer_payment[0][date]', effPaySource?.date || issue_date);
       } else {
-        formData.append('cash_payment[0][sum]', String(effPaySum));
+        addParam('cash_payment[0][sum]', String(effPaySum));
       }
     }
 
-    console.log('iCount sending multipart FormData with payment');
+    // Join with & but DON'T double-encode brackets - PHP needs them raw
+    const formBody = parts.join('&')
+      .replace(/%5B/g, '[')
+      .replace(/%5D/g, ']');
+    
+    console.log('iCount raw form body:', formBody);
 
-    // Create document in iCount using multipart FormData (let fetch set Content-Type with boundary)
+    // Create document in iCount
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      body: formData
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody
     });
 
     const data = await res.json();
