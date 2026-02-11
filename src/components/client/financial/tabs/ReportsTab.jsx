@@ -8,9 +8,8 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 const REPORT_TYPES = [
-  { id: 'pnl', name: 'דוח רווח והפסד', description: 'סיכום הכנסות, הוצאות ורווח נקי', icon: BarChart3, color: 'from-blue-500 to-indigo-500' },
-  { id: 'vat', name: 'דוח מע״מ', description: 'דוח מע"מ להגשה', icon: Receipt, color: 'from-purple-500 to-pink-500' },
-  { id: 'customers', name: 'דוח לקוחות', description: 'יתרות לקוחות ופירוט', icon: Users, color: 'from-green-500 to-teal-500' },
+  { id: 'dashboard', name: 'סיכום חודשי', description: 'הכנסות, הוצאות ורווח - סיכום מ-Finbot', icon: BarChart3, color: 'from-blue-500 to-indigo-500' },
+  { id: 'customers', name: 'דוח לקוחות', description: 'רשימת לקוחות מסונכרנים', icon: Users, color: 'from-green-500 to-teal-500' },
 ];
 
 export default function ReportsTab({ data }) {
@@ -137,8 +136,30 @@ export default function ReportsTab({ data }) {
           </div>
           <p className="text-xs text-gray-500">{periodStart} — {periodEnd}</p>
 
-          {/* Render results as table or key-value */}
-          {renderReportResult(reportResult)}
+          {/* Local summary cards */}
+          {reportResult?.local_summary && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+              <div className="bg-green-50 rounded-lg p-3">
+                <p className="text-xs text-green-600 mb-1">הכנסות</p>
+                <p className="text-lg font-bold text-green-800">₪{(reportResult.local_summary.total_income || 0).toLocaleString()}</p>
+              </div>
+              <div className="bg-red-50 rounded-lg p-3">
+                <p className="text-xs text-red-600 mb-1">הוצאות</p>
+                <p className="text-lg font-bold text-red-800">₪{(reportResult.local_summary.total_expenses || 0).toLocaleString()}</p>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-3">
+                <p className="text-xs text-blue-600 mb-1">רווח</p>
+                <p className="text-lg font-bold text-blue-800">₪{(reportResult.local_summary.profit || 0).toLocaleString()}</p>
+              </div>
+              <div className="bg-purple-50 rounded-lg p-3">
+                <p className="text-xs text-purple-600 mb-1">לקוחות</p>
+                <p className="text-lg font-bold text-purple-800">{reportResult.local_summary.customers_count || 0}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Finbot data or raw results */}
+          {renderReportResult(reportResult?.finbot_data || reportResult)}
         </motion.div>
       )}
     </motion.div>
