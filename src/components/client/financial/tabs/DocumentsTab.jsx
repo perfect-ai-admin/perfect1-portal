@@ -191,8 +191,9 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
 
   const createMutation = useMutation({
     mutationFn: (data) => {
-      const total = data.items.reduce((sum, i) => sum + (i.quantity * i.unit_price), 0);
-      const payAmount = data.payment_amount ? Number(data.payment_amount) : total;
+      const itemsTotal = data.items.reduce((sum, i) => sum + (i.quantity * i.unit_price), 0);
+      const fullAmount = isVatExempt ? itemsTotal : Math.round(itemsTotal * 1.17 * 100) / 100;
+      const payAmount = data.payment_amount ? Number(data.payment_amount) : fullAmount;
       const payload = {
         ...data,
         ...(needsPayment && {
