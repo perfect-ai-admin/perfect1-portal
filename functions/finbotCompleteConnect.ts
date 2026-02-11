@@ -16,53 +16,54 @@ Deno.serve(async (req) => {
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
         const body = await req.json();
-        const { api_key, username, password, code } = body;
+        const { api_key } = body;
 
-        const connections = await base44.entities.FinbotConnection.filter({ user_id: user.id });
-        if (!connections || connections.length === 0) {
-            return Response.json({ error: 'לא נמצא חיבור ממתין. יש להתחיל תהליך חיבור קודם.' }, { status: 400 });
+        if (!api_key) {
+            return Response.json({ error: 'חסר API Key' }, { status: 400 });
         }
 
-        const connection = connections[0];
+        // Find or create connection record
+        let connections = await base44.entities.FinbotConnection.filter({ user_id: user.id });
+        let connection;
+        
+        if (!connections || connections.length === 0) {
+            // Auto-create connection record if not exists
+            connection = await base44.entities.FinbotConnection.create({
+                user_id: user.id,
+                strategy: 'apikey',
+                status: 'pending'
+            });
+        } else {
+            connection = connections[0];
+        }
+
         let updateData = {};
 
         try {
-            if (connection.strategy === 'apikey' && api_key) {
-                // Validate API key by making a test POST with minimal data
-                // We'll send an intentionally incomplete request - if we get a Finbot error (not 401), the token is valid
-                const testResponse = await fetch(FINBOT_API_URL, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'secret': api_key
-                    },
-                    body: JSON.stringify({ type: '1', date: '01/01/2025', language: 'he', currency: 'ILS', vatType: false, rounding: true })
-                });
+            // Validate API key against Finbot API
+            const testResponse = await fetch(FINBOT_API_URL, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'secret': api_key
+                },
+                body: JSON.stringify({ type: '1', date: '01/01/2025', language: 'HE', currency: 'ILS', vatType: false, rounding: true })
+            });
 
-                const testText = await testResponse.text();
-                console.log('Finbot validation response:', testResponse.status, testText);
+            const testText = await testResponse.text();
+            console.log('Finbot validation response:', testResponse.status, testText);
 
-                // If we get 401/403, the token is invalid. Any other response means the token works.
-                if (testResponse.status === 401 || testResponse.status === 403) {
-                    throw new Error('API Key לא תקין. בדוק את הטוקן ונסה שוב.');
-                }
-
-                updateData = {
-                    status: 'connected',
-                    api_key_ref: api_key,
-                    last_error: null
-                };
-
-            } else if (connection.strategy === 'credentials' && username && password) {
-                updateData = {
-                    status: 'connected',
-                    username,
-                    password_ref: password,
-                    last_error: null
-                };
-            } else {
-                return Response.json({ error: 'חסרים פרטי התחברות' }, { status: 400 });
+            // If we get 401/403, the token is invalid
+            if (testResponse.status === 401 || testResponse.status === 403) {
+                throw new Error('API Key לא תקין. בדוק את הטוקן ונסה שוב.');
             }
+
+            updateData = {
+                status: 'connected',
+                strategy: 'apikey',
+                api_key_ref: api_key,
+                last_error: null
+            };
 
             await base44.entities.FinbotConnection.update(connection.id, updateData);
 
