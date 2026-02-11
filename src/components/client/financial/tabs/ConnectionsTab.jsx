@@ -141,9 +141,19 @@ export default function ConnectionsTab({ data }) {
         </p>
       </div>
 
-      {/* Connect Dialog */}
+      {/* Step 1: Intro / Software Selection Dialog */}
+      <ConnectAccountingSoftwareDialog
+        open={showSoftwareDialog}
+        onOpenChange={setShowSoftwareDialog}
+        selectedProvider={connectProvider}
+        onContinue={() => {
+          setShowSoftwareDialog(false);
+        }}
+      />
+
+      {/* Step 2: API Key Dialog */}
       <ConnectProviderDialog
-        open={!!connectProvider}
+        open={!!connectProvider && !showSoftwareDialog}
         onClose={() => setConnectProvider(null)}
         provider={connectProvider}
         onConnect={handleConnect}
