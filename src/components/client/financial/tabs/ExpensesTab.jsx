@@ -1,183 +1,111 @@
 import React, { useState } from 'react';
-import { Plus, Tag, Trash2, Check } from 'lucide-react';
+import { RefreshCw, Loader2, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export default function ExpensesTab({ data }) {
-  const [activeSubTab, setActiveSubTab] = useState('pending');
-  const [showAddExpense, setShowAddExpense] = useState(false);
+  const queryClient = useQueryClient();
 
-  // Empty initial data
-  const expenses = {
-    pending: [],
-    classified: [],
-    all: [],
-  };
+  const { data: expenses = [], isLoading } = useQuery({
+    queryKey: ['finbot-expenses'],
+    queryFn: () => base44.entities.FinbotExpense.list('-created_date', 200),
+  });
 
-  const categories = [
-    '📢 פרסום',
-    '💻 תוכנות',
-    '🛠️ ציוד',
-    '⛽ דלק/רכב',
-    '🏢 משרד',
-    '👔 שירותים מקצועיים',
-    '📌 אחרות',
-  ];
+  const syncMutation = useMutation({
+    mutationFn: () => base44.functions.invoke('finbotSyncPull', { resource: 'expenses' }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
+      toast.success(`סונכרנו ${res.data?.synced_count || 0} הוצאות`);
+    },
+    onError: (err) => toast.error(err.message || 'שגיאה בסנכרון'),
+  });
 
-  const currentExpenses = expenses[activeSubTab] || [];
+  const totalAmount = expenses.reduce((sum, e) => sum + (e.amount || 0), 0);
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-      {/* Header with Add Button */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-gray-900">הוצאות</h2>
-        <Button onClick={() => setShowAddExpense(true)} className="gap-2">
-          <Plus className="w-4 h-4" />
-          <span className="hidden md:inline">קליטת הוצאה</span>
-          <span className="md:hidden">הוצאה</span>
+        <Button size="sm" variant="outline" className="gap-2" onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending}>
+          {syncMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+          <span className="hidden md:inline">סנכרן מ-Finbot</span>
+          <span className="md:hidden">סנכרן</span>
         </Button>
       </div>
 
-      {/* Sub-tabs */}
-      <Tabs value={activeSubTab} onValueChange={setActiveSubTab}>
-        <TabsList className="w-full justify-start border-b border-gray-200 bg-transparent p-0 h-auto">
-          <TabsTrigger value="pending" className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600">
-            לטיפול ({expenses.pending.length})
-          </TabsTrigger>
-          <TabsTrigger value="classified" className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600">
-            מסווגות ({expenses.classified.length})
-          </TabsTrigger>
-          <TabsTrigger value="all" className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600">
-            הכל ({expenses.all.length})
-          </TabsTrigger>
-        </TabsList>
+      {/* Summary */}
+      {expenses.length > 0 && (
+        <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-3 flex items-center justify-between">
+          <span className="text-sm text-gray-700">סה״כ הוצאות</span>
+          <span className="text-lg font-bold text-red-700">₪{totalAmount.toLocaleString('he-IL')}</span>
+        </div>
+      )}
 
-        {/* Content */}
-        <TabsContent value={activeSubTab} className="mt-4 space-y-2">
-          {currentExpenses.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-600 text-sm">אין הוצאות להצגה</p>
-            </div>
-          ) : (
-            currentExpenses.map((expense, idx) => (
+      {isLoading ? (
+        <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>
+      ) : expenses.length === 0 ? (
+        <div className="text-center py-8 text-gray-500 text-sm">
+          אין הוצאות עדיין. התחבר ל-Finbot וסנכרן הוצאות.
+        </div>
+      ) : (
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="border-b bg-gray-50">
+                <tr>
+                  <th className="text-right px-4 py-2 font-semibold">תאריך</th>
+                  <th className="text-right px-4 py-2 font-semibold">ספק</th>
+                  <th className="text-right px-4 py-2 font-semibold">קטגוריה</th>
+                  <th className="text-right px-4 py-2 font-semibold">סכום</th>
+                  <th className="text-right px-4 py-2 font-semibold">מע״מ</th>
+                  <th className="text-right px-4 py-2 font-semibold">אמצעי תשלום</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {expenses.map(expense => (
+                  <tr key={expense.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-gray-600">{expense.date ? new Date(expense.date).toLocaleDateString('he-IL') : '-'}</td>
+                    <td className="px-4 py-3">{expense.vendor || '-'}</td>
+                    <td className="px-4 py-3">
+                      {expense.category && <span className="px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">{expense.category}</span>}
+                    </td>
+                    <td className="px-4 py-3 font-medium">₪{(expense.amount || 0).toLocaleString('he-IL')}</td>
+                    <td className="px-4 py-3 text-gray-500">{expense.vat != null ? `₪${expense.vat.toLocaleString()}` : '-'}</td>
+                    <td className="px-4 py-3 text-gray-500">{expense.payment_method || '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-2">
+            {expenses.map((expense, idx) => (
               <motion.div
                 key={expense.id}
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between hover:shadow-sm transition-shadow group"
+                transition={{ delay: idx * 0.03 }}
+                className="bg-white border border-gray-200 rounded-lg p-3"
               >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{expense.supplier}</p>
-                  <p className="text-xs text-gray-600 truncate">{expense.date}</p>
-                </div>
-
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">{expense.amount}</p>
-                    <p className="text-xs text-gray-500">{expense.category}</p>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{expense.vendor || 'ללא ספק'}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs text-gray-500">{expense.date ? new Date(expense.date).toLocaleDateString('he-IL') : ''}</span>
+                      {expense.category && <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">{expense.category}</span>}
+                    </div>
                   </div>
-
-                  {activeSubTab === 'pending' && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => console.log('Classify', expense.id)}
-                      className="h-8 px-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      סווג
-                    </Button>
-                  )}
-
-                  <button className="p-1 hover:bg-red-50 rounded transition-colors text-gray-400 hover:text-red-600">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <p className="font-bold text-sm text-red-700">₪{(expense.amount || 0).toLocaleString()}</p>
                 </div>
               </motion.div>
-            ))
-          )}
-        </TabsContent>
-      </Tabs>
-
-      {/* Add Expense Modal */}
-      {showAddExpense && (
-        <Dialog open={showAddExpense} onOpenChange={setShowAddExpense}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>קליטת הוצאה חדשה</DialogTitle>
-            </DialogHeader>
-
-            <div className="space-y-4">
-              {/* Amount */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">סכום</label>
-                <input
-                  type="number"
-                  placeholder="₪"
-                  className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">תאריך</label>
-                <input
-                  type="date"
-                  className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Supplier */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-1">ספק</label>
-                <input
-                  type="text"
-                  placeholder="שם הספק"
-                  className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* Category */}
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">קטגוריה</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {categories.map(cat => (
-                    <button
-                      key={cat}
-                      className="px-3 py-2 text-sm border border-gray-200 rounded hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <DialogFooter className="gap-2">
-              <Button variant="outline" onClick={() => setShowAddExpense(false)}>
-                ביטול
-              </Button>
-              <Button onClick={() => {
-                setShowAddExpense(false);
-                // Show toast
-              }}>
-                <Check className="w-4 h-4 ml-2" />
-                שמור
-              </Button>
-              <Button variant="outline">
-                שמור ועוד אחת
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            ))}
+          </div>
+        </>
       )}
     </motion.div>
   );
