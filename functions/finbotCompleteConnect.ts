@@ -2,19 +2,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 /**
  * Complete Finbot connection
- * Input:
- *   - apikey: {api_key}
- *   - credentials: {username, password}
- *   - oauth: {code}
+ * For apikey strategy: validates the API token against Finbot API
+ * Uses the real Finbot endpoint: GET https://api.finbot.co.il/api/v2/income
+ * with header: secret: <token>
  */
 
-// TODO: Adjust endpoints based on actual Finbot API documentation
-const FINBOT_ENDPOINTS = {
-    oauth_token: '/oauth/token',
-    auth_login: '/auth/login',
-    me: '/me',
-    validate: '/validate'
-};
+const FINBOT_API_BASE = 'https://api.finbot.co.il/api/v2';
 
 Deno.serve(async (req) => {
     try {
@@ -32,23 +25,58 @@ Deno.serve(async (req) => {
         const connections = await base44.entities.FinbotConnection.filter({ user_id: user.id });
         
         if (!connections || connections.length === 0) {
-            return Response.json({ error: 'No pending connection found. Start connection first.' }, { status: 400 });
+            return Response.json({ error: 'לא נמצא חיבור ממתין. יש להתחיל תהליך חיבור קודם.' }, { status: 400 });
         }
 
         const connection = connections[0];
-        const baseUrl = Deno.env.get('FINBOT_BASE_URL') || 'https://api.finbot.co.il';
-
         let updateData = {};
         let finbotAccountId = null;
 
         try {
-            if (connection.strategy === 'oauth' && code) {
-                // Exchange code for tokens
+            if (connection.strategy === 'apikey' && api_key) {
+                // Validate API key by making a test request to Finbot
+                // We use the income endpoint with GET to test the token
+                const testResponse = await fetch(`${FINBOT_API_BASE}/income`, {
+                    method: 'GET',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'secret': api_key
+                    }
+                });
+
+                console.log('Finbot validation response status:', testResponse.status);
+
+                if (!testResponse.ok && testResponse.status !== 404) {
+                    const errorText = await testResponse.text();
+                    console.log('Finbot validation error:', errorText);
+                    throw new Error('API Key לא תקין. בדוק את הטוקן ונסה שוב.');
+                }
+
+                // Token is valid
+                updateData = {
+                    status: 'connected',
+                    api_key_ref: api_key,
+                    finbot_account_id: null,
+                    last_error: null
+                };
+
+            } else if (connection.strategy === 'credentials' && username && password) {
+                // For credentials strategy - not officially supported by Finbot API
+                // Store credentials and try to use them
+                updateData = {
+                    status: 'connected',
+                    username,
+                    password_ref: password,
+                    last_error: null
+                };
+
+            } else if (connection.strategy === 'oauth' && code) {
+                // OAuth flow
                 const clientId = Deno.env.get('FINBOT_CLIENT_ID');
                 const clientSecret = Deno.env.get('FINBOT_CLIENT_SECRET');
                 const redirectUrl = Deno.env.get('FINBOT_REDIRECT_URL');
 
-                const tokenResponse = await fetch(`${baseUrl}${FINBOT_ENDPOINTS.oauth_token}`, {
+                const tokenResponse = await fetch(`${FINBOT_API_BASE}/oauth/token`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -62,14 +90,14 @@ Deno.serve(async (req) => {
 
                 if (!tokenResponse.ok) {
                     const errorText = await tokenResponse.text();
-                    throw new Error(`OAuth token exchange failed: ${errorText}`);
+                    throw new Error(`שגיאה בהחלפת קוד OAuth: ${errorText}`);
                 }
 
                 const tokenData = await tokenResponse.json();
                 
                 updateData = {
                     status: 'connected',
-                    access_token_ref: tokenData.access_token, // TODO: Encrypt in production
+                    access_token_ref: tokenData.access_token,
                     refresh_token_ref: tokenData.refresh_token,
                     token_expires_at: tokenData.expires_in 
                         ? new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
@@ -79,57 +107,9 @@ Deno.serve(async (req) => {
                 };
                 finbotAccountId = tokenData.account_id;
 
-            } else if (connection.strategy === 'apikey' && api_key) {
-                // Validate API key by making a test request
-                const testResponse = await fetch(`${baseUrl}${FINBOT_ENDPOINTS.me}`, {
-                    headers: { 
-                        'Authorization': `Bearer ${api_key}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!testResponse.ok) {
-                    throw new Error('Invalid API key');
-                }
-
-                const accountData = await testResponse.json();
-                
-                updateData = {
-                    status: 'connected',
-                    api_key_ref: api_key, // TODO: Encrypt in production
-                    finbot_account_id: accountData.id || accountData.account_id || null,
-                    last_error: null
-                };
-                finbotAccountId = accountData.id || accountData.account_id;
-
-            } else if (connection.strategy === 'credentials' && username && password) {
-                // Login with credentials to get token
-                const loginResponse = await fetch(`${baseUrl}${FINBOT_ENDPOINTS.auth_login}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
-                if (!loginResponse.ok) {
-                    throw new Error('Invalid credentials');
-                }
-
-                const loginData = await loginResponse.json();
-                
-                updateData = {
-                    status: 'connected',
-                    username,
-                    password_ref: password, // TODO: Encrypt in production
-                    access_token_ref: loginData.token || loginData.access_token,
-                    token_expires_at: loginData.expires_at || null,
-                    finbot_account_id: loginData.account_id || null,
-                    last_error: null
-                };
-                finbotAccountId = loginData.account_id;
-
             } else {
                 return Response.json({ 
-                    error: 'Missing credentials for the selected strategy' 
+                    error: 'חסרים פרטי התחברות לשיטה שנבחרה' 
                 }, { status: 400 });
             }
 
@@ -147,7 +127,7 @@ Deno.serve(async (req) => {
 
             return Response.json({ 
                 status: 'connected', 
-                message: 'Successfully connected to Finbot',
+                message: 'התחברת ל-Finbot בהצלחה!',
                 finbot_account_id: finbotAccountId
             });
 

@@ -3,36 +3,31 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 /**
  * Fetch reports from Finbot
  * Input: {report_type: "pnl" | "vat" | "customers", period_start, period_end}
+ * 
+ * Uses Finbot API v2 with secret header
  */
 
-// TODO: Adjust endpoints based on actual Finbot API documentation
-const FINBOT_ENDPOINTS = {
-    reports: '/reports',
+const FINBOT_API_BASE = 'https://api.finbot.co.il/api/v2';
+
+const REPORT_ENDPOINTS = {
     pnl: '/reports/profit-loss',
     vat: '/reports/vat',
     customers: '/reports/customers'
 };
 
-async function getFinbotClient(base44, userId) {
+async function getFinbotAuth(base44, userId) {
     const connections = await base44.entities.FinbotConnection.filter({ user_id: userId });
     
-    if (!connections || connections.length === 0 || connections[0].status !== 'connected') {
-        throw new Error('Not connected to Finbot');
+    if (connections && connections.length > 0 && connections[0].status === 'connected') {
+        const connection = connections[0];
+        if (connection.api_key_ref) return connection.api_key_ref;
+        if (connection.access_token_ref) return connection.access_token_ref;
     }
 
-    const connection = connections[0];
-    const baseUrl = Deno.env.get('FINBOT_BASE_URL') || 'https://api.finbot.co.il';
-    
-    let authHeader;
-    if (connection.api_key_ref) {
-        authHeader = `Bearer ${connection.api_key_ref}`;
-    } else if (connection.access_token_ref) {
-        authHeader = `Bearer ${connection.access_token_ref}`;
-    } else {
-        throw new Error('No valid credentials found');
-    }
+    const globalToken = Deno.env.get('FINBOT_API_TOKEN');
+    if (globalToken) return globalToken;
 
-    return { baseUrl, authHeader, connection };
+    throw new Error('לא נמצא טוקן Finbot.');
 }
 
 Deno.serve(async (req) => {
@@ -48,11 +43,11 @@ Deno.serve(async (req) => {
         const { report_type, period_start, period_end } = body;
 
         if (!report_type || !['pnl', 'vat', 'customers'].includes(report_type)) {
-            return Response.json({ error: 'Invalid report type' }, { status: 400 });
+            return Response.json({ error: 'סוג דוח לא תקין' }, { status: 400 });
         }
 
         if (!period_start || !period_end) {
-            return Response.json({ error: 'Period start and end are required' }, { status: 400 });
+            return Response.json({ error: 'חובה לציין תאריך התחלה וסיום' }, { status: 400 });
         }
 
         // Create report run record
@@ -65,26 +60,31 @@ Deno.serve(async (req) => {
         });
 
         try {
-            const { baseUrl, authHeader } = await getFinbotClient(base44, user.id);
+            const apiToken = await getFinbotAuth(base44, user.id);
 
-            // Get appropriate endpoint
-            const endpoint = FINBOT_ENDPOINTS[report_type] || FINBOT_ENDPOINTS.reports;
+            const endpoint = REPORT_ENDPOINTS[report_type];
+            const url = `${FINBOT_API_BASE}${endpoint}?from=${period_start}&to=${period_end}`;
             
-            // Fetch report from Finbot
-            const url = `${baseUrl}${endpoint}?from=${period_start}&to=${period_end}`;
             const response = await fetch(url, {
                 headers: {
-                    'Authorization': authHeader,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'secret': apiToken
                 }
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Finbot API error: ${errorText}`);
+            const responseText = await response.text();
+            console.log('Finbot report response:', response.status, responseText.substring(0, 500));
+
+            let reportData;
+            try {
+                reportData = JSON.parse(responseText);
+            } catch {
+                reportData = { raw_response: responseText };
             }
 
-            const reportData = await response.json();
+            if (!response.ok) {
+                throw new Error(reportData?.message || `שגיאה בשליפת דוח מ-Finbot (${response.status})`);
+            }
 
             // Update report run with results
             await base44.entities.FinbotReportRun.update(reportRun.id, {
@@ -111,10 +111,20 @@ Deno.serve(async (req) => {
             });
 
         } catch (apiError) {
-            // Update report run with error
             await base44.entities.FinbotReportRun.update(reportRun.id, {
                 status: 'error',
                 last_error: apiError.message
+            });
+
+            // Log failure
+            await base44.entities.FinbotAuditLog.create({
+                user_id: user.id,
+                action: 'finbot.fetch_report',
+                entity_type: 'FinbotReportRun',
+                entity_id: reportRun.id,
+                request_data: { report_type, period_start, period_end },
+                response_data: { error: apiError.message },
+                success: false
             });
 
             throw apiError;

@@ -3,7 +3,28 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 /**
  * Download document PDF from Finbot
  * Input: {document_id} (local document ID)
+ * 
+ * If the document has a pdf_url from the Finbot API response, returns it directly.
+ * Otherwise tries to fetch it from Finbot API.
  */
+
+const FINBOT_API_BASE = 'https://api.finbot.co.il/api/v2';
+
+async function getFinbotAuth(base44, userId) {
+    const connections = await base44.entities.FinbotConnection.filter({ user_id: userId });
+    
+    if (connections && connections.length > 0 && connections[0].status === 'connected') {
+        const connection = connections[0];
+        if (connection.api_key_ref) return connection.api_key_ref;
+        if (connection.access_token_ref) return connection.access_token_ref;
+    }
+
+    const globalToken = Deno.env.get('FINBOT_API_TOKEN');
+    if (globalToken) return globalToken;
+
+    throw new Error('לא נמצא טוקן Finbot.');
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -17,7 +38,7 @@ Deno.serve(async (req) => {
         const { document_id } = body;
 
         if (!document_id) {
-            return Response.json({ error: 'Document ID is required' }, { status: 400 });
+            return Response.json({ error: 'מזהה מסמך הוא שדה חובה' }, { status: 400 });
         }
 
         // Find local document
@@ -27,7 +48,7 @@ Deno.serve(async (req) => {
         });
 
         if (!documents || documents.length === 0) {
-            return Response.json({ error: 'Document not found' }, { status: 404 });
+            return Response.json({ error: 'מסמך לא נמצא' }, { status: 404 });
         }
 
         const document = documents[0];
@@ -37,52 +58,36 @@ Deno.serve(async (req) => {
             return Response.json({ file_url: document.pdf_url });
         }
 
-        // Otherwise, try to fetch from Finbot
-        const connections = await base44.entities.FinbotConnection.filter({ user_id: user.id });
-        
-        if (!connections || connections.length === 0 || connections[0].status !== 'connected') {
-            return Response.json({ error: 'Not connected to Finbot' }, { status: 400 });
-        }
-
-        const connection = connections[0];
-        const baseUrl = Deno.env.get('FINBOT_BASE_URL') || 'https://api.finbot.co.il';
-        
-        let authHeader;
-        if (connection.api_key_ref) {
-            authHeader = `Bearer ${connection.api_key_ref}`;
-        } else if (connection.access_token_ref) {
-            authHeader = `Bearer ${connection.access_token_ref}`;
-        } else {
-            return Response.json({ error: 'No valid credentials' }, { status: 400 });
-        }
-
-        // TODO: Adjust endpoint based on actual Finbot API documentation
-        const downloadUrl = `${baseUrl}/documents/${document.finbot_document_id}/download`;
-        
-        const response = await fetch(downloadUrl, {
-            headers: { 'Authorization': authHeader }
-        });
-
-        if (!response.ok) {
-            return Response.json({ error: 'Failed to download document' }, { status: 500 });
-        }
-
-        // Get the PDF URL from response (might be a redirect or direct file)
-        const contentType = response.headers.get('content-type');
-        
-        if (contentType?.includes('application/json')) {
-            const data = await response.json();
-            const pdfUrl = data.url || data.pdf_url || data.download_url;
-            
-            // Update local document with PDF URL
+        // Check if raw response has a link
+        if (document.raw?.pdf_link || document.raw?.link) {
+            const pdfUrl = document.raw.pdf_link || document.raw.link;
             await base44.entities.FinbotDocument.update(document.id, { pdf_url: pdfUrl });
-            
             return Response.json({ file_url: pdfUrl });
         }
 
-        // If it's a direct file, we'd need to upload to our storage
-        // For now, return the Finbot URL
-        return Response.json({ file_url: downloadUrl });
+        // Try to fetch from Finbot API
+        if (document.finbot_document_id) {
+            const apiToken = await getFinbotAuth(base44, user.id);
+            
+            const response = await fetch(`${FINBOT_API_BASE}/income/${document.finbot_document_id}`, {
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'secret': apiToken 
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const pdfUrl = data.pdf_link || data.pdf_url || data.link;
+                
+                if (pdfUrl) {
+                    await base44.entities.FinbotDocument.update(document.id, { pdf_url: pdfUrl });
+                    return Response.json({ file_url: pdfUrl });
+                }
+            }
+        }
+
+        return Response.json({ error: 'לא נמצא קישור PDF למסמך זה' }, { status: 404 });
 
     } catch (error) {
         console.error('Error downloading document:', error.message);
