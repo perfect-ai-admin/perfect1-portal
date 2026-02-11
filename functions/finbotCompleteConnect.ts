@@ -8,7 +8,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const FINBOT_VALIDATE_URLS = [
     'https://api.finbotai.co.il/reports/app-dashboard-data-current-month',
-    'https://api.finbotai.co.il/customers'
+    'https://api.finbotai.co.il/customers',
+    'https://api.finbotai.co.il/income',
 ];
 
 Deno.serve(async (req) => {
@@ -41,6 +42,18 @@ Deno.serve(async (req) => {
             let lastStatus = 0;
             let lastResponseText = '';
 
+            // Also test with global token to see what works
+            const globalToken = Deno.env.get('FINBOT_API_TOKEN');
+            if (globalToken) {
+                console.log('Testing with GLOBAL token for reference...');
+                for (const url of FINBOT_VALIDATE_URLS) {
+                    const gr = await fetch(url, { method: 'GET', headers: { 'Content-Type': 'application/json', 'secret': globalToken } });
+                    const gt = await gr.text();
+                    console.log(`GLOBAL [${url}]: ${gr.status} ${gt.substring(0, 200)}`);
+                }
+            }
+
+            console.log('Now testing with USER-PROVIDED token...');
             for (const url of FINBOT_VALIDATE_URLS) {
                 const testResponse = await fetch(url, {
                     method: 'GET',
@@ -48,7 +61,7 @@ Deno.serve(async (req) => {
                 });
                 lastStatus = testResponse.status;
                 lastResponseText = await testResponse.text();
-                console.log(`Finbot validation [${url}]:`, testResponse.status, lastResponseText.substring(0, 200));
+                console.log(`USER [${url}]:`, testResponse.status, lastResponseText.substring(0, 200));
 
                 if (testResponse.ok || testResponse.status === 200) {
                     validated = true;
