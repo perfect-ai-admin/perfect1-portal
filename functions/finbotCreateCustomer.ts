@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
         const finbotPayload = {
             type: '7',
             date: todayDDMMYYYY(),
-            language: 'he',
+            language: 'HE',
             currency: 'ILS',
             vatType: false,
             rounding: true,
