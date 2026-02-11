@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
         const finbotPayload = {
             type: DOCUMENT_TYPE_MAP[type],
             date: formattedDate,
-            language: lang || 'he',
+            language: (lang || 'HE').toUpperCase(),
             currency: currency || 'ILS',
             vatType: vatType !== undefined ? vatType : false, // false = prices before VAT
             rounding: rounding !== undefined ? rounding : true,
