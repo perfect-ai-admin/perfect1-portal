@@ -137,30 +137,25 @@ Deno.serve(async (req) => {
     if (payload.comment) jsonPayload.comment = payload.comment;
     if (payload.client_id) jsonPayload.client_id = payload.client_id;
 
-    // Payment - add to JSON payload using multipart for payment arrays
-    // iCount requires payment info via form-data, not JSON for nested arrays
-    let useFormData = false;
-    let paymentFields = {};
+    // Build entire request as URL-encoded form data (PHP-style)
+    // iCount's PHP backend parses URL-encoded better than JSON for nested arrays
+    const formData = new URLSearchParams();
+    formData.append('sid', jsonPayload.sid);
+    formData.append('doctype', jsonPayload.doctype);
+    if (jsonPayload.doc_date) formData.append('doc_date', jsonPayload.doc_date);
+    if (jsonPayload.currency_code) formData.append('currency_code', jsonPayload.currency_code);
+    if (jsonPayload.comment) formData.append('comment', jsonPayload.comment);
+    if (jsonPayload.client_id) formData.append('client_id', String(jsonPayload.client_id));
     
-    if (hasPayment) {
-      useFormData = true;
-      const effPaySource = effectivePayment[0];
-      const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
-      const effPayType = PAYMENT_TYPE_MAP[effPayTypeKey] || 1;
-      const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
-      
-      if (effPayType === 3) {
-        paymentFields = { 'cc_payment[sum]': effPaySum, 'cc_payment[cc_type]': '3' };
-      } else if (effPayType === 2) {
-        paymentFields = { 'cheque_payment[sum]': effPaySum, 'cheque_payment[date]': effPaySource?.date || issue_date };
-      } else if (effPayType === 4) {
-        paymentFields = { 'bank_transfer_payment[sum]': effPaySum, 'bank_transfer_payment[date]': effPaySource?.date || issue_date };
-      } else {
-        paymentFields = { 'cash_payment': effPaySum };
-      }
-    }
+    // Items as PHP-style array
+    icountItems.forEach((item, i) => {
+      formData.append(`items[${i}][description]`, item.description);
+      formData.append(`items[${i}][unitprice]`, String(item.unitprice));
+      formData.append(`items[${i}][quantity]`, String(item.quantity));
+      if (item.vat_rate !== undefined) formData.append(`items[${i}][vat_rate]`, String(item.vat_rate));
+    });
 
-    // Add payment to JSON payload
+    // Payment as PHP-style array
     if (hasPayment) {
       const effPaySource = effectivePayment[0];
       const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
@@ -168,23 +163,27 @@ Deno.serve(async (req) => {
       const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
       
       if (effPayType === 3) {
-        jsonPayload.cc_payment = [{ sum: effPaySum, cc_type: 3 }];
+        formData.append('cc_payment[0][sum]', String(effPaySum));
+        formData.append('cc_payment[0][cc_type]', '3');
       } else if (effPayType === 2) {
-        jsonPayload.cheque_payment = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
+        formData.append('cheque_payment[0][sum]', String(effPaySum));
+        formData.append('cheque_payment[0][date]', effPaySource?.date || issue_date);
       } else if (effPayType === 4) {
-        jsonPayload.bank_transfer_payment = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
+        formData.append('bank_transfer_payment[0][sum]', String(effPaySum));
+        formData.append('bank_transfer_payment[0][date]', effPaySource?.date || issue_date);
       } else {
-        jsonPayload.cash_payment = [{ sum: effPaySum }];
+        formData.append('cash_payment[0][sum]', String(effPaySum));
       }
     }
 
-    console.log('iCount JSON payload:', JSON.stringify(jsonPayload));
+    const formBody = formData.toString();
+    console.log('iCount form payload:', formBody);
 
-    // Create document in iCount using JSON
+    // Create document in iCount using URL-encoded form data
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(jsonPayload)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody
     });
 
     const data = await res.json();
