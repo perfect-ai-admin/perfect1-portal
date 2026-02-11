@@ -162,24 +162,58 @@ export default function DocumentsTab({ data }) {
   );
 }
 
+const PAYMENT_TYPE_OPTIONS = [
+  { value: 'cash', label: 'מזומן' },
+  { value: 'bank_transfer', label: 'העברה בנקאית' },
+  { value: 'credit_card', label: 'כרטיס אשראי' },
+  { value: 'cheque', label: 'צ׳ק' },
+  { value: 'paypal', label: 'PayPal' },
+  { value: 'payment_app', label: 'אפליקציית תשלום (ביט/פייבוקס)' },
+  { value: 'other', label: 'אחר' },
+];
+
 function CreateDocumentDialog({ open, onClose, customers, queryClient }) {
   const [form, setForm] = useState({
     type: 'receipt',
     customer_id: '',
     issue_date: new Date().toISOString().split('T')[0],
     items: [{ description: '', quantity: 1, unit_price: 0 }],
+    payment_type: 'cash',
     notes: ''
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.functions.invoke('finbotCreateDocument', data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
-      toast.success('מסמך נוצר בהצלחה');
-      onClose();
-      setForm({ type: 'receipt', customer_id: '', issue_date: new Date().toISOString().split('T')[0], items: [{ description: '', quantity: 1, unit_price: 0 }], notes: '' });
+    mutationFn: (data) => {
+      // Build payment array from form
+      const total = data.items.reduce((sum, i) => sum + (i.quantity * i.unit_price), 0);
+      const payload = {
+        ...data,
+        payment: [{
+          date: data.issue_date,
+          type: data.payment_type,
+          price: total
+        }]
+      };
+      delete payload.payment_type;
+      return base44.functions.invoke('finbotCreateDocument', payload);
     },
-    onError: (err) => toast.error(err.message || 'שגיאה ביצירת מסמך'),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
+      const pdfUrl = res.data?.finbot_response?.pdf_link || res.data?.document?.pdf_url;
+      if (pdfUrl) {
+        toast.success('מסמך הופק בהצלחה!', { 
+          action: { label: 'פתח PDF', onClick: () => window.open(pdfUrl, '_blank') }
+        });
+      } else {
+        toast.success('מסמך נוצר בהצלחה');
+      }
+      onClose();
+      setForm({ type: 'receipt', customer_id: '', issue_date: new Date().toISOString().split('T')[0], items: [{ description: '', quantity: 1, unit_price: 0 }], payment_type: 'cash', notes: '' });
+    },
+    onError: (err) => {
+      const msg = err?.response?.data?.error || err.message || 'שגיאה ביצירת מסמך';
+      toast.error(msg);
+    },
   });
 
   const addItem = () => setForm(p => ({ ...p, items: [...p.items, { description: '', quantity: 1, unit_price: 0 }] }));
@@ -257,6 +291,18 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient }) {
               <span className="font-bold">₪{total.toLocaleString()}</span>
               <span className="text-xs text-gray-400 mr-2">(+ מע״מ ₪{(total * 0.17).toLocaleString()})</span>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">אמצעי תשלום</label>
+            <Select value={form.payment_type} onValueChange={v => setForm(p => ({...p, payment_type: v}))}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {PAYMENT_TYPE_OPTIONS.map(opt => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
