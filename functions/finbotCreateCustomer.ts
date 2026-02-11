@@ -53,9 +53,10 @@ Deno.serve(async (req) => {
         if (address) customerObj.address = address;
         if (id_number) customerObj.tax = id_number;
 
-        // For Osek Patur: vatType must be false, price is before VAT
-        // Finbot adds 17% VAT on top, so payment sum must be price * 1.17
-        // Using price=1, so sum=1.17
+        // For Osek Patur: vatType=false, prices are before VAT
+        // Finbot calculates total with VAT: price * 1.17
+        // Payment sum must equal total with VAT after rounding
+        // Using price=100, total with VAT = 117
         const finbotPayload = {
             type: '1',
             date: todayDDMMYYYY(),
@@ -64,8 +65,8 @@ Deno.serve(async (req) => {
             vatType: false,
             rounding: true,
             customer: customerObj,
-            items: [{ name: 'רישום לקוח', amount: 1, price: 1 }],
-            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 1.17 }]
+            items: [{ name: 'רישום לקוח', amount: 1, price: 100 }],
+            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 117 }]
         };
 
         console.log('Finbot create customer payload:', JSON.stringify(finbotPayload));
