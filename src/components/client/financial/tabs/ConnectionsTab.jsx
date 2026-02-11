@@ -144,24 +144,21 @@ export default function ConnectionsTab({ data }) {
 
       {/* Step 1: Intro / Software Selection Dialog */}
       <ConnectAccountingSoftwareDialog
-        open={showSoftwareDialog}
+        open={!!connectProvider && dialogStep === 'intro'}
         onOpenChange={(val) => {
           if (!val) {
-            setShowSoftwareDialog(false);
-            // If closed via X button, also clear provider
             setConnectProvider(null);
           }
         }}
         selectedProvider={connectProvider}
         onContinue={() => {
-          // Close intro dialog, ConnectProviderDialog will open since connectProvider is still set
-          setShowSoftwareDialog(false);
+          setDialogStep('apikey');
         }}
       />
 
       {/* Step 2: API Key Dialog */}
       <ConnectProviderDialog
-        open={!!connectProvider && !showSoftwareDialog}
+        open={!!connectProvider && dialogStep === 'apikey'}
         onClose={() => setConnectProvider(null)}
         provider={connectProvider}
         onConnect={handleConnect}
