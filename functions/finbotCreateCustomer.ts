@@ -5,7 +5,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  * 
  * Finbot does NOT have a dedicated create-customer API.
  * Customers are created via the income API with customer.save=true.
- * We create a zero-amount quote (type 7 = הצעת מחיר) to register the customer.
+ * We create a minimal receipt to register the customer.
  * 
  * API: POST https://api.finbotai.co.il/income
  * Header: secret: <API_TOKEN>
@@ -13,13 +13,13 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const FINBOT_API_URL = 'https://api.finbotai.co.il/income';
 
-function todayDDMMYYYY() {
+function todayFormatted() {
     const now = new Date();
     return `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
 }
 
-async function getFinbotToken(base44, userId) {
-    const connections = await base44.entities.FinbotConnection.filter({ user_id: userId });
+async function getFinbotToken(base44Client, userId) {
+    const connections = await base44Client.entities.FinbotConnection.filter({ user_id: userId });
     if (connections?.length > 0 && connections[0].status === 'connected') {
         if (connections[0].api_key_ref) return connections[0].api_key_ref;
         if (connections[0].access_token_ref) return connections[0].access_token_ref;
@@ -31,8 +31,8 @@ async function getFinbotToken(base44, userId) {
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
+        const base44Client = createClientFromRequest(req);
+        const user = await base44Client.auth.me();
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
         const body = await req.json();
@@ -42,47 +42,45 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'שם הלקוח הוא שדה חובה' }, { status: 400 });
         }
 
-        const apiToken = await getFinbotToken(base44, user.id);
+        const apiToken = await getFinbotToken(base44Client, user.id);
+        const dateStr = todayFormatted();
 
-        // Use a receipt (type 1) to register the customer in Finbot
-        // Osek Patur can only create receipts. We create a 1 ILS receipt with customer.save=true.
-        // vatType=false means price is before VAT, so payment sum must match total including VAT
+        // Build customer object with save=true to persist in Finbot
         const customerObj = { name, save: true };
         if (email) customerObj.email = email;
         if (phone) customerObj.phone = phone;
         if (address) customerObj.address = address;
         if (id_number) customerObj.tax = id_number;
 
-        // For Osek Patur: vatType=false, no VAT is actually charged
-        // The successful document creation test showed price=100, sum=100 works
-        // Payment sum must equal items sum exactly
-        const finbotPayload = {
+        // Create a minimal receipt (type 1) to register the customer
+        // For Osek Patur: vatType=false, price before VAT
+        // The successful test showed price=100 sum=100 works (Finbot handles VAT internally)
+        const payload = {
             type: '1',
-            date: todayDDMMYYYY(),
+            date: dateStr,
             language: 'HE',
             currency: 'ILS',
             vatType: false,
             rounding: true,
             customer: customerObj,
             items: [{ name: 'רישום לקוח', amount: 1, price: 100 }],
-            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 100 }]
+            payments: [{ type: '0', date: dateStr, sum: 100 }]
         };
 
-        console.log('PAYLOAD:', JSON.stringify(finbotPayload));
+        console.log('CREATE_CUSTOMER_PAYLOAD:', JSON.stringify(payload));
 
         const response = await fetch(FINBOT_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'secret': apiToken },
-            body: JSON.stringify(finbotPayload)
+            body: JSON.stringify(payload)
         });
 
         const responseText = await response.text();
-        console.log('RESPONSE:', response.status, responseText);
+        console.log('CREATE_CUSTOMER_RESPONSE:', response.status, responseText);
 
         let finbotResult;
         try { 
             const parsed = JSON.parse(responseText);
-            // Ensure it's a plain object (not array)
             if (Array.isArray(parsed)) {
                 finbotResult = { items: parsed };
             } else if (typeof parsed === 'object' && parsed !== null) {
@@ -97,7 +95,7 @@ Deno.serve(async (req) => {
         const isSuccess = finbotResult?.status === 1;
 
         // Save locally
-        const localCustomer = await base44.entities.FinbotCustomer.create({
+        const localCustomer = await base44Client.entities.FinbotCustomer.create({
             user_id: user.id,
             finbot_customer_id: '',
             name, id_number: id_number || null, email: email || null,
@@ -107,10 +105,10 @@ Deno.serve(async (req) => {
             synced_at: new Date().toISOString()
         });
 
-        await base44.entities.FinbotAuditLog.create({
+        await base44Client.entities.FinbotAuditLog.create({
             user_id: user.id, action: 'finbot.create_customer',
             entity_type: 'FinbotCustomer', entity_id: localCustomer.id,
-            request_data: { payload: finbotPayload },
+            request_data: { payload },
             response_data: { result: finbotResult },
             success: isSuccess
         });
