@@ -104,50 +104,45 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Build form-urlencoded body (iCount requires this format for nested arrays)
-    const formParts = [];
+    // Build PHP-style nested form data for iCount
+    const formData = new URLSearchParams();
     
-    function encodeField(key, value) {
-      formParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-    }
+    formData.append('sid', payload.sid);
+    formData.append('doctype', payload.doctype);
+    if (payload.doc_date) formData.append('doc_date', payload.doc_date);
+    if (payload.currency_code) formData.append('currency_code', payload.currency_code);
+    if (payload.comment) formData.append('comment', payload.comment);
+    if (payload.client_id) formData.append('client_id', String(payload.client_id));
 
-    encodeField('sid', payload.sid);
-    encodeField('doctype', payload.doctype);
-    if (payload.doc_date) encodeField('doc_date', payload.doc_date);
-    if (payload.currency_code) encodeField('currency_code', payload.currency_code);
-    if (payload.comment) encodeField('comment', payload.comment);
-    if (payload.client_id) encodeField('client_id', payload.client_id);
-
-    // Items
+    // Items - PHP array format
     icountItems.forEach((item, i) => {
-      encodeField(`items[${i}][description]`, item.description);
-      encodeField(`items[${i}][unitprice]`, item.unitprice);
-      encodeField(`items[${i}][quantity]`, item.quantity);
-      if (item.vat_rate !== undefined) encodeField(`items[${i}][vat_rate]`, item.vat_rate);
+      formData.append(`items[${i}][description]`, item.description);
+      formData.append(`items[${i}][unitprice]`, String(item.unitprice));
+      formData.append(`items[${i}][quantity]`, String(item.quantity));
+      if (item.vat_rate !== undefined) formData.append(`items[${i}][vat_rate]`, String(item.vat_rate));
     });
 
-    // Payment
+    // Payment - PHP array format
     if (payType === 3) {
-      encodeField('cc_payment[0][sum]', paySum);
-      encodeField('cc_payment[0][cc_type]', 3);
+      formData.append('cc_payment[0][sum]', String(paySum));
+      formData.append('cc_payment[0][cc_type]', '3');
     } else if (payType === 2) {
-      encodeField('cheque_payment[0][sum]', paySum);
-      encodeField('cheque_payment[0][date]', paymentSource?.date || issue_date);
+      formData.append('cheque_payment[0][sum]', String(paySum));
+      formData.append('cheque_payment[0][date]', paymentSource?.date || issue_date);
     } else if (payType === 4) {
-      encodeField('bank_transfer_payment[0][sum]', paySum);
-      encodeField('bank_transfer_payment[0][date]', paymentSource?.date || issue_date);
+      formData.append('bank_transfer_payment[0][sum]', String(paySum));
+      formData.append('bank_transfer_payment[0][date]', paymentSource?.date || issue_date);
     } else {
-      encodeField('cash_payment[0][sum]', paySum);
+      formData.append('cash_payment[0][sum]', String(paySum));
     }
 
-    const formBody = formParts.join('&');
-    console.log('iCount form body:', formBody);
+    console.log('iCount form payload:', formData.toString());
 
-    // Create document in iCount using form-urlencoded
+    // Create document in iCount
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formBody
+      body: formData.toString()
     });
 
     const data = await res.json();
