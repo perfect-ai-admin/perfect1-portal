@@ -13,19 +13,10 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Name and phone are required' }, { status: 400 });
         }
 
-        // Create record in CloseOsekPaturCRM using service role
-        const record = await base44.asServiceRole.entities.CloseOsekPaturCRM.create({
-            full_name: payload.name,
-            phone: payload.phone,
-            notes: payload.source_page ? `הגיע מדף: ${payload.source_page}` : 'הגיע מדף סגירת עוסק פטור',
-            income_tax_status: 'not_started',
-            vat_status: 'not_started',
-            national_insurance_status: 'not_started'
-        });
-
-        // Also create a Lead record so it shows in LeadsAdmin CRM
+        // Create a Lead record in LeadsAdmin CRM
+        let record;
         try {
-            await base44.asServiceRole.entities.Lead.create({
+            record = await base44.asServiceRole.entities.Lead.create({
                 name: payload.name,
                 phone: payload.phone,
                 source_page: payload.source_page || 'סגירת עוסק פטור',
