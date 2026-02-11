@@ -16,6 +16,7 @@ export default function ConnectionsTab({ data }) {
   const [syncLoading, setSyncLoading] = useState({});
   const [connectProvider, setConnectProvider] = useState(null); // provider to connect
   const [showSoftwareDialog, setShowSoftwareDialog] = useState(false); // intro dialog
+  const [dialogStep, setDialogStep] = useState('intro'); // 'intro' | 'apikey'
 
   // Fetch status for all available providers
   const fetchAllStatuses = async () => {
