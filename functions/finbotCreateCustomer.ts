@@ -44,7 +44,8 @@ Deno.serve(async (req) => {
 
         const apiToken = await getFinbotToken(base44, user.id);
 
-        // Build a quote (type 7) to register the customer in Finbot
+        // Build a receipt (type 1) with 0 price to register the customer in Finbot
+        // Quotes (type 7) may fail for Osek Patur, receipts are universally supported
         const customerObj = { name, save: true };
         if (email) customerObj.email = email;
         if (phone) customerObj.phone = phone;
@@ -52,14 +53,15 @@ Deno.serve(async (req) => {
         if (id_number) customerObj.tax = id_number;
 
         const finbotPayload = {
-            type: '7',
+            type: '1',
             date: todayDDMMYYYY(),
             language: 'HE',
             currency: 'ILS',
             vatType: false,
             rounding: true,
             customer: customerObj,
-            items: [{ name: 'רישום לקוח במערכת', amount: 1, price: 1 }]
+            items: [{ name: 'רישום לקוח', amount: 1, price: 0 }],
+            payments: [{ type: '0', date: todayDDMMYYYY(), sum: 0 }]
         };
 
         console.log('Finbot create customer payload:', JSON.stringify(finbotPayload));
