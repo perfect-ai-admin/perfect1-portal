@@ -13,7 +13,7 @@ export const ACCOUNTING_PROVIDERS = [
     logoColors: { bg: '#f0fdf4', text: '#166534', border: '#86efac' },
     description: 'ניהול מסמכים, הוצאות ודוחות עם AI',
     status: 'available', // available | coming_soon
-    authMethods: ['apikey', 'credentials'],
+    authMethods: ['apikey'],
     syncResources: ['customers', 'documents', 'expenses'],
     features: ['מסמכים', 'לקוחות', 'הוצאות', 'דוחות'],
     connectFunction: 'finbotStartConnect',
