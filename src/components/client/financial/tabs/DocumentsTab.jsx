@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
 import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
 
-const TYPE_LABELS = { receipt: 'קבלה', invoice_receipt: 'חשבונית מס/קבלה', credit: 'זיכוי' };
+const TYPE_LABELS = { receipt: 'קבלה', invoice: 'חשבונית', invoice_receipt: 'חשבונית מס/קבלה', credit: 'זיכוי' };
 const STATUS_COLORS = {
   paid: 'bg-green-100 text-green-800', created: 'bg-blue-100 text-blue-800',
   sent: 'bg-yellow-100 text-yellow-800', cancelled: 'bg-red-100 text-red-800',
@@ -73,7 +73,7 @@ export default function DocumentsTab({ data }) {
 
       {/* Filter */}
       <div className="flex gap-2 flex-wrap">
-        {['all', 'receipt', 'invoice_receipt', 'credit'].map(t => (
+        {['all', 'receipt', 'invoice', 'invoice_receipt', 'credit'].map(t => (
           <button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${filterType === t ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
             {t === 'all' ? 'הכל' : TYPE_LABELS[t]}
           </button>
@@ -182,21 +182,28 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
     issue_date: new Date().toISOString().split('T')[0],
     items: [{ description: '', quantity: 1, unit_price: 0 }],
     payment_type: 'cash',
+    payment_amount: '',
     notes: ''
   });
+
+  const needsPayment = ['receipt', 'invoice_receipt'].includes(form.type);
 
   const createMutation = useMutation({
     mutationFn: (data) => {
       const total = data.items.reduce((sum, i) => sum + (i.quantity * i.unit_price), 0);
+      const payAmount = data.payment_amount ? Number(data.payment_amount) : total;
       const payload = {
         ...data,
-        payment: [{
-          date: data.issue_date,
-          type: data.payment_type,
-          price: total
-        }]
+        ...(needsPayment && {
+          payment: [{
+            date: data.issue_date,
+            type: data.payment_type,
+            price: payAmount
+          }]
+        })
       };
       delete payload.payment_type;
+      delete payload.payment_amount;
       return base44.functions.invoke(createDocFn, payload);
     },
     onSuccess: (res) => {
@@ -210,7 +217,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
         toast.success('מסמך נוצר בהצלחה');
       }
       onClose();
-      setForm({ type: 'receipt', customer_id: '', issue_date: new Date().toISOString().split('T')[0], items: [{ description: '', quantity: 1, unit_price: 0 }], payment_type: 'cash', notes: '' });
+      setForm({ type: 'receipt', customer_id: '', issue_date: new Date().toISOString().split('T')[0], items: [{ description: '', quantity: 1, unit_price: 0 }], payment_type: 'cash', payment_amount: '', notes: '' });
     },
     onError: (err) => {
       const msg = err?.response?.data?.error || err.message || 'שגיאה ביצירת מסמך';
@@ -238,6 +245,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="receipt">קבלה</SelectItem>
+                  <SelectItem value="invoice">חשבונית</SelectItem>
                   <SelectItem value="invoice_receipt">חשבונית מס/קבלה</SelectItem>
                   <SelectItem value="credit">זיכוי</SelectItem>
                 </SelectContent>
@@ -295,17 +303,34 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">אמצעי תשלום</label>
-            <Select value={form.payment_type} onValueChange={v => setForm(p => ({...p, payment_type: v}))}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {PAYMENT_TYPE_OPTIONS.map(opt => (
-                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {needsPayment && (
+            <>
+              <div>
+                <label className="block text-sm font-medium mb-1">אמצעי תשלום</label>
+                <Select value={form.payment_type} onValueChange={v => setForm(p => ({...p, payment_type: v}))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {PAYMENT_TYPE_OPTIONS.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">סכום ששולם</label>
+                <Input 
+                  type="number" 
+                  min="0" 
+                  step="0.01" 
+                  placeholder={`₪${total.toLocaleString()} (סה״כ לפני מע״מ)`}
+                  value={form.payment_amount} 
+                  onChange={e => setForm(p => ({...p, payment_amount: e.target.value}))} 
+                  className="text-sm"
+                />
+                <p className="text-xs text-gray-400 mt-1">השאר ריק לתשלום מלא</p>
+              </div>
+            </>
+          )}
 
           <div>
             <label className="block text-sm font-medium mb-1">הערות</label>
