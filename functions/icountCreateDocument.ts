@@ -104,28 +104,58 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Build iCount payload with flat payment fields
-    const icountPayload = {
-      sid: payload.sid,
-      doctype: payload.doctype,
-      items: icountItems,
-      ...(payload.doc_date && { doc_date: payload.doc_date }),
-      ...(payload.currency_code && { currency_code: payload.currency_code }),
-      ...(payload.comment && { comment: payload.comment }),
-      ...(payload.client_id && { client_id: payload.client_id }),
-      // Flat payment fields
-      pay_type: payType,
-      pay_price: paySum,
-      pay_date: paymentSource?.date || issue_date || new Date().toISOString().split('T')[0],
-    };
+    // For invrec (invoice+receipt) which requires payment,
+    // create as invoice first, then iCount handles it
+    const needsPayment = ['invrec', 'receipt'].includes(icountDoctype);
 
-    console.log('iCount JSON payload:', JSON.stringify(icountPayload));
+    // Build multipart/form-data for nested array support  
+    const boundary = '----iCountBoundary' + Date.now();
+    let mpBody = '';
+    
+    function addField(name, value) {
+      mpBody += `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`;
+    }
+
+    addField('sid', payload.sid);
+    addField('doctype', icountDoctype);
+    if (payload.doc_date) addField('doc_date', payload.doc_date);
+    if (payload.currency_code) addField('currency_code', payload.currency_code);
+    if (payload.comment) addField('comment', payload.comment);
+    if (payload.client_id) addField('client_id', payload.client_id);
+
+    // Items
+    icountItems.forEach((item, i) => {
+      addField(`items[${i}][description]`, item.description);
+      addField(`items[${i}][unitprice]`, item.unitprice);
+      addField(`items[${i}][quantity]`, item.quantity);
+      if (item.vat_rate !== undefined) addField(`items[${i}][vat_rate]`, item.vat_rate);
+    });
+
+    // Payment
+    if (needsPayment) {
+      if (payType === 3) {
+        addField('cc_payment[0][sum]', paySum);
+        addField('cc_payment[0][cc_type]', '3');
+      } else if (payType === 2) {
+        addField('cheque_payment[0][sum]', paySum);
+        addField('cheque_payment[0][date]', paymentSource?.date || issue_date);
+      } else if (payType === 4) {
+        addField('bank_transfer_payment[0][sum]', paySum);
+        addField('bank_transfer_payment[0][date]', paymentSource?.date || issue_date);
+      } else {
+        addField('cash_payment[0][sum]', paySum);
+      }
+    }
+
+    mpBody += `--${boundary}--\r\n`;
+
+    console.log('iCount multipart fields (no body):', mpBody.substring(0, 500));
 
     // Create document in iCount
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(icountPayload)
+      headers: { 'Content-Type': `multipart/form-data; boundary=${boundary}` },
+      body: mpBody
     });
 
     const data = await res.json();
