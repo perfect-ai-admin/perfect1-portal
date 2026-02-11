@@ -16,7 +16,6 @@ export default function ConnectionsTab({ data }) {
   const [syncLoading, setSyncLoading] = useState({});
   const [connectProvider, setConnectProvider] = useState(null); // provider to connect
   const [showSoftwareDialog, setShowSoftwareDialog] = useState(false); // intro dialog
-  const [dialogStep, setDialogStep] = useState('intro'); // 'intro' | 'apikey'
 
   // Fetch status for all available providers
   const fetchAllStatuses = async () => {
@@ -123,7 +122,7 @@ export default function ConnectionsTab({ data }) {
               disconnectLoading={disconnectLoading[provider.id]}
               onConnect={() => {
                 setConnectProvider(provider);
-                setDialogStep('intro');
+                setShowSoftwareDialog(true);
               }}
               onDisconnect={() => handleDisconnect(provider.id)}
               onSync={(resource) => handleSync(provider.id, resource)}
@@ -144,21 +143,17 @@ export default function ConnectionsTab({ data }) {
 
       {/* Step 1: Intro / Software Selection Dialog */}
       <ConnectAccountingSoftwareDialog
-        open={!!connectProvider && dialogStep === 'intro'}
-        onOpenChange={(val) => {
-          if (!val) {
-            setConnectProvider(null);
-          }
-        }}
+        open={showSoftwareDialog}
+        onOpenChange={setShowSoftwareDialog}
         selectedProvider={connectProvider}
         onContinue={() => {
-          setDialogStep('apikey');
+          setShowSoftwareDialog(false);
         }}
       />
 
       {/* Step 2: API Key Dialog */}
       <ConnectProviderDialog
-        open={!!connectProvider && dialogStep === 'apikey'}
+        open={!!connectProvider && !showSoftwareDialog}
         onClose={() => setConnectProvider(null)}
         provider={connectProvider}
         onConnect={handleConnect}
