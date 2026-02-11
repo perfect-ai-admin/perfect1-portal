@@ -53,12 +53,13 @@ Deno.serve(async (req) => {
         if (address) customerObj.address = address;
         if (id_number) customerObj.tax = id_number;
 
+        // First attempt: receipt with vatType=true (price includes VAT) so sum matches exactly
         const finbotPayload = {
             type: '1',
             date: todayDDMMYYYY(),
             language: 'HE',
             currency: 'ILS',
-            vatType: false,
+            vatType: true,
             rounding: true,
             customer: customerObj,
             items: [{ name: 'רישום לקוח', amount: 1, price: 1 }],
