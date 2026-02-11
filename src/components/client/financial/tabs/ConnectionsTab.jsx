@@ -16,7 +16,8 @@ export default function ConnectionsTab({ data }) {
   const [disconnectLoading, setDisconnectLoading] = useState({});
   const [syncLoading, setSyncLoading] = useState({});
   const [connectProvider, setConnectProvider] = useState(null); // provider to connect
-  const [showSoftwareDialog, setShowSoftwareDialog] = useState(false); // intro dialog
+  const [showSoftwareDialog, setShowSoftwareDialog] = useState(false); // step 1: intro
+  const [showProviderSelection, setShowProviderSelection] = useState(false); // step 2: choose provider
 
   // Fetch status for all available providers
   const fetchAllStatuses = async () => {
