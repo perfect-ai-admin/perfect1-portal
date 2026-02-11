@@ -125,30 +125,19 @@ Deno.serve(async (req) => {
     const effectivePayment = (payment && payment.length > 0) ? payment : (needsPayment ? [{ date: issue_date || new Date().toISOString().split('T')[0], type: 'cash', price: totalWithVat }] : []);
     const hasPayment = effectivePayment.length > 0;
 
-    // Build multipart/form-data for nested array support  
-    const boundary = '----iCountBoundary' + Date.now();
-    let mpBody = '';
+    // Build JSON payload for iCount
+    const jsonPayload = {
+      sid: payload.sid,
+      doctype: icountDoctype,
+      items: icountItems,
+    };
     
-    function addField(name, value) {
-      mpBody += `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`;
-    }
+    if (payload.doc_date) jsonPayload.doc_date = payload.doc_date;
+    if (payload.currency_code) jsonPayload.currency_code = payload.currency_code;
+    if (payload.comment) jsonPayload.comment = payload.comment;
+    if (payload.client_id) jsonPayload.client_id = payload.client_id;
 
-    addField('sid', payload.sid);
-    addField('doctype', icountDoctype);
-    if (payload.doc_date) addField('doc_date', payload.doc_date);
-    if (payload.currency_code) addField('currency_code', payload.currency_code);
-    if (payload.comment) addField('comment', payload.comment);
-    if (payload.client_id) addField('client_id', payload.client_id);
-
-    // Items
-    icountItems.forEach((item, i) => {
-      addField(`items[${i}][description]`, item.description);
-      addField(`items[${i}][unitprice]`, item.unitprice);
-      addField(`items[${i}][quantity]`, item.quantity);
-      if (item.vat_rate !== undefined) addField(`items[${i}][vat_rate]`, item.vat_rate);
-    });
-
-    // Payment - recalculate from effective payment
+    // Payment - add to JSON payload
     if (hasPayment) {
       const effPaySource = effectivePayment[0];
       const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
@@ -156,28 +145,23 @@ Deno.serve(async (req) => {
       const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
       
       if (effPayType === 3) {
-        addField('cc_payment[0][sum]', effPaySum);
-        addField('cc_payment[0][cc_type]', '3');
+        jsonPayload.cc_payment = [{ sum: effPaySum, cc_type: 3 }];
       } else if (effPayType === 2) {
-        addField('cheque_payment[0][sum]', effPaySum);
-        addField('cheque_payment[0][date]', effPaySource?.date || issue_date);
+        jsonPayload.cheque_payment = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
       } else if (effPayType === 4) {
-        addField('bank_transfer_payment[0][sum]', effPaySum);
-        addField('bank_transfer_payment[0][date]', effPaySource?.date || issue_date);
+        jsonPayload.bank_transfer_payment = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
       } else {
-        addField('cash_payment[0][sum]', effPaySum);
+        jsonPayload.cash_payment = [{ sum: effPaySum }];
       }
     }
 
-    mpBody += `--${boundary}--\r\n`;
-
-    console.log('iCount multipart fields (no body):', mpBody.substring(0, 500));
+    console.log('iCount JSON payload:', JSON.stringify(jsonPayload).substring(0, 800));
 
     // Create document in iCount
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': `multipart/form-data; boundary=${boundary}` },
-      body: mpBody
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jsonPayload)
     });
 
     const data = await res.json();
