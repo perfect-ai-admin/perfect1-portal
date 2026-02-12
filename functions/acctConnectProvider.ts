@@ -13,9 +13,9 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { provider, credentials } = await req.json();
-    if (!provider || !credentials) {
-      return Response.json({ error: 'חסרים פרטים: provider + credentials' }, { status: 400 });
+    const { provider, credentials, reconnect } = await req.json();
+    if (!provider) {
+      return Response.json({ error: 'חסר פרטי ספק' }, { status: 400 });
     }
 
     // Check for existing active connection
@@ -25,9 +25,89 @@ Deno.serve(async (req) => {
     });
     if (existing?.length > 0) {
       const existingProvider = existing[0].provider;
-      return Response.json({ 
-        error: `כבר מחובר ל-${existingProvider}. נתק לפני חיבור לספק אחר` 
-      }, { status: 400 });
+      if (existingProvider !== provider || !reconnect) {
+        return Response.json({ 
+          error: `כבר מחובר ל-${existingProvider}. נתק לפני חיבור לספק אחר` 
+        }, { status: 400 });
+      }
+      // Already connected to same provider, just return success
+      return Response.json({ status: 'connected', message: `כבר מחובר ל-${provider}` });
+    }
+
+    // Check if reconnecting with saved credentials
+    if (reconnect) {
+      const savedConns = await base44.asServiceRole.entities.AccountingConnection.filter({
+        user_id: user.id,
+        provider,
+      });
+      if (savedConns?.length > 0) {
+        const saved = savedConns[0];
+        const hasSavedCreds = (provider === 'icount' && saved.username && saved.password_enc && saved.provider_account_id) ||
+                              (provider === 'morning' && saved.api_key_enc && saved.api_secret_enc) ||
+                              (provider === 'finbot' && saved.api_key_enc);
+        
+        if (hasSavedCreds) {
+          // Re-test connection with saved credentials
+          let testOk = false;
+          let updateData = { status: 'connected', last_error: null };
+
+          if (provider === 'icount') {
+            const testResult = await testIcountConnection({ 
+              cid: saved.provider_account_id, 
+              username: saved.username, 
+              password: saved.password_enc 
+            });
+            if (testResult.success) {
+              updateData.sid = testResult.sid;
+              updateData.sid_expires_at = new Date(Date.now() + 3600000).toISOString();
+              testOk = true;
+            } else {
+              return Response.json({ error: testResult.error || 'פרטי ההתחברות השמורים כבר לא תקינים. יש להזין מחדש.', needs_credentials: true }, { status: 400 });
+            }
+          } else if (provider === 'morning') {
+            try {
+              const MORNING_BASE = "https://api.greeninvoice.co.il/api/v1";
+              const tokenResp = await fetch(`${MORNING_BASE}/account/token`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: saved.api_key_enc, secret: saved.api_secret_enc }),
+              });
+              testOk = tokenResp.ok;
+              if (!testOk) {
+                return Response.json({ error: 'פרטי ההתחברות השמורים כבר לא תקינים. יש להזין מחדש.', needs_credentials: true }, { status: 400 });
+              }
+            } catch (e) {
+              return Response.json({ error: 'שגיאה בבדיקת חיבור: ' + e.message, needs_credentials: true }, { status: 400 });
+            }
+          } else if (provider === 'finbot') {
+            testOk = true; // Finbot validates on first use
+          }
+
+          if (testOk) {
+            await base44.asServiceRole.entities.AccountingConnection.update(saved.id, updateData);
+            
+            // Audit
+            await base44.asServiceRole.entities.AccountingAuditLog.create({
+              user_id: user.id, provider, action: 'provider.reconnect', success: true,
+            });
+
+            // Trigger sync
+            const providerSyncMap = { icount: 'icountSyncPull', finbot: 'finbotSyncPull', morning: 'morningSyncPull' };
+            const syncFnName = providerSyncMap[provider];
+            if (syncFnName) {
+              try { await base44.asServiceRole.functions.invoke(syncFnName, { resource: 'all' }); } catch (e) { console.log('Reconnect sync:', e.message); }
+            }
+
+            return Response.json({ status: 'connected', message: `מחובר מחדש ל-${provider}!`, reconnected: true });
+          }
+        }
+      }
+      // No saved credentials found
+      return Response.json({ error: 'אין פרטי התחברות שמורים. יש להזין פרטים.', needs_credentials: true }, { status: 400 });
+    }
+
+    if (!credentials) {
+      return Response.json({ error: 'חסרים פרטי התחברות' }, { status: 400 });
     }
 
     // Test connection based on provider
