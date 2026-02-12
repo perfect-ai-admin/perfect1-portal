@@ -137,6 +137,7 @@ export default function ConnectionsTab({ data }) {
               syncLoading={getSyncLoadingForProvider(provider.id)}
               disconnectLoading={disconnectLoading[provider.id]}
               onConnect={() => {
+                setConnectProvider(provider);
                 setShowSoftwareDialog(true);
               }}
               onDisconnect={() => handleDisconnect(provider.id)}
@@ -156,27 +157,38 @@ export default function ConnectionsTab({ data }) {
         </p>
       </div>
 
-      {/* Step 1: Intro Dialog */}
+      {/* Step 1: Intro Dialog — then skip to step 3 (credentials) since provider already chosen */}
       <ConnectAccountingSoftwareDialog
         open={showSoftwareDialog}
-        onOpenChange={setShowSoftwareDialog}
+        onOpenChange={(val) => {
+          setShowSoftwareDialog(val);
+          if (!val) setConnectProvider(null);
+        }}
         onContinue={() => {
           setShowSoftwareDialog(false);
-          setShowProviderSelection(true);
+          // If provider already selected (clicked from card), go straight to credentials
+          if (connectProvider) {
+            // Dialog will open via connectProvider state
+          } else {
+            setShowProviderSelection(true);
+          }
         }}
       />
 
-      {/* Step 2: Provider Selection Dialog */}
+      {/* Step 2: Provider Selection Dialog (only when no provider pre-selected) */}
       <ProviderSelectionDialog
         open={showProviderSelection}
-        onOpenChange={setShowProviderSelection}
+        onOpenChange={(val) => {
+          setShowProviderSelection(val);
+          if (!val) setConnectProvider(null);
+        }}
         onSelectProvider={(provider) => {
           setConnectProvider(provider);
           setShowProviderSelection(false);
         }}
       />
 
-      {/* Step 3: Provider-specific API Key Dialog */}
+      {/* Step 3: Provider-specific Credentials Dialog */}
       <ConnectProviderDialog
         open={!!connectProvider && !showSoftwareDialog && !showProviderSelection}
         onClose={() => setConnectProvider(null)}
