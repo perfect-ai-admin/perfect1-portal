@@ -1,10 +1,183 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-/**
- * Unified sync-pull function.
- * Reads the user's active AccountingConnection, then delegates to the correct provider sync.
- * Input: { resource: "customers" | "documents" | "expenses" | "all" }
- */
+const MORNING_BASE = "https://api.greeninvoice.co.il/api/v1";
+
+const DOC_TYPE_MAP = {
+  305: 'invoice', 320: 'invoice_receipt', 400: 'receipt',
+  10: 'quote', 330: 'credit_note', 300: 'invoice', 405: 'receipt', 100: 'quote',
+};
+
+async function fetchWithRetry(url, options, maxRetries = 2) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const resp = await fetch(url, options);
+    if (resp.status === 429) {
+      await new Promise(r => setTimeout(r, Math.pow(2, attempt + 1) * 2000));
+      continue;
+    }
+    return resp;
+  }
+  throw new Error('Rate limit exceeded');
+}
+
+async function getMorningJWT(conn) {
+  const tokenResp = await fetchWithRetry(`${MORNING_BASE}/account/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: conn.api_key_enc, secret: conn.api_secret_enc }),
+  });
+  if (!tokenResp.ok) throw new Error('שגיאה בהתחברות ל-Morning');
+  const { token } = await tokenResp.json();
+  return token;
+}
+
+async function upsertEntity(base44, entityName, item, matchFields) {
+  const filter = {};
+  for (const f of matchFields) filter[f] = item[f];
+  const existing = await base44.asServiceRole.entities[entityName].filter(filter);
+  if (existing?.length > 0) {
+    await base44.asServiceRole.entities[entityName].update(existing[0].id, item);
+  } else {
+    await base44.asServiceRole.entities[entityName].create(item);
+  }
+}
+
+async function morningSyncCustomers(base44, userId, jwt) {
+  let page = 1, count = 0;
+  while (true) {
+    const resp = await fetchWithRetry(`${MORNING_BASE}/clients/search`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page, pageSize: 100 }),
+    });
+    if (!resp.ok) break;
+    const data = await resp.json();
+    const items = data.items || [];
+    if (!items.length) break;
+
+    for (const c of items) {
+      await upsertEntity(base44, 'AccountingCustomer', {
+        user_id: userId, provider: 'morning',
+        provider_customer_id: String(c.id),
+        name: c.name || c.companyName || 'ללא שם',
+        contact_person: c.contactPerson || null,
+        tax_id: c.taxId || null,
+        email: Array.isArray(c.emails) && c.emails.length > 0 ? c.emails[0] : null,
+        phone: c.phone || null, address: c.address || null,
+        city: c.city || null, zip: c.zip || null,
+        country: c.country || 'IL', is_active: c.active !== false,
+        raw: c, synced_at: new Date().toISOString(),
+      }, ['user_id', 'provider', 'provider_customer_id']);
+      count++;
+    }
+    console.log(`Fetched ${items.length} customers (page ${page})`);
+    if (items.length < 100) break;
+    page++;
+    if (page > 100) break;
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  return count;
+}
+
+async function morningSyncDocuments(base44, userId, jwt) {
+  let page = 1, count = 0;
+  while (true) {
+    const resp = await fetchWithRetry(`${MORNING_BASE}/documents/search`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page, pageSize: 100, sort: 'documentDate', sortType: 'desc' }),
+    });
+    if (!resp.ok) break;
+    const data = await resp.json();
+    const items = data.items || [];
+    if (!items.length) break;
+
+    for (const d of items) {
+      const docType = DOC_TYPE_MAP[d.type] || 'invoice';
+      let status = 'final';
+      if (d.status === 0) status = 'draft';
+      else if (d.status === 3) status = 'cancelled';
+      const subtotal = d.amount || 0;
+      const vatAmount = d.vat || 0;
+      const total = d.totalAmount || (subtotal + vatAmount);
+      let paymentMethod = null;
+      if (Array.isArray(d.payment) && d.payment.length > 0) {
+        const pmMap = { 0: 'other', 1: 'cash', 2: 'check', 3: 'credit_card', 4: 'bank_transfer', 5: 'paypal', 10: 'bit' };
+        paymentMethod = pmMap[d.payment[0].type] || 'other';
+      }
+      let pdfUrl = null;
+      if (d.url) pdfUrl = d.url.origin || d.url.he || d.url.en || null;
+
+      await upsertEntity(base44, 'AccountingDocument', {
+        user_id: userId, provider: 'morning',
+        provider_document_id: String(d.id), doc_type: docType,
+        doc_number: d.number != null ? String(d.number) : null,
+        status, direction: 'outbound',
+        customer_provider_id: d.client?.id ? String(d.client.id) : null,
+        customer_name: d.client?.name || null,
+        customer_tax_id: d.client?.taxId || null,
+        currency: d.currency || 'ILS', subtotal, vat_amount: vatAmount, total,
+        amount_paid: d.totalPaid || 0,
+        balance_due: Math.max(0, total - (d.totalPaid || 0)),
+        issue_date: d.documentDate || d.creationDate || null,
+        due_date: d.dueDate || null, payment_date: d.paymentDate || null,
+        payment_method: paymentMethod,
+        items: Array.isArray(d.income) ? d.income.map(item => ({
+          description: item.description || '', quantity: item.quantity || 1,
+          unit_price: item.price || 0, line_total: (item.quantity || 1) * (item.price || 0),
+        })) : [],
+        notes: d.footer || d.remarks || null, pdf_url: pdfUrl,
+        raw: d, synced_at: new Date().toISOString(),
+      }, ['user_id', 'provider', 'provider_document_id']);
+      count++;
+    }
+    console.log(`Fetched ${items.length} documents (page ${page})`);
+    if (items.length < 100) break;
+    page++;
+    if (page > 100) break;
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  return count;
+}
+
+async function morningSyncExpenses(base44, userId, jwt) {
+  let page = 1, count = 0;
+  while (true) {
+    const resp = await fetchWithRetry(`${MORNING_BASE}/expenses/search`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page, pageSize: 100 }),
+    });
+    if (!resp.ok) break;
+    const data = await resp.json();
+    const items = data.items || [];
+    if (!items.length) break;
+
+    for (const e of items) {
+      await upsertEntity(base44, 'AccountingExpense', {
+        user_id: userId, provider: 'morning',
+        provider_expense_id: String(e.id),
+        vendor: e.supplier?.name || e.description || null,
+        category: e.accountingClassification || null,
+        description: e.description || null,
+        date: e.documentDate || e.date || null,
+        amount: e.totalAmount || e.amount || 0,
+        vat_amount: e.vat || 0,
+        net_amount: (e.totalAmount || e.amount || 0) - (e.vat || 0),
+        currency: e.currency || 'ILS',
+        reference_number: e.number != null ? String(e.number) : null,
+        raw: e, synced_at: new Date().toISOString(),
+      }, ['user_id', 'provider', 'provider_expense_id']);
+      count++;
+    }
+    console.log(`Fetched ${items.length} expenses (page ${page})`);
+    if (items.length < 100) break;
+    page++;
+    if (page > 100) break;
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  return count;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -24,52 +197,45 @@ Deno.serve(async (req) => {
     const connection = connections[0];
     const provider = connection.provider;
 
-    // Delegate to provider-specific sync function
-    const providerSyncMap = {
-      icount: 'icountSyncPull',
-      finbot: 'finbotSyncPull',
-      morning: 'morningSyncPull',
-    };
-
-    const syncFn = providerSyncMap[provider];
-    if (!syncFn) {
+    if (provider !== 'morning') {
       return Response.json({ error: `סנכרון עדיין לא נתמך עבור ${provider}` }, { status: 400 });
     }
 
-    // If "all", sync customers, documents, expenses sequentially
-    if (resource === 'all') {
-      const results = {};
-      for (const res of ['customers', 'documents', 'expenses']) {
-        try {
-          const r = await base44.functions.invoke(syncFn, { resource: res });
-          results[res] = r?.data?.synced_count || r?.synced_count || 0;
-        } catch (e) {
-          console.log(`Sync ${res} error:`, e.message);
-          results[res] = 0;
-        }
-      }
-      // Update last_sync_at
-      await base44.asServiceRole.entities.AccountingConnection.update(connection.id, {
-        last_sync_at: new Date().toISOString()
-      });
-      return Response.json({ status: 'success', provider, results });
+    const jwt = await getMorningJWT(connection);
+    const results = {};
+    let totalCount = 0;
+
+    const resources = resource === 'all' ? ['customers', 'documents', 'expenses'] : [resource];
+
+    for (const res of resources) {
+      let count = 0;
+      if (res === 'customers') count = await morningSyncCustomers(base44, user.id, jwt);
+      else if (res === 'documents') count = await morningSyncDocuments(base44, user.id, jwt);
+      else if (res === 'expenses') count = await morningSyncExpenses(base44, user.id, jwt);
+      results[res] = count;
+      totalCount += count;
+      console.log(`Synced ${count} ${res}`);
     }
 
-    // Single resource sync
-    const result = await base44.functions.invoke(syncFn, { resource });
-
-    // Update last_sync_at
+    // Update connection
     await base44.asServiceRole.entities.AccountingConnection.update(connection.id, {
-      last_sync_at: new Date().toISOString()
+      last_sync_at: new Date().toISOString(),
+      last_full_import_at: new Date().toISOString(),
+      last_error: null,
     });
 
-    return Response.json({
-      status: 'success',
-      provider,
-      synced_count: result?.data?.synced_count || result?.synced_count || 0,
-      job_id: result?.data?.job_id || result?.job_id,
+    // Audit
+    await base44.asServiceRole.entities.AccountingAuditLog.create({
+      user_id: user.id,
+      provider: 'morning',
+      action: `sync.pull_${resource}`,
+      details: { synced_count: totalCount, results },
+      success: true,
     });
+
+    return Response.json({ status: 'success', provider, synced_count: totalCount, results });
   } catch (error) {
+    console.log('acctSyncPull error:', error.message);
     return Response.json({ error: error.message, status: 'error' }, { status: 500 });
   }
 });
