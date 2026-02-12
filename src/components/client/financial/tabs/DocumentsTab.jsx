@@ -36,20 +36,18 @@ export default function DocumentsTab({ data }) {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents', providerId || 'none'],
     queryFn: () => {
-      if (!isConnected || !providerId) return [];
       return base44.entities.FinbotDocument.filter({ provider: providerId }, '-issue_date', 500);
     },
-    enabled: !providerLoading,
+    enabled: !providerLoading && isConnected && !!providerId,
     refetchOnWindowFocus: true,
   });
 
   const { data: customers = [] } = useQuery({
     queryKey: ['finbot-customers', providerId || 'none'],
     queryFn: () => {
-      if (!isConnected || !providerId) return [];
       return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
-    enabled: !providerLoading,
+    enabled: !providerLoading && isConnected && !!providerId,
   });
 
   const syncMutation = useMutation({
