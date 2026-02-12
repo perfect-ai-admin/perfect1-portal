@@ -21,16 +21,18 @@ export default function ConnectionsTab({ data }) {
   const [showSoftwareDialog, setShowSoftwareDialog] = useState(false); // step 1: intro
   const [showProviderSelection, setShowProviderSelection] = useState(false); // step 2: choose provider
 
-  // Fetch status for all available providers
+  // Fetch unified connection status
   const fetchAllStatuses = async () => {
     setLoading(true);
     const newStatuses = {};
 
-    for (const provider of ACCOUNTING_PROVIDERS) {
-      if (provider.status === 'available' && provider.statusFunction) {
-        const res = await base44.functions.invoke(provider.statusFunction);
-        newStatuses[provider.id] = res.data;
+    try {
+      const res = await base44.functions.invoke('acctGetConnectionStatus');
+      if (res.data?.connected) {
+        newStatuses[res.data.provider] = res.data;
       }
+    } catch (err) {
+      console.log('Status fetch error:', err);
     }
 
     setStatuses(newStatuses);
@@ -39,81 +41,63 @@ export default function ConnectionsTab({ data }) {
 
   useEffect(() => { fetchAllStatuses(); }, []);
 
-  const handleConnect = async (providerId, strategy, credentials) => {
+  const handleConnect = async (providerId, credentials) => {
     const provider = getProvider(providerId);
-    if (!provider?.completeFunction) return;
-
     setConnectLoading(true);
 
-    // Direct connect - send API key to complete function
-    const completeRes = await base44.functions.invoke(provider.completeFunction, credentials);
-    setConnectLoading(false);
+    try {
+      const res = await base44.functions.invoke('acctConnectProvider', { 
+        provider: providerId, 
+        credentials 
+      });
 
-    if (completeRes.data?.status === 'connected') {
-      const sync = completeRes.data?.sync;
-      if (sync) {
-        const parts = [];
-        if (sync.customers > 0) parts.push(`${sync.customers} לקוחות`);
-        if (sync.documents > 0) parts.push(`${sync.documents} מסמכים`);
-        if (sync.expenses > 0) parts.push(`${sync.expenses} הוצאות`);
-        const syncMsg = parts.length > 0 ? ` | סונכרנו: ${parts.join(', ')}` : '';
-        toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉${syncMsg}`, { duration: 6000 });
+      if (res.data?.status === 'connected') {
+        toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה! 🎉`, { duration: 6000 });
+        setConnectProvider(null);
+        queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
+        fetchAllStatuses();
       } else {
-        toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
+        toast.error(res.data?.error || 'שגיאה בהתחברות');
       }
-      setConnectProvider(null);
-      // Invalidate all financial queries so data appears immediately
-      queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
-      fetchAllStatuses();
-    } else {
-      toast.error(completeRes.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'שגיאה בהתחברות');
     }
+    setConnectLoading(false);
   };
 
   const handleDisconnect = async (providerId) => {
     const provider = getProvider(providerId);
-    if (!provider?.disconnectFunction) return;
     if (!confirm(`בטוח שברצונך להתנתק מ-${provider.name}?`)) return;
 
     setDisconnectLoading(p => ({ ...p, [providerId]: true }));
-    await base44.functions.invoke(provider.disconnectFunction);
+    await base44.functions.invoke('acctDisconnectProvider');
     setDisconnectLoading(p => ({ ...p, [providerId]: false }));
     toast.success(`התנתקת מ-${provider.name}`);
-    // Clear cached data immediately so it doesn't show stale results
-    queryClient.setQueryData(['finbot-documents', providerId], []);
-    queryClient.setQueryData(['finbot-customers', providerId], []);
-    queryClient.setQueryData(['finbot-expenses', providerId], []);
-    queryClient.setQueryData(['finbot-documents-revenue', providerId], []);
     queryClient.setQueryData(['active-accounting-connection'], null);
-    // Then invalidate to refetch fresh state
     queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
-    queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
-    queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
-    queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
-    queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
     fetchAllStatuses();
   };
 
   const handleSync = async (providerId, resource) => {
     const provider = getProvider(providerId);
-    if (!provider?.syncFunction) return;
-
     const key = `${providerId}_${resource}`;
     setSyncLoading(p => ({ ...p, [key]: true }));
 
-    const res = await base44.functions.invoke(provider.syncFunction, { resource });
-    setSyncLoading(p => ({ ...p, [key]: false }));
-
-    if (res.data?.status === 'success') {
-      toast.success(`סונכרנו ${res.data.synced_count || 0} רשומות מ-${provider.name}`);
-      fetchAllStatuses();
-    } else {
-      toast.error(res.data?.error || 'שגיאה בסנכרון');
+    try {
+      // Use existing provider-specific sync for icount (already works), unified for others
+      const syncFn = providerId === 'icount' ? 'icountSyncPull' : 'acctSyncPull';
+      const res = await base44.functions.invoke(syncFn, { resource });
+      
+      if (res.data?.status === 'success') {
+        toast.success(`סונכרנו ${res.data.synced_count || 0} רשומות מ-${provider.name}`);
+        fetchAllStatuses();
+      } else {
+        toast.error(res.data?.error || 'שגיאה בסנכרון');
+      }
+    } catch (err) {
+      toast.error('שגיאה בסנכרון');
     }
+    setSyncLoading(p => ({ ...p, [key]: false }));
   };
 
   // Build sync loading map per provider
