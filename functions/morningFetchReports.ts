@@ -258,11 +258,20 @@ Deno.serve(async (req) => {
       toDate: period_end,
     });
 
-    // Debug: log document type distribution
+    // Debug: log document type distribution and credit notes details
     const typeCounts = {};
     documents.forEach(d => { typeCounts[d.type] = (typeCounts[d.type] || 0) + 1; });
     console.log(`Morning reports: ${documents.length} docs, ${expenses.length} expenses for ${period_start} to ${period_end}`);
     console.log('Document type distribution:', JSON.stringify(typeCounts));
+    
+    // Log credit notes for debugging
+    const creditNotes = documents.filter(d => d.type === DOC_TYPES.CREDIT_NOTE);
+    if (creditNotes.length > 0) {
+      console.log(`Credit notes (${creditNotes.length}):`);
+      creditNotes.forEach(cn => {
+        console.log(`  #${cn.number} | status:${cn.status} | amount:${cn.amount} | amountDueVat:${cn.amountDueVat} | amountExemptVat:${cn.amountExemptVat} | vat:${cn.vat} | client:${cn.client?.name}`);
+      });
+    }
 
     let data = {};
 
