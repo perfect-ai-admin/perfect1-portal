@@ -4,28 +4,19 @@ const MORNING_BASE = "https://api.greeninvoice.co.il/api/v1";
 
 /**
  * Morning (Green Invoice) — sync pull for customers, documents, expenses.
- * Input: { resource: "customers" | "documents" | "expenses" }
+ * Input: { resource: "customers" | "documents" | "expenses" | "all" }
  */
 
 // Document type mapping: Morning numeric → our string
 const DOC_TYPE_MAP = {
-  305: 'invoice',        // חשבונית מס
-  320: 'invoice_receipt', // חשבונית מס / קבלה
-  400: 'receipt',         // קבלה
-  10:  'quote',           // הצעת מחיר
-  330: 'credit_note',     // חשבונית זיכוי
-  300: 'invoice',         // חשבון עסקה (mapped to invoice)
-  405: 'receipt',         // קבלה על תרומה
-};
-
-const DOC_TYPE_LABELS = {
-  305: 'חשבונית מס',
-  320: 'חשבונית מס / קבלה',
-  400: 'קבלה',
-  10:  'הצעת מחיר',
-  330: 'חשבונית זיכוי',
-  300: 'חשבון עסקה',
-  405: 'קבלה על תרומה',
+  305: 'invoice',         // חשבונית מס
+  320: 'invoice_receipt',  // חשבונית מס / קבלה
+  400: 'receipt',          // קבלה
+  10:  'quote',            // הצעת מחיר
+  330: 'credit_note',      // חשבונית זיכוי
+  300: 'invoice',          // חשבון עסקה
+  405: 'receipt',          // קבלה על תרומה
+  100: 'quote',            // הזמנה
 };
 
 async function getJWT(base44, userId) {
@@ -43,11 +34,13 @@ async function getJWT(base44, userId) {
   });
   
   if (!tokenResp.ok) {
-    const err = await tokenResp.json().catch(() => ({}));
-    throw new Error(err.errorMessage || 'שגיאה בהתחברות ל-Morning');
+    const errText = await tokenResp.text();
+    console.log('Morning token error:', tokenResp.status, errText);
+    throw new Error('שגיאה בהתחברות ל-Morning – בדוק את פרטי ה-API');
   }
   
   const { token } = await tokenResp.json();
+  if (!token) throw new Error('לא התקבל טוקן מ-Morning');
   return { jwt: token, connection: conn };
 }
 
@@ -62,7 +55,11 @@ async function syncCustomers(base44, userId, jwt) {
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ page, pageSize }),
     });
-    if (!resp.ok) break;
+    
+    if (!resp.ok) {
+      console.log('Morning clients/search error:', resp.status, await resp.text().catch(() => ''));
+      break;
+    }
     
     const data = await resp.json();
     const items = data.items || [];
@@ -72,11 +69,11 @@ async function syncCustomers(base44, userId, jwt) {
       const normalized = {
         user_id: userId,
         provider: 'morning',
-        provider_customer_id: c.id,
+        provider_customer_id: String(c.id),
         name: c.name || c.companyName || 'ללא שם',
         contact_person: c.contactPerson || null,
         tax_id: c.taxId || null,
-        email: (c.emails && c.emails[0]) || null,
+        email: Array.isArray(c.emails) && c.emails.length > 0 ? c.emails[0] : null,
         phone: c.phone || null,
         address: c.address || null,
         city: c.city || null,
@@ -89,7 +86,7 @@ async function syncCustomers(base44, userId, jwt) {
 
       // Upsert: find existing by provider_customer_id
       const existing = await base44.asServiceRole.entities.AccountingCustomer.filter({
-        user_id: userId, provider: 'morning', provider_customer_id: c.id,
+        user_id: userId, provider: 'morning', provider_customer_id: String(c.id),
       });
       
       if (existing?.length > 0) {
@@ -102,7 +99,8 @@ async function syncCustomers(base44, userId, jwt) {
 
     if (items.length < pageSize) break;
     page++;
-    await new Promise(r => setTimeout(r, 300)); // rate limit
+    if (page > 20) break; // safety limit
+    await new Promise(r => setTimeout(r, 300));
   }
   return totalSynced;
 }
@@ -123,7 +121,11 @@ async function syncDocuments(base44, userId, jwt) {
         sortType: 'desc',
       }),
     });
-    if (!resp.ok) break;
+    
+    if (!resp.ok) {
+      console.log('Morning documents/search error:', resp.status, await resp.text().catch(() => ''));
+      break;
+    }
     
     const data = await resp.json();
     const items = data.items || [];
@@ -142,27 +144,33 @@ async function syncDocuments(base44, userId, jwt) {
       const vatAmount = d.vat || 0;
       const total = d.totalAmount || (subtotal + vatAmount);
 
-      // Map payment method
+      // Map payment method from payment array
       let paymentMethod = null;
-      if (d.payment && d.payment.length > 0) {
+      if (Array.isArray(d.payment) && d.payment.length > 0) {
         const pmMap = { 0: 'other', 1: 'cash', 2: 'check', 3: 'credit_card', 4: 'bank_transfer', 5: 'paypal', 10: 'bit' };
         paymentMethod = pmMap[d.payment[0].type] || 'other';
+      }
+
+      // Get PDF URL from url object
+      let pdfUrl = null;
+      if (d.url) {
+        pdfUrl = d.url.origin || d.url.he || d.url.en || null;
       }
 
       const normalized = {
         user_id: userId,
         provider: 'morning',
-        provider_document_id: d.id,
+        provider_document_id: String(d.id),
         doc_type: docType,
-        doc_number: d.number ? String(d.number) : null,
+        doc_number: d.number != null ? String(d.number) : null,
         status,
-        direction: 'inbound',
-        customer_provider_id: d.client?.id || null,
-        customer_name: d.client?.name || d.clientName || null,
+        direction: 'outbound',
+        customer_provider_id: d.client?.id ? String(d.client.id) : null,
+        customer_name: d.client?.name || null,
         customer_tax_id: d.client?.taxId || null,
         currency: d.currency || 'ILS',
         subtotal,
-        vat_rate: d.vatType === 0 ? 0 : 17,
+        vat_rate: d.vatType === 2 ? 0 : 17, // vatType 2=exempt
         vat_amount: vatAmount,
         total,
         amount_paid: d.totalPaid || 0,
@@ -171,20 +179,20 @@ async function syncDocuments(base44, userId, jwt) {
         due_date: d.dueDate || null,
         payment_date: d.paymentDate || null,
         payment_method: paymentMethod,
-        items: (d.income || []).map(item => ({
+        items: Array.isArray(d.income) ? d.income.map(item => ({
           description: item.description || '',
           quantity: item.quantity || 1,
           unit_price: item.price || 0,
           line_total: (item.quantity || 1) * (item.price || 0),
-        })),
+        })) : [],
         notes: d.footer || d.remarks || null,
-        pdf_url: d.url?.origin || null,
+        pdf_url: pdfUrl,
         raw: d,
         synced_at: new Date().toISOString(),
       };
 
       const existing = await base44.asServiceRole.entities.AccountingDocument.filter({
-        user_id: userId, provider: 'morning', provider_document_id: d.id,
+        user_id: userId, provider: 'morning', provider_document_id: String(d.id),
       });
       
       if (existing?.length > 0) {
@@ -197,6 +205,7 @@ async function syncDocuments(base44, userId, jwt) {
 
     if (items.length < pageSize) break;
     page++;
+    if (page > 20) break;
     await new Promise(r => setTimeout(r, 300));
   }
   return totalSynced;
@@ -213,7 +222,11 @@ async function syncExpenses(base44, userId, jwt) {
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ page, pageSize }),
     });
-    if (!resp.ok) break;
+    
+    if (!resp.ok) {
+      console.log('Morning expenses/search error:', resp.status, await resp.text().catch(() => ''));
+      break;
+    }
     
     const data = await resp.json();
     const items = data.items || [];
@@ -223,7 +236,7 @@ async function syncExpenses(base44, userId, jwt) {
       const normalized = {
         user_id: userId,
         provider: 'morning',
-        provider_expense_id: e.id,
+        provider_expense_id: String(e.id),
         vendor: e.supplier?.name || e.description || null,
         category: e.accountingClassification || null,
         description: e.description || null,
@@ -233,13 +246,13 @@ async function syncExpenses(base44, userId, jwt) {
         net_amount: (e.totalAmount || e.amount || 0) - (e.vat || 0),
         currency: e.currency || 'ILS',
         payment_method: null,
-        reference_number: e.number ? String(e.number) : null,
+        reference_number: e.number != null ? String(e.number) : null,
         raw: e,
         synced_at: new Date().toISOString(),
       };
 
       const existing = await base44.asServiceRole.entities.AccountingExpense.filter({
-        user_id: userId, provider: 'morning', provider_expense_id: e.id,
+        user_id: userId, provider: 'morning', provider_expense_id: String(e.id),
       });
       
       if (existing?.length > 0) {
@@ -252,6 +265,7 @@ async function syncExpenses(base44, userId, jwt) {
 
     if (items.length < pageSize) break;
     page++;
+    if (page > 20) break;
     await new Promise(r => setTimeout(r, 300));
   }
   return totalSynced;
@@ -263,7 +277,8 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { resource } = await req.json();
+    const body = await req.json();
+    const resource = body.resource;
     if (!resource) return Response.json({ error: 'resource is required' }, { status: 400 });
 
     const { jwt, connection } = await getJWT(base44, user.id);
@@ -271,13 +286,19 @@ Deno.serve(async (req) => {
     let synced_count = 0;
 
     if (resource === 'customers' || resource === 'all') {
-      synced_count += await syncCustomers(base44, user.id, jwt);
+      const count = await syncCustomers(base44, user.id, jwt);
+      synced_count += count;
+      console.log(`Morning synced ${count} customers`);
     }
     if (resource === 'documents' || resource === 'all') {
-      synced_count += await syncDocuments(base44, user.id, jwt);
+      const count = await syncDocuments(base44, user.id, jwt);
+      synced_count += count;
+      console.log(`Morning synced ${count} documents`);
     }
     if (resource === 'expenses' || resource === 'all') {
-      synced_count += await syncExpenses(base44, user.id, jwt);
+      const count = await syncExpenses(base44, user.id, jwt);
+      synced_count += count;
+      console.log(`Morning synced ${count} expenses`);
     }
 
     // Update connection last_sync_at
@@ -297,6 +318,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ status: 'success', synced_count });
   } catch (error) {
+    console.log('morningSyncPull error:', error.message);
     return Response.json({ error: error.message, status: 'error' }, { status: 500 });
   }
 });
