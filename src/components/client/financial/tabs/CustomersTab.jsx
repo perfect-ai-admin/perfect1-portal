@@ -20,8 +20,10 @@ export default function CustomersTab({ data }) {
   const { fn, providerId, isConnected, isLoading: providerLoading } = useActiveAccountingProvider();
 
   const { data: customers = [], isLoading } = useQuery({
-    queryKey: ['finbot-customers', providerId || 'none'],
-    queryFn: () => {
+    queryKey: ['accounting-customers', providerId || 'none'],
+    queryFn: async () => {
+      const custs = await base44.entities.AccountingCustomer.filter({ provider: providerId }, '-created_date', 500);
+      if (custs?.length > 0) return custs;
       return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
@@ -33,7 +35,7 @@ export default function CustomersTab({ data }) {
       return base44.functions.invoke('acctSyncPull', { resource: 'customers' });
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-customers', providerId || 'none'] });
+      queryClient.invalidateQueries({ queryKey: ['accounting-customers', providerId || 'none'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} לקוחות`);
     },
     onError: (err) => toast.error(err.message || 'שגיאה בסנכרון'),
@@ -44,7 +46,7 @@ export default function CustomersTab({ data }) {
       return base44.functions.invoke('acctCreateCustomer', data);
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
+      queryClient.invalidateQueries({ queryKey: ['accounting-customers'] });
       const providerIdResult = res.data?.provider_id;
       toast.success(`לקוח נוצר בהצלחה${providerIdResult ? ' ונשמר ב-iCount' : ''}`);
       setShowAddCustomer(false);

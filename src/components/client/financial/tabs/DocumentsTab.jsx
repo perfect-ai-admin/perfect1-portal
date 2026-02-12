@@ -34,8 +34,18 @@ export default function DocumentsTab({ data }) {
   const { fn, isConnected, isLoading: providerLoading, isVatExempt, providerId } = useActiveAccountingProvider();
 
   const { data: documents = [], isLoading } = useQuery({
-    queryKey: ['finbot-documents', providerId || 'none'],
-    queryFn: () => {
+    queryKey: ['accounting-documents', providerId || 'none'],
+    queryFn: async () => {
+      // Try unified AccountingDocument first, fallback to legacy FinbotDocument
+      const docs = await base44.entities.AccountingDocument.filter({ provider: providerId }, '-issue_date', 500);
+      if (docs?.length > 0) return docs.map(d => ({
+        ...d,
+        type: d.doc_type || d.type,
+        subtotal: d.subtotal || 0,
+        vat: d.vat_amount || d.vat || 0,
+        total: d.total || 0,
+        customer_name: d.customer_name || '',
+      }));
       return base44.entities.FinbotDocument.filter({ provider: providerId }, '-issue_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
@@ -43,8 +53,10 @@ export default function DocumentsTab({ data }) {
   });
 
   const { data: customers = [] } = useQuery({
-    queryKey: ['finbot-customers', providerId || 'none'],
-    queryFn: () => {
+    queryKey: ['accounting-customers', providerId || 'none'],
+    queryFn: async () => {
+      const custs = await base44.entities.AccountingCustomer.filter({ provider: providerId }, '-created_date', 500);
+      if (custs?.length > 0) return custs;
       return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
@@ -55,8 +67,8 @@ export default function DocumentsTab({ data }) {
       return base44.functions.invoke('acctSyncPull', { resource: 'documents' });
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents', providerId || 'none'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
+      queryClient.invalidateQueries({ queryKey: ['accounting-documents', providerId || 'none'] });
+      queryClient.invalidateQueries({ queryKey: ['accounting-documents-revenue'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} מסמכים`);
     },
     onError: (err) => toast.error(err.message),

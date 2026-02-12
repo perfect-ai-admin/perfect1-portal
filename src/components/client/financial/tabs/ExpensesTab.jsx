@@ -12,8 +12,10 @@ export default function ExpensesTab({ data }) {
   const { fn, isConnected, providerId, isLoading: providerLoading } = useActiveAccountingProvider();
 
   const { data: expenses = [], isLoading } = useQuery({
-    queryKey: ['finbot-expenses', providerId || 'none'],
-    queryFn: () => {
+    queryKey: ['accounting-expenses', providerId || 'none'],
+    queryFn: async () => {
+      const exps = await base44.entities.AccountingExpense.filter({ provider: providerId }, '-date', 500);
+      if (exps?.length > 0) return exps;
       return base44.entities.FinbotExpense.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
@@ -24,7 +26,7 @@ export default function ExpensesTab({ data }) {
       return base44.functions.invoke('acctSyncPull', { resource: 'expenses' });
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['accounting-expenses'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} הוצאות`);
     },
     onError: (err) => toast.error(err.message || 'שגיאה בסנכרון'),
