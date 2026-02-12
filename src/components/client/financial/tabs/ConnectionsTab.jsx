@@ -159,15 +159,17 @@ export default function ConnectionsTab({ data }) {
       <ConnectAccountingSoftwareDialog
         open={showSoftwareDialog}
         onOpenChange={(val) => {
-          setShowSoftwareDialog(val);
-          if (!val) setConnectProvider(null);
+          if (!val && !connectProvider) {
+            // Only clear provider if user cancelled (X button), not when continuing
+            setShowSoftwareDialog(false);
+          } else {
+            setShowSoftwareDialog(val);
+          }
         }}
         onContinue={() => {
           setShowSoftwareDialog(false);
           // If provider already selected (clicked from card), go straight to credentials
-          if (connectProvider) {
-            // Dialog will open via connectProvider state
-          } else {
+          if (!connectProvider) {
             setShowProviderSelection(true);
           }
         }}
