@@ -34,9 +34,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: `דוחות עדיין לא נתמכים עבור ${provider}` }, { status: 400 });
     }
 
-    const result = await base44.asServiceRole.functions.invoke(reportFn, body);
-    // Morning returns {data: {...}}, pass through directly
-    return Response.json(result);
+    const result = await base44.functions.invoke(reportFn, body);
+    // The inner function returns {data: {...}}, pass through
+    return Response.json(result.data);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
