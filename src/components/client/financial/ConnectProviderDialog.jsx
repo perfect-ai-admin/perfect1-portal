@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Link2, Loader2, ShieldCheck, HelpCircle, ChevronDown, ChevronUp, ExternalLink, X } from 'lucide-react';
+import { Link2, Loader2, ShieldCheck, HelpCircle, ChevronDown, ChevronUp, ExternalLink, X, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 const PROVIDER_GUIDES = {
+  morning: {
+    steps: [
+      'היכנס לחשבון Morning (חשבונית ירוקה) שלך',
+      'לחץ על "הגדרות" > "מפתחות API"',
+      'לחץ על "צור מפתח API חדש"',
+      'העתק את ה-API Key וה-API Secret שנוצרו',
+      'הדבק את שניהם כאן',
+    ],
+    link: { url: 'https://app.greeninvoice.co.il/settings/api-keys', label: 'פתח את הגדרות API ב-Morning' },
+  },
   icount: {
     steps: [
       'היכנס לחשבון ה-iCount שלך ב-app.icount.co.il',
@@ -17,72 +29,89 @@ const PROVIDER_GUIDES = {
       'היכנס לאפליקציית Finbot שלך',
       'עבור ללשונית "הגדרות העסק"',
       'חפש את השדה "מפתח API להפקת הכנסות"',
-      'לחץ על "יצירת מפתח API" — המערכת תיצור עבורך טוקן',
+      'לחץ על "יצירת מפתח API"',
       'העתק את הטוקן והדבק אותו כאן',
     ],
     link: { url: 'https://bros.finbot.co.il/hs-user/index.php', label: 'פתח את חשבון Finbot שלי' },
   },
-  morning: {
-    steps: [
-      'היכנס לחשבון Morning (חשבונית ירוקה) שלך',
-      'לחץ על "הגדרות" > "מפתחות API"',
-      'לחץ על "צור מפתח API חדש"',
-      'העתק את ה-API Key וה-API Secret שנוצרו',
-      'הדבק את שניהם כאן',
-    ],
-    link: { url: 'https://app.greeninvoice.co.il/settings/api-keys', label: 'פתח את הגדרות API ב-Morning' },
-  },
-  sumit: {
-    steps: [
-      'היכנס לחשבון Sumit שלך',
-      'עבור להגדרות > אינטגרציות',
-      'העתק את ה-API Key',
-    ],
-    link: { url: 'https://app.sumit.co.il', label: 'פתח את חשבון Sumit שלי' },
-  },
 };
 
-function ConnectProviderDialogInner({ provider, onConnect, onClose, loading }) {
+// This component handles EVERYTHING internally - no dependency on parent state
+function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
   const [credentials, setCredentials] = useState({});
   const [showGuide, setShowGuide] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState('idle'); // idle | connecting | success | error
+  const [errorMsg, setErrorMsg] = useState('');
 
   const authFields = provider.authFields || [];
   const guide = PROVIDER_GUIDES[provider.id];
 
+  const allFieldsFilled = authFields.every(f => (credentials[f.name] || '').trim().length > 0);
+
   async function doConnect() {
-    if (submitting || loading) return;
-    setSubmitting(true);
-    console.log('📡 doConnect:', provider.id, Object.keys(credentials));
-    try {
-      await onConnect(provider.id, { ...credentials });
-    } catch (err) {
-      console.error('doConnect error:', err);
+    if (status === 'connecting') return;
+    if (!allFieldsFilled) {
+      setErrorMsg('אנא מלא את כל השדות');
+      setStatus('error');
+      return;
     }
-    setSubmitting(false);
+
+    setStatus('connecting');
+    setErrorMsg('');
+
+    try {
+      console.log('📡 Connecting to', provider.id, '...');
+      const res = await base44.functions.invoke('acctConnectProvider', {
+        provider: provider.id,
+        credentials
+      });
+      console.log('📡 Response:', JSON.stringify(res.data));
+
+      if (res.data?.status === 'connected') {
+        setStatus('success');
+        toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה! 🎉`, { duration: 6000 });
+        // Wait a moment to show success state, then close
+        setTimeout(() => {
+          onSuccess?.();
+          onClose();
+        }, 1500);
+      } else {
+        setStatus('error');
+        setErrorMsg(res.data?.error || 'שגיאה לא צפויה בהתחברות');
+      }
+    } catch (err) {
+      console.error('📡 Connect error:', err);
+      setStatus('error');
+      const msg = err?.response?.data?.error || err?.message || 'שגיאה בהתחברות';
+      setErrorMsg(msg);
+    }
   }
 
-  const isLoading = loading || submitting;
-
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999, direction: 'rtl' }}>
-      <div 
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)' }}
-        onMouseDown={onClose}
+    <div style={{ position: 'fixed', inset: 0, zIndex: 99999, direction: 'rtl' }}>
+      {/* Overlay */}
+      <div
+        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)' }}
+        onClick={() => { if (status !== 'connecting') onClose(); }}
       />
-      
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
-        <div 
+
+      {/* Dialog */}
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
+        <div
           style={{ background: 'white', borderRadius: 12, boxShadow: '0 25px 50px rgba(0,0,0,0.25)', width: '100%', maxWidth: 440, pointerEvents: 'auto', position: 'relative' }}
-          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
         >
-          <div 
-            style={{ position: 'absolute', top: 12, left: 12, cursor: 'pointer', padding: 4, borderRadius: '50%', color: '#9ca3af' }}
-            onMouseDown={(e) => { e.stopPropagation(); onClose(); }}
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={status === 'connecting'}
+            style={{ position: 'absolute', top: 12, left: 12, background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 4 }}
           >
             <X className="w-5 h-5" />
-          </div>
+          </button>
 
+          {/* Header */}
           <div style={{ padding: '24px 24px 16px' }}>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center border"
@@ -96,100 +125,117 @@ function ConnectProviderDialogInner({ provider, onConnect, onClose, loading }) {
             </p>
           </div>
 
-          <div style={{ padding: '0 24px', maxHeight: '50vh', overflowY: 'auto' }}>
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
-                <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-                <span>החיבור מאובטח ומוצפן. הנתונים נשמרים רק בחשבון שלך.</span>
-              </div>
-
-              {authFields.map((field) => (
-                <div key={field.name}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
-                  <input
-                    type={field.type || 'text'}
-                    placeholder={field.placeholder || ''}
-                    value={credentials[field.name] || ''}
-                    onChange={e => {
-                      const val = e.target.value;
-                      setCredentials(prev => ({ ...prev, [field.name]: val }));
-                    }}
-                    dir="ltr"
-                    autoComplete="off"
-                    style={{ width: '100%', textAlign: 'left', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, outline: 'none' }}
-                  />
-                </div>
-              ))}
-
-              {guide && (
-                <>
-                  <div
-                    onMouseDown={() => setShowGuide(!showGuide)}
-                    className="w-full flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors py-1 cursor-pointer select-none"
-                  >
-                    <HelpCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>איפה מוצאים את הפרטים?</span>
-                    {showGuide ? <ChevronUp className="w-4 h-4 mr-auto" /> : <ChevronDown className="w-4 h-4 mr-auto" />}
+          {/* Success state */}
+          {status === 'success' ? (
+            <div style={{ padding: '24px', textAlign: 'center' }}>
+              <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-3" />
+              <p className="text-lg font-bold text-green-700">החשבון חובר בהצלחה!</p>
+              <p className="text-sm text-gray-500 mt-1">מסנכרנים נתונים ברקע...</p>
+            </div>
+          ) : (
+            <>
+              {/* Form */}
+              <div style={{ padding: '0 24px', maxHeight: '50vh', overflowY: 'auto' }}>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
+                    <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+                    <span>החיבור מאובטח ומוצפן. הנתונים נשמרים רק בחשבון שלך.</span>
                   </div>
-                  {showGuide && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3 text-sm text-blue-900">
-                      <ol className="list-decimal list-inside space-y-2 pr-2 text-blue-800">
-                        {guide.steps.map((step, i) => <li key={i}>{step}</li>)}
-                      </ol>
-                      {guide.link && (
-                        <div className="pt-1 border-t border-blue-200">
-                          <a href={guide.link.url} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium">
-                            <ExternalLink className="w-3.5 h-3.5" /> {guide.link.label}
-                          </a>
-                        </div>
-                      )}
+
+                  {authFields.map((field) => (
+                    <div key={field.name}>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
+                      <input
+                        type={field.type || 'text'}
+                        placeholder={field.placeholder || ''}
+                        value={credentials[field.name] || ''}
+                        onChange={e => setCredentials(prev => ({ ...prev, [field.name]: e.target.value }))}
+                        disabled={status === 'connecting'}
+                        dir="ltr"
+                        autoComplete="off"
+                        style={{
+                          width: '100%', textAlign: 'left', padding: '8px 12px',
+                          border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, outline: 'none',
+                          opacity: status === 'connecting' ? 0.6 : 1
+                        }}
+                      />
+                    </div>
+                  ))}
+
+                  {/* Error message */}
+                  {status === 'error' && errorMsg && (
+                    <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-red-700">
+                      <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                      <span>{errorMsg}</span>
                     </div>
                   )}
-                </>
-              )}
-            </div>
-          </div>
 
-          <div style={{ padding: '16px 24px 24px', display: 'flex', gap: 8, borderTop: '1px solid #f3f4f6', marginTop: 8 }}>
-            <div
-              role="button"
-              tabIndex={0}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!isLoading) doConnect();
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!isLoading) doConnect();
-              }}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '10px 20px', background: isLoading ? '#94a3b8' : '#1E3A5F', color: 'white',
-                borderRadius: 8, fontWeight: 500, fontSize: 14,
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                userSelect: 'none',
-              }}
-            >
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />}
-              חבר את החשבון
-            </div>
-            <div
-              role="button"
-              tabIndex={0}
-              onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
-              style={{
-                padding: '10px 16px', background: 'white', border: '1px solid #d1d5db',
-                color: '#374151', borderRadius: 8, fontWeight: 500, fontSize: 14,
-                cursor: 'pointer', userSelect: 'none',
-              }}
-            >
-              ביטול
-            </div>
-          </div>
+                  {/* Guide */}
+                  {guide && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setShowGuide(!showGuide)}
+                        className="w-full flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors py-1"
+                        style={{ background: 'none', border: 'none' }}
+                      >
+                        <HelpCircle className="w-4 h-4 flex-shrink-0" />
+                        <span>איפה מוצאים את הפרטים?</span>
+                        {showGuide ? <ChevronUp className="w-4 h-4 mr-auto" /> : <ChevronDown className="w-4 h-4 mr-auto" />}
+                      </button>
+                      {showGuide && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3 text-sm text-blue-900">
+                          <ol className="list-decimal list-inside space-y-2 pr-2 text-blue-800">
+                            {guide.steps.map((step, i) => <li key={i}>{step}</li>)}
+                          </ol>
+                          {guide.link && (
+                            <div className="pt-1 border-t border-blue-200">
+                              <a href={guide.link.url} target="_blank" rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium">
+                                <ExternalLink className="w-3.5 h-3.5" /> {guide.link.label}
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Footer buttons */}
+              <div style={{ padding: '16px 24px 24px', display: 'flex', gap: 8, borderTop: '1px solid #f3f4f6', marginTop: 8 }}>
+                <button
+                  type="button"
+                  disabled={status === 'connecting' || !allFieldsFilled}
+                  onClick={doConnect}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    padding: '10px 20px',
+                    background: (status === 'connecting' || !allFieldsFilled) ? '#94a3b8' : '#1E3A5F',
+                    color: 'white', borderRadius: 8, fontWeight: 500, fontSize: 14,
+                    cursor: (status === 'connecting' || !allFieldsFilled) ? 'not-allowed' : 'pointer',
+                    border: 'none',
+                  }}
+                >
+                  {status === 'connecting' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />}
+                  {status === 'connecting' ? 'מתחבר...' : 'חבר את החשבון'}
+                </button>
+                <button
+                  type="button"
+                  disabled={status === 'connecting'}
+                  onClick={onClose}
+                  style={{
+                    padding: '10px 16px', background: 'white', border: '1px solid #d1d5db',
+                    color: '#374151', borderRadius: 8, fontWeight: 500, fontSize: 14,
+                    cursor: status === 'connecting' ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  ביטול
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -197,21 +243,13 @@ function ConnectProviderDialogInner({ provider, onConnect, onClose, loading }) {
 }
 
 export default function ConnectProviderDialog({ open, onClose, provider, onConnect, loading }) {
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      return () => { document.body.style.overflow = ''; };
-    }
-  }, [open]);
-
   if (!open || !provider) return null;
 
   return ReactDOM.createPortal(
-    <ConnectProviderDialogInner 
-      provider={provider} 
-      onConnect={onConnect} 
-      onClose={onClose} 
-      loading={loading} 
+    <ConnectProviderDialogInner
+      provider={provider}
+      onSuccess={onConnect ? () => onConnect(provider.id, {}) : undefined}
+      onClose={onClose}
     />,
     document.body
   );
