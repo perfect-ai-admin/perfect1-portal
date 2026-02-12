@@ -132,12 +132,23 @@ Deno.serve(async (req) => {
         if (['invrec', 'receipt'].includes(icountDoctype)) {
           docPayload.cash = { sum: totalWithVat };
         }
+        console.log(`QA ${stepName} payload:`, JSON.stringify(docPayload));
         const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(docPayload)
         });
         const data = await res.json();
+        console.log(`QA ${stepName} response:`, JSON.stringify(data));
+
+        // If doctype not supported by account, treat as warn not fail
+        const errDesc = data.error_description || data.reason || '';
+        if (!data.status && (errDesc.includes('לא חוקי') || errDesc.includes('לא נתמך') || errDesc.includes('not supported'))) {
+          await logStep(stepName, 'warn', `DOCTYPE_NOT_SUPPORTED: ${errDesc}`);
+          warnings.push(`${type}: ${errDesc}`);
+          return;
+        }
+
         if (data.status && data.docnum) {
           const docId = `${data.doctype || icountDoctype}_${data.docnum}`;
           const localDoc = await base44.asServiceRole.entities.FinbotDocument.create({
