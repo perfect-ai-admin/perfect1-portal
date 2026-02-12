@@ -34,14 +34,22 @@ export default function DocumentsTab({ data }) {
   const { fn, isConnected, isLoading: providerLoading, isVatExempt } = useActiveAccountingProvider();
 
   const { data: documents = [], isLoading } = useQuery({
-    queryKey: ['finbot-documents'],
-    queryFn: () => base44.entities.FinbotDocument.list('-issue_date', 500),
+    queryKey: ['finbot-documents', fn ? 'connected' : 'none'],
+    queryFn: () => {
+      if (!isConnected) return [];
+      return base44.entities.FinbotDocument.list('-issue_date', 500);
+    },
+    enabled: !providerLoading,
     refetchOnWindowFocus: true,
   });
 
   const { data: customers = [] } = useQuery({
-    queryKey: ['finbot-customers'],
-    queryFn: () => base44.entities.FinbotCustomer.list('-created_date', 500),
+    queryKey: ['finbot-customers', fn ? 'connected' : 'none'],
+    queryFn: () => {
+      if (!isConnected) return [];
+      return base44.entities.FinbotCustomer.list('-created_date', 500);
+    },
+    enabled: !providerLoading,
   });
 
   const syncMutation = useMutation({

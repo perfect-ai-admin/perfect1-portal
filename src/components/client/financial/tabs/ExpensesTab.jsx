@@ -11,9 +11,14 @@ export default function ExpensesTab({ data }) {
   const queryClient = useQueryClient();
   const { fn } = useActiveAccountingProvider();
 
+  const { isConnected } = useActiveAccountingProvider();
+
   const { data: expenses = [], isLoading } = useQuery({
-    queryKey: ['finbot-expenses'],
-    queryFn: () => base44.entities.FinbotExpense.list('-created_date', 200),
+    queryKey: ['finbot-expenses', isConnected ? 'connected' : 'none'],
+    queryFn: () => {
+      if (!isConnected) return [];
+      return base44.entities.FinbotExpense.list('-created_date', 500);
+    },
   });
 
   const syncMutation = useMutation({
