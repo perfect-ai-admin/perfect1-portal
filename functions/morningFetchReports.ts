@@ -77,8 +77,11 @@ async function fetchAllPages(jwt, endpoint, filters) {
  */
 
 function getDocBeforeVat(d) {
-  // amountDueVat + amountExemptVat = total before VAT
-  return (d.amountDueVat || 0) + (d.amountExemptVat || 0);
+  // For most docs: amountDueVat + amountExemptVat = total before VAT
+  // For receipts: these fields may be 0, so fallback to amount - vat
+  const fromFields = (d.amountDueVat || 0) + (d.amountExemptVat || 0);
+  if (fromFields > 0) return fromFields;
+  return (d.amount || 0) - (d.vat || 0);
 }
 
 function buildIncomeReport(documents) {
