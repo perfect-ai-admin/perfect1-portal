@@ -143,7 +143,7 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
 
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose}>ביטול</Button>
-          <Button onClick={handleConnect} disabled={loading || !allFieldsFilled}>
+          <Button onClick={handleConnect} disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : <Link2 className="w-4 h-4 ml-2" />}
             חבר את החשבון
           </Button>
