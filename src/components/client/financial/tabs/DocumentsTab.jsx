@@ -156,7 +156,7 @@ export default function DocumentsTab({ data }) {
                     <td className="px-4 py-3">{TYPE_LABELS[doc.type] || doc.type}</td>
                     <td className="px-4 py-3">{doc.customer_name || '-'}</td>
                     <td className="px-4 py-3">{formatCurrency(amounts.subtotal)}</td>
-                    <td className="px-4 py-3">{formatCurrency(amounts.vat)}</td>
+                    <td className="px-4 py-3">{amounts.showVat ? formatCurrency(amounts.vat) : '-'}</td>
                     <td className="px-4 py-3 font-medium">{formatCurrency(amounts.total)}</td>
                     <td className="px-4 py-3">
                       {doc.status && <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[doc.status] || 'bg-gray-100 text-gray-700'}`}>{STATUS_LABELS[doc.status] || doc.status}</span>}
@@ -189,7 +189,7 @@ export default function DocumentsTab({ data }) {
                   </div>
                   <div className="text-left">
                     <p className="font-bold text-sm">{formatCurrency(amounts.total)}</p>
-                    {amounts.vat > 0 && <p className="text-xs text-gray-400">מע״מ: {formatCurrency(amounts.vat)}</p>}
+                    {amounts.showVat && amounts.vat > 0 && <p className="text-xs text-gray-400">מע״מ: {formatCurrency(amounts.vat)}</p>}
                   </div>
                 </div>
               </div>
