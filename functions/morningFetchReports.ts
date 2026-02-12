@@ -85,7 +85,11 @@ function getDocBeforeVat(d) {
 }
 
 function buildIncomeReport(documents) {
-  const activeDocs = documents.filter(d => d.status !== CANCELLED_STATUS);
+  // Credit notes with status=3 (cancelled) in Morning actually represent real cancellations of invoices
+  // They should be INCLUDED in reports. Only non-credit docs with status=3 are truly cancelled.
+  const activeDocs = documents.filter(d => 
+    d.status !== CANCELLED_STATUS || CREDIT_TYPES.includes(d.type)
+  );
 
   const allDocs = activeDocs.map(d => {
     let _type;
@@ -119,7 +123,10 @@ function buildIncomeReport(documents) {
 }
 
 function buildPnLReport(documents, expenses) {
-  const activeDocs = documents.filter(d => d.status !== CANCELLED_STATUS);
+  // Credit notes with status=3 represent real cancellations - include them
+  const activeDocs = documents.filter(d => 
+    d.status !== CANCELLED_STATUS || CREDIT_TYPES.includes(d.type)
+  );
   
   // Income docs (invoices, invoice-receipts, deal invoices)
   const incomeDocs = activeDocs.filter(d => INCOME_TYPES.includes(d.type));
@@ -177,7 +184,10 @@ function buildPnLReport(documents, expenses) {
 }
 
 function buildVATReport(documents, expenses) {
-  const activeDocs = documents.filter(d => d.status !== CANCELLED_STATUS);
+  // Credit notes with status=3 represent real cancellations - include them
+  const activeDocs = documents.filter(d => 
+    d.status !== CANCELLED_STATUS || CREDIT_TYPES.includes(d.type)
+  );
   
   // Taxable transactions use amountDueVat (before VAT amount on taxable portion)
   const taxableInvoices = activeDocs.filter(d => d.type === DOC_TYPES.INVOICE).reduce((s, d) => s + (d.amountDueVat || 0), 0);
