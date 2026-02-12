@@ -154,42 +154,9 @@ export default function ConnectionsTab({ data }) {
         </p>
       </div>
 
-      {/* Step 1: Intro Dialog — then skip to step 3 (credentials) since provider already chosen */}
-      <ConnectAccountingSoftwareDialog
-        open={showSoftwareDialog}
-        onOpenChange={(val) => {
-          if (!val && !connectProvider) {
-            // Only clear provider if user cancelled (X button), not when continuing
-            setShowSoftwareDialog(false);
-          } else {
-            setShowSoftwareDialog(val);
-          }
-        }}
-        onContinue={() => {
-          setShowSoftwareDialog(false);
-          // If provider already selected (clicked from card), go straight to credentials
-          if (!connectProvider) {
-            setShowProviderSelection(true);
-          }
-        }}
-      />
-
-      {/* Step 2: Provider Selection Dialog (only when no provider pre-selected) */}
-      <ProviderSelectionDialog
-        open={showProviderSelection}
-        onOpenChange={(val) => {
-          setShowProviderSelection(val);
-          if (!val) setConnectProvider(null);
-        }}
-        onSelectProvider={(provider) => {
-          setConnectProvider(provider);
-          setShowProviderSelection(false);
-        }}
-      />
-
-      {/* Step 3: Provider-specific Credentials Dialog */}
+      {/* Provider-specific Credentials Dialog — opens directly */}
       <ConnectProviderDialog
-        open={!!connectProvider && !showSoftwareDialog && !showProviderSelection}
+        open={!!connectProvider}
         onClose={() => setConnectProvider(null)}
         provider={connectProvider}
         onConnect={handleConnect}
