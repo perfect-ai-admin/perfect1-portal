@@ -35,7 +35,8 @@ async function ensureIcountSession(base44, userId) {
   }
 
   // Need to re-login
-  if (!conn.provider_account_id || !conn.username || !conn.password_ref) {
+  const password = conn.password_enc || conn.password_ref;
+  if (!conn.provider_account_id || !conn.username || !password) {
     throw new Error('חסרים פרטי התחברות ל-iCount. התחבר מחדש.');
   }
 
@@ -45,7 +46,7 @@ async function ensureIcountSession(base44, userId) {
     body: JSON.stringify({
       cid: conn.provider_account_id,
       user: conn.username,
-      pass: conn.password_ref
+      pass: password
     })
   });
 

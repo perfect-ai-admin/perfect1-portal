@@ -13,10 +13,14 @@ async function ensureSession(base44, userId) {
     return { sid: conn.sid, cid: conn.provider_account_id, conn };
   }
 
+  const password = conn.password_enc || conn.password_ref;
+  if (!conn.provider_account_id || !conn.username || !password) {
+    throw new Error('חסרים פרטי התחברות ל-iCount. התחבר מחדש.');
+  }
   const loginRes = await fetch(`${ICOUNT_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cid: conn.provider_account_id, user: conn.username, pass: conn.password_ref })
+    body: JSON.stringify({ cid: conn.provider_account_id, user: conn.username, pass: password })
   });
   const loginData = await loginRes.json();
   if (!loginData.status) throw new Error(loginData.error_description || 'שגיאת התחברות');
@@ -248,14 +252,23 @@ Deno.serve(async (req) => {
 
     let syncedCount = 0;
 
-    if (resource === 'customers') {
-      syncedCount = await syncCustomers(base44, user.id, sid);
-    } else if (resource === 'documents') {
-      syncedCount = await syncDocuments(base44, user.id, sid);
-    } else if (resource === 'expenses') {
-      syncedCount = await syncExpenses(base44, user.id, sid);
-    } else {
-      return Response.json({ error: `Unknown resource: ${resource}` }, { status: 400 });
+    const results = {};
+    const resources = resource === 'all' ? ['customers', 'documents', 'expenses'] : [resource];
+
+    for (const res of resources) {
+      if (res === 'customers') {
+        const count = await syncCustomers(base44, user.id, sid);
+        results.customers = count;
+        syncedCount += count;
+      } else if (res === 'documents') {
+        const count = await syncDocuments(base44, user.id, sid);
+        results.documents = count;
+        syncedCount += count;
+      } else if (res === 'expenses') {
+        const count = await syncExpenses(base44, user.id, sid);
+        results.expenses = count;
+        syncedCount += count;
+      }
     }
 
     // Update sync job
@@ -282,7 +295,7 @@ Deno.serve(async (req) => {
       success: true
     });
 
-    return Response.json({ status: 'success', synced_count: syncedCount, job_id: syncJob.id });
+    return Response.json({ status: 'success', synced_count: syncedCount, results, job_id: syncJob.id });
 
   } catch (error) {
     return Response.json({ error: error.message, status: 'error' }, { status: 500 });
