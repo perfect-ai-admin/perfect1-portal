@@ -17,11 +17,15 @@ export default function CustomersTab({ data }) {
   const [showAddCustomer, setShowAddCustomer] = useState(false);
   const [newCustomer, setNewCustomer] = useState({ name: '', phone: '', email: '', id_number: '', address: '', city: '' });
   const queryClient = useQueryClient();
-  const { fn, providerId } = useActiveAccountingProvider();
+  const { fn, providerId, isConnected, isLoading: providerLoading } = useActiveAccountingProvider();
 
   const { data: customers = [], isLoading } = useQuery({
-    queryKey: ['finbot-customers'],
-    queryFn: () => base44.entities.FinbotCustomer.list('-created_date', 500),
+    queryKey: ['finbot-customers', isConnected ? 'connected' : 'none'],
+    queryFn: () => {
+      if (!isConnected) return [];
+      return base44.entities.FinbotCustomer.list('-created_date', 500);
+    },
+    enabled: !providerLoading,
     refetchOnWindowFocus: true,
   });
 
