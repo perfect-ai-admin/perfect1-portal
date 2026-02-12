@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
       });
       const custData = await custRes.json();
       if (custData.status) {
-        const clients = custData.client_list || [];
+        const clients = custData.clients || custData.client_list || [];
         for (const client of clients) {
           const clientId = String(client.client_id);
           const existingCust = await base44.asServiceRole.entities.FinbotCustomer.filter({
