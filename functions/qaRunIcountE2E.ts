@@ -128,9 +128,11 @@ Deno.serve(async (req) => {
           doc_date: new Date().toISOString().split('T')[0],
           comment: `QA_RUN:${runId}`
         };
-        // Add payment for receipt/invrec - sum must include VAT
-        if (['invrec', 'receipt'].includes(icountDoctype)) {
+        // Add payment: invrec adds VAT, receipt does NOT add VAT (receipt amount = exact sum)
+        if (icountDoctype === 'invrec') {
           docPayload.cash = { sum: totalWithVat };
+        } else if (icountDoctype === 'receipt') {
+          docPayload.cash = { sum: unitPrice };
         }
         console.log(`QA ${stepName} payload:`, JSON.stringify(docPayload));
         const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
@@ -178,7 +180,7 @@ Deno.serve(async (req) => {
     // ===== D) receipt =====
     await createDoc('create_document_receipt', 'receipt', 'receipt', 50);
     // ===== E) credit invoice =====
-    await createDoc('create_document_credit', 'credit', 'credit_invoice', 30);
+    await createDoc('create_document_credit', 'credit', 'creditinv', 30);
 
     // ===== F) Pull Sync - Customers =====
     try {
