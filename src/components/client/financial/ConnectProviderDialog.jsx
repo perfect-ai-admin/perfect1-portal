@@ -69,12 +69,24 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
 
       if (res.data?.status === 'connected') {
         setStatus('success');
-        toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה! 🎉`, { duration: 6000 });
+        toast.success(`חשבון ${provider.name} חובר בהצלחה! מסנכרנים את כל הנתונים...`, { duration: 8000 });
+        
+        // Trigger full sync in background
+        base44.functions.invoke('morningSyncPull', { resource: 'all' })
+          .then(syncRes => {
+            const r = syncRes.data?.results || {};
+            toast.success(`סנכרון הושלם! ${r.customers || 0} לקוחות, ${r.documents || 0} מסמכים, ${r.expenses || 0} הוצאות`, { duration: 8000 });
+          })
+          .catch(err => {
+            console.log('Background sync error:', err);
+            toast.info('הסנכרון ירוץ ברקע, תוכל לסנכרן ידנית מאוחר יותר');
+          });
+
         // Wait a moment to show success state, then close
         setTimeout(() => {
           onSuccess?.();
           onClose();
-        }, 1500);
+        }, 2000);
       } else {
         setStatus('error');
         setErrorMsg(res.data?.error || 'שגיאה לא צפויה בהתחברות');
