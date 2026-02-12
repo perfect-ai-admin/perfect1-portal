@@ -258,7 +258,11 @@ Deno.serve(async (req) => {
       toDate: period_end,
     });
 
+    // Debug: log document type distribution
+    const typeCounts = {};
+    documents.forEach(d => { typeCounts[d.type] = (typeCounts[d.type] || 0) + 1; });
     console.log(`Morning reports: ${documents.length} docs, ${expenses.length} expenses for ${period_start} to ${period_end}`);
+    console.log('Document type distribution:', JSON.stringify(typeCounts));
 
     let data = {};
 
