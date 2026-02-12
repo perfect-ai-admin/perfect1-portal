@@ -33,6 +33,7 @@ export default function ConnectionsTab({ data }) {
       if (res.data?.connected) {
         newStatuses[res.data.provider] = res.data;
       }
+      setSavedProviders(res.data?.saved_providers || []);
     } catch (err) {
       console.log('Status fetch error:', err);
     }
