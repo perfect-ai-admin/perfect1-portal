@@ -35,6 +35,7 @@ Deno.serve(async (req) => {
     }
 
     const result = await base44.asServiceRole.functions.invoke(reportFn, body);
+    // Morning returns {data: {...}}, pass through directly
     return Response.json(result);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
