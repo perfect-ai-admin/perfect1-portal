@@ -166,8 +166,14 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
             </p>
           </div>
 
-          {/* Success state */}
-          {status === 'success' ? (
+          {/* Reconnecting state */}
+          {status === 'reconnecting' ? (
+            <div style={{ padding: '32px 24px', textAlign: 'center' }}>
+              <Loader2 className="w-12 h-12 text-blue-500 mx-auto mb-3 animate-spin" />
+              <p className="text-base font-bold text-gray-700">מתחבר עם הפרטים השמורים...</p>
+              <p className="text-sm text-gray-500 mt-1">רגע אחד</p>
+            </div>
+          ) : status === 'success' ? (
             <div style={{ padding: '24px', textAlign: 'center' }}>
               <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-3" />
               <p className="text-lg font-bold text-green-700">החשבון חובר בהצלחה!</p>
