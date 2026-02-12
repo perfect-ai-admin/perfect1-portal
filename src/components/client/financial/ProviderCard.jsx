@@ -10,7 +10,7 @@ const PROVIDER_LOGOS = {
   icount: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/14f110f3a_image.png',
 };
 
-export default function ProviderCard({ provider, connectionStatus, loading, syncLoading, onConnect, onDisconnect, onSync, disconnectLoading, isOtherProviderConnected }) {
+export default function ProviderCard({ provider, connectionStatus, loading, syncLoading, onConnect, onDisconnect, onSync, disconnectLoading, isOtherProviderConnected, hasSavedCredentials, onReconnect, reconnectLoading }) {
   const isConnected = connectionStatus?.connected === true;
   const isComingSoon = provider.status === 'coming_soon';
 
