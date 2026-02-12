@@ -12,10 +12,11 @@ export const ACCOUNTING_PROVIDERS = [
     logoText: 'morning',
     logoColors: { bg: '#eff6ff', text: '#1e40af', border: '#93c5fd' },
     description: 'מערכת חשבוניות וניהול מסמכים פיננסיים',
-    status: 'coming_soon',
+    status: 'available',
     authStrategy: 'api_key',
     authFields: [
-      { name: 'api_key', label: 'API Key', type: 'password', placeholder: 'הדבק כאן את ה-API Key שלך' },
+      { name: 'api_key', label: 'API Key', type: 'password', placeholder: 'הדבק כאן את ה-API Key שלך מלוח הבקרה של Morning' },
+      { name: 'api_secret', label: 'API Secret', type: 'password', placeholder: 'הדבק כאן את ה-Secret שלך' },
     ],
     syncResources: ['customers', 'documents', 'expenses'],
     features: ['חשבוניות', 'קבלות', 'לקוחות', 'הוצאות', 'דוחות'],
