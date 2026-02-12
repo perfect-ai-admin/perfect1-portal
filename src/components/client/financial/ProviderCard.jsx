@@ -84,9 +84,16 @@ export default function ProviderCard({ provider, connectionStatus, loading, sync
       {!isComingSoon && (
         <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-2">
           {!isConnected ? (
-            <Button size="sm" className="gap-2 h-8 text-xs" onClick={onConnect} disabled={isOtherProviderConnected}>
-              <Link2 className="w-3 h-3" /> {isOtherProviderConnected ? 'מערכת אחרת מחוברת' : 'התחבר'}
-            </Button>
+            hasSavedCredentials ? (
+              <Button size="sm" className="gap-2 h-8 text-xs bg-green-600 hover:bg-green-700" onClick={onReconnect} disabled={reconnectLoading || isOtherProviderConnected}>
+                {reconnectLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Link2 className="w-3 h-3" />} 
+                {isOtherProviderConnected ? 'מערכת אחרת מחוברת' : 'חבר מחדש בלחיצה'}
+              </Button>
+            ) : (
+              <Button size="sm" className="gap-2 h-8 text-xs" onClick={onConnect} disabled={isOtherProviderConnected}>
+                <Link2 className="w-3 h-3" /> {isOtherProviderConnected ? 'מערכת אחרת מחוברת' : 'התחבר'}
+              </Button>
+            )
           ) : (
             <>
               {provider.syncResources.map(resource => (
