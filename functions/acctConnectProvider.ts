@@ -51,10 +51,37 @@ Deno.serve(async (req) => {
       connectionData.sid_expires_at = new Date(Date.now() + 3600000).toISOString();
       connectionData.status = 'connected';
       connectionData.config = { is_vat_exempt: testResult.is_vat_exempt || false };
-    } else if (provider === 'morning') {
-      // Morning uses API key — will be implemented in Morning-specific prompt
+    } else if (provider === 'finbot') {
+      // Finbot uses API key — validate by saving, real validation on first use
+      if (!credentials.api_key?.trim()) {
+        return Response.json({ error: 'חסר API Key' }, { status: 400 });
+      }
       connectionData.strategy = 'api_key';
-      connectionData.api_key_enc = credentials.api_key;
+      connectionData.api_key_enc = credentials.api_key.trim();
+      connectionData.status = 'connected';
+
+      // Also update legacy FinbotConnection for backward compatibility
+      try {
+        const legacyConns = await base44.asServiceRole.entities.FinbotConnection.filter({ user_id: user.id });
+        if (legacyConns?.length > 0) {
+          await base44.asServiceRole.entities.FinbotConnection.update(legacyConns[0].id, {
+            status: 'connected', strategy: 'apikey', api_key_ref: credentials.api_key.trim(), last_error: null
+          });
+        } else {
+          await base44.asServiceRole.entities.FinbotConnection.create({
+            user_id: user.id, strategy: 'apikey', status: 'connected', api_key_ref: credentials.api_key.trim()
+          });
+        }
+      } catch (legacyErr) {
+        console.log('Legacy FinbotConnection sync skipped:', legacyErr.message);
+      }
+    } else if (provider === 'morning') {
+      // Morning uses API key — will be implemented later
+      if (!credentials.api_key?.trim()) {
+        return Response.json({ error: 'חסר API Key' }, { status: 400 });
+      }
+      connectionData.strategy = 'api_key';
+      connectionData.api_key_enc = credentials.api_key.trim();
       connectionData.status = 'connected';
     } else {
       return Response.json({ error: 'הספק הזה עדיין לא נתמך' }, { status: 400 });
@@ -99,7 +126,7 @@ Deno.serve(async (req) => {
       success: true,
     });
 
-    // Run initial sync inline for icount
+    // Run initial sync inline
     if (provider === 'icount') {
       try {
         await base44.asServiceRole.functions.invoke('icountSyncPull', {
@@ -108,6 +135,15 @@ Deno.serve(async (req) => {
         });
       } catch (syncErr) {
         console.log('Initial sync triggered (may run async):', syncErr.message);
+      }
+    } else if (provider === 'finbot') {
+      try {
+        await base44.asServiceRole.functions.invoke('finbotSyncPull', {
+          resource: 'all',
+          fullSync: true,
+        });
+      } catch (syncErr) {
+        console.log('Finbot initial sync triggered (may run async):', syncErr.message);
       }
     }
 

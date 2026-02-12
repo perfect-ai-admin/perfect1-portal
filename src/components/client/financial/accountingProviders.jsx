@@ -35,7 +35,7 @@ export const ACCOUNTING_PROVIDERS = [
     logoText: 'FINBOT',
     logoColors: { bg: '#f0fdf4', text: '#166534', border: '#86efac' },
     description: 'ניהול מסמכים, הוצאות ודוחות עם AI',
-    status: 'coming_soon',
+    status: 'available',
     authStrategy: 'api_key',
     authFields: [
       { name: 'api_key', label: 'API Key', type: 'password', placeholder: 'הדבק כאן את ה-API Key שלך' },
