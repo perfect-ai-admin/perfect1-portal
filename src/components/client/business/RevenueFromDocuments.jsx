@@ -4,14 +4,21 @@ import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Minus, FileText, Receipt, CreditCard, Loader2 } from 'lucide-react';
 import { formatCurrency } from './formatters';
+import useActiveAccountingProvider from '../../hooks/useActiveAccountingProvider';
 
 const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 const SHORT_MONTHS = ['ינו','פבר','מרץ','אפר','מאי','יוני','יולי','אוג','ספט','אוק','נוב','דצמ'];
 
 export default function RevenueFromDocuments({ period }) {
+  const { providerId, isConnected } = useActiveAccountingProvider();
+
   const { data: documents = [], isLoading } = useQuery({
-    queryKey: ['finbot-documents-revenue'],
-    queryFn: () => base44.entities.FinbotDocument.list('-created_date', 500),
+    queryKey: ['finbot-documents-revenue', providerId],
+    queryFn: () => {
+      if (!providerId) return [];
+      return base44.entities.FinbotDocument.filter({ provider: providerId }, '-created_date', 500);
+    },
+    enabled: !!providerId,
     staleTime: 60000,
   });
 
