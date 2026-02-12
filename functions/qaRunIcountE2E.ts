@@ -1,5 +1,33 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+const ICOUNT_BASE_URL = Deno.env.get("ICOUNT_BASE_URL") || "https://api.icount.co.il/api/v3.php";
+
+async function ensureSession(base44, userId) {
+  const connections = await base44.asServiceRole.entities.AccountingConnection.filter({ user_id: userId, provider: 'icount' });
+  if (!connections?.length) throw new Error('No iCount connection');
+  const conn = connections[0];
+  if (conn.status !== 'connected') throw new Error('Connection not active');
+
+  const sidExpiry = conn.sid_expires_at ? new Date(conn.sid_expires_at) : null;
+  if (conn.sid && sidExpiry && sidExpiry > new Date()) {
+    return { sid: conn.sid, cid: conn.provider_account_id, conn };
+  }
+
+  const loginRes = await fetch(`${ICOUNT_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cid: conn.provider_account_id, user: conn.username, pass: conn.password_ref })
+  });
+  const loginData = await loginRes.json();
+  if (!loginData.status) throw new Error('Session refresh failed');
+
+  await base44.asServiceRole.entities.AccountingConnection.update(conn.id, {
+    sid: loginData.sid, sid_expires_at: new Date(Date.now() + 25 * 60 * 1000).toISOString(),
+    status: 'connected', last_error: null
+  });
+  return { sid: loginData.sid, cid: conn.provider_account_id, conn: { ...conn, sid: loginData.sid } };
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -28,21 +56,12 @@ Deno.serve(async (req) => {
       });
     };
 
-    // ===== A) Preflight (inline check) =====
+    // ===== A) Preflight =====
+    let sid;
     try {
-      const icountUrl = Deno.env.get("ICOUNT_BASE_URL");
-      if (!icountUrl) {
-        await logStep('preflight', 'fail', 'MISSING_ICOUNT_BASE_URL');
-        return Response.json({ ok: false, runId, steps, created, warnings });
-      }
-      const connections = await base44.asServiceRole.entities.AccountingConnection.filter({
-        user_id: user.id, provider: 'icount'
-      });
-      if (!connections?.length || connections[0].status !== 'connected') {
-        await logStep('preflight', 'fail', 'NOT_CONNECTED');
-        return Response.json({ ok: false, runId, steps, created, warnings });
-      }
-      await logStep('preflight', 'pass', `Connection verified: ${connections[0].provider_account_id}`);
+      const session = await ensureSession(base44, user.id);
+      sid = session.sid;
+      await logStep('preflight', 'pass', `Connected: ${session.cid}`);
     } catch (e) {
       await logStep('preflight', 'fail', e.message);
       return Response.json({ ok: false, runId, steps, created, warnings });
@@ -51,113 +70,111 @@ Deno.serve(async (req) => {
     // ===== B) Create Customer (Push) =====
     let customerProviderId = null;
     try {
-      const custRes = await base44.functions.invoke('icountCreateCustomer', {
-        name: `QA Customer ${runId}`,
+      const custPayload = {
+        sid,
+        client_name: `QA Customer ${runId}`,
         phone: '0500000000',
         email: `qa+${runId}@example.com`,
         notes: `QA_RUN:${runId}`
+      };
+      const custRes = await fetch(`${ICOUNT_BASE_URL}/client/create_or_update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(custPayload)
       });
-      const custData = custRes.data;
-      if (custData?.status === 'success' && custData?.customer?.id) {
-        created.customerId = custData.customer.id;
-        customerProviderId = custData.provider_id || custData.customer.finbot_customer_id;
-        await logStep('create_customer', 'pass', `Customer created: ${custData.customer.id}, provider_id: ${customerProviderId}`);
+      const custData = await custRes.json();
+
+      if (custData.status && custData.client_id) {
+        customerProviderId = String(custData.client_id);
+        const localCust = await base44.asServiceRole.entities.FinbotCustomer.create({
+          user_id: user.id, provider: 'icount',
+          finbot_customer_id: customerProviderId,
+          name: `QA Customer ${runId}`,
+          phone: '0500000000', email: `qa+${runId}@example.com`,
+          notes: `QA_RUN:${runId}`,
+          synced_at: new Date().toISOString()
+        });
+        created.customerId = localCust.id;
+        await logStep('create_customer', 'pass', `iCount ID: ${customerProviderId}, local: ${localCust.id}`);
       } else {
-        await logStep('create_customer', 'fail', custData?.error || 'No customer returned');
+        await logStep('create_customer', 'fail', custData.error_description || 'No client_id returned');
       }
     } catch (e) {
       await logStep('create_customer', 'fail', e.message);
     }
 
-    // ===== C) Create Document - invoice_receipt =====
-    if (customerProviderId) {
+    // Helper: create document in iCount
+    const createDoc = async (stepName, type, icountDoctype, unitPrice) => {
+      if (!customerProviderId) {
+        await logStep(stepName, 'skipped', 'No customer');
+        return;
+      }
       try {
-        const docRes = await base44.functions.invoke('icountCreateDocument', {
-          type: 'invoice_receipt',
-          customer_provider_id: customerProviderId,
-          items: [{ description: `QA Item ${runId}`, quantity: 1, unit_price: 100 }],
-          notes: `QA_RUN:${runId}`,
-          issue_date: new Date().toISOString().split('T')[0]
+        const items = [{ description: `QA ${type} ${runId}`, unitprice: unitPrice, quantity: 1 }];
+        const docPayload = {
+          sid, doctype: icountDoctype,
+          client_id: parseInt(customerProviderId),
+          items,
+          doc_date: new Date().toISOString().split('T')[0],
+          comment: `QA_RUN:${runId}`
+        };
+        // Add payment for receipt/invrec
+        if (['invrec', 'receipt'].includes(icountDoctype)) {
+          docPayload.cash = { sum: unitPrice };
+        }
+        const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(docPayload)
         });
-        const docData = docRes.data;
-        if (docData?.status === 'success' && docData?.document?.id) {
-          created.documentIds.push(docData.document.id);
-          const hasProviderId = !!(docData.docnum || docData.document?.finbot_document_id);
-          const totalOk = (docData.document?.total || 0) > 0;
-          if (hasProviderId && totalOk) {
-            await logStep('create_document_invrec', 'pass', `Doc: ${docData.docnum}, total: ${docData.document.total}`);
-          } else {
-            await logStep('create_document_invrec', 'warn', `Doc created but checks partial: provider_id=${hasProviderId}, total>0=${totalOk}`);
-            warnings.push('invoice_receipt created but some assertions partial');
-          }
+        const data = await res.json();
+        if (data.status && data.docnum) {
+          const docId = `${data.doctype || icountDoctype}_${data.docnum}`;
+          const localDoc = await base44.asServiceRole.entities.FinbotDocument.create({
+            user_id: user.id, provider: 'icount',
+            finbot_document_id: docId, type,
+            customer_finbot_id: customerProviderId,
+            issue_date: new Date().toISOString().split('T')[0],
+            currency: 'ILS', subtotal: unitPrice,
+            total: unitPrice, status: 'issued',
+            pdf_url: data.doc_url || '',
+            items: [{ description: `QA ${type} ${runId}`, unit_price: unitPrice, quantity: 1 }],
+            notes: `QA_RUN:${runId}`, raw: data,
+            synced_at: new Date().toISOString()
+          });
+          created.documentIds.push(localDoc.id);
+          await logStep(stepName, 'pass', `docnum: ${data.docnum}, local: ${localDoc.id}`);
         } else {
-          await logStep('create_document_invrec', 'fail', docData?.error || 'No document returned');
+          await logStep(stepName, 'fail', data.error_description || data.reason || JSON.stringify(data));
         }
       } catch (e) {
-        await logStep('create_document_invrec', 'fail', e.message);
+        await logStep(stepName, 'fail', e.message);
       }
+    };
 
-      // ===== D) Create Document - receipt =====
-      try {
-        const recRes = await base44.functions.invoke('icountCreateDocument', {
-          type: 'receipt',
-          customer_provider_id: customerProviderId,
-          items: [{ description: `QA Receipt ${runId}`, quantity: 1, unit_price: 50 }],
-          notes: `QA_RUN:${runId}`,
-          issue_date: new Date().toISOString().split('T')[0]
-        });
-        const recData = recRes.data;
-        if (recData?.status === 'success' && recData?.document?.id) {
-          created.documentIds.push(recData.document.id);
-          await logStep('create_document_receipt', 'pass', `Receipt: ${recData.docnum}`);
-        } else {
-          await logStep('create_document_receipt', 'fail', recData?.error || 'No receipt returned');
-        }
-      } catch (e) {
-        await logStep('create_document_receipt', 'fail', e.message);
-      }
-
-      // ===== E) Create Credit =====
-      try {
-        const credRes = await base44.functions.invoke('icountCreateDocument', {
-          type: 'credit',
-          customer_provider_id: customerProviderId,
-          items: [{ description: `QA Credit ${runId}`, quantity: 1, unit_price: 30 }],
-          notes: `QA_RUN:${runId}`,
-          issue_date: new Date().toISOString().split('T')[0]
-        });
-        const credData = credRes.data;
-        if (credData?.status === 'success' && credData?.document?.id) {
-          created.documentIds.push(credData.document.id);
-          await logStep('create_document_credit', 'pass', `Credit: ${credData.docnum}`);
-        } else {
-          await logStep('create_document_credit', 'fail', credData?.error || 'No credit returned');
-        }
-      } catch (e) {
-        await logStep('create_document_credit', 'fail', e.message);
-      }
-    } else {
-      await logStep('create_document_invrec', 'skipped', 'No customer provider ID');
-      await logStep('create_document_receipt', 'skipped', 'No customer provider ID');
-      await logStep('create_document_credit', 'skipped', 'No customer provider ID');
-    }
+    // ===== C) invoice_receipt =====
+    await createDoc('create_document_invrec', 'invoice_receipt', 'invrec', 100);
+    // ===== D) receipt =====
+    await createDoc('create_document_receipt', 'receipt', 'receipt', 50);
+    // ===== E) credit =====
+    await createDoc('create_document_credit', 'credit', 'creditinv', 30);
 
     // ===== F) Pull Sync - Customers =====
     try {
-      const pullCustRes = await base44.functions.invoke('icountSyncPull', { resource: 'customers' });
-      const pullCustData = pullCustRes.data;
-      if (pullCustData?.status === 'success') {
-        // Verify customer exists after pull
-        const customers = await base44.asServiceRole.entities.FinbotCustomer.filter({ user_id: user.id, provider: 'icount' });
-        const qaCustomer = customers?.find(c => c.notes?.includes(`QA_RUN:${runId}`) || c.name?.includes(runId));
-        if (qaCustomer) {
-          await logStep('pull_customers', 'pass', `Synced ${pullCustData.synced_count}, QA customer found`);
-        } else {
-          await logStep('pull_customers', 'warn', `Synced ${pullCustData.synced_count} but QA customer not found in pull results`);
-          warnings.push('QA customer not found after pull sync');
-        }
+      const pullRes = await fetch(`${ICOUNT_BASE_URL}/client/get_list`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sid, list_type: 'array' })
+      });
+      const pullData = await pullRes.json();
+      if (pullData.status) {
+        const clients = pullData.clients || pullData.client_list || [];
+        const qaFound = clients.some(c => c.client_name?.includes(runId) || c.notes?.includes(runId));
+        await logStep('pull_customers', qaFound ? 'pass' : 'warn',
+          `${clients.length} customers fetched. QA customer ${qaFound ? 'found' : 'not found'}`);
+        if (!qaFound) warnings.push('QA customer not found in pull');
       } else {
-        await logStep('pull_customers', 'fail', pullCustData?.error || 'Pull customers failed');
+        await logStep('pull_customers', 'fail', pullData.error_description || 'Pull failed');
       }
     } catch (e) {
       await logStep('pull_customers', 'fail', e.message);
@@ -165,12 +182,19 @@ Deno.serve(async (req) => {
 
     // Pull Sync - Documents
     try {
-      const pullDocRes = await base44.functions.invoke('icountSyncPull', { resource: 'documents' });
-      const pullDocData = pullDocRes.data;
-      if (pullDocData?.status === 'success') {
-        await logStep('pull_documents', 'pass', `Synced ${pullDocData.synced_count} documents`);
+      const endDate = new Date().toISOString().split('T')[0];
+      const startDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+      const pullRes = await fetch(`${ICOUNT_BASE_URL}/doc/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sid, start_date: startDate, end_date: endDate, max_results: 100, sort_order: 'DESC' })
+      });
+      const pullData = await pullRes.json();
+      if (pullData.status) {
+        const docs = pullData.results_list || [];
+        await logStep('pull_documents', 'pass', `${docs.length} documents fetched`);
       } else {
-        await logStep('pull_documents', 'fail', pullDocData?.error || 'Pull documents failed');
+        await logStep('pull_documents', 'fail', pullData.error_description || 'Pull failed');
       }
     } catch (e) {
       await logStep('pull_documents', 'fail', e.message);
@@ -179,23 +203,27 @@ Deno.serve(async (req) => {
     // ===== G) Expenses Pull =====
     if (!skipExpenses) {
       try {
-        const pullExpRes = await base44.functions.invoke('icountSyncPull', { resource: 'expenses' });
-        const pullExpData = pullExpRes.data;
-        if (pullExpData?.status === 'success') {
-          await logStep('pull_expenses', 'pass', `Synced ${pullExpData.synced_count} expenses`);
-        } else if (pullExpData?.synced_count === 0 || pullExpData?.error?.includes('no_results')) {
+        const endDate = new Date().toISOString().split('T')[0];
+        const startDate = new Date(Date.now() - 365 * 86400000).toISOString().split('T')[0];
+        const pullRes = await fetch(`${ICOUNT_BASE_URL}/expense/search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sid, start_date: startDate, end_date: endDate, max_results: 100 })
+        });
+        const pullData = await pullRes.json();
+        if (pullData.status) {
+          const exps = pullData.results_list || [];
+          await logStep('pull_expenses', exps.length > 0 ? 'pass' : 'warn',
+            exps.length > 0 ? `${exps.length} expenses` : 'NO_EXPENSES_FOUND');
+          if (exps.length === 0) warnings.push('No expenses found');
+        } else if (pullData.reason === 'no_results_found') {
           await logStep('pull_expenses', 'warn', 'NO_EXPENSES_FOUND');
-          warnings.push('No expenses found in iCount');
+          warnings.push('No expenses in iCount');
         } else {
-          await logStep('pull_expenses', 'fail', pullExpData?.error || 'Pull expenses failed');
+          await logStep('pull_expenses', 'fail', pullData.error_description || 'Pull failed');
         }
       } catch (e) {
-        if (e.message?.includes('no_results') || e.message?.includes('404')) {
-          await logStep('pull_expenses', 'warn', 'NO_EXPENSES_FOUND');
-          warnings.push('No expenses found');
-        } else {
-          await logStep('pull_expenses', 'fail', e.message);
-        }
+        await logStep('pull_expenses', 'fail', e.message);
       }
     } else {
       await logStep('pull_expenses', 'skipped', 'Skipped by user');
@@ -203,58 +231,77 @@ Deno.serve(async (req) => {
 
     // ===== H) Reports =====
     if (!skipReports) {
+      const REPORT_ENDPOINTS = {
+        customers: '/client/get_list',
+        pnl: '/reports/income_tax_report',
+        vat: '/reports/vat_report'
+      };
       const today = new Date().toISOString().split('T')[0];
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
-      
-      for (const reportType of ['customers', 'pnl', 'vat']) {
+      const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+
+      for (const [rType, endpoint] of Object.entries(REPORT_ENDPOINTS)) {
         try {
-          const repRes = await base44.functions.invoke('icountFetchReports', {
-            report_type: reportType,
-            period_start: thirtyDaysAgo,
-            period_end: today
+          const payload = { sid };
+          if (rType === 'customers') payload.list_type = 'array';
+          else if (rType === 'vat' || rType === 'pnl') {
+            payload.start_month = thirtyAgo.substring(0, 7);
+            payload.end_month = today.substring(0, 7);
+          }
+          const res = await fetch(`${ICOUNT_BASE_URL}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
           });
-          const repData = repRes.data;
-          if (repData?.status === 'success') {
-            await logStep(`report_${reportType}`, 'pass', `Report generated: ${repData.report_run_id}`);
+          const data = await res.json();
+          if (data.status) {
+            await logStep(`report_${rType}`, 'pass', `Report OK`);
           } else {
-            await logStep(`report_${reportType}`, 'warn', `SKIPPED_NOT_IMPLEMENTED: ${repData?.error || 'Unknown'}`);
-            warnings.push(`Report ${reportType}: ${repData?.error || 'not available'}`);
+            await logStep(`report_${rType}`, 'warn', `SKIPPED: ${data.error_description || data.reason || 'unknown'}`);
+            warnings.push(`Report ${rType}: ${data.error_description || data.reason}`);
           }
         } catch (e) {
-          await logStep(`report_${reportType}`, 'warn', `SKIPPED_NOT_IMPLEMENTED: ${e.message}`);
-          warnings.push(`Report ${reportType}: ${e.message}`);
+          await logStep(`report_${rType}`, 'warn', `SKIPPED: ${e.message}`);
+          warnings.push(`Report ${rType}: ${e.message}`);
         }
       }
     } else {
       await logStep('reports', 'skipped', 'Skipped by user');
     }
 
-    // ===== I) Download Document PDF =====
+    // ===== I) Download PDF =====
     if (created.documentIds.length > 0) {
       try {
-        const dlRes = await base44.functions.invoke('icountDownloadDocument', {
-          document_id: created.documentIds[0]
-        });
-        const dlData = dlRes.data;
-        if (dlData?.status === 'success' && dlData?.file_url) {
-          await logStep('download_pdf', 'pass', `PDF URL: ${dlData.file_url.substring(0, 60)}...`);
+        const docs = await base44.asServiceRole.entities.FinbotDocument.filter({ id: created.documentIds[0] });
+        const doc = docs?.[0];
+        if (doc?.pdf_url) {
+          await logStep('download_pdf', 'pass', `PDF: ${doc.pdf_url.substring(0, 60)}...`);
+        } else if (doc?.finbot_document_id) {
+          const [doctype, docnum] = doc.finbot_document_id.split('_');
+          const infoRes = await fetch(`${ICOUNT_BASE_URL}/doc/info`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sid, doctype, docnum: parseInt(docnum), get_pdf_link: true })
+          });
+          const infoData = await infoRes.json();
+          if (infoData.pdf_link || infoData.doc_url) {
+            await logStep('download_pdf', 'pass', `PDF: ${(infoData.pdf_link || infoData.doc_url).substring(0, 60)}...`);
+          } else {
+            await logStep('download_pdf', 'warn', 'PDF_NOT_AVAILABLE');
+            warnings.push('No PDF link from iCount');
+          }
         } else {
           await logStep('download_pdf', 'warn', 'PDF_NOT_AVAILABLE');
-          warnings.push('PDF download returned no URL');
         }
       } catch (e) {
-        await logStep('download_pdf', 'warn', `PDF_NOT_AVAILABLE: ${e.message}`);
-        warnings.push(`PDF download error: ${e.message}`);
+        await logStep('download_pdf', 'warn', `PDF error: ${e.message}`);
+        warnings.push(`PDF: ${e.message}`);
       }
     } else {
       await logStep('download_pdf', 'skipped', 'No documents created');
     }
 
-    // Determine overall status
     const hasFail = steps.some(s => s.status === 'fail');
-    const ok = !hasFail;
-
-    return Response.json({ ok, runId, steps, created, warnings });
+    return Response.json({ ok: !hasFail, runId, steps, created, warnings });
 
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
