@@ -239,6 +239,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
       queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
       const pdfUrl = res.data?.finbot_response?.pdf_link || res.data?.document?.pdf_url || res.data?.pdf_url;
       if (pdfUrl) {
         toast.success('מסמך הופק בהצלחה!', { 
