@@ -69,6 +69,21 @@ export default function DocumentsTab({ data }) {
 
   const formatCurrency = (amount) => amount != null ? `₪${Number(amount).toLocaleString('he-IL')}` : '-';
 
+  // Calculate display values - if vat is missing and not exempt, compute it
+  const getDocAmounts = (doc) => {
+    const subtotal = Number(doc.subtotal) || 0;
+    let vat = Number(doc.vat) || 0;
+    let total = Number(doc.total) || 0;
+
+    if (!vat && !isVatExempt && subtotal > 0) {
+      vat = Math.round(subtotal * 0.18 * 100) / 100;
+    }
+    if (!total || total === subtotal) {
+      total = Math.round((subtotal + vat) * 100) / 100;
+    }
+    return { subtotal, vat, total };
+  };
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
       <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-3">
