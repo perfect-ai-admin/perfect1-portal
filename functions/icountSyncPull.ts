@@ -235,19 +235,22 @@ Deno.serve(async (req) => {
 
     let syncedCount = 0;
 
-    // Debug: test iCount API directly
-    if (resource === 'customers') {
+    // Debug mode
+    if (body.debug) {
       const debugRes = await fetch(`${ICOUNT_BASE_URL}/client/get_list`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sid, list_type: 'array' })
       });
       const debugData = await debugRes.json();
-      console.log('[DEBUG] iCount client/get_list raw response keys:', JSON.stringify(Object.keys(debugData)));
-      console.log('[DEBUG] iCount status:', debugData.status, 'client_list type:', typeof debugData.client_list, 'client_list length:', Array.isArray(debugData.client_list) ? debugData.client_list.length : 'N/A');
-      if (debugData.client_list?.length > 0) {
-        console.log('[DEBUG] First client:', JSON.stringify(debugData.client_list[0]));
-      }
+      return Response.json({ 
+        debug: true, 
+        icount_status: debugData.status,
+        keys: Object.keys(debugData),
+        client_list_length: Array.isArray(debugData.client_list) ? debugData.client_list.length : 'not_array',
+        first_client: debugData.client_list?.[0] || null,
+        raw_snippet: JSON.stringify(debugData).substring(0, 500)
+      });
     }
 
     if (resource === 'customers') {
