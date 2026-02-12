@@ -80,26 +80,52 @@ Deno.serve(async (req) => {
       if (!credentials.api_key?.trim() || !credentials.api_secret?.trim()) {
         return Response.json({ error: 'חסרים API Key ו-API Secret' }, { status: 400 });
       }
-      // Test connection via morningConnectTest
+      // Test connection directly via Morning API (avoid function invocation issues)
       try {
-        const testResult = await base44.asServiceRole.functions.invoke('morningConnectTest', {
-          api_key: credentials.api_key.trim(),
-          api_secret: credentials.api_secret.trim(),
+        const MORNING_BASE = "https://api.greeninvoice.co.il/api/v1";
+        const tokenResp = await fetch(`${MORNING_BASE}/account/token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: credentials.api_key.trim(), secret: credentials.api_secret.trim() }),
         });
-        if (!testResult?.success) {
-          return Response.json({ error: testResult?.error || 'פרטי התחברות לא נכונים ל-Morning' }, { status: 400 });
+        
+        if (!tokenResp.ok) {
+          const errText = await tokenResp.text();
+          let errMsg = 'פרטי התחברות לא נכונים ל-Morning';
+          try { errMsg = JSON.parse(errText).errorMessage || errMsg; } catch(_) {}
+          console.log('Morning token error:', tokenResp.status, errText);
+          return Response.json({ error: errMsg }, { status: 400 });
         }
+        
+        const tokenData = await tokenResp.json();
+        const jwt = tokenData.token;
+        if (!jwt) {
+          return Response.json({ error: 'לא התקבל טוקן מ-Morning' }, { status: 400 });
+        }
+
+        // Fetch business info
+        let businessInfo = {};
+        try {
+          const bizResp = await fetch(`${MORNING_BASE}/businesses/me`, {
+            headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+          });
+          if (bizResp.ok) businessInfo = await bizResp.json();
+        } catch(bizErr) {
+          console.log('Morning businesses/me failed:', bizErr.message);
+        }
+
         connectionData.strategy = 'api_key';
         connectionData.api_key_enc = credentials.api_key.trim();
         connectionData.api_secret_enc = credentials.api_secret.trim();
-        connectionData.provider_account_id = testResult.business_id || null;
+        connectionData.provider_account_id = businessInfo.id || null;
         connectionData.status = 'connected';
         connectionData.config = { 
-          is_vat_exempt: testResult.is_vat_exempt || false,
-          business_name: testResult.business_name || null,
-          business_type: testResult.business_type || null,
+          is_vat_exempt: businessInfo.taxType === 2,
+          business_name: businessInfo.name || null,
+          business_type: businessInfo.taxType || null,
         };
       } catch (testErr) {
+        console.log('Morning connect error:', testErr.message);
         return Response.json({ error: testErr.message || 'שגיאה בבדיקת חיבור ל-Morning' }, { status: 400 });
       }
     } else {
