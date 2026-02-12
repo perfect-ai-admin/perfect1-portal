@@ -7,7 +7,7 @@ const DOC_TYPE_MAP = {
   10: 'quote', 330: 'credit_note', 300: 'invoice', 405: 'receipt', 100: 'quote',
 };
 
-async function fetchWithRetry(url, options, maxRetries = 2) {
+async function fetchWithRetry(url, options, maxRetries = 3) {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     const resp = await fetch(url, options);
     if (resp.status === 429) {
@@ -16,7 +16,7 @@ async function fetchWithRetry(url, options, maxRetries = 2) {
     }
     return resp;
   }
-  throw new Error('Rate limit exceeded');
+  throw new Error('Rate limit exceeded from Morning API');
 }
 
 async function getMorningJWT(conn) {
@@ -30,19 +30,54 @@ async function getMorningJWT(conn) {
   return token;
 }
 
-async function upsertEntity(base44, entityName, item, matchFields) {
-  const filter = {};
-  for (const f of matchFields) filter[f] = item[f];
-  const existing = await base44.asServiceRole.entities[entityName].filter(filter);
-  if (existing?.length > 0) {
-    await base44.asServiceRole.entities[entityName].update(existing[0].id, item);
-  } else {
-    await base44.asServiceRole.entities[entityName].create(item);
+// Helper: process items with rate-limit-safe delays
+async function safeUpsertBatch(base44, entityName, items, matchFields) {
+  let count = 0;
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const filter = {};
+    for (const f of matchFields) filter[f] = item[f];
+
+    try {
+      const existing = await base44.asServiceRole.entities[entityName].filter(filter);
+      if (existing?.length > 0) {
+        await base44.asServiceRole.entities[entityName].update(existing[0].id, item);
+      } else {
+        await base44.asServiceRole.entities[entityName].create(item);
+      }
+      count++;
+    } catch (e) {
+      // Rate limit from Base44 SDK - wait and retry once
+      if (e.message?.includes('429') || e.message?.includes('Rate limit')) {
+        console.log(`Rate limit hit at item ${i}, waiting 3s...`);
+        await new Promise(r => setTimeout(r, 3000));
+        try {
+          const existing2 = await base44.asServiceRole.entities[entityName].filter(filter);
+          if (existing2?.length > 0) {
+            await base44.asServiceRole.entities[entityName].update(existing2[0].id, item);
+          } else {
+            await base44.asServiceRole.entities[entityName].create(item);
+          }
+          count++;
+        } catch (e2) {
+          console.log(`Failed to upsert item ${i} after retry: ${e2.message}`);
+        }
+      } else {
+        console.log(`Error upserting item ${i}: ${e.message}`);
+      }
+    }
+
+    // Small delay every 5 items to avoid rate limits
+    if ((i + 1) % 5 === 0) {
+      await new Promise(r => setTimeout(r, 300));
+    }
   }
+  return count;
 }
 
 async function morningSyncCustomers(base44, userId, jwt) {
-  let page = 1, count = 0;
+  let page = 1;
+  const allItems = [];
   while (true) {
     const resp = await fetchWithRetry(`${MORNING_BASE}/clients/search`, {
       method: 'POST',
@@ -55,7 +90,7 @@ async function morningSyncCustomers(base44, userId, jwt) {
     if (!items.length) break;
 
     for (const c of items) {
-      await upsertEntity(base44, 'AccountingCustomer', {
+      allItems.push({
         user_id: userId, provider: 'morning',
         provider_customer_id: String(c.id),
         name: c.name || c.companyName || 'ללא שם',
@@ -66,20 +101,22 @@ async function morningSyncCustomers(base44, userId, jwt) {
         city: c.city || null, zip: c.zip || null,
         country: c.country || 'IL', is_active: c.active !== false,
         raw: c, synced_at: new Date().toISOString(),
-      }, ['user_id', 'provider', 'provider_customer_id']);
-      count++;
+      });
     }
     console.log(`Fetched ${items.length} customers (page ${page})`);
     if (items.length < 100) break;
     page++;
-    if (page > 100) break;
-    await new Promise(r => setTimeout(r, 1000));
+    if (page > 50) break;
+    await new Promise(r => setTimeout(r, 500));
   }
-  return count;
+
+  console.log(`Total customers fetched from Morning: ${allItems.length}, starting upsert...`);
+  return await safeUpsertBatch(base44, 'AccountingCustomer', allItems, ['user_id', 'provider', 'provider_customer_id']);
 }
 
 async function morningSyncDocuments(base44, userId, jwt) {
-  let page = 1, count = 0;
+  let page = 1;
+  const allItems = [];
   while (true) {
     const resp = await fetchWithRetry(`${MORNING_BASE}/documents/search`, {
       method: 'POST',
@@ -107,7 +144,7 @@ async function morningSyncDocuments(base44, userId, jwt) {
       let pdfUrl = null;
       if (d.url) pdfUrl = d.url.origin || d.url.he || d.url.en || null;
 
-      await upsertEntity(base44, 'AccountingDocument', {
+      allItems.push({
         user_id: userId, provider: 'morning',
         provider_document_id: String(d.id), doc_type: docType,
         doc_number: d.number != null ? String(d.number) : null,
@@ -127,20 +164,22 @@ async function morningSyncDocuments(base44, userId, jwt) {
         })) : [],
         notes: d.footer || d.remarks || null, pdf_url: pdfUrl,
         raw: d, synced_at: new Date().toISOString(),
-      }, ['user_id', 'provider', 'provider_document_id']);
-      count++;
+      });
     }
     console.log(`Fetched ${items.length} documents (page ${page})`);
     if (items.length < 100) break;
     page++;
-    if (page > 100) break;
-    await new Promise(r => setTimeout(r, 1000));
+    if (page > 50) break;
+    await new Promise(r => setTimeout(r, 500));
   }
-  return count;
+
+  console.log(`Total documents fetched from Morning: ${allItems.length}, starting upsert...`);
+  return await safeUpsertBatch(base44, 'AccountingDocument', allItems, ['user_id', 'provider', 'provider_document_id']);
 }
 
 async function morningSyncExpenses(base44, userId, jwt) {
-  let page = 1, count = 0;
+  let page = 1;
+  const allItems = [];
   while (true) {
     const resp = await fetchWithRetry(`${MORNING_BASE}/expenses/search`, {
       method: 'POST',
@@ -153,7 +192,7 @@ async function morningSyncExpenses(base44, userId, jwt) {
     if (!items.length) break;
 
     for (const e of items) {
-      await upsertEntity(base44, 'AccountingExpense', {
+      allItems.push({
         user_id: userId, provider: 'morning',
         provider_expense_id: String(e.id),
         vendor: e.supplier?.name || e.description || null,
@@ -166,16 +205,17 @@ async function morningSyncExpenses(base44, userId, jwt) {
         currency: e.currency || 'ILS',
         reference_number: e.number != null ? String(e.number) : null,
         raw: e, synced_at: new Date().toISOString(),
-      }, ['user_id', 'provider', 'provider_expense_id']);
-      count++;
+      });
     }
     console.log(`Fetched ${items.length} expenses (page ${page})`);
     if (items.length < 100) break;
     page++;
-    if (page > 100) break;
-    await new Promise(r => setTimeout(r, 1000));
+    if (page > 50) break;
+    await new Promise(r => setTimeout(r, 500));
   }
-  return count;
+
+  console.log(`Total expenses fetched from Morning: ${allItems.length}, starting upsert...`);
+  return await safeUpsertBatch(base44, 'AccountingExpense', allItems, ['user_id', 'provider', 'provider_expense_id']);
 }
 
 Deno.serve(async (req) => {
