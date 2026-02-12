@@ -208,12 +208,19 @@ async function testIcountConnection(credentials) {
       return { success: false, error: 'חסרים שדות: מספר חברה, שם משתמש וסיסמה' };
     }
 
-    const resp = await fetch(`${ICOUNT_BASE}/api/v3/auth/login`, {
+    const resp = await fetch(`${ICOUNT_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ cid, user: username, pass: password }),
     });
-    const data = await resp.json();
+    const text = await resp.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.log('iCount login response is not JSON:', text.substring(0, 200));
+      return { success: false, error: 'תשובה לא תקינה מ-iCount. ייתכן שכתובת ה-API השתנתה.' };
+    }
 
     if (data.status && data.sid) {
       return { 
