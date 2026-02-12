@@ -20,10 +20,10 @@ export default function CustomersTab({ data }) {
   const { fn, providerId, isConnected, isLoading: providerLoading } = useActiveAccountingProvider();
 
   const { data: customers = [], isLoading } = useQuery({
-    queryKey: ['finbot-customers', isConnected ? 'connected' : 'none'],
+    queryKey: ['finbot-customers', providerId || 'none'],
     queryFn: () => {
-      if (!isConnected) return [];
-      return base44.entities.FinbotCustomer.list('-created_date', 500);
+      if (!isConnected || !providerId) return [];
+      return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading,
     refetchOnWindowFocus: true,

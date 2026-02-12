@@ -9,16 +9,15 @@ import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvi
 
 export default function ExpensesTab({ data }) {
   const queryClient = useQueryClient();
-  const { fn } = useActiveAccountingProvider();
-
-  const { isConnected } = useActiveAccountingProvider();
+  const { fn, isConnected, providerId, isLoading: providerLoading } = useActiveAccountingProvider();
 
   const { data: expenses = [], isLoading } = useQuery({
-    queryKey: ['finbot-expenses', isConnected ? 'connected' : 'none'],
+    queryKey: ['finbot-expenses', providerId || 'none'],
     queryFn: () => {
-      if (!isConnected) return [];
-      return base44.entities.FinbotExpense.list('-created_date', 500);
+      if (!isConnected || !providerId) return [];
+      return base44.entities.FinbotExpense.filter({ provider: providerId }, '-created_date', 500);
     },
+    enabled: !providerLoading,
   });
 
   const syncMutation = useMutation({

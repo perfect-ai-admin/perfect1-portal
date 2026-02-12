@@ -40,7 +40,7 @@ export default function useActiveAccountingProvider() {
       });
       return connections?.[0] || null;
     },
-    staleTime: 60000,
+    staleTime: 5000,
     retry: 1,
   });
 

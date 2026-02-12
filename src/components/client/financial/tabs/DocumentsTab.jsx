@@ -31,23 +31,23 @@ export default function DocumentsTab({ data }) {
   const [showConnectDialog, setShowConnectDialog] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const queryClient = useQueryClient();
-  const { fn, isConnected, isLoading: providerLoading, isVatExempt } = useActiveAccountingProvider();
+  const { fn, isConnected, isLoading: providerLoading, isVatExempt, providerId } = useActiveAccountingProvider();
 
   const { data: documents = [], isLoading } = useQuery({
-    queryKey: ['finbot-documents', fn ? 'connected' : 'none'],
+    queryKey: ['finbot-documents', providerId || 'none'],
     queryFn: () => {
-      if (!isConnected) return [];
-      return base44.entities.FinbotDocument.list('-issue_date', 500);
+      if (!isConnected || !providerId) return [];
+      return base44.entities.FinbotDocument.filter({ provider: providerId }, '-issue_date', 500);
     },
     enabled: !providerLoading,
     refetchOnWindowFocus: true,
   });
 
   const { data: customers = [] } = useQuery({
-    queryKey: ['finbot-customers', fn ? 'connected' : 'none'],
+    queryKey: ['finbot-customers', providerId || 'none'],
     queryFn: () => {
-      if (!isConnected) return [];
-      return base44.entities.FinbotCustomer.list('-created_date', 500);
+      if (!isConnected || !providerId) return [];
+      return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading,
   });
