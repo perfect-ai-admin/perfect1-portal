@@ -165,8 +165,12 @@ export default function ConnectionsTab({ data }) {
         open={!!connectProvider}
         onClose={() => setConnectProvider(null)}
         provider={connectProvider}
-        onConnect={handleConnect}
-        loading={connectLoading}
+        onConnect={() => {
+          // Success callback — refresh statuses
+          queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
+          fetchAllStatuses();
+          setConnectProvider(null);
+        }}
       />
     </motion.div>
   );
