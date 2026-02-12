@@ -41,8 +41,8 @@ Deno.serve(async (req) => {
       const results = {};
       for (const res of ['customers', 'documents', 'expenses']) {
         try {
-          const r = await base44.asServiceRole.functions.invoke(syncFn, { resource: res });
-          results[res] = r?.synced_count || 0;
+          const r = await base44.functions.invoke(syncFn, { resource: res });
+          results[res] = r?.data?.synced_count || r?.synced_count || 0;
         } catch (e) {
           console.log(`Sync ${res} error:`, e.message);
           results[res] = 0;
@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
     }
 
     // Single resource sync
-    const result = await base44.asServiceRole.functions.invoke(syncFn, { resource });
+    const result = await base44.functions.invoke(syncFn, { resource });
 
     // Update last_sync_at
     await base44.asServiceRole.entities.AccountingConnection.update(connection.id, {
