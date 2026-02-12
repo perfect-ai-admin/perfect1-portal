@@ -57,8 +57,9 @@ export default function ReportsTab({ data }) {
       return base44.functions.invoke('acctFetchReports', { report_type, period_start: periodStart, period_end: periodEnd });
     },
     onSuccess: (res, variables) => {
-      const responseData = res.data?.data;
-      if (responseData?.status) {
+      // Handle both nested and flat response structures
+      const responseData = res.data?.data || res.data;
+      if (responseData?.status || responseData?.income_report || responseData?.income_tax_report || responseData?.vat_report) {
         setReportData(responseData);
         setActiveReportType(variables.report_type);
         toast.success('הדוח הופק בהצלחה');
