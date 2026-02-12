@@ -18,7 +18,10 @@ async function getJWT(base44, userId) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id: conn.api_key_enc, secret: conn.api_secret_enc }),
   });
-  if (!tokenResp.ok) throw new Error('שגיאה בהתחברות ל-Morning');
+  if (!tokenResp.ok) {
+    console.log('Morning token error:', tokenResp.status);
+    throw new Error('שגיאה בהתחברות ל-Morning');
+  }
   const { token } = await tokenResp.json();
   return token;
 }
@@ -34,17 +37,19 @@ Deno.serve(async (req) => {
 
     const jwt = await getJWT(base44, user.id);
 
-    // Build client payload for Morning API
+    // Build client payload per Morning API: POST /clients
     const clientPayload = {
       name,
-      ...(id_number ? { taxId: id_number } : {}),
-      ...(email ? { emails: [email] } : {}),
-      ...(phone ? { phone } : {}),
-      ...(address ? { address } : {}),
-      ...(city ? { city } : {}),
-      ...(zip ? { zip } : {}),
       active: true,
     };
+    if (id_number) clientPayload.taxId = id_number;
+    if (email) clientPayload.emails = [email];
+    if (phone) clientPayload.phone = phone;
+    if (address) clientPayload.address = address;
+    if (city) clientPayload.city = city;
+    if (zip) clientPayload.zip = zip;
+
+    console.log('Morning create client payload:', JSON.stringify(clientPayload));
 
     const resp = await fetch(`${MORNING_BASE}/clients`, {
       method: 'POST',
@@ -52,11 +57,19 @@ Deno.serve(async (req) => {
       body: JSON.stringify(clientPayload),
     });
 
-    const result = await resp.json();
+    const resultText = await resp.text();
+    let result;
+    try {
+      result = JSON.parse(resultText);
+    } catch (_) {
+      console.log('Morning create client non-JSON:', resultText.substring(0, 200));
+      return Response.json({ error: 'תגובה לא תקינה מ-Morning' }, { status: 500 });
+    }
 
     if (!resp.ok) {
+      console.log('Morning create client error:', resp.status, JSON.stringify(result));
       return Response.json({ 
-        error: result.errorMessage || 'שגיאה ביצירת לקוח ב-Morning' 
+        error: result.errorMessage || result.message || 'שגיאה ביצירת לקוח ב-Morning' 
       }, { status: 400 });
     }
 
@@ -64,10 +77,10 @@ Deno.serve(async (req) => {
     const saved = await base44.asServiceRole.entities.AccountingCustomer.create({
       user_id: user.id,
       provider: 'morning',
-      provider_customer_id: result.id,
+      provider_customer_id: String(result.id),
       name: result.name || name,
       tax_id: result.taxId || id_number || null,
-      email: (result.emails && result.emails[0]) || email || null,
+      email: Array.isArray(result.emails) && result.emails.length > 0 ? result.emails[0] : (email || null),
       phone: result.phone || phone || null,
       address: result.address || address || null,
       city: result.city || city || null,
@@ -91,6 +104,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ status: 'success', customer: saved });
   } catch (error) {
+    console.log('morningCreateCustomer error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

@@ -6,7 +6,7 @@ const MORNING_BASE = "https://api.greeninvoice.co.il/api/v1";
  * Morning (Green Invoice) — fetch financial reports.
  * Input: { report_type: "pnl"|"vat"|"income", period_start, period_end }
  * 
- * Morning doesn't have a direct "report" API, so we compute reports from document + expense data.
+ * Morning doesn't have dedicated report endpoints, so we compute from documents + expenses.
  */
 async function getJWT(base44, userId) {
   const connections = await base44.asServiceRole.entities.AccountingConnection.filter({
@@ -25,6 +25,32 @@ async function getJWT(base44, userId) {
   return token;
 }
 
+async function fetchAllPages(jwt, endpoint, filters) {
+  const allItems = [];
+  let page = 1;
+  const pageSize = 100;
+
+  while (true) {
+    const resp = await fetch(`${MORNING_BASE}/${endpoint}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...filters, page, pageSize }),
+    });
+    if (!resp.ok) {
+      console.log(`Morning ${endpoint} error:`, resp.status);
+      break;
+    }
+    const data = await resp.json();
+    const items = data.items || [];
+    allItems.push(...items);
+    if (items.length < pageSize) break;
+    page++;
+    if (page > 10) break; // safety
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return allItems;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -39,40 +65,26 @@ Deno.serve(async (req) => {
     const jwt = await getJWT(base44, user.id);
 
     // Fetch documents for period
-    const docsResp = await fetch(`${MORNING_BASE}/documents/search`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fromDate: period_start,
-        toDate: period_end,
-        pageSize: 500,
-        page: 1,
-      }),
+    const documents = await fetchAllPages(jwt, 'documents/search', {
+      fromDate: period_start,
+      toDate: period_end,
     });
-    const docsData = docsResp.ok ? await docsResp.json() : { items: [] };
-    const documents = docsData.items || [];
 
     // Fetch expenses for period
-    const expResp = await fetch(`${MORNING_BASE}/expenses/search`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fromDate: period_start,
-        toDate: period_end,
-        pageSize: 500,
-        page: 1,
-      }),
+    const expenses = await fetchAllPages(jwt, 'expenses/search', {
+      fromDate: period_start,
+      toDate: period_end,
     });
-    const expData = expResp.ok ? await expResp.json() : { items: [] };
-    const expenses = expData.items || [];
+
+    console.log(`Morning reports: ${documents.length} docs, ${expenses.length} expenses for ${period_start} to ${period_end}`);
 
     let report = {};
 
+    // Income document types
+    const incomeTypes = [305, 320, 400, 300];
+    const creditTypes = [330];
+
     if (report_type === 'pnl') {
-      // Profit & Loss
-      const incomeTypes = [305, 320, 400, 300]; // invoices + receipts
-      const creditTypes = [330]; // credit notes
-      
       const income = documents
         .filter(d => incomeTypes.includes(d.type) && d.status !== 3)
         .reduce((sum, d) => sum + (d.amount || 0), 0);
@@ -81,7 +93,8 @@ Deno.serve(async (req) => {
         .filter(d => creditTypes.includes(d.type) && d.status !== 3)
         .reduce((sum, d) => sum + (d.amount || 0), 0);
       
-      const totalExpenses = expenses.reduce((sum, e) => sum + (e.totalAmount || e.amount || 0), 0);
+      const totalExpenses = expenses
+        .reduce((sum, e) => sum + (e.totalAmount || e.amount || 0), 0);
 
       report = {
         title: 'דוח רווח והפסד',
@@ -94,7 +107,6 @@ Deno.serve(async (req) => {
         data: { income, credits, expenses: totalExpenses },
       };
     } else if (report_type === 'vat') {
-      // VAT Report
       const outputVat = documents
         .filter(d => d.status !== 3)
         .reduce((sum, d) => sum + (d.vat || 0), 0);
@@ -102,7 +114,7 @@ Deno.serve(async (req) => {
       const inputVat = expenses.reduce((sum, e) => sum + (e.vat || 0), 0);
       
       const taxableIncome = documents
-        .filter(d => [305, 320, 400, 300].includes(d.type) && d.status !== 3)
+        .filter(d => incomeTypes.includes(d.type) && d.status !== 3)
         .reduce((sum, d) => sum + (d.amount || 0), 0);
 
       report = {
@@ -122,13 +134,17 @@ Deno.serve(async (req) => {
         },
       };
     } else if (report_type === 'income') {
-      // Income summary
+      const typeLabels = {
+        305: 'חשבוניות מס',
+        320: 'חשבונית מס/קבלה',
+        400: 'קבלות',
+        330: 'זיכויים',
+        300: 'חשבון עסקה',
+      };
+
       const incomeByType = {};
       for (const d of documents.filter(d => d.status !== 3)) {
-        const label = d.type === 305 ? 'חשבוניות מס' :
-                      d.type === 320 ? 'חשבונית מס/קבלה' :
-                      d.type === 400 ? 'קבלות' :
-                      d.type === 330 ? 'זיכויים' : 'אחר';
+        const label = typeLabels[d.type] || 'אחר';
         incomeByType[label] = (incomeByType[label] || 0) + (d.amount || 0);
       }
 
@@ -157,6 +173,7 @@ Deno.serve(async (req) => {
 
     return Response.json({ status: 'success', report });
   } catch (error) {
+    console.log('morningFetchReports error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

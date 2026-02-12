@@ -5,6 +5,9 @@ const MORNING_BASE = "https://api.greeninvoice.co.il/api/v1";
 /**
  * Morning (Green Invoice) — get document download links.
  * Input: { document_id } (our local AccountingDocument id)
+ * 
+ * Morning API: GET /documents/{id}/download returns { file: "url" }
+ * Also GET /documents/{id} returns url.origin, url.he, url.en
  */
 async function getJWT(base44, userId) {
   const connections = await base44.asServiceRole.entities.AccountingConnection.filter({
@@ -39,44 +42,48 @@ Deno.serve(async (req) => {
     const doc = docs?.find(d => d.id === document_id);
     if (!doc) return Response.json({ error: 'מסמך לא נמצא' }, { status: 404 });
 
-    // If we already have a PDF URL
+    // If we already have a PDF URL, return it
     if (doc.pdf_url) {
       return Response.json({ status: 'success', pdf_url: doc.pdf_url });
     }
 
+    if (!doc.provider_document_id) {
+      return Response.json({ error: 'חסר מזהה מסמך ב-Morning' }, { status: 400 });
+    }
+
     const jwt = await getJWT(base44, user.id);
 
-    // Fetch download links from Morning
-    const resp = await fetch(`${MORNING_BASE}/documents/${doc.provider_document_id}/download`, {
-      method: 'GET',
+    // First try: GET /documents/{id} to get the url object
+    const docResp = await fetch(`${MORNING_BASE}/documents/${doc.provider_document_id}`, {
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
     });
 
-    if (!resp.ok) {
-      // Try getting the doc itself which may have a url
-      const docResp = await fetch(`${MORNING_BASE}/documents/${doc.provider_document_id}`, {
-        headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
-      });
-      if (docResp.ok) {
-        const docData = await docResp.json();
-        const pdfUrl = docData.url?.origin || docData.url?.he || null;
-        if (pdfUrl) {
-          await base44.asServiceRole.entities.AccountingDocument.update(doc.id, { pdf_url: pdfUrl });
-          return Response.json({ status: 'success', pdf_url: pdfUrl });
-        }
+    if (docResp.ok) {
+      const docData = await docResp.json();
+      const pdfUrl = docData.url?.origin || docData.url?.he || docData.url?.en || null;
+      if (pdfUrl) {
+        await base44.asServiceRole.entities.AccountingDocument.update(doc.id, { pdf_url: pdfUrl });
+        return Response.json({ status: 'success', pdf_url: pdfUrl });
       }
-      return Response.json({ error: 'לא ניתן להוריד את המסמך' }, { status: 400 });
     }
 
-    const downloadData = await resp.json();
-    const pdfUrl = downloadData.file || downloadData.url || downloadData.link || null;
+    // Fallback: try /documents/{id}/download
+    const dlResp = await fetch(`${MORNING_BASE}/documents/${doc.provider_document_id}/download`, {
+      headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+    });
 
-    if (pdfUrl) {
-      await base44.asServiceRole.entities.AccountingDocument.update(doc.id, { pdf_url: pdfUrl });
+    if (dlResp.ok) {
+      const dlData = await dlResp.json();
+      const pdfUrl = dlData.file || dlData.url || dlData.link || null;
+      if (pdfUrl) {
+        await base44.asServiceRole.entities.AccountingDocument.update(doc.id, { pdf_url: pdfUrl });
+        return Response.json({ status: 'success', pdf_url: pdfUrl });
+      }
     }
 
-    return Response.json({ status: 'success', pdf_url: pdfUrl });
+    return Response.json({ error: 'לא ניתן להוריד את המסמך' }, { status: 400 });
   } catch (error) {
+    console.log('morningDownloadDocument error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

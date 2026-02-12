@@ -44,7 +44,10 @@ async function getJWT(base44, userId) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id: conn.api_key_enc, secret: conn.api_secret_enc }),
   });
-  if (!tokenResp.ok) throw new Error('שגיאה בהתחברות ל-Morning');
+  if (!tokenResp.ok) {
+    console.log('Morning token error:', tokenResp.status, await tokenResp.text().catch(() => ''));
+    throw new Error('שגיאה בהתחברות ל-Morning');
+  }
   const { token } = await tokenResp.json();
   return { jwt: token, connection: conn };
 }
@@ -69,17 +72,21 @@ Deno.serve(async (req) => {
 
     const { jwt, connection } = await getJWT(base44, user.id);
 
+    // Determine VAT type based on business config
+    // vatType: 0=default(based on business), 1=included, 2=exempt
+    const vatType = connection.config?.is_vat_exempt ? 2 : 0;
+
     // Build income lines
     const income = items.map((item, idx) => ({
-      catalogNum: '',
+      catalogNum: item.catalogNum || '',
       description: item.description || `פריט ${idx + 1}`,
       quantity: item.quantity || 1,
       price: item.unit_price || item.price || 0,
       currency: 'ILS',
-      vatType: connection.config?.is_vat_exempt ? 2 : 0, // 0=default, 2=exempt
+      vatType: vatType,
     }));
 
-    // Build payment array
+    // Build payment array (only for receipts and invoice_receipts)
     const payment = [];
     if (payment_method && payment_method !== 'none') {
       const pmType = MORNING_PAYMENT_MAP[payment_method] ?? 0;
@@ -92,28 +99,31 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Resolve customer
-    let clientId = null;
+    // Resolve customer: look up provider_customer_id
+    let clientObj = undefined;
     if (customer_id) {
-      // Look up the provider_customer_id from our AccountingCustomer entity
       const customers = await base44.asServiceRole.entities.AccountingCustomer.filter({
         user_id: user.id, provider: 'morning',
       });
       const match = customers?.find(c => c.id === customer_id || c.provider_customer_id === customer_id);
-      if (match) clientId = match.provider_customer_id;
+      if (match?.provider_customer_id) {
+        clientObj = { id: match.provider_customer_id };
+      }
     }
 
-    // Build document payload
+    // Build document payload per Morning API
     const docPayload = {
       type: morningType,
-      ...(clientId ? { client: { id: clientId } } : {}),
+      ...(clientObj ? { client: clientObj } : {}),
       income,
-      payment: payment.length > 0 ? payment : undefined,
+      ...(payment.length > 0 ? { payment } : {}),
       remarks: notes || '',
       date: issue_date || new Date().toISOString().split('T')[0],
       lang: 'he',
       currency: 'ILS',
     };
+
+    console.log('Morning create document payload:', JSON.stringify(docPayload).substring(0, 500));
 
     const createResp = await fetch(`${MORNING_BASE}/documents`, {
       method: 'POST',
@@ -121,11 +131,19 @@ Deno.serve(async (req) => {
       body: JSON.stringify(docPayload),
     });
 
-    const result = await createResp.json();
+    const resultText = await createResp.text();
+    let result;
+    try {
+      result = JSON.parse(resultText);
+    } catch (_) {
+      console.log('Morning create doc non-JSON response:', resultText.substring(0, 300));
+      return Response.json({ error: 'תגובה לא תקינה מ-Morning' }, { status: 500 });
+    }
 
     if (!createResp.ok) {
+      console.log('Morning create doc error:', createResp.status, JSON.stringify(result));
       return Response.json({ 
-        error: result.errorMessage || 'שגיאה ביצירת מסמך ב-Morning',
+        error: result.errorMessage || result.message || 'שגיאה ביצירת מסמך ב-Morning',
         details: result,
       }, { status: 400 });
     }
@@ -135,16 +153,21 @@ Deno.serve(async (req) => {
     const vatAmount = result.vat || 0;
     const total = result.totalAmount || (subtotal + vatAmount);
 
+    let pdfUrl = null;
+    if (result.url) {
+      pdfUrl = result.url.origin || result.url.he || result.url.en || null;
+    }
+
     const savedDoc = await base44.asServiceRole.entities.AccountingDocument.create({
       user_id: user.id,
       provider: 'morning',
-      provider_document_id: result.id,
+      provider_document_id: String(result.id),
       doc_type: type,
-      doc_number: result.number ? String(result.number) : null,
+      doc_number: result.number != null ? String(result.number) : null,
       status: result.status === 0 ? 'draft' : 'final',
       direction: 'outbound',
-      customer_provider_id: clientId,
-      customer_name: result.client?.name || result.clientName || null,
+      customer_provider_id: clientObj?.id || null,
+      customer_name: result.client?.name || null,
       currency: 'ILS',
       subtotal,
       vat_amount: vatAmount,
@@ -160,7 +183,7 @@ Deno.serve(async (req) => {
         line_total: i.quantity * i.price,
       })),
       notes: notes || null,
-      pdf_url: result.url?.origin || null,
+      pdf_url: pdfUrl,
       raw: result,
       synced_at: new Date().toISOString(),
     });
@@ -181,9 +204,10 @@ Deno.serve(async (req) => {
       document: savedDoc,
       morning_doc_id: result.id,
       doc_number: result.number,
-      pdf_url: result.url?.origin || null,
+      pdf_url: pdfUrl,
     });
   } catch (error) {
+    console.log('morningCreateDocument error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
