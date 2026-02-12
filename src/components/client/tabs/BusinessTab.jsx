@@ -13,9 +13,10 @@ import FocusDashboard from '../business/FocusDashboard';
 import StateDataCollector from '../business/StateDataCollector';
 import UnifiedRecommendationPanel from '../business/UnifiedRecommendationPanel';
 import BusinessStateTimeline from '../business/BusinessStateTimeline';
+import RevenueFromDocuments from '../business/RevenueFromDocuments';
 import CollapsibleSection from '@/components/common/CollapsibleSection';
 import MetricTooltip from '@/components/common/MetricTooltip';
-import { TrendingUp, DollarSign, PieChart, Download, BarChart3, Sparkles } from 'lucide-react';
+import { TrendingUp, DollarSign, PieChart, Download, BarChart3, Sparkles, Receipt } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '../business/formatters';
 import {
@@ -271,6 +272,11 @@ const BusinessTab = React.memo(({ data }) => {
           <p className="text-xs text-gray-400 font-semibold">-</p>
         </div>
       </div>
+
+      {/* Revenue Summary from Documents */}
+      <CollapsibleSection title="ריכוז הכנסות" icon={Receipt} defaultOpen={true}>
+        <RevenueFromDocuments period={period} />
+      </CollapsibleSection>
 
       {/* Charts Section - Mobile Optimized */}
       <div className="space-y-3">
