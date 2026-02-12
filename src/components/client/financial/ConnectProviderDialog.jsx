@@ -40,13 +40,40 @@ const PROVIDER_GUIDES = {
 function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
   const [credentials, setCredentials] = useState({});
   const [showGuide, setShowGuide] = useState(false);
-  const [status, setStatus] = useState('idle'); // idle | connecting | success | error
+  const [status, setStatus] = useState('idle'); // idle | connecting | reconnecting | success | error
   const [errorMsg, setErrorMsg] = useState('');
 
   const authFields = provider.authFields || [];
   const guide = PROVIDER_GUIDES[provider.id];
 
   const allFieldsFilled = authFields.every(f => (credentials[f.name] || '').trim().length > 0);
+
+  // Try reconnect with saved credentials on mount
+  React.useEffect(() => {
+    let cancelled = false;
+    async function tryReconnect() {
+      setStatus('reconnecting');
+      try {
+        const res = await base44.functions.invoke('acctConnectProvider', {
+          provider: provider.id,
+          reconnect: true,
+        });
+        if (cancelled) return;
+        if (res.data?.status === 'connected') {
+          setStatus('success');
+          toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה!`, { duration: 5000 });
+          setTimeout(() => { onSuccess?.(); onClose(); }, 1500);
+          return;
+        }
+      } catch (err) {
+        if (cancelled) return;
+        console.log('Reconnect failed, showing form:', err?.response?.data?.error || err.message);
+      }
+      if (!cancelled) setStatus('idle');
+    }
+    tryReconnect();
+    return () => { cancelled = true; };
+  }, [provider.id]);
 
   async function doConnect() {
     if (status === 'connecting') return;
