@@ -69,19 +69,31 @@ export default function DocumentsTab({ data }) {
 
   const formatCurrency = (amount) => amount != null ? `₪${Number(amount).toLocaleString('he-IL')}` : '-';
 
-  // Calculate display values - if vat is missing and not exempt, compute it
+  // Calculate display values based on accounting rules:
+  // - Invoice / Invoice+Receipt (invrec): has VAT (for osek morasha)
+  // - Receipt: no VAT column (for osek patur it's VAT-free, for morasha it's just a payment confirmation)
+  // - Osek patur: never has VAT
   const getDocAmounts = (doc) => {
     const subtotal = Number(doc.subtotal) || 0;
     let vat = Number(doc.vat) || 0;
     let total = Number(doc.total) || 0;
 
-    if (!vat && !isVatExempt && subtotal > 0) {
+    const isInvoiceType = ['invoice', 'invoice_receipt', 'credit'].includes(doc.type);
+
+    if (!vat && !isVatExempt && isInvoiceType && subtotal > 0) {
       vat = Math.round(subtotal * 0.18 * 100) / 100;
     }
-    if (!total || total === subtotal) {
+
+    // For receipts or osek patur - no VAT
+    if (isVatExempt || doc.type === 'receipt') {
+      vat = 0;
+    }
+
+    if (!total || (total === subtotal && vat > 0)) {
       total = Math.round((subtotal + vat) * 100) / 100;
     }
-    return { subtotal, vat, total };
+
+    return { subtotal, vat, total, showVat: isInvoiceType && !isVatExempt };
   };
 
   return (
