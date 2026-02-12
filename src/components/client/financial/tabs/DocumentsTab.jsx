@@ -136,14 +136,16 @@ export default function DocumentsTab({ data }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filtered.map(doc => (
+                {filtered.map(doc => {
+                  const amounts = getDocAmounts(doc);
+                  return (
                   <tr key={doc.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-gray-600">{doc.issue_date ? new Date(doc.issue_date).toLocaleDateString('he-IL') : '-'}</td>
                     <td className="px-4 py-3">{TYPE_LABELS[doc.type] || doc.type}</td>
                     <td className="px-4 py-3">{doc.customer_name || '-'}</td>
-                    <td className="px-4 py-3">{formatCurrency(doc.subtotal)}</td>
-                    <td className="px-4 py-3">{formatCurrency(doc.vat)}</td>
-                    <td className="px-4 py-3 font-medium">{formatCurrency(doc.total)}</td>
+                    <td className="px-4 py-3">{formatCurrency(amounts.subtotal)}</td>
+                    <td className="px-4 py-3">{formatCurrency(amounts.vat)}</td>
+                    <td className="px-4 py-3 font-medium">{formatCurrency(amounts.total)}</td>
                     <td className="px-4 py-3">
                       {doc.status && <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[doc.status] || 'bg-gray-100 text-gray-700'}`}>{STATUS_LABELS[doc.status] || doc.status}</span>}
                     </td>
@@ -155,7 +157,8 @@ export default function DocumentsTab({ data }) {
                       )}
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
