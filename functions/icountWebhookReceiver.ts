@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClient } from 'npm:@base44/sdk@0.8.6';
 
 /**
  * iCount Webhook Receiver
@@ -47,7 +47,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing action or cid' }, { status: 400 });
     }
 
-    const base44 = createClientFromRequest(req);
+    // Webhook from iCount has no auth header - use service role directly
+    const base44 = createClient({ appId: Deno.env.get("BASE44_APP_ID") });
 
     // Find connection by cid
     const connections = await base44.asServiceRole.entities.AccountingConnection.filter({
