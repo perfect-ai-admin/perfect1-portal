@@ -35,7 +35,7 @@ export default function CustomersTab({ data }) {
       return base44.functions.invoke(fn.syncPull, { resource: 'customers' });
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-customers', providerId || 'none'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} לקוחות`);
     },
     onError: (err) => toast.error(err.message || 'שגיאה בסנכרון'),
