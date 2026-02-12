@@ -33,12 +33,40 @@ export default function QuickActionsBar({ onActionComplete, user }) {
   const [connectLoading, setConnectLoading] = useState(false);
   const queryClient = useQueryClient();
 
+  const [reconnecting, setReconnecting] = useState(false);
+
   const checkConnection = () => {
     if (!isConnected) {
-      setShowConnectDialog(true);
+      // Try reconnect first
+      tryReconnect();
       return false;
     }
     return true;
+  };
+
+  const tryReconnect = async () => {
+    // Check if there are saved credentials we can reconnect with
+    setReconnecting(true);
+    try {
+      const statusRes = await base44.functions.invoke('acctGetConnectionStatus');
+      const saved = statusRes.data?.saved_providers || [];
+      if (saved.length > 0) {
+        // Try to reconnect with saved credentials
+        const provider = saved[0].provider;
+        const res = await base44.functions.invoke('acctConnectProvider', { provider, reconnect: true });
+        if (res.data?.status === 'connected') {
+          toast.success(res.data.message || `חובר מחדש ל-${provider}!`);
+          queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
+          onActionComplete?.();
+          setReconnecting(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.log('Quick reconnect failed, showing dialog:', err?.response?.data?.error || err.message);
+    }
+    setReconnecting(false);
+    setShowConnectDialog(true);
   };
 
   // Step 1 -> Step 2: Intro done, show provider selection
