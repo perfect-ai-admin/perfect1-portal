@@ -97,8 +97,8 @@ Deno.serve(async (req) => {
     const paymentSource = (payment && payment.length > 0) ? payment[0] : null;
     const payTypeKey = paymentSource?.type || payment_type || 'cash';
     const payType = PAYMENT_TYPE_MAP[payTypeKey] || 1;
-    // If explicit payment amount provided, use as-is (already includes VAT if relevant)
-    const paySum = paymentSource?.price ? Number(paymentSource.price) : totalWithVat;
+    // Payment sum should match the subtotal - iCount adds VAT on its own
+    const paySum = paymentSource?.price ? Number(paymentSource.price) : subtotalCalc;
 
     // Customer identification
     if (customer_provider_id) {
