@@ -165,7 +165,9 @@ export default function DocumentsTab({ data }) {
 
           {/* Mobile Cards */}
           <div className="md:hidden space-y-2">
-            {filtered.map(doc => (
+            {filtered.map(doc => {
+              const amounts = getDocAmounts(doc);
+              return (
               <div key={doc.id} className="bg-white border border-gray-200 rounded-lg p-3">
                 <div className="flex justify-between items-start">
                   <div>
@@ -173,10 +175,14 @@ export default function DocumentsTab({ data }) {
                     <p className="text-xs text-gray-500">{doc.customer_name || '-'}</p>
                     <p className="text-xs text-gray-400 mt-1">{doc.issue_date ? new Date(doc.issue_date).toLocaleDateString('he-IL') : ''}</p>
                   </div>
-                  <p className="font-bold text-sm">{formatCurrency(doc.total)}</p>
+                  <div className="text-left">
+                    <p className="font-bold text-sm">{formatCurrency(amounts.total)}</p>
+                    {amounts.vat > 0 && <p className="text-xs text-gray-400">מע״מ: {formatCurrency(amounts.vat)}</p>}
+                  </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
