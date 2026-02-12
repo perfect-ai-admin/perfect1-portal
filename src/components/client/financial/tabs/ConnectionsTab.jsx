@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ACCOUNTING_PROVIDERS, getProvider } from '../accountingProviders';
 import ProviderCard from '../ProviderCard';
@@ -10,6 +11,7 @@ import ProviderSelectionDialog from '../ProviderSelectionDialog';
 import ConnectProviderDialog from '../ConnectProviderDialog';
 
 export default function ConnectionsTab({ data }) {
+  const queryClient = useQueryClient();
   const [statuses, setStatuses] = useState({}); // {finbot: {connected, ...}, ...}
   const [loading, setLoading] = useState(true);
   const [connectLoading, setConnectLoading] = useState(false);
@@ -60,6 +62,12 @@ export default function ConnectionsTab({ data }) {
         toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
       }
       setConnectProvider(null);
+      // Invalidate all financial queries so data appears immediately
+      queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
       fetchAllStatuses();
     } else {
       toast.error(completeRes.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
@@ -75,6 +83,12 @@ export default function ConnectionsTab({ data }) {
     await base44.functions.invoke(provider.disconnectFunction);
     setDisconnectLoading(p => ({ ...p, [providerId]: false }));
     toast.success(`התנתקת מ-${provider.name}`);
+    // Invalidate all financial queries so data disappears immediately
+    queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
+    queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
+    queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
+    queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
+    queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
     fetchAllStatuses();
   };
 
