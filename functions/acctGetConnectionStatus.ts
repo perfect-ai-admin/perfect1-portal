@@ -16,7 +16,21 @@ Deno.serve(async (req) => {
     });
 
     if (!connections?.length) {
-      return Response.json({ connected: false });
+      // Check for disabled connections with saved credentials
+      const disabledConns = await base44.asServiceRole.entities.AccountingConnection.filter({
+        user_id: user.id,
+      });
+      const savedProviders = [];
+      for (const conn of (disabledConns || [])) {
+        const p = conn.provider;
+        const hasCreds = (p === 'icount' && conn.username && conn.password_enc && conn.provider_account_id) ||
+                         (p === 'morning' && conn.api_key_enc && conn.api_secret_enc) ||
+                         (p === 'finbot' && conn.api_key_enc);
+        if (hasCreds) {
+          savedProviders.push({ provider: p, provider_account_id: conn.provider_account_id, status: conn.status });
+        }
+      }
+      return Response.json({ connected: false, saved_providers: savedProviders });
     }
 
     const connection = connections[0];
