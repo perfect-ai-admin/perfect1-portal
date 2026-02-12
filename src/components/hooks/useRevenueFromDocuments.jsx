@@ -10,13 +10,14 @@ export default function useRevenueFromDocuments() {
   const { providerId, isConnected } = useActiveAccountingProvider();
 
   const { data: documents = [], isLoading } = useQuery({
-    queryKey: ['finbot-documents-revenue', providerId],
+    queryKey: ['finbot-documents-revenue', providerId || 'none'],
     queryFn: () => {
       if (!providerId) return [];
       return base44.entities.FinbotDocument.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !!providerId,
-    staleTime: 60000,
+    staleTime: 30000,
+    refetchOnWindowFocus: true,
   });
 
   const stats = useMemo(() => {
