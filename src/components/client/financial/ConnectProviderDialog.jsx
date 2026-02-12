@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link2, Loader2, ShieldCheck, HelpCircle, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import ReactDOM from 'react-dom';
+import { Link2, Loader2, ShieldCheck, HelpCircle, ChevronDown, ChevronUp, ExternalLink, X } from 'lucide-react';
 
 // Provider-specific help guides
 const PROVIDER_GUIDES = {
@@ -47,11 +47,19 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
   const [credentials, setCredentials] = useState({});
   const [showGuide, setShowGuide] = useState(false);
 
-  // Reset when provider changes
+  // Reset when dialog opens
   useEffect(() => {
     if (open) {
       setCredentials({});
       setShowGuide(false);
+    }
+  }, [open]);
+
+  // Lock body scroll
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
     }
   }, [open]);
 
@@ -60,6 +68,7 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
   }, []);
 
   const handleSubmit = useCallback(() => {
+    console.log('🔌 Connect clicked!', provider?.id, credentials);
     if (provider && onConnect) {
       onConnect(provider.id, credentials);
     }
@@ -70,35 +79,40 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
   const authFields = provider.authFields || [];
   const guide = PROVIDER_GUIDES[provider.id];
 
-  return (
-    <div className="fixed inset-0 z-[9999]" dir="rtl">
+  const dialogContent = (
+    <div 
+      className="fixed inset-0" 
+      style={{ zIndex: 99999 }} 
+      dir="rtl"
+    >
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/60"
         onClick={onClose}
       />
       
-      {/* Dialog */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
+      {/* Centering container */}
+      <div className="absolute inset-0 flex items-center justify-center p-4">
         <div 
-          className="bg-white rounded-xl shadow-2xl w-full max-w-md pointer-events-auto relative"
+          className="bg-white rounded-xl shadow-2xl w-full max-w-md relative"
+          style={{ zIndex: 100000 }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close button */}
           <button 
             type="button"
-            className="absolute top-3 left-3 text-gray-400 hover:text-gray-600 transition-colors z-10"
+            className="absolute top-3 left-3 p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
             onClick={onClose}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            <X className="w-5 h-5" />
           </button>
 
           {/* Header */}
           <div className="p-6 pb-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center border"
-                style={{ backgroundColor: provider.logoColors.bg, borderColor: provider.logoColors.border }}>
-                <span className="font-black text-xs" style={{ color: provider.logoColors.text }}>{provider.logoText}</span>
+                style={{ backgroundColor: provider.logoColors?.bg, borderColor: provider.logoColors?.border }}>
+                <span className="font-black text-xs" style={{ color: provider.logoColors?.text }}>{provider.logoText}</span>
               </div>
               <h2 className="text-lg font-bold text-gray-900">חיבור חשבון {provider.name}</h2>
             </div>
@@ -108,7 +122,7 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
           </div>
 
           {/* Body */}
-          <div className="px-6 space-y-4">
+          <div className="px-6 space-y-4 max-h-[50vh] overflow-y-auto">
             <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
               <ShieldCheck className="w-4 h-4 flex-shrink-0" />
               <span>החיבור מאובטח ומוצפן. הנתונים נשמרים רק בחשבון שלך.</span>
@@ -124,6 +138,7 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
                   onChange={e => handleFieldChange(field.name, e.target.value)}
                   dir="ltr"
                   className="w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  autoComplete="off"
                 />
               </div>
             ))}
@@ -172,12 +187,12 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
           </div>
 
           {/* Footer */}
-          <div className="p-6 pt-4 flex gap-2 justify-start">
+          <div className="p-6 pt-4 flex gap-2 justify-start border-t border-gray-100 mt-2">
             <button
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1E3A5F] text-white rounded-lg font-medium text-sm hover:bg-[#2C5282] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1E3A5F] text-white rounded-lg font-medium text-sm hover:bg-[#2C5282] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -189,7 +204,7 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors"
+              className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer"
             >
               ביטול
             </button>
@@ -198,4 +213,7 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
       </div>
     </div>
   );
+
+  // Render via portal to document.body to avoid any parent overflow/z-index issues
+  return ReactDOM.createPortal(dialogContent, document.body);
 }
