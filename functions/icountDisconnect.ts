@@ -30,32 +30,48 @@ Deno.serve(async (req) => {
       } catch (_) { /* ignore logout errors */ }
     }
 
-    // Delete all iCount documents for this user
+    // Delete ALL financial data for this user (both tagged and untagged)
     const deleteResults = { documents: 0, customers: 0, expenses: 0 };
 
+    // Delete documents - both with provider=icount AND without provider (legacy)
     try {
-      const docs = await base44.asServiceRole.entities.FinbotDocument.filter({ user_id: user.id, provider: 'icount' });
-      for (const doc of docs) {
-        await base44.asServiceRole.entities.FinbotDocument.delete(doc.id);
-        deleteResults.documents++;
+      const docsIcount = await base44.asServiceRole.entities.FinbotDocument.filter({ user_id: user.id, provider: 'icount' });
+      const docsNoProvider = await base44.asServiceRole.entities.FinbotDocument.filter({ user_id: user.id });
+      const allDocIds = new Set();
+      for (const doc of [...docsIcount, ...docsNoProvider]) {
+        if (!allDocIds.has(doc.id)) {
+          allDocIds.add(doc.id);
+          await base44.asServiceRole.entities.FinbotDocument.delete(doc.id);
+          deleteResults.documents++;
+        }
       }
     } catch (_) { /* ignore */ }
 
-    // Delete all iCount customers for this user
+    // Delete customers - both with provider=icount AND without provider (legacy)
     try {
-      const custs = await base44.asServiceRole.entities.FinbotCustomer.filter({ user_id: user.id, provider: 'icount' });
-      for (const cust of custs) {
-        await base44.asServiceRole.entities.FinbotCustomer.delete(cust.id);
-        deleteResults.customers++;
+      const custsIcount = await base44.asServiceRole.entities.FinbotCustomer.filter({ user_id: user.id, provider: 'icount' });
+      const custsNoProvider = await base44.asServiceRole.entities.FinbotCustomer.filter({ user_id: user.id });
+      const allCustIds = new Set();
+      for (const cust of [...custsIcount, ...custsNoProvider]) {
+        if (!allCustIds.has(cust.id)) {
+          allCustIds.add(cust.id);
+          await base44.asServiceRole.entities.FinbotCustomer.delete(cust.id);
+          deleteResults.customers++;
+        }
       }
     } catch (_) { /* ignore */ }
 
-    // Delete all iCount expenses for this user
+    // Delete expenses - both with provider=icount AND without provider (legacy)
     try {
-      const exps = await base44.asServiceRole.entities.FinbotExpense.filter({ user_id: user.id, provider: 'icount' });
-      for (const exp of exps) {
-        await base44.asServiceRole.entities.FinbotExpense.delete(exp.id);
-        deleteResults.expenses++;
+      const expsIcount = await base44.asServiceRole.entities.FinbotExpense.filter({ user_id: user.id, provider: 'icount' });
+      const expsNoProvider = await base44.asServiceRole.entities.FinbotExpense.filter({ user_id: user.id });
+      const allExpIds = new Set();
+      for (const exp of [...expsIcount, ...expsNoProvider]) {
+        if (!allExpIds.has(exp.id)) {
+          allExpIds.add(exp.id);
+          await base44.asServiceRole.entities.FinbotExpense.delete(exp.id);
+          deleteResults.expenses++;
+        }
       }
     } catch (_) { /* ignore */ }
 
