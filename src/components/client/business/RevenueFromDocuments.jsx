@@ -22,9 +22,9 @@ export default function RevenueFromDocuments({ period }) {
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
-    // Only count revenue documents (invoice, invoice_receipt)
+    // Count revenue documents (invoice, invoice_receipt, receipt)
     const revenueDocs = documents.filter(d => 
-      ['invoice', 'invoice_receipt'].includes(d.type) && d.status !== 'cancelled'
+      ['invoice', 'invoice_receipt', 'receipt'].includes(d.type) && d.status !== 'cancelled'
     );
 
     // Group by month
