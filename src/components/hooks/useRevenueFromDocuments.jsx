@@ -12,10 +12,9 @@ export default function useRevenueFromDocuments() {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents-revenue', providerId || 'none'],
     queryFn: () => {
-      if (!providerId) return [];
       return base44.entities.FinbotDocument.filter({ provider: providerId }, '-created_date', 500);
     },
-    enabled: !!providerId,
+    enabled: !!providerId && isConnected,
     staleTime: 30000,
     refetchOnWindowFocus: true,
   });
