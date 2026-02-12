@@ -90,6 +90,7 @@ Deno.serve(async (req) => {
 
           const docDataObj = {
             user_id: userId,
+            provider: 'icount',
             finbot_document_id: docId,
             type: ourType,
             customer_finbot_id: doc.client_id ? String(doc.client_id) : '',
@@ -140,6 +141,7 @@ Deno.serve(async (req) => {
           
           const customerData = {
             user_id: userId,
+            provider: 'icount',
             finbot_customer_id: clientIdStr,
             name: client.client_name || '',
             id_number: client.vat_id || '',
@@ -187,6 +189,7 @@ Deno.serve(async (req) => {
           
           const expDataObj = {
             user_id: userId,
+            provider: 'icount',
             finbot_expense_id: expIdStr,
             vendor: exp.supplier_name || '',
             category: exp.expense_type_name || '',
