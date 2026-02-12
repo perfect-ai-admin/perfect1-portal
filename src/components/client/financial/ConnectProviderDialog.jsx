@@ -17,12 +17,13 @@ const PROVIDER_GUIDES = {
   },
   finbot: {
     steps: [
-      'היכנס לחשבון ה-Finbot שלך ב-app.finbot.co.il',
-      'לחץ על "הגדרות" בתפריט הראשי',
-      'בחר "API" או "חיבורים חיצוניים"',
-      'העתק את ה-API Key שמופיע שם',
+      'היכנס לאפליקציית Finbot שלך',
+      'עבור ללשונית "הגדרות העסק"',
+      'חפש את השדה "מפתח API להפקת הכנסות"',
+      'לחץ על "יצירת מפתח API" — המערכת תיצור עבורך טוקן',
+      'העתק את הטוקן והדבק אותו כאן',
     ],
-    link: { url: 'https://app.finbot.co.il', label: 'פתח את חשבון Finbot שלי' },
+    link: { url: 'https://finbot.helpjuice.com/he_IL/api-docs-create-income', label: 'צפה בתיעוד API של Finbot' },
   },
   morning: {
     steps: [
