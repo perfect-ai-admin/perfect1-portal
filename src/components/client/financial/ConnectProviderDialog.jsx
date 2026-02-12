@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { Link2, Loader2, ShieldCheck, HelpCircle, ChevronDown, ChevronUp, ExternalLink, X } from 'lucide-react';
 
-// Provider-specific help guides
 const PROVIDER_GUIDES = {
   icount: {
     steps: [
@@ -46,8 +45,9 @@ const PROVIDER_GUIDES = {
 export default function ConnectProviderDialog({ open, onClose, provider, onConnect, loading }) {
   const [credentials, setCredentials] = useState({});
   const [showGuide, setShowGuide] = useState(false);
+  const credentialsRef = useRef(credentials);
+  credentialsRef.current = credentials;
 
-  // Reset when dialog opens
   useEffect(() => {
     if (open) {
       setCredentials({});
@@ -55,7 +55,6 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
     }
   }, [open]);
 
-  // Lock body scroll
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -63,52 +62,41 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
     }
   }, [open]);
 
-  const handleFieldChange = useCallback((fieldName, value) => {
-    setCredentials(prev => ({ ...prev, [fieldName]: value }));
-  }, []);
-
-  const handleSubmit = useCallback(() => {
-    console.log('🔌 Connect clicked!', provider?.id, credentials);
-    if (provider && onConnect) {
-      onConnect(provider.id, credentials);
-    }
-  }, [provider, credentials, onConnect]);
-
   if (!open || !provider) return null;
 
   const authFields = provider.authFields || [];
   const guide = PROVIDER_GUIDES[provider.id];
 
-  const dialogContent = (
-    <div 
-      className="fixed inset-0" 
-      style={{ zIndex: 99999 }} 
-      dir="rtl"
-    >
+  const onSubmitClick = () => {
+    const creds = credentialsRef.current;
+    console.log('🔌 Submit clicked, provider:', provider.id, 'credentials keys:', Object.keys(creds));
+    onConnect(provider.id, creds);
+  };
+
+  return ReactDOM.createPortal(
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999, direction: 'rtl' }}>
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)' }}
+        onMouseDown={onClose}
       />
       
-      {/* Centering container */}
-      <div className="absolute inset-0 flex items-center justify-center p-4">
+      {/* Dialog */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
         <div 
-          className="bg-white rounded-xl shadow-2xl w-full max-w-md relative"
-          style={{ zIndex: 100000 }}
-          onClick={(e) => e.stopPropagation()}
+          style={{ background: 'white', borderRadius: 12, boxShadow: '0 25px 50px rgba(0,0,0,0.25)', width: '100%', maxWidth: 440, pointerEvents: 'auto', position: 'relative' }}
+          onMouseDown={(e) => e.stopPropagation()}
         >
-          {/* Close button */}
-          <button 
-            type="button"
-            className="absolute top-3 left-3 p-1 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100"
-            onClick={onClose}
+          {/* Close */}
+          <div 
+            style={{ position: 'absolute', top: 12, left: 12, cursor: 'pointer', padding: 4, borderRadius: '50%', color: '#9ca3af' }}
+            onMouseDown={(e) => { e.stopPropagation(); onClose(); }}
           >
             <X className="w-5 h-5" />
-          </button>
+          </div>
 
           {/* Header */}
-          <div className="p-6 pb-4">
+          <div style={{ padding: '24px 24px 16px' }}>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center border"
                 style={{ backgroundColor: provider.logoColors?.bg, borderColor: provider.logoColors?.border }}>
@@ -122,98 +110,98 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
           </div>
 
           {/* Body */}
-          <div className="px-6 space-y-4 max-h-[50vh] overflow-y-auto">
-            <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
-              <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-              <span>החיבור מאובטח ומוצפן. הנתונים נשמרים רק בחשבון שלך.</span>
-            </div>
-
-            {authFields.map((field) => (
-              <div key={field.name}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
-                <input
-                  type={field.type || 'text'}
-                  placeholder={field.placeholder || ''}
-                  value={credentials[field.name] || ''}
-                  onChange={e => handleFieldChange(field.name, e.target.value)}
-                  dir="ltr"
-                  className="w-full text-left px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  autoComplete="off"
-                />
+          <div style={{ padding: '0 24px', maxHeight: '50vh', overflowY: 'auto' }}>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
+                <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+                <span>החיבור מאובטח ומוצפן. הנתונים נשמרים רק בחשבון שלך.</span>
               </div>
-            ))}
 
-            {/* How-to guide */}
-            {guide && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setShowGuide(!showGuide)}
-                  className="w-full flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors py-1"
-                >
-                  <HelpCircle className="w-4 h-4 flex-shrink-0" />
-                  <span>איפה מוצאים את הפרטים?</span>
-                  {showGuide ? <ChevronUp className="w-4 h-4 mr-auto" /> : <ChevronDown className="w-4 h-4 mr-auto" />}
-                </button>
+              {authFields.map((field) => (
+                <div key={field.name}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
+                  <input
+                    type={field.type || 'text'}
+                    placeholder={field.placeholder || ''}
+                    value={credentials[field.name] || ''}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setCredentials(prev => ({ ...prev, [field.name]: val }));
+                    }}
+                    dir="ltr"
+                    autoComplete="off"
+                    style={{ width: '100%', textAlign: 'left', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, outline: 'none' }}
+                    onFocus={e => { e.target.style.borderColor = '#3b82f6'; e.target.style.boxShadow = '0 0 0 2px rgba(59,130,246,0.2)'; }}
+                    onBlur={e => { e.target.style.borderColor = '#d1d5db'; e.target.style.boxShadow = 'none'; }}
+                  />
+                </div>
+              ))}
 
-                {showGuide && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3 text-sm text-blue-900">
-                    <div className="flex items-start gap-2">
-                      <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                      <p className="font-medium">הדרכה שלב אחרי שלב:</p>
-                    </div>
-                    <ol className="list-decimal list-inside space-y-2 pr-2 text-blue-800">
-                      {guide.steps.map((step, i) => (
-                        <li key={i}>{step}</li>
-                      ))}
-                    </ol>
-                    {guide.link && (
-                      <div className="pt-1 border-t border-blue-200">
-                        <a
-                          href={guide.link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 hover:underline font-medium"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          {guide.link.label}
-                        </a>
-                      </div>
-                    )}
+              {guide && (
+                <>
+                  <div
+                    onMouseDown={() => setShowGuide(!showGuide)}
+                    className="w-full flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors py-1 cursor-pointer select-none"
+                  >
+                    <HelpCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>איפה מוצאים את הפרטים?</span>
+                    {showGuide ? <ChevronUp className="w-4 h-4 mr-auto" /> : <ChevronDown className="w-4 h-4 mr-auto" />}
                   </div>
-                )}
-              </>
-            )}
+                  {showGuide && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3 text-sm text-blue-900">
+                      <ol className="list-decimal list-inside space-y-2 pr-2 text-blue-800">
+                        {guide.steps.map((step, i) => <li key={i}>{step}</li>)}
+                      </ol>
+                      {guide.link && (
+                        <div className="pt-1 border-t border-blue-200">
+                          <a href={guide.link.url} target="_blank" rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-blue-600 hover:underline font-medium">
+                            <ExternalLink className="w-3.5 h-3.5" /> {guide.link.label}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
 
           {/* Footer */}
-          <div className="p-6 pt-4 flex gap-2 justify-start border-t border-gray-100 mt-2">
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={loading}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1E3A5F] text-white rounded-lg font-medium text-sm hover:bg-[#2C5282] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          <div style={{ padding: '16px 24px 24px', display: 'flex', gap: 8, borderTop: '1px solid #f3f4f6', marginTop: 8 }}>
+            <div
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSubmitClick();
+              }}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                padding: '10px 20px', background: loading ? '#94a3b8' : '#1E3A5F', color: 'white',
+                borderRadius: 8, fontWeight: 500, fontSize: 14,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                userSelect: 'none', transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#2C5282'; }}
+              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#1E3A5F'; }}
             >
-              {loading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Link2 className="w-4 h-4" />
-              )}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />}
               חבר את החשבון
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors cursor-pointer"
+            </div>
+            <div
+              onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+              style={{
+                padding: '10px 16px', background: 'white', border: '1px solid #d1d5db',
+                color: '#374151', borderRadius: 8, fontWeight: 500, fontSize: 14,
+                cursor: 'pointer', userSelect: 'none',
+              }}
             >
               ביטול
-            </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
-
-  // Render via portal to document.body to avoid any parent overflow/z-index issues
-  return ReactDOM.createPortal(dialogContent, document.body);
 }
