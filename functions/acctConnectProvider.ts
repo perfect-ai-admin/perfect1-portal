@@ -76,13 +76,32 @@ Deno.serve(async (req) => {
         console.log('Legacy FinbotConnection sync skipped:', legacyErr.message);
       }
     } else if (provider === 'morning') {
-      // Morning uses API key — will be implemented later
-      if (!credentials.api_key?.trim()) {
-        return Response.json({ error: 'חסר API Key' }, { status: 400 });
+      // Morning uses API Key + Secret → JWT auth
+      if (!credentials.api_key?.trim() || !credentials.api_secret?.trim()) {
+        return Response.json({ error: 'חסרים API Key ו-API Secret' }, { status: 400 });
       }
-      connectionData.strategy = 'api_key';
-      connectionData.api_key_enc = credentials.api_key.trim();
-      connectionData.status = 'connected';
+      // Test connection via morningConnectTest
+      try {
+        const testResult = await base44.asServiceRole.functions.invoke('morningConnectTest', {
+          api_key: credentials.api_key.trim(),
+          api_secret: credentials.api_secret.trim(),
+        });
+        if (!testResult?.success) {
+          return Response.json({ error: testResult?.error || 'פרטי התחברות לא נכונים ל-Morning' }, { status: 400 });
+        }
+        connectionData.strategy = 'api_key';
+        connectionData.api_key_enc = credentials.api_key.trim();
+        connectionData.api_secret_enc = credentials.api_secret.trim();
+        connectionData.provider_account_id = testResult.business_id || null;
+        connectionData.status = 'connected';
+        connectionData.config = { 
+          is_vat_exempt: testResult.is_vat_exempt || false,
+          business_name: testResult.business_name || null,
+          business_type: testResult.business_type || null,
+        };
+      } catch (testErr) {
+        return Response.json({ error: testErr.message || 'שגיאה בבדיקת חיבור ל-Morning' }, { status: 400 });
+      }
     } else {
       return Response.json({ error: 'הספק הזה עדיין לא נתמך' }, { status: 400 });
     }
@@ -127,23 +146,20 @@ Deno.serve(async (req) => {
     });
 
     // Run initial sync inline
-    if (provider === 'icount') {
+    const providerSyncMap = {
+      icount: 'icountSyncPull',
+      finbot: 'finbotSyncPull',
+      morning: 'morningSyncPull',
+    };
+    const syncFnName = providerSyncMap[provider];
+    if (syncFnName) {
       try {
-        await base44.asServiceRole.functions.invoke('icountSyncPull', {
+        await base44.asServiceRole.functions.invoke(syncFnName, {
           resource: 'all',
           fullSync: true,
         });
       } catch (syncErr) {
-        console.log('Initial sync triggered (may run async):', syncErr.message);
-      }
-    } else if (provider === 'finbot') {
-      try {
-        await base44.asServiceRole.functions.invoke('finbotSyncPull', {
-          resource: 'all',
-          fullSync: true,
-        });
-      } catch (syncErr) {
-        console.log('Finbot initial sync triggered (may run async):', syncErr.message);
+        console.log(`${provider} initial sync triggered (may run async):`, syncErr.message);
       }
     }
 
