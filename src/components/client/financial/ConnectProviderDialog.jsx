@@ -63,8 +63,8 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md" dir="rtl">
+    <Dialog open={open} onOpenChange={(val) => { if (!val) onClose(); }}>
+      <DialogContent className="max-w-md" dir="rtl" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg flex items-center justify-center border"
