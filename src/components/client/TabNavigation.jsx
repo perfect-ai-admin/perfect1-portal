@@ -94,7 +94,8 @@ export default function TabNavigation({ activeTab, onChange, availableTabs }) {
       >
         <div className="grid grid-cols-6 gap-1 p-2">
           {TABS.map(tab => {
-            const Icon = tab.icon;
+            const Icon = typeof tab.icon === 'string' ? ICON_MAP[tab.icon] : tab.icon;
+            if (!Icon) return null;
             return (
               <button
                 key={tab.id}
