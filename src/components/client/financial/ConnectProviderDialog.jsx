@@ -71,8 +71,10 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
         setStatus('success');
         toast.success(`חשבון ${provider.name} חובר בהצלחה! מסנכרנים את כל הנתונים...`, { duration: 8000 });
         
-        // Trigger full sync in background
-        base44.functions.invoke('morningSyncPull', { resource: 'all' })
+        // Trigger full sync in background - use correct function per provider
+        const syncFnMap = { morning: 'morningSyncPull', icount: 'icountSyncPull', finbot: 'finbotSyncPull' };
+        const syncFn = syncFnMap[provider.id] || 'acctSyncPull';
+        base44.functions.invoke(syncFn, { resource: 'all' })
           .then(syncRes => {
             const r = syncRes.data?.results || {};
             toast.success(`סנכרון הושלם! ${r.customers || 0} לקוחות, ${r.documents || 0} מסמכים, ${r.expenses || 0} הוצאות`, { duration: 8000 });
