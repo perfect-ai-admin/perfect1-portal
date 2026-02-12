@@ -35,7 +35,8 @@ export default function DocumentsTab({ data }) {
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents'],
-    queryFn: () => base44.entities.FinbotDocument.list('-created_date', 200),
+    queryFn: () => base44.entities.FinbotDocument.list('-issue_date', 500),
+    refetchOnWindowFocus: true,
   });
 
   const { data: customers = [] } = useQuery({

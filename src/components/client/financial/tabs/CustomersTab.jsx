@@ -21,7 +21,8 @@ export default function CustomersTab({ data }) {
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['finbot-customers'],
-    queryFn: () => base44.entities.FinbotCustomer.list('-created_date', 200),
+    queryFn: () => base44.entities.FinbotCustomer.list('-created_date', 500),
+    refetchOnWindowFocus: true,
   });
 
   const syncMutation = useMutation({
@@ -41,9 +42,10 @@ export default function CustomersTab({ data }) {
       if (!fn?.createCustomer) throw new Error('אין חיבור למערכת חשבונות');
       return base44.functions.invoke(fn.createCustomer, data);
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
-      toast.success('לקוח נוצר בהצלחה');
+      const providerIdResult = res.data?.provider_id;
+      toast.success(`לקוח נוצר בהצלחה${providerIdResult ? ' ונשמר ב-iCount' : ''}`);
       setShowAddCustomer(false);
       setNewCustomer({ name: '', phone: '', email: '', id_number: '', address: '', city: '' });
     },
