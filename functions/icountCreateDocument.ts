@@ -127,7 +127,7 @@ Deno.serve(async (req) => {
 
     // Build JSON payload for iCount
     const jsonPayload = {
-      sid: payload.sid,
+      sid,
       doctype: icountDoctype,
       items: icountItems,
     };
