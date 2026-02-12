@@ -258,6 +258,7 @@ export default function QuickActionsBar({ onActionComplete, user }) {
         open={showProviderSelection}
         onOpenChange={setShowProviderSelection}
         onSelectProvider={handleProviderSelected}
+        savedProviders={savedProvidersList}
       />
 
       {/* Step 3: Provider-specific Connection Dialog (API Key etc.) */}
