@@ -30,6 +30,35 @@ Deno.serve(async (req) => {
       } catch (_) { /* ignore logout errors */ }
     }
 
+    // Delete all iCount documents for this user
+    const deleteResults = { documents: 0, customers: 0, expenses: 0 };
+
+    try {
+      const docs = await base44.asServiceRole.entities.FinbotDocument.filter({ user_id: user.id, provider: 'icount' });
+      for (const doc of docs) {
+        await base44.asServiceRole.entities.FinbotDocument.delete(doc.id);
+        deleteResults.documents++;
+      }
+    } catch (_) { /* ignore */ }
+
+    // Delete all iCount customers for this user
+    try {
+      const custs = await base44.asServiceRole.entities.FinbotCustomer.filter({ user_id: user.id, provider: 'icount' });
+      for (const cust of custs) {
+        await base44.asServiceRole.entities.FinbotCustomer.delete(cust.id);
+        deleteResults.customers++;
+      }
+    } catch (_) { /* ignore */ }
+
+    // Delete all iCount expenses for this user
+    try {
+      const exps = await base44.asServiceRole.entities.FinbotExpense.filter({ user_id: user.id, provider: 'icount' });
+      for (const exp of exps) {
+        await base44.asServiceRole.entities.FinbotExpense.delete(exp.id);
+        deleteResults.expenses++;
+      }
+    } catch (_) { /* ignore */ }
+
     // Update connection to disabled
     await base44.asServiceRole.entities.AccountingConnection.update(conn.id, {
       status: 'disabled',
@@ -43,10 +72,15 @@ Deno.serve(async (req) => {
     await base44.asServiceRole.entities.FinbotAuditLog.create({
       user_id: user.id,
       action: 'icount.disconnect',
+      response_data: deleteResults,
       success: true
     });
 
-    return Response.json({ status: 'ok', message: 'התנתקת מ-iCount בהצלחה' });
+    return Response.json({ 
+      status: 'ok', 
+      message: 'התנתקת מ-iCount בהצלחה',
+      deleted: deleteResults
+    });
 
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
