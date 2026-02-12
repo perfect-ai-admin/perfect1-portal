@@ -58,7 +58,7 @@ export default function DocumentsTab({ data }) {
       return base44.functions.invoke(fn.syncPull, { resource: 'documents' });
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-documents', providerId || 'none'] });
       queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} מסמכים`);
     },
