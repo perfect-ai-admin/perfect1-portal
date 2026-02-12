@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: `יצירת מסמכים עדיין לא נתמכת עבור ${provider}` }, { status: 400 });
     }
 
-    const result = await base44.asServiceRole.functions.invoke(createFn, body);
+    const result = await base44.functions.invoke(createFn, body);
     return Response.json(result);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
