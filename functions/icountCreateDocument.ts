@@ -203,10 +203,19 @@ Deno.serve(async (req) => {
       } catch (_) { /* ignore */ }
     }
 
-    // Calculate totals from response (iCount uses totalsum, totalvat, totalwithvat)
+    // Calculate totals - iCount doc/create response often lacks total fields,
+    // so we calculate from items + VAT rate
     const subtotal = parseFloat(data.totalsum || data.total_sum || 0) || items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
-    const vat = parseFloat(data.totalvat || data.total_vat || 0);
-    const total = parseFloat(data.totalwithvat || data.total_with_vat || 0) || subtotal + vat;
+    let vat = parseFloat(data.totalvat || data.total_vat || 0);
+    let total = parseFloat(data.totalwithvat || data.total_with_vat || 0);
+    
+    // If iCount didn't return VAT/total, calculate based on account VAT settings
+    if (!vat && !isVatExempt) {
+      vat = Math.round(subtotal * vatRate * 100) / 100;
+    }
+    if (!total) {
+      total = Math.round((subtotal + vat) * 100) / 100;
+    }
 
     // Find customer name
     let customerName = '';

@@ -124,6 +124,20 @@ async function syncDocuments(base44, userId, sid) {
       pdfUrl = infoData.pdf_link || infoData.doc_url || null;
     } catch (_) { /* skip pdf */ }
 
+    // Extract amounts - prefer explicit VAT fields, fallback to calculation
+    const rawSubtotal = parseFloat(doc.totalsum || doc.total_sum || doc.total || 0);
+    let rawVat = parseFloat(doc.totalvat || doc.total_vat || 0);
+    let rawTotal = parseFloat(doc.totalwithvat || doc.total_with_vat || 0);
+    
+    // If no explicit total-with-vat, calculate: total = subtotal + vat
+    if (!rawTotal && rawSubtotal) {
+      rawTotal = Math.round((rawSubtotal + rawVat) * 100) / 100;
+    }
+    // If total exists but no vat, derive vat = total - subtotal
+    if (rawTotal && !rawVat && rawTotal > rawSubtotal) {
+      rawVat = Math.round((rawTotal - rawSubtotal) * 100) / 100;
+    }
+
     const docData = {
       user_id: userId,
       provider: 'icount',
@@ -133,9 +147,9 @@ async function syncDocuments(base44, userId, sid) {
       customer_name: doc.client_name || '',
       issue_date: doc.dateissued || '',
       currency: doc.currency_code || 'ILS',
-      subtotal: parseFloat(doc.totalsum || doc.total_sum || doc.total || 0),
-      vat: parseFloat(doc.totalvat || doc.total_vat || 0),
-      total: parseFloat(doc.totalwithvat || doc.total_with_vat || doc.totalsum || doc.total_sum || doc.total || 0),
+      subtotal: rawSubtotal,
+      vat: rawVat,
+      total: rawTotal || rawSubtotal,
       status: (doc.is_cancelled === 1 || doc.doc_status === 'cancelled') ? 'cancelled' : 'issued',
       pdf_url: pdfUrl,
       items: doc.items_list || [],
