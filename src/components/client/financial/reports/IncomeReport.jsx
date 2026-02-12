@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 const fmt = (n) => `₪${Number(n || 0).toLocaleString('he-IL')}`;
 
 const DOC_TYPE_LABELS = {
-  invoice: 'חשבונית',
+  invoice: 'חשבונית מס',
   invrec: 'חשבונית מס/קבלה',
   receipt: 'קבלה',
   credit_invoice: 'זיכוי',
   creditinv: 'זיכוי',
+  deal_invoice: 'חשבון עסקה',
 };
 
 export default function IncomeReport({ data }) {
