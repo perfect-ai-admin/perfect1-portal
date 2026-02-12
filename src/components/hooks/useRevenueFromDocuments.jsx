@@ -17,9 +17,9 @@ export default function useRevenueFromDocuments() {
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
-    // Revenue docs: invoice + invoice_receipt, not cancelled
+    // Revenue docs: invoice + invoice_receipt + receipt, not cancelled
     const revenueDocs = documents.filter(d =>
-      ['invoice', 'invoice_receipt'].includes(d.type) && d.status !== 'cancelled'
+      ['invoice', 'invoice_receipt', 'receipt'].includes(d.type) && d.status !== 'cancelled'
     );
 
     // Expense docs (if any)
