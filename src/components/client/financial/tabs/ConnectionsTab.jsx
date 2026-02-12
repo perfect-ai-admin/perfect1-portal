@@ -145,6 +145,8 @@ export default function ConnectionsTab({ data }) {
                   disconnectLoading={disconnectLoading[provider.id]}
                   isOtherProviderConnected={!!connectedProviderId && connectedProviderId !== provider.id}
                   onConnect={() => {
+                    // Don't open connect dialog if already connected to this provider
+                    if (statuses[provider.id]?.connected) return;
                     setConnectProvider(provider);
                   }}
                   onDisconnect={() => handleDisconnect(provider.id)}
