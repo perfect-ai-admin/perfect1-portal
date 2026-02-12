@@ -179,11 +179,14 @@ export default function ConnectionsTab({ data }) {
                   syncLoading={getSyncLoadingForProvider(provider.id)}
                   disconnectLoading={disconnectLoading[provider.id]}
                   isOtherProviderConnected={!!connectedProviderId && connectedProviderId !== provider.id}
+                  hasSavedCredentials={savedProviders.some(sp => sp.provider === provider.id)}
+                  reconnectLoading={reconnectLoading[provider.id]}
                   onConnect={() => {
                     // Don't open connect dialog if already connected to this provider
                     if (statuses[provider.id]?.connected) return;
                     setConnectProvider(provider);
                   }}
+                  onReconnect={() => handleReconnect(provider.id)}
                   onDisconnect={() => handleDisconnect(provider.id)}
                   onSync={(resource) => handleSync(provider.id, resource)}
                 />
