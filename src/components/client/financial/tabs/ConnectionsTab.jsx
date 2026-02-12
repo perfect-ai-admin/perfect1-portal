@@ -13,8 +13,10 @@ import ConnectProviderDialog from '../ConnectProviderDialog';
 export default function ConnectionsTab({ data }) {
   const queryClient = useQueryClient();
   const [statuses, setStatuses] = useState({}); // {finbot: {connected, ...}, ...}
+  const [savedProviders, setSavedProviders] = useState([]); // providers with saved creds
   const [loading, setLoading] = useState(true);
   const [connectLoading, setConnectLoading] = useState(false);
+  const [reconnectLoading, setReconnectLoading] = useState({});
   const [disconnectLoading, setDisconnectLoading] = useState({});
   const [syncLoading, setSyncLoading] = useState({});
   const [connectProvider, setConnectProvider] = useState(null); // provider to connect
