@@ -40,38 +40,34 @@ const PROVIDER_GUIDES = {
 function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
   const [credentials, setCredentials] = useState({});
   const [showGuide, setShowGuide] = useState(false);
-  const [status, setStatus] = useState('idle'); // idle | connecting | reconnecting | success | error
+  const [status, setStatus] = useState('idle'); // idle | connecting | success | error
   const [errorMsg, setErrorMsg] = useState('');
+  const [hasSavedCreds, setHasSavedCreds] = useState(false);
+  const [checkingCreds, setCheckingCreds] = useState(true);
 
   const authFields = provider.authFields || [];
   const guide = PROVIDER_GUIDES[provider.id];
 
   const allFieldsFilled = authFields.every(f => (credentials[f.name] || '').trim().length > 0);
 
-  // Try reconnect with saved credentials on mount
+  // Check if saved credentials exist (but don't auto-connect)
   React.useEffect(() => {
     let cancelled = false;
-    async function tryReconnect() {
-      setStatus('reconnecting');
+    async function checkSavedCreds() {
+      setCheckingCreds(true);
       try {
-        const res = await base44.functions.invoke('acctConnectProvider', {
-          provider: provider.id,
-          reconnect: true,
-        });
+        const res = await base44.functions.invoke('acctGetConnectionStatus', {});
         if (cancelled) return;
-        if (res.data?.status === 'connected') {
-          setStatus('success');
-          toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה!`, { duration: 5000 });
-          setTimeout(() => { onSuccess?.(); onClose(); }, 1500);
-          return;
+        const savedProviders = res.data?.saved_providers || [];
+        if (savedProviders.includes(provider.id)) {
+          setHasSavedCreds(true);
         }
       } catch (err) {
-        if (cancelled) return;
-        console.log('Reconnect failed, showing form:', err?.response?.data?.error || err.message);
+        console.log('Check saved creds error:', err);
       }
-      if (!cancelled) setStatus('idle');
+      if (!cancelled) setCheckingCreds(false);
     }
-    tryReconnect();
+    checkSavedCreds();
     return () => { cancelled = true; };
   }, [provider.id]);
 
