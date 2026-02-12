@@ -145,14 +145,15 @@ Deno.serve(async (req) => {
       const effPayType = PAYMENT_TYPE_MAP[effPayTypeKey] || 1;
       const effPaySum = effPaySource?.price ? Number(effPaySource.price) : subtotalCalc;
       
+      // Don't send explicit sum - let iCount auto-match payment to document total
       if (effPayType === 3) {
-        jsonPayload.cc = { sum: effPaySum, cc_type: 3 };
+        jsonPayload.cc = { cc_type: 3 };
       } else if (effPayType === 2) {
-        jsonPayload.cheques = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
+        jsonPayload.cheques = [{ date: effPaySource?.date || issue_date }];
       } else if (effPayType === 4) {
-        jsonPayload.banktransfer = { sum: effPaySum, date: effPaySource?.date || issue_date };
+        jsonPayload.banktransfer = { date: effPaySource?.date || issue_date };
       } else {
-        jsonPayload.cash = { sum: effPaySum };
+        jsonPayload.cash = {};
       }
     }
 
