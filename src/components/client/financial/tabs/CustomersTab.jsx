@@ -47,8 +47,7 @@ export default function CustomersTab({ data }) {
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['accounting-customers'] });
-      const providerIdResult = res.data?.provider_id;
-      toast.success(`לקוח נוצר בהצלחה${providerIdResult ? ' ונשמר ב-iCount' : ''}`);
+      toast.success('לקוח נוצר בהצלחה ונשמר במערכת החשבונות');
       setShowAddCustomer(false);
       setNewCustomer({ name: '', phone: '', email: '', id_number: '', address: '', city: '' });
     },

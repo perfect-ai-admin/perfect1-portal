@@ -260,9 +260,9 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
       const fullAmount = isVatExempt ? itemsTotal : Math.round(itemsTotal * 1.18 * 100) / 100;
       const payAmount = data.payment_amount ? Number(data.payment_amount) : fullAmount;
       
-      // Find iCount customer ID from selected customer
+      // Find provider customer ID from selected customer
       const selectedCustomer = data.customer_id ? customers.find(c => c.id === data.customer_id) : null;
-      const customerProviderId = selectedCustomer?.finbot_customer_id || null;
+      const customerProviderId = selectedCustomer?.provider_customer_id || selectedCustomer?.finbot_customer_id || null;
       
       const payload = {
         type: data.type,
@@ -271,21 +271,15 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
         issue_date: data.issue_date,
         items: data.items,
         notes: data.notes,
-        ...(docNeedsPayment && {
-          payment: [{
-            date: data.issue_date,
-            type: data.payment_type || 'cash',
-            price: payAmount
-          }]
-        })
+        payment_method: docNeedsPayment ? (data.payment_type || 'cash') : undefined,
       };
       return base44.functions.invoke(createDocFn, payload);
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
-      const pdfUrl = res.data?.finbot_response?.pdf_link || res.data?.document?.pdf_url || res.data?.pdf_url;
+      queryClient.invalidateQueries({ queryKey: ['accounting-documents'] });
+      queryClient.invalidateQueries({ queryKey: ['accounting-documents-revenue'] });
+      queryClient.invalidateQueries({ queryKey: ['accounting-customers'] });
+      const pdfUrl = res.data?.document?.pdf_url || res.data?.pdf_url || res.data?.finbot_response?.pdf_link;
       if (pdfUrl) {
         toast.success('מסמך הופק בהצלחה!', { 
           action: { label: 'פתח PDF', onClick: () => window.open(pdfUrl, '_blank') }
