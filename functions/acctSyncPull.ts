@@ -237,8 +237,37 @@ Deno.serve(async (req) => {
     const connection = connections[0];
     const provider = connection.provider;
 
+    // For non-Morning providers, delegate to their specific sync function
     if (provider !== 'morning') {
-      return Response.json({ error: `סנכרון עדיין לא נתמך עבור ${provider}` }, { status: 400 });
+      const providerSyncMap = {
+        icount: 'icountSyncPull',
+        finbot: 'finbotSyncPull',
+      };
+      const syncFn = providerSyncMap[provider];
+      if (!syncFn) {
+        return Response.json({ error: `סנכרון עדיין לא נתמך עבור ${provider}` }, { status: 400 });
+      }
+
+      // Delegate to provider-specific function
+      console.log(`Delegating sync to ${syncFn} for provider ${provider}`);
+      const resources = resource === 'all' ? ['customers', 'documents', 'expenses'] : [resource];
+      const results = {};
+      let totalCount = 0;
+
+      for (const res of resources) {
+        try {
+          const syncRes = await base44.asServiceRole.functions.invoke(syncFn, { resource: res });
+          const count = syncRes?.synced_count || 0;
+          results[res] = count;
+          totalCount += count;
+          console.log(`${provider} synced ${count} ${res}`);
+        } catch (e) {
+          console.log(`${provider} sync ${res} error: ${e.message}`);
+          results[res] = 0;
+        }
+      }
+
+      return Response.json({ status: 'success', provider, synced_count: totalCount, results });
     }
 
     const jwt = await getMorningJWT(connection);
@@ -267,7 +296,7 @@ Deno.serve(async (req) => {
     // Audit
     await base44.asServiceRole.entities.AccountingAuditLog.create({
       user_id: user.id,
-      provider: 'morning',
+      provider,
       action: `sync.pull_${resource}`,
       details: { synced_count: totalCount, results },
       success: true,
