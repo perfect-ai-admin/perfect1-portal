@@ -193,7 +193,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
     mutationFn: (data) => {
       const docNeedsPayment = ['receipt', 'invoice_receipt'].includes(data.type);
       const itemsTotal = data.items.reduce((sum, i) => sum + (i.quantity * i.unit_price), 0);
-      const fullAmount = isVatExempt ? itemsTotal : Math.round(itemsTotal * 1.17 * 100) / 100;
+      const fullAmount = isVatExempt ? itemsTotal : Math.round(itemsTotal * 1.18 * 100) / 100;
       const payAmount = data.payment_amount ? Number(data.payment_amount) : fullAmount;
       
       // Find iCount customer ID from selected customer
@@ -318,7 +318,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
                 <>
                   <span className="text-sm text-gray-600">סה״כ לפני מע״מ: </span>
                   <span className="font-bold">₪{total.toLocaleString()}</span>
-                  <span className="text-xs text-gray-400 mr-2">(+ מע״מ ₪{(total * 0.17).toLocaleString()})</span>
+                  <span className="text-xs text-gray-400 mr-2">(+ מע״מ 18% ₪{(total * 0.18).toLocaleString()})</span>
                 </>
               )}
             </div>
@@ -345,7 +345,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
                   step="0.01" 
                   placeholder={isVatExempt 
                     ? `₪${total.toLocaleString()} (סה״כ)` 
-                    : `₪${Math.round(total * 1.17).toLocaleString()} (כולל מע״מ)`}
+                    : `₪${Math.round(total * 1.18).toLocaleString()} (כולל מע״מ 18%)`}
                   value={form.payment_amount} 
                   onChange={e => setForm(p => ({...p, payment_amount: e.target.value}))} 
                   className="text-sm"

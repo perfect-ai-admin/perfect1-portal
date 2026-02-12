@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
     const connections = await base44.asServiceRole.entities.AccountingConnection.filter({ user_id: user.id, provider: 'icount', status: 'connected' });
     const connConfig = connections?.[0]?.config || {};
     const isVatExempt = !!(connConfig.is_tax_exempt || connConfig.is_vat_exempt);
-    const vatMultiplier = isVatExempt ? 1 : 1.17;
+    const vatMultiplier = isVatExempt ? 1 : 1.18;
 
     // Add payment info (required by iCount for receipt/invrec)
     const subtotalCalc = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
@@ -137,29 +137,9 @@ Deno.serve(async (req) => {
     if (payload.comment) jsonPayload.comment = payload.comment;
     if (payload.client_id) jsonPayload.client_id = payload.client_id;
 
-    // Build the payload manually using PHP-style URL encoding
-    // URLSearchParams encodes brackets, but PHP needs literal brackets
-    const parts = [];
-    function addParam(key, value) {
-      parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
-    }
-    
-    addParam('sid', jsonPayload.sid);
-    addParam('doctype', jsonPayload.doctype);
-    if (jsonPayload.doc_date) addParam('doc_date', jsonPayload.doc_date);
-    if (jsonPayload.currency_code) addParam('currency_code', jsonPayload.currency_code);
-    if (jsonPayload.comment) addParam('comment', jsonPayload.comment);
-    if (jsonPayload.client_id) addParam('client_id', String(jsonPayload.client_id));
-    
-    // Items
-    icountItems.forEach((item, i) => {
-      addParam(`items[${i}][description]`, item.description);
-      addParam(`items[${i}][unitprice]`, String(item.unitprice));
-      addParam(`items[${i}][quantity]`, String(item.quantity));
-      if (item.vat_rate !== undefined) addParam(`items[${i}][vat_rate]`, String(item.vat_rate));
-    });
-
-    // Payment
+    // Add payment using correct iCount API field names (from official docs):
+    // cash: iCountCashPayment object, cheques: array of iCountChequePayment,
+    // banktransfer: iCountBankTransferPayment object, cc: iCountCreditCardPayment object
     if (hasPayment) {
       const effPaySource = effectivePayment[0];
       const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
@@ -167,31 +147,23 @@ Deno.serve(async (req) => {
       const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
       
       if (effPayType === 3) {
-        addParam('cc_payment[0][sum]', String(effPaySum));
-        addParam('cc_payment[0][cc_type]', '3');
+        jsonPayload.cc = { sum: effPaySum, cc_type: 3 };
       } else if (effPayType === 2) {
-        addParam('cheque_payment[0][sum]', String(effPaySum));
-        addParam('cheque_payment[0][date]', effPaySource?.date || issue_date);
+        jsonPayload.cheques = [{ sum: effPaySum, date: effPaySource?.date || issue_date }];
       } else if (effPayType === 4) {
-        addParam('bank_transfer_payment[0][sum]', String(effPaySum));
-        addParam('bank_transfer_payment[0][date]', effPaySource?.date || issue_date);
+        jsonPayload.banktransfer = { sum: effPaySum, date: effPaySource?.date || issue_date };
       } else {
-        addParam('cash_payment[0][sum]', String(effPaySum));
+        jsonPayload.cash = { sum: effPaySum };
       }
     }
 
-    // Join with & but DON'T double-encode brackets - PHP needs them raw
-    const formBody = parts.join('&')
-      .replace(/%5B/g, '[')
-      .replace(/%5D/g, ']');
-    
-    console.log('iCount raw form body:', formBody);
+    console.log('iCount JSON payload:', JSON.stringify(jsonPayload));
 
-    // Create document in iCount
+    // Create document in iCount using JSON
     const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formBody
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jsonPayload)
     });
 
     const data = await res.json();
