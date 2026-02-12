@@ -42,14 +42,18 @@ export default function ConnectionsTab({ data }) {
   useEffect(() => { fetchAllStatuses(); }, []);
 
   const handleConnect = async (providerId, credentials) => {
+    if (connectLoading) return; // prevent double-click
     const provider = getProvider(providerId);
+    console.log('📡 handleConnect called for', providerId, 'with keys:', Object.keys(credentials));
     setConnectLoading(true);
 
     try {
+      console.log('📡 Invoking acctConnectProvider...');
       const res = await base44.functions.invoke('acctConnectProvider', { 
         provider: providerId, 
         credentials 
       });
+      console.log('📡 Response:', res.data);
 
       if (res.data?.status === 'connected') {
         toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה! 🎉`, { duration: 6000 });
@@ -60,7 +64,9 @@ export default function ConnectionsTab({ data }) {
         toast.error(res.data?.error || 'שגיאה בהתחברות');
       }
     } catch (err) {
-      toast.error(err?.response?.data?.error || 'שגיאה בהתחברות');
+      console.error('📡 Connect error:', err);
+      const errMsg = err?.response?.data?.error || err?.message || 'שגיאה בהתחברות';
+      toast.error(errMsg);
     }
     setConnectLoading(false);
   };
