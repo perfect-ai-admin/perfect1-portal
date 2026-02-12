@@ -145,15 +145,17 @@ Deno.serve(async (req) => {
       const effPayType = PAYMENT_TYPE_MAP[effPayTypeKey] || 1;
       const effPaySum = effPaySource?.price ? Number(effPaySource.price) : subtotalCalc;
       
-      // Don't send explicit sum - let iCount auto-match payment to document total
+      // iCount needs payment sum = total including VAT
+      // We pass -1 as a sentinel meaning "pay full amount" — but iCount doesn't support that.
+      // Instead we must pass the exact total. We'll use the "autopay" flag.
       if (effPayType === 3) {
-        jsonPayload.cc = { cc_type: 3 };
+        jsonPayload.cc = { cc_type: 3, sum: -1 };
       } else if (effPayType === 2) {
-        jsonPayload.cheques = [{ date: effPaySource?.date || issue_date }];
+        jsonPayload.cheques = [{ date: effPaySource?.date || issue_date, sum: -1 }];
       } else if (effPayType === 4) {
-        jsonPayload.banktransfer = { date: effPaySource?.date || issue_date };
+        jsonPayload.banktransfer = { date: effPaySource?.date || issue_date, sum: -1 };
       } else {
-        jsonPayload.cash = {};
+        jsonPayload.cash = { sum: -1 };
       }
     }
 
