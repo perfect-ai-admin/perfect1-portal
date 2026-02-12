@@ -84,9 +84,7 @@ export default function ConnectionsTab({ data }) {
     setSyncLoading(p => ({ ...p, [key]: true }));
 
     try {
-      // Use existing provider-specific sync for icount (already works), unified for others
-      const syncFn = providerId === 'icount' ? 'icountSyncPull' : 'acctSyncPull';
-      const res = await base44.functions.invoke(syncFn, { resource });
+      const res = await base44.functions.invoke('acctSyncPull', { resource });
       
       if (res.data?.status === 'success') {
         toast.success(`סונכרנו ${res.data.synced_count || 0} רשומות מ-${provider.name}`);

@@ -54,9 +54,7 @@ export default function ReportsTab({ data }) {
   const fetchMutation = useMutation({
     mutationFn: ({ report_type }) => {
       if (!isConnected) throw new Error('אין חיבור למערכת חשבונות');
-      // Use existing icount function for backward compat, will migrate to unified later
-      const reportFn = fn?.fetchReports || 'icountFetchReports';
-      return base44.functions.invoke(reportFn, { report_type, period_start: periodStart, period_end: periodEnd });
+      return base44.functions.invoke('acctFetchReports', { report_type, period_start: periodStart, period_end: periodEnd });
     },
     onSuccess: (res, variables) => {
       const responseData = res.data?.data;
@@ -90,7 +88,7 @@ export default function ReportsTab({ data }) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
       <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-3">
-        <h2 className="text-lg font-bold text-purple-900">דוחות מ-iCount</h2>
+        <h2 className="text-lg font-bold text-purple-900">דוחות</h2>
         <p className="text-xs text-purple-600 mt-0.5">הפק דוחות ישירות ממערכת החשבונות שלך</p>
       </div>
 

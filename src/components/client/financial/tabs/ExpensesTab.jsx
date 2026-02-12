@@ -21,8 +21,7 @@ export default function ExpensesTab({ data }) {
 
   const syncMutation = useMutation({
     mutationFn: () => {
-      if (!fn?.syncPull) throw new Error('אין חיבור למערכת חשבונות');
-      return base44.functions.invoke(fn.syncPull, { resource: 'expenses' });
+      return base44.functions.invoke('acctSyncPull', { resource: 'expenses' });
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });

@@ -52,8 +52,7 @@ export default function DocumentsTab({ data }) {
 
   const syncMutation = useMutation({
     mutationFn: () => {
-      if (!fn?.syncPull) throw new Error('אין חיבור למערכת חשבונות');
-      return base44.functions.invoke(fn.syncPull, { resource: 'documents' });
+      return base44.functions.invoke('acctSyncPull', { resource: 'documents' });
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-documents', providerId || 'none'] });
@@ -203,7 +202,7 @@ export default function DocumentsTab({ data }) {
         onClose={() => setShowCreateDialog(false)}
         customers={customers}
         queryClient={queryClient}
-        createDocFn={fn?.createDocument}
+        createDocFn={'acctCreateDocument'}
         isVatExempt={isVatExempt}
       />
 
