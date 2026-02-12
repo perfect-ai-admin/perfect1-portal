@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
 
     const { api_key, api_secret } = await req.json();
     if (!api_key || !api_secret) {
-      return Response.json({ error: 'חסרים API Key ו-API Secret' }, { status: 400 });
+      return Response.json({ success: false, error: 'חסרים API Key ו-API Secret' });
     }
 
     // Get JWT token
@@ -26,11 +26,14 @@ Deno.serve(async (req) => {
     });
 
     if (!tokenResp.ok) {
-      const errData = await tokenResp.json().catch(() => ({}));
-      return Response.json({ 
-        success: false, 
-        error: errData.errorMessage || 'פרטי התחברות לא נכונים ל-Morning' 
-      });
+      const errText = await tokenResp.text();
+      let errMsg = 'פרטי התחברות לא נכונים ל-Morning';
+      try {
+        const errData = JSON.parse(errText);
+        errMsg = errData.errorMessage || errData.message || errMsg;
+      } catch (_) {}
+      console.log('Morning token error:', tokenResp.status, errText);
+      return Response.json({ success: false, error: errMsg });
     }
 
     const tokenData = await tokenResp.json();
@@ -40,7 +43,7 @@ Deno.serve(async (req) => {
       return Response.json({ success: false, error: 'לא התקבל טוקן מ-Morning' });
     }
 
-    // Fetch business info to verify
+    // Fetch business info to verify connection
     const bizResp = await fetch(`${MORNING_BASE}/businesses/me`, {
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
     });
@@ -48,7 +51,13 @@ Deno.serve(async (req) => {
     let businessInfo = {};
     if (bizResp.ok) {
       businessInfo = await bizResp.json();
+      console.log('Morning business info keys:', Object.keys(businessInfo));
+    } else {
+      console.log('Morning businesses/me failed:', bizResp.status);
     }
+
+    // taxType: 1 = עוסק מורשה, 2 = עוסק פטור, 3 = חברה בע"מ, 4 = עמותה
+    const isVatExempt = businessInfo.taxType === 2;
 
     return Response.json({ 
       success: true, 
@@ -56,9 +65,10 @@ Deno.serve(async (req) => {
       business_id: businessInfo.id || null,
       business_name: businessInfo.name || null,
       business_type: businessInfo.taxType || null,
-      is_vat_exempt: businessInfo.taxType === 2, // 2 = עוסק פטור
+      is_vat_exempt: isVatExempt,
     });
   } catch (error) {
-    return Response.json({ success: false, error: error.message }, { status: 500 });
+    console.log('morningConnectTest error:', error.message);
+    return Response.json({ success: false, error: 'גישה נדחתה, נא להתחבר מחדש' });
   }
 });
