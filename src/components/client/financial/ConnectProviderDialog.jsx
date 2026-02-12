@@ -206,6 +206,26 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
               {/* Form */}
               <div style={{ padding: '0 24px', maxHeight: '50vh', overflowY: 'auto' }}>
                 <div className="space-y-4">
+                  {/* Quick reconnect button if saved credentials exist */}
+                  {hasSavedCreds && !checkingCreds && (
+                    <button
+                      type="button"
+                      onClick={doReconnect}
+                      className="w-full flex items-center justify-center gap-2 bg-green-50 border-2 border-green-300 hover:bg-green-100 rounded-lg px-4 py-3 text-sm font-bold text-green-700 transition-colors"
+                    >
+                      <CheckCircle2 className="w-5 h-5" />
+                      חיבור מחדש בלחיצה (פרטים שמורים)
+                    </button>
+                  )}
+
+                  {hasSavedCreds && !checkingCreds && (
+                    <div className="relative flex items-center gap-3">
+                      <div className="flex-1 h-px bg-gray-200" />
+                      <span className="text-xs text-gray-400">או הזן פרטים חדשים</span>
+                      <div className="flex-1 h-px bg-gray-200" />
+                    </div>
+                  )}
+
                   <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
                     <ShieldCheck className="w-4 h-4 flex-shrink-0" />
                     <span>החיבור מאובטח ומוצפן. הנתונים נשמרים רק בחשבון שלך.</span>
