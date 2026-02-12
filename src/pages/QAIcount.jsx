@@ -38,9 +38,15 @@ export default function QAIcount() {
     onSuccess: (res) => setRunId(res.data.runId),
   });
 
-  // E2E
+  // E2E - use ref for latest runId
+  const runIdRef = React.useRef(runId);
+  React.useEffect(() => { runIdRef.current = runId; }, [runId]);
+
   const e2e = useMutation({
-    mutationFn: () => base44.functions.invoke('qaRunIcountE2E', { runId, options: { skipReports, skipExpenses } }),
+    mutationFn: (overrideRunId) => {
+      const id = overrideRunId || runIdRef.current;
+      return base44.functions.invoke('qaRunIcountE2E', { runId: id, options: { skipReports, skipExpenses } });
+    },
     onSuccess: (res) => setE2eResult(res.data),
   });
 
@@ -203,11 +209,11 @@ export default function QAIcount() {
                       onSuccess: (res) => {
                         const newId = res.data.runId;
                         setRunId(newId);
-                        setTimeout(() => e2e.mutate(), 100);
+                        e2e.mutate(newId);
                       }
                     });
                   } else {
-                    e2e.mutate();
+                    e2e.mutate(runId);
                   }
                 }}
                 disabled={e2e.isPending}
