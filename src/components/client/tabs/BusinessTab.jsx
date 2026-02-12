@@ -14,6 +14,7 @@ import StateDataCollector from '../business/StateDataCollector';
 import UnifiedRecommendationPanel from '../business/UnifiedRecommendationPanel';
 import BusinessStateTimeline from '../business/BusinessStateTimeline';
 import RevenueFromDocuments from '../business/RevenueFromDocuments';
+import useRevenueFromDocuments from '../../hooks/useRevenueFromDocuments';
 import CollapsibleSection from '@/components/common/CollapsibleSection';
 import MetricTooltip from '@/components/common/MetricTooltip';
 import { TrendingUp, DollarSign, PieChart, Download, BarChart3, Sparkles, Receipt } from 'lucide-react';
@@ -31,10 +32,11 @@ const BusinessTab = React.memo(({ data }) => {
   const [period, setPeriod] = useState('month');
   const [isExporting, setIsExporting] = useState(false);
   
-  // Check if we have real data (mock check for now)
-  const hasRealData = false; // This would normally check data.revenue_metrics?.length > 0
+  // Real revenue data from iCount documents
+  const revenue = useRevenueFromDocuments();
+  const hasRealData = revenue.hasData;
 
-  // Beautiful Demo Data
+  // Demo data for charts when no real data
   const demoRevenueData = [
     { period: 'ינו', value: 12000, previous: 10000 },
     { period: 'פבר', value: 18000, previous: 12000 },
@@ -61,16 +63,18 @@ const BusinessTab = React.memo(({ data }) => {
     };
   });
 
-  // Charts use demo data for visuals
-  const revenueData = hasRealData ? [] : demoRevenueData;
+  // Use real revenue chart data when available, demo otherwise
+  const revenueData = hasRealData ? revenue.chartData : demoRevenueData;
   const expenseData = hasRealData ? [] : demoExpenseData;
   const heatmapData = hasRealData ? [] : demoHeatmapData;
 
-  // Metrics stay at 0 until real data exists (per user request)
-  const totalRevenue = hasRealData ? revenueData.reduce((acc, curr) => acc + curr.value, 0) : 0;
-  const totalExpenses = hasRealData ? expenseData.reduce((acc, curr) => acc + curr.value, 0) : 0;
+  // KPI values - real from iCount documents
+  const totalRevenue = hasRealData ? revenue.totalRevenue : 0;
+  const totalExpenses = hasRealData ? revenue.totalExpenses : 0;
   const netProfit = totalRevenue - totalExpenses;
-  const performance = hasRealData ? 85 : 0;
+  const revenueChange = hasRealData ? revenue.revenueChangePercent : 0;
+  const revenueTrend = revenueChange > 0 ? 1 : revenueChange < 0 ? -1 : 0;
+  const performance = hasRealData ? 0 : 0;
 
 
 
@@ -209,9 +213,9 @@ const BusinessTab = React.memo(({ data }) => {
         <MetricQuadrant
           title="הכנסות"
           value={totalRevenue}
-          change={hasRealData ? "+12%" : "0%"}
-          trend={hasRealData ? 1 : 0}
-          chartData={revenueData} // Keep charts showing demo/real pattern
+          change={`${revenueChange > 0 ? '+' : ''}${revenueChange}%`}
+          trend={revenueTrend}
+          chartData={revenueData}
           icon={TrendingUp}
           isCurrency={true}
           compact={true}
@@ -219,8 +223,8 @@ const BusinessTab = React.memo(({ data }) => {
         <MetricQuadrant
           title="הוצאות"
           value={totalExpenses}
-          change={hasRealData ? "-5%" : "0%"}
-          trend={hasRealData ? -1 : 0}
+          change="0%"
+          trend={0}
           chartData={revenueData}
           icon={DollarSign}
           isCurrency={true}
@@ -229,8 +233,8 @@ const BusinessTab = React.memo(({ data }) => {
         <MetricQuadrant
           title="רווח נקי"
           value={netProfit}
-          change={hasRealData ? "+24%" : "0%"}
-          trend={hasRealData ? 1 : 0}
+          change={`${revenueChange > 0 ? '+' : ''}${revenueChange}%`}
+          trend={revenueTrend}
           chartData={revenueData}
           icon={PieChart}
           isCurrency={true}
@@ -239,8 +243,8 @@ const BusinessTab = React.memo(({ data }) => {
         <MetricQuadrant
           title="ביצוע"
           value={performance}
-          change={hasRealData ? "+2%" : "0%"}
-          trend={hasRealData ? 1 : 0}
+          change="0%"
+          trend={0}
           chartData={revenueData}
           icon={BarChart3}
           isPercentage={true}
@@ -253,23 +257,27 @@ const BusinessTab = React.memo(({ data }) => {
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-600 font-medium">הכנסות</p>
-            <p className="text-lg font-bold text-gray-900">₪0</p>
+            <p className="text-lg font-bold text-gray-900">{formatCurrency(totalRevenue, false)}</p>
           </div>
-          <p className="text-xs text-gray-400 font-semibold">-</p>
+          <p className={`text-xs font-semibold ${revenueTrend > 0 ? 'text-green-600' : revenueTrend < 0 ? 'text-red-600' : 'text-gray-400'}`}>
+            {revenueChange !== 0 ? `${revenueChange > 0 ? '+' : ''}${revenueChange}%` : '-'}
+          </p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-600 font-medium">הוצאות</p>
-            <p className="text-lg font-bold text-gray-900">₪0</p>
+            <p className="text-lg font-bold text-gray-900">{formatCurrency(totalExpenses, false)}</p>
           </div>
           <p className="text-xs text-gray-400 font-semibold">-</p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-600 font-medium">רווח נקי</p>
-            <p className="text-lg font-bold text-gray-900">₪0</p>
+            <p className="text-lg font-bold text-gray-900">{formatCurrency(netProfit, false)}</p>
           </div>
-          <p className="text-xs text-gray-400 font-semibold">-</p>
+          <p className={`text-xs font-semibold ${revenueTrend > 0 ? 'text-green-600' : revenueTrend < 0 ? 'text-red-600' : 'text-gray-400'}`}>
+            {revenueChange !== 0 ? `${revenueChange > 0 ? '+' : ''}${revenueChange}%` : '-'}
+          </p>
         </div>
       </div>
 
@@ -286,7 +294,9 @@ const BusinessTab = React.memo(({ data }) => {
               נתונים לדוגמה
             </div>
           )}
-          <h3 className="text-sm font-bold text-gray-900 mb-2">מגמת הכנסות</h3>
+          <h3 className="text-sm font-bold text-gray-900 mb-2">
+            {hasRealData ? 'מגמת הכנסות (מ-iCount)' : 'מגמת הכנסות'}
+          </h3>
           <RevenueLineChart data={revenueData} period={period} />
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 relative overflow-hidden">
@@ -307,9 +317,9 @@ const BusinessTab = React.memo(({ data }) => {
             <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">השוואת הכנסות והוצאות</h3>
             <BarChart 
               data={revenueData.map(item => ({
-                name: item.month,
-                הכנסות: item.value,
-                הוצאות: Math.round(item.value * 0.4)
+                name: item.period || item.name,
+                הכנסות: item.value || 0,
+                הוצאות: hasRealData ? 0 : Math.round((item.value || 0) * 0.4)
               }))}
               dataKeys={['הכנסות', 'הוצאות']}
               colors={['#22C55E', '#EF4444']}
