@@ -3,6 +3,13 @@ import { Link2, Wifi, WifiOff, Loader2, RefreshCw, XCircle, AlertCircle, Clock }
 import { Button } from '@/components/ui/button';
 import { RESOURCE_LABELS } from './accountingProviders';
 
+const PROVIDER_LOGOS = {
+  finbot: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/bad1e678a_Logo-Finbot-2048x470.png',
+  morning: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/c4ed41c81_image.png',
+  sumit: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/ee666d319_image.png',
+  icount: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/14f110f3a_image.png',
+};
+
 export default function ProviderCard({ provider, connectionStatus, loading, syncLoading, onConnect, onDisconnect, onSync, disconnectLoading }) {
   const isConnected = connectionStatus?.connected;
   const isComingSoon = provider.status === 'coming_soon';
@@ -15,15 +22,19 @@ export default function ProviderCard({ provider, connectionStatus, loading, sync
       {/* Header */}
       <div className="flex items-start gap-3">
         {/* Logo */}
-        <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 border`}
+        <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 border overflow-hidden`}
           style={{ 
             backgroundColor: provider.logoColors.bg, 
             borderColor: provider.logoColors.border 
           }}
         >
-          <span className="font-black text-sm" style={{ color: provider.logoColors.text }}>
-            {provider.logoText}
-          </span>
+          {PROVIDER_LOGOS[provider.id] ? (
+            <img src={PROVIDER_LOGOS[provider.id]} alt={provider.name} className="h-8 w-auto object-contain" />
+          ) : (
+            <span className="font-black text-sm" style={{ color: provider.logoColors.text }}>
+              {provider.logoText}
+            </span>
+          )}
         </div>
 
         <div className="flex-1 min-w-0">
