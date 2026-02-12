@@ -25,13 +25,17 @@ Deno.serve(async (req) => {
     });
     if (existing?.length > 0) {
       const existingProvider = existing[0].provider;
-      if (existingProvider !== provider || !reconnect) {
-        return Response.json({ 
-          error: `כבר מחובר ל-${existingProvider}. נתק לפני חיבור לספק אחר` 
-        }, { status: 400 });
+      if (existingProvider === provider && !reconnect) {
+        // Already connected to same provider, just return success
+        return Response.json({ status: 'connected', message: `כבר מחובר ל-${provider}` });
       }
-      // Already connected to same provider, just return success
-      return Response.json({ status: 'connected', message: `כבר מחובר ל-${provider}` });
+      if (existingProvider !== provider) {
+        // Different provider - disable old connection first (don't block, just switch)
+        for (const conn of existing) {
+          await base44.asServiceRole.entities.AccountingConnection.update(conn.id, { status: 'disabled' });
+        }
+        console.log(`Disabled previous ${existingProvider} connection to switch to ${provider}`);
+      }
     }
 
     // Check if reconnecting with saved credentials
