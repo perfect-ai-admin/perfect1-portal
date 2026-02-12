@@ -86,9 +86,9 @@ const BusinessTab = React.memo(({ data }) => {
         period,
         revenue: revenueData,
         metrics: {
-          totalRevenue: 0,
-          totalExpenses: 0,
-          netProfit: 0,
+          totalRevenue,
+          totalExpenses,
+          netProfit,
           performance: 0
         },
         vision: data.business_vision,
@@ -151,7 +151,7 @@ const BusinessTab = React.memo(({ data }) => {
 
 
       {/* Demo Mode Banner */}
-      {!hasRealData && (
+      {!hasRealData && !revenue.isLoading && (
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
