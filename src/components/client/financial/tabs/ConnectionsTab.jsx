@@ -136,7 +136,6 @@ export default function ConnectionsTab({ data }) {
               disconnectLoading={disconnectLoading[provider.id]}
               onConnect={() => {
                 setConnectProvider(provider);
-                setShowSoftwareDialog(true);
               }}
               onDisconnect={() => handleDisconnect(provider.id)}
               onSync={(resource) => handleSync(provider.id, resource)}
