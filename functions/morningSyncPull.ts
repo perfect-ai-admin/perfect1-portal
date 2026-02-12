@@ -9,15 +9,30 @@ const MORNING_BASE = "https://api.greeninvoice.co.il/api/v1";
 
 // Document type mapping: Morning numeric → our string
 const DOC_TYPE_MAP = {
-  305: 'invoice',         // חשבונית מס
-  320: 'invoice_receipt',  // חשבונית מס / קבלה
-  400: 'receipt',          // קבלה
-  10:  'quote',            // הצעת מחיר
-  330: 'credit_note',      // חשבונית זיכוי
-  300: 'invoice',          // חשבון עסקה
-  405: 'receipt',          // קבלה על תרומה
-  100: 'quote',            // הזמנה
+  305: 'invoice',
+  320: 'invoice_receipt',
+  400: 'receipt',
+  10:  'quote',
+  330: 'credit_note',
+  300: 'invoice',
+  405: 'receipt',
+  100: 'quote',
 };
+
+// Helper: fetch with retry on rate limit
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const resp = await fetch(url, options);
+    if (resp.status === 429) {
+      const waitSec = Math.pow(2, attempt + 1) * 2; // 4, 8, 16 seconds
+      console.log(`Rate limited, waiting ${waitSec}s before retry ${attempt + 1}...`);
+      await new Promise(r => setTimeout(r, waitSec * 1000));
+      continue;
+    }
+    return resp;
+  }
+  throw new Error('Rate limit exceeded after retries');
+}
 
 async function getJWT(base44, userId) {
   const connections = await base44.asServiceRole.entities.AccountingConnection.filter({
@@ -26,8 +41,7 @@ async function getJWT(base44, userId) {
   if (!connections?.length) throw new Error('אין חיבור פעיל ל-Morning');
   const conn = connections[0];
   
-  // Get fresh JWT token
-  const tokenResp = await fetch(`${MORNING_BASE}/account/token`, {
+  const tokenResp = await fetchWithRetry(`${MORNING_BASE}/account/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id: conn.api_key_enc, secret: conn.api_secret_enc }),
@@ -44,13 +58,33 @@ async function getJWT(base44, userId) {
   return { jwt: token, connection: conn };
 }
 
+// Batch upsert helper - collect items then upsert
+async function batchUpsert(base44, entityName, items, matchFields) {
+  let count = 0;
+  // Process in small batches to avoid rate limits on base44 side
+  for (const item of items) {
+    const filter = {};
+    for (const f of matchFields) {
+      filter[f] = item[f];
+    }
+    const existing = await base44.asServiceRole.entities[entityName].filter(filter);
+    if (existing?.length > 0) {
+      await base44.asServiceRole.entities[entityName].update(existing[0].id, item);
+    } else {
+      await base44.asServiceRole.entities[entityName].create(item);
+    }
+    count++;
+  }
+  return count;
+}
+
 async function syncCustomers(base44, userId, jwt) {
   let page = 1;
-  let totalSynced = 0;
-  const pageSize = 50;
+  let allItems = [];
+  const pageSize = 100;
 
   while (true) {
-    const resp = await fetch(`${MORNING_BASE}/clients/search`, {
+    const resp = await fetchWithRetry(`${MORNING_BASE}/clients/search`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ page, pageSize }),
@@ -66,7 +100,7 @@ async function syncCustomers(base44, userId, jwt) {
     if (!items.length) break;
 
     for (const c of items) {
-      const normalized = {
+      allItems.push({
         user_id: userId,
         provider: 'morning',
         provider_customer_id: String(c.id),
@@ -82,44 +116,30 @@ async function syncCustomers(base44, userId, jwt) {
         is_active: c.active !== false,
         raw: c,
         synced_at: new Date().toISOString(),
-      };
-
-      // Upsert: find existing by provider_customer_id
-      const existing = await base44.asServiceRole.entities.AccountingCustomer.filter({
-        user_id: userId, provider: 'morning', provider_customer_id: String(c.id),
       });
-      
-      if (existing?.length > 0) {
-        await base44.asServiceRole.entities.AccountingCustomer.update(existing[0].id, normalized);
-      } else {
-        await base44.asServiceRole.entities.AccountingCustomer.create(normalized);
-      }
-      totalSynced++;
     }
 
+    console.log(`Fetched ${items.length} customers (page ${page}), total so far: ${allItems.length}`);
     if (items.length < pageSize) break;
     page++;
-    if (page > 50) break; // safety limit
-    await new Promise(r => setTimeout(r, 1000));
+    if (page > 100) break;
+    await new Promise(r => setTimeout(r, 1500));
   }
-  return totalSynced;
+
+  console.log(`Upserting ${allItems.length} customers...`);
+  return await batchUpsert(base44, 'AccountingCustomer', allItems, ['user_id', 'provider', 'provider_customer_id']);
 }
 
 async function syncDocuments(base44, userId, jwt) {
   let page = 1;
-  let totalSynced = 0;
-  const pageSize = 50;
+  let allItems = [];
+  const pageSize = 100;
 
   while (true) {
-    const resp = await fetch(`${MORNING_BASE}/documents/search`, {
+    const resp = await fetchWithRetry(`${MORNING_BASE}/documents/search`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        page, 
-        pageSize,
-        sort: 'documentDate',
-        sortType: 'desc',
-      }),
+      body: JSON.stringify({ page, pageSize, sort: 'documentDate', sortType: 'desc' }),
     });
     
     if (!resp.ok) {
@@ -133,31 +153,26 @@ async function syncDocuments(base44, userId, jwt) {
 
     for (const d of items) {
       const docType = DOC_TYPE_MAP[d.type] || 'invoice';
-      
-      // Map status: 0=draft, 1=open(final), 2=closed(final), 3=cancelled
       let status = 'final';
       if (d.status === 0) status = 'draft';
       else if (d.status === 3) status = 'cancelled';
 
-      // Calculate amounts
       const subtotal = d.amount || 0;
       const vatAmount = d.vat || 0;
       const total = d.totalAmount || (subtotal + vatAmount);
 
-      // Map payment method from payment array
       let paymentMethod = null;
       if (Array.isArray(d.payment) && d.payment.length > 0) {
         const pmMap = { 0: 'other', 1: 'cash', 2: 'check', 3: 'credit_card', 4: 'bank_transfer', 5: 'paypal', 10: 'bit' };
         paymentMethod = pmMap[d.payment[0].type] || 'other';
       }
 
-      // Get PDF URL from url object
       let pdfUrl = null;
       if (d.url) {
         pdfUrl = d.url.origin || d.url.he || d.url.en || null;
       }
 
-      const normalized = {
+      allItems.push({
         user_id: userId,
         provider: 'morning',
         provider_document_id: String(d.id),
@@ -170,7 +185,7 @@ async function syncDocuments(base44, userId, jwt) {
         customer_tax_id: d.client?.taxId || null,
         currency: d.currency || 'ILS',
         subtotal,
-        vat_rate: d.vatType === 2 ? 0 : 17, // vatType 2=exempt
+        vat_rate: d.vatType === 2 ? 0 : 17,
         vat_amount: vatAmount,
         total,
         amount_paid: d.totalPaid || 0,
@@ -189,35 +204,27 @@ async function syncDocuments(base44, userId, jwt) {
         pdf_url: pdfUrl,
         raw: d,
         synced_at: new Date().toISOString(),
-      };
-
-      const existing = await base44.asServiceRole.entities.AccountingDocument.filter({
-        user_id: userId, provider: 'morning', provider_document_id: String(d.id),
       });
-      
-      if (existing?.length > 0) {
-        await base44.asServiceRole.entities.AccountingDocument.update(existing[0].id, normalized);
-      } else {
-        await base44.asServiceRole.entities.AccountingDocument.create(normalized);
-      }
-      totalSynced++;
     }
 
+    console.log(`Fetched ${items.length} documents (page ${page}), total so far: ${allItems.length}`);
     if (items.length < pageSize) break;
     page++;
-    if (page > 50) break;
-    await new Promise(r => setTimeout(r, 1000));
+    if (page > 100) break;
+    await new Promise(r => setTimeout(r, 1500));
   }
-  return totalSynced;
+
+  console.log(`Upserting ${allItems.length} documents...`);
+  return await batchUpsert(base44, 'AccountingDocument', allItems, ['user_id', 'provider', 'provider_document_id']);
 }
 
 async function syncExpenses(base44, userId, jwt) {
   let page = 1;
-  let totalSynced = 0;
-  const pageSize = 50;
+  let allItems = [];
+  const pageSize = 100;
 
   while (true) {
-    const resp = await fetch(`${MORNING_BASE}/expenses/search`, {
+    const resp = await fetchWithRetry(`${MORNING_BASE}/expenses/search`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ page, pageSize }),
@@ -233,7 +240,7 @@ async function syncExpenses(base44, userId, jwt) {
     if (!items.length) break;
 
     for (const e of items) {
-      const normalized = {
+      allItems.push({
         user_id: userId,
         provider: 'morning',
         provider_expense_id: String(e.id),
@@ -249,26 +256,18 @@ async function syncExpenses(base44, userId, jwt) {
         reference_number: e.number != null ? String(e.number) : null,
         raw: e,
         synced_at: new Date().toISOString(),
-      };
-
-      const existing = await base44.asServiceRole.entities.AccountingExpense.filter({
-        user_id: userId, provider: 'morning', provider_expense_id: String(e.id),
       });
-      
-      if (existing?.length > 0) {
-        await base44.asServiceRole.entities.AccountingExpense.update(existing[0].id, normalized);
-      } else {
-        await base44.asServiceRole.entities.AccountingExpense.create(normalized);
-      }
-      totalSynced++;
     }
 
+    console.log(`Fetched ${items.length} expenses (page ${page}), total so far: ${allItems.length}`);
     if (items.length < pageSize) break;
     page++;
-    if (page > 50) break;
-    await new Promise(r => setTimeout(r, 1000));
+    if (page > 100) break;
+    await new Promise(r => setTimeout(r, 1500));
   }
-  return totalSynced;
+
+  console.log(`Upserting ${allItems.length} expenses...`);
+  return await batchUpsert(base44, 'AccountingExpense', allItems, ['user_id', 'provider', 'provider_expense_id']);
 }
 
 Deno.serve(async (req) => {
@@ -284,20 +283,24 @@ Deno.serve(async (req) => {
     const { jwt, connection } = await getJWT(base44, user.id);
 
     let synced_count = 0;
+    const results = {};
 
     if (resource === 'customers' || resource === 'all') {
       const count = await syncCustomers(base44, user.id, jwt);
       synced_count += count;
+      results.customers = count;
       console.log(`Morning synced ${count} customers`);
     }
     if (resource === 'documents' || resource === 'all') {
       const count = await syncDocuments(base44, user.id, jwt);
       synced_count += count;
+      results.documents = count;
       console.log(`Morning synced ${count} documents`);
     }
     if (resource === 'expenses' || resource === 'all') {
       const count = await syncExpenses(base44, user.id, jwt);
       synced_count += count;
+      results.expenses = count;
       console.log(`Morning synced ${count} expenses`);
     }
 
@@ -305,6 +308,7 @@ Deno.serve(async (req) => {
     await base44.asServiceRole.entities.AccountingConnection.update(connection.id, {
       last_sync_at: new Date().toISOString(),
       last_error: null,
+      last_full_import_at: new Date().toISOString(),
     });
 
     // Audit
@@ -312,11 +316,11 @@ Deno.serve(async (req) => {
       user_id: user.id,
       provider: 'morning',
       action: `sync.pull_${resource}`,
-      details: { synced_count },
+      details: { synced_count, results },
       success: true,
     });
 
-    return Response.json({ status: 'success', synced_count });
+    return Response.json({ status: 'success', synced_count, results });
   } catch (error) {
     console.log('morningSyncPull error:', error.message);
     return Response.json({ error: error.message, status: 'error' }, { status: 500 });
