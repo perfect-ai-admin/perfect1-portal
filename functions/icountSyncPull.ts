@@ -75,9 +75,9 @@ async function syncCustomers(base44, userId, sid) {
 }
 
 async function syncDocuments(base44, userId, sid) {
-  // Get documents from last 6 months
+  // Get documents from last 12 months
   const endDate = new Date().toISOString().split('T')[0];
-  const startDate = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const res = await fetch(`${ICOUNT_BASE_URL}/doc/search`, {
     method: 'POST',
@@ -87,7 +87,7 @@ async function syncDocuments(base44, userId, sid) {
       start_date: startDate,
       end_date: endDate,
       detail_level: 2,
-      max_results: 500,
+      max_results: 1000,
       sort_order: 'DESC'
     })
   });
@@ -106,10 +106,22 @@ async function syncDocuments(base44, userId, sid) {
 
     // Map iCount doctype to our type
     let ourType = 'receipt';
-    if (doc.doctype === 'invoice_receipt') ourType = 'invoice_receipt';
-    else if (doc.doctype === 'credit_invoice') ourType = 'credit';
-    else if (doc.doctype === 'invoice') ourType = 'invoice_receipt';
+    if (doc.doctype === 'invrec') ourType = 'invoice_receipt';
+    else if (doc.doctype === 'creditinv' || doc.doctype === 'credit_invoice') ourType = 'credit';
+    else if (doc.doctype === 'invoice') ourType = 'invoice';
     else if (doc.doctype === 'receipt') ourType = 'receipt';
+
+    // Get PDF link
+    let pdfUrl = null;
+    try {
+      const infoRes = await fetch(`${ICOUNT_BASE_URL}/doc/info`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sid, doctype: doc.doctype, docnum: doc.docnum, get_pdf_link: true })
+      });
+      const infoData = await infoRes.json();
+      pdfUrl = infoData.pdf_link || infoData.doc_url || null;
+    } catch (_) { /* skip pdf */ }
 
     const docData = {
       user_id: userId,
@@ -122,7 +134,9 @@ async function syncDocuments(base44, userId, sid) {
       subtotal: doc.total_sum || 0,
       vat: doc.total_vat || 0,
       total: doc.total_with_vat || doc.total_sum || 0,
-      status: doc.status === 0 ? 'open' : 'closed',
+      status: doc.doc_status === 'cancelled' ? 'cancelled' : 'issued',
+      pdf_url: pdfUrl,
+      items: doc.items_list || [],
       raw: doc,
       synced_at: new Date().toISOString()
     };
@@ -140,7 +154,7 @@ async function syncDocuments(base44, userId, sid) {
 
 async function syncExpenses(base44, userId, sid) {
   const endDate = new Date().toISOString().split('T')[0];
-  const startDate = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const startDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const res = await fetch(`${ICOUNT_BASE_URL}/expense/search`, {
     method: 'POST',
