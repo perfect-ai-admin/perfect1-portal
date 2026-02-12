@@ -41,7 +41,7 @@ export default function DocumentsTab({ data }) {
 
   const { data: customers = [] } = useQuery({
     queryKey: ['finbot-customers'],
-    queryFn: () => base44.entities.FinbotCustomer.list('-created_date', 200),
+    queryFn: () => base44.entities.FinbotCustomer.list('-created_date', 500),
   });
 
   const syncMutation = useMutation({
