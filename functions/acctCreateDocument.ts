@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
     }
 
     const result = await base44.functions.invoke(createFn, body);
-    return Response.json(result);
+    return Response.json(result.data || result);
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
