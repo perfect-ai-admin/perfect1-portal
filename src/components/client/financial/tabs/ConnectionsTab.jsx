@@ -48,7 +48,17 @@ export default function ConnectionsTab({ data }) {
     setConnectLoading(false);
 
     if (completeRes.data?.status === 'connected') {
-      toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
+      const sync = completeRes.data?.sync;
+      if (sync) {
+        const parts = [];
+        if (sync.customers > 0) parts.push(`${sync.customers} לקוחות`);
+        if (sync.documents > 0) parts.push(`${sync.documents} מסמכים`);
+        if (sync.expenses > 0) parts.push(`${sync.expenses} הוצאות`);
+        const syncMsg = parts.length > 0 ? ` | סונכרנו: ${parts.join(', ')}` : '';
+        toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉${syncMsg}`, { duration: 6000 });
+      } else {
+        toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
+      }
       setConnectProvider(null);
       fetchAllStatuses();
     } else {
