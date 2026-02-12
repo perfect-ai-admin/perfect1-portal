@@ -70,7 +70,7 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
     onConnect(provider.id, credentials);
   };
 
-  const allFieldsFilled = authFields.every(f => (credentials[f.name] || '').trim());
+  const allFieldsFilled = authFields.length > 0 && authFields.every(f => (credentials[f.name] || '').trim());
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
