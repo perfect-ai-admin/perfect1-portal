@@ -23,7 +23,7 @@ const PROVIDER_GUIDES = {
       'לחץ על "יצירת מפתח API" — המערכת תיצור עבורך טוקן',
       'העתק את הטוקן והדבק אותו כאן',
     ],
-    link: { url: 'https://finbot.helpjuice.com/he_IL/api-docs-create-income', label: 'צפה בתיעוד API של Finbot' },
+    link: { url: 'https://bros.finbot.co.il/hs-user/index.php', label: 'פתח את חשבון Finbot שלי' },
   },
   morning: {
     steps: [
