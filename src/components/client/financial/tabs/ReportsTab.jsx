@@ -54,7 +54,7 @@ export default function ReportsTab({ data }) {
   const fetchMutation = useMutation({
     mutationFn: ({ report_type }) => {
       if (!isConnected) throw new Error('אין חיבור למערכת חשבונות');
-      return base44.functions.invoke('acctFetchReports', { report_type, period_start: periodStart, period_end: periodEnd });
+      return base44.functions.invoke(fn?.fetchReports || 'morningFetchReports', { report_type, period_start: periodStart, period_end: periodEnd });
     },
     onSuccess: (res, variables) => {
       // Handle both nested and flat response structures
