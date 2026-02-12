@@ -6,23 +6,6 @@
 
 export const ACCOUNTING_PROVIDERS = [
   {
-    id: 'finbot',
-    name: 'Finbot',
-    logo: null, // will use text logo
-    logoText: 'FINBOT',
-    logoColors: { bg: '#f0fdf4', text: '#166534', border: '#86efac' },
-    description: 'ניהול מסמכים, הוצאות ודוחות עם AI',
-    status: 'available', // available | coming_soon
-    authMethods: ['apikey'],
-    syncResources: ['customers', 'documents', 'expenses'],
-    features: ['מסמכים', 'לקוחות', 'הוצאות', 'דוחות'],
-    connectFunction: 'finbotStartConnect',
-    completeFunction: 'finbotCompleteConnect',
-    disconnectFunction: 'finbotDisconnect',
-    statusFunction: 'finbotGetConnectionStatus',
-    syncFunction: 'finbotSyncPull',
-  },
-  {
     id: 'morning',
     name: 'Morning (חשבונית ירוקה)',
     logo: null,
@@ -30,31 +13,43 @@ export const ACCOUNTING_PROVIDERS = [
     logoColors: { bg: '#eff6ff', text: '#1e40af', border: '#93c5fd' },
     description: 'מערכת חשבוניות וניהול מסמכים פיננסיים',
     status: 'coming_soon',
-    authMethods: ['apikey'],
+    authStrategy: 'api_key',
+    authFields: [
+      { name: 'api_key', label: 'API Key', type: 'password', placeholder: 'הדבק כאן את ה-API Key שלך' },
+    ],
     syncResources: ['customers', 'documents', 'expenses'],
-    features: ['חשבוניות', 'קבלות', 'לקוחות'],
-    connectFunction: null,
-    completeFunction: null,
-    disconnectFunction: null,
-    statusFunction: null,
-    syncFunction: null,
+    features: ['חשבוניות', 'קבלות', 'לקוחות', 'הוצאות', 'דוחות'],
+    supportedDocTypes: ['invoice', 'invoice_receipt', 'receipt', 'credit_note', 'quote'],
+    capabilities: {
+      canCreateDocuments: true,
+      canCreateCustomers: true,
+      canListExpenses: true,
+      canFetchReports: true,
+      canDownloadPdf: true,
+    },
   },
   {
-    id: 'sumit',
-    name: 'Sumit',
+    id: 'finbot',
+    name: 'Finbot',
     logo: null,
-    logoText: 'SUMIT',
-    logoColors: { bg: '#f0fdf4', text: '#065f46', border: '#6ee7b7' },
-    description: 'הנהלת חשבונות וחשבוניות אונליין',
+    logoText: 'FINBOT',
+    logoColors: { bg: '#f0fdf4', text: '#166534', border: '#86efac' },
+    description: 'ניהול מסמכים, הוצאות ודוחות עם AI',
     status: 'coming_soon',
-    authMethods: ['apikey', 'credentials'],
+    authStrategy: 'api_key',
+    authFields: [
+      { name: 'api_key', label: 'API Key', type: 'password', placeholder: 'הדבק כאן את ה-API Key שלך' },
+    ],
     syncResources: ['customers', 'documents', 'expenses'],
-    features: ['חשבוניות', 'הצעות מחיר', 'לקוחות'],
-    connectFunction: null,
-    completeFunction: null,
-    disconnectFunction: null,
-    statusFunction: null,
-    syncFunction: null,
+    features: ['מסמכים', 'לקוחות', 'הוצאות', 'דוחות'],
+    supportedDocTypes: ['invoice', 'invoice_receipt', 'receipt', 'credit_note'],
+    capabilities: {
+      canCreateDocuments: true,
+      canCreateCustomers: true,
+      canListExpenses: true,
+      canFetchReports: true,
+      canDownloadPdf: true,
+    },
   },
   {
     id: 'icount',
@@ -64,14 +59,45 @@ export const ACCOUNTING_PROVIDERS = [
     logoColors: { bg: '#eef2ff', text: '#3730a3', border: '#a5b4fc' },
     description: 'תוכנת הנהלת חשבונות מתקדמת',
     status: 'available',
-    authMethods: ['credentials'],
+    authStrategy: 'session',
+    authFields: [
+      { name: 'cid', label: 'מספר חברה (CID)', type: 'text', placeholder: '' },
+      { name: 'username', label: 'שם משתמש', type: 'text', placeholder: '' },
+      { name: 'password', label: 'סיסמה', type: 'password', placeholder: '' },
+    ],
     syncResources: ['customers', 'documents', 'expenses'],
     features: ['חשבוניות', 'קבלות', 'לקוחות', 'הוצאות', 'דוחות'],
-    connectFunction: 'icountStartConnect',
-    completeFunction: 'icountCompleteConnect',
-    disconnectFunction: 'icountDisconnect',
-    statusFunction: 'icountGetConnectionStatus',
-    syncFunction: 'icountSyncPull',
+    supportedDocTypes: ['invoice', 'invoice_receipt', 'receipt', 'credit_note', 'quote'],
+    capabilities: {
+      canCreateDocuments: true,
+      canCreateCustomers: true,
+      canListExpenses: true,
+      canFetchReports: true,
+      canDownloadPdf: true,
+    },
+  },
+  {
+    id: 'sumit',
+    name: 'Sumit',
+    logo: null,
+    logoText: 'SUMIT',
+    logoColors: { bg: '#f0fdf4', text: '#065f46', border: '#6ee7b7' },
+    description: 'הנהלת חשבונות וחשבוניות אונליין',
+    status: 'coming_soon',
+    authStrategy: 'api_key',
+    authFields: [
+      { name: 'api_key', label: 'API Key', type: 'password', placeholder: '' },
+    ],
+    syncResources: ['customers', 'documents', 'expenses'],
+    features: ['חשבוניות', 'הצעות מחיר', 'לקוחות'],
+    supportedDocTypes: ['invoice', 'invoice_receipt', 'receipt', 'credit_note', 'quote'],
+    capabilities: {
+      canCreateDocuments: true,
+      canCreateCustomers: true,
+      canListExpenses: true,
+      canFetchReports: false,
+      canDownloadPdf: true,
+    },
   },
 ];
 
@@ -93,8 +119,24 @@ export const RESOURCE_LABELS = {
   expenses: 'הוצאות',
 };
 
-export const AUTH_METHOD_LABELS = {
-  apikey: 'API Key',
-  credentials: 'שם משתמש וסיסמה',
+export const AUTH_STRATEGY_LABELS = {
+  api_key: 'API Key',
+  session: 'שם משתמש וסיסמה',
   oauth: 'OAuth',
+};
+
+/**
+ * Provider-agnostic function map.
+ * All providers use the SAME unified backend functions.
+ * The backend function reads the user's connection to determine which provider API to call.
+ */
+export const UNIFIED_FUNCTIONS = {
+  connect: 'acctConnectProvider',
+  disconnect: 'acctDisconnectProvider',
+  getStatus: 'acctGetConnectionStatus',
+  createCustomer: 'acctCreateCustomer',
+  createDocument: 'acctCreateDocument',
+  syncPull: 'acctSyncPull',
+  fetchReports: 'acctFetchReports',
+  downloadDocument: 'acctDownloadDocument',
 };
