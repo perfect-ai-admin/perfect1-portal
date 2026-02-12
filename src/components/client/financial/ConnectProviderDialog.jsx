@@ -28,11 +28,12 @@ const PROVIDER_GUIDES = {
   morning: {
     steps: [
       'היכנס לחשבון Morning (חשבונית ירוקה) שלך',
-      'לחץ על "הגדרות" > "API"',
-      'צור API Key חדש או העתק קיים',
-      'הדבק את ה-API Key כאן',
+      'לחץ על "הגדרות" > "מפתחות API"',
+      'לחץ על "צור מפתח API חדש"',
+      'העתק את ה-API Key וה-API Secret שנוצרו',
+      'הדבק את שניהם כאן',
     ],
-    link: { url: 'https://app.greeninvoice.co.il', label: 'פתח את חשבון Morning שלי' },
+    link: { url: 'https://app.greeninvoice.co.il/settings/api-keys', label: 'פתח את הגדרות API ב-Morning' },
   },
   sumit: {
     steps: [
