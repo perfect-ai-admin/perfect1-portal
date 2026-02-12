@@ -10,8 +10,8 @@ const PROVIDER_LOGOS = {
   icount: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/14f110f3a_image.png',
 };
 
-export default function ProviderCard({ provider, connectionStatus, loading, syncLoading, onConnect, onDisconnect, onSync, disconnectLoading }) {
-  const isConnected = connectionStatus?.connected;
+export default function ProviderCard({ provider, connectionStatus, loading, syncLoading, onConnect, onDisconnect, onSync, disconnectLoading, isOtherProviderConnected }) {
+  const isConnected = connectionStatus?.connected === true;
   const isComingSoon = provider.status === 'coming_soon';
 
   return (
@@ -84,8 +84,8 @@ export default function ProviderCard({ provider, connectionStatus, loading, sync
       {!isComingSoon && (
         <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-2">
           {!isConnected ? (
-            <Button size="sm" className="gap-2 h-8 text-xs" onClick={onConnect}>
-              <Link2 className="w-3 h-3" /> התחבר
+            <Button size="sm" className="gap-2 h-8 text-xs" onClick={onConnect} disabled={isOtherProviderConnected}>
+              <Link2 className="w-3 h-3" /> {isOtherProviderConnected ? 'מערכת אחרת מחוברת' : 'התחבר'}
             </Button>
           ) : (
             <>
