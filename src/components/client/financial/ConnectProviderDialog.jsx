@@ -71,6 +71,32 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
     return () => { cancelled = true; };
   }, [provider.id]);
 
+  async function doReconnect() {
+    setStatus('reconnecting');
+    setErrorMsg('');
+    try {
+      const res = await base44.functions.invoke('acctConnectProvider', {
+        provider: provider.id,
+        reconnect: true,
+      });
+      if (res.data?.status === 'connected') {
+        setStatus('success');
+        toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה!`, { duration: 5000 });
+
+        const syncFnMap = { morning: 'morningSyncPull', icount: 'icountSyncPull', finbot: 'finbotSyncPull' };
+        const syncFn = syncFnMap[provider.id] || 'acctSyncPull';
+        base44.functions.invoke(syncFn, { resource: 'all' }).catch(() => {});
+
+        setTimeout(() => { onSuccess?.(); onClose(); }, 2000);
+        return;
+      }
+    } catch (err) {
+      setErrorMsg(err?.response?.data?.error || 'הפרטים השמורים כבר לא תקינים. יש להזין פרטים חדשים.');
+      setHasSavedCreds(false);
+    }
+    setStatus('idle');
+  }
+
   async function doConnect() {
     if (status === 'connecting') return;
     if (!allFieldsFilled) {
