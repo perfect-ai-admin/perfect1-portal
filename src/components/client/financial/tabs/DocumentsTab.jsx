@@ -14,10 +14,16 @@ import { toast } from 'sonner';
 import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
 import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
 
-const TYPE_LABELS = { receipt: 'קבלה', invoice: 'חשבונית', invoice_receipt: 'חשבונית מס/קבלה', credit: 'זיכוי' };
+const TYPE_LABELS = { receipt: 'קבלה', invoice: 'חשבונית', invoice_receipt: 'חשבונית מס/קבלה', credit: 'זיכוי', issued: 'הופק' };
 const STATUS_COLORS = {
   paid: 'bg-green-100 text-green-800', created: 'bg-blue-100 text-blue-800',
   sent: 'bg-yellow-100 text-yellow-800', cancelled: 'bg-red-100 text-red-800',
+  issued: 'bg-green-100 text-green-800', open: 'bg-blue-100 text-blue-800',
+  closed: 'bg-gray-100 text-gray-700',
+};
+const STATUS_LABELS = {
+  paid: 'שולם', created: 'נוצר', sent: 'נשלח', cancelled: 'בוטל',
+  issued: 'הופק', open: 'פתוח', closed: 'סגור',
 };
 
 export default function DocumentsTab({ data }) {
@@ -44,6 +50,7 @@ export default function DocumentsTab({ data }) {
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
       toast.success(`סונכרנו ${res.data?.synced_count || 0} מסמכים`);
     },
     onError: (err) => toast.error(err.message),
@@ -73,11 +80,14 @@ export default function DocumentsTab({ data }) {
 
       {/* Filter */}
       <div className="flex gap-2 flex-wrap">
-        {['all', 'receipt', 'invoice', 'invoice_receipt', 'credit'].map(t => (
+        {['all', 'receipt', 'invoice', 'invoice_receipt', 'credit'].map(t => {
+          const count = t === 'all' ? documents.length : documents.filter(d => d.type === t).length;
+          return (
           <button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${filterType === t ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-            {t === 'all' ? 'הכל' : TYPE_LABELS[t]}
+            {t === 'all' ? 'הכל' : TYPE_LABELS[t]} ({count})
           </button>
-        ))}
+        );
+      })}
       </div>
 
       {isLoading ? (
@@ -111,7 +121,7 @@ export default function DocumentsTab({ data }) {
                     <td className="px-4 py-3">{formatCurrency(doc.vat)}</td>
                     <td className="px-4 py-3 font-medium">{formatCurrency(doc.total)}</td>
                     <td className="px-4 py-3">
-                      {doc.status && <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[doc.status] || 'bg-gray-100 text-gray-700'}`}>{doc.status}</span>}
+                      {doc.status && <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[doc.status] || 'bg-gray-100 text-gray-700'}`}>{STATUS_LABELS[doc.status] || doc.status}</span>}
                     </td>
                     <td className="px-4 py-3">
                       {doc.pdf_url && (
@@ -219,6 +229,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
+      queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
       const pdfUrl = res.data?.finbot_response?.pdf_link || res.data?.document?.pdf_url || res.data?.pdf_url;
       if (pdfUrl) {
         toast.success('מסמך הופק בהצלחה!', { 
