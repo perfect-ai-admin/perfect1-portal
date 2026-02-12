@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Link2, Loader2, ShieldCheck, HelpCircle, ChevronDown, ChevronUp, ExternalLink, X } from 'lucide-react';
 
@@ -42,52 +42,40 @@ const PROVIDER_GUIDES = {
   },
 };
 
-export default function ConnectProviderDialog({ open, onClose, provider, onConnect, loading }) {
+function ConnectProviderDialogInner({ provider, onConnect, onClose, loading }) {
   const [credentials, setCredentials] = useState({});
   const [showGuide, setShowGuide] = useState(false);
-  const credentialsRef = useRef(credentials);
-  credentialsRef.current = credentials;
-
-  useEffect(() => {
-    if (open) {
-      setCredentials({});
-      setShowGuide(false);
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      return () => { document.body.style.overflow = ''; };
-    }
-  }, [open]);
-
-  if (!open || !provider) return null;
+  const [submitting, setSubmitting] = useState(false);
 
   const authFields = provider.authFields || [];
   const guide = PROVIDER_GUIDES[provider.id];
 
-  const onSubmitClick = () => {
-    const creds = credentialsRef.current;
-    console.log('🔌 Submit clicked, provider:', provider.id, 'credentials keys:', Object.keys(creds));
-    onConnect(provider.id, creds);
-  };
+  async function doConnect() {
+    if (submitting || loading) return;
+    setSubmitting(true);
+    console.log('📡 doConnect:', provider.id, Object.keys(credentials));
+    try {
+      await onConnect(provider.id, { ...credentials });
+    } catch (err) {
+      console.error('doConnect error:', err);
+    }
+    setSubmitting(false);
+  }
 
-  return ReactDOM.createPortal(
+  const isLoading = loading || submitting;
+
+  return (
     <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999, direction: 'rtl' }}>
-      {/* Backdrop */}
       <div 
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)' }}
         onMouseDown={onClose}
       />
       
-      {/* Dialog */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, pointerEvents: 'none' }}>
         <div 
           style={{ background: 'white', borderRadius: 12, boxShadow: '0 25px 50px rgba(0,0,0,0.25)', width: '100%', maxWidth: 440, pointerEvents: 'auto', position: 'relative' }}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          {/* Close */}
           <div 
             style={{ position: 'absolute', top: 12, left: 12, cursor: 'pointer', padding: 4, borderRadius: '50%', color: '#9ca3af' }}
             onMouseDown={(e) => { e.stopPropagation(); onClose(); }}
@@ -95,7 +83,6 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
             <X className="w-5 h-5" />
           </div>
 
-          {/* Header */}
           <div style={{ padding: '24px 24px 16px' }}>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center border"
@@ -109,7 +96,6 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
             </p>
           </div>
 
-          {/* Body */}
           <div style={{ padding: '0 24px', maxHeight: '50vh', overflowY: 'auto' }}>
             <div className="space-y-4">
               <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-green-700">
@@ -131,8 +117,6 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
                     dir="ltr"
                     autoComplete="off"
                     style={{ width: '100%', textAlign: 'left', padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: 8, fontSize: 14, outline: 'none' }}
-                    onFocus={e => { e.target.style.borderColor = '#3b82f6'; e.target.style.boxShadow = '0 0 0 2px rgba(59,130,246,0.2)'; }}
-                    onBlur={e => { e.target.style.borderColor = '#d1d5db'; e.target.style.boxShadow = 'none'; }}
                   />
                 </div>
               ))}
@@ -167,29 +151,36 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
             </div>
           </div>
 
-          {/* Footer */}
           <div style={{ padding: '16px 24px 24px', display: 'flex', gap: 8, borderTop: '1px solid #f3f4f6', marginTop: 8 }}>
             <div
+              role="button"
+              tabIndex={0}
               onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onSubmitClick();
+                if (!isLoading) doConnect();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isLoading) doConnect();
               }}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '10px 20px', background: loading ? '#94a3b8' : '#1E3A5F', color: 'white',
+                padding: '10px 20px', background: isLoading ? '#94a3b8' : '#1E3A5F', color: 'white',
                 borderRadius: 8, fontWeight: 500, fontSize: 14,
-                cursor: loading ? 'not-allowed' : 'pointer',
-                userSelect: 'none', transition: 'background 0.2s',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                userSelect: 'none',
               }}
-              onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#2C5282'; }}
-              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#1E3A5F'; }}
             >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />}
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />}
               חבר את החשבון
             </div>
             <div
+              role="button"
+              tabIndex={0}
               onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
               style={{
                 padding: '10px 16px', background: 'white', border: '1px solid #d1d5db',
                 color: '#374151', borderRadius: 8, fontWeight: 500, fontSize: 14,
@@ -201,7 +192,27 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
           </div>
         </div>
       </div>
-    </div>,
+    </div>
+  );
+}
+
+export default function ConnectProviderDialog({ open, onClose, provider, onConnect, loading }) {
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
+    }
+  }, [open]);
+
+  if (!open || !provider) return null;
+
+  return ReactDOM.createPortal(
+    <ConnectProviderDialogInner 
+      provider={provider} 
+      onConnect={onConnect} 
+      onClose={onClose} 
+      loading={loading} 
+    />,
     document.body
   );
 }
