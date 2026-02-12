@@ -234,24 +234,6 @@ Deno.serve(async (req) => {
 
     let syncedCount = 0;
 
-    // Debug mode
-    if (body.debug) {
-      const debugRes = await fetch(`${ICOUNT_BASE_URL}/client/get_list`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sid, list_type: 'array' })
-      });
-      const debugData = await debugRes.json();
-      return Response.json({ 
-        debug: true, 
-        icount_status: debugData.status,
-        keys: Object.keys(debugData),
-        client_list_length: Array.isArray(debugData.client_list) ? debugData.client_list.length : 'not_array',
-        first_client: debugData.client_list?.[0] || null,
-        raw_snippet: JSON.stringify(debugData).substring(0, 500)
-      });
-    }
-
     if (resource === 'customers') {
       syncedCount = await syncCustomers(base44, user.id, sid);
     } else if (resource === 'documents') {
