@@ -35,6 +35,7 @@ async function syncCustomers(base44, userId, sid) {
     body: JSON.stringify({ sid, list_type: 'array' })
   });
   const data = await res.json();
+  console.log('[syncCustomers] iCount response status:', data.status, 'client_list length:', (data.client_list || []).length, 'keys:', Object.keys(data));
   if (!data.status) throw new Error(data.error_description || 'שגיאה בשליפת לקוחות');
 
   const clients = data.client_list || [];
