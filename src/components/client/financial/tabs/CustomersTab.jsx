@@ -22,10 +22,9 @@ export default function CustomersTab({ data }) {
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['finbot-customers', providerId || 'none'],
     queryFn: () => {
-      if (!isConnected || !providerId) return [];
       return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
-    enabled: !providerLoading,
+    enabled: !providerLoading && isConnected && !!providerId,
     refetchOnWindowFocus: true,
   });
 
