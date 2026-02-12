@@ -49,6 +49,14 @@ export default function ConnectProviderDialog({ open, onClose, provider, onConne
   const [credentials, setCredentials] = useState({});
   const [showGuide, setShowGuide] = useState(false);
 
+  // Reset credentials when dialog opens with a new provider
+  React.useEffect(() => {
+    if (open && provider) {
+      setCredentials({});
+      setShowGuide(false);
+    }
+  }, [open, provider?.id]);
+
   if (!provider) return null;
 
   const authFields = provider.authFields || [];
