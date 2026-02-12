@@ -156,8 +156,8 @@ Deno.serve(async (req) => {
     await createDoc('create_document_invrec', 'invoice_receipt', 'invrec', 100);
     // ===== D) receipt =====
     await createDoc('create_document_receipt', 'receipt', 'receipt', 50);
-    // ===== E) credit =====
-    await createDoc('create_document_credit', 'credit', 'creditinv', 30);
+    // ===== E) credit invoice =====
+    await createDoc('create_document_credit', 'credit', 'credit_invoice', 30);
 
     // ===== F) Pull Sync - Customers =====
     try {
