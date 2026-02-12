@@ -66,8 +66,8 @@ Deno.serve(async (req) => {
     return Response.json({
       status: 'success',
       provider,
-      synced_count: result?.synced_count || 0,
-      job_id: result?.job_id,
+      synced_count: result?.data?.synced_count || result?.synced_count || 0,
+      job_id: result?.data?.job_id || result?.job_id,
     });
   } catch (error) {
     return Response.json({ error: error.message, status: 'error' }, { status: 500 });
