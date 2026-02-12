@@ -216,6 +216,7 @@ Deno.serve(async (req) => {
     // Save locally
     const localDoc = await base44.asServiceRole.entities.FinbotDocument.create({
       user_id: user.id,
+      provider: 'icount',
       finbot_document_id: data.docnum ? `${data.doctype}_${data.docnum}` : '',
       type: type === 'tax-receipt' ? 'invoice_receipt' : type,
       customer_finbot_id: String(payload.client_id || ''),

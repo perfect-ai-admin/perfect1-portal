@@ -50,6 +50,7 @@ async function syncCustomers(base44, userId, sid) {
 
     const customerData = {
       user_id: userId,
+      provider: 'icount',
       finbot_customer_id: clientId,
       name: client.client_name || '',
       id_number: client.vat_id || '',
@@ -125,6 +126,7 @@ async function syncDocuments(base44, userId, sid) {
 
     const docData = {
       user_id: userId,
+      provider: 'icount',
       finbot_document_id: docId,
       type: ourType,
       customer_finbot_id: doc.client_id ? String(doc.client_id) : '',
@@ -185,6 +187,7 @@ async function syncExpenses(base44, userId, sid) {
 
     const expData = {
       user_id: userId,
+      provider: 'icount',
       finbot_expense_id: expId,
       vendor: exp.supplier_name || '',
       category: exp.expense_type_name || '',

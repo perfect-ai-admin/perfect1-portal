@@ -67,6 +67,7 @@ Deno.serve(async (req) => {
     // Save locally
     const localCustomer = await base44.asServiceRole.entities.FinbotCustomer.create({
       user_id: user.id,
+      provider: 'icount',
       finbot_customer_id: String(data.client_id),
       name,
       id_number: id_number || '',
