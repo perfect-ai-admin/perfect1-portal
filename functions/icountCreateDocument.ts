@@ -201,10 +201,10 @@ Deno.serve(async (req) => {
       } catch (_) { /* ignore */ }
     }
 
-    // Calculate totals from response
-    const subtotal = data.total_sum || items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
-    const vat = data.total_vat || 0;
-    const total = data.total_with_vat || subtotal + vat;
+    // Calculate totals from response (iCount uses totalsum, totalvat, totalwithvat)
+    const subtotal = parseFloat(data.totalsum || data.total_sum || 0) || items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
+    const vat = parseFloat(data.totalvat || data.total_vat || 0);
+    const total = parseFloat(data.totalwithvat || data.total_with_vat || 0) || subtotal + vat;
 
     // Find customer name
     let customerName = '';
