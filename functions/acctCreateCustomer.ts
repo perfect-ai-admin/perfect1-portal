@@ -54,27 +54,39 @@ Deno.serve(async (req) => {
 
     console.log('Morning create client payload:', JSON.stringify(clientPayload));
 
-    const resp = await fetch(`${MORNING_BASE}/clients`, {
+    let resp = await fetch(`${MORNING_BASE}/clients`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(clientPayload),
     });
 
-    const resultText = await resp.text();
+    let resultText = await resp.text();
     let result;
     try { result = JSON.parse(resultText); } catch (_) {
       return Response.json({ error: 'תגובה לא תקינה מ-Morning' }, { status: 500 });
     }
 
+    // If taxId is invalid, retry without it
+    if (!resp.ok && result?.errorCode === 1111 && clientPayload.taxId) {
+      console.log('Morning rejected taxId, retrying without it...');
+      delete clientPayload.taxId;
+      resp = await fetch(`${MORNING_BASE}/clients`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${jwt}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(clientPayload),
+      });
+      resultText = await resp.text();
+      try { result = JSON.parse(resultText); } catch (_) {
+        return Response.json({ error: 'תגובה לא תקינה מ-Morning' }, { status: 500 });
+      }
+    }
+
     if (!resp.ok) {
       console.log('Morning create client error:', resp.status, JSON.stringify(result));
       
-      // If Morning returns 400 with an existing client ID, treat as duplicate
+      // If Morning returns 400 with an existing client ID (string UUID), treat as duplicate
       if (resp.status === 400 && typeof result === 'string' && result.length > 10) {
-        // Morning returns the existing client ID as the error body
         console.log('Client already exists in Morning, ID:', result);
-        
-        // Save to our DB with the existing Morning ID
         const saved = await base44.asServiceRole.entities.AccountingCustomer.create({
           user_id: user.id,
           provider: 'morning',
@@ -90,7 +102,6 @@ Deno.serve(async (req) => {
           is_active: true,
           synced_at: new Date().toISOString(),
         });
-        
         return Response.json({ status: 'success', customer: saved, note: 'לקוח קיים כבר ב-Morning, נוסף למערכת' });
       }
       
