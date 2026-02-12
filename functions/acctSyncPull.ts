@@ -28,6 +28,7 @@ Deno.serve(async (req) => {
     const providerSyncMap = {
       icount: 'icountSyncPull',
       finbot: 'finbotSyncPull',
+      morning: 'morningSyncPull',
     };
 
     const syncFn = providerSyncMap[provider];

@@ -26,6 +26,7 @@ Deno.serve(async (req) => {
     const providerFnMap = {
       icount: 'icountCreateDocument',
       finbot: 'finbotCreateDocument',
+      morning: 'morningCreateDocument',
     };
 
     const createFn = providerFnMap[provider];

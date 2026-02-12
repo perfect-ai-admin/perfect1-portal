@@ -26,6 +26,7 @@ Deno.serve(async (req) => {
     const providerFnMap = {
       icount: 'icountFetchReports',
       finbot: 'finbotFetchReports',
+      morning: 'morningFetchReports',
     };
 
     const reportFn = providerFnMap[provider];
