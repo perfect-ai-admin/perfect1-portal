@@ -89,10 +89,12 @@ Deno.serve(async (req) => {
     const connConfig = connections?.[0]?.config || {};
     const isVatExempt = !!(connConfig.is_tax_exempt || connConfig.is_vat_exempt);
 
-    // For osek patur: total = subtotal (no VAT). iCount handles VAT itself based on account settings.
-    // Payment sum must match the total iCount calculates, so use subtotal only.
+    // iCount adds VAT automatically based on account settings.
+    // Payment sum must match the total iCount will calculate (including VAT).
     const subtotalCalc = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
-    const totalWithVat = subtotalCalc; // Let iCount handle VAT calculation
+    // If VAT exempt, total = subtotal. Otherwise, iCount adds VAT (typically 18%).
+    const vatRate = isVatExempt ? 0 : 0.18;
+    const totalWithVat = Math.round(subtotalCalc * (1 + vatRate) * 100) / 100;
     
     const paymentSource = (payment && payment.length > 0) ? payment[0] : null;
     const payTypeKey = paymentSource?.type || payment_type || 'cash';
