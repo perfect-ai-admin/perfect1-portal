@@ -88,11 +88,11 @@ Deno.serve(async (req) => {
     const connections = await base44.asServiceRole.entities.AccountingConnection.filter({ user_id: user.id, provider: 'icount', status: 'connected' });
     const connConfig = connections?.[0]?.config || {};
     const isVatExempt = !!(connConfig.is_tax_exempt || connConfig.is_vat_exempt);
-    const vatMultiplier = isVatExempt ? 1 : 1.18;
 
-    // Add payment info (required by iCount for receipt/invrec)
+    // For osek patur: total = subtotal (no VAT). iCount handles VAT itself based on account settings.
+    // Payment sum must match the total iCount calculates, so use subtotal only.
     const subtotalCalc = items.reduce((sum, i) => sum + (i.unit_price || 0) * (i.quantity || 1), 0);
-    const totalWithVat = Math.round(subtotalCalc * vatMultiplier * 100) / 100;
+    const totalWithVat = subtotalCalc; // Let iCount handle VAT calculation
     
     const paymentSource = (payment && payment.length > 0) ? payment[0] : null;
     const payTypeKey = paymentSource?.type || payment_type || 'cash';
