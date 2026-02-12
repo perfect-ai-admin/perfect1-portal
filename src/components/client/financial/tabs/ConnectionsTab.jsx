@@ -83,7 +83,13 @@ export default function ConnectionsTab({ data }) {
     await base44.functions.invoke(provider.disconnectFunction);
     setDisconnectLoading(p => ({ ...p, [providerId]: false }));
     toast.success(`התנתקת מ-${provider.name}`);
-    // Invalidate all financial queries so data disappears immediately
+    // Clear cached data immediately so it doesn't show stale results
+    queryClient.setQueryData(['finbot-documents', providerId], []);
+    queryClient.setQueryData(['finbot-customers', providerId], []);
+    queryClient.setQueryData(['finbot-expenses', providerId], []);
+    queryClient.setQueryData(['finbot-documents-revenue', providerId], []);
+    queryClient.setQueryData(['active-accounting-connection'], null);
+    // Then invalidate to refetch fresh state
     queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
     queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
     queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
