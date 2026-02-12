@@ -162,7 +162,7 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
             </p>
           </div>
 
-          {/* Reconnecting state */}
+          {/* Success / Reconnecting / Form states */}
           {status === 'reconnecting' ? (
             <div style={{ padding: '32px 24px', textAlign: 'center' }}>
               <Loader2 className="w-12 h-12 text-blue-500 mx-auto mb-3 animate-spin" />
