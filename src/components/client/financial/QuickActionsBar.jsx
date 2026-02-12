@@ -87,31 +87,12 @@ export default function QuickActionsBar({ onActionComplete, user }) {
     if (!window.confirm('האם אתה בטוח שברצונך להתנתק ממערכת הנהלת החשבונות?')) return;
     
     try {
-      // Call actual disconnect function to clean up server-side data
-      const provider = user?.accounting_software?.provider;
-      if (provider === 'icount') {
-        await base44.functions.invoke('icountDisconnect');
-      } else if (provider === 'finbot') {
-        await base44.functions.invoke('finbotDisconnect');
-      }
-
-      await base44.auth.updateMe({
-        accounting_software: null
-      });
+      await base44.functions.invoke('acctDisconnectProvider');
 
       // Clear cached financial data immediately
       queryClient.setQueryData(['active-accounting-connection'], null);
-      queryClient.setQueryData(['finbot-documents', provider], []);
-      queryClient.setQueryData(['finbot-customers', provider], []);
-      queryClient.setQueryData(['finbot-expenses', provider], []);
-      queryClient.setQueryData(['finbot-documents-revenue', provider], []);
-      
       queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-customers'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-expenses'] });
-      queryClient.invalidateQueries({ queryKey: ['finbot-documents-revenue'] });
-      await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+      queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
       
       toast.success('התנתקת בהצלחה');
       onActionComplete && onActionComplete();
