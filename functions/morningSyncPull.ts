@@ -99,8 +99,8 @@ async function syncCustomers(base44, userId, jwt) {
 
     if (items.length < pageSize) break;
     page++;
-    if (page > 20) break; // safety limit
-    await new Promise(r => setTimeout(r, 300));
+    if (page > 50) break; // safety limit
+    await new Promise(r => setTimeout(r, 1000));
   }
   return totalSynced;
 }
@@ -205,8 +205,8 @@ async function syncDocuments(base44, userId, jwt) {
 
     if (items.length < pageSize) break;
     page++;
-    if (page > 20) break;
-    await new Promise(r => setTimeout(r, 300));
+    if (page > 50) break;
+    await new Promise(r => setTimeout(r, 1000));
   }
   return totalSynced;
 }
@@ -265,8 +265,8 @@ async function syncExpenses(base44, userId, jwt) {
 
     if (items.length < pageSize) break;
     page++;
-    if (page > 20) break;
-    await new Promise(r => setTimeout(r, 300));
+    if (page > 50) break;
+    await new Promise(r => setTimeout(r, 1000));
   }
   return totalSynced;
 }
