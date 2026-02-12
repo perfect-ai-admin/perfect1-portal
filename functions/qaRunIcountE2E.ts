@@ -103,6 +103,15 @@ Deno.serve(async (req) => {
       await logStep('create_customer', 'fail', e.message);
     }
 
+    // Detect VAT settings
+    let isVatExempt = false;
+    try {
+      const conns = await base44.asServiceRole.entities.AccountingConnection.filter({ user_id: user.id, provider: 'icount' });
+      const cfg = conns?.[0]?.config || {};
+      isVatExempt = !!(cfg.is_tax_exempt || cfg.is_vat_exempt);
+    } catch (_) {}
+    const vatRate = isVatExempt ? 0 : 0.18;
+
     // Helper: create document in iCount
     const createDoc = async (stepName, type, icountDoctype, unitPrice) => {
       if (!customerProviderId) {
@@ -111,6 +120,7 @@ Deno.serve(async (req) => {
       }
       try {
         const items = [{ description: `QA ${type} ${runId}`, unitprice: unitPrice, quantity: 1 }];
+        const totalWithVat = Math.round(unitPrice * (1 + vatRate) * 100) / 100;
         const docPayload = {
           sid, doctype: icountDoctype,
           client_id: parseInt(customerProviderId),
@@ -118,9 +128,9 @@ Deno.serve(async (req) => {
           doc_date: new Date().toISOString().split('T')[0],
           comment: `QA_RUN:${runId}`
         };
-        // Add payment for receipt/invrec
+        // Add payment for receipt/invrec - sum must include VAT
         if (['invrec', 'receipt'].includes(icountDoctype)) {
-          docPayload.cash = { sum: unitPrice };
+          docPayload.cash = { sum: totalWithVat };
         }
         const res = await fetch(`${ICOUNT_BASE_URL}/doc/create`, {
           method: 'POST',
