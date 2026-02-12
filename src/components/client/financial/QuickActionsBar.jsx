@@ -31,7 +31,15 @@ export default function QuickActionsBar({ onActionComplete, user }) {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [showProviderConnect, setShowProviderConnect] = useState(false);
   const [connectLoading, setConnectLoading] = useState(false);
+  const [savedProvidersList, setSavedProvidersList] = useState([]);
   const queryClient = useQueryClient();
+
+  // Fetch saved providers for selection dialog
+  React.useEffect(() => {
+    base44.functions.invoke('acctGetConnectionStatus', {}).then(res => {
+      setSavedProvidersList(res.data?.saved_providers || []);
+    }).catch(() => {});
+  }, []);
 
   const checkConnection = () => {
     if (!isConnected) {
