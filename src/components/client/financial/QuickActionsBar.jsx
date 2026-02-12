@@ -34,8 +34,7 @@ export default function QuickActionsBar({ onActionComplete, user }) {
   const queryClient = useQueryClient();
 
   const checkConnection = () => {
-    // Check if user has an active accounting software connection
-    if (!user?.accounting_software?.is_active) {
+    if (!isConnected) {
       setShowConnectDialog(true);
       return false;
     }
@@ -147,13 +146,13 @@ export default function QuickActionsBar({ onActionComplete, user }) {
     <>
       {/* Desktop Bar */}
       <div className="hidden md:flex items-center gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4 shadow-sm">
-        {user?.accounting_software?.is_active && (
+        {isConnected && providerId && (
           <div className="flex items-center gap-2 pl-4 ml-2 border-l border-blue-200">
             <div className="relative group">
               <div className="h-8 w-auto px-2 bg-white rounded-md border border-blue-100 flex items-center justify-center shadow-sm">
                  <img 
-                   src={softwareLogos[user.accounting_software.provider]} 
-                   alt={user.accounting_software.provider}
+                   src={softwareLogos[providerId]} 
+                   alt={providerId}
                    className="h-5 w-auto object-contain"
                  />
               </div>
@@ -167,7 +166,7 @@ export default function QuickActionsBar({ onActionComplete, user }) {
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] text-gray-500 leading-tight">מחובר ל-</span>
-              <span className="text-xs font-bold text-gray-700 leading-tight capitalize">{user.accounting_software.provider}</span>
+              <span className="text-xs font-bold text-gray-700 leading-tight capitalize">{providerName || providerId}</span>
             </div>
           </div>
         )}
@@ -180,7 +179,7 @@ export default function QuickActionsBar({ onActionComplete, user }) {
               הפקת מסמך
             </Button>
           </DropdownMenuTrigger>
-          {user?.accounting_software?.is_active && (
+          {isConnected && (
             <DropdownMenuContent align="start">
               {documentTypes.map(type => (
                 <DropdownMenuItem
@@ -239,7 +238,7 @@ export default function QuickActionsBar({ onActionComplete, user }) {
                  הפקת מסמך
                </button>
              </DropdownMenuTrigger>
-             {user?.accounting_software?.is_active && (
+             {isConnected && (
                <DropdownMenuContent align="start" side="top" className="mb-2">
                  {documentTypes.map(type => (
                    <DropdownMenuItem
