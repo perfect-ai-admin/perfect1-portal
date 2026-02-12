@@ -53,8 +53,10 @@ export default function ReportsTab({ data }) {
 
   const fetchMutation = useMutation({
     mutationFn: ({ report_type }) => {
-      if (!fn?.fetchReports) throw new Error('אין חיבור למערכת חשבונות');
-      return base44.functions.invoke(fn.fetchReports, { report_type, period_start: periodStart, period_end: periodEnd });
+      if (!isConnected) throw new Error('אין חיבור למערכת חשבונות');
+      // Use existing icount function for backward compat, will migrate to unified later
+      const reportFn = fn?.fetchReports || 'icountFetchReports';
+      return base44.functions.invoke(reportFn, { report_type, period_start: periodStart, period_end: periodEnd });
     },
     onSuccess: (res, variables) => {
       const responseData = res.data?.data;
