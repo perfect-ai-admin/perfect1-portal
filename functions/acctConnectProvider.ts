@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-const ICOUNT_BASE = "https://api.icount.co.il";
+const ICOUNT_BASE = "https://api.icount.co.il/api/v3.php";
 
 /**
  * Unified provider connection function.
