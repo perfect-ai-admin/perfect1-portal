@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../../hooks/useQueryKeys';
+import useActiveAccountingProvider from '../../hooks/useActiveAccountingProvider';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +23,7 @@ import ProviderSelectionDialog from './ProviderSelectionDialog';
 import ConnectProviderDialog from './ConnectProviderDialog';
 
 export default function QuickActionsBar({ onActionComplete, user }) {
+  const { isConnected, providerId, providerName } = useActiveAccountingProvider();
   const [showCreateModal, setShowCreateModal] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
   const [showConnectDialog, setShowConnectDialog] = useState(false);
