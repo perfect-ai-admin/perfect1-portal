@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     const connection = connections[0];
     const provider = connection.provider;
 
-    // Disable connection, clear session tokens
+    // Disable connection, clear session tokens but KEEP credentials for reconnect
     await base44.asServiceRole.entities.AccountingConnection.update(connection.id, {
       status: 'disabled',
       sid: null,
@@ -31,6 +31,8 @@ Deno.serve(async (req) => {
       access_token_ref: null,
       refresh_token_ref: null,
       token_expires_at: null,
+      // NOTE: api_key_enc, api_secret_enc, password_enc, username, provider_account_id are KEPT
+      // so the user can reconnect without re-entering credentials
     });
 
     // Audit log
