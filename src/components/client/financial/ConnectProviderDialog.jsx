@@ -59,7 +59,8 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
         const res = await base44.functions.invoke('acctGetConnectionStatus', {});
         if (cancelled) return;
         const savedProviders = res.data?.saved_providers || [];
-        if (savedProviders.includes(provider.id)) {
+        const match = savedProviders.find(sp => sp.provider === provider.id || sp === provider.id);
+        if (match) {
           setHasSavedCreds(true);
         }
       } catch (err) {
