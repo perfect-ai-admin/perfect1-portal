@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
 import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
 
-const TYPE_LABELS = { receipt: 'קבלה', invoice: 'חשבונית', invoice_receipt: 'חשבונית מס/קבלה', credit: 'זיכוי', issued: 'הופק' };
+const TYPE_LABELS = { receipt: 'קבלה', invoice: 'חשבונית', invoice_receipt: 'חשבונית מס/קבלה', credit_note: 'זיכוי', credit: 'זיכוי', issued: 'הופק' };
 const STATUS_COLORS = {
   paid: 'bg-green-100 text-green-800', created: 'bg-blue-100 text-blue-800',
   sent: 'bg-yellow-100 text-yellow-800', cancelled: 'bg-red-100 text-red-800',
@@ -87,7 +87,7 @@ export default function DocumentsTab({ data }) {
     let vat = Number(doc.vat) || 0;
     let total = Number(doc.total) || 0;
 
-    const isInvoiceType = ['invoice', 'invoice_receipt', 'credit'].includes(doc.type);
+    const isInvoiceType = ['invoice', 'invoice_receipt', 'credit', 'credit_note'].includes(doc.type);
 
     if (!vat && !isVatExempt && isInvoiceType && subtotal > 0) {
       vat = Math.round(subtotal * 0.18 * 100) / 100;
@@ -125,7 +125,7 @@ export default function DocumentsTab({ data }) {
 
       {/* Filter */}
       <div className="flex gap-2 flex-wrap">
-        {['all', 'receipt', 'invoice', 'invoice_receipt', 'credit'].map(t => {
+        {['all', 'receipt', 'invoice', 'invoice_receipt', 'credit_note'].map(t => {
           const count = t === 'all' ? documents.length : documents.filter(d => d.type === t).length;
           return (
           <button key={t} onClick={() => setFilterType(t)} className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${filterType === t ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
@@ -318,7 +318,7 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
                   <SelectItem value="receipt">קבלה</SelectItem>
                   <SelectItem value="invoice">חשבונית</SelectItem>
                   <SelectItem value="invoice_receipt">חשבונית מס/קבלה</SelectItem>
-                  <SelectItem value="credit">זיכוי</SelectItem>
+                  <SelectItem value="credit_note">זיכוי</SelectItem>
                 </SelectContent>
               </Select>
             </div>
