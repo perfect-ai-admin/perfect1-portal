@@ -74,6 +74,38 @@ export default function ConnectionsTab({ data }) {
     setConnectLoading(false);
   };
 
+  const handleReconnect = async (providerId) => {
+    setReconnectLoading(p => ({ ...p, [providerId]: true }));
+    try {
+      const res = await base44.functions.invoke('acctConnectProvider', { 
+        provider: providerId, 
+        reconnect: true 
+      });
+      if (res.data?.status === 'connected') {
+        toast.success(res.data.message || `חובר מחדש ל-${providerId}! 🎉`);
+        queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
+        fetchAllStatuses();
+      } else {
+        toast.error(res.data?.error || 'שגיאה בהתחברות מחדש');
+        if (res.data?.needs_credentials) {
+          // Saved creds are invalid, open regular connect dialog
+          const provider = getProvider(providerId);
+          if (provider) setConnectProvider(provider);
+        }
+      }
+    } catch (err) {
+      const errData = err?.response?.data;
+      if (errData?.needs_credentials) {
+        toast.info('הפרטים השמורים כבר לא תקינים. יש להזין מחדש.');
+        const provider = getProvider(providerId);
+        if (provider) setConnectProvider(provider);
+      } else {
+        toast.error(errData?.error || 'שגיאה בהתחברות מחדש');
+      }
+    }
+    setReconnectLoading(p => ({ ...p, [providerId]: false }));
+  };
+
   const handleDisconnect = async (providerId) => {
     const provider = getProvider(providerId);
     if (!confirm(`בטוח שברצונך להתנתק מ-${provider.name}?`)) return;
