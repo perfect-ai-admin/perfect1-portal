@@ -28,14 +28,21 @@ Deno.serve(async (req) => {
       });
     };
 
-    // ===== A) Preflight =====
+    // ===== A) Preflight (inline check) =====
     try {
-      const preflight = await base44.functions.invoke('qaPreflightIcount', {});
-      if (!preflight.data?.ok) {
-        await logStep('preflight', 'fail', preflight.data?.reason || 'Preflight failed');
+      const icountUrl = Deno.env.get("ICOUNT_BASE_URL");
+      if (!icountUrl) {
+        await logStep('preflight', 'fail', 'MISSING_ICOUNT_BASE_URL');
         return Response.json({ ok: false, runId, steps, created, warnings });
       }
-      await logStep('preflight', 'pass', 'Connection verified');
+      const connections = await base44.asServiceRole.entities.AccountingConnection.filter({
+        user_id: user.id, provider: 'icount'
+      });
+      if (!connections?.length || connections[0].status !== 'connected') {
+        await logStep('preflight', 'fail', 'NOT_CONNECTED');
+        return Response.json({ ok: false, runId, steps, created, warnings });
+      }
+      await logStep('preflight', 'pass', `Connection verified: ${connections[0].provider_account_id}`);
     } catch (e) {
       await logStep('preflight', 'fail', e.message);
       return Response.json({ ok: false, runId, steps, created, warnings });
