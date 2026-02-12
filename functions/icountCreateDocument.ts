@@ -137,14 +137,13 @@ Deno.serve(async (req) => {
     if (payload.comment) jsonPayload.comment = payload.comment;
     if (payload.client_id) jsonPayload.client_id = payload.client_id;
 
-    // Add payment using correct iCount API field names (from official docs):
-    // cash: iCountCashPayment object, cheques: array of iCountChequePayment,
-    // banktransfer: iCountBankTransferPayment object, cc: iCountCreditCardPayment object
+    // Add payment using correct iCount API field names
+    // IMPORTANT: Don't send payment sum - let iCount auto-calculate to match doc total
     if (hasPayment) {
       const effPaySource = effectivePayment[0];
       const effPayTypeKey = effPaySource?.type || payment_type || 'cash';
       const effPayType = PAYMENT_TYPE_MAP[effPayTypeKey] || 1;
-      const effPaySum = effPaySource?.price ? Number(effPaySource.price) : totalWithVat;
+      const effPaySum = effPaySource?.price ? Number(effPaySource.price) : subtotalCalc;
       
       if (effPayType === 3) {
         jsonPayload.cc = { sum: effPaySum, cc_type: 3 };
