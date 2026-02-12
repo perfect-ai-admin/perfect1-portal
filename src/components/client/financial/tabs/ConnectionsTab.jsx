@@ -126,29 +126,35 @@ export default function ConnectionsTab({ data }) {
       </div>
 
       {/* Provider Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {ACCOUNTING_PROVIDERS.map((provider, idx) => (
-          <motion.div
-            key={provider.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-          >
-            <ProviderCard
-              provider={provider}
-              connectionStatus={statuses[provider.id]}
-              loading={loading && provider.status === 'available'}
-              syncLoading={getSyncLoadingForProvider(provider.id)}
-              disconnectLoading={disconnectLoading[provider.id]}
-              onConnect={() => {
-                setConnectProvider(provider);
-              }}
-              onDisconnect={() => handleDisconnect(provider.id)}
-              onSync={(resource) => handleSync(provider.id, resource)}
-            />
-          </motion.div>
-        ))}
-      </div>
+      {(() => {
+        const connectedProviderId = Object.keys(statuses).find(k => statuses[k]?.connected);
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {ACCOUNTING_PROVIDERS.map((provider, idx) => (
+              <motion.div
+                key={provider.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <ProviderCard
+                  provider={provider}
+                  connectionStatus={statuses[provider.id]}
+                  loading={loading && provider.status === 'available'}
+                  syncLoading={getSyncLoadingForProvider(provider.id)}
+                  disconnectLoading={disconnectLoading[provider.id]}
+                  isOtherProviderConnected={!!connectedProviderId && connectedProviderId !== provider.id}
+                  onConnect={() => {
+                    setConnectProvider(provider);
+                  }}
+                  onDisconnect={() => handleDisconnect(provider.id)}
+                  onSync={(resource) => handleSync(provider.id, resource)}
+                />
+              </motion.div>
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Info */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
