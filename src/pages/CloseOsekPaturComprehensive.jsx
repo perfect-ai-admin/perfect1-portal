@@ -1,12 +1,11 @@
-import React, { useState, forwardRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
 import {
   CheckCircle, AlertCircle, Phone, MessageCircle, 
-  FileText, DollarSign, Shield, AlertTriangle, HelpCircle, Clock, Building2, X, Loader2
+  FileText, DollarSign, Shield, AlertTriangle, HelpCircle, Clock, Building2
 } from 'lucide-react';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
@@ -24,10 +23,7 @@ import {
 } from "@/components/ui/accordion";
 
 export default function CloseOsekPaturComprehensive() {
-  const [showLeadForm, setShowLeadForm] = useState(false);
-  const [showCTAForm, setShowCTAForm] = useState(false);
-  const [ctaSubmitting, setCtaSubmitting] = useState(false);
-  const navigate = useNavigate();
+  const whatsappUrl = "https://wa.me/972502277087?text=" + encodeURIComponent("היי, אני רוצה לסגור את העוסק פטור שלי");
 
   const faqs = [
     {
@@ -129,13 +125,14 @@ export default function CloseOsekPaturComprehensive() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={() => setShowCTAForm(true)}
-                  className="w-full sm:w-auto h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg transition-all"
-                >
-                  <CheckCircle className="ml-2 w-5 h-5" />
-                  לסגירת התיק בקליק
-                </Button>
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    className="w-full sm:w-auto h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white shadow-lg transition-all"
+                  >
+                    <MessageCircle className="ml-2 w-5 h-5" />
+                    לסגירת התיק בוואטסאפ
+                  </Button>
+                </a>
               </div>
             </motion.div>
           </div>
@@ -237,14 +234,16 @@ export default function CloseOsekPaturComprehensive() {
                צריך לסגור את התיק במהירות?
              </h3>
              <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-               אנחנו נטפל בכל פרטי הסגירה במהירות - פשוט תתן לנו את הפרטים שלך
+               אנחנו נטפל בכל פרטי הסגירה במהירות – שלח לנו הודעה בוואטסאפ
              </p>
-             <Button 
-               onClick={() => setShowCTAForm(true)}
-               className="h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
-             >
-               השאירו פרטים ונחזור אליכם
-             </Button>
+             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+               <Button 
+                 className="h-14 px-8 text-lg font-bold rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white shadow-lg"
+               >
+                 <MessageCircle className="ml-2 w-5 h-5" />
+                 דברו איתנו בוואטסאפ
+               </Button>
+             </a>
            </motion.div>
          </div>
         </section>
@@ -415,12 +414,14 @@ export default function CloseOsekPaturComprehensive() {
                  <h3 className="text-2xl font-black text-[#1E3A5F] mb-3">
                     רוצים לסגור עוסק פטור במהירות?
                  </h3>
-                 <Button 
-                   onClick={() => setShowCTAForm(true)}
-                   className="h-14 px-8 text-lg font-black rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white shadow-lg"
-                 >
-                   השאירו פרטים ונחזור אליכם
-                 </Button>
+                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                   <Button 
+                     className="h-14 px-8 text-lg font-black rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white shadow-lg"
+                   >
+                     <MessageCircle className="ml-2 w-5 h-5" />
+                     שלחו הודעה בוואטסאפ
+                   </Button>
+                 </a>
                </div>
              </motion.div>
            </div>
@@ -529,80 +530,7 @@ export default function CloseOsekPaturComprehensive() {
           sourcePage="CloseOsekPaturComprehensive - SafeCtaBar"
         />
 
-        {/* CTA Lead Form Popup */}
-        <AnimatePresence>
-          {showCTAForm && (
-            <>
-              <motion.div 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/50 z-40" 
-                onClick={() => setShowCTAForm(false)} 
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-              >
-                <div className="bg-white rounded-2xl shadow-2xl w-11/12 sm:w-96 pointer-events-auto p-6 sm:p-8">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl sm:text-2xl font-black text-[#1E3A5F]">סגירת עוסק פטור</h3>
-                    <button onClick={() => setShowCTAForm(false)} className="text-gray-400 hover:text-gray-600">
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-                  <p className="text-gray-600 text-sm mb-5">השאירו שם וטלפון ונחזור אליכם בהקדם</p>
-                  <form
-                    onSubmit={async (e) => {
-                      e.preventDefault();
-                      setCtaSubmitting(true);
-                      const name = e.target.fullName.value;
-                      const phone = e.target.phone.value;
-                      await base44.functions.invoke('submitCloseOsekLead', {
-                        name,
-                        phone,
-                        source_page: 'CloseOsekPaturComprehensive'
-                      });
-                      setCtaSubmitting(false);
-                      setShowCTAForm(false);
-                      navigate(createPageUrl('ThankYou'));
-                    }}
-                    className="space-y-4"
-                  >
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">שם מלא</label>
-                      <input
-                        type="text"
-                        name="fullName"
-                        required
-                        placeholder="הכנס שמך"
-                        className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#1E3A5F] focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">מספר טלפון</label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        required
-                        placeholder="05X-XXXXXXX"
-                        className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#1E3A5F] focus:outline-none"
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      disabled={ctaSubmitting}
-                      className="w-full h-14 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white font-bold rounded-xl mt-2"
-                    >
-                      {ctaSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'שליחה'}
-                    </Button>
-                  </form>
-                  <p className="text-xs text-gray-400 text-center mt-4">ללא התחייבות • נחזור אליך בהקדם</p>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+
         </main>
         </>
         );

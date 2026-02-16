@@ -130,6 +130,7 @@ import Privacy from './pages/Privacy';
 import ProfessionLanding from './pages/ProfessionLanding';
 import ProfessionPage from './pages/ProfessionPage';
 import Professions from './pages/Professions';
+import QAIcount from './pages/QAIcount';
 import ReceiptsIncome from './pages/ReceiptsIncome';
 import Regulation from './pages/Regulation';
 import SEOAdmin from './pages/SEOAdmin';
@@ -162,7 +163,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import QAIcount from './pages/QAIcount';
 import __Layout from './Layout.jsx';
 
 
@@ -250,6 +250,7 @@ export const PAGES = {
     "ProfessionLanding": ProfessionLanding,
     "ProfessionPage": ProfessionPage,
     "Professions": Professions,
+    "QAIcount": QAIcount,
     "ReceiptsIncome": ReceiptsIncome,
     "Regulation": Regulation,
     "SEOAdmin": SEOAdmin,
@@ -282,7 +283,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "QAIcount": QAIcount,
 }
 
 export const pagesConfig = {
