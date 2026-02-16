@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
 import {
   CheckCircle, AlertCircle, Phone, MessageCircle, 
   FileText, DollarSign, Shield, AlertTriangle, HelpCircle, Clock, Building2
@@ -24,6 +25,18 @@ import {
 
 export default function CloseOsekPaturComprehensive() {
   const whatsappUrl = "https://wa.me/972502277087?text=" + encodeURIComponent("היי, אני רוצה לסגור את העוסק פטור שלי");
+
+  const handleWhatsAppClick = useCallback((ctaLocation) => {
+    // Fire and forget - create lead in CRM, don't block the user
+    base44.functions.invoke('trackWhatsappLead', {
+      source_page: 'CloseOsekPaturComprehensive',
+      cta_location: ctaLocation,
+      category: 'other',
+      notes: 'סגירת עוסק פטור - כניסה מוואטסאפ'
+    }).catch(() => {}); // silent fail
+    
+    window.open(whatsappUrl, '_blank');
+  }, [whatsappUrl]);
 
   const faqs = [
     {
