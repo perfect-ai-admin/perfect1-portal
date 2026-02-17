@@ -1,5 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+/**
+ * Track WhatsApp button clicks - analytics only, NO lead creation.
+ * Leads are created only when the user actually sends a WhatsApp message
+ * (handled by greenApiWebhook).
+ */
 Deno.serve(async (req) => {
     try {
         if (req.method !== 'POST') {
@@ -9,69 +14,17 @@ Deno.serve(async (req) => {
         const payload = await req.json();
         const base44 = createClientFromRequest(req);
 
-        const sourcePage = payload.source_page || 'WhatsApp Lead';
+        const sourcePage = payload.source_page || 'WhatsApp Click';
         const ctaLocation = payload.cta_location || 'unknown';
-        const category = payload.category || 'other';
-        const notes = payload.notes || 'ליד מוואטסאפ - ' + sourcePage;
 
-        // Create lead in CRM
-        const lead = await base44.asServiceRole.entities.Lead.create({
-            name: 'ליד וואטסאפ - ' + sourcePage,
-            phone: 'ממתין לוואטסאפ',
-            source_page: sourcePage,
-            category: category,
-            status: 'new',
-            priority: 'medium',
-            interaction_type: 'whatsapp_click',
-            notes: notes + ' | כפתור: ' + ctaLocation + ' | ' + new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' })
-        });
+        console.log('WhatsApp button clicked - source:', sourcePage, 'cta:', ctaLocation);
 
-        // Send WhatsApp notification to 0502277087 via Green-API
-        const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
-        const apiToken = Deno.env.get('GREENAPI_API_TOKEN');
+        // Analytics only - no lead creation
+        // Lead will be created when the user actually sends a WhatsApp message
 
-        if (instanceId && apiToken) {
-            const whatsappMessage = '🔔 *ליד חדש מוואטסאפ!*\n\n' +
-                '📄 מקור: ' + sourcePage + '\n' +
-                '🔘 כפתור: ' + ctaLocation + '\n' +
-                '📅 ' + new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem' }) + '\n\n' +
-                '⚡ הלקוח לחץ על כפתור וואטסאפ ועומד לשלוח הודעה.\n' +
-                'שים לב להודעה נכנסת!';
-
-            const greenApiUrl = 'https://api.greenapi.com/waInstance' + instanceId + '/sendMessage/' + apiToken;
-
-            try {
-                const waResponse = await fetch(greenApiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chatId: '972502277087@c.us',
-                        message: whatsappMessage
-                    })
-                });
-                const waResult = await waResponse.text();
-                console.log('WhatsApp notification sent:', waResponse.status, waResult);
-            } catch (waErr) {
-                console.error('WhatsApp notification failed:', waErr.message);
-            }
-        } else {
-            console.warn('Green-API credentials not configured, skipping WhatsApp notification');
-        }
-
-        // Also send email notification
-        try {
-            await base44.asServiceRole.integrations.Core.SendEmail({
-                to: 'yosi5919@gmail.com',
-                subject: 'קליק וואטסאפ חדש - ' + sourcePage,
-                body: '<div style="direction:rtl;font-family:Arial,sans-serif"><h2>קליק וואטסאפ חדש!</h2><p>מקור: ' + sourcePage + '</p><p>כפתור: ' + ctaLocation + '</p><p>הליד נוצר ב-CRM.</p></div>'
-            });
-        } catch (emailErr) {
-            console.error('Email notification failed:', emailErr);
-        }
-
-        return Response.json({ success: true, lead_id: lead.id });
+        return Response.json({ success: true, tracked: true });
     } catch (error) {
-        console.error('Error tracking whatsapp lead:', error);
+        console.error('Error tracking whatsapp click:', error);
         return Response.json({ error: error.message }, { status: 500 });
     }
 });
