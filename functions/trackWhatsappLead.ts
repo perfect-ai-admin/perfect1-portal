@@ -12,15 +12,13 @@ Deno.serve(async (req) => {
         }
 
         const payload = await req.json();
-        const base44 = createClientFromRequest(req);
-
         const sourcePage = payload.source_page || 'WhatsApp Click';
         const ctaLocation = payload.cta_location || 'unknown';
 
         console.log('WhatsApp button clicked - source:', sourcePage, 'cta:', ctaLocation);
 
-        // Analytics only - no lead creation
-        // Lead will be created when the user actually sends a WhatsApp message
+        // Analytics tracking only - no lead creation here.
+        // Real leads are created in greenApiWebhook when user actually sends a message.
 
         return Response.json({ success: true, tracked: true });
     } catch (error) {
