@@ -141,10 +141,24 @@ Deno.serve(async (req) => {
                     console.warn('⚠️ Could not create Lead for LeadsAdmin:', leadErr.message);
                 }
 
-                // שליחת הודעת ברוכים הבאים
+                // שליחת הודעת ברוכים הבאים ללקוח
                 await sendWhatsAppMessage(phoneNumber, 
                     'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?'
                 );
+
+                // שליחת התראה לך על הליד החדש
+                try {
+                    await sendWhatsAppMessage('972502277087', 
+                        '🔔 *ליד חדש מוואטסאפ!*\n\n' +
+                        '👤 שם: ' + (senderData?.senderName || 'לא ידוע') + '\n' +
+                        '📱 טלפון: ' + localPhone + '\n' +
+                        '💬 הודעה: ' + (messageText.length > 150 ? messageText.substring(0, 150) + '...' : messageText) + '\n\n' +
+                        '⚡ הליד נוצר ב-CRM אוטומטית.'
+                    );
+                    console.log('✅ Admin notification sent to 0502277087');
+                } catch (notifyErr) {
+                    console.warn('⚠️ Could not send admin notification:', notifyErr.message);
+                }
 
                 return Response.json({ status: 'new_lead_created', lead_id: newLead.id });
             } catch (err) {
