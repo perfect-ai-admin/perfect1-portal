@@ -123,6 +123,24 @@ Deno.serve(async (req) => {
                 user = newLead;
                 console.log('✅ New lead created:', newLead.id, 'linked_user:', linkedUserId);
 
+                // Also create a Lead record for LeadsAdmin CRM with the real phone number
+                const localPhone = '0' + normalizedPhone.substring(3);
+                try {
+                    await base44.asServiceRole.entities.Lead.create({
+                        name: senderData?.senderName || 'ליד וואטסאפ',
+                        phone: localPhone,
+                        source_page: 'WhatsApp - הודעה נכנסת',
+                        category: 'other',
+                        status: 'new',
+                        priority: 'medium',
+                        interaction_type: 'whatsapp_click',
+                        notes: 'הודעה ראשונה: ' + (messageText.length > 100 ? messageText.substring(0, 100) + '...' : messageText)
+                    });
+                    console.log('✅ Lead also created in LeadsAdmin with phone:', localPhone);
+                } catch (leadErr) {
+                    console.warn('⚠️ Could not create Lead for LeadsAdmin:', leadErr.message);
+                }
+
                 // שליחת הודעת ברוכים הבאים
                 await sendWhatsAppMessage(phoneNumber, 
                     'היי! 👋\n\nאני המנטור העסקי החכם של Perfect One.\n\nאני כאן כדי לעזור לך להתקדם בעסק שלך.\n\nספר לי - מה הכי מעסיק אותך היום?'
