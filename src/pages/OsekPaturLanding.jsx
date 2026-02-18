@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SafeCtaBar from '../components/cro/SafeCtaBar';
+import LeadPopup from '../components/cro/LeadPopup';
 
 import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -48,69 +49,13 @@ function FAQItem({ question, answer }) {
 }
 
 export default function OsekPaturLanding() {
-   const [formData, setFormData] = useState({
-    name: '',
-    phone: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupFormData, setPopupFormData] = useState({ name: '', phone: '', email: '' });
+  const [showLeadPopup, setShowLeadPopup] = useState(false);
+  const [popupSource, setPopupSource] = useState('דף נחיתה - פתיחת עוסק פטור');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.phone) {
-      alert('אנא מלא שם וטלפון');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      // Use backend function to bypass RLS for public users
-      await base44.functions.invoke('submitLead', {
-        ...formData,
-        source_page: 'דף נחיתה - פתיחת עוסק פטור',
-        status: 'new'
-      });
-
-      window.location.href = '/ThankYou';
-    } catch (err) {
-      console.error(err);
-      alert('אירעה שגיאה בשליחת הטופס. אנא נסה שוב או צור קשר בטלפון.');
-    } finally {
-      setIsSubmitting(false);
-    }
+  const openPopup = (source) => {
+    setPopupSource(source || 'דף נחיתה - פתיחת עוסק פטור');
+    setShowLeadPopup(true);
   };
-
-  const scrollToForm = () => {
-    setShowPopup(false);
-    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handlePopupSubmit = async (e) => {
-    e.preventDefault();
-    if (!popupFormData.name || !popupFormData.phone) {
-      alert('אנא מלא שם וטלפון');
-      return;
-    }
-
-    try {
-      // Use backend function to bypass RLS for public users
-      await base44.functions.invoke('submitLead', {
-        ...popupFormData,
-        source_page: 'פופאפ - 35% גלילה',
-        status: 'new'
-      });
-      setShowPopup(false);
-      window.location.href = '/ThankYou';
-    } catch (err) {
-      console.error(err);
-      alert('שגיאה בשליחה, אנא נסה שוב');
-    }
-  };
-
-  // DEPRECATED: Auto-scroll popups removed for Google Ads compliance
-  // Use SafeCtaBar + SafeLeadInline instead
 
   const faqs = [
     {
