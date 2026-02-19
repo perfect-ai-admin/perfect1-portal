@@ -85,8 +85,7 @@ export default function OsekPaturLanding() {
   };
 
   const scrollToForm = () => {
-    setShowPopup(false);
-    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+    setShowLeadPopup(true);
   };
 
   const handlePopupSubmit = async (e) => {
