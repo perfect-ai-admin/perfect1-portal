@@ -847,6 +847,13 @@ export default function OsekPaturLanding() {
         subtitle="שם + טלפון בלבד"
         sourcePage="OsekPaturLanding - SafeCtaBar"
       />
+
+      {/* Lead Popup */}
+      <LeadPopup 
+        open={showLeadPopup} 
+        onClose={() => setShowLeadPopup(false)}
+        sourcePage="דף נחיתה - פתיחת עוסק פטור"
+      />
     </>
   );
 }
