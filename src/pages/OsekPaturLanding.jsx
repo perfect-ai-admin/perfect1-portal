@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SafeCtaBar from '../components/cro/SafeCtaBar';
+import LeadPopup from '../components/cro/LeadPopup';
 
 import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
