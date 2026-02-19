@@ -56,6 +56,7 @@ export default function OsekPaturLanding() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [showLeadPopup, setShowLeadPopup] = useState(false);
   const [popupFormData, setPopupFormData] = useState({ name: '', phone: '', email: '' });
 
   const handleSubmit = async (e) => {
