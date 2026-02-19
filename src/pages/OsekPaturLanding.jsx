@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SafeCtaBar from '../components/cro/SafeCtaBar';
-import LeadPopup from '../components/cro/LeadPopup';
 
 import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -49,13 +48,69 @@ function FAQItem({ question, answer }) {
 }
 
 export default function OsekPaturLanding() {
-  const [showLeadPopup, setShowLeadPopup] = useState(false);
-  const [popupSource, setPopupSource] = useState('דף נחיתה - פתיחת עוסק פטור');
+   const [formData, setFormData] = useState({
+    name: '',
+    phone: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupFormData, setPopupFormData] = useState({ name: '', phone: '', email: '' });
 
-  const openPopup = (source) => {
-    setPopupSource(source || 'דף נחיתה - פתיחת עוסק פטור');
-    setShowLeadPopup(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.phone) {
+      alert('אנא מלא שם וטלפון');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Use backend function to bypass RLS for public users
+      await base44.functions.invoke('submitLead', {
+        ...formData,
+        source_page: 'דף נחיתה - פתיחת עוסק פטור',
+        status: 'new'
+      });
+
+      window.location.href = '/ThankYou';
+    } catch (err) {
+      console.error(err);
+      alert('אירעה שגיאה בשליחת הטופס. אנא נסה שוב או צור קשר בטלפון.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const scrollToForm = () => {
+    setShowPopup(false);
+    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handlePopupSubmit = async (e) => {
+    e.preventDefault();
+    if (!popupFormData.name || !popupFormData.phone) {
+      alert('אנא מלא שם וטלפון');
+      return;
+    }
+
+    try {
+      // Use backend function to bypass RLS for public users
+      await base44.functions.invoke('submitLead', {
+        ...popupFormData,
+        source_page: 'פופאפ - 35% גלילה',
+        status: 'new'
+      });
+      setShowPopup(false);
+      window.location.href = '/ThankYou';
+    } catch (err) {
+      console.error(err);
+      alert('שגיאה בשליחה, אנא נסה שוב');
+    }
+  };
+
+  // DEPRECATED: Auto-scroll popups removed for Google Ads compliance
+  // Use SafeCtaBar + SafeLeadInline instead
 
   const faqs = [
     {
@@ -215,7 +270,7 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <Button onClick={() => openPopup('Hero - פתיחת עוסק פטור')} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg shadow-green-900/20 transform hover:-translate-y-1 transition-all">
+                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg shadow-green-900/20 transform hover:-translate-y-1 transition-all">
                     <Target className="ml-2 w-5 h-5" />
                     פתיחת עוסק פטור בקליק
                   </Button>
@@ -319,7 +374,7 @@ export default function OsekPaturLanding() {
               viewport={{ once: true }}
               whileHover={{ y: -5 }}
               className="bg-gradient-to-br from-[#E8F5E9] to-[#F1F8E9] rounded-3xl p-8 md:p-12 text-center border-2 border-[#27AE60]/10 shadow-xl relative overflow-hidden group cursor-pointer"
-              onClick={() => openPopup('Search Intent - בואו נתחיל')}
+              onClick={scrollToForm}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#27AE60]/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 duration-500"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#27AE60]/5 rounded-tr-[80px] -ml-6 -mb-6 transition-transform group-hover:scale-110 duration-500"></div>
@@ -338,7 +393,7 @@ export default function OsekPaturLanding() {
                 <Button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    openPopup('Search Intent - בואו נתחיל');
+                    scrollToForm();
                   }}
                   className="h-14 md:h-16 px-10 md:px-12 text-xl font-bold rounded-full bg-[#27AE60] hover:bg-[#219150] text-white shadow-lg shadow-green-600/30 transform transition-all hover:-translate-y-1 hover:shadow-green-600/50 w-full sm:w-auto flex items-center justify-center gap-3 group-hover:scale-105 duration-300"
                 >
@@ -416,7 +471,7 @@ export default function OsekPaturLanding() {
                  בכל חודש משלוש עצמאיים חדשים בוחרים בנו להיות החברה שלהם בדרך
                </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-               <Button onClick={() => openPopup('Proof Section - השאר פרטים')} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
+               <Button onClick={scrollToForm} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
                  <Target className="ml-2 w-5 h-5" />
                  השאר פרטים
                </Button>
@@ -769,7 +824,7 @@ export default function OsekPaturLanding() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={() => openPopup('Final CTA - השאר פרטים')} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
+                <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
                   <Target className="ml-3 w-6 h-6" />
                   השאר פרטים עכשיו
                 </Button>
