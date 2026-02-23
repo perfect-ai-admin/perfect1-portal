@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare, Info, CreditCard } from 'lucide-react';
+import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare, Info } from 'lucide-react';
 import UserProfileModal from './UserProfileModal';
 
 export default function UsersTable(props) {
@@ -249,7 +249,6 @@ export default function UsersTable(props) {
                             <th className="text-right p-4 font-semibold text-gray-700">טלפון</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מקור הגעה</th>
                             <th className="text-right p-4 font-semibold text-gray-700">UTM</th>
-                            <th className="text-right p-4 font-semibold text-gray-700">תשלומים</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מסלול</th>
                             <th className="text-right p-4 font-semibold text-gray-700">
                                 <div className="flex items-center gap-2 justify-end">
@@ -324,31 +323,6 @@ export default function UsersTable(props) {
                                             )}
                                         </div>
                                     ) : '-'}
-                                </td>
-                                <td className="p-4">
-                                    {user.payments_count > 0 ? (
-                                        <TooltipProvider>
-                                            <Tooltip>
-                                                <TooltipTrigger>
-                                                    <div className="flex items-center gap-1.5 cursor-help">
-                                                        <CreditCard className="w-4 h-4 text-green-600" />
-                                                        <span className="font-semibold text-green-700">{user.payments_count}</span>
-                                                        <span className="text-xs text-gray-500">({user.payments_total?.toLocaleString()}₪)</span>
-                                                    </div>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p className="text-sm font-bold mb-1">פרטי תשלומים</p>
-                                                    <p className="text-xs">מספר תשלומים: {user.payments_count}</p>
-                                                    <p className="text-xs">סה״כ: ₪{user.payments_total?.toLocaleString()}</p>
-                                                    {user.last_payment_date && (
-                                                        <p className="text-xs">תשלום אחרון: {new Date(user.last_payment_date).toLocaleDateString('he-IL')}</p>
-                                                    )}
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    ) : (
-                                        <span className="text-gray-400 text-sm">ללא תשלומים</span>
-                                    )}
                                 </td>
                                 <td className="p-4">
                                     {user.current_plan_id ? (
