@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, Wallet, X } from 'lucide-react';
+import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 /**
- * CheckoutDialog – popup checkout experience.
+ * CheckoutDialog – popup checkout experience with Tranzila iFrame.
  *
  * Props:
  *  open        – boolean
@@ -21,7 +21,6 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
   const [iframeLoading, setIframeLoading] = useState(false);
   const [paymentStep, setPaymentStep] = useState('summary');
 
-  // Reset state when dialog opens/closes
   useEffect(() => {
     if (open) {
       setPaymentStep('summary');
@@ -39,7 +38,6 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
     try {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
-
       if (productProp && typeof productProp === 'object') {
         setProduct(productProp);
       }
@@ -53,17 +51,12 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
 
   const amount = product?.price || 0;
   const isRecurring = product?.isRecurring || false;
-  const isYearlySubscription = product?.billingCycle === 'yearly';
-
-  // For recurring monthly: handshake sum = monthly price (first charge)
-  // For yearly or one-time: handshake sum = total price
-  const handshakeSum = amount;
 
   const handleProceedToPayment = async () => {
     if (!product) return;
     setIframeLoading(true);
     try {
-      const response = await base44.functions.invoke('tranzilaCreateHandshake', { sum: handshakeSum });
+      const response = await base44.functions.invoke('tranzilaCreateHandshake', { sum: amount });
       const data = response.data;
 
       if (!data.thtk) {
@@ -72,14 +65,20 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
         return;
       }
 
+      console.log('Handshake OK:', { thtk: data.thtk.substring(0, 10) + '...', supplier: data.supplier, sum: data.sum });
+
       setHandshakeData(data);
       setPaymentStep('payment');
 
+      // Submit form after React renders
       setTimeout(() => {
         const form = document.getElementById('tranzila-dialog-form');
-        if (form) form.submit();
+        if (form) {
+          console.log('Submitting form to Tranzila iFrame...');
+          form.submit();
+        }
         setIframeLoading(false);
-      }, 200);
+      }, 300);
     } catch (error) {
       console.error('Payment init error:', error);
       toast.error('שגיאה בהתחלת תהליך התשלום');
@@ -89,33 +88,10 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
 
   if (!open) return null;
 
-  // Recurring config (monthly subscriptions only)
-  const recurTransaction = 4;
+  // Recurring: start date = next month (YYYY-MM-DD)
   const today = new Date();
   const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
   const recurStartDate = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-${String(nextMonth.getDate()).padStart(2, '0')}`;
-
-  // Build purchase data for invoice
-  const buildPurchaseData = () => {
-    if (isRecurring || !product) return null;
-    if (product.isCart && product.items) {
-      return product.items.map(item => ({
-        product_name: item.title || item.name || 'מוצר',
-        product_quantity: 1,
-        product_price: item.price || 0,
-      }));
-    }
-    return [{
-      product_name: (product.name || 'שירות').substring(0, 118),
-      product_quantity: 1,
-      product_price: amount,
-    }];
-  };
-
-  const purchaseData = buildPurchaseData();
-  const encodedPurchaseData = purchaseData
-    ? encodeURIComponent(JSON.stringify(purchaseData))
-    : null;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
@@ -125,15 +101,12 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
       >
         <DialogTitle className="sr-only">תשלום</DialogTitle>
 
-        {/* Header bar */}
+        {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b px-4 py-3 flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900">
             {paymentStep === 'summary' ? 'סיכום הזמנה' : 'תשלום מאובטח'}
           </h2>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-          >
+          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
@@ -164,9 +137,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
               isRecurring={isRecurring}
               user={user}
               handshakeData={handshakeData}
-              recurTransaction={recurTransaction}
               recurStartDate={recurStartDate}
-              encodedPurchaseData={encodedPurchaseData}
               onBack={() => { setPaymentStep('summary'); setHandshakeData(null); }}
             />
           )}
@@ -243,23 +214,18 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
         )}
       </Button>
 
-      {/* Trust */}
-      <div className="flex items-center justify-center gap-3 text-[10px] text-gray-400">
-        <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />מאובטח</span>
-        <span>•</span><span>PCI-DSS</span><span>•</span><span>SSL</span>
-      </div>
+      <p className="text-center text-[10px] text-gray-400 flex items-center justify-center gap-1">
+        <ShieldCheck className="w-3 h-3" />
+        מאובטח בתקן PCI-DSS Level 1 · Tranzila
+      </p>
     </div>
   );
 }
 
-function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurTransaction, recurStartDate, encodedPurchaseData, onBack }) {
+function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurStartDate, onBack }) {
   if (!handshakeData) return null;
 
   const isYearlySubscription = product?.billingCycle === 'yearly';
-
-  const getButtonLabel = () => {
-    return 'לתשלום';
-  };
 
   return (
     <div className="space-y-3">
@@ -267,7 +233,11 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
         {product.name} – ₪{amount}{isRecurring ? '/חודש' : isYearlySubscription ? '/שנה' : ''}
       </p>
 
-      {/* Hidden form */}
+      {/* 
+        Hidden form that submits to Tranzila iFrame.
+        CRITICAL: Parameters must match EXACTLY what the handshake was created with.
+        Following Tranzila's official Base44 integration guide for recurring payments.
+      */}
       <form
         id="tranzila-dialog-form"
         action={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php`}
@@ -275,7 +245,7 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
         method="POST"
         style={{ display: 'none' }}
       >
-        {/* Required core parameters */}
+        {/* Core transaction parameters */}
         <input type="hidden" name="sum" value={String(amount)} />
         <input type="hidden" name="currency" value="1" />
         <input type="hidden" name="cred_type" value="1" />
@@ -283,19 +253,20 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
         <input type="hidden" name="new_process" value="1" />
         <input type="hidden" name="thtk" value={handshakeData.thtk} />
 
-        {/* Display */}
+        {/* Display customization */}
         <input type="hidden" name="lang" value="il" />
         <input type="hidden" name="nologo" value="1" />
         <input type="hidden" name="trBgColor" value="FFFFFF" />
         <input type="hidden" name="trTextColor" value="1E3A5F" />
         <input type="hidden" name="trButtonColor" value="27AE60" />
-        <input type="hidden" name="buttonLabel" value="Pay" />
+        <input type="hidden" name="buttonLabel" value="לתשלום" />
 
-        {/* Recurring (monthly subscriptions only) */}
+        {/* Recurring payments (monthly subscriptions) */}
         {isRecurring && (
           <>
             <input type="hidden" name="recur_sum" value={String(amount)} />
             <input type="hidden" name="recur_transaction" value="4" />
+            <input type="hidden" name="recur_payments" value="12" />
             <input type="hidden" name="recur_start_date" value={recurStartDate} />
           </>
         )}
@@ -305,23 +276,22 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
           <>
             <input type="hidden" name="contact" value={user.full_name || ''} />
             <input type="hidden" name="email" value={user.email || ''} />
-            <input type="hidden" name="pdesc" value={(product.name || '').substring(0, 50)} />
           </>
         )}
+        <input type="hidden" name="pdesc" value={product.name || ''} />
       </form>
 
-      {/* iframe */}
+      {/* Tranzila iFrame */}
       <div className="w-full rounded-xl overflow-hidden border border-gray-200 bg-white" style={{ minHeight: '460px' }}>
         <iframe
           id="tranzila-dialog-iframe"
           name="tranzila-dialog-iframe"
-          allowpaymentrequest="true"
           style={{ width: '100%', height: '460px', border: 'none' }}
           title="טופס תשלום מאובטח"
         />
       </div>
 
-      {/* Back */}
+      {/* Back button */}
       <div className="text-center">
         <Button variant="ghost" onClick={onBack} className="text-gray-500 text-sm">
           <ArrowRight className="w-4 h-4 ml-1" />
