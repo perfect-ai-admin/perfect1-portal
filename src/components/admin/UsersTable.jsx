@@ -326,6 +326,31 @@ export default function UsersTable(props) {
                                     ) : '-'}
                                 </td>
                                 <td className="p-4">
+                                    {user.payments_count > 0 ? (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    <div className="flex items-center gap-1.5 cursor-help">
+                                                        <CreditCard className="w-4 h-4 text-green-600" />
+                                                        <span className="font-semibold text-green-700">{user.payments_count}</span>
+                                                        <span className="text-xs text-gray-500">({user.payments_total?.toLocaleString()}₪)</span>
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className="text-sm font-bold mb-1">פרטי תשלומים</p>
+                                                    <p className="text-xs">מספר תשלומים: {user.payments_count}</p>
+                                                    <p className="text-xs">סה״כ: ₪{user.payments_total?.toLocaleString()}</p>
+                                                    {user.last_payment_date && (
+                                                        <p className="text-xs">תשלום אחרון: {new Date(user.last_payment_date).toLocaleDateString('he-IL')}</p>
+                                                    )}
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    ) : (
+                                        <span className="text-gray-400 text-sm">ללא תשלומים</span>
+                                    )}
+                                </td>
+                                <td className="p-4">
                                     {user.current_plan_id ? (
                                         <Badge variant="outline">פלאן פעיל</Badge>
                                     ) : (
