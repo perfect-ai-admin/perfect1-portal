@@ -386,7 +386,8 @@ export default function Checkout() {
                     {isRecurring && (
                       <>
                         <input type="hidden" name="recur_sum" value={amount} />
-                        <input type="hidden" name="recur_transaction" value={recurTransaction} />
+                        <input type="hidden" name="recur_transaction" value="4" />
+                        <input type="hidden" name="recur_payments" value="9999" />
                         <input type="hidden" name="recur_start_date" value={recurStartDate} />
                       </>
                     )}
