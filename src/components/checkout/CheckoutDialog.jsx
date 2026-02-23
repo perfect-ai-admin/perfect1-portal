@@ -211,15 +211,11 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
         <span className="text-2xl font-black text-[#27AE60]">₪{amount}</span>
       </div>
 
-      {/* Payment methods for one-time */}
-      {!isRecurring && (
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-gray-400">אמצעי תשלום:</span>
-          {['כרטיס אשראי', 'Google Pay', 'PayPal', 'Bit'].map(m => (
-            <span key={m} className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{m}</span>
-          ))}
-        </div>
-      )}
+      {/* Payment method */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-xs text-gray-400">אמצעי תשלום:</span>
+        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">כרטיס אשראי</span>
+      </div>
 
       {/* User info */}
       {user && (
