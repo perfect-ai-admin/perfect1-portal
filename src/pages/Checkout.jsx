@@ -362,7 +362,7 @@ export default function Checkout() {
                     <input type="hidden" name="trBgColor" value="FFFFFF" />
                     <input type="hidden" name="trTextColor" value="1E3A5F" />
                     <input type="hidden" name="trButtonColor" value="27AE60" />
-                    <input type="hidden" name="buttonLabel" value={isRecurring ? 'הפעל מנוי' : 'שלם עכשיו'} />
+                    <input type="hidden" name="buttonLabel" value="לתשלום" />
                     <input type="hidden" name="accessibility" value="2" />
 
                     {/* Digital wallets for one-time payments */}
@@ -386,7 +386,7 @@ export default function Checkout() {
                     {isRecurring && (
                       <>
                         <input type="hidden" name="recur_sum" value={amount} />
-                        <input type="hidden" name="recur_transaction" value={`${recurTransaction}_approved`} />
+                        <input type="hidden" name="recur_transaction" value={recurTransaction} />
                         <input type="hidden" name="recur_start_date" value={recurStartDate} />
                       </>
                     )}
