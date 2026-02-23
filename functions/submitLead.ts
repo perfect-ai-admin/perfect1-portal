@@ -24,7 +24,12 @@ Deno.serve(async (req) => {
             status: 'new',
             interaction_type: payload.interaction_type || 'form',
             priority: 'medium',
-            created_date: new Date().toISOString()
+            utm_source: payload.utm_source || '',
+            utm_medium: payload.utm_medium || '',
+            utm_campaign: payload.utm_campaign || '',
+            utm_term: payload.utm_term || '',
+            utm_content: payload.utm_content || '',
+            referrer: payload.referrer || ''
         });
 
         // Handle Email Notification if needed

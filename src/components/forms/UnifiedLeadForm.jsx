@@ -79,6 +79,8 @@ export default function UnifiedLeadForm({
     setIsSubmitting(true);
 
     try {
+      // Capture UTM params from URL
+      const urlParams = new URLSearchParams(window.location.search);
       // יצירת לד
       const newLead = await base44.entities.Lead.create({
         name: formData.name,
@@ -86,7 +88,13 @@ export default function UnifiedLeadForm({
         email: formData.email || undefined,
         profession: showProfession ? formData.profession : undefined,
         source_page: sourcePage,
-        status: 'new'
+        status: 'new',
+        utm_source: urlParams.get('utm_source') || '',
+        utm_medium: urlParams.get('utm_medium') || '',
+        utm_campaign: urlParams.get('utm_campaign') || '',
+        utm_term: urlParams.get('utm_term') || '',
+        utm_content: urlParams.get('utm_content') || '',
+        referrer: document.referrer || ''
       });
 
       // Tracking
