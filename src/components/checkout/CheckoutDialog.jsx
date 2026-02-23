@@ -185,6 +185,11 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
             <CreditCard className="w-4 h-4 shrink-0" />
             <span>חיוב חודשי אוטומטי – ניתן לביטול בכל עת</span>
           </div>
+        ) : product.billingCycle === 'yearly' ? (
+          <div className="flex items-center gap-2 text-sm text-purple-700 bg-purple-50 px-3 py-1.5 rounded-lg">
+            <CreditCard className="w-4 h-4 shrink-0" />
+            <span>תשלום שנתי חד-פעמי · חיסכון של 17%</span>
+          </div>
         ) : (
           <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-lg">
             <Check className="w-4 h-4 shrink-0" />
