@@ -708,6 +708,7 @@ export default function LeadsAdmin() {
                   {visibleColumns.phone && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">טלפון</th>}
                   {visibleColumns.profession && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקצוע</th>}
                   {visibleColumns.source && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">מקור</th>}
+                  {visibleColumns.utm && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">UTM</th>}
                   {visibleColumns.category && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">קטגוריה</th>}
                   {visibleColumns.type && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">סוג</th>}
                   {visibleColumns.agent && <th className="px-2 py-2 text-right text-xs sticky top-0 bg-[#1E3A5F]">
