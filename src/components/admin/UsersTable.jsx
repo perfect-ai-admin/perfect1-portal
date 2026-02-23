@@ -249,6 +249,7 @@ export default function UsersTable(props) {
                             <th className="text-right p-4 font-semibold text-gray-700">טלפון</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מקור הגעה</th>
                             <th className="text-right p-4 font-semibold text-gray-700">UTM</th>
+                            <th className="text-right p-4 font-semibold text-gray-700">תשלומים</th>
                             <th className="text-right p-4 font-semibold text-gray-700">מסלול</th>
                             <th className="text-right p-4 font-semibold text-gray-700">
                                 <div className="flex items-center gap-2 justify-end">
