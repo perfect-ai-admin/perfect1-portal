@@ -279,44 +279,37 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
         method="POST"
         style={{ display: 'none' }}
       >
-        <input type="hidden" name="sum" value={amount} />
+        {/* Required core parameters */}
+        <input type="hidden" name="sum" value={String(amount)} />
         <input type="hidden" name="currency" value="1" />
         <input type="hidden" name="cred_type" value="1" />
         <input type="hidden" name="tranmode" value="A" />
         <input type="hidden" name="new_process" value="1" />
         <input type="hidden" name="thtk" value={handshakeData.thtk} />
 
+        {/* Display */}
         <input type="hidden" name="lang" value="il" />
         <input type="hidden" name="nologo" value="1" />
         <input type="hidden" name="trBgColor" value="FFFFFF" />
         <input type="hidden" name="trTextColor" value="1E3A5F" />
         <input type="hidden" name="trButtonColor" value="27AE60" />
         <input type="hidden" name="buttonLabel" value="Pay" />
-        <input type="hidden" name="accessibility" value="2" />
-
-        {/* Product details for invoice (non-recurring only) */}
-        {!isRecurring && encodedPurchaseData && (
-          <>
-            <input type="hidden" name="u71" value="1" />
-            <input type="hidden" name="json_purchase_data" value={encodedPurchaseData} />
-          </>
-        )}
 
         {/* Recurring (monthly subscriptions only) */}
         {isRecurring && (
           <>
-            <input type="hidden" name="recur_sum" value={amount} />
+            <input type="hidden" name="recur_sum" value={String(amount)} />
             <input type="hidden" name="recur_transaction" value="4" />
             <input type="hidden" name="recur_start_date" value={recurStartDate} />
           </>
         )}
 
-        {/* Customer */}
+        {/* Customer info */}
         {user && (
           <>
             <input type="hidden" name="contact" value={user.full_name || ''} />
             <input type="hidden" name="email" value={user.email || ''} />
-            <input type="hidden" name="pdesc" value={product.name} />
+            <input type="hidden" name="pdesc" value={(product.name || '').substring(0, 50)} />
           </>
         )}
       </form>
