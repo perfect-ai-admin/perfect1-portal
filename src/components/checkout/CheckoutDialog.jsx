@@ -40,17 +40,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
       const currentUser = await base44.auth.me();
       setUser(currentUser);
 
-      // If productProp is a tier name string
-      if (typeof productProp === 'string' && SUBSCRIPTION_TIERS[productProp]) {
-        const tier = SUBSCRIPTION_TIERS[productProp];
-        setProduct({
-          name: `מנוי ${tier.title}`,
-          description: `מסלול ${tier.name} – חיוב חודשי אוטומטי`,
-          price: tier.price,
-          tierName: tier.name,
-          isRecurring: true,
-        });
-      } else if (productProp && typeof productProp === 'object') {
+      if (productProp && typeof productProp === 'object') {
         setProduct(productProp);
       }
     } catch (error) {
