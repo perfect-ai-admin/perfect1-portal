@@ -211,26 +211,24 @@ export default function PricingPerfectBizAI() {
   };
 
   const handleSubscriptionClick = (tier) => {
-    const planId = getPlanId(tier);
-    
     if (!user) {
       setShowLoginModal(true);
       return;
     }
 
-    if (!planId) {
-      // Fallback if plan doesn't exist in DB yet
-      toast.error(`המסלול ${tier.name} אינו זמין כרגע לרכישה`);
+    if (tier.price === 0) {
+      toast.info('אתה כבר במסלול החינמי');
       return;
     }
 
-    if (user.current_plan_id === planId) {
+    const planId = getPlanId(tier);
+    if (planId && user.current_plan_id === planId) {
        toast.info('זהו המסלול הנוכחי שלך');
        return;
     }
 
-    // Navigate to checkout
-    navigate(`/Checkout?type=plan&id=${planId}`);
+    // Navigate to Tranzila checkout with tier info
+    navigate(`/Checkout?tier=${tier.name}&price=${tier.price}`);
   };
 
   const handleServiceClick = (service) => {
