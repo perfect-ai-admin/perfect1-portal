@@ -680,6 +680,15 @@ export default function LeadsAdmin() {
                 </button>
               </div>
 
+              {/* UTM info */}
+              {(lead.utm_source || lead.utm_campaign) && (
+                <div className="text-[10px] text-blue-600 bg-blue-50 rounded p-1.5 mb-2">
+                  {lead.utm_source && <span className="mr-2">📌 {lead.utm_source}</span>}
+                  {lead.utm_medium && <span className="mr-2">| {lead.utm_medium}</span>}
+                  {lead.utm_campaign && <span>| {lead.utm_campaign}</span>}
+                </div>
+              )}
+
               {/* Timestamp */}
               <div className="text-[10px] text-gray-400 text-center mt-2 border-t pt-2">
                 {format(new Date(lead.created_date), 'dd/MM/yy HH:mm')} | {lead.source_page || 'לא ידוע'}
