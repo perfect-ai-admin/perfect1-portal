@@ -34,6 +34,7 @@ export default function LeadsAdmin() {
     phone: true,
     profession: true,
     source: true,
+    utm: true,
     category: true,
     type: true,
     agent: true,
