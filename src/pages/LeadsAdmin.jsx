@@ -1290,6 +1290,19 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading }) {
           {lead.source_page && <div><strong>מקור:</strong> {lead.source_page}</div>}
           <div><strong>נוצר:</strong> {format(new Date(lead.created_date), 'dd/MM/yyyy HH:mm')}</div>
         </div>
+        {(lead.utm_source || lead.utm_medium || lead.utm_campaign || lead.referrer) && (
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <h5 className="font-bold mb-1 text-xs text-blue-700">מידע UTM:</h5>
+            <div className="space-y-0.5 text-xs text-gray-600">
+              {lead.utm_source && <div><strong>Source:</strong> {lead.utm_source}</div>}
+              {lead.utm_medium && <div><strong>Medium:</strong> {lead.utm_medium}</div>}
+              {lead.utm_campaign && <div><strong>Campaign:</strong> {lead.utm_campaign}</div>}
+              {lead.utm_term && <div><strong>Term:</strong> {lead.utm_term}</div>}
+              {lead.utm_content && <div><strong>Content:</strong> {lead.utm_content}</div>}
+              {lead.referrer && <div><strong>Referrer:</strong> {lead.referrer}</div>}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex gap-3 pt-4">
