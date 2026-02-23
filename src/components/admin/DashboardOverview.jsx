@@ -134,6 +134,76 @@ export default function DashboardOverview({ loginData }) {
                 </Card>
             </div>
 
+            {/* Recent Users with Source Info */}
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <Globe className="w-5 h-5" />
+                        משתמשים אחרונים - מקור הגעה ו-UTM
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {recentUsers.length === 0 ? (
+                        <p className="text-center text-muted-foreground py-4">אין משתמשים להצגה</p>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b bg-gray-50">
+                                        <th className="text-right p-3 font-semibold">תאריך</th>
+                                        <th className="text-right p-3 font-semibold">שם</th>
+                                        <th className="text-right p-3 font-semibold">אימייל</th>
+                                        <th className="text-right p-3 font-semibold">דף מקור</th>
+                                        <th className="text-right p-3 font-semibold">UTM Source</th>
+                                        <th className="text-right p-3 font-semibold">UTM Medium</th>
+                                        <th className="text-right p-3 font-semibold">UTM Campaign</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {recentUsers.map(u => (
+                                        <tr key={u.id} className="border-b hover:bg-gray-50">
+                                            <td className="p-3 text-gray-500 whitespace-nowrap">
+                                                {format(new Date(u.created_date), 'dd/MM/yy HH:mm')}
+                                            </td>
+                                            <td className="p-3 font-medium">{u.full_name || '-'}</td>
+                                            <td className="p-3 text-gray-600 text-xs">{u.email || '-'}</td>
+                                            <td className="p-3">
+                                                {u.acquisition_source?.ref_page ? (
+                                                    <span className="text-xs bg-gray-100 px-2 py-1 rounded truncate block max-w-[180px]" title={u.acquisition_source.ref_page}>
+                                                        {u.acquisition_source.ref_page}
+                                                    </span>
+                                                ) : <span className="text-gray-400">-</span>}
+                                            </td>
+                                            <td className="p-3">
+                                                {u.acquisition_source?.utm_source ? (
+                                                    <Badge variant="outline" className="bg-blue-50 text-blue-700 text-xs">
+                                                        {u.acquisition_source.utm_source}
+                                                    </Badge>
+                                                ) : <span className="text-gray-400">-</span>}
+                                            </td>
+                                            <td className="p-3">
+                                                {u.acquisition_source?.utm_medium ? (
+                                                    <Badge variant="outline" className="bg-purple-50 text-purple-700 text-xs">
+                                                        {u.acquisition_source.utm_medium}
+                                                    </Badge>
+                                                ) : <span className="text-gray-400">-</span>}
+                                            </td>
+                                            <td className="p-3">
+                                                {u.acquisition_source?.utm_campaign ? (
+                                                    <span className="text-xs text-gray-600 truncate block max-w-[180px]" title={u.acquisition_source.utm_campaign}>
+                                                        {u.acquisition_source.utm_campaign}
+                                                    </span>
+                                                ) : <span className="text-gray-400">-</span>}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
             {/* Recent Activity */}
             <Card>
                 <CardHeader>
