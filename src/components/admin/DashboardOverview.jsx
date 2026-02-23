@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, CreditCard, MousePointerClick, FileText, Activity, Image, Presentation, Smile } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Users, CreditCard, MousePointerClick, FileText, Activity, Image, Presentation, Smile, Globe, Tag } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 
 export default function DashboardOverview({ loginData }) {
     const [stats, setStats] = useState(null);
     const [recentActivity, setRecentActivity] = useState([]);
+    const [recentUsers, setRecentUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,6 +25,7 @@ export default function DashboardOverview({ loginData }) {
                 if (response.data) {
                     setStats(response.data.stats);
                     setRecentActivity(response.data.recentActivity || []);
+                    setRecentUsers(response.data.recentUsers || []);
                 }
             } catch (error) {
                 console.error("Failed to fetch dashboard stats", error);
