@@ -76,7 +76,21 @@ Deno.serve(async (req) => {
         // Recent Activity
         const recentActivity = await base44.asServiceRole.entities.ActivityLog.list('-created_date', 10);
 
-        return Response.json({ stats, recentActivity });
+        // Recent Users with acquisition source info (last 20)
+        const recentUsers = users
+            .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+            .slice(0, 20)
+            .map(u => ({
+                id: u.id,
+                full_name: u.full_name,
+                email: u.email,
+                created_date: u.created_date,
+                status: u.status,
+                acquisition_source: u.acquisition_source || null,
+                last_visit_source: u.last_visit_source || null
+            }));
+
+        return Response.json({ stats, recentActivity, recentUsers });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
     }
