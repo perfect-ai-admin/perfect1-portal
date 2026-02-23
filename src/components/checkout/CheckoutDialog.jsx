@@ -262,9 +262,7 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
   const isYearlySubscription = product?.billingCycle === 'yearly';
 
   const getButtonLabel = () => {
-    if (isRecurring) return 'הפעל מנוי חודשי';
-    if (isYearlySubscription) return `שלם ₪${amount} לשנה`;
-    return 'שלם עכשיו';
+    return 'לתשלום';
   };
 
   return (
