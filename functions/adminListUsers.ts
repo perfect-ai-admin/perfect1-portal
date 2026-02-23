@@ -27,17 +27,44 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Fetch all users using service role
-        const users = await base44.asServiceRole.entities.User.list();
+        // Fetch all users and payments using service role
+        const [users, payments] = await Promise.all([
+            base44.asServiceRole.entities.User.list(),
+            base44.asServiceRole.entities.Payment.list()
+        ]);
 
-        // Enrich users - journey started if phone is saved
+        // Build payment stats per user
+        const paymentsByUser = {};
+        for (const payment of payments) {
+            const uid = payment.user_id;
+            if (!uid) continue;
+            if (!paymentsByUser[uid]) {
+                paymentsByUser[uid] = { count: 0, total: 0, lastDate: null, completedCount: 0 };
+            }
+            const stats = paymentsByUser[uid];
+            stats.count += 1;
+            if (payment.status === 'completed') {
+                stats.completedCount += 1;
+                stats.total += (payment.amount || 0);
+                const pDate = payment.completed_at || payment.created_date;
+                if (pDate && (!stats.lastDate || new Date(pDate) > new Date(stats.lastDate))) {
+                    stats.lastDate = pDate;
+                }
+            }
+        }
+
+        // Enrich users
         const enrichedUsers = users.map(user => {
             const hasStartedJourney = !!(user.phone && user.phone.trim() !== '');
+            const pStats = paymentsByUser[user.id] || { count: 0, total: 0, lastDate: null, completedCount: 0 };
             
             return {
                 ...user,
                 has_started_journey: hasStartedJourney,
-                journey_details: hasStartedJourney ? 'Phone registered - Journey started' : null
+                journey_details: hasStartedJourney ? 'Phone registered - Journey started' : null,
+                payments_count: pStats.completedCount,
+                payments_total: pStats.total,
+                last_payment_date: pStats.lastDate
             };
         });
         
