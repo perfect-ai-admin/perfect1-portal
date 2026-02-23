@@ -230,8 +230,19 @@ export default function PricingPerfectBizAI() {
        return;
     }
 
-    // Open checkout popup
-    setCheckoutProduct(tier.name);
+    // Open checkout popup with correct price based on billing cycle
+    const isYearly = billingCycle === 'yearly';
+    const monthlyPrice = isYearly ? Math.round(tier.price * 0.83) : tier.price;
+    setCheckoutProduct({
+      name: `מנוי ${tier.title}`,
+      description: isYearly 
+        ? `מסלול ${tier.name} – חיוב שנתי (₪${monthlyPrice * 12} לשנה)` 
+        : `מסלול ${tier.name} – חיוב חודשי אוטומטי`,
+      price: isYearly ? monthlyPrice * 12 : monthlyPrice,
+      tierName: tier.name,
+      isRecurring: !isYearly, // yearly = one-time annual charge, monthly = recurring
+      billingCycle: billingCycle,
+    });
     setCheckoutOpen(true);
   };
 
