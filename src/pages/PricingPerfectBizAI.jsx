@@ -21,6 +21,7 @@ import {
 import TabNavigation from '@/components/client/TabNavigation';
 import NotificationCenter from '@/components/client/NotificationCenter';
 import ShoppingCart from '@/components/client/shared/ShoppingCart';
+import CheckoutDialog from '@/components/checkout/CheckoutDialog';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
@@ -107,6 +108,8 @@ export default function PricingPerfectBizAI() {
   const navigate = useNavigate();
   const location = useLocation();
   const [limitReached, setLimitReached] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [checkoutProduct, setCheckoutProduct] = useState(null);
 
   // Optimized data fetching with React Query
   const { data: user, isLoading: isUserLoading } = useQuery({
@@ -227,8 +230,9 @@ export default function PricingPerfectBizAI() {
        return;
     }
 
-    // Navigate to Tranzila checkout with tier info
-    navigate(`/Checkout?tier=${tier.name}&price=${tier.price}`);
+    // Open checkout popup
+    setCheckoutProduct(tier.name);
+    setCheckoutOpen(true);
   };
 
   const handleServiceClick = (service) => {
@@ -237,14 +241,14 @@ export default function PricingPerfectBizAI() {
       return;
     }
     
-    // Navigate to checkout with one-time product params
-    const params = new URLSearchParams({
-      type: 'one-time',
+    // Open checkout popup for one-time product
+    setCheckoutProduct({
       name: service.name,
+      description: service.description || '',
       price: service.price,
-      desc: service.description || '',
+      isRecurring: false,
     });
-    navigate(`/Checkout?${params.toString()}`);
+    setCheckoutOpen(true);
   };
 
   const isCurrentPlan = (tier) => {
