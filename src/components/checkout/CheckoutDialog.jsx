@@ -315,7 +315,7 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
         {isRecurring && (
           <>
             <input type="hidden" name="recur_sum" value={amount} />
-            <input type="hidden" name="recur_transaction" value={`${recurTransaction}_approved`} />
+            <input type="hidden" name="recur_transaction" value={recurTransaction} />
             <input type="hidden" name="recur_start_date" value={recurStartDate} />
           </>
         )}
