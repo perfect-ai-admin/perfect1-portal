@@ -51,11 +51,19 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
     }
   };
 
+  const amount = product?.price || 0;
+  const isRecurring = product?.isRecurring || false;
+  const isYearlySubscription = product?.billingCycle === 'yearly';
+
+  // For recurring monthly: handshake sum = monthly price (first charge)
+  // For yearly or one-time: handshake sum = total price
+  const handshakeSum = amount;
+
   const handleProceedToPayment = async () => {
     if (!product) return;
     setIframeLoading(true);
     try {
-      const response = await base44.functions.invoke('tranzilaCreateHandshake', { sum: product.price });
+      const response = await base44.functions.invoke('tranzilaCreateHandshake', { sum: handshakeSum });
       const data = response.data;
 
       if (!data.thtk) {
@@ -81,10 +89,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
 
   if (!open) return null;
 
-  const amount = product?.price || 0;
-  const isRecurring = product?.isRecurring || false;
-
-  // Recurring config
+  // Recurring config (monthly subscriptions only)
   const recurTransaction = 4;
   const today = new Date();
   const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
