@@ -761,6 +761,13 @@ export default function PricingPerfectBizAI() {
                 </div>
             )}
         </AnimatePresence>
+
+        {/* Checkout Popup */}
+        <CheckoutDialog
+          open={checkoutOpen}
+          onClose={() => { setCheckoutOpen(false); setCheckoutProduct(null); }}
+          product={checkoutProduct}
+        />
       </div>
     </>
   );
