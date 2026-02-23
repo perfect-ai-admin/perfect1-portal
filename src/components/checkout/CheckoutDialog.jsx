@@ -5,21 +5,13 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, Wallet, X } from 'lucide-react';
 import { toast } from 'sonner';
 
-const SUBSCRIPTION_TIERS = {
-  Free: { name: 'Free', title: 'התחלה חכמה', price: 0 },
-  Basic: { name: 'Basic', title: 'התקדמות יציבה', price: 59 },
-  Pro: { name: 'Pro', title: 'שליטה וצמיחה', price: 149 },
-  Elite: { name: 'Elite', title: 'מערכת שעובדת בשבילך', price: 349 },
-};
-
 /**
  * CheckoutDialog – popup checkout experience.
  *
  * Props:
  *  open        – boolean
  *  onClose     – () => void
- *  product     – { name, description, price, isRecurring, tierName?, items? }
- *                OR  tierName string (e.g. 'Pro') for subscription shortcut
+ *  product     – { name, description, price, isRecurring, tierName?, billingCycle?, items? }
  */
 export default function CheckoutDialog({ open, onClose, product: productProp }) {
   const [user, setUser] = useState(null);
