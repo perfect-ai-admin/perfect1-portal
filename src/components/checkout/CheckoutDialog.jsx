@@ -200,7 +200,9 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
 
       {/* Price */}
       <div className="flex justify-between items-center border-t border-b py-3">
-        <span className="font-bold text-base">סה"כ {isRecurring ? 'לחודש' : 'לתשלום'}</span>
+        <span className="font-bold text-base">
+          סה"כ {isRecurring ? 'לחודש' : product.billingCycle === 'yearly' ? 'לשנה' : 'לתשלום'}
+        </span>
         <span className="text-2xl font-black text-[#27AE60]">₪{amount}</span>
       </div>
 
