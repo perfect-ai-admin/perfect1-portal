@@ -1,289 +1,360 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, CreditCard, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 
+const SUBSCRIPTION_TIERS = {
+  Free: { name: 'Free', title: 'התחלה חכמה', price: 0 },
+  Basic: { name: 'Basic', title: 'התקדמות יציבה', price: 59 },
+  Pro: { name: 'Pro', title: 'שליטה וצמיחה', price: 149 },
+  Elite: { name: 'Elite', title: 'מערכת שעובדת בשבילך', price: 349 },
+};
+
 export default function Checkout() {
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [user, setUser] = useState(null);
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [processing, setProcessing] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const urlParams = new URLSearchParams(window.location.search);
 
-    // Support both single product (URL) and Cart (State)
-    const productType = searchParams.get('type'); // 'plan' or 'goal'
-    const productId = searchParams.get('id');
-    const cartItems = location.state?.items;
+  const productType = urlParams.get('type'); // 'plan', 'goal', 'landing-page', 'service'
+  const productId = urlParams.get('id');
+  const tierName = urlParams.get('tier'); // e.g. 'Basic', 'Pro', 'Elite'
+  const priceParam = urlParams.get('price');
+  const cartItems = location.state?.items;
 
-    useEffect(() => {
-        loadData();
-    }, []);
+  const [user, setUser] = useState(null);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [handshakeData, setHandshakeData] = useState(null);
+  const [iframeLoading, setIframeLoading] = useState(false);
+  const [paymentStep, setPaymentStep] = useState('summary'); // 'summary' | 'payment'
 
-    const loadData = async () => {
-        try {
-            const currentUser = await base44.auth.me();
-            setUser(currentUser);
+  useEffect(() => {
+    loadData();
+  }, []);
 
-            if (cartItems && cartItems.length > 0) {
-                // Cart Checkout
-                const total = cartItems.reduce((sum, item) => sum + (item.price || 99), 0);
-                setProduct({
-                    name: `עגלת קניות (${cartItems.length} פריטים)`,
-                    description: cartItems.map(i => i.title).join(', '),
-                    price: total,
-                    isCart: true
-                });
-            } else if (productType === 'plan') {
-                const plans = await base44.entities.Plan.filter({ id: productId });
-                if (plans.length > 0) setProduct(plans[0]);
-            } else if (productType === 'goal') {
-                const goals = await base44.entities.Goal.filter({ id: productId });
-                if (goals.length > 0) setProduct(goals[0]);
-            } else if (productType === 'landing-page') {
-                // Direct landing page checkout support
-                const pages = await base44.entities.LandingPage.get(productId);
-                if (pages) setProduct({
-                    name: `דף נחיתה: ${pages.business_name}`,
-                    description: 'דף נחיתה ממותג',
-                    price: 299,
-                    isLandingPage: true
-                });
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error('שגיאה בטעינת הנתונים');
-        } finally {
-            setLoading(false);
+  const loadData = async () => {
+    try {
+      const currentUser = await base44.auth.me();
+      setUser(currentUser);
+
+      if (cartItems && cartItems.length > 0) {
+        const total = cartItems.reduce((sum, item) => sum + (item.price || 99), 0);
+        setProduct({
+          name: `עגלת קניות (${cartItems.length} פריטים)`,
+          description: cartItems.map(i => i.title).join(', '),
+          price: total,
+          isCart: true,
+          isRecurring: false,
+        });
+      } else if (tierName && SUBSCRIPTION_TIERS[tierName]) {
+        // Direct tier checkout (from PricingPerfectBizAI)
+        const tier = SUBSCRIPTION_TIERS[tierName];
+        setProduct({
+          name: `מנוי ${tier.title}`,
+          description: `מסלול ${tier.name} – חיוב חודשי אוטומטי`,
+          price: tier.price,
+          tierName: tier.name,
+          isRecurring: true,
+        });
+      } else if (productType === 'plan' && productId) {
+        const plans = await base44.entities.Plan.filter({ id: productId });
+        if (plans.length > 0) {
+          const plan = plans[0];
+          setProduct({
+            ...plan,
+            price: priceParam ? Number(priceParam) : plan.price,
+            isRecurring: true,
+          });
         }
-    };
+      } else if (productType === 'goal' && productId) {
+        const goals = await base44.entities.Goal.filter({ id: productId });
+        if (goals.length > 0) setProduct({ ...goals[0], isRecurring: false });
+      } else if (productType === 'landing-page' && productId) {
+        const page = await base44.entities.LandingPage.get(productId);
+        if (page) setProduct({
+          name: `דף נחיתה: ${page.business_name}`,
+          description: 'דף נחיתה ממותג',
+          price: 299,
+          isLandingPage: true,
+          isRecurring: false,
+        });
+      } else if (priceParam) {
+        // Generic service checkout
+        setProduct({
+          name: urlParams.get('name') || 'שירות',
+          description: urlParams.get('desc') || '',
+          price: Number(priceParam),
+          isRecurring: false,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('שגיאה בטעינת הנתונים');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleCheckout = async () => {
-        setProcessing(true);
-        try {
-            let payload = {
-                product_type: productType,
-                product_id: productId
-            };
+  const handleProceedToPayment = async () => {
+    setIframeLoading(true);
+    try {
+      const amount = product.price;
+      const response = await base44.functions.invoke('tranzilaCreateHandshake', { sum: amount });
+      const data = response.data;
 
-            if (cartItems && cartItems.length > 0) {
-                payload = {
-                    product_type: 'cart',
-                    items: cartItems.map(item => ({
-                        id: item.id,
-                        title: item.title,
-                        price: item.price || 99,
-                        type: item.type,
-                        data: item.data
-                    }))
-                };
-            } else if (productType === 'landing-page') {
-                payload = {
-                    product_type: 'landing-page',
-                    product_id: productId
-                };
-            }
+      if (!data.thtk) {
+        toast.error('שגיאה בהתחלת התשלום');
+        setIframeLoading(false);
+        return;
+      }
 
-            const response = await base44.functions.invoke('createCheckoutSession', payload);
+      setHandshakeData(data);
+      setPaymentStep('payment');
 
-            if (response.data.success && response.data.url) {
-                // Optimistic update for landing pages if single checkout
-                if (productType === 'landing-page' && productId) {
-                    try {
-                        await base44.functions.invoke('publishLandingPage', {
-                            landingPageId: productId,
-                            action: 'markPaid'
-                        });
-                    } catch (err) {
-                        console.error('Failed to mark as paid:', err);
-                    }
-                }
-                window.location.href = response.data.url;
-            } else {
-                toast.error('שגיאה ביצירת ההזמנה');
-            }
-        } catch (error) {
-            toast.error('שגיאה בעיבוד התשלום');
-            console.error(error);
-        } finally {
-            setProcessing(false);
+      // Submit the hidden form to load the iframe
+      setTimeout(() => {
+        const form = document.getElementById('tranzila-form');
+        if (form) {
+          form.submit();
         }
-    };
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-[#1E3A5F]" />
-            </div>
-        );
+        setIframeLoading(false);
+      }, 200);
+    } catch (error) {
+      console.error('Payment init error:', error);
+      toast.error('שגיאה בהתחלת תהליך התשלום');
+      setIframeLoading(false);
     }
+  };
 
-    if (!product) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-4">המוצר לא נמצא</h1>
-                    <Button onClick={() => navigate('/ClientDashboard')}>
-                        חזור לדשבורד
-                    </Button>
-                </div>
-            </div>
-        );
-    }
-
-    const amount = productType === 'plan' ? product.price : 99;
-
+  if (loading) {
     return (
-        <>
-            <Helmet>
-                <title>תשלום - BizPilot</title>
-                <meta name="robots" content="noindex, nofollow" />
-            </Helmet>
-
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4" dir="rtl">
-                <div className="max-w-2xl mx-auto">
-                    {/* Header */}
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">השלם את ההזמנה</h1>
-                        <p className="text-gray-600">אתה על סף לשדרג את העסק שלך</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {/* Order Summary */}
-                        <div className="md:col-span-2">
-                            <Card className="shadow-lg">
-                                <CardHeader>
-                                    <CardTitle>סיכום ההזמנה</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {/* Product Info */}
-                                    <div className="border-b pb-4">
-                                        <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-                                        <p className="text-gray-600 text-sm mb-3">{product.description}</p>
-                                        
-                                        {productType === 'plan' && (
-                                            <div className="space-y-2">
-                                                {product.marketing_enabled && (
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <span>✅</span> מודול שיווק
-                                                    </div>
-                                                )}
-                                                {product.mentor_enabled && (
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <span>✅</span> מודול מנטור
-                                                    </div>
-                                                )}
-                                                {product.finance_enabled && (
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <span>✅</span> מודול פיננסים
-                                                    </div>
-                                                )}
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <span>🎯</span> {product.goals_limit === null ? 'מטרות ללא הגבלה' : `עד ${product.goals_limit} מטרות`}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Pricing */}
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between">
-                                            <span className="text-gray-600">סכום</span>
-                                            <span className="font-semibold">₪{amount}</span>
-                                        </div>
-                                        {productType === 'plan' && (
-                                            <div className="flex justify-between text-sm text-gray-600">
-                                                <span>תוקף</span>
-                                                <span>
-                                                    {product.billing_type === 'monthly' ? 'חודש' :
-                                                     product.billing_type === 'yearly' ? 'שנה' : 'חד פעמי'}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Total */}
-                                    <div className="border-t pt-4">
-                                        <div className="flex justify-between">
-                                            <span className="text-lg font-bold">סה"כ לתשלום</span>
-                                            <span className="text-2xl font-bold text-[#27AE60]">₪{amount}</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Checkout Button */}
-                                    <Button
-                                        onClick={handleCheckout}
-                                        disabled={processing}
-                                        className="w-full bg-[#27AE60] hover:bg-[#2ECC71] h-12 text-lg mt-4"
-                                    >
-                                        {processing ? (
-                                            <>
-                                                <Loader2 className="w-5 h-5 animate-spin ml-2" />
-                                                מעבד...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <CreditCard className="w-5 h-5 ml-2" />
-                                                המשך לתשלום
-                                            </>
-                                        )}
-                                    </Button>
-
-                                    {/* Security Notice */}
-                                    <div className="flex items-center gap-2 text-xs text-gray-600 mt-4">
-                                        <ShieldCheck className="w-4 h-4" />
-                                        התשלום מאובטח ומוצפן ב-Stripe
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        {/* User Info */}
-                        <div>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-base">פרטי החשבון</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                    <div>
-                                        <p className="text-xs text-gray-600 mb-1">שם</p>
-                                        <p className="font-semibold">{user?.full_name}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-600 mb-1">אימייל</p>
-                                        <p className="text-sm">{user?.email}</p>
-                                    </div>
-
-                                    {/* Info Box */}
-                                    <div className="bg-blue-50 p-3 rounded-lg mt-4">
-                                        <p className="text-xs text-blue-900">
-                                            ✨ לאחר התשלום, ההרשאות שלך יעודכנו מיד.
-                                        </p>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
-
-                    {/* Back Button */}
-                    <div className="mt-6 text-center">
-                        <Button 
-                            variant="outline" 
-                            onClick={() => navigate('/ClientDashboard')}
-                            disabled={processing}
-                        >
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                            חזור לדשבורד
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1E3A5F]" />
+      </div>
     );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center" dir="rtl">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">המוצר לא נמצא</h1>
+          <Button onClick={() => navigate(-1)}>
+            <ArrowRight className="w-4 h-4 ml-2" />
+            חזרה
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const amount = product.price;
+  const isRecurring = product.isRecurring;
+
+  // Recurring config: monthly, unlimited
+  const recurTransaction = 4; // monthly
+  const today = new Date();
+  const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+  const recurStartDate = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-${String(nextMonth.getDate()).padStart(2, '0')}`;
+
+  return (
+    <>
+      <Helmet>
+        <title>תשלום - Perfect Biz AI</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6 px-4" dir="rtl">
+        <div className="max-w-xl mx-auto">
+          {/* Back button */}
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="mb-4 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowRight className="w-4 h-4 ml-1" />
+            חזרה
+          </Button>
+
+          {paymentStep === 'summary' && (
+            <>
+              {/* Order Summary Card */}
+              <Card className="shadow-lg border-0 overflow-hidden">
+                <div className="h-2 bg-gradient-to-r from-[#1E3A5F] to-[#2C5282]" />
+                <CardContent className="p-6 space-y-5">
+                  <div className="text-center">
+                    <h1 className="text-2xl font-bold text-gray-900">סיכום הזמנה</h1>
+                  </div>
+
+                  {/* Product details */}
+                  <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+                    <h3 className="font-bold text-lg">{product.name}</h3>
+                    {product.description && (
+                      <p className="text-gray-600 text-sm">{product.description}</p>
+                    )}
+
+                    {isRecurring && (
+                      <div className="flex items-center gap-2 text-sm text-blue-700 bg-blue-50 px-3 py-2 rounded-lg">
+                        <CreditCard className="w-4 h-4" />
+                        <span>חיוב חודשי אוטומטי – ניתן לביטול בכל עת</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Pricing breakdown */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-gray-600">
+                      <span>{isRecurring ? 'חיוב חודשי' : 'סכום'}</span>
+                      <span className="font-semibold text-gray-900">₪{amount}</span>
+                    </div>
+                    {isRecurring && (
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>תדירות</span>
+                        <span>חודשי – עד לביטול</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Total */}
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-bold">סה"כ {isRecurring ? 'לחודש' : 'לתשלום'}</span>
+                      <span className="text-2xl font-black text-[#27AE60]">₪{amount}</span>
+                    </div>
+                  </div>
+
+                  {/* User info */}
+                  {user && (
+                    <div className="text-sm text-gray-500 bg-gray-50 rounded-lg p-3">
+                      <span>חשבון: </span>
+                      <span className="font-medium text-gray-700">{user.full_name} ({user.email})</span>
+                    </div>
+                  )}
+
+                  {/* CTA */}
+                  <Button
+                    onClick={handleProceedToPayment}
+                    disabled={iframeLoading}
+                    className="w-full h-14 text-lg font-bold bg-[#27AE60] hover:bg-[#2ECC71] shadow-lg"
+                  >
+                    {iframeLoading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin ml-2" />
+                        מכין את דף התשלום...
+                      </>
+                    ) : (
+                      <>
+                        <ShieldCheck className="w-5 h-5 ml-2" />
+                        המשך לתשלום מאובטח
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Trust signals */}
+                  <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>תשלום מאובטח</span>
+                    </div>
+                    <span>•</span>
+                    <span>PCI-DSS</span>
+                    <span>•</span>
+                    <span>הצפנת SSL</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          {paymentStep === 'payment' && handshakeData && (
+            <>
+              <Card className="shadow-lg border-0 overflow-hidden">
+                <div className="h-2 bg-gradient-to-r from-[#27AE60] to-[#2ECC71]" />
+                <CardContent className="p-4 sm:p-6">
+                  <div className="text-center mb-4">
+                    <h2 className="text-xl font-bold text-gray-900">הזינו פרטי תשלום</h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {product.name} – ₪{amount}{isRecurring ? '/חודש' : ''}
+                    </p>
+                  </div>
+
+                  {/* Hidden form that posts to Tranzila iframe */}
+                  <form
+                    id="tranzila-form"
+                    action={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php`}
+                    target="tranzila-iframe"
+                    method="POST"
+                    style={{ display: 'none' }}
+                  >
+                    <input type="hidden" name="sum" value={amount} />
+                    <input type="hidden" name="currency" value="1" />
+                    <input type="hidden" name="cred_type" value="1" />
+                    <input type="hidden" name="tranmode" value="A" />
+                    <input type="hidden" name="new_process" value="1" />
+                    <input type="hidden" name="thtk" value={handshakeData.thtk} />
+                    <input type="hidden" name="lang" value="il" />
+                    <input type="hidden" name="nologo" value="1" />
+                    <input type="hidden" name="trBgColor" value="FFFFFF" />
+                    <input type="hidden" name="trTextColor" value="1E3A5F" />
+                    <input type="hidden" name="trButtonColor" value="27AE60" />
+                    <input type="hidden" name="buttonLabel" value={isRecurring ? 'הפעל מנוי' : 'שלם עכשיו'} />
+                    <input type="hidden" name="accessibility" value="2" />
+
+                    {/* Recurring payment params */}
+                    {isRecurring && (
+                      <>
+                        <input type="hidden" name="recur_sum" value={amount} />
+                        <input type="hidden" name="recur_transaction" value={`${recurTransaction}_approved`} />
+                        <input type="hidden" name="recur_start_date" value={recurStartDate} />
+                        {/* No recur_payments = unlimited until cancellation */}
+                      </>
+                    )}
+
+                    {/* Customer info */}
+                    {user && (
+                      <>
+                        <input type="hidden" name="contact" value={user.full_name || ''} />
+                        <input type="hidden" name="email" value={user.email || ''} />
+                        <input type="hidden" name="pdesc" value={product.name} />
+                      </>
+                    )}
+                  </form>
+
+                  {/* Tranzila iframe */}
+                  <div className="w-full rounded-xl overflow-hidden border border-gray-200 bg-white" style={{ minHeight: '480px' }}>
+                    <iframe
+                      id="tranzila-iframe"
+                      name="tranzila-iframe"
+                      allowpaymentrequest="true"
+                      style={{ width: '100%', height: '480px', border: 'none' }}
+                      title="טופס תשלום מאובטח"
+                    />
+                  </div>
+
+                  {/* Back to summary */}
+                  <div className="mt-4 text-center">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setPaymentStep('summary');
+                        setHandshakeData(null);
+                      }}
+                      className="text-gray-500"
+                    >
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                      חזרה לסיכום
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }
