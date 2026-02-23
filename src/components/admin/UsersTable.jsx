@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare, Info } from 'lucide-react';
+import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare, Info, CreditCard } from 'lucide-react';
 import UserProfileModal from './UserProfileModal';
 
 export default function UsersTable(props) {
