@@ -123,6 +123,41 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                     </TabsList>
 
                     <TabsContent value="info" className="space-y-4 mt-4">
+                        {/* Payment & Activity Summary Cards */}
+                        {!loadingDetails && extendedData && (
+                            <div className="grid grid-cols-3 gap-3">
+                                <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                                    <CreditCard className="w-5 h-5 text-green-600 mx-auto mb-1" />
+                                    <p className="text-2xl font-black text-green-700">
+                                        {extendedData.payments?.filter(p => p.status === 'completed').length || 0}
+                                    </p>
+                                    <p className="text-xs text-green-600">תשלומים הושלמו</p>
+                                </div>
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                                    <CreditCard className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                                    <p className="text-2xl font-black text-blue-700">
+                                        ₪{(extendedData.ltv || 0).toLocaleString()}
+                                    </p>
+                                    <p className="text-xs text-blue-600">סה״כ תשלומים (LTV)</p>
+                                </div>
+                                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 text-center">
+                                    <Activity className="w-5 h-5 text-purple-600 mx-auto mb-1" />
+                                    <p className="text-sm font-bold text-purple-700">
+                                        {extendedData.payments?.filter(p => p.status === 'completed').length > 0
+                                            ? format(new Date(
+                                                extendedData.payments
+                                                    .filter(p => p.status === 'completed')
+                                                    .sort((a, b) => new Date(b.completed_at || b.created_date) - new Date(a.completed_at || a.created_date))[0]
+                                                    ?.completed_at || extendedData.payments.filter(p => p.status === 'completed').sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0]?.created_date
+                                            ), 'dd/MM/yyyy')
+                                            : '---'
+                                        }
+                                    </p>
+                                    <p className="text-xs text-purple-600">תשלום אחרון</p>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label>שם מלא</Label>
