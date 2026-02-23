@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard } from 'lucide-react';
+import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 
 const SUBSCRIPTION_TIERS = {
@@ -19,9 +19,9 @@ export default function Checkout() {
   const location = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
 
-  const productType = urlParams.get('type'); // 'plan', 'goal', 'landing-page', 'service'
+  const productType = urlParams.get('type'); // 'plan', 'goal', 'landing-page', 'service', 'one-time'
   const productId = urlParams.get('id');
-  const tierName = urlParams.get('tier'); // e.g. 'Basic', 'Pro', 'Elite'
+  const tierName = urlParams.get('tier');
   const priceParam = urlParams.get('price');
   const cartItems = location.state?.items;
 
@@ -49,9 +49,9 @@ export default function Checkout() {
           price: total,
           isCart: true,
           isRecurring: false,
+          items: cartItems,
         });
       } else if (tierName && SUBSCRIPTION_TIERS[tierName]) {
-        // Direct tier checkout (from PricingPerfectBizAI)
         const tier = SUBSCRIPTION_TIERS[tierName];
         setProduct({
           name: `מנוי ${tier.title}`,
@@ -59,6 +59,13 @@ export default function Checkout() {
           price: tier.price,
           tierName: tier.name,
           isRecurring: true,
+        });
+      } else if (productType === 'one-time' && priceParam) {
+        setProduct({
+          name: urlParams.get('name') || 'שירות',
+          description: urlParams.get('desc') || '',
+          price: Number(priceParam),
+          isRecurring: false,
         });
       } else if (productType === 'plan' && productId) {
         const plans = await base44.entities.Plan.filter({ id: productId });
@@ -83,7 +90,6 @@ export default function Checkout() {
           isRecurring: false,
         });
       } else if (priceParam) {
-        // Generic service checkout
         setProduct({
           name: urlParams.get('name') || 'שירות',
           description: urlParams.get('desc') || '',
@@ -115,7 +121,6 @@ export default function Checkout() {
       setHandshakeData(data);
       setPaymentStep('payment');
 
-      // Submit the hidden form to load the iframe
       setTimeout(() => {
         const form = document.getElementById('tranzila-form');
         if (form) {
@@ -156,10 +161,34 @@ export default function Checkout() {
   const isRecurring = product.isRecurring;
 
   // Recurring config: monthly, unlimited
-  const recurTransaction = 4; // monthly
+  const recurTransaction = 4;
   const today = new Date();
   const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
   const recurStartDate = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-${String(nextMonth.getDate()).padStart(2, '0')}`;
+
+  // Build json_purchase_data for one-time product invoice
+  const buildPurchaseData = () => {
+    if (isRecurring) return null;
+    
+    if (product.isCart && product.items) {
+      return product.items.map(item => ({
+        product_name: item.title || item.name || 'מוצר',
+        product_quantity: 1,
+        product_price: item.price || 0,
+      }));
+    }
+    
+    return [{
+      product_name: (product.name || 'שירות').substring(0, 118),
+      product_quantity: 1,
+      product_price: amount,
+    }];
+  };
+
+  const purchaseData = buildPurchaseData();
+  const encodedPurchaseData = purchaseData 
+    ? encodeURIComponent(JSON.stringify(purchaseData))
+    : null;
 
   return (
     <>
@@ -182,7 +211,6 @@ export default function Checkout() {
 
           {paymentStep === 'summary' && (
             <>
-              {/* Order Summary Card */}
               <Card className="shadow-lg border-0 overflow-hidden">
                 <div className="h-2 bg-gradient-to-r from-[#1E3A5F] to-[#2C5282]" />
                 <CardContent className="p-6 space-y-5">
@@ -197,10 +225,15 @@ export default function Checkout() {
                       <p className="text-gray-600 text-sm">{product.description}</p>
                     )}
 
-                    {isRecurring && (
+                    {isRecurring ? (
                       <div className="flex items-center gap-2 text-sm text-blue-700 bg-blue-50 px-3 py-2 rounded-lg">
                         <CreditCard className="w-4 h-4" />
                         <span>חיוב חודשי אוטומטי – ניתן לביטול בכל עת</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+                        <Check className="w-4 h-4" />
+                        <span>תשלום חד-פעמי · ללא מנוי · ללא התחייבות</span>
                       </div>
                     )}
                   </div>
@@ -226,6 +259,31 @@ export default function Checkout() {
                       <span className="text-2xl font-black text-[#27AE60]">₪{amount}</span>
                     </div>
                   </div>
+
+                  {/* Payment methods for one-time */}
+                  {!isRecurring && (
+                    <div className="bg-gray-50 rounded-xl p-3">
+                      <p className="text-xs text-gray-500 mb-2 font-medium">אמצעי תשלום זמינים:</p>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                          <CreditCard className="w-3.5 h-3.5" />
+                          <span>כרטיס אשראי</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                          <Wallet className="w-3.5 h-3.5" />
+                          <span>Google Pay</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                          <Wallet className="w-3.5 h-3.5" />
+                          <span>PayPal</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                          <Wallet className="w-3.5 h-3.5" />
+                          <span>Bit</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* User info */}
                   {user && (
@@ -290,12 +348,15 @@ export default function Checkout() {
                     method="POST"
                     style={{ display: 'none' }}
                   >
+                    {/* Core params */}
                     <input type="hidden" name="sum" value={amount} />
                     <input type="hidden" name="currency" value="1" />
                     <input type="hidden" name="cred_type" value="1" />
                     <input type="hidden" name="tranmode" value="A" />
                     <input type="hidden" name="new_process" value="1" />
                     <input type="hidden" name="thtk" value={handshakeData.thtk} />
+
+                    {/* Display */}
                     <input type="hidden" name="lang" value="il" />
                     <input type="hidden" name="nologo" value="1" />
                     <input type="hidden" name="trBgColor" value="FFFFFF" />
@@ -304,13 +365,29 @@ export default function Checkout() {
                     <input type="hidden" name="buttonLabel" value={isRecurring ? 'הפעל מנוי' : 'שלם עכשיו'} />
                     <input type="hidden" name="accessibility" value="2" />
 
-                    {/* Recurring payment params */}
+                    {/* Digital wallets for one-time payments */}
+                    {!isRecurring && (
+                      <>
+                        <input type="hidden" name="google_pay" value="1" />
+                        <input type="hidden" name="ppnewwin" value="2" />
+                        <input type="hidden" name="bit_pay" value="1" />
+                      </>
+                    )}
+
+                    {/* Product details for invoice (one-time only) */}
+                    {!isRecurring && encodedPurchaseData && (
+                      <>
+                        <input type="hidden" name="u71" value="1" />
+                        <input type="hidden" name="json_purchase_data" value={encodedPurchaseData} />
+                      </>
+                    )}
+
+                    {/* Recurring payment params (subscriptions only) */}
                     {isRecurring && (
                       <>
                         <input type="hidden" name="recur_sum" value={amount} />
                         <input type="hidden" name="recur_transaction" value={`${recurTransaction}_approved`} />
                         <input type="hidden" name="recur_start_date" value={recurStartDate} />
-                        {/* No recur_payments = unlimited until cancellation */}
                       </>
                     )}
 
@@ -325,12 +402,12 @@ export default function Checkout() {
                   </form>
 
                   {/* Tranzila iframe */}
-                  <div className="w-full rounded-xl overflow-hidden border border-gray-200 bg-white" style={{ minHeight: '480px' }}>
+                  <div className="w-full rounded-xl overflow-hidden border border-gray-200 bg-white" style={{ minHeight: '500px' }}>
                     <iframe
                       id="tranzila-iframe"
                       name="tranzila-iframe"
                       allowpaymentrequest="true"
-                      style={{ width: '100%', height: '480px', border: 'none' }}
+                      style={{ width: '100%', height: '500px', border: 'none' }}
                       title="טופס תשלום מאובטח"
                     />
                   </div>
@@ -348,6 +425,16 @@ export default function Checkout() {
                       <ArrowRight className="w-4 h-4 ml-1" />
                       חזרה לסיכום
                     </Button>
+                  </div>
+
+                  {/* Trust */}
+                  <div className="mt-3 flex items-center justify-center gap-4 text-xs text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>מאובטח ע״י Tranzila</span>
+                    </div>
+                    <span>•</span>
+                    <span>PCI-DSS Level 1</span>
                   </div>
                 </CardContent>
               </Card>

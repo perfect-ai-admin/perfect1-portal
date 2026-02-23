@@ -232,18 +232,19 @@ export default function PricingPerfectBizAI() {
   };
 
   const handleServiceClick = (service) => {
-    const planId = getPlanId(service);
-    
     if (!user) {
       setShowLoginModal(true);
       return;
     }
     
-    if (planId) {
-        navigate(`/Checkout?type=plan&id=${planId}`);
-    } else {
-        toast.error(`השירות ${service.name} אינו זמין כרגע לרכישה`);
-    }
+    // Navigate to checkout with one-time product params
+    const params = new URLSearchParams({
+      type: 'one-time',
+      name: service.name,
+      price: service.price,
+      desc: service.description || '',
+    });
+    navigate(`/Checkout?${params.toString()}`);
   };
 
   const isCurrentPlan = (tier) => {
