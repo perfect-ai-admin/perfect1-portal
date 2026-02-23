@@ -854,6 +854,17 @@ export default function LeadsAdmin() {
                     </td>}
                     {visibleColumns.profession && <td className="px-2 py-1.5 text-xs">{lead.profession || '-'}</td>}
                     {visibleColumns.source && <td className="px-2 py-1.5 text-[10px] text-gray-500 max-w-[100px] truncate">{lead.source_page || '-'}</td>}
+                    {visibleColumns.utm && <td className="px-2 py-1.5 text-[10px] text-gray-500 max-w-[140px]">
+                      {(lead.utm_source || lead.utm_medium || lead.utm_campaign) ? (
+                        <div className="space-y-0.5">
+                          {lead.utm_source && <div><span className="font-semibold">src:</span> {lead.utm_source}</div>}
+                          {lead.utm_medium && <div><span className="font-semibold">med:</span> {lead.utm_medium}</div>}
+                          {lead.utm_campaign && <div><span className="font-semibold">camp:</span> {lead.utm_campaign}</div>}
+                        </div>
+                      ) : (
+                        <span className="text-gray-300">-</span>
+                      )}
+                    </td>}
                     {visibleColumns.category && <td className="px-2 py-1.5 text-xs">
                       <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-medium ${categoryColors[lead.category || 'osek_patur']}`}>
                         {categoryLabels[lead.category || 'osek_patur']}
