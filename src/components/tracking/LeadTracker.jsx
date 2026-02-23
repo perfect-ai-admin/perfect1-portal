@@ -1,6 +1,6 @@
 import { base44 } from '@/api/base44Client';
 
-// Track phone clicks
+// Track phone clicks - saves lead to CRM
 export const trackPhoneClick = async (phoneNumber, sourcePage = window.location.pathname) => {
   try {
     await base44.entities.Lead.create({
@@ -16,23 +16,14 @@ export const trackPhoneClick = async (phoneNumber, sourcePage = window.location.
   }
 };
 
-// Track WhatsApp clicks
+// Track WhatsApp clicks - analytics only, NO lead creation
+// Lead creation happens only when the user actually sends a WhatsApp message
+// (handled by greenApiWebhook on the server side)
 export const trackWhatsAppClick = async (phoneNumber, sourcePage = window.location.pathname) => {
-  try {
-    await base44.entities.Lead.create({
-      name: 'לקוח שפתח וואטסאפ (לא מילא טופס)',
-      phone: phoneNumber,
-      source_page: sourcePage,
-      interaction_type: 'whatsapp_click',
-      status: 'new',
-      notes: 'לקוח לחץ על כפתור וואטסאפ'
-    });
-  } catch (err) {
-    console.error('Failed to track WhatsApp click:', err);
-  }
+  console.log('WhatsApp click tracked (analytics only):', sourcePage);
 };
 
-// Helper to add tracking to links
+// Helper to add tracking to phone links
 export const addPhoneTracking = (phoneNumber) => {
   return {
     onClick: () => trackPhoneClick(phoneNumber),
@@ -40,6 +31,7 @@ export const addPhoneTracking = (phoneNumber) => {
   };
 };
 
+// Helper for WhatsApp links - NO lead creation
 export const addWhatsAppTracking = (phoneNumber, message = '') => {
   return {
     onClick: () => trackWhatsAppClick(phoneNumber),
