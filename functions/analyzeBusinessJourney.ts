@@ -231,7 +231,9 @@ Deno.serve(async (req) => {
         });
 
         // Backward compatibility + Flag updates on User
+        // שינוי סטטוס מ-paused ל-active כי המשתמש השלים את האונבורדינג
         const updates = {
+            status: 'active',
             business_journey_completed: true,
             business_journey_answers: answers,
             business_domain: answers.profession_description || null,
