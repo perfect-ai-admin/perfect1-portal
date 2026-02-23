@@ -24,12 +24,24 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Server configuration error: Missing Tranzila credentials' }, { status: 500 });
         }
 
+        // Log the full request for debugging
+        console.log('Handshake request - supplier:', supplier, 'sum:', sum, 'sum type:', typeof sum);
+
         const handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${encodeURIComponent(supplier)}&sum=${encodeURIComponent(sum)}&TranzilaPW=${encodeURIComponent(TranzilaPW)}`;
+
+        console.log('Handshake URL (without PW):', `https://api.tranzila.com/v1/handshake/create?supplier=${encodeURIComponent(supplier)}&sum=${encodeURIComponent(sum)}&TranzilaPW=***`);
 
         const response = await fetch(handshakeUrl);
         const data = await response.text();
 
         console.log('Tranzila handshake raw response:', data);
+        console.log('Tranzila handshake status:', response.status);
+
+        // Check for error responses
+        if (data.includes('error') || data.includes('Error')) {
+            console.error('Tranzila returned error:', data);
+            return Response.json({ error: 'Tranzila handshake error', details: data }, { status: 500 });
+        }
 
         const thtkPrefix = "thtk=";
         let thtk = data.trim();
@@ -41,6 +53,8 @@ Deno.serve(async (req) => {
             console.error('Invalid thtk received:', thtk);
             return Response.json({ error: 'Failed to get handshake token from Tranzila', raw: data }, { status: 500 });
         }
+
+        console.log('Handshake success - thtk:', thtk.substring(0, 8) + '...', 'sum:', sum);
 
         return Response.json({ thtk, supplier, sum });
     } catch (error) {
