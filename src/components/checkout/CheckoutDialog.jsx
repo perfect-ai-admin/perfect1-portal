@@ -259,10 +259,18 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
 function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurTransaction, recurStartDate, encodedPurchaseData, onBack }) {
   if (!handshakeData) return null;
 
+  const isYearlySubscription = product?.billingCycle === 'yearly';
+
+  const getButtonLabel = () => {
+    if (isRecurring) return 'הפעל מנוי חודשי';
+    if (isYearlySubscription) return `שלם ₪${amount} לשנה`;
+    return 'שלם עכשיו';
+  };
+
   return (
     <div className="space-y-3">
       <p className="text-sm text-gray-500 text-center">
-        {product.name} – ₪{amount}{isRecurring ? '/חודש' : ''}
+        {product.name} – ₪{amount}{isRecurring ? '/חודש' : isYearlySubscription ? '/שנה' : ''}
       </p>
 
       {/* Hidden form */}
@@ -285,10 +293,10 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
         <input type="hidden" name="trBgColor" value="FFFFFF" />
         <input type="hidden" name="trTextColor" value="1E3A5F" />
         <input type="hidden" name="trButtonColor" value="27AE60" />
-        <input type="hidden" name="buttonLabel" value={isRecurring ? 'הפעל מנוי' : 'שלם עכשיו'} />
+        <input type="hidden" name="buttonLabel" value={getButtonLabel()} />
         <input type="hidden" name="accessibility" value="2" />
 
-        {/* Digital wallets – one-time only */}
+        {/* Digital wallets – for one-time and yearly payments */}
         {!isRecurring && (
           <>
             <input type="hidden" name="google_pay" value="1" />
@@ -297,7 +305,7 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
           </>
         )}
 
-        {/* Product details for invoice */}
+        {/* Product details for invoice (non-recurring) */}
         {!isRecurring && encodedPurchaseData && (
           <>
             <input type="hidden" name="u71" value="1" />
@@ -305,7 +313,7 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurT
           </>
         )}
 
-        {/* Recurring */}
+        {/* Recurring (monthly subscriptions only) */}
         {isRecurring && (
           <>
             <input type="hidden" name="recur_sum" value={amount} />
