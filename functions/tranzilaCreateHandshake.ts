@@ -9,7 +9,8 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { sum } = await req.json();
+        const body = await req.json();
+        const sum = body.sum;
 
         if (!sum || sum <= 0) {
             return Response.json({ error: 'Invalid sum' }, { status: 400 });
@@ -23,7 +24,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Server configuration error: Missing Tranzila credentials' }, { status: 500 });
         }
 
-        const handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${supplier}&sum=${sum}&TranzilaPW=${TranzilaPW}`;
+        const handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${encodeURIComponent(supplier)}&sum=${encodeURIComponent(sum)}&TranzilaPW=${encodeURIComponent(TranzilaPW)}`;
 
         const response = await fetch(handshakeUrl);
         const data = await response.text();
