@@ -31,6 +31,9 @@ export default function ProductFilters({ search, onSearchChange, typeFilter, onT
           <SelectItem value="logo">לוגואים</SelectItem>
           <SelectItem value="sticker">סטיקרים</SelectItem>
           <SelectItem value="presentation">מצגות</SelectItem>
+          <SelectItem value="plan">מנויים</SelectItem>
+          <SelectItem value="service">שירותים</SelectItem>
+          <SelectItem value="goal">מטרות</SelectItem>
         </SelectContent>
       </Select>
       <Select value={statusFilter} onValueChange={onStatusChange}>
