@@ -14,10 +14,7 @@ Deno.serve(async (req) => {
             const json = await req.json();
             params = new URLSearchParams(Object.entries(json).map(([k,v]) => [k, String(v)]));
         } else {
-            // Try query string first
             params = url.searchParams;
-            
-            // Also try body as form data
             if (!params.has('Response') && !params.has('response')) {
                 try {
                     const body = await req.text();
@@ -34,7 +31,6 @@ Deno.serve(async (req) => {
         const index = params.get('index') || params.get('Index') || '';
 
         console.log('[TranzilaNotify] Response:', response, 'ConfirmationCode:', confirmationCode, 'paymentId:', paymentId, 'index:', index);
-        console.log('[TranzilaNotify] All params:', Object.fromEntries(params.entries()));
 
         // Only process successful transactions
         if (response !== '000') {
@@ -72,6 +68,86 @@ Deno.serve(async (req) => {
         });
 
         console.log('[TranzilaNotify] Payment marked completed:', paymentId);
+
+        // === FULFILLMENT: Create PurchasedProduct records ===
+        const userId = payment.user_id;
+        const productType = payment.product_type;
+        const productId = payment.product_id;
+
+        // Handle plan assignment
+        if (productType === 'plan' && productId) {
+            try {
+                await base44.asServiceRole.entities.PurchasedProduct.create({
+                    user_id: userId,
+                    product_type: 'service',
+                    product_name: payment.product_name || 'מנוי',
+                    status: 'active',
+                    payment_id: paymentId,
+                    purchase_price: payment.amount || 0,
+                    metadata: { plan_id: productId, type: 'subscription' }
+                });
+                console.log('[TranzilaNotify] PurchasedProduct created for plan:', productId);
+            } catch (e) {
+                console.error('[TranzilaNotify] Failed to create PurchasedProduct for plan:', e);
+            }
+        }
+
+        // Handle single product purchase (goal, landing-page, service, one-time)
+        if (productType === 'goal' || productType === 'landing-page' || productType === 'service' || productType === 'one-time') {
+            try {
+                const ppType = productType === 'landing-page' ? 'landing_page' : 
+                               productType === 'one-time' ? 'service' : 
+                               productType === 'goal' ? 'service' : productType;
+                await base44.asServiceRole.entities.PurchasedProduct.create({
+                    user_id: userId,
+                    product_type: ppType,
+                    product_name: payment.product_name || 'שירות',
+                    status: 'active',
+                    payment_id: paymentId,
+                    purchase_price: payment.amount || 0,
+                    linked_entity_id: productId || '',
+                    metadata: { original_type: productType }
+                });
+                console.log('[TranzilaNotify] PurchasedProduct created for:', productType);
+            } catch (e) {
+                console.error('[TranzilaNotify] Failed to create PurchasedProduct:', e);
+            }
+        }
+
+        // Handle cart items
+        if (productType === 'cart') {
+            const items = payment.items || [];
+            for (const item of items) {
+                try {
+                    const purchasedData = {
+                        user_id: userId,
+                        product_type: item.type || 'other',
+                        product_name: item.title || 'מוצר',
+                        status: 'active',
+                        payment_id: paymentId,
+                        purchase_price: item.price || 0,
+                        preview_image: item.preview_image || item.data?.logoUrl || item.data?.preview_image || '',
+                        metadata: item.data || {}
+                    };
+
+                    if (item.type === 'landing_page' && item.data?.landingPageId) {
+                        purchasedData.linked_entity_id = item.data.landingPageId;
+                    }
+                    if ((item.type === 'logo' || item.type === 'sticker')) {
+                        const downloadUrl = item.data?.logoUrl || item.data?.stickerUrl || item.preview_image || item.data?.preview_image;
+                        if (downloadUrl) purchasedData.download_url = downloadUrl;
+                    }
+                    if (item.type === 'presentation' && item.data?.presentationUrl) {
+                        purchasedData.download_url = item.data.presentationUrl;
+                    }
+
+                    await base44.asServiceRole.entities.PurchasedProduct.create(purchasedData);
+                    console.log('[TranzilaNotify] PurchasedProduct created for cart item:', item.title);
+                } catch (ppErr) {
+                    console.error('[TranzilaNotify] Failed to create PurchasedProduct:', ppErr);
+                }
+            }
+        }
 
         return new Response('OK', { status: 200 });
     } catch (error) {
