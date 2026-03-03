@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
             paymentData.metadata = metadata;
         }
 
-        const payment = await base44.entities.Payment.create(paymentData);
+        const payment = await base44.asServiceRole.entities.Payment.create(paymentData);
         console.log('Payment created:', payment.id, 'amount:', amount);
 
         // Step 2: Create Tranzila handshake
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
 
         if (data.includes('error') || data.includes('Error')) {
             // Mark payment as failed
-            await base44.entities.Payment.update(payment.id, { 
+            await base44.asServiceRole.entities.Payment.update(payment.id, { 
                 status: 'failed', 
                 failure_reason: 'Handshake failed: ' + data 
             });
@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
         }
 
         if (!thtk || thtk.length < 10) {
-            await base44.entities.Payment.update(payment.id, { 
+            await base44.asServiceRole.entities.Payment.update(payment.id, { 
                 status: 'failed', 
                 failure_reason: 'Invalid handshake token' 
             });
