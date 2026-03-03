@@ -16,8 +16,8 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Missing payment_id' }, { status: 400 });
         }
 
-        // Get payment record
-        const payments = await base44.entities.Payment.filter({ id: payment_id });
+        // Get payment record using service role (RLS may block user from reading)
+        const payments = await base44.asServiceRole.entities.Payment.filter({ id: payment_id });
         if (!payments || payments.length === 0) {
             return Response.json({ error: 'Payment not found' }, { status: 404 });
         }
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
         }
 
         // Update payment to completed
-        await base44.entities.Payment.update(payment_id, {
+        await base44.asServiceRole.entities.Payment.update(payment_id, {
             status: 'completed',
             transaction_id: transaction_id || '',
             completed_at: new Date().toISOString()
@@ -164,7 +164,7 @@ Deno.serve(async (req) => {
 
             // Save deliverables on payment
             if (deliverableLinks.length > 0) {
-                await base44.entities.Payment.update(payment_id, {
+                await base44.asServiceRole.entities.Payment.update(payment_id, {
                     deliverables: deliverableLinks
                 });
 
