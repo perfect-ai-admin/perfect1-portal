@@ -76,6 +76,7 @@ export default function MyProducts() {
         
         const mapType = (t) => t === 'landing-page' ? 'landing_page' :
                                t === 'one-time' ? 'service' :
+                               t === 'plan' ? 'plan' :
                                t || 'service';
         
         if (p.product_type === 'cart' && p.items?.length > 0) {

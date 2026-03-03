@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   Globe, Palette, Presentation, Image, MoreVertical, 
   ExternalLink, Download, Eye, Archive, Copy, Calendar,
-  CheckCircle2, FileText, CreditCard, Target
+  CheckCircle2, FileText, CreditCard, Target, Crown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,7 +20,7 @@ const typeConfig = {
   logo: { icon: Palette, label: 'לוגו', color: 'bg-purple-500', lightColor: 'bg-purple-50 text-purple-700' },
   sticker: { icon: Image, label: 'סטיקר', color: 'bg-pink-500', lightColor: 'bg-pink-50 text-pink-700' },
   presentation: { icon: Presentation, label: 'מצגת', color: 'bg-amber-500', lightColor: 'bg-amber-50 text-amber-700' },
-  plan: { icon: CreditCard, label: 'מנוי', color: 'bg-indigo-500', lightColor: 'bg-indigo-50 text-indigo-700' },
+  plan: { icon: Crown, label: 'מנוי', color: 'bg-indigo-500', lightColor: 'bg-indigo-50 text-indigo-700' },
   goal: { icon: Target, label: 'מטרה', color: 'bg-teal-500', lightColor: 'bg-teal-50 text-teal-700' },
   service: { icon: FileText, label: 'שירות', color: 'bg-green-500', lightColor: 'bg-green-50 text-green-700' },
   other: { icon: FileText, label: 'מוצר', color: 'bg-gray-500', lightColor: 'bg-gray-50 text-gray-700' },
