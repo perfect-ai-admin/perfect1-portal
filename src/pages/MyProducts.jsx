@@ -61,9 +61,9 @@ export default function MyProducts() {
       // Get PurchasedProduct records
       const purchased = await base44.entities.PurchasedProduct.list('-created_date', 200);
       
-      // Also get ALL payments for this user to catch anything missing
+      // Also get completed payments for this user to catch anything missing
       const allPayments = await base44.entities.Payment.filter(
-        { user_id: user.id }, '-created_date', 200
+        { user_id: user.id, status: 'completed' }, '-created_date', 200
       );
       
       // Find payments that have no matching PurchasedProduct
@@ -86,13 +86,13 @@ export default function MyProducts() {
               user_id: p.user_id,
               product_type: item.type || 'other',
               product_name: item.title || 'מוצר',
-              status: p.status === 'completed' ? 'active' : 'draft',
+              status: 'active',
               payment_id: p.id,
               purchase_price: item.price || 0,
               preview_image: item.preview_image || item.data?.logoUrl || item.data?.preview_image || '',
               download_url: item.data?.logoUrl || item.data?.stickerUrl || item.data?.presentationUrl || '',
               created_date: p.completed_at || p.created_date,
-              metadata: { from_payment: true, payment_status: p.status, ...(item.data || {}) }
+              metadata: { from_payment: true, ...(item.data || {}) }
             });
           }
         } else {
@@ -101,13 +101,13 @@ export default function MyProducts() {
             user_id: p.user_id,
             product_type: mapType(p.product_type),
             product_name: p.product_name || 'רכישה',
-            status: p.status === 'completed' ? 'active' : 'draft',
+            status: 'active',
             payment_id: p.id,
             purchase_price: p.amount || 0,
             preview_image: p.metadata?.logoUrl || '',
             download_url: p.metadata?.logoUrl || '',
             created_date: p.completed_at || p.created_date,
-            metadata: { from_payment: true, payment_status: p.status }
+            metadata: { from_payment: true }
           });
         }
       }
