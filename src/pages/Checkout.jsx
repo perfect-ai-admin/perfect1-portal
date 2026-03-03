@@ -435,6 +435,7 @@ export default function Checkout() {
                     <input type="hidden" name="new_process" value="1" />
                     <input type="hidden" name="thtk" value={handshakeData.thtk} />
                     <input type="hidden" name="myid" value={handshakeData.paymentId} />
+                    <input type="hidden" name="notify_url_address" value={`https://base44.app/api/apps/${window.location.hostname.includes('base44') ? window.location.pathname.split('/')[2] || '' : ''}/functions/tranzilaNotify`} />
 
                     {/* Display */}
                     <input type="hidden" name="lang" value="il" />
