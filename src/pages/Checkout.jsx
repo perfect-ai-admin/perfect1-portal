@@ -397,8 +397,13 @@ export default function Checkout() {
                     <input type="hidden" name="trBgColor" value="FFFFFF" />
                     <input type="hidden" name="trTextColor" value="1E3A5F" />
                     <input type="hidden" name="trButtonColor" value="27AE60" />
-                    <input type="hidden" name="buttonLabel" value="Pay" />
+                    <input type="hidden" name="buttonLabel" value="לתשלום" />
                     <input type="hidden" name="accessibility" value="2" />
+
+                    {/* Digital wallets */}
+                    <input type="hidden" name="google_pay" value="1" />
+                    <input type="hidden" name="ppnewwin" value="2" />
+                    <input type="hidden" name="bit_pay" value="1" />
 
                     {/* Product details for invoice (one-time only) */}
                     {!isRecurring && encodedPurchaseData && (
@@ -433,6 +438,7 @@ export default function Checkout() {
                       id="tranzila-iframe"
                       name="tranzila-iframe"
                       allowpaymentrequest="true"
+                      allow="payment"
                       style={{ width: '100%', height: '500px', border: 'none' }}
                       title="טופס תשלום מאובטח"
                     />

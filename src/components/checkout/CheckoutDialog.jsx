@@ -316,6 +316,34 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         <input type="hidden" name="trTextColor" value="1E3A5F" />
         <input type="hidden" name="trButtonColor" value="27AE60" />
         <input type="hidden" name="buttonLabel" value="לתשלום" />
+        <input type="hidden" name="accessibility" value="2" />
+
+        {/* Digital wallets */}
+        <input type="hidden" name="google_pay" value="1" />
+        <input type="hidden" name="ppnewwin" value="2" />
+        <input type="hidden" name="bit_pay" value="1" />
+
+        {/* Product details for invoice (one-time only) */}
+        {!isRecurring && (() => {
+          const purchaseItems = product.items
+            ? product.items.map(item => ({
+                product_name: (item.title || item.name || 'מוצר').substring(0, 118),
+                product_quantity: 1,
+                product_price: item.price || 0
+              }))
+            : [{
+                product_name: (product.name || 'שירות').substring(0, 118),
+                product_quantity: 1,
+                product_price: amount
+              }];
+          const encoded = encodeURIComponent(JSON.stringify(purchaseItems));
+          return (
+            <>
+              <input type="hidden" name="u71" value="1" />
+              <input type="hidden" name="json_purchase_data" value={encoded} />
+            </>
+          );
+        })()}
 
         {/* Recurring payments (monthly subscriptions) */}
         {isRecurring && (
@@ -342,6 +370,8 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         <iframe
           id="tranzila-dialog-iframe"
           name="tranzila-dialog-iframe"
+          allowpaymentrequest="true"
+          allow="payment"
           style={{ width: '100%', height: '460px', border: 'none' }}
           title="טופס תשלום מאובטח"
         />

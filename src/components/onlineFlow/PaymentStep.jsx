@@ -192,6 +192,17 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
               <input type="hidden" name="trTextColor" value="1E3A5F" />
               <input type="hidden" name="trButtonColor" value="27AE60" />
               <input type="hidden" name="buttonLabel" value="לתשלום" />
+              <input type="hidden" name="accessibility" value="2" />
+
+              {/* Digital wallets */}
+              <input type="hidden" name="google_pay" value="1" />
+              <input type="hidden" name="ppnewwin" value="2" />
+              <input type="hidden" name="bit_pay" value="1" />
+
+              {/* Product details for invoice */}
+              <input type="hidden" name="u71" value="1" />
+              <input type="hidden" name="json_purchase_data" value={encodeURIComponent(JSON.stringify([{product_name: `פתיחת עוסק פטור - ${selectedPlan.name}`.substring(0, 118), product_quantity: 1, product_price: price}]))} />
+
               <input type="hidden" name="contact" value={formData.fullName || ''} />
               <input type="hidden" name="email" value={formData.email || ''} />
               <input type="hidden" name="pdesc" value={`פתיחת עוסק פטור - ${selectedPlan.name}`} />
@@ -202,6 +213,8 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
             <iframe
               id="tranzila-osek-iframe"
               name="tranzila-osek-iframe"
+              allowpaymentrequest="true"
+              allow="payment"
               style={{ width: '100%', height: '460px', border: 'none' }}
               title="טופס תשלום מאובטח"
             />
