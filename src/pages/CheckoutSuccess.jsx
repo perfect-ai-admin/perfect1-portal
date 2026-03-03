@@ -47,6 +47,16 @@ export default function CheckoutSuccess() {
              } catch (_) {}
 
              if (payment) {
+                 // If still pending, wait a bit and re-check (confirm may be in progress)
+                 if (payment.status === 'pending') {
+                     console.log('[CheckoutSuccess] Payment still pending, waiting 3s...');
+                     await new Promise(r => setTimeout(r, 3000));
+                     try {
+                         const recheckPayments = await base44.entities.Payment.filter({ id: paymentId });
+                         if (recheckPayments.length > 0) payment = recheckPayments[0];
+                     } catch (_) {}
+                 }
+
                  setDetails(payment);
 
                  if (payment.status === 'completed') {
