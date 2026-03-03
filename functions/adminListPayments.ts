@@ -9,13 +9,26 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Forbidden' }, { status: 403 });
         }
 
-        const payments = await base44.asServiceRole.entities.Payment.list('-created_date', 100);
+        // Use filter with empty query to get all payments via service role
+        const payments = await base44.asServiceRole.entities.Payment.filter({}, '-created_date', 500);
         
-        // Enrich with user details if possible (optional optimization)
-        // For now returning raw payments
+        // Enrich with user names
+        const userIds = [...new Set(payments.map(p => p.user_id).filter(Boolean))];
+        let usersMap = {};
         
-        return Response.json({ payments });
+        if (userIds.length > 0) {
+            const allUsers = await base44.asServiceRole.entities.User.filter({}, null, 1000);
+            allUsers.forEach(u => { usersMap[u.id] = u.full_name || u.email || u.id; });
+        }
+
+        const enriched = payments.map(p => ({
+            ...p,
+            user_name: usersMap[p.user_id] || p.user_id || 'לא ידוע'
+        }));
+
+        return Response.json({ payments: enriched });
     } catch (error) {
+        console.error('adminListPayments error:', error.message);
         return Response.json({ error: error.message }, { status: 500 });
     }
 });
