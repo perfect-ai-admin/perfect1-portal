@@ -308,6 +308,14 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         <input type="hidden" name="tranmode" value="A" />
         <input type="hidden" name="new_process" value="1" />
         <input type="hidden" name="thtk" value={handshakeData.thtk} />
+        
+        {/* Payment ID for tracking */}
+        <input type="hidden" name="myid" value={handshakeData.paymentId || ''} />
+        
+        {/* Notify URL for server-to-server callback */}
+        {handshakeData.notifyUrl && (
+          <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
+        )}
 
         {/* Display customization */}
         <input type="hidden" name="lang" value="il" />
