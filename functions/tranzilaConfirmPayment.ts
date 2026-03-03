@@ -47,6 +47,7 @@ Deno.serve(async (req) => {
         const productType = payment.product_type;
         const productId = payment.product_id;
 
+        // === Create PurchasedProduct for ALL payment types ===
         if (productType === 'plan' && productId) {
             try {
                 await base44.functions.invoke('assignPlanToUser', {
@@ -56,6 +57,20 @@ Deno.serve(async (req) => {
                 console.log('Plan assigned:', productId);
             } catch (e) {
                 console.error('Failed to assign plan:', e);
+            }
+            // Create PurchasedProduct for plan/subscription
+            try {
+                await base44.asServiceRole.entities.PurchasedProduct.create({
+                    user_id: user.id,
+                    product_type: 'service',
+                    product_name: payment.product_name || 'מנוי',
+                    status: 'active',
+                    payment_id: payment_id,
+                    purchase_price: payment.amount || 0,
+                    metadata: { plan_id: productId, type: 'subscription' }
+                });
+            } catch (e) {
+                console.error('Failed to create PurchasedProduct for plan:', e);
             }
         } else if (productType === 'goal') {
             // Increase goal limit
@@ -75,6 +90,20 @@ Deno.serve(async (req) => {
             } catch (e) {
                 console.error('Failed to update goal limit:', e);
             }
+            // Create PurchasedProduct for goal
+            try {
+                await base44.asServiceRole.entities.PurchasedProduct.create({
+                    user_id: user.id,
+                    product_type: 'service',
+                    product_name: payment.product_name || 'מטרה עסקית',
+                    status: 'active',
+                    payment_id: payment_id,
+                    purchase_price: payment.amount || 0,
+                    metadata: { goal_id: productId, type: 'goal' }
+                });
+            } catch (e) {
+                console.error('Failed to create PurchasedProduct for goal:', e);
+            }
         } else if (productType === 'landing-page' && productId) {
             try {
                 await base44.functions.invoke('publishLandingPage', {
@@ -89,7 +118,39 @@ Deno.serve(async (req) => {
             } catch (e) {
                 console.error('Failed to publish landing page:', e);
             }
-        } else if (productType === 'cart') {
+            // Create PurchasedProduct for landing page
+            try {
+                await base44.asServiceRole.entities.PurchasedProduct.create({
+                    user_id: user.id,
+                    product_type: 'landing_page',
+                    product_name: payment.product_name || 'דף נחיתה',
+                    status: 'active',
+                    payment_id: payment_id,
+                    purchase_price: payment.amount || 0,
+                    linked_entity_id: productId,
+                    metadata: { type: 'landing_page' }
+                });
+            } catch (e) {
+                console.error('Failed to create PurchasedProduct for landing page:', e);
+            }
+        } else if (productType === 'one-time' || productType === 'service') {
+            // Create PurchasedProduct for one-time/service purchases
+            try {
+                await base44.asServiceRole.entities.PurchasedProduct.create({
+                    user_id: user.id,
+                    product_type: 'service',
+                    product_name: payment.product_name || 'שירות',
+                    status: 'active',
+                    payment_id: payment_id,
+                    purchase_price: payment.amount || 0,
+                    metadata: { original_type: productType }
+                });
+            } catch (e) {
+                console.error('Failed to create PurchasedProduct for service:', e);
+            }
+        }
+        
+        if (productType === 'cart') {
             // Handle cart items
             const items = payment.items || [];
             const deliverableLinks = [];
