@@ -181,198 +181,132 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
           </div>
         </div>
 
-        {/* Personal Details */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-          <h3 className="font-bold text-gray-900 text-sm">פרטים לחשבונית</h3>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-700">שם מלא</label>
-              <Input
-                value={cardData.fullName}
-                onChange={(e) => handleCardChange('fullName', e.target.value)}
-                className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
-                placeholder="ישראל ישראלי"
-              />
-            </div>
-            
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-700">תעודת זהות</label>
-              <Input
-                value={cardData.idNumber}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, '').slice(0, 9);
-                  setCardData({...cardData, idNumber: val});
-                }}
-                className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
-                placeholder="מספר ת.ז (9 ספרות)"
-                maxLength={9}
-                inputMode="numeric"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-700">אימייל לקבלה</label>
-              <Input
-                type="email"
-                value={cardData.email}
-                onChange={(e) => handleCardChange('email', e.target.value)}
-                className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-left"
-                dir="ltr"
-                placeholder="email@example.com"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Methods */}
-        <div className="space-y-4">
-          <h3 className="font-bold text-gray-900 text-sm px-1">בחר אמצעי תשלום</h3>
-          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid grid-cols-1 gap-3">
-            
-            <label className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-              paymentMethod === 'card' 
-                ? 'border-blue-500 bg-blue-50/50 shadow-sm' 
-                : 'border-gray-200 bg-white hover:border-gray-300'
-            }`}>
-              <RadioGroupItem value="card" className="sr-only" />
-              <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                paymentMethod === 'card' ? 'border-blue-600 bg-blue-600' : 'border-gray-300'
-              }`}>
-                {paymentMethod === 'card' && <div className="w-2 h-2 bg-white rounded-full" />}
-              </div>
-              <div className="p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                <CreditCard className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <div className="font-bold text-gray-900">כרטיס אשראי</div>
-                <div className="text-xs text-gray-500">כל הכרטיסים נתמכים</div>
-              </div>
-            </label>
-
-            <label className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-              paymentMethod === 'bit' 
-                ? 'border-blue-500 bg-blue-50/50 shadow-sm' 
-                : 'border-gray-200 bg-white hover:border-gray-300'
-            }`}>
-              <RadioGroupItem value="bit" className="sr-only" />
-               <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                paymentMethod === 'bit' ? 'border-blue-600 bg-blue-600' : 'border-gray-300'
-              }`}>
-                {paymentMethod === 'bit' && <div className="w-2 h-2 bg-white rounded-full" />}
-              </div>
-              <div className="p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
-                <Smartphone className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <div className="font-bold text-gray-900">Bit / PayBox</div>
-                <div className="text-xs text-gray-500">תשלום מהיר בנייד</div>
-              </div>
-            </label>
-
-          </RadioGroup>
-        </div>
-
-        {/* Card Form */}
-        <AnimatePresence>
-          {paymentMethod === 'card' && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-white rounded-xl border border-gray-200 p-5 space-y-4 overflow-hidden"
-            >
+        {!showIframe ? (
+          <>
+            {/* Personal Details */}
+            <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+              <h3 className="font-bold text-gray-900 text-sm">פרטים לחשבונית</h3>
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-700">מספר כרטיס</label>
-                  <div className="relative">
-                    <Input
-                      value={cardData.cardNumber}
-                      onChange={(e) => handleCardChange('cardNumber', e.target.value)}
-                      className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-center font-mono tracking-wider pl-10"
-                      dir="ltr"
-                      placeholder="0000 0000 0000 0000"
-                      maxLength={19}
-                    />
-                    <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  </div>
+                  <label className="text-xs font-semibold text-gray-700">שם מלא</label>
+                  <Input
+                    value={cardData.fullName}
+                    onChange={(e) => handleCardChange('fullName', e.target.value)}
+                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-right"
+                    placeholder="ישראל ישראלי"
+                  />
                 </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700">תוקף</label>
-                    <Input
-                      value={cardData.expiryDate}
-                      onChange={(e) => handleCardChange('expiryDate', e.target.value)}
-                      className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-center font-mono"
-                      dir="ltr"
-                      placeholder="MM/YY"
-                      maxLength={5}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-gray-700">CVV</label>
-                    <Input
-                      type="password"
-                      value={cardData.cvv}
-                      onChange={(e) => handleCardChange('cvv', e.target.value)}
-                      className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-center font-mono"
-                      dir="ltr"
-                      placeholder="123"
-                      maxLength={3}
-                    />
-                  </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-700">אימייל לקבלה</label>
+                  <Input
+                    type="email"
+                    value={cardData.email}
+                    onChange={(e) => handleCardChange('email', e.target.value)}
+                    className="bg-gray-50 border-gray-200 focus:bg-white transition-colors text-left"
+                    dir="ltr"
+                    placeholder="email@example.com"
+                  />
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
 
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-red-50 text-red-600 p-3 rounded-xl text-sm flex items-center gap-2"
-          >
-            <X className="w-4 h-4" />
-            {error}
-          </motion.div>
+            {error && (
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                className="bg-red-50 text-red-600 p-3 rounded-xl text-sm flex items-center gap-2">
+                <X className="w-4 h-4" />
+                {error}
+              </motion.div>
+            )}
+          </>
+        ) : (
+          <>
+            {/* Tranzila iFrame */}
+            <div className="text-center mb-2">
+              <p className="text-sm text-gray-500">הזינו פרטי תשלום – ₪{price}</p>
+            </div>
+
+            {handshakeData && (
+              <form
+                id="tranzila-logo-form"
+                action={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php`}
+                target="tranzila-logo-iframe"
+                method="POST"
+                style={{ display: 'none' }}
+              >
+                <input type="hidden" name="sum" value={price} />
+                <input type="hidden" name="currency" value="1" />
+                <input type="hidden" name="cred_type" value="1" />
+                <input type="hidden" name="tranmode" value="A" />
+                <input type="hidden" name="new_process" value="1" />
+                <input type="hidden" name="thtk" value={handshakeData.thtk} />
+                <input type="hidden" name="lang" value="il" />
+                <input type="hidden" name="nologo" value="1" />
+                <input type="hidden" name="trBgColor" value="FFFFFF" />
+                <input type="hidden" name="trTextColor" value="1E3A5F" />
+                <input type="hidden" name="trButtonColor" value="27AE60" />
+                <input type="hidden" name="buttonLabel" value="לתשלום" />
+                <input type="hidden" name="contact" value={cardData.fullName || ''} />
+                <input type="hidden" name="email" value={cardData.email || ''} />
+                <input type="hidden" name="pdesc" value={`לוגו מקצועי - ${businessName}`} />
+              </form>
+            )}
+
+            <div className="w-full rounded-xl overflow-hidden border border-gray-200 bg-white" style={{ minHeight: '460px' }}>
+              <iframe
+                id="tranzila-logo-iframe"
+                name="tranzila-logo-iframe"
+                style={{ width: '100%', height: '460px', border: 'none' }}
+                title="טופס תשלום מאובטח"
+              />
+            </div>
+          </>
         )}
         </div>
 
         {/* Footer Actions */}
         <div className="flex-none p-4 bg-white border-t border-gray-100 space-y-3 lg:rounded-b-2xl">
-          <Button
-            onClick={handleSubmit}
-            disabled={isProcessing}
-            className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-blue-200 text-base"
-          >
-            {isProcessing ? (
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                מעבד תשלום...
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                <Lock className="w-4 h-4" />
-                שלם וקבל את הלוגו - ₪{price}
-              </span>
-            )}
-          </Button>
+          {!showIframe ? (
+            <>
+              <Button
+                onClick={handleSubmit}
+                disabled={isProcessing}
+                className="w-full h-12 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white rounded-xl font-bold shadow-lg text-base"
+              >
+                {isProcessing ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    מכין את דף התשלום...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4" />
+                    המשך לתשלום מאובטח - ₪{price}
+                  </span>
+                )}
+              </Button>
 
-          <div className="text-center">
-            <button 
-              onClick={onBack}
-              className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              חזור לעריכה
-            </button>
-          </div>
+              <div className="text-center">
+                <button onClick={onBack}
+                  className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                  חזור לעריכה
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center">
+              <button onClick={() => { setShowIframe(false); setHandshakeData(null); }}
+                className="text-sm text-gray-500 hover:text-gray-800 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-1 mx-auto">
+                <ArrowRight className="w-4 h-4" />
+                חזרה לסיכום
+              </button>
+            </div>
+          )}
 
           <div className="flex items-center justify-center gap-2 text-[10px] text-gray-400">
             <Lock className="w-3 h-3" />
-            <span>SSL מאובטח</span>
+            <span>מאובטח ע״י Tranzila</span>
             <span>•</span>
-            <span>חשבונית מס מיידית</span>
+            <span>PCI-DSS Level 1</span>
           </div>
         </div>
       </div>
