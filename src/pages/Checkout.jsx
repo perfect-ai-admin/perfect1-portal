@@ -108,17 +108,23 @@ export default function Checkout() {
   const handleProceedToPayment = async () => {
     setIframeLoading(true);
     try {
-      const amount = product.price;
-      const response = await base44.functions.invoke('tranzilaCreateHandshake', { sum: amount });
+      const amt = product.price;
+      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+        product_type: productType || (product.isCart ? 'cart' : product.isRecurring ? 'plan' : 'one-time'),
+        product_name: product.name,
+        amount: amt,
+        product_id: productId || '',
+        items: cartItems || undefined,
+      });
       const data = response.data;
 
-      if (!data.thtk) {
+      if (!data.success || !data.thtk) {
         toast.error('שגיאה בהתחלת התשלום');
         setIframeLoading(false);
         return;
       }
 
-      setHandshakeData(data);
+      setHandshakeData({ ...data, paymentId: data.paymentId });
       setPaymentStep('payment');
 
       setTimeout(() => {
@@ -134,6 +140,35 @@ export default function Checkout() {
       setIframeLoading(false);
     }
   };
+
+  // Listen for Tranzila iframe postMessage
+  useEffect(() => {
+    const handleMessage = async (event) => {
+      if (event.data && typeof event.data === 'string' && handshakeData?.paymentId) {
+        try {
+          const parsed = JSON.parse(event.data);
+          if (parsed.Response === '000') {
+            await base44.functions.invoke('tranzilaConfirmPayment', {
+              payment_id: handshakeData.paymentId,
+              transaction_id: parsed.ConfirmationCode || ''
+            });
+            navigate(`/CheckoutSuccess?payment_id=${handshakeData.paymentId}`);
+          }
+        } catch (e) {
+          if (event.data.includes('Response=000')) {
+            const params = new URLSearchParams(event.data);
+            await base44.functions.invoke('tranzilaConfirmPayment', {
+              payment_id: handshakeData.paymentId,
+              transaction_id: params.get('ConfirmationCode') || ''
+            });
+            navigate(`/CheckoutSuccess?payment_id=${handshakeData.paymentId}`);
+          }
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [handshakeData]);
 
   if (loading) {
     return (
