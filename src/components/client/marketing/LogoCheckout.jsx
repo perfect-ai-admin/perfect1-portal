@@ -64,65 +64,50 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
 
   const handleCardChange = (field, value) => {
     setError('');
-    if (field === 'cardNumber') {
-      value = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
-      if (value.length > 19) return;
-    }
-    if (field === 'expiryDate') {
-      value = value.replace(/\D/g, '');
-      if (value.length > 4) return;
-      if (value.length >= 2) {
-        value = value.slice(0, 2) + '/' + value.slice(2);
-      }
-    }
-    if (field === 'cvv') {
-      value = value.replace(/\D/g, '');
-      if (value.length > 3) return;
-    }
     setCardData({ ...cardData, [field]: value });
   };
 
-  const validateCardData = () => {
+  const handleSubmit = async () => {
     if (!cardData.fullName.trim()) {
       setError('נא להזין שם מלא');
-      return false;
-    }
-    if (!cardData.idNumber.trim() || cardData.idNumber.length < 9) {
-      setError('נא להזין תעודת זהות תקינה');
-      return false;
+      return;
     }
     if (!cardData.email.trim()) {
       setError('נא להזין דוא״ל לקבלת הקבצים');
-      return false;
+      return;
     }
-    if (paymentMethod === 'card') {
-      if (!cardData.cardNumber.replace(/\s/g, '')) {
-        setError('נא להזין מספר כרטיס');
-        return false;
-      }
-      if (!cardData.expiryDate || cardData.expiryDate.length < 5) {
-        setError('נא להזין תוקף תקין');
-        return false;
-      }
-      if (!cardData.cvv || cardData.cvv.length < 3) {
-        setError('נא להזין 3 ספרות בגב הכרטיס');
-        return false;
-      }
-    }
-    return true;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateCardData()) return;
 
     setIsProcessing(true);
-    // Simulate processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsProcessing(false);
-    onSuccess({
-      email: cardData.email,
-      businessName: businessName
-    });
+    setError('');
+    try {
+      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+        product_type: 'one-time',
+        product_name: `לוגו מקצועי - ${businessName}`,
+        amount: price,
+        metadata: { businessName, slogan, logoUrl }
+      });
+
+      const data = response.data;
+      if (!data.success || !data.thtk) {
+        setError('שגיאה בהתחלת התשלום');
+        setIsProcessing(false);
+        return;
+      }
+
+      paymentIdRef.current = data.paymentId;
+      setHandshakeData(data);
+      setShowIframe(true);
+
+      setTimeout(() => {
+        const form = document.getElementById('tranzila-logo-form');
+        if (form) form.submit();
+        setIsProcessing(false);
+      }, 300);
+    } catch (err) {
+      console.error('Payment error:', err);
+      setError('שגיאה בהתחלת התשלום');
+      setIsProcessing(false);
+    }
   };
 
   return (
