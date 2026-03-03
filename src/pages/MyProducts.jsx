@@ -56,8 +56,39 @@ export default function MyProducts() {
   }, []);
 
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ['purchased-products'],
-    queryFn: () => base44.entities.PurchasedProduct.list('-created_date', 100),
+    queryKey: ['purchased-products', user?.id],
+    queryFn: async () => {
+      // Get PurchasedProduct records
+      const purchased = await base44.entities.PurchasedProduct.list('-created_date', 200);
+      
+      // Also get completed payments to catch any that don't have PurchasedProduct yet
+      const payments = await base44.entities.Payment.filter(
+        { user_id: user.id, status: 'completed' }, '-created_date', 200
+      );
+      
+      // Find payments that have no matching PurchasedProduct
+      const purchasedPaymentIds = new Set(purchased.map(p => p.payment_id).filter(Boolean));
+      const missingPayments = payments.filter(p => !purchasedPaymentIds.has(p.id));
+      
+      // Convert missing payments to product-like objects
+      const fromPayments = missingPayments.map(p => ({
+        id: 'payment_' + p.id,
+        user_id: p.user_id,
+        product_type: p.product_type === 'landing-page' ? 'landing_page' :
+                      p.product_type === 'one-time' ? 'service' :
+                      p.product_type === 'plan' ? 'plan' :
+                      p.product_type === 'goal' ? 'goal' :
+                      p.product_type || 'service',
+        product_name: p.product_name || 'רכישה',
+        status: 'active',
+        payment_id: p.id,
+        purchase_price: p.amount || 0,
+        created_date: p.completed_at || p.created_date,
+        metadata: { from_payment: true }
+      }));
+      
+      return [...purchased, ...fromPayments];
+    },
     enabled: !!user,
   });
 
