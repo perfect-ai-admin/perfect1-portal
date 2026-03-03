@@ -39,9 +39,14 @@ export default function CheckoutSuccess() {
                  return;
              }
 
-             const payments = await base44.entities.Payment.filter({ id: paymentId });
-             if (payments.length > 0) {
-                 const payment = payments[0];
+             // Use function to get payment details (RLS might block direct access)
+             let payment = null;
+             try {
+                 const payments = await base44.entities.Payment.filter({ id: paymentId });
+                 if (payments.length > 0) payment = payments[0];
+             } catch (_) {}
+
+             if (payment) {
                  setDetails(payment);
 
                  if (payment.status === 'completed') {
