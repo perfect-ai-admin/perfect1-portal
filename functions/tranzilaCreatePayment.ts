@@ -86,12 +86,17 @@ Deno.serve(async (req) => {
 
         console.log('Handshake success - thtk:', thtk.substring(0, 8) + '...');
 
+        // Build notify_url for Tranzila server-to-server callback
+        const baseUrl = Deno.env.get('BASE_URL') || '';
+        const notifyUrl = baseUrl ? `${baseUrl}/functions/tranzilaNotify` : '';
+
         return Response.json({ 
             success: true,
             paymentId: payment.id,
             thtk, 
             supplier, 
-            sum: amount 
+            sum: amount,
+            notifyUrl 
         });
     } catch (error) {
         console.error('tranzilaCreatePayment error:', error.message);

@@ -435,7 +435,7 @@ export default function Checkout() {
                     <input type="hidden" name="new_process" value="1" />
                     <input type="hidden" name="thtk" value={handshakeData.thtk} />
                     <input type="hidden" name="myid" value={handshakeData.paymentId} />
-                    {/* notify_url configured in Tranzila dashboard */}
+                    <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
 
                     {/* Display */}
                     <input type="hidden" name="lang" value="il" />
