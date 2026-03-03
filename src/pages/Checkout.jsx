@@ -434,6 +434,7 @@ export default function Checkout() {
                     <input type="hidden" name="tranmode" value="A" />
                     <input type="hidden" name="new_process" value="1" />
                     <input type="hidden" name="thtk" value={handshakeData.thtk} />
+                    <input type="hidden" name="myid" value={handshakeData.paymentId} />
 
                     {/* Display */}
                     <input type="hidden" name="lang" value="il" />
