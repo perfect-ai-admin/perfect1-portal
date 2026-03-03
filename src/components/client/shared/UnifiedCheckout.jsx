@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, onSuccess }) {
   const [paymentMethod, setPaymentMethod] = useState('card');
