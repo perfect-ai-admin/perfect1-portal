@@ -7,47 +7,10 @@ Deno.serve(async (req) => {
         const clonedReq = req.clone();
         
         let params;
-        const contentType = req.headers.get('content-type') || '';
-        const url = new URL(req.url);
-        
-        if (contentType.includes('application/x-www-form-urlencoded')) {
-            const body = await req.text();
-            params = new URLSearchParams(body);
-        } else if (contentType.includes('application/json')) {
-            const json = await req.json();
-            params = new URLSearchParams(Object.entries(json).map(([k,v]) => [k, String(v)]));
-        } else {
-            params = url.searchParams;
-            if (!params.has('Response') && !params.has('response')) {
-                try {
-                    const body = await req.text();
-                    if (body) {
-                        params = new URLSearchParams(body);
-                    }
-                } catch (_) {}
-            }
-        }
-
-        const response = params.get('Response') || params.get('response') || '';
-        const confirmationCode = params.get('ConfirmationCode') || params.get('confirmationcode') || '';
-        const paymentId = params.get('myid') || params.get('o_myid') || '';
-        const index = params.get('index') || params.get('Index') || '';
-
-        console.log('[TranzilaNotify] Response:', response, 'ConfirmationCode:', confirmationCode, 'paymentId:', paymentId, 'index:', index);
-
-        // Only process successful transactions
-        if (response !== '000') {
-            console.log('[TranzilaNotify] Non-success response:', response);
-            return new Response('OK', { status: 200 });
-        }
-
-        if (!paymentId) {
-            console.error('[TranzilaNotify] No payment ID in notify');
-            return new Response('OK', { status: 200 });
-        }
-
-        // Use createClientFromRequest for service role access
+...
+        // Use createClientFromRequest for service role access (webhook - no user auth)
         const base44 = createClientFromRequest(clonedReq);
+        // Note: all entity ops below use asServiceRole since this is a server-to-server callback
 
         const payments = await base44.asServiceRole.entities.Payment.filter({ id: paymentId });
         if (!payments || payments.length === 0) {
