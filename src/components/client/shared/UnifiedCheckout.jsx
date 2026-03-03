@@ -108,37 +108,30 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
 
     setIsProcessing(true);
     try {
-        // Construct payload for cart checkout
-        const payload = {
+        // Use Tranzila for cart checkout
+        const response = await base44.functions.invoke('tranzilaCreatePayment', {
             product_type: 'cart',
+            product_name: `עגלת קניות (${items.length} פריטים)`,
+            amount: totalPrice,
             items: items.map(item => ({
                 id: item.id,
                 title: item.title,
                 price: item.price || 99,
                 type: item.type,
-                data: item.data
+                data: item.data,
+                preview_image: item.preview_image
             }))
-        };
+        });
 
-        // We use the existing function
-        const response = await base44.functions.invoke('createCheckoutSession', payload);
-
-        if (response.data.success && response.data.url) {
-             // Optimistic update for landing pages (if any)
-             for (const item of items) {
-                 if (item.type === 'landing_page' && item.data?.landingPageId) {
-                     try {
-                         await base44.functions.invoke('publishLandingPage', {
-                             landingPageId: item.data.landingPageId,
-                             action: 'markPaid'
-                         });
-                     } catch (err) {
-                         console.error('Failed to mark as paid:', err);
-                     }
-                 }
-             }
-             
-             window.location.href = response.data.url;
+        if (response.data.success && response.data.thtk) {
+             // Navigate to Checkout page with Tranzila payment
+             const params = new URLSearchParams({
+                 type: 'cart',
+                 price: totalPrice,
+                 name: `עגלת קניות (${items.length} פריטים)`,
+                 payment_id: response.data.paymentId
+             });
+             navigate(createPageUrl('Checkout') + '?' + params.toString());
         } else {
             setError('שגיאה ביצירת ההזמנה');
             toast.error('שגיאה ביצירת ההזמנה');
