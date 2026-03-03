@@ -239,6 +239,10 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
                 <input type="hidden" name="tranmode" value="A" />
                 <input type="hidden" name="new_process" value="1" />
                 <input type="hidden" name="thtk" value={handshakeData.thtk} />
+                <input type="hidden" name="myid" value={handshakeData.paymentId || ''} />
+                {handshakeData.notifyUrl && (
+                  <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
+                )}
                 <input type="hidden" name="lang" value="il" />
                 <input type="hidden" name="nologo" value="1" />
                 <input type="hidden" name="trBgColor" value="FFFFFF" />
