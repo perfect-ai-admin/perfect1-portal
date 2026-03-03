@@ -56,18 +56,26 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
     if (!product) return;
     setIframeLoading(true);
     try {
-      const response = await base44.functions.invoke('tranzilaCreateHandshake', { sum: amount });
+      // Use unified tranzilaCreatePayment - creates Payment record + handshake
+      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+        product_type: product.product_type || 'one-time',
+        product_name: product.name,
+        amount: amount,
+        product_id: product.product_id || product.id || '',
+        items: product.items || undefined,
+        metadata: product.metadata || undefined
+      });
       const data = response.data;
 
-      if (!data.thtk) {
+      if (!data.success || !data.thtk) {
         toast.error('שגיאה בהתחלת התשלום');
         setIframeLoading(false);
         return;
       }
 
-      console.log('Handshake OK:', { thtk: data.thtk.substring(0, 10) + '...', supplier: data.supplier, sum: data.sum });
+      console.log('Payment created:', data.paymentId, 'Handshake OK');
 
-      setHandshakeData(data);
+      setHandshakeData({ ...data, paymentId: data.paymentId });
       setPaymentStep('payment');
 
       // Submit form after React renders
