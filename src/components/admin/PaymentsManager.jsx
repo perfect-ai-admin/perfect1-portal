@@ -34,6 +34,7 @@ export default function PaymentsManager() {
 
     const filteredPayments = payments.filter(payment => 
         payment.user_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.user_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         payment.product_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         payment.amount?.toString().includes(searchTerm)
     );
