@@ -133,7 +133,7 @@ export default function PaymentsManager() {
                                                         {payment.status}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="font-mono text-xs">{payment.user_id}</TableCell>
+                                                <TableCell className="text-xs">{payment.user_name || payment.user_id}</TableCell>
                                             </TableRow>
                                         ))
                                     )}
