@@ -32,7 +32,7 @@ const statusConfig = {
   archived: { label: 'בארכיון', className: 'bg-gray-50 text-gray-500 border-gray-200' },
 };
 
-export default function ProductCard({ product, onPreview, onArchive }) {
+export default function ProductCard({ product, onPreview, onArchive, onCancelSubscription }) {
   const [failedImg, setFailedImg] = useState(false);
   const config = typeConfig[product.product_type] || typeConfig.other;
   const status = statusConfig[product.status] || statusConfig.active;
@@ -104,7 +104,13 @@ export default function ProductCard({ product, onPreview, onArchive }) {
                       העתק קישור
                     </DropdownMenuItem>
                   )}
-                  {product.status !== 'archived' && onArchive && (
+                  {product.product_type === 'plan' && product.status === 'active' && onCancelSubscription && (
+                    <DropdownMenuItem onClick={() => onCancelSubscription(product)} className="text-red-600">
+                      <X className="w-4 h-4 ml-2" />
+                      ביטול מנוי
+                    </DropdownMenuItem>
+                  )}
+                  {product.status !== 'archived' && product.product_type !== 'plan' && onArchive && (
                     <DropdownMenuItem onClick={() => onArchive(product.id)}>
                       <Archive className="w-4 h-4 ml-2" />
                       העבר לארכיון
