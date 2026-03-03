@@ -1,17 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [handshakeData, setHandshakeData] = useState(null);
+  const [showIframe, setShowIframe] = useState(false);
+  const paymentIdRef = useRef(null);
 
   const planPrices = {
     basic: 199,
     premium: 299
   };
+
+  // Listen for Tranzila iframe postMessage
+  useEffect(() => {
+    const handleMessage = async (event) => {
+      if (event.data && typeof event.data === 'string' && paymentIdRef.current) {
+        try {
+          const parsed = JSON.parse(event.data);
+          if (parsed.Response === '000') {
+            await base44.functions.invoke('tranzilaConfirmPayment', {
+              payment_id: paymentIdRef.current,
+              transaction_id: parsed.ConfirmationCode || ''
+            });
+            toast.success('התשלום בוצע בהצלחה!');
+            onSuccess();
+          }
+        } catch (e) {
+          if (event.data.includes('Response=000')) {
+            const params = new URLSearchParams(event.data);
+            await base44.functions.invoke('tranzilaConfirmPayment', {
+              payment_id: paymentIdRef.current,
+              transaction_id: params.get('ConfirmationCode') || ''
+            });
+            toast.success('התשלום בוצע בהצלחה!');
+            onSuccess();
+          }
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   const handlePayment = async () => {
     setIsProcessing(true);
@@ -31,15 +66,34 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
         consent: true
       });
 
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create payment + handshake via Tranzila
+      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+        product_type: 'service',
+        product_name: `פתיחת עוסק פטור - ${selectedPlan.name}`,
+        amount: planPrices[selectedPlan.id],
+        metadata: { plan: selectedPlan.id, customer_name: formData.fullName, customer_phone: formData.phone }
+      });
 
-      // Call success handler
-      onSuccess();
+      const data = response.data;
+      if (!data.success || !data.thtk) {
+        setError('שגיאה בהתחלת התשלום');
+        setIsProcessing(false);
+        return;
+      }
+
+      paymentIdRef.current = data.paymentId;
+      setHandshakeData(data);
+      setShowIframe(true);
+
+      // Submit form after render
+      setTimeout(() => {
+        const form = document.getElementById('tranzila-osek-form');
+        if (form) form.submit();
+        setIsProcessing(false);
+      }, 300);
     } catch (err) {
       console.error('Payment error:', err);
       setError('אירעה שגיאה בעיבוד התשלום. אנא נסה שוב.');
-    } finally {
       setIsProcessing(false);
     }
   };
