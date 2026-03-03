@@ -1,23 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Lock, X, ChevronRight, CreditCard, Smartphone, Building } from 'lucide-react';
+import { Check, Lock, X, ChevronRight, CreditCard, Smartphone, Building, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import WatermarkedLogo from './WatermarkedLogo';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, onSuccess, onClose, price = 39 }) {
-  const [paymentMethod, setPaymentMethod] = useState('card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [handshakeData, setHandshakeData] = useState(null);
+  const [showIframe, setShowIframe] = useState(false);
+  const paymentIdRef = useRef(null);
+
   const [cardData, setCardData] = useState({
     fullName: '',
     email: '',
-    cardNumber: '',
-    idNumber: '',
-    expiryDate: '',
-    cvv: ''
   });
+
+  // Listen for Tranzila iframe postMessage
+  useEffect(() => {
+    const handleMessage = async (event) => {
+      if (event.data && typeof event.data === 'string' && paymentIdRef.current) {
+        try {
+          const parsed = JSON.parse(event.data);
+          if (parsed.Response === '000') {
+            await base44.functions.invoke('tranzilaConfirmPayment', {
+              payment_id: paymentIdRef.current,
+              transaction_id: parsed.ConfirmationCode || ''
+            });
+            toast.success('התשלום בוצע בהצלחה!');
+            onSuccess({ email: cardData.email, businessName });
+          }
+        } catch (e) {
+          if (event.data.includes('Response=000')) {
+            const params = new URLSearchParams(event.data);
+            await base44.functions.invoke('tranzilaConfirmPayment', {
+              payment_id: paymentIdRef.current,
+              transaction_id: params.get('ConfirmationCode') || ''
+            });
+            toast.success('התשלום בוצע בהצלחה!');
+            onSuccess({ email: cardData.email, businessName });
+          }
+        }
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [cardData.email]);
 
   const product = {
     name: 'לוגו מקצועי',
