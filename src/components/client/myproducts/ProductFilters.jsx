@@ -42,8 +42,8 @@ export default function ProductFilters({ search, onSearchChange, typeFilter, onT
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">כל הסטטוסים</SelectItem>
-          <SelectItem value="active">פעיל</SelectItem>
-          <SelectItem value="draft">טיוטה</SelectItem>
+          <SelectItem value="active">שולם</SelectItem>
+          <SelectItem value="draft">ממתין לתשלום</SelectItem>
           <SelectItem value="archived">ארכיון</SelectItem>
         </SelectContent>
       </Select>

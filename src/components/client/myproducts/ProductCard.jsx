@@ -27,8 +27,8 @@ const typeConfig = {
 };
 
 const statusConfig = {
-  active: { label: 'פעיל', className: 'bg-green-50 text-green-700 border-green-200' },
-  draft: { label: 'טיוטה', className: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
+  active: { label: 'שולם ✓', className: 'bg-green-50 text-green-700 border-green-200' },
+  draft: { label: 'ממתין לתשלום', className: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
   archived: { label: 'בארכיון', className: 'bg-gray-50 text-gray-500 border-gray-200' },
 };
 
