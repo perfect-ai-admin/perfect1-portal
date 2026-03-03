@@ -35,8 +35,12 @@ Deno.serve(async (req) => {
             product_name: product_name || 'מוצר',
             amount,
             currency: 'ILS',
-            payment_method: 'credit_card',
-            status: 'pending'
+            payment_method: 'tranzila',
+            status: 'pending',
+            metadata: {
+                user_email: user.email || '',
+                user_name: user.full_name || ''
+            }
         };
 
         if (items) {
