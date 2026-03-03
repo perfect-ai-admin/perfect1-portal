@@ -61,33 +61,58 @@ export default function MyProducts() {
       // Get PurchasedProduct records
       const purchased = await base44.entities.PurchasedProduct.list('-created_date', 200);
       
-      // Also get completed payments to catch any that don't have PurchasedProduct yet
-      const payments = await base44.entities.Payment.filter(
-        { user_id: user.id, status: 'completed' }, '-created_date', 200
+      // Also get ALL payments for this user to catch anything missing
+      const allPayments = await base44.entities.Payment.filter(
+        { user_id: user.id }, '-created_date', 200
       );
       
       // Find payments that have no matching PurchasedProduct
       const purchasedPaymentIds = new Set(purchased.map(p => p.payment_id).filter(Boolean));
-      const missingPayments = payments.filter(p => !purchasedPaymentIds.has(p.id));
       
-      // Convert missing payments to product-like objects
-      const fromPayments = missingPayments.map(p => ({
-        id: 'payment_' + p.id,
-        user_id: p.user_id,
-        product_type: p.product_type === 'landing-page' ? 'landing_page' :
-                      p.product_type === 'one-time' ? 'service' :
-                      p.product_type === 'plan' ? 'plan' :
-                      p.product_type === 'goal' ? 'goal' :
-                      p.product_type || 'service',
-        product_name: p.product_name || 'רכישה',
-        status: 'active',
-        payment_id: p.id,
-        purchase_price: p.amount || 0,
-        created_date: p.completed_at || p.created_date,
-        metadata: { from_payment: true }
-      }));
+      const missingProducts = [];
       
-      return [...purchased, ...fromPayments];
+      for (const p of allPayments) {
+        if (purchasedPaymentIds.has(p.id)) continue;
+        
+        const mapType = (t) => t === 'landing-page' ? 'landing_page' :
+                               t === 'one-time' ? 'service' :
+                               t || 'service';
+        
+        if (p.product_type === 'cart' && p.items?.length > 0) {
+          // Expand cart items individually
+          for (const item of p.items) {
+            missingProducts.push({
+              id: 'payment_' + p.id + '_' + (item.id || Math.random()),
+              user_id: p.user_id,
+              product_type: item.type || 'other',
+              product_name: item.title || 'מוצר',
+              status: p.status === 'completed' ? 'active' : 'draft',
+              payment_id: p.id,
+              purchase_price: item.price || 0,
+              preview_image: item.preview_image || item.data?.logoUrl || item.data?.preview_image || '',
+              download_url: item.data?.logoUrl || item.data?.stickerUrl || item.data?.presentationUrl || '',
+              created_date: p.completed_at || p.created_date,
+              metadata: { from_payment: true, payment_status: p.status, ...(item.data || {}) }
+            });
+          }
+        } else {
+          missingProducts.push({
+            id: 'payment_' + p.id,
+            user_id: p.user_id,
+            product_type: mapType(p.product_type),
+            product_name: p.product_name || 'רכישה',
+            status: p.status === 'completed' ? 'active' : 'draft',
+            payment_id: p.id,
+            purchase_price: p.amount || 0,
+            preview_image: p.metadata?.logoUrl || '',
+            download_url: p.metadata?.logoUrl || '',
+            created_date: p.completed_at || p.created_date,
+            metadata: { from_payment: true, payment_status: p.status }
+          });
+        }
+      }
+      
+      return [...purchased, ...missingProducts];
     },
     enabled: !!user,
   });
