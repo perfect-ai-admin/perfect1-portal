@@ -32,10 +32,18 @@ const statusConfig = {
   archived: { label: 'בארכיון', className: 'bg-gray-50 text-gray-500 border-gray-200' },
 };
 
+const planStatusConfig = {
+  active: { label: 'מנוי פעיל ✓', className: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  archived: { label: 'מנוי מבוטל', className: 'bg-gray-50 text-gray-500 border-gray-200' },
+};
+
 export default function ProductCard({ product, onPreview, onArchive, onCancelSubscription }) {
   const [failedImg, setFailedImg] = useState(false);
   const config = typeConfig[product.product_type] || typeConfig.other;
-  const status = statusConfig[product.status] || statusConfig.active;
+  const isPlan = product.product_type === 'plan';
+  const status = isPlan 
+    ? (planStatusConfig[product.status] || planStatusConfig.active) 
+    : (statusConfig[product.status] || statusConfig.active);
   const Icon = config.icon;
 
   const handleCopyLink = () => {
@@ -127,7 +135,7 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
                 {new Date(product.created_date).toLocaleDateString('he-IL')}
               </span>
               {product.purchase_price > 0 && (
-                <span>₪{product.purchase_price}</span>
+                <span>₪{product.purchase_price}{isPlan ? '/חודש' : ''}</span>
               )}
             </div>
           </div>
