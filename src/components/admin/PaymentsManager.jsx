@@ -5,9 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { Search, Download, ChevronDown, ChevronUp, User, Mail, Phone, CreditCard, Hash, Clock } from 'lucide-react';
+import { Search, Download, ChevronDown, ChevronUp, User, Mail, Phone, CreditCard, Hash, Clock, CheckCircle2, RefreshCw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import PlansManager from './PlansManager';
 
 const STATUS_LABELS = {
@@ -97,6 +98,17 @@ export default function PaymentsManager() {
             case 'pending': return 'bg-yellow-100 text-yellow-800';
             case 'failed': return 'bg-red-100 text-red-800';
             default: return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    const markAsCompleted = async (paymentId) => {
+        try {
+            await base44.functions.invoke('adminMarkPaymentCompleted', { payment_id: paymentId });
+            toast.success('התשלום סומן כ"שולם"');
+            fetchPayments();
+        } catch (error) {
+            toast.error('שגיאה בעדכון סטטוס');
+            console.error(error);
         }
     };
 
@@ -285,6 +297,25 @@ export default function PaymentsManager() {
                                                                                 </Badge>
                                                                             ))}
                                                                         </div>
+                                                                    </div>
+                                                                )}
+                                                                {/* Admin action: Mark as completed */}
+                                                                {payment.status === 'pending' && (
+                                                                    <div className="col-span-full pt-2 border-t">
+                                                                        <Button
+                                                                            size="sm"
+                                                                            className="bg-green-600 hover:bg-green-700 text-white"
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                markAsCompleted(payment.id);
+                                                                            }}
+                                                                        >
+                                                                            <CheckCircle2 className="w-4 h-4 ml-1" />
+                                                                            סמן כ"שולם" ידנית
+                                                                        </Button>
+                                                                        <span className="text-xs text-gray-400 mr-3">
+                                                                            אם אתה יודע שהחיוב עבר בטרנזילה
+                                                                        </span>
                                                                     </div>
                                                                 )}
                                                             </div>
