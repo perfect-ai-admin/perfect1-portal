@@ -276,7 +276,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
                     <div>
                         <h4 className="font-bold text-blue-900 text-sm mb-1">תשלום מאובטח</h4>
                         <p className="text-xs text-blue-700 leading-relaxed">
-                            התשלום מתבצע באמצעות Stripe בתקן האבטחה המחמיר ביותר (PCI-DSS).
+                            התשלום מתבצע באמצעות סליקה מאובטחת בתקן PCI-DSS.
                             בלחיצה על "המשך לתשלום" תועבר לעמוד סליקה מאובטח.
                         </p>
                     </div>
