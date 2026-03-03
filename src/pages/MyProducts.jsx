@@ -80,7 +80,6 @@ export default function MyProducts() {
                                t || 'service';
         
         if (p.product_type === 'cart' && p.items?.length > 0) {
-          // Expand cart items individually
           for (const item of p.items) {
             missingProducts.push({
               id: 'payment_' + p.id + '_' + (item.id || Math.random()),
@@ -113,7 +112,30 @@ export default function MyProducts() {
         }
       }
       
-      return [...purchased, ...missingProducts];
+      let allProducts = [...purchased, ...missingProducts];
+      
+      // Add current subscription from User entity if not already in list
+      if (user.current_plan_id) {
+        const hasPlanProduct = allProducts.some(p => p.product_type === 'plan');
+        if (!hasPlanProduct) {
+          const plans = await base44.entities.Plan.list();
+          const currentPlan = plans.find(p => p.id === user.current_plan_id);
+          if (currentPlan) {
+            allProducts.unshift({
+              id: 'subscription_' + currentPlan.id,
+              user_id: user.id,
+              product_type: 'plan',
+              product_name: `מנוי ${currentPlan.name}`,
+              status: 'active',
+              purchase_price: currentPlan.price || 0,
+              created_date: user.plan_start_date || user.created_date,
+              metadata: { plan_id: currentPlan.id, type: 'subscription', from_user: true }
+            });
+          }
+        }
+      }
+      
+      return allProducts;
     },
     enabled: !!user,
   });
