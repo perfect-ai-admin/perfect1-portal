@@ -1,8 +1,11 @@
-import { createClient } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
     try {
         // Tranzila sends POST with form data or query params
+        // Clone the request so we can read the body AND pass it to createClientFromRequest
+        const clonedReq = req.clone();
+        
         let params;
         const contentType = req.headers.get('content-type') || '';
         const url = new URL(req.url);
@@ -43,9 +46,8 @@ Deno.serve(async (req) => {
             return new Response('OK', { status: 200 });
         }
 
-        // Use service role directly - NO user auth for server-to-server callback
-        const appId = Deno.env.get('BASE44_APP_ID');
-        const base44 = createClient({ appId });
+        // Use createClientFromRequest for service role access
+        const base44 = createClientFromRequest(clonedReq);
 
         const payments = await base44.asServiceRole.entities.Payment.filter({ id: paymentId });
         if (!payments || payments.length === 0) {
