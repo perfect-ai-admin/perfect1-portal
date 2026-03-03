@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Package, ArrowRight, Loader2, Globe, Palette, 
   Presentation, Image, ShoppingCart, X, LogOut,
-  User, HelpCircle, CreditCard
+  User, HelpCircle, CreditCard, AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
 import ProductCard from '@/components/client/myproducts/ProductCard';
@@ -35,6 +35,8 @@ export default function MyProducts() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [previewPage, setPreviewPage] = useState(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [cancelDialog, setCancelDialog] = useState(null);
+  const [isCancelling, setIsCancelling] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -169,6 +171,29 @@ export default function MyProducts() {
       toast.error('שגיאה בטעינת התצוגה המקדימה');
     } finally {
       setIsPreviewLoading(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    setIsCancelling(true);
+    try {
+      // Reset user plan to free
+      await base44.auth.updateMe({
+        current_plan_id: null,
+        plan_renewal_date: null,
+      });
+      // Archive the PurchasedProduct if it's a real record
+      if (cancelDialog?.id && !cancelDialog.id.startsWith('subscription_') && !cancelDialog.id.startsWith('payment_')) {
+        await base44.entities.PurchasedProduct.update(cancelDialog.id, { status: 'archived' });
+      }
+      queryClient.invalidateQueries({ queryKey: ['purchased-products'] });
+      toast.success('המנוי בוטל בהצלחה. חזרת למסלול החינמי.');
+      setCancelDialog(null);
+      setUser(prev => ({ ...prev, current_plan_id: null }));
+    } catch (err) {
+      toast.error('שגיאה בביטול המנוי');
+    } finally {
+      setIsCancelling(false);
     }
   };
 
