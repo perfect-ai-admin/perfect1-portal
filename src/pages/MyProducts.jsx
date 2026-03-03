@@ -337,6 +337,7 @@ export default function MyProducts() {
                     product={product}
                     onPreview={handlePreview}
                     onArchive={(id) => archiveMutation.mutate(id)}
+                    onCancelSubscription={(p) => setCancelDialog(p)}
                   />
                 ))}
               </AnimatePresence>
@@ -344,6 +345,36 @@ export default function MyProducts() {
           )}
         </div>
       </div>
+
+      {/* Cancel Subscription Dialog */}
+      <Dialog open={!!cancelDialog} onOpenChange={(open) => { if (!open) setCancelDialog(null); }}>
+        <DialogContent className="max-w-md" dir="rtl">
+          <DialogHeader>
+            <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-2">
+              <AlertTriangle className="w-6 h-6 text-red-500" />
+            </div>
+            <DialogTitle className="text-center">ביטול מנוי</DialogTitle>
+            <DialogDescription className="text-center">
+              האם אתה בטוח שברצונך לבטל את המנוי <strong>{cancelDialog?.product_name}</strong>?
+              <br />
+              תחזור למסלול החינמי עם מטרה אחת בלבד.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 sm:justify-center mt-4">
+            <Button variant="outline" onClick={() => setCancelDialog(null)} disabled={isCancelling}>
+              חזרה
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleCancelSubscription}
+              disabled={isCancelling}
+            >
+              {isCancelling ? <Loader2 className="w-4 h-4 animate-spin ml-2" /> : null}
+              כן, בטל מנוי
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Landing Page Preview Modal */}
       <Dialog open={!!previewPage || isPreviewLoading} onOpenChange={(open) => { if (!open) { setPreviewPage(null); setIsPreviewLoading(false); } }}>
