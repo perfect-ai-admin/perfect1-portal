@@ -151,6 +151,9 @@ export default function PaymentsManager() {
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>היסטוריית תשלומים ({filteredPayments.length})</CardTitle>
                             <div className="flex gap-2">
+                                <Button variant="outline" size="icon" onClick={() => { setLoading(true); fetchPayments(); }}>
+                                    <RefreshCw className="w-4 h-4" />
+                                </Button>
                                 <div className="relative">
                                     <Search className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                     <Input
