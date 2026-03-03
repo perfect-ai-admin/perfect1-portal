@@ -217,7 +217,8 @@ Deno.serve(async (req) => {
                         purchasedData.download_url = item.data.presentationUrl;
                     }
 
-                    await base44.entities.PurchasedProduct.create(purchasedData);
+                    await base44.asServiceRole.entities.PurchasedProduct.create(purchasedData);
+                    console.log('PurchasedProduct created for cart item:', item.title);
                 } catch (ppErr) {
                     console.error('Failed to create PurchasedProduct:', ppErr);
                 }
