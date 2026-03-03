@@ -13,7 +13,7 @@ import { toast } from 'sonner';
  *  onClose     – () => void
  *  product     – { name, description, price, isRecurring, tierName?, billingCycle?, items? }
  */
-export default function CheckoutDialog({ open, onClose, product: productProp }) {
+export default function CheckoutDialog({ open, onClose, product: productProp, onPaymentSuccess }) {
   const [user, setUser] = useState(null);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,6 +32,54 @@ export default function CheckoutDialog({ open, onClose, product: productProp }) 
       setLoading(true);
     }
   }, [open, productProp]);
+
+  // Listen for Tranzila iframe postMessage (success/fail)
+  useEffect(() => {
+    if (!open) return;
+
+    const handleMessage = async (event) => {
+      // Tranzila sends postMessage on completion
+      if (event.data && typeof event.data === 'string') {
+        try {
+          const parsed = JSON.parse(event.data);
+          if (parsed.Response === '000' && handshakeData?.paymentId) {
+            // Payment success - confirm on backend
+            try {
+              await base44.functions.invoke('tranzilaConfirmPayment', {
+                payment_id: handshakeData.paymentId,
+                transaction_id: parsed.ConfirmationCode || parsed.index || ''
+              });
+              toast.success('התשלום בוצע בהצלחה! 🎉');
+              if (onPaymentSuccess) onPaymentSuccess(handshakeData.paymentId);
+              onClose();
+            } catch (err) {
+              console.error('Confirm payment error:', err);
+              toast.error('שגיאה באישור התשלום');
+            }
+          }
+        } catch (e) {
+          // Not JSON, check for Tranzila URL params
+          if (event.data.includes('Response=000') && handshakeData?.paymentId) {
+            try {
+              const params = new URLSearchParams(event.data);
+              await base44.functions.invoke('tranzilaConfirmPayment', {
+                payment_id: handshakeData.paymentId,
+                transaction_id: params.get('ConfirmationCode') || ''
+              });
+              toast.success('התשלום בוצע בהצלחה! 🎉');
+              if (onPaymentSuccess) onPaymentSuccess(handshakeData.paymentId);
+              onClose();
+            } catch (err) {
+              console.error('Confirm payment error:', err);
+            }
+          }
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [open, handshakeData]);
 
   const loadData = async () => {
     setLoading(true);
