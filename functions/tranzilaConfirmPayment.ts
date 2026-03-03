@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
             try {
                 await base44.asServiceRole.entities.PurchasedProduct.create({
                     user_id: user.id,
-                    product_type: 'service',
+                    product_type: 'plan',
                     product_name: payment.product_name || 'מנוי',
                     status: 'active',
                     payment_id: payment_id,
