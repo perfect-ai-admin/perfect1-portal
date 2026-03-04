@@ -298,27 +298,46 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     setShowCheckout(false);
     setIsPublishing(true);
     try {
-      // Mark as paid
-      await base44.functions.invoke('publishLandingPage', {
-        landingPageId: previewPageId,
-        action: 'markPaid'
-      });
-
-      // Publish to live
-      const publishRes = await base44.functions.invoke('publishLandingPage', {
-        landingPageId: previewPageId,
-        action: 'publish'
-      });
-
-      if (!publishRes?.data?.url) {
-        throw new Error('Failed to get published URL');
+      // tranzilaConfirmPayment already publishes the landing page,
+      // but we need to get the published URL. Try to fetch it.
+      let url = null;
+      
+      // First try: publish (will succeed or return already-published URL)
+      try {
+        const publishRes = await base44.functions.invoke('publishLandingPage', {
+          landingPageId: previewPageId,
+          action: 'publish'
+        });
+        url = publishRes?.data?.url;
+      } catch (e) {
+        console.log('Publish attempt:', e.message);
+      }
+      
+      // Fallback: fetch the landing page to get its published_url
+      if (!url) {
+        try {
+          const pageRes = await base44.functions.invoke('getPublicLandingPageById', { pageId: previewPageId });
+          url = pageRes?.data?.published_url;
+        } catch (e) {
+          console.log('Fetch page attempt:', e.message);
+        }
       }
 
-      setPublishedUrl(publishRes.data.url);
-      setShowingPreview(false);
+      // Last fallback: construct URL from slug
+      if (!url && pageSlug) {
+        url = `https://one-pai.com/LP?s=${pageSlug}`;
+      }
+
+      if (url) {
+        setPublishedUrl(url);
+        setShowingPreview(false);
+      } else {
+        toast.error('התשלום בוצע! הדף פורסם אך לא הצלחנו לטעון את הקישור. בדוק במוצרים שלי.');
+        setShowingPreview(false);
+      }
     } catch (error) {
       console.error('Error publishing:', error);
-      toast.error('אירעה שגיאה בפרסום. אנא נסה שוב.');
+      toast.error('התשלום בוצע! אירעה שגיאה בטעינת הקישור.');
     } finally {
       setIsPublishing(false);
     }
