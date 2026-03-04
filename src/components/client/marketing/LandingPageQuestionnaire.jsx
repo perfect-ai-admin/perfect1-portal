@@ -1369,6 +1369,25 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                   </DialogContent>
               </Dialog>
 
+              {/* Checkout Dialog - Tranzila Payment */}
+              <CheckoutDialog 
+                open={showCheckout}
+                onClose={() => setShowCheckout(false)}
+                product={{
+                  name: `דף נחיתה: ${formData.businessName}`,
+                  description: 'דף נחיתה ממותג כולל תוכן, עיצוב ודומיין אמיתי',
+                  price: 299,
+                  product_type: 'landing-page',
+                  product_id: previewPageId || '',
+                  metadata: {
+                    landingPageId: previewPageId,
+                    slug: pageSlug,
+                    businessName: formData.businessName
+                  }
+                }}
+                onPaymentSuccess={handlePaymentSuccess}
+              />
+
             </div>
           ) : publishedUrl ? (
             <div className="flex flex-col h-full bg-slate-50 animate-in fade-in zoom-in duration-500 relative overflow-hidden">
