@@ -456,12 +456,19 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         />
       </div>
 
-      {/* Back button */}
-      <div className="text-center">
+      {/* Back button + manual confirm */}
+      <div className="text-center space-y-2">
         <Button variant="ghost" onClick={onBack} className="text-gray-500 text-sm">
           <ArrowRight className="w-4 h-4 ml-1" />
           חזרה לסיכום
         </Button>
+        {onManualConfirm && (
+          <div>
+            <button onClick={onManualConfirm} className="text-[11px] text-blue-500 hover:text-blue-700 underline">
+              שילמתי אבל המסך לא התקדם? לחץ כאן
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-center gap-3 text-[10px] text-gray-400">
