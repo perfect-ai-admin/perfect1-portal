@@ -105,6 +105,7 @@ Deno.serve(async (req) => {
                 console.error('Failed to create PurchasedProduct for goal:', e);
             }
         } else if (productType === 'landing-page' && productId) {
+            let publishedUrl = '';
             try {
                 await base44.functions.invoke('publishLandingPage', {
                     landingPageId: productId,
@@ -114,6 +115,12 @@ Deno.serve(async (req) => {
                     landingPageId: productId,
                     action: 'publish'
                 });
+                // Get slug for published URL
+                const lpArr = await base44.asServiceRole.entities.LandingPage.filter({ id: productId });
+                if (lpArr?.length > 0) {
+                    const slug = lpArr[0].slug || productId;
+                    publishedUrl = `/LP?slug=${slug}`;
+                }
                 console.log('Landing page published:', productId);
             } catch (e) {
                 console.error('Failed to publish landing page:', e);
@@ -128,6 +135,7 @@ Deno.serve(async (req) => {
                     payment_id: payment_id,
                     purchase_price: payment.amount || 0,
                     linked_entity_id: productId,
+                    published_url: publishedUrl,
                     metadata: { type: 'landing_page' }
                 });
             } catch (e) {
