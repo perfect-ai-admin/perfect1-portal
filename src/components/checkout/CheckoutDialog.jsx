@@ -87,7 +87,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     return () => window.removeEventListener('message', handleMessage);
   }, [open, handshakeData]);
 
-  // Polling: check iframe URL for success response (fallback for when postMessage doesn't fire)
+  // Polling fallback 1: check iframe URL (may fail due to cross-origin)
   useEffect(() => {
     if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
 
@@ -109,6 +109,45 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
         // Cross-origin - expected, ignore
       }
     }, 1500);
+
+    return () => clearInterval(interval);
+  }, [open, paymentStep, handshakeData]);
+
+  // Polling fallback 2: check Payment entity status in DB (handles notify_url callback from Tranzila)
+  useEffect(() => {
+    if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
+
+    let attempts = 0;
+    const maxAttempts = 40; // ~2 minutes
+
+    const interval = setInterval(async () => {
+      if (paymentConfirmedRef.current) {
+        clearInterval(interval);
+        return;
+      }
+      attempts++;
+      if (attempts > maxAttempts) {
+        clearInterval(interval);
+        return;
+      }
+      try {
+        const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+        if (payments?.length > 0 && payments[0].status === 'completed') {
+          // Payment was confirmed via notify_url webhook
+          if (!paymentConfirmedRef.current) {
+            paymentConfirmedRef.current = true;
+            toast.success('התשלום בוצע בהצלחה! 🎉');
+            if (onPaymentSuccess) {
+              await onPaymentSuccess(handshakeData.paymentId);
+            }
+            onClose();
+          }
+          clearInterval(interval);
+        }
+      } catch (e) {
+        // Ignore errors
+      }
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [open, paymentStep, handshakeData]);
