@@ -266,6 +266,23 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
               handshakeData={handshakeData}
               recurStartDate={recurStartDate}
               onBack={() => { setPaymentStep('summary'); setHandshakeData(null); }}
+              onManualConfirm={async () => {
+                // Manual check - user claims they paid
+                try {
+                  const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+                  if (payments?.length > 0 && payments[0].status === 'completed') {
+                    paymentConfirmedRef.current = true;
+                    toast.success('התשלום בוצע בהצלחה! 🎉');
+                    if (onPaymentSuccess) await onPaymentSuccess(handshakeData.paymentId);
+                    onClose();
+                  } else {
+                    // Try to confirm payment
+                    await confirmPayment('manual');
+                  }
+                } catch (e) {
+                  toast.error('לא הצלחנו לאמת את התשלום. נסה שוב בעוד רגע.');
+                }
+              }}
             />
           )}
         </div>
