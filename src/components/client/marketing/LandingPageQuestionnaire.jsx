@@ -286,7 +286,16 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     }
   };
 
-  const handlePublishToLive = async () => {
+  const [showCheckout, setShowCheckout] = useState(false);
+
+  const handlePublishToLive = () => {
+    // Open checkout dialog instead of publishing directly
+    setShowCheckout(true);
+  };
+
+  const handlePaymentSuccess = async () => {
+    // After successful payment, publish to live domain
+    setShowCheckout(false);
     setIsPublishing(true);
     try {
       // Mark as paid
@@ -309,7 +318,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       setShowingPreview(false);
     } catch (error) {
       console.error('Error publishing:', error);
-      alert('אירעה שגיאה בפרסום. אנא נסה שוב.');
+      toast.error('אירעה שגיאה בפרסום. אנא נסה שוב.');
     } finally {
       setIsPublishing(false);
     }
