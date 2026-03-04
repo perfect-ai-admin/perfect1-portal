@@ -27,6 +27,7 @@ import EmptyProducts from '@/components/client/myproducts/EmptyProducts';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import ShoppingCartButton from '@/components/client/shared/ShoppingCart';
 import NotificationCenter from '@/components/client/NotificationCenter';
+import LandingPageManageSheet from '@/components/client/myproducts/LandingPageManageSheet';
 
 export default function MyProducts() {
   const [user, setUser] = useState(null);
@@ -37,6 +38,7 @@ export default function MyProducts() {
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [cancelDialog, setCancelDialog] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [managePageId, setManagePageId] = useState(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -340,6 +342,7 @@ export default function MyProducts() {
                     onPreview={handlePreview}
                     onArchive={(id) => archiveMutation.mutate(id)}
                     onCancelSubscription={(p) => setCancelDialog(p)}
+                    onManage={(id) => setManagePageId(id)}
                   />
                 ))}
               </AnimatePresence>
@@ -377,6 +380,13 @@ export default function MyProducts() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Manage Landing Page Sheet */}
+      <LandingPageManageSheet 
+        pageId={managePageId} 
+        open={!!managePageId} 
+        onOpenChange={(open) => { if(!open) setManagePageId(null); }} 
+      />
 
       {/* Landing Page Preview Modal */}
       <Dialog open={!!previewPage || isPreviewLoading} onOpenChange={(open) => { if (!open) { setPreviewPage(null); setIsPreviewLoading(false); } }}>

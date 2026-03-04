@@ -40,7 +40,7 @@ const planStatusConfig = {
   archived: { label: 'מנוי מבוטל', className: 'bg-gray-50 text-gray-500 border-gray-200' },
 };
 
-export default function ProductCard({ product, onPreview, onArchive, onCancelSubscription }) {
+export default function ProductCard({ product, onPreview, onArchive, onCancelSubscription, onManage }) {
   const [failedImg, setFailedImg] = useState(false);
   const navigate = useNavigate();
   const config = typeConfig[product.product_type] || typeConfig.other;
@@ -150,7 +150,7 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
               <Button 
                 size="sm" 
                 className="gap-1.5 text-xs h-8 rounded-lg bg-blue-600 hover:bg-blue-700"
-                onClick={() => navigate(createPageUrl('LandingPageManager') + '?id=' + (product.linked_entity_id || product.metadata?.landingPageId))}
+                onClick={() => onManage ? onManage(product.linked_entity_id || product.metadata?.landingPageId) : navigate(createPageUrl('LandingPageManager') + '?id=' + (product.linked_entity_id || product.metadata?.landingPageId))}
               >
                 <Settings className="w-3.5 h-3.5" />
                 נהל דף
