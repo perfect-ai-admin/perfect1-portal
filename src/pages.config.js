@@ -98,6 +98,7 @@ import InviteUser from './pages/InviteUser';
 import InvoicesAppLanding from './pages/InvoicesAppLanding';
 import JourneyDashboard from './pages/JourneyDashboard';
 import LP from './pages/LP';
+import LandingPageManager from './pages/LandingPageManager';
 import LandingPagePreview from './pages/LandingPagePreview';
 import LashArtistLanding from './pages/LashArtistLanding';
 import LeadsAdmin from './pages/LeadsAdmin';
@@ -163,7 +164,6 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
-import LandingPageManager from './pages/LandingPageManager';
 import __Layout from './Layout.jsx';
 
 
@@ -219,6 +219,7 @@ export const PAGES = {
     "InvoicesAppLanding": InvoicesAppLanding,
     "JourneyDashboard": JourneyDashboard,
     "LP": LP,
+    "LandingPageManager": LandingPageManager,
     "LandingPagePreview": LandingPagePreview,
     "LashArtistLanding": LashArtistLanding,
     "LeadsAdmin": LeadsAdmin,
@@ -284,7 +285,6 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
-    "LandingPageManager": LandingPageManager,
 }
 
 export const pagesConfig = {

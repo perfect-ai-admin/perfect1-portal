@@ -146,11 +146,11 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
 
           {/* Actions */}
           <div className="flex items-center gap-2 flex-wrap">
-            {product.product_type === 'landing_page' && product.linked_entity_id && (
+            {product.product_type === 'landing_page' && (product.linked_entity_id || product.metadata?.landingPageId) && (
               <Button 
                 size="sm" 
                 className="gap-1.5 text-xs h-8 rounded-lg bg-blue-600 hover:bg-blue-700"
-                onClick={() => navigate(createPageUrl('LandingPageManager') + '?id=' + product.linked_entity_id)}
+                onClick={() => navigate(createPageUrl('LandingPageManager') + '?id=' + (product.linked_entity_id || product.metadata?.landingPageId))}
               >
                 <Settings className="w-3.5 h-3.5" />
                 נהל דף

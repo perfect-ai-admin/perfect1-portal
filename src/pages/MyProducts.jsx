@@ -108,6 +108,8 @@ export default function MyProducts() {
             purchase_price: p.amount || 0,
             preview_image: p.metadata?.logoUrl || '',
             download_url: p.metadata?.logoUrl || '',
+            linked_entity_id: p.product_id || p.metadata?.landingPageId || '',
+            published_url: p.product_type === 'landing-page' && p.metadata?.slug ? `/LP?s=${p.metadata.slug}` : '',
             created_date: p.completed_at || p.created_date,
             metadata: { from_payment: true }
           });
