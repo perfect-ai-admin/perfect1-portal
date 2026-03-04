@@ -163,6 +163,7 @@ import WhatIsOsekPatur from './pages/WhatIsOsekPatur';
 import WhenNeedOsekMorsha from './pages/WhenNeedOsekMorsha';
 import WhoCannotBeOsekPatur from './pages/WhoCannotBeOsekPatur';
 import WoltDeliveryLanding from './pages/WoltDeliveryLanding';
+import LandingPageManager from './pages/LandingPageManager';
 import __Layout from './Layout.jsx';
 
 
@@ -283,6 +284,7 @@ export const PAGES = {
     "WhenNeedOsekMorsha": WhenNeedOsekMorsha,
     "WhoCannotBeOsekPatur": WhoCannotBeOsekPatur,
     "WoltDeliveryLanding": WoltDeliveryLanding,
+    "LandingPageManager": LandingPageManager,
 }
 
 export const pagesConfig = {
