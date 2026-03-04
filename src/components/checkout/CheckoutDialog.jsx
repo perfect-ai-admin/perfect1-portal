@@ -44,7 +44,10 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
         transaction_id: transactionId || ''
       });
       toast.success('התשלום בוצע בהצלחה! 🎉');
-      if (onPaymentSuccess) onPaymentSuccess(handshakeData.paymentId);
+      // Call onPaymentSuccess BEFORE onClose so the parent can handle the transition
+      if (onPaymentSuccess) {
+        await onPaymentSuccess(handshakeData.paymentId);
+      }
       onClose();
     } catch (err) {
       console.error('Confirm payment error:', err);
