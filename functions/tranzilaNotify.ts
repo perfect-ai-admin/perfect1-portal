@@ -59,11 +59,34 @@ Deno.serve(async (req) => {
 
         // Handle single product purchase (goal, landing-page, service, one-time)
         if (productType === 'goal' || productType === 'landing-page' || productType === 'service' || productType === 'one-time') {
+            const ppType = productType === 'landing-page' ? 'landing_page' : 
+                           productType === 'one-time' ? 'service' : 
+                           productType === 'goal' ? 'service' : productType;
+
+            // For landing pages - publish the page
+            let publishedUrl = '';
+            if (productType === 'landing-page' && productId) {
+                try {
+                    // Mark as paid
+                    await base44.asServiceRole.entities.LandingPage.update(productId, {
+                        status: 'published',
+                        paid_at: new Date().toISOString(),
+                        published_at: new Date().toISOString()
+                    });
+                    // Get slug for published URL
+                    const lpArr = await base44.asServiceRole.entities.LandingPage.filter({ id: productId });
+                    if (lpArr?.length > 0) {
+                        const slug = lpArr[0].slug || productId;
+                        publishedUrl = `/LP?slug=${slug}`;
+                    }
+                    console.log('[TranzilaNotify] Landing page published:', productId);
+                } catch (e) {
+                    console.error('[TranzilaNotify] Failed to publish landing page:', e);
+                }
+            }
+
             try {
-                const ppType = productType === 'landing-page' ? 'landing_page' : 
-                               productType === 'one-time' ? 'service' : 
-                               productType === 'goal' ? 'service' : productType;
-                await base44.asServiceRole.entities.PurchasedProduct.create({
+                const ppData = {
                     user_id: userId,
                     product_type: ppType,
                     product_name: payment.product_name || 'שירות',
@@ -72,7 +95,11 @@ Deno.serve(async (req) => {
                     purchase_price: payment.amount || 0,
                     linked_entity_id: productId || '',
                     metadata: { original_type: productType }
-                });
+                };
+                if (publishedUrl) {
+                    ppData.published_url = publishedUrl;
+                }
+                await base44.asServiceRole.entities.PurchasedProduct.create(ppData);
                 console.log('[TranzilaNotify] PurchasedProduct created for:', productType);
             } catch (e) {
                 console.error('[TranzilaNotify] Failed to create PurchasedProduct:', e);
