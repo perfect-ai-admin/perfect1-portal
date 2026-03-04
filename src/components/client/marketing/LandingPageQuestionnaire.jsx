@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
+import CheckoutDialog from '@/components/checkout/CheckoutDialog';
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { addToCart } from '../shared/cartUtils';
