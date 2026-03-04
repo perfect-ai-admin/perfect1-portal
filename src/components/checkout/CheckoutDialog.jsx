@@ -33,45 +33,48 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     }
   }, [open, productProp]);
 
+  const paymentConfirmedRef = React.useRef(false);
+
+  const confirmPayment = async (transactionId) => {
+    if (paymentConfirmedRef.current || !handshakeData?.paymentId) return;
+    paymentConfirmedRef.current = true;
+    try {
+      await base44.functions.invoke('tranzilaConfirmPayment', {
+        payment_id: handshakeData.paymentId,
+        transaction_id: transactionId || ''
+      });
+      toast.success('התשלום בוצע בהצלחה! 🎉');
+      if (onPaymentSuccess) onPaymentSuccess(handshakeData.paymentId);
+      onClose();
+    } catch (err) {
+      console.error('Confirm payment error:', err);
+      paymentConfirmedRef.current = false;
+      toast.error('שגיאה באישור התשלום');
+    }
+  };
+
+  // Reset confirmed ref when dialog opens/closes
+  useEffect(() => {
+    if (!open) {
+      paymentConfirmedRef.current = false;
+    }
+  }, [open]);
+
   // Listen for Tranzila iframe postMessage (success/fail)
   useEffect(() => {
     if (!open) return;
 
     const handleMessage = async (event) => {
-      // Tranzila sends postMessage on completion
       if (event.data && typeof event.data === 'string') {
         try {
           const parsed = JSON.parse(event.data);
-          if (parsed.Response === '000' && handshakeData?.paymentId) {
-            // Payment success - confirm on backend
-            try {
-              await base44.functions.invoke('tranzilaConfirmPayment', {
-                payment_id: handshakeData.paymentId,
-                transaction_id: parsed.ConfirmationCode || parsed.index || ''
-              });
-              toast.success('התשלום בוצע בהצלחה! 🎉');
-              if (onPaymentSuccess) onPaymentSuccess(handshakeData.paymentId);
-              onClose();
-            } catch (err) {
-              console.error('Confirm payment error:', err);
-              toast.error('שגיאה באישור התשלום');
-            }
+          if (parsed.Response === '000') {
+            confirmPayment(parsed.ConfirmationCode || parsed.index || '');
           }
         } catch (e) {
-          // Not JSON, check for Tranzila URL params
-          if (event.data.includes('Response=000') && handshakeData?.paymentId) {
-            try {
-              const params = new URLSearchParams(event.data);
-              await base44.functions.invoke('tranzilaConfirmPayment', {
-                payment_id: handshakeData.paymentId,
-                transaction_id: params.get('ConfirmationCode') || ''
-              });
-              toast.success('התשלום בוצע בהצלחה! 🎉');
-              if (onPaymentSuccess) onPaymentSuccess(handshakeData.paymentId);
-              onClose();
-            } catch (err) {
-              console.error('Confirm payment error:', err);
-            }
+          if (event.data.includes('Response=000')) {
+            const params = new URLSearchParams(event.data);
+            confirmPayment(params.get('ConfirmationCode') || '');
           }
         }
       }
@@ -80,6 +83,32 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, [open, handshakeData]);
+
+  // Polling: check iframe URL for success response (fallback for when postMessage doesn't fire)
+  useEffect(() => {
+    if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
+
+    const interval = setInterval(() => {
+      if (paymentConfirmedRef.current) {
+        clearInterval(interval);
+        return;
+      }
+      try {
+        const iframe = document.getElementById('tranzila-dialog-iframe');
+        if (!iframe) return;
+        const iframeUrl = iframe.contentWindow?.location?.href || '';
+        if (iframeUrl.includes('Response=000')) {
+          const urlParams = new URLSearchParams(iframeUrl.split('?')[1] || '');
+          confirmPayment(urlParams.get('ConfirmationCode') || '');
+          clearInterval(interval);
+        }
+      } catch (e) {
+        // Cross-origin - expected, ignore
+      }
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [open, paymentStep, handshakeData]);
 
   const loadData = async () => {
     setLoading(true);
