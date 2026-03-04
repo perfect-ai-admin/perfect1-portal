@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { 
   Globe, Palette, Presentation, Image, MoreVertical, 
   ExternalLink, Download, Eye, Archive, Copy, Calendar,
-  CheckCircle2, FileText, CreditCard, Target, Crown, X
+  CheckCircle2, FileText, CreditCard, Target, Crown, X,
+  Settings
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,6 +42,7 @@ const planStatusConfig = {
 
 export default function ProductCard({ product, onPreview, onArchive, onCancelSubscription }) {
   const [failedImg, setFailedImg] = useState(false);
+  const navigate = useNavigate();
   const config = typeConfig[product.product_type] || typeConfig.other;
   const isPlan = product.product_type === 'plan';
   const status = isPlan 
@@ -142,6 +146,17 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
 
           {/* Actions */}
           <div className="flex items-center gap-2 flex-wrap">
+            {product.product_type === 'landing_page' && product.linked_entity_id && (
+              <Button 
+                size="sm" 
+                className="gap-1.5 text-xs h-8 rounded-lg bg-blue-600 hover:bg-blue-700"
+                onClick={() => navigate(createPageUrl('LandingPageManager') + '?id=' + product.linked_entity_id)}
+              >
+                <Settings className="w-3.5 h-3.5" />
+                נהל דף
+              </Button>
+            )}
+
             {product.product_type === 'landing_page' && product.published_url && (
               <Button 
                 size="sm" 
@@ -151,17 +166,6 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 צפה בדף
-              </Button>
-            )}
-
-            {product.product_type === 'landing_page' && onPreview && (
-              <Button 
-                size="sm" 
-                className="gap-1.5 text-xs h-8 rounded-lg bg-blue-600 hover:bg-blue-700"
-                onClick={() => onPreview(product)}
-              >
-                <Eye className="w-3.5 h-3.5" />
-                תצוגה מקדימה
               </Button>
             )}
 
