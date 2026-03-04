@@ -349,7 +349,7 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
   );
 }
 
-function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurStartDate, onBack }) {
+function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurStartDate, onBack, onManualConfirm }) {
   if (!handshakeData) return null;
 
   const isYearlySubscription = product?.billingCycle === 'yearly';
