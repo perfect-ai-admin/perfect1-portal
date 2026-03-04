@@ -22,7 +22,7 @@ export default function Layout({ children, currentPageName }) {
     const location = useLocation();
 
     // עמודים עצמאיים ללא Header/Footer
-    if (['SystemLogicMap', 'LP', 'LandingPagePreview', 'LandingPageManager'].includes(currentPageName)) {
+    if (['SystemLogicMap', 'LP', 'LandingPagePreview'].includes(currentPageName)) {
       return children;
     }
 
@@ -46,7 +46,7 @@ export default function Layout({ children, currentPageName }) {
     }
 
     // ClientDashboard / AdminDashboard / PricingPerfectBizAI / Summary - אל תציג Header רגיל (יש להם Header משלהם)
-    if (currentPageName === 'ClientDashboard' || currentPageName === 'AdminDashboard' || currentPageName === 'PricingPerfectBizAI' || currentPageName === 'Summary' || currentPageName === 'MyProducts' || currentPageName === 'CloseOsekPaturCRM') {
+    if (currentPageName === 'ClientDashboard' || currentPageName === 'AdminDashboard' || currentPageName === 'PricingPerfectBizAI' || currentPageName === 'Summary' || currentPageName === 'MyProducts' || currentPageName === 'CloseOsekPaturCRM' || currentPageName === 'LandingPageManager') {
       return (
         <HelmetProvider>
           <CriticalCSS />
