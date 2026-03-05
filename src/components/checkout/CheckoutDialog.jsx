@@ -399,6 +399,7 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         
         {/* Payment ID for tracking */}
         <input type="hidden" name="myid" value={handshakeData.paymentId || ''} />
+        <input type="hidden" name="myid_lable" value="תעודת זהות" />
         
         {/* Notify URL for server-to-server callback */}
         {handshakeData.notifyUrl && (

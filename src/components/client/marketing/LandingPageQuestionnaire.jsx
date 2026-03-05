@@ -298,11 +298,9 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     setShowCheckout(false);
     setIsPublishing(true);
     try {
-      // tranzilaConfirmPayment already publishes the landing page,
-      // but we need to get the published URL. Try to fetch it.
       let url = null;
       
-      // First try: publish (will succeed or return already-published URL)
+      // First try: publish
       try {
         const publishRes = await base44.functions.invoke('publishLandingPage', {
           landingPageId: previewPageId,
@@ -328,15 +326,18 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
         url = `https://one-pai.com/LP?s=${pageSlug}`;
       }
 
+      // CRITICAL: Move away from the preview/draft screen and show published URL
+      setShowingPreview(false);
+      setIsBuilding(false);
+      
       if (url) {
         setPublishedUrl(url);
-        setShowingPreview(false);
       } else {
         toast.error('התשלום בוצע! הדף פורסם אך לא הצלחנו לטעון את הקישור. בדוק במוצרים שלי.');
-        setShowingPreview(false);
       }
     } catch (error) {
       console.error('Error publishing:', error);
+      setShowingPreview(false);
       toast.error('התשלום בוצע! אירעה שגיאה בטעינת הקישור.');
     } finally {
       setIsPublishing(false);
