@@ -192,6 +192,8 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
               {handshakeData.notifyUrl && (
                 <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
               )}
+              <input type="hidden" name="success_url_address" value="https://one-pai.com/MyProducts?payment=success" />
+              <input type="hidden" name="fail_url_address" value="https://one-pai.com/PricingPerfectBizAI?payment=failed" />
               <input type="hidden" name="lang" value="il" />
               <input type="hidden" name="nologo" value="1" />
               <input type="hidden" name="trBgColor" value="FFFFFF" />
