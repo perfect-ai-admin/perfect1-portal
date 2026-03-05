@@ -438,6 +438,8 @@ export default function Checkout() {
                     <input type="hidden" name="myid_lable" value="תעודת זהות" />
                     <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />
                     <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
+                    <input type="hidden" name="success_url_address" value="https://one-pai.com/MyProducts?payment=success" />
+                    <input type="hidden" name="fail_url_address" value="https://one-pai.com/PricingPerfectBizAI?payment=failed" />
 
                     {/* Display */}
                     <input type="hidden" name="lang" value="il" />
