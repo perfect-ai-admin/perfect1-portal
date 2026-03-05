@@ -128,6 +128,38 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
     },
   ];
 
+  const handleTestChannels = async () => {
+    if (!page?.id) {
+      toast.error('שמור את ההגדרות קודם');
+      return;
+    }
+    setTesting(true);
+    setTestResults(null);
+    try {
+      const res = await base44.functions.invoke('testLeadChannels', { pageId: page.id });
+      setTestResults(res.data);
+      const allSuccess = Object.values(res.data.results || {}).every(r => r.success);
+      if (allSuccess) {
+        toast.success('כל הערוצים עובדים מצוין! ✅');
+      } else {
+        toast.warning('חלק מהערוצים נכשלו — בדוק את הפרטים');
+      }
+    } catch (err) {
+      toast.error('שגיאה בבדיקה: ' + (err?.response?.data?.error || err.message));
+      setTestResults(null);
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  const channelLabels = {
+    n8n: 'CRM מובנה',
+    whatsapp: 'WhatsApp',
+    email: 'אימייל',
+    phone: 'הודעה קצרה',
+    webhook: 'CRM חיצוני',
+  };
+
   const activeChannels = form.lead_channels;
   const needsPhone = activeChannels.some(c => ['whatsapp', 'phone', 'n8n'].includes(c));
   const needsEmail = activeChannels.some(c => ['email', 'n8n'].includes(c));
