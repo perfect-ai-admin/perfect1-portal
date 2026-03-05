@@ -449,6 +449,65 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
         </CardContent>
       </Card>
 
+      {/* Test Channels */}
+      <Card className="border-orange-200 bg-orange-50/50">
+        <CardContent className="pt-5 pb-4">
+          <div className="flex items-start gap-3">
+            <div className="bg-orange-100 p-2 rounded-lg flex-shrink-0">
+              <Send className="w-5 h-5 text-orange-700" />
+            </div>
+            <div className="flex-1">
+              <p className="font-bold text-orange-900 text-sm mb-1">שלח ליד מבחן 🧪</p>
+              <p className="text-xs text-orange-800 leading-relaxed mb-3">
+                שמור קודם את ההגדרות, ואז לחץ כדי לשלוח ליד מבחן לכל הערוצים שבחרת. 
+                ככה תוכל/י לוודא שהכל עובד לפני שהדף עולה לאוויר.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={testing || !page?.id}
+                onClick={handleTestChannels}
+                className="gap-2 border-orange-300 text-orange-800 hover:bg-orange-100"
+              >
+                {testing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                {testing ? 'שולח ליד מבחן...' : 'שלח ליד מבחן'}
+              </Button>
+
+              {/* Test Results */}
+              {testResults && testResults.results && (
+                <div className="mt-3 space-y-1.5">
+                  {Object.entries(testResults.results).map(([ch, result]) => (
+                    <div key={ch} className={`flex items-center gap-2 text-xs p-2 rounded-lg ${
+                      result.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+                    }`}>
+                      {result.success 
+                        ? <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        : <XCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                      }
+                      <span className={`font-medium ${result.success ? 'text-green-800' : 'text-red-800'}`}>
+                        {channelLabels[ch] || ch}
+                      </span>
+                      {result.success 
+                        ? <span className="text-green-600">— עובד! ✅</span>
+                        : <span className="text-red-600">— {result.error || `שגיאה (${result.status})`}</span>
+                      }
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {!page?.id && (
+                <p className="mt-2 text-[10px] text-orange-600 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  שמור קודם את ההגדרות כדי לאפשר בדיקה
+                </p>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex justify-end">
         <Button type="submit" disabled={saving} className="gap-2 bg-blue-600 hover:bg-blue-700">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
