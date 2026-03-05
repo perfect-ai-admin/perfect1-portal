@@ -47,6 +47,12 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
       // Call onPaymentSuccess BEFORE onClose so the parent can handle the transition
       if (onPaymentSuccess) {
         await onPaymentSuccess(handshakeData.paymentId);
+      } else {
+        // Default: redirect to live domain MyProducts
+        const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
+        if (isPreview) {
+          window.location.href = 'https://one-pai.com/MyProducts?payment=success';
+        }
       }
       onClose();
     } catch (err) {
