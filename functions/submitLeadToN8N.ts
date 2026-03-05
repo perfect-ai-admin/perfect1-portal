@@ -22,11 +22,19 @@ Deno.serve(async (req) => {
             }
         }
 
-        const leadDestination = landingPage?.lead_destination || 'n8n';
+        // Support multi-channel: use lead_channels array, fallback to old lead_destination
+        let channels = landingPage?.lead_channels || [];
+        if (channels.length === 0 && landingPage?.lead_destination) {
+            channels = [landingPage.lead_destination];
+        }
+        if (channels.length === 0) {
+            channels = ['n8n'];
+        }
+
         const destPhone = landingPage?.destination_phone || '';
         const destEmail = landingPage?.destination_email || '';
 
-        console.log(`Lead destination: ${leadDestination}, phone: ${destPhone}, email: ${destEmail}`);
+        console.log(`Lead channels: ${JSON.stringify(channels)}, phone: ${destPhone}, email: ${destEmail}`);
 
         // 2. Always save to CRM (Lead entity)
         const leadData = {
@@ -54,9 +62,7 @@ Deno.serve(async (req) => {
                 status: 'new',
                 journey_stage: 'lead_new'
             };
-            // If landing page has a created_by (owner), link to their user_id
             if (landingPage?.created_by) {
-                // Find the user by email to get their id
                 try {
                     const users = await base44.asServiceRole.entities.User.filter({ email: landingPage.created_by });
                     if (users && users.length > 0) {
@@ -72,41 +78,38 @@ Deno.serve(async (req) => {
             console.warn('CRMLead creation failed (non-critical):', crmErr.message);
         }
 
-        // 4. Send to external CRM webhook if configured
-        if (leadDestination === 'webhook') {
+        // 4. Process all channels
+        const notifications = [];
+
+        // Webhook channel
+        if (channels.includes('webhook')) {
             const webhookUrl = landingPage?.webhook_url;
             const webhookHeaders = landingPage?.webhook_headers || {};
             if (webhookUrl) {
-                try {
-                    const webhookPayload = {
-                        name: name || '',
-                        phone: phone.trim(),
-                        email: email || '',
-                        message: message || '',
-                        source: businessName || pageSlug || 'landing-page',
-                        page_url: pageSlug ? `https://one-pai.com/LP?s=${pageSlug}` : '',
-                        timestamp: new Date().toISOString(),
-                        lead_id: leadResult.id
-                    };
-                    const webhookResp = await fetch(webhookUrl, {
+                const webhookPayload = {
+                    name: name || '',
+                    phone: phone.trim(),
+                    email: email || '',
+                    message: message || '',
+                    source: businessName || pageSlug || 'landing-page',
+                    page_url: pageSlug ? `https://one-pai.com/LP?s=${pageSlug}` : '',
+                    timestamp: new Date().toISOString(),
+                    lead_id: leadResult.id
+                };
+                notifications.push(
+                    fetch(webhookUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', ...webhookHeaders },
                         body: JSON.stringify(webhookPayload)
-                    });
-                    console.log('External webhook status:', webhookResp.status);
-                } catch (whErr) {
-                    console.warn('External webhook failed:', whErr.message);
-                }
+                    }).then(r => console.log('External webhook status:', r.status)).catch(e => console.warn('External webhook failed:', e.message))
+                );
             } else {
-                console.warn('Webhook destination selected but no URL configured');
+                console.warn('Webhook channel selected but no URL configured');
             }
         }
 
-        // 5. Send notifications based on lead_destination setting
-        const notifications = [];
-
-        // Always try N8N if destination is n8n
-        if (leadDestination === 'n8n') {
+        // N8N channel
+        if (channels.includes('n8n')) {
             const N8N_URL = Deno.env.get('N8N_WEBHOOK_URL');
             if (N8N_URL) {
                 notifications.push(
@@ -123,8 +126,8 @@ Deno.serve(async (req) => {
             }
         }
 
-        // WhatsApp notification
-        if ((leadDestination === 'whatsapp' || leadDestination === 'n8n') && destPhone) {
+        // WhatsApp notification channel
+        if ((channels.includes('whatsapp') || channels.includes('n8n')) && destPhone) {
             const greenApiToken = Deno.env.get('GREENAPI_API_TOKEN');
             const greenApiInstance = Deno.env.get('GREENAPI_INSTANCE_ID');
             if (greenApiToken && greenApiInstance) {
@@ -148,8 +151,8 @@ Deno.serve(async (req) => {
             }
         }
 
-        // Email notification
-        if ((leadDestination === 'email' || leadDestination === 'n8n') && destEmail) {
+        // Email notification channel
+        if ((channels.includes('email') || channels.includes('n8n')) && destEmail) {
             notifications.push(
                 base44.asServiceRole.integrations.Core.SendEmail({
                     from_name: businessName || 'Lead.im',
@@ -178,10 +181,8 @@ Deno.serve(async (req) => {
             );
         }
 
-        // SMS notification (phone destination)
-        if (leadDestination === 'phone' && destPhone) {
-            // For SMS, send via email as fallback (no SMS provider configured)
-            // At minimum, send WhatsApp
+        // Phone/SMS channel (WhatsApp short message)
+        if (channels.includes('phone') && destPhone) {
             const greenApiToken = Deno.env.get('GREENAPI_API_TOKEN');
             const greenApiInstance = Deno.env.get('GREENAPI_INSTANCE_ID');
             if (greenApiToken && greenApiInstance) {
@@ -199,7 +200,7 @@ Deno.serve(async (req) => {
             }
         }
 
-        // Wait for all notifications (non-blocking - don't fail if any notification fails)
+        // Wait for all notifications
         if (notifications.length > 0) {
             await Promise.allSettled(notifications);
         }
@@ -208,7 +209,7 @@ Deno.serve(async (req) => {
             success: true,
             message: 'Lead saved and notifications sent',
             leadId: leadResult.id,
-            destination: leadDestination
+            channels: channels
         });
 
     } catch (error) {
