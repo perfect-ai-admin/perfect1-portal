@@ -9,9 +9,6 @@ import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
 import CampaignBuilder from '../marketing/CampaignBuilder';
 
-import BarChart from '../business/BarChart';
-import Sparkline from '../business/Sparkline';
-
 export default function MarketingTab({ data }) {
   return (
     <motion.div
