@@ -19,6 +19,8 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
   const [showHeaders, setShowHeaders] = useState(false);
   const [newHeaderKey, setNewHeaderKey] = useState('');
   const [newHeaderValue, setNewHeaderValue] = useState('');
+  const [testing, setTesting] = useState(false);
+  const [testResults, setTestResults] = useState(null);
 
   useEffect(() => {
     if (page) {
