@@ -145,6 +145,11 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
             toast.success('התשלום בוצע בהצלחה! 🎉');
             if (onPaymentSuccess) {
               await onPaymentSuccess(handshakeData.paymentId);
+            } else {
+              const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
+              if (isPreview) {
+                window.location.href = 'https://one-pai.com/MyProducts?payment=success';
+              }
             }
             onClose();
           }
