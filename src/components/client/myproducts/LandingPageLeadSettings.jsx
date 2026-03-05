@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Save, Loader2, Phone, Mail, Link2, MessageCircle, Webhook, CheckCircle2, ArrowLeft, Zap, Globe, Copy, Eye, EyeOff, Plus, Trash2, Check } from 'lucide-react';
+import { Save, Loader2, Phone, Mail, Link2, MessageCircle, Webhook, CheckCircle2, ArrowLeft, Zap, Globe, Copy, Eye, EyeOff, Plus, Trash2, Check, Send, XCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { base44 } from '@/api/base44Client';
 
 export default function LandingPageLeadSettings({ page, onSave, saving }) {
   const [form, setForm] = useState({
