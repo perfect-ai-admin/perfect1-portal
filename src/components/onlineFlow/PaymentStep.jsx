@@ -188,6 +188,7 @@ export default function PaymentStep({ formData, selectedPlan, onSuccess, onBack 
               <input type="hidden" name="thtk" value={handshakeData.thtk} />
               <input type="hidden" name="myid" value="" />
               <input type="hidden" name="myid_lable" value="תעודת זהות" />
+              <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />
               {handshakeData.notifyUrl && (
                 <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
               )}

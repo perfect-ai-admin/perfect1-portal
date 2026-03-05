@@ -401,6 +401,9 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         <input type="hidden" name="myid" value="" />
         <input type="hidden" name="myid_lable" value="תעודת זהות" />
         
+        {/* Pass payment ID via order reference field (returned in notify callback) */}
+        <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />
+        
         {/* Notify URL for server-to-server callback */}
         {handshakeData.notifyUrl && (
           <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
