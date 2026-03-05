@@ -1,16 +1,52 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 Deno.serve(async (req) => {
     try {
         // Tranzila sends POST with form data or query params
-        // Clone the request so we can read the body AND pass it to createClientFromRequest
         const clonedReq = req.clone();
         
         let params;
-...
+        const contentType = req.headers.get('content-type') || '';
+        
+        if (contentType.includes('application/x-www-form-urlencoded')) {
+            const body = await req.text();
+            params = new URLSearchParams(body);
+        } else if (contentType.includes('application/json')) {
+            const body = await req.json();
+            params = new URLSearchParams(Object.entries(body).map(([k, v]) => [k, String(v)]));
+        } else {
+            // Try URL params
+            const url = new URL(req.url);
+            params = url.searchParams;
+        }
+
+        const responseCode = params.get('Response') || '';
+        const confirmationCode = params.get('ConfirmationCode') || '';
+        const index = params.get('index') || '';
+        
+        // Payment ID is now passed via o_cred_oid (since myid is used for TZ/ID number)
+        const paymentId = params.get('o_cred_oid') || params.get('myid') || params.get('oid') || '';
+
+        console.log('[TranzilaNotify] Received callback:', {
+            Response: responseCode,
+            ConfirmationCode: confirmationCode,
+            paymentId,
+            index
+        });
+
+        // Only process successful transactions
+        if (responseCode !== '000') {
+            console.log('[TranzilaNotify] Non-success response:', responseCode);
+            return new Response('OK', { status: 200 });
+        }
+
+        if (!paymentId) {
+            console.error('[TranzilaNotify] No payment ID found in callback');
+            return new Response('OK', { status: 200 });
+        }
+
         // Use createClientFromRequest for service role access (webhook - no user auth)
         const base44 = createClientFromRequest(clonedReq);
-        // Note: all entity ops below use asServiceRole since this is a server-to-server callback
 
         const payments = await base44.asServiceRole.entities.Payment.filter({ id: paymentId });
         if (!payments || payments.length === 0) {
@@ -63,17 +99,14 @@ Deno.serve(async (req) => {
                            productType === 'one-time' ? 'service' : 
                            productType === 'goal' ? 'service' : productType;
 
-            // For landing pages - publish the page
             let publishedUrl = '';
             if (productType === 'landing-page' && productId) {
                 try {
-                    // Mark as paid
                     await base44.asServiceRole.entities.LandingPage.update(productId, {
                         status: 'published',
                         paid_at: new Date().toISOString(),
                         published_at: new Date().toISOString()
                     });
-                    // Get slug for published URL
                     const lpArr = await base44.asServiceRole.entities.LandingPage.filter({ id: productId });
                     if (lpArr?.length > 0) {
                         const slug = lpArr[0].slug || productId;
