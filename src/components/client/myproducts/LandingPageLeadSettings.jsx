@@ -3,9 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Save, Loader2, Phone, Mail, Link2, MessageCircle, Webhook, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Save, Loader2, Phone, Mail, Link2, MessageCircle, Webhook, CheckCircle2, AlertCircle, ArrowLeft, Zap } from 'lucide-react';
 
 export default function LandingPageLeadSettings({ page, onSave, saving }) {
   const [form, setForm] = useState({
@@ -30,23 +29,70 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
   };
 
   const destinations = [
-    { value: 'n8n', label: 'CRM (מערכת הלידים שלנו)', icon: Webhook, desc: 'לידים נשמרים ומנוהלים במערכת Perfect One', badge: 'מומלץ' },
-    { value: 'whatsapp', label: 'WhatsApp ישיר', icon: MessageCircle, desc: 'לידים נשלחים ישירות ל-WhatsApp שלך' },
-    { value: 'email', label: 'התראת אימייל', icon: Mail, desc: 'לידים נשלחים למייל שלך' },
-    { value: 'phone', label: 'התראת SMS', icon: Phone, desc: 'לידים נשלחים ב-SMS לטלפון שלך' },
+    { 
+      value: 'n8n', 
+      label: 'CRM + כל הערוצים', 
+      icon: Webhook, 
+      desc: 'לידים נשמרים ב-CRM שלך + נשלחים לוואטסאפ ומייל (אם הוגדרו)', 
+      badge: 'מומלץ',
+      detail: 'הליד נשמר אוטומטית במערכת הלידים, ובנוסף נשלחת התראה לוואטסאפ ולמייל שהגדרת.'
+    },
+    { 
+      value: 'whatsapp', 
+      label: 'WhatsApp ישיר', 
+      icon: MessageCircle, 
+      desc: 'לידים נשלחים ישירות ל-WhatsApp שלך + נשמרים ב-CRM',
+      detail: 'הליד נשמר במערכת ונשלח כהודעת וואטסאפ עם כל הפרטים למספר שתגדיר.'
+    },
+    { 
+      value: 'email', 
+      label: 'התראת אימייל', 
+      icon: Mail, 
+      desc: 'לידים נשלחים למייל שלך + נשמרים ב-CRM',
+      detail: 'הליד נשמר במערכת ונשלח כמייל מעוצב עם כל פרטי הליד לכתובת שתגדיר.'
+    },
+    { 
+      value: 'phone', 
+      label: 'הודעת WhatsApp (כ-SMS)', 
+      icon: Phone, 
+      desc: 'לידים נשלחים כהודעה קצרה לטלפון שלך + נשמרים ב-CRM',
+      detail: 'הליד נשמר במערכת ונשלחת הודעת וואטסאפ קצרה עם תמצית הפרטים.'
+    },
   ];
+
+  const selectedDest = destinations.find(d => d.value === form.lead_destination);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* How it works */}
+      <Card className="border-green-200 bg-green-50/50">
+        <CardContent className="pt-5 pb-4">
+          <div className="flex items-start gap-3">
+            <div className="bg-green-100 p-2 rounded-lg flex-shrink-0">
+              <Zap className="w-5 h-5 text-green-700" />
+            </div>
+            <div>
+              <p className="font-bold text-green-900 text-sm mb-1">חיבור אמיתי - לא רק ממשק</p>
+              <p className="text-xs text-green-800 leading-relaxed">
+                כל ליד שנכנס מדף הנחיתה שלך: 
+                <strong> נשמר אוטומטית ב-CRM</strong> (מערכת הלידים), 
+                <strong> מקושר לדף הנחיתה הספציפי שלך</strong>, 
+                ו<strong>נשלח אליך בערוץ שתבחר</strong> (וואטסאפ / מייל / שניהם).
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Lead Destination */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Link2 className="w-5 h-5 text-blue-600" />
-            לאן לשלוח את הלידים?
+            ערוץ קבלת ההתראות
           </CardTitle>
           <CardDescription>
-            בחר/י לאן הלידים שנכנסים מדף הנחיתה יישלחו
+            בחר/י איפה תקבל/י את ההתראות על לידים חדשים
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -60,7 +106,7 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
                 onClick={() => setForm(f => ({ ...f, lead_destination: dest.value }))}
                 className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-right ${
                   isActive 
-                    ? 'border-blue-500 bg-blue-50' 
+                    ? 'border-blue-500 bg-blue-50 shadow-sm' 
                     : 'border-gray-200 hover:border-gray-300 bg-white'
                 }`}
               >
@@ -90,45 +136,71 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
       {/* Destination Details */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">פרטי היעד</CardTitle>
+          <CardTitle className="text-lg">פרטי היעד שלך</CardTitle>
           <CardDescription>
-            הגדר את הפרטים לקבלת הלידים
+            {selectedDest?.detail || 'הגדר את הפרטים לקבלת הלידים'}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>טלפון לקבלת התראות / WhatsApp</Label>
-            <Input 
-              value={form.destination_phone} 
-              onChange={(e) => setForm(f => ({ ...f, destination_phone: e.target.value }))} 
-              placeholder="050-0000000" 
-              dir="ltr" 
-            />
-            <p className="text-xs text-gray-400">הלידים יישלחו למספר זה ב-WhatsApp או SMS</p>
-          </div>
+          {(form.lead_destination === 'whatsapp' || form.lead_destination === 'phone' || form.lead_destination === 'n8n') && (
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <MessageCircle className="w-4 h-4 text-green-600" />
+                מספר WhatsApp לקבלת לידים
+              </Label>
+              <Input 
+                value={form.destination_phone} 
+                onChange={(e) => setForm(f => ({ ...f, destination_phone: e.target.value }))} 
+                placeholder="050-0000000" 
+                dir="ltr" 
+              />
+              <p className="text-xs text-gray-400">הודעות על לידים חדשים יישלחו למספר זה בוואטסאפ</p>
+            </div>
+          )}
 
-          <div className="space-y-2">
-            <Label>אימייל לקבלת לידים</Label>
-            <Input 
-              value={form.destination_email} 
-              onChange={(e) => setForm(f => ({ ...f, destination_email: e.target.value }))} 
-              placeholder="your@email.com" 
-              type="email"
-              dir="ltr" 
-            />
-            <p className="text-xs text-gray-400">לידים חדשים יישלחו גם לכתובת זו</p>
-          </div>
+          {(form.lead_destination === 'email' || form.lead_destination === 'n8n') && (
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-blue-600" />
+                אימייל לקבלת לידים
+              </Label>
+              <Input 
+                value={form.destination_email} 
+                onChange={(e) => setForm(f => ({ ...f, destination_email: e.target.value }))} 
+                placeholder="your@email.com" 
+                type="email"
+                dir="ltr" 
+              />
+              <p className="text-xs text-gray-400">מייל מעוצב עם פרטי הליד יישלח לכתובת זו</p>
+            </div>
+          )}
+
+          {form.lead_destination === 'phone' && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+              <strong>שים לב:</strong> הודעות נשלחות בוואטסאפ (לא SMS רגיל). וודא שהמספר מחובר לוואטסאפ.
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Info */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
-        <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-        <div className="text-sm text-blue-800">
-          <p className="font-bold mb-1">איך זה עובד?</p>
-          <p>כל ליד שנכנס דרך דף הנחיתה שלך נשמר אוטומטית במערכת. בנוסף, תקבל/י התראה ליעד שבחרת (WhatsApp, מייל, או SMS). מהדשבורד תוכל/י לראות את כל הלידים ולנהל אותם.</p>
-        </div>
-      </div>
+      {/* Flow Diagram */}
+      <Card className="border-slate-200 bg-slate-50/50">
+        <CardContent className="pt-5 pb-4">
+          <p className="font-bold text-slate-800 text-sm mb-3">תהליך הליד:</p>
+          <div className="flex items-center gap-2 text-xs text-slate-600 flex-wrap">
+            <span className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 font-medium">👤 גולש ממלא טופס</span>
+            <ArrowLeft className="w-3 h-3 text-slate-400 flex-shrink-0" />
+            <span className="bg-blue-100 border border-blue-200 rounded-lg px-3 py-1.5 font-medium text-blue-800">💾 נשמר ב-CRM</span>
+            <ArrowLeft className="w-3 h-3 text-slate-400 flex-shrink-0" />
+            <span className="bg-green-100 border border-green-200 rounded-lg px-3 py-1.5 font-medium text-green-800">
+              {form.lead_destination === 'whatsapp' ? '📱 וואטסאפ אליך' : 
+               form.lead_destination === 'email' ? '📧 מייל אליך' :
+               form.lead_destination === 'phone' ? '📱 הודעה אליך' :
+               '📱📧 וואטסאפ + מייל אליך'}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="flex justify-end">
         <Button type="submit" disabled={saving} className="gap-2 bg-blue-600 hover:bg-blue-700">
