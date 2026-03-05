@@ -397,8 +397,8 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         <input type="hidden" name="new_process" value="1" />
         <input type="hidden" name="thtk" value={handshakeData.thtk} />
         
-        {/* Payment ID for tracking */}
-        <input type="hidden" name="myid" value={handshakeData.paymentId || ''} />
+        {/* TZ field - let user fill their ID number */}
+        <input type="hidden" name="myid" value="" />
         <input type="hidden" name="myid_lable" value="תעודת זהות" />
         
         {/* Notify URL for server-to-server callback */}
