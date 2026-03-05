@@ -72,7 +72,37 @@ Deno.serve(async (req) => {
             console.warn('CRMLead creation failed (non-critical):', crmErr.message);
         }
 
-        // 4. Send notifications based on lead_destination setting
+        // 4. Send to external CRM webhook if configured
+        if (leadDestination === 'webhook') {
+            const webhookUrl = landingPage?.webhook_url;
+            const webhookHeaders = landingPage?.webhook_headers || {};
+            if (webhookUrl) {
+                try {
+                    const webhookPayload = {
+                        name: name || '',
+                        phone: phone.trim(),
+                        email: email || '',
+                        message: message || '',
+                        source: businessName || pageSlug || 'landing-page',
+                        page_url: pageSlug ? `https://one-pai.com/LP?s=${pageSlug}` : '',
+                        timestamp: new Date().toISOString(),
+                        lead_id: leadResult.id
+                    };
+                    const webhookResp = await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', ...webhookHeaders },
+                        body: JSON.stringify(webhookPayload)
+                    });
+                    console.log('External webhook status:', webhookResp.status);
+                } catch (whErr) {
+                    console.warn('External webhook failed:', whErr.message);
+                }
+            } else {
+                console.warn('Webhook destination selected but no URL configured');
+            }
+        }
+
+        // 5. Send notifications based on lead_destination setting
         const notifications = [];
 
         // Always try N8N if destination is n8n
