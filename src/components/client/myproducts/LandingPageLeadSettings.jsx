@@ -4,14 +4,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Save, Loader2, Phone, Mail, Link2, MessageCircle, Webhook, CheckCircle2, AlertCircle, ArrowLeft, Zap } from 'lucide-react';
+import { Save, Loader2, Phone, Mail, Link2, MessageCircle, Webhook, CheckCircle2, ArrowLeft, Zap, Globe, Copy, Eye, EyeOff, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function LandingPageLeadSettings({ page, onSave, saving }) {
   const [form, setForm] = useState({
     lead_destination: 'n8n',
     destination_phone: '',
     destination_email: '',
+    webhook_url: '',
+    webhook_headers: {},
   });
+  const [showHeaders, setShowHeaders] = useState(false);
+  const [newHeaderKey, setNewHeaderKey] = useState('');
+  const [newHeaderValue, setNewHeaderValue] = useState('');
 
   useEffect(() => {
     if (page) {
@@ -19,6 +25,8 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
         lead_destination: page.lead_destination || 'n8n',
         destination_phone: page.destination_phone || page.phone || '',
         destination_email: page.destination_email || '',
+        webhook_url: page.webhook_url || '',
+        webhook_headers: page.webhook_headers || {},
       });
     }
   }, [page]);
@@ -28,14 +36,41 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
     onSave(form);
   };
 
+  const addHeader = () => {
+    if (!newHeaderKey.trim()) return;
+    setForm(f => ({
+      ...f,
+      webhook_headers: { ...f.webhook_headers, [newHeaderKey.trim()]: newHeaderValue }
+    }));
+    setNewHeaderKey('');
+    setNewHeaderValue('');
+  };
+
+  const removeHeader = (key) => {
+    setForm(f => {
+      const headers = { ...f.webhook_headers };
+      delete headers[key];
+      return { ...f, webhook_headers: headers };
+    });
+  };
+
   const destinations = [
     { 
       value: 'n8n', 
-      label: 'CRM + כל הערוצים', 
+      label: 'CRM מובנה + כל הערוצים', 
       icon: Webhook, 
-      desc: 'לידים נשמרים ב-CRM שלך + נשלחים לוואטסאפ ומייל (אם הוגדרו)', 
+      desc: 'לידים נשמרים ב-CRM שלך + נשלחים לוואטסאפ ומייל', 
       badge: 'מומלץ',
       detail: 'הליד נשמר אוטומטית במערכת הלידים, ובנוסף נשלחת התראה לוואטסאפ ולמייל שהגדרת.'
+    },
+    { 
+      value: 'webhook', 
+      label: 'CRM חיצוני (Webhook)', 
+      icon: Globe, 
+      desc: 'חבר כל מערכת CRM חיצונית - Monday, HubSpot, Salesforce ועוד', 
+      badge: 'חדש',
+      badgeColor: 'bg-purple-100 text-purple-700',
+      detail: 'הזן את כתובת ה-Webhook של מערכת ה-CRM שלך. הליד יישלח ישירות למערכת שלך בפורמט JSON.'
     },
     { 
       value: 'whatsapp', 
@@ -61,6 +96,7 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
   ];
 
   const selectedDest = destinations.find(d => d.value === form.lead_destination);
+  const headerEntries = Object.entries(form.webhook_headers || {});
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -75,9 +111,10 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
               <p className="font-bold text-green-900 text-sm mb-1">חיבור אמיתי - לא רק ממשק</p>
               <p className="text-xs text-green-800 leading-relaxed">
                 כל ליד שנכנס מדף הנחיתה שלך: 
-                <strong> נשמר אוטומטית ב-CRM</strong> (מערכת הלידים), 
-                <strong> מקושר לדף הנחיתה הספציפי שלך</strong>, 
-                ו<strong>נשלח אליך בערוץ שתבחר</strong> (וואטסאפ / מייל / שניהם).
+                <strong> נשמר אוטומטית ב-CRM</strong>, 
+                <strong> מקושר לדף הנחיתה שלך</strong>, 
+                ו<strong>נשלח אליך בערוץ שתבחר</strong>. 
+                אפשר גם לחבר ישירות ל-CRM חיצוני שלך!
               </p>
             </div>
           </div>
@@ -89,10 +126,10 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <Link2 className="w-5 h-5 text-blue-600" />
-            ערוץ קבלת ההתראות
+            ערוץ קבלת הלידים
           </CardTitle>
           <CardDescription>
-            בחר/י איפה תקבל/י את ההתראות על לידים חדשים
+            בחר/י לאן הלידים יגיעו ואיך תקבל/י אותם
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -121,7 +158,7 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
                       {dest.label}
                     </span>
                     {dest.badge && (
-                      <Badge className="bg-green-100 text-green-700 border-0 text-[10px]">{dest.badge}</Badge>
+                      <Badge className={`${dest.badgeColor || 'bg-green-100 text-green-700'} border-0 text-[10px]`}>{dest.badge}</Badge>
                     )}
                   </div>
                   <p className="text-xs text-gray-500 mt-0.5">{dest.desc}</p>
@@ -136,12 +173,134 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
       {/* Destination Details */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">פרטי היעד שלך</CardTitle>
+          <CardTitle className="text-lg">פרטי החיבור</CardTitle>
           <CardDescription>
             {selectedDest?.detail || 'הגדר את הפרטים לקבלת הלידים'}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Webhook CRM Settings */}
+          {form.lead_destination === 'webhook' && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-purple-600" />
+                  כתובת Webhook (URL)
+                </Label>
+                <Input 
+                  value={form.webhook_url} 
+                  onChange={(e) => setForm(f => ({ ...f, webhook_url: e.target.value }))} 
+                  placeholder="https://hooks.zapier.com/... או https://api.hubspot.com/..." 
+                  dir="ltr" 
+                />
+                <p className="text-xs text-gray-400">
+                  הזן את כתובת ה-Webhook מה-CRM שלך. הליד יישלח כ-POST עם JSON.
+                </p>
+              </div>
+
+              {/* Guide cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {[
+                  { name: 'Monday.com', emoji: '📋', hint: 'הגדרות → אינטגרציות → Webhook' },
+                  { name: 'HubSpot', emoji: '🟠', hint: 'Settings → Integrations → Webhooks' },
+                  { name: 'Salesforce', emoji: '☁️', hint: 'Setup → Platform Events' },
+                  { name: 'Zapier', emoji: '⚡', hint: 'Create Zap → Webhook trigger' },
+                ].map(crm => (
+                  <div key={crm.name} className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-xs">
+                    <span className="text-base">{crm.emoji}</span>
+                    <div>
+                      <span className="font-medium text-gray-800">{crm.name}</span>
+                      <p className="text-gray-400 text-[10px]">{crm.hint}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Custom Headers */}
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setShowHeaders(!showHeaders)}
+                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  {showHeaders ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showHeaders ? 'הסתר' : 'הוסף'} Headers (API Key, Auth Token)
+                </button>
+
+                {showHeaders && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 space-y-3">
+                    <p className="text-xs text-gray-500">
+                      חלק ממערכות ה-CRM דורשות API Key או Token. הוסף אותם כ-Header.
+                    </p>
+
+                    {/* Existing Headers */}
+                    {headerEntries.map(([key, value]) => (
+                      <div key={key} className="flex items-center gap-2">
+                        <Input value={key} disabled className="flex-1 text-xs bg-white" dir="ltr" />
+                        <Input value={value} disabled className="flex-1 text-xs bg-white" dir="ltr" />
+                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => removeHeader(key)}>
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
+
+                    {/* New Header */}
+                    <div className="flex items-center gap-2">
+                      <Input 
+                        value={newHeaderKey}
+                        onChange={(e) => setNewHeaderKey(e.target.value)}
+                        placeholder="Header Name (e.g. Authorization)"
+                        className="flex-1 text-xs" 
+                        dir="ltr" 
+                      />
+                      <Input 
+                        value={newHeaderValue}
+                        onChange={(e) => setNewHeaderValue(e.target.value)}
+                        placeholder="Value (e.g. Bearer abc123)"
+                        className="flex-1 text-xs" 
+                        dir="ltr" 
+                      />
+                      <Button type="button" variant="outline" size="icon" className="h-8 w-8" onClick={addHeader}>
+                        <Plus className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Test Webhook */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-xs text-blue-800 mb-2">
+                  <strong>פורמט הליד שנשלח:</strong>
+                </p>
+                <pre dir="ltr" className="bg-white border border-blue-100 rounded p-2 text-[10px] text-gray-700 overflow-x-auto">
+{JSON.stringify({
+  name: "שם הלקוח",
+  phone: "050-0000000",
+  email: "email@example.com",
+  message: "הודעה...",
+  source: "שם דף הנחיתה",
+  timestamp: "2025-01-01T12:00:00Z"
+}, null, 2)}
+                </pre>
+                <button 
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(JSON.stringify({
+                      name: "שם הלקוח", phone: "050-0000000", email: "email@example.com",
+                      message: "הודעה...", source: "שם דף הנחיתה", timestamp: new Date().toISOString()
+                    }, null, 2));
+                    toast.success('הפורמט הועתק ללוח');
+                  }}
+                  className="mt-2 flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+                >
+                  <Copy className="w-3 h-3" /> העתק פורמט
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* WhatsApp */}
           {(form.lead_destination === 'whatsapp' || form.lead_destination === 'phone' || form.lead_destination === 'n8n') && (
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
@@ -158,6 +317,7 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
             </div>
           )}
 
+          {/* Email */}
           {(form.lead_destination === 'email' || form.lead_destination === 'n8n') && (
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
@@ -196,6 +356,7 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
               {form.lead_destination === 'whatsapp' ? '📱 וואטסאפ אליך' : 
                form.lead_destination === 'email' ? '📧 מייל אליך' :
                form.lead_destination === 'phone' ? '📱 הודעה אליך' :
+               form.lead_destination === 'webhook' ? '🔗 CRM חיצוני שלך' :
                '📱📧 וואטסאפ + מייל אליך'}
             </span>
           </div>
