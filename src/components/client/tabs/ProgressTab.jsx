@@ -26,6 +26,37 @@ import { useGoals, useUpdateGoal, useDeleteGoal, useCreateGoal, useGenerateGoalP
 import { useBusinessJourney, JOURNEY_QUERY_KEY } from '@/components/hooks/useBusinessJourney';
 import { queryKeys } from '@/components/hooks/useQueryKeys';
 
+function NextStepCard({ step, onWhyClick, onAction, onNavigate }) {
+  if (!step) return null;
+  return (
+    <div className="space-y-3">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Target className="w-5 h-5 text-green-700" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-bold text-gray-900 text-base leading-tight">{step.title}</h3>
+          <p className="text-sm text-gray-500 mt-1 leading-relaxed">{step.description}</p>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button 
+          onClick={onAction}
+          className="flex-1 bg-green-600 hover:bg-green-700 text-white h-10 rounded-xl text-sm font-semibold"
+        >
+          <Play className="w-4 h-4 ml-1.5" />
+          התחל עכשיו
+        </Button>
+        {onWhyClick && (
+          <Button variant="outline" onClick={onWhyClick} className="h-10 rounded-xl text-sm">
+            למה זה חשוב?
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const MILESTONES = [
   {
     id: 'registration',
