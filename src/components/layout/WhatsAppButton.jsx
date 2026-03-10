@@ -24,7 +24,7 @@ export default function WhatsAppButton({ message = "היי, הגעתי מהאת�
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-full py-5 px-8 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 animate-pulse-glow"
+            className="flex items-center gap-3 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-full py-5 px-8 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
           >
             <MessageCircle className="w-7 h-7" />
             <span className="font-black text-lg hidden sm:inline">דברו איתנו</span>
