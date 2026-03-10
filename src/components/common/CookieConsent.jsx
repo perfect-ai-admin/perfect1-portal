@@ -40,6 +40,16 @@ export default function CookieConsent() {
         </div>
         <div className="flex gap-3 w-full md:w-auto">
           <Button 
+            variant="outline"
+            onClick={() => {
+              localStorage.setItem('cookie_consent', 'essential_only');
+              setIsVisible(false);
+            }}
+            className="flex-1 md:flex-none border-gray-300 text-gray-700 hover:bg-gray-100 font-medium"
+          >
+            רק הכרחי
+          </Button>
+          <Button 
             onClick={handleAccept}
             className="flex-1 md:flex-none bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold"
           >

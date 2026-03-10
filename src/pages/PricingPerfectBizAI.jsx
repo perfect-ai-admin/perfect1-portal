@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Check, X, ArrowRight, Star, Lock, AlertTriangle, 
   Palette, MonitorPlay, Rocket, Loader2, LogIn, CreditCard, ShieldCheck,
-  LogOut, HelpCircle, User, Globe, Sparkles, Sticker, Layout, Smartphone
+  LogOut, HelpCircle, User, Globe, Sparkles, Zap, Sticker, Layout, Smartphone
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -284,8 +284,7 @@ export default function PricingPerfectBizAI() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate(createPageUrl('ClientLogin'));
+    base44.auth.logout('/');
   };
 
   const toggleLanguage = () => {
@@ -758,7 +757,10 @@ export default function PricingPerfectBizAI() {
                                 התחבר באמצעות Google
                               </Button>
                               <Button
-                                onClick={() => navigate(createPageUrl('ClientLogin'))}
+                                onClick={() => {
+                                  setShowLoginModal(false);
+                                  base44.auth.redirectToLogin(window.location.pathname);
+                                }}
                                 className="w-full h-12 text-base bg-[#1E3A5F] hover:bg-[#162B47] text-white rounded-xl shadow-md hover:shadow-lg transition-all"
                               >
                                 כניסה רגילה

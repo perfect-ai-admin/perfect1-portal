@@ -36,12 +36,21 @@ export default function AdminDashboard() {
         }
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        if (loginData.phone === '0502277087' && loginData.code === '123456') {
-            setUser({ full_name: 'Admin', role: 'admin', id: 'admin-bypass' });
-        } else {
-            alert('פרטים שגויים');
+        try {
+            const response = await base44.functions.invoke('authMe', {
+                phone: loginData.phone,
+                code: loginData.code
+            });
+            if (response.data?.user && response.data.user.role === 'admin') {
+                setUser(response.data.user);
+            } else {
+                alert('פרטים שגויים או אין הרשאת מנהל');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('שגיאה בהתחברות');
         }
     };
 
