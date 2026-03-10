@@ -117,17 +117,9 @@ export default function Layout({ children, currentPageName }) {
           <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-          {/* Google Ads Conversion Tracking */}
-          <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085" />
-          <script dangerouslySetInnerHTML={{__html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-10811556085');
-          `}} />
-
-          {/* Facebook Pixel */}
-          <script async dangerouslySetInnerHTML={{__html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');if(typeof fbq !== 'undefined'){fbq('init','1234567890');fbq('track','PageView');}`}} />
+          {/* Google Ads Conversion Tracking - loaded via GTM for policy compliance */}
+          {/* Facebook Pixel - loaded via GTM for policy compliance */}
+          {/* All tracking scripts should be managed through Google Tag Manager */}
 
           {/* Base44 Default Auth */}
         </Helmet>
