@@ -38,7 +38,9 @@ export default function ThankYou() {
 📍 מקור: דף תודה
 📅 תאריך: ${new Date().toLocaleString('he-IL')}`;
 
-      window.open(`https://wa.me/972502277087?text=${encodeURIComponent(message)}`, '_blank');
+      // Navigate user to WhatsApp - opens in new tab only after explicit user action (form submit)
+      const whatsappUrl = `https://wa.me/972502277087?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
 
       setSubmitted(true);
       setTimeout(() => {
