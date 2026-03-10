@@ -30,10 +30,9 @@ export default function WhatsAppButton({ message = "היי, הגעתי מהאת�
             <span className="font-black text-lg hidden sm:inline">דברו איתנו</span>
           </a>
 
-          {/* Ping animation */}
+          {/* Static indicator dot - no ping animation (Google policy compliant) */}
           <span className="absolute -top-1 -right-1 flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-[#25D366]"></span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-[#25D366] border-2 border-white"></span>
           </span>
         </motion.div>
       )}
