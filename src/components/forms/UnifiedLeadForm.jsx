@@ -100,19 +100,13 @@ export default function UnifiedLeadForm({
       // Tracking
       trackLeadSubmit(newLead);
 
-      // Push to dataLayer for GTM
+      // Push to dataLayer for GTM - NO PII (Google policy compliant)
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
         event: 'lead_submit',
-        lead_name: newLead.name,
-        lead_phone: newLead.phone,
-        lead_email: newLead.email || '',
-        lead_profession: newLead.profession || '',
-        lead_source: sourcePage
-      });
-      console.log('Lead submitted to dataLayer:', {
-        event: 'lead_submit',
-        lead_email: newLead.email
+        lead_source: sourcePage,
+        lead_has_email: !!newLead.email,
+        lead_has_profession: !!newLead.profession
       });
 
       // Email notification
