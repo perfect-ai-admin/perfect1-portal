@@ -3,7 +3,6 @@ import { MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function WhatsAppButton({ message = "היי, הגעתי מהאתר ואשמח לקבל ייעוץ לפתיחת עוסק פטור" }) {
-  const [showTooltip, setShowTooltip] = useState(false);
   // Always visible - no auto-show timers (Google policy compliant)
   const isVisible = true;
 
