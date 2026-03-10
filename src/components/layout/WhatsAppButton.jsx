@@ -18,28 +18,7 @@ export default function WhatsAppButton({ message = "היי, הגעתי מהאת�
           exit={{ opacity: 0, scale: 0.5, y: 20 }}
           className="fixed bottom-6 left-6 z-50"
         >
-          {/* Tooltip */}
-          <AnimatePresence>
-            {showTooltip && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="absolute bottom-full left-0 mb-3 bg-white rounded-2xl shadow-xl p-4 w-64"
-              >
-                <button
-                  onClick={() => setShowTooltip(false)}
-                  className="absolute top-2 left-2 text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  👋 היי! יש לך שאלות על פתיחת עוסק פטור? נשמח לעזור!
-                </p>
-                <div className="mt-2 w-4 h-4 bg-white transform rotate-45 absolute -bottom-2 left-6" />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Tooltip - only on hover, no auto-popup (Google policy compliant) */}
 
           {/* Button */}
           <a
