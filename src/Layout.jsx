@@ -71,20 +71,31 @@ export default function Layout({ children, currentPageName }) {
           }
 
     useEffect(() => {
-      // Inject GTM script to HEAD if not already there
+      // GTM - Load via standard script src (not innerHTML injection - Google policy safe)
       if (!document.getElementById(gtmScriptId)) {
+        // Initialize dataLayer
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+        
+        // Load GTM script via src attribute (not innerHTML)
         const script = document.createElement('script');
         script.id = gtmScriptId;
         script.async = true;
-        script.innerHTML = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PNK9CCRQ');`;
+        script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-PNK9CCRQ';
         document.head.appendChild(script);
       }
 
-      // Inject GTM noscript to BODY if not already there
+      // GTM noscript fallback
       if (!document.getElementById(noscriptId)) {
         const noscript = document.createElement('noscript');
         noscript.id = noscriptId;
-        noscript.innerHTML = '<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNK9CCRQ" height="0" width="0" style="display:none;visibility:hidden"></iframe>';
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://www.googletagmanager.com/ns.html?id=GTM-PNK9CCRQ';
+        iframe.height = '0';
+        iframe.width = '0';
+        iframe.style.display = 'none';
+        iframe.style.visibility = 'hidden';
+        noscript.appendChild(iframe);
         document.body.insertBefore(noscript, document.body.firstChild);
       }
     }, []);
