@@ -50,7 +50,7 @@ export default function UnifiedLeadForm({
     phone: '',
     email: '',
     profession: defaultProfession,
-    consent: true,
+    consent: false,
   });
   const uniqueId = React.useId();
   const [isSubmitting, setIsSubmitting] = useState(false);

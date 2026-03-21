@@ -97,12 +97,12 @@ export default function AccessibilityMenu() {
     <>
       {/* כפתור נגישות צף */}
       <button
-        onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
-        className="fixed left-4 bottom-24 z-[60] bg-[#1E3A5F] text-white w-11 h-11 rounded-full shadow-lg hover:bg-[#2C5282] transition-all flex items-center justify-center"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed left-4 bottom-6 z-50 bg-[#1E3A5F] text-white w-12 h-12 rounded-full shadow-lg hover:bg-[#2C5282] transition-all flex items-center justify-center"
         aria-label="פתח תפריט נגישות"
         title="נגישות"
       >
-        <Accessibility className="w-5 h-5" />
+        <Accessibility className="w-6 h-6" />
       </button>
 
       {/* תפריט נגישות */}
@@ -110,12 +110,12 @@ export default function AccessibilityMenu() {
         <>
           {/* Overlay */}
           <div 
-            className="fixed inset-0 bg-black/30 z-[60]"
+            className="fixed inset-0 bg-black/50 z-50"
             onClick={() => setIsOpen(false)}
           />
           
           {/* תפריט */}
-          <div className="fixed left-4 bottom-40 z-[61] bg-white rounded-xl shadow-2xl w-72 p-5 max-h-[60vh] overflow-y-auto" dir="rtl">
+          <div className="fixed left-4 bottom-20 z-50 bg-white rounded-xl shadow-2xl w-80 p-6 max-h-[80vh] overflow-y-auto" dir="rtl">
             {/* כותרת */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">

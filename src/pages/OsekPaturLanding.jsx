@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Link } from 'react-router-dom';
 import SafeCtaBar from '../components/cro/SafeCtaBar';
 import LeadPopup from '../components/cro/LeadPopup';
 
-import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Loader2 } from 'lucide-react';
+import { CheckCircle, Phone, MessageCircle, Shield, Clock, Users, Star, TrendingUp, FileText, Briefcase, Target, Zap, Award, ArrowLeft, Smartphone, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SEOOptimized from './SEOOptimized';
 import FAQSchema from '../components/seo/FAQSchema';
@@ -18,7 +17,12 @@ function FAQItem({ question, answer }) {
   const [isOpen, setIsOpen] = React.useState(false);
   
   return (
-    <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:border-[#1E3A5F]/30 transition-all">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:border-[#1E3A5F]/30 transition-all"
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-4 text-right flex items-center justify-between hover:bg-gray-50 transition-colors"
@@ -31,52 +35,51 @@ function FAQItem({ question, answer }) {
         </div>
       </button>
       {isOpen && (
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="px-6 py-4 bg-gray-50 border-t border-gray-200"
+        >
           <p className="text-gray-700 leading-relaxed">{answer}</p>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
 
 export default function OsekPaturLanding() {
-  const [formData, setFormData] = useState({ name: '', phone: '', consent: false });
+   const [formData, setFormData] = useState({
+    name: '',
+    phone: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const [showLeadPopup, setShowLeadPopup] = useState(false);
-  const [formError, setFormError] = useState('');
+  const [popupFormData, setPopupFormData] = useState({ name: '', phone: '', email: '' });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormError('');
     if (!formData.name || !formData.phone) {
-      setFormError('אנא מלא שם וטלפון');
-      return;
-    }
-    if (!formData.consent) {
-      setFormError('חובה לאשר את תנאי השימוש');
+      alert('אנא מלא שם וטלפון');
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const urlParams = new URLSearchParams(window.location.search);
+      // Use backend function to bypass RLS for public users
       await base44.functions.invoke('submitLead', {
-        name: formData.name,
-        phone: formData.phone,
-        source_page: 'דף נחיתה - ליווי עצמאים',
-        status: 'new',
-        utm_source: urlParams.get('utm_source') || '',
-        utm_medium: urlParams.get('utm_medium') || '',
-        utm_campaign: urlParams.get('utm_campaign') || '',
-        utm_term: urlParams.get('utm_term') || '',
-        utm_content: urlParams.get('utm_content') || '',
-        referrer: document.referrer || ''
+        ...formData,
+        source_page: 'דף נחיתה - פתיחת עוסק פטור',
+        status: 'new'
       });
+
       window.location.href = '/ThankYou';
     } catch (err) {
       console.error(err);
-      setFormError('אירעה שגיאה, אנא נסה שוב או צור קשר בטלפון.');
+      alert('אירעה שגיאה בשליחת הטופס. אנא נסה שוב או צור קשר בטלפון.');
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -85,106 +88,178 @@ export default function OsekPaturLanding() {
     setShowLeadPopup(true);
   };
 
+  const handlePopupSubmit = async (e) => {
+    e.preventDefault();
+    if (!popupFormData.name || !popupFormData.phone) {
+      alert('אנא מלא שם וטלפון');
+      return;
+    }
+
+    try {
+      // Use backend function to bypass RLS for public users
+      await base44.functions.invoke('submitLead', {
+        ...popupFormData,
+        source_page: 'פופאפ - 35% גלילה',
+        status: 'new'
+      });
+      setShowPopup(false);
+      window.location.href = '/ThankYou';
+    } catch (err) {
+      console.error(err);
+      alert('שגיאה בשליחה, אנא נסה שוב');
+    }
+  };
+
+  // DEPRECATED: Auto-scroll popups removed for Google Ads compliance
+  // Use SafeCtaBar + SafeLeadInline instead
+
   const faqs = [
     {
-      question: "מה ההבדל בין סוגי הרישום השונים לעצמאים?",
-      answer: "יש כמה מסלולים לעצמאים – המסלול הנפוץ ביותר לעצמאים בתחילת הדרך הוא הקל והפשוט ביותר, עם פחות דיווחים ופחות חובות. אנחנו יודעים בדיוק מה מתאים לך."
+      question: "מה בדיוק הבדל בין עוסק פטור לעוסק מורשה?",
+      answer: "עוסק פטור - עד 120K בשנה, בלי מע\"מ, לא צריך דוחות מע\"מ חודשיים. עוסק מורשה - מעל 120K, חייב בדוחות מע\"מ חודשיים. שלנו - אנחנו יודעים בדיוק מה מתאים לכם."
     },
     {
-      question: "האם צריך לשלם ביטוח לאומי?",
-      answer: "כן, אבל בתעריף נמוך יותר. אנחנו עושים את החישוב בשבילך ודואגים שלא תשלם יותר מדי."
+      question: "אני עוסק פטור - צריך לשלם ביטוח לאומי?",
+      answer: "כן, אבל בתעריף נמוך יותר מעוסקים מורשים. אנחנו עושים את החישוב בשבילך ודואגים שלא תעברו דרך דלת."
     },
     {
-      question: "כמה עולה ליווי חודשי?",
-      answer: "הליווי מתחיל מ-99₪ לחודש כולל דוחות, תשובות לשאלות, וניהול שוטף. זול יחסית לשקט הנפשי שזה נותן."
+      question: "מה קורה אם הכנסותיי עלו למעל 120K באמצע השנה?",
+      answer: "צריך לעבור לעוסק מורשה. אנחנו מטפלים בהמרה הזאת - זה לא נורא, זה אפילו טוב (יותר אופציות)."
     },
     {
-      question: "כמה זמן לוקח להתחיל?",
-      answer: "התהליך מהיר – ברוב המקרים תוך 24-48 שעות תוכל להתחיל לעבוד כחוק ולהוציא חשבוניות."
+      question: "כמה עולה ליווי עוסק פטור בחודש?",
+      answer: "התמחה שלנו זה עוסקים קטנים - כ-99₪ בחודש כולל דוחות, תשובות לשאלות וויסות של מצב. בכלל זול."
     },
     {
-      question: "מה אם יש לי שאלה מחוץ לשעות העבודה?",
-      answer: "אנחנו משיבים בתחילת יום העסקים הבא. תשלח הודעה בוואטסאפ ותקבל תשובה מלאה."
+      question: "האם אוכל להעביר את החשבונות שלי מרואה חשבון אחר?",
+      answer: "בהחלט. אנחנו ניקח את הקובץ המתודולוגי שלך והמשיכנו משם. לא צריך לשרוט הכל מהתחלה."
     },
     {
-      question: "האם אוכל לנהל הכנסות והוצאות בקלות?",
-      answer: "בהחלט – אנחנו מספקים אפליקציה ייעודית קלה לשימוש. פשוט צלם את הקבלה ועלה, והכל מסודר."
+      question: "מה קורה אם יש לי שאלה בשבת או חג?",
+      answer: "אנחנו משיבים בתחילת יום העסקים הבא. עוד משהו - למה לא להשאיר הודעה בוואטס? כשנבחזור אתם תקבלו תשובה מלאה."
     },
     {
-      question: "מה קורה אם ההכנסות שלי גדלות?",
-      answer: "זה חיובי! אנחנו נלווה אותך גם במעבר למסלול המתאים. לא צריך לדאוג – זה אפילו טוב."
+      question: "האם אני יכול לעשות בעצמי את הדוח השנתי?",
+      answer: "טכנית - כן. אבל אנחנו כבר מכינים אותו (זה כבר בחוזה). לא כדאי לעשות בעצמך - סיכון לטעויות שאומדות הרבה יותר מהליווי."
     },
     {
-      question: "האם אני יכול להעביר את החשבונות שלי מגורם אחר?",
-      answer: "בהחלט. אנחנו נקבל את המידע הקיים ונמשיך משם. לא צריך להתחיל מאפס."
+      question: "מה אם לא עמדתי בדדליין הגשת דוח?",
+      answer: "אנחנו דואגים שזה לא יקרה, אבל אם קרה - יש דרכים להאריך. ישנם קנסות, אבל אנחנו יודעים איך להוריד אותם."
+    },
+    {
+      question: "צריך לשמור על קבלות?",
+      answer: "כן, צריך. אנחנו עוזרים לך לארגן את זה בצורה ספרתית - פשוט צלם את הקבלה ועלה לאפליקציה."
+    },
+    {
+      question: "האם יש דרך להעביר לקוח שלי אישור רשמי?",
+      answer: "כן - אנחנו מציאים הצעה רשמית עם חתימה דיגיטלית. זה משנה את כל אחד שניה עם הלקוחות."
+    },
+    {
+      question: "מה אם יש לי הכנסות מחו\"ל?",
+      answer: "צריך לדווח עליהם בדוח - זה מסבך קצת את החישובים, אבל זה ניתן. אנחנו עושים את זה."
+    },
+    {
+      question: "אני יכול לפתוח אפילו עוסק פטור עבור בן או בת שלי?",
+      answer: "לא ממש - עוסק פטור הוא תיק אישי. אבל אם בן/ת שלך רוצה להתחיל עוסק, אנחנו עוזרים גם לו/ה."
     }
   ];
 
   return (
     <>
-      <PageTracker pageUrl="/OsekPaturLanding" pageType="landing" />
+      <PageTracker pageUrl="/osek-patur" pageType="landing" />
       <FAQSchema faqs={faqs} />
       <SEOOptimized
-        title="ליווי לעצמאים חדשים - מתחילים עסק בצורה פשוטה | Perfect One"
-        description="מתחילים לעבוד כעצמאים? ליווי מקצועי ואישי לכל השלבים – מההקמה ועד הדוח השנתי. תהליך מהיר, פשוט וללא כאב ראש."
-        keywords="ליווי עצמאים, הקמת עסק, התחלת עסק, ליווי עסקי, ניהול עסק קטן, רישום עסק, שירות לעצמאים"
-        canonical="https://perfect1.co.il/OsekPaturLanding"
+        title="עוסק פטור בישראל - המדריך המלא למי שמתחיל עסק חדש | Perfect One"
+        description="רוצה להתחיל עסק בחוקיות? מדריך שלם על עוסק פטור - היתרונות, החסרונות, התהליך והדרישות. למי זה מתאים וכמה זה עולה באמת."
+        keywords="עוסק פטור, הקמת עוסק פטור, מה זה עוסק פטור, תנאים לעוסק פטור, דרישות עוסק פטור, עלות עוסק פטור, מסלול עוסק פטור"
+        canonical="https://perfect1.co.il/osek-patur"
         schema={{
           "@context": "https://schema.org",
-          "@type": "ProfessionalService",
-          "name": "Perfect One - ליווי עצמאים חדשים",
-          "description": "שירות ליווי מקצועי לעצמאים בתחילת הדרך – הקמה, ניהול שוטף ודוחות",
-          "url": "https://perfect1.co.il/OsekPaturLanding",
-          "telephone": "+972-55-970-0641",
+          "@type": "LocalBusiness",
+          "name": "Perfect One - פתיחת עוסק פטור בישראל",
+          "description": "שירות מלא לפתיחת עוסק פטור כולל ליווי חודשי ודוח שנתי",
+          "url": "https://perfect1.co.il/osek-patur",
+          "telephone": "+972-50-227-7087",
           "priceRange": "₪₪",
           "address": {
             "@type": "PostalAddress",
-            "addressCountry": "IL"
+            "addressCountry": "IL",
+            "addressRegion": "ישראל"
           },
           "areaServed": {
             "@type": "Country",
             "name": "ישראל"
           },
-          "serviceType": "ליווי עצמאים",
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "31.0461",
+            "longitude": "34.8516"
+          },
+          "serviceType": "פתיחת עוסק פטור",
           "provider": {
             "@type": "Organization",
-            "name": "Perfect One"
+            "name": "Perfect One",
+            "sameAs": [
+              "https://www.facebook.com/perfect1.co.il",
+              "https://www.linkedin.com/company/perfect1",
+              "https://www.instagram.com/perfect1.co.il"
+            ]
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "249",
+            "priceCurrency": "ILS",
+            "availability": "https://schema.org/InStock"
+          },
+          "about": {
+            "@type": "Thing",
+            "name": "פתיחת עוסק פטור בישראל",
+            "description": "שירות מקצועי לפתיחת עוסקים פטורים"
+          },
+          "isPartOf": {
+            "@type": "WebSite",
+            "name": "Perfect One",
+            "url": "https://perfect1.co.il"
           }
         }}
       />
-
       <main className="pt-14 md:pt-20 bg-[#F8F9FA]">
         <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
           <Breadcrumbs items={[
             { label: 'דף הבית', url: 'Home' },
-            { label: 'ליווי לעצמאים חדשים' }
+            { label: 'פתיחת עוסק פטור' }
           ]} />
         </div>
-
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847] overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-20 right-20 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
-          </div>
+         <section className="relative bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847] overflow-hidden">
+           <div className="absolute inset-0 opacity-10">
+             <div className="absolute top-20 right-20 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
+             <div className="absolute bottom-20 left-20 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
+           </div>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative">
-            <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-              <div className="text-center lg:text-right">
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4 md:mb-6">
-                  <span className="text-[#27AE60] block md:inline">מתחילים עסק?</span> הדרך הקלה ביותר להיות עצמאי
-                </h1>
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative">
+             <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+               <motion.div
+                 initial={{ opacity: 0, x: -50 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 className="text-center lg:text-right"
+               >
 
-                <p className="text-lg md:text-2xl text-white/90 mb-6 leading-relaxed font-medium px-2 md:px-0">
-                  ליווי אישי ומקצועי מהרגע הראשון – אנחנו מטפלים בכל הבירוקרטיה, אתם מתמקדים בלהרוויח
-                </p>
+
+                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-4 md:mb-6">
+                    <span className="text-[#27AE60] block md:inline">פתיחת עוסק פטור</span> פשוט, מהיר וחוקי
+                 </h1>
+
+                 <p className="text-lg md:text-2xl text-white/90 mb-6 leading-relaxed font-medium px-2 md:px-0">
+                    הדרך המהירה והקלה ביותר לפתוח עוסק פטור - אנחנו נטפל בבירוקרטיה, אתם תתחילו להרוויח
+                 </p>
 
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 border border-white/20">
                   <div className="grid grid-cols-2 gap-4 text-white">
                     {[
-                      { icon: CheckCircle, text: 'ליווי אישי מלא' },
+                      { icon: CheckCircle, text: 'ליווי מלא' },
                       { icon: Clock, text: 'תהליך מהיר' },
-                      { icon: Shield, text: 'בלי כאב ראש' },
+                      { icon: Shield, text: 'בלי בירוקרטיה' },
                       { icon: Star, text: 'שקט נפשי' }
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-2">
@@ -195,43 +270,47 @@ export default function OsekPaturLanding() {
                   </div>
                 </div>
 
-                {/* Private service disclaimer */}
-                <p className="text-xs text-white/50 mb-6 px-2">
-                  השירות ניתן על ידי גורם פרטי ואינו קשור לרשויות המדינה
-                </p>
-
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg shadow-green-900/20 transition-all">
+                  <Button onClick={scrollToForm} className="w-full sm:w-auto h-12 sm:h-14 lg:h-16 px-4 sm:px-8 lg:px-10 text-base sm:text-lg lg:text-xl font-bold rounded-xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-lg shadow-green-900/20 transform hover:-translate-y-1 transition-all">
                     <Target className="ml-2 w-5 h-5" />
-                    קבלו ליווי אישי עכשיו
+                    פתיחת עוסק פטור בקליק
                   </Button>
-                  <a href="https://wa.me/972559700641?text=היי, אני מתעניין בליווי לעצמאים" target="_blank" rel="noopener noreferrer">
+                  <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="w-full sm:w-auto h-12 sm:h-14 px-4 sm:px-8 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-white text-[#1E3A5F] hover:bg-white/90 shadow-lg">
                       <MessageCircle className="ml-2 w-5 h-5" />
                       WhatsApp
                     </Button>
                   </a>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="hidden lg:block">
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="hidden lg:block"
+              >
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                   <div className="text-center mb-4">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#D4AF37]/10 flex items-center justify-center">
-                      <Award className="w-6 h-6 text-[#D4AF37]" />
-                    </div>
+                    <img 
+                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='7'/%3E%3Cpolyline points='8.21 13.89 7 23 12 20 17 23 15.79 13.88'/%3E%3C/svg%3E"
+                      alt="פתיחת עוסק פטור מקצועי"
+                      className="w-12 h-12 mx-auto mb-3"
+                      width="48"
+                      height="48"
+                      loading="eager"
+                    />
                     <h3 className="text-xl font-black text-[#1E3A5F] mb-1">יוצאים לדרך</h3>
-                    <p className="text-sm text-gray-600">הדרך הקלה והמקצועית להיות עצמאי</p>
+                    <p className="text-sm text-gray-600">הדרך הקלה להיות עצמאי</p>
                   </div>
 
                   <ul className="space-y-2">
                     {[
-                      'ליווי מלא בתהליך ההקמה',
-                      'טיפול בכל הניירת והבירוקרטיה',
-                      'אפליקציה לניהול הכנסות והוצאות',
-                      'מענה מקצועי לכל שאלה',
-                      'שקט נפשי מהיום הראשון'
-                    ].map((item, i) => (
+                       'פתיחת התיק מול כל הרשויות',
+                       'טיפול מלא בבירוקרטיה',
+                       'אפליקציה להפקת קבלות',
+                       'ראש שקט ממס הכנסה',
+                       'מענה אנושי מקצועי'
+                     ].map((item, i) => (
                       <li key={i} className="flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-[#27AE60] flex-shrink-0" />
                         <span className="text-sm text-gray-700 font-medium">{item}</span>
@@ -241,41 +320,127 @@ export default function OsekPaturLanding() {
 
                   <div className="mt-4 pt-4 border-t border-gray-200 text-center">
                     <p className="text-xs text-gray-500 mb-2">כבר עזרנו ל-</p>
-                    <p className="text-3xl font-black text-[#1E3A5F]">2,000+</p>
-                    <p className="text-xs text-gray-500">עצמאים בכל הארץ</p>
+                    <p className="text-3xl font-black text-[#1E3A5F]">2000+</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>
 
-        {/* Benefits Section */}
-        <section className="py-10 md:py-16 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-8 md:mb-12">
-              <div className="inline-block bg-green-100 text-green-700 px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 shadow-sm">
-                ✅ למה אלפי עצמאים בוחרים בנו
-              </div>
-              <h2 className="text-2xl md:text-5xl font-black text-[#1E3A5F] mb-3 md:mb-4 leading-tight">
-                ליווי מקצועי שחוסך לך זמן, כסף וכאב ראש
+        {/* Search Intent Section */}
+        <section className="py-16 bg-gradient-to-b from-white to-gray-50 border-t-4 border-[#D4AF37]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-10"
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-2">
+                גם אתה חיפשת את זה?
               </h2>
-              <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4 md:px-0">
-                מתאים למי שרוצה להתחיל כעצמאי (למשל עוסק פטור) בצורה פשוטה ונכונה
-              </p>
+              <p className="text-lg text-gray-500 font-medium">השאלות שכולם שואלים בגוגל</p>
+            </motion.div>
+
+            <div className="space-y-4 mb-12">
+              {[
+                "איך פותחים עוסק פטור?",
+                "עוסק פטור או מורשה?",
+                "צריך רואה חשבון לפתיחת עוסק?",
+                "כמה זמן לוקח לפתוח עוסק פטור?",
+                "איך מתחילים לעבוד חוקי?"
+              ].map((query, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white rounded-xl px-6 py-4 flex justify-between items-center shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-default"
+                >
+                  <span className="text-lg text-gray-700 font-medium">{query}</span>
+                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                </motion.div>
+              ))}
             </div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -5 }}
+              className="bg-gradient-to-br from-[#E8F5E9] to-[#F1F8E9] rounded-3xl p-8 md:p-12 text-center border-2 border-[#27AE60]/10 shadow-xl relative overflow-hidden group cursor-pointer"
+              onClick={scrollToForm}
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#27AE60]/5 rounded-bl-[100px] -mr-8 -mt-8 transition-transform group-hover:scale-110 duration-500"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#27AE60]/5 rounded-tr-[80px] -ml-6 -mb-6 transition-transform group-hover:scale-110 duration-500"></div>
+              
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 text-3xl">
+                  🚀
+                </div>
+                <h3 className="text-2xl md:text-4xl font-black text-[#1E3A5F] mb-4 leading-tight">
+                  במקום לחפש תשובות –
+                  <span className="block text-[#27AE60] mt-2">אנחנו עושים את זה בשבילך.</span>
+                </h3>
+                <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto font-medium">
+                  הצטרפו לאלפי עצמאים שכבר נהנים משקט נפשי וטיפול מקצועי מא' ועד ת'
+                </p>
+                <Button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    scrollToForm();
+                  }}
+                  className="h-14 md:h-16 px-10 md:px-12 text-xl font-bold rounded-full bg-[#27AE60] hover:bg-[#219150] text-white shadow-lg shadow-green-600/30 transform transition-all hover:-translate-y-1 hover:shadow-green-600/50 w-full sm:w-auto flex items-center justify-center gap-3 group-hover:scale-105 duration-300"
+                >
+                  בואו נתחיל
+                  <ArrowLeft className="w-6 h-6 animate-pulse" />
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* How We Solve It */}
+         <section className="py-10 md:py-16 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-8 md:mb-12"
+             >
+               <div className="inline-block bg-green-100 text-green-700 px-4 py-1.5 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 shadow-sm">
+                 ✅ הפתרון שעבד לאלפים
+               </div>
+               <h2 className="text-2xl md:text-5xl font-black text-[#1E3A5F] mb-3 md:mb-4 leading-tight">
+                 עצמאי? פותחים עוסק פטור עם ליווי מלא
+               </h2>
+               <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4 md:px-0">
+                 מתאים לעצמאים בתחילת הדרך - הסבר מלא וליווי אישי מרגע ההחלטה
+               </p>
+             </motion.div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { icon: Shield, title: 'אפס טעויות', desc: 'אנחנו בודקים כל מסמך בקפדנות לפני הגשה כדי להבטיח תהליך חלק ומהיר' },
-                { icon: Clock, title: 'תהליך מהיר', desc: 'במקום שבועות של בירוקרטיה, אנחנו מזרזים את התהליך וחוסכים לך זמן יקר' },
-                { icon: TrendingUp, title: 'ליווי שוטף מלא', desc: 'דיווחים, דוחות שנתיים, מענה לשאלות – הכל כלול. אתה מתמקד בעבודה' },
-                { icon: FileText, title: 'שקיפות מלאה', desc: 'עדכונים בזמן אמת – תמיד תדע מה קורה ומה הצעד הבא' },
-                { icon: Briefcase, title: 'אפליקציה חכמה', desc: 'ניהול הכנסות והוצאות בקלות – צלם קבלה והכל מסודר אוטומטית' },
-                { icon: Award, title: 'ניסיון של 2,000+ עצמאים', desc: 'אנחנו מכירים כל ניואנס ויודעים בדיוק איך לחסוך לך כסף ועצבים' }
+                { icon: AlertCircle, title: 'יתרון #1: אפס טעויות בהגשה', desc: 'אנחנו בודקים כל טופס בקפדנות לפני השליחה כדי להבטיח אישור מהיר וחלק' },
+                { icon: Clock, title: 'יתרון #2: פתיחה מהירה', desc: 'במקום להמתין שבועות, אנחנו מזרזים את התהליך מול הרשויות וחוסכים לכם זמן יקר' },
+                { icon: TrendingUp, title: 'יתרון #3: מעטפת ליווי מלאה', desc: 'אנחנו דואגים לכל הדיווחים השוטפים ולדוחות השנתיים, כדי שתוכלו להתמקד בעבודה' },
+                { icon: Shield, title: 'יתרון #4: שקיפות מלאה', desc: 'עדכונים שוטפים בזמן אמת - תמיד תדעו בדיוק מה קורה עם התיק שלכם ומה הצעד הבא' },
+                { icon: FileText, title: 'יתרון #5: טכנולוגיה מתקדמת', desc: 'אפליקציה ייעודית וקלה לשימוש למעקב אחר הכנסות והוצאות מכל מקום ובכל זמן' },
+                { icon: Award, title: 'יתרון #6: מומחיות וניסיון', desc: 'עם ניסיון של מעל 2,000 עצמאים, אנחנו מכירים את כל הניואנסים הקטנים שחוסכים כסף' }
               ].map((item, i) => (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                   className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#27AE60]/20"
                 >
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center mb-4">
@@ -283,65 +448,83 @@ export default function OsekPaturLanding() {
                   </div>
                   <h3 className="text-xl font-bold text-[#1E3A5F] mb-2 leading-tight">{item.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{item.desc}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Social Proof Section */}
-        <section className="py-12 bg-gradient-to-br from-blue-600 to-blue-700">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-bold mb-6 border border-white/30">
-              📊 הוכחה שזה עובד
-            </div>
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-              2,000+ עצמאים כבר מלווים איתנו
-            </h2>
-            <p className="text-xl text-white/90 mb-8">
-              כל חודש עוד עצמאים בוחרים בנו – כי פשוט, מקצועי, ובלי כאב ראש
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button onClick={scrollToForm} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
-                <Target className="ml-2 w-5 h-5" />
-                התחל עכשיו
-              </Button>
-              <a href="https://wa.me/972559700641?text=היי, אני מתעניין בליווי לעצמאים" target="_blank" rel="noopener noreferrer">
-                <Button className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#27AE60] shadow-lg">
-                  <MessageCircle className="ml-2 w-5 h-5" />
-                  WhatsApp
-                </Button>
-              </a>
-            </div>
+        {/* Proof Section */}
+         <section className="py-12 bg-gradient-to-br from-blue-600 to-blue-700">
+           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+             <motion.div
+               initial={{ opacity: 0, scale: 0.9 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               viewport={{ once: true }}
+             >
+               <div className="inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full text-sm font-bold mb-6 border border-white/30">
+                 📊 הוכחה שזה עובד
+               </div>
+               <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
+                 2,000+ עצמאים בחרו בנו להיות הביטחון שלהם
+               </h2>
+               <p className="text-xl text-white/90 mb-8">
+                 בכל חודש משלוש עצמאיים חדשים בוחרים בנו להיות החברה שלהם בדרך
+               </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+               <Button onClick={scrollToForm} className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl bg-white text-[#27AE60] hover:bg-white/90 shadow-lg">
+                 <Target className="ml-2 w-5 h-5" />
+                 השאר פרטים
+               </Button>
+               <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
+                 <Button className="h-12 sm:h-14 px-6 sm:px-10 text-base sm:text-lg font-bold rounded-xl border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#27AE60] shadow-lg">
+                   <MessageCircle className="ml-2 w-5 h-5" />
+                   WhatsApp
+                 </Button>
+               </a>
+              </div>
+            </motion.div>
           </div>
         </section>
 
         {/* What's Included */}
-        <section className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                מה כלול בליווי שלנו
-              </h2>
-              <p className="text-xl text-gray-600">הכל במקום אחד – ליווי מלא + דוחות + אפליקציה</p>
-            </div>
+         <section className="py-12 bg-white">
+           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                 פתיחת תיק עוסק פטור - תהליך ברור וביטוח מלא
+               </h2>
+               <p className="text-xl text-gray-600">ליווי שוטף + דוח שנתי + אפליקציה לניהול העסק - הכל בחבילה אחת</p>
+             </motion.div>
 
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl shadow-xl p-8 md:p-10 border-2 border-[#1E3A5F]/10">
               <ul className="grid md:grid-cols-2 gap-6">
                 {[
-                  'ליווי מלא בהקמת העסק',
-                  'טיפול בכל הניירת והבירוקרטיה',
+                  'פתיחת תיק עוסק פטור',
+                  'ליווי מול כל הרשויות',
                   'אפליקציה לניהול הכנסות והוצאות',
-                  'ליווי חודשי שוטף',
-                  'הכנה והגשת דוחות',
+                  'ליווי חודשי מלא',
+                  'הכנת והגשת דוח שנתי',
                   'תמיכה אישית ושקט נפשי'
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3">
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex items-center gap-3"
+                  >
                     <div className="w-8 h-8 rounded-full bg-[#27AE60] flex items-center justify-center flex-shrink-0">
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <span className="text-lg font-bold text-gray-800">{item}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </div>
@@ -349,24 +532,33 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* Who Is This For */}
-        <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                למי הליווי שלנו מתאים?
-              </h2>
-              <p className="text-lg text-gray-600">עצמאים, פרילנסרים ונותני שירותים בכל תחום</p>
-            </div>
+         <section className="py-12 bg-gradient-to-br from-[#F8F9FA] to-blue-50/30">
+           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                 פתיחת עוסק פטור אונליין עם ליווי אנושי ומענה לשאלות
+               </h2>
+               <p className="text-lg text-gray-600">למי זה מתאים? עצמאים, פרילנסרים ונותני שירותים בכל תחום</p>
+             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-6">
               {[
-                { icon: Briefcase, text: 'עצמאים שרוצים להתחיל נכון' },
+                { icon: Briefcase, text: 'עצמאיים בתחילת הדרך' },
                 { icon: Users, text: 'פרילנסרים ונותני שירותים' },
-                { icon: Award, text: 'בעלי מקצוע שרוצים לעבוד בחוקיות' },
-                { icon: Target, text: 'כל מי שרוצה שקט נפשי בניהול העסק' }
+                { icon: Award, text: 'בעלי מקצוע' },
+                { icon: Target, text: 'כל מי שצריך לפתוח עוסק פטור ולהתחיל לעבוד' }
               ].map((item, i) => (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                   className="bg-white rounded-2xl p-6 shadow-lg border-r-4 border-[#27AE60]"
                 >
                   <div className="flex items-center gap-4">
@@ -375,33 +567,42 @@ export default function OsekPaturLanding() {
                     </div>
                     <p className="text-lg font-bold text-gray-800">{item.text}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
         {/* Why Different */}
-        <section className="py-12 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-10">
-              <div className="inline-block bg-purple-100 text-purple-700 px-6 py-2 rounded-full text-sm font-bold mb-6">
-                🎯 מה מייחד אותנו
-              </div>
-              <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                ליווי עסקי עם מקצועיות וגישה אישית
-              </h2>
-            </div>
+         <section className="py-12 bg-white">
+           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               className="text-center mb-10"
+             >
+               <div className="inline-block bg-purple-100 text-purple-700 px-6 py-2 rounded-full text-sm font-bold mb-6">
+                 🎯 מה שונה בנו
+               </div>
+               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
+                 ליווי בפתיחת עוסק פטור - מקצועיות וניסיון שעובד
+               </h2>
+             </motion.div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {[
-                { icon: Users, title: 'אנחנו מבינים אותך', desc: 'אנחנו עצמאים בעצמנו – מבינים בעומק את האתגרים שלך' },
-                { icon: Zap, title: 'שירות אישי', desc: 'כל לקוח מקבל תשומת לב מלאה – לא מוקד טלפוני' },
-                { icon: Briefcase, title: 'הכל במקום אחד', desc: 'אפליקציה, ליווי, דוחות – בלי להתרוצץ בין ספקים' },
-                { icon: Award, title: 'אחריות מלאה', desc: 'אנחנו עומדים מאחורי כל שלב בתהליך' }
+                { icon: Users, title: 'אנחנו עצמאיים', desc: 'מבינים בעומק את הקשיים שלך - אנחנו עברנו בדיוק באותו דרך' },
+                { icon: Zap, title: 'שירות אישי ומקצועי', desc: 'כל קליינט משיג תשומת לב הייעודית - לא מחסום טלפוני' },
+                { icon: Briefcase, title: 'אפליקציה משלנו', desc: 'לא צריך אפליקציות מרובות - הכל במקום אחד' },
+                { icon: Award, title: 'אחריות מלאה', desc: 'אנחנו עומדים מאחוריך - יעילות מובטחת ותמיכה מקצועית' }
               ].map((item, i) => (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                   className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 md:p-4"
                 >
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#1E3A5F]/10 flex items-center justify-center mb-2 md:mb-3">
@@ -409,7 +610,7 @@ export default function OsekPaturLanding() {
                   </div>
                   <h3 className="text-sm md:text-base font-bold text-[#1E3A5F] mb-1 leading-tight">{item.title}</h3>
                   <p className="text-xs md:text-sm text-gray-600 leading-snug">{item.desc}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -419,44 +620,53 @@ export default function OsekPaturLanding() {
         <section className="py-8 md:py-20 bg-gradient-to-br from-[#1E3A5F] via-[#2C5282] to-[#0F2847]" id="contact-form">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center">
-              <div className="text-center lg:text-right">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="text-center lg:text-right"
+              >
                 <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white mb-3 lg:mb-6 leading-tight">
-                  רוצה להתחיל? <br className="hidden lg:block"/>
-                  קבל ליווי אישי עכשיו
+                  מתחילים עסק? <br className="hidden lg:block"/>
+                  פתיחת עוסק פטור עם בטחון מלא
                 </h2>
                 <p className="text-lg md:text-xl text-white/90 leading-relaxed mb-6 lg:mb-8 max-w-lg mx-auto lg:mx-0">
-                  השאירו פרטים ותקבלו שיחה קצרה – בלי התחייבות, בלי לחץ.
+                  השאירו פרטים ותקבלו שיחה ישירה - כדי לדעת בדיוק איפה אתם עומדים ומה הצעד הבא.
                 </p>
 
                 <div className="hidden lg:flex flex-col gap-4 text-white/80">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                      <Shield className="w-6 h-6 text-[#27AE60]" />
-                    </div>
-                    <span className="text-lg">בלי כאב ראש – אנחנו מטפלים בהכל</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                      <Zap className="w-6 h-6 text-[#D4AF37]" />
-                    </div>
-                    <span className="text-lg">תהליך מהיר ומדויק</span>
-                  </div>
+                   <div className="flex items-center gap-3">
+                     <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                       <Shield className="w-6 h-6 text-[#27AE60]" />
+                     </div>
+                     <span className="text-lg">בלי טרטורים ובירוקרטיה</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                       <Zap className="w-6 h-6 text-[#D4AF37]" />
+                     </div>
+                     <span className="text-lg">תהליך מהיר ומדויק</span>
+                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div>
-                {isSuccess ? (
-                  <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
-                    <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-10 h-10 text-green-500" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
-                    <p className="text-gray-600">נחזור אליך בקרוב</p>
-                  </div>
-                ) : (
-                  <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border-2 border-[#D4AF37]/30">
-                    <form onSubmit={handleSubmit} className="space-y-3">
-                      <div>
+             <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+             >
+               {isSuccess ? (
+                 <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
+                   <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+                     <CheckCircle className="w-10 h-10 text-green-500" />
+                   </div>
+                   <h3 className="text-2xl font-bold text-gray-800 mb-2">תודה על הפנייה!</h3>
+                   <p className="text-gray-600">נחזור אליך בקרוב ונתחיל את התהליך</p>
+                 </div>
+               ) : (
+                 <div className="bg-white rounded-2xl md:rounded-3xl shadow-2xl p-5 md:p-8 border-2 border-[#D4AF37]/30">
+                   <form onSubmit={handleSubmit} className="space-y-3">
+                     <div>
                         <label className="block text-sm font-bold text-gray-700 mb-1.5">שם מלא *</label>
                         <Input
                           placeholder="איך קוראים לך?"
@@ -464,7 +674,6 @@ export default function OsekPaturLanding() {
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
                           required
-                          autoComplete="name"
                         />
                       </div>
 
@@ -477,86 +686,64 @@ export default function OsekPaturLanding() {
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           className="h-11 md:h-12 rounded-xl border-2 text-base shadow-sm focus:ring-2 focus:ring-[#27AE60] focus:border-transparent transition-all"
                           required
-                          autoComplete="tel"
                         />
                       </div>
 
-                      <div className="flex items-start space-x-3 space-x-reverse py-2">
-                        <Checkbox 
-                          id="landing-consent"
-                          checked={formData.consent}
-                          onCheckedChange={(checked) => setFormData({...formData, consent: checked})}
-                          className="mt-1"
-                        />
-                        <label
-                          htmlFor="landing-consent"
-                          className="text-xs font-medium leading-relaxed text-gray-500"
-                        >
-                          אני מאשר/ת את <Link to="/Terms" className="underline" target="_blank">תנאי השימוש</Link> ו<Link to="/Privacy" className="underline" target="_blank">מדיניות הפרטיות</Link> ומסכימ/ה לקבלת פניות.
-                        </label>
-                      </div>
+                     <Button
+                       type="submit"
+                       disabled={isSubmitting}
+                       className="w-full h-12 md:h-14 text-base md:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white mt-2"
+                     >
+                       {isSubmitting ? 'שולח...' : 'לפתיחת עוסק פטור'}
+                     </Button>
 
-                      {formError && (
-                        <p className="text-sm text-red-500 font-medium text-center">{formError}</p>
-                      )}
-
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full h-12 md:h-14 text-base md:text-lg font-bold rounded-xl bg-gradient-to-r from-[#27AE60] to-[#2ECC71] hover:from-[#2ECC71] hover:to-[#27AE60] text-white mt-2"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="w-5 h-5 animate-spin ml-2" />
-                            שולח...
-                          </>
-                        ) : 'בדיקה ראשונית ללא התחייבות'}
-                      </Button>
-
-                      <p className="text-xs text-gray-500 text-center mt-3">
-                        🔒 ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום
-                      </p>
-                      <p className="text-[10px] text-gray-400 text-center">
-                        השירות ניתן על ידי גורם פרטי ואינו קשור לרשויות המדינה
-                      </p>
-                    </form>
-                  </div>
-                )}
-              </div>
+                     <p className="text-xs text-gray-500 text-center mt-3">
+                       ללא התחייבות • שיחה קצרה • הסבר מלא לפני כל תשלום
+                     </p>
+                     </form>
+                 </div>
+               )}
+             </motion.div>
             </div>
-          </div>
+         </div>
         </section>
 
-        {/* Testimonials */}
+
+
+        {/* Testimonials Section - NEW */}
         <section className="py-12 md:py-20 bg-[#F8F9FA]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-8 md:mb-16">
               <h2 className="text-2xl md:text-4xl font-black text-[#1E3A5F] mb-3 md:mb-4">מה אומרים עלינו?</h2>
-              <p className="text-lg md:text-xl text-gray-600 px-4">אלפי עצמאים כבר נהנים מליווי מקצועי ושקט נפשי</p>
+              <p className="text-lg md:text-xl text-gray-600 px-4">אלפי עצמאים כבר פתחו עוסק פטור איתנו. הנה כמה מהם:</p>
             </div>
             <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {[
                 {
-                  text: "פשוט הצילו אותי. לא הבנתי כלום מהניירת. הם עשו הכל תוך יום אחד. השירות הכי יעיל שנתקלתי בו.",
-                  name: "דניאל כ.",
+                  text: "פשוט הצילו אותי. לא הבנתי כלום מהטפסים של מס הכנסה, הם עשו הכל תוך יום אחד. השירות הכי יעיל שנתקלתי בו.",
+                  name: "דניאל כהן",
                   role: "מעצב גרפי",
                   stars: 5
                 },
                 {
-                  text: "החשש הכי גדול שלי היה לעשות טעויות בתהליך הבירוקרטי. הצוות נתן לי ביטחון מלא וליווי אישי מדהים.",
-                  name: "שרה ל.",
+                  text: "החשש הכי גדול שלי היה לעשות טעות מול הרשויות. הצוות של Perfect One נתן לי ביטחון מלא וליווי אישי מדהים.",
+                  name: "שרה לוי",
                   role: "קוסמטיקאית",
                   stars: 5
                 },
                 {
-                  text: "האפליקציה שלהם גאונית! אני מצלם קבלות והכל מסודר. שווה כל שקל רק בשביל השקט הנפשי.",
-                  name: "עומר י.",
+                  text: "האפליקציה שלהם גאונית! אני מצלם קבלות והכל מסודר. שווה כל שקל רק בשביל השקט הנפשי הזה.",
+                  name: "עומר יוסף",
                   role: "מאמן כושר אישי",
                   stars: 5
                 }
               ].map((review, i) => (
-                <div 
+                <motion.div 
                   key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                   className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative"
                 >
                   <div className="absolute -top-4 right-8 text-6xl text-[#D4AF37] opacity-20 font-serif">"</div>
@@ -575,7 +762,7 @@ export default function OsekPaturLanding() {
                       <p className="text-sm text-gray-500">{review.role}</p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -584,11 +771,16 @@ export default function OsekPaturLanding() {
         {/* FAQ Section */}
         <section className="py-12 bg-white">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-10"
+            >
               <h2 className="text-3xl md:text-4xl font-black text-[#1E3A5F] mb-4">
-                שאלות נפוצות
+                עוד שאלות נפוצות
               </h2>
-            </div>
+            </motion.div>
 
             <div className="space-y-4">
               {faqs.map((faq, i) => (
@@ -601,51 +793,66 @@ export default function OsekPaturLanding() {
         {/* Related Content */}
         <RelatedContent pageType="landing" />
 
+        {/* Scroll to Top */}
+        <section className="py-12 bg-gradient-to-br from-blue-50 to-indigo-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <Button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="h-16 px-10 text-xl font-bold rounded-2xl bg-[#1E3A5F] hover:bg-[#2C5282] text-white"
+            >
+              חזרה לתחילת הדף
+            </Button>
+          </div>
+        </section>
+
         {/* Final CTA */}
-        <section className="py-16 bg-gradient-to-br from-[#1E3A5F] to-[#0F2847] relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 right-10 w-64 h-64 bg-[#27AE60] rounded-full blur-3xl"></div>
-            <div className="absolute bottom-10 left-10 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
+        <section className="py-16 bg-gradient-to-br from-orange-500 to-red-600 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+            <div className="absolute bottom-10 left-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
           </div>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-              מוכנים להתחיל? הליווי שלנו מחכה לכם
-            </h2>
-            <p className="text-xl text-white/90 mb-8">
-              שיחה קצרה וחינם, בלי התחייבות – פשוט לשמוע מה הצעד הבא
-            </p>
-            <p className="text-sm text-white/50 mb-8">
-              השירות ניתן על ידי גורם פרטי ואינו קשור לרשויות המדינה
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-[#27AE60] hover:bg-[#229954] text-white shadow-2xl">
-                <Target className="ml-3 w-6 h-6" />
-                השאירו פרטים
-              </Button>
-              <a href="https://wa.me/972559700641?text=היי, אני מתעניין בליווי לעצמאים" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#1E3A5F] shadow-2xl">
-                  <MessageCircle className="ml-3 w-6 h-6" />
-                  פנייה בוואטסאפ
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+                עוסק פטור לעצמאים ופרילנסרים - ליווי מלא לאורך הדרך
+              </h2>
+              <p className="text-xl text-white/90 mb-8">
+                בואו נעזור לכם להתחיל נכון - שיחה קצרה וחינם, בלי התחייבות, בלי בירוקרטיה
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button onClick={scrollToForm} className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl bg-white text-[#27AE60] hover:bg-white/90 shadow-2xl">
+                  <Target className="ml-3 w-6 h-6" />
+                  השאר פרטים עכשיו
                 </Button>
-              </a>
-            </div>
+                <a href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור" target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="w-full sm:w-auto h-16 px-10 text-xl font-black rounded-2xl border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#27AE60] shadow-2xl">
+                    <MessageCircle className="ml-3 w-6 h-6" />
+                    פנייה מיידית בווצאפ
+                  </Button>
+                </a>
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>
 
-      {/* Safe CTA */}
+      {/* Safe CTA Solutions - Google Compliant */}
       <SafeCtaBar 
-        title="בדיקה ראשונית ללא התחייבות"
+        title="בדיקה אישית ללא התחייבות"
         subtitle="שם + טלפון בלבד"
         sourcePage="OsekPaturLanding - SafeCtaBar"
       />
 
-      {/* Lead Popup - only on click */}
+      {/* Lead Popup */}
       <LeadPopup 
         open={showLeadPopup} 
         onClose={() => setShowLeadPopup(false)}
-        sourcePage="דף נחיתה - ליווי עצמאים"
+        sourcePage="דף נחיתה - פתיחת עוסק פטור"
       />
     </>
   );
