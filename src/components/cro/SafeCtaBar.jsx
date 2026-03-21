@@ -23,7 +23,8 @@ export default function SafeCtaBar({
     <div className={cn(
       "fixed bottom-0 left-0 right-0 z-30 md:bottom-auto md:right-4 md:top-2/3 md:-translate-y-1/2 md:w-80",
       "border-t md:border-t-0 md:border border-gray-200 bg-white shadow-lg md:rounded-2xl",
-      "max-h-[30vh] md:max-h-none" // Limit height on mobile to avoid covering too much content
+      isExpanded ? "max-h-[85vh] overflow-y-auto" : "max-h-[30vh]",
+      "md:max-h-none"
     )}>
       {/* Header */}
       <button
