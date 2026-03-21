@@ -110,12 +110,12 @@ export default function AccessibilityMenu() {
         <>
           {/* Overlay */}
           <div 
-            className="fixed inset-0 bg-black/50 z-50"
+            className="fixed inset-0 bg-black/30 z-[60]"
             onClick={() => setIsOpen(false)}
           />
           
           {/* תפריט */}
-          <div className="fixed left-4 bottom-20 z-50 bg-white rounded-xl shadow-2xl w-80 p-6 max-h-[80vh] overflow-y-auto" dir="rtl">
+          <div className="fixed left-4 bottom-40 z-[61] bg-white rounded-xl shadow-2xl w-72 p-5 max-h-[60vh] overflow-y-auto" dir="rtl">
             {/* כותרת */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
