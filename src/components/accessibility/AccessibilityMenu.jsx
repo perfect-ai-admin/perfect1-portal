@@ -97,12 +97,12 @@ export default function AccessibilityMenu() {
     <>
       {/* כפתור נגישות צף */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-4 bottom-6 z-50 bg-[#1E3A5F] text-white w-12 h-12 rounded-full shadow-lg hover:bg-[#2C5282] transition-all flex items-center justify-center"
+        onClick={(e) => { e.stopPropagation(); setIsOpen(!isOpen); }}
+        className="fixed left-4 bottom-24 z-[60] bg-[#1E3A5F] text-white w-11 h-11 rounded-full shadow-lg hover:bg-[#2C5282] transition-all flex items-center justify-center"
         aria-label="פתח תפריט נגישות"
         title="נגישות"
       >
-        <Accessibility className="w-6 h-6" />
+        <Accessibility className="w-5 h-5" />
       </button>
 
       {/* תפריט נגישות */}
