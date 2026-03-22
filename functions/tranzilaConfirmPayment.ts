@@ -43,6 +43,17 @@ Deno.serve(async (req) => {
 
         console.log('Payment confirmed:', payment_id, 'product_type:', payment.product_type);
 
+        // === AUTO INVOICE: Issue Morning invoice_receipt ===
+        try {
+            const invoiceResult = await base44.functions.invoke('issueMorningInvoice', {
+                payment_id: payment_id,
+                trigger_source: 'tranzila_confirm',
+            });
+            console.log('[ConfirmPayment] Invoice result:', JSON.stringify(invoiceResult?.data || invoiceResult).substring(0, 200));
+        } catch (invErr) {
+            console.error('[ConfirmPayment] Invoice issue failed (non-blocking):', invErr.message);
+        }
+
         // Handle fulfillment based on product type
         const productType = payment.product_type;
         const productId = payment.product_id;
