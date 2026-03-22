@@ -69,18 +69,22 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     }
   }, [open]);
 
-  // Listen for Tranzila iframe postMessage (success/fail)
+  // Unified payment detection: postMessage + iframe navigation + fast DB polling
   useEffect(() => {
-    if (!open) return;
+    if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
 
-    const handleMessage = async (event) => {
+    const cleanups = [];
+
+    // === Method 1: PostMessage from Tranzila iframe ===
+    const handleMessage = (event) => {
+      if (paymentConfirmedRef.current) return;
       if (event.data && typeof event.data === 'string') {
         try {
           const parsed = JSON.parse(event.data);
           if (parsed.Response === '000') {
             confirmPayment(parsed.ConfirmationCode || parsed.index || '');
           }
-        } catch (e) {
+        } catch (_) {
           if (event.data.includes('Response=000')) {
             const params = new URLSearchParams(event.data);
             confirmPayment(params.get('ConfirmationCode') || '');
@@ -88,95 +92,38 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
         }
       }
     };
-
     window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [open, handshakeData]);
+    cleanups.push(() => window.removeEventListener('message', handleMessage));
 
-  // Polling fallback 1: check iframe URL + listen for iframe navigation
-  useEffect(() => {
-    if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
-
+    // === Method 2: Iframe load/navigation detection ===
     const iframe = document.getElementById('tranzila-dialog-iframe');
-    
-    // Listen for iframe load events (fires when success/fail URL loads)
-    const handleIframeLoad = () => {
-      if (paymentConfirmedRef.current) return;
-      try {
-        const iframeUrl = iframe?.contentWindow?.location?.href || '';
-        if (iframeUrl.includes('about:blank') && iframeUrl !== 'about:blank') {
-          // Tranzila redirected to success - try confirming
-          confirmPayment('iframe-redirect');
-        }
-        if (iframeUrl.includes('Response=000')) {
-          const urlParams = new URLSearchParams(iframeUrl.split('?')[1] || '');
-          confirmPayment(urlParams.get('ConfirmationCode') || '');
-        }
-      } catch (e) {
-        // Cross-origin - iframe navigated away from Tranzila, likely success redirect
-        // This is actually a GOOD signal - try confirming
-        if (!paymentConfirmedRef.current) {
-          confirmPayment('iframe-navigation');
-        }
-      }
-    };
-
     if (iframe) {
-      // Skip the initial load (form submission)
       let loadCount = 0;
-      const wrappedHandler = () => {
+      const handleIframeLoad = () => {
         loadCount++;
-        if (loadCount > 1) { // Skip first load (form submission)
-          handleIframeLoad();
-        }
-      };
-      iframe.addEventListener('load', wrappedHandler);
-      
-      // Also poll URL periodically
-      const interval = setInterval(() => {
-        if (paymentConfirmedRef.current) {
-          clearInterval(interval);
-          return;
-        }
+        if (loadCount <= 1 || paymentConfirmedRef.current) return;
         try {
           const iframeUrl = iframe?.contentWindow?.location?.href || '';
           if (iframeUrl.includes('Response=000')) {
             const urlParams = new URLSearchParams(iframeUrl.split('?')[1] || '');
             confirmPayment(urlParams.get('ConfirmationCode') || '');
-            clearInterval(interval);
           }
-        } catch (e) {
-          // Cross-origin - expected, ignore
+        } catch (_) {
+          // Cross-origin = iframe navigated away from Tranzila = success redirect
+          confirmPayment('iframe-navigation');
         }
-      }, 1000);
-
-      return () => {
-        iframe.removeEventListener('load', wrappedHandler);
-        clearInterval(interval);
       };
+      iframe.addEventListener('load', handleIframeLoad);
+      cleanups.push(() => iframe.removeEventListener('load', handleIframeLoad));
     }
-  }, [open, paymentStep, handshakeData]);
 
-  // Polling fallback 2: check Payment entity status in DB (handles notify_url callback from Tranzila)
-  // Also tries to proactively confirm payment after initial wait
-  useEffect(() => {
-    if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
-
-    let attempts = 0;
-    const maxAttempts = 120; // ~3 minutes at 1.5s intervals
-
-    const interval = setInterval(async () => {
-      if (paymentConfirmedRef.current) {
-        clearInterval(interval);
-        return;
-      }
-      attempts++;
-      if (attempts > maxAttempts) {
-        clearInterval(interval);
-        return;
-      }
+    // === Method 3: Fast DB polling (notify webhook sets completed) ===
+    let pollCount = 0;
+    const pollInterval = setInterval(async () => {
+      if (paymentConfirmedRef.current) { clearInterval(pollInterval); return; }
+      pollCount++;
+      if (pollCount > 240) { clearInterval(pollInterval); return; } // ~2min at 500ms
       try {
-        // Check DB status - only trusts tranzilaNotify webhook to set completed
         const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
         if (payments?.length > 0 && payments[0].status === 'completed') {
           if (!paymentConfirmedRef.current) {
@@ -192,15 +139,13 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
             }
             onClose();
           }
-          clearInterval(interval);
-          return;
+          clearInterval(pollInterval);
         }
-      } catch (e) {
-        // Ignore errors
-      }
-    }, 1500);
+      } catch (_) {}
+    }, 500);
+    cleanups.push(() => clearInterval(pollInterval));
 
-    return () => clearInterval(interval);
+    return () => cleanups.forEach(fn => fn());
   }, [open, paymentStep, handshakeData]);
 
   const loadData = async () => {
