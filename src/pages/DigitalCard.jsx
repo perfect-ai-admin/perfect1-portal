@@ -39,16 +39,23 @@ export default function DigitalCard() {
   const color = card.primary_color || '#1E3A5F';
   const wa = card.whatsapp || card.phone;
 
+  // Ensure URLs have protocol
+  const ensureUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return 'https://' + url;
+  };
+
   const act = {
     call: () => { trackClick(card.id, 'call'); window.location.href = `tel:${card.phone}`; },
     whatsapp: () => { trackClick(card.id, 'whatsapp'); window.open(`https://wa.me/${wa}`, '_blank'); },
     email: () => { trackClick(card.id, 'email'); window.location.href = `mailto:${card.email}`; },
-    website: () => { trackClick(card.id, 'website'); window.open(card.website_url, '_blank'); },
-    instagram: () => { trackClick(card.id, 'instagram'); window.open(card.instagram_url, '_blank'); },
-    facebook: () => { trackClick(card.id, 'facebook'); window.open(card.facebook_url, '_blank'); },
-    linkedin: () => { trackClick(card.id, 'linkedin'); window.open(card.linkedin_url, '_blank'); },
-    tiktok: () => { trackClick(card.id, 'tiktok'); window.open(card.tiktok_url, '_blank'); },
-    waze: () => { trackClick(card.id, 'waze'); window.open(card.waze_url, '_blank'); },
+    website: () => { if (card.website_url) { trackClick(card.id, 'website'); window.open(ensureUrl(card.website_url), '_blank'); } },
+    instagram: () => { if (card.instagram_url) { trackClick(card.id, 'instagram'); window.open(ensureUrl(card.instagram_url), '_blank'); } },
+    facebook: () => { if (card.facebook_url) { trackClick(card.id, 'facebook'); window.open(ensureUrl(card.facebook_url), '_blank'); } },
+    linkedin: () => { if (card.linkedin_url) { trackClick(card.id, 'linkedin'); window.open(ensureUrl(card.linkedin_url), '_blank'); } },
+    tiktok: () => { if (card.tiktok_url) { trackClick(card.id, 'tiktok'); window.open(ensureUrl(card.tiktok_url), '_blank'); } },
+    waze: () => { if (card.waze_url) { trackClick(card.id, 'waze'); window.open(ensureUrl(card.waze_url), '_blank'); } },
     saveContact: () => { trackClick(card.id, 'save_contact'); if (card.vcf_url) window.open(card.vcf_url, '_blank'); },
     share: async () => {
       trackClick(card.id, 'share');
