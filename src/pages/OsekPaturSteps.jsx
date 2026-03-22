@@ -32,6 +32,7 @@ export default function OsekPaturSteps() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [user, setUser] = useState(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -59,11 +60,14 @@ export default function OsekPaturSteps() {
       if (scrollPercentage >= 75 && !showPopup) {
         setShowPopup(true);
       }
+      if (scrollPercentage >= 35 && !showStickyCta) {
+        setShowStickyCta(true);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [showPopup]);
+  }, [showPopup, showStickyCta]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -484,15 +488,22 @@ export default function OsekPaturSteps() {
           </div>
         </section>
 
-        {/* Sticky Mobile CTA */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white border-t-2 border-[#D4AF37] shadow-[0_-4px_12px_rgba(0,0,0,0.15)] p-3 safe-area-pb">
-          <Button 
-            onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
-            className="w-full h-12 bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl text-base shadow-lg"
+        {/* Sticky Mobile CTA - appears after 35% scroll */}
+        {showStickyCta && (
+          <motion.div 
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-white border-t-2 border-[#D4AF37] shadow-[0_-4px_12px_rgba(0,0,0,0.15)] p-3 safe-area-pb"
           >
-            🚀 פתיחת עוסק פטור - השאר פרטים
-          </Button>
-        </div>
+            <Button 
+              onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
+              className="w-full h-12 bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl text-base shadow-lg"
+            >
+              🚀 פתיחת עוסק פטור - השאר פרטים
+            </Button>
+          </motion.div>
+        )}
 
         {/* Related */}
         <RelatedContent pageType="guide" />
