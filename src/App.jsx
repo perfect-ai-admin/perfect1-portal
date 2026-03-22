@@ -43,6 +43,9 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      {/* Standalone pages - NO layout wrapper */}
+      <Route path="/DigitalCard" element={<DigitalCard />} />
+
       <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
           <MainPage />
