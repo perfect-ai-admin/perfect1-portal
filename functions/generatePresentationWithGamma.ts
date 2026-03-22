@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 
 Deno.serve(async (req) => {
   try {
@@ -84,8 +84,6 @@ Call to action: Contact Us`;
       }
     };
 
-    // Don't add theme/folder - let Gamma use defaults
-
     const gammaResponse = await fetch('https://public-api.gamma.app/v1.0/generations', {
       method: 'POST',
       headers: {
@@ -98,7 +96,6 @@ Call to action: Contact Us`;
     if (!gammaResponse.ok) {
       const errorText = await gammaResponse.text();
       console.error('❌ Gamma API Error:', gammaResponse.status, errorText);
-      console.error('📤 Payload sent:', JSON.stringify(payload, null, 2));
       
       let errorMsg = `Gamma API Error ${gammaResponse.status}`;
       try {
@@ -118,15 +115,17 @@ Call to action: Contact Us`;
       throw new Error('No generationId returned from Gamma API');
     }
 
-    // Poll for completion (Gamma API is async)
+    // Poll for completion - use 5 second intervals as recommended by Gamma docs
     let presentationUrl = null;
+    let pdfExportUrl = null;
     let attempts = 0;
-    const maxAttempts = 120; // 120 * 1 second = 2 minutes max
+    const maxAttempts = 60; // 60 * 5 seconds = 5 minutes max
+    const pollInterval = 5000; // 5 seconds as recommended
 
     console.log(`⏳ Starting polling for generation ${generationId}...`);
 
-    while (attempts < maxAttempts && !presentationUrl) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    while (attempts < maxAttempts) {
+      await new Promise(resolve => setTimeout(resolve, pollInterval));
       attempts++;
 
       try {
@@ -144,37 +143,39 @@ Call to action: Contact Us`;
         }
 
         const statusData = await statusResponse.json();
-        console.log(`📊 Poll #${attempts}:`, JSON.stringify(statusData, null, 2));
+        console.log(`📊 Poll #${attempts}: status=${statusData.status}, keys=${Object.keys(statusData).join(',')}`);
 
         if (statusData.status === 'completed') {
-          // Try different URL field names that Gamma might use
           presentationUrl = statusData.gammaUrl || statusData.url || statusData.presentationUrl || statusData.outputUrl;
+          pdfExportUrl = statusData.exportUrl || null;
           
-          // Get the PDF export URL if available
-          const exportUrl = statusData.exportUrl || null;
+          console.log('✅ gammaUrl:', presentationUrl);
+          console.log('✅ exportUrl (PDF):', pdfExportUrl);
           
-          console.log('✅ Full status object:', JSON.stringify(statusData, null, 2));
-          console.log('✅ All available fields:', Object.keys(statusData));
-          console.log('✅ gammaUrl field:', statusData.gammaUrl);
-          console.log('✅ exportUrl (PDF):', exportUrl);
-          console.log('✅ Final URL extracted:', presentationUrl);
-          
-          if (!presentationUrl) {
-            console.warn('⚠️ No URL found in response. Full object:', statusData);
+          // If exportAs was requested but exportUrl isn't ready yet, poll a few more times
+          if (!pdfExportUrl && presentationUrl) {
+            console.log('⏳ PDF export not ready yet, polling a few more times...');
+            for (let extraPoll = 0; extraPoll < 6; extraPoll++) {
+              await new Promise(resolve => setTimeout(resolve, 5000));
+              try {
+                const extraResponse = await fetch(`https://public-api.gamma.app/v1.0/generations/${generationId}`, {
+                  method: 'GET',
+                  headers: { 'X-API-KEY': Deno.env.get('GAMMA_API_KEY') }
+                });
+                if (extraResponse.ok) {
+                  const extraData = await extraResponse.json();
+                  console.log(`📊 Extra poll #${extraPoll + 1}: exportUrl=${extraData.exportUrl || 'null'}`);
+                  if (extraData.exportUrl) {
+                    pdfExportUrl = extraData.exportUrl;
+                    break;
+                  }
+                }
+              } catch (e) {
+                console.error('Extra poll error:', e.message);
+              }
+            }
           }
-
-          // Store exportUrl for later use
-          if (exportUrl) {
-            presentationUrl = presentationUrl; // keep gamma URL too
-            // We'll return both URLs
-            return Response.json({
-              success: true,
-              presentationUrl,
-              pdfUrl: exportUrl,
-              generationId,
-              message: 'המצגה שלך נוצרה בהצלחה!'
-            });
-          }
+          
           break;
         }
 
@@ -188,21 +189,15 @@ Call to action: Contact Us`;
     }
 
     if (!presentationUrl) {
-      throw new Error(`Gamma generation timed out after ${maxAttempts} attempts (${maxAttempts}s)`);
+      throw new Error(`Gamma generation timed out after ${maxAttempts * 5} seconds`);
     }
 
-    console.log('📤 Final response:', {
-      success: true,
-      presentationUrl,
-      presentationUrlType: typeof presentationUrl,
-      generationId,
-      message: 'המצגה שלך נוצרה בהצלחה!'
-    });
+    console.log('📤 Final response:', { presentationUrl, pdfUrl: pdfExportUrl, generationId });
 
     return Response.json({
       success: true,
       presentationUrl,
-      pdfUrl: null,
+      pdfUrl: pdfExportUrl,
       generationId,
       message: 'המצגה שלך נוצרה בהצלחה!'
     });
