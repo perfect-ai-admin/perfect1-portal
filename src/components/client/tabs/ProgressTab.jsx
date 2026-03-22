@@ -497,21 +497,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
       <div className="hidden lg:grid lg:grid-cols-12 gap-6">
         {/* Journey Timeline - Desktop */}
         <div className="lg:col-span-6">
-           <div className="flex items-center justify-between mb-4">
-             <h2 className="text-xl font-bold text-gray-900">המסע שלך</h2>
-             <Button 
-               variant="outline" 
-               size="sm"
-               onClick={handleResetJourney}
-               className="text-sm"
-             >
-               <RefreshCcw className="w-4 h-4 ml-2" />
-               רענן מסע
-             </Button>
-           </div>
-           <div>
-            <JourneyTimeline onStartTask={handleStartTask} />
-           </div>
+           <JourneyTimeline onStartTask={handleStartTask} onResetJourney={handleResetJourney} />
         </div>
 
         {/* Right Column - Next Step & Actions 50% */}
