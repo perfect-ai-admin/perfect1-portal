@@ -10,6 +10,29 @@ export default function NavigationTracker() {
     const { Pages, mainPage } = pagesConfig;
     const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 
+    // Persist UTM params & referrer on first arrival so lead forms can use them later
+    useEffect(() => {
+        try {
+            const params = new URLSearchParams(location.search);
+            const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+            const hasUtm = utmKeys.some(k => params.get(k));
+            if (hasUtm) {
+                utmKeys.forEach(k => {
+                    const v = params.get(k);
+                    if (v) sessionStorage.setItem(k, v);
+                });
+            }
+            // Save first referrer (external site) once per session
+            if (document.referrer && !sessionStorage.getItem('landing_referrer')) {
+                sessionStorage.setItem('landing_referrer', document.referrer);
+            }
+            // Save the first landing page URL
+            if (!sessionStorage.getItem('landing_page_url')) {
+                sessionStorage.setItem('landing_page_url', window.location.href);
+            }
+        } catch (_) { /* sessionStorage may be blocked */ }
+    }, [location.search]);
+
     // Log user activity when navigating to a page
     useEffect(() => {
         // Extract page name from pathname
