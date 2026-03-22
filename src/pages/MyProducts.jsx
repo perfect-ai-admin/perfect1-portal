@@ -28,6 +28,7 @@ import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import ShoppingCartButton from '@/components/client/shared/ShoppingCart';
 import NotificationCenter from '@/components/client/NotificationCenter';
 import LandingPageManageSheet from '@/components/client/myproducts/LandingPageManageSheet';
+import EditDigitalCardDialog from '@/components/client/myproducts/EditDigitalCardDialog';
 
 export default function MyProducts() {
   const [user, setUser] = useState(null);
@@ -39,6 +40,7 @@ export default function MyProducts() {
   const [cancelDialog, setCancelDialog] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
   const [managePageId, setManagePageId] = useState(null);
+  const [editCardId, setEditCardId] = useState(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -355,6 +357,7 @@ export default function MyProducts() {
                     onArchive={(id) => archiveMutation.mutate(id)}
                     onCancelSubscription={(p) => setCancelDialog(p)}
                     onManage={(id) => setManagePageId(id)}
+                    onEditCard={(cardId) => setEditCardId(cardId)}
                   />
                 ))}
               </AnimatePresence>
@@ -392,6 +395,14 @@ export default function MyProducts() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Digital Card Dialog */}
+      <EditDigitalCardDialog
+        open={!!editCardId}
+        onOpenChange={(open) => { if (!open) setEditCardId(null); }}
+        cardId={editCardId}
+        onSaved={() => queryClient.invalidateQueries({ queryKey: ['purchased-products'] })}
+      />
 
       {/* Manage Landing Page Sheet */}
       <LandingPageManageSheet 
