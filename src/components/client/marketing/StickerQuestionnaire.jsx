@@ -61,10 +61,11 @@ const StepHeader = ({ icon: Icon, title, description, colorClass = "bg-blue-100 
 );
 
 export default function StickerQuestionnaire({ onComplete, onClose }) {
-  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 6;
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutProduct, setCheckoutProduct] = useState(null);
   
   const [formData, setFormData] = useState({
     businessName: '',
