@@ -12,6 +12,7 @@ import DashboardOverview from '../components/admin/DashboardOverview';
 import PaymentsManager from '../components/admin/PaymentsManager';
 import LandingPagesManager from '../components/admin/LandingPagesManager';
 import ActivityLogView from '../components/admin/ActivityLogView';
+import BillingDocumentsManager from '../components/admin/BillingDocumentsManager';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
