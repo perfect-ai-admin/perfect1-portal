@@ -27,6 +27,7 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({});
   const [newService, setNewService] = useState('');
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   useEffect(() => {
     if (!open || !cardId) return;
