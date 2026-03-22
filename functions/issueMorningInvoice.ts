@@ -492,11 +492,14 @@ Deno.serve(async (req) => {
 
     // ─── Step 8: Send email ───
     const customerEmail = morningCustomer.email || payment.metadata?.user_email;
-    if (isValidEmail(customerEmail) && pdfUrl) {
+    if (isValidEmail(customerEmail) && (viewUrl || pdfUrl)) {
       try {
         await base44.asServiceRole.entities.BillingDocument.update(billingDocId, {
           send_status: 'sending',
         });
+
+        // Use viewUrl (Morning's sharing page) so clicking opens PDF in browser directly
+        const emailDocUrl = viewUrl || pdfUrl;
 
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: customerEmail,
@@ -515,7 +518,7 @@ Deno.serve(async (req) => {
                   <tr><td style="padding:8px 0;color:#6b7280;">תאריך:</td><td style="padding:8px 0;">${new Date().toLocaleDateString('he-IL')}</td></tr>
                 </table>
                 <div style="text-align:center;margin:20px 0;">
-                  <a href="${pdfUrl}" style="display:inline-block;background:#1E3A5F;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;">צפה בחשבונית</a>
+                  <a href="${emailDocUrl}" target="_blank" style="display:inline-block;background:#1E3A5F;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;">צפה בחשבונית</a>
                 </div>
                 <p style="color:#9ca3af;font-size:12px;margin-top:24px;">Perfect One – ניהול עסקי חכם</p>
               </div>
