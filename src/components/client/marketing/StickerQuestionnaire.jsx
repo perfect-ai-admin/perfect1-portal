@@ -745,6 +745,44 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                 </motion.div>
               </motion.div>
             </div>
+          ) : showSuccess && paymentComplete ? (
+             /* Thank You Screen after payment */
+             <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-8">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+                className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center shadow-lg shadow-green-200"
+              >
+                <CheckCircle2 className="w-12 h-12 text-green-600" />
+              </motion.div>
+
+              <div className="space-y-2">
+                <h2 className="text-2xl font-black text-gray-900">תודה על הרכישה! 🎉</h2>
+                <p className="text-gray-600 text-sm max-w-xs mx-auto">
+                  הסטיקר נשלח למייל שלך ונשמר ב"המוצרים שלי"
+                </p>
+              </div>
+
+              {generatedStickerUrl && (
+                <div className="relative w-48 h-48 bg-gray-50 rounded-xl overflow-hidden shadow-md border-2 border-gray-100">
+                  <img 
+                    src={finalStickerUrl || generatedStickerUrl} 
+                    alt="הסטיקר שלך" 
+                    className="w-full h-full object-contain p-3"
+                  />
+                </div>
+              )}
+
+               <div className="flex flex-col gap-3 w-full max-w-xs">
+                   <Button 
+                    onClick={() => onComplete(formData)}
+                    className="bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold h-11"
+                  >
+                    חזרה למרכז השליטה
+                  </Button>
+               </div>
+             </div>
           ) : showSuccess ? (
              <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-4">
               {generatedStickerUrl ? (
