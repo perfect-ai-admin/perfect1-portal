@@ -106,6 +106,7 @@ export default function MyProducts() {
           if (metaType === 'sticker') resolvedType = 'sticker';
           if (metaType === 'logo') resolvedType = 'logo';
           if (metaType === 'presentation') resolvedType = 'presentation';
+          if (metaType === 'digital_card') resolvedType = 'service';
           
           // Get the image/download URL from metadata based on type
           const imageUrl = p.metadata?.stickerUrl || p.metadata?.logoUrl || p.metadata?.preview_image || '';
