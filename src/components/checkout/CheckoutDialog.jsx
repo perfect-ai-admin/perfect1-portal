@@ -93,30 +93,68 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     return () => window.removeEventListener('message', handleMessage);
   }, [open, handshakeData]);
 
-  // Polling fallback 1: check iframe URL (may fail due to cross-origin)
+  // Polling fallback 1: check iframe URL + listen for iframe navigation
   useEffect(() => {
     if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
 
-    const interval = setInterval(() => {
-      if (paymentConfirmedRef.current) {
-        clearInterval(interval);
-        return;
-      }
+    const iframe = document.getElementById('tranzila-dialog-iframe');
+    
+    // Listen for iframe load events (fires when success/fail URL loads)
+    const handleIframeLoad = () => {
+      if (paymentConfirmedRef.current) return;
       try {
-        const iframe = document.getElementById('tranzila-dialog-iframe');
-        if (!iframe) return;
-        const iframeUrl = iframe.contentWindow?.location?.href || '';
+        const iframeUrl = iframe?.contentWindow?.location?.href || '';
+        if (iframeUrl.includes('about:blank') && iframeUrl !== 'about:blank') {
+          // Tranzila redirected to success - try confirming
+          confirmPayment('iframe-redirect');
+        }
         if (iframeUrl.includes('Response=000')) {
           const urlParams = new URLSearchParams(iframeUrl.split('?')[1] || '');
           confirmPayment(urlParams.get('ConfirmationCode') || '');
-          clearInterval(interval);
         }
       } catch (e) {
-        // Cross-origin - expected, ignore
+        // Cross-origin - iframe navigated away from Tranzila, likely success redirect
+        // This is actually a GOOD signal - try confirming
+        if (!paymentConfirmedRef.current) {
+          confirmPayment('iframe-navigation');
+        }
       }
-    }, 1500);
+    };
 
-    return () => clearInterval(interval);
+    if (iframe) {
+      // Skip the initial load (form submission)
+      let loadCount = 0;
+      const wrappedHandler = () => {
+        loadCount++;
+        if (loadCount > 1) { // Skip first load (form submission)
+          handleIframeLoad();
+        }
+      };
+      iframe.addEventListener('load', wrappedHandler);
+      
+      // Also poll URL periodically
+      const interval = setInterval(() => {
+        if (paymentConfirmedRef.current) {
+          clearInterval(interval);
+          return;
+        }
+        try {
+          const iframeUrl = iframe?.contentWindow?.location?.href || '';
+          if (iframeUrl.includes('Response=000')) {
+            const urlParams = new URLSearchParams(iframeUrl.split('?')[1] || '');
+            confirmPayment(urlParams.get('ConfirmationCode') || '');
+            clearInterval(interval);
+          }
+        } catch (e) {
+          // Cross-origin - expected, ignore
+        }
+      }, 1000);
+
+      return () => {
+        iframe.removeEventListener('load', wrappedHandler);
+        clearInterval(interval);
+      };
+    }
   }, [open, paymentStep, handshakeData]);
 
   // Polling fallback 2: check Payment entity status in DB (handles notify_url callback from Tranzila)
