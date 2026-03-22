@@ -270,8 +270,8 @@ Deno.serve(async (req) => {
       console.log(`[Invoice] Stale processing record found (${Math.round(processingAge/1000)}s), treating as failed`);
     }
 
-    // If there's a failed attempt, we'll retry (update existing record)
-    const failedDoc = existingDocs?.find(d => d.issue_status === 'failed');
+    // If there's a failed or stale processing attempt, we'll retry (update existing record)
+    const failedDoc = existingDocs?.find(d => d.issue_status === 'failed') || currentlyProcessing;
 
     // ─── Step 3: Get Morning connection ───
     let jwt, connection;
