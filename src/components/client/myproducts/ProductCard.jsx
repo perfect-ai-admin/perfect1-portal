@@ -6,7 +6,7 @@ import {
   Globe, Palette, Presentation, Image, MoreVertical, 
   ExternalLink, Download, Eye, Archive, Copy, Calendar,
   CheckCircle2, FileText, CreditCard, Target, Crown, X,
-  Settings
+  Settings, Edit2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,7 +40,7 @@ const planStatusConfig = {
   archived: { label: 'מנוי מבוטל', className: 'bg-gray-50 text-gray-500 border-gray-200' },
 };
 
-export default function ProductCard({ product, onPreview, onArchive, onCancelSubscription, onManage }) {
+export default function ProductCard({ product, onPreview, onArchive, onCancelSubscription, onManage, onEditCard }) {
   const [failedImg, setFailedImg] = useState(false);
   const navigate = useNavigate();
   const config = typeConfig[product.product_type] || typeConfig.other;

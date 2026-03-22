@@ -32,12 +32,19 @@ Deno.serve(async (req) => {
         email: card.email,
         social_networks: card.social_networks,
         logo_url: card.logo_url,
+        cover_image_url: card.cover_image_url,
         preferred_style: card.preferred_style,
         primary_color: card.primary_color,
         slug: card.slug,
         public_url: card.public_url,
         qr_image_url: card.qr_image_url,
         vcf_url: card.vcf_url,
+        website_url: card.website_url || '',
+        instagram_url: card.instagram_url || '',
+        facebook_url: card.facebook_url || '',
+        linkedin_url: card.linkedin_url || '',
+        tiktok_url: card.tiktok_url || '',
+        waze_url: card.waze_url || '',
       }
     });
   } catch (error) {
