@@ -202,7 +202,7 @@ export default function OsekPaturSteps() {
         canonical="https://perfect1.co.il/osek-patur-steps"
       />
 
-      <main className="bg-white">
+      <main className="bg-white pb-16 md:pb-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <Breadcrumbs items={[
             { label: 'דף הבית', url: 'Home' },
