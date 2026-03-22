@@ -421,8 +421,8 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         )}
         
         {/* Success/fail redirect URLs */}
-        <input type="hidden" name="success_url_address" value="https://one-pai.com/MyProducts?payment=success" />
-        <input type="hidden" name="fail_url_address" value="https://one-pai.com/PricingPerfectBizAI?payment=failed" />
+        <input type="hidden" name="success_url_address" value="about:blank" />
+        <input type="hidden" name="fail_url_address" value="about:blank" />
 
         {/* Display customization */}
         <input type="hidden" name="lang" value="il" />
