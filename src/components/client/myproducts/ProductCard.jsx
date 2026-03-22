@@ -102,11 +102,15 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
       <div className="flex flex-col sm:flex-row">
         {/* Image / Icon Area */}
         <div className="w-full sm:w-40 h-32 sm:h-auto bg-gray-50 flex-shrink-0 relative flex items-center justify-center overflow-hidden">
-          {product.preview_image && !failedImg ? (
+          {(product.preview_image || ((product.product_type === 'sticker' || product.product_type === 'logo') && product.download_url)) && !failedImg ? (
             <img 
-              src={product.preview_image} 
+              src={product.preview_image || product.download_url} 
               alt={product.product_name}
-              className="w-full h-full object-cover"
+              className={`w-full h-full ${
+                product.product_type === 'sticker' || product.product_type === 'logo' 
+                  ? 'object-contain p-2 bg-white' 
+                  : 'object-cover'
+              }`}
               onError={() => setFailedImg(true)}
             />
           ) : (
