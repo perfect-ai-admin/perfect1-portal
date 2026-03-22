@@ -901,16 +901,16 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                 </p>
               </div>
               <div className="bg-white rounded-xl p-4 border border-gray-200">
-                <p className="text-xs text-gray-500 mb-3">{pdfUrl ? 'הורד את המצגת:' : 'הקישור למצגת:'}</p>
+                <p className="text-xs text-gray-500 mb-3">הורד את המצגת:</p>
                 <a 
                   href={pdfUrl || draftPreviewUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  download={pdfUrl ? `מצגת-${formData.businessName || 'עסקית'}.pdf` : undefined}
+                  download={`מצגת-${formData.businessName || 'עסקית'}.pdf`}
                   className="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center justify-center gap-2"
                 >
-                  {pdfUrl ? 'הורד מצגת PDF' : 'פתח את המצגת'}
-                  <ExternalLink className="w-4 h-4" />
+                  הורד מצגת
+                  <Download className="w-4 h-4" />
                 </a>
               </div>
               <div className="flex flex-col gap-3 w-full">
