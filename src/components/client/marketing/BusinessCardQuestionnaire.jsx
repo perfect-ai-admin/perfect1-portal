@@ -6,13 +6,16 @@ import { Label } from '@/components/ui/label';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, User, Briefcase, 
   Layout, Phone, Mail, Globe, Instagram, Facebook, Linkedin, Music,
-  Image, Share2, Check, Smartphone, Link as LinkIcon, Users, Navigation
+  Image, Share2, Check, Smartphone, Link as LinkIcon, Users, Navigation,
+  CheckCircle2, Copy, ExternalLink
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 import BusinessCardPreview from './BusinessCardPreview';
 import BusinessCardResult from '@/components/client/marketing/BusinessCardResult';
 import BusinessCardSummary from '@/components/client/marketing/BusinessCardSummary';
+import CheckoutDialog from '@/components/checkout/CheckoutDialog';
 
 // Custom specialized card selector component
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
