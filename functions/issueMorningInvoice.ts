@@ -465,9 +465,11 @@ Deno.serve(async (req) => {
     }
 
     // ─── Step 7: Document issued successfully ───
-    // Use the Hebrew viewer URL for direct browser viewing (not download)
-    const viewUrl = result.url?.he || result.url?.origin || result.url?.en || null;
-    const pdfUrl = viewUrl;
+    // Build a direct browser-viewable URL (Morning's sharing page, not the download endpoint)
+    const downloadUrl = result.url?.he || result.url?.origin || result.url?.en || null;
+    // Morning sharing/viewer URL opens in browser with their built-in PDF viewer
+    const viewUrl = result.id ? `https://www.greeninvoice.co.il/document/${result.id}` : downloadUrl;
+    const pdfUrl = downloadUrl; // keep download URL for records
     const subtotal = result.amount || totalAmount;
     const vatAmount = result.vat || 0;
     const total = result.totalAmount || (subtotal + vatAmount);
