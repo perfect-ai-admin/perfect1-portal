@@ -121,6 +121,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   const [countdown, setCountdown] = useState(60);
   const [showCheckout, setShowCheckout] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   // Countdown timer during building
   useEffect(() => {
@@ -248,9 +249,12 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
 
          if (response.data.success) {
            const url = response.data.presentationUrl;
+           const pdf = response.data.pdfUrl;
            console.log('✅ Setting presentation URL:', url);
+           console.log('✅ Setting PDF URL:', pdf);
            setPresentationUrl(url);
            setDraftPreviewUrl(url);
+           if (pdf) setPdfUrl(pdf);
            setShowDraftPreview(true);
            toast.success('המצגה שלך מוכנה! 🎉');
          } else {
