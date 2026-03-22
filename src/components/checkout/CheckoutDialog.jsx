@@ -167,7 +167,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
       } catch (e) {
         // Ignore errors
       }
-    }, 1500);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [open, paymentStep, handshakeData]);
