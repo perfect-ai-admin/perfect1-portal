@@ -12,7 +12,7 @@ import AggresiveLeadPopup from '../components/popups/AggresiveLeadPopup';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
-import { CheckCircle, AlertCircle, Phone, MessageCircle, ArrowRight, Loader2, FileText } from 'lucide-react';
+import { CheckCircle, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Accordion,
@@ -220,9 +220,15 @@ export default function OsekPaturSteps() {
             <h2 className="text-xl md:text-2xl font-bold text-gray-700 mb-8">
               כך פותחים עוסק פטור בצורה מסודרת מול מס הכנסה, מע״מ וביטוח לאומי
             </h2>
-            <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8">
-              כל שלב מוסבר בברור. אם אתה רוצה שנטפל בזה בעבורך, אתה יכול גם לבחור בתהליך של <Link to={createPageUrl('OsekPaturOnlineLanding')} className="text-blue-600 font-bold hover:text-blue-800 underline">פתיחת עוסק פטור אונליין</Link> שנעשה כלו דיגיטלי.
+            <p className="text-gray-600 leading-relaxed max-w-2xl mx-auto mb-6">
+              מדריך מלא עם כל מה שצריך לדעת. קרא, תבין, ואם תרצה - נעשה הכל בשבילך.
             </p>
+            <Button 
+              onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
+              className="h-14 px-10 text-lg bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl shadow-lg transform transition-all hover:scale-105"
+            >
+              רוצה שנפתח לך עוסק פטור? לחץ כאן →
+            </Button>
           </div>
         </section>
 
@@ -262,6 +268,26 @@ export default function OsekPaturSteps() {
                   </div>
                 </motion.div>
               ))}
+
+              {/* Mini CTA after step 3 */}
+              {steps.length > 3 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] rounded-3xl p-8 text-center text-white shadow-xl"
+                  style={{ order: 3 }}
+                >
+                  <p className="text-xl font-bold mb-2">נשמע מורכב? 🤔</p>
+                  <p className="text-blue-100 mb-5">אנחנו עושים את כל התהליך בשבילך - מ-א׳ עד ת׳</p>
+                  <Button 
+                    onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="h-12 px-8 bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl text-base"
+                  >
+                    פתיחת עוסק פטור בקליק →
+                  </Button>
+                </motion.div>
+              )}
             </div>
           </div>
         </section>
@@ -358,6 +384,23 @@ export default function OsekPaturSteps() {
                 </motion.div>
               ))}
             </div>
+
+            {/* CTA after mistakes */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-10 bg-white rounded-2xl p-8 text-center shadow-lg border-2 border-orange-200"
+            >
+              <p className="text-2xl font-black text-[#1E3A5F] mb-2">לא רוצה לעשות טעויות? 🎯</p>
+              <p className="text-gray-600 mb-5">תן לנו לטפל בפתיחה - בלי טעויות, בלי כאבי ראש</p>
+              <Button 
+                onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
+                className="h-12 px-8 bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl text-base"
+              >
+                פתיחת עוסק פטור ללא טעויות →
+              </Button>
+            </motion.div>
           </div>
         </section>
 
@@ -391,54 +434,52 @@ export default function OsekPaturSteps() {
                 </AccordionItem>
               ))}
             </Accordion>
-          </div>
-        </section>
 
-        {/* New Lead CTA */}
-        <section className="py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* CTA after FAQ */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border-l-4 border-[#1E3A5F]"
+              className="mt-10 text-center bg-blue-50 rounded-2xl p-8 border-2 border-blue-200"
             >
-              <h2 className="text-3xl font-black text-[#1E3A5F] mb-4">
-                רוצה שנעשה סדר ונעזור לך בפתיחה?
-              </h2>
-              <p className="text-gray-700 mb-6 text-lg">
-                אל תשבור את הראש לבד. הצוות שלנו כאן כדי ללוות אותך יד ביד בתהליך הפתיחה, לוודא שהכל תקין ולחסוך לך זמן יקר.
-              </p>
+              <p className="text-lg font-bold text-[#1E3A5F] mb-2">עדיין יש שאלות?</p>
+              <p className="text-gray-600 mb-4">השאר פרטים ונסביר לך הכל בשיחה קצרה</p>
               <Button 
                 onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
-                className="h-14 px-8 text-lg bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold rounded-xl flex items-center gap-3 shadow-lg shadow-blue-900/20 transform transition-transform active:scale-95"
+                className="h-12 px-8 bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold rounded-xl"
               >
-                <FileText className="w-5 h-5" />
-                לחץ כאן להשארת פרטים
+                רוצה שיחת ייעוץ חינם →
               </Button>
             </motion.div>
           </div>
         </section>
 
-        {/* Contact */}
-        <section className="py-16 bg-white border-t">
-          <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl font-black text-[#1E3A5F] mb-4">
-              השאלה סיביות? ניתן לתקשר ישירות
+        {/* Post-FAQ CTA with inline form */}
+        <section className="py-16 bg-gradient-to-r from-[#1E3A5F] to-[#2C5282]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-3">
+              מוכן לפתוח עוסק פטור?
             </h2>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer">
-                <Button className="h-11 sm:h-12 px-4 sm:px-6 text-sm sm:text-base bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">
-                  <MessageCircle className="ml-2 w-4 h-4" />
-                  WhatsApp
-                </Button>
-              </a>
-              <a href="tel:+972502277087">
-                <Button className="h-11 sm:h-12 px-4 sm:px-6 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">
-                  <Phone className="ml-2 w-4 h-4" />
-                  התקשר
-                </Button>
-              </a>
+            <p className="text-blue-100 mb-8 text-lg">
+              השאר שם וטלפון - נחזור אליך תוך שעות ונסדר הכל
+            </p>
+            <div className="max-w-md mx-auto bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+              <UnifiedLeadForm
+                variant="inline"
+                title=""
+                subtitle=""
+                ctaText="פתיחת עוסק פטור בקליק"
+                fields={["name", "phone"]}
+                sourcePage="OsekPaturSteps-bottom"
+                onSuccess={() => {
+                  window.location.href = '/ThankYou';
+                }}
+              />
+            </div>
+            <div className="flex items-center justify-center gap-6 mt-6 text-blue-200 text-sm">
+              <span>✓ ללא התחייבות</span>
+              <span>✓ תשובה תוך שעות</span>
+              <span>✓ שירות אישי</span>
             </div>
           </div>
         </section>
