@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import JourneyTimeline from '../progress/JourneyTimeline';
 import StepImportancePanel from '../progress/StepImportancePanel';
 import QuickStatsBar from '../progress/QuickStatsBar';
