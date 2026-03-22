@@ -133,7 +133,48 @@ export default function MyProducts() {
       }
       
       let allProducts = [...purchased, ...missingProducts];
-      
+
+      // Add digital cards that aren't already linked as products
+      const digitalCards = await base44.entities.DigitalCard.filter({ user_id: user.id });
+      const existingCardIds = new Set(
+        allProducts
+          .filter(p => p.metadata?.type === 'digital_card' || p.metadata?.cardId)
+          .map(p => p.metadata?.cardId || p.metadata?.card_id)
+          .filter(Boolean)
+      );
+      for (const card of digitalCards) {
+        if (!existingCardIds.has(card.id)) {
+          allProducts.push({
+            id: 'card_' + card.id,
+            user_id: user.id,
+            product_type: 'service',
+            product_name: `כרטיס ביקור: ${card.full_name || 'דיגיטלי'}`,
+            status: card.status === 'published' ? 'active' : 'draft',
+            purchase_price: 0,
+            preview_image: card.qr_image_url || '',
+            download_url: card.public_url || '',
+            published_url: card.public_url || '',
+            created_date: card.created_date,
+            metadata: { type: 'digital_card', cardId: card.id, fullName: card.full_name, profession: card.profession }
+          });
+        }
+      }
+
+      // Also fix existing products that are digital cards but missing cardId
+      for (const p of allProducts) {
+        if (p.metadata?.type === 'digital_card' && !p.metadata?.cardId && !p.metadata?.card_id) {
+          // Try to find matching card by name
+          const matchingCard = digitalCards.find(c => c.full_name === p.metadata?.fullName);
+          if (matchingCard) {
+            p.metadata.cardId = matchingCard.id;
+          }
+        }
+        // Normalize card_id to cardId
+        if (p.metadata?.card_id && !p.metadata?.cardId) {
+          p.metadata.cardId = p.metadata.card_id;
+        }
+      }
+
       // Add current subscription from User entity if not already in list
       if (user.current_plan_id) {
         const hasPlanProduct = allProducts.some(p => p.product_type === 'plan');
