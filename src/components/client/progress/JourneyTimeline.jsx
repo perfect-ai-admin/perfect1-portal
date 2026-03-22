@@ -24,7 +24,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
-export default function JourneyTimeline({ onStartTask }) {
+export default function JourneyTimeline({ onStartTask, onResetJourney }) {
   const navigate = useNavigate();
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
