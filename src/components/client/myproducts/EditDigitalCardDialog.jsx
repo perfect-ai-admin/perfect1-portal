@@ -179,7 +179,7 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
                 </div>
               ) : formData.cover_image_url ? (
                 <div className="space-y-2">
-                  <div className="relative rounded-xl overflow-hidden h-32 bg-gray-100">
+                  <div className="relative rounded-xl overflow-hidden h-32 bg-gray-800 border border-gray-300">
                     <img 
                       src={formData.cover_image_url} 
                       alt="Cover" 
