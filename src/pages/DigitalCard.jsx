@@ -33,8 +33,8 @@ export default function DigitalCard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <CardLoading />;
-  if (error || !card) return <CardNotFound />;
+  if (loading) return <HelmetProvider><CardLoading /></HelmetProvider>;
+  if (error || !card) return <HelmetProvider><CardNotFound /></HelmetProvider>;
 
   const color = card.primary_color || '#1E3A5F';
   const wa = card.whatsapp || card.phone;
