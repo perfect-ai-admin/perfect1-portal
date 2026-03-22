@@ -155,6 +155,10 @@ export default function AdminDashboard() {
                                 <FileText className="w-4 h-4" />
                                 <span className="hidden sm:inline">דפי נחיתה</span>
                             </TabsTrigger>
+                            <TabsTrigger value="billing" className="flex items-center gap-2">
+                                <Receipt className="w-4 h-4" />
+                                <span className="hidden sm:inline">חשבוניות</span>
+                            </TabsTrigger>
                             <TabsTrigger value="activity" className="flex items-center gap-2">
                                 <Activity className="w-4 h-4" />
                                 <span className="hidden sm:inline">פעילות</span>
