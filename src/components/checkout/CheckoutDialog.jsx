@@ -408,6 +408,27 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
         {product.name} – ₪{amount}{isRecurring ? '/חודש' : isYearlySubscription ? '/שנה' : ''}
       </p>
 
+      {/* Payment method icons */}
+      <div className="flex items-center justify-center gap-3 flex-wrap">
+        <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4 object-contain" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5 object-contain" />
+        </div>
+        <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-4 object-contain" />
+        </div>
+        <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-4 object-contain" />
+        </div>
+        <div className="flex items-center gap-1.5 bg-[#1DD05D]/10 px-2.5 py-1.5 rounded-lg border border-[#1DD05D]/20">
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
+            <rect width="24" height="24" rx="6" fill="#1DD05D"/>
+            <path d="M7 12.5L10.5 16L17 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span className="text-[10px] font-bold text-[#1DD05D]">Bit</span>
+        </div>
+      </div>
+
       {/* 
         Hidden form that submits to Tranzila iFrame.
         CRITICAL: Parameters must match EXACTLY what the handshake was created with.
