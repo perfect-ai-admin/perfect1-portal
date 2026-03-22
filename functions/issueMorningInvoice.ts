@@ -541,10 +541,10 @@ Deno.serve(async (req) => {
         });
       }
     } else {
-      console.log('[Invoice] No valid email or PDF URL, skipping email');
+      console.log('[Invoice] No valid email or document URL, skipping email');
       await base44.asServiceRole.entities.BillingDocument.update(billingDocId, {
         send_status: 'not_sent',
-        error_message: !isValidEmail(customerEmail) ? 'No valid email' : 'No PDF URL',
+        error_message: !isValidEmail(customerEmail) ? 'No valid email' : 'No document URL',
       });
     }
 
