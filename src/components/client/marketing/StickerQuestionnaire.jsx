@@ -927,6 +927,59 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
           </div>
         </div>
       )}
+
+      {/* Inline Checkout Dialog */}
+      <CheckoutDialog
+        open={showCheckout}
+        onClose={() => setShowCheckout(false)}
+        product={checkoutProduct}
+        onPaymentSuccess={async (paymentId) => {
+          try {
+            const stickerImageUrl = finalStickerUrl || generatedStickerUrl;
+            const user = await base44.auth.me();
+            
+            // Save to PurchasedProduct
+            await base44.entities.PurchasedProduct.create({
+              type: 'sticker',
+              title: `סטיקר: ${formData.businessName || 'ממותג'}`,
+              data: {
+                businessName: formData.businessName,
+                exampleSentence: formData.exampleSentence,
+                stickerUrl: stickerImageUrl
+              },
+              preview_image: stickerImageUrl,
+              price: 29,
+              payment_id: paymentId,
+              status: 'completed'
+            });
+
+            // Send email with sticker
+            await base44.integrations.Core.SendEmail({
+              to: user.email,
+              subject: '🎨 הסטיקר שלך מוכן! – Perfect One',
+              body: `
+                <div style="direction: rtl; font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #1E3A5F;">הסטיקר הממותג שלך מוכן! 🎉</h2>
+                  <p>שלום ${user.full_name || ''},</p>
+                  <p>תודה על הרכישה! הסטיקר שלך מוכן לשימוש:</p>
+                  <div style="text-align: center; margin: 20px 0;">
+                    <img src="${stickerImageUrl}" alt="הסטיקר שלך" style="max-width: 300px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
+                  </div>
+                  <p><strong>שם העסק:</strong> ${formData.businessName || '-'}</p>
+                  <p><strong>טקסט:</strong> ${formData.exampleSentence || '-'}</p>
+                  <p style="margin-top: 20px;">ניתן להוריד את הסטיקר גם מ<a href="https://one-pai.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
+                  <p style="color: #888; font-size: 12px; margin-top: 30px;">צוות Perfect One</p>
+                </div>
+              `
+            });
+
+            toast.success('הסטיקר נשמר ונשלח למייל שלך! 🎉');
+          } catch (err) {
+            console.error('Post-payment error:', err);
+            toast.success('התשלום בוצע! הסטיקר זמין במוצרים שלך.');
+          }
+        }}
+      />
     </div>
   );
 }
