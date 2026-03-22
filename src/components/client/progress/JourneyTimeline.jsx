@@ -107,9 +107,6 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
     <div className="relative min-h-[300px] p-4 pb-6 bg-gray-50/50 rounded-3xl">
       {/* Header */}
       <div className="mb-5 text-center">
-        <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-2">
-          <Map className="w-6 h-6 text-blue-600" />
-        </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-1">
           מסע העסק שלך
         </h2>
