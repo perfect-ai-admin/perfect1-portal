@@ -746,7 +746,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
               </motion.div>
             </div>
           ) : showSuccess && paymentComplete ? (
-             /* Thank You Screen after payment */
+             /* Thank You Screen after payment - show CLEAN image without watermark */
              <div className="flex flex-col items-center justify-center text-center space-y-6 w-full animate-in fade-in zoom-in duration-500 mt-8">
               <motion.div
                 initial={{ scale: 0 }}
@@ -766,11 +766,22 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
               {generatedStickerUrl && (
                 <div className="relative w-48 h-48 bg-gray-50 rounded-xl overflow-hidden shadow-md border-2 border-gray-100">
-                  <img 
-                    src={finalStickerUrl || generatedStickerUrl} 
-                    alt="הסטיקר שלך" 
-                    className="w-full h-full object-contain p-3"
-                  />
+                  {formData.language === 'hebrew' ? (
+                    <WatermarkedSticker 
+                      src={generatedStickerUrl} 
+                      alt="הסטיקר שלך" 
+                      text={formData.exampleSentence}
+                      secondaryText={formData.businessName}
+                      watermark={false}
+                      className="w-full h-full object-contain p-3"
+                    />
+                  ) : (
+                    <img 
+                      src={generatedStickerUrl} 
+                      alt="הסטיקר שלך" 
+                      className="w-full h-full object-contain p-3"
+                    />
+                  )}
                 </div>
               )}
 
