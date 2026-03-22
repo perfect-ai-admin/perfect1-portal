@@ -79,7 +79,7 @@ import ConsultancyLanding from './pages/ConsultancyLanding';
 import Contact from './pages/Contact';
 import CostsOsekMorsha from './pages/CostsOsekMorsha';
 import CreditsPage from './pages/CreditsPage';
-import DigitalCard from './pages/DigitalCard';
+
 import EyebrowStylistLanding from './pages/EyebrowStylistLanding';
 import FitnessTrainerLanding from './pages/FitnessTrainerLanding';
 import FreelancerLanding from './pages/FreelancerLanding';
@@ -200,7 +200,7 @@ export const PAGES = {
     "Contact": Contact,
     "CostsOsekMorsha": CostsOsekMorsha,
     "CreditsPage": CreditsPage,
-    "DigitalCard": DigitalCard,
+
     "EyebrowStylistLanding": EyebrowStylistLanding,
     "FitnessTrainerLanding": FitnessTrainerLanding,
     "FreelancerLanding": FreelancerLanding,
