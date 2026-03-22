@@ -171,25 +171,23 @@ function resolveDocumentType(payment, connection) {
 
 // ─── Build Document Lines ───
 
-const VAT_RATE = 0.17; // Israel VAT rate
+// Morning vatType values:
+// 0 = price is BEFORE VAT (Morning adds VAT on top)
+// 1 = price is VAT-INCLUSIVE (Morning extracts VAT from the price)
+// 2 = VAT exempt
+//
+// Our prices are always VAT-inclusive (what the customer paid), so we use vatType=1.
 
-// Our prices are VAT-inclusive. When vatType=0 (standard VAT),
-// Morning expects the price BEFORE VAT in the income lines.
-function priceBeforeVat(inclPrice, vatType) {
-  if (vatType !== 0) return inclPrice; // exempt or zero-rated: no adjustment
-  return Math.round((inclPrice / (1 + VAT_RATE)) * 100) / 100;
-}
-
-function buildDocumentItems(payment, vatType) {
+function buildDocumentItems(payment, isVatExempt) {
+  const vatType = isVatExempt ? 2 : 1; // 1 = VAT inclusive, 2 = exempt
   const items = [];
 
   if (payment.items?.length > 0) {
     for (const item of payment.items) {
-      const rawPrice = item.price || item.unit_price || 0;
       items.push({
         description: item.title || item.description || item.product_name || 'שירות',
         quantity: item.quantity || 1,
-        price: priceBeforeVat(rawPrice, vatType),
+        price: item.price || item.unit_price || 0,
         currency: 'ILS',
         vatType,
       });
@@ -198,7 +196,7 @@ function buildDocumentItems(payment, vatType) {
     items.push({
       description: payment.product_name || 'שירות',
       quantity: 1,
-      price: priceBeforeVat(payment.amount || 0, vatType),
+      price: payment.amount || 0,
       currency: 'ILS',
       vatType,
     });
