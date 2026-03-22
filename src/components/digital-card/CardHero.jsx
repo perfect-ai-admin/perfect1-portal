@@ -17,9 +17,13 @@ export default function CardHero({ card, color }) {
   return (
     <div className="relative">
       {/* Cover area */}
-      <div className="h-[220px] relative overflow-hidden">
+      <div className={`${card.cover_image_url ? 'h-[260px]' : 'h-[220px]'} relative overflow-hidden`}>
         {card.cover_image_url ? (
-          <img src={card.cover_image_url} alt="" className="w-full h-full object-cover" />
+          <img 
+            src={card.cover_image_url} 
+            alt="" 
+            className="w-full h-full object-cover object-center"
+          />
         ) : (
           <div
             className="w-full h-full"
