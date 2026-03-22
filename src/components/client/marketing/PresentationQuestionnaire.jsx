@@ -821,7 +821,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     try {
       const user = await base44.auth.me();
       
-      // Save to PurchasedProduct
+      // Save to PurchasedProduct - prefer PDF URL for download
+      const finalDownloadUrl = pdfUrl || draftPreviewUrl;
       await base44.entities.PurchasedProduct.create({
         user_id: user.id,
         product_type: 'presentation',
@@ -829,10 +830,11 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
         status: 'active',
         payment_id: paymentId,
         purchase_price: 199,
-        download_url: draftPreviewUrl,
+        download_url: finalDownloadUrl,
         published_url: draftPreviewUrl,
         metadata: {
           presentationUrl: draftPreviewUrl,
+          pdfUrl: pdfUrl || null,
           businessName: formData.businessName,
           type: 'presentation'
         }
@@ -849,8 +851,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               <p>שלום ${user.full_name || ''},</p>
               <p>תודה על הרכישה! המצגת העסקית שלך עבור <strong>${formData.businessName}</strong> מוכנה.</p>
               <div style="background: #f0f7ff; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center;">
-                <a href="${draftPreviewUrl}" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
-                  פתח את המצגת
+                <a href="${pdfUrl || draftPreviewUrl}" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                  ${pdfUrl ? 'הורד את המצגת (PDF)' : 'פתח את המצגת'}
                 </a>
               </div>
               <p style="color: #666; font-size: 14px;">המצגת נשמרה גם באזור האישי שלך תחת "המוצרים שלי".</p>
