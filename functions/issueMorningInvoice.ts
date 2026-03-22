@@ -171,26 +171,34 @@ function resolveDocumentType(payment, connection) {
 
 // ─── Build Document Lines ───
 
+const VAT_RATE = 0.17; // Israel VAT rate
+
+// Our prices are VAT-inclusive. When vatType=0 (standard VAT),
+// Morning expects the price BEFORE VAT in the income lines.
+function priceBeforeVat(inclPrice, vatType) {
+  if (vatType !== 0) return inclPrice; // exempt or zero-rated: no adjustment
+  return Math.round((inclPrice / (1 + VAT_RATE)) * 100) / 100;
+}
+
 function buildDocumentItems(payment, vatType) {
   const items = [];
 
-  // If payment has detailed items (cart)
   if (payment.items?.length > 0) {
     for (const item of payment.items) {
+      const rawPrice = item.price || item.unit_price || 0;
       items.push({
         description: item.title || item.description || item.product_name || 'שירות',
         quantity: item.quantity || 1,
-        price: item.price || item.unit_price || 0,
+        price: priceBeforeVat(rawPrice, vatType),
         currency: 'ILS',
         vatType,
       });
     }
   } else {
-    // Single product
     items.push({
       description: payment.product_name || 'שירות',
       quantity: 1,
-      price: payment.amount || 0,
+      price: priceBeforeVat(payment.amount || 0, vatType),
       currency: 'ILS',
       vatType,
     });
