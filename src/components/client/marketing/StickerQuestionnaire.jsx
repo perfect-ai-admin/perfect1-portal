@@ -66,6 +66,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [checkoutProduct, setCheckoutProduct] = useState(null);
+  const [paymentComplete, setPaymentComplete] = useState(false);
   
   const [formData, setFormData] = useState({
     businessName: '',
