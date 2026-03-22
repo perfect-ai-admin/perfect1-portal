@@ -14,16 +14,23 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing form data' }, { status: 400 });
     }
 
-    // Build slug - use only ASCII-safe chars
-    const baseName = (formData.fullName || 'card')
-      .trim()
+    // Hebrew to Latin transliteration map
+    const hebrewMap = {
+      'א':'a','ב':'b','ג':'g','ד':'d','ה':'h','ו':'v','ז':'z','ח':'ch','ט':'t',
+      'י':'y','כ':'k','ך':'k','ל':'l','מ':'m','ם':'m','נ':'n','ן':'n','ס':'s',
+      'ע':'a','פ':'p','ף':'p','צ':'ts','ץ':'ts','ק':'k','ר':'r','ש':'sh','ת':'t'
+    };
+    const transliterate = (str) => str.split('').map(c => hebrewMap[c] || c).join('');
+
+    // Build slug from business name
+    const rawName = formData.fullName || formData.profession || 'card';
+    const baseName = transliterate(rawName.trim())
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s-]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
 
-    // Simple slug - add timestamp for uniqueness
     const slugBase = baseName || 'card';
     const slug = `${slugBase}-${Date.now().toString(36)}`;
 
