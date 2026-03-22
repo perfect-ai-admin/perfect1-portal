@@ -70,6 +70,7 @@ Call to action: Contact Us`;
       format: 'presentation',
       numCards,
       cardSplit: 'auto',
+      exportAs: 'pdf',
       textOptions: {
         amount: 'detailed',
         tone: 'professional, persuasive',
@@ -149,14 +150,30 @@ Call to action: Contact Us`;
           // Try different URL field names that Gamma might use
           presentationUrl = statusData.gammaUrl || statusData.url || statusData.presentationUrl || statusData.outputUrl;
           
+          // Get the PDF export URL if available
+          const exportUrl = statusData.exportUrl || null;
+          
           console.log('✅ Full status object:', JSON.stringify(statusData, null, 2));
           console.log('✅ All available fields:', Object.keys(statusData));
           console.log('✅ gammaUrl field:', statusData.gammaUrl);
-          console.log('✅ url field:', statusData.url);
+          console.log('✅ exportUrl (PDF):', exportUrl);
           console.log('✅ Final URL extracted:', presentationUrl);
           
           if (!presentationUrl) {
             console.warn('⚠️ No URL found in response. Full object:', statusData);
+          }
+
+          // Store exportUrl for later use
+          if (exportUrl) {
+            presentationUrl = presentationUrl; // keep gamma URL too
+            // We'll return both URLs
+            return Response.json({
+              success: true,
+              presentationUrl,
+              pdfUrl: exportUrl,
+              generationId,
+              message: 'המצגה שלך נוצרה בהצלחה!'
+            });
           }
           break;
         }
