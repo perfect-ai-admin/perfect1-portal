@@ -172,10 +172,20 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
 
             {/* Cover Image */}
             <Section icon={Image} title="תמונת קאבר">
-              {formData.cover_image_url ? (
+              {uploadingCover ? (
+                <div className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-blue-300 rounded-xl py-6 bg-blue-50/30">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                  <span className="text-xs text-blue-600 font-medium">מעלה תמונה...</span>
+                </div>
+              ) : formData.cover_image_url ? (
                 <div className="space-y-2">
                   <div className="relative rounded-xl overflow-hidden h-32 bg-gray-100">
-                    <img src={formData.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+                    <img 
+                      src={formData.cover_image_url} 
+                      alt="Cover" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
                     <button
                       onClick={() => handleChange('cover_image_url', '')}
                       className="absolute top-2 left-2 w-7 h-7 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70"
@@ -190,13 +200,10 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
                   </label>
                 </div>
               ) : (
-                <label className={`flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-200 rounded-xl py-6 cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-colors ${uploadingCover ? 'pointer-events-none opacity-60' : ''}`}>
-                  {uploadingCover ? (
-                    <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                  ) : (
-                    <Image className="w-8 h-8 text-gray-300" />
-                  )}
-                  <span className="text-xs text-gray-500">{uploadingCover ? 'מעלה...' : 'לחץ להעלאת תמונת קאבר'}</span>
+                <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-200 rounded-xl py-6 cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-colors">
+                  <Image className="w-8 h-8 text-gray-300" />
+                  <span className="text-xs text-gray-500">לחץ להעלאת תמונת קאבר</span>
+                  <span className="text-[10px] text-gray-400">JPG, PNG עד 5MB</span>
                   <input type="file" accept="image/*" onChange={handleCoverUpload} className="hidden" />
                 </label>
               )}
