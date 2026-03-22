@@ -940,17 +940,18 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
             
             // Save to PurchasedProduct
             await base44.entities.PurchasedProduct.create({
-              type: 'sticker',
-              title: `סטיקר: ${formData.businessName || 'ממותג'}`,
-              data: {
-                businessName: formData.businessName,
-                exampleSentence: formData.exampleSentence,
-                stickerUrl: stickerImageUrl
-              },
+              user_id: user.id,
+              product_type: 'sticker',
+              product_name: `סטיקר: ${formData.businessName || 'ממותג'}`,
               preview_image: stickerImageUrl,
-              price: 29,
+              download_url: stickerImageUrl,
+              purchase_price: 29,
               payment_id: paymentId,
-              status: 'completed'
+              status: 'active',
+              metadata: {
+                businessName: formData.businessName,
+                exampleSentence: formData.exampleSentence
+              }
             });
 
             // Send email with sticker
