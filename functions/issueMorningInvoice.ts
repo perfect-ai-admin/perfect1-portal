@@ -335,21 +335,36 @@ Deno.serve(async (req) => {
     // ─── Step 5: Resolve or create customer ───
     let morningCustomer;
     try {
-      // Get user info
-      const users = await base44.asServiceRole.entities.User.filter({ id: payment.user_id });
-      const userInfo = users?.[0] || {};
+      // Get user info - User entity only has id, email, full_name, role + custom fields
+      let userInfo = {};
+      try {
+        const users = await base44.asServiceRole.entities.User.filter({ id: payment.user_id });
+        userInfo = users?.[0] || {};
+      } catch (userErr) {
+        console.log('[Invoice] Could not fetch user info:', userErr.message);
+      }
 
-      morningCustomer = await findOrCreateMorningCustomer(base44, jwt, {
+      // Merge data from multiple sources: User entity, Payment metadata, Payment fields
+      const meta = payment.metadata || {};
+      const customerData = {
         user_id: payment.user_id,
-        full_name: userInfo.full_name || payment.metadata?.user_name || '',
-        email: userInfo.email || payment.metadata?.user_email || '',
-        phone: userInfo.phone || '',
-        tax_id: userInfo.id_number || '',
-        company_name: userInfo.company_name || '',
-        address: userInfo.address || '',
-        city: userInfo.city || '',
-        zip: userInfo.zip_code || '',
-      });
+        full_name: userInfo.full_name || meta.user_name || meta.full_name || meta.customer_name || payment.product_name || '',
+        email: userInfo.email || meta.user_email || meta.email || '',
+        phone: meta.phone || meta.user_phone || '',
+        tax_id: meta.tax_id || meta.id_number || '',
+        company_name: meta.company_name || meta.business_name || '',
+        address: meta.address || '',
+        city: meta.city || '',
+        zip: meta.zip || meta.zip_code || '',
+      };
+
+      console.log('[Invoice] Customer data resolved:', JSON.stringify({
+        full_name: customerData.full_name,
+        email: customerData.email,
+        phone: customerData.phone,
+      }));
+
+      morningCustomer = await findOrCreateMorningCustomer(base44, jwt, customerData);
 
       await base44.asServiceRole.entities.BillingDocument.update(billingDocId, {
         morning_customer_id: morningCustomer.provider_customer_id,
