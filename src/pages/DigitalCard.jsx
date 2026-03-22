@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
+import { useParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import CardLoading from '@/components/digital-card/CardLoading';
@@ -15,13 +16,15 @@ function trackClick(cardId, action) {
 }
 
 export default function DigitalCard() {
+  const { slug: pathSlug } = useParams();
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Support both /card/:slug (new clean URL) and /DigitalCard?slug=xxx (legacy)
     const params = new URLSearchParams(window.location.search);
-    const slug = params.get('slug');
+    const slug = pathSlug || params.get('slug');
     if (!slug) { setError('not_found'); setLoading(false); return; }
     
     base44.functions.invoke('getPublicCard', { slug })
