@@ -44,6 +44,7 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
           whatsapp: c.whatsapp || '',
           email: c.email || '',
           services: c.services || [],
+          cover_image_url: c.cover_image_url || '',
           primary_color: c.primary_color || '#1E3A5F',
           website_url: c.website_url || '',
           instagram_url: c.instagram_url || '',
