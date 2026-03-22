@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Users, Shield, LayoutDashboard, CreditCard, FileText, Activity } from 'lucide-react';
+import { Search, Users, Shield, LayoutDashboard, CreditCard, FileText, Activity, Receipt } from 'lucide-react';
 import UsersTable from '../components/admin/UsersTable';
 import SystemConfigManager from '../components/admin/SystemConfigManager';
 import InviteUserDialog from '../components/admin/InviteUserDialog';
