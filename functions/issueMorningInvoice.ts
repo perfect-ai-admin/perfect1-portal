@@ -243,17 +243,31 @@ Deno.serve(async (req) => {
       payment_id,
     });
 
-    // Check if already issued
-    const alreadyIssued = existingDocs?.find(d =>
-      d.issue_status === 'issued' || d.issue_status === 'processing'
-    );
+    // Check if already issued OR currently processing (race condition guard)
+    const alreadyIssued = existingDocs?.find(d => d.issue_status === 'issued');
     if (alreadyIssued) {
-      console.log(`[Invoice] Already processed for payment ${payment_id}: ${alreadyIssued.issue_status}`);
+      console.log(`[Invoice] Already issued for payment ${payment_id}`);
       return Response.json({
         status: 'already_processed',
         billing_document_id: alreadyIssued.id,
         document_number: alreadyIssued.document_number,
       });
+    }
+
+    // Race condition: if another instance is already processing, wait briefly then recheck
+    const currentlyProcessing = existingDocs?.find(d => d.issue_status === 'processing');
+    if (currentlyProcessing) {
+      // Check if it's been processing for more than 2 minutes (stale lock)
+      const processingAge = Date.now() - new Date(currentlyProcessing.updated_date).getTime();
+      if (processingAge < 120000) { // less than 2 minutes
+        console.log(`[Invoice] Another instance is processing for payment ${payment_id}, skipping`);
+        return Response.json({
+          status: 'already_processing',
+          billing_document_id: currentlyProcessing.id,
+        });
+      }
+      // If stale, treat as failed so we can retry
+      console.log(`[Invoice] Stale processing record found (${Math.round(processingAge/1000)}s), treating as failed`);
     }
 
     // If there's a failed attempt, we'll retry (update existing record)
