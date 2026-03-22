@@ -237,57 +237,57 @@ export default function OsekPaturSteps() {
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="space-y-8">
               {steps.map((step, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-3xl p-8 border-l-4 border-blue-600 shadow-lg hover:shadow-xl transition-all"
-                >
-                  <div className="flex gap-6">
-                    <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-blue-600 text-white font-black text-xl">
-                        {step.number}
+                <React.Fragment key={i}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-3xl p-8 border-l-4 border-blue-600 shadow-lg hover:shadow-xl transition-all"
+                  >
+                    <div className="flex gap-6">
+                      <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-blue-600 text-white font-black text-xl">
+                          {step.number}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-2xl font-bold text-[#1E3A5F] mb-4">{step.title}</h3>
+                        <ul className="space-y-2 mb-4">
+                          {step.points.map((point, j) => (
+                            <li key={j} className="flex items-start gap-3">
+                              <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                              <span className="text-gray-700">{point}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-sm text-gray-600 italic border-t pt-4">
+                          💡 {step.detail}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-[#1E3A5F] mb-4">{step.title}</h3>
-                      <ul className="space-y-2 mb-4">
-                        {step.points.map((point, j) => (
-                          <li key={j} className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                            <span className="text-gray-700">{point}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="text-sm text-gray-600 italic border-t pt-4">
-                        💡 {step.detail}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
 
-              {/* Mini CTA after step 3 */}
-              {steps.length > 3 && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] rounded-3xl p-8 text-center text-white shadow-xl"
-                  style={{ order: 3 }}
-                >
-                  <p className="text-xl font-bold mb-2">נשמע מורכב? 🤔</p>
-                  <p className="text-blue-100 mb-5">אנחנו עושים את כל התהליך בשבילך - מ-א׳ עד ת׳</p>
-                  <Button 
-                    onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="h-12 px-8 bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl text-base"
-                  >
-                    פתיחת עוסק פטור בקליק →
-                  </Button>
-                </motion.div>
-              )}
+                  {/* Mini CTA after step 3 */}
+                  {i === 2 && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] rounded-3xl p-8 text-center text-white shadow-xl"
+                    >
+                      <p className="text-xl font-bold mb-2">נשמע מורכב? 🤔</p>
+                      <p className="text-blue-100 mb-5">אנחנו עושים את כל התהליך בשבילך - מ-א׳ עד ת׳</p>
+                      <Button 
+                        onClick={() => document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="h-12 px-8 bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl text-base"
+                      >
+                        פתיחת עוסק פטור בקליק →
+                      </Button>
+                    </motion.div>
+                  )}
+                </React.Fragment>
+              ))}
             </div>
           </div>
         </section>
