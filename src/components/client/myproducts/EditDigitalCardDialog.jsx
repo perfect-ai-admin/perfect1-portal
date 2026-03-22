@@ -14,12 +14,12 @@ import {
 } from 'lucide-react';
 
 const LINK_FIELDS = [
-  { key: 'website_url', label: 'אתר', icon: Globe, placeholder: 'https://www.example.com', color: 'text-blue-500' },
-  { key: 'instagram_url', label: 'אינסטגרם', icon: Instagram, placeholder: 'https://instagram.com/username', color: 'text-pink-500' },
-  { key: 'facebook_url', label: 'פייסבוק', icon: Facebook, placeholder: 'https://facebook.com/page', color: 'text-blue-600' },
-  { key: 'linkedin_url', label: 'לינקדאין', icon: Linkedin, placeholder: 'https://linkedin.com/in/username', color: 'text-blue-700' },
-  { key: 'tiktok_url', label: 'טיקטוק', icon: Music, placeholder: 'https://tiktok.com/@username', color: 'text-gray-800' },
-  { key: 'waze_url', label: 'Waze', icon: Navigation, placeholder: 'https://waze.com/ul/...', color: 'text-cyan-500' },
+  { key: 'website_url', label: 'אתר', icon: Globe, placeholder: 'https://www.example.com', color: 'text-blue-500', activeColor: 'bg-blue-50 border-blue-200' },
+  { key: 'instagram_url', label: 'אינסטגרם', icon: Instagram, placeholder: 'https://instagram.com/username', color: 'text-pink-500', activeColor: 'bg-pink-50 border-pink-200' },
+  { key: 'facebook_url', label: 'פייסבוק', icon: Facebook, placeholder: 'https://facebook.com/page', color: 'text-blue-600', activeColor: 'bg-blue-50 border-blue-200' },
+  { key: 'linkedin_url', label: 'לינקדאין', icon: Linkedin, placeholder: 'https://linkedin.com/in/username', color: 'text-blue-700', activeColor: 'bg-blue-50 border-blue-200' },
+  { key: 'tiktok_url', label: 'טיקטוק', icon: Music, placeholder: 'https://tiktok.com/@username', color: 'text-gray-800', activeColor: 'bg-gray-50 border-gray-300' },
+  { key: 'waze_url', label: 'Waze / ניווט', icon: Navigation, placeholder: 'https://waze.com/ul/...', color: 'text-cyan-500', activeColor: 'bg-cyan-50 border-cyan-200' },
 ];
 
 export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSaved }) {
