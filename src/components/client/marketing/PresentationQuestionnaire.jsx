@@ -165,7 +165,9 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   useEffect(() => {
     const scrollArea = document.getElementById('questionnaire-scroll-area');
     if (scrollArea) scrollArea.scrollTop = 0;
-  }, [currentStep]);
+    // Also scroll window to top to prevent page jumping
+    window.scrollTo(0, 0);
+  }, [currentStep, showDraftPreview, paymentComplete]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
