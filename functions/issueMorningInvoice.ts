@@ -392,9 +392,8 @@ Deno.serve(async (req) => {
     // ─── Step 6: Build and send document to Morning ───
     const docType = resolveDocumentType(payment, connection);
     const morningType = OUR_TO_MORNING_TYPE[docType];
-    const isVatExempt = connection?.config?.is_vat_exempt;
-    const vatType = isVatExempt ? 2 : 0;
-    const income = buildDocumentItems(payment, vatType);
+    const isVatExempt = connection?.config?.is_vat_exempt || false;
+    const income = buildDocumentItems(payment, isVatExempt);
 
     // Payment line uses the actual amount paid (VAT-inclusive)
     const amountPaid = payment.amount || 0;
