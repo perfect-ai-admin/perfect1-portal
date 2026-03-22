@@ -115,7 +115,7 @@ export default function MyProducts() {
             id: 'payment_' + p.id,
             user_id: p.user_id,
             product_type: resolvedType,
-            product_name: p.product_name || (metaType === 'sticker' ? `סטיקר: ${p.metadata?.businessName || 'ממותג'}` : metaType === 'logo' ? `לוגו: ${p.metadata?.businessName || 'ממותג'}` : 'רכישה'),
+            product_name: p.product_name || (metaType === 'sticker' ? `סטיקר: ${p.metadata?.businessName || 'ממותג'}` : metaType === 'logo' ? `לוגו: ${p.metadata?.businessName || 'ממותג'}` : metaType === 'presentation' ? `מצגת: ${p.metadata?.businessName || 'עסקית'}` : 'רכישה'),
             status: 'active',
             payment_id: p.id,
             purchase_price: p.amount || 0,
