@@ -203,8 +203,8 @@ export default function BusinessCardPreview({ data, onPurchase, onBack }) {
 
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs text-gray-400 line-through">₪98</span>
-              <span className="text-2xl font-black text-blue-600 mr-2">₪49</span>
+              <span className="text-xs text-gray-400 line-through">₪298</span>
+              <span className="text-2xl font-black text-blue-600 mr-2">₪149</span>
               <span className="text-xs text-gray-500">חד פעמי</span>
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function BusinessCardPreview({ data, onPurchase, onBack }) {
             className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold h-12 rounded-xl text-base shadow-lg shadow-blue-200 gap-2"
           >
             <ShoppingCart className="w-5 h-5" />
-            רכוש את הכרטיס – ₪49
+            רכוש את הכרטיס – ₪149
           </Button>
 
           <div className="flex items-center justify-center gap-4 text-[10px] text-gray-400">

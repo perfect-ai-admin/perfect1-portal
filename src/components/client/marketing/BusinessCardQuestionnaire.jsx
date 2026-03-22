@@ -604,7 +604,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
         setCheckoutProduct({
           name: `כרטיס ביקור דיגיטלי: ${formData.fullName || 'ממותג'}`,
           description: 'כרטיס ביקור דיגיטלי עם QR, קישור שיתוף וכפתורי יצירת קשר',
-          price: 49,
+          price: 149,
           isRecurring: false,
           product_type: 'one-time',
           metadata: {
@@ -643,7 +643,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                   preview_image: cardResult.qr_image_url || '',
                   download_url: cardResult.public_url || '',
                   published_url: cardResult.public_url || '',
-                  purchase_price: 49,
+                  purchase_price: 149,
                   payment_id: paymentId,
                   status: 'active',
                   metadata: {

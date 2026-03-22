@@ -229,8 +229,8 @@ export default function BusinessCardResult({ formData, cardResult, onPurchase, o
              <div className="flex flex-col w-full sm:w-auto text-center sm:text-right">
                  <span className="text-xs text-gray-500 font-medium">מחיר השקה מיוחד</span>
                  <div className="flex items-baseline justify-center sm:justify-start gap-2">
-                     <span className="text-xl font-black text-gray-900">₪49</span>
-                     <span className="text-sm text-gray-400 line-through font-medium">₪98</span>
+                     <span className="text-xl font-black text-gray-900">₪149</span>
+                     <span className="text-sm text-gray-400 line-through font-medium">₪298</span>
                  </div>
              </div>
              
