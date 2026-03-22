@@ -163,8 +163,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
 
     let attempts = 0;
-    const maxAttempts = 80; // ~2 minutes at 1.5s intervals
-    let hasTriedConfirm = false;
+    const maxAttempts = 120; // ~3 minutes at 1.5s intervals
 
     const interval = setInterval(async () => {
       if (paymentConfirmedRef.current) {
@@ -177,7 +176,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
         return;
       }
       try {
-        // Check DB status
+        // Check DB status - only trusts tranzilaNotify webhook to set completed
         const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
         if (payments?.length > 0 && payments[0].status === 'completed') {
           if (!paymentConfirmedRef.current) {
@@ -196,16 +195,10 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
           clearInterval(interval);
           return;
         }
-
-        // After ~12 seconds, try proactive confirm (user likely submitted the form)
-        if (attempts >= 8 && !hasTriedConfirm) {
-          hasTriedConfirm = true;
-          confirmPayment('auto-poll');
-        }
       } catch (e) {
         // Ignore errors
       }
-    }, 1000);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, [open, paymentStep, handshakeData]);
