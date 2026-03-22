@@ -340,26 +340,24 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
       {/* Payment methods */}
       <div className="space-y-2">
         <span className="text-xs text-gray-400">אמצעי תשלום נתמכים:</span>
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Credit Cards */}
-          <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4 object-contain" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5 object-contain" />
-          </div>
-          {/* Digital Wallets */}
-          <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-4 object-contain" />
-          </div>
-          <div className="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-4 object-contain" />
-          </div>
-          <div className="flex items-center gap-1.5 bg-[#1DD05D]/5 px-2.5 py-1.5 rounded-lg border border-[#1DD05D]/20">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-              <rect width="24" height="24" rx="6" fill="#1DD05D"/>
-              <path d="M7 12.5L10.5 16L17 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="text-[10px] font-bold text-[#1DD05D]">Bit</span>
-          </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-[#1A1F71]">
+            <svg viewBox="0 0 48 16" className="h-3.5" fill="none"><path d="M17.7 1.2l-3.5 13.5h-2.8L14.9 1.2h2.8zm14.3 8.7l1.5-4 .8 4h-2.3zm3.1 4.8h2.6L35.4 1.2h-2.4c-.5 0-1 .3-1.2.8l-4.2 12.7h2.9l.6-1.6h3.6l.4 1.6zm-7.4-4.4c0-3.5-4.8-3.7-4.8-5.2 0-.5.5-1 1.5-1.1.5-.1 1.9-.1 3.5.7l.6-2.9C27.3 1.3 25.9 1 24.2 1c-2.8 0-4.7 1.5-4.7 3.6 0 1.6 1.4 2.4 2.5 3 1.1.5 1.5.9 1.5 1.4 0 .7-.9 1.1-1.7 1.1-1.5 0-2.3-.4-3-.7l-.5 2.9c.7.3 1.9.6 3.2.6 2.9 0 4.8-1.5 4.8-3.6zM12 1.2L7.5 14.7H4.6L2.4 3.4c-.1-.5-.3-.7-.7-.9C.9 2.1 0 1.6 0 1.6l.1-.4h4.7c.6 0 1.1.4 1.3 1.1l1.2 6.1L10 1.2H12z" fill="#1A1F71"/></svg>
+            VISA
+          </span>
+          <span className="inline-flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-700">
+            <svg viewBox="0 0 24 16" className="h-3.5" fill="none"><circle cx="8.5" cy="8" r="7.5" fill="#EB001B"/><circle cx="15.5" cy="8" r="7.5" fill="#F79E1B"/><path d="M12 2.3a7.5 7.5 0 010 11.4 7.5 7.5 0 000-11.4z" fill="#FF5F00"/></svg>
+          </span>
+          <span className="inline-flex items-center gap-1 bg-[#1DD05D]/10 px-2 py-1 rounded-md border border-[#1DD05D]/30 text-[11px] font-bold text-[#1DD05D]">
+            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none"><rect width="20" height="20" rx="5" fill="#1DD05D"/><path d="M6 10.5L9 13.5L14.5 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            Bit
+          </span>
+          <span className="inline-flex items-center bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-600">
+            Google Pay
+          </span>
+          <span className="inline-flex items-center bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-600">
+            PayPal
+          </span>
         </div>
       </div>
 
