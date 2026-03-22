@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
 
         // === AUTO INVOICE: Issue Morning invoice_receipt ===
         try {
-            const invoiceResult = await base44.functions.invoke('issueMorningInvoice', {
+            const invoiceResult = await base44.asServiceRole.functions.invoke('issueMorningInvoice', {
                 payment_id: payment_id,
                 trigger_source: 'tranzila_confirm',
             });
