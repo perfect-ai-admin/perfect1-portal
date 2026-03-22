@@ -9,7 +9,7 @@ import {
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Layers, FileText, MonitorPlay, BarChart3, Star,
-  Lightbulb, Trophy, Presentation, Calendar, Loader2, ExternalLink, CheckCircle2, Maximize2, Globe
+  Lightbulb, Trophy, Presentation, Calendar, Loader2, ExternalLink, CheckCircle2, Maximize2, Globe, Download
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
