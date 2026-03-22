@@ -105,8 +105,21 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
   return (
     <div className="relative min-h-[300px] p-4 pb-6 bg-gray-50/50 rounded-3xl">
       {/* Header */}
-      <div className="mb-8 text-center">
-        <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-3">
+      <div className="mb-5 text-center">
+        {onResetJourney && (
+          <div className="flex justify-end mb-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={onResetJourney}
+              className="text-xs"
+            >
+              <RefreshCcw className="w-3.5 h-3.5 ml-1.5" />
+              רענן מסע
+            </Button>
+          </div>
+        )}
+        <div className="inline-flex items-center justify-center p-3 bg-blue-100 rounded-full mb-2">
           <Map className="w-6 h-6 text-blue-600" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-1">
