@@ -92,9 +92,11 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
 
   const [errors, setErrors] = useState({});
   const [isBuilding, setIsBuilding] = useState(false);
-  const [viewState, setViewState] = useState('questionnaire'); // 'questionnaire', 'summary', 'result', 'building'
+  const [viewState, setViewState] = useState('questionnaire'); // 'questionnaire', 'summary', 'result', 'building', 'paid'
   const [cardResult, setCardResult] = useState(null);
   const [buildError, setBuildError] = useState(null);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutProduct, setCheckoutProduct] = useState(null);
 
   // Scroll to top on step change for mobile
   useEffect(() => {
