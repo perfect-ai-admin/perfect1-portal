@@ -397,6 +397,7 @@ Deno.serve(async (req) => {
 
     // Payment line uses the actual amount paid (VAT-inclusive)
     const amountPaid = payment.amount || 0;
+    const totalAmount = amountPaid;
 
     // Build payment array (required for invoice_receipt and receipt)
     const paymentArr = [];
