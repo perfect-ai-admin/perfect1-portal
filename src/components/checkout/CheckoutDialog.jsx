@@ -493,9 +493,9 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
           <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
         )}
         
-        {/* Success/fail redirect URLs */}
-        <input type="hidden" name="success_url_address" value="about:blank" />
-        <input type="hidden" name="fail_url_address" value="about:blank" />
+        {/* Success/fail redirect URLs - use data URI that sends postMessage to parent */}
+        <input type="hidden" name="success_url_address" value={`javascript:void(window.parent.postMessage(JSON.stringify({Response:'000',status:'success'}),'*'))`} />
+        <input type="hidden" name="fail_url_address" value={`javascript:void(window.parent.postMessage(JSON.stringify({Response:'fail',status:'failed'}),'*'))`} />
 
         {/* Display customization */}
         <input type="hidden" name="lang" value="il" />
