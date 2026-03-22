@@ -472,6 +472,7 @@ function PaymentStep({ product, amount, isRecurring, user, handshakeData, recurS
 
         {/* Digital wallets */}
         <input type="hidden" name="google_pay" value="1" />
+        <input type="hidden" name="apple_pay" value="1" />
         <input type="hidden" name="ppnewwin" value="2" />
         <input type="hidden" name="bit_pay" value="1" />
 
