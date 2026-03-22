@@ -75,11 +75,34 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
   const handleCoverUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('יש להעלות קובץ תמונה בלבד');
+      return;
+    }
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('גודל התמונה מקסימלי 5MB');
+      return;
+    }
+    
     setUploadingCover(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    handleChange('cover_image_url', file_url);
-    setUploadingCover(false);
-    toast.success('תמונת קאבר הועלתה בהצלחה');
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      if (file_url) {
+        handleChange('cover_image_url', file_url);
+        toast.success('תמונת קאבר הועלתה בהצלחה');
+      } else {
+        toast.error('שגיאה בהעלאת התמונה');
+      }
+    } catch (err) {
+      console.error('Cover upload error:', err);
+      toast.error('שגיאה בהעלאת התמונה. נסה שוב.');
+    } finally {
+      setUploadingCover(false);
+    }
   };
 
   const handleSave = async () => {
