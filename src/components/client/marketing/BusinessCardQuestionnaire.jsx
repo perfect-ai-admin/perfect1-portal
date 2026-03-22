@@ -202,7 +202,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
       });
       
       if (res.data?.success) {
-        setCardResult(res.data);
+        setCardResult({ ...res.data, cardId: res.data.card_id });
         setViewState('result');
       } else {
         setBuildError('אירעה שגיאה ביצירת הכרטיס');
