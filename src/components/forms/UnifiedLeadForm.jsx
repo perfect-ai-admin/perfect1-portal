@@ -79,10 +79,10 @@ export default function UnifiedLeadForm({
     setIsSubmitting(true);
 
     try {
-      // Capture UTM params – check URL first, fall back to sessionStorage (persisted on landing)
+      // Capture UTM params – check URL first, fall back to localStorage (persisted across login redirect)
       const urlParams = new URLSearchParams(window.location.search);
-      const getUtm = (key) => urlParams.get(key) || sessionStorage.getItem(key) || '';
-      const referrer = document.referrer || sessionStorage.getItem('landing_referrer') || '';
+      const getUtm = (key) => urlParams.get(key) || localStorage.getItem(`lead_${key}`) || '';
+      const referrer = document.referrer || localStorage.getItem('lead_referrer') || '';
 
       // יצירת לד
       const newLead = await base44.entities.Lead.create({
