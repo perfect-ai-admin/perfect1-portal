@@ -110,7 +110,7 @@ export default function MyProducts() {
           
           // Get the image/download URL from metadata based on type
           const imageUrl = p.metadata?.stickerUrl || p.metadata?.logoUrl || p.metadata?.preview_image || '';
-          const downloadUrl = p.metadata?.presentationUrl || imageUrl;
+          const downloadUrl = p.metadata?.presentationUrl || p.metadata?.public_url || imageUrl;
           
           missingProducts.push({
             id: 'payment_' + p.id,
