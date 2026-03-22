@@ -536,15 +536,155 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
       );
   }
 
-  if (viewState === 'result' && cardResult) {
+  if (viewState === 'paid' && cardResult) {
       return (
-        <BusinessCardResult
-            formData={formData}
-            cardResult={cardResult}
-            onPurchase={() => onComplete({ ...formData, ...cardResult, action: 'purchase' })}
-            onBack={() => setViewState('questionnaire')}
-            isPurchased={false} // Draft mode initially
-        />
+        <div className="flex flex-col items-center justify-center text-center space-y-6 p-6 w-full animate-in fade-in zoom-in duration-500">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+            className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center shadow-lg shadow-green-200"
+          >
+            <CheckCircle2 className="w-12 h-12 text-green-600" />
+          </motion.div>
+
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-gray-900">הכרטיס שלך פעיל! 🎉</h2>
+            <p className="text-gray-600 text-sm max-w-xs mx-auto">
+              הכרטיס נשלח למייל שלך ונשמר ב"המוצרים שלי"
+            </p>
+          </div>
+
+          {cardResult.public_url && (
+            <div className="w-full max-w-sm bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-3">
+              <p className="text-xs text-gray-500 font-medium">הקישור האישי שלך:</p>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 text-xs bg-white p-2 rounded-lg border border-gray-200 truncate text-blue-600" dir="ltr">
+                  {cardResult.public_url}
+                </code>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(cardResult.public_url);
+                    toast.success('הקישור הועתק!');
+                  }}
+                  className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <Copy className="w-4 h-4 text-gray-600" />
+                </button>
+              </div>
+              <Button 
+                onClick={() => window.open(cardResult.public_url, '_blank')}
+                variant="outline"
+                className="w-full gap-2 text-sm"
+              >
+                <ExternalLink className="w-4 h-4" />
+                צפה בכרטיס
+              </Button>
+            </div>
+          )}
+
+          <Button 
+            onClick={() => onComplete(formData)}
+            className="bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold h-11 w-full max-w-xs"
+          >
+            חזרה למרכז השליטה
+          </Button>
+
+          <CheckoutDialog
+            open={showCheckout}
+            onClose={() => setShowCheckout(false)}
+            product={checkoutProduct}
+          />
+        </div>
+      );
+  }
+
+  if (viewState === 'result' && cardResult) {
+      const handlePurchaseClick = () => {
+        setCheckoutProduct({
+          name: `כרטיס ביקור דיגיטלי: ${formData.fullName || 'ממותג'}`,
+          description: 'כרטיס ביקור דיגיטלי עם QR, קישור שיתוף וכפתורי יצירת קשר',
+          price: 49,
+          isRecurring: false,
+          product_type: 'one-time',
+          metadata: {
+            type: 'digital_card',
+            cardId: cardResult.cardId,
+            public_url: cardResult.public_url,
+            fullName: formData.fullName,
+            profession: formData.profession
+          }
+        });
+        setShowCheckout(true);
+      };
+
+      return (
+        <>
+          <BusinessCardResult
+              formData={formData}
+              cardResult={cardResult}
+              onPurchase={handlePurchaseClick}
+              onBack={() => setViewState('questionnaire')}
+              isPurchased={false}
+          />
+          <CheckoutDialog
+            open={showCheckout}
+            onClose={() => setShowCheckout(false)}
+            product={checkoutProduct}
+            onPaymentSuccess={async (paymentId) => {
+              try {
+                const user = await base44.auth.me();
+                
+                // Save to PurchasedProduct
+                await base44.entities.PurchasedProduct.create({
+                  user_id: user.id,
+                  product_type: 'service',
+                  product_name: `כרטיס ביקור: ${formData.fullName || 'דיגיטלי'}`,
+                  preview_image: cardResult.qr_image_url || '',
+                  download_url: cardResult.public_url || '',
+                  published_url: cardResult.public_url || '',
+                  purchase_price: 49,
+                  payment_id: paymentId,
+                  status: 'active',
+                  metadata: {
+                    type: 'digital_card',
+                    cardId: cardResult.cardId,
+                    fullName: formData.fullName,
+                    profession: formData.profession
+                  }
+                });
+
+                // Send email with card link
+                await base44.integrations.Core.SendEmail({
+                  to: user.email,
+                  subject: '🎴 כרטיס הביקור הדיגיטלי שלך מוכן! – Perfect One',
+                  body: `
+                    <div style="direction: rtl; font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                      <h2 style="color: #1E3A5F;">כרטיס הביקור שלך מוכן! 🎉</h2>
+                      <p>שלום ${user.full_name || formData.fullName || ''},</p>
+                      <p>תודה על הרכישה! הכרטיס הדיגיטלי שלך פעיל ומוכן לשיתוף:</p>
+                      <div style="text-align: center; margin: 20px 0;">
+                        <a href="${cardResult.public_url}" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                          צפה בכרטיס שלך
+                        </a>
+                      </div>
+                      <p><strong>קישור ישיר:</strong> <a href="${cardResult.public_url}" style="color: #1E3A5F;">${cardResult.public_url}</a></p>
+                      <p style="margin-top: 20px;">ניתן לגשת לכרטיס גם מ<a href="https://one-pai.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
+                      <p style="color: #888; font-size: 12px; margin-top: 30px;">צוות Perfect One</p>
+                    </div>
+                  `
+                });
+
+                setViewState('paid');
+                toast.success('הכרטיס נשמר ונשלח למייל שלך! 🎉');
+              } catch (err) {
+                console.error('Post-payment error:', err);
+                setViewState('paid');
+                toast.success('התשלום בוצע! הכרטיס זמין במוצרים שלך.');
+              }
+            }}
+          />
+        </>
       );
   }
 
