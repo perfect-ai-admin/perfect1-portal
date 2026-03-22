@@ -84,13 +84,17 @@ export default function UnifiedLeadForm({
       const getUtm = (key) => urlParams.get(key) || localStorage.getItem(`lead_${key}`) || '';
       const referrer = document.referrer || localStorage.getItem('lead_referrer') || '';
 
+      // Determine source page - use the prop, but enrich with landing URL if available
+      const landingUrl = localStorage.getItem('lead_landing_url') || '';
+      const effectiveSource = sourcePage || landingUrl || window.location.pathname;
+
       // יצירת לד
       const newLead = await base44.entities.Lead.create({
         name: formData.name,
         phone: formData.phone,
         email: formData.email || undefined,
         profession: showProfession ? formData.profession : undefined,
-        source_page: sourcePage,
+        source_page: effectiveSource,
         status: 'new',
         utm_source: getUtm('utm_source'),
         utm_medium: getUtm('utm_medium'),
