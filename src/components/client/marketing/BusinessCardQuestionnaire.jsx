@@ -429,33 +429,38 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
 
               <div className="space-y-2">
                  <Label className="block text-xs font-semibold">האם תרצה להוסיף תמונת נושא (Cover)?</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                     <SelectionCard
-                      selected={formData.hasCover === 'yes'}
-                      onClick={() => handleInputChange('hasCover', 'yes')}
-                      icon={Image}
-                      title="כן, הוסף תמונה"
-                      description="תמונה בחלק העליון"
-                    />
+                  <div className="grid grid-cols-1 gap-2">
+                     <div 
+                        className={cn(
+                          "cursor-pointer p-3 rounded-xl border flex items-center justify-between transition-all relative overflow-hidden",
+                          formData.hasCover === 'yes'
+                            ? "border-purple-500 bg-purple-50" 
+                            : "border-gray-200 hover:bg-gray-50"
+                        )}
+                      >
+                         <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={handleCoverUpload}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                        <div className="flex items-center gap-2">
+                             <Image className={cn("w-4 h-4", formData.hasCover === 'yes' ? "text-purple-600" : "text-gray-400")} />
+                             <span className={cn("text-xs font-medium", formData.hasCover === 'yes' ? "text-purple-900" : "text-gray-700")}>
+                                 {formData.coverFile ? "כן (קובץ הועלה ✓)" : "כן, העלה תמונת קאבר"}
+                             </span>
+                        </div>
+                        {formData.hasCover === 'yes' && <Check className="w-4 h-4 text-purple-600" />}
+                    </div>
+                    
                      <SelectionCard
                       selected={formData.hasCover === 'no'}
-                      onClick={() => handleInputChange('hasCover', 'no')}
+                      onClick={() => { handleInputChange('hasCover', 'no'); handleInputChange('coverFile', null); }}
                       icon={X}
                       title="לא, ללא תמונה"
                       description="עיצוב נקי עם צבע"
                     />
                   </div>
-
-                  {formData.hasCover === 'yes' && (
-                      <div className="mt-2 p-4 border border-blue-100 rounded-xl bg-blue-50/50 flex flex-col items-center justify-center text-center animate-in fade-in slide-in-from-top-1">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                              <Image className="w-4 h-4 text-blue-600" />
-                          </div>
-                          <p className="text-xs font-medium text-blue-900">
-                              מעולה! לאחר בחירת הכרטיס תהיה אפשרות להעלות תמונת נושא (Cover) אישית ומותאמת.
-                          </p>
-                      </div>
-                  )}
               </div>
 
                <div className="space-y-2">
