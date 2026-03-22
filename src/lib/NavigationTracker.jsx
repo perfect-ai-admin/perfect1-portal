@@ -10,7 +10,9 @@ export default function NavigationTracker() {
     const { Pages, mainPage } = pagesConfig;
     const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 
-    // Persist UTM params & referrer on first arrival so lead forms can use them later
+    // Persist UTM params & referrer so lead forms can use them later.
+    // Uses localStorage (not sessionStorage) because the login flow redirects
+    // through an external Base44 domain which clears sessionStorage.
     useEffect(() => {
         try {
             const params = new URLSearchParams(location.search);
@@ -19,18 +21,29 @@ export default function NavigationTracker() {
             if (hasUtm) {
                 utmKeys.forEach(k => {
                     const v = params.get(k);
-                    if (v) sessionStorage.setItem(k, v);
+                    if (v) localStorage.setItem(`lead_${k}`, v);
                 });
+                // Mark the timestamp so we can expire after 30 days
+                localStorage.setItem('lead_utm_ts', String(Date.now()));
             }
-            // Save first referrer (external site) once per session
-            if (document.referrer && !sessionStorage.getItem('landing_referrer')) {
-                sessionStorage.setItem('landing_referrer', document.referrer);
+            // Save first referrer (external site) – only once per acquisition
+            if (document.referrer && !localStorage.getItem('lead_referrer')) {
+                // Only save if referrer is from a different domain (true external referrer)
+                try {
+                    const refHost = new URL(document.referrer).hostname;
+                    const curHost = window.location.hostname;
+                    if (refHost !== curHost) {
+                        localStorage.setItem('lead_referrer', document.referrer);
+                    }
+                } catch (_) {
+                    localStorage.setItem('lead_referrer', document.referrer);
+                }
             }
             // Save the first landing page URL
-            if (!sessionStorage.getItem('landing_page_url')) {
-                sessionStorage.setItem('landing_page_url', window.location.href);
+            if (!localStorage.getItem('lead_landing_url')) {
+                localStorage.setItem('lead_landing_url', window.location.href);
             }
-        } catch (_) { /* sessionStorage may be blocked */ }
+        } catch (_) { /* storage may be blocked */ }
     }, [location.search]);
 
     // Log user activity when navigating to a page
