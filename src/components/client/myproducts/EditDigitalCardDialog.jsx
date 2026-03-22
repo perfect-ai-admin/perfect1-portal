@@ -277,29 +277,54 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
 
             {/* Links */}
             <Section icon={LinkIcon} title="קישורים ורשתות חברתיות">
-              <p className="text-xs text-gray-400 mb-2">הקישורים יופיעו ככפתורים בכרטיס שלך</p>
-              <div className="space-y-2">
+              <p className="text-xs text-gray-400 mb-2">הקישורים יופיעו ככפתורים בכרטיס שלך. הכנס כתובת URL ← יופיע בכרטיס</p>
+              <div className="space-y-2.5">
                 {LINK_FIELDS.map(field => {
                   const Icon = field.icon;
-                  const hasValue = !!formData[field.key];
+                  const hasValue = !!formData[field.key]?.trim();
                   return (
-                    <div key={field.key} className="flex items-center gap-2">
-                      <div className={`w-8 h-8 rounded-lg ${hasValue ? 'bg-green-50' : 'bg-gray-50'} flex items-center justify-center flex-shrink-0 border ${hasValue ? 'border-green-200' : 'border-gray-100'}`}>
+                    <div key={field.key} className={`flex items-center gap-2 p-1.5 rounded-lg border transition-all ${hasValue ? field.activeColor : 'border-transparent'}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 relative ${hasValue ? 'bg-green-50 border border-green-200' : 'bg-gray-50 border border-gray-100'}`}>
                         <Icon className={`w-4 h-4 ${hasValue ? field.color : 'text-gray-400'}`} />
+                        {hasValue && (
+                          <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full flex items-center justify-center">
+                            <Check className="w-2 h-2 text-white" />
+                          </div>
+                        )}
                       </div>
                       <div className="flex-1">
+                        <Label className="text-[10px] text-gray-400 mb-0.5 block">{field.label}</Label>
                         <Input 
                           value={formData[field.key] || ''} 
                           onChange={e => handleChange(field.key, e.target.value)} 
                           placeholder={field.placeholder}
-                          className="h-9 text-xs" 
+                          className={`h-8 text-xs ${hasValue ? 'border-green-200 bg-white' : ''}`}
                           dir="ltr"
                         />
                       </div>
+                      {hasValue && (
+                        <button 
+                          onClick={() => handleChange(field.key, '')}
+                          className="p-1 text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                          title="הסר קישור"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   );
                 })}
               </div>
+              
+              {/* Summary of active links */}
+              {LINK_FIELDS.some(f => !!formData[f.key]?.trim()) && (
+                <div className="mt-3 p-2.5 bg-green-50 border border-green-100 rounded-lg">
+                  <p className="text-[10px] text-green-700 font-medium flex items-center gap-1">
+                    <Check className="w-3 h-3" />
+                    {LINK_FIELDS.filter(f => !!formData[f.key]?.trim()).length} קישורים פעילים יופיעו בכרטיס
+                  </p>
+                </div>
+              )}
             </Section>
 
             <Button onClick={handleSave} disabled={saving} className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-base">
