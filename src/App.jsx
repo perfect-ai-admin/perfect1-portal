@@ -83,11 +83,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <NavigationTracker />
-          <Routes>
-            {/* Standalone public page - completely outside auth & layout */}
-            <Route path="/DigitalCard" element={<DigitalCard />} />
-            <Route path="*" element={<AuthenticatedApp />} />
-          </Routes>
+          <AppRoutes />
         </Router>
         <Toaster />
       </QueryClientProvider>
