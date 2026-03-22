@@ -636,23 +636,28 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                 const user = await base44.auth.me();
                 
                 // Save to PurchasedProduct
-                await base44.entities.PurchasedProduct.create({
-                  user_id: user.id,
-                  product_type: 'service',
-                  product_name: `כרטיס ביקור: ${formData.fullName || 'דיגיטלי'}`,
-                  preview_image: cardResult.qr_image_url || '',
-                  download_url: cardResult.public_url || '',
-                  published_url: cardResult.public_url || '',
-                  purchase_price: 149,
-                  payment_id: paymentId,
-                  status: 'active',
-                  metadata: {
-                    type: 'digital_card',
-                    cardId: cardResult.cardId,
-                    fullName: formData.fullName,
-                    profession: formData.profession
-                  }
-                });
+                 await base44.entities.PurchasedProduct.create({
+                   user_id: user.id,
+                   product_type: 'service',
+                   product_name: `כרטיס ביקור: ${formData.fullName || 'דיגיטלי'}`,
+                   preview_image: cardResult.qr_image_url || '',
+                   download_url: cardResult.public_url || '',
+                   published_url: cardResult.public_url || '',
+                   purchase_price: 149,
+                   payment_id: paymentId,
+                   status: 'active',
+                   metadata: {
+                     type: 'digital_card',
+                     cardId: cardResult.cardId || cardResult.card_id,
+                     fullName: formData.fullName,
+                     profession: formData.profession
+                   }
+                 });
+
+                 // Activate the card (change status from draft to published)
+                 if (cardResult.cardId || cardResult.card_id) {
+                   await base44.entities.DigitalCard.update(cardResult.cardId || cardResult.card_id, { status: 'published' });
+                 }
 
                 // Send email with card link
                 await base44.integrations.Core.SendEmail({
