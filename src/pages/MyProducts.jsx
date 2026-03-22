@@ -134,7 +134,7 @@ export default function MyProducts() {
       
       let allProducts = [...purchased, ...missingProducts];
 
-      // Add digital cards that aren't already linked as products
+      // Add digital cards that were paid for and aren't already linked as products
       const digitalCards = await base44.entities.DigitalCard.filter({ user_id: user.id });
       const existingCardIds = new Set(
         allProducts
@@ -143,13 +143,14 @@ export default function MyProducts() {
           .filter(Boolean)
       );
       for (const card of digitalCards) {
-        if (!existingCardIds.has(card.id)) {
+        // Only show published (paid) cards that aren't already in the list
+        if (!existingCardIds.has(card.id) && card.status === 'published') {
           allProducts.push({
             id: 'card_' + card.id,
             user_id: user.id,
             product_type: 'service',
             product_name: `כרטיס ביקור: ${card.full_name || 'דיגיטלי'}`,
-            status: card.status === 'published' ? 'active' : 'draft',
+            status: 'active',
             purchase_price: 0,
             preview_image: card.qr_image_url || '',
             download_url: card.public_url || '',
