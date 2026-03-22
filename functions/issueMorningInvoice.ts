@@ -465,7 +465,9 @@ Deno.serve(async (req) => {
     }
 
     // ─── Step 7: Document issued successfully ───
-    const pdfUrl = result.url?.origin || result.url?.he || result.url?.en || null;
+    // Use the Hebrew viewer URL for direct browser viewing (not download)
+    const viewUrl = result.url?.he || result.url?.origin || result.url?.en || null;
+    const pdfUrl = viewUrl;
     const subtotal = result.amount || totalAmount;
     const vatAmount = result.vat || 0;
     const total = result.totalAmount || (subtotal + vatAmount);
