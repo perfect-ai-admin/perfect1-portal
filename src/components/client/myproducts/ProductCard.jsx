@@ -214,15 +214,18 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
               </Button>
             )}
 
-            {product.product_type === 'presentation' && product.download_url && (
+            {product.product_type === 'presentation' && (product.metadata?.pdfUrl || product.download_url) && (
               <Button 
                 size="sm" 
-                variant="outline" 
-                className="gap-1.5 text-xs h-8 rounded-lg"
-                onClick={() => window.open(product.download_url, '_blank')}
+                className={`gap-1.5 text-xs h-8 rounded-lg ${product.metadata?.pdfUrl ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                variant={product.metadata?.pdfUrl ? 'default' : 'outline'}
+                onClick={() => window.open(product.metadata?.pdfUrl || product.download_url, '_blank')}
               >
-                <ExternalLink className="w-3.5 h-3.5" />
-                צפה במצגת
+                {product.metadata?.pdfUrl ? (
+                  <><Download className="w-3.5 h-3.5" />הורד PDF</>
+                ) : (
+                  <><ExternalLink className="w-3.5 h-3.5" />צפה במצגת</>
+                )}
               </Button>
             )}
           </div>
