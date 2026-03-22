@@ -72,6 +72,16 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
     setFormData(prev => ({ ...prev, services: prev.services.filter((_, i) => i !== index) }));
   };
 
+  const handleCoverUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    handleChange('cover_image_url', file_url);
+    setUploadingCover(false);
+    toast.success('תמונת קאבר הועלתה בהצלחה');
+  };
+
   const handleSave = async () => {
     setSaving(true);
     const socialNetworks = [];
