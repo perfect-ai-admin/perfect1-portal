@@ -105,6 +105,7 @@ export default function MyProducts() {
           let resolvedType = mapType(p.product_type);
           if (metaType === 'sticker') resolvedType = 'sticker';
           if (metaType === 'logo') resolvedType = 'logo';
+          if (metaType === 'presentation') resolvedType = 'presentation';
           
           // Get the image URL from metadata based on type
           const imageUrl = p.metadata?.stickerUrl || p.metadata?.logoUrl || p.metadata?.preview_image || '';
