@@ -810,7 +810,8 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                              setIsAddingToCart(true);
                              try {
                                const stickerImageUrl = finalStickerUrl || generatedStickerUrl;
-                               const success = await addToCart({
+                               // Save to cart first (persists image)
+                               await addToCart({
                                  type: 'sticker',
                                  data: { businessName: formData.businessName, exampleSentence: formData.exampleSentence, stickerUrl: stickerImageUrl },
                                  price: 29,
@@ -818,19 +819,21 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                                  preview_image: stickerImageUrl,
                                  openCart: false
                                });
-                               if (success) {
-                                 // Navigate to checkout with the sticker item
-                                 const items = [{
+                               // Open checkout dialog inline
+                               setCheckoutProduct({
+                                 name: `סטיקר ממותג: ${formData.businessName || 'ממותג'}`,
+                                 description: formData.exampleSentence || 'סטיקר ממותג לוואטסאפ',
+                                 price: 29,
+                                 isRecurring: false,
+                                 product_type: 'one-time',
+                                 metadata: {
                                    type: 'sticker',
-                                   title: `סטיקר: ${formData.businessName || 'ממותג'}`,
-                                   price: 29,
-                                   data: { businessName: formData.businessName, exampleSentence: formData.exampleSentence, stickerUrl: stickerImageUrl },
-                                   preview_image: stickerImageUrl
-                                 }];
-                                 navigate(createPageUrl('ClientDashboard') + '?tab=checkout', {
-                                   state: { items, totalPrice: 29 }
-                                 });
-                               }
+                                   stickerUrl: stickerImageUrl,
+                                   businessName: formData.businessName,
+                                   exampleSentence: formData.exampleSentence
+                                 }
+                               });
+                               setShowCheckout(true);
                              } catch (err) {
                                console.error(err);
                                toast.error('שגיאה, נסה שוב');
@@ -844,7 +847,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                            {isAddingToCart ? (
                              <span className="flex items-center gap-2">
                                <Loader2 className="w-4 h-4 animate-spin" />
-                               מעביר לתשלום...
+                               מכין תשלום...
                              </span>
                            ) : (
                              <span className="flex items-center gap-2">
