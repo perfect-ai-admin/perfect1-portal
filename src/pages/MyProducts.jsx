@@ -120,9 +120,9 @@ export default function MyProducts() {
             payment_id: p.id,
             purchase_price: p.amount || 0,
             preview_image: imageUrl,
-            download_url: imageUrl,
+            download_url: downloadUrl,
             linked_entity_id: p.product_id || p.metadata?.landingPageId || '',
-            published_url: p.product_type === 'landing-page' && p.metadata?.slug ? `/LP?s=${p.metadata.slug}` : '',
+            published_url: (p.product_type === 'landing-page' && p.metadata?.slug) ? `/LP?s=${p.metadata.slug}` : (metaType === 'presentation' && p.metadata?.presentationUrl) ? p.metadata.presentationUrl : '',
             created_date: p.completed_at || p.created_date,
             metadata: { from_payment: true, ...p.metadata }
           });
