@@ -138,7 +138,7 @@ export default function AdminDashboard() {
                 {/* Main Content */}
                 <div className="max-w-7xl mx-auto p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                        <TabsList className="grid grid-cols-6 gap-2 bg-white p-2 rounded-xl shadow-md overflow-x-auto">
+                        <TabsList className="grid grid-cols-7 gap-2 bg-white p-2 rounded-xl shadow-md overflow-x-auto">
                             <TabsTrigger value="overview" className="flex items-center gap-2">
                                 <LayoutDashboard className="w-4 h-4" />
                                 <span className="hidden sm:inline">ראשי</span>
