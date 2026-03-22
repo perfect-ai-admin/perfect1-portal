@@ -1013,9 +1013,11 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
               `
             });
 
+            setPaymentComplete(true);
             toast.success('הסטיקר נשמר ונשלח למייל שלך! 🎉');
           } catch (err) {
             console.error('Post-payment error:', err);
+            setPaymentComplete(true);
             toast.success('התשלום בוצע! הסטיקר זמין במוצרים שלך.');
           }
         }}
