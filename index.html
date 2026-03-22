@@ -6,6 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     <title>Base44 APP</title>
+    <script>
+      // Capture UTM params & referrer BEFORE React loads or any auth redirect.
+      // This runs on the very first page load, even before login redirect.
+      (function(){
+        try {
+          var p = new URLSearchParams(window.location.search);
+          var keys = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+          var has = false;
+          for (var i=0; i<keys.length; i++) { if (p.get(keys[i])) { has = true; break; } }
+          if (has) {
+            for (var j=0; j<keys.length; j++) {
+              var v = p.get(keys[j]);
+              if (v) localStorage.setItem('lead_' + keys[j], v);
+            }
+            localStorage.setItem('lead_utm_ts', String(Date.now()));
+          }
+          if (document.referrer && !localStorage.getItem('lead_referrer')) {
+            try {
+              var rh = new URL(document.referrer).hostname;
+              if (rh !== window.location.hostname) localStorage.setItem('lead_referrer', document.referrer);
+            } catch(e) { localStorage.setItem('lead_referrer', document.referrer); }
+          }
+          if (!localStorage.getItem('lead_landing_url')) {
+            localStorage.setItem('lead_landing_url', window.location.href);
+          }
+        } catch(e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
