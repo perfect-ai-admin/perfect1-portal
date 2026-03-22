@@ -162,8 +162,8 @@ Deno.serve(async (req) => {
                         const downloadUrl = item.data?.logoUrl || item.data?.stickerUrl || item.preview_image || item.data?.preview_image;
                         if (downloadUrl) purchasedData.download_url = downloadUrl;
                     }
-                    if (item.type === 'presentation' && item.data?.presentationUrl) {
-                        purchasedData.download_url = item.data.presentationUrl;
+                    if (item.type === 'presentation') {
+                        purchasedData.download_url = item.data?.pdfUrl || item.data?.presentationUrl || '';
                     }
 
                     await base44.asServiceRole.entities.PurchasedProduct.create(purchasedData);
