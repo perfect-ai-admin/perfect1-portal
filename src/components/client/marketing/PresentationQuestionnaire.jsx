@@ -1084,60 +1084,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     );
   }
 
-  if (presentationUrl) {
-    return (
-      <div className="flex flex-col h-full bg-gradient-to-b from-green-50 to-emerald-50">
-        {/* Success Header */}
-        <div className="flex-none px-4 py-3 border-b border-green-100 bg-white/80 backdrop-blur-md z-10">
-          <button 
-            onClick={onClose}
-            className="p-2 -mr-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Success Content */}
-        <div className="flex-1 flex flex-col items-center justify-center p-6">
-          <div className="text-center space-y-6 max-w-sm">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg mx-auto"
-            >
-              <Check className="w-8 h-8" />
-            </motion.div>
-
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">המצגה שלך אושרה! ✨</h2>
-              <p className="text-gray-600">המצגה העסקית שלך מוכנה לשימוש</p>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 border border-gray-200">
-              <p className="text-xs text-gray-500 mb-3">הקישור למצגת:</p>
-              <a 
-                href={presentationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-700 font-semibold text-sm break-all flex items-center justify-center gap-2"
-              >
-                פתח את המצגה
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
-
-            <Button
-              onClick={onClose}
-              className="w-full bg-green-600 hover:bg-green-700 text-white"
-            >
-              סגור
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Note: presentationUrl success screen is now handled inside the showDraftPreview + paymentComplete flow above
 
   return (
     <div className="flex flex-col h-full bg-white relative">
