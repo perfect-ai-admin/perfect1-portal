@@ -371,10 +371,18 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
 
                 {/* Info Message */}
                 {formData.socialNetworks.length > 0 && (
-                    <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl text-center animate-in fade-in slide-in-from-top-2">
-                        <p className="text-xs text-blue-700 font-medium">
-                            לאחר אישור הכרטיס ביקור ניתן יהיה לקשר את הרשתות שבחרת.
-                        </p>
+                    <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl animate-in fade-in slide-in-from-top-2">
+                        <div className="flex items-start gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                            <div className="space-y-1">
+                                <p className="text-xs text-blue-700 font-medium">
+                                    {formData.socialNetworks.length} רשתות נבחרו ✓
+                                </p>
+                                <p className="text-[10px] text-blue-600">
+                                    את הקישורים תוכל להוסיף מיד לאחר יצירת הכרטיס, דרך כפתור "עריכה".
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
