@@ -202,6 +202,7 @@ Call to action: Contact Us`;
     return Response.json({
       success: true,
       presentationUrl,
+      pdfUrl: null,
       generationId,
       message: 'המצגה שלך נוצרה בהצלחה!'
     });
