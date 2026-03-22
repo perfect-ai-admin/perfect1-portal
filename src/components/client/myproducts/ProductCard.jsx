@@ -57,9 +57,39 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
     }
   };
 
-  const handleDownload = () => {
-    if (product.download_url) {
-      window.open(product.download_url, '_blank');
+  const handleDownload = async () => {
+    const url = product.download_url || product.preview_image;
+    if (!url) return;
+    
+    try {
+      // For data URLs or blob URLs, create a direct download
+      const link = document.createElement('a');
+      const ext = product.product_type === 'logo' ? 'png' : 'png';
+      const safeName = (product.product_name || 'download').replace(/[^א-תa-zA-Z0-9\s]/g, '').trim().replace(/\s+/g, '_');
+      
+      if (url.startsWith('data:')) {
+        link.href = url;
+        link.download = `${safeName}.${ext}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success('ההורדה החלה!');
+      } else {
+        // For external URLs, fetch and download as blob
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        link.href = blobUrl;
+        link.download = `${safeName}.${ext}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+        toast.success('ההורדה החלה!');
+      }
+    } catch (err) {
+      // Fallback: open in new tab
+      window.open(url, '_blank');
     }
   };
 
