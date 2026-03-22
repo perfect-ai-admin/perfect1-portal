@@ -230,6 +230,33 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
                 </Button>
               );
             })()}
+
+            {/* Digital Card Actions */}
+            {product.metadata?.type === 'digital_card' && (
+              <>
+                {product.metadata?.cardId && onEditCard && (
+                  <Button 
+                    size="sm" 
+                    className="gap-1.5 text-xs h-8 rounded-lg bg-blue-600 hover:bg-blue-700"
+                    onClick={() => onEditCard(product.metadata.cardId)}
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    ערוך כרטיס
+                  </Button>
+                )}
+                {(product.published_url || product.download_url) && (
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="gap-1.5 text-xs h-8 rounded-lg"
+                    onClick={() => window.open(product.published_url || product.download_url, '_blank')}
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    צפה בכרטיס
+                  </Button>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
