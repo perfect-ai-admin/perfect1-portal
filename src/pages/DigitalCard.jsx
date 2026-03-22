@@ -61,13 +61,31 @@ export default function DigitalCard() {
     },
   };
 
+  const pageTitle = `${card.full_name} | כרטיס ביקור דיגיטלי`;
+  const pageDesc = `${card.full_name} - ${card.profession || 'כרטיס ביקור דיגיטלי'}`;
+  const pageUrl = card.public_url || window.location.href;
+  const pageImage = card.cover_image_url || card.logo_url || card.qr_image_url || '';
+
   return (
     <>
-      {/* Meta tags */}
-      <title>{card.full_name} | כרטיס ביקור דיגיטלי</title>
-      <meta name="description" content={`${card.full_name} - ${card.profession}`} />
-      <meta name="theme-color" content={color} />
-      
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <meta name="theme-color" content={color} />
+        <meta name="robots" content="noindex, nofollow" />
+        {/* Open Graph */}
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content={pageUrl} />
+        {pageImage && <meta property="og:image" content={pageImage} />}
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDesc} />
+        {pageImage && <meta name="twitter:image" content={pageImage} />}
+      </Helmet>
+
       <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white overflow-x-hidden" dir="rtl">
         <motion.div
           initial={{ opacity: 0 }}
