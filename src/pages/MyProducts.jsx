@@ -100,20 +100,29 @@ export default function MyProducts() {
             });
           }
         } else {
+          // Detect actual product type from metadata
+          const metaType = p.metadata?.type;
+          let resolvedType = mapType(p.product_type);
+          if (metaType === 'sticker') resolvedType = 'sticker';
+          if (metaType === 'logo') resolvedType = 'logo';
+          
+          // Get the image URL from metadata based on type
+          const imageUrl = p.metadata?.stickerUrl || p.metadata?.logoUrl || p.metadata?.preview_image || '';
+          
           missingProducts.push({
             id: 'payment_' + p.id,
             user_id: p.user_id,
-            product_type: mapType(p.product_type),
-            product_name: p.product_name || 'רכישה',
+            product_type: resolvedType,
+            product_name: p.product_name || (metaType === 'sticker' ? `סטיקר: ${p.metadata?.businessName || 'ממותג'}` : metaType === 'logo' ? `לוגו: ${p.metadata?.businessName || 'ממותג'}` : 'רכישה'),
             status: 'active',
             payment_id: p.id,
             purchase_price: p.amount || 0,
-            preview_image: p.metadata?.logoUrl || '',
-            download_url: p.metadata?.logoUrl || '',
+            preview_image: imageUrl,
+            download_url: imageUrl,
             linked_entity_id: p.product_id || p.metadata?.landingPageId || '',
             published_url: p.product_type === 'landing-page' && p.metadata?.slug ? `/LP?s=${p.metadata.slug}` : '',
             created_date: p.completed_at || p.created_date,
-            metadata: { from_payment: true }
+            metadata: { from_payment: true, ...p.metadata }
           });
         }
       }
