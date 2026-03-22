@@ -9,7 +9,8 @@ import { toast } from 'sonner';
 import { 
   Globe, Instagram, Facebook, Linkedin, Music, Navigation, 
   Loader2, Save, Link as LinkIcon, Phone, Mail, User, Briefcase,
-  MessageCircle, ExternalLink, Palette, Tag, Plus, X, Image, Upload
+  MessageCircle, ExternalLink, Palette, Tag, Plus, X, Image, Upload,
+  Check, Youtube, MapPin, Twitter
 } from 'lucide-react';
 
 const LINK_FIELDS = [
