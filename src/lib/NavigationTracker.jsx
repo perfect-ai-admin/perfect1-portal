@@ -15,6 +15,11 @@ export default function NavigationTracker() {
     // through an external Base44 domain which clears sessionStorage.
     useEffect(() => {
         try {
+            // Expire old UTM data after 30 days
+            const utmTs = localStorage.getItem('lead_utm_ts');
+            if (utmTs && Date.now() - Number(utmTs) > 30 * 24 * 60 * 60 * 1000) {
+                ['lead_utm_source','lead_utm_medium','lead_utm_campaign','lead_utm_term','lead_utm_content','lead_referrer','lead_landing_url','lead_utm_ts'].forEach(k => localStorage.removeItem(k));
+            }
             const params = new URLSearchParams(location.search);
             const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
             const hasUtm = utmKeys.some(k => params.get(k));
