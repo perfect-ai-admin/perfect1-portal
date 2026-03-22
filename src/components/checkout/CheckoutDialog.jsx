@@ -120,11 +120,13 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
   }, [open, paymentStep, handshakeData]);
 
   // Polling fallback 2: check Payment entity status in DB (handles notify_url callback from Tranzila)
+  // Also tries to proactively confirm payment after initial wait
   useEffect(() => {
     if (!open || paymentStep !== 'payment' || !handshakeData?.paymentId) return;
 
     let attempts = 0;
-    const maxAttempts = 40; // ~2 minutes
+    const maxAttempts = 80; // ~2 minutes at 1.5s intervals
+    let hasTriedConfirm = false;
 
     const interval = setInterval(async () => {
       if (paymentConfirmedRef.current) {
@@ -137,9 +139,9 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
         return;
       }
       try {
+        // Check DB status
         const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
         if (payments?.length > 0 && payments[0].status === 'completed') {
-          // Payment was confirmed via notify_url webhook
           if (!paymentConfirmedRef.current) {
             paymentConfirmedRef.current = true;
             toast.success('התשלום בוצע בהצלחה! 🎉');
@@ -154,11 +156,18 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
             onClose();
           }
           clearInterval(interval);
+          return;
+        }
+
+        // After ~12 seconds, try proactive confirm (user likely submitted the form)
+        if (attempts >= 8 && !hasTriedConfirm) {
+          hasTriedConfirm = true;
+          confirmPayment('auto-poll');
         }
       } catch (e) {
         // Ignore errors
       }
-    }, 3000);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, [open, paymentStep, handshakeData]);
