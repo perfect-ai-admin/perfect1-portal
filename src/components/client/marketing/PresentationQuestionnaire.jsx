@@ -1016,7 +1016,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                 <Button
                   onClick={() => addToCart({
                     type: 'presentation',
-                    data: { presentationUrl: draftPreviewUrl, businessName: formData.businessName },
+                    data: { presentationUrl: draftPreviewUrl, pdfUrl: pdfUrl || null, businessName: formData.businessName },
                     price: 199,
                     title: `מצגת: ${formData.businessName}`,
                     preview_image: '',
