@@ -859,7 +859,8 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                            onClick={async () => {
                              setIsAddingToCart(true);
                              try {
-                               const stickerImageUrl = finalStickerUrl || generatedStickerUrl;
+                               // Use original generated URL for cart/checkout (clean, no watermark)
+                               const stickerImageUrl = generatedStickerUrl;
                                // Save to cart first (persists image)
                                await addToCart({
                                  type: 'sticker',
