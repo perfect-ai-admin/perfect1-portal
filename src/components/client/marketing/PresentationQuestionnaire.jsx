@@ -1056,6 +1056,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
             metadata: {
               type: 'presentation',
               presentationUrl: draftPreviewUrl,
+              pdfUrl: pdfUrl || null,
               businessName: formData.businessName
             }
           }}
