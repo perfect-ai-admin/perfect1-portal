@@ -203,14 +203,14 @@ export default function ProductCard({ product, onPreview, onArchive, onCancelSub
               </Button>
             )}
 
-            {(product.product_type === 'logo' || product.product_type === 'sticker') && product.download_url && (
+            {(product.product_type === 'logo' || product.product_type === 'sticker') && (product.download_url || product.preview_image) && (
               <Button 
                 size="sm" 
                 className="gap-1.5 text-xs h-8 rounded-lg bg-green-600 hover:bg-green-700"
                 onClick={handleDownload}
               >
                 <Download className="w-3.5 h-3.5" />
-                הורד קובץ
+                הורד {product.product_type === 'logo' ? 'לוגו' : 'סטיקר'}
               </Button>
             )}
 
