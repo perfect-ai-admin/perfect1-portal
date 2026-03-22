@@ -64,6 +64,17 @@ const AuthenticatedApp = () => {
   );
 };
 
+// Wrapper that checks if on DigitalCard route to skip auth entirely
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Standalone public page - completely outside auth & layout */}
+      <Route path="/DigitalCard" element={<DigitalCard />} />
+      <Route path="/*" element={<AuthenticatedApp />} />
+    </Routes>
+  );
+};
+
 
 function App() {
 
