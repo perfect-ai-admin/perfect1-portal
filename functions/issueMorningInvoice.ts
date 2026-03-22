@@ -398,15 +398,15 @@ Deno.serve(async (req) => {
     const vatType = isVatExempt ? 2 : 0;
     const income = buildDocumentItems(payment, vatType);
 
-    // Calculate total for payment line
-    const totalAmount = income.reduce((sum, item) => sum + (item.quantity || 1) * (item.price || 0), 0);
+    // Payment line uses the actual amount paid (VAT-inclusive)
+    const amountPaid = payment.amount || 0;
 
     // Build payment array (required for invoice_receipt and receipt)
     const paymentArr = [];
     if (docType === 'invoice_receipt' || docType === 'receipt') {
       paymentArr.push({
         type: MORNING_PAYMENT_MAP[payment.payment_method] || 3, // default credit card
-        price: totalAmount,
+        price: amountPaid,
         currency: 'ILS',
         date: new Date().toISOString().split('T')[0],
       });
