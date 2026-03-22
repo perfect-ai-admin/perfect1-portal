@@ -811,16 +811,120 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     }
   };
 
+  const handlePaymentSuccess = async (paymentId) => {
+    try {
+      const user = await base44.auth.me();
+      
+      // Save to PurchasedProduct
+      await base44.entities.PurchasedProduct.create({
+        user_id: user.id,
+        product_type: 'presentation',
+        product_name: `מצגת עסקית: ${formData.businessName || 'ללא שם'}`,
+        status: 'active',
+        payment_id: paymentId,
+        purchase_price: 199,
+        download_url: draftPreviewUrl,
+        published_url: draftPreviewUrl,
+        metadata: {
+          presentationUrl: draftPreviewUrl,
+          businessName: formData.businessName,
+          type: 'presentation'
+        }
+      });
+
+      // Send email with the presentation link
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: user.email,
+          subject: `המצגת העסקית שלך מוכנה! - ${formData.businessName}`,
+          body: `
+            <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #1E3A5F;">המצגת שלך מוכנה! 🎉</h2>
+              <p>שלום ${user.full_name || ''},</p>
+              <p>תודה על הרכישה! המצגת העסקית שלך עבור <strong>${formData.businessName}</strong> מוכנה.</p>
+              <div style="background: #f0f7ff; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center;">
+                <a href="${draftPreviewUrl}" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                  פתח את המצגת
+                </a>
+              </div>
+              <p style="color: #666; font-size: 14px;">המצגת נשמרה גם באזור האישי שלך תחת "המוצרים שלי".</p>
+              <p style="color: #999; font-size: 12px;">צוות Perfect One</p>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.error('Email send error:', emailErr);
+      }
+
+      setPaymentComplete(true);
+      setShowCheckout(false);
+    } catch (err) {
+      console.error('Payment success handler error:', err);
+      toast.error('שגיאה בשמירת המוצר');
+    }
+  };
+
   if (showDraftPreview && draftPreviewUrl) {
     const embedUrl = draftPreviewUrl.replace('gamma.app/docs/', 'gamma.app/embed/');
     
+    // Thank You screen after payment
+    if (paymentComplete) {
+      return (
+        <div className="flex flex-col h-full bg-white">
+          <div className="flex-none px-4 py-3 border-b border-gray-100 bg-white z-10">
+            <button onClick={onClose} className="p-2 -mr-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-center p-6 overflow-y-auto">
+            <div className="text-center space-y-6 max-w-sm">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
+                className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center shadow-lg shadow-green-200 mx-auto"
+              >
+                <CheckCircle2 className="w-12 h-12 text-green-600" />
+              </motion.div>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-black text-gray-900">תודה על הרכישה! 🎉</h2>
+                <p className="text-gray-600 text-sm max-w-xs mx-auto">
+                  המצגת נשלחה למייל שלך ונשמרה ב"המוצרים שלי"
+                </p>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-200">
+                <p className="text-xs text-gray-500 mb-3">הקישור למצגת:</p>
+                <a 
+                  href={draftPreviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center justify-center gap-2"
+                >
+                  פתח את המצגת
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+              <div className="flex flex-col gap-3 w-full">
+                <Button 
+                  onClick={() => onComplete(formData)}
+                  className="bg-[#1E3A5F] hover:bg-[#2C5282] text-white font-bold h-11"
+                >
+                  חזרה למרכז השליטה
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col h-full bg-gray-50">
         {/* Preview Header */}
         <div className="flex-none px-4 py-3 border-b border-gray-200 bg-white flex items-center justify-between z-10">
           <div>
-            <h3 className="font-bold text-gray-900">תצוגה מקדימה - טיוטה</h3>
-            <p className="text-xs text-gray-500">לאחר תשלום תקבל PDF איכותי ללא סימני מים</p>
+            <h3 className="font-bold text-gray-900 text-sm">תצוגה מקדימה - טיוטה</h3>
+            <p className="text-xs text-gray-500">לאחר תשלום תקבל את המצגת המלאה</p>
           </div>
           <button 
             onClick={() => {
@@ -835,11 +939,11 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
           </button>
         </div>
 
-        {/* Preview Content */}
-        <div className="flex-1 flex flex-col p-0 md:p-4 overflow-y-auto bg-white md:bg-gray-50">
-          <div className="w-full max-w-5xl mx-auto space-y-0 md:space-y-4">
+        {/* Preview Content - scrollable */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="w-full max-w-5xl mx-auto">
             {/* Iframe Preview with Watermark Overlay */}
-            <div className="bg-white md:rounded-xl md:shadow-lg overflow-hidden border-b md:border-2 border-gray-200 relative group">
+            <div className="bg-white md:m-4 md:rounded-xl md:shadow-lg overflow-hidden md:border-2 border-gray-200 relative group">
               
               {/* Maximize Button */}
               <button
@@ -851,96 +955,50 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                 <span className="text-xs font-bold max-w-0 overflow-hidden group-hover/btn:max-w-[100px] transition-all duration-300 whitespace-nowrap">הגדל</span>
               </button>
 
-              {/* Desktop View: High Fidelity Scaled */}
+              {/* Desktop View */}
               <div className="hidden md:block relative w-full aspect-video overflow-hidden bg-gray-50">
                 <div 
                   className="absolute top-0 left-0 origin-top-left"
-                  style={{
-                    width: '150%', 
-                    height: '150%', 
-                    transform: 'scale(0.66667)', // Scale back to fit
-                  }}
+                  style={{ width: '150%', height: '150%', transform: 'scale(0.66667)' }}
                 >
-                  <iframe
-                    src={embedUrl}
-                    className="w-full h-full border-0"
-                    title="Presentation Preview Desktop"
-                    allow="fullscreen"
-                    loading="lazy"
-                  />
+                  <iframe src={embedUrl} className="w-full h-full border-0" title="Presentation Preview Desktop" allow="fullscreen" loading="lazy" />
                   <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
                     {[20, 50, 80].map((top) => (
-                      <div
-                        key={top}
-                        className="absolute text-red-500/15 font-black text-9xl whitespace-nowrap select-none"
-                        style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
-                      >
-                        טיוטה
-                      </div>
+                      <div key={top} className="absolute text-red-500/15 font-black text-9xl whitespace-nowrap select-none" style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}>טיוטה</div>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* Mobile View: High Fidelity Desktop Simulation */}
-              {/* Using 300% width and scaling down to 0.333 forces desktop layout rendering on mobile */}
-              <div className="md:hidden relative w-full bg-gray-50" style={{ paddingTop: '56.25%' /* Force 16:9 Aspect Ratio Container */ }}>
-                <div 
-                  className="absolute top-0 left-0 origin-top-left overflow-hidden"
-                  style={{
-                    width: '300%',  // Simulate wide desktop screen (~1100-1200px on mobile)
-                    height: '300%', 
-                    transform: 'scale(0.33333)', // Scale back to fit mobile width exactly
-                  }}
-                >
-                  <iframe
-                    src={embedUrl}
-                    className="w-full h-full border-0"
-                    title="Presentation Preview Mobile"
-                    allow="fullscreen"
-                    loading="lazy"
-                  />
+              {/* Mobile View */}
+              <div className="md:hidden relative w-full bg-gray-50" style={{ paddingTop: '56.25%' }}>
+                <div className="absolute top-0 left-0 origin-top-left overflow-hidden" style={{ width: '300%', height: '300%', transform: 'scale(0.33333)' }}>
+                  <iframe src={embedUrl} className="w-full h-full border-0" title="Presentation Preview Mobile" allow="fullscreen" loading="lazy" />
                   <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
                     {[20, 50, 80].map((top) => (
-                      <div
-                        key={top}
-                        className="absolute text-red-500/15 font-black text-9xl whitespace-nowrap select-none"
-                        style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}
-                      >
-                        טיוטה
-                      </div>
+                      <div key={top} className="absolute text-red-500/15 font-black text-9xl whitespace-nowrap select-none" style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)' }}>טיוטה</div>
                     ))}
                   </div>
                 </div>
-              </div>
-
-              {/* Info banner - hidden on mobile to save space, visible on desktop */}
-              <div className="hidden md:block bg-yellow-50 border-t-2 border-yellow-200 px-4 py-2 text-center">
-                <p className="text-xs text-yellow-800 font-semibold">
-                  💡 גלול בין השקפים לצפייה מלאה • לאחר תשלום תקבל PDF נקי ללא סימני מים
-                </p>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="p-4 md:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 md:rounded-xl md:shadow-md space-y-4 border-t md:border-2 border-blue-200">
+            {/* Action Buttons - always visible, scrolls into view */}
+            <div className="p-4 md:p-6 md:mx-4 md:mb-4 bg-gradient-to-br from-blue-50 to-indigo-50 md:rounded-xl md:shadow-md space-y-4 border-t md:border-2 border-blue-200">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-full mb-3">
                   <FileText className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="text-xl font-black text-gray-900 mb-2">אהבת? קבל את המצגת המלאה !</h4>
-                <p className="text-sm text-gray-600 mb-1">
-                  לאחר התשלום תקבל:
-                </p>
+                <h4 className="text-xl font-black text-gray-900 mb-2">אהבת? קבל את המצגת המלאה!</h4>
+                <p className="text-sm text-gray-600 mb-1">לאחר התשלום תקבל:</p>
                 <div className="text-xs text-right bg-white/60 rounded-lg p-3 space-y-1 inline-block">
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-600" />
-                    <span className="font-semibold">קובץ PDF איכותי ללא סימני מים</span>
+                    <span className="font-semibold">קישור למצגת המלאה ללא סימני מים</span>
                   </div>
-
                   <div className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-600" />
-                    <span className="font-semibold">אפשרות להורדה והדפסה</span>
+                    <span className="font-semibold">שליחה למייל + שמירה באזור האישי</span>
                   </div>
                 </div>
               </div>
@@ -952,7 +1010,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                     data: { presentationUrl: draftPreviewUrl, businessName: formData.businessName },
                     price: 199,
                     title: `מצגת: ${formData.businessName}`,
-                    preview_image: 'https://cdn.dribbble.com/users/5031392/screenshots/15467520/media/c8d1c611531868a8677c7c32d483730e.png', // Placeholder
+                    preview_image: '',
                     openCart: false
                   })}
                   variant="outline"
@@ -961,23 +1019,39 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                   הוסף לסל
                 </Button>
                 <Button
-                  onClick={() => {
-                    toast.success('מעביר לתשלום...');
-                    // TODO: redirect לעמוד תשלום
-                  }}
+                  onClick={() => setShowCheckout(true)}
                   className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-black text-lg h-14 shadow-lg"
                 >
                   <Wallet className="w-5 h-5 ml-2" />
-                  לקבלת המצגת המלאה
+                  ₪199 - קנה עכשיו
                 </Button>
               </div>
               
-              <p className="text-xs text-center text-gray-600">
-                קבלה מיידית • הורדת PDF תוך דקות
+              <p className="text-xs text-center text-gray-500">
+                תשלום חד-פעמי • קבלה מיידית למייל
               </p>
             </div>
           </div>
         </div>
+
+        {/* Checkout Dialog */}
+        <CheckoutDialog
+          open={showCheckout}
+          onClose={() => setShowCheckout(false)}
+          product={{
+            name: `מצגת עסקית: ${formData.businessName || 'ללא שם'}`,
+            description: 'מצגת עסקית מעוצבת - כוללת קישור למצגת המלאה ושליחה למייל',
+            price: 199,
+            isRecurring: false,
+            product_type: 'one-time',
+            metadata: {
+              type: 'presentation',
+              presentationUrl: draftPreviewUrl,
+              businessName: formData.businessName
+            }
+          }}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
 
         {/* Full Preview Dialog */}
         <Dialog open={isFullPreviewOpen} onOpenChange={setIsFullPreviewOpen}>
@@ -997,22 +1071,10 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
                       </DialogClose>
                 </div>
                 <div className="flex-1 overflow-hidden bg-gray-100 relative">
-                    <iframe
-                      src={embedUrl}
-                      className="w-full h-full border-0"
-                      title="Full Presentation Preview"
-                      allow="fullscreen"
-                    />
-                    {/* Watermark Overlay for Full Screen */}
+                    <iframe src={embedUrl} className="w-full h-full border-0" title="Full Presentation Preview" allow="fullscreen" />
                     <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden">
                       {[15, 35, 55, 75, 95].map((top) => (
-                        <div
-                          key={top}
-                          className="absolute text-red-500/10 font-black text-[10rem] whitespace-nowrap select-none"
-                          style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-30deg)' }}
-                        >
-                          טיוטה
-                        </div>
+                        <div key={top} className="absolute text-red-500/10 font-black text-[10rem] whitespace-nowrap select-none" style={{ top: `${top}%`, left: '50%', transform: 'translate(-50%, -50%) rotate(-30deg)' }}>טיוטה</div>
                       ))}
                     </div>
                 </div>
