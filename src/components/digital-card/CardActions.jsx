@@ -70,18 +70,17 @@ function ActionCircle({ icon: Icon, label, onClick, color }) {
 }
 
 export default function CardActions({ card, actions, color }) {
-  const has = (n) => card.social_networks?.includes(n);
   const btns = [];
 
   if (card.phone) btns.push({ icon: SvgIcons.Phone, label: 'חיוג', onClick: actions.call });
   if (card.whatsapp || card.phone) btns.push({ icon: SvgIcons.WhatsApp, label: 'וואטסאפ', onClick: actions.whatsapp });
   if (card.email) btns.push({ icon: SvgIcons.Email, label: 'אימייל', onClick: actions.email });
-  if (has('instagram')) btns.push({ icon: SvgIcons.Instagram, label: 'אינסטגרם', onClick: actions.instagram });
-  if (has('facebook')) btns.push({ icon: SvgIcons.Facebook, label: 'פייסבוק', onClick: actions.facebook });
-  if (has('linkedin')) btns.push({ icon: SvgIcons.LinkedIn, label: 'לינקדאין', onClick: actions.linkedin });
-  if (has('tiktok')) btns.push({ icon: SvgIcons.TikTok, label: 'טיקטוק', onClick: actions.tiktok });
-  if (has('website')) btns.push({ icon: SvgIcons.Website, label: 'אתר', onClick: actions.website });
-  if (has('waze')) btns.push({ icon: SvgIcons.Waze, label: 'ניווט', onClick: actions.waze });
+  if (card.instagram_url) btns.push({ icon: SvgIcons.Instagram, label: 'אינסטגרם', onClick: actions.instagram });
+  if (card.facebook_url) btns.push({ icon: SvgIcons.Facebook, label: 'פייסבוק', onClick: actions.facebook });
+  if (card.linkedin_url) btns.push({ icon: SvgIcons.LinkedIn, label: 'לינקדאין', onClick: actions.linkedin });
+  if (card.tiktok_url) btns.push({ icon: SvgIcons.TikTok, label: 'טיקטוק', onClick: actions.tiktok });
+  if (card.website_url) btns.push({ icon: SvgIcons.Website, label: 'אתר', onClick: actions.website });
+  if (card.waze_url) btns.push({ icon: SvgIcons.Waze, label: 'ניווט', onClick: actions.waze });
 
   if (!btns.length) return null;
 
