@@ -48,7 +48,7 @@ const AuthenticatedApp = () => {
           <MainPage />
         </LayoutWrapper>
       } />
-      {Object.entries(Pages).filter(([path]) => !['DigitalCard'].includes(path)).map(([path, Page]) => (
+      {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}
           path={`/${path}`}
