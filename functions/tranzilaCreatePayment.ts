@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 
 Deno.serve(async (req) => {
     try {
@@ -28,6 +28,14 @@ Deno.serve(async (req) => {
         }
 
         // Step 1: Create Payment record
+        // IMPORTANT: Always preserve user_email and user_name in metadata for invoice generation
+        const mergedMetadata = {
+            user_email: user.email || '',
+            user_name: user.full_name || '',
+            full_name: user.full_name || '',
+            ...(metadata || {}),
+        };
+
         const paymentData = {
             user_id: user.id,
             product_type,
@@ -37,17 +45,11 @@ Deno.serve(async (req) => {
             currency: 'ILS',
             payment_method: 'tranzila',
             status: 'pending',
-            metadata: {
-                user_email: user.email || '',
-                user_name: user.full_name || ''
-            }
+            metadata: mergedMetadata,
         };
 
         if (items) {
             paymentData.items = items;
-        }
-        if (metadata) {
-            paymentData.metadata = metadata;
         }
 
         const payment = await base44.asServiceRole.entities.Payment.create(paymentData);
