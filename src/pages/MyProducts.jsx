@@ -107,8 +107,9 @@ export default function MyProducts() {
           if (metaType === 'logo') resolvedType = 'logo';
           if (metaType === 'presentation') resolvedType = 'presentation';
           
-          // Get the image URL from metadata based on type
+          // Get the image/download URL from metadata based on type
           const imageUrl = p.metadata?.stickerUrl || p.metadata?.logoUrl || p.metadata?.preview_image || '';
+          const downloadUrl = p.metadata?.presentationUrl || imageUrl;
           
           missingProducts.push({
             id: 'payment_' + p.id,
