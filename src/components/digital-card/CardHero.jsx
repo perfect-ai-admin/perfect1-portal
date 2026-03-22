@@ -11,19 +11,33 @@ function lighten(hex, amt = 50) {
 
 export default function CardHero({ card, color }) {
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [coverLoaded, setCoverLoaded] = useState(false);
+  const [coverError, setCoverError] = useState(false);
   const initials = (card.full_name || '').split(' ').map(w => w[0]).join('').slice(0, 2);
   const lighter = lighten(color, 60);
+
+  const hasCover = card.cover_image_url && !coverError;
 
   return (
     <div className="relative">
       {/* Cover area */}
-      <div className={`${card.cover_image_url ? 'h-[260px]' : 'h-[220px]'} relative overflow-hidden`}>
-        {card.cover_image_url ? (
-          <img 
-            src={card.cover_image_url} 
-            alt="" 
-            className="w-full h-full object-cover object-center"
-          />
+      <div className={`${hasCover ? 'h-[260px]' : 'h-[220px]'} relative overflow-hidden`}>
+        {hasCover ? (
+          <>
+            {!coverLoaded && (
+              <div
+                className="absolute inset-0 animate-pulse"
+                style={{ background: `linear-gradient(160deg, ${color} 0%, ${lighter} 50%, ${color} 100%)` }}
+              />
+            )}
+            <img 
+              src={card.cover_image_url} 
+              alt="" 
+              className={`w-full h-full object-cover object-center transition-opacity duration-500 ${coverLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setCoverLoaded(true)}
+              onError={() => setCoverError(true)}
+            />
+          </>
         ) : (
           <div
             className="w-full h-full"
