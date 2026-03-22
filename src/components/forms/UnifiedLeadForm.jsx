@@ -79,8 +79,11 @@ export default function UnifiedLeadForm({
     setIsSubmitting(true);
 
     try {
-      // Capture UTM params from URL
+      // Capture UTM params – check URL first, fall back to sessionStorage (persisted on landing)
       const urlParams = new URLSearchParams(window.location.search);
+      const getUtm = (key) => urlParams.get(key) || sessionStorage.getItem(key) || '';
+      const referrer = document.referrer || sessionStorage.getItem('landing_referrer') || '';
+
       // יצירת לד
       const newLead = await base44.entities.Lead.create({
         name: formData.name,
@@ -89,12 +92,12 @@ export default function UnifiedLeadForm({
         profession: showProfession ? formData.profession : undefined,
         source_page: sourcePage,
         status: 'new',
-        utm_source: urlParams.get('utm_source') || '',
-        utm_medium: urlParams.get('utm_medium') || '',
-        utm_campaign: urlParams.get('utm_campaign') || '',
-        utm_term: urlParams.get('utm_term') || '',
-        utm_content: urlParams.get('utm_content') || '',
-        referrer: document.referrer || ''
+        utm_source: getUtm('utm_source'),
+        utm_medium: getUtm('utm_medium'),
+        utm_campaign: getUtm('utm_campaign'),
+        utm_term: getUtm('utm_term'),
+        utm_content: getUtm('utm_content'),
+        referrer
       });
 
       // Tracking
