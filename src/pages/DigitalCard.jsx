@@ -67,7 +67,7 @@ export default function DigitalCard() {
   const pageImage = card.cover_image_url || card.logo_url || card.qr_image_url || '';
 
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
