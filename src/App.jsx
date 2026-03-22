@@ -69,6 +69,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Standalone public page - completely outside auth & layout */}
+      <Route path="/card/:slug" element={<DigitalCard />} />
       <Route path="/DigitalCard" element={<DigitalCard />} />
       <Route path="/*" element={<AuthenticatedApp />} />
     </Routes>
