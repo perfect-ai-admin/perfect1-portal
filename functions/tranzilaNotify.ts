@@ -70,6 +70,17 @@ Deno.serve(async (req) => {
 
         console.log('[TranzilaNotify] Payment marked completed:', paymentId);
 
+        // === AUTO INVOICE: Issue Morning invoice_receipt ===
+        try {
+            const invoiceResult = await base44.asServiceRole.functions.invoke('issueMorningInvoice', {
+                payment_id: paymentId,
+                trigger_source: 'tranzila_notify',
+            });
+            console.log('[TranzilaNotify] Invoice result:', JSON.stringify(invoiceResult?.data || invoiceResult).substring(0, 200));
+        } catch (invErr) {
+            console.error('[TranzilaNotify] Invoice issue failed (non-blocking):', invErr.message);
+        }
+
         // === FULFILLMENT: Create PurchasedProduct records ===
         const userId = payment.user_id;
         const productType = payment.product_type;
