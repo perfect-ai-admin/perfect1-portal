@@ -185,6 +185,10 @@ export default function AdminDashboard() {
                             <LandingPagesManager />
                         </TabsContent>
 
+                        <TabsContent value="billing">
+                            <BillingDocumentsManager />
+                        </TabsContent>
+
                         <TabsContent value="activity">
                             <ActivityLogView />
                         </TabsContent>
