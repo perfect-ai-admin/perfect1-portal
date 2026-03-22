@@ -119,6 +119,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
   const [fullscreenPreview, setFullscreenPreview] = useState(false);
   const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false);
   const [countdown, setCountdown] = useState(60);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [paymentComplete, setPaymentComplete] = useState(false);
 
   // Countdown timer during building
   useEffect(() => {
