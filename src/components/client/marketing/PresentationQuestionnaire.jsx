@@ -852,7 +852,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
               <p>תודה על הרכישה! המצגת העסקית שלך עבור <strong>${formData.businessName}</strong> מוכנה.</p>
               <div style="background: #f0f7ff; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center;">
                 <a href="${pdfUrl || draftPreviewUrl}" style="display: inline-block; background: #1E3A5F; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
-                  ${pdfUrl ? 'הורד את המצגת (PDF)' : 'פתח את המצגת'}
+                  הורד את המצגת
                 </a>
               </div>
               <p style="color: #666; font-size: 14px;">המצגת נשמרה גם באזור האישי שלך תחת "המוצרים שלי".</p>
