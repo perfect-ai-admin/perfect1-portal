@@ -985,7 +985,8 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
         product={checkoutProduct}
         onPaymentSuccess={async (paymentId) => {
           try {
-            const stickerImageUrl = finalStickerUrl || generatedStickerUrl;
+            // Always use the original generated URL (without watermark) for saving
+            const stickerImageUrl = generatedStickerUrl;
             const user = await base44.auth.me();
             
             // Save to PurchasedProduct
