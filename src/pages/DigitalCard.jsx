@@ -116,6 +116,6 @@ export default function DigitalCard() {
 
         <CardBottomBar card={card} actions={act} color={color} />
       </div>
-    </>
+    </HelmetProvider>
   );
 }
