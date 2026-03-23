@@ -22,7 +22,7 @@ export default function Layout({ children, currentPageName }) {
     const location = useLocation();
 
     // עמודים עצמאיים ללא Header/Footer
-    if (['SystemLogicMap', 'LP', 'LandingPagePreview', 'DigitalCard'].includes(currentPageName)) {
+    if (['SystemLogicMap', 'LP', 'LandingPagePreview', 'DigitalCard', 'OsekPaturLanding'].includes(currentPageName)) {
       return children;
     }
 
