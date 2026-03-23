@@ -294,11 +294,11 @@ export default function UsersTable(props) {
                                 <td className="p-4">
                                     {user.has_started_journey ? (
                                         <Badge className="bg-green-100 text-green-800 border-green-200">
-                                            השלים שאלון
+                                            פעיל ✓
                                         </Badge>
                                     ) : user.business_journey_completed ? (
-                                        <Badge className="bg-green-100 text-green-800 border-green-200">
-                                            השלים שאלון
+                                        <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                                            השלים שאלון (ללא טלפון)
                                         </Badge>
                                     ) : (
                                         <span className="text-gray-400 text-sm">טרם התחיל</span>
