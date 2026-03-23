@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
 
         // Enrich users
         const enrichedUsers = users.map(user => {
-            const hasStartedJourney = !!user.business_journey_completed;
+            const hasStartedJourney = !!user.business_journey_completed && !!(user.phone && user.phone.trim() !== '');
             const pStats = paymentsByUser[user.id] || { count: 0, total: 0, lastDate: null, completedCount: 0 };
             const userPlan = user.current_plan_id ? planMap[user.current_plan_id] : null;
             
