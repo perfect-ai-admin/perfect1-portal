@@ -42,18 +42,7 @@ export default function HeroSection({ onSubmit, isSubmitting }) {
               ))}
             </div>
 
-            {/* Mobile WhatsApp */}
-            <div className="lg:hidden">
-              <a
-                href="https://wa.me/972502277087?text=היי, רוצה לפתוח עוסק פטור"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-all"
-              >
-                <MessageCircle className="w-5 h-5" />
-                דברו איתנו בWhatsApp
-              </a>
-            </div>
+
           </div>
 
           {/* Form */}
