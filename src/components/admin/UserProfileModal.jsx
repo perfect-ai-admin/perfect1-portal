@@ -311,9 +311,16 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                         <div className="bg-gray-50 p-4 rounded-lg">
                             <h3 className="font-semibold mb-2">מסלול נוכחי</h3>
                             {user.current_plan_id ? (
-                                <Badge className="bg-[#27AE60] text-white">מסלול פעיל</Badge>
+                                <div className="flex items-center gap-2">
+                                    <Badge className="bg-[#27AE60] text-white">
+                                        {user.plan_name || 'מסלול פעיל'}
+                                    </Badge>
+                                    {user.plan_price != null && (
+                                        <span className="text-sm text-gray-500">₪{user.plan_price}</span>
+                                    )}
+                                </div>
                             ) : (
-                                <p className="text-gray-500">אין מסלול פעיל</p>
+                                <p className="text-gray-500">חינמי (ללא מסלול)</p>
                             )}
                         </div>
                         <div>
