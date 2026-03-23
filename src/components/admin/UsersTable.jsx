@@ -293,8 +293,12 @@ export default function UsersTable(props) {
                                 <td className="p-4 text-gray-600">{user.email}</td>
                                 <td className="p-4">
                                     {user.has_started_journey ? (
-                                        <Badge className="bg-blue-100 text-blue-800 border-blue-200">
-                                            התחיל תהליך
+                                        <Badge className="bg-green-100 text-green-800 border-green-200">
+                                            השלים שאלון
+                                        </Badge>
+                                    ) : user.business_journey_completed ? (
+                                        <Badge className="bg-green-100 text-green-800 border-green-200">
+                                            השלים שאלון
                                         </Badge>
                                     ) : (
                                         <span className="text-gray-400 text-sm">טרם התחיל</span>
@@ -326,9 +330,15 @@ export default function UsersTable(props) {
                                 </td>
                                 <td className="p-4">
                                     {user.current_plan_id ? (
-                                        <Badge variant="outline">פלאן פעיל</Badge>
+                                        <Badge className={
+                                            (user.plan_price && user.plan_price > 0) 
+                                                ? "bg-green-100 text-green-800 border-green-200" 
+                                                : "bg-gray-100 text-gray-700 border-gray-200"
+                                        }>
+                                            {user.plan_name || 'מסלול פעיל'}
+                                        </Badge>
                                     ) : (
-                                        <span className="text-gray-400">ללא מסלול</span>
+                                        <span className="text-gray-400">חינמי</span>
                                     )}
                                 </td>
                                 <td className="p-4">
