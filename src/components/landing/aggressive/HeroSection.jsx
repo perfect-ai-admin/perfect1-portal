@@ -17,7 +17,7 @@ export default function HeroSection({ onSubmit, isSubmitting }) {
           <div className="text-center lg:text-right">
             <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
               פתיחת עוסק פטור –{' '}
-              <span className="text-[#27AE60]">מתחילים בלי להסתבך</span>
+              <span className="text-[#27AE60]">בלי טעויות ובזבוז זמן</span>
             </h1>
 
             <p className="text-lg md:text-xl text-white/85 mb-6 leading-relaxed font-medium">
