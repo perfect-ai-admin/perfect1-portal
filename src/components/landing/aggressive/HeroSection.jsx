@@ -15,10 +15,6 @@ export default function HeroSection({ onSubmit, isSubmitting }) {
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           {/* Text */}
           <div className="text-center lg:text-right">
-            <div className="inline-block bg-[#27AE60]/20 text-[#27AE60] px-4 py-1.5 rounded-full text-sm font-bold mb-4 border border-[#27AE60]/30">
-              ⚡ חזרה תוך 10 דקות
-            </div>
-
             <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
               פתיחת עוסק פטור –{' '}
               <span className="text-[#27AE60]">מתחילים בלי להסתבך</span>
