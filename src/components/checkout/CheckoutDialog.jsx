@@ -173,7 +173,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     try {
       // Use unified tranzilaCreatePayment - creates Payment record + handshake
       const response = await base44.functions.invoke('tranzilaCreatePayment', {
-        product_type: product.product_type || 'one-time',
+        product_type: product.product_type || (isRecurring ? 'plan' : 'one-time'),
         product_name: product.name,
         amount: amount,
         product_id: product.product_id || product.id || '',
