@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
     try {
+        const body = await req.json();
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
 
@@ -9,7 +10,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { answers } = await base44.request.json();
+        const { answers } = body;
 
         if (!answers) {
             return Response.json({ error: 'Answers are required' }, { status: 400 });
