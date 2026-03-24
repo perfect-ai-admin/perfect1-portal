@@ -40,36 +40,26 @@ export default function Checkout() {
     loadData();
   }, []);
 
+  const billingCycle = urlParams.get('cycle') || 'monthly';
+  const isYearly = billingCycle === 'yearly';
+
   const loadData = async () => {
     try {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
 
-      if (cartItems && cartItems.length > 0) {
-        const total = cartItems.reduce((sum, item) => sum + (item.price || 99), 0);
-        setProduct({
-          name: `עגלת קניות (${cartItems.length} פריטים)`,
-          description: cartItems.map(i => i.title).join(', '),
-          price: total,
-          isCart: true,
-          isRecurring: false,
-          items: cartItems,
-        });
-      } else if (tierName && SUBSCRIPTION_TIERS[tierName]) {
+      if (tierName && SUBSCRIPTION_TIERS[tierName]) {
         const tier = SUBSCRIPTION_TIERS[tierName];
+        const finalPrice = priceParam ? Number(priceParam) : (isYearly ? Math.round(tier.price * 0.83) * 12 : tier.price);
         setProduct({
           name: `מנוי ${tier.title}`,
-          description: `מסלול ${tier.name} – חיוב חודשי אוטומטי`,
-          price: tier.price,
+          description: isYearly 
+            ? `מסלול ${tier.name} – חיוב שנתי` 
+            : `מסלול ${tier.name} – חיוב חודשי אוטומטי`,
+          price: finalPrice,
           tierName: tier.name,
-          isRecurring: true,
-        });
-      } else if (productType === 'one-time' && priceParam) {
-        setProduct({
-          name: urlParams.get('name') || 'שירות',
-          description: urlParams.get('desc') || '',
-          price: Number(priceParam),
-          isRecurring: false,
+          isRecurring: !isYearly, // monthly = recurring, yearly = one-time annual
+          billingCycle,
         });
       } else if (productType === 'plan' && productId) {
         const plans = await base44.entities.Plan.filter({ id: productId });
@@ -78,28 +68,10 @@ export default function Checkout() {
           setProduct({
             ...plan,
             price: priceParam ? Number(priceParam) : plan.price,
-            isRecurring: true,
+            isRecurring: !isYearly,
+            billingCycle,
           });
         }
-      } else if (productType === 'goal' && productId) {
-        const goals = await base44.entities.Goal.filter({ id: productId });
-        if (goals.length > 0) setProduct({ ...goals[0], isRecurring: false });
-      } else if (productType === 'landing-page' && productId) {
-        const page = await base44.entities.LandingPage.get(productId);
-        if (page) setProduct({
-          name: `דף נחיתה: ${page.business_name}`,
-          description: 'דף נחיתה ממותג',
-          price: 299,
-          isLandingPage: true,
-          isRecurring: false,
-        });
-      } else if (priceParam) {
-        setProduct({
-          name: urlParams.get('name') || 'שירות',
-          description: urlParams.get('desc') || '',
-          price: Number(priceParam),
-          isRecurring: false,
-        });
       }
     } catch (error) {
       console.error(error);
