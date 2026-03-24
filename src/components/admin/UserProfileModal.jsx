@@ -192,9 +192,9 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="active">🟢 פעיל</SelectItem>
-                                        <SelectItem value="paused">🟡 מושהה</SelectItem>
-                                        <SelectItem value="blocked">🔴 חסום</SelectItem>
+                                        <SelectItem value="paused">🟡 מושהה (משתמש חדש)</SelectItem>
+                                        <SelectItem value="active">🟢 פעיל (התחיל תהליך)</SelectItem>
+                                        <SelectItem value="blocked">🔴 חסום (ידני ע״י מנהל)</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
