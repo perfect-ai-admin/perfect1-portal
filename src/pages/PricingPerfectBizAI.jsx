@@ -22,6 +22,7 @@ import TabNavigation from '@/components/client/TabNavigation';
 import NotificationCenter from '@/components/client/NotificationCenter';
 import ShoppingCart from '@/components/client/shared/ShoppingCart';
 import CheckoutDialog from '@/components/checkout/CheckoutDialog';
+import SubscriptionCheckoutDialog from '@/components/checkout/SubscriptionCheckoutDialog';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
