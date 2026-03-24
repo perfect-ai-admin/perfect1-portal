@@ -214,7 +214,6 @@ export default function Checkout() {
   const isRecurring = product.isRecurring;
 
   // Recurring config: monthly, unlimited
-  const recurTransaction = 4;
   const today = new Date();
   const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
   const recurStartDate = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-${String(nextMonth.getDate()).padStart(2, '0')}`;
