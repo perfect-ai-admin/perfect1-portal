@@ -117,78 +117,88 @@ export default function Checkout() {
     }
   };
 
-  // Listen for Tranzila iframe postMessage + redirect detection
-  useEffect(() => {
-    if (!handshakeData?.paymentId) return;
+  const confirmPayment = async (transactionId) => {
+    if (paymentConfirmedRef.current || !handshakeData?.paymentId) return;
+    paymentConfirmedRef.current = true;
+    try {
+      await base44.functions.invoke('tranzilaConfirmPayment', {
+        payment_id: handshakeData.paymentId,
+        transaction_id: transactionId || ''
+      });
+      toast.success('התשלום בוצע בהצלחה! 🎉');
+      setPaymentStep('success');
+      setTimeout(() => {
+        canvas({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }, 300);
+    } catch (err) {
+      console.error('Confirm payment error:', err);
+      paymentConfirmedRef.current = false;
+      toast.error('שגיאה באישור התשלום');
+    }
+  };
 
-    const confirmAndRedirect = async (confirmCode) => {
-      try {
-        await base44.functions.invoke('tranzilaConfirmPayment', {
-          payment_id: handshakeData.paymentId,
-          transaction_id: confirmCode || ''
-        });
-      } catch (err) {
-        console.error('Confirm payment error:', err);
-      }
-      navigate(`/CheckoutSuccess?payment_id=${handshakeData.paymentId}`);
-    };
+  // Listen for Tranzila iframe postMessage + redirect detection + DB polling
+  useEffect(() => {
+    if (!handshakeData?.paymentId || paymentStep === 'success') return;
+    const cleanups = [];
 
     const handleMessage = async (event) => {
-      // Skip non-string messages
-      if (!event.data || typeof event.data !== 'string') return;
-      
+      if (paymentConfirmedRef.current || !event.data || typeof event.data !== 'string') return;
       const raw = event.data;
-      console.log('[Tranzila postMessage]', raw.substring(0, 200));
-
-      // Try JSON format
       try {
         const parsed = JSON.parse(raw);
-        if (parsed.Response === '000' || parsed.Response === 0 || parsed.response === '000') {
-          await confirmAndRedirect(parsed.ConfirmationCode || parsed.confirmationcode || '');
+        if (parsed.Response === '000' || parsed.Response === 0) {
+          confirmPayment(parsed.ConfirmationCode || '');
           return;
         }
-      } catch (_) { /* not JSON */ }
-
-      // Try query string format
-      if (raw.includes('Response=000') || raw.includes('response=000')) {
-        const params = new URLSearchParams(raw);
-        await confirmAndRedirect(params.get('ConfirmationCode') || params.get('confirmationcode') || '');
-        return;
-      }
-
-      // Try URL format (Tranzila may redirect the iframe to a URL with query params)
-      if (raw.includes('?') && (raw.includes('Response=000') || raw.includes('response=000'))) {
-        const qs = raw.split('?')[1];
-        const params = new URLSearchParams(qs);
-        await confirmAndRedirect(params.get('ConfirmationCode') || params.get('confirmationcode') || '');
-        return;
+      } catch (_) {}
+      if (raw.includes('Response=000')) {
+        const params = new URLSearchParams(raw.includes('?') ? raw.split('?')[1] : raw);
+        confirmPayment(params.get('ConfirmationCode') || '');
       }
     };
-
-    // Also poll iframe URL for redirect-based confirmation
-    let pollInterval = null;
-    try {
-      pollInterval = setInterval(() => {
-        try {
-          const iframe = document.getElementById('tranzila-iframe');
-          if (!iframe) return;
-          const iframeUrl = iframe.contentWindow?.location?.href;
-          if (iframeUrl && iframeUrl.includes('Response=000')) {
-            clearInterval(pollInterval);
-            const qs = iframeUrl.split('?')[1];
-            const params = new URLSearchParams(qs || '');
-            confirmAndRedirect(params.get('ConfirmationCode') || '');
-          }
-        } catch (_) { /* cross-origin - expected */ }
-      }, 1000);
-    } catch (_) {}
-
     window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
-      if (pollInterval) clearInterval(pollInterval);
-    };
-  }, [handshakeData]);
+    cleanups.push(() => window.removeEventListener('message', handleMessage));
+
+    // Iframe navigation detection
+    const iframe = document.getElementById('tranzila-iframe');
+    if (iframe) {
+      let loadCount = 0;
+      const handleLoad = () => {
+        loadCount++;
+        if (loadCount <= 1 || paymentConfirmedRef.current) return;
+        try {
+          const url = iframe?.contentWindow?.location?.href || '';
+          if (url.includes('Response=000')) {
+            const p = new URLSearchParams(url.split('?')[1] || '');
+            confirmPayment(p.get('ConfirmationCode') || '');
+          }
+        } catch (_) {
+          confirmPayment('iframe-navigation');
+        }
+      };
+      iframe.addEventListener('load', handleLoad);
+      cleanups.push(() => iframe.removeEventListener('load', handleLoad));
+    }
+
+    // DB polling
+    let pollCount = 0;
+    const pollInterval = setInterval(async () => {
+      if (paymentConfirmedRef.current) { clearInterval(pollInterval); return; }
+      pollCount++;
+      if (pollCount > 240) { clearInterval(pollInterval); return; }
+      try {
+        const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+        if (payments?.length > 0 && payments[0].status === 'completed') {
+          confirmPayment('polling');
+          clearInterval(pollInterval);
+        }
+      } catch (_) {}
+    }, 500);
+    cleanups.push(() => clearInterval(pollInterval));
+
+    return () => cleanups.forEach(fn => fn());
+  }, [handshakeData, paymentStep]);
 
   if (loading) {
     return (
