@@ -798,12 +798,9 @@ export default function PricingPerfectBizAI() {
           onClose={() => { setSubCheckoutOpen(false); setSubCheckoutProduct(null); }}
           product={subCheckoutProduct}
           onPaymentSuccess={async () => {
-            const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
-            if (isPreview) {
-              window.location.href = 'https://one-pai.com/MyProducts?payment=success';
-            } else {
-              navigate(createPageUrl('MyProducts') + '?payment=success');
-            }
+            setSubCheckoutOpen(false);
+            setSubCheckoutProduct(null);
+            toast.success('המסלול שודרג בהצלחה! 🎉');
           }}
         />
       </div>
