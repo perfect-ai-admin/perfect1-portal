@@ -31,40 +31,59 @@ Deno.serve(async (req) => {
         console.log('📌 Goal category:', goal.category);
         console.log('📌 Goal user_id:', goal.user_id);
 
-        // מצא את היוזר
+        // מצא את היוזר - עם retry כי הטלפון נשמר רגע לפני יצירת המטרה
         let userName = '';
         let userEmail = '';
         let userPhone = '';
 
-        try {
-            const allUsers = await base44.asServiceRole.entities.User.list();
-            const goalUser = allUsers.find(u => u.id === goal.user_id);
-
-            if (goalUser) {
-                userName = goalUser.full_name || '';
-                userEmail = goalUser.email || '';
-                userPhone = goalUser.phone || '';
-                console.log('👤 User found:', userEmail);
-            }
-
-            // אם אין טלפון ביוזר, חפש ב-CRMLead
-            if (!userPhone && goalUser) {
+        const fetchUserWithRetry = async (retries = 3, delayMs = 2000) => {
+            for (let attempt = 1; attempt <= retries; attempt++) {
                 try {
-                    const leads = await base44.asServiceRole.entities.CRMLead.filter({
-                        user_id: goalUser.id
-                    }, '-created_date', 1);
+                    const allUsers = await base44.asServiceRole.entities.User.list();
+                    const goalUser = allUsers.find(u => u.id === goal.user_id);
 
-                    if (leads && leads.length > 0 && leads[0].phone) {
-                        userPhone = leads[0].phone;
-                        console.log('📱 Phone from CRMLead:', userPhone);
+                    if (goalUser) {
+                        userName = goalUser.full_name || '';
+                        userEmail = goalUser.email || '';
+                        userPhone = goalUser.phone || '';
+                        console.log(`👤 User found (attempt ${attempt}):`, userEmail, 'phone:', userPhone || 'EMPTY');
+                    }
+
+                    // אם יש טלפון, סיימנו
+                    if (userPhone) return;
+
+                    // אם אין טלפון ביוזר, חפש ב-CRMLead
+                    if (goalUser) {
+                        try {
+                            const leads = await base44.asServiceRole.entities.CRMLead.filter({
+                                user_id: goalUser.id
+                            }, '-created_date', 1);
+
+                            if (leads && leads.length > 0 && leads[0].phone) {
+                                userPhone = leads[0].phone;
+                                console.log('📱 Phone from CRMLead:', userPhone);
+                                return;
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ CRMLead lookup failed:', e.message);
+                        }
+                    }
+
+                    // אם עדיין אין טלפון ויש עוד ניסיונות - חכה ונסה שוב
+                    if (attempt < retries) {
+                        console.log(`⏳ Phone not found yet, retrying in ${delayMs}ms (attempt ${attempt}/${retries})`);
+                        await new Promise(resolve => setTimeout(resolve, delayMs));
                     }
                 } catch (e) {
-                    console.warn('⚠️ CRMLead lookup failed:', e.message);
+                    console.warn(`⚠️ User lookup failed (attempt ${attempt}):`, e.message);
+                    if (attempt < retries) {
+                        await new Promise(resolve => setTimeout(resolve, delayMs));
+                    }
                 }
             }
-        } catch (e) {
-            console.warn('⚠️ User lookup failed:', e.message);
-        }
+        };
+
+        await fetchUserWithRetry();
 
         // בנה את הפיילוד ל-N8N
         const n8nPayload = {
