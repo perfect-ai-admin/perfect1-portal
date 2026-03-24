@@ -220,29 +220,7 @@ export default function Checkout() {
   const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
   const recurStartDate = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-${String(nextMonth.getDate()).padStart(2, '0')}`;
 
-  // Build json_purchase_data for one-time product invoice
-  const buildPurchaseData = () => {
-    if (isRecurring) return null;
-    
-    if (product.isCart && product.items) {
-      return product.items.map(item => ({
-        product_name: item.title || item.name || 'מוצר',
-        product_quantity: 1,
-        product_price: item.price || 0,
-      }));
-    }
-    
-    return [{
-      product_name: (product.name || 'שירות').substring(0, 118),
-      product_quantity: 1,
-      product_price: amount,
-    }];
-  };
-
-  const purchaseData = buildPurchaseData();
-  const encodedPurchaseData = purchaseData 
-    ? encodeURIComponent(JSON.stringify(purchaseData))
-    : null;
+  // No purchase data needed for subscriptions (handled by recurring params)
 
   return (
     <>
