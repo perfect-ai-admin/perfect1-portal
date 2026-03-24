@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard } from 'lucide-react';
+import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, CheckCircle, Home } from 'lucide-react';
 import { toast } from 'sonner';
+import canvas from 'canvas-confetti';
 
 /**
  * Checkout page – dedicated to SUBSCRIPTION / RECURRING payments only.
