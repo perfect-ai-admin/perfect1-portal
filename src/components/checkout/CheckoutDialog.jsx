@@ -495,16 +495,6 @@ function PaymentStep({ product, amount, user, handshakeData, onBack, onManualCon
           );
         })()}
 
-        {/* Recurring payments (monthly subscriptions) */}
-        {isRecurring && (
-          <>
-            <input type="hidden" name="recur_sum" value={String(amount)} />
-            <input type="hidden" name="recur_transaction" value="4" />
-            <input type="hidden" name="recur_payments" value="12" />
-            <input type="hidden" name="recur_start_date" value={recurStartDate} />
-          </>
-        )}
-
         {/* Customer info */}
         {user && (
           <>
