@@ -339,30 +339,32 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  {/* Payment methods for one-time */}
-                  {!isRecurring && (
-                    <div className="bg-gray-50 rounded-xl p-3">
-                      <p className="text-xs text-gray-500 mb-2 font-medium">אמצעי תשלום זמינים:</p>
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                          <CreditCard className="w-3.5 h-3.5" />
-                          <span>כרטיס אשראי</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                          <Wallet className="w-3.5 h-3.5" />
-                          <span>Google Pay</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                          <Wallet className="w-3.5 h-3.5" />
-                          <span>PayPal</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                          <Wallet className="w-3.5 h-3.5" />
-                          <span>Bit</span>
-                        </div>
+                  {/* Payment methods */}
+                  <div className="bg-gray-50 rounded-xl p-3">
+                    <p className="text-xs text-gray-500 mb-2 font-medium">אמצעי תשלום זמינים:</p>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                        <CreditCard className="w-3.5 h-3.5" />
+                        <span>כרטיס אשראי</span>
                       </div>
+                      {!isRecurring && (
+                        <>
+                          <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                            <Wallet className="w-3.5 h-3.5" />
+                            <span>Google Pay</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                            <Wallet className="w-3.5 h-3.5" />
+                            <span>PayPal</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
+                            <Wallet className="w-3.5 h-3.5" />
+                            <span>Bit</span>
+                          </div>
+                        </>
+                      )}
                     </div>
-                  )}
+                  </div>
 
                   {/* User info */}
                   {user && (
