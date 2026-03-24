@@ -86,11 +86,10 @@ export default function Checkout() {
     try {
       const amt = product.price;
       const response = await base44.functions.invoke('tranzilaCreatePayment', {
-        product_type: productType || (product.isCart ? 'cart' : product.isRecurring ? 'plan' : 'one-time'),
+        product_type: 'plan',
         product_name: product.name,
         amount: amt,
         product_id: productId || '',
-        items: cartItems || undefined,
       });
       const data = response.data;
 
