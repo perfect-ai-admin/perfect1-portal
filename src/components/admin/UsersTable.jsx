@@ -28,10 +28,7 @@ export default function UsersTable(props) {
         setLoading(true);
         try {
             // Use backend function to list users (supports bypass and admin check)
-            const response = await base44.functions.invoke('adminListUsers', {
-                bypassCode: props.loginData?.code,
-                phone: props.loginData?.phone
-            });
+            const response = await base44.functions.invoke('adminListUsers', {});
             
             if (response.data && response.data.users) {
                 const sortedUsers = response.data.users.sort((a, b) => 
