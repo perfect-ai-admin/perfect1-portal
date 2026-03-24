@@ -467,18 +467,14 @@ function PaymentStep({ product, amount, user, handshakeData, onBack, onManualCon
         <input type="hidden" name="buttonLabel" value="לתשלום" />
         <input type="hidden" name="accessibility" value="2" />
 
-        {/* Digital wallets - only for one-time payments, NOT for recurring */}
-        {!isRecurring && (
-          <>
-            <input type="hidden" name="google_pay" value="1" />
-            <input type="hidden" name="apple_pay" value="1" />
-            <input type="hidden" name="ppnewwin" value="2" />
-            <input type="hidden" name="bit_pay" value="1" />
-          </>
-        )}
+        {/* Digital wallets - all available for one-time */}
+        <input type="hidden" name="google_pay" value="1" />
+        <input type="hidden" name="apple_pay" value="1" />
+        <input type="hidden" name="ppnewwin" value="2" />
+        <input type="hidden" name="bit_pay" value="1" />
 
-        {/* Product details for invoice (one-time only) */}
-        {!isRecurring && (() => {
+        {/* Product details for invoice */}
+        {(() => {
           const purchaseItems = product.items
             ? product.items.map(item => ({
                 product_name: (item.title || item.name || 'מוצר').substring(0, 118),
