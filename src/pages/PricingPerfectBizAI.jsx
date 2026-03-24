@@ -233,18 +233,19 @@ export default function PricingPerfectBizAI() {
        return;
     }
 
-    // Navigate to dedicated subscription checkout page
+    // Open subscription checkout dialog
     const isYearly = billingCycle === 'yearly';
     const monthlyPrice = isYearly ? Math.round(tier.price * 0.83) : tier.price;
     const finalPrice = isYearly ? monthlyPrice * 12 : monthlyPrice;
-    const params = new URLSearchParams({
-      type: 'plan',
-      tier: tier.name,
-      price: String(finalPrice),
-      cycle: billingCycle,
-      id: planId || '',
+    setSubCheckoutProduct({
+      name: `מסלול ${tier.title}`,
+      price: finalPrice,
+      tierName: tier.name,
+      billingCycle,
+      isRecurring: !isYearly,
+      productId: planId || '',
     });
-    navigate(`/Checkout?${params.toString()}`);
+    setSubCheckoutOpen(true);
   };
 
   const handleServiceClick = (service) => {
