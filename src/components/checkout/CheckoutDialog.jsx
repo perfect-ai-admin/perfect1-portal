@@ -279,7 +279,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
   );
 }
 
-function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProceed }) {
+function SummaryStep({ product, amount, user, iframeLoading, onProceed }) {
   return (
     <div className="space-y-4">
       {/* Product details */}
@@ -288,33 +288,19 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
         {product.description && (
           <p className="text-gray-600 text-sm">{product.description}</p>
         )}
-        {isRecurring ? (
-          <div className="flex items-center gap-2 text-sm text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg">
-            <CreditCard className="w-4 h-4 shrink-0" />
-            <span>חיוב חודשי אוטומטי – ניתן לביטול בכל עת</span>
-          </div>
-        ) : product.billingCycle === 'yearly' ? (
-          <div className="flex items-center gap-2 text-sm text-purple-700 bg-purple-50 px-3 py-1.5 rounded-lg">
-            <CreditCard className="w-4 h-4 shrink-0" />
-            <span>תשלום שנתי חד-פעמי · חיסכון של 17%</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-lg">
-            <Check className="w-4 h-4 shrink-0" />
-            <span>תשלום חד-פעמי · ללא מנוי · ללא התחייבות</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-lg">
+          <Check className="w-4 h-4 shrink-0" />
+          <span>תשלום חד-פעמי · ללא מנוי · ללא התחייבות</span>
+        </div>
       </div>
 
       {/* Price */}
       <div className="flex justify-between items-center border-t border-b py-3">
-        <span className="font-bold text-base">
-          סה"כ {isRecurring ? 'לחודש' : product.billingCycle === 'yearly' ? 'לשנה' : 'לתשלום'}
-        </span>
+        <span className="font-bold text-base">סה"כ לתשלום</span>
         <span className="text-2xl font-black text-[#27AE60]">₪{amount}</span>
       </div>
 
-      {/* Payment methods */}
+      {/* Payment methods - all wallets available for one-time */}
       <div className="space-y-2">
         <span className="text-xs text-gray-400">אמצעי תשלום נתמכים:</span>
         <div className="flex items-center gap-2 flex-wrap">
@@ -325,20 +311,16 @@ function SummaryStep({ product, amount, isRecurring, user, iframeLoading, onProc
           <span className="inline-flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-700">
             <svg viewBox="0 0 24 16" className="h-3.5" fill="none"><circle cx="8.5" cy="8" r="7.5" fill="#EB001B"/><circle cx="15.5" cy="8" r="7.5" fill="#F79E1B"/><path d="M12 2.3a7.5 7.5 0 010 11.4 7.5 7.5 0 000-11.4z" fill="#FF5F00"/></svg>
           </span>
-          {!isRecurring && (
-            <>
-              <span className="inline-flex items-center gap-1 bg-[#1DD05D]/10 px-2 py-1 rounded-md border border-[#1DD05D]/30 text-[11px] font-bold text-[#1DD05D]">
-                <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none"><rect width="20" height="20" rx="5" fill="#1DD05D"/><path d="M6 10.5L9 13.5L14.5 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                Bit
-              </span>
-              <span className="inline-flex items-center bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-600">
-                Google Pay
-              </span>
-              <span className="inline-flex items-center bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-600">
-                PayPal
-              </span>
-            </>
-          )}
+          <span className="inline-flex items-center gap-1 bg-[#1DD05D]/10 px-2 py-1 rounded-md border border-[#1DD05D]/30 text-[11px] font-bold text-[#1DD05D]">
+            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none"><rect width="20" height="20" rx="5" fill="#1DD05D"/><path d="M6 10.5L9 13.5L14.5 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            Bit
+          </span>
+          <span className="inline-flex items-center bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-600">
+            Google Pay
+          </span>
+          <span className="inline-flex items-center bg-white px-2 py-1 rounded-md border border-gray-200 text-[11px] font-semibold text-gray-600">
+            PayPal
+          </span>
         </div>
       </div>
 
