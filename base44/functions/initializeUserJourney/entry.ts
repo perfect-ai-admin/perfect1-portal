@@ -1,8 +1,9 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 /**
- * Initialize journey and assign goals for a new user
- * Called after onboarding questionnaire completion
+ * Initialize journey for a new user
+ * This is a legacy function - the main journey creation is done by analyzeBusinessJourney
+ * This function now just creates a basic BusinessJourney record if one doesn't exist
  */
 Deno.serve(async (req) => {
   if (req.method !== 'POST') {
@@ -17,7 +18,21 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Create BusinessJourney record
+    // Check if user already has an active journey
+    const existingJourneys = await base44.entities.BusinessJourney.filter({ 
+      user_id: user.id, 
+      status: 'active' 
+    });
+
+    if (existingJourneys.length > 0) {
+      return Response.json({
+        success: true,
+        journey_id: existingJourneys[0].id,
+        message: 'Journey already exists'
+      });
+    }
+
+    // Create a basic BusinessJourney record
     const journey = await base44.entities.BusinessJourney.create({
       user_id: user.id,
       status: 'active',
@@ -26,42 +41,10 @@ Deno.serve(async (req) => {
       completed_goals: []
     });
 
-    // Create 7 initial goals
-    const goalCodes = [
-      'business_status',
-      'idea_development',
-      'first_customer',
-      'open_business',
-      'product_portfolio',
-      'marketing_campaign',
-      'weekly_target'
-    ];
-
-    const createdGoals = [];
-    for (let i = 0; i < goalCodes.length; i++) {
-      const status = i === 0 ? 'completed' : i === 1 ? 'in_progress' : 'not_started';
-      
-      const goal = await base44.entities.Goal.create({
-        goal_code: goalCodes[i],
-        status,
-        progress_percent: status === 'completed' ? 100 : 0,
-        current_step: status === 'in_progress' ? 1 : 0
-      });
-      
-      createdGoals.push(goal);
-    }
-
-    // Update journey with first goal
-    await base44.entities.BusinessJourney.update(journey.id, {
-      current_goal_code: goalCodes[1],
-      journey_progress_percent: 14
-    });
-
     return Response.json({
       success: true,
       journey_id: journey.id,
-      goals_created: createdGoals.length,
-      current_goal: goalCodes[1]
+      message: 'Journey initialized - complete questionnaire for personalized plan'
     });
 
   } catch (error) {
