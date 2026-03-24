@@ -9,7 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Search, Edit, UserCog, Loader2, Trash2, CheckSquare, XSquare, Info } from 'lucide-react';
 import UserProfileModal from './UserProfileModal';
 
-export default function UsersTable(props) {
+export default function UsersTable() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
