@@ -100,13 +100,16 @@ Deno.serve(async (req) => {
         const baseUrl = Deno.env.get('BASE_URL') || '';
         const notifyUrl = baseUrl ? `${baseUrl}/functions/tranzilaNotify` : '';
 
+        console.log('Payment ready:', payment.id, 'isRecurring:', isRecurring, 'amount:', amount);
+
         return Response.json({ 
             success: true,
             paymentId: payment.id,
             thtk, 
             supplier, 
             sum: amount,
-            notifyUrl 
+            notifyUrl,
+            isRecurring
         });
     } catch (error) {
         console.error('tranzilaCreatePayment error:', error.message);
