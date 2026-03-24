@@ -56,7 +56,15 @@ Deno.serve(async (req) => {
         console.log('Payment created:', payment.id, 'amount:', amount);
 
         // Step 2: Create Tranzila handshake
-        const handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${encodeURIComponent(supplier)}&sum=${encodeURIComponent(amount)}&TranzilaPW=${encodeURIComponent(TranzilaPW)}`;
+        // For recurring (subscription) payments, include recur params in handshake
+        const isRecurring = product_type === 'plan';
+        let handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${encodeURIComponent(supplier)}&sum=${encodeURIComponent(amount)}&TranzilaPW=${encodeURIComponent(TranzilaPW)}`;
+        if (isRecurring) {
+            const today = new Date();
+            const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            const recurStartDate = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-${String(nextMonth.getDate()).padStart(2, '0')}`;
+            handshakeUrl += `&recur_payments=998&recur_sum=${encodeURIComponent(amount)}&recur_transaction=4_approved&recur_start_date=${recurStartDate}`;
+        }
 
         const response = await fetch(handshakeUrl);
         const data = await response.text();
