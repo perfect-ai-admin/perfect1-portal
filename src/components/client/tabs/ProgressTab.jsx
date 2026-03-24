@@ -340,7 +340,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   // Check if user has recommended goal (First task of journey)
   // We prioritize the ACTUAL first task of the journey over the generic recommended_goal
-  const firstJourneyTask = currentUserData?.client_tasks?.[0];
+  const firstJourneyTask = activeMilestones?.[0];
   
   // Define the "Recommended Goal" as the current journey step
   const recommendedGoal = firstJourneyTask ? {
