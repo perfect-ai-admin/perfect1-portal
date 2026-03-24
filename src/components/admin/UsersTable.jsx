@@ -355,9 +355,9 @@ export default function UsersTable() {
                                             </TooltipTrigger>
                                             <TooltipContent>
                                                 <p className="text-sm">
-                                                    {user.status === 'active' ? 'גישה מלאה + הודעות WhatsApp' :
-                                                     user.status === 'paused' ? 'גישה למערכת ללא הודעות WhatsApp' :
-                                                     'ללא גישה'}
+                                                    {user.status === 'active' ? 'התחיל תהליך - גישה מלאה + הודעות WhatsApp' :
+                                                     user.status === 'blocked' ? 'נחסם ידנית ע״י מנהל' :
+                                                     'משתמש חדש - טרם התחיל תהליך'}
                                                 </p>
                                             </TooltipContent>
                                         </Tooltip>
