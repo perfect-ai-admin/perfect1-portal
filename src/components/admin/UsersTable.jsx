@@ -345,12 +345,12 @@ export default function UsersTable() {
                                                 <Badge 
                                                     className={
                                                         user.status === 'active' ? 'bg-green-100 text-green-800 cursor-help' :
-                                                        user.status === 'paused' ? 'bg-yellow-100 text-yellow-800 cursor-help' :
-                                                        'bg-red-100 text-red-800 cursor-help'
+                                                        user.status === 'blocked' ? 'bg-red-100 text-red-800 cursor-help' :
+                                                        'bg-yellow-100 text-yellow-800 cursor-help'
                                                     }
                                                 >
                                                     {user.status === 'active' ? '🟢 פעיל' : 
-                                                     user.status === 'paused' ? '🟡 מושהה' : '🔴 חסום'}
+                                                     user.status === 'blocked' ? '🔴 חסום' : '🟡 מושהה'}
                                                 </Badge>
                                             </TooltipTrigger>
                                             <TooltipContent>
