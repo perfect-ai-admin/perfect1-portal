@@ -6,8 +6,6 @@ Deno.serve(async (req) => {
         
         // Handle CORS preflight if needed, though SDK handles it usually.
         // Get payload
-        const payload = await req.json().catch(() => ({}));
-        const { bypassCode, phone } = payload;
         
         // Check authentication - verify admin via Base44 auth
         const user = await base44.auth.me().catch(() => null);
