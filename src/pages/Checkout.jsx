@@ -23,11 +23,10 @@ export default function Checkout() {
   const location = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
 
-  const productType = urlParams.get('type'); // 'plan', 'goal', 'landing-page', 'service', 'one-time'
+  const productType = urlParams.get('type'); // 'plan'
   const productId = urlParams.get('id');
   const tierName = urlParams.get('tier');
   const priceParam = urlParams.get('price');
-  const cartItems = location.state?.items;
 
   const [user, setUser] = useState(null);
   const [product, setProduct] = useState(null);
