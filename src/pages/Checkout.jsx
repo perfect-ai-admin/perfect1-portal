@@ -315,30 +315,13 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  {/* Payment methods */}
-                  <div className="bg-gray-50 rounded-xl p-3">
-                    <p className="text-xs text-gray-500 mb-2 font-medium">אמצעי תשלום זמינים:</p>
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                        <CreditCard className="w-3.5 h-3.5" />
-                        <span>כרטיס אשראי</span>
-                      </div>
-                      {!isRecurring && (
-                        <>
-                          <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                            <Wallet className="w-3.5 h-3.5" />
-                            <span>Google Pay</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                            <Wallet className="w-3.5 h-3.5" />
-                            <span>PayPal</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-gray-600 bg-white px-2.5 py-1.5 rounded-lg border">
-                            <Wallet className="w-3.5 h-3.5" />
-                            <span>Bit</span>
-                          </div>
-                        </>
-                      )}
+                  {/* Payment method - credit card only for subscriptions */}
+                  <div className="bg-blue-50 rounded-xl p-3">
+                    <div className="flex items-center gap-2 text-sm text-blue-700">
+                      <CreditCard className="w-4 h-4 shrink-0" />
+                      <span className="font-medium">
+                        {isRecurring ? 'חיוב חוזר – כרטיס אשראי בלבד' : 'תשלום שנתי – כרטיס אשראי'}
+                      </span>
                     </div>
                   </div>
 
