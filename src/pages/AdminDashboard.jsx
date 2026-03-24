@@ -53,37 +53,27 @@ export default function AdminDashboard() {
     if (!user) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] flex items-center justify-center p-4" dir="rtl">
-                <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-                    <div className="text-center mb-8">
-                        <Shield className="w-12 h-12 text-[#1E3A5F] mx-auto mb-4" />
-                        <h1 className="text-2xl font-bold text-[#1E3A5F]">כניסה לניהול</h1>
-                    </div>
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label>
-                            <Input 
-                                value={loginData.phone}
-                                onChange={e => setLoginData({...loginData, phone: e.target.value})}
-                                placeholder="050-0000000"
-                                className="text-left"
-                                dir="ltr"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">קוד אימות</label>
-                            <Input 
-                                type="password"
-                                value={loginData.code}
-                                onChange={e => setLoginData({...loginData, code: e.target.value})}
-                                placeholder="******"
-                                className="text-left"
-                                dir="ltr"
-                            />
-                        </div>
-                        <Button type="submit" className="w-full bg-[#1E3A5F] hover:bg-[#2C5282]">
-                            כניסה
+                <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center">
+                    <Shield className="w-12 h-12 text-[#1E3A5F] mx-auto mb-4" />
+                    <h1 className="text-2xl font-bold text-[#1E3A5F] mb-2">אין הרשאת מנהל</h1>
+                    <p className="text-gray-500 mb-6">אתה מחובר אבל אין לך הרשאת אדמין לעמוד הזה.</p>
+                    <div className="space-y-3">
+                        <Button 
+                            className="w-full bg-[#1E3A5F] hover:bg-[#2C5282]"
+                            onClick={() => window.location.href = '/ClientDashboard'}
+                        >
+                            חזרה לדשבורד
                         </Button>
-                    </form>
+                        <Button 
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => {
+                                base44.auth.logout('/AdminDashboard');
+                            }}
+                        >
+                            התחבר עם חשבון אחר
+                        </Button>
+                    </div>
                 </div>
             </div>
         );
