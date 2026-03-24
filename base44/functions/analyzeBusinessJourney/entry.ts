@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
                **Step 1: The "Momentum" Task (Quick Win)**
                - THIS IS CRITICAL. The first task MUST be something they can do in 5-10 minutes to get a "quick win".
                - Examples: "Send a WhatsApp to 5 friends", "Write your pitch", "Sign up for the app".
-               - It must be tagged as `task_type: "MOMENTUM"`.
+               - It must be tagged as task_type: "MOMENTUM".
 
                **Steps 2-6: The "Healthy Business" Roadmap**
                - Don't just list random tasks. Build the business layer by layer.
