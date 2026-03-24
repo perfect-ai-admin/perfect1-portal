@@ -150,7 +150,7 @@ export default function AdminDashboard() {
                         </TabsContent>
 
                         <TabsContent value="users">
-                            <UsersTable loginData={loginData} />
+                            <UsersTable />
                         </TabsContent>
 
                         <TabsContent value="payments">
