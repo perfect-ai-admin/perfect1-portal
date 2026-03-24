@@ -777,20 +777,32 @@ export default function PricingPerfectBizAI() {
             )}
         </AnimatePresence>
 
-        {/* Checkout Popup */}
+        {/* Checkout Popup - One-time products */}
         <CheckoutDialog
           open={checkoutOpen}
           onClose={() => { setCheckoutOpen(false); setCheckoutProduct(null); }}
           product={checkoutProduct}
           onPaymentSuccess={async () => {
-            // Redirect to live domain after successful payment
-            const liveDomain = 'https://one-pai.com';
-            const currentPath = window.location.pathname + window.location.search;
             const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
             if (isPreview) {
-              window.location.href = liveDomain + '/MyProducts';
+              window.location.href = 'https://one-pai.com/MyProducts';
             } else {
               navigate(createPageUrl('MyProducts'));
+            }
+          }}
+        />
+
+        {/* Checkout Popup - Subscriptions */}
+        <SubscriptionCheckoutDialog
+          open={subCheckoutOpen}
+          onClose={() => { setSubCheckoutOpen(false); setSubCheckoutProduct(null); }}
+          product={subCheckoutProduct}
+          onPaymentSuccess={async () => {
+            const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
+            if (isPreview) {
+              window.location.href = 'https://one-pai.com/MyProducts?payment=success';
+            } else {
+              navigate(createPageUrl('MyProducts') + '?payment=success');
             }
           }}
         />
