@@ -390,13 +390,7 @@ export default function Checkout() {
 
                     {/* No digital wallets for subscription checkout - credit card only */}
 
-                    {/* Product details for invoice (one-time only) */}
-                    {!isRecurring && encodedPurchaseData && (
-                      <>
-                        <input type="hidden" name="u71" value="1" />
-                        <input type="hidden" name="json_purchase_data" value={encodedPurchaseData} />
-                      </>
-                    )}
+                    {/* No invoice data for subscriptions */}
 
                     {/* Recurring payment params (subscriptions only) */}
                     {isRecurring && (
