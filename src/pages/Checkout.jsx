@@ -7,6 +7,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 
+/**
+ * Checkout page – dedicated to SUBSCRIPTION / RECURRING payments only.
+ * For one-time products (logo, landing page, etc.), use CheckoutDialog instead.
+ */
 const SUBSCRIPTION_TIERS = {
   Free: { name: 'Free', title: 'התחלה חכמה', price: 0 },
   Basic: { name: 'Basic', title: 'התקדמות יציבה', price: 59 },
