@@ -6,12 +6,13 @@ import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, X } from 'lucide-r
 import { toast } from 'sonner';
 
 /**
- * CheckoutDialog – popup checkout experience with Tranzila iFrame.
+ * CheckoutDialog – popup checkout for ONE-TIME products only (logo, landing page, digital card, etc.)
+ * For subscriptions/recurring, use pages/Checkout instead.
  *
  * Props:
  *  open        – boolean
  *  onClose     – () => void
- *  product     – { name, description, price, isRecurring, tierName?, billingCycle?, items? }
+ *  product     – { name, description, price, items? }
  */
 export default function CheckoutDialog({ open, onClose, product: productProp, onPaymentSuccess }) {
   const [user, setUser] = useState(null);
