@@ -32,8 +32,24 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
     queryFn: async () => await base44.auth.me(),
   });
 
-  const clientTasks = user?.client_tasks || [];
-  const businessState = user?.business_state || {};
+  // Fetch active journey from BusinessJourney entity (primary source)
+  const { data: activeJourney } = useQuery({
+    queryKey: ['businessJourney', 'active', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const journeys = await base44.entities.BusinessJourney.filter({ 
+        user_id: user.id, 
+        status: 'active' 
+      });
+      return journeys.length > 0 ? journeys[0] : null;
+    },
+    enabled: !!user?.id,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Primary: BusinessJourney entity tasks, Fallback: User entity client_tasks
+  const clientTasks = activeJourney?.tasks || user?.client_tasks || [];
+  const businessState = activeJourney?.business_metrics || user?.business_state || {};
 
   // Map task to icon based on keywords
   const getIconForTask = (title) => {
