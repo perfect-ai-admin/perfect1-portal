@@ -257,9 +257,9 @@ export default function UsersTable() {
                                             </TooltipTrigger>
                                             <TooltipContent className="max-w-xs">
                                                 <p className="font-bold mb-2">סטטוסים:</p>
-                                                <p className="text-sm mb-1">🟢 <strong>פעיל:</strong> גישה מלאה + הודעות WhatsApp מהמנטורים</p>
-                                                <p className="text-sm mb-1">🟡 <strong>מושהה:</strong> גישה למערכת (שיווק, פיננסים) ללא הודעות WhatsApp</p>
-                                                <p className="text-sm">🔴 <strong>חסום:</strong> ללא גישה למערכת</p>
+                                                <p className="text-sm mb-1">🟡 <strong>מושהה:</strong> משתמש חדש שנכנס למערכת</p>
+                                                <p className="text-sm mb-1">🟢 <strong>פעיל:</strong> התחיל תהליך - גישה מלאה + הודעות WhatsApp</p>
+                                                <p className="text-sm">🔴 <strong>חסום:</strong> נחסם ידנית ע״י מנהל</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
