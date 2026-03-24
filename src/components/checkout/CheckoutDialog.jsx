@@ -243,7 +243,6 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
             <SummaryStep
               product={product}
               amount={amount}
-              isRecurring={isRecurring}
               user={user}
               iframeLoading={iframeLoading}
               onProceed={handleProceedToPayment}
@@ -252,10 +251,8 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
             <PaymentStep
               product={product}
               amount={amount}
-              isRecurring={isRecurring}
               user={user}
               handshakeData={handshakeData}
-              recurStartDate={recurStartDate}
               onBack={() => { setPaymentStep('summary'); setHandshakeData(null); }}
               onManualConfirm={async () => {
                 // Manual check - user claims they paid
