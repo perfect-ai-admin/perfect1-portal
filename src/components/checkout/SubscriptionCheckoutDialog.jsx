@@ -275,7 +275,7 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
                 {isRecurring && (
                   <>
                     <input type="hidden" name="recur_sum" value={String(amount)} />
-                    <input type="hidden" name="recur_transaction" value="4" />
+                    <input type="hidden" name="recur_transaction" value="4_approved" />
                     <input type="hidden" name="recur_start_date" value={recurStartDate} />
                   </>
                 )}
