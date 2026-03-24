@@ -111,6 +111,8 @@ export default function PricingPerfectBizAI() {
   const [limitReached, setLimitReached] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [checkoutProduct, setCheckoutProduct] = useState(null);
+  const [subCheckoutOpen, setSubCheckoutOpen] = useState(false);
+  const [subCheckoutProduct, setSubCheckoutProduct] = useState(null);
 
   // Optimized data fetching with React Query
   const { data: user, isLoading: isUserLoading } = useQuery({
