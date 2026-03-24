@@ -34,7 +34,8 @@ export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const [handshakeData, setHandshakeData] = useState(null);
   const [iframeLoading, setIframeLoading] = useState(false);
-  const [paymentStep, setPaymentStep] = useState('summary'); // 'summary' | 'payment'
+  const [paymentStep, setPaymentStep] = useState('summary'); // 'summary' | 'payment' | 'success'
+  const paymentConfirmedRef = useRef(false);
 
   useEffect(() => {
     loadData();
