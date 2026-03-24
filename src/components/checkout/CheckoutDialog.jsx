@@ -166,7 +166,6 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
   };
 
   const amount = product?.price || 0;
-  const isRecurring = product?.isRecurring || false;
 
   const handleProceedToPayment = async () => {
     if (!product) return;
@@ -174,7 +173,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     try {
       // Use unified tranzilaCreatePayment - creates Payment record + handshake
       const response = await base44.functions.invoke('tranzilaCreatePayment', {
-        product_type: product.product_type || (isRecurring ? 'plan' : 'one-time'),
+        product_type: product.product_type || 'one-time',
         product_name: product.name,
         amount: amount,
         product_id: product.product_id || product.id || '',
@@ -211,11 +210,6 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
   };
 
   if (!open) return null;
-
-  // Recurring: start date = next month (YYYY-MM-DD)
-  const today = new Date();
-  const nextMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
-  const recurStartDate = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}-${String(nextMonth.getDate()).padStart(2, '0')}`;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
