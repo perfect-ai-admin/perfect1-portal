@@ -454,6 +454,7 @@ export default function Checkout() {
                     {/* Recurring payment params (subscriptions only) */}
                     {isRecurring && (
                       <>
+                        <input type="hidden" name="recur_payments" value="998" />
                         <input type="hidden" name="recur_sum" value={amount} />
                         <input type="hidden" name="recur_transaction" value="4_approved" />
                         <input type="hidden" name="recur_start_date" value={recurStartDate} />
