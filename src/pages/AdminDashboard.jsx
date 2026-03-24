@@ -18,7 +18,6 @@ export default function AdminDashboard() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
-    const [loginData, setLoginData] = useState({ phone: '', code: '' });
 
     useEffect(() => {
         checkAuth();
@@ -26,6 +25,12 @@ export default function AdminDashboard() {
 
     const checkAuth = async () => {
         try {
+            const isAuth = await base44.auth.isAuthenticated();
+            if (!isAuth) {
+                // לא מחובר - שלח להתחברות Base44
+                base44.auth.redirectToLogin(window.location.pathname);
+                return;
+            }
             const currentUser = await base44.auth.me();
             if (currentUser && currentUser.role === 'admin') {
                 setUser(currentUser);
@@ -34,24 +39,6 @@ export default function AdminDashboard() {
             console.error(error);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await base44.functions.invoke('authMe', {
-                phone: loginData.phone,
-                code: loginData.code
-            });
-            if (response.data?.user && response.data.user.role === 'admin') {
-                setUser(response.data.user);
-            } else {
-                alert('פרטים שגויים או אין הרשאת מנהל');
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            alert('שגיאה בהתחברות');
         }
     };
 
