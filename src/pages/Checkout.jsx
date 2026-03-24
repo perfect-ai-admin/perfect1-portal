@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, Wallet } from 'lucide-react';
+import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 
 /**
