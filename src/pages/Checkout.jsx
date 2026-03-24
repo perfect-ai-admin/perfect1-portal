@@ -355,6 +355,55 @@ export default function Checkout() {
             </>
           )}
 
+          {paymentStep === 'success' && (
+            <Card className="shadow-lg border-0 overflow-hidden">
+              <div className="h-2 bg-gradient-to-r from-[#27AE60] to-[#2ECC71]" />
+              <CardContent className="p-8 text-center space-y-6">
+                <div className="flex justify-center">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-[#27AE60] rounded-full opacity-10 scale-125 animate-ping" />
+                    <CheckCircle className="w-20 h-20 text-[#27AE60] relative" />
+                  </div>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">🎉 התשלום בוצע בהצלחה!</h1>
+                  <p className="text-gray-600 text-lg">{product?.name}</p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-right">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">סכום</span>
+                    <span className="font-bold text-[#27AE60]">₪{amount}</span>
+                  </div>
+                  {product?.isRecurring && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">סוג חיוב</span>
+                      <span className="font-medium">חודשי – עד לביטול</span>
+                    </div>
+                  )}
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-blue-900">✨ המסלול שלך עודכן! כל המודולים החדשים זמינים לך כעת.</p>
+                </div>
+                <div className="flex flex-col gap-3 pt-2">
+                  <Button
+                    onClick={() => navigate('/MyProducts?payment=success')}
+                    className="bg-[#27AE60] hover:bg-[#2ECC71] h-12 text-lg w-full"
+                  >
+                    <Home className="w-5 h-5 ml-2" />
+                    לאזור האישי
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/ClientDashboard')}
+                    variant="outline"
+                    className="h-12"
+                  >
+                    חזור לדשבורד
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {paymentStep === 'payment' && handshakeData && (
             <>
               <Card className="shadow-lg border-0 overflow-hidden">
