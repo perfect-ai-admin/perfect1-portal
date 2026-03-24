@@ -326,10 +326,17 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     try {
       await updateUserPhoneMutation.mutateAsync({ phone: phoneNumber });
 
-      // Proceed to create goal
+      // Check if this is the first goal ever
+      const isFirstGoalEver = (!existingGoals || existingGoals.length === 0);
+
+      // Calculate next index
+      const maxIndex = (existingGoals || []).reduce((max, g) => Math.max(max, g.goal_index || 0), 0);
+
+      // Proceed to create goal - with same logic as handleCreate
       const goalData = {
+        user_id: user?.id,
         category: selectedTemplate.id,
-        title: goalTitle,
+        title: goalTitle || selectedTemplate.name || 'מטרה חדשה',
         description: selectedTemplate.description,
         current: 0,
         target: 100,
@@ -337,7 +344,11 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         urgency: urgency,
         status: 'active',
         isPrimary: isPrimary && !hasPrimaryGoal,
-        aiInsight: 'מטרה חדשה נוצרה - התחל לעבוד לקראתה!'
+        aiInsight: 'המטרה נוצרת... אנחנו בונים לך תוכנית עבודה מותאמת אישית 🚀',
+        actionHint: 'המטרה נוצרת...',
+        is_first_goal: isFirstGoalEver,
+        flow_step: isFirstGoalEver ? 1 : undefined,
+        goal_index: maxIndex + 1
       };
       onCreateGoal(goalData, false);
     } catch (error) {
