@@ -287,6 +287,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
     setShowGoalSelectionConfirmation(true);
 
     try {
+      // Check if this is the user's first goal ever
+      const isFirstGoalEver = activeGoals.length === 0;
+
       // Create goal in DB immediately WITHOUT waiting for AI
       // Use hook
       const createdGoal = await createGoalMutation.mutateAsync({
@@ -294,7 +297,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
         user_id: user?.id,
         status: 'active',
         plan_summary: 'בונה תוכנית...',
-        tasks: []
+        tasks: [],
+        is_first_goal: isFirstGoalEver
       });
 
       // Generate AI plan in background without blocking
