@@ -137,10 +137,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
     ? activeJourney.tasks
     : (currentUserData?.client_tasks?.length > 0 ? currentUserData.client_tasks : MILESTONES);
 
-  // Determine current/completed based on status field in tasks
+  // Determine current/completed based on is_completed or status field in tasks
   // Find the first non-completed task as the current step
-  const currentTask = activeMilestones.find(t => t.status === 'in_progress') 
-    || activeMilestones.find(t => t.status === 'pending');
+  const currentTask = activeMilestones.find(t => !t.is_completed && t.status !== 'completed');
   const nextStep = currentTask || activeMilestones[0];
   
   // For legacy/default milestones
