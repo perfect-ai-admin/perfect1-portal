@@ -80,10 +80,13 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
   };
 
   // Convert client_tasks to steps format (these are the AI-generated tasks)
+  // Find the first incomplete task index for "current" determination
+  const firstIncompleteIndex = clientTasks.findIndex(t => !t.is_completed && t.status !== 'completed');
+
   const dynamicSteps = clientTasks.length > 0 
     ? clientTasks.map((task, index) => {
-        const isCompleted = task.status === 'completed';
-        const isCurrent = task.status === 'in_progress' || (index === 0 && !isCompleted);
+        const isCompleted = task.is_completed === true || task.status === 'completed';
+        const isCurrent = !isCompleted && index === (firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0);
         const isLocked = !isCompleted && !isCurrent;
 
         return {
