@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone, Loader2, Sparkles, ArrowRight, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -493,68 +493,107 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             </div>
           </motion.div>
         ) : (
-          <motion.div className="space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            {/* Selected Goal - Hero Card */}
-            <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-6 text-white text-center shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50"></div>
-              <div className="relative z-10">
-                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/20">
-                  <selectedTemplate.icon className="w-8 h-8 text-[#D4AF37]" />
-                </div>
-                <h3 className="text-xl font-bold mb-1.5">{selectedTemplate.name}</h3>
-                <p className="text-white/70 text-sm">{selectedTemplate.description}</p>
-              </div>
-            </div>
-
-            {/* What you'll get */}
-            <div className="bg-gradient-to-br from-amber-50/50 to-white rounded-xl p-4 border border-amber-100/50">
-              <h4 className="text-sm font-bold text-[#1E3A5F] text-center mb-3">מה כלול בתוכנית שלך</h4>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { icon: '🎯', text: 'תוכנית פעולה מותאמת' },
-                  { icon: '🤖', text: 'מנטור AI אישי' },
-                  { icon: '📊', text: 'מעקב התקדמות' },
-                  { icon: '💡', text: 'המלצות חכמות' }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-white rounded-lg p-2.5 border border-gray-100 shadow-sm">
-                    <span className="text-lg">{item.icon}</span>
-                    <span className="text-xs font-medium text-gray-700">{item.text}</span>
+          <motion.div className="space-y-5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            {/* Selected Goal - Premium Hero */}
+            <div className="relative rounded-2xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#0F2439] via-[#1E3A5F] to-[#2C5282]" />
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 30% 20%, rgba(212,175,55,0.3) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 50%)' }} />
+              <div className="relative z-10 p-6 sm:p-8 text-center">
+                <motion.div 
+                  initial={{ scale: 0.8, opacity: 0 }} 
+                  animate={{ scale: 1, opacity: 1 }} 
+                  transition={{ delay: 0.1, type: 'spring' }}
+                  className="w-20 h-20 mx-auto mb-5 relative"
+                >
+                  <div className="absolute inset-0 bg-[#D4AF37]/20 rounded-2xl rotate-6" />
+                  <div className="relative w-full h-full bg-gradient-to-br from-[#D4AF37] to-[#C5A028] rounded-2xl flex items-center justify-center shadow-lg shadow-amber-900/30">
+                    <selectedTemplate.icon className="w-9 h-9 text-white" />
                   </div>
-                ))}
+                </motion.div>
+                <motion.h3 
+                  initial={{ opacity: 0, y: 8 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl font-extrabold text-white mb-2 tracking-tight"
+                >
+                  {selectedTemplate.name}
+                </motion.h3>
+                <motion.p 
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  transition={{ delay: 0.3 }}
+                  className="text-blue-200/80 text-sm max-w-xs mx-auto"
+                >
+                  {selectedTemplate.description}
+                </motion.p>
               </div>
             </div>
 
-            {/* Quick Create CTA */}
-            <div className="text-center">
-              <p className="text-xs text-gray-400">ה-AI יבנה לך תוכנית מותאמת אישית תוך שניות</p>
+            {/* Benefits - Stacked Cards */}
+            <div className="space-y-2">
+              {[
+                { icon: Sparkles, text: 'תוכנית פעולה מותאמת אישית', sub: 'צעדים ברורים שמתקדמים אותך' },
+                { icon: Target, text: 'מנטור AI שמלווה אותך', sub: 'ליווי אישי דרך וואטסאפ' },
+                { icon: TrendingUp, text: 'מעקב התקדמות בזמן אמת', sub: 'תמיד יודע/ת איפה עומדים' },
+              ].map((item, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, x: 20 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  transition={{ delay: 0.2 + i * 0.1 }}
+                  className="flex items-center gap-3 bg-white rounded-xl p-3.5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1E3A5F]/10 to-[#2C5282]/10 flex items-center justify-center flex-shrink-0">
+                    <item.icon className="w-5 h-5 text-[#1E3A5F]" />
+                  </div>
+                  <div className="flex-1 text-right">
+                    <p className="text-sm font-bold text-gray-900">{item.text}</p>
+                    <p className="text-xs text-gray-400">{item.sub}</p>
+                  </div>
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                </motion.div>
+              ))}
             </div>
+
+            {/* Trust bar */}
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              transition={{ delay: 0.5 }}
+              className="flex items-center justify-center gap-1.5 text-gray-400"
+            >
+              <Shield className="w-3.5 h-3.5" />
+              <span className="text-xs">ה-AI יבנה תוכנית מותאמת תוך שניות</span>
+            </motion.div>
           </motion.div>
         )}
         </div>
 
         {/* Footer */}
         {selectedTemplate && (
-          <div className="px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-100 bg-gradient-to-b from-white to-gray-50/50 rounded-b-2xl space-y-2.5 flex-shrink-0">
-            <Button 
-              onClick={handleCreate} 
-              disabled={!goalTitle || isCreating}
-              className="w-full bg-gradient-to-r from-[#D4AF37] to-[#C5A028] hover:from-[#C5A028] hover:to-[#B8941F] text-[#1E3A5F] h-12 sm:h-14 font-bold text-base sm:text-lg rounded-xl shadow-lg shadow-amber-200/50 transition-all active:scale-[0.98]"
-            >
-              {isCreating ? (
-                <>
-                  <Loader2 className="w-5 h-5 ml-2 animate-spin" />
-                  בונה תוכנית...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5 ml-2" />
-                  {editingGoal ? 'שמור שינויים' : 'התחל עכשיו'}
-                </>
-              )}
-            </Button>
+          <div className="px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-50 bg-white rounded-b-2xl space-y-3 flex-shrink-0">
+            <motion.div whileTap={{ scale: 0.97 }}>
+              <Button 
+                onClick={handleCreate} 
+                disabled={!goalTitle || isCreating}
+                className="w-full bg-gradient-to-l from-[#D4AF37] via-[#E5C04B] to-[#D4AF37] hover:brightness-105 text-[#1A1A2E] h-14 sm:h-16 font-extrabold text-base sm:text-lg rounded-2xl shadow-xl shadow-amber-300/30 transition-all border border-amber-400/30 tracking-wide"
+              >
+                {isCreating ? (
+                  <>
+                    <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+                    בונה תוכנית...
+                  </>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <ArrowRight className="w-5 h-5" />
+                    {editingGoal ? 'שמור שינויים' : 'התחל עכשיו'}
+                  </span>
+                )}
+              </Button>
+            </motion.div>
             <button 
               onClick={() => setSelectedTemplate(null)} 
-              className="w-full text-center text-gray-400 text-xs hover:text-gray-600 py-1"
+              className="w-full text-center text-gray-400 text-xs hover:text-gray-500 py-1 transition-colors"
             >
               ← חזור לבחירת מטרה
             </button>
