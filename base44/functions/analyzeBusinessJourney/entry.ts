@@ -254,6 +254,121 @@ Deno.serve(async (req) => {
             active_journey_id: newJourney.id
         });
 
+        // שלח מייל מעוצב למשתמש עם הזמנה לבחור מטרה ראשונה
+        try {
+            const firstName = (user.full_name || '').split(' ')[0] || 'יזם/ת';
+            const stateName = analysis.state_name || 'בתחילת הדרך';
+            const recommendedGoalReason = analysis.recommended_goal?.reason || 'המטרה הזו מותאמת במיוחד עבורך';
+            const stateDescription = analysis.state_description || '';
+            const dashboardUrl = 'https://perfect1.co.il/ClientDashboard';
+
+            const goalLabels = {
+                active_customers: 'הגדלת כמות לקוחות פעילים',
+                monthly_income: 'הגדלת הכנסה חודשית',
+                cashflow_stability: 'יציבות בתזרים מזומנים',
+                quality_leads: 'יותר פניות / לידים איכותיים',
+                conversion_rate: 'שיפור אחוזי סגירה',
+                deal_value: 'העלאת מחיר / ערך עסקה',
+                time_saving: 'חיסכון בזמן עבודה',
+                business_control: 'סדר ושליטה בעסק',
+                marketing_engine: 'בניית מנגנון שיווק קבוע',
+                retention: 'שימור והחזרת לקוחות',
+                reduce_stress: 'פחות לחץ ושחיקה',
+                focus_direction: 'מיקוד וכיוון עסקי ברור'
+            };
+            const recommendedGoalTitle = goalLabels[analysis.recommended_goal?.goal_id] || 'המטרה המומלצת שלך';
+
+            const emailBody = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:'Heebo',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f9;padding:32px 16px;">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+<!-- Header -->
+<tr><td style="background:linear-gradient(135deg,#1E3A5F 0%,#2C5282 100%);padding:40px 32px;text-align:center;">
+  <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d476070d43f37f05394ca/d5e3cf717_logo.png" alt="Perfect Biz AI" width="64" height="64" style="border-radius:50%;margin-bottom:16px;border:3px solid rgba(255,255,255,0.3);" />
+  <h1 style="color:#ffffff;font-size:26px;margin:0 0 8px 0;font-weight:700;">🎉 ${firstName}, המסע העסקי שלך מתחיל!</h1>
+  <p style="color:rgba(255,255,255,0.85);font-size:16px;margin:0;">סיימת את האבחון — עכשיו הגיע הזמן לפעול</p>
+</td></tr>
+
+<!-- State Summary -->
+<tr><td style="padding:32px;">
+  <div style="background:#f0f7ff;border-radius:12px;padding:24px;border-right:4px solid #2C5282;margin-bottom:24px;">
+    <p style="color:#64748b;font-size:13px;margin:0 0 6px 0;font-weight:600;">האבחון שלך:</p>
+    <h2 style="color:#1E3A5F;font-size:20px;margin:0 0 8px 0;font-weight:700;">${stateName}</h2>
+    <p style="color:#475569;font-size:15px;margin:0;line-height:1.6;">${stateDescription}</p>
+  </div>
+
+  <!-- Recommended Goal -->
+  <div style="background:linear-gradient(135deg,#fefce8 0%,#fef9c3 100%);border-radius:12px;padding:24px;border:1px solid #fde047;margin-bottom:24px;">
+    <p style="color:#92400e;font-size:13px;margin:0 0 4px 0;font-weight:600;">⭐ המטרה המומלצת שלך:</p>
+    <h3 style="color:#78350f;font-size:22px;margin:0 0 8px 0;font-weight:700;">${recommendedGoalTitle}</h3>
+    <p style="color:#92400e;font-size:14px;margin:0;line-height:1.5;">${recommendedGoalReason}</p>
+  </div>
+
+  <!-- What you get -->
+  <h3 style="color:#1E3A5F;font-size:18px;margin:0 0 16px 0;font-weight:700;">מה תקבל/י כשתתחיל/י מטרה?</h3>
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+    <tr>
+      <td style="padding:8px 0;vertical-align:top;width:32px;"><span style="font-size:20px;">🎯</span></td>
+      <td style="padding:8px 0 8px 8px;"><strong style="color:#1e293b;">תוכנית פעולה מותאמת אישית</strong><br/><span style="color:#64748b;font-size:13px;">משימות ברורות עם AI שמלווה אותך</span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;vertical-align:top;width:32px;"><span style="font-size:20px;">🤖</span></td>
+      <td style="padding:8px 0 8px 8px;"><strong style="color:#1e293b;">מנטור AI אישי</strong><br/><span style="color:#64748b;font-size:13px;">יועץ עסקי שזמין לך 24/7</span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;vertical-align:top;width:32px;"><span style="font-size:20px;">📊</span></td>
+      <td style="padding:8px 0 8px 8px;"><strong style="color:#1e293b;">מעקב התקדמות חכם</strong><br/><span style="color:#64748b;font-size:13px;">תראה בדיוק איפה את/ה עומד/ת</span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;vertical-align:top;width:32px;"><span style="font-size:20px;">🚀</span></td>
+      <td style="padding:8px 0 8px 8px;"><strong style="color:#1e293b;">המטרה הראשונה — בחינם!</strong><br/><span style="color:#64748b;font-size:13px;">בלי מחויבות, בלי כרטיס אשראי</span></td>
+    </tr>
+  </table>
+
+  <!-- CTA Button -->
+  <table width="100%" cellpadding="0" cellspacing="0">
+    <tr><td align="center" style="padding:8px 0 24px 0;">
+      <a href="${dashboardUrl}" style="display:inline-block;background:linear-gradient(135deg,#D4AF37 0%,#F4D03F 100%);color:#1E3A5F;font-size:18px;font-weight:800;padding:16px 48px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(212,175,55,0.4);">
+        🎯 בחר/י מטרה ראשונה — בחינם
+      </a>
+    </td></tr>
+  </table>
+
+  <div style="text-align:center;padding:16px 0 0 0;border-top:1px solid #e2e8f0;">
+    <p style="color:#94a3b8;font-size:13px;margin:0;">
+      לא צריך לדעת הכול כדי להתחיל 💪<br/>צריך רק להתחיל כדי לדעת הכול
+    </p>
+  </div>
+</td></tr>
+
+<!-- Footer -->
+<tr><td style="background:#f8fafc;padding:20px 32px;text-align:center;border-top:1px solid #e2e8f0;">
+  <p style="color:#94a3b8;font-size:12px;margin:0;">Perfect Biz AI — הדרך החכמה לעסק מצליח</p>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+            await base44.integrations.Core.SendEmail({
+                to: user.email,
+                subject: `🎯 ${firstName}, התוכנית העסקית שלך מוכנה — בחר/י מטרה ראשונה בחינם!`,
+                body: emailBody,
+                from_name: 'Perfect Biz AI'
+            });
+
+            console.log('📧 Journey completion email sent to:', user.email);
+        } catch (emailError) {
+            console.warn('⚠️ Failed to send journey completion email:', emailError.message);
+        }
+
         return Response.json({ success: true, analysis: analysis, journeyId: newJourney.id });
 
     } catch (error) {
