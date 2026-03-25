@@ -164,8 +164,7 @@ export default function EmailSignatureQuestionnaire({ onComplete, onClose }) {
                   value={formData.fullName} 
                   onChange={(e) => handleInputChange('fullName', e.target.value)} 
                   placeholder="כפי שיופיע בחתימה" 
-                  className={cn("h-9 text-xs", errors.fullName && "border-red-500")}
-                  autoFocus
+                  className={cn("h-10 text-base sm:text-sm", errors.fullName && "border-red-500")}
                 />
                 {errors.fullName && <p className="text-red-500 text-[10px]">{errors.fullName}</p>}
               </div>
@@ -177,7 +176,7 @@ export default function EmailSignatureQuestionnaire({ onComplete, onClose }) {
                   value={formData.role} 
                   onChange={(e) => handleInputChange('role', e.target.value)} 
                   placeholder="לדוגמה: יועץ משכנתאות | מעצבת גרפית..." 
-                  className={cn("h-9 text-xs", errors.role && "border-red-500")}
+                  className={cn("h-10 text-base sm:text-sm", errors.role && "border-red-500")}
                 />
                 {errors.role && <p className="text-red-500 text-[10px]">{errors.role}</p>}
               </div>
@@ -204,7 +203,7 @@ export default function EmailSignatureQuestionnaire({ onComplete, onClose }) {
                   value={formData.phone} 
                   onChange={(e) => handleInputChange('phone', e.target.value)} 
                   placeholder="050-0000000" 
-                  className="h-9 text-xs"
+                  className="h-10 text-base sm:text-sm"
                 />
               </div>
 
@@ -216,7 +215,7 @@ export default function EmailSignatureQuestionnaire({ onComplete, onClose }) {
                   value={formData.email} 
                   onChange={(e) => handleInputChange('email', e.target.value)} 
                   placeholder="name@example.com" 
-                  className="h-9 text-xs"
+                  className="h-10 text-base sm:text-sm"
                 />
               </div>
 
@@ -227,7 +226,7 @@ export default function EmailSignatureQuestionnaire({ onComplete, onClose }) {
                   value={formData.website} 
                   onChange={(e) => handleInputChange('website', e.target.value)} 
                   placeholder="www.example.co.il" 
-                  className="h-9 text-xs"
+                  className="h-10 text-base sm:text-sm"
                 />
               </div>
             </div>

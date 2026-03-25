@@ -175,8 +175,7 @@ export default function ProposalQuestionnaire({ onComplete, onClose }) {
                   value={formData.businessName} 
                   onChange={(e) => handleInputChange('businessName', e.target.value)} 
                   placeholder="לדוגמה: כהן שירותי יעוץ" 
-                  className={cn("h-9 text-xs", errors.businessName && "border-red-500")}
-                  autoFocus
+                  className={cn("h-10 text-base sm:text-sm", errors.businessName && "border-red-500")}
                 />
                 {errors.businessName && <p className="text-red-500 text-[10px]">{errors.businessName}</p>}
               </div>
@@ -188,7 +187,7 @@ export default function ProposalQuestionnaire({ onComplete, onClose }) {
                   value={formData.field} 
                   onChange={(e) => handleInputChange('field', e.target.value)} 
                   placeholder="לדוגמה: שיווק דיגיטלי, שיפוצים..." 
-                  className={cn("h-9 text-xs", errors.field && "border-red-500")}
+                  className={cn("h-10 text-base sm:text-sm", errors.field && "border-red-500")}
                 />
                 {errors.field && <p className="text-red-500 text-[10px]">{errors.field}</p>}
               </div>

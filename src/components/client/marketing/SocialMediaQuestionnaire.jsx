@@ -178,8 +178,7 @@ export default function SocialMediaQuestionnaire({ onComplete, onClose }) {
                   value={formData.businessName} 
                   onChange={(e) => handleInputChange('businessName', e.target.value)} 
                   placeholder="הזן טקסט חופשי..." 
-                  className="h-9 text-xs"
-                  autoFocus
+                  className="h-10 text-base sm:text-sm"
                 />
               </div>
 
@@ -536,17 +535,17 @@ export default function SocialMediaQuestionnaire({ onComplete, onClose }) {
                       value={formData.inspirationLinks} 
                       onChange={(e) => handleInputChange('inspirationLinks', e.target.value)} 
                       placeholder="https://instagram.com/..." 
-                      className="h-9 text-xs"
-                    />
-                </div>
+                      className="h-10 text-base sm:text-sm"
+                      />
+                      </div>
 
-                <div className="space-y-1">
-                    <Label className="text-xs font-semibold">יש משהו שחשוב לך שלא יופיע בעיצוב?</Label>
-                    <Textarea 
+                      <div className="space-y-1">
+                      <Label className="text-xs font-semibold">יש משהו שחשוב לך שלא יופיע בעיצוב?</Label>
+                      <Textarea 
                       value={formData.excludeElements} 
                       onChange={(e) => handleInputChange('excludeElements', e.target.value)} 
                       placeholder="טקסט חופשי..." 
-                      className="h-20 text-xs resize-none"
+                      className="h-20 text-base sm:text-sm resize-none"
                     />
                 </div>
              </div>
