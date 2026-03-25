@@ -183,6 +183,76 @@ Deno.serve(async (req) => {
             }
         }
         
+        // ==========================================
+        // ACTION: ADMIN_SEND - שליחה ידנית ע"י אדמין למשתמש ספציפי
+        // ==========================================
+        if (action === 'admin_send') {
+            const adminUser = await base44.auth.me();
+            if (!adminUser || adminUser.role !== 'admin') {
+                return Response.json({ error: 'Admin only' }, { status: 403 });
+            }
+            
+            if (!goal_id) {
+                return Response.json({ error: 'goal_id required' }, { status: 400 });
+            }
+            
+            const targetGoal = await base44.asServiceRole.entities.UserGoal.get(goal_id);
+            if (!targetGoal) {
+                return Response.json({ error: 'Goal not found' }, { status: 404 });
+            }
+            
+            // Find the goal owner
+            const allUsers = await base44.asServiceRole.entities.User.list();
+            const targetUser = allUsers.find(u => u.id === targetGoal.user_id);
+            
+            if (!targetUser) {
+                return Response.json({ error: 'User not found for goal' }, { status: 404 });
+            }
+            
+            let phoneNumber = targetUser.phone;
+            if (!phoneNumber) {
+                const leads = await base44.asServiceRole.entities.CRMLead.filter({ 
+                    $or: [{ email: targetUser.email }, { user_id: targetUser.id }]
+                }, '-created_date', 1);
+                if (leads?.length > 0) phoneNumber = leads[0].phone;
+            }
+            
+            if (!phoneNumber) {
+                return Response.json({ error: 'No phone for user: ' + targetUser.email }, { status: 400 });
+            }
+            
+            const introMessage = MESSAGE_TEMPLATES.intro.default;
+            const agreementMessage = MESSAGE_TEMPLATES.agreement.default
+                .replace('{goal_title}', targetGoal.title || 'המטרה שבחרת');
+            
+            // Log
+            await base44.asServiceRole.entities.MentorFlowLog.create({
+                user_id: targetUser.id, goal_id: goal_id,
+                flow_stage: 'intro', message_sent: introMessage, template_used: 'intro.default'
+            });
+            await base44.asServiceRole.entities.MentorFlowLog.create({
+                user_id: targetUser.id, goal_id: goal_id,
+                flow_stage: 'agreement', message_sent: agreementMessage, template_used: 'agreement.default'
+            });
+            
+            // Update goal
+            await base44.asServiceRole.entities.UserGoal.update(goal_id, {
+                flow_data: { ...targetGoal.flow_data, mentor_stage: 'agreement', mentor_started_at: new Date().toISOString() }
+            });
+            
+            // Send WhatsApp
+            const whatsappMessage = `${introMessage}\n\n${agreementMessage}`;
+            console.log('📤 Admin send to:', targetUser.full_name, phoneNumber, 'goal:', targetGoal.title);
+            await sendWhatsAppMessage(phoneNumber, whatsappMessage);
+            
+            return Response.json({ 
+                success: true, 
+                user: targetUser.full_name, 
+                phone: phoneNumber, 
+                goal: targetGoal.title 
+            });
+        }
+
         // קריאה ידנית רגילה
         const user = await base44.auth.me();
         
