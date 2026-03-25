@@ -47,8 +47,8 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Primary: BusinessJourney entity tasks, Fallback: User entity client_tasks
-  const clientTasks = activeJourney?.tasks || user?.client_tasks || [];
+  // Primary: BusinessJourney entity tasks (only if non-empty), Fallback: User entity client_tasks
+  const clientTasks = (activeJourney?.tasks?.length > 0 ? activeJourney.tasks : null) || user?.client_tasks || [];
   const businessState = activeJourney?.business_metrics || user?.business_state || {};
 
   // Map task to icon based on keywords
