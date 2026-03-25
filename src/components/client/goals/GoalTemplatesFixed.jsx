@@ -494,16 +494,14 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </motion.div>
         ) : (
           <motion.div className="space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            {/* Selected Goal - Compact Hero */}
-            <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-4 text-white text-center shadow-lg">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20 flex-shrink-0">
-                  <selectedTemplate.icon className="w-5 h-5 text-[#D4AF37]" />
-                </div>
-                <div className="text-right">
-                  <h3 className="text-base font-bold leading-tight drop-shadow-md">{selectedTemplate.name}</h3>
-                  <p className="text-white/80 text-xs mt-0.5 drop-shadow-sm">{selectedTemplate.description}</p>
-                </div>
+            {/* Selected Goal - Clean Header */}
+            <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
+              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${selectedTemplate.color} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                <selectedTemplate.icon className="w-5 h-5 text-white" />
+              </div>
+              <div className="text-right flex-1">
+                <h3 className="text-base font-bold text-[#1E3A5F] leading-tight">{selectedTemplate.name}</h3>
+                <p className="text-gray-500 text-xs mt-0.5">{selectedTemplate.description}</p>
               </div>
             </div>
 
