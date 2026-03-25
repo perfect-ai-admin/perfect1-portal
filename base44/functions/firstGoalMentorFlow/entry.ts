@@ -56,13 +56,27 @@ Deno.serve(async (req) => {
         if (event?.type === 'create' && event?.entity_name === 'UserGoal') {
             console.log('🔔 Entity automation triggered for UserGoal create');
             
-            // בדוק אם זו מטרה ראשונה
-            if (!data?.is_first_goal) {
-                console.log('⏭️ Not a first goal, skipping. is_first_goal:', data?.is_first_goal);
-                return Response.json({ message: 'Not a first goal, skipping' });
-            }
+            // בדוק אם זו מטרה ראשונה - גם לפי flag וגם לפי בדיקה אמיתית ב-DB
+            const goalId = event.entity_id;
+            const goal = await base44.asServiceRole.entities.UserGoal.get(goalId);
             
-            console.log('✅ First goal detected, starting mentor flow');
+            if (!data?.is_first_goal && !goal?.is_first_goal) {
+                // Double check: count user's goals in DB
+                const userId = goal?.user_id || data?.user_id;
+                if (userId) {
+                    const userGoals = await base44.asServiceRole.entities.UserGoal.filter({ user_id: userId });
+                    if (userGoals.length > 1) {
+                        console.log('⏭️ Not a first goal (user has', userGoals.length, 'goals). Skipping.');
+                        return Response.json({ message: 'Not a first goal, skipping' });
+                    }
+                    console.log('✅ First goal detected via DB check (only 1 goal for user)');
+                } else {
+                    console.log('⏭️ No user_id found, skipping');
+                    return Response.json({ message: 'No user_id, skipping' });
+                }
+            } else {
+                console.log('✅ First goal detected via is_first_goal flag');
+            }
             
             // עכשיו שלח ווטסאפ למשתמש
             const goalId = event.entity_id;
