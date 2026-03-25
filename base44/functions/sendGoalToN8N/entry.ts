@@ -35,17 +35,24 @@ Deno.serve(async (req) => {
         let userName = '';
         let userEmail = '';
         let userPhone = '';
+        let businessJourneyAnswers = null;
+        let businessDomain = '';
+        let businessState = null;
+        let goalUser = null;
 
         const fetchUserWithRetry = async (retries = 3, delayMs = 2000) => {
             for (let attempt = 1; attempt <= retries; attempt++) {
                 try {
                     const allUsers = await base44.asServiceRole.entities.User.list();
-                    const goalUser = allUsers.find(u => u.id === goal.user_id);
+                    goalUser = allUsers.find(u => u.id === goal.user_id);
 
                     if (goalUser) {
                         userName = goalUser.full_name || '';
                         userEmail = goalUser.email || '';
                         userPhone = goalUser.phone || '';
+                        businessJourneyAnswers = goalUser.business_journey_answers || null;
+                        businessDomain = goalUser.business_domain || '';
+                        businessState = goalUser.business_state || null;
                         console.log(`👤 User found (attempt ${attempt}):`, userEmail, 'phone:', userPhone || 'EMPTY');
                     }
 
@@ -85,6 +92,20 @@ Deno.serve(async (req) => {
 
         await fetchUserWithRetry();
 
+        // טען את ה-BusinessJourney הפעיל של המשתמש
+        let activeJourney = null;
+        try {
+            const journeys = await base44.asServiceRole.entities.BusinessJourney.filter({
+                user_id: goal.user_id, status: 'active'
+            }, '-created_date', 1);
+            if (journeys && journeys.length > 0) {
+                activeJourney = journeys[0];
+                console.log('📋 Active BusinessJourney found:', activeJourney.id);
+            }
+        } catch (e) {
+            console.warn('⚠️ BusinessJourney lookup failed:', e.message);
+        }
+
         // בנה את הפיילוד ל-N8N
         const n8nPayload = {
             event_type: 'goal_created',
@@ -122,8 +143,25 @@ Deno.serve(async (req) => {
                 id: goal.user_id || '',
                 full_name: userName,
                 email: userEmail,
-                phone: userPhone
+                phone: userPhone,
+                business_domain: businessDomain
             },
+
+            // תשובות שאלון מסע העסק
+            business_journey_questionnaire: businessJourneyAnswers || {},
+
+            // מצב עסקי (מהניתוח של ה-AI)
+            business_state: businessState || {},
+
+            // נתוני מסע העסק הפעיל
+            active_journey: activeJourney ? {
+                id: activeJourney.id,
+                stage: activeJourney.stage || '',
+                ai_analysis: activeJourney.ai_analysis || '',
+                business_metrics: activeJourney.business_metrics || {},
+                recommended_goal: activeJourney.recommended_goal || {},
+                tasks_count: (activeJourney.tasks || []).length
+            } : null,
 
             // מקור האירוע
             source: 'base44_automation'
