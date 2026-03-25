@@ -132,10 +132,10 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const [showGoalSelectionConfirmation, setShowGoalSelectionConfirmation] = useState(false);
 
   // Use dynamic tasks from Active Journey if available
-  // Fallback to User entity (legacy), then to Default Milestones
-  const activeMilestones = activeJourney?.tasks?.length > 0 
-    ? activeJourney.tasks
-    : (currentUserData?.client_tasks?.length > 0 ? currentUserData.client_tasks : MILESTONES);
+  // Fallback to User entity client_tasks (legacy), then to Default Milestones
+  const activeMilestones = (activeJourney?.tasks?.length > 0 ? activeJourney.tasks : null)
+    || (currentUserData?.client_tasks?.length > 0 ? currentUserData.client_tasks : null)
+    || MILESTONES;
 
   // Determine current/completed based on is_completed or status field in tasks
   // Find the first non-completed task as the current step
