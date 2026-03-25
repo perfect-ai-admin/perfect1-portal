@@ -494,39 +494,35 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
           </motion.div>
         ) : (
           <motion.div className="space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            {/* Selected Goal - Hero Card */}
-            <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-6 text-white text-center shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50"></div>
-              <div className="relative z-10">
-                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/20">
-                  <selectedTemplate.icon className="w-8 h-8 text-[#D4AF37]" />
+            {/* Selected Goal - Compact Hero */}
+            <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-4 text-white text-center shadow-lg">
+              <div className="flex items-center justify-center gap-3">
+                <div className="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20 flex-shrink-0">
+                  <selectedTemplate.icon className="w-5 h-5 text-[#D4AF37]" />
                 </div>
-                <h3 className="text-xl font-bold mb-1.5">{selectedTemplate.name}</h3>
-                <p className="text-white/70 text-sm">{selectedTemplate.description}</p>
+                <div className="text-right">
+                  <h3 className="text-base font-bold leading-tight">{selectedTemplate.name}</h3>
+                  <p className="text-white/60 text-xs mt-0.5">{selectedTemplate.description}</p>
+                </div>
               </div>
             </div>
 
             {/* What you'll get */}
-            <div className="bg-gradient-to-br from-amber-50/50 to-white rounded-xl p-4 border border-amber-100/50">
-              <h4 className="text-sm font-bold text-[#1E3A5F] text-center mb-3">מה כלול בתוכנית שלך</h4>
-              <div className="grid grid-cols-2 gap-2">
+            <div className="bg-gradient-to-br from-amber-50/50 to-white rounded-xl p-3 border border-amber-100/50">
+              <h4 className="text-xs font-bold text-[#1E3A5F] text-center mb-2">מה כלול בתוכנית שלך</h4>
+              <div className="grid grid-cols-2 gap-1.5">
                 {[
                   { icon: '🎯', text: 'תוכנית פעולה מותאמת' },
                   { icon: '🤖', text: 'מנטור AI אישי' },
                   { icon: '📊', text: 'מעקב התקדמות' },
                   { icon: '💡', text: 'המלצות חכמות' }
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-white rounded-lg p-2.5 border border-gray-100 shadow-sm">
-                    <span className="text-lg">{item.icon}</span>
-                    <span className="text-xs font-medium text-gray-700">{item.text}</span>
+                  <div key={i} className="flex items-center gap-1.5 bg-white rounded-lg p-2 border border-gray-100">
+                    <span>{item.icon}</span>
+                    <span className="text-[11px] font-medium text-gray-700">{item.text}</span>
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Quick Create CTA */}
-            <div className="text-center">
-              <p className="text-xs text-gray-400">ה-AI יבנה לך תוכנית מותאמת אישית תוך שניות</p>
             </div>
           </motion.div>
         )}
