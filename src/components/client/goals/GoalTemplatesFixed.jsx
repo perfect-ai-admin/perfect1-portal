@@ -440,93 +440,90 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
             </h2>
             <div className="w-5"></div>
           </div>
-          {!selectedTemplate && <p className="text-center text-xs sm:text-sm text-gray-600 mt-2">בחר מטרה שמשפיעה על העסק שלך</p>}
+          {!selectedTemplate && <p className="text-center text-xs sm:text-sm text-gray-600 mt-2">בחר/י מטרה — נבנה לך תוכנית פעולה תוך שניות ⚡</p>}
         </div>
 
         {/* Body - scrollable */}
         <div className="px-4 sm:px-6 py-3 sm:py-4 flex-1 overflow-y-auto">
         {!selectedTemplate ? (
           <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <div className="grid grid-cols-2 gap-2">
-              {GOAL_TEMPLATES.map((template, idx) => (
+            <div className="grid grid-cols-1 gap-2">
+              {GOAL_TEMPLATES.map((template, idx) => {
+                const isAlreadyActive = existingGoals?.some(g => 
+                  g.category === template.id && ['active', 'in_progress', 'selected'].includes(g.status)
+                );
+                return (
                 <motion.button
                   key={template.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.02 }}
-                  onClick={() => handleTemplateSelect(template)}
-                  className="text-right bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md rounded-lg p-2.5 transition-all group"
+                  onClick={() => {
+                    if (isAlreadyActive) return;
+                    handleTemplateSelect(template);
+                  }}
+                  disabled={isAlreadyActive}
+                  className={cn(
+                    "text-right rounded-xl p-3 transition-all group relative overflow-hidden",
+                    isAlreadyActive 
+                      ? "bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed"
+                      : "bg-white border-2 border-gray-100 hover:border-purple-400 hover:shadow-lg active:scale-[0.98]"
+                  )}
                 >
-                  <div className="flex items-center gap-2">
-                    <div className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform`}>
-                      <template.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${template.color} flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-sm`}>
+                      <template.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="font-semibold text-gray-900 text-xs sm:text-sm text-right leading-tight">{template.name}</h3>
+                    <div className="flex-1 text-right">
+                      <h3 className="font-bold text-gray-900 text-sm leading-tight">{template.name}</h3>
+                      <p className="text-xs text-gray-500 mt-0.5">{template.description}</p>
+                    </div>
+                    {isAlreadyActive ? (
+                      <div className="flex items-center gap-1 bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">
+                        <Check className="w-3 h-3" />
+                        פעיל
+                      </div>
+                    ) : (
+                      <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-purple-500 transition-colors flex-shrink-0" />
+                    )}
                   </div>
                 </motion.button>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         ) : (
-          <motion.div className="space-y-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            {/* Goal Title - Bold and Non-editable */}
-            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-2.5 border border-purple-200">
-              <div className="flex items-center gap-2.5">
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${selectedTemplate.color} flex items-center justify-center flex-shrink-0`}>
-                  <selectedTemplate.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-[10px] sm:text-xs text-purple-600 font-medium mb-0.5">המטרה שלך</p>
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-tight">{selectedTemplate.name}</h3>
-                </div>
+          <motion.div className="space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            {/* Selected Goal - Hero Card */}
+            <div className={`bg-gradient-to-br ${selectedTemplate.color} rounded-xl p-5 text-white text-center shadow-lg`}>
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
+                <selectedTemplate.icon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-1">{selectedTemplate.name}</h3>
+              <p className="text-white/80 text-sm">{selectedTemplate.description}</p>
+            </div>
+
+            {/* What you'll get */}
+            <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+              <h4 className="text-sm font-bold text-gray-700 text-center mb-3">מה תקבל/י?</h4>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { icon: '🎯', text: 'תוכנית פעולה מותאמת' },
+                  { icon: '🤖', text: 'מנטור AI אישי' },
+                  { icon: '📊', text: 'מעקב התקדמות' },
+                  { icon: '💡', text: 'המלצות חכמות' }
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 bg-white rounded-lg p-2 border border-gray-100">
+                    <span className="text-lg">{item.icon}</span>
+                    <span className="text-xs font-medium text-gray-700">{item.text}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="space-y-2">
-
-              {/* Two Custom Questions */}
-              {selectedTemplate.questions && (
-                <div className="grid grid-cols-1 gap-2.5">
-                  {selectedTemplate.questions.map((q) => (
-                    <div key={q.id} className="space-y-1">
-                      <Label htmlFor={q.id} className="text-[11px] sm:text-xs font-semibold text-gray-600">{q.label}</Label>
-                      <Input
-                        id={q.id}
-                        value={customAnswers[q.id] || ''}
-                        onChange={(e) => setCustomAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                        placeholder={q.placeholder}
-                        className="h-8 sm:h-9 text-xs sm:text-sm"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Urgency */}
-              <div>
-                <Label className="text-xs sm:text-sm font-bold text-gray-700 block mb-1.5">דחיפות המשימה</Label>
-                <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-                  {[
-                    { value: 'low', label: 'נמוכה', desc: 'בזמן שלי' },
-                    { value: 'medium', label: 'בינונית', desc: 'חשוב' },
-                    { value: 'high', label: 'גבוהה', desc: 'דחוף!' }
-                  ].map((level) => (
-                    <button
-                      key={level.value}
-                      onClick={() => setUrgency(level.value)}
-                      className={cn(
-                        "flex flex-col items-center justify-center py-2 px-1.5 rounded-lg border transition-all",
-                        urgency === level.value
-                          ? "border-purple-500 bg-purple-50 text-purple-700 shadow-sm"
-                          : "border-gray-200 bg-white hover:bg-gray-50 text-gray-600"
-                      )}
-                    >
-                      <span className="text-xs sm:text-sm font-bold">{level.label}</span>
-                      <span className="text-[10px] sm:text-xs opacity-70">{level.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {/* Quick Create CTA */}
+            <div className="text-center">
+              <p className="text-xs text-gray-400">ה-AI יבנה לך תוכנית מותאמת אישית תוך שניות</p>
             </div>
           </motion.div>
         )}
@@ -534,31 +531,30 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
         {/* Footer */}
         {selectedTemplate && (
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl flex gap-2 flex-shrink-0">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-white rounded-b-2xl space-y-2 flex-shrink-0">
             <Button 
               onClick={handleCreate} 
               disabled={!goalTitle || isCreating}
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white h-10 sm:h-11 font-semibold text-sm sm:text-base"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12 sm:h-14 font-bold text-base sm:text-lg rounded-xl shadow-lg shadow-purple-200 transition-all active:scale-[0.98]"
             >
               {isCreating ? (
                 <>
-                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                  יוצר...
+                  <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+                  בונה תוכנית...
                 </>
               ) : (
                 <>
-                  <Check className="w-4 h-4 ml-2" />
-                  {editingGoal ? 'שמור שינויים' : 'צור מטרה'}
+                  <Zap className="w-5 h-5 ml-2" />
+                  {editingGoal ? 'שמור שינויים' : '🚀 התחל עכשיו — בחינם'}
                 </>
               )}
             </Button>
-            <Button 
-              variant="outline" 
-              onClick={onClose}
-              className="px-3 sm:px-4 text-sm"
+            <button 
+              onClick={() => setSelectedTemplate(null)} 
+              className="w-full text-center text-gray-400 text-xs hover:text-gray-600 py-1"
             >
-              ביטול
-            </Button>
+              ← חזור לבחירת מטרה
+            </button>
           </div>
         )}
       </div>
