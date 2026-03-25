@@ -237,8 +237,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                   value={formData.fullName} 
                   onChange={(e) => handleInputChange('fullName', e.target.value)} 
                   placeholder="כפי שיופיע בכרטיס" 
-                  className={cn("h-9 text-xs", errors.fullName && "border-red-500")}
-                  autoFocus
+                  className={cn("h-10 text-base sm:text-sm", errors.fullName && "border-red-500")}
                 />
                 {errors.fullName && <p className="text-red-500 text-[10px]">{errors.fullName}</p>}
               </div>
@@ -246,11 +245,11 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
               <div className="space-y-1">
                 <Label htmlFor="profession" className="text-xs font-semibold">תחום עיסוק</Label>
                 <Input 
-                  id="profession" 
-                  value={formData.profession} 
-                  onChange={(e) => handleInputChange('profession', e.target.value)} 
-                  placeholder="לדוגמה: יועץ משכנתאות, מעצבת גרפית..." 
-                  className="h-9 text-xs"
+                 id="profession" 
+                 value={formData.profession} 
+                 onChange={(e) => handleInputChange('profession', e.target.value)} 
+                 placeholder="לדוגמה: יועץ משכנתאות, מעצבת גרפית..." 
+                 className="h-10 text-base sm:text-sm"
                 />
               </div>
             </div>
@@ -294,19 +293,19 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                         value={formData.service1} 
                         onChange={(e) => handleInputChange('service1', e.target.value)} 
                         placeholder="שירות 1" 
-                        className="h-9 text-xs"
+                        className="h-10 text-base sm:text-sm"
                     />
                     <Input 
                         value={formData.service2} 
                         onChange={(e) => handleInputChange('service2', e.target.value)} 
                         placeholder="שירות 2" 
-                        className="h-9 text-xs"
+                        className="h-10 text-base sm:text-sm"
                     />
                     <Input 
                         value={formData.service3} 
                         onChange={(e) => handleInputChange('service3', e.target.value)} 
                         placeholder="שירות 3" 
-                        className="h-9 text-xs"
+                        className="h-10 text-base sm:text-sm"
                     />
                 </div>
               </div>
@@ -332,7 +331,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                         value={formData.phone} 
                         onChange={(e) => handleInputChange('phone', e.target.value)} 
                         placeholder="050-0000000" 
-                        className="h-9 text-xs"
+                        className="h-10 text-base sm:text-sm"
                     />
                 </div>
                 
@@ -343,7 +342,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                         value={formData.email} 
                         onChange={(e) => handleInputChange('email', e.target.value)} 
                         placeholder="example@mail.com" 
-                        className="h-9 text-xs"
+                        className="h-10 text-base sm:text-sm"
                     />
                 </div>
 
