@@ -429,18 +429,18 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-purple-50 to-blue-50 border-b border-gray-200 rounded-t-2xl flex-shrink-0">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-t-2xl flex-shrink-0">
           <div className="flex items-center justify-between">
-            <button onClick={onClose} className="p-1.5 hover:bg-white/50 rounded-lg transition-colors">
-              <X className="w-5 h-5 text-gray-500" />
+            <button onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors">
+              <X className="w-5 h-5 text-white/70" />
             </button>
-            <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-              {editingGoal ? 'עריכת מטרה' : 'מטרה חדשה'}
+            <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
+              {editingGoal ? 'עריכת מטרה' : 'מטרה עסקית חדשה'}
             </h2>
             <div className="w-5"></div>
           </div>
-          {!selectedTemplate && <p className="text-center text-xs sm:text-sm text-gray-600 mt-2">בחר/י מטרה — נבנה לך תוכנית פעולה תוך שניות ⚡</p>}
+          {!selectedTemplate && <p className="text-center text-xs sm:text-sm text-white/70 mt-2">בחר/י את המטרה שלך — נבנה תוכנית מותאמת אישית</p>}
         </div>
 
         {/* Body - scrollable */}
@@ -464,10 +464,10 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                   }}
                   disabled={isAlreadyActive}
                   className={cn(
-                    "text-right rounded-xl p-3 transition-all group relative overflow-hidden",
+                    "text-right rounded-xl p-3.5 transition-all group relative overflow-hidden",
                     isAlreadyActive 
-                      ? "bg-gray-50 border border-gray-200 opacity-60 cursor-not-allowed"
-                      : "bg-white border-2 border-gray-100 hover:border-purple-400 hover:shadow-lg active:scale-[0.98]"
+                      ? "bg-gray-50 border border-gray-200 opacity-50 cursor-not-allowed"
+                      : "bg-white border border-gray-200/80 hover:border-[#D4AF37] hover:shadow-md hover:shadow-amber-50 active:scale-[0.98]"
                   )}
                 >
                   <div className="flex items-center gap-3">
@@ -484,7 +484,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                         פעיל
                       </div>
                     ) : (
-                      <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-purple-500 transition-colors flex-shrink-0" />
+                      <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-[#D4AF37] transition-colors flex-shrink-0" />
                     )}
                   </div>
                 </motion.button>
@@ -495,17 +495,20 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         ) : (
           <motion.div className="space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             {/* Selected Goal - Hero Card */}
-            <div className={`bg-gradient-to-br ${selectedTemplate.color} rounded-xl p-5 text-white text-center shadow-lg`}>
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
-                <selectedTemplate.icon className="w-8 h-8 text-white" />
+            <div className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] rounded-xl p-6 text-white text-center shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvc3ZnPg==')] opacity-50"></div>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/20">
+                  <selectedTemplate.icon className="w-8 h-8 text-[#D4AF37]" />
+                </div>
+                <h3 className="text-xl font-bold mb-1.5">{selectedTemplate.name}</h3>
+                <p className="text-white/70 text-sm">{selectedTemplate.description}</p>
               </div>
-              <h3 className="text-xl font-bold mb-1">{selectedTemplate.name}</h3>
-              <p className="text-white/80 text-sm">{selectedTemplate.description}</p>
             </div>
 
             {/* What you'll get */}
-            <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-              <h4 className="text-sm font-bold text-gray-700 text-center mb-3">מה תקבל/י?</h4>
+            <div className="bg-gradient-to-br from-amber-50/50 to-white rounded-xl p-4 border border-amber-100/50">
+              <h4 className="text-sm font-bold text-[#1E3A5F] text-center mb-3">מה כלול בתוכנית שלך</h4>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { icon: '🎯', text: 'תוכנית פעולה מותאמת' },
@@ -513,7 +516,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
                   { icon: '📊', text: 'מעקב התקדמות' },
                   { icon: '💡', text: 'המלצות חכמות' }
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-white rounded-lg p-2 border border-gray-100">
+                  <div key={i} className="flex items-center gap-2 bg-white rounded-lg p-2.5 border border-gray-100 shadow-sm">
                     <span className="text-lg">{item.icon}</span>
                     <span className="text-xs font-medium text-gray-700">{item.text}</span>
                   </div>
@@ -531,11 +534,11 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
         {/* Footer */}
         {selectedTemplate && (
-          <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-white rounded-b-2xl space-y-2 flex-shrink-0">
+          <div className="px-4 sm:px-6 py-4 sm:py-5 border-t border-gray-100 bg-gradient-to-b from-white to-gray-50/50 rounded-b-2xl space-y-2.5 flex-shrink-0">
             <Button 
               onClick={handleCreate} 
               disabled={!goalTitle || isCreating}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white h-12 sm:h-14 font-bold text-base sm:text-lg rounded-xl shadow-lg shadow-purple-200 transition-all active:scale-[0.98]"
+              className="w-full bg-gradient-to-r from-[#D4AF37] to-[#C5A028] hover:from-[#C5A028] hover:to-[#B8941F] text-[#1E3A5F] h-12 sm:h-14 font-bold text-base sm:text-lg rounded-xl shadow-lg shadow-amber-200/50 transition-all active:scale-[0.98]"
             >
               {isCreating ? (
                 <>
@@ -545,7 +548,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
               ) : (
                 <>
                   <Zap className="w-5 h-5 ml-2" />
-                  {editingGoal ? 'שמור שינויים' : '🚀 התחל עכשיו — בחינם'}
+                  {editingGoal ? 'שמור שינויים' : 'התחל עכשיו'}
                 </>
               )}
             </Button>
