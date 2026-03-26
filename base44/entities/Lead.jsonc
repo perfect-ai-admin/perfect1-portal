@@ -1,0 +1,416 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05de\u05dc\u05d0"
+    },
+    "phone": {
+      "type": "string",
+      "description": "\u05de\u05e1\u05e4\u05e8 \u05d8\u05dc\u05e4\u05d5\u05df"
+    },
+    "email": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea \u05d0\u05d9\u05de\u05d9\u05d9\u05dc"
+    },
+    "profession": {
+      "type": "string",
+      "description": "\u05de\u05e7\u05e6\u05d5\u05e2"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "osek_patur",
+        "monthly_support",
+        "invoice",
+        "consultation",
+        "other"
+      ],
+      "default": "osek_patur",
+      "description": "\u05e7\u05d8\u05d2\u05d5\u05e8\u05d9\u05d9\u05ea \u05d4\u05dc\u05d9\u05d3"
+    },
+    "notes": {
+      "type": "string",
+      "description": "\u05d4\u05e2\u05e8\u05d5\u05ea \u05e0\u05d5\u05e1\u05e4\u05d5\u05ea"
+    },
+    "source_page": {
+      "type": "string",
+      "description": "\u05d3\u05e3 \u05d4\u05de\u05e7\u05d5\u05e8"
+    },
+    "interaction_type": {
+      "type": "string",
+      "enum": [
+        "form",
+        "phone_click",
+        "whatsapp_click",
+        "manual"
+      ],
+      "default": "form",
+      "description": "\u05e1\u05d5\u05d2 \u05d4\u05d0\u05d9\u05e0\u05d8\u05e8\u05d0\u05e7\u05e6\u05d9\u05d4"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "no_answer",
+        "in_progress",
+        "qualified",
+        "closing_process",
+        "send_marketing_material",
+        "not_interested",
+        "converted",
+        "closed"
+      ],
+      "default": "new",
+      "description": "\u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05dc\u05d9\u05d3"
+    },
+    "not_interested_reason": {
+      "type": "string",
+      "enum": [
+        "already_has_osek",
+        "not_now",
+        "looking_for_different_service",
+        "price_too_high",
+        "prefers_other_accountant",
+        "decided_not_to_open_business",
+        "going_with_osek_morsha",
+        "doing_it_alone",
+        "employer_doesnt_allow",
+        "waiting_for_discharge",
+        "too_complicated"
+      ],
+      "description": "\u05e1\u05d9\u05d1\u05d4 \u05dc\u05d0\u05d9 \u05d4\u05ea\u05d0\u05de\u05d4 (\u05d7\u05d5\u05d1\u05d4 \u05db\u05d0\u05e9\u05e8 \u05e1\u05d8\u05d8\u05d5\u05e1 \u05d4\u05d5\u05d0 not_interested)"
+    },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d7\u05d6\u05e8\u05d4 \u05dc\u05dc\u05e7\u05d5\u05d7"
+    },
+    "last_contact_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d9\u05e6\u05d9\u05e8\u05ea \u05e7\u05e9\u05e8 \u05d0\u05d7\u05e8\u05d5\u05df"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium",
+      "description": "\u05e2\u05d3\u05d9\u05e4\u05d5\u05ea"
+    },
+    "consent": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05e1\u05db\u05de\u05d4 \u05dc\u05e7\u05d1\u05dc\u05ea \u05e2\u05d3\u05db\u05d5\u05e0\u05d9\u05dd"
+    },
+    "agent_name": {
+      "type": "string",
+      "description": "\u05e9\u05dd \u05d4\u05e0\u05e6\u05d9\u05d2 \u05e9\u05de\u05d8\u05e4\u05dc \u05d1\u05dc\u05d9\u05d3"
+    },
+    "client_password": {
+      "type": "string",
+      "description": "\u05e1\u05d9\u05e1\u05de\u05d4 \u05dc\u05d0\u05d6\u05d5\u05e8 \u05d0\u05d9\u05e9\u05d9"
+    },
+    "utm_source": {
+      "type": "string",
+      "description": "UTM Source - \u05de\u05e7\u05d5\u05e8 \u05d4\u05d2\u05e2\u05d4 (google, facebook, etc)"
+    },
+    "utm_medium": {
+      "type": "string",
+      "description": "UTM Medium - \u05d0\u05de\u05e6\u05e2\u05d9 (cpc, social, email, etc)"
+    },
+    "utm_campaign": {
+      "type": "string",
+      "description": "UTM Campaign - \u05e9\u05dd \u05d4\u05e7\u05de\u05e4\u05d9\u05d9\u05df"
+    },
+    "utm_term": {
+      "type": "string",
+      "description": "UTM Term - \u05de\u05d9\u05dc\u05ea \u05de\u05e4\u05ea\u05d7"
+    },
+    "utm_content": {
+      "type": "string",
+      "description": "UTM Content - \u05ea\u05d5\u05db\u05df \u05d4\u05de\u05d5\u05d3\u05e2\u05d4"
+    },
+    "referrer": {
+      "type": "string",
+      "description": "\u05db\u05ea\u05d5\u05d1\u05ea \u05d4\u05de\u05e4\u05e0\u05d4 (document.referrer)"
+    },
+    "client_tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "impact": {
+            "type": "string"
+          },
+          "urgency": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "completed_date": {
+            "type": "string"
+          },
+          "help_link": {
+            "type": "string"
+          },
+          "help_content": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "\u05de\u05e9\u05d9\u05de\u05d5\u05ea \u05d7\u05db\u05de\u05d5\u05ea \u05dc\u05dc\u05e7\u05d5\u05d7"
+    },
+    "business_metrics": {
+      "type": "object",
+      "description": "\u05de\u05d3\u05d3\u05d9\u05dd \u05e2\u05e1\u05e7\u05d9\u05d9\u05dd \u05e9\u05dc \u05d4\u05dc\u05e7\u05d5\u05d7"
+    },
+    "chat_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "\u05d4\u05d9\u05e1\u05d8\u05d5\u05e8\u05d9\u05d9\u05ea \u05e9\u05d9\u05d7\u05d5\u05ea \u05e2\u05dd \u05d4\u05de\u05dc\u05d5\u05d5\u05d4 \u05d4\u05d7\u05db\u05dd"
+    },
+    "business_journey_answers": {
+      "type": "object",
+      "description": "\u05ea\u05e9\u05d5\u05d1\u05d5\u05ea \u05d4\u05e9\u05d0\u05dc\u05d5\u05df \u05d4\u05d0\u05d7\u05e8\u05d5\u05df \u05e9\u05dc \u05de\u05e1\u05e2 \u05d4\u05e2\u05e1\u05e7"
+    },
+    "business_journey_completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05d4\u05e9\u05dc\u05de\u05ea \u05d4\u05e9\u05d0\u05dc\u05d5\u05df \u05d4\u05d0\u05d7\u05e8\u05d5\u05df"
+    },
+    "business_state": {
+      "type": "object",
+      "description": "\u05de\u05e6\u05d1 \u05e2\u05e1\u05e7\u05d9 \u05de\u05ea\u05de\u05e9\u05da - Business State Engine",
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": [
+            "pre_revenue",
+            "early_revenue",
+            "growing",
+            "stable",
+            "declining",
+            "crisis"
+          ],
+          "description": "\u05e9\u05dc\u05d1 \u05e2\u05e1\u05e7\u05d9 \u05e0\u05d5\u05db\u05d7\u05d9"
+        },
+        "primary_challenge": {
+          "type": "string",
+          "enum": [
+            "no_leads",
+            "low_conversion",
+            "overload",
+            "cash_flow",
+            "retention",
+            "focus"
+          ],
+          "description": "\u05d0\u05ea\u05d2\u05e8 \u05de\u05e8\u05db\u05d6\u05d9 \u05e0\u05d5\u05db\u05d7\u05d9"
+        },
+        "marketing_state": {
+          "type": "object",
+          "properties": {
+            "active_channels": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "past_experiments": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "current_phase": {
+              "type": "string",
+              "enum": [
+                "not_ready",
+                "testing",
+                "scaling",
+                "optimizing",
+                "paused"
+              ]
+            }
+          }
+        },
+        "sales_state": {
+          "type": "object",
+          "properties": {
+            "pipeline": {
+              "type": "object"
+            },
+            "conversion_rates": {
+              "type": "object"
+            },
+            "bottleneck": {
+              "type": "string",
+              "enum": [
+                "lead_gen",
+                "qualification",
+                "closing",
+                "none"
+              ]
+            }
+          }
+        },
+        "operations_state": {
+          "type": "object",
+          "properties": {
+            "weekly_capacity": {
+              "type": "object"
+            },
+            "workload_status": {
+              "type": "string",
+              "enum": [
+                "under_capacity",
+                "optimal",
+                "near_limit",
+                "overloaded"
+              ]
+            }
+          }
+        },
+        "performance_state": {
+          "type": "object",
+          "properties": {
+            "active_goals": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "execution_rate": {
+              "type": "number"
+            }
+          }
+        },
+        "focus_state": {
+          "type": "object",
+          "properties": {
+            "current_strategic_focus": {
+              "type": "string",
+              "enum": [
+                "growth",
+                "stability",
+                "optimization",
+                "survival"
+              ]
+            },
+            "active_initiatives": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "maxItems": 3
+            },
+            "deferred_ideas": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "unified_recommendation": {
+          "type": "object",
+          "properties": {
+            "single_next_action": {
+              "type": "string"
+            },
+            "why_this_matters": {
+              "type": "string"
+            },
+            "what_not_doing_now": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "decision_log": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "question": {
+                "type": "string"
+              },
+              "decision": {
+                "type": "string"
+              },
+              "outcome": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "\u05dc\u05d5\u05d2 \u05d4\u05d7\u05dc\u05d8\u05d5\u05ea \u05e9\u05d4\u05ea\u05e7\u05d1\u05dc\u05d5 \u05d1\u05de\u05e2\u05e8\u05db\u05ea"
+        }
+      }
+    },
+    "n8n_synced": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u05d4\u05d0\u05dd \u05d4\u05dc\u05d9\u05d3 \u05e1\u05d5\u05e0\u05db\u05e8\u05df \u05dc-N8N"
+    },
+    "n8n_last_sync": {
+      "type": "string",
+      "format": "date-time",
+      "description": "\u05ea\u05d0\u05e8\u05d9\u05da \u05e1\u05e0\u05db\u05e8\u05d5\u05df \u05d0\u05d7\u05e8\u05d5\u05df \u05dc-N8N"
+    },
+    "n8n_error": {
+      "type": "string",
+      "description": "\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d0\u05d7\u05e8\u05d5\u05e0\u05d4 \u05d1\u05e1\u05e0\u05db\u05e8\u05d5\u05df \u05dc-N8N"
+    }
+  },
+  "required": [
+    "name",
+    "phone"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": true
+  }
+}

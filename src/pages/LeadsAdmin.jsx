@@ -268,7 +268,7 @@ export default function LeadsAdmin() {
   // Sort leads if sortBy is active
   const sortedLeads = [...filteredLeads].sort((a, b) => {
     if (sortBy === 'status') {
-      const statusOrder = { new: 1, contacted: 2, no_answer: 3, in_progress: 4, qualified: 5, not_interested: 6, converted: 7, closed: 8 };
+      const statusOrder = { new: 1, contacted: 2, no_answer: 3, in_progress: 4, qualified: 5, closing_process: 6, send_marketing_material: 7, not_interested: 8, converted: 9, closed: 10 };
       return (statusOrder[a.status || 'new'] || 99) - (statusOrder[b.status || 'new'] || 99);
     } else if (sortBy === 'priority') {
       const priorityOrder = { high: 1, medium: 2, low: 3 };
@@ -283,6 +283,8 @@ export default function LeadsAdmin() {
     no_answer: 'bg-orange-500 text-white shadow-lg shadow-orange-500/50',
     in_progress: 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50',
     qualified: 'bg-purple-500 text-white shadow-lg shadow-purple-500/50',
+    closing_process: 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/50',
+    send_marketing_material: 'bg-teal-500 text-white shadow-lg shadow-teal-500/50',
     not_interested: 'bg-red-600 text-white shadow-lg shadow-red-600/50 animate-pulse',
     converted: 'bg-green-600 text-white shadow-lg shadow-green-600/50 animate-pulse',
     closed: 'bg-gray-600 text-white shadow-lg shadow-gray-600/50'
@@ -294,6 +296,8 @@ export default function LeadsAdmin() {
     no_answer: 'אין מענה',
     in_progress: 'בתהליך',
     qualified: 'מתאים',
+    closing_process: 'בתהליך סגירה',
+    send_marketing_material: 'לשלוח חומר שיווקי',
     not_interested: 'לא מעוניין',
     converted: 'נסגר',
     closed: 'סגור'
@@ -537,6 +541,8 @@ export default function LeadsAdmin() {
                 <SelectItem value="no_answer">אין מענה</SelectItem>
                 <SelectItem value="in_progress">בתהליך</SelectItem>
                 <SelectItem value="qualified">מתאים</SelectItem>
+                <SelectItem value="closing_process">בתהליך סגירה</SelectItem>
+                <SelectItem value="send_marketing_material">לשלוח חומר שיווקי</SelectItem>
                 <SelectItem value="not_interested">לא מעוניין</SelectItem>
                 <SelectItem value="converted">נסגר</SelectItem>
                 <SelectItem value="closed">סגור</SelectItem>
@@ -1208,6 +1214,8 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading }) {
               <SelectItem value="no_answer">אין מענה</SelectItem>
               <SelectItem value="in_progress">בתהליך</SelectItem>
               <SelectItem value="qualified">מתאים</SelectItem>
+              <SelectItem value="closing_process">בתהליך סגירה</SelectItem>
+              <SelectItem value="send_marketing_material">לשלוח חומר שיווקי</SelectItem>
               <SelectItem value="not_interested">לא מעוניין</SelectItem>
               <SelectItem value="converted">נסגר</SelectItem>
               <SelectItem value="closed">סגור</SelectItem>
@@ -1246,6 +1254,12 @@ function LeadEditForm({ lead, onSave, onCancel, isLoading }) {
               <SelectItem value="looking_for_different_service">מחפש שירות אחר</SelectItem>
               <SelectItem value="price_too_high">המחיר יקר מדי</SelectItem>
               <SelectItem value="prefers_other_accountant">מעדיף רואה חשבון אחר</SelectItem>
+              <SelectItem value="decided_not_to_open_business">החליט לא לפתוח עסק</SelectItem>
+              <SelectItem value="going_with_osek_morsha">הולך על עוסק מורשה</SelectItem>
+              <SelectItem value="doing_it_alone">פותח לבד בלי ליווי</SelectItem>
+              <SelectItem value="employer_doesnt_allow">המעסיק לא מאפשר</SelectItem>
+              <SelectItem value="waiting_for_discharge">ממתין לשחרור מצבא/שירות</SelectItem>
+              <SelectItem value="too_complicated">נראה לו מסובך מדי</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -1396,6 +1410,8 @@ function AddLeadForm({ onSave, onCancel, isLoading }) {
               <SelectItem value="no_answer">אין מענה</SelectItem>
               <SelectItem value="in_progress">בתהליך</SelectItem>
               <SelectItem value="qualified">מתאים</SelectItem>
+              <SelectItem value="closing_process">בתהליך סגירה</SelectItem>
+              <SelectItem value="send_marketing_material">לשלוח חומר שיווקי</SelectItem>
               <SelectItem value="not_interested">לא מעוניין</SelectItem>
               <SelectItem value="converted">נסגר</SelectItem>
               <SelectItem value="closed">סגור</SelectItem>
