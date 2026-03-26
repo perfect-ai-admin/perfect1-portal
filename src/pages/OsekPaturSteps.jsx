@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import SEOOptimized from './SEOOptimized';
 import Breadcrumbs from '../components/seo/Breadcrumbs';
 import FAQSchema from '../components/seo/FAQSchema';
@@ -10,10 +8,7 @@ import PageTracker from '../components/seo/PageTracker';
 import RelatedContent from '../components/seo/RelatedContent';
 import AggresiveLeadPopup from '../components/popups/AggresiveLeadPopup';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { base44 } from '@/api/base44Client';
-import { CheckCircle, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { CheckCircle, AlertCircle } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -23,36 +18,8 @@ import {
 import UnifiedLeadForm from '../components/forms/UnifiedLeadForm';
 
 export default function OsekPaturSteps() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [user, setUser] = useState(null);
   const [showStickyCta, setShowStickyCta] = useState(false);
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const currentUser = await base44.auth.me();
-        if (currentUser) {
-          setUser(currentUser);
-          // Set default values from user profile
-          setFormData(prev => ({
-            ...prev,
-            phone: currentUser.phone || prev.phone,
-            email: currentUser.email || prev.email
-          }));
-        }
-      } catch (err) {
-        // User not logged in
-      }
-    };
-    loadUser();
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,39 +35,6 @@ export default function OsekPaturSteps() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [showPopup, showStickyCta]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!formData.name.trim() || !formData.phone.trim()) {
-      toast.error('נא למלא שם וטלפון');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const response = await base44.functions.invoke('submitLeadToN8N', {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        message: 'בקשה לפתיחת עוסק פטור',
-        pageSlug: 'osek-patur-steps',
-        businessName: 'Perfect One - Osek Patur'
-      });
-
-      if (response.data.success) {
-        setFormData({ name: '', phone: '', email: '' });
-        navigate(createPageUrl('ThankYou'));
-      } else {
-        toast.error('שגיאה בשליחת הלידים: ' + (response.data.error || 'שגיאה לא ידועה'));
-      }
-    } catch (error) {
-      console.error('Form submission error:', error);
-      toast.error('שגיאה בשליחה: ' + error.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const steps = [
     {
@@ -305,53 +239,16 @@ export default function OsekPaturSteps() {
                viewport={{ once: true }}
                className="bg-white rounded-2xl md:rounded-3xl shadow-lg p-5 md:p-12 border-2 border-blue-200"
              >
-               <h2 className="text-2xl md:text-3xl font-black text-[#1E3A5F] text-center mb-1 md:mb-2">
-                 רוצה שנפתח עבורך את העוסק?
-               </h2>
-               <p className="text-sm md:text-base text-gray-700 text-center mb-5 md:mb-8">
-                 השאר פרטים ונחזור אליך עם הכוונה מלאה
-               </p>
-               <form onSubmit={handleSubmit} className="space-y-3">
-                 <Input
-                   placeholder="שם מלא *"
-                   value={formData.name}
-                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                   className="h-12 rounded-xl border-2 text-base"
-                   required
-                 />
-                 <Input
-                   type="tel"
-                   placeholder="טלפון *"
-                   value={formData.phone}
-                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                   className="h-12 rounded-xl border-2 text-base"
-                   required
-                 />
-                 <Input
-                   type="email"
-                   placeholder="מייל (לא חובה)"
-                   value={formData.email}
-                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                   className="h-12 rounded-xl border-2 text-base"
-                 />
-                 <Button
-                   type="submit"
-                   disabled={isSubmitting}
-                   className="w-full h-13 text-base bg-[#D4AF37] hover:bg-[#c9a430] text-[#1E3A5F] font-black rounded-xl disabled:opacity-50 shadow-lg"
-                 >
-                   {isSubmitting ? (
-                     <>
-                       <Loader2 className="w-4 h-4 ml-2 animate-spin inline" />
-                       שולח...
-                     </>
-                   ) : (
-                     '🚀 פתיחת עוסק פטור - התחל עכשיו'
-                   )}
-                 </Button>
-               </form>
-               <p className="text-xs text-gray-500 text-center mt-3">
-                 ✓ ללא התחייבות • ✓ נחזור תוך שעות
-               </p>
+               <UnifiedLeadForm
+                 title="רוצה שנפתח עבורך את העוסק?"
+                 subtitle="השאר פרטים ונחזור אליך עם הכוונה מלאה"
+                 ctaText="🚀 פתיחת עוסק פטור - התחל עכשיו"
+                 fields={["name", "phone", "email"]}
+                 sourcePage="OsekPaturSteps"
+                 onSuccess={() => {
+                   window.location.href = '/ThankYou';
+                 }}
+               />
              </motion.div>
            </div>
          </section>
