@@ -212,6 +212,22 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
                   <p className="text-xs text-gray-500 leading-relaxed">
                     {step.description}
                   </p>
+                  {isCurrent && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onStartTask && step.originalTask) {
+                          onStartTask(step.originalTask);
+                        } else {
+                          handleStepClick(step);
+                        }
+                      }}
+                      className="mt-2 inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md shadow-blue-200"
+                    >
+                      <Rocket className="w-3.5 h-3.5" />
+                      התחל את השלב הזה
+                    </button>
+                  )}
                 </div>
 
                 {/* Chevron / Indicator */}
