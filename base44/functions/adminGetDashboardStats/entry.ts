@@ -1,28 +1,13 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Handle CORS/Bypass
-        const payload = await req.json().catch(() => ({}));
-        const { bypassCode, phone } = payload;
-        
-        let authorized = false;
-        
-        // 1. Check bypass
-        if (bypassCode === '123456' && phone === '0502277087') {
-            authorized = true;
-        } else {
-            // 2. Check real admin session
-            const user = await base44.auth.me().catch(() => null);
-            if (user && user.role === 'admin') {
-                authorized = true;
-            }
-        }
-
-        if (!authorized) {
-            return Response.json({ error: 'Forbidden' }, { status: 403 });
+        // Verify admin authentication
+        const user = await base44.auth.me();
+        if (!user || user.role !== 'admin') {
+            return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
         }
 
         const stats = {

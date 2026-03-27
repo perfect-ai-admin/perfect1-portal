@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 /**
  * Create an income document in Finbot
@@ -173,8 +173,8 @@ Deno.serve(async (req) => {
             } else {
                 // Default: cash for total amount (including VAT)
                 const subtotalAmount = finbotPayload.items.reduce((sum, item) => sum + (item.amount * item.price), 0);
-                // vatType=false means prices are BEFORE VAT, so total = subtotal * 1.17
-                const totalWithVat = finbotPayload.vatType ? subtotalAmount : Math.round(subtotalAmount * 1.17 * 100) / 100;
+                // vatType=false means prices are BEFORE VAT, so total = subtotal * 1.18
+                const totalWithVat = finbotPayload.vatType ? subtotalAmount : Math.round(subtotalAmount * 1.18 * 100) / 100;
                 finbotPayload.payments = [{
                     type: '0', // cash
                     date: formattedDate,
@@ -248,7 +248,7 @@ Deno.serve(async (req) => {
 
         // Calculate totals for local storage
         const subtotal = finbotPayload.items.reduce((sum, item) => sum + (item.amount * item.price), 0);
-        const vat = subtotal * 0.17;
+        const vat = subtotal * 0.18;
         const total = subtotal + vat;
 
         // Save to local database

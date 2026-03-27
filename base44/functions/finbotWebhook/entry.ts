@@ -1,7 +1,7 @@
 // FINBOT Webhook Handler (section 5.1.3)
 // Handles real-time events from FINBOT API
 
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
   try {
