@@ -1,8 +1,10 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 const STRIPE_WEBHOOK_SECRET = Deno.env.get('STRIPE_WEBHOOK_SECRET');
 
 async function verifyStripeSignature(body, signature) {
+    if (!STRIPE_WEBHOOK_SECRET) return false;
+    
     const encoder = new TextEncoder();
     const keyData = encoder.encode(STRIPE_WEBHOOK_SECRET);
     
@@ -14,10 +16,16 @@ async function verifyStripeSignature(body, signature) {
         ['verify']
     );
 
-    const [timestamp, signatureHash] = signature.split(',')[0].split('=')[1] && signature.split(',').map(part => {
-        const [key, value] = part.split('=');
-        return value;
-    });
+    const parts = signature.split(',').reduce((acc, part) => {
+        const [k, v] = part.split('=');
+        acc[k] = v;
+        return acc;
+    }, {});
+    
+    const timestamp = parts['t'];
+    const signatureHash = parts['v1'];
+    
+    if (!timestamp || !signatureHash) return false;
 
     const signedContent = `${timestamp}.${body}`;
     const signedData = encoder.encode(signedContent);
@@ -58,10 +66,8 @@ Deno.serve(async (req) => {
             const session = event.data.object;
             const paymentId = session.metadata.payment_id;
             const userId = session.metadata.user_id;
-            const productType = session.metadata.product_type;
-            const productId = session.metadata.product_id;
 
-            // Update payment
+            // Update payment status
             await base44.asServiceRole.entities.Payment.update(paymentId, {
                 status: 'completed',
                 stripe_session_id: session.id,
@@ -71,171 +77,17 @@ Deno.serve(async (req) => {
                 completed_at: new Date().toISOString()
             });
 
-            // Helper to activate landing page
-            const activateLandingPage = async (pageId) => {
-                try {
-                    await base44.asServiceRole.functions.invoke('publishLandingPage', {
-                        landingPageId: pageId,
-                        action: 'markPaid'
-                    });
-                    // Also attempt to publish
-                    await base44.asServiceRole.functions.invoke('publishLandingPage', {
-                        landingPageId: pageId,
-                        action: 'publish'
-                    });
-                } catch (err) {
-                    console.error('Failed to activate landing page:', err);
-                }
-            };
-
-            // Handle fulfillment
-            if (productType === 'plan') {
-                await base44.asServiceRole.functions.invoke('assignPlanToUser', {
-                    user_id: userId,
-                    plan_id: productId
-                });
-            } else if (productType === 'goal') {
-                const userArr = await base44.asServiceRole.entities.User.filter({ id: userId });
-                if (userArr.length > 0) {
-                    const u = userArr[0];
-                    // Calculate effective current limit
-                    const currentEffective = (u.goals_limit_override !== null && u.goals_limit_override !== undefined)
-                        ? u.goals_limit_override
-                        : (u.goals_limit || 1);
-                    const newOverride = currentEffective + 1;
-                    await base44.asServiceRole.entities.User.update(userId, {
-                        goals_limit_override: newOverride
-                    });
-                    console.log(`✅ Goal purchase: goals_limit_override updated ${currentEffective} -> ${newOverride} for user ${userId}`);
-                }
-            } else if (productType === 'landing-page') {
-                await activateLandingPage(productId);
-            } else if (productType === 'cart') {
-                // Fetch payment to get items
-                const payment = await base44.asServiceRole.entities.Payment.get(paymentId);
-                const items = payment.items || [];
-                
-                const deliverableLinks = [];
-                
-                for (const item of items) {
-                    if (item.type === 'landing_page' && item.data?.landingPageId) {
-                        await activateLandingPage(item.data.landingPageId);
-                    }
-                    
-                    // Collect original image URLs for logos and stickers
-                    if (item.type === 'logo' || item.type === 'sticker') {
-                        const originalUrl = item.data?.logoUrl || item.data?.stickerUrl || item.preview_image || item.data?.preview_image;
-                        if (originalUrl) {
-                            deliverableLinks.push({
-                                title: item.title || (item.type === 'logo' ? 'לוגו' : 'סטיקר'),
-                                url: originalUrl,
-                                type: item.type
-                            });
-                        }
-                    }
-                    
-                    // Mark cart item as purchased
-                    if (item.id) {
-                        try {
-                            await base44.asServiceRole.entities.CartItem.update(item.id, { status: 'purchased' });
-                        } catch (e) {
-                            console.log('Failed to update cart item status', e);
-                        }
-                    }
-                }
-                
-                // Create PurchasedProduct records for each item
-                for (const item of items) {
-                    try {
-                        const purchasedData = {
-                            user_id: userId,
-                            product_type: item.type || 'other',
-                            product_name: item.title || 'מוצר',
-                            status: 'active',
-                            payment_id: paymentId,
-                            purchase_price: item.price || 0,
-                            preview_image: item.preview_image || item.data?.logoUrl || item.data?.preview_image || '',
-                            metadata: item.data || {}
-                        };
-                        
-                        if (item.type === 'landing_page' && item.data?.landingPageId) {
-                            purchasedData.linked_entity_id = item.data.landingPageId;
-                            // Try to get published URL
-                            try {
-                                const pages = await base44.asServiceRole.entities.LandingPage.filter({ id: item.data.landingPageId });
-                                if (pages.length > 0 && pages[0].slug) {
-                                    purchasedData.published_url = `https://perfect-one.co.il/LP?slug=${pages[0].slug}`;
-                                }
-                            } catch (e) { console.log('Could not fetch LP url'); }
-                        }
-                        
-                        if ((item.type === 'logo' || item.type === 'sticker') && deliverableLinks.length > 0) {
-                            const link = deliverableLinks.find(d => d.type === item.type);
-                            if (link) purchasedData.download_url = link.url;
-                        }
-                        
-                        if (item.type === 'presentation' && item.data?.presentationUrl) {
-                            purchasedData.download_url = item.data.presentationUrl;
-                        }
-                        
-                        await base44.asServiceRole.entities.PurchasedProduct.create(purchasedData);
-                    } catch (ppErr) {
-                        console.error('Failed to create PurchasedProduct:', ppErr);
-                    }
-                }
-
-                // Save deliverable links on payment record so CheckoutSuccess can show them
-                if (deliverableLinks.length > 0) {
-                    await base44.asServiceRole.entities.Payment.update(paymentId, {
-                        deliverables: deliverableLinks
-                    });
-                    
-                    // Send email with download links
-                    try {
-                        const user = await base44.asServiceRole.entities.User.get(userId);
-                        if (user?.email) {
-                            const linksHtml = deliverableLinks.map(d => 
-                                `<tr><td style="padding:8px 0;border-bottom:1px solid #eee;"><strong>${d.title}</strong></td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:left;"><a href="${d.url}" style="color:#2563eb;font-weight:bold;text-decoration:none;">הורד קובץ ⬇️</a></td></tr>`
-                            ).join('');
-                            
-                            await base44.asServiceRole.integrations.Core.SendEmail({
-                                to: user.email,
-                                subject: '🎉 הקבצים שלך מוכנים להורדה - Perfect One',
-                                body: `
-                                    <div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
-                                        <div style="background:linear-gradient(135deg,#1E3A5F,#2C5282);padding:30px;border-radius:16px 16px 0 0;text-align:center;">
-                                            <h1 style="color:white;margin:0;font-size:24px;">🎉 תודה על הרכישה!</h1>
-                                        </div>
-                                        <div style="background:white;padding:30px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 16px 16px;">
-                                            <p style="color:#374151;font-size:16px;line-height:1.6;">שלום ${user.full_name || ''},</p>
-                                            <p style="color:#374151;font-size:16px;line-height:1.6;">הרכישה שלך בוצעה בהצלחה! הנה הקבצים שלך להורדה:</p>
-                                            <table style="width:100%;margin:20px 0;border-collapse:collapse;">
-                                                ${linksHtml}
-                                            </table>
-                                            <p style="color:#6b7280;font-size:14px;margin-top:20px;">הקבצים שלך באיכות מלאה, ללא סימן מים.</p>
-                                            <p style="color:#6b7280;font-size:14px;">בהצלחה! 🚀</p>
-                                        </div>
-                                    </div>
-                                `
-                            });
-                        }
-                    } catch (emailErr) {
-                        console.error('Failed to send deliverable email:', emailErr);
-                    }
-                }
-            }
-
-            // Log activity
-            await base44.asServiceRole.entities.ActivityLog.create({
-                user_id: userId,
-                activity_type: 'payment_made',
-                description: `תשלום בוצע בהצלחה עבור ${productType === 'plan' ? 'מסלול' : 'מטרה'}`,
-                details: {
+            // Call unified fulfillment logic
+            try {
+                const fulfillResult = await base44.asServiceRole.functions.invoke('fulfillPayment', {
                     payment_id: paymentId,
-                    product_type: productType,
-                    product_id: productId
-                }
-            });
+                    user_id: userId,
+                    trigger_source: 'stripe_webhook'
+                });
+                console.log('[stripeWebhook] Fulfillment result:', fulfillResult?.data?.success);
+            } catch (fulfillErr) {
+                console.error('[stripeWebhook] Fulfillment error:', fulfillErr.message);
+            }
         }
 
         if (event.type === 'charge.failed') {
