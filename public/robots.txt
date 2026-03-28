@@ -1,5 +1,12 @@
 User-agent: *
 Allow: /
+Allow: /opening-business-israel
+Allow: /osek-patur
+Allow: /osek-murshe
+Allow: /hevra-bam
+Allow: /sgirat-tikim
+Allow: /guides
+Allow: /compare
 Disallow: /AdminDashboard
 Disallow: /AgentCRM
 Disallow: /AgentsManager

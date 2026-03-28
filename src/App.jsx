@@ -9,6 +9,13 @@ import PageNotFound from './lib/PageNotFound';
 import { SupabaseAuthProvider, useAuth } from '@/lib/SupabaseAuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import DigitalCard from './pages/DigitalCard';
+import { HelmetProvider } from 'react-helmet-async';
+import './portal/styles/portal.css';
+
+const PortalHomePage = React.lazy(() => import('./portal/templates/PortalHomePage'));
+const CategoryHubPage = React.lazy(() => import('./portal/templates/CategoryHubPage'));
+const SEOArticlePage = React.lazy(() => import('./portal/templates/SEOArticlePage'));
+const ComparisonPage = React.lazy(() => import('./portal/templates/ComparisonPage'));
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -69,6 +76,16 @@ const AuthenticatedApp = () => {
   );
 };
 
+const PortalWrapper = ({ children }) => (
+  <HelmetProvider>
+    <Suspense fallback={<PageLoader />}>
+      <div dir="rtl" className="portal-root">
+        {children}
+      </div>
+    </Suspense>
+  </HelmetProvider>
+);
+
 // Wrapper that checks if on DigitalCard route to skip auth entirely
 const AppRoutes = () => {
   return (
@@ -76,6 +93,21 @@ const AppRoutes = () => {
       {/* Standalone public page - completely outside auth & layout */}
       <Route path="/card/:slug" element={<DigitalCard />} />
       <Route path="/DigitalCard" element={<DigitalCard />} />
+
+      {/* Portal public pages */}
+      <Route path="/opening-business-israel" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
+      <Route path="/osek-patur" element={<PortalWrapper><CategoryHubPage category="osek-patur" /></PortalWrapper>} />
+      <Route path="/osek-patur/:slug" element={<PortalWrapper><SEOArticlePage category="osek-patur" /></PortalWrapper>} />
+      <Route path="/osek-murshe" element={<PortalWrapper><CategoryHubPage category="osek-murshe" /></PortalWrapper>} />
+      <Route path="/osek-murshe/:slug" element={<PortalWrapper><SEOArticlePage category="osek-murshe" /></PortalWrapper>} />
+      <Route path="/hevra-bam" element={<PortalWrapper><CategoryHubPage category="hevra-bam" /></PortalWrapper>} />
+      <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
+      <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
+      <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
+      <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
+      <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
+      <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
+
       <Route path="/*" element={<AuthenticatedApp />} />
     </Routes>
   );

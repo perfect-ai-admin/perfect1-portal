@@ -1,0 +1,314 @@
+/* Portal Styles - פרפקט וואן Business Portal */
+
+/* ===== Font Import ===== */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ===== Base ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+.portal-root {
+  font-family: 'Heebo', sans-serif;
+  direction: rtl;
+  text-align: right;
+  background-color: #F8F9FA;
+  min-height: 100vh;
+}
+
+/* ===== Typography ===== */
+.portal-h1 {
+  font-size: 48px;
+  font-weight: 800;
+  color: #1E3A5F;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.portal-h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1E3A5F;
+  line-height: 1.3;
+}
+
+.portal-h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2C3E50;
+  line-height: 1.4;
+}
+
+.portal-body {
+  font-size: 18px;
+  font-weight: 400;
+  color: #374151;
+  line-height: 1.8;
+}
+
+.portal-small {
+  font-size: 16px;
+  font-weight: 400;
+  color: #64748B;
+}
+
+/* ===== Article Content ===== */
+.portal-article h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1E3A5F;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.portal-article h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2C3E50;
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.portal-article p {
+  font-size: 18px;
+  color: #374151;
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+}
+
+.portal-article ul,
+.portal-article ol {
+  margin-bottom: 1.25rem;
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+.portal-article li {
+  font-size: 17px;
+  color: #374151;
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+}
+
+.portal-article ul li {
+  list-style-type: disc;
+}
+
+.portal-article ol li {
+  list-style-type: decimal;
+}
+
+.portal-article a {
+  color: #0D9488;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.portal-article a:hover {
+  color: #0F766E;
+}
+
+.portal-article strong {
+  font-weight: 700;
+  color: #1E3A5F;
+}
+
+.portal-article blockquote {
+  border-right: 4px solid #D4AF37;
+  border-left: none;
+  padding-right: 1.5rem;
+  padding-left: 0;
+  margin: 1.5rem 0;
+  background-color: #FAFAF8;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #4B5563;
+}
+
+/* ===== Callout Boxes ===== */
+.portal-callout {
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  border-right: 4px solid;
+  border-left: none;
+}
+
+.portal-callout-info {
+  background-color: #EFF6FF;
+  border-color: #3B82F6;
+  color: #1E40AF;
+}
+
+.portal-callout-warning {
+  background-color: #FFFBEB;
+  border-color: #F59E0B;
+  color: #92400E;
+}
+
+.portal-callout-tip {
+  background-color: #ECFDF5;
+  border-color: #10B981;
+  color: #065F46;
+}
+
+/* ===== Card Hover Animations ===== */
+.portal-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #E5E7EB;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.portal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(30, 58, 95, 0.12);
+  border-color: #D4AF37;
+}
+
+/* ===== CTA Buttons ===== */
+.portal-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0D9488;
+  color: white;
+  height: 3.5rem;
+  padding: 0 2rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 17px;
+  font-family: 'Heebo', sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  gap: 0.5rem;
+}
+
+.portal-cta-primary:hover {
+  background-color: #0F766E;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.3);
+}
+
+.portal-cta-primary:active {
+  transform: translateY(0);
+}
+
+.portal-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: #1E3A5F;
+  height: 3.5rem;
+  padding: 0 2rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  font-size: 17px;
+  font-family: 'Heebo', sans-serif;
+  border: 2px solid #1E3A5F;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  gap: 0.5rem;
+}
+
+.portal-cta-secondary:hover {
+  background-color: #1E3A5F;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(30, 58, 95, 0.2);
+}
+
+.portal-cta-secondary:active {
+  transform: translateY(0);
+}
+
+/* ===== RTL Adjustments ===== */
+.portal-root [dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+.portal-root ul,
+.portal-root ol {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 768px) {
+  .portal-h1 {
+    font-size: 34px;
+  }
+
+  .portal-h2 {
+    font-size: 26px;
+  }
+
+  .portal-h3 {
+    font-size: 22px;
+  }
+
+  .portal-body {
+    font-size: 16px;
+  }
+
+  .portal-small {
+    font-size: 14px;
+  }
+
+  .portal-article h2 {
+    font-size: 24px;
+    margin-top: 2rem;
+  }
+
+  .portal-article h3 {
+    font-size: 20px;
+    margin-top: 1.5rem;
+  }
+
+  .portal-article p {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .portal-article li {
+    font-size: 16px;
+  }
+
+  .portal-cta-primary,
+  .portal-cta-secondary {
+    width: 100%;
+    font-size: 16px;
+    height: 3rem;
+  }
+
+  .portal-callout {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-h1 {
+    font-size: 28px;
+  }
+
+  .portal-h2 {
+    font-size: 22px;
+  }
+
+  .portal-h3 {
+    font-size: 20px;
+  }
+}
