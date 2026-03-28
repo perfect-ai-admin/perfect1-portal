@@ -280,7 +280,7 @@ function LandingSchemaMarkup({ faqItems }) {
     areaServed: { '@type': 'Country', name: 'Israel' },
     availableChannel: {
       '@type': 'ServiceChannel',
-      serviceUrl: 'https://perfect1.co.il/OsekPaturSteps',
+      serviceUrl: 'https://perfect1.co.il/OsekPaturLanding',
       servicePhone: '+972502277087',
     },
   };
@@ -303,7 +303,7 @@ function LandingSchemaMarkup({ faqItems }) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'פרפקט וואן', item: 'https://perfect1.co.il' },
-      { '@type': 'ListItem', position: 2, name: 'פתיחת עוסק פטור', item: 'https://perfect1.co.il/OsekPaturSteps' },
+      { '@type': 'ListItem', position: 2, name: 'פתיחת עוסק פטור', item: 'https://perfect1.co.il/OsekPaturLanding' },
     ],
   };
 
@@ -408,11 +408,11 @@ export default function OsekPaturLanding() {
           <title>פתיחת עוסק פטור אונליין | ליווי מקצועי מהתחלה ועד הסוף - פרפקט וואן</title>
           <meta name="description" content="רוצים לפתוח עוסק פטור? קבלו ליווי מקצועי מלא — בדיקת התאמה חינם, הכוונה לפתיחת תיקים במס הכנסה, מע״מ וביטוח לאומי. בלי בירוקרטיה, בלי טעויות. התחילו עכשיו!" />
           <meta name="keywords" content="פתיחת עוסק פטור, איך פותחים עוסק פטור, פתיחת עוסק פטור אונליין, כמה עולה לפתוח עוסק פטור, פתיחת תיק עוסק פטור, פתיחת עוסק פטור מס הכנסה, פתיחת עוסק פטור ביטוח לאומי, עוסק פטור למתחילים" />
-          <link rel="canonical" href="https://perfect1.co.il/OsekPaturSteps" />
+          <link rel="canonical" href="https://perfect1.co.il/OsekPaturLanding" />
           <meta property="og:title" content="פתיחת עוסק פטור אונליין — ליווי מקצועי מ-א׳ ועד ת׳" />
           <meta property="og:description" content="בדיקת התאמה חינם לפתיחת עוסק פטור. ליווי מקצועי, בלי בירוקרטיה, בלי טעויות. השאירו פרטים ונחזור אליכם תוך דקות." />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://perfect1.co.il/OsekPaturSteps" />
+          <meta property="og:url" content="https://perfect1.co.il/OsekPaturLanding" />
           <meta property="og:image" content="https://perfect1.co.il/og-image.png" />
           <meta property="og:locale" content="he_IL" />
           <meta name="twitter:card" content="summary_large_image" />
@@ -453,7 +453,7 @@ export default function OsekPaturLanding() {
           <div className="relative max-w-6xl mx-auto px-4 py-10 md:py-16">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
               {/* Left side: Content */}
-              <div className="order-2 md:order-1">
+              <div className="order-1 md:order-1">
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5">
                   <Zap className="w-4 h-4 text-yellow-400" />
                   <span className="text-white/90 text-sm font-medium">בדיקת התאמה חינם — ללא התחייבות</span>
@@ -503,7 +503,7 @@ export default function OsekPaturLanding() {
               </div>
 
               {/* Right side: Form */}
-              <div className="order-1 md:order-2">
+              <div className="order-2 md:order-2">
                 <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md mx-auto md:mx-0">
                   <LeadForm
                     id="hero-lead-form"
