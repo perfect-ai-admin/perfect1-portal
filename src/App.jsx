@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import DigitalCard from './pages/DigitalCard';
+
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -52,7 +52,7 @@ const AuthenticatedApp = () => {
             <MainPage />
           </LayoutWrapper>
         } />
-        {Object.entries(Pages).filter(([path]) => path !== 'DigitalCard').map(([path, Page]) => (
+        {Object.entries(Pages).map(([path, Page]) => (
           <Route
             key={path}
             path={`/${path}`}
@@ -69,13 +69,9 @@ const AuthenticatedApp = () => {
   );
 };
 
-// Wrapper that checks if on DigitalCard route to skip auth entirely
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Standalone public page - completely outside auth & layout */}
-      <Route path="/card/:slug" element={<DigitalCard />} />
-      <Route path="/DigitalCard" element={<DigitalCard />} />
       <Route path="/*" element={<AuthenticatedApp />} />
     </Routes>
   );

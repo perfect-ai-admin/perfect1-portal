@@ -3,8 +3,42 @@ import { motion } from 'framer-motion';
 import { Check, Copy, ShoppingCart, Sparkles, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import CardHeader from '@/components/digital-card/CardHeader';
-import ActionButtons from '@/components/digital-card/ActionButtons';
+// Inline preview components (digital-card components were removed)
+const CardHeader = ({ card, primaryColor, themeStyles }) => (
+  <div className="relative">
+    <div className="h-32 w-full" style={{ background: themeStyles?.gradient || '#1A1A1A' }} />
+    <div className="flex flex-col items-center -mt-12 relative z-10 px-4">
+      {card.logo_url ? (
+        <img src={card.logo_url} alt={card.full_name} className="w-20 h-20 rounded-full border-4 border-gray-900 object-cover bg-gray-800" />
+      ) : (
+        <div className="w-20 h-20 rounded-full border-4 border-gray-900 bg-gray-700 flex items-center justify-center text-2xl font-bold text-white">
+          {card.full_name?.charAt(0) || '?'}
+        </div>
+      )}
+      <h3 className="text-white font-bold text-lg mt-3">{card.full_name}</h3>
+      {card.profession && <p className="text-gray-400 text-xs mt-1">{card.profession}</p>}
+      {card.services?.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-2 justify-center">
+          {card.services.map((s, i) => (
+            <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-gray-300">{s}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+const ActionButtons = ({ card, actions }) => (
+  <div className="grid grid-cols-4 gap-2 px-4">
+    {card.phone && <button onClick={actions.call} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"><span className="text-lg">📞</span><span className="text-[9px] text-gray-400">חיוג</span></button>}
+    {card.whatsapp && <button onClick={actions.whatsapp} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"><span className="text-lg">💬</span><span className="text-[9px] text-gray-400">וואטסאפ</span></button>}
+    {card.email && <button onClick={actions.email} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"><span className="text-lg">📧</span><span className="text-[9px] text-gray-400">אימייל</span></button>}
+    {card.website_url && <button onClick={actions.website} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"><span className="text-lg">🌐</span><span className="text-[9px] text-gray-400">אתר</span></button>}
+    {card.instagram_url && <button onClick={actions.instagram} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"><span className="text-lg">📸</span><span className="text-[9px] text-gray-400">אינסטגרם</span></button>}
+    {card.facebook_url && <button onClick={actions.facebook} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"><span className="text-lg">👤</span><span className="text-[9px] text-gray-400">פייסבוק</span></button>}
+    {card.waze_url && <button onClick={actions.waze} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"><span className="text-lg">🗺️</span><span className="text-[9px] text-gray-400">ניווט</span></button>}
+  </div>
+);
 import confetti from 'canvas-confetti';
 import { cn } from '@/lib/utils';
 
