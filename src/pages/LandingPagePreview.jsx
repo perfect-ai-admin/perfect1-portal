@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { Loader2, AlertCircle, ShoppingCart, ArrowRight, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
+import { entities } from '@/api/supabaseClient';
 
 export default function LandingPagePreview() {
     const { landing_id: paramsId } = useParams();
@@ -17,7 +17,7 @@ export default function LandingPagePreview() {
         queryKey: ['landingPagePreview', landing_id],
         queryFn: async () => {
             if (!landing_id) throw new Error("No landing page ID provided");
-            return await base44.entities.LandingPage.get(landing_id);
+            return await entities.LandingPage.get(landing_id);
         },
         enabled: !!landing_id,
         retry: false

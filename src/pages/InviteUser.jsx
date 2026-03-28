@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -26,11 +26,7 @@ export default function InviteUser() {
     setMessage(null);
 
     try {
-      // Invite user to the system
-      await base44.users.inviteUser(email, role);
-      
-      // Send email invitation via Gmail
-      await base44.functions.invoke('sendInviteEmail', { email, role });
+      await invokeFunction('sendInviteEmail', { email, role });
       
       setMessage({ 
         type: 'success', 

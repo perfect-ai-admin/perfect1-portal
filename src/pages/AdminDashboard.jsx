@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Shield, LayoutDashboard, CreditCard, FileText, Activity, Receipt } from 'lucide-react';
@@ -12,6 +12,7 @@ import PaymentsManager from '../components/admin/PaymentsManager';
 import LandingPagesManager from '../components/admin/LandingPagesManager';
 import ActivityLogView from '../components/admin/ActivityLogView';
 import BillingDocumentsManager from '../components/admin/BillingDocumentsManager';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);
@@ -24,13 +25,7 @@ export default function AdminDashboard() {
 
     const checkAuth = async () => {
         try {
-            const isAuth = await base44.auth.isAuthenticated();
-            if (!isAuth) {
-                // לא מחובר - שלח להתחברות Base44
-                base44.auth.redirectToLogin(window.location.pathname);
-                return;
-            }
-            const currentUser = await base44.auth.me();
+            const currentUser = await auth.me();
             if (currentUser && currentUser.role === 'admin') {
                 setUser(currentUser);
             }
@@ -59,15 +54,15 @@ export default function AdminDashboard() {
                     <div className="space-y-3">
                         <Button 
                             className="w-full bg-[#1E3A5F] hover:bg-[#2C5282]"
-                            onClick={() => window.location.href = '/ClientDashboard'}
+                            onClick={() => window.location.href = '/APP'}
                         >
                             חזרה לדשבורד
                         </Button>
-                        <Button 
+                        <Button
                             variant="outline"
                             className="w-full"
                             onClick={() => {
-                                base44.auth.logout('/AdminDashboard');
+                                auth.logout('/AdminDashboard');
                             }}
                         >
                             התחבר עם חשבון אחר

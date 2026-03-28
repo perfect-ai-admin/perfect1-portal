@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Circle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
-
+import { invokeLLM } from '@/api/supabaseClient';
 // Extract action items from conversation using AI
 export async function extractActionItems(conversationHistory) {
   try {
@@ -12,7 +11,7 @@ export async function extractActionItems(conversationHistory) {
       .map(m => `${m.role}: ${m.content}`)
       .join('\n');
 
-    const response = await base44.integrations.Core.InvokeLLM({
+    const response = await invokeLLM({
       prompt: `נתח את השיחה הבאה וחלץ פעולות (action items) שהמשתמש צריך לבצע.
       
 השיחה:

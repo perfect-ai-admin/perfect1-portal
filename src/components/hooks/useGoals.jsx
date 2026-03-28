@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { queryKeys } from './useQueryKeys';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 // --- Query: List Goals ---
 export function useGoals(filters = {}) {
   return useQuery({
     queryKey: queryKeys.goals.list(filters),
-    queryFn: () => base44.entities.UserGoal.filter(filters),
+    queryFn: () => entities.UserGoal.filter(filters),
     staleTime: 1000 * 60, // 1 minute
   });
 }
@@ -16,7 +16,7 @@ export function useCreateGoal() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (goalData) => base44.entities.UserGoal.create(goalData),
+    mutationFn: (goalData) => entities.UserGoal.create(goalData),
     onMutate: async (newGoal) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: ['goals', 'list'] });
@@ -60,8 +60,8 @@ export function useGenerateGoalPlan() {
 
   return useMutation({
     mutationFn: async (goalData) => {
-      const response = await base44.functions.invoke('generateGoalPlan', { goalData });
-      return response.data;
+      const response = await invokeFunction('generateGoalPlan', { goalData });
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['goals'] });
@@ -81,7 +81,7 @@ export function useUpdateGoal() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, ...data }) => base44.entities.UserGoal.update(id, data),
+    mutationFn: ({ id, ...data }) => entities.UserGoal.update(id, data),
     onMutate: async ({ id, ...newData }) => {
       await queryClient.cancelQueries({ queryKey: ['goals', 'list'] });
       const previousGoals = queryClient.getQueriesData({ queryKey: ['goals', 'list'] });
@@ -113,7 +113,7 @@ export function useDeleteGoal() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (goalId) => base44.entities.UserGoal.delete(goalId),
+    mutationFn: (goalId) => entities.UserGoal.delete(goalId),
     onMutate: async (goalId) => {
       await queryClient.cancelQueries({ queryKey: ['goals', 'list'] });
       const previousGoals = queryClient.getQueriesData({ queryKey: ['goals', 'list'] });

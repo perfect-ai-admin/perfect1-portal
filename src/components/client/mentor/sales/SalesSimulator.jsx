@@ -4,8 +4,8 @@ import { Mic, Send, StopCircle, Play, RotateCcw, User, Bot, Award } from 'lucide
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { base44 } from '@/api/base44Client';
 import ReactMarkdown from 'react-markdown';
+import { invokeLLM } from '@/api/supabaseClient';
 
 const SCENARIOS = [
   { id: 'cold_call', title: 'שיחה קרה', description: 'נסה לקבוע פגישה עם לקוח שלא מכיר אותך', difficulty: 'hard' },
@@ -65,7 +65,7 @@ export default function SalesSimulator() {
         תחזיר רק את התגובה שלך כלקוח.
       `;
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await invokeLLM({
         prompt: prompt,
         add_context_from_internet: false
       });
@@ -99,7 +99,7 @@ export default function SalesSimulator() {
             }
         `;
         
-        const res = await base44.integrations.Core.InvokeLLM({
+        const res = await invokeLLM({
             prompt: prompt,
             response_json_schema: {
                 type: "object",

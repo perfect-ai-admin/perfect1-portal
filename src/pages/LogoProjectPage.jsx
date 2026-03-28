@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,10 +28,10 @@ export default function LogoProjectPage() {
 
   const loadProjectData = async () => {
     try {
-      const res = await base44.functions.invoke('getProjectAndGenerations', { project_id: projectId });
-      setProject(res.data.project);
-      setGenerations(res.data.generations || []);
-      setDownloadCredits(res.data.download_credits || 0);
+      const res = await invokeFunction('getProjectAndGenerations', { project_id: projectId });
+      setProject(res.project);
+      setGenerations(res.generations || []);
+      setDownloadCredits(res.download_credits || 0);
     } catch (error) {
       setMessage({ type: 'error', text: error.message || 'Failed to load project' });
     } finally {
@@ -45,12 +45,12 @@ export default function LogoProjectPage() {
     setMessage(null);
 
     try {
-      const res = await base44.functions.invoke('generateLogoForProject', { project_id: projectId, variation_mode: false });
-      if (res.data?.ok) {
+      const res = await invokeFunction('generateLogoForProject', { project_id: projectId, variation_mode: false });
+      if (res?.ok) {
         setGenerations([{
-          id: res.data.generation_id,
-          external_url: res.data.image_url,
-          image_url: res.data.image_url,
+          id: res.generation_id,
+          external_url: res.image_url,
+          image_url: res.image_url,
           status: 'generated',
           is_preview: true,
           is_unlocked: false,
@@ -63,20 +63,20 @@ export default function LogoProjectPage() {
           status: 'ready',
           free_previews_used: prev.free_previews_used + 1
         }));
-        setMessage({ type: 'success', text: `✓ Preview generated! (${res.data.free_previews_left} left)` });
-      } else if (res.data?.error_code === 'PREVIEW_LIMIT_REACHED') {
+        setMessage({ type: 'success', text: `✓ Preview generated! (${res.free_previews_left} left)` });
+      } else if (res?.error_code === 'PREVIEW_LIMIT_REACHED') {
         setMessage({ 
           type: 'error', 
           text: 'Free previews used. Unlock a logo to continue generating.',
           action: 'buyCredits'
         });
-      } else if (res.data?.error_code === 'RATE_LIMIT') {
-        setMessage({ type: 'error', text: `Please wait ${res.data.wait_seconds}s before generating again.` });
+      } else if (res?.error_code === 'RATE_LIMIT') {
+        setMessage({ type: 'error', text: `Please wait ${res.wait_seconds}s before generating again.` });
       } else {
-        throw new Error(res.data?.message || 'Generation failed');
+        throw new Error(res?.message || 'Generation failed');
       }
     } catch (error) {
-      const errMsg = error.response?.data?.message || error.message;
+      const errMsg = error.message || 'שגיאה ביצירת הלוגו';
       setMessage({ type: 'error', text: errMsg });
     } finally {
       setGenerating(false);
@@ -85,17 +85,17 @@ export default function LogoProjectPage() {
 
   const handleUnlock = async (generation_id) => {
     try {
-      const res = await base44.functions.invoke('unlockLogo', { generation_id });
-      if (res.data?.ok) {
-        setDownloadCredits(res.data.credits_left);
-        setGenerations(prev => prev.map(g => 
-          g.id === generation_id 
-            ? { ...g, is_unlocked: true, status: 'approved' } 
+      const res = await invokeFunction('unlockLogo', { generation_id });
+      if (res?.ok) {
+        setDownloadCredits(res.credits_left);
+        setGenerations(prev => prev.map(g =>
+          g.id === generation_id
+            ? { ...g, is_unlocked: true, status: 'approved' }
             : g
         ));
         setMessage({ type: 'success', text: '✓ Logo unlocked!' });
       } else {
-        setMessage({ type: 'error', text: res.data?.message || 'Failed to unlock logo' });
+        setMessage({ type: 'error', text: res?.message || 'Failed to unlock logo' });
       }
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
@@ -104,13 +104,13 @@ export default function LogoProjectPage() {
 
   const handleApprove = async (generation_id) => {
     try {
-      const res = await base44.functions.invoke('approveLogo', { generation_id });
-      if (res.data?.ok) {
-        setDownloadCredits(res.data.credits_left);
-        setProject(prev => ({ 
-          ...prev, 
-          status: 'approved', 
-          approved_logo_url: res.data.approved_url || res.data.approved_url,
+      const res = await invokeFunction('approveLogo', { generation_id });
+      if (res?.ok) {
+        setDownloadCredits(res.credits_left);
+        setProject(prev => ({
+          ...prev,
+          status: 'approved',
+          approved_logo_url: res.approved_url,
           approved_generation_id: generation_id
         }));
         setGenerations(prev => prev.map(g => ({ ...g, is_unlocked: g.id === generation_id ? true : g.is_unlocked, status: g.id === generation_id ? 'approved' : g.status })));

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { motion } from 'framer-motion';
 import CardLoading from '@/components/digital-card/CardLoading';
 import CardNotFound from '@/components/digital-card/CardNotFound';
@@ -12,7 +12,7 @@ import CardQR from '@/components/digital-card/CardQR';
 import CardBottomBar from '@/components/digital-card/CardBottomBar';
 
 function trackClick(cardId, action) {
-  base44.functions.invoke('trackCardClick', { card_id: cardId, action }).catch(() => {});
+  invokeFunction('trackCardClick', { card_id: cardId, action }).catch(() => {});
 }
 
 export default function DigitalCard() {
@@ -27,9 +27,9 @@ export default function DigitalCard() {
     const slug = pathSlug || params.get('slug');
     if (!slug) { setError('not_found'); setLoading(false); return; }
     
-    base44.functions.invoke('getPublicCard', { slug })
+    invokeFunction('getPublicCard', { slug })
       .then(res => {
-        if (res.data?.success && res.data?.card) setCard(res.data.card);
+        if (res?.success && res?.card) setCard(res.card);
         else setError('not_found');
       })
       .catch(() => setError('not_found'))
@@ -114,7 +114,7 @@ export default function DigitalCard() {
           {/* Powered by */}
           <div className="text-center mt-10 pb-4">
             <a 
-              href="https://one-pai.com" 
+              href="https://perfect-dashboard.com" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-[10px] text-gray-600 hover:text-gray-400 transition-colors tracking-[0.2em] uppercase"

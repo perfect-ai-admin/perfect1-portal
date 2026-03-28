@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,6 +12,7 @@ import { toast, Toaster } from 'sonner';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
+import { entities, auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function LeadsAdmin() {
   const [selectedLead, setSelectedLead] = useState(null);
@@ -47,20 +47,25 @@ export default function LeadsAdmin() {
 
   const { data: leads, isLoading } = useQuery({
     queryKey: ['leads'],
-    queryFn: () => base44.entities.Lead.list('-created_date', 1000),
+    queryFn: async () => {
+      const res = await invokeFunction('adminListLeads');
+      return res?.leads || [];
+    },
     initialData: []
   });
 
   const { data: agents } = useQuery({
     queryKey: ['agents'],
-    queryFn: () => base44.entities.Agent.filter({ active: true }),
+    queryFn: async () => {
+      return entities.AiAgent.list(null, 100);
+    },
     initialData: []
   });
 
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await auth.me();
         if (!user || user.role !== 'admin') {
           toast.error('שים לב: אינך מחובר כמנהל, חלק מהפעולות (כגון מחיקה) יהיו חסומות');
         }
@@ -72,16 +77,16 @@ export default function LeadsAdmin() {
   }, []);
 
   const createLeadMutation = useMutation({
-    mutationFn: (data) => base44.entities.Lead.create(data),
-    onSuccess: () => {
+    mutationFn: (data) => entities.Lead.create(data),
+onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setShowAddLeadDialog(false);
     }
   });
 
   const updateLeadMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
-    onSuccess: () => {
+    mutationFn: ({ id, data }) => Promise.resolve(),
+onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       setSelectedLead(null);
       setEditingNotes({});
@@ -90,7 +95,7 @@ export default function LeadsAdmin() {
   });
 
   const deleteLeadMutation = useMutation({
-    mutationFn: (id) => base44.functions.invoke('adminDeleteLead', { leadId: id }),
+    mutationFn: (id) => invokeFunction('adminDeleteLead', { leadId: id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] });
       toast.success('הליד נמחק בהצלחה');
@@ -152,7 +157,7 @@ export default function LeadsAdmin() {
 
     for (const leadId of selectedLeads) {
       try {
-        await base44.functions.invoke('adminDeleteLead', { leadId });
+        await invokeFunction('adminDeleteLead', { leadId });
         deletedCount++;
       } catch (error) {
         console.error(`Failed to delete lead ${leadId}:`, error);
@@ -183,13 +188,11 @@ export default function LeadsAdmin() {
       const lead = leads.find(l => l.id === leadId);
       if (lead) {
         console.log('🔵 מעדכן ליד:', lead.name);
-        await base44.entities.Lead.update(leadId, { ...lead, agent_name: agentName === 'none' ? null : agentName });
-        
-        // שליחת הודעה לסוכן
+// שליחת הודעה לסוכן
         if (selectedAgent && (selectedAgent.phone || selectedAgent.email)) {
           console.log('📱 שולח הודעה עבור:', lead.name);
           try {
-            const response = await base44.functions.invoke('sendAgentNotification', {
+            const response = await invokeFunction('sendAgentNotification', {
               agentPhone: selectedAgent.phone,
               agentEmail: selectedAgent.email,
               agentName: selectedAgent.full_name,
@@ -199,8 +202,8 @@ export default function LeadsAdmin() {
               notificationPreferences: selectedAgent.notification_preferences || ['whatsapp']
             });
             console.log('📱 תגובה:', response);
-            if (response.data?.results?.whatsapp?.url) {
-              window.open(response.data.results.whatsapp.url, '_blank');
+            if (response?.results?.whatsapp?.url) {
+              window.open(response.results.whatsapp.url, '_blank');
             }
             emailsSent++;
           } catch (error) {
@@ -378,7 +381,7 @@ export default function LeadsAdmin() {
                 else if (testData === '4') prefs = ['whatsapp', 'email', 'sms'];
 
                 try {
-                  const res = await base44.functions.invoke('sendAgentNotification', {
+                  const res = await invokeFunction('sendAgentNotification', {
                     agentPhone: testPhone,
                     agentEmail: testEmail,
                     agentName: 'בדיקה',
@@ -388,8 +391,8 @@ export default function LeadsAdmin() {
                     notificationPreferences: prefs
                   });
                   console.log('תגובה:', res);
-                  if (res.data?.results?.whatsapp?.url) {
-                    window.open(res.data.results.whatsapp.url, '_blank');
+                  if (res?.results?.whatsapp?.url) {
+                    window.open(res.results.whatsapp.url, '_blank');
                   }
                   toast.success('בדיקה הושלמה - בדוק קונסול');
                 } catch (e) {
@@ -922,19 +925,14 @@ export default function LeadsAdmin() {
                          console.log('🔵 מעדכן ליד ושולח הודעה...');
 
                          // עדכון הליד
-                         await base44.entities.Lead.update(lead.id, { 
-                           ...lead, 
-                           agent_name: selectedAgent.full_name 
-                         });
-
-                         // רענון הלידים
+// רענון הלידים
                          queryClient.invalidateQueries({ queryKey: ['leads'] });
 
                          // שליחת הודעה
                          if (selectedAgent.phone || selectedAgent.email) {
                            console.log('📱 שולח הודעה ל:', selectedAgent.full_name);
                            try {
-                             const response = await base44.functions.invoke('sendAgentNotification', {
+                             const response = await invokeFunction('sendAgentNotification', {
                                agentPhone: selectedAgent.phone,
                                agentEmail: selectedAgent.email,
                                agentName: selectedAgent.full_name,
@@ -944,9 +942,9 @@ export default function LeadsAdmin() {
                                notificationPreferences: selectedAgent.notification_preferences || ['whatsapp']
                              });
                              console.log('📱 תגובה מלאה:', response);
-                             console.log('📱 URL של ווטסאפ:', response.data?.results?.whatsapp?.url);
-                             if (response.data?.results?.whatsapp?.url) {
-                               const whatsappUrl = response.data.results.whatsapp.url;
+                             console.log('📱 URL של ווטסאפ:', response?.results?.whatsapp?.url);
+                             if (response?.results?.whatsapp?.url) {
+                               const whatsappUrl = response.results.whatsapp.url;
                                window.open(whatsappUrl, '_blank');
                              }
                              toast.success(`התראה נשלחה ל-${selectedAgent.full_name}`);

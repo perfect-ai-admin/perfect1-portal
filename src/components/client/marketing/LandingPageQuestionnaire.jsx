@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -249,18 +249,18 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     try {
       // Step 1: Create the landing page
       console.log('[STEP 1] Creating landing page...');
-      const createRes = await base44.functions.invoke('createLandingPage', { data: formData });
+      const createRes = await invokeFunction('createLandingPage', { data: formData });
 
-      if (!createRes?.data?.id) {
+      if (!createRes?.id) {
         throw new Error('Failed to create page - no ID returned');
       }
 
-      const pageId = createRes.data.id;
+      const pageId = createRes.id;
       console.log('[STEP 1] ✓ Page created with ID:', pageId);
 
       // Step 2: Use the returned data directly (Fastest & Most Reliable)
       // This avoids DB replication lag/RLS issues where the page exists but isn't readable yet
-      const pageData = createRes.data;
+      const pageData = createRes;
       
       // Validate critical data exists
       if (!pageData.sections_json || pageData.sections_json.length === 0) {
@@ -302,20 +302,20 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
       
       // First try: publish
       try {
-        const publishRes = await base44.functions.invoke('publishLandingPage', {
+        const publishRes = await invokeFunction('publishLandingPage', {
           landingPageId: previewPageId,
           action: 'publish'
         });
-        url = publishRes?.data?.url;
+        url = publishRes?.url || publishRes?.public_url;
       } catch (e) {
         console.log('Publish attempt:', e.message);
       }
-      
+
       // Fallback: fetch the landing page to get its published_url
       if (!url) {
         try {
-          const pageRes = await base44.functions.invoke('getPublicLandingPageById', { pageId: previewPageId });
-          url = pageRes?.data?.published_url;
+          const pageRes = await invokeFunction('getPublicLandingPageById', { pageId: previewPageId });
+          url = pageRes?.published_url;
         } catch (e) {
           console.log('Fetch page attempt:', e.message);
         }
@@ -323,7 +323,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       // Last fallback: construct URL from slug
       if (!url && pageSlug) {
-        url = `https://one-pai.com/LP?s=${pageSlug}`;
+        url = `https://perfect-dashboard.com/LP?s=${pageSlug}`;
       }
 
       // CRITICAL: Move away from the preview/draft screen and show published URL
@@ -348,19 +348,19 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
     setIsPublishing(true);
     try {
       // Mark as paid
-      await base44.functions.invoke('publishLandingPage', {
+      await invokeFunction('publishLandingPage', {
         landingPageId: createdPageData?.id,
         action: 'markPaid'
       });
 
       // Publish to get real domain
-      const response = await base44.functions.invoke('publishLandingPage', {
+      const response = await invokeFunction('publishLandingPage', {
         landingPageId: createdPageData?.id,
         action: 'publish'
       });
 
-      if (response.data?.url) {
-        setPublishedUrl(response.data.url);
+      if (response?.url) {
+        setPublishedUrl(response.url);
       } else {
         alert('שגיאה בפרסום הדף. אנא נסה שוב.');
       }
@@ -1266,7 +1266,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                              <div className="w-3 h-3 rounded-full bg-green-400" />
                            </div>
                            <div className="flex-1 bg-white h-6 rounded-md shadow-sm border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-mono">
-                              one-pai.com/LP?s={pageSlug}
+                              perfect-dashboard.com/LP?s={pageSlug}
                            </div>
                         </div>
 
@@ -1376,7 +1376,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                </div>
                                <div className="flex flex-col">
                                   <span className="text-sm font-bold text-gray-900 leading-tight">{createdPageData?.business_name}</span>
-                                  <span className="text-xs text-slate-500 dir-ltr font-mono">one-pai.com/LP/{pageSlug}</span>
+                                  <span className="text-xs text-slate-500 dir-ltr font-mono">perfect-dashboard.com/LP/{pageSlug}</span>
                                </div>
                            </div>
                            <DialogClose asChild>
@@ -1445,7 +1445,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                              <div className="w-3 h-3 rounded-full bg-green-400" />
                            </div>
                            <div className="flex-1 bg-white h-6 rounded-md shadow-sm border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-mono">
-                              one-pai.com/LP?s={pageSlug}
+                              perfect-dashboard.com/LP?s={pageSlug}
                            </div>
                         </div>
                         
@@ -1569,7 +1569,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                </div>
                                <div className="flex flex-col">
                                   <span className="text-sm font-bold text-gray-900 leading-tight">{createdPageData?.business_name}</span>
-                                  <span className="text-xs text-slate-500 dir-ltr font-mono">one-pai.com/LP/{pageSlug}</span>
+                                  <span className="text-xs text-slate-500 dir-ltr font-mono">perfect-dashboard.com/LP/{pageSlug}</span>
                                </div>
                            </div>
                            <DialogClose asChild>

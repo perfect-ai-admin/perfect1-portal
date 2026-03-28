@@ -10,12 +10,12 @@ import {
   CheckCircle2, Copy, ExternalLink
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import BusinessCardPreview from './BusinessCardPreview';
 import BusinessCardResult from '@/components/client/marketing/BusinessCardResult';
 import BusinessCardSummary from '@/components/client/marketing/BusinessCardSummary';
 import CheckoutDialog from '@/components/checkout/CheckoutDialog';
+import { entities, auth, sendEmail, invokeFunction } from '@/api/supabaseClient';
 
 // Custom specialized card selector component
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -197,12 +197,12 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
           setFormData(prev => ({...prev, logoDataUrl, coverDataUrl}));
       }
 
-      const res = await base44.functions.invoke('createDigitalCard', {
+      const res = await invokeFunction('createDigitalCard', {
         formData: { ...formData, logoFile: undefined, logoDataUrl, coverFile: undefined, coverDataUrl }
       });
       
-      if (res.data?.success) {
-        setCardResult({ ...res.data, cardId: res.data.card_id });
+      if (res?.success) {
+        setCardResult({ ...res, cardId: res.card_id });
         setViewState('result');
       } else {
         setBuildError('אירעה שגיאה ביצירת הכרטיס');
@@ -645,10 +645,11 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
             product={checkoutProduct}
             onPaymentSuccess={async (paymentId) => {
               try {
-                const user = await base44.auth.me();
-                
+               
+                const user = await auth.me();
+
                 // Save to PurchasedProduct
-                 await base44.entities.PurchasedProduct.create({
+                 await entities.PurchasedProduct.create({
                    user_id: user.id,
                    product_type: 'service',
                    product_name: `כרטיס ביקור: ${formData.fullName || 'דיגיטלי'}`,
@@ -668,11 +669,11 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
 
                  // Activate the card (change status from draft to published)
                  if (cardResult.cardId || cardResult.card_id) {
-                   await base44.entities.DigitalCard.update(cardResult.cardId || cardResult.card_id, { status: 'published' });
+                   await entities.DigitalCard.update(cardResult.cardId || cardResult.card_id, { status: 'published' });
                  }
 
                 // Send email with card link
-                await base44.integrations.Core.SendEmail({
+                await sendEmail({
                   to: user.email,
                   subject: '🎴 כרטיס הביקור הדיגיטלי שלך מוכן! – Perfect One',
                   body: `
@@ -686,7 +687,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                         </a>
                       </div>
                       <p><strong>קישור ישיר:</strong> <a href="${cardResult.public_url}" style="color: #1E3A5F;">${cardResult.public_url}</a></p>
-                      <p style="margin-top: 20px;">ניתן לגשת לכרטיס גם מ<a href="https://one-pai.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
+                      <p style="margin-top: 20px;">ניתן לגשת לכרטיס גם מ<a href="https://perfect-dashboard.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
                       <p style="color: #888; font-size: 12px; margin-top: 30px;">צוות Perfect One</p>
                     </div>
                   `

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { CheckCircle2, Circle, Plus, Lock, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import GoalUpgradeModal from './GoalUpgradeModal';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function GoalsCatalog({ user, userGoals, onUpdate }) {
     const [allGoals, setAllGoals] = useState([]);
@@ -18,7 +18,7 @@ export default function GoalsCatalog({ user, userGoals, onUpdate }) {
     }, []);
 
     const loadGoals = async () => {
-        const goals = await base44.entities.Goal.filter({ is_active: true });
+        const goals = await entities.Goal.filter({ is_active: true });
         setAllGoals(goals.sort((a, b) => a.display_order - b.display_order));
         setLoading(false);
     };
@@ -34,33 +34,33 @@ export default function GoalsCatalog({ user, userGoals, onUpdate }) {
 
     const handleSelectGoal = async (goal, activate = false) => {
         try {
-            const response = await base44.functions.invoke('selectGoal', {
+            const response = await invokeFunction('selectGoal', {
                 goal_id: goal.id,
                 activate: activate
             });
 
-            if (response.data.success) {
-                toast.success(response.data.message);
+            if (response.success) {
+                toast.success(response.message);
                 onUpdate();
             }
         } catch (error) {
-            if (error.response?.data?.error === 'goals_limit_reached') {
-                setUpgradeData(error.response.data);
+            if (error.message?.includes('goals_limit_reached')) {
+                setUpgradeData({ error: 'goals_limit_reached' });
                 setShowUpgrade(true);
             } else {
-                toast.error(error.response?.data?.message || 'שגיאה');
+                toast.error(error.message || 'שגיאה');
             }
         }
     };
 
     const handleActivateGoal = async (userGoalId) => {
         try {
-            const response = await base44.functions.invoke('activateGoal', {
+            const response = await invokeFunction('activateGoal', {
                 user_goal_id: userGoalId
             });
 
-            if (response.data.success) {
-                toast.success(response.data.message);
+            if (response.success) {
+                toast.success(response.message);
                 onUpdate();
             }
         } catch (error) {

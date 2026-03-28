@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Save, Loader2, Phone, Mail, Link2, MessageCircle, Webhook, CheckCircle2, ArrowLeft, Zap, Globe, Copy, Eye, EyeOff, Plus, Trash2, Check, Send, XCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { base44 } from '@/api/base44Client';
-
+import { invokeFunction } from '@/api/supabaseClient';
 export default function LandingPageLeadSettings({ page, onSave, saving }) {
   const [form, setForm] = useState({
     lead_channels: [],
@@ -136,9 +135,9 @@ export default function LandingPageLeadSettings({ page, onSave, saving }) {
     setTesting(true);
     setTestResults(null);
     try {
-      const res = await base44.functions.invoke('testLeadChannels', { pageId: page.id });
-      setTestResults(res.data);
-      const allSuccess = Object.values(res.data.results || {}).every(r => r.success);
+      const res = await invokeFunction('testLeadChannels', { pageId: page.id });
+      setTestResults(res);
+      const allSuccess = Object.values(res?.results || {}).every(r => r.success);
       if (allSuccess) {
         toast.success('כל הערוצים עובדים מצוין! ✅');
       } else {

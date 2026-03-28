@@ -18,8 +18,7 @@ import {
   Link
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { base44 } from '@/api/base44Client';
-
+import { entities } from '@/api/supabaseClient';
 export default function DailyFocusScreen({ focus, onSave }) {
   const [primaryFocus, setPrimaryFocus] = useState(focus?.primary_focus || '');
   const [selectedGoalId, setSelectedGoalId] = useState(focus?.goal_id || '');
@@ -39,7 +38,7 @@ export default function DailyFocusScreen({ focus, onSave }) {
 
     const loadGoals = async () => {
         try {
-            const goals = await base44.entities.UserGoal.filter({ status: 'active' }, '-created_date', 20);
+            const goals = await entities.UserGoal.filter({ status: 'active' }, '-created_date', 20);
             if (goals) {
                 setActiveGoals(goals);
                 // If no goal selected and there are goals, default to primary or first one

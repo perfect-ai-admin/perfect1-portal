@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,6 +7,7 @@ import { User, Phone, Mail, Loader2, CheckCircle, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { trackLeadSubmit } from '../tracking/EventTracker';
+import { entities, sendEmail } from '@/api/supabaseClient';
 
 /**
  * UnifiedLeadForm - טופס לידים אחיד לכל האתר
@@ -89,7 +89,7 @@ export default function UnifiedLeadForm({
       const effectiveSource = sourcePage || landingUrl || window.location.pathname;
 
       // יצירת לד
-      const newLead = await base44.entities.Lead.create({
+      const newLead = await entities.Lead.create({
         name: formData.name,
         phone: formData.phone,
         email: formData.email || undefined,
@@ -118,7 +118,7 @@ export default function UnifiedLeadForm({
 
       // Email notification
       try {
-        await base44.integrations.Core.SendEmail({
+        await sendEmail({
           to: 'yosi5919@gmail.com',
           subject: `🎯 ליד חדש מ${sourcePage}`,
           body: `

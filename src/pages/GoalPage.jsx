@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Loader2, ChevronRight, ArrowRight } from 'lucide-react';
 import GoalMentorChat from '@/components/client/mentor/GoalMentorChat';
-import SEOOptimized from './SEOOptimized';
+import { Helmet } from 'react-helmet-async';
+import { entities, auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function GoalPage() {
   const { goalCode } = useParams();
@@ -18,7 +18,7 @@ export default function GoalPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await auth.me();
         if (!currentUser) {
           navigate('/login');
           return;
@@ -26,7 +26,7 @@ export default function GoalPage() {
         setUser(currentUser);
 
         // Fetch goal
-        const goalsData = await base44.entities.Goal.filter(
+        const goalsData = await entities.Goal.filter(
           { goal_code: goalCode },
           null,
           1
@@ -35,8 +35,8 @@ export default function GoalPage() {
           setGoal(goalsData[0]);
 
           // Update journey to set current goal
-          const journeys = await base44.entities.BusinessJourney.filter(
-            { user_id: currentUser.email },
+          const journeys = await entities.BusinessJourney.filter(
+            { user_id: currentUser.id },
             '-updated_date',
             1
           );
@@ -46,7 +46,7 @@ export default function GoalPage() {
 
             // Set as current goal if not already
             if (j.current_goal_code !== goalCode) {
-              await base44.entities.BusinessJourney.update(j.id, {
+              await entities.BusinessJourney.update(j.id, {
                 current_goal_code: goalCode
               });
             }
@@ -81,11 +81,11 @@ export default function GoalPage() {
 
   return (
     <>
-      <SEOOptimized
-        title={`${goal.name} | Perfect One`}
-        description={goal.description}
-        canonical={`https://perfect1.co.il/goal/${goalCode}`}
-      />
+      <Helmet>
+        <title>{`${goal.name} | Perfect One`}</title>
+        <meta name="description" content={goal.description} />
+        <link rel="canonical" href={`https://perfect-dashboard.com/goal/${goalCode}`} />
+      </Helmet>
 
       <main className="min-h-screen bg-[#F8F9FA] py-8">
         <div className="max-w-4xl mx-auto px-4">

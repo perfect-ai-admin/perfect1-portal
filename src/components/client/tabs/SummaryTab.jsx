@@ -5,8 +5,8 @@ import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Rocket, Brain, Zap, Award, Target, TrendingUp, Users, Crown, Shield, Sparkles, Star } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import GoalTemplatesFixed, { GOAL_TEMPLATES } from '@/components/client/goals/GoalTemplatesFixed';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function SummaryTab({ data }) {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function SummaryTab({ data }) {
 
   const handleCreateGoal = async (goalData, isEditing) => {
     try {
-      await base44.entities.UserGoal.create({
+      await entities.UserGoal.create({
         ...goalData,
         user_id: data.id
       });

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from './AuthContext';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from './SupabaseAuthContext';
 import { pagesConfig } from '@/pages.config';
 
 export default function NavigationTracker() {
@@ -12,7 +11,7 @@ export default function NavigationTracker() {
 
     // Persist UTM params & referrer so lead forms can use them later.
     // Uses localStorage (not sessionStorage) because the login flow redirects
-    // through an external Base44 domain which clears sessionStorage.
+    // through an external domain which clears sessionStorage.
     useEffect(() => {
         try {
             // Expire old UTM data after 30 days
@@ -73,9 +72,8 @@ export default function NavigationTracker() {
         }
 
         if (isAuthenticated && pageName) {
-            base44.appLogs.logUserInApp(pageName).catch(() => {
-                // Silently fail - logging shouldn't break the app
-            });
+            // Navigation tracking
+            console.debug('[nav]', pageName);
         }
     }, [location, isAuthenticated, Pages, mainPageKey]);
 

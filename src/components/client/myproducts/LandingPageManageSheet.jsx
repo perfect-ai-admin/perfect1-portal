@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { 
   Loader2, Globe, ExternalLink, Eye,
@@ -17,6 +16,7 @@ import LandingPagePreviewPanel from './LandingPagePreviewPanel';
 import LandingPageLeadSettings from './LandingPageLeadSettings';
 import LandingPageContentEditor from './LandingPageContentEditor';
 import LandingPageStats from './LandingPageStats';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function LandingPageManageSheet({ pageId, open, onOpenChange }) {
   const [page, setPage] = useState(null);
@@ -38,9 +38,9 @@ export default function LandingPageManageSheet({ pageId, open, onOpenChange }) {
   const loadData = async () => {
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('getPublicLandingPageById', { pageId });
-      if (response.data) {
-        setPage(response.data);
+      const response = await invokeFunction('getPublicLandingPageById', { pageId });
+      if (response) {
+        setPage(response);
       } else {
         toast.error('דף הנחיתה לא נמצא');
         onOpenChange(false);
@@ -56,7 +56,7 @@ export default function LandingPageManageSheet({ pageId, open, onOpenChange }) {
   const handleSave = async (updates) => {
     setSaving(true);
     try {
-      await base44.entities.LandingPage.update(pageId, updates);
+      await entities.LandingPage.update(pageId, updates);
       setPage(prev => ({ ...prev, ...updates }));
       toast.success('השינויים נשמרו בהצלחה!');
     } catch (error) {
@@ -67,7 +67,7 @@ export default function LandingPageManageSheet({ pageId, open, onOpenChange }) {
     }
   };
 
-  const publicUrl = page?.slug ? `https://one-pai.com/LP?s=${page.slug}` : null;
+  const publicUrl = page?.slug ? `https://perfect-dashboard.com/LP?s=${page.slug}` : null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

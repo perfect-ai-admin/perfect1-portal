@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Zap, Brain, Activity } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function PromptEvolutionDashboard() {
     const [evolutionData, setEvolutionData] = useState(null);
@@ -13,7 +13,7 @@ export default function PromptEvolutionDashboard() {
     // Get active prompt version
     const { data: activePrompt } = useQuery({
         queryKey: ['activePrompt'],
-        queryFn: () => base44.functions.invoke('getActivePrompt'),
+        queryFn: () => invokeFunction('getActivePrompt'),
         refetchInterval: 60000 // Refresh every minute
     });
 
@@ -22,7 +22,7 @@ export default function PromptEvolutionDashboard() {
         queryKey: ['recentAnalyses'],
         queryFn: async () => {
             try {
-                const result = await base44.entities.PageQualityAnalysis.filter({}, '-analysis_date', 20);
+                const result = await entities.PageQualityAnalysis.filter({}, '-analysis_date', 20);
                 return result || [];
             } catch (err) {
                 console.error('Error fetching analyses:', err);
@@ -36,8 +36,8 @@ export default function PromptEvolutionDashboard() {
     const handleEvolvePrompt = async () => {
         setLoading(true);
         try {
-            const result = await base44.functions.invoke('evolvePrompt');
-            alert(`✅ פרומט V${result.data?.new_version || 'N/A'} יצור בהצלחה!`);
+            const result = await invokeFunction('evolvePrompt');
+            alert(`פרומט V${result?.new_version || 'N/A'} נוצר בהצלחה!`);
         } catch (error) {
             alert(`❌ שגיאה: ${error.message}`);
         } finally {
@@ -82,7 +82,7 @@ export default function PromptEvolutionDashboard() {
                         <div>
                             <div className="text-sm text-blue-600 font-semibold">גרסת פרומט</div>
                             <div className="text-2xl font-bold text-blue-900">
-                                V{activePrompt?.data?.version || '—'}
+                                V{activePrompt?.version || '—'}
                             </div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@ export default function PromptEvolutionDashboard() {
                         <div>
                             <div className="text-sm text-green-600 font-semibold">ציון כולל</div>
                             <div className="text-2xl font-bold text-green-900">
-                                {activePrompt?.data?.avg_quality_score?.toFixed(1) || '—'}/100
+                                {activePrompt?.avg_quality_score?.toFixed(1) || '—'}/100
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export default function PromptEvolutionDashboard() {
                         <div>
                             <div className="text-sm text-purple-600 font-semibold">דפים שנוצרו</div>
                             <div className="text-2xl font-bold text-purple-900">
-                                {activePrompt?.data?.pages_generated || '0'}
+                                {activePrompt?.pages_generated || '0'}
                             </div>
                         </div>
                     </div>
@@ -124,7 +124,7 @@ export default function PromptEvolutionDashboard() {
                         <div>
                             <div className="text-sm text-amber-600 font-semibold">שיפורים</div>
                             <div className="text-2xl font-bold text-amber-900">
-                                {activePrompt?.data?.improvements_log?.length || '0'}
+                                {activePrompt?.improvements_log?.length || '0'}
                             </div>
                         </div>
                     </div>
@@ -175,9 +175,9 @@ export default function PromptEvolutionDashboard() {
             {/* Evolution Log */}
             <Card className="p-6">
                 <h3 className="text-lg font-bold mb-4">רישום שיפורים</h3>
-                {activePrompt?.data?.improvements_log && activePrompt.data.improvements_log.length > 0 ? (
+                {activePrompt?.improvements_log && activePrompt.improvements_log.length > 0 ? (
                     <div className="space-y-3">
-                        {activePrompt.data.improvements_log.slice().reverse().map((log, idx) => (
+                        {activePrompt.improvements_log.slice().reverse().map((log, idx) => (
                             <div key={idx} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <div className="flex items-start justify-between mb-2">
                                     <div className="font-semibold text-gray-900">{log.change}</div>

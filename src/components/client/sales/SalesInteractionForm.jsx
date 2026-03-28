@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { CheckCircle, AlertCircle, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { entities } from '@/api/supabaseClient';
 
 export default function SalesInteractionForm({ open, onOpenChange, onSuccess }) {
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ export default function SalesInteractionForm({ open, onOpenChange, onSuccess }) 
 
     setLoading(true);
     try {
-      await base44.entities.SalesInteraction.create({
+      await entities.SalesInteraction.create({
         ...formData,
         price_offered: formData.price_offered ? parseFloat(formData.price_offered) : null,
         duration_minutes: formData.duration_minutes ? parseInt(formData.duration_minutes) : null,

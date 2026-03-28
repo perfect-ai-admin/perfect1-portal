@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { base44 } from '@/api/base44Client';
 import DailyFocusScreen from './daily/DailyFocusScreen';
 import WeeklyStructureScreen from './daily/WeeklyStructureScreen';
 import FocusScreen from './daily/FocusScreen';
 import LoadScreen from './daily/LoadScreen';
 import ReviewScreen from './daily/ReviewScreen';
 import { Zap, Calendar, Target, Activity, CheckCircle2 } from 'lucide-react';
+import { entities } from '@/api/supabaseClient';
 
 export default function DailyOperations({ data }) {
   const [focus, setFocus] = useState(null);
@@ -20,7 +20,7 @@ export default function DailyOperations({ data }) {
   const loadTodaysFocus = async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
-      const focusData = await base44.entities.DailyFocus.filter(
+      const focusData = await entities.DailyFocus.filter(
         { date: today },
         '-created_date',
         1
@@ -44,9 +44,9 @@ export default function DailyOperations({ data }) {
       const updatedFocus = { ...focus, ...updates, date: today };
 
       if (focus?.id) {
-        await base44.entities.DailyFocus.update(focus.id, updates);
+        await entities.DailyFocus.update(focus.id, updates);
       } else {
-        await base44.entities.DailyFocus.create(updatedFocus);
+        await entities.DailyFocus.create(updatedFocus);
       }
 
       setFocus(updatedFocus);

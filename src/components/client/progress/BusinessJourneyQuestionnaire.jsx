@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
+import { invokeFunction } from '@/api/supabaseClient';
 
 // Profession Question (Free Text)
 const PROFESSION_QUESTION = {
@@ -325,7 +325,7 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
     setIsSubmitting(true);
     try {
       // Call the "Brain" function to analyze and update user
-      await base44.functions.invoke('analyzeBusinessJourney', { answers: finalAnswers });
+      await invokeFunction('analyzeBusinessJourney', { answers: finalAnswers });
       
       onComplete();
     } catch (error) {

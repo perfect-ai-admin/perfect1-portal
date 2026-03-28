@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,9 +40,9 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
     const loadFullDetails = async () => {
         setLoadingDetails(true);
         try {
-            const response = await base44.functions.invoke('adminGetUserFullDetails', { user_id: user.id });
-            if (response.data) {
-                setExtendedData(response.data);
+            const response = await invokeFunction('adminGetUserFullDetails', { user_id: user.id });
+            if (response) {
+                setExtendedData(response);
             }
         } catch (error) {
             console.error("Failed to load user details", error);
@@ -52,7 +52,8 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
     };
 
     const loadPlans = async () => {
-        const allPlans = await base44.entities.Plan.list();
+       
+        const allPlans = [];
         setPlans(allPlans);
     };
 
@@ -63,13 +64,13 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
             if (updates.goals_limit_override === '') updates.goals_limit_override = null;
             if (updates.max_active_goals_override === '') updates.max_active_goals_override = null;
 
-            const response = await base44.functions.invoke('adminUpdateUser', {
+            const response = await invokeFunction('adminUpdateUser', {
                 user_id: user.id,
                 updates: updates
             });
             
-            if (response.data?.error) {
-                throw new Error(response.data.error);
+            if (response?.error) {
+                throw new Error(response.error);
             }
 
             toast.success('המשתמש עודכן בהצלחה');
@@ -77,7 +78,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
             onClose();
         } catch (error) {
             console.error('Update failed:', error);
-            const errorMessage = error.response?.data?.error || error.message || 'שגיאה לא ידועה';
+            const errorMessage = error.message || 'שגיאה לא ידועה';
             toast.error(`שגיאה בעדכון המשתמש: ${errorMessage}`);
         } finally {
             setSaving(false);
@@ -88,7 +89,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
         if (!selectedPlan) return;
         setSaving(true);
         try {
-            await base44.functions.invoke('assignPlanToUser', {
+            await invokeFunction('assignPlanToUser', {
                 user_id: user.id,
                 plan_id: selectedPlan
             });
@@ -283,7 +284,7 @@ export default function UserProfileModal({ user, onClose, onUpdate }) {
                                                             onClick={async () => {
                                                                 if (!confirm(`למחוק את המטרה "${g.title}"?`)) return;
                                                                 try {
-                                                                    await base44.functions.invoke('adminUpdateUser', {
+                                                                    await invokeFunction('adminUpdateUser', {
                                                                         user_id: user.id,
                                                                         delete_goal_id: g.id
                                                                     });

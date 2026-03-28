@@ -17,8 +17,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { base44 } from '@/api/base44Client';
 import { Skeleton } from '@/components/ui/skeleton';
+import { entities, auth } from '@/api/supabaseClient';
 
 export default function DailyCockpit({ onNavigate }) {
   const [dailyFocus, setDailyFocus] = useState(null);
@@ -32,7 +32,7 @@ export default function DailyCockpit({ onNavigate }) {
     loadUserData();
     
     // Subscribe to DailyFocus updates
-    const unsubscribeFocus = base44.entities.DailyFocus.subscribe(() => {
+    const unsubscribeFocus = entities.DailyFocus.subscribe(() => {
         loadUserData();
     });
     return () => {
@@ -42,12 +42,12 @@ export default function DailyCockpit({ onNavigate }) {
 
   const loadUserData = async () => {
     try {
-      const user = await base44.auth.me();
+      const user = await auth.me();
       setUserName(user.full_name?.split(' ')[0] || 'חבר');
       setBusinessState(user.business_state);
       
       const today = new Date().toISOString().split('T')[0];
-      const focusData = await base44.entities.DailyFocus.filter({ date: today }, '-created_date', 1);
+      const focusData = await entities.DailyFocus.filter({ date: today }, '-created_date', 1);
       
       if (focusData.length > 0) {
         setDailyFocus(focusData[0]);
@@ -63,9 +63,9 @@ export default function DailyCockpit({ onNavigate }) {
   const { data: fetchedGoals, isLoading: isLoadingGoals, refetch: refetchGoals } = useQuery({
     queryKey: ['userGoals'], // Using general key to match GoalsTab invalidation
     queryFn: async () => {
-        const user = await base44.auth.me();
+        const user = await auth.me();
         if (!user) return [];
-        return await base44.entities.UserGoal.filter({ user_id: user.id }, '-created_date', 50);
+        return await entities.UserGoal.filter({ user_id: user.id }, '-created_date', 50);
     },
     staleTime: 1000 * 60, // 1 minute
   });
@@ -98,7 +98,7 @@ export default function DailyCockpit({ onNavigate }) {
 
   // Subscribe to changes in goals
   useEffect(() => {
-      const unsubscribe = base44.entities.UserGoal.subscribe(() => {
+      const unsubscribe = entities.UserGoal.subscribe(() => {
           refetchGoals();
       });
       return () => unsubscribe();

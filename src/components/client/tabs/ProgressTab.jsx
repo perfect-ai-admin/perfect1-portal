@@ -14,7 +14,6 @@ import BusinessJourneyQuestionnaire from '../progress/BusinessJourneyQuestionnai
 import DynamicTaskQuestionnaire from '../progress/DynamicTaskQuestionnaire';
 import GoalTemplatesFixed, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import HeroGoal from '../goals/HeroGoal';
 import SecondaryGoals from '../goals/SecondaryGoals';
@@ -24,6 +23,7 @@ import { useAppAuth } from '@/components/hooks/useAppAuth';
 import { useGoals, useUpdateGoal, useDeleteGoal, useCreateGoal, useGenerateGoalPlan } from '@/components/hooks/useGoals';
 import { useBusinessJourney, JOURNEY_QUERY_KEY } from '@/components/hooks/useBusinessJourney';
 import { queryKeys } from '@/components/hooks/useQueryKeys';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 function NextStepCard({ step, onWhyClick, onAction, onNavigate }) {
   if (!step) return null;
@@ -118,7 +118,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   // Subscribe to goal changes
   React.useEffect(() => {
-    const unsubscribe = base44.entities.UserGoal.subscribe(() => {
+    const unsubscribe = entities.UserGoal.subscribe(() => {
       queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
     });
     return () => unsubscribe();
@@ -195,7 +195,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
     }
     
     try {
-      await base44.functions.invoke('resetBusinessJourney');
+      await invokeFunction('resetBusinessJourney');
       await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
       await queryClient.invalidateQueries({ queryKey: JOURNEY_QUERY_KEY });
       await queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
@@ -313,7 +313,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
           // I'll stick to direct invoke here for the specific "background update" pattern,
           // BUT invalidate queries at the end.
           
-          await base44.functions.invoke('generateGoalPlan', { 
+          await invokeFunction('generateGoalPlan', {
             goalId: createdGoal.id,
             title: createdGoal.title,
             goalData: {

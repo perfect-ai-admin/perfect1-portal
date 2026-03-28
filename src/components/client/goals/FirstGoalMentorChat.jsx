@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import ReactMarkdown from 'react-markdown';
 
 /**
@@ -33,37 +33,37 @@ export default function FirstGoalMentorChat({ goal, onComplete }) {
     try {
       console.log('🚀 Starting FirstGoalMentorChat for goal:', goal.id);
       
-      const response = await base44.functions.invoke('firstGoalMentorFlow', {
+      const response = await invokeFunction('firstGoalMentorFlow', {
         action: 'start_flow',
         goal_id: goal.id
       });
 
-      console.log('✅ Flow started, response:', response.data);
+      console.log('✅ Flow started, response:', response);
 
-      if (response.data.success) {
+      if (response.success) {
         // שלח הודעת וואצאפ עם ההודעה הראשונה
-        const firstMessage = response.data.messages[0];
+        const firstMessage = response.messages[0];
         if (firstMessage && firstMessage.content) {
           console.log('📱 Sending first message to WhatsApp');
           try {
-            const whatsappRes = await base44.functions.invoke('smartMentorEngine', {
+            const whatsappRes = await invokeFunction('smartMentorEngine', {
               action: 'send_whatsapp',
               content: firstMessage.content,
               goal_id: goal.id
             });
-            console.log('✅ WhatsApp message sent:', whatsappRes.data);
+            console.log('✅ WhatsApp message sent:', whatsappRes);
           } catch (whatsappErr) {
             console.warn('⚠️ Failed to send WhatsApp message:', whatsappErr);
           }
         }
 
         // הצגת ההודעות עם השהיות
-        for (const msg of response.data.messages) {
+        for (const msg of response.messages) {
           await displayMessageWithDelay(msg);
         }
-        
-        setCurrentStage(response.data.next_stage);
-        if (response.data.messages.some(m => m.requires_response)) {
+
+        setCurrentStage(response.next_stage);
+        if (response.messages.some(m => m.requires_response)) {
           setWaitingForResponse(true);
           startTimeRef.current = new Date();
         }
@@ -118,27 +118,27 @@ export default function FirstGoalMentorChat({ goal, onComplete }) {
     setIsLoading(true);
 
     try {
-      const response = await base44.functions.invoke('firstGoalMentorFlow', {
+      const response = await invokeFunction('firstGoalMentorFlow', {
         action: 'handle_response',
         goal_id: goal.id,
         user_response: userMessage,
         stage: currentStage
       });
 
-      if (response.data.success) {
+      if (response.success) {
         // הצגת תגובת המנטור עם השהיות
-        for (const msg of response.data.messages) {
+        for (const msg of response.messages) {
           await displayMessageWithDelay(msg);
         }
 
-        setCurrentStage(response.data.next_stage);
-        
+        setCurrentStage(response.next_stage);
+
         // בדיקה אם צריך תגובה נוספת
-        const needsResponse = response.data.messages.some(m => m.requires_response);
+        const needsResponse = response.messages.some(m => m.requires_response);
         if (needsResponse) {
           setWaitingForResponse(true);
           startTimeRef.current = new Date();
-        } else if (response.data.next_stage === 'completed') {
+        } else if (response.next_stage === 'completed') {
           // סיום הפלואו
           setTimeout(() => {
             if (onComplete) onComplete();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Loader2, Gift, Zap } from 'lucide-react';
 import { toast } from 'sonner';
@@ -15,8 +15,8 @@ export default function CreditsPage() {
 
     const loadCredits = async () => {
         try {
-            const res = await base44.functions.invoke('getDownloadCredits', {});
-            setDownloadCredits(res.data?.download_credits || 0);
+            const res = await invokeFunction('getDownloadCredits');
+            setDownloadCredits(res?.download_credits || 0);
         } catch (err) {
             toast.error('Failed to load credits');
         } finally {
@@ -27,11 +27,11 @@ export default function CreditsPage() {
     const handleAddCredits = async (amount) => {
         setAdding(amount);
         try {
-            const res = await base44.functions.invoke('addDownloadCredits', {
+            const res = await invokeFunction('addDownloadCredits', {
                 amount,
                 reason: `manual_topup_${amount}`
             });
-            setDownloadCredits(res.data?.download_credits || 0);
+            setDownloadCredits(res?.download_credits || 0);
             toast.success(`Added ${amount} download credits! 🎉`);
         } catch (err) {
             toast.error('Error: ' + err.message);

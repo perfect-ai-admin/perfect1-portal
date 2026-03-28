@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useGoalMentorWebhook } from '@/components/hooks/useGoalMentorWebhook';
-import { base44 } from '@/api/base44Client';
 import GoalCompletionModal from '@/components/client/journey/GoalCompletionModal';
 import {
   Send,
@@ -14,6 +13,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { auth } from '@/api/supabaseClient';
 
 /**
  * Goal Mentor Chat Component
@@ -30,7 +30,7 @@ export default function GoalMentorChat({ goalCode, goalData, customerGoalId, onG
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await auth.me();
         if (currentUser) {
           setUser(currentUser);
         }

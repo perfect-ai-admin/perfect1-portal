@@ -4,10 +4,10 @@ import { Check, Lock, X, ChevronRight, ChevronDown, CreditCard, Smartphone, Buil
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, onSuccess }) {
   const navigate = useNavigate();
@@ -41,7 +41,8 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
   useEffect(() => {
     const loadUser = async () => {
         try {
-            const currentUser = await base44.auth.me();
+           
+            const currentUser = await auth.me();
             setUser(currentUser);
             if (currentUser) {
                 setCardData(prev => ({
@@ -111,7 +112,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
     setIsProcessing(true);
     try {
         // Use Tranzila for cart checkout
-        const response = await base44.functions.invoke('tranzilaCreatePayment', {
+        const response = await invokeFunction('tranzilaCreatePayment', {
             product_type: 'cart',
             product_name: `עגלת קניות (${items.length} פריטים)`,
             amount: totalPrice,
@@ -125,13 +126,13 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
             }))
         });
 
-        if (response.data.success && response.data.thtk) {
+        if (response.success && response.thtk) {
              // Navigate to Checkout page with Tranzila payment
              const params = new URLSearchParams({
                  type: 'cart',
                  price: totalPrice,
                  name: `עגלת קניות (${items.length} פריטים)`,
-                 payment_id: response.data.paymentId
+                 payment_id: response.paymentId
              });
              navigate(createPageUrl('Checkout') + '?' + params.toString());
         } else {

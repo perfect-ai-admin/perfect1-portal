@@ -1,15 +1,15 @@
 import React from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, MousePointer, TrendingUp, Eye } from 'lucide-react';
+import { entities } from '@/api/supabaseClient';
 
 export default function LandingPageStats({ pageId, pageName }) {
   const { data: leads = [] } = useQuery({
     queryKey: ['landing-leads', pageId],
     queryFn: async () => {
       try {
-        const allLeads = await base44.entities.Lead.filter({ source_page: pageName }, '-created_date', 100);
+        const allLeads = await entities.Lead.filter({ source_page: pageName }, '-created_date', 100);
         return allLeads;
       } catch {
         return [];

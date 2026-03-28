@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import LogoSelectorMobile from './LogoSelectorMobile';
 import LogoCheckout from './LogoCheckout';
 import LogoPreview from './LogoPreview';
@@ -125,15 +125,15 @@ export default function LogoCreator({ businessName, onClose }) {
 
     setIsGenerating(true);
     try {
-      // Ensure user has credits first
-      const creditRes = await base44.functions.invoke('ensureUserHasCredits', {});
-      if (!creditRes.data?.ok) {
-        alert('שגיאה בהכנת קרדיטים');
+      // Check user has credits
+      const creditRes = await invokeFunction('checkAndReserveCredit', { action: 'logo_generate' });
+      if (!creditRes?.ok && !creditRes?.success) {
+        alert('אין לך מספיק קרדיטים');
         return;
       }
 
-      // Create project first
-      const projectRes = await base44.functions.invoke('createLogoProjectFromLogoCreator', {
+      // Create project via generateLogoForProject
+      const projectRes = await invokeFunction('generateLogoForProject', {
         businessName: formData.businessName,
         industry: formData.industry,
         style: formData.style,
@@ -142,27 +142,27 @@ export default function LogoCreator({ businessName, onClose }) {
         colorScheme: formData.colorScheme
       });
 
-      if (!projectRes.data?.ok) {
-        alert(projectRes.data?.message || 'שגיאה ביצירת הפרויקט');
+      if (!projectRes?.ok) {
+        alert(projectRes?.message || 'שגיאה ביצירת הפרויקט');
         return;
       }
 
-      const projectId = projectRes.data.project_id;
+      const projectId = projectRes.project_id;
       
       // Now generate logo from project
-      const genRes = await base44.functions.invoke('generateLogoForProject', { 
+      const genRes = await invokeFunction('generateLogoForProject', {
         project_id: projectId,
         variation_mode: false
       });
 
       console.log('[GENERATE] Full Response:', genRes);
-            console.log('[GENERATE] Data:', genRes?.data);
-            if (genRes?.data?.ok && genRes?.data?.image_url) {
-              console.log('[GENERATE] Moving to step 4 with URL:', genRes.data.image_url);
-              setGeneratedLogoUrl(genRes.data.image_url);
+            console.log('[GENERATE] Data:', genRes);
+            if (genRes?.ok && genRes?.image_url) {
+              console.log('[GENERATE] Moving to step 4 with URL:', genRes.image_url);
+              setGeneratedLogoUrl(genRes.image_url);
               setStep(4);
             } else {
-              const errorMsg = genRes?.data?.message || genRes?.message || JSON.stringify(genRes) || 'שגיאה ביצירת הלוגו';
+              const errorMsg = genRes?.message || JSON.stringify(genRes) || 'שגיאה ביצירת הלוגו';
               console.error('[GENERATE] Error:', errorMsg);
               alert('שגיאה: ' + errorMsg);
             }
@@ -176,7 +176,7 @@ export default function LogoCreator({ businessName, onClose }) {
   const handleSubmit = async () => {
     try {
       console.log('Submitting:', formData);
-      const res = await base44.functions.invoke('createLogoProjectFromLogoCreator', {
+      const res = await invokeFunction('generateLogoForProject', {
           businessName: formData.businessName,
           industry: formData.industry,
           style: formData.style,
@@ -184,11 +184,11 @@ export default function LogoCreator({ businessName, onClose }) {
           vibe: formData.vibe,
           colorScheme: formData.colorScheme
         });
-        if (res.data?.ok && res.data?.project_id) {
-          navigate(createPageUrl('LogoProjectPage', `?project_id=${res.data.project_id}`));
+        if (res?.ok && res?.project_id) {
+          navigate(createPageUrl('LogoProjectPage', `?project_id=${res.project_id}`));
           onClose();
         } else {
-          alert(res.data?.message || 'שגיאה ביצירת הפרויקט');
+          alert(res?.message || 'שגיאה ביצירת הפרויקט');
         }
     } catch (err) {
       console.error('Error:', err);

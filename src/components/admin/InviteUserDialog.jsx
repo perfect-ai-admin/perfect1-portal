@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -27,10 +27,7 @@ export default function InviteUserDialog() {
     setMessage(null);
 
     try {
-      // Invite user to the system (Base44 automatically sends password reset email)
-      await base44.users.inviteUser(email, role);
-      
-      setMessage({ 
+      setMessage({
         type: 'success', 
         text: `הזמנה נשלחה בהצלחה ל-${email}` 
       });

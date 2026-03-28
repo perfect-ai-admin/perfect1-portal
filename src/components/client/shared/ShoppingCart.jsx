@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye, Loader2, Presentation, Palette, Globe, Layout, Image as ImageIcon } from 'lucide-react';
@@ -10,6 +9,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function ShoppingCartButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,9 +48,9 @@ export default function ShoppingCartButton() {
   const handlePreview = async (landingPageId) => {
     setIsPreviewLoading(true);
     try {
-        const response = await base44.functions.invoke('getPublicLandingPageById', { pageId: landingPageId });
-        if (response.data) {
-            setPreviewPage(response.data);
+        const response = await invokeFunction('getPublicLandingPageById', { pageId: landingPageId });
+        if (response) {
+            setPreviewPage(response);
             setIsPreviewLoading(false);
         } else {
             toast.error('לא ניתן לטעון את התצוגה המקדימה');
@@ -84,7 +84,7 @@ export default function ShoppingCartButton() {
 
   const updateCart = async () => {
     try {
-      const items = await base44.entities.CartItem.filter({ status: 'active' }, '-created_date');
+      const items = await entities.CartItem.filter({ status: 'active' }, '-created_date');
       setCartItems(items);
       
       // Select all by default if new items added or on first load
@@ -137,7 +137,7 @@ export default function ShoppingCartButton() {
 
   const removeItem = async (idToRemove) => {
     try {
-      await base44.entities.CartItem.delete(idToRemove);
+      await entities.CartItem.delete(idToRemove);
       updateCart();
       toast.success('פריט הוסר מהעגלה');
     } catch (error) {

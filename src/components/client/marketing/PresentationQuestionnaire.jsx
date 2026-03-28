@@ -13,11 +13,11 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { addToCart } from '../shared/cartUtils';
 import { useQuery } from '@tanstack/react-query';
 import CheckoutDialog from '@/components/checkout/CheckoutDialog';
+import { entities, auth, sendEmail, uploadFile, invokeFunction } from '@/api/supabaseClient';
 
 // Custom specialized card selector component for better UX
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -146,20 +146,14 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
     setThemes(predefinedThemes);
   }, []);
 
-  // Fetch folders from backend
+  // Folders are not fetched from backend (Edge Function removed)
+  // Using predefined folders instead
   useEffect(() => {
-    const fetchFolders = async () => {
-      try {
-        const response = await base44.functions.invoke('getGammaFolders', {});
-        if (response.data.success) {
-          setFolders(response.data.folders);
-        }
-      } catch (error) {
-        console.error('Error fetching folders:', error);
-        setFolders([]);
-      }
-    };
-    fetchFolders();
+    setFolders([
+      { id: 'default', name: 'ברירת מחדל' },
+      { id: 'business', name: 'עסקי' },
+      { id: 'startup', name: 'סטארטאפ' },
+    ]);
   }, []);
 
   // Scroll to top on step change for mobile
@@ -207,7 +201,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
 
     try {
       toast.info('מעלה קובץ...');
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       setFormData(prev => ({ 
         ...prev, 
         uploadedFileUrl: file_url, 
@@ -241,15 +235,15 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
       setIsBuilding(true);
       try {
          // Call the correct function name
-         const response = await base44.functions.invoke('generatePresentationWithGamma', { formData });
+         const response = await invokeFunction('generatePresentationWithGamma', { formData });
 
          console.log('🔵 Full response object:', response);
-         console.log('🔵 response.data:', response.data);
-         console.log('🔵 response.data.presentationUrl:', response.data?.presentationUrl);
+         console.log('🔵 response:', response);
+         console.log('🔵 response.presentationUrl:', response?.presentationUrl);
 
-         if (response.data.success) {
-           const url = response.data.presentationUrl;
-           const pdf = response.data.pdfUrl;
+         if (response.success) {
+           const url = response.presentationUrl;
+           const pdf = response.pdfUrl;
            console.log('✅ Setting presentation URL:', url);
            console.log('✅ Setting PDF URL:', pdf);
            setPresentationUrl(url);
@@ -258,8 +252,8 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
            setShowDraftPreview(true);
            toast.success('המצגה שלך מוכנה! 🎉');
          } else {
-           console.error('❌ API returned error:', response.data);
-           toast.error('שגיאה: ' + (response.data.error || 'לא הצלח ליצור מצגה'));
+           console.error('❌ API returned error:', response);
+           toast.error('שגיאה: ' + (response.error || 'לא הצלח ליצור מצגה'));
          }
        } catch (error) {
          console.error('❌ Exception error:', error);
@@ -819,11 +813,12 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
 
   const handlePaymentSuccess = async (paymentId) => {
     try {
-      const user = await base44.auth.me();
+     
+      const user = await auth.me();
       
       // Save to PurchasedProduct - prefer PDF URL for download
       const finalDownloadUrl = pdfUrl || draftPreviewUrl;
-      await base44.entities.PurchasedProduct.create({
+      await entities.PurchasedProduct.create({
         user_id: user.id,
         product_type: 'presentation',
         product_name: `מצגת עסקית: ${formData.businessName || 'ללא שם'}`,
@@ -842,7 +837,7 @@ export default function PresentationQuestionnaire({ onComplete, onClose, onSwitc
 
       // Send email with the presentation link
       try {
-        await base44.integrations.Core.SendEmail({
+        await sendEmail({
           to: user.email,
           subject: `המצגת העסקית שלך מוכנה! - ${formData.businessName}`,
           body: `

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -40,6 +39,7 @@ import ShoppingCart from '../components/client/shared/ShoppingCart';
 import UnifiedCheckout from '../components/client/shared/UnifiedCheckout';
 
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 // Lazy Load Heavy Tabs
 const ProgressTab = React.lazy(() => import('../components/client/tabs/ProgressTab'));
@@ -85,7 +85,7 @@ export default function ClientDashboard() {
           };
 
           // Get current user to check if acquisition source exists
-          const currentUser = await base44.auth.me();
+          const currentUser = await auth.me();
           if (currentUser) {
             const updates = {
               last_visit_source: marketingData
@@ -96,7 +96,7 @@ export default function ClientDashboard() {
               updates.acquisition_source = marketingData;
             }
 
-            await base44.auth.updateMe(updates);
+            await auth.updateMe(updates);
             console.log('Marketing data updated:', marketingData);
           }
         }
@@ -118,29 +118,21 @@ export default function ClientDashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Check authentication with Base44 auth
+  // Check authentication - redirect to login if not authenticated
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const isAuth = await base44.auth.isAuthenticated();
+        const isAuth = await auth.isAuthenticated();
         if (!isAuth) {
-          base44.auth.redirectToLogin('/ClientDashboard');
+          auth.redirectToLogin('/APP');
           return;
         }
-
-        const currentUser = await base44.auth.me();
-        if (!currentUser) {
-          base44.auth.redirectToLogin('/ClientDashboard');
-          return;
-        }
-
-        setUser(currentUser);
+        const currentUser = await auth.me();
+        if (currentUser) setUser(currentUser);
       } catch (error) {
         console.error('Auth check error:', error);
-        base44.auth.redirectToLogin('/ClientDashboard');
       }
     };
-
     checkAuth();
   }, []);
 
@@ -218,7 +210,7 @@ export default function ClientDashboard() {
     }
   }), [currentData]);
 
-  if (!user) {
+  if (isLoading && !user && !userData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C5282] text-white shadow-xl">
@@ -236,7 +228,7 @@ export default function ClientDashboard() {
     );
   }
 
-  if (!currentData?.id || !currentData?.full_name || typeof currentData !== 'object') {
+  if (!isLoading && !currentData?.id && !currentData?.full_name) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 flex items-center justify-center" dir="rtl">
         <Alert variant="destructive" className="max-w-md">
@@ -244,7 +236,7 @@ export default function ClientDashboard() {
           <AlertDescription>
             <p className="font-bold mb-2">נתונים חסרים</p>
             <p className="text-sm mb-4">לא ניתן לטעון את מרכז הניהול. אנא התחבר מחדש.</p>
-            <button 
+            <button
               onClick={handleLogout}
               className="text-sm font-medium underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 px-2 py-1 rounded"
               aria-label="חזור לעמוד הכניסה"
@@ -262,7 +254,7 @@ export default function ClientDashboard() {
       <GeneralErrorBoundary>
         <>
         <Helmet>
-        <title>מרכז ניהול עסקי - {currentData.full_name} | Perfect One</title>
+        <title>מרכז ניהול עסקי - {currentData?.full_name} | Perfect One</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 

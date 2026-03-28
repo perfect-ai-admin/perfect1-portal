@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -28,17 +28,18 @@ export default function UsersTable() {
         setLoading(true);
         try {
             // Use backend function to list users (supports bypass and admin check)
-            const response = await base44.functions.invoke('adminListUsers', {});
+            const response = await invokeFunction('adminListUsers');
             
-            if (response.data && response.data.users) {
-                const sortedUsers = response.data.users.sort((a, b) => 
+            if (response && response.users) {
+                const sortedUsers = response.users.sort((a, b) =>
                     new Date(b.created_date) - new Date(a.created_date)
                 );
                 setUsers(sortedUsers);
             } else {
                 // Fallback for direct entity access if function fails or returns weird format
-                const allUsers = await base44.entities.User.list();
-                const sortedUsers = allUsers.sort((a, b) => 
+               
+                const allUsers = [];
+                const sortedUsers = allUsers.sort((a, b) =>
                     new Date(b.created_date) - new Date(a.created_date)
                 );
                 setUsers(sortedUsers);
@@ -46,8 +47,8 @@ export default function UsersTable() {
         } catch (error) {
             console.error('Error loading users:', error);
             try {
-                // Fallback try direct access
-                const allUsers = await base44.entities.User.list();
+               
+                const allUsers = [];
                 setUsers(allUsers);
             } catch (e) {
                 console.error('Fallback failed:', e);
@@ -110,11 +111,11 @@ export default function UsersTable() {
         try {
             for (const userId of selectedUserIds) {
                 if (bulkAction === 'delete') {
-                    await base44.entities.User.delete(userId);
+                    await invokeFunction('adminUpdateUser', { user_id: userId, deleted: true });
                 } else if (bulkAction === 'status') {
-                    await base44.entities.User.update(userId, { status: bulkStatus });
+                    await invokeFunction('adminUpdateUser', { user_id: userId, status: bulkStatus });
                 } else if (bulkAction === 'plan') {
-                    await base44.entities.User.update(userId, { current_plan_id: bulkPlan });
+                    await invokeFunction('adminUpdateUser', { user_id: userId, current_plan_id: bulkPlan });
                 }
             }
             

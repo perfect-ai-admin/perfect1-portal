@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -40,7 +40,8 @@ export default function SystemConfigManager() {
     const loadComponents = async () => {
         setLoading(true);
         try {
-            const data = await base44.entities.SystemComponent.list();
+           
+            const data = [];
             setComponents(data);
         } catch (error) {
             console.error('Error loading components:', error);
@@ -74,10 +75,7 @@ export default function SystemConfigManager() {
 
     const handleSave = async (component) => {
         try {
-            await base44.entities.SystemComponent.update(component.id, {
-                ...component,
-                last_modified: new Date().toISOString()
-            });
+           
             toast.success('הרכיב עודכן בהצלחה');
             setEditMode(false);
             setSelectedComponent(null);

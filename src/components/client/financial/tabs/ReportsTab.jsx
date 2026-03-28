@@ -3,7 +3,7 @@ import { FileText, Loader2, BarChart3, Receipt, TrendingUp, Calendar } from 'luc
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
@@ -54,17 +54,17 @@ export default function ReportsTab({ data }) {
   const fetchMutation = useMutation({
     mutationFn: ({ report_type }) => {
       if (!isConnected) throw new Error('אין חיבור למערכת חשבונות');
-      return base44.functions.invoke('morningFetchReports', { report_type, period_start: periodStart, period_end: periodEnd });
+      return invokeFunction('morningFetchReports', { report_type, period_start: periodStart, period_end: periodEnd });
     },
     onSuccess: (res, variables) => {
-      // Handle both nested and flat response structures
-      const responseData = res.data?.data || res.data;
+      // invokeFunction returns data directly (no .data wrapper)
+      const responseData = res?.data || res;
       if (responseData?.status || responseData?.income_report || responseData?.income_tax_report || responseData?.vat_report) {
         setReportData(responseData);
         setActiveReportType(variables.report_type);
         toast.success('הדוח הופק בהצלחה');
       } else {
-        toast.error(responseData?.error_description || res.data?.error || 'שגיאה בהפקת הדוח');
+        toast.error(responseData?.error_description || res?.error || 'שגיאה בהפקת הדוח');
       }
     },
     onError: (err) => toast.error(err.message || 'שגיאה בהפקת הדוח'),

@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Sparkles, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { base44 } from '@/api/base44Client';
 import ReactMarkdown from 'react-markdown';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function MentorChat({ clientData }) {
   const [messages, setMessages] = useState([]);
@@ -18,7 +18,7 @@ export default function MentorChat({ clientData }) {
 
   const loadHistory = async () => {
     try {
-        const history = await base44.entities.MentorMessage.filter({}, '-created_date', 20);
+        const history = await entities.MentorMessage.filter({}, '-created_date', 20);
         if (history.length > 0) {
             setMessages(history.reverse());
         } else {
@@ -47,18 +47,19 @@ export default function MentorChat({ clientData }) {
 
     try {
         // Call the smart backend function
-        const response = await base44.functions.invoke('mentorChat', {
+        const response = await invokeFunction('mentorChat', {
+            user_id: clientData?.id || '',
             message: userMessage,
             clientData: clientData
         });
 
-        const reply = response.data.reply;
+        const reply = response.reply;
 
         setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
-        
+
         // Trigger a refresh of the dashboard/focus if a suggestion was made
         // In a real app we might use a context or event emitter, here we rely on the user navigating or refresh intervals
-        if (response.data.suggested_focus) {
+        if (response.suggested_focus) {
             // Optional: Show a toast or small indicator that the plan was updated
             console.log("Plan updated by mentor!");
         }

@@ -26,8 +26,7 @@ import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
 import { useCreateGoal, useGoals } from '@/components/hooks/useGoals';
 import LimitUpgradeDialog from '@/components/client/goals/LimitUpgradeDialog';
 import { useBusinessJourney } from '@/components/hooks/useBusinessJourney';
-import { base44 } from '@/api/base44Client';
-
+import { auth } from '@/api/supabaseClient';
 export default function Summary() {
   const { data: user, isLoading: isUserLoading } = useAppAuth();
   const { data: activeJourney } = useBusinessJourney(user?.id);
@@ -45,7 +44,7 @@ export default function Summary() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!isUserLoading && !user) {
-      base44.auth.redirectToLogin('/Summary');
+      auth.redirectToLogin('/Summary');
     }
   }, [user, isUserLoading]);
 

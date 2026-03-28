@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
@@ -27,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import { SkeletonPricing } from '@/components/client/SkeletonLoaders';
+import { entities, auth, invokeFunction } from '@/api/supabaseClient';
 
 // Static data outside component
 const SUBSCRIPTION_TIERS = [
@@ -117,13 +117,13 @@ export default function PricingPerfectBizAI() {
   // Optimized data fetching with React Query
   const { data: user, isLoading: isUserLoading } = useQuery({
     queryKey: ['user', 'me'],
-    queryFn: () => base44.auth.me().catch(() => null),
+    queryFn: () => auth.me().catch(() => null),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const { data: plans = [], isLoading: isPlansLoading } = useQuery({
     queryKey: ['plans'],
-    queryFn: () => base44.entities.Plan.list({ limit: 50 }),
+    queryFn: () => entities.Plan.list({ limit: 50 }),
     staleTime: 1000 * 60 * 60, // 1 hour (plans don't change often)
   });
 
@@ -274,10 +274,10 @@ export default function PricingPerfectBizAI() {
 
   const handleGoogleLogin = async () => {
     try {
-      const response = await base44.functions.invoke('googleAuthStart', {});
-      if (response.data && response.data.url) {
-        sessionStorage.setItem('oauth_state', response.data.state);
-        window.location.href = response.data.url;
+      const response = await invokeFunction('googleAuthStart', {});
+      if (response && response.url) {
+        sessionStorage.setItem('oauth_state', response.state);
+        window.location.href = response.url;
       }
     } catch (error) {
       console.error('Google login error:', error);
@@ -286,7 +286,7 @@ export default function PricingPerfectBizAI() {
   };
 
   const handleLogout = () => {
-    base44.auth.logout('/');
+    auth.logout('/');
   };
 
   const toggleLanguage = () => {
@@ -761,7 +761,7 @@ export default function PricingPerfectBizAI() {
                               <Button
                                 onClick={() => {
                                   setShowLoginModal(false);
-                                  base44.auth.redirectToLogin(window.location.pathname);
+                                  auth.redirectToLogin(window.location.pathname);
                                 }}
                                 className="w-full h-12 text-base bg-[#1E3A5F] hover:bg-[#162B47] text-white rounded-xl shadow-md hover:shadow-lg transition-all"
                               >
@@ -783,9 +783,9 @@ export default function PricingPerfectBizAI() {
           onClose={() => { setCheckoutOpen(false); setCheckoutProduct(null); }}
           product={checkoutProduct}
           onPaymentSuccess={async () => {
-            const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
+            const isPreview = window.location.hostname.includes('preview');
             if (isPreview) {
-              window.location.href = 'https://one-pai.com/MyProducts';
+              window.location.href = 'https://perfect-dashboard.com/MyProducts';
             } else {
               navigate(createPageUrl('MyProducts'));
             }

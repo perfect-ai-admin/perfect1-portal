@@ -12,11 +12,11 @@ import {
   FileText, Calendar, Layers, Share2, Sticker, Smile, Shield, Download, ExternalLink, Loader2, CheckCircle2
   } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { addToCart } from '@/components/client/shared/cartUtils';
 import WatermarkedSticker from './WatermarkedSticker';
 import CheckoutDialog from '@/components/checkout/CheckoutDialog';
+import { entities, auth, sendEmail, uploadFile, invokeFunction } from '@/api/supabaseClient';
 
 // Custom specialized card selector component for better UX
 const SelectionCard = ({ selected, onClick, icon: Icon, title, description, className }) => (
@@ -180,7 +180,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
         if (formData.logoFile) {
             try {
                 toast.info('מעלה את הלוגו שלך...');
-                const { file_url } = await base44.integrations.Core.UploadFile({ file: formData.logoFile });
+                const { file_url } = await uploadFile({ file: formData.logoFile });
                 finalFormData.logoUrl = file_url;
                 delete finalFormData.logoFile; // Don't send the blob
             } catch (uploadError) {
@@ -191,32 +191,32 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
 
         console.log('Sending sticker request with data:', finalFormData);
 
-        const response = await base44.functions.invoke('generateSticker', { 
+        const response = await invokeFunction('generateSticker', {
             formData: finalFormData,
             width: 1024,
             height: 1024
         });
 
-        if (response.data && response.data.ok) {
-            setGeneratedStickerUrl(response.data.image_url);
-            setAiBrief(response.data.ai_brief);
-            setAiPrompt(response.data.used_prompt);
-            
+        if (response && response.ok) {
+            setGeneratedStickerUrl(response.image_url);
+            setAiBrief(response.ai_brief);
+            setAiPrompt(response.used_prompt);
+
             // Console log for transparency as requested
-            console.log('🔵 AI Product Brief (Hebrew):', response.data.ai_brief);
-            console.log('🔵 Generated Prompt (English):', response.data.used_prompt);
+            console.log('🔵 AI Product Brief (Hebrew):', response.ai_brief);
+            console.log('🔵 Generated Prompt (English):', response.used_prompt);
             
             setShowSuccess(true);
             toast.success('הסטיקר נוצר בהצלחה!');
         } else {
-            console.error('Sticker generation failed:', response.data);
+            console.error('Sticker generation failed:', response);
             toast.error('שגיאה ביצירת הסטיקר. נסה שנית.');
         }
 
       } catch (error) {
         console.error('Error generating sticker:', error);
         // Show detailed error if available
-        const msg = error.response?.data?.error || error.response?.data?.message || 'שגיאה בתקשורת עם השרת';
+        const msg = error.message || 'שגיאה בתקשורת עם השרת';
         toast.error(msg);
       } finally {
         setIsBuilding(false);
@@ -988,10 +988,11 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
           try {
             // Always use the original generated URL (without watermark) for saving
             const stickerImageUrl = generatedStickerUrl;
-            const user = await base44.auth.me();
-            
+           
+            const user = await auth.me();
+
             // Save to PurchasedProduct
-            await base44.entities.PurchasedProduct.create({
+            await entities.PurchasedProduct.create({
               user_id: user.id,
               product_type: 'sticker',
               product_name: `סטיקר: ${formData.businessName || 'ממותג'}`,
@@ -1007,7 +1008,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
             });
 
             // Send email with sticker
-            await base44.integrations.Core.SendEmail({
+            await sendEmail({
               to: user.email,
               subject: '🎨 הסטיקר שלך מוכן! – Perfect One',
               body: `
@@ -1020,7 +1021,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                   </div>
                   <p><strong>שם העסק:</strong> ${formData.businessName || '-'}</p>
                   <p><strong>טקסט:</strong> ${formData.exampleSentence || '-'}</p>
-                  <p style="margin-top: 20px;">ניתן להוריד את הסטיקר גם מ<a href="https://one-pai.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
+                  <p style="margin-top: 20px;">ניתן להוריד את הסטיקר גם מ<a href="https://perfect-dashboard.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
                   <p style="color: #888; font-size: 12px; margin-top: 30px;">צוות Perfect One</p>
                 </div>
               `

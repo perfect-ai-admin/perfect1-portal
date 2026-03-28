@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function CloseOsekPaturCRM() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -26,11 +26,11 @@ export default function CloseOsekPaturCRM() {
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ['closeOsekPaturCRM'],
-    queryFn: () => base44.entities.CloseOsekPaturCRM.list('-created_date'),
+    queryFn: () => entities.CloseOsekPaturCRM.list('-created_date'),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.CloseOsekPaturCRM.create(data),
+    mutationFn: (data) => entities.CloseOsekPaturCRM.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['closeOsekPaturCRM'] });
       setDialogOpen(false);
@@ -39,7 +39,7 @@ export default function CloseOsekPaturCRM() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.CloseOsekPaturCRM.update(id, data),
+    mutationFn: ({ id, data }) => entities.CloseOsekPaturCRM.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['closeOsekPaturCRM'] });
       setDialogOpen(false);
@@ -48,7 +48,7 @@ export default function CloseOsekPaturCRM() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.CloseOsekPaturCRM.delete(id),
+    mutationFn: (id) => entities.CloseOsekPaturCRM.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['closeOsekPaturCRM'] });
       setDeleteTarget(null);

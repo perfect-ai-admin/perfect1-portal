@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Edit2, Trash2, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { base44 } from '@/api/base44Client';
-
+import { entities, invokeFunction } from '@/api/supabaseClient';
 const STATUS_OPTIONS = [
   { id: 'idea', label: '💡 רעיון' },
   { id: 'in_progress', label: '⚡ בתהליך' },
@@ -21,7 +20,7 @@ export default function SavedWorkDetail({ work, onClose, onUpdate }) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await base44.entities.SavedWork.update(work.id, editData);
+      await entities.SavedWork.update(work.id, editData);
       onUpdate(editData);
       setIsEditing(false);
     } catch (err) {
@@ -34,7 +33,7 @@ export default function SavedWorkDetail({ work, onClose, onUpdate }) {
   const handleStatusChange = async (newStatus) => {
     setIsSaving(true);
     try {
-      await base44.entities.SavedWork.update(work.id, { status: newStatus });
+      await entities.SavedWork.update(work.id, { status: newStatus });
       onUpdate({ ...work, status: newStatus });
     } finally {
       setIsSaving(false);

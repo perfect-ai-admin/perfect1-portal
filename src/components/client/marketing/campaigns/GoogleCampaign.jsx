@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, MapPin, Check, Link2, ArrowRight, DollarSign, Globe, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function GoogleCampaign({ onBack, onComplete }) {
   const [step, setStep] = useState(1);
@@ -22,7 +22,7 @@ export default function GoogleCampaign({ onBack, onComplete }) {
   const handleLaunch = async () => {
     try {
         setIsLoading(true);
-        await base44.entities.Campaign.create({
+        await entities.Campaign.create({
             name: `Google Ads - ${new Date().toLocaleDateString('he-IL')}`,
             channel: 'google',
             platform: 'google_ads',

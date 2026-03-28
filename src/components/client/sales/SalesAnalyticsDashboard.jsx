@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
 } from 'recharts';
 import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Target } from 'lucide-react';
+import { entities } from '@/api/supabaseClient';
 
 export default function SalesAnalyticsDashboard({ leadId }) {
   const [metrics, setMetrics] = useState(null);
@@ -23,9 +23,9 @@ export default function SalesAnalyticsDashboard({ leadId }) {
   const loadData = async () => {
     try {
       const [interactionsData, metricsData, insightsData] = await Promise.all([
-        base44.entities.SalesInteraction.filter({ created_by: leadId }, '-date', 100),
-        base44.entities.SalesMetric.filter({ created_by: leadId }, '-period_date', 5),
-        base44.entities.SalesInsight.filter({ created_by: leadId }, '-period_date', 10)
+        entities.SalesInteraction.filter({ created_by: leadId }, '-date', 100),
+        entities.SalesMetric.filter({ created_by: leadId }, '-period_date', 5),
+        entities.SalesInsight.filter({ created_by: leadId }, '-period_date', 10)
       ]);
 
       setInteractions(interactionsData);

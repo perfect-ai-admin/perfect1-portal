@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Loader2, CheckCircle, Home, Target, Copy, Download, Palette, Sticker } from 'lucide-react';
 import { toast } from 'sonner';
-import canvas from 'canvas-confetti';
+import confetti from 'canvas-confetti';
 
 export default function CheckoutSuccess() {
     const [searchParams] = useSearchParams();
@@ -23,7 +23,7 @@ export default function CheckoutSuccess() {
         verifyPayment();
         // Celebration animation
         setTimeout(() => {
-            canvas({
+            confetti({
                 particleCount: 100,
                 spread: 70,
                 origin: { y: 0.6 }
@@ -42,7 +42,8 @@ export default function CheckoutSuccess() {
              // Use function to get payment details (RLS might block direct access)
              let payment = null;
              try {
-                 const payments = await base44.entities.Payment.filter({ id: paymentId });
+                 const res = await invokeFunction('getPaymentStatus', { payment_id: paymentId });
+                 const payments = res?.payments || [];
                  if (payments.length > 0) payment = payments[0];
              } catch (_) {}
 
@@ -52,7 +53,8 @@ export default function CheckoutSuccess() {
                      console.log('[CheckoutSuccess] Payment still pending, waiting 3s...');
                      await new Promise(r => setTimeout(r, 3000));
                      try {
-                         const recheckPayments = await base44.entities.Payment.filter({ id: paymentId });
+                         const recheckRes = await invokeFunction('getPaymentStatus', { payment_id: paymentId });
+                         const recheckPayments = recheckRes?.payments || [];
                          if (recheckPayments.length > 0) payment = recheckPayments[0];
                      } catch (_) {}
                  }
@@ -67,33 +69,34 @@ export default function CheckoutSuccess() {
                       if (payment.product_type === 'landing-page') {
                           try {
                               // Step 1: Mark as paid
-                              await base44.functions.invoke('publishLandingPage', {
+                              await invokeFunction('publishLandingPage', {
                                   landingPageId: payment.product_id,
                                   action: 'markPaid'
                               });
 
                               // Step 2: Publish to air
-                              const publishResult = await base44.functions.invoke('publishLandingPage', {
+                              const publishResult = await invokeFunction('publishLandingPage', {
                                   landingPageId: payment.product_id,
                                   action: 'publish'
                               });
 
-                              if (publishResult.data.success) {
+                              if (publishResult.success) {
                                   // Defensive fallback: try url first, then public_url
-                                  const url = publishResult?.data?.url || publishResult?.data?.public_url;
+                                  const url = publishResult?.url || publishResult?.public_url;
                                   if (!url) {
                                       throw new Error('publishLandingPage returned no public URL in response');
                                   }
                                   console.log('[CHECKOUT_SUCCESS] Landing page published:', {
                                       landingPageId: payment.product_id,
                                       publishedUrl: url,
-                                      slug: publishResult.data.slug,
-                                      status: publishResult.data.status,
-                                      isIdempotent: publishResult.data.isIdempotent
+                                      slug: publishResult.slug,
+                                      status: publishResult.status,
+                                      isIdempotent: publishResult.isIdempotent
                                   });
                                   setPublishedUrl(url);
                                   // Fetch landing page details for DB verification
-                                  const pages = await base44.entities.LandingPage.filter({ id: payment.product_id });
+                                 
+                                  const pages = [];
                                   if (pages.length > 0) {
                                       console.log('[DB_VERIFY] Page status:', {
                                           id: pages[0].id,

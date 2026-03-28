@@ -1,193 +1,117 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import SEOOptimized from './SEOOptimized';
-import Breadcrumbs from '../components/seo/Breadcrumbs';
+import Header from '@/components/marketing/Header';
+import Footer from '@/components/marketing/Footer';
 
 export default function Privacy() {
   return (
-    <>
-      <SEOOptimized 
-        title="מדיניות הפרטיות - פרפקט וואן"
-        description="מדיניות הפרטיות של פרפקט וואן - כיצד אנחנו משתמשים ומנהלים את המידע שלך"
-        canonical="https://perfect1.co.il/privacy"
-      />
-      <main className="pt-20 bg-[#F8F9FA]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-          <Breadcrumbs items={[
-            { label: 'דף הבית', url: 'Home' },
-            { label: 'מדיניות פרטיות' }
-          ]} />
-        </div>
-
-        <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-16 text-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">מדיניות הפרטיות</h1>
-            <p className="text-xl text-white/80">כיצד אנחנו משתמשים ומנהלים את המידע שלך</p>
+    <div className="min-h-screen bg-white" dir="rtl">
+      <Header />
+      
+      <main className="pt-20">
+        {/* Hero */}
+        <section className="py-12 md:py-16 px-4 sm:px-6 bg-gray-50/50">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              מדיניות פרטיות
+            </h1>
+            <p className="text-gray-600">
+              עדכון אחרון: ינואר 2025
+            </p>
           </div>
         </section>
 
-        <section className="py-16 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
-            >
-              {/* מה אנחנו */}
-              <div className="bg-blue-50 border-l-4 border-[#1E3A5F] rounded-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-3">מי אנחנו</h2>
-                <p className="text-gray-800">
-                  <strong>פרפקט וואן</strong> היא חברה פרטית (ח.פ: 516309747) המספקת ייעוץ וליווי בתחום פתיחת עסקים בישראל.
-                  <br />
-                  <strong>אנחנו חברה פרטית וביעלות חזקה: האתר אינו אתר ממשלתי ואנחנו אינו מייצגים רשות כלשהי.</strong>
+        {/* Content */}
+        <section className="py-12 md:py-16 px-4 sm:px-6">
+          <div className="max-w-3xl mx-auto prose prose-lg prose-gray">
+            <div className="bg-white rounded-2xl border border-gray-100 p-8 md:p-12 space-y-8">
+              
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">1. מבוא</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  ב-ClientDashboard אנחנו מכבדים את הפרטיות שלך ומחויבים להגנה על המידע האישי שלך. מדיניות פרטיות זו מסבירה כיצד אנחנו אוספים, משתמשים ומגנים על המידע שלך כאשר אתה משתמש בשירותים שלנו.
                 </p>
               </div>
 
-              {/* Section 1 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">1. איזה מידע אנחנו אוספים?</h2>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  כשאתה פונה אלינו דרך האתר, אנחנו אוספים:
+                <h2 className="text-xl font-bold text-gray-900 mb-4">2. המידע שאנחנו אוספים</h2>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  אנחנו אוספים את סוגי המידע הבאים:
                 </p>
-                <ul className="space-y-2 ml-6">
-                  {[
-                    'שם מלא',
-                    'מספר טלפון',
-                    'כתובת דוא"ל (אם סופקה)',
-                    'מידע על המקצוע או סוג העסק שלך',
-                    'הערות או פרטים נוספים שאתה בוחר לשתף'
-                  ].map((item, i) => (
-                    <li key={i} className="text-gray-700 flex gap-3">
-                      <span>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
+                <ul className="list-disc list-inside text-gray-600 space-y-2">
+                  <li>מידע שאתה מספק לנו ישירות (שם, כתובת מייל, פרטי עסק)</li>
+                  <li>מידע על השימוש שלך במערכת (פעולות, העדפות, נתונים עסקיים שאתה מזין)</li>
+                  <li>מידע טכני (כתובת IP, סוג דפדפן, מכשיר)</li>
                 </ul>
               </div>
 
-              {/* Section 2 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">2. למה אנחנו משתמשים בזה?</h2>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  המידע שלך משמש ל:
+                <h2 className="text-xl font-bold text-gray-900 mb-4">3. כיצד אנחנו משתמשים במידע</h2>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  אנחנו משתמשים במידע שלך כדי:
                 </p>
-                <ul className="space-y-2 ml-6">
-                  {[
-                    'ליצור קשר איתך בנוגע לשירותים שלנו',
-                    'לתת לך ייעוץ וליווי בתהליך פתיחת העסק',
-                    'לשלוח לך עדכונים וטיפים בנוגע לנושאים הרלוונטיים',
-                    'לשפר את השירותים שלנו בהתאם למשוב',
-                    'לדעת כמה מישהו הגיע אלינו וממה (לניתוח סטטיסטיקות)'
-                  ].map((item, i) => (
-                    <li key={i} className="text-gray-700 flex gap-3">
-                      <span>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
+                <ul className="list-disc list-inside text-gray-600 space-y-2">
+                  <li>לספק ולשפר את השירותים שלנו</li>
+                  <li>להתאים אישית את החוויה שלך</li>
+                  <li>לשלוח עדכונים והודעות חשובות</li>
+                  <li>לנתח ולשפר את המוצר שלנו</li>
+                  <li>לעמוד בדרישות חוק</li>
                 </ul>
               </div>
 
-              {/* Section 3 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">3. האם אנחנו משתפים את המידע שלך?</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  <strong>לא, אנחנו לא משתפים את המידע שלך עם גורמים חיצוניים.</strong>
-                </p>
-                <p className="text-gray-700 mt-4">
-                  המידע שלך יישמר אצלנו בלבד וישמש אך ורק לתקשורת עם חברה שלנו.
-                </p>
-                <p className="text-gray-700 mt-4 text-sm">
-                  <strong>חריגים:</strong> אנחנו עשויים לשתף מידע אם נדרשנו על פי חוק או להגן על זכויות משפטיות.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">4. שיתוף מידע</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  אנחנו לא מוכרים או משכירים את המידע האישי שלך לצדדים שלישיים. אנחנו עשויים לשתף מידע עם ספקי שירותים שעוזרים לנו לתפעל את המערכת, תוך הקפדה על סודיות ואבטחה.
                 </p>
               </div>
 
-              {/* Section 4 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">4. כמה זמן אנחנו שומרים את המידע?</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  אנחנו שומרים את המידע שלך כל עוד אתה חוקק זקוק לשירותים שלנו, וגם לתקופה סבירה לאחר מכן כדי להמשיך להציע תמיכה ולהתייעץ.
-                  <br />
-                  אם אתה מבקש להסיר את המידע שלך, תוכל להשיג זאת בכל זמן.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">5. אבטחת מידע</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  אנחנו נוקטים באמצעי אבטחה מתקדמים להגנה על המידע שלך, כולל הצפנה, גיבויים שוטפים, ובקרת גישה מחמירה. עם זאת, אין שיטה להעברת נתונים באינטרנט שהיא מאובטחת ב-100%.
                 </p>
               </div>
 
-              {/* Section 5 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">5. אבטחת המידע שלך</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  אנחנו שומרים את המידע שלך בצורה בטוחה. הנתונים מאוחסנים בשרתים מאובטחים וניתנים לגישה רק לאנשים שצריכים לגשת אליהם כדי להשיג את הדרישות שלך.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">6. הזכויות שלך</h2>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  יש לך את הזכויות הבאות בנוגע למידע שלך:
                 </p>
-              </div>
-
-              {/* Section 6 */}
-              <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">6. הזכויות שלך</h2>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  יש לך את הזכות:
-                </p>
-                <ul className="space-y-2 ml-6">
-                  {[
-                    'לגשת למידע שלך ולראות מה אנחנו שומרים עליך',
-                    'לתקן מידע שגוי',
-                    'למחוק את המידע שלך',
-                    'לבקש לא לקבל עוד פניות דוא"ל או טלפוניות'
-                  ].map((item, i) => (
-                    <li key={i} className="text-gray-700 flex gap-3">
-                      <span>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
+                <ul className="list-disc list-inside text-gray-600 space-y-2">
+                  <li>גישה למידע שאנחנו מחזיקים עליך</li>
+                  <li>תיקון מידע לא מדויק</li>
+                  <li>מחיקת המידע שלך (בכפוף להגבלות חוקיות)</li>
+                  <li>התנגדות לעיבוד מסוים של המידע</li>
                 </ul>
               </div>
 
-              {/* Section 7 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">7. עוגיות (Cookies)</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  האתר שלנו משתמש בעוגיות כדי לשפר את החוויה שלך. עוגיות אלה עוזרות לנו להבין איך אתה משתמש באתר ולעדכן אותו.
-                  <br />
-                  אתה יכול להגדיר את הדפדפן שלך לדחיית עוגיות אם תרצה.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">7. עוגיות (Cookies)</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  אנחנו משתמשים בעוגיות כדי לשפר את חוויית השימוש שלך. עוגיות אלה עוזרות לנו לזכור את ההעדפות שלך ולנתח את השימוש באתר. אתה יכול לשלוט בהגדרות העוגיות דרך הדפדפן שלך.
                 </p>
               </div>
 
-              {/* Section 8 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">8. שינויים למדיניות זו</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  עלול להיות עדכונים למדיניות זו. שינויים יופרסמו באתר ותחיד לתוקף מיד.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">8. שינויים במדיניות</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  אנחנו עשויים לעדכן מדיניות זו מעת לעת. נודיע לך על שינויים משמעותיים באמצעות הודעה במערכת או במייל.
                 </p>
               </div>
 
-              {/* Contact */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-l-4 border-[#1E3A5F] rounded-lg p-6 mt-12">
-                <h3 className="text-2xl font-bold text-[#1E3A5F] mb-4">שאלות בנוגע לפרטיות?</h3>
-                <p className="text-gray-800 mb-4">
-                  אנחנו כאן כדי לעזור! אתה יכול ליצור קשר איתנו בכל שאלה בנוגע למדיניות הפרטיות שלנו:
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">9. יצירת קשר</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  אם יש לך שאלות לגבי מדיניות הפרטיות, אנא צור איתנו קשר בכתובת: privacy@clientdashboard.co.il
                 </p>
-                <div className="bg-white rounded-lg p-4">
-                  <p className="text-gray-800 font-medium mb-2">
-                    <strong>פרפקט וואן</strong>
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    📞 <a href="tel:0502277087" className="text-[#1E3A5F] hover:underline">0502277087</a>
-                  </p>
-                  <p className="text-gray-700 mb-1">
-                    💬 <a href="https://wa.me/972502277087" className="text-[#1E3A5F] hover:underline">וואטסאפ</a>
-                  </p>
-                  <p className="text-gray-700">
-                    🏢 אנחנו זמינים בשעות: א'-ה' 9:00-18:00
-                  </p>
-                </div>
               </div>
 
-              {/* Last Updated */}
-              <p className="text-sm text-gray-500 text-center mt-8">
-                עדכון אחרון: 11 בינואר 2026
-              </p>
-            </motion.div>
+            </div>
           </div>
         </section>
       </main>
-    </>
+      
+      <Footer />
+    </div>
   );
 }

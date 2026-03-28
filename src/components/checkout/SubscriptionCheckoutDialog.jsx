@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, ArrowRight, ShieldCheck, X, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 /**
  * SubscriptionCheckoutDialog – popup checkout for plan subscriptions.
@@ -32,7 +32,7 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
   const loadUser = async () => {
     setLoading(true);
     try {
-      const u = await base44.auth.me();
+      const u = await auth.me();
       setUser(u);
     } catch (e) {
       console.error(e);
@@ -53,7 +53,7 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
     if (paymentConfirmedRef.current || !handshakeData?.paymentId) return;
     paymentConfirmedRef.current = true;
     try {
-      await base44.functions.invoke('tranzilaConfirmPayment', {
+      await invokeFunction('tranzilaConfirmPayment', {
         payment_id: handshakeData.paymentId,
         transaction_id: transactionId || ''
       });
@@ -115,7 +115,8 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
       pollCount++;
       if (pollCount > 240) { clearInterval(pollInterval); return; }
       try {
-        const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+        const pollRes = await invokeFunction('getPaymentStatus', { payment_id: handshakeData.paymentId });
+        const payments = pollRes?.payments || [];
         if (payments?.length > 0 && payments[0].status === 'completed') {
           confirmPayment('polling');
           clearInterval(pollInterval);
@@ -131,14 +132,13 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
     if (!product) return;
     setIframeLoading(true);
     try {
-      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+      const data = await invokeFunction('tranzilaCreatePayment', {
         product_type: 'plan',
         product_name: product.name,
         amount,
         product_id: product.productId || '',
       });
-      const data = response.data;
-      if (!data.success || !data.thtk) {
+      if (!data?.success || !data?.thtk) {
         toast.error('שגיאה בהתחלת התשלום');
         setIframeLoading(false);
         return;
@@ -311,7 +311,8 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
                   <button
                     onClick={async () => {
                       try {
-                        const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+                        const manualRes = await invokeFunction('getPaymentStatus', { payment_id: handshakeData.paymentId });
+                        const payments = manualRes?.payments || [];
                         if (payments?.length > 0 && payments[0].status === 'completed') {
                           confirmPayment('manual');
                         } else {

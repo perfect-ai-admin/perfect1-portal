@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { 
   Globe, Instagram, Facebook, Linkedin, Music, Navigation, 
@@ -12,6 +11,7 @@ import {
   MessageCircle, ExternalLink, Palette, Tag, Plus, X, Image, Upload,
   Check, Youtube, MapPin, Twitter
 } from 'lucide-react';
+import { entities, uploadFile } from '@/api/supabaseClient';
 
 const LINK_FIELDS = [
   { key: 'website_url', label: 'אתר', icon: Globe, placeholder: 'https://www.example.com', color: 'text-blue-500', activeColor: 'bg-blue-50 border-blue-200' },
@@ -34,7 +34,7 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
     if (!open || !cardId) return;
     setLoading(true);
     (async () => {
-      const cards = await base44.entities.DigitalCard.filter({ id: cardId });
+      const cards = await entities.DigitalCard.filter({ id: cardId });
       if (cards?.length > 0) {
         const c = cards[0];
         setCard(c);
@@ -91,7 +91,7 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
     
     setUploadingCover(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       if (file_url) {
         handleChange('cover_image_url', file_url);
         toast.success('תמונת קאבר הועלתה בהצלחה');
@@ -116,7 +116,7 @@ export default function EditDigitalCardDialog({ open, onOpenChange, cardId, onSa
     if (formData.website_url) socialNetworks.push('website');
     if (formData.waze_url) socialNetworks.push('waze');
 
-    await base44.entities.DigitalCard.update(cardId, {
+    await entities.DigitalCard.update(cardId, {
       ...formData,
       social_networks: socialNetworks,
     });

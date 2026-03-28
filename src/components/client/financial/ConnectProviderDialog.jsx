@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Link2, Loader2, ShieldCheck, HelpCircle, ChevronDown, ChevronUp, ExternalLink, X, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 const PROVIDER_GUIDES = {
@@ -56,9 +56,9 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
     async function checkSavedCreds() {
       setCheckingCreds(true);
       try {
-        const res = await base44.functions.invoke('acctGetConnectionStatus', {});
+        const res = await invokeFunction('acctGetConnectionStatus');
         if (cancelled) return;
-        const savedProviders = res.data?.saved_providers || [];
+        const savedProviders = res?.saved_providers || [];
         const match = savedProviders.find(sp => sp.provider === provider.id || sp === provider.id);
         if (match) {
           setHasSavedCreds(true);
@@ -76,17 +76,17 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
     setStatus('reconnecting');
     setErrorMsg('');
     try {
-      const res = await base44.functions.invoke('acctConnectProvider', {
+      const res = await invokeFunction('acctConnectProvider', {
         provider: provider.id,
         reconnect: true,
       });
-      if (res.data?.status === 'connected') {
+      if (res?.status === 'connected') {
         setStatus('success');
-        toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה!`, { duration: 5000 });
+        toast.success(res.message || `חשבון ${provider.name} חובר בהצלחה!`, { duration: 5000 });
 
         const syncFnMap = { morning: 'morningSyncPull', icount: 'icountSyncPull', finbot: 'finbotSyncPull' };
         const syncFn = syncFnMap[provider.id] || 'acctSyncPull';
-        base44.functions.invoke(syncFn, { resource: 'all' }).catch(() => {});
+        invokeFunction(syncFn, { resource: 'all' }).catch(() => {});
 
         setTimeout(() => { onSuccess?.(); onClose(); }, 2000);
         return;
@@ -111,22 +111,22 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
 
     try {
       console.log('📡 Connecting to', provider.id, '...');
-      const res = await base44.functions.invoke('acctConnectProvider', {
+      const res = await invokeFunction('acctConnectProvider', {
         provider: provider.id,
         credentials
       });
-      console.log('📡 Response:', JSON.stringify(res.data));
+      console.log('📡 Response:', JSON.stringify(res));
 
-      if (res.data?.status === 'connected') {
+      if (res?.status === 'connected') {
         setStatus('success');
         toast.success(`חשבון ${provider.name} חובר בהצלחה! מסנכרנים את כל הנתונים...`, { duration: 8000 });
-        
+
         // Trigger full sync in background - use correct function per provider
         const syncFnMap = { morning: 'morningSyncPull', icount: 'icountSyncPull', finbot: 'finbotSyncPull' };
         const syncFn = syncFnMap[provider.id] || 'acctSyncPull';
-        base44.functions.invoke(syncFn, { resource: 'all' })
+        invokeFunction(syncFn, { resource: 'all' })
           .then(syncRes => {
-            const r = syncRes.data?.results || {};
+            const r = syncRes?.results || {};
             toast.success(`סנכרון הושלם! ${r.customers || 0} לקוחות, ${r.documents || 0} מסמכים, ${r.expenses || 0} הוצאות`, { duration: 8000 });
           })
           .catch(err => {
@@ -141,7 +141,7 @@ function ConnectProviderDialogInner({ provider, onSuccess, onClose }) {
         }, 2000);
       } else {
         setStatus('error');
-        setErrorMsg(res.data?.error || 'שגיאה לא צפויה בהתחברות');
+        setErrorMsg(res?.error || 'שגיאה לא צפויה בהתחברות');
       }
     } catch (err) {
       console.error('📡 Connect error:', err);

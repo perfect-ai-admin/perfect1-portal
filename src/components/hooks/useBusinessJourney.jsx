@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-
+import { entities } from '@/api/supabaseClient';
 export const JOURNEY_QUERY_KEY = ['businessJourney', 'active'];
 
 export function useBusinessJourney(userId) {
@@ -9,7 +8,7 @@ export function useBusinessJourney(userId) {
     queryFn: async () => {
       if (!userId) return null;
       // Fetch the active journey for this user
-      const journeys = await base44.entities.BusinessJourney.filter({ 
+      const journeys = await entities.BusinessJourney.filter({ 
         user_id: userId, 
         status: 'active' 
       });

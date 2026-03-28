@@ -1,209 +1,121 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import SEOOptimized from './SEOOptimized';
-import Breadcrumbs from '../components/seo/Breadcrumbs';
+import Header from '@/components/marketing/Header';
+import Footer from '@/components/marketing/Footer';
 
 export default function Terms() {
   return (
-    <>
-      <SEOOptimized 
-        title="תנאי שימוש - פרפקט וואן"
-        description="תנאי השימוש באתר פרפקט וואן - הבהרה על טבע השירות, אחריויות וחוקים"
-        canonical="https://perfect1.co.il/terms"
-      />
-      <main className="pt-20 bg-[#F8F9FA]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-          <Breadcrumbs items={[
-            { label: 'דף הבית', url: 'Home' },
-            { label: 'תנאי שימוש' }
-          ]} />
-        </div>
-
-        <section className="bg-gradient-to-br from-[#1E3A5F] to-[#2C5282] py-16 text-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">תנאי השימוש</h1>
-            <p className="text-xl text-white/80">הבהרה על טבע השירות, אחריויות וחוקים</p>
+    <div className="min-h-screen bg-white" dir="rtl">
+      <Header />
+      
+      <main className="pt-20">
+        {/* Hero */}
+        <section className="py-12 md:py-16 px-4 sm:px-6 bg-gray-50/50">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              תנאי שימוש
+            </h1>
+            <p className="text-gray-600">
+              עדכון אחרון: ינואר 2025
+            </p>
           </div>
         </section>
 
-        <section className="py-16 bg-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
-            >
-              {/* Important Notice */}
-              <div className="bg-red-50 border-4 border-red-400 rounded-lg p-8">
-                <h2 className="text-2xl font-bold text-[#1E3A5F] mb-4">⚠️ הבהרה חשובה ביותר</h2>
-                <div className="space-y-3 text-lg text-gray-800">
-                  <p>
-                    <strong>פרפקט וואן</strong> (ח.פ: 516309747) היא חברה פרטית.
-                  </p>
-                  <p>
-                    <strong>👉 האתר אינו אתר ממשלתי</strong>
-                  </p>
-                  <p>
-                    <strong>👉 אנחנו אינם מייצגים רשות כלשהי</strong>
-                  </p>
-                  <p>
-                    <strong>👉 זה ייעוץ וליווי פרטי בלבד - אתה מבצע את הפעולות בעצמך מול הרשויות</strong>
-                  </p>
-                  <p>
-                    <strong>👉 אנחנו לא נותנים ייעוץ משפטי או חשבונאי רשמי</strong>
-                  </p>
-                </div>
-              </div>
-
-              {/* Section 1 */}
+        {/* Content */}
+        <section className="py-12 md:py-16 px-4 sm:px-6">
+          <div className="max-w-3xl mx-auto prose prose-lg prose-gray">
+            <div className="bg-white rounded-2xl border border-gray-100 p-8 md:p-12 space-y-8">
+              
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">1. טבע השירות</h2>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  השירותים שאנחנו מספקים הם:
-                </p>
-                <ul className="space-y-2 ml-6">
-                  {[
-                    'ייעוץ פרטי בנושא פתיחת עסקים בישראל',
-                    'הדרכה וליווי בתהליך הפתיחה',
-                    'עזרה בהבנת דרישות הרשויות',
-                    'אישור בהכנת מסמכים'
-                  ].map((item, i) => (
-                    <li key={i} className="text-gray-700 flex gap-3">
-                      <span>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-gray-700 mt-6 font-bold bg-yellow-50 p-4 rounded-lg">
-                  ❌ השירותים אינם כוללים: ביצוע פעולות משפטיות, ייעוץ חשבונאי רשמי, או כל התחייבות להשלים תהליכים בשם הלקוח.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">1. כללי</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  אתר זה מופעל על ידי חברת פרפקט וואן, ח.פ 516309747 (להלן: "החברה" או "הנהלת האתר"). השימוש באתר ובשירותיו כפוף לקריאת תקנון זה ולהסכמה לתנאיו. בעצם השימוש באתר, הגלישה בו, והזמנת שירותים או מוצרים באמצעותו, אתה מצהיר כי קראת את התקנון, הבנת אותו ואתה מסכים לכל הוראותיו.
                 </p>
               </div>
 
-              {/* Section 2 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">2. אחריות הלקוח</h2>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  הלקוח אחראי אישית:
+                <h2 className="text-xl font-bold text-gray-900 mb-4">2. תיאור השירות והמוצרים</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  האתר מציע שירותי SaaS לניהול עסקי (ClientDashboard), וכן מוצרים דיגיטליים ופיזיים הנמכרים מעת לעת. תמונות המוצרים באתר נועדו להמחשה בלבד וייתכנו הבדלים בין התמונות לבין המוצר בפועל. החברה עושה מאמצים לוודא שהמידע באתר מדויק, אך ייתכנו טעויות בתום לב.
                 </p>
-                <ul className="space-y-2 ml-6">
-                  {[
-                    'ביצוע כל הפעולות מול הרשויות (מס הכנסה, ביטוח לאומי וכו\')',
-                    'לוידוא שהמידע שסיפק הוא נכון ותקין',
-                    'להקפדה על כל החוקים הרלוונטיים',
-                    'לביצוע פעולות משפטיות או חשבונאיות בהנחיית אנשי מקצוע רשמיים'
-                  ].map((item, i) => (
-                    <li key={i} className="text-gray-700 flex gap-3">
-                      <span>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
+              </div>
+
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">3. הזמנת מוצרים ואספקה</h2>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  רכישת מוצרים באתר תתבצע באמצעות כרטיס אשראי או אמצעי תשלום אחר המקובל על החברה.
+                </p>
+                <ul className="list-disc list-inside text-gray-600 space-y-2">
+                  <li>החברה רשאית לא לאשר הזמנה מסיבות שונות כגון: מלאי שאזל, בעיה בפרטי האשראי, או כל סיבה אחרת לשיקול דעתה.</li>
+                  <li>עבור מוצרים דיגיטליים, האספקה היא מיידית או תוך זמן קצר לכתובת המייל שהוזנה.</li>
+                  <li>עבור מוצרים פיזיים (אם ישנם), זמני המשלוח יפורטו בעמוד המוצר. החברה לא תישא באחריות לעיכובים שאינם בשליטתה (כגון שביתות דואר, כוח עליון).</li>
                 </ul>
               </div>
 
-              {/* Section 3 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">3. חוקים וחוקיות</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  כל החוקים של מדינת ישראל חלים על פתיחת עסק. אנחנו מספקים ייעוץ על סמך ידע שלנו, אך <strong>אנחנו אינו מבטיחים דיוק מלא בכל מקרה</strong> ו<strong>אנחנו אינו אחראים לטעויות משלנו או לשינויים בחוקים</strong>.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">4. מדיניות ביטולים והחזרים</h2>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  אנו פועלים בהתאם לחוק הגנת הצרכן, התשמ"א-1981.
+                </p>
+                
+                <h3 className="font-bold text-gray-800 mt-4 mb-2">מוצרים פיזיים:</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  ניתן לבטל עסקה תוך 14 יום מקבלת המוצר או מסמך הגילוי (המאוחר מביניהם). הודעת הביטול תימסר לחברה בדוא"ל או בדואר רשום. במקרה של ביטול שלא עקב פגם, יחולו דמי ביטול בשיעור 5% מערך העסקה או 100 ש"ח, לפי הנמוך מביניהם. על הלקוח להחזיר את המוצר באריזתו המקורית וללא פגם.
+                </p>
+
+                <h3 className="font-bold text-gray-800 mt-4 mb-2">מוצרים דיגיטליים ושירותי מידע:</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  עבור מוצרים הניתנים להקלטה, שעתוק או שכפול (כגון קבצים דיגיטליים, קורסים לצפייה מיידית, תוכנות), לא ניתן לבטל את העסקה לאחר קבלת הגישה למוצר, בהתאם לחוק הגנת הצרכן.
+                </p>
+
+                <h3 className="font-bold text-gray-800 mt-4 mb-2">מנויים מתחדשים:</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  ניתן לבטל מנוי מתחדש בכל עת. הביטול ייכנס לתוקף בסיום מחזור החיוב הנוכחי. לא יינתנו החזרים כספיים רטרואקטיביים עבור תקופות שלא נוצלו במלואן, אלא אם נקבע אחרת בחוק.
                 </p>
               </div>
 
-              {/* Section 4 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">4. אי-אחריות מוגבלת</h2>
-                <p className="text-gray-700 mb-4 leading-relaxed">
-                  פרפקט וואן לא אחראית לנזקים או הפסדים הנוצרים מ:
-                </p>
-                <ul className="space-y-2 ml-6">
-                  {[
-                    'שגיאות או השמטות בהנחיות שלנו',
-                    'שינויים בחוקים לאחר קבלת השירות',
-                    'החלטות אישיות של הלקוח',
-                    'אי-ציות של הרשויות לבקשות',
-                    'השימוש באתר או השירותים שלנו בדרך כלשהי'
-                  ].map((item, i) => (
-                    <li key={i} className="text-gray-700 flex gap-3">
-                      <span>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Section 5 */}
-              <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">5. מידע אישי וחוקיות</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  כשאתה משתמש בשירותים שלנו, אתה מספק מידע אישי. מידע זה משומר בהתאם לחוקי הגנת הנתונים בישראל ולמדיניות הפרטיות שלנו.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">5. קניין רוחני</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  כל זכויות הקניין הרוחני באתר, לרבות שם המותג, עיצובים, תכנים, קוד מחשב וקבצים גרפיים, הינם רכושה הבלעדי של חברת פרפקט וואן. אין להעתיק, לשכפל, להפיץ או לעשות כל שימוש מסחרי בתכנים אלו ללא אישור מראש ובכתב.
                 </p>
               </div>
 
-              {/* Section 6 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">6. זכויות יוצרים</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  כל התוכן באתר (טקסטים, עיצובים, תמונות וכו') הוא בעלות פרפקט וואן. אתה לא רשאי להעתיק, להפיץ או להשתמש בתוכן ללא הסכמה בכתב.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">6. פרטיות ואבטחת מידע</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  החברה נוקטת באמצעי זהירות מקובלים על מנת לשמור, ככל האפשר, על סודיות המידע. פרטי האשראי של המשתמשים אינם נשמרים במערכות החברה אלא מסופקים ישירות לספקי סליקה מאובטחים. השימוש במידע שנאסף ייעשה רק על פי מדיניות הפרטיות של האתר ועל פי הוראות כל דין.
                 </p>
               </div>
 
-              {/* Section 7 */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">7. שינויים לתנאים</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  פרפקט וואן שומרת לעצמה את הזכות לשנות תנאים אלו בכל עת. שינויים יהיו בתוקף מיד לאחר פרסום באתר.
+                <h2 className="text-xl font-bold text-gray-900 mb-4">7. הגבלת אחריות</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  השירותים והמוצרים באתר ניתנים לשימוש כמות שהם (AS IS). החברה לא תישא באחריות לכל נזק, ישיר או עקיף, שייגרם למשתמש או לצד שלישי כתוצאה משימוש באתר או במוצרים, מעבר לעלות המוצר שנרכש בפועל.
                 </p>
               </div>
 
-              {/* Section 8 - Cancellation Policy */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">8. מדיניות ביטולים והחזרים</h2>
-                <p className="text-gray-700 leading-relaxed mb-4">
-                  אנו בפרפקט וואן שואפים לספק ללקוחותינו את השירות הטוב ביותר. בהתאם לחוק הגנת הצרכן ומדיניות החברה:
+                <h2 className="text-xl font-bold text-gray-900 mb-4">8. דין וסמכות שיפוט</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  על תקנון זה ועל השימוש באתר יחולו דיני מדינת ישראל בלבד. סמכות השיפוט הבלעדית לכל עניין הנוגע לתקנון זה מוקנית לבתי המשפט המוסמכים במחוז תל אביב.
                 </p>
-                <ul className="space-y-2 ml-6">
-                  {[
-                    'ניתן לבטל מנוי חודשי בכל עת. הביטול ייכנס לתוקף בסיום מחזור החיוב הנוכחי.',
-                    'לא יינתן החזר כספי רטרואקטיבי על תקופות בהן השירות היה פעיל.',
-                    'במקרה של רכישת מוצר דיגיטלי (כגון לוגו או מצגת) שלא סופק עדיין, ניתן לבטל את העסקה ולקבל החזר מלא.',
-                    'לא ניתן לבטל רכישה של מוצר דיגיטלי לאחר שסופק או הורד למחשב הלקוח, בהתאם לחוק הגנת הצרכן למוצרים הניתנים לשעתוק או שכפול.',
-                    'בקשות לביטול יש לשלוח בכתב דרך הוואטסאפ או במייל, והן יטופלו בתוך 2 ימי עסקים.'
-                  ].map((item, i) => (
-                    <li key={i} className="text-gray-700 flex gap-3">
-                      <span>•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
 
-              {/* Section 9 - Contact */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">9. פרטי החברה</h2>
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border-l-4 border-[#1E3A5F]">
-                  <p className="text-gray-800 font-bold mb-3">פרפקט וואן</p>
-                  <p className="text-gray-700 mb-2">
-                    <strong>מספר חברה:</strong> 516309747
-                  </p>
-                  <p className="text-gray-700 mb-2">
-                    <strong>טלפון:</strong> <a href="tel:0502277087" className="text-[#1E3A5F] hover:underline">0502277087</a>
-                  </p>
-                  <p className="text-gray-700 mb-2">
-                    <strong>וואטסאפ:</strong> <a href="https://wa.me/972502277087" className="text-[#1E3A5F] hover:underline">צור קשר</a>
-                  </p>
-                  <p className="text-gray-700">
-                    <strong>שעות פעילות:</strong> א'-ה' 9:00-18:00
-                  </p>
-                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">9. יצירת קשר</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  לכל שאלה, בירור או הודעת ביטול, ניתן לפנות אלינו בפרטים הבאים:<br/>
+                  חברת פרפקט וואן (ח.פ 516309747)<br/>
+                  דוא"ל: legal@clientdashboard.co.il
+                </p>
               </div>
 
-              {/* Last Updated */}
-              <p className="text-sm text-gray-500 text-center mt-8">
-                עדכון אחרון: 11 בינואר 2026
-              </p>
-            </motion.div>
+            </div>
           </div>
         </section>
       </main>
-    </>
+      
+      <Footer />
+    </div>
   );
 }

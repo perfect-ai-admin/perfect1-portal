@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import SalesInteractionForm from '../sales/SalesInteractionForm';
 import CreateScriptDialog from './sales/CreateScriptDialog';
+import { entities } from '@/api/supabaseClient';
 
 const DEFAULT_SCRIPTS = [
   {
@@ -102,7 +102,7 @@ export default function SalesScriptsLibrary() {
 
   const { data: customScripts, isLoading } = useQuery({
     queryKey: ['salesScripts'],
-    queryFn: () => base44.entities.SalesScript.list('-created_date'),
+    queryFn: () => entities.SalesScript.list('-created_date'),
     initialData: []
   });
 

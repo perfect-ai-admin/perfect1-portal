@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { invokeFunction } from '@/api/supabaseClient';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, Building2, Users, 
   FileText, List, Palette, Repeat, Check, Briefcase, 
@@ -144,14 +145,27 @@ export default function ProposalQuestionnaire({ onComplete, onClose }) {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e) => {
+  const [generatedProposal, setGeneratedProposal] = useState(null);
+  const [generateError, setGenerateError] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
       setIsBuilding(true);
-      setTimeout(() => {
-        setIsBuilding(false);
+      setGenerateError('');
+      try {
+        const response = await invokeFunction('generateProposal', { formData });
+        if (response?.error) {
+          throw new Error(response.error);
+        }
+        setGeneratedProposal(response);
         setShowSuccess(true);
-      }, 2500);
+      } catch (err) {
+        console.error('Proposal generation error:', err);
+        setGenerateError(err.message || 'שגיאה ביצירת הצעת המחיר. נסה שוב.');
+      } finally {
+        setIsBuilding(false);
+      }
     }
   };
 
@@ -569,6 +583,11 @@ export default function ProposalQuestionnaire({ onComplete, onClose }) {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="w-full">
+              {generateError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 text-red-700 text-sm text-center">
+                  {generateError}
+                </div>
+              )}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}

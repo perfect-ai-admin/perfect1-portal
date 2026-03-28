@@ -2,10 +2,10 @@ import React from 'react';
 import { RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function ExpensesTab({ data }) {
   const queryClient = useQueryClient();
@@ -14,20 +14,20 @@ export default function ExpensesTab({ data }) {
   const { data: expenses = [], isLoading } = useQuery({
     queryKey: ['accounting-expenses', providerId || 'none'],
     queryFn: async () => {
-      const exps = await base44.entities.AccountingExpense.filter({ provider: providerId }, '-date', 500);
+      const exps = await entities.AccountingExpense.filter({ provider: providerId }, '-date', 500);
       if (exps?.length > 0) return exps;
-      return base44.entities.FinbotExpense.filter({ provider: providerId }, '-created_date', 500);
+      return entities.FinbotExpense.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
   });
 
   const syncMutation = useMutation({
     mutationFn: () => {
-      return base44.functions.invoke('acctSyncPull', { resource: 'expenses' });
+      return invokeFunction('acctSyncPull', { resource: 'expenses' });
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['accounting-expenses'] });
-      toast.success(`סונכרנו ${res.data?.synced_count || 0} הוצאות`);
+      toast.success(`סונכרנו ${res?.synced_count || 0} הוצאות`);
     },
     onError: (err) => toast.error(err.message || 'שגיאה בסנכרון'),
   });

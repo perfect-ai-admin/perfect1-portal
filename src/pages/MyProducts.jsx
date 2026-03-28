@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -29,6 +28,7 @@ import ShoppingCartButton from '@/components/client/shared/ShoppingCart';
 import NotificationCenter from '@/components/client/NotificationCenter';
 import LandingPageManageSheet from '@/components/client/myproducts/LandingPageManageSheet';
 import EditDigitalCardDialog from '@/components/client/myproducts/EditDigitalCardDialog';
+import { entities, auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function MyProducts() {
   const [user, setUser] = useState(null);
@@ -47,15 +47,15 @@ export default function MyProducts() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const isAuth = await base44.auth.isAuthenticated();
+        const isAuth = await auth.isAuthenticated();
         if (!isAuth) {
-          base44.auth.redirectToLogin('/MyProducts');
+          auth.redirectToLogin('/MyProducts');
           return;
         }
-        const currentUser = await base44.auth.me();
+        const currentUser = await auth.me();
         setUser(currentUser);
       } catch (error) {
-        base44.auth.redirectToLogin('/MyProducts');
+        auth.redirectToLogin('/MyProducts');
       }
     };
     checkAuth();
@@ -65,10 +65,10 @@ export default function MyProducts() {
     queryKey: ['purchased-products', user?.id],
     queryFn: async () => {
       // Get PurchasedProduct records
-      const purchased = await base44.entities.PurchasedProduct.list('-created_date', 200);
+      const purchased = await entities.PurchasedProduct.list('-created_date', 200);
       
       // Also get completed payments for this user to catch anything missing
-      const allPayments = await base44.entities.Payment.filter(
+      const allPayments = await entities.Payment.filter(
         { user_id: user.id, status: 'completed' }, '-created_date', 200
       );
       
@@ -135,7 +135,7 @@ export default function MyProducts() {
       let allProducts = [...purchased, ...missingProducts];
 
       // Add digital cards that were paid for and aren't already linked as products
-      const digitalCards = await base44.entities.DigitalCard.filter({ user_id: user.id });
+      const digitalCards = await entities.DigitalCard.filter({ user_id: user.id });
       const existingCardIds = new Set(
         allProducts
           .filter(p => p.metadata?.type === 'digital_card' || p.metadata?.cardId)
@@ -180,7 +180,7 @@ export default function MyProducts() {
       if (user.current_plan_id) {
         const hasPlanProduct = allProducts.some(p => p.product_type === 'plan');
         if (!hasPlanProduct) {
-          const plans = await base44.entities.Plan.list();
+          const plans = await entities.Plan.list();
           const currentPlan = plans.find(p => p.id === user.current_plan_id);
           if (currentPlan) {
             allProducts.unshift({
@@ -203,7 +203,7 @@ export default function MyProducts() {
   });
 
   const archiveMutation = useMutation({
-    mutationFn: (id) => base44.entities.PurchasedProduct.update(id, { status: 'archived' }),
+    mutationFn: (id) => entities.PurchasedProduct.update(id, { status: 'archived' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['purchased-products'] });
       toast.success('המוצר הועבר לארכיון');
@@ -223,9 +223,9 @@ export default function MyProducts() {
     if (product.product_type !== 'landing_page' || !product.linked_entity_id) return;
     setIsPreviewLoading(true);
     try {
-      const response = await base44.functions.invoke('getPublicLandingPageById', { pageId: product.linked_entity_id });
-      if (response.data) {
-        setPreviewPage(response.data);
+      const response = await invokeFunction('getPublicLandingPageById', { pageId: product.linked_entity_id });
+      if (response) {
+        setPreviewPage(response);
       }
     } catch (err) {
       toast.error('שגיאה בטעינת התצוגה המקדימה');
@@ -238,13 +238,13 @@ export default function MyProducts() {
     setIsCancelling(true);
     try {
       // Reset user plan to free
-      await base44.auth.updateMe({
+      await auth.updateMe({
         current_plan_id: null,
         plan_renewal_date: null,
       });
       // Archive the PurchasedProduct if it's a real record
       if (cancelDialog?.id && !cancelDialog.id.startsWith('subscription_') && !cancelDialog.id.startsWith('payment_')) {
-        await base44.entities.PurchasedProduct.update(cancelDialog.id, { status: 'archived' });
+        await entities.PurchasedProduct.update(cancelDialog.id, { status: 'archived' });
       }
       queryClient.invalidateQueries({ queryKey: ['purchased-products'] });
       toast.success('המנוי בוטל בהצלחה. חזרת למסלול החינמי.');
@@ -257,7 +257,7 @@ export default function MyProducts() {
     }
   };
 
-  const handleLogout = () => base44.auth.logout();
+  const handleLogout = () => auth.logout();
 
   const stats = useMemo(() => {
     const active = products.filter(p => p.status === 'active').length;

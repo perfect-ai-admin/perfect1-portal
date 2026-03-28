@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, BookOpen, Zap, MessageSquare, Layers, Briefcase, MoreVertical, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 const WORK_TYPE_CONFIG = {
   campaign: { label: 'קמפיין', icon: Zap, color: 'bg-blue-100 text-blue-700' },
@@ -28,7 +28,7 @@ export default function SavedWorksSection({ onSelectWork }) {
 
   const { data: works = [], isLoading } = useQuery({
     queryKey: ['savedWorks'],
-    queryFn: () => base44.entities.SavedWork.list('-updated_date'),
+    queryFn: () => entities.SavedWork.list('-updated_date'),
     initialData: []
   });
 

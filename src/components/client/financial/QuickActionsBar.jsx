@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, Plus, BarChart3, DollarSign, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../../hooks/useQueryKeys';
@@ -21,6 +20,7 @@ import {
 import ConnectAccountingSoftwareDialog from './ConnectAccountingSoftwareDialog';
 import ProviderSelectionDialog from './ProviderSelectionDialog';
 import ConnectProviderDialog from './ConnectProviderDialog';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function QuickActionsBar({ onActionComplete, user }) {
   const { isConnected, providerId, providerName } = useActiveAccountingProvider();
@@ -36,8 +36,8 @@ export default function QuickActionsBar({ onActionComplete, user }) {
 
   // Fetch saved providers for selection dialog
   React.useEffect(() => {
-    base44.functions.invoke('acctGetConnectionStatus', {}).then(res => {
-      setSavedProvidersList(res.data?.saved_providers || []);
+    invokeFunction('acctGetConnectionStatus').then(res => {
+      setSavedProvidersList(res?.saved_providers || []);
     }).catch(() => {});
   }, []);
 
@@ -69,22 +69,23 @@ export default function QuickActionsBar({ onActionComplete, user }) {
 
     setConnectLoading(true);
     try {
-      const completeRes = await base44.functions.invoke(provider.completeFunction, credentials);
+      const completeRes = await invokeFunction(provider.completeFunction, credentials);
 
-      if (completeRes.data?.status === 'connected') {
+      if (completeRes?.status === 'connected') {
         toast.success(`חשבון ${provider.name} חובר בהצלחה! 🎉`);
         setShowProviderConnect(false);
         setSelectedProvider(null);
-        await base44.auth.updateMe({
+       
+        await auth.updateMe({
           accounting_software: { provider: provider.id, is_active: true }
         });
         queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
         onActionComplete && onActionComplete();
       } else {
-        toast.error(completeRes.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
+        toast.error(completeRes?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.');
       }
     } catch (error) {
-      const msg = error?.response?.data?.error || error?.response?.data?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.';
+      const msg = error?.message || 'שגיאה בהתחברות. בדוק שה-API Key תקין.';
       toast.error(msg);
     } finally {
       setConnectLoading(false);
@@ -95,7 +96,7 @@ export default function QuickActionsBar({ onActionComplete, user }) {
     if (!window.confirm('האם אתה בטוח שברצונך להתנתק ממערכת הנהלת החשבונות?')) return;
     
     try {
-      await base44.functions.invoke('acctDisconnectProvider');
+      await invokeFunction('acctDisconnectProvider');
 
       // Clear cached financial data immediately
       queryClient.setQueryData(['active-accounting-connection'], null);

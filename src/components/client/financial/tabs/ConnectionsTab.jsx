@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ACCOUNTING_PROVIDERS, getProvider } from '../accountingProviders';
@@ -29,11 +29,11 @@ export default function ConnectionsTab({ data }) {
     const newStatuses = {};
 
     try {
-      const res = await base44.functions.invoke('acctGetConnectionStatus');
-      if (res.data?.connected) {
-        newStatuses[res.data.provider] = res.data;
+      const res = await invokeFunction('acctGetConnectionStatus');
+      if (res?.connected) {
+        newStatuses[res.provider] = res;
       }
-      setSavedProviders(res.data?.saved_providers || []);
+      setSavedProviders(res?.saved_providers || []);
     } catch (err) {
       console.log('Status fetch error:', err);
     }
@@ -52,19 +52,19 @@ export default function ConnectionsTab({ data }) {
 
     try {
       console.log('📡 Invoking acctConnectProvider...');
-      const res = await base44.functions.invoke('acctConnectProvider', { 
-        provider: providerId, 
-        credentials 
+      const res = await invokeFunction('acctConnectProvider', {
+        provider: providerId,
+        credentials
       });
-      console.log('📡 Response:', res.data);
+      console.log('📡 Response:', res);
 
-      if (res.data?.status === 'connected') {
-        toast.success(res.data.message || `חשבון ${provider.name} חובר בהצלחה! 🎉`, { duration: 6000 });
+      if (res?.status === 'connected') {
+        toast.success(res.message || `חשבון ${provider.name} חובר בהצלחה! 🎉`, { duration: 6000 });
         setConnectProvider(null);
         queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
         fetchAllStatuses();
       } else {
-        toast.error(res.data?.error || 'שגיאה בהתחברות');
+        toast.error(res?.error || 'שגיאה בהתחברות');
       }
     } catch (err) {
       console.error('📡 Connect error:', err);
@@ -77,17 +77,17 @@ export default function ConnectionsTab({ data }) {
   const handleReconnect = async (providerId) => {
     setReconnectLoading(p => ({ ...p, [providerId]: true }));
     try {
-      const res = await base44.functions.invoke('acctConnectProvider', { 
-        provider: providerId, 
-        reconnect: true 
+      const res = await invokeFunction('acctConnectProvider', {
+        provider: providerId,
+        reconnect: true
       });
-      if (res.data?.status === 'connected') {
-        toast.success(res.data.message || `חובר מחדש ל-${providerId}! 🎉`);
+      if (res?.status === 'connected') {
+        toast.success(res.message || `חובר מחדש ל-${providerId}! 🎉`);
         queryClient.invalidateQueries({ queryKey: ['active-accounting-connection'] });
         fetchAllStatuses();
       } else {
-        toast.error(res.data?.error || 'שגיאה בהתחברות מחדש');
-        if (res.data?.needs_credentials) {
+        toast.error(res?.error || 'שגיאה בהתחברות מחדש');
+        if (res?.needs_credentials) {
           // Saved creds are invalid, open regular connect dialog
           const provider = getProvider(providerId);
           if (provider) setConnectProvider(provider);
@@ -111,7 +111,7 @@ export default function ConnectionsTab({ data }) {
     if (!confirm(`בטוח שברצונך להתנתק מ-${provider.name}?`)) return;
 
     setDisconnectLoading(p => ({ ...p, [providerId]: true }));
-    await base44.functions.invoke('acctDisconnectProvider');
+    await invokeFunction('acctDisconnectProvider');
     setDisconnectLoading(p => ({ ...p, [providerId]: false }));
     toast.success(`התנתקת מ-${provider.name}`);
     queryClient.setQueryData(['active-accounting-connection'], null);
@@ -125,13 +125,13 @@ export default function ConnectionsTab({ data }) {
     setSyncLoading(p => ({ ...p, [key]: true }));
 
     try {
-      const res = await base44.functions.invoke('acctSyncPull', { resource });
+      const res = await invokeFunction('acctSyncPull', { resource });
       
-      if (res.data?.status === 'success') {
-        toast.success(`סונכרנו ${res.data.synced_count || 0} רשומות מ-${provider.name}`);
+      if (res?.status === 'success') {
+        toast.success(`סונכרנו ${res.synced_count || 0} רשומות מ-${provider.name}`);
         fetchAllStatuses();
       } else {
-        toast.error(res.data?.error || 'שגיאה בסנכרון');
+        toast.error(res?.error || 'שגיאה בסנכרון');
       }
     } catch (err) {
       toast.error('שגיאה בסנכרון');

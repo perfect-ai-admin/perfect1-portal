@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Wand2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function CreateScriptDialog({ open, onOpenChange, onScriptCreated }) {
   const [loading, setLoading] = useState(false);
@@ -28,11 +28,10 @@ export default function CreateScriptDialog({ open, onOpenChange, onScriptCreated
     setLoading(true);
     try {
       // 1. Generate Content
-      const response = await base44.functions.invoke('generateSalesScript', formData);
-      const generatedData = response.data;
+      const generatedData = await invokeFunction('generateSalesScript', formData);
 
       // 2. Save to DB
-      const newScript = await base44.entities.SalesScript.create({
+      const newScript = await entities.SalesScript.create({
         title: generatedData.title,
         content: generatedData.script,
         type: formData.type,

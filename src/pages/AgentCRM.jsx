@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -11,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Loader2, Phone, MessageCircle, Calendar, Search, LogOut, Save, X, Edit2, Columns3, Filter } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function AgentCRM() {
   const [agent, setAgent] = useState(null);
@@ -55,13 +55,13 @@ export default function AgentCRM() {
 
   const { data: allLeads, isLoading } = useQuery({
     queryKey: ['agent-leads'],
-    queryFn: () => base44.entities.Lead.list('-created_date', 1000),
+    queryFn: () => entities.Lead.list('-created_date', 1000),
     initialData: [],
     enabled: !!agent
   });
 
   const updateLeadMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Lead.update(id, data),
+    mutationFn: ({ id, data }) => entities.Lead.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['agent-leads'] });
       setSelectedLead(null);

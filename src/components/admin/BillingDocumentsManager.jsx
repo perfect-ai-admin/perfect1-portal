@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -40,7 +40,8 @@ export default function BillingDocumentsManager() {
 
   const loadDocs = async () => {
     setLoading(true);
-    const data = await base44.entities.BillingDocument.list('-created_date', 100);
+   
+    const data = [];
     setDocs(data || []);
     setLoading(false);
   };
@@ -50,14 +51,14 @@ export default function BillingDocumentsManager() {
   const handleRetryIssue = async (doc) => {
     setRetrying(doc.id);
     try {
-      const res = await base44.functions.invoke('retryBillingDocument', {
+      const res = await invokeFunction('retryBillingDocument', {
         billing_document_id: doc.id,
         action: 'retry_issue',
       });
-      if (res.data?.status === 'already_issued') {
+      if (res?.status === 'already_issued') {
         toast.info('המסמך כבר הופק');
-      } else if (res.data?.error) {
-        toast.error(res.data.error);
+      } else if (res?.error) {
+        toast.error(res.error);
       } else {
         toast.success('הפקה חוזרת נשלחה');
       }
@@ -71,14 +72,14 @@ export default function BillingDocumentsManager() {
   const handleResendEmail = async (doc) => {
     setRetrying(doc.id);
     try {
-      const res = await base44.functions.invoke('retryBillingDocument', {
+      const res = await invokeFunction('retryBillingDocument', {
         billing_document_id: doc.id,
         action: 'resend_email',
       });
-      if (res.data?.status === 'email_sent') {
-        toast.success(`מייל נשלח ל-${res.data.email}`);
-      } else if (res.data?.error) {
-        toast.error(res.data.error);
+      if (res?.status === 'email_sent') {
+        toast.success(`מייל נשלח ל-${res.email}`);
+      } else if (res?.error) {
+        toast.error(res.error);
       }
       await loadDocs();
     } catch (err) {

@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client'; // Keep for direct entity check
+// Keep for direct entity check
 import SimpleDialog from '@/components/client/SimpleDialog';
 import { useUpdateUserPhone } from '@/components/hooks/useAppAuth';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 // Goal Templates
 export const GOAL_TEMPLATES = [
@@ -260,7 +261,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
     // Check if phone number is missing (only for new goals)
     if (!editingGoal && !showPhonePrompt) {
       try {
-        const currentUser = await base44.auth.me();
+       
+        const currentUser = await auth.me();
         const hasPhone = currentUser?.phone || currentUser?.mobile || currentUser?.phoneNumber;
         
         if (!hasPhone) {

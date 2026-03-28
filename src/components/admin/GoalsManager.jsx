@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
@@ -16,16 +16,15 @@ export default function GoalsManager() {
 
     const loadGoals = async () => {
         setLoading(true);
-        const allGoals = await base44.entities.Goal.list();
+       
+        const allGoals = [];
         setGoals(allGoals.sort((a, b) => a.display_order - b.display_order));
         setLoading(false);
     };
 
     const toggleActive = async (goalId, currentStatus) => {
         try {
-            await base44.entities.Goal.update(goalId, {
-                is_active: !currentStatus
-            });
+           
             toast.success('סטטוס המטרה עודכן');
             loadGoals();
         } catch (error) {

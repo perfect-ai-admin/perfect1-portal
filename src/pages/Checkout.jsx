@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, CheckCircle, Home } from 'lucide-react';
 import { toast } from 'sonner';
-import canvas from 'canvas-confetti';
+import confetti from 'canvas-confetti';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 /**
  * Checkout page – dedicated to SUBSCRIPTION / RECURRING payments only.
@@ -46,7 +46,7 @@ export default function Checkout() {
 
   const loadData = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await auth.me();
       setUser(currentUser);
 
       if (tierName && SUBSCRIPTION_TIERS[tierName]) {
@@ -63,7 +63,8 @@ export default function Checkout() {
           billingCycle,
         });
       } else if (productType === 'plan' && productId) {
-        const plans = await base44.entities.Plan.filter({ id: productId });
+       
+        const plans = [];
         if (plans.length > 0) {
           const plan = plans[0];
           setProduct({
@@ -86,15 +87,14 @@ export default function Checkout() {
     setIframeLoading(true);
     try {
       const amt = product.price;
-      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+      const data = await invokeFunction('tranzilaCreatePayment', {
         product_type: 'plan',
         product_name: product.name,
         amount: amt,
         product_id: productId || '',
       });
-      const data = response.data;
 
-      if (!data.success || !data.thtk) {
+      if (!data?.success || !data?.thtk) {
         toast.error('שגיאה בהתחלת התשלום');
         setIframeLoading(false);
         return;
@@ -121,14 +121,14 @@ export default function Checkout() {
     if (paymentConfirmedRef.current || !handshakeData?.paymentId) return;
     paymentConfirmedRef.current = true;
     try {
-      await base44.functions.invoke('tranzilaConfirmPayment', {
+      await invokeFunction('tranzilaConfirmPayment', {
         payment_id: handshakeData.paymentId,
         transaction_id: transactionId || ''
       });
       toast.success('התשלום בוצע בהצלחה! 🎉');
       setPaymentStep('success');
       setTimeout(() => {
-        canvas({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       }, 300);
     } catch (err) {
       console.error('Confirm payment error:', err);
@@ -188,7 +188,8 @@ export default function Checkout() {
       pollCount++;
       if (pollCount > 240) { clearInterval(pollInterval); return; }
       try {
-        const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+        const pollRes = await invokeFunction('getPaymentStatus', { payment_id: handshakeData.paymentId });
+        const payments = pollRes?.payments || [];
         if (payments?.length > 0 && payments[0].status === 'completed') {
           confirmPayment('polling');
           clearInterval(pollInterval);
@@ -435,8 +436,8 @@ export default function Checkout() {
                     <input type="hidden" name="myid_lable" value="תעודת זהות" />
                     <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />
                     <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
-                    <input type="hidden" name="success_url_address" value="https://one-pai.com/MyProducts?payment=success" />
-                    <input type="hidden" name="fail_url_address" value="https://one-pai.com/PricingPerfectBizAI?payment=failed" />
+                    <input type="hidden" name="success_url_address" value="https://perfect-dashboard.com/MyProducts?payment=success" />
+                    <input type="hidden" name="fail_url_address" value="https://perfect-dashboard.com/PricingPerfectBizAI?payment=failed" />
 
                     {/* Display */}
                     <input type="hidden" name="lang" value="il" />

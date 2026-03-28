@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -14,9 +14,9 @@ export default function LandingPagesManager() {
     useEffect(() => {
         const fetchLPs = async () => {
             try {
-                const response = await base44.functions.invoke('adminListLandingPages');
-                if (response.data) {
-                    setLandingPages(response.data.landingPages || []);
+                const response = await invokeFunction('adminListLandingPages');
+                if (response) {
+                    setLandingPages(response.landingPages || []);
                 }
             } catch (error) {
                 console.error("Failed to fetch landing pages", error);

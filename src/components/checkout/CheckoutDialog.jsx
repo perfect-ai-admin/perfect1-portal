@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { auth, invokeFunction } from '@/api/supabaseClient';
 
 /**
  * CheckoutDialog – popup checkout for ONE-TIME products only (logo, landing page, digital card, etc.)
@@ -40,7 +41,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     if (paymentConfirmedRef.current || !handshakeData?.paymentId) return;
     paymentConfirmedRef.current = true;
     try {
-      await base44.functions.invoke('tranzilaConfirmPayment', {
+      await invokeFunction('tranzilaConfirmPayment', {
         payment_id: handshakeData.paymentId,
         transaction_id: transactionId || ''
       });
@@ -50,9 +51,9 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
         await onPaymentSuccess(handshakeData.paymentId);
       } else {
         // Default: redirect to live domain MyProducts
-        const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
+        const isPreview = window.location.hostname.includes('preview');
         if (isPreview) {
-          window.location.href = 'https://one-pai.com/MyProducts?payment=success';
+          window.location.href = 'https://perfect-dashboard.com/MyProducts?payment=success';
         }
       }
       onClose();
@@ -125,7 +126,8 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
       pollCount++;
       if (pollCount > 240) { clearInterval(pollInterval); return; } // ~2min at 500ms
       try {
-        const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+        const pollRes = await invokeFunction('getPaymentStatus', { payment_id: handshakeData.paymentId });
+        const payments = pollRes?.payments || [];
         if (payments?.length > 0 && payments[0].status === 'completed') {
           if (!paymentConfirmedRef.current) {
             paymentConfirmedRef.current = true;
@@ -133,9 +135,9 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
             if (onPaymentSuccess) {
               await onPaymentSuccess(handshakeData.paymentId);
             } else {
-              const isPreview = window.location.hostname.includes('base44') || window.location.hostname.includes('preview');
+              const isPreview = window.location.hostname.includes('preview');
               if (isPreview) {
-                window.location.href = 'https://one-pai.com/MyProducts?payment=success';
+                window.location.href = 'https://perfect-dashboard.com/MyProducts?payment=success';
               }
             }
             onClose();
@@ -152,7 +154,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
   const loadData = async () => {
     setLoading(true);
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await auth.me();
       setUser(currentUser);
       if (productProp && typeof productProp === 'object') {
         setProduct(productProp);
@@ -172,7 +174,7 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
     setIframeLoading(true);
     try {
       // Use unified tranzilaCreatePayment - creates Payment record + handshake
-      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+      const data = await invokeFunction('tranzilaCreatePayment', {
         product_type: product.product_type || 'one-time',
         product_name: product.name,
         amount: amount,
@@ -180,9 +182,8 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
         items: product.items || undefined,
         metadata: product.metadata || undefined
       });
-      const data = response.data;
 
-      if (!data.success || !data.thtk) {
+      if (!data?.success || !data?.thtk) {
         toast.error('שגיאה בהתחלת התשלום');
         setIframeLoading(false);
         return;
@@ -257,7 +258,8 @@ export default function CheckoutDialog({ open, onClose, product: productProp, on
               onManualConfirm={async () => {
                 // Manual check - user claims they paid
                 try {
-                  const payments = await base44.entities.Payment.filter({ id: handshakeData.paymentId });
+                  const manualRes = await invokeFunction('getPaymentStatus', { payment_id: handshakeData.paymentId });
+                  const payments = manualRes?.payments || [];
                   if (payments?.length > 0 && payments[0].status === 'completed') {
                     paymentConfirmedRef.current = true;
                     toast.success('התשלום בוצע בהצלחה! 🎉');
@@ -425,7 +427,7 @@ function PaymentStep({ product, amount, user, handshakeData, onBack, onManualCon
       {/* 
         Hidden form that submits to Tranzila iFrame.
         CRITICAL: Parameters must match EXACTLY what the handshake was created with.
-        Following Tranzila's official Base44 integration guide for recurring payments.
+        Following Tranzila's official integration guide for recurring payments.
       */}
       <form
         id="tranzila-dialog-form"

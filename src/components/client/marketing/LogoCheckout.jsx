@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import WatermarkedLogo from './WatermarkedLogo';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, onSuccess, onClose, price = 39 }) {
@@ -27,7 +27,7 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
         try {
           const parsed = JSON.parse(event.data);
           if (parsed.Response === '000') {
-            await base44.functions.invoke('tranzilaConfirmPayment', {
+            await invokeFunction('tranzilaConfirmPayment', {
               payment_id: paymentIdRef.current,
               transaction_id: parsed.ConfirmationCode || ''
             });
@@ -37,7 +37,7 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
         } catch (e) {
           if (event.data.includes('Response=000')) {
             const params = new URLSearchParams(event.data);
-            await base44.functions.invoke('tranzilaConfirmPayment', {
+            await invokeFunction('tranzilaConfirmPayment', {
               payment_id: paymentIdRef.current,
               transaction_id: params.get('ConfirmationCode') || ''
             });
@@ -80,15 +80,14 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
     setIsProcessing(true);
     setError('');
     try {
-      const response = await base44.functions.invoke('tranzilaCreatePayment', {
+      const data = await invokeFunction('tranzilaCreatePayment', {
         product_type: 'one-time',
         product_name: `לוגו מקצועי - ${businessName}`,
         amount: price,
         metadata: { businessName, slogan, logoUrl }
       });
 
-      const data = response.data;
-      if (!data.success || !data.thtk) {
+      if (!data?.success || !data?.thtk) {
         setError('שגיאה בהתחלת התשלום');
         setIsProcessing(false);
         return;

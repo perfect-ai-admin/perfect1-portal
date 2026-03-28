@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, Target, Zap, Flame } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -8,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import JourneyProgress from '@/components/client/journey/JourneyProgress';
 import CurrentGoalCard from '@/components/client/journey/CurrentGoalCard';
 import StatCard from '@/components/client/journey/StatCard';
+import { auth } from '@/api/supabaseClient';
 
 export default function JourneyDashboard() {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export default function JourneyDashboard() {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await auth.me();
         if (!currentUser) {
           navigate('/');
           return;

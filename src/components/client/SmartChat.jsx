@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
-
+import { entities, invokeLLM, invokeFunction } from '@/api/supabaseClient';
 export default function SmartChat({ clientData, onUpdate }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -87,7 +86,7 @@ ${userMessage.content}
 
 תשובתך:`;
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const response = await invokeLLM({
         prompt: prompt,
         add_context_from_internet: false
       });
@@ -102,7 +101,7 @@ ${userMessage.content}
       setMessages(updatedMessages);
 
       // Save to database
-      await base44.entities.Lead.update(clientData.id, {
+      await entities.Lead.update(clientData.id, {
         chat_history: updatedMessages
       });
 
@@ -143,7 +142,7 @@ ${chatText}
 
 אם המידע לא קיים - החזר null. אל תמציא מידע.`;
 
-      const analysis = await base44.integrations.Core.InvokeLLM({
+      const analysis = await invokeLLM({
         prompt: analysisPrompt,
         response_json_schema: {
           type: "object",
@@ -185,7 +184,7 @@ ${chatText}
       }
 
       if (Object.keys(updates).length > 0) {
-        await base44.entities.Lead.update(clientData.id, updates);
+        await entities.Lead.update(clientData.id, updates);
         if (onUpdate) onUpdate();
       }
 

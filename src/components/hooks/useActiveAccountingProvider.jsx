@@ -1,22 +1,26 @@
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { getProvider, UNIFIED_FUNCTIONS } from '../client/financial/accountingProviders';
 
 /**
  * Hook that detects the user's active accounting connection
  * and returns the correct provider config with UNIFIED function names.
- * All providers use the same backend functions — the backend determines which API to call.
  */
 export default function useActiveAccountingProvider() {
   const { data: connection, isLoading } = useQuery({
     queryKey: ['active-accounting-connection'],
     queryFn: async () => {
-      const user = await base44.auth.me();
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
-      const connections = await base44.entities.AccountingConnection.filter({ 
-        user_id: user.id, 
-        status: 'connected' 
-      });
+      // Find customer by email, then get their accounting connection
+      const { data: customer } = await supabase.from('customers').select('id').eq('email', user.email).single();
+      if (!customer) return null;
+      const { data: connections } = await supabase
+        .from('accounting_connections')
+        .select('*')
+        .eq('customer_id', customer.id)
+        .eq('status', 'connected')
+        .limit(1);
       return connections?.[0] || null;
     },
     staleTime: 5000,

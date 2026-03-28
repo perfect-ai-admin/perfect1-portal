@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 
-const WEBHOOK_URL = process.env.REACT_APP_N8N_WEBHOOK_URL || Deno.env.get('N8N_WEBHOOK_URL');
+
+const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || '';
 
 export function useGoalMentor(userPhone, userEmail, userName) {
   const [messages, setMessages] = useState([]);

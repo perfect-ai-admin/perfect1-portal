@@ -20,16 +20,16 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { entities, auth } from '@/api/supabaseClient';
 
 export default function JourneyTimeline({ onStartTask, onResetJourney }) {
   const navigate = useNavigate();
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: async () => await base44.auth.me(),
+    queryFn: async () => await auth.me(),
   });
 
   // Fetch active journey from BusinessJourney entity (primary source)
@@ -37,7 +37,7 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
     queryKey: ['businessJourney', 'active', user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      const journeys = await base44.entities.BusinessJourney.filter({ 
+      const journeys = await entities.BusinessJourney.filter({ 
         user_id: user.id, 
         status: 'active' 
       });

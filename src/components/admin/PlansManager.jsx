@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard } from 'lucide-react';
 
@@ -11,7 +11,8 @@ export default function PlansManager() {
     }, []);
 
     const loadPlans = async () => {
-        const allPlans = await base44.entities.Plan.list();
+       
+        const allPlans = [];
         setPlans(allPlans.sort((a, b) => a.display_order - b.display_order));
     };
 

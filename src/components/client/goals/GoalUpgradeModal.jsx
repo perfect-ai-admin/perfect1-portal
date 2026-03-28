@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Lock, TrendingUp } from 'lucide-react';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function GoalUpgradeModal({ upgradeData, user, onClose }) {
     const [plans, setPlans] = useState([]);
@@ -14,7 +14,7 @@ export default function GoalUpgradeModal({ upgradeData, user, onClose }) {
     }, []);
 
     const loadPlans = async () => {
-        const allPlans = await base44.entities.Plan.filter({ is_active: true });
+        const allPlans = await entities.Plan.filter({ is_active: true });
         // Sort by goals_limit descending
         setPlans(allPlans.sort((a, b) => (b.goals_limit ?? 999) - (a.goals_limit ?? 999)));
         setLoading(false);

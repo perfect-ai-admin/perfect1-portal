@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, UserPlus, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function AgentsManager() {
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -16,12 +16,12 @@ export default function AgentsManager() {
 
   const { data: agents, isLoading } = useQuery({
     queryKey: ['agents'],
-    queryFn: () => base44.entities.Agent.list('-created_date', 100),
+    queryFn: () => entities.Agent.list('-created_date', 100),
     initialData: []
   });
 
   const createAgentMutation = useMutation({
-    mutationFn: (data) => base44.entities.Agent.create(data),
+    mutationFn: (data) => entities.Agent.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['agents'] });
       setShowAddDialog(false);
@@ -29,7 +29,7 @@ export default function AgentsManager() {
   });
 
   const updateAgentMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Agent.update(id, data),
+    mutationFn: ({ id, data }) => entities.Agent.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['agents'] });
       setEditingAgent(null);
@@ -37,7 +37,7 @@ export default function AgentsManager() {
   });
 
   const deleteAgentMutation = useMutation({
-    mutationFn: (id) => base44.entities.Agent.delete(id),
+    mutationFn: (id) => entities.Agent.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['agents'] });
     }

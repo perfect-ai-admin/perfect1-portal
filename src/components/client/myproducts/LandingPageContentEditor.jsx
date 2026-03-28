@@ -10,9 +10,9 @@ import {
   ChevronDown, ChevronUp, Layers, Eye, Sparkles, 
   GripVertical, Trash2, Plus
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import SectionEditorRouter from './editors/SectionEditorRouter';
+import { uploadFile } from '@/api/supabaseClient';
 
 const SECTION_LABELS = {
   hero: '🎯 Hero - כותרת ראשית',
@@ -109,7 +109,7 @@ export default function LandingPageContentEditor({ page, onSave, saving }) {
     if (!file) return;
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       setForm(f => ({ ...f, logo_url: file_url }));
       toast.success('הלוגו הועלה בהצלחה');
     } catch (err) {

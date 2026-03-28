@@ -1,129 +1,51 @@
-import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 /**
- * SEOHead - מטא תגיות מלאות לכל דף
- * כולל: Title, Description, Canonical, Open Graph, Twitter Cards, hreflang
- * 
- * Props:
- * - title: כותרת הדף
- * - description: תיאור הדף
- * - canonical: URL קנוניקלי
- * - image: תמונה לשיתוף (OG)
- * - type: סוג העמוד (website/article)
- * - schema: JSON-LD Schema
- * - noindex: חסימת אינדקס (אופציונלי)
+ * SEOHead - Reusable SEO component for all pages
+ * Adds meta tags, Open Graph, Twitter Card, canonical URL, and JSON-LD Schema
  */
 export default function SEOHead({
   title,
   description,
   canonical,
-  image = 'https://perfect1.co.il/og-default.jpg',
-  type = 'website',
-  schema = null,
+  ogImage,
+  schema,
+  keywords,
   noindex = false,
-  keywords = '',
 }) {
-  const siteUrl = 'https://perfect1.co.il';
-  const siteName = 'Perfect One';
-  const twitterHandle = '@perfect1_co_il';
-  const locale = 'he_IL';
-
-  // Title מלא עם מיתוג
-  const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
+  const siteUrl = 'https://perfect-dashboard.com';
+  const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
+  const siteName = 'ClientDashboard';
 
   return (
     <Helmet>
-      {/* Basic Meta Tags */}
-      <title>{fullTitle}</title>
+      <title>{title}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
-      <link rel="canonical" href={canonical || `${siteUrl}${window.location.pathname}`} />
-      
-      {/* Language & Direction */}
-      <html lang="he" dir="rtl" />
-      
-      {/* Robots */}
-      {noindex ? (
-        <meta name="robots" content="noindex, nofollow" />
-      ) : (
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-      )}
-
-      {/* hreflang - Self-referential */}
-      <link rel="alternate" hrefLang="he-IL" href={canonical || `${siteUrl}${window.location.pathname}`} />
-      <link rel="alternate" hrefLang="x-default" href={canonical || `${siteUrl}${window.location.pathname}`} />
+      <link rel="canonical" href={fullCanonical} />
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
 
       {/* Open Graph */}
-      <meta property="og:locale" content={locale} />
-      <meta property="og:type" content={type} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={canonical || `${siteUrl}${window.location.pathname}`} />
+      <meta property="og:url" content={fullCanonical} />
+      <meta property="og:type" content="website" />
       <meta property="og:site_name" content={siteName} />
-      <meta property="og:image" content={image} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:image:alt" content={title} />
-      
-      {type === 'article' && (
-        <>
-          <meta property="article:publisher" content="https://www.facebook.com/perfect1.co.il" />
-          <meta property="article:modified_time" content={new Date().toISOString()} />
-        </>
-      )}
+      <meta property="og:locale" content="he_IL" />
+      {ogImage && <meta property="og:image" content={ogImage} />}
 
-      {/* Twitter Card */}
+      {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content={twitterHandle} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
-      <meta name="twitter:image:alt" content={title} />
+      {ogImage && <meta name="twitter:image" content={ogImage} />}
 
-      {/* Additional SEO */}
-      <meta name="author" content={siteName} />
-      <meta name="publisher" content={siteName} />
-      
-      {/* Mobile Optimization */}
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-      <meta name="format-detection" content="telephone=yes" />
-
-      {/* Schema.org JSON-LD */}
+      {/* JSON-LD Schema */}
       {schema && (
         <script type="application/ld+json">
           {JSON.stringify(schema)}
         </script>
       )}
-
-      {/* WebSite Schema - Global */}
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": siteName,
-          "url": siteUrl,
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": `${siteUrl}/search?q={search_term_string}`,
-            "query-input": "required name=search_term_string"
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": siteName,
-            "url": siteUrl,
-            "logo": {
-              "@type": "ImageObject",
-              "url": `${siteUrl}/logo.png`
-            },
-            "sameAs": [
-              "https://www.facebook.com/perfect1.co.il",
-              "https://www.linkedin.com/company/perfect1",
-              "https://www.instagram.com/perfect1.co.il"
-            ]
-          }
-        })}
-      </script>
     </Helmet>
   );
 }

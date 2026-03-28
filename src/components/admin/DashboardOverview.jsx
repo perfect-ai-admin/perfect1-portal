@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, CreditCard, MousePointerClick, FileText, Activity, Image, Presentation, Smile, Globe, Tag } from 'lucide-react';
@@ -21,11 +21,11 @@ export default function DashboardOverview({ loginData }) {
                     phone: loginData.phone 
                 } : {};
 
-                const response = await base44.functions.invoke('adminGetDashboardStats', payload);
-                if (response.data) {
-                    setStats(response.data.stats);
-                    setRecentActivity(response.data.recentActivity || []);
-                    setRecentUsers(response.data.recentUsers || []);
+                const response = await invokeFunction('adminGetDashboardStats', payload);
+                if (response) {
+                    setStats(response.stats);
+                    setRecentActivity(response.recentActivity || []);
+                    setRecentUsers(response.recentUsers || []);
                 }
             } catch (error) {
                 console.error("Failed to fetch dashboard stats", error);

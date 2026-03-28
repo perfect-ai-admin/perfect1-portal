@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Settings, Search, Mail, LayoutGrid, Rocket, ArrowRight, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CampaignBuilder from './CampaignBuilder';
 import { toast } from 'sonner';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function CampaignSection() {
   const [isCreating, setIsCreating] = useState(false);
@@ -13,11 +13,11 @@ export default function CampaignSection() {
 
   const { data: campaigns = [], isLoading } = useQuery({
     queryKey: ['campaigns'],
-    queryFn: () => base44.entities.Campaign.list(),
+    queryFn: () => entities.Campaign.list(),
   });
 
   const deleteCampaignMutation = useMutation({
-    mutationFn: (id) => base44.entities.Campaign.delete(id),
+    mutationFn: (id) => entities.Campaign.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['campaigns'] });
       toast.success('הקמפיין נמחק בהצלחה');

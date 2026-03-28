@@ -1,13 +1,13 @@
 import React from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { entities } from '@/api/supabaseClient';
 
 export default function QAAuditLog({ runId }) {
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['qa-audit-logs', runId],
     queryFn: async () => {
-      const all = await base44.entities.FinbotAuditLog.filter(
+      const all = await entities.FinbotAuditLog.filter(
         { action: { $regex: 'qa.' } },
         '-created_date',
         50

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 // --- Theme & Style Utilities ---
@@ -83,7 +83,7 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
 
         setIsSubmitting(true);
         try {
-            const response = await base44.functions.invoke('submitLeadToN8N', {
+            const response = await invokeFunction('submitLeadToN8N', {
                 name: formData.name,
                 phone: formData.phone,
                 email: formData.email,
@@ -92,11 +92,11 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
                 businessName: business_name
             });
 
-            if (response.data.success) {
+            if (response.success) {
                 toast.success('הלידים שלך נשלחו בהצלחה!');
                 setFormData({ name: '', phone: '', email: '', message: '' });
             } else {
-                toast.error('שגיאה בשליחת הלידים: ' + response.data.error);
+                toast.error('שגיאה בשליחת הלידים: ' + response.error);
             }
         } catch (error) {
             console.error('Form submission error:', error);

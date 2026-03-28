@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, LogIn } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 
 export default function AgentLogin() {
   const [username, setUsername] = useState('');
@@ -19,15 +19,15 @@ export default function AgentLogin() {
     setIsLoading(true);
 
     try {
-      const agents = await base44.entities.Agent.filter({ username, password });
-      
-      if (agents.length === 0) {
+      const result = await invokeFunction('agentLogin', { username, password });
+      const agent = result.agent;
+
+      if (!agent) {
         setError('שם משתמש או סיסמה שגויים');
         setIsLoading(false);
         return;
       }
 
-      const agent = agents[0];
       if (!agent.active) {
         setError('חשבון זה אינו פעיל');
         setIsLoading(false);

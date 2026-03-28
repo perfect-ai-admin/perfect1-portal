@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { toast } from 'sonner';
 
 /**
@@ -15,30 +15,30 @@ export function useGoalMentorWebhook(userPhone, userEmail, userName) {
     async (eventPayload) => {
       setLoading(true);
       try {
-        const response = await base44.functions.invoke('webhookGoalMentor', eventPayload);
+        const response = await invokeFunction('webhookGoalMentor', eventPayload);
 
-        if (response.data.success) {
+        if (response.success) {
           // Add assistant response to conversation
-          if (response.data.response?.text) {
+          if (response.response?.text) {
             setConversation(prev => [
               ...prev,
               {
                 role: 'assistant',
-                text: response.data.response.text,
+                text: response.response.text,
                 timestamp: new Date()
               }
             ]);
           }
 
           // Update goal state if provided
-          if (response.data.goal_update) {
-            setGoalState(response.data.goal_update);
+          if (response.goal_update) {
+            setGoalState(response.goal_update);
           }
 
-          return response.data;
+          return response;
         } else {
           toast.error('שגיאה בתקשורת עם המנטור');
-          console.error('Webhook error:', response.data.error);
+          console.error('Webhook error:', response.error);
           return null;
         }
       } catch (error) {

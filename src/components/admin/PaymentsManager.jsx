@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -39,9 +39,9 @@ export default function PaymentsManager() {
 
     const fetchPayments = async () => {
         try {
-            const response = await base44.functions.invoke('adminListPayments');
-            if (response.data) {
-                setPayments(response.data.payments || []);
+            const response = await invokeFunction('adminListPayments');
+            if (response) {
+                setPayments(response.payments || []);
             }
         } catch (error) {
             console.error("Failed to fetch payments", error);
@@ -103,7 +103,7 @@ export default function PaymentsManager() {
 
     const markAsCompleted = async (paymentId) => {
         try {
-            await base44.functions.invoke('adminMarkPaymentCompleted', { payment_id: paymentId });
+            await invokeFunction('adminMarkPaymentCompleted', { payment_id: paymentId });
             toast.success('התשלום סומן כ"שולם"');
             fetchPayments();
         } catch (error) {

@@ -3,13 +3,13 @@ import { Plus, Phone, Mail, Search, RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function CustomersTab({ data }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,9 +22,9 @@ export default function CustomersTab({ data }) {
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ['accounting-customers', providerId || 'none'],
     queryFn: async () => {
-      const custs = await base44.entities.AccountingCustomer.filter({ provider: providerId }, '-created_date', 500);
+      const custs = await entities.AccountingCustomer.filter({ provider: providerId }, '-created_date', 500);
       if (custs?.length > 0) return custs;
-      return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
+      return entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
     refetchOnWindowFocus: true,
@@ -32,18 +32,18 @@ export default function CustomersTab({ data }) {
 
   const syncMutation = useMutation({
     mutationFn: () => {
-      return base44.functions.invoke('acctSyncPull', { resource: 'customers' });
+      return invokeFunction('acctSyncPull', { resource: 'customers' });
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['accounting-customers', providerId || 'none'] });
-      toast.success(`סונכרנו ${res.data?.synced_count || 0} לקוחות`);
+      toast.success(`סונכרנו ${res?.synced_count || 0} לקוחות`);
     },
     onError: (err) => toast.error(err.message || 'שגיאה בסנכרון'),
   });
 
   const createMutation = useMutation({
     mutationFn: (data) => {
-      return base44.functions.invoke('acctCreateCustomer', data);
+      return invokeFunction('acctCreateCustomer', data);
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['accounting-customers'] });

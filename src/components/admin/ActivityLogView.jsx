@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Badge } from '@/components/ui/badge';
 import { Activity } from 'lucide-react';
 import { format } from 'date-fns';
@@ -13,7 +13,8 @@ export default function ActivityLogView() {
     }, []);
 
     const loadLogs = async () => {
-        const allLogs = await base44.entities.ActivityLog.list('-created_date', 50);
+       
+        const allLogs = [];
         setLogs(allLogs);
         setLoading(false);
     };

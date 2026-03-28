@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail, Users, Clock, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function EmailCampaign({ onBack, onComplete }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function EmailCampaign({ onBack, onComplete }) {
   const handleLaunch = async () => {
     try {
         setIsLoading(true);
-        await base44.entities.Campaign.create({
+        await entities.Campaign.create({
             name: `Email Campaign - ${new Date().toLocaleDateString('he-IL')}`,
             channel: 'email',
             status: 'active',

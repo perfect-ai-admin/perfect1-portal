@@ -1,17 +1,17 @@
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { entities, auth, uploadFile } from '@/api/supabaseClient';
 
-// Re-upload external image URLs to Base44 storage so they don't expire
+// Re-upload external image URLs to storage so they don't expire
 const persistImage = async (imageUrl) => {
   if (!imageUrl || imageUrl.startsWith('data:')) return imageUrl;
-  // Already on Base44 storage - no need to re-upload
+  // Already on our storage - no need to re-upload
   if (imageUrl.includes('base44') || imageUrl.includes('supabase')) return imageUrl;
   try {
     const response = await fetch(imageUrl);
     if (!response.ok) return imageUrl;
     const blob = await response.blob();
     const file = new File([blob], 'image.png', { type: blob.type || 'image/png' });
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadFile({ file });
     return file_url;
   } catch (err) {
     console.warn('Failed to persist image, using original URL:', err);
@@ -21,17 +21,17 @@ const persistImage = async (imageUrl) => {
 
 export const addToCart = async ({ type, data, price, title, description, preview_image, openCart = true }) => {
   try {
-    const user = await base44.auth.me().catch(() => null);
+    const user = await auth.me().catch(() => null);
     
     if (!user) {
         toast.error('יש להתחבר כדי להוסיף מוצרים לעגלה');
         setTimeout(() => {
-            base44.auth.redirectToLogin(window.location.href);
+            auth.redirectToLogin(window.location.href);
         }, 1500);
         return false;
     }
 
-    // For logos and stickers, persist the image to Base44 storage
+    // For logos and stickers, persist the image to storage
     // so the URL doesn't expire (stockimg.ai URLs expire)
     let persistedPreview = preview_image;
     let persistedData = { ...data };
@@ -47,7 +47,7 @@ export const addToCart = async ({ type, data, price, title, description, preview
     }
 
     // Create entity record
-    await base44.entities.CartItem.create({
+    await entities.CartItem.create({
       type,
       data: persistedData,
       price: price || 39,

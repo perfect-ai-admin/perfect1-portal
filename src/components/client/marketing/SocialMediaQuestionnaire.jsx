@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { invokeFunction } from '@/api/supabaseClient';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, Building2, Smile, 
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
@@ -146,15 +147,27 @@ export default function SocialMediaQuestionnaire({ onComplete, onClose }) {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleSubmit = (e) => {
+  const [generatedDesigns, setGeneratedDesigns] = useState(null);
+  const [generateError, setGenerateError] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateStep(currentStep)) {
       setIsBuilding(true);
-      setTimeout(() => {
-        setIsBuilding(false);
+      setGenerateError('');
+      try {
+        const response = await invokeFunction('generateSocialDesigns', { formData });
+        if (response?.error) {
+          throw new Error(response.error);
+        }
+        setGeneratedDesigns(response);
         setShowSuccess(true);
-        // onComplete(formData);
-      }, 2500);
+      } catch (err) {
+        console.error('Social designs generation error:', err);
+        setGenerateError(err.message || 'שגיאה ביצירת העיצובים. נסה שוב.');
+      } finally {
+        setIsBuilding(false);
+      }
     }
   };
 
@@ -632,6 +645,11 @@ export default function SocialMediaQuestionnaire({ onComplete, onClose }) {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="w-full">
+              {generateError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 text-red-700 text-sm text-center">
+                  {generateError}
+                </div>
+              )}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}

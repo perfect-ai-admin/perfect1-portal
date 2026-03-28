@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import useActiveAccountingProvider from './useActiveAccountingProvider';
+import { entities } from '@/api/supabaseClient';
 
 const SHORT_MONTHS = ['ינו','פבר','מרץ','אפר','מאי','יוני','יולי','אוג','ספט','אוק','נוב','דצמ'];
 const FULL_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
@@ -12,7 +12,7 @@ export default function useRevenueFromDocuments() {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ['finbot-documents-revenue', providerId || 'none'],
     queryFn: () => {
-      return base44.entities.FinbotDocument.filter({ provider: providerId }, '-created_date', 500);
+      return entities.FinbotDocument.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !!providerId && isConnected,
     staleTime: 30000,

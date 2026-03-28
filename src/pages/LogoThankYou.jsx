@@ -125,7 +125,7 @@ export default function LogoThankYou() {
                   </div>
                 </Link>
                 
-                <Link to={createPageUrl('LandingPageBuilder')} className="group block">
+                <Link to={createPageUrl('LandingPageManager')} className="group block">
                   <div className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-black hover:to-gray-900 text-white rounded-xl p-4 flex items-center justify-between shadow-lg">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">

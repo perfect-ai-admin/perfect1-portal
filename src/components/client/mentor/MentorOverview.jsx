@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { 
   CheckCircle2, 
   Circle, 
@@ -28,6 +27,7 @@ import GoalTemplatesFixed from '../goals/GoalTemplatesFixed';
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
 import BusinessRoadmap from '../goals/BusinessRoadmap';
 import FirstGoalFlow from '../goals/FirstGoalFlow';
+import { entities, auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function MentorOverview() {
   const queryClient = useQueryClient();
@@ -39,14 +39,14 @@ export default function MentorOverview() {
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: async () => await base44.auth.me()
+    queryFn: async () => await auth.me()
   });
 
   const { data: goals, isLoading, refetch: refetchGoals } = useQuery({
     queryKey: ['userGoals', 'active'],
     queryFn: async () => {
-        const user = await base44.auth.me();
-        return base44.entities.UserGoal.filter({ 
+        const user = await auth.me();
+        return entities.UserGoal.filter({ 
             user_id: user.id, 
             status: 'active' 
         });
@@ -64,13 +64,13 @@ export default function MentorOverview() {
     queryKey: ['userPlan', user?.plan_id],
     queryFn: async () => {
       if (!user?.plan_id) return null;
-      return await base44.entities.Plan.filter({ id: user.plan_id });
+      return await entities.Plan.filter({ id: user.plan_id });
     },
     enabled: !!user?.plan_id
   });
 
   const updateGoalMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.UserGoal.update(id, data),
+    mutationFn: ({ id, data }) => entities.UserGoal.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userGoals'] });
       toast.success('המטרה עודכנה בהצלחה');
@@ -79,7 +79,7 @@ export default function MentorOverview() {
 
   const createGoalMutation = useMutation({
     mutationFn: async ({ title, goalId, goalData }) => {
-        const currentUser = await base44.auth.me();
+        const currentUser = await auth.me();
         const activeGoalsCount = goals?.length || 0;
         
         // Create goal in DB first
@@ -91,12 +91,12 @@ export default function MentorOverview() {
           tasks: []
         };
         
-        const createdGoal = await base44.entities.UserGoal.create(goalToCreate);
+        const createdGoal = await entities.UserGoal.create(goalToCreate);
         
         // Generate plan in background
         setTimeout(async () => {
           try {
-            await base44.functions.invoke('generateGoalPlan', { 
+            await invokeFunction('generateGoalPlan', { 
               goalId: createdGoal.id,
               title: createdGoal.title,
               goalData: {
@@ -274,7 +274,7 @@ export default function MentorOverview() {
               });
 
               // Update Goal with tasks and status
-              await base44.entities.UserGoal.update(activeFirstGoal.id, { 
+              await entities.UserGoal.update(activeFirstGoal.id, { 
                   flow_step: 8,
                   tasks: tasks,
                   plan_summary: finalData?.insight || 'יצאנו לדרך עם מיקרו-פעולה ראשונה!',

@@ -6,9 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Sparkles, Brain, Target, Flag } from "lucide-react";
-import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import GoalSuccessPlan from './GoalSuccessPlan';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 const steps = [
   { id: 1, title: "מודעות ראשונית" },
@@ -45,7 +45,7 @@ export default function FirstGoalFlow({ goal, onComplete }) {
         flow_data: updatedFlowData
       };
 
-      await base44.entities.UserGoal.update(goal.id, updates);
+      await entities.UserGoal.update(goal.id, updates);
       return updatedFlowData;
     },
     onSuccess: (data) => {
@@ -65,7 +65,7 @@ export default function FirstGoalFlow({ goal, onComplete }) {
     if (currentStep < steps.length) {
       setCurrentStep(prev => prev + 1);
       // Save the *next* step index immediately so if they refresh they are on the new step
-      base44.entities.UserGoal.update(goal.id, { flow_step: currentStep + 1 });
+      entities.UserGoal.update(goal.id, { flow_step: currentStep + 1 });
     } else {
       if (onComplete) onComplete(formData);
     }

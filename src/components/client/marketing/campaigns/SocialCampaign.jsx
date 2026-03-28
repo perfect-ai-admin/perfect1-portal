@@ -6,8 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Facebook, Instagram, Check, AlertCircle, Link2, Image, Layout, ArrowRight, Calendar, DollarSign, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function SocialCampaign({ onBack, onComplete }) {
   const [step, setStep] = useState(1);
@@ -37,7 +37,7 @@ export default function SocialCampaign({ onBack, onComplete }) {
   const handleLaunch = async () => {
     try {
         setIsLoading(true);
-        await base44.entities.Campaign.create({
+        await entities.Campaign.create({
             name: `Social Campaign - ${new Date().toLocaleDateString('he-IL')}`,
             channel: 'social',
             platform: data.platforms.join(', '),

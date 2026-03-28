@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
-import { 
+import {
   ArrowRight, Loader2, Globe, ExternalLink, Copy, Eye,
   Settings, Phone, Mail, Link2, Palette, Save, CheckCircle2,
-  BarChart3, Users, MousePointer, Pencil, Smartphone, Monitor
+  BarChart3, Users, MousePointer, Pencil, Smartphone, Monitor, Send
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,12 +22,14 @@ import LandingPagePreviewPanel from '@/components/client/myproducts/LandingPageP
 import LandingPageLeadSettings from '@/components/client/myproducts/LandingPageLeadSettings';
 import LandingPageContentEditor from '@/components/client/myproducts/LandingPageContentEditor';
 import LandingPageStats from '@/components/client/myproducts/LandingPageStats';
+import { entities, auth, invokeFunction } from '@/api/supabaseClient';
 
 export default function LandingPageManager() {
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [activeTab, setActiveTab] = useState('content');
   const navigate = useNavigate();
 
@@ -42,12 +43,13 @@ export default function LandingPageManager() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const isAuth = await base44.auth.isAuthenticated();
+     
+      const isAuth = await auth.isAuthenticated();
       if (!isAuth) {
-        base44.auth.redirectToLogin('/LandingPageManager?id=' + pageId);
+        auth.redirectToLogin('/LandingPageManager?id=' + pageId);
         return;
       }
-      const currentUser = await base44.auth.me();
+      const currentUser = await auth.me();
       setUser(currentUser);
 
       if (!pageId) {
@@ -56,9 +58,9 @@ export default function LandingPageManager() {
         return;
       }
 
-      const response = await base44.functions.invoke('getPublicLandingPageById', { pageId });
-      if (response.data) {
-        setPage(response.data);
+      const response = await invokeFunction('getPublicLandingPageById', { pageId });
+      if (response) {
+        setPage(response);
       } else {
         toast.error('דף הנחיתה לא נמצא');
         navigate(createPageUrl('MyProducts'));
@@ -74,7 +76,7 @@ export default function LandingPageManager() {
   const handleSave = async (updates) => {
     setSaving(true);
     try {
-      await base44.entities.LandingPage.update(pageId, updates);
+      await entities.LandingPage.update(pageId, updates);
       setPage(prev => ({ ...prev, ...updates }));
       toast.success('השינויים נשמרו בהצלחה!');
     } catch (error) {
@@ -85,8 +87,22 @@ export default function LandingPageManager() {
     }
   };
 
+  const handlePublish = async () => {
+    setPublishing(true);
+    try {
+      await invokeFunction('publishLandingPage', { landing_page_id: pageId });
+      setPage(prev => ({ ...prev, status: 'published' }));
+      toast.success('הדף פורסם בהצלחה!');
+    } catch (error) {
+      console.error(error);
+      toast.error('שגיאה בפרסום הדף');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   const publicUrl = page?.slug 
-    ? `https://one-pai.com/LP?s=${page.slug}` 
+    ? `https://perfect-dashboard.com/LP?s=${page.slug}` 
     : null;
 
   if (loading) {
@@ -148,6 +164,19 @@ export default function LandingPageManager() {
                     צפה בדף
                   </Button>
                 )}
+                <Button
+                  size="sm"
+                  className="bg-blue-500 hover:bg-blue-400 gap-1.5 text-xs"
+                  onClick={handlePublish}
+                  disabled={publishing}
+                >
+                  {publishing ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Send className="w-3.5 h-3.5" />
+                  )}
+                  פרסם
+                </Button>
               </div>
             </div>
           </div>

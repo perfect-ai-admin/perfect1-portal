@@ -8,11 +8,11 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
 import useActiveAccountingProvider from '../../../hooks/useActiveAccountingProvider';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 const TYPE_LABELS = { receipt: 'קבלה', invoice: 'חשבונית', invoice_receipt: 'חשבונית מס/קבלה', credit_note: 'זיכוי', credit: 'זיכוי', issued: 'הופק' };
 const STATUS_COLORS = {
@@ -37,7 +37,7 @@ export default function DocumentsTab({ data }) {
     queryKey: ['accounting-documents', providerId || 'none'],
     queryFn: async () => {
       // Try unified AccountingDocument first, fallback to legacy FinbotDocument
-      const docs = await base44.entities.AccountingDocument.filter({ provider: providerId }, '-issue_date', 500);
+      const docs = await entities.AccountingDocument.filter({ provider: providerId }, '-issue_date', 500);
       if (docs?.length > 0) return docs.map(d => ({
         ...d,
         type: d.doc_type || d.type,
@@ -46,7 +46,7 @@ export default function DocumentsTab({ data }) {
         total: d.total || 0,
         customer_name: d.customer_name || '',
       }));
-      return base44.entities.FinbotDocument.filter({ provider: providerId }, '-issue_date', 500);
+      return entities.FinbotDocument.filter({ provider: providerId }, '-issue_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
     refetchOnWindowFocus: true,
@@ -55,21 +55,21 @@ export default function DocumentsTab({ data }) {
   const { data: customers = [] } = useQuery({
     queryKey: ['accounting-customers', providerId || 'none'],
     queryFn: async () => {
-      const custs = await base44.entities.AccountingCustomer.filter({ provider: providerId }, '-created_date', 500);
+      const custs = await entities.AccountingCustomer.filter({ provider: providerId }, '-created_date', 500);
       if (custs?.length > 0) return custs;
-      return base44.entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
+      return entities.FinbotCustomer.filter({ provider: providerId }, '-created_date', 500);
     },
     enabled: !providerLoading && isConnected && !!providerId,
   });
 
   const syncMutation = useMutation({
     mutationFn: () => {
-      return base44.functions.invoke('acctSyncPull', { resource: 'documents' });
+      return invokeFunction('acctSyncPull', { resource: 'documents' });
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['accounting-documents', providerId || 'none'] });
       queryClient.invalidateQueries({ queryKey: ['accounting-documents-revenue'] });
-      toast.success(`סונכרנו ${res.data?.synced_count || 0} מסמכים`);
+      toast.success(`סונכרנו ${res?.synced_count || 0} מסמכים`);
     },
     onError: (err) => toast.error(err.message),
   });
@@ -273,13 +273,13 @@ function CreateDocumentDialog({ open, onClose, customers, queryClient, createDoc
         notes: data.notes,
         payment_method: docNeedsPayment ? (data.payment_type || 'cash') : undefined,
       };
-      return base44.functions.invoke(createDocFn, payload);
+      return invokeFunction(createDocFn, payload);
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['accounting-documents'] });
       queryClient.invalidateQueries({ queryKey: ['accounting-documents-revenue'] });
       queryClient.invalidateQueries({ queryKey: ['accounting-customers'] });
-      const pdfUrl = res.data?.document?.pdf_url || res.data?.pdf_url || res.data?.finbot_response?.pdf_link;
+      const pdfUrl = res?.document?.pdf_url || res?.pdf_url || res?.finbot_response?.pdf_link;
       if (pdfUrl) {
         toast.success('מסמך הופק בהצלחה!', { 
           action: { label: 'פתח PDF', onClick: () => window.open(pdfUrl, '_blank') }

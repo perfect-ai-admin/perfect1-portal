@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -27,13 +27,13 @@ export default function GoogleBusinessProfile() {
 
   const checkConnection = async () => {
     try {
-      const response = await base44.functions.invoke('googleBusinessProfile', {
+      const response = await invokeFunction('googleBusinessProfile', {
         action: 'getProfile'
       });
       
-      if (response.data.locations && response.data.locations.length > 0) {
+      if (response.locations && response.locations.length > 0) {
         setIsConnected(true);
-        setProfile(response.data.locations[0]);
+        setProfile(response.locations[0]);
         loadReviews();
         loadInsights();
       }
@@ -45,12 +45,12 @@ export default function GoogleBusinessProfile() {
   const connectGBP = async () => {
     try {
       setLoading(true);
-      const response = await base44.functions.invoke('googleBusinessProfile', {
+      const response = await invokeFunction('googleBusinessProfile', {
         action: 'getAuthUrl'
       });
       
       // Open OAuth window
-      window.open(response.data.authUrl, '_blank', 'width=600,height=700');
+      window.open(response.authUrl, '_blank', 'width=600,height=700');
       
       // Listen for callback
       window.addEventListener('message', handleOAuthCallback);
@@ -71,10 +71,10 @@ export default function GoogleBusinessProfile() {
 
   const loadReviews = async () => {
     try {
-      const response = await base44.functions.invoke('googleBusinessProfile', {
+      const response = await invokeFunction('googleBusinessProfile', {
         action: 'getReviews'
       });
-      setReviews(response.data.reviews || []);
+      setReviews(response.reviews || []);
     } catch (error) {
       console.error('Error loading reviews:', error);
     }
@@ -82,10 +82,10 @@ export default function GoogleBusinessProfile() {
 
   const loadInsights = async () => {
     try {
-      const response = await base44.functions.invoke('googleBusinessProfile', {
+      const response = await invokeFunction('googleBusinessProfile', {
         action: 'getInsights'
       });
-      setInsights(response.data.insights || {});
+      setInsights(response.insights || {});
     } catch (error) {
       console.error('Error loading insights:', error);
     }
@@ -211,7 +211,7 @@ function ProfileManager({ profile, onUpdate }) {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await base44.functions.invoke('googleBusinessProfile', {
+      await invokeFunction('googleBusinessProfile', {
         action: 'updateProfile',
         profileData: {
           locationName: profile.name,
@@ -292,7 +292,7 @@ function PostPublisher({ profile }) {
   const handlePublish = async () => {
     try {
       setPublishing(true);
-      await base44.functions.invoke('googleBusinessProfile', {
+      await invokeFunction('googleBusinessProfile', {
         action: 'createPost',
         postData: {
           ...postData,
@@ -366,7 +366,7 @@ function ReviewsManager({ reviews, onRespond }) {
   const handleRespond = async () => {
     try {
       setResponding(true);
-      await base44.functions.invoke('googleBusinessProfile', {
+      await invokeFunction('googleBusinessProfile', {
         action: 'respondToReview',
         reviewId: selectedReview.name,
         response

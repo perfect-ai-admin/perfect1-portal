@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { supabase, invokeFunction } from '@/api/supabaseClient';
 import { queryKeys } from './useQueryKeys';
 
 // --- Query: Get Current User ---
@@ -8,14 +8,15 @@ export function useAppAuth() {
     queryKey: queryKeys.user.me,
     queryFn: async () => {
       try {
-        const user = await base44.auth.me();
-        return user || null;
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) return null;
+        return { id: user.id, email: user.email, ...user.user_metadata };
       } catch (error) {
         console.error("Auth check failed:", error);
         return null;
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes stale time
+    staleTime: 1000 * 60 * 5,
     retry: 1,
   });
 }
@@ -25,7 +26,11 @@ export function useUpdateUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data) => base44.auth.updateMe(data),
+    mutationFn: async (data) => {
+      const { data: result, error } = await supabase.auth.updateUser({ data });
+      if (error) throw error;
+      return result.user;
+    },
     onMutate: async (newData) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.user.me });
       const previousUser = queryClient.getQueryData(queryKeys.user.me);
@@ -50,9 +55,10 @@ export function useUpdateUserPhone() {
   return useMutation({
     mutationFn: async ({ phone }) => {
       // First backend function if needed
-      await base44.functions.invoke('updateUserPhone', { phone });
-      // Then update auth state
-      return base44.auth.updateMe({ phone });
+      await invokeFunction('updateUserPhone', { phone });
+      const { data, error } = await supabase.auth.updateUser({ data: { phone } });
+      if (error) throw error;
+      return data.user;
     },
     onMutate: async ({ phone }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.user.me });
@@ -75,7 +81,7 @@ export function useUpdateUserPhone() {
 export function useLogout() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => base44.auth.logout(),
+    mutationFn: () => supabase.auth.signOut(),
     onSuccess: () => {
       queryClient.setQueryData(queryKeys.user.me, null);
       queryClient.clear();

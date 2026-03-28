@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { base44 } from '@/api/base44Client';
 import { finbotService } from './FINBOTService';
+import { entities, invokeFunction } from '@/api/supabaseClient';
 
 export default function InvoiceGenerator({ onCreateInvoice }) {
   const [step, setStep] = useState('templates'); // templates, form, preview, sending, sent
@@ -35,7 +35,7 @@ export default function InvoiceGenerator({ onCreateInvoice }) {
 
   const loadPreviousClients = async () => {
     try {
-      const leads = await base44.entities.Lead.list('-created_date', 50);
+      const leads = await entities.Lead.list('-created_date', 50);
       setPreviousClients(leads || []);
     } catch (error) {
       console.error('Failed to load clients:', error);
