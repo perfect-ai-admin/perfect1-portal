@@ -97,7 +97,7 @@ const SectionFAQ = ({ section }) => (
   <div id={section.id} className="scroll-mt-24">
     {section.title && <h2 className="portal-h2 mb-6">{section.title || 'שאלות נפוצות'}</h2>}
     <Accordion type="single" collapsible className="space-y-3">
-      {section.items.map((item, i) => (
+      {(section.items || []).map((item, i) => (
         <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-xl border border-gray-200 px-4 sm:px-6 overflow-hidden">
           <AccordionTrigger className="text-right font-bold text-base sm:text-lg text-portal-navy hover:no-underline py-4 sm:py-5">
             {item.question}
@@ -118,29 +118,94 @@ const SectionQuote = ({ section }) => (
   </blockquote>
 );
 
-const SectionComparison = ({ section }) => (
-  <div id={section.id} className="scroll-mt-24 overflow-x-auto">
-    {section.title && <h2 className="portal-h2 mb-6">{section.title}</h2>}
-    <table className="w-full border-collapse bg-white rounded-xl overflow-hidden shadow-sm">
-      <thead>
-        <tr className="bg-portal-navy text-white">
-          {section.headers.map((h, i) => (
-            <th key={i} className="px-3 sm:px-6 py-3 sm:py-4 text-right font-bold text-sm sm:text-base whitespace-nowrap">{h}</th>
+const SectionComparison = ({ section }) => {
+  // Support three formats:
+  // 1. Simple table: headers[] + rows[][] (flat arrays)
+  // 2. Card format: items[] with title + features[]
+  // 3. Labeled table: columns[] + rows[] with { label, values[] }
+  const hasSimpleTable = section.headers && Array.isArray(section.rows) && Array.isArray(section.rows[0]);
+  const hasLabeledTable = section.columns && Array.isArray(section.rows) && section.rows[0]?.label;
+  const hasCards = Array.isArray(section.items);
+
+  return (
+    <div id={section.id} className="scroll-mt-24">
+      {section.title && <h2 className="portal-h2 mb-6">{section.title}</h2>}
+      {section.description && <p className="portal-body mb-6">{section.description}</p>}
+
+      {/* Format 1: Simple table with headers + rows[][] */}
+      {hasSimpleTable && (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-white rounded-xl overflow-hidden shadow-sm">
+            <thead>
+              <tr className="bg-portal-navy text-white">
+                {(section.headers || []).map((h, i) => (
+                  <th key={i} className="px-3 sm:px-6 py-3 sm:py-4 text-right font-bold text-sm sm:text-base whitespace-nowrap">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {(section.rows || []).map((row, i) => (
+                <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  {(row || []).map((cell, j) => (
+                    <td key={j} className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-700 border-t border-gray-100">{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Format 3: Labeled table with columns[] + rows[]{label, values[]} */}
+      {hasLabeledTable && (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-white rounded-xl overflow-hidden shadow-sm">
+            <thead>
+              <tr className="bg-portal-navy text-white">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-right font-bold text-sm sm:text-base whitespace-nowrap"></th>
+                {(section.columns || []).map((col, i) => (
+                  <th key={i} className="px-3 sm:px-6 py-3 sm:py-4 text-right font-bold text-sm sm:text-base whitespace-nowrap">{col}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {(section.rows || []).map((row, i) => (
+                <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base font-medium text-portal-navy border-t border-gray-100">{row.label}</td>
+                  {(row.values || []).map((val, j) => (
+                    <td key={j} className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-700 border-t border-gray-100">{val}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Format 2: Card format with items[]{title, features[]} */}
+      {!hasSimpleTable && !hasLabeledTable && hasCards && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          {(section.items || []).map((item, i) => (
+            <div key={i} className="bg-portal-bg rounded-xl border border-gray-200 p-5 sm:p-6">
+              <h3 className="font-bold text-lg text-portal-navy mb-3">{item.title}</h3>
+              {item.description && <p className="portal-body mb-3">{item.description}</p>}
+              {item.features && (
+                <ul className="space-y-2">
+                  {(item.features || []).map((feature, j) => (
+                    <li key={j} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-portal-teal mt-1 shrink-0" />
+                      <span className="text-sm text-gray-600">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {section.rows.map((row, i) => (
-          <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-            {row.map((cell, j) => (
-              <td key={j} className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-700 border-t border-gray-100">{cell}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SectionCTAInline = ({ section }) => (
   <InlineCTA title={section.title} buttonText={section.buttonText || section.button} variant={section.variant} />

@@ -11,18 +11,18 @@ const generateArticleSchema = (data) => ({
   author: {
     '@type': 'Organization',
     name: data.author?.name || 'פרפקט וואן',
-    url: 'https://perfect-dashboard.com',
+    url: 'https://www.perfect1.co.il',
   },
   publisher: {
     '@type': 'Organization',
     name: 'פרפקט וואן',
-    url: 'https://perfect-dashboard.com',
+    url: 'https://www.perfect1.co.il',
     logo: {
       '@type': 'ImageObject',
-      url: 'https://perfect-dashboard.com/og-image.png',
+      url: 'https://www.perfect1.co.il/og-image.png',
     },
   },
-  image: 'https://perfect-dashboard.com/og-image.png',
+  image: 'https://www.perfect1.co.il/og-image.png',
   mainEntityOfPage: {
     '@type': 'WebPage',
     '@id': data.canonical,
@@ -50,7 +50,7 @@ const generateBreadcrumbSchema = (breadcrumbs) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: crumb.label,
-    item: crumb.href ? `https://perfect-dashboard.com${crumb.href}` : undefined,
+    item: crumb.href ? `https://www.perfect1.co.il${crumb.href}` : undefined,
   })),
 });
 
@@ -58,11 +58,11 @@ const generateOrganizationSchema = () => ({
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'פרפקט וואן',
-  url: 'https://perfect-dashboard.com',
+  url: 'https://www.perfect1.co.il',
   description: 'ליווי מקצועי לפתיחה, ניהול וסגירת עסקים בישראל',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://perfect-dashboard.com/og-image.png',
+    url: 'https://www.perfect1.co.il/og-image.png',
   },
   areaServed: {
     '@type': 'Country',

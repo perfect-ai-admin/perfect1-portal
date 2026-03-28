@@ -66,7 +66,7 @@ export default function SEOArticlePage({ category }) {
       />
       <SchemaMarkup
         type="article"
-        data={{ ...content, canonical: `https://perfect-dashboard.com/${category}/${slug}` }}
+        data={{ ...content, canonical: `https://www.perfect1.co.il/${category}/${slug}` }}
         faqItems={faqItems}
         breadcrumbs={breadcrumbs}
       />

@@ -53,7 +53,7 @@ export default function ComparisonPage() {
       />
       <SchemaMarkup
         type="article"
-        data={{ ...content, canonical: `https://perfect-dashboard.com/compare/${slug}`, title: content.heroTitle || content.title }}
+        data={{ ...content, canonical: `https://www.perfect1.co.il/compare/${slug}`, title: content.heroTitle || content.title }}
         faqItems={faqItems}
         breadcrumbs={[{ label: 'מדריכים', href: '/guides' }, { label: content.title }]}
       />
@@ -80,15 +80,15 @@ export default function ComparisonPage() {
               <table className="w-full border-collapse bg-white rounded-2xl overflow-hidden shadow-lg">
                 <thead>
                   <tr className="bg-portal-navy text-white">
-                    {content.comparisonTable.headers.map((h, i) => (
+                    {(content.comparisonTable.headers || []).map((h, i) => (
                       <th key={i} className="px-3 sm:px-6 py-3 sm:py-4 text-right font-bold text-sm sm:text-base whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {content.comparisonTable.rows.map((row, i) => (
+                  {(content.comparisonTable.rows || []).map((row, i) => (
                     <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                      {row.map((cell, j) => (
+                      {(row || []).map((cell, j) => (
                         <td key={j} className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-700 border-t border-gray-100">
                           {cell === true ? <CheckCircle2 className="w-5 h-5 text-green-500" /> :
                            cell === false ? <XCircle className="w-5 h-5 text-red-400" /> :

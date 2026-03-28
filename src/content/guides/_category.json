@@ -14,7 +14,13 @@
     { "title": "שאלות נפוצות", "slug": "faq" }
   ],
   "articles": [
-    { "slug": "which-business-type", "title": "איזה סוג עסק מתאים לך? מדריך בחירה מלא", "readTime": 15 }
+    { "slug": "which-business-type", "title": "איזה סוג עסק מתאים לך? מדריך בחירה מלא", "readTime": 15 },
+    { "slug": "opening-business", "title": "מדריך פתיחת עסק בישראל — הצעדים הראשונים שלך 2026", "readTime": 14 },
+    { "slug": "comparisons", "title": "השוואת סוגי עסקים — פטור, מורשה או חברה בע\"מ", "readTime": 12 },
+    { "slug": "taxation", "title": "מדריך מיסוי לעסקים בישראל — כל מה שצריך לדעת 2026", "readTime": 15 },
+    { "slug": "freelancers", "title": "מדריך מקיף לפרילנסרים בישראל 2026", "readTime": 14 },
+    { "slug": "tools", "title": "כלים ומחשבונים לעסקים קטנים — המדריך המלא 2026", "readTime": 12 },
+    { "slug": "faq", "title": "שאלות נפוצות על עסקים בישראל — כל התשובות במקום אחד", "readTime": 13 }
   ],
   "faq": [
     {
