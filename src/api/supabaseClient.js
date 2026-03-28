@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://fnsnnezhikgqajdbtwoa.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuc25uZXpoaWtncWFqZGJ0d29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5Nzg5MDAsImV4cCI6MjA4NDU1NDkwMH0.EGdw5eJ-rJ9v1cMxS0EZHPcAvJ0FJ3Won38I8VbfrY4';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -11,6 +11,16 @@ export async function invokeFunction(name, payload = {}) {
   if (error) throw error;
   return data;
 }
+
+// --- Multi-tenancy: project source identifier ---
+const PROJECT_SOURCE = 'sales_portal';
+
+// Tables that are shared reference data — no source filtering needed
+const SHARED_TABLES = new Set([
+  'plans',
+  'services',
+  'professions',
+]);
 
 // --- Entity name → Supabase table mapping ---
 const entityTableMap = {
@@ -52,9 +62,12 @@ function parseOrderBy(orderBy) {
 }
 
 function createEntityHelper(tableName) {
+  const needsSourceFilter = !SHARED_TABLES.has(tableName);
+
   return {
     async list(orderBy, limit) {
       let query = supabase.from(tableName).select('*');
+      if (needsSourceFilter) query = query.eq('source', PROJECT_SOURCE);
       const order = parseOrderBy(orderBy);
       if (order) query = query.order(order.column, { ascending: order.ascending });
       if (limit) query = query.limit(limit);
@@ -65,6 +78,7 @@ function createEntityHelper(tableName) {
 
     async filter(filters = {}, orderBy, limit) {
       let query = supabase.from(tableName).select('*');
+      if (needsSourceFilter) query = query.eq('source', PROJECT_SOURCE);
       for (const [key, value] of Object.entries(filters)) {
         query = query.eq(key, value);
       }
@@ -83,7 +97,10 @@ function createEntityHelper(tableName) {
     },
 
     async create(record) {
-      const { data, error } = await supabase.from(tableName).insert(record).select().single();
+      const recordWithSource = needsSourceFilter
+        ? { ...record, source: PROJECT_SOURCE }
+        : record;
+      const { data, error } = await supabase.from(tableName).insert(recordWithSource).select().single();
       if (error) throw error;
       return data;
     },

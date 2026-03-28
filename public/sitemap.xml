@@ -75,6 +75,122 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <!-- Portal: Homepage -->
+  <url>
+    <loc>https://perfect-dashboard.com/opening-business-israel</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- Portal: Category Hubs -->
+  <url>
+    <loc>https://perfect-dashboard.com/osek-patur</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/osek-murshe</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/hevra-bam</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/sgirat-tikim</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/guides</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <!-- Portal: Osek Patur Articles -->
+  <url>
+    <loc>https://perfect-dashboard.com/osek-patur/how-to-open</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/osek-patur/cost</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/osek-patur/accountant</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/osek-patur/tax-reporting</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/osek-patur/income-ceiling</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Portal: Osek Murshe Articles -->
+  <url>
+    <loc>https://perfect-dashboard.com/osek-murshe/how-to-open</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/osek-murshe/cost</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/osek-murshe/vat-guide</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Portal: Hevra BAM Articles -->
+  <url>
+    <loc>https://perfect-dashboard.com/hevra-bam/how-to-open</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/hevra-bam/cost</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Portal: Sgirat Tikim Articles -->
+  <url>
+    <loc>https://perfect-dashboard.com/sgirat-tikim/close-osek-patur</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://perfect-dashboard.com/sgirat-tikim/close-osek-murshe</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Portal: Guides Articles -->
+  <url>
+    <loc>https://perfect-dashboard.com/guides/which-business-type</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Portal: Comparison Pages -->
+  <url>
+    <loc>https://perfect-dashboard.com/compare/osek-patur-vs-murshe</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <!-- SEO Article Pages -->
   <url>
     <loc>https://perfect-dashboard.com/blog/logo-leasek</loc>

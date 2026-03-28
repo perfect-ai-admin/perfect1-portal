@@ -1,0 +1,59 @@
+{
+  "categories": [
+    {
+      "id": "osek-patur",
+      "title": "עוסק פטור",
+      "slug": "osek-patur",
+      "description": "כל מה שצריך לדעת על פתיחה, ניהול ומיסוי עוסק פטור בישראל",
+      "metaTitle": "עוסק פטור - מדריך מקיף לפתיחה, ניהול ומיסוי | פרפקט וואן",
+      "metaDescription": "מדריכים מקיפים לעוסק פטור: פתיחה, ניהול, מיסים, זכויות וחובות. כל המידע במקום אחד עם אפשרות לליווי אישי.",
+      "icon": "FileText",
+      "color": "teal",
+      "stats": { "articles": 30, "guides": 6 }
+    },
+    {
+      "id": "osek-murshe",
+      "title": "עוסק מורשה",
+      "slug": "osek-murshe",
+      "description": "מדריכים מקיפים לפתיחה וניהול עוסק מורשה",
+      "metaTitle": "עוסק מורשה - מדריך מלא לפתיחה וניהול | פרפקט וואן",
+      "metaDescription": "כל מה שצריך לדעת על עוסק מורשה: פתיחה, מע\"מ, מס הכנסה, דוחות וחשבוניות. מדריכים + ליווי אישי.",
+      "icon": "Briefcase",
+      "color": "blue",
+      "stats": { "articles": 30, "guides": 6 }
+    },
+    {
+      "id": "hevra-bam",
+      "title": "חברה בע\"מ",
+      "slug": "hevra-bam",
+      "description": "הקמה, ניהול ורישום חברה בע\"מ בישראל",
+      "metaTitle": "חברה בע\"מ - מדריך להקמה וניהול | פרפקט וואן",
+      "metaDescription": "מדריכים להקמת חברה בע\"מ: רישום, ניהול, דוחות, בעלי מניות ושכר. כל המידע + ליווי מקצועי.",
+      "icon": "Building2",
+      "color": "indigo",
+      "stats": { "articles": 30, "guides": 6 }
+    },
+    {
+      "id": "sgirat-tikim",
+      "title": "סגירת תיקים",
+      "slug": "sgirat-tikim",
+      "description": "סגירת עסק, תיקים ומול רשויות — בלי טעויות",
+      "metaTitle": "סגירת תיקים - מדריך לסגירת עסק בישראל | פרפקט וואן",
+      "metaDescription": "מדריכים לסגירת עוסק פטור, עוסק מורשה וחברה. סגירה מול מס הכנסה, מע\"מ וביטוח לאומי.",
+      "icon": "FolderX",
+      "color": "red",
+      "stats": { "articles": 25, "guides": 6 }
+    },
+    {
+      "id": "guides",
+      "title": "מידע ומדריכים",
+      "slug": "guides",
+      "description": "מדריכים כלליים, השוואות וכלים לעסקים בישראל",
+      "metaTitle": "מדריכים לפתיחת עסק בישראל | פרפקט וואן",
+      "metaDescription": "מדריכים, השוואות וכלים לפתיחת עסק: עצמאים, מיסוי, תמחור ועוד. כל מה שצריך לדעת לפני שמתחילים.",
+      "icon": "BookOpen",
+      "color": "amber",
+      "stats": { "articles": 25, "guides": 6 }
+    }
+  ]
+}
