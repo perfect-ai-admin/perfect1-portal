@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import DigitalCard from './pages/DigitalCard';
+import DigitalCard from './pages/DigitalBusinessCard';
 import { HelmetProvider } from 'react-helmet-async';
 import './portal/styles/portal.css';
 

@@ -26,8 +26,11 @@ const SectionText = ({ section }) => {
 const SectionList = ({ section }) => (
   <div id={section.id} className="scroll-mt-24">
     {section.title && <h2 className="portal-h2 mb-4">{section.title}</h2>}
+    {section.description && (
+      <p className="portal-body mb-4">{section.description}</p>
+    )}
     <ul className="space-y-3">
-      {section.items.map((item, i) => (
+      {(section.items || []).map((item, i) => (
         <li key={i} className="flex items-start gap-3">
           <CheckCircle2 className="w-5 h-5 text-portal-teal mt-1 shrink-0" />
           {typeof item === 'string' ? (
@@ -44,24 +47,28 @@ const SectionList = ({ section }) => (
   </div>
 );
 
-const SectionSteps = ({ section }) => (
-  <div id={section.id} className="scroll-mt-24">
-    {section.title && <h2 className="portal-h2 mb-6">{section.title}</h2>}
-    <div className="space-y-6">
-      {section.items.map((step, i) => (
-        <div key={i} className="flex gap-4">
-          <div className="flex-shrink-0 w-10 h-10 rounded-full bg-portal-teal text-white flex items-center justify-center font-bold text-lg">
-            {i + 1}
+const SectionSteps = ({ section }) => {
+  // JSON uses "steps" array, but fall back to "items" for compatibility
+  const steps = section.steps || section.items || [];
+  return (
+    <div id={section.id} className="scroll-mt-24">
+      {section.title && <h2 className="portal-h2 mb-6">{section.title}</h2>}
+      <div className="space-y-6">
+        {steps.map((step, i) => (
+          <div key={i} className="flex gap-4">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-portal-teal text-white flex items-center justify-center font-bold text-lg">
+              {step.number || i + 1}
+            </div>
+            <div className="flex-1 pt-1">
+              <h3 className="font-bold text-lg text-portal-navy mb-1">{step.title}</h3>
+              <p className="portal-body">{step.description}</p>
+            </div>
           </div>
-          <div className="flex-1 pt-1">
-            <h3 className="font-bold text-lg text-portal-navy mb-1">{step.title}</h3>
-            <p className="portal-body">{step.description}</p>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const SectionCallout = ({ section }) => {
   const icons = { info: Info, warning: AlertCircle, tip: Lightbulb };
@@ -72,12 +79,15 @@ const SectionCallout = ({ section }) => {
   };
   const Icon = icons[section.variant] || Info;
   const colorClass = colors[section.variant] || colors.info;
+  // JSON uses "content" field, but support "text" for backward compatibility
+  const bodyText = section.text || section.content || '';
 
   return (
     <div className={`rounded-xl border-2 p-5 flex gap-3 ${colorClass}`}>
       <Icon className="w-6 h-6 shrink-0 mt-0.5" />
       <div className="portal-body text-current">
-        <ReactMarkdown>{section.text}</ReactMarkdown>
+        {section.title && <strong className="block mb-1">{section.title}</strong>}
+        <ReactMarkdown>{bodyText}</ReactMarkdown>
       </div>
     </div>
   );
@@ -133,7 +143,7 @@ const SectionComparison = ({ section }) => (
 );
 
 const SectionCTAInline = ({ section }) => (
-  <InlineCTA title={section.title} buttonText={section.button} variant={section.variant} />
+  <InlineCTA title={section.title} buttonText={section.buttonText || section.button} variant={section.variant} />
 );
 
 const SECTION_MAP = {
