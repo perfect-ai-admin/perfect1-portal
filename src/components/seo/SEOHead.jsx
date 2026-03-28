@@ -13,7 +13,7 @@ export default function SEOHead({
   keywords,
   noindex = false,
 }) {
-  const siteUrl = 'https://perfect-dashboard.com';
+  const siteUrl = 'https://www.perfect1.co.il';
   const fullCanonical = canonical
     ? (canonical.startsWith('http') ? canonical : `${siteUrl}${canonical}`)
     : siteUrl;

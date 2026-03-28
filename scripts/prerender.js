@@ -16,7 +16,7 @@ import { fileURLToPath } from 'url';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const DIST_DIR = resolve(__dirname, '../dist');
 const CONTENT_DIR = resolve(__dirname, '../src/content');
-const BASE_URL = 'https://perfect-dashboard.com';
+const BASE_URL = 'https://www.perfect1.co.il';
 
 // Discover all portal routes dynamically from content JSON files
 function discoverRoutes() {

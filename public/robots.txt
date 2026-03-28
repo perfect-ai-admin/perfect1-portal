@@ -17,4 +17,4 @@ Disallow: /Checkout
 Disallow: /CheckoutSuccess
 Disallow: /APP
 
-Sitemap: https://perfect-dashboard.com/sitemap.xml
+Sitemap: https://www.perfect1.co.il/sitemap.xml
