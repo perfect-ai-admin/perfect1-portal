@@ -3,14 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 import { 
   TrendingUp, Users, Wallet, Target, 
   LayoutGrid, Clock, Heart, Megaphone,
-  ArrowLeft, CheckCircle2, Zap, BarChart3,
-  Shield, Rocket, Brain, Sparkles,
+  ArrowLeft, CheckCircle2, Zap, BarChart3, Rocket, Brain, Sparkles,
   XCircle, MessageCircle, ShieldCheck,
   Mic, Trophy, Star,
-  ScanFace, Magnet, RefreshCcw,
-  PenTool, Share2, Calendar, Repeat,
+  ScanFace, Magnet, RefreshCcw, Share2, Calendar, Repeat,
   Copy, Map,
-  Gift, UserPlus, Smile, LifeBuoy,
+  Gift, UserPlus, LifeBuoy,
   Bot, Coffee, Hourglass, Cpu,
   ClipboardCheck, FileText, Flame, Construction
 } from 'lucide-react';

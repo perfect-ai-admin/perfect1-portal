@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Tag, Sparkles, Check, Zap } from 'lucide-react';
+import { ArrowLeft, Tag, Check, Zap } from 'lucide-react';
 import Header from '@/components/marketing/Header';
 import Footer from '@/components/marketing/Footer';
 

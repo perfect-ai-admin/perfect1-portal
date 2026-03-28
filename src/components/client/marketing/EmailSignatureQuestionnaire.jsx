@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { 
-  ChevronLeft, ChevronRight, X, Sparkles, User, Briefcase, 
-  Phone, Mail, Globe, Instagram, Facebook, Linkedin, 
-  Image, Share2, Check, MessageSquare, Layout, CreditCard,
+  ChevronLeft, ChevronRight, X, Sparkles, User, 
+  Phone, Mail, Instagram, Facebook, Linkedin, 
+  Image, Share2, Check, MessageSquare, CreditCard,
   AtSign
 } from 'lucide-react';
 import { cn } from "@/lib/utils";

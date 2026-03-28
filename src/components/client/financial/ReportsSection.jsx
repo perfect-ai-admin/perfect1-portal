@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, TrendingUp, DollarSign, PieChart, Users, Calendar } from 'lucide-react';
+import { FileText, TrendingUp, DollarSign, PieChart, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,

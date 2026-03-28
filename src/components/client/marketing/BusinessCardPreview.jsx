@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Phone, Mail, Globe, Instagram, Facebook, MessageCircle, Share2, Download, ShoppingCart, Lock, Sparkles } from 'lucide-react';
+import { Phone, Mail, Globe, Instagram, Facebook, MessageCircle, ShoppingCart, Lock, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 

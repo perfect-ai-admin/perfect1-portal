@@ -9,8 +9,6 @@ import {
   Clock,
   Heart,
   Megaphone,
-  Compass,
-  Battery,
   ArrowLeft
 } from 'lucide-react';
 import { motion } from 'framer-motion';

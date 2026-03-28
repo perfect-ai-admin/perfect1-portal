@@ -12,7 +12,6 @@ import {
   MessageCircle,
   ArrowLeft,
   XCircle,
-  Clock,
   Zap,
   Layout
 } from 'lucide-react';

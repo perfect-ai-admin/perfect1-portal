@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, useMotionValue, animate } from 'framer-motion';
 
 // Swipeable Tabs Container (section 8)
 export default function SwipeableTabs({ activeTab, onChange, tabs, children }) {

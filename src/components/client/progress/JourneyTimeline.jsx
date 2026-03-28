@@ -11,18 +11,15 @@ import {
   Check,
   ChevronLeft,
   X,
-  Circle,
   Lightbulb,
   Users,
   DollarSign,
-  Rocket,
-  RefreshCcw
+  Rocket
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { entities, auth } from '@/api/supabaseClient';
 
 export default function JourneyTimeline({ onStartTask, onResetJourney }) {

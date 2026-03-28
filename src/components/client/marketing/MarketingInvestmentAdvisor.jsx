@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, DollarSign, Users, Calendar, Target, AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { invokeFunction } from '@/api/supabaseClient';
+import { TrendingUp, DollarSign, Users, Calendar, Target, AlertTriangle, CheckCircle } from 'lucide-react';
 
 // Marketing Investment Advisor (section 4.5.4)
 function analyzeDecisionFactors(data) {

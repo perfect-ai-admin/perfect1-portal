@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { invokeFunction } from '@/api/supabaseClient';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard } from 'lucide-react';
 

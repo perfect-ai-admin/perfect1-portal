@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Lock, X, ChevronRight, ChevronDown, CreditCard, Smartphone, Building, ShoppingBag, ArrowRight, Palette, Presentation, Globe, Image as ImageIcon } from 'lucide-react';
+import { Check, Lock, X, ChevronRight, ChevronDown, CreditCard, ShoppingBag, ArrowRight, Palette, Presentation, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';

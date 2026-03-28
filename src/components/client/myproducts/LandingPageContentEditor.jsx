@@ -6,9 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { 
-  Save, Loader2, Palette, Type, Phone, Globe, Image, 
-  ChevronDown, ChevronUp, Layers, Eye, Sparkles, 
-  GripVertical, Trash2, Plus
+  Save, Loader2, Palette, Type, Phone, Image, 
+  ChevronDown, ChevronUp, Layers, Trash2, Plus
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SectionEditorRouter from './editors/SectionEditorRouter';

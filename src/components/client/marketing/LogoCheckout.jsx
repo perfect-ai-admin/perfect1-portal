@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Lock, X, ChevronRight, CreditCard, Smartphone, Building, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Check, Lock, X, ChevronRight, Building, Loader2, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import WatermarkedLogo from './WatermarkedLogo';
 import { invokeFunction } from '@/api/supabaseClient';
 import { toast } from 'sonner';

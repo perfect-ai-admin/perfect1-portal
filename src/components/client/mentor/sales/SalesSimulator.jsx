@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Send, StopCircle, Play, RotateCcw, User, Bot, Award } from 'lucide-react';
+import { Send, StopCircle, RotateCcw, Bot, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import ReactMarkdown from 'react-markdown';
 import { invokeLLM } from '@/api/supabaseClient';
 
 const SCENARIOS = [

@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Facebook, Instagram, Check, AlertCircle, Link2, Image, Layout, ArrowRight, Calendar, DollarSign, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Facebook, Instagram, Check, Link2, Image, Layout, ArrowRight, DollarSign, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 
 export default function SocialCampaign({ onBack, onComplete }) {
   const [step, setStep] = useState(1);

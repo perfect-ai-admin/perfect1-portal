@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Palette, Rocket, Users, TrendingUp, BookOpen, Briefcase } from 'lucide-react';
+import { Palette, Rocket, Users, TrendingUp, BookOpen } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BrandingTools from '../marketing/BrandingTools';
 import CampaignSection from '../marketing/CampaignSection';
 import GoogleSection from '../marketing/GoogleSection';
 import ROISection from '../marketing/ROISection';
 import LearnSection from '../marketing/LearnSection';
-import CampaignBuilder from '../marketing/CampaignBuilder';
 
 export default function MarketingTab({ data }) {
   return (

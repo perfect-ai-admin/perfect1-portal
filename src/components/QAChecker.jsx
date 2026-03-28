@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle, AlertTriangle, Zap, Eye } from 'lucide-react';
-import { Card } from '@/components/ui/card';
 
 /**
  * QA Checker Component

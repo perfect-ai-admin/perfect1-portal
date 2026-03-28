@@ -11,7 +11,7 @@ export default [
       "src/pages/**/*.{js,mjs,cjs,jsx}",
       "src/Layout.jsx",
     ],
-    ignores: ["src/lib/**/*", "src/components/ui/**/*"],
+    ignores: ["src/lib/**/*", "src/components/ui/**/*", "src/components/client/BUSINESS_STATE_SPEC.md.jsx"],
     ...pluginJs.configs.recommended,
     ...pluginReact.configs.flat.recommended,
     languageOptions: {
@@ -52,7 +52,7 @@ export default [
       "react/react-in-jsx-scope": "off",
       "react/no-unknown-property": [
         "error",
-        { ignore: ["cmdk-input-wrapper", "toast-close"] },
+        { ignore: ["cmdk-input-wrapper", "toast-close", "allowpaymentrequest"] },
       ],
       "react-hooks/rules-of-hooks": "error",
     },

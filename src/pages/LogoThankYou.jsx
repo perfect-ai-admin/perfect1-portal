@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Mail, Download, ArrowLeft, Star, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { createPageUrl } from '@/utils';

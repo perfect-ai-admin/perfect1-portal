@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Plus, BarChart3, DollarSign, Search, X } from 'lucide-react';
+import { FileText, Plus, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';

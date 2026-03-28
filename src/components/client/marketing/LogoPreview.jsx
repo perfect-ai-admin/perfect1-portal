@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Lock, ChevronLeft, Zap, AlertCircle } from 'lucide-react';
+import { Lock, ChevronLeft, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import WatermarkedLogo from './WatermarkedLogo';
 import { addToCart } from '../shared/cartUtils';

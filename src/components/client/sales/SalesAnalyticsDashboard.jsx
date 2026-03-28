@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { 
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, 
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
-} from 'recharts';
-import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Target } from 'lucide-react';
+
+
+import { TrendingUp, AlertCircle, CheckCircle, Target } from 'lucide-react';
 import { entities } from '@/api/supabaseClient';
 
 export default function SalesAnalyticsDashboard({ leadId }) {

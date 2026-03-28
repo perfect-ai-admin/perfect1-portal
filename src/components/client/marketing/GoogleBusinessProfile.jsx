@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  MapPin, Phone, Globe, Clock, Image, Send, Star, 
+  MapPin, Send, Star, 
   TrendingUp, Eye, MousePointerClick, MessageCircle 
 } from 'lucide-react';
 import { toast } from 'sonner';

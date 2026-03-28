@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Lock, TrendingUp } from 'lucide-react';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 
 export default function GoalUpgradeModal({ upgradeData, user, onClose }) {
     const [plans, setPlans] = useState([]);

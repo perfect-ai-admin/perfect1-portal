@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useAuth } from '@/lib/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, Shield, LayoutDashboard, CreditCard, FileText, Activity, Receipt } from 'lucide-react';
@@ -12,7 +11,7 @@ import PaymentsManager from '../components/admin/PaymentsManager';
 import LandingPagesManager from '../components/admin/LandingPagesManager';
 import ActivityLogView from '../components/admin/ActivityLogView';
 import BillingDocumentsManager from '../components/admin/BillingDocumentsManager';
-import { auth, invokeFunction } from '@/api/supabaseClient';
+import { auth } from '@/api/supabaseClient';
 
 export default function AdminDashboard() {
     const [user, setUser] = useState(null);

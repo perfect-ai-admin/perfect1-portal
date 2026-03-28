@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Circle, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { invokeLLM } from '@/api/supabaseClient';
 // Extract action items from conversation using AI
 export async function extractActionItems(conversationHistory) {

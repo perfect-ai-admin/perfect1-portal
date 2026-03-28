@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Check, AlertCircle, Edit2 } from 'lucide-react';
+import { Link2, Check, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function GoogleSection() {

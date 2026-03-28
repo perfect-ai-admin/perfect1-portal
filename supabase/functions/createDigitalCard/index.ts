@@ -59,6 +59,7 @@ Deno.serve(async (req) => {
       .insert({
         customer_id: customer.id,
         slug,
+        name: fullName || customer.full_name || '',
         full_name: fullName || customer.full_name || '',
         profession: profession || '',
         presentation_style: presentationStyle || '',

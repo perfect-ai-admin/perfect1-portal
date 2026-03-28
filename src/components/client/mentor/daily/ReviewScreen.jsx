@@ -5,8 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { 
   Trophy, 
   Target, 
-  ThumbsDown, 
-  ArrowUpRight,
+  ThumbsDown,
   Sparkles,
   Share2
 } from 'lucide-react';

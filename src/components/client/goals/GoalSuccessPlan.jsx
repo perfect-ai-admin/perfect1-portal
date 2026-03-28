@@ -1,9 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { 
   Target, 
   Map, 
-  ListTodo, 
   Trophy, 
   ArrowLeft,
   CheckCircle2,

@@ -1,8 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  User, Sparkles, MessageSquare, Video, 
-  Target, Zap, Shield, CheckCircle2, 
+  User, Sparkles, MessageSquare, Video, CheckCircle2, 
   ArrowLeft, Brain, Smile, Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

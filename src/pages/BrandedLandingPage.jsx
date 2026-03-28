@@ -2,8 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Rocket, Clock, CheckCircle2, Zap, Layout,
-  Globe, Shield, MousePointerClick, ChevronDown,
-  X, Check, Sparkles, Smartphone, ArrowLeft
+  Globe, Sparkles, Smartphone, ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {

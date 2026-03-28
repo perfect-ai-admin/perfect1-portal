@@ -13,7 +13,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import DailyCockpit from '../mentor/DailyCockpit';
 import MentorChat from '../mentor/MentorChat';
-import Insights from '../mentor/Insights';
 import MentorOverview from '../mentor/MentorOverview';
 import DailyOperations from '../mentor/DailyOperations'; // Using as "The Plan" base for now
 import SalesCenter from '../mentor/sales/SalesCenter';

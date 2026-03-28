@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { entities, invokeLLM, invokeFunction } from '@/api/supabaseClient';
+import { entities, invokeLLM } from '@/api/supabaseClient';
 export default function SmartChat({ clientData, onUpdate }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');

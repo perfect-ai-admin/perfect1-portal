@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertCircle, Check, Clock } from 'lucide-react';
+import { Check, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, User, Shield, Zap, AlertCircle, Award, TrendingUp, Users, ThumbsUp, Briefcase, MapPin, Mail, Globe, Loader2 } from 'lucide-react';
+import { Phone, MessageCircle, Check, ArrowLeft, ChevronDown, Send, Star, Zap, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -37,15 +37,24 @@ const staggerContainer = {
 };
 
 export default function DynamicLandingPage({ data, isThumbnail = false }) {
-    if (!data) return null;
-
-    const { primary_color = '#2563EB', sections_json, business_name, slug } = data;
-    const contrastColor = getContrastColor(primary_color);
-    
     // Form state
     const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '', consent: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const uniqueId = React.useId();
+
+    // Sticky CTA Logic
+    const [showStickyCTA, setShowStickyCTA] = useState(false);
+    useEffect(() => {
+        if (isThumbnail) return;
+        const handleScroll = () => setShowStickyCTA(window.scrollY > 600);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [isThumbnail]);
+
+    if (!data) return null;
+
+    const { primary_color = '#2563EB', sections_json, business_name, slug } = data;
+    const contrastColor = getContrastColor(primary_color);
 
     // CSS Variables for dynamic theming
     const themeStyle = {
@@ -56,15 +65,6 @@ export default function DynamicLandingPage({ data, isThumbnail = false }) {
         '--primary-500': primary_color, // base
         '--primary-900': `${primary_color}e6`, // 90% opacity
     };
-
-    // Sticky CTA Logic
-    const [showStickyCTA, setShowStickyCTA] = useState(false);
-    useEffect(() => {
-        if (isThumbnail) return;
-        const handleScroll = () => setShowStickyCTA(window.scrollY > 600);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [isThumbnail]);
 
     const scrollToContact = () => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
 

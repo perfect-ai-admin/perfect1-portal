@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   CheckCircle2, 
   Clock, 
@@ -13,9 +12,7 @@ import {
   ArrowRight,
   Shield,
   Zap,
-  Bot,
-  Sparkles,
-  Link
+  Sparkles
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { entities } from '@/api/supabaseClient';

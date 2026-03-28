@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Settings, Search, Mail, LayoutGrid, Rocket, ArrowRight, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Search, Mail, LayoutGrid, Rocket, ArrowRight, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import CampaignBuilder from './CampaignBuilder';
 import { toast } from 'sonner';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 
 export default function CampaignSection() {
   const [isCreating, setIsCreating] = useState(false);

@@ -1,10 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Presentation, FileSpreadsheet, Zap, Target,
-  TrendingUp, Users, MessageSquare, Award,
-  CheckCircle2, ArrowLeft, Brain, Share2,
-  Briefcase, DollarSign, Clock, Sparkles
+  Presentation, FileSpreadsheet,
+  TrendingUp, MessageSquare, Award,
+  CheckCircle2, ArrowLeft, Brain, Share2, Clock, Sparkles
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {

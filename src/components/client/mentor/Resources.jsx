@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Clock, ArrowRight } from 'lucide-react';
+import { BookOpen, Clock } from 'lucide-react';
 import MentorHeader from './shared/MentorHeader';
-import { Button } from '@/components/ui/button';
 
 const recommendedNow = [
   {

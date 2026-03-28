@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Sparkles, Brain, Target, Flag } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Sparkles, Target, Flag } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import GoalSuccessPlan from './GoalSuccessPlan';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 
 const steps = [
   { id: 1, title: "מודעות ראשונית" },

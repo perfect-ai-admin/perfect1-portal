@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, FileText, Receipt, CreditCard, Loader2 } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, FileText, Loader2 } from 'lucide-react';
 import { formatCurrency } from './formatters';
 import useActiveAccountingProvider from '../../hooks/useActiveAccountingProvider';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 
 const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 const SHORT_MONTHS = ['ינו','פבר','מרץ','אפר','מאי','יוני','יולי','אוג','ספט','אוק','נוב','דצמ'];

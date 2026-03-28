@@ -2,16 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Megaphone, 
-  Target, 
-  DollarSign, 
-  Calendar, 
   Send, 
-  ArrowRight, 
-  Instagram, 
-  Facebook, 
   Mail, 
   Search, 
-  Globe, 
   ChevronRight, 
   X,
   LayoutGrid,
@@ -19,10 +12,6 @@ import {
   Sparkles
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import SocialCampaign from './campaigns/SocialCampaign';
 import GoogleCampaign from './campaigns/GoogleCampaign';
 import EmailCampaign from './campaigns/EmailCampaign';

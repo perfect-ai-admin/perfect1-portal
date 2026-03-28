@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Palette, FileText, Image, Type } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import LogoCreator from './LogoCreator';
 
 export default function BrandingSection({ businessName, onActionStart }) {

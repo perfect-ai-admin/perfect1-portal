@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   TrendingUp, 
   BarChart3, 
@@ -21,12 +21,12 @@ import { useDialogState } from '@/components/DialogStateContext';
 // Minimum touch targets: 44px
 export default function MobileTabBar({ activeTab, onChange, availableTabs }) {
   const { isAnyDialogOpen } = useDialogState();
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   // Hide completely when dialog is open
   if (isAnyDialogOpen) {
     return null;
   }
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
   
   const defaultTabs = [
     { id: 'progress', label: 'התקדמות', icon: TrendingUp },

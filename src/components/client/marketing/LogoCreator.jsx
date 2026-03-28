@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Wand2, Download, RefreshCw, FileJson, Image, Code, CheckCircle2, ChevronRight, LayoutGrid, Type, X, Sparkles, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Palette, Wand2, RefreshCw, CheckCircle2, ChevronRight, LayoutGrid, Type, X, Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { invokeFunction } from '@/api/supabaseClient';
-import LogoSelectorMobile from './LogoSelectorMobile';
 import LogoCheckout from './LogoCheckout';
 import LogoPreview from './LogoPreview';
 import { useNavigate } from 'react-router-dom';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { Download, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const fmt = (n) => `₪${Number(n || 0).toLocaleString('he-IL')}`;

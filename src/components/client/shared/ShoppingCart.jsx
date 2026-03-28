@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { toast } from "sonner";
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, X, Trash2, Maximize2, Check, ExternalLink, ArrowRight, ShieldCheck, Eye, Loader2, Presentation, Palette, Globe, Layout, Image as ImageIcon } from 'lucide-react';
+import { ShoppingCart, X, Trash2, Maximize2, Check, ArrowRight, ShieldCheck, Eye, Loader2, Presentation, Palette, Globe, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent } from '@/components/ui/dialog';

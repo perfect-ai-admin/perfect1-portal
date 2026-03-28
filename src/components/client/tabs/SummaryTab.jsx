@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Rocket, Brain, Zap, Award, Target, TrendingUp, Users, Crown, Shield, Sparkles, Star } from 'lucide-react';
 import GoalTemplatesFixed, { GOAL_TEMPLATES } from '@/components/client/goals/GoalTemplatesFixed';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 
 export default function SummaryTab({ data }) {
   const navigate = useNavigate();

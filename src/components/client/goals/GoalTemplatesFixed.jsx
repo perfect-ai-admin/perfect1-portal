@@ -1,14 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { DollarSign, Users, Clock, BookOpen, Heart, Plus, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone, Loader2 } from 'lucide-react';
+import { DollarSign, Users, Clock, BookOpen, Heart, Target, TrendingUp, X, Check, Zap, ChevronLeft, Phone, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 // Keep for direct entity check
-import SimpleDialog from '@/components/client/SimpleDialog';
 import { useUpdateUserPhone } from '@/components/hooks/useAppAuth';
-import { auth, invokeFunction } from '@/api/supabaseClient';
+import { auth } from '@/api/supabaseClient';
 
 // Goal Templates
 export const GOAL_TEMPLATES = [

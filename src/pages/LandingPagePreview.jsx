@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
-import { Loader2, AlertCircle, ShoppingCart, ArrowRight, Eye } from 'lucide-react';
+import { Loader2, AlertCircle, ShoppingCart, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';

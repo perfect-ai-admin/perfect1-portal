@@ -4,8 +4,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { 
   Globe, Palette, Presentation, Image, MoreVertical, 
-  ExternalLink, Download, Eye, Archive, Copy, Calendar,
-  CheckCircle2, FileText, CreditCard, Target, Crown, X,
+  ExternalLink, Download, Archive, Copy, Calendar, FileText, Target, Crown, X,
   Settings, Edit2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

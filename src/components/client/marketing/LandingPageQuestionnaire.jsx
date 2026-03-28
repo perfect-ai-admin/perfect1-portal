@@ -5,20 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, Building2, 
   Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
   Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
   Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2, Copy, Eye, Maximize2, ExternalLink,
-  CheckCircle2, Pencil, Info, Monitor, Smartphone, Shield, Loader2, ShoppingCart
+  FileText, Calendar, Layers, Copy, Eye, ExternalLink,
+  CheckCircle2, Pencil, Loader2, ShoppingCart
 } from 'lucide-react';
 import { toast } from 'sonner';
 import DynamicLandingPage from '@/components/landing-page/DynamicLandingPage';
 import CheckoutDialog from '@/components/checkout/CheckoutDialog';
-import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { addToCart } from '../shared/cartUtils';
 

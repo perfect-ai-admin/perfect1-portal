@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
-import { Loader2, CheckCircle, Home, Target, Copy, Download, Palette, Sticker } from 'lucide-react';
+import { Loader2, CheckCircle, Home, Target, Copy, Download, Palette } from 'lucide-react';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 

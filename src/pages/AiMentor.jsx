@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
   Target, Calendar, CheckCircle2, Zap, Brain, 
   TrendingUp, Users, MessageSquare, LineChart, 
@@ -8,7 +8,6 @@ import {
   Megaphone, UserCheck, Headset, Settings, 
   Award, RefreshCw, XCircle, Check, ChevronDown
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import {
   Accordion,
   AccordionContent,

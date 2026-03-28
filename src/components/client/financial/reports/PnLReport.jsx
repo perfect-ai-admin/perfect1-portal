@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, DollarSign, Receipt, FileText, Percent } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, FileText, Percent } from 'lucide-react';
 
 const fmt = (n) => `₪${Number(n || 0).toLocaleString('he-IL')}`;
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Copy, Play, BookMarked, MessageCircle, Phone, VideoIcon, Plus, Wand2, Lightbulb } from 'lucide-react';
+import { Copy, BookMarked, MessageCircle, Phone, VideoIcon, Plus, Wand2, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';

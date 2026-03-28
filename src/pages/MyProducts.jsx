@@ -3,14 +3,12 @@ import { Helmet } from 'react-helmet-async';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { 
-  Package, ArrowRight, Loader2, Globe, Palette, 
-  Presentation, Image, ShoppingCart, X, LogOut,
-  User, HelpCircle, CreditCard, AlertTriangle
+  Package, ArrowRight, Loader2, X, LogOut,
+  User, CreditCard, AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Sticker, MessageCircle, Send, Zap,
+  Sticker, Send, Zap,
   Smile, ThumbsUp, Heart, CheckCircle2,
-  Smartphone, Clock, ShieldCheck, ArrowLeft,
+  Smartphone, ArrowLeft,
   MessageSquare, Users, Sparkles, Coffee, ShoppingBag, Truck, Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -2,14 +2,11 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import HeroGoal from '../goals/HeroGoal';
-import FirstGoalFlow from '../goals/FirstGoalFlow';
 import SecondaryGoals from '../goals/SecondaryGoals';
 import BusinessRoadmap from '../goals/BusinessRoadmap';
-import GoalTemplates, { GOAL_TEMPLATES } from '../goals/GoalTemplatesFixed';
+import GoalTemplates from '../goals/GoalTemplatesFixed';
 import LimitUpgradeDialog from '../goals/LimitUpgradeDialog';
-import SimpleDialog from '../SimpleDialog';
-import { Plus, Sparkles, Target, ArrowLeft } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Plus, Sparkles, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // Hooks

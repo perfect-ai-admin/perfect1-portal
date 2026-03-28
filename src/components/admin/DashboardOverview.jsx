@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { invokeFunction } from '@/api/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, CreditCard, MousePointerClick, FileText, Activity, Image, Presentation, Smile, Globe, Tag } from 'lucide-react';
+import { Users, CreditCard, FileText, Activity, Image, Presentation, Smile, Globe } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 

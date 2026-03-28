@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { Download, Palette, ChevronLeft, ChevronRight, Image, Code, FileJson, CheckCircle2, Wand2, ShoppingCart, X } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Image, Code, FileJson, CheckCircle2, Wand2, ShoppingCart, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 

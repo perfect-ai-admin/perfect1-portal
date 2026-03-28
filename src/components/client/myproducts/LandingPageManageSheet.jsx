@@ -4,7 +4,7 @@ import {
   Loader2, Globe, ExternalLink, Eye,
   Pencil, Users, BarChart3
 } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import {
   Sheet,

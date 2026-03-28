@@ -6,10 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, Building2, 
-  Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
-  Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
-  Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2, Sticker, Smile, Shield, Download, ExternalLink, Loader2, CheckCircle2
+  Target, Zap, MessageSquare, Paintbrush, 
+  Send, Users, Wallet, Briefcase, Check,
+  Upload, Globe, Lock, CreditCard, Layers, Smile, Shield, Loader2, CheckCircle2
   } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';

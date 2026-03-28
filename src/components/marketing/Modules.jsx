@@ -12,8 +12,7 @@ import {
   Receipt,
   PieChart,
   Calculator,
-  ArrowLeft,
-  Check
+  ArrowLeft
 } from 'lucide-react';
 
 import { getSignupUrl } from '@/components/utils/tracking';

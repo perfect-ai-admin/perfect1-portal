@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { 
   Palette, 
   FileText, 
@@ -7,7 +6,6 @@ import {
   Tag,
   Share2,
   CreditCard,
-  Mail,
   Receipt,
   ArrowRight,
   Video

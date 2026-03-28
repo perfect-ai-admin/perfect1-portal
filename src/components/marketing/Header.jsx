@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, ChevronDown, Sparkles, Layers, Tag, HelpCircle } from 'lucide-react';
+import { Menu, X, ChevronDown, Sparkles, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -23,6 +23,15 @@ export default function Header() {
     { label: 'כרטיס ביקור דיגיטלי', href: '/DigitalBusinessCard' },
     { label: 'אווטר AI לעסק', href: '/AvatarAi' },
     { label: 'הצעת מחיר ממותגת', href: '/BrandedQuote' },
+  ];
+
+  const blogLinks = [
+    { label: 'מדריך: לוגו לעסק', href: '/blog/logo-leasek' },
+    { label: 'מדריך: כרטיס ביקור דיגיטלי', href: '/blog/kartis-bikur-digitali' },
+    { label: 'מדריך: דף נחיתה', href: '/blog/daf-nchita' },
+    { label: 'מדריך: מצגת עסקית', href: '/blog/matzget-iskit' },
+    { label: 'מדריך: מצגת משקיעים', href: '/blog/matzget-mashkiim' },
+    { label: 'מדריך: סטיקר לעסק', href: '/blog/sticker-leasek' },
   ];
 
   const navLinks = [
@@ -54,6 +63,22 @@ export default function Header() {
                   <DropdownMenuItem key={product.label} asChild>
                     <a href={product.href} className="cursor-pointer">
                       {product.label}
+                    </a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium">
+                מדריכים
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {blogLinks.map((link) => (
+                  <DropdownMenuItem key={link.label} asChild>
+                    <a href={link.href} className="cursor-pointer">
+                      {link.label}
                     </a>
                   </DropdownMenuItem>
                 ))}
@@ -136,6 +161,22 @@ export default function Header() {
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {product.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <p className="text-gray-900 text-sm font-black mb-4 px-2 flex items-center gap-2"><span className="w-1 h-4 bg-indigo-600 rounded-full"></span>מדריכים</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {blogLinks.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      className="text-gray-600 bg-gray-50 hover:bg-white hover:text-indigo-600 hover:shadow-md hover:border-indigo-100 border border-transparent transition-all py-3 px-3 rounded-xl text-sm font-medium text-center"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {link.label}
                     </a>
                   ))}
                 </div>

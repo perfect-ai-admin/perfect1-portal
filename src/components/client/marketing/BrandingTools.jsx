@@ -4,12 +4,9 @@ import {
   Palette, 
   Layers, 
   Presentation, 
-  Shield, 
   Image, 
   Share2, 
-  Mail, 
   FileText,
-  X,
   Smile,
   Bot
 } from 'lucide-react';
@@ -24,7 +21,6 @@ import PresentationQuestionnaire from './PresentationQuestionnaire';
 import StickerQuestionnaire from './StickerQuestionnaire';
 import SocialMediaQuestionnaire from './SocialMediaQuestionnaire';
 import BusinessCardQuestionnaire from './BusinessCardQuestionnaire';
-import EmailSignatureQuestionnaire from './EmailSignatureQuestionnaire';
 import ProposalQuestionnaire from './ProposalQuestionnaire';
 import UnifiedLeadForm from '@/components/forms/UnifiedLeadForm';
 

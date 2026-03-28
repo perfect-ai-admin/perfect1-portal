@@ -7,10 +7,8 @@ import { Label } from '@/components/ui/label';
 import { invokeFunction } from '@/api/supabaseClient';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, Building2, Smile, 
-  Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
-  Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
-  Upload, Phone, Mail, Globe, Lock, CreditCard,
-  FileText, Calendar, Layers, Share2, Instagram, Facebook,
+  Target, Zap, MessageSquare, Paintbrush, Users, Briefcase, Check,
+  Upload, Calendar, Layers, Instagram, Facebook,
   Image, Layout, Quote, Megaphone, Smartphone, Star
 } from 'lucide-react';
 import { cn } from "@/lib/utils";

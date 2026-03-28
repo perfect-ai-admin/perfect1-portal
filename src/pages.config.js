@@ -29,6 +29,14 @@ const SmartLogo = React.lazy(() => import('./pages/SmartLogo'));
 const SocialDesigns = React.lazy(() => import('./pages/SocialDesigns'));
 const Terms = React.lazy(() => import('./pages/Terms'));
 
+// --- SEO Blog articles (lazy) ---
+const BlogLogoArticle = React.lazy(() => import('./pages/blog/LogoArticle'));
+const BlogDigitalCardArticle = React.lazy(() => import('./pages/blog/DigitalCardArticle'));
+const BlogLandingPageArticle = React.lazy(() => import('./pages/blog/LandingPageArticle'));
+const BlogPresentationArticle = React.lazy(() => import('./pages/blog/PresentationArticle'));
+const BlogInvestorDeckArticle = React.lazy(() => import('./pages/blog/InvestorDeckArticle'));
+const BlogStickerArticle = React.lazy(() => import('./pages/blog/StickerArticle'));
+
 // --- Application pages (static imports — lightweight) ---
 import Login from './pages/Login';
 import AgentLogin from './pages/AgentLogin';
@@ -79,6 +87,13 @@ export const PAGES = {
     "SmartLogo": SmartLogo,
     "SocialDesigns": SocialDesigns,
     "Terms": Terms,
+    // SEO Blog articles
+    "blog/logo-leasek": BlogLogoArticle,
+    "blog/kartis-bikur-digitali": BlogDigitalCardArticle,
+    "blog/daf-nchita": BlogLandingPageArticle,
+    "blog/matzget-iskit": BlogPresentationArticle,
+    "blog/matzget-mashkiim": BlogInvestorDeckArticle,
+    "blog/sticker-leasek": BlogStickerArticle,
     // Application pages
     "login": Login,
     "AdminDashboard": AdminDashboard,

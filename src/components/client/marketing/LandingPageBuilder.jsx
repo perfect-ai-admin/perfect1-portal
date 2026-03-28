@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, ChevronRight, X } from 'lucide-react';
+import { Layers, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LandingPageQuestionnaire from './LandingPageQuestionnaire';
 

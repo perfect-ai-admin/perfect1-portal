@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ArrowLeft, ArrowRight, Check, Sparkles, Target } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ArrowLeft, Target } from 'lucide-react';
 
 // Configuration for specific task questions
 const TASK_QUESTIONS = {

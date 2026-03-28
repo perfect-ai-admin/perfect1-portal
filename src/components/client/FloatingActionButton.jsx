@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, FileText, Target, MessageSquare, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default function FloatingActionButton({ onAction }) {
   const [isOpen, setIsOpen] = useState(false);

@@ -6,16 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { 
   ChevronLeft, ChevronRight, X, Sparkles, Building2, 
-  Target, AlertCircle, Zap, MessageSquare, Paintbrush, 
-  Send, Users, Wallet, Briefcase, Clock, ThumbsUp, Check,
+  Target, AlertCircle, Zap, Paintbrush, Users, Wallet, Briefcase, Clock, Check,
   Upload, Layers, FileText, MonitorPlay, BarChart3, Star,
-  Lightbulb, Trophy, Presentation, Calendar, Loader2, ExternalLink, CheckCircle2, Maximize2, Globe, Download
+  Lightbulb, Trophy, Presentation, Loader2, CheckCircle2, Maximize2, Download
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { toast } from 'sonner';
 import { addToCart } from '../shared/cartUtils';
-import { useQuery } from '@tanstack/react-query';
 import CheckoutDialog from '@/components/checkout/CheckoutDialog';
 import { entities, auth, sendEmail, uploadFile, invokeFunction } from '@/api/supabaseClient';
 

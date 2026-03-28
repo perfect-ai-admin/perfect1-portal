@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAppAuth, useLogout } from '@/components/hooks/useAppAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -8,17 +7,11 @@ import { createPageUrl } from '@/utils';
 import GeneralErrorBoundary from '../components/GeneralErrorBoundary';
 import { DialogStateProvider } from '../components/DialogStateContext';
 import { 
-  LogOut, HelpCircle, User, AlertCircle, Globe, ShoppingCart as ShoppingCartIcon,
-  TrendingUp, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, Lightbulb, CreditCard, Package
+  LogOut, HelpCircle, User, AlertCircle, Globe, BarChart3, Wallet, Target, Megaphone, MessageSquare, MapPin, CreditCard, Package
 } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -30,16 +23,13 @@ import {
 // Components
 import TabNavigation from '../components/client/TabNavigation';
 import MobileTabBar from '../components/client/MobileTabBar';
-import SwipeableTabs from '../components/client/SwipeableTabs';
-import PullToRefresh from '../components/client/PullToRefresh';
 import NotificationCenter from '../components/client/NotificationCenter';
-import FloatingActionButton from '../components/client/FloatingActionButton';
 import Breadcrumbs from '../components/client/Breadcrumbs';
 import ShoppingCart from '../components/client/shared/ShoppingCart';
 import UnifiedCheckout from '../components/client/shared/UnifiedCheckout';
 
 import { SkeletonHeader, SkeletonTabContent } from '../components/client/SkeletonLoaders';
-import { auth, invokeFunction } from '@/api/supabaseClient';
+import { auth } from '@/api/supabaseClient';
 
 // Lazy Load Heavy Tabs
 const ProgressTab = React.lazy(() => import('../components/client/tabs/ProgressTab'));

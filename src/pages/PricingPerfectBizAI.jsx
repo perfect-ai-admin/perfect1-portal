@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   Check, X, ArrowRight, Star, Lock, AlertTriangle, 
-  Palette, MonitorPlay, Rocket, Loader2, LogIn, CreditCard, ShieldCheck,
+  Palette, MonitorPlay, Rocket, LogIn, CreditCard, ShieldCheck,
   LogOut, HelpCircle, User, Globe, Sparkles, Zap, Sticker, Layout, Smartphone
 } from 'lucide-react';
 import {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp } from 'lucide-react';
-import Sparkline from '../business/Sparkline';
 import BarChart from '../business/BarChart';
 
 export default function ROISection() {

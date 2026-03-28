@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, BookOpen, Zap, MessageSquare, Layers, Briefcase, MoreVertical, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 
 const WORK_TYPE_CONFIG = {
   campaign: { label: 'קמפיין', icon: Zap, color: 'bg-blue-100 text-blue-700' },

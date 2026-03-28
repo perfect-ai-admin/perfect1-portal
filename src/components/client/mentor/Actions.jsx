@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import MentorHeader from './shared/MentorHeader';
 import OutcomeTracker from './shared/OutcomeTracker';
-import { Button } from '@/components/ui/button';
 
 const mockActions = {
   today: [

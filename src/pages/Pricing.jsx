@@ -3,7 +3,7 @@ import Header from '@/components/marketing/Header';
 import Footer from '@/components/marketing/Footer';
 import FinalCTA from '@/components/marketing/FinalCTA';
 import { Button } from '@/components/ui/button';
-import { Check, ArrowLeft, Star, HelpCircle, Palette, Presentation, Megaphone, ShieldCheck, CreditCard, Smartphone, Sticker, Layout } from 'lucide-react';
+import { Check, ArrowLeft, Star, Palette, Presentation, Megaphone, ShieldCheck, CreditCard, Smartphone, Sticker, Layout } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { getSignupUrl } from '@/components/utils/tracking';

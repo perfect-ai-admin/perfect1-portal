@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 
 const WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || '';

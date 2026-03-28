@@ -24,7 +24,7 @@ export default function ResourceHints({ priorityImages = [], prefetchPages = [] 
           rel="preload" 
           as="image" 
           href={img}
-          fetchpriority="high"
+          fetchPriority="high"
         />
       ))}
       

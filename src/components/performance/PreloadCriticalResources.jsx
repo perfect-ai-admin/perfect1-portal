@@ -32,7 +32,7 @@ export default function PreloadCriticalResources({ pageName }) {
           rel="preload" 
           as="image" 
           href={img}
-          fetchpriority="high"
+          fetchPriority="high"
         />
       ))}
 

@@ -4,8 +4,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
 } from "@/components/ui/carousel";
 import { ArrowLeft, ArrowRight, Palette, Sparkles, Check, Zap, Star } from 'lucide-react';
 import Header from '@/components/marketing/Header';

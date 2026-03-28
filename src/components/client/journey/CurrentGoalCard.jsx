@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Sparkles, ArrowLeft } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export default function CurrentGoalCard({ goal, onStart, isLoading = false }) {
   if (!goal || goal.status !== 'in_progress') {

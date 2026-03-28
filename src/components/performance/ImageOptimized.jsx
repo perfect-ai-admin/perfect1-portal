@@ -41,7 +41,7 @@ export default function ImageOptimized({
       sizes={sizes}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
-      fetchpriority={priority ? 'high' : 'auto'}
+      fetchPriority={priority ? 'high' : 'auto'}
       onLoad={() => setLoaded(true)}
       className={cn(
         'transition-opacity duration-300',

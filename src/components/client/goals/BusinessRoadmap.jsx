@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Circle, Lock, ChevronDown, ChevronUp, Map, Play, Plus } from 'lucide-react';
+import { CheckCircle2, ChevronDown, ChevronUp, Map, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, ChevronRight, ArrowRight } from 'lucide-react';
 import GoalMentorChat from '@/components/client/mentor/GoalMentorChat';
 import { Helmet } from 'react-helmet-async';
-import { entities, auth, invokeFunction } from '@/api/supabaseClient';
+import { entities, auth } from '@/api/supabaseClient';
 
 export default function GoalPage() {
   const { goalCode } = useParams();

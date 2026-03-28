@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/lib/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, X } from 'lucide-react';
+import { Loader2, ArrowRight, ShieldCheck, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { auth, invokeFunction } from '@/api/supabaseClient';
 

@@ -5,18 +5,11 @@ import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 import {
   ArrowRight, Loader2, Globe, ExternalLink, Copy, Eye,
-  Settings, Phone, Mail, Link2, Palette, Save, CheckCircle2,
-  BarChart3, Users, MousePointer, Pencil, Smartphone, Monitor, Send
+  BarChart3, Users, Pencil, Send
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import LandingPagePreviewPanel from '@/components/client/myproducts/LandingPagePreviewPanel';
 import LandingPageLeadSettings from '@/components/client/myproducts/LandingPageLeadSettings';

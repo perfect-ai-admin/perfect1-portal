@@ -7,9 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { 
   Globe, Instagram, Facebook, Linkedin, Music, Navigation, 
-  Loader2, Save, Link as LinkIcon, Phone, Mail, User, Briefcase,
+  Loader2, Save, Link as LinkIcon, Phone, User, Briefcase,
   MessageCircle, ExternalLink, Palette, Tag, Plus, X, Image, Upload,
-  Check, Youtube, MapPin, Twitter
+  Check
 } from 'lucide-react';
 import { entities, uploadFile } from '@/api/supabaseClient';
 

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, Eye, Edit } from 'lucide-react';
+import { ExternalLink, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function LandingPagesManager() {

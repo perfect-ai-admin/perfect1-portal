@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
     Search, 
     Bot, 
@@ -19,8 +17,7 @@ import {
     ChevronUp,
     Edit,
     Save,
-    X,
-    Plus
+    X
 } from 'lucide-react';
 import { toast } from 'sonner';
 

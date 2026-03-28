@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { invokeFunction } from '@/api/supabaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ACCOUNTING_PROVIDERS, getProvider } from '../accountingProviders';
 import ProviderCard from '../ProviderCard';
-import ConnectAccountingSoftwareDialog from '../ConnectAccountingSoftwareDialog';
-import ProviderSelectionDialog from '../ProviderSelectionDialog';
 import ConnectProviderDialog from '../ConnectProviderDialog';
 
 export default function ConnectionsTab({ data }) {

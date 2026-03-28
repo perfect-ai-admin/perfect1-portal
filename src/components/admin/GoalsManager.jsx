@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { invokeFunction } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Target, Plus, Edit, Trash2 } from 'lucide-react';
+import { Target, Plus, Edit } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function GoalsManager() {

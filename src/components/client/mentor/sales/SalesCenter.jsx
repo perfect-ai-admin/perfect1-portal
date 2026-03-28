@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Trophy, 
-  Users, 
   MessageSquare, 
   ShieldAlert, 
   PlayCircle, 
-  BarChart2,
-  PhoneCall
+  BarChart2
 } from 'lucide-react';
 import SalesScriptsLibrary from '../SalesScripts'; // Reusing existing
 import ObjectionMaster from './ObjectionMaster';

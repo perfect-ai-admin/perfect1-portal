@@ -16,6 +16,9 @@ const PUBLIC_PAGES = [
     'Branding', 'BusinessPresentation', 'BusinessSticker',
     'DigitalBusinessCard', 'SmartLogo', 'SocialDesigns', 'Goal',
     'login',
+    // SEO Blog articles
+    'blog/logo-leasek', 'blog/kartis-bikur-digitali', 'blog/daf-nchita',
+    'blog/matzget-iskit', 'blog/matzget-mashkiim', 'blog/sticker-leasek',
 ];
 
 // Standalone pages — rendered without any layout wrapper

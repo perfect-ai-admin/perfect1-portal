@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FileText, Send, Download, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Send, Download, CheckCircle, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { finbotService } from './FINBOTService';
 import { Badge } from '@/components/ui/badge';

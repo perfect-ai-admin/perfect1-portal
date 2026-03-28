@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Edit2, X, Circle, CheckCircle2 } from 'lucide-react';
+import { Edit2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function HeroGoal({ goal, onStatusChange, onEdit, onDelete, isLoading = false }) {

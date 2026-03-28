@@ -48,7 +48,19 @@ export default function ArticleLayout({
 
         {/* Article Content */}
         <article className="py-12 md:py-20">
-          <div className="max-w-3xl mx-auto px-4 prose prose-lg prose-gray prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-a:text-violet-600 prose-a:no-underline hover:prose-a:underline" dir="rtl">
+          <div className="max-w-3xl mx-auto px-4 article-content" dir="rtl">
+            <style>{`
+              .article-content h2 { font-size: 1.75rem; font-weight: 800; color: #111827; margin-top: 2.5rem; margin-bottom: 1rem; line-height: 1.3; }
+              .article-content h3 { font-size: 1.35rem; font-weight: 700; color: #1f2937; margin-top: 2rem; margin-bottom: 0.75rem; }
+              .article-content p { font-size: 1.125rem; color: #374151; line-height: 1.8; margin-bottom: 1.25rem; }
+              .article-content ul, .article-content ol { margin-bottom: 1.25rem; padding-right: 1.5rem; }
+              .article-content li { font-size: 1.125rem; color: #374151; line-height: 1.8; margin-bottom: 0.5rem; }
+              .article-content a { color: #7c3aed; text-decoration: none; font-weight: 600; }
+              .article-content a:hover { text-decoration: underline; }
+              .article-content strong { color: #111827; font-weight: 700; }
+              .article-content ol { list-style-type: decimal; }
+              .article-content ul { list-style-type: disc; }
+            `}</style>
             {children}
           </div>
         </article>

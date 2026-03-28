@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightbulb, ChevronDown, ChevronUp, TrendingUp, Shield, Rocket } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronDown, TrendingUp, Shield, Rocket } from 'lucide-react';
 
 // Context-specific learning content (section 4.1.3)
 const EDUCATIONAL_CONTENT = {

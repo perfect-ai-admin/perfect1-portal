@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { MessageCircle, Zap } from 'lucide-react';
 import QuickPrompts from './QuickPrompts';
 import ChatMessage from './ChatMessage';

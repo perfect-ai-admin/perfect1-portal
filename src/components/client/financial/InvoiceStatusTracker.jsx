@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Eye, DollarSign, Send } from 'lucide-react';
+import { Eye, DollarSign, Send } from 'lucide-react';
 import { finbotService } from './FINBOTService';
 import { Badge } from '@/components/ui/badge';
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Edit2, Trash2, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
+import { Edit2, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { entities, invokeFunction } from '@/api/supabaseClient';
+import { entities } from '@/api/supabaseClient';
 const STATUS_OPTIONS = [
   { id: 'idea', label: '💡 רעיון' },
   { id: 'in_progress', label: '⚡ בתהליך' },

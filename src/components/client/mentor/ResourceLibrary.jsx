@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, Video, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // Categorized Resource Library (section 4.6)
 const RESOURCES = {
