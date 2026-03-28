@@ -350,4 +350,34 @@ function generate() {
   console.log(`📁 Output: ${DIST_DIR}\n`);
 }
 
+// Copy base index.html to SPA routes that aren't pre-rendered
+// This ensures Vercel serves the SPA shell for non-portal routes
+function generateSPAFallbacks() {
+  const spaRoutes = [
+    '/OsekPaturSteps',
+    '/DigitalCard',
+    '/login',
+    '/APP',
+  ];
+
+  const baseHtml = getBaseHtml();
+  let count = 0;
+
+  for (const route of spaRoutes) {
+    const outputDir = join(DIST_DIR, ...route.split('/').filter(Boolean));
+    // Skip if already has a pre-rendered file
+    if (existsSync(join(outputDir, 'index.html'))) continue;
+
+    mkdirSync(outputDir, { recursive: true });
+    writeFileSync(join(outputDir, 'index.html'), baseHtml, 'utf-8');
+    count++;
+    console.log(`  📋 ${route} (SPA fallback)`);
+  }
+
+  if (count > 0) {
+    console.log(`\n📊 Generated ${count} SPA fallback pages`);
+  }
+}
+
 generate();
+generateSPAFallbacks();
