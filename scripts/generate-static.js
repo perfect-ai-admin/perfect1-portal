@@ -356,6 +356,7 @@ function generateSPAFallbacks() {
   const spaRoutes = [
     '/OsekPaturLanding',
     '/OsekPaturSteps',
+    '/ThankYou',
     '/DigitalCard',
     '/login',
     '/APP',

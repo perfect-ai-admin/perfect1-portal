@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +23,7 @@ export default function PortalLeadForm({
   variant = 'default',
   className = '',
 }) {
+  const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', phone: '', businessType: '' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -57,39 +59,14 @@ export default function PortalLeadForm({
         referrer: document.referrer || '',
       });
 
-      // GTM tracking
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          event: 'lead_submitted',
-          source_page: sourcePage,
-          business_type: form.businessType,
-        });
-      }
-
-      // Facebook Pixel
-      if (window.fbq) {
-        window.fbq('track', 'Lead', { content_name: sourcePage });
-      }
-
-      setSuccess(true);
+      // Redirect to ThankYou page — conversion tracking fires there
+      navigate(`/ThankYou?source=${encodeURIComponent(sourcePage)}&name=${encodeURIComponent(form.name)}`);
     } catch (err) {
       setError('שגיאה בשליחה, נסה שוב');
     } finally {
       setLoading(false);
     }
   };
-
-  if (success) {
-    return (
-      <div className={`text-center py-10 ${className}`}>
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle2 className="w-8 h-8 text-green-600" />
-        </div>
-        <h3 className="text-2xl font-bold text-portal-navy mb-2">תודה!</h3>
-        <p className="text-lg text-gray-600">הפרטים נקלטו, ניצור איתך קשר בהקדם</p>
-      </div>
-    );
-  }
 
   const isCompact = variant === 'compact';
 

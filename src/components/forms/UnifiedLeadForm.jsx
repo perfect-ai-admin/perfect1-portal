@@ -144,7 +144,7 @@ export default function UnifiedLeadForm({
       } else {
         // Default: redirect אחרי 1.5 שניות
         await new Promise(resolve => setTimeout(resolve, 1500));
-        window.location.href = '/ThankYou';
+        window.location.href = `/ThankYou?source=${encodeURIComponent(effectiveSource)}&name=${encodeURIComponent(formData.name)}`;
       }
     } catch (submitError) {
       console.error('Error submitting lead:', submitError);

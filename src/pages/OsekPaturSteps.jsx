@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { HelmetProvider } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -25,9 +26,9 @@ function StepsLeadForm({
   ctaText = 'קבלו ליווי לפתיחת עוסק פטור',
   className = '',
 }) {
+  const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', phone: '' });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
@@ -78,37 +79,14 @@ function StepsLeadForm({
         referrer: document.referrer || '',
       });
 
-      trackEvent('lead_submitted', {
-        form_location: variant,
-        source_page: 'osek_patur_steps',
-      });
-
-      setSuccess(true);
+      // Redirect to ThankYou — conversion tracking fires there
+      navigate(`/ThankYou?source=${encodeURIComponent(`steps-osek-patur-${variant}`)}&name=${encodeURIComponent(form.name)}`);
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
     } finally {
       setLoading(false);
     }
   };
-
-  if (success) {
-    return (
-      <div className={`text-center py-8 ${className}`}>
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle2 className="w-8 h-8 text-green-600" />
-        </div>
-        <h3 className="text-2xl font-bold text-portal-navy mb-2">תודה! הפרטים נקלטו</h3>
-        <p className="text-lg text-gray-600 mb-4">ניצור איתך קשר תוך דקות ספורות</p>
-        <a
-          href={`tel:${PORTAL_CTA.phone}`}
-          className="inline-flex items-center gap-2 text-portal-teal font-bold hover:underline"
-        >
-          <Phone className="w-4 h-4" />
-          או התקשרו אלינו: {PORTAL_CTA.phone}
-        </a>
-      </div>
-    );
-  }
 
   return (
     <div id={id} className={className}>
