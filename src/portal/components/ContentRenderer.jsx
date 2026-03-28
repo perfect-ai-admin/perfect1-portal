@@ -30,7 +30,14 @@ const SectionList = ({ section }) => (
       {section.items.map((item, i) => (
         <li key={i} className="flex items-start gap-3">
           <CheckCircle2 className="w-5 h-5 text-portal-teal mt-1 shrink-0" />
-          <span className="portal-body">{item}</span>
+          {typeof item === 'string' ? (
+            <span className="portal-body">{item}</span>
+          ) : (
+            <div className="portal-body">
+              <strong>{item.title}</strong>
+              {item.description && <span> — {item.description}</span>}
+            </div>
+          )}
         </li>
       ))}
     </ul>

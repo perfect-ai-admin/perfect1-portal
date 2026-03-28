@@ -12,6 +12,16 @@ export async function invokeFunction(name, payload = {}) {
   return data;
 }
 
+// --- Multi-tenancy: project source identifier ---
+const PROJECT_SOURCE = 'sales_portal';
+
+// Tables that are shared reference data — no source filtering needed
+const SHARED_TABLES = new Set([
+  'plans',
+  'services',
+  'professions',
+]);
+
 // --- Entity name → Supabase table mapping ---
 const entityTableMap = {
   Payment: 'payments', Plan: 'plans', Goal: 'goals', UserGoal: 'customer_goals',
@@ -52,9 +62,12 @@ function parseOrderBy(orderBy) {
 }
 
 function createEntityHelper(tableName) {
+  const needsSourceFilter = !SHARED_TABLES.has(tableName);
+
   return {
     async list(orderBy, limit) {
       let query = supabase.from(tableName).select('*');
+      if (needsSourceFilter) query = query.eq('source', PROJECT_SOURCE);
       const order = parseOrderBy(orderBy);
       if (order) query = query.order(order.column, { ascending: order.ascending });
       if (limit) query = query.limit(limit);
@@ -65,6 +78,7 @@ function createEntityHelper(tableName) {
 
     async filter(filters = {}, orderBy, limit) {
       let query = supabase.from(tableName).select('*');
+      if (needsSourceFilter) query = query.eq('source', PROJECT_SOURCE);
       for (const [key, value] of Object.entries(filters)) {
         query = query.eq(key, value);
       }
@@ -83,7 +97,10 @@ function createEntityHelper(tableName) {
     },
 
     async create(record) {
-      const { data, error } = await supabase.from(tableName).insert(record).select().single();
+      const recordWithSource = needsSourceFilter
+        ? { ...record, source: PROJECT_SOURCE }
+        : record;
+      const { data, error } = await supabase.from(tableName).insert(recordWithSource).select().single();
       if (error) throw error;
       return data;
     },
