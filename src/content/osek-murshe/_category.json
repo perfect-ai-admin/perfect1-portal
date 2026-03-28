@@ -13,7 +13,11 @@
     { "title": "מעבר בין סטטוסים", "slug": "status-change" },
     { "title": "שאלות נפוצות", "slug": "faq" }
   ],
-  "articles": [],
+  "articles": [
+    { "slug": "how-to-open", "title": "איך פותחים עוסק מורשה — מדריך מלא 2026", "readTime": 14 },
+    { "slug": "cost", "title": "כמה עולה עוסק מורשה? פירוט עלויות מלא 2026", "readTime": 10 },
+    { "slug": "vat-guide", "title": "מדריך מע\"מ לעוסק מורשה — כל מה שצריך לדעת", "readTime": 12 }
+  ],
   "faq": [
     {
       "question": "מה ההבדל בין עוסק מורשה לעוסק פטור?",

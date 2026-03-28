@@ -13,7 +13,10 @@
     { "title": "חובות והשלכות", "slug": "consequences" },
     { "title": "שאלות נפוצות", "slug": "faq" }
   ],
-  "articles": [],
+  "articles": [
+    { "slug": "close-osek-patur", "title": "סגירת עוסק פטור — מדריך שלב אחר שלב", "readTime": 10 },
+    { "slug": "close-osek-murshe", "title": "סגירת עוסק מורשה — מדריך מלא", "readTime": 12 }
+  ],
   "faq": [
     {
       "question": "מה קורה אם לא סוגרים תיק של עסק לא פעיל?",

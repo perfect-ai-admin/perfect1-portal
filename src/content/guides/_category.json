@@ -13,7 +13,9 @@
     { "title": "כלים ומחשבונים", "slug": "tools" },
     { "title": "שאלות נפוצות", "slug": "faq" }
   ],
-  "articles": [],
+  "articles": [
+    { "slug": "which-business-type", "title": "איזה סוג עסק מתאים לך? מדריך בחירה מלא", "readTime": 15 }
+  ],
   "faq": [
     {
       "question": "מה עדיף - עוסק פטור, מורשה או חברה?",

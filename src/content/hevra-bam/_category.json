@@ -13,7 +13,10 @@
     { "title": "מעבר לחברה", "slug": "transition" },
     { "title": "שאלות נפוצות", "slug": "faq" }
   ],
-  "articles": [],
+  "articles": [
+    { "slug": "how-to-open", "title": "איך מקימים חברה בע\"מ — מדריך מלא 2026", "readTime": 15 },
+    { "slug": "cost", "title": "כמה עולה להקים ולנהל חברה בע\"מ?", "readTime": 11 }
+  ],
   "faq": [
     {
       "question": "כמה עולה להקים חברה בע\"מ?",
