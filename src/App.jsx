@@ -95,7 +95,7 @@ const AppRoutes = () => {
       <Route path="/DigitalCard" element={<DigitalCard />} />
 
       {/* Landing pages - standalone (no auth, no portal wrapper) */}
-      <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
+      <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
 
       {/* Portal public pages */}
       <Route path="/" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />

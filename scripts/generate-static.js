@@ -354,7 +354,7 @@ function generate() {
 // This ensures Vercel serves the SPA shell for non-portal routes
 function generateSPAFallbacks() {
   const spaRoutes = [
-    '/OsekPaturSteps',
+    '/OsekPaturLanding',
     '/DigitalCard',
     '/login',
     '/APP',
