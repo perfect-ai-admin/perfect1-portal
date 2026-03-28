@@ -1,6 +1,27 @@
 {
+  "cleanUrls": true,
   "rewrites": [
-    { "source": "/((?!api|assets|favicon|_next).*)", "destination": "/index.html" }
+    { "source": "/APP/:path*", "destination": "/index.html" },
+    { "source": "/login", "destination": "/index.html" },
+    { "source": "/AdminDashboard", "destination": "/index.html" },
+    { "source": "/card/:path*", "destination": "/index.html" },
+    { "source": "/DigitalCard", "destination": "/index.html" },
+    { "source": "/SmartLogo", "destination": "/index.html" },
+    { "source": "/DigitalBusinessCard", "destination": "/index.html" },
+    { "source": "/BrandedLandingPage", "destination": "/index.html" },
+    { "source": "/BusinessPresentation", "destination": "/index.html" },
+    { "source": "/BusinessSticker", "destination": "/index.html" },
+    { "source": "/Pricing", "destination": "/index.html" },
+    { "source": "/Features", "destination": "/index.html" },
+    { "source": "/FAQ", "destination": "/index.html" },
+    { "source": "/AiMentor", "destination": "/index.html" },
+    { "source": "/Branding", "destination": "/index.html" },
+    { "source": "/SocialDesigns", "destination": "/index.html" },
+    { "source": "/AvatarAi", "destination": "/index.html" },
+    { "source": "/BrandedQuote", "destination": "/index.html" },
+    { "source": "/Goal", "destination": "/index.html" },
+    { "source": "/Privacy", "destination": "/index.html" },
+    { "source": "/Terms", "destination": "/index.html" }
   ],
   "headers": [
     {

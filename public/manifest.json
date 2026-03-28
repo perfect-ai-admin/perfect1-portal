@@ -1,7 +1,7 @@
 {
-  "name": "ClientDashboard",
-  "short_name": "ClientDashboard",
-  "description": "מערכת ניהול עסק מקיפה לעסקים קטנים, עצמאים ויזמים",
+  "name": "פרפקט וואן — פתיחת עסק בישראל",
+  "short_name": "פרפקט וואן",
+  "description": "מדריכים מקיפים לפתיחת עסק בישראל: עוסק פטור, עוסק מורשה, חברה בע״מ. מידע, כלים וליווי מקצועי.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -10,7 +10,7 @@
   "lang": "he",
   "icons": [
     {
-      "src": "https://base44.com/logo_v2.svg",
+      "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
