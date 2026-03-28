@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { supabase } from '@/api/supabaseClient';
+import { base44 } from '@/api/base44Client';
 
 import ClientFooter from './components/client/ClientFooter';
 import CriticalCSS from './components/performance/CriticalCSS';
@@ -34,9 +34,9 @@ export default function Layout({ children, currentPageName }) {
       if (isPublic) return;
       const checkAuth = async () => {
         try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session) {
-            window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname);
+          const isAuthed = await base44.auth.isAuthenticated();
+          if (!isAuthed) {
+            base44.auth.redirectToLogin(location.pathname);
             return;
           }
         } catch (err) {

@@ -6,7 +6,7 @@ import { pagesConfig } from './pages.config'
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
-import { SupabaseAuthProvider, useAuth } from '@/lib/SupabaseAuthContext';
+import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import DigitalCard from './pages/DigitalCard';
 
@@ -85,7 +85,7 @@ const AppRoutes = () => {
 function App() {
 
   return (
-    <SupabaseAuthProvider>
+    <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <NavigationTracker />
@@ -93,7 +93,7 @@ function App() {
         </Router>
         <Toaster />
       </QueryClientProvider>
-    </SupabaseAuthProvider>
+    </AuthProvider>
   )
 }
 
