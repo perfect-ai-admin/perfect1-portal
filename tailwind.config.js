@@ -10,20 +10,6 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-  			portal: {
-  				navy: '#1E3A5F',
-  				'navy-light': '#2A4A73',
-  				'navy-dark': '#152D4A',
-  				gold: '#D4AF37',
-  				'gold-light': '#E5C560',
-  				teal: '#0D9488',
-  				'teal-light': '#14B8A6',
-  				'teal-dark': '#0F766E',
-  				bg: '#F8F9FA',
-  				'bg-warm': '#FAFAF8',
-  				text: '#2C3E50',
-  				'text-light': '#64748B',
-  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

@@ -14,11 +14,8 @@ export default function SEOHead({
   noindex = false,
 }) {
   const siteUrl = 'https://perfect-dashboard.com';
-  const fullCanonical = canonical
-    ? (canonical.startsWith('http') ? canonical : `${siteUrl}${canonical}`)
-    : siteUrl;
-  const siteName = 'פרפקט וואן';
-  const defaultOgImage = `${siteUrl}/og-image.png`;
+  const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
+  const siteName = 'ClientDashboard';
 
   return (
     <Helmet>
@@ -35,13 +32,13 @@ export default function SEOHead({
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content="he_IL" />
-      <meta property="og:image" content={ogImage || defaultOgImage} />
+      {ogImage && <meta property="og:image" content={ogImage} />}
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage || defaultOgImage} />
+      {ogImage && <meta name="twitter:image" content={ogImage} />}
 
       {/* JSON-LD Schema */}
       {schema && (
