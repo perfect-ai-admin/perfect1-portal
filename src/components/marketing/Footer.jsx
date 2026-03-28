@@ -56,8 +56,9 @@ export default function Footer() {
               <li><a href="/Features" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">תכונות</a></li>
               <li><a href="/Pricing" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">מחירים</a></li>
               <li><a href="/FAQ" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">שאלות נפוצות</a></li>
+              <li><a href="/About" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">אודות</a></li>
               <li><a href="/Privacy" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">מדיניות פרטיות</a></li>
-              <li><a href="/Terms" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">תנאי שימוש</a></li>
+              <li><a href="/Terms" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">תקנון</a></li>
             </ul>
             <a
               href={SIGNUP_URL}
@@ -70,7 +71,7 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-400 text-sm">
-            © {currentYear} ClientDashboard. כל הזכויות שמורות.
+            © {currentYear} פרפקט וואן. כל הזכויות שמורות.
           </p>
         </div>
       </div>

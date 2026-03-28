@@ -52,11 +52,11 @@ const SectionSteps = ({ section }) => {
   const steps = section.steps || section.items || [];
   return (
     <div id={section.id} className="scroll-mt-24">
-      {section.title && <h2 className="portal-h2 mb-6">{section.title}</h2>}
-      <div className="space-y-6">
+      {section.title && <h2 className="portal-h2 mb-4 sm:mb-6">{section.title}</h2>}
+      <div className="space-y-4 sm:space-y-6">
         {steps.map((step, i) => (
-          <div key={i} className="flex gap-4">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-portal-teal text-white flex items-center justify-center font-bold text-lg">
+          <div key={i} className="flex gap-3 sm:gap-4">
+            <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-portal-teal text-white flex items-center justify-center font-bold text-base sm:text-lg">
               {step.number || i + 1}
             </div>
             <div className="flex-1 pt-1">
@@ -98,8 +98,8 @@ const SectionFAQ = ({ section }) => (
     {section.title && <h2 className="portal-h2 mb-6">{section.title || 'שאלות נפוצות'}</h2>}
     <Accordion type="single" collapsible className="space-y-3">
       {section.items.map((item, i) => (
-        <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-xl border border-gray-200 px-6 overflow-hidden">
-          <AccordionTrigger className="text-right font-bold text-lg text-portal-navy hover:no-underline py-5">
+        <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-xl border border-gray-200 px-4 sm:px-6 overflow-hidden">
+          <AccordionTrigger className="text-right font-bold text-base sm:text-lg text-portal-navy hover:no-underline py-4 sm:py-5">
             {item.question}
           </AccordionTrigger>
           <AccordionContent className="portal-body pb-5 text-gray-600">
@@ -125,7 +125,7 @@ const SectionComparison = ({ section }) => (
       <thead>
         <tr className="bg-portal-navy text-white">
           {section.headers.map((h, i) => (
-            <th key={i} className="px-6 py-4 text-right font-bold text-base">{h}</th>
+            <th key={i} className="px-3 sm:px-6 py-3 sm:py-4 text-right font-bold text-sm sm:text-base whitespace-nowrap">{h}</th>
           ))}
         </tr>
       </thead>
@@ -133,7 +133,7 @@ const SectionComparison = ({ section }) => (
         {section.rows.map((row, i) => (
           <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
             {row.map((cell, j) => (
-              <td key={j} className="px-6 py-4 text-base text-gray-700 border-t border-gray-100">{cell}</td>
+              <td key={j} className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-700 border-t border-gray-100">{cell}</td>
             ))}
           </tr>
         ))}

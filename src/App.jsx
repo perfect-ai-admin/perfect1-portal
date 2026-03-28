@@ -16,6 +16,7 @@ const PortalHomePage = React.lazy(() => import('./portal/templates/PortalHomePag
 const CategoryHubPage = React.lazy(() => import('./portal/templates/CategoryHubPage'));
 const SEOArticlePage = React.lazy(() => import('./portal/templates/SEOArticlePage'));
 const ComparisonPage = React.lazy(() => import('./portal/templates/ComparisonPage'));
+const OsekPaturLanding = React.lazy(() => import('./pages/OsekPaturLanding'));
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -92,6 +93,9 @@ const AppRoutes = () => {
       {/* Standalone public page - completely outside auth & layout */}
       <Route path="/card/:slug" element={<DigitalCard />} />
       <Route path="/DigitalCard" element={<DigitalCard />} />
+
+      {/* Landing pages - standalone (no auth, no portal wrapper) */}
+      <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
 
       {/* Portal public pages */}
       <Route path="/" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />

@@ -28,7 +28,7 @@ export default function TableOfContents({ items = [] }) {
   if (items.length === 0) return null;
 
   return (
-    <div className="bg-portal-bg rounded-2xl border border-gray-200 p-6 mb-8">
+    <div className="bg-portal-bg rounded-2xl border border-gray-200 p-4 sm:p-6 mb-6 sm:mb-8">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 w-full md:cursor-default"

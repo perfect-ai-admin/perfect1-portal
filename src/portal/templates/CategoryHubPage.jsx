@@ -55,13 +55,13 @@ export default function CategoryHubPage({ category }) {
       <SchemaMarkup type="category" data={content} faqItems={faq} breadcrumbs={[{ label: title }]} />
       <PortalHeader />
 
-      <main className="pt-16 md:pt-[72px]">
+      <main className="pt-14 sm:pt-16 md:pt-[72px]">
         {/* Hero */}
-        <section className={`py-16 md:py-24 bg-gradient-to-br ${gradient} text-white`}>
+        <section className={`py-10 sm:py-16 md:py-24 bg-gradient-to-br ${gradient} text-white`}>
           <div className="max-w-5xl mx-auto px-4">
-            <div className="mb-4"><Breadcrumbs items={[{ label: title }]} /></div>
-            <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight">{title}</h1>
-            <p className="text-xl text-white/80 max-w-2xl leading-relaxed">{description}</p>
+            <div className="mb-3 sm:mb-4"><Breadcrumbs items={[{ label: title }]} /></div>
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight">{title}</h1>
+            <p className="text-base sm:text-xl text-white/80 max-w-2xl leading-relaxed">{description}</p>
           </div>
         </section>
 
@@ -70,7 +70,7 @@ export default function CategoryHubPage({ category }) {
           <section className="py-12 md:py-16 bg-white">
             <div className="max-w-5xl mx-auto px-4">
               <h2 className="portal-h2 mb-8">נושאים בקטגוריה</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {subcategories.map((sub, i) => (
                   <Link
                     key={i}
@@ -94,7 +94,7 @@ export default function CategoryHubPage({ category }) {
           <section className="py-12 md:py-16 bg-portal-bg">
             <div className="max-w-5xl mx-auto px-4">
               <h2 className="portal-h2 mb-8">מאמרים ומדריכים</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {articles.map((article, i) => (
                   <motion.div
                     key={i}
@@ -135,8 +135,8 @@ export default function CategoryHubPage({ category }) {
               <h2 className="portal-h2 text-center mb-8">שאלות נפוצות</h2>
               <Accordion type="single" collapsible className="space-y-3">
                 {faq.map((item, i) => (
-                  <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-xl border border-gray-200 px-6 overflow-hidden">
-                    <AccordionTrigger className="text-right font-bold text-lg text-portal-navy hover:no-underline py-5">
+                  <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-xl border border-gray-200 px-4 sm:px-6 overflow-hidden">
+                    <AccordionTrigger className="text-right font-bold text-base sm:text-lg text-portal-navy hover:no-underline py-4 sm:py-5">
                       {item.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-gray-600 text-base leading-relaxed pb-5">

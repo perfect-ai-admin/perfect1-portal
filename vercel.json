@@ -21,7 +21,9 @@
     { "source": "/BrandedQuote", "destination": "/index.html" },
     { "source": "/Goal", "destination": "/index.html" },
     { "source": "/Privacy", "destination": "/index.html" },
-    { "source": "/Terms", "destination": "/index.html" }
+    { "source": "/Terms", "destination": "/index.html" },
+    { "source": "/OsekPaturSteps", "destination": "/index.html" },
+    { "source": "/About", "destination": "/index.html" }
   ],
   "headers": [
     {

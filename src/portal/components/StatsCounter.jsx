@@ -33,7 +33,7 @@ export default function StatsCounter({ stats = DEFAULT_STATS }) {
   return (
     <section className="py-12 bg-portal-navy">
       <div className="max-w-5xl mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
           {stats.map((stat, index) => (
             <motion.div
               key={index}

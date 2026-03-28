@@ -59,12 +59,12 @@ export default function ComparisonPage() {
       />
       <PortalHeader />
 
-      <main className="pt-16 md:pt-[72px] bg-white">
+      <main className="pt-14 sm:pt-16 md:pt-[72px] bg-white">
         {/* Hero */}
-        <section className="py-12 md:py-16 bg-gradient-to-br from-indigo-600 to-indigo-700 text-white">
+        <section className="py-8 sm:py-12 md:py-16 bg-gradient-to-br from-indigo-600 to-indigo-700 text-white">
           <div className="max-w-4xl mx-auto px-4">
             <Breadcrumbs items={[{ label: 'מדריכים', href: '/guides' }, { label: content.title }]} />
-            <h1 className="text-3xl md:text-5xl font-extrabold leading-tight mt-4 mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold leading-tight mt-3 sm:mt-4 mb-3 sm:mb-4">
               {content.heroTitle || content.title}
             </h1>
             {content.heroSubtitle && (
@@ -81,7 +81,7 @@ export default function ComparisonPage() {
                 <thead>
                   <tr className="bg-portal-navy text-white">
                     {content.comparisonTable.headers.map((h, i) => (
-                      <th key={i} className="px-6 py-4 text-right font-bold text-base">{h}</th>
+                      <th key={i} className="px-3 sm:px-6 py-3 sm:py-4 text-right font-bold text-sm sm:text-base whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -89,7 +89,7 @@ export default function ComparisonPage() {
                   {content.comparisonTable.rows.map((row, i) => (
                     <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                       {row.map((cell, j) => (
-                        <td key={j} className="px-6 py-4 text-base text-gray-700 border-t border-gray-100">
+                        <td key={j} className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-700 border-t border-gray-100">
                           {cell === true ? <CheckCircle2 className="w-5 h-5 text-green-500" /> :
                            cell === false ? <XCircle className="w-5 h-5 text-red-400" /> :
                            cell}
@@ -117,7 +117,7 @@ export default function ComparisonPage() {
               <h2 className="portal-h2 mb-4">ההמלצה שלנו</h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-6">{content.recommendation}</p>
               <a href="#portal-lead-form">
-                <Button className="h-14 px-8 text-lg rounded-2xl bg-portal-teal hover:bg-portal-teal-dark text-white font-bold shadow-lg">
+                <Button className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-2xl bg-portal-teal hover:bg-portal-teal-dark text-white font-bold shadow-lg">
                   בדוק מה מתאים לך
                   <ArrowLeft className="mr-2 h-5 w-5" />
                 </Button>

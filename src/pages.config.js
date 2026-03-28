@@ -21,6 +21,7 @@ const Branding = React.lazy(() => import('./pages/Branding'));
 const BusinessPresentation = React.lazy(() => import('./pages/BusinessPresentation'));
 const BusinessSticker = React.lazy(() => import('./pages/BusinessSticker'));
 const DigitalBusinessCard = React.lazy(() => import('./pages/DigitalBusinessCard'));
+const About = React.lazy(() => import('./pages/About'));
 const FAQ = React.lazy(() => import('./pages/FAQ'));
 const Goal = React.lazy(() => import('./pages/Goal'));
 const Pricing = React.lazy(() => import('./pages/Pricing'));
@@ -28,6 +29,7 @@ const Privacy = React.lazy(() => import('./pages/Privacy'));
 const SmartLogo = React.lazy(() => import('./pages/SmartLogo'));
 const SocialDesigns = React.lazy(() => import('./pages/SocialDesigns'));
 const Terms = React.lazy(() => import('./pages/Terms'));
+const OsekPaturLanding = React.lazy(() => import('./pages/OsekPaturLanding'));
 
 // --- SEO Blog articles (lazy) ---
 const BlogLogoArticle = React.lazy(() => import('./pages/blog/LogoArticle'));
@@ -68,6 +70,7 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     // Landing / public pages
+    "About": About,
     "AdminUsers": AdminUsers,
     "AiMentor": AiMentor,
     "AvatarAi": AvatarAi,
@@ -87,6 +90,7 @@ export const PAGES = {
     "SmartLogo": SmartLogo,
     "SocialDesigns": SocialDesigns,
     "Terms": Terms,
+    "OsekPaturSteps": OsekPaturLanding,
     // SEO Blog articles
     "blog/logo-leasek": BlogLogoArticle,
     "blog/kartis-bikur-digitali": BlogDigitalCardArticle,

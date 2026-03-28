@@ -49,9 +49,9 @@ export default function PortalHomePage() {
       <SchemaMarkup type="home" faqItems={HOME_FAQ} />
       <PortalHeader />
 
-      <main className="pt-16 md:pt-[72px]">
+      <main className="pt-14 sm:pt-16 md:pt-[72px]">
         {/* Hero */}
-        <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-b from-portal-bg to-white">
+        <section className="relative py-14 sm:py-20 md:py-32 overflow-hidden bg-gradient-to-b from-portal-bg to-white">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-50/50 via-transparent to-transparent -z-10" />
           <div className="max-w-6xl mx-auto px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
@@ -59,23 +59,23 @@ export default function PortalHomePage() {
                 <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-portal-teal opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-portal-teal"></span></span>
                 מרכז מידע מקצועי
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-portal-navy leading-[1.15] mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-portal-navy leading-[1.15] mb-5 sm:mb-6">
                 פתיחת עסק בישראל
                 <br />
                 <span className="text-portal-teal">מדריכים, מידע וליווי אישי</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto mb-10 leading-relaxed font-light">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light">
                 כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <a href={`tel:${PORTAL_CTA.phone}`}>
-                  <Button className="h-14 px-8 text-lg rounded-2xl bg-portal-teal hover:bg-portal-teal-dark text-white font-bold shadow-lg w-full sm:w-auto">
+                  <Button className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-2xl bg-portal-teal hover:bg-portal-teal-dark text-white font-bold shadow-lg w-full sm:w-auto">
                     <Phone className="ml-2 h-5 w-5" />
                     בדיקת התאמה לפתיחת עסק
                   </Button>
                 </a>
                 <a href={PORTAL_CTA.whatsapp} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="h-14 px-8 text-lg rounded-2xl border-2 border-portal-navy text-portal-navy hover:bg-portal-navy/5 font-bold w-full sm:w-auto">
+                  <Button variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-2xl border-2 border-portal-navy text-portal-navy hover:bg-portal-navy/5 font-bold w-full sm:w-auto">
                     <MessageCircle className="ml-2 h-5 w-5" />
                     שיחה עם נציג
                   </Button>
@@ -90,7 +90,7 @@ export default function PortalHomePage() {
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="portal-h2 text-center mb-3">באיזה נושא אתה מחפש מידע?</h2>
             <p className="text-center text-gray-500 text-lg mb-10">בחר קטגוריה כדי לקבל מדריכים, מידע והמלצות</p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {(categories || []).slice(0, 4).map((cat) => (
                 <CategoryCard
                   key={cat.id}
@@ -131,7 +131,7 @@ export default function PortalHomePage() {
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="portal-h2 text-center mb-3">מדריכים פופולריים</h2>
             <p className="text-center text-gray-500 text-lg mb-10">המאמרים הכי מבוקשים באתר</p>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {POPULAR_ARTICLES.map((article, i) => (
                 <ArticleCard key={i} {...article} />
               ))}
@@ -157,8 +157,8 @@ export default function PortalHomePage() {
             <h2 className="portal-h2 text-center mb-10">שאלות נפוצות</h2>
             <Accordion type="single" collapsible className="space-y-3">
               {HOME_FAQ.map((item, i) => (
-                <AccordionItem key={i} value={`faq-${i}`} className="bg-portal-bg rounded-xl border border-gray-200 px-6 overflow-hidden">
-                  <AccordionTrigger className="text-right font-bold text-lg text-portal-navy hover:no-underline py-5">
+                <AccordionItem key={i} value={`faq-${i}`} className="bg-portal-bg rounded-xl border border-gray-200 px-4 sm:px-6 overflow-hidden">
+                  <AccordionTrigger className="text-right font-bold text-base sm:text-lg text-portal-navy hover:no-underline py-4 sm:py-5">
                     {item.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 text-base leading-relaxed pb-5">

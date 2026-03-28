@@ -94,7 +94,7 @@ export default function PortalLeadForm({
 
   return (
     <div className={className}>
-      {title && !isCompact && <h2 className="text-2xl font-bold text-portal-navy mb-2 text-center">{title}</h2>}
+      {title && !isCompact && <h2 className="text-xl sm:text-2xl font-bold text-portal-navy mb-2 text-center">{title}</h2>}
       {subtitle && !isCompact && <p className="text-gray-500 text-center mb-6">{subtitle}</p>}
 
       <form onSubmit={handleSubmit} className={`${isCompact ? 'flex flex-wrap gap-3 items-end' : 'space-y-4 max-w-md mx-auto'}`}>
@@ -142,7 +142,7 @@ export default function PortalLeadForm({
         <Button
           type="submit"
           disabled={loading}
-          className={`h-14 rounded-2xl text-lg font-bold shadow-lg bg-portal-teal hover:bg-portal-teal-dark text-white ${isCompact ? 'px-6' : 'w-full'}`}
+          className={`h-12 sm:h-14 rounded-2xl text-base sm:text-lg font-bold shadow-lg bg-portal-teal hover:bg-portal-teal-dark text-white ${isCompact ? 'px-6' : 'w-full'}`}
         >
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin" />

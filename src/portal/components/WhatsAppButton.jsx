@@ -11,7 +11,7 @@ export default function WhatsAppButton() {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 left-6 z-40 group"
+      className="fixed bottom-6 left-6 z-40 group hidden md:block"
       aria-label="שלח הודעת WhatsApp"
     >
       <div className="relative">

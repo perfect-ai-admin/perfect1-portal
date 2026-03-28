@@ -72,12 +72,12 @@ export default function SEOArticlePage({ category }) {
       />
       <PortalHeader />
 
-      <main className="pt-16 md:pt-[72px] bg-white">
+      <main className="pt-14 sm:pt-16 md:pt-[72px] bg-white">
         {/* Hero */}
-        <section className="py-12 md:py-16 bg-portal-bg border-b border-gray-100">
+        <section className="py-8 sm:py-12 md:py-16 bg-portal-bg border-b border-gray-100">
           <div className="max-w-3xl mx-auto px-4">
             <Breadcrumbs items={breadcrumbs} />
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-portal-navy leading-tight mt-4 mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-portal-navy leading-tight mt-3 sm:mt-4 mb-3 sm:mb-4">
               {content.heroTitle || content.title}
             </h1>
             {content.heroSubtitle && (
@@ -110,7 +110,7 @@ export default function SEOArticlePage({ category }) {
           <section className="py-12 bg-portal-bg">
             <div className="max-w-5xl mx-auto px-4">
               <h2 className="portal-h2 text-center mb-8">מאמרים קשורים</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {relatedArticles.map((article, i) => (
                   <ArticleCard
                     key={i}
