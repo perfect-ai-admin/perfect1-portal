@@ -118,12 +118,12 @@ function LeadForm({
   return (
     <div id={id} className={className}>
       {title && (
-        <h3 className={`font-bold text-center mb-1 ${isHero ? 'text-xl text-white' : 'text-xl text-portal-navy'}`}>
+        <h3 className="font-bold text-center mb-1 text-xl text-portal-navy">
           {title}
         </h3>
       )}
       {subtitle && (
-        <p className={`text-center mb-4 text-sm ${isHero ? 'text-white/80' : 'text-gray-500'}`}>
+        <p className="text-center mb-4 text-sm text-gray-500">
           {subtitle}
         </p>
       )}
@@ -469,6 +469,19 @@ export default function OsekPaturLanding() {
                   רוצים להתחיל לעבוד עצמאי? אנחנו מלווים אתכם בכל שלב — מבדיקת ההתאמה ועד פתיחת התיקים. בלי לחפש לבד, בלי טעויות.
                 </p>
 
+                {/* Mobile: Form right after the hero text */}
+                <div className="md:hidden mb-6">
+                  <div className="bg-white rounded-3xl shadow-2xl p-6">
+                    <LeadForm
+                      id="hero-lead-form-mobile"
+                      variant="hero"
+                      title="השאירו פרטים — נחזור תוך דקות"
+                      subtitle="בדיקת התאמה חינם, ללא התחייבות"
+                      ctaText="בדקו התאמה עכשיו →"
+                    />
+                  </div>
+                </div>
+
                 {/* Trust badges */}
                 <div className="flex flex-wrap gap-x-5 gap-y-2 mb-6">
                   <div className="flex items-center gap-2 text-white/80 text-sm">
@@ -502,8 +515,8 @@ export default function OsekPaturLanding() {
                 </div>
               </div>
 
-              {/* Right side: Form */}
-              <div className="order-2 md:order-2">
+              {/* Right side: Form (desktop only) */}
+              <div className="hidden md:block order-2">
                 <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md mx-auto md:mx-0">
                   <LeadForm
                     id="hero-lead-form"
