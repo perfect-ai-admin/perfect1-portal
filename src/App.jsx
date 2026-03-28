@@ -95,6 +95,7 @@ const AppRoutes = () => {
       <Route path="/DigitalCard" element={<DigitalCard />} />
 
       {/* Portal public pages */}
+      <Route path="/" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
       <Route path="/opening-business-israel" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
       <Route path="/osek-patur" element={<PortalWrapper><CategoryHubPage category="osek-patur" /></PortalWrapper>} />
       <Route path="/osek-patur/:slug" element={<PortalWrapper><SEOArticlePage category="osek-patur" /></PortalWrapper>} />
