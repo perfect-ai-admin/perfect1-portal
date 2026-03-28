@@ -47,6 +47,7 @@ export default function PortalLeadForm({
         name: form.name,
         phone: form.phone,
         profession: form.businessType,
+        source: 'sales_portal',
         source_page: `פורטל עסקי - ${sourcePage}`,
         utm_source: params.get('utm_source') || '',
         utm_medium: params.get('utm_medium') || '',

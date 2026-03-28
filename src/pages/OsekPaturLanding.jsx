@@ -69,6 +69,7 @@ function LeadForm({
         name: form.name,
         phone: form.phone,
         profession: 'osek_patur',
+        source: 'sales_portal',
         source_page: `landing-osek-patur-${variant}`,
         utm_source: params.get('utm_source') || '',
         utm_medium: params.get('utm_medium') || '',

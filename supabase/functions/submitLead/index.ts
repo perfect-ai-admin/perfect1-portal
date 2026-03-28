@@ -22,6 +22,7 @@ Deno.serve(async (req) => {
     }
 
     // Create lead using service role (public endpoint, no auth required)
+    // source separates data between projects sharing the same DB
     const { data: lead, error: leadError } = await supabaseAdmin
       .from('leads')
       .insert({
@@ -30,6 +31,7 @@ Deno.serve(async (req) => {
         email: payload.email || null,
         profession: payload.profession || null,
         source_page: payload.source_page || 'דף נחיתה - פתיחת עוסק פטור',
+        source: payload.source || 'sales_portal',
         status: 'new',
         interaction_type: payload.interaction_type || 'form',
         priority: 'medium',
