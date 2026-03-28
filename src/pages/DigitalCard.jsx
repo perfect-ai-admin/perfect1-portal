@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
-import { invokeFunction } from '@/api/supabaseClient';
+import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import CardLoading from '@/components/digital-card/CardLoading';
 import CardNotFound from '@/components/digital-card/CardNotFound';
@@ -12,7 +12,8 @@ import CardQR from '@/components/digital-card/CardQR';
 import CardBottomBar from '@/components/digital-card/CardBottomBar';
 
 function trackClick(cardId, action) {
-  invokeFunction('trackCardClick', { card_id: cardId, action }).catch(() => {});
+  // Silent tracking - fire and forget
+  base44.functions.invoke('trackCardClick', { card_id: cardId, action }).catch(() => {});
 }
 
 export default function DigitalCard() {
@@ -27,9 +28,9 @@ export default function DigitalCard() {
     const slug = pathSlug || params.get('slug');
     if (!slug) { setError('not_found'); setLoading(false); return; }
     
-    invokeFunction('getPublicCard', { slug })
+    base44.functions.invoke('getPublicCard', { slug })
       .then(res => {
-        if (res?.success && res?.card) setCard(res.card);
+        if (res?.data?.success && res?.data?.card) setCard(res.data.card);
         else setError('not_found');
       })
       .catch(() => setError('not_found'))
