@@ -1,4 +1,9 @@
+# robots.txt — perfect1.co.il
+# Updated: 2026-03-29
+
 User-agent: *
+
+# === Portal SEO Pages — Allow ===
 Allow: /
 Allow: /opening-business-israel
 Allow: /osek-patur
@@ -7,14 +12,73 @@ Allow: /hevra-bam
 Allow: /sgirat-tikim
 Allow: /guides
 Allow: /compare
+
+# === Public Pages — Allow ===
+Allow: /About
+Allow: /FAQ
+Allow: /Pricing
+Allow: /Features
+Allow: /Privacy
+Allow: /Terms
+
+# === Product Pages — Allow ===
+Allow: /SmartLogo
+Allow: /DigitalBusinessCard
+Allow: /BrandedLandingPage
+Allow: /BusinessPresentation
+Allow: /BusinessSticker
+Allow: /SocialDesigns
+Allow: /AiMentor
+Allow: /Branding
+
+# === Blog — Allow ===
+Allow: /blog/
+
+# === Landing Pages ===
+Allow: /OsekPaturLanding
+
+# === System / Admin — Disallow ===
+Disallow: /login
+Disallow: /AgentLogin
 Disallow: /AdminDashboard
+Disallow: /AdminUsers
 Disallow: /AgentCRM
 Disallow: /AgentsManager
 Disallow: /LeadsAdmin
 Disallow: /CloseOsekPaturCRM
-Disallow: /login
+
+# === CRM — Disallow ===
+Disallow: /CRM
+Disallow: /CRM/
+
+# === App / Authenticated — Disallow ===
+Disallow: /APP
 Disallow: /Checkout
 Disallow: /CheckoutSuccess
-Disallow: /APP
+Disallow: /MyProducts
+Disallow: /Summary
+Disallow: /DigitalCard
+Disallow: /card/
+Disallow: /CreditsPage
+Disallow: /GoalPage
+Disallow: /Goal
+Disallow: /InviteUser
+Disallow: /JourneyDashboard
+Disallow: /LandingPageManager
+Disallow: /LandingPagePreview
+Disallow: /LogoProjectPage
+Disallow: /LogoThankYou
+
+# === Thank You / Conversion — Disallow ===
+Disallow: /ThankYou
+Disallow: /open-osek-patur
+
+# === Duplicate Content — Disallow ===
+Disallow: /Home
+Disallow: /OsekPaturSteps
+Disallow: /S
+Disallow: /AvatarAi
+Disallow: /BrandedQuote
+Disallow: /PricingPerfectBizAI
 
 Sitemap: https://www.perfect1.co.il/sitemap.xml
