@@ -45,6 +45,13 @@ export default function PipelineCard({ lead, onClick, isDragging }) {
         </p>
       )}
 
+      {/* Source page */}
+      {lead.source_page && (
+        <p className="text-[10px] text-slate-400 mb-1 truncate" title={lead.source_page}>
+          📍 {lead.source_page}
+        </p>
+      )}
+
       {/* Service type */}
       {lead.service_type && (
         <p className="text-xs text-slate-600 mb-2 truncate">

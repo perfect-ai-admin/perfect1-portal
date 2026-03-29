@@ -82,6 +82,10 @@ Deno.serve(async (req) => {
       source: 'sales_portal',
       interaction_type: 'form',
       status: 'new',
+      pipeline_stage: 'new_lead',
+      temperature: 'warm',
+      contact_attempts: 0,
+      sla_deadline: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
       priority: 'medium'
     };
 

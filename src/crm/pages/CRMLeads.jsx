@@ -306,6 +306,7 @@ export default function CRMLeads() {
               <th className="p-3 text-right">טמפרטורה</th>
               <th className="p-3 text-right">SLA</th>
               <th className="p-3 text-right">נציג</th>
+              <th className="p-3 text-right">מקור</th>
               <th className="p-3 text-right">שירות</th>
             </tr>
           </thead>
@@ -331,6 +332,7 @@ export default function CRMLeads() {
                 <td className="p-3">{lead.temperature && <TemperatureBadge temperature={lead.temperature} />}</td>
                 <td className="p-3"><SLAIndicator deadline={lead.sla_deadline} /></td>
                 <td className="p-3 text-xs text-slate-500">{lead.agent_name}</td>
+                <td className="p-3 text-xs text-slate-400 truncate max-w-[120px]" title={lead.source_page}>{lead.source_page}</td>
                 <td className="p-3 text-xs text-slate-500">{lead.service_type}</td>
               </tr>
             ))}
