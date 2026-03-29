@@ -18,6 +18,7 @@ const SEOArticlePage = React.lazy(() => import('./portal/templates/SEOArticlePag
 const ComparisonPage = React.lazy(() => import('./portal/templates/ComparisonPage'));
 const OsekPaturLanding = React.lazy(() => import('./pages/OsekPaturLanding'));
 const OsekPaturSteps = React.lazy(() => import('./pages/OsekPaturSteps'));
+const OpenOsekPatur = React.lazy(() => import('./pages/OpenOsekPatur'));
 const ThankYou = React.lazy(() => import('./pages/ThankYou'));
 
 // CRM Pages
@@ -108,6 +109,7 @@ const AppRoutes = () => {
       {/* Landing pages - standalone (no auth, no portal wrapper) */}
       <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
       <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
+      <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
       <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
 
       {/* Portal public pages */}
