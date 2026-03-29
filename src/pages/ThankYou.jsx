@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { HelmetProvider } from 'react-helmet-async';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { CheckCircle2, Phone, ArrowRight, BookOpen, MessageCircle } from 'lucide-react';
 import { PORTAL_CTA } from '@/portal/config/navigation';
 
@@ -23,9 +23,9 @@ function getSourceLabel(source) {
 }
 
 export default function ThankYou() {
-  const [searchParams] = useSearchParams();
-  const source = searchParams.get('source') || '';
-  const name = searchParams.get('name') || '';
+  const location = useLocation();
+  const source = location.state?.source || '';
+  const name = location.state?.name || '';
   const hasFired = useRef(false);
 
   // Fire conversion events ONCE on page load
@@ -49,11 +49,10 @@ export default function ThankYou() {
         page_path: '/ThankYou',
       });
 
-      // Google Ads specific — gtag conversion
-      // This fires if gtag.js is loaded via GTM or directly
+      // Google Ads conversion tracking
       if (window.gtag) {
         window.gtag('event', 'conversion', {
-          send_to: 'AW-CONVERSION_ID/CONVERSION_LABEL', // Replace with actual values in GTM
+          send_to: 'AW-10811556085/PzlFCIrkg_gbEPWBraMo',
           value: 1.0,
           currency: 'ILS',
         });
