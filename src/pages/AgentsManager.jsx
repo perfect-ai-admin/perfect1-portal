@@ -136,7 +136,7 @@ export default function AgentsManager() {
               </div>
               <div className="bg-gray-50 rounded p-3">
                 <p className="text-sm text-gray-700">
-                  <strong>סיסמה:</strong> {agent.password}
+                  <strong>סיסמה:</strong> ********
                 </p>
               </div>
             </div>

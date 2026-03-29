@@ -59,20 +59,50 @@ export async function requireAdmin(req: Request) {
   return customer;
 }
 
-// CORS headers for Edge Functions
+// --- HTML escaping helper (prevents XSS / HTML injection) ---
+export function escapeHtml(str: string | null | undefined): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// --- CORS ---
+const ALLOWED_ORIGINS = [
+  'https://perfect1.co.il',
+  'https://www.perfect1.co.il',
+  'https://one-pai.com',
+  'https://www.one-pai.com',
+  'http://localhost:5173',
+];
+
+export function getCorsHeaders(req?: Request): Record<string, string> {
+  const origin = req?.headers?.get('Origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
+}
+
+// Legacy constant — kept for backwards compat but prefer getCorsHeaders(req)
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': ALLOWED_ORIGINS[0],
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 // Standard response helpers
-export function jsonResponse(data: unknown, status = 200) {
+export function jsonResponse(data: unknown, status = 200, req?: Request) {
+  const headers = req ? getCorsHeaders(req) : corsHeaders;
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: { ...headers, 'Content-Type': 'application/json' },
   });
 }
 
-export function errorResponse(message: string, status = 500) {
-  return jsonResponse({ error: message }, status);
+export function errorResponse(message: string, status = 500, req?: Request) {
+  return jsonResponse({ error: message }, status, req);
 }

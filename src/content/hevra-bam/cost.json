@@ -211,14 +211,19 @@
       "title": "איך מקימים חברה בע\"מ — מדריך מלא"
     },
     {
-      "slug": "osek-murshe-vs-hevra",
+      "slug": "management",
       "category": "hevra-bam",
-      "title": "עוסק מורשה או חברה בע\"מ — מה עדיף?"
+      "title": "ניהול חברה בע\"מ — חובות, דיווחים ואגרות"
     },
     {
-      "slug": "tax-benefits",
-      "category": "hevra-bam",
-      "title": "הטבות מס לחברה בע\"מ"
+      "slug": "cost",
+      "category": "osek-murshe",
+      "title": "עלות פתיחת עוסק מורשה — השוואה"
+    },
+    {
+      "slug": "which-business-type",
+      "category": "guides",
+      "title": "איזה סוג עסק מתאים לך?"
     }
   ]
 }

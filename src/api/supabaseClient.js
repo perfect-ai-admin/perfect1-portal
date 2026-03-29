@@ -43,6 +43,10 @@ const entityTableMap = {
   FollowupSequence: 'followup_sequences', PageSnapshot: 'page_snapshots',
   BusinessJourneyRecord: 'business_journeys', PurchasedProduct: 'purchased_products',
   CRMLead: 'crm_leads', Agent: 'ai_agents', Campaign: 'campaigns',
+  Client: 'clients', Communication: 'communications', Task: 'tasks',
+  Document: 'documents', StatusHistory: 'status_history',
+  ServiceCatalog: 'service_catalog', LostReason: 'lost_reasons',
+  Notification: 'notifications',
   CloseOsekPaturCRM: 'close_osek_patur_crm', CompetitorData: 'competitor_data',
   ContentSuggestion: 'content_suggestions', FinbotAuditLog: 'finbot_audit_log',
   LinkReport: 'link_reports', MentorMessage: 'conversation_messages',
@@ -91,7 +95,9 @@ function createEntityHelper(tableName) {
     },
 
     async get(id) {
-      const { data, error } = await supabase.from(tableName).select('*').eq('id', id).single();
+      let query = supabase.from(tableName).select('*').eq('id', id);
+      if (needsSourceFilter) query = query.eq('source', PROJECT_SOURCE);
+      const { data, error } = await query.single();
       if (error) throw error;
       return data;
     },
@@ -106,18 +112,20 @@ function createEntityHelper(tableName) {
     },
 
     async update(id, updates) {
-      const { data, error } = await supabase
+      let query = supabase
         .from(tableName)
         .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .select()
-        .single();
+        .eq('id', id);
+      if (needsSourceFilter) query = query.eq('source', PROJECT_SOURCE);
+      const { data, error } = await query.select().single();
       if (error) throw error;
       return data;
     },
 
     async delete(id) {
-      const { error } = await supabase.from(tableName).delete().eq('id', id);
+      let query = supabase.from(tableName).delete().eq('id', id);
+      if (needsSourceFilter) query = query.eq('source', PROJECT_SOURCE);
+      const { error } = await query;
       if (error) throw error;
       return { success: true };
     },
@@ -186,6 +194,10 @@ export const entities = {
   SavedWork: getEntity('SavedWork'), Service: getEntity('Service'),
   SitemapURL: getEntity('SitemapURL'), Presentation: getEntity('Presentation'),
   Sticker: getEntity('Sticker'), OAuthToken: getEntity('OAuthToken'),
+  Client: getEntity('Client'), Communication: getEntity('Communication'),
+  Task: getEntity('Task'), Document: getEntity('Document'),
+  StatusHistory: getEntity('StatusHistory'), ServiceCatalog: getEntity('ServiceCatalog'),
+  LostReason: getEntity('LostReason'), Notification: getEntity('Notification'),
 };
 
 // --- Auth helpers (direct Supabase, no proxy) ---

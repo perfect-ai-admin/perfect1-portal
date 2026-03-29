@@ -193,7 +193,8 @@
   ],
   "relatedArticles": [
     { "slug": "close-osek-patur", "category": "sgirat-tikim", "title": "סגירת עוסק פטור — מדריך מלא" },
-    { "slug": "accountant", "category": "osek-murshe", "title": "רואה חשבון לעוסק מורשה" },
-    { "slug": "cost", "category": "osek-murshe", "title": "עלות פתיחת עוסק מורשה" }
+    { "slug": "consequences", "category": "sgirat-tikim", "title": "חובות והשלכות סגירת עסק" },
+    { "slug": "how-to-open", "category": "osek-murshe", "title": "פתיחת עוסק מורשה — מדריך מלא" },
+    { "slug": "taxes", "category": "osek-murshe", "title": "מע\"מ ומסים לעוסק מורשה" }
   ]
 }

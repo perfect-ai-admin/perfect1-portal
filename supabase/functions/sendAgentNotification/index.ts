@@ -1,7 +1,7 @@
 // Migrated from Base44: sendAgentNotification
 // Send a notification to an agent via email or WhatsApp
 
-import { supabaseAdmin, getCustomer, requireAdmin, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCustomer, requireAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml } from '../_shared/supabaseAdmin.ts';
 
 async function sendViaResend(to: string, subject: string, html: string): Promise<void> {
   const resendApiKey = Deno.env.get('RESEND_API_KEY');
@@ -48,7 +48,7 @@ async function sendViaWhatsApp(phone: string, message: string): Promise<void> {
 }
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
     // Allow both admin and regular customer to call this endpoint
@@ -58,11 +58,11 @@ Deno.serve(async (req) => {
     } catch {
       caller = await getCustomer(req);
     }
-    if (!caller) return errorResponse('Unauthorized', 401);
+    if (!caller) return errorResponse('Unauthorized', 401, req);
 
     const { lead_id, agent_id, message, channel } = await req.json();
     if (!agent_id || !message || !channel) {
-      return errorResponse('agent_id, message, and channel are required', 400);
+      return errorResponse('agent_id, message, and channel are required', 400, req);
     }
 
     // Get lead data if provided
@@ -84,31 +84,31 @@ Deno.serve(async (req) => {
       .single();
 
     if (agentErr || !agent) {
-      return errorResponse('Agent not found', 404);
+      return errorResponse('Agent not found', 404, req);
     }
 
     // Send notification based on channel
     if (channel === 'email') {
-      if (!agent.email) return errorResponse('Agent has no email address', 400);
+      if (!agent.email) return errorResponse('Agent has no email address', 400, req);
 
       const subject = lead_id
-        ? `הודעה חדשה לגבי ליד ${leadData?.name || lead_id}`
+        ? `הודעה חדשה לגבי ליד ${escapeHtml(leadData?.name) || lead_id}`
         : 'הודעה חדשה מהמערכת';
 
       const html = `
         <div style="direction: rtl; font-family: Arial, sans-serif;">
           <h2>הודעה מ-One-Pai</h2>
-          <p>${message}</p>
-          ${leadData ? `<hr/><h3>פרטי ליד:</h3><p>שם: ${leadData.name}<br/>טלפון: ${leadData.phone || ''}<br/>אימייל: ${leadData.email || ''}</p>` : ''}
+          <p>${escapeHtml(message)}</p>
+          ${leadData ? `<hr/><h3>פרטי ליד:</h3><p>שם: ${escapeHtml(leadData.name)}<br/>טלפון: ${escapeHtml(leadData.phone) || ''}<br/>אימייל: ${escapeHtml(leadData.email) || ''}</p>` : ''}
         </div>
       `;
 
       await sendViaResend(agent.email, subject, html);
     } else if (channel === 'whatsapp') {
-      if (!agent.phone_e164) return errorResponse('Agent has no phone_e164 for WhatsApp', 400);
+      if (!agent.phone_e164) return errorResponse('Agent has no phone_e164 for WhatsApp', 400, req);
       await sendViaWhatsApp(agent.phone_e164, message);
     } else {
-      return errorResponse(`Unsupported channel: ${channel}. Use 'email' or 'whatsapp'`, 400);
+      return errorResponse(`Unsupported channel: ${channel}. Use 'email' or 'whatsapp'`, 400, req);
     }
 
     // Log to activity_log
@@ -118,9 +118,9 @@ Deno.serve(async (req) => {
       data: { lead_id, channel, sent_by: caller.id, message }
     }).catch((e: Error) => console.warn('activity_log insert failed:', e.message));
 
-    return jsonResponse({ success: true, channel });
+    return jsonResponse({ success: true, channel }, 200, req);
   } catch (error) {
     console.error('sendAgentNotification error:', (error as Error).message);
-    return errorResponse((error as Error).message);
+    return errorResponse((error as Error).message, 500, req);
   }
 });

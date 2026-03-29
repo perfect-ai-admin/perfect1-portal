@@ -254,8 +254,8 @@
   ],
   "relatedArticles": [
     { "slug": "close-osek-murshe", "category": "sgirat-tikim", "title": "סגירת עוסק מורשה — מדריך מלא" },
-    { "slug": "close-osek-patur", "category": "sgirat-tikim", "title": "סגירת עוסק פטור — מדריך שלב אחר שלב" },
     { "slug": "consequences", "category": "sgirat-tikim", "title": "חובות והשלכות סגירת עסק" },
-    { "slug": "when-to-incorporate", "category": "hevra-bam", "title": "מתי לפתוח חברה — ומתי לסגור?" }
+    { "slug": "how-to-open", "category": "hevra-bam", "title": "איך מקימים חברה בע\"מ — מדריך מלא" },
+    { "slug": "which-business-type", "category": "guides", "title": "איזה סוג עסק מתאים לך?" }
   ]
 }

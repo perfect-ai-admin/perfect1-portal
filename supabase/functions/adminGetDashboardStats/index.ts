@@ -1,23 +1,23 @@
 // Migrated from Base44: adminGetDashboardStats
 
-import { supabaseAdmin, getCustomer, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCustomer, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: getCorsHeaders(req) });
   }
 
   try {
     // Admin check via customers table
     const customer = await getCustomer(req);
     if (!customer || customer.role !== 'admin') {
-      return errorResponse('Forbidden: Admin access required', 403);
+      return errorResponse('Forbidden: Admin access required', 403, req);
     }
 
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-    // Parallel queries for performance
+    // Parallel queries for performance — filtered by source='sales_portal' where applicable
     const [
       customersRes,
       newCustomersRes,
@@ -28,14 +28,14 @@ Deno.serve(async (req) => {
       publishedLPRes,
       recentActivityRes
     ] = await Promise.all([
-      supabaseAdmin.from('customers').select('id', { count: 'exact', head: true }),
-      supabaseAdmin.from('customers').select('id', { count: 'exact', head: true }).gte('created_at', firstDayOfMonth),
-      supabaseAdmin.from('customers').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-      supabaseAdmin.from('payments').select('amount, product_type, items, created_at').eq('status', 'completed'),
-      supabaseAdmin.from('payments').select('amount').eq('status', 'completed').gte('created_at', firstDayOfMonth),
-      supabaseAdmin.from('landing_pages').select('id', { count: 'exact', head: true }),
-      supabaseAdmin.from('landing_pages').select('id', { count: 'exact', head: true }).eq('is_published', true),
-      supabaseAdmin.from('activity_log').select('*').order('created_at', { ascending: false }).limit(10)
+      supabaseAdmin.from('customers').select('id', { count: 'exact', head: true }).eq('source', 'sales_portal'),
+      supabaseAdmin.from('customers').select('id', { count: 'exact', head: true }).eq('source', 'sales_portal').gte('created_at', firstDayOfMonth),
+      supabaseAdmin.from('customers').select('id', { count: 'exact', head: true }).eq('source', 'sales_portal').eq('status', 'active'),
+      supabaseAdmin.from('payments').select('amount, product_type, items, created_at').eq('source', 'sales_portal').eq('status', 'completed'),
+      supabaseAdmin.from('payments').select('amount').eq('source', 'sales_portal').eq('status', 'completed').gte('created_at', firstDayOfMonth),
+      supabaseAdmin.from('landing_pages').select('id', { count: 'exact', head: true }).eq('source', 'sales_portal'),
+      supabaseAdmin.from('landing_pages').select('id', { count: 'exact', head: true }).eq('source', 'sales_portal').eq('is_published', true),
+      supabaseAdmin.from('activity_log').select('*').eq('source', 'sales_portal').order('created_at', { ascending: false }).limit(10)
     ]);
 
     const payments = paymentsRes.data || [];
@@ -76,6 +76,7 @@ Deno.serve(async (req) => {
     const { data: recentCustomers } = await supabaseAdmin
       .from('customers')
       .select('id, name, email, created_at, status, journey_stage')
+      .eq('source', 'sales_portal')
       .order('created_at', { ascending: false })
       .limit(20);
 
@@ -83,8 +84,8 @@ Deno.serve(async (req) => {
       stats,
       recentActivity: recentActivityRes.data || [],
       recentUsers: recentCustomers || []
-    });
+    }, 200, req);
   } catch (error) {
-    return errorResponse((error as Error).message);
+    return errorResponse((error as Error).message, 500, req);
   }
 });

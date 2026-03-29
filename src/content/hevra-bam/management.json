@@ -233,8 +233,8 @@
   ],
   "relatedArticles": [
     { "slug": "how-to-open", "category": "hevra-bam", "title": "איך פותחים חברה בע\"מ — מדריך מלא" },
-    { "slug": "cost", "category": "hevra-bam", "title": "כמה עולה להקים חברה בע\"מ?" },
     { "slug": "reports", "category": "hevra-bam", "title": "דוחות והנהלת חשבונות חברה בע\"מ" },
-    { "slug": "shareholders", "category": "hevra-bam", "title": "בעלי מניות ושכר בחברה בע\"מ" }
+    { "slug": "close-company", "category": "sgirat-tikim", "title": "סגירת חברה בע\"מ — מדריך מלא" },
+    { "slug": "taxation", "category": "guides", "title": "מדריך מיסוי וחשבונאות לעסקים" }
   ]
 }

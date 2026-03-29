@@ -1,17 +1,17 @@
 // Migrated from Base44: trackWhatsappLead
 // Public endpoint — track a WhatsApp lead click (source, phone, page)
 
-import { supabaseAdmin, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
     const { source, phone, page } = await req.json();
 
     // At least one identifier or source is required
     if (!source && !phone && !page) {
-      return errorResponse('At least one of source, phone, or page is required', 400);
+      return errorResponse('At least one of source, phone, or page is required', 400, req);
     }
 
     const now = new Date().toISOString();
@@ -22,6 +22,7 @@ Deno.serve(async (req) => {
         .from('leads')
         .select('id, interaction_count')
         .eq('phone', phone)
+        .eq('source', 'sales_portal')
         .limit(1);
 
       if (existingLeads && existingLeads.length > 0) {
@@ -39,7 +40,7 @@ Deno.serve(async (req) => {
         await supabaseAdmin.from('leads').insert({
           phone,
           source_page: page || source || 'WhatsApp Click',
-          source: source || 'whatsapp',
+          source: 'sales_portal',
           status: 'new',
           interaction_type: 'whatsapp_click',
           priority: 'medium',
@@ -60,9 +61,9 @@ Deno.serve(async (req) => {
       }
     }).catch((e: Error) => console.warn('activity_log insert failed:', e.message));
 
-    return jsonResponse({ success: true });
+    return jsonResponse({ success: true }, 200, req);
   } catch (error) {
     console.error('trackWhatsappLead error:', (error as Error).message);
-    return errorResponse((error as Error).message);
+    return errorResponse((error as Error).message, 500, req);
   }
 });

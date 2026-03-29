@@ -20,6 +20,15 @@ const OsekPaturLanding = React.lazy(() => import('./pages/OsekPaturLanding'));
 const OsekPaturSteps = React.lazy(() => import('./pages/OsekPaturSteps'));
 const ThankYou = React.lazy(() => import('./pages/ThankYou'));
 
+// CRM Pages
+const CRMLayout = React.lazy(() => import('./crm/pages/CRMLayout'));
+const CRMPipeline = React.lazy(() => import('./crm/pages/CRMPipeline'));
+const CRMLeadDetail = React.lazy(() => import('./crm/pages/CRMLeadDetail'));
+const CRMLeads = React.lazy(() => import('./crm/pages/CRMLeads'));
+const CRMDashboard = React.lazy(() => import('./crm/pages/CRMDashboard'));
+const CRMTasks = React.lazy(() => import('./crm/pages/CRMTasks'));
+const CRMSettings = React.lazy(() => import('./crm/pages/CRMSettings'));
+
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
     <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
@@ -115,6 +124,16 @@ const AppRoutes = () => {
       <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
       <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
       <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
+
+      {/* CRM Routes — protected by auth inside CRMLayout */}
+      <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
+        <Route index element={<CRMPipeline />} />
+        <Route path="leads" element={<CRMLeads />} />
+        <Route path="leads/:id" element={<CRMLeadDetail />} />
+        <Route path="dashboard" element={<CRMDashboard />} />
+        <Route path="tasks" element={<CRMTasks />} />
+        <Route path="settings" element={<CRMSettings />} />
+      </Route>
 
       <Route path="/*" element={<AuthenticatedApp />} />
     </Routes>

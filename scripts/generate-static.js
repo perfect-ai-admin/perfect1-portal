@@ -360,6 +360,7 @@ function generateSPAFallbacks() {
     '/DigitalCard',
     '/login',
     '/APP',
+    '/CRM',
   ];
 
   const baseHtml = getBaseHtml();

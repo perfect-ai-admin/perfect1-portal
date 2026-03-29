@@ -1,7 +1,7 @@
 // Migrated from Base44: submitLeadToN8N
 // Saves a lead from a landing page form and routes it to configured notification channels
 
-import { supabaseAdmin, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml } from '../_shared/supabaseAdmin.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
@@ -31,14 +31,14 @@ async function sendEmailViaResend(to: string, subject: string, html: string, fro
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: getCorsHeaders(req) });
   }
 
   try {
     const { name, phone, email, message, pageSlug, businessName } = await req.json();
 
     if (!phone) {
-      return errorResponse('Phone is required', 400);
+      return errorResponse('Phone is required', 400, req);
     }
 
     // 1. Find the landing page by slug to get lead destination settings
@@ -79,6 +79,7 @@ Deno.serve(async (req) => {
       email: email || '',
       notes: message || '',
       source_page: businessName || pageSlug || 'landing-page',
+      source: 'sales_portal',
       interaction_type: 'form',
       status: 'new',
       priority: 'medium'
@@ -195,21 +196,26 @@ Deno.serve(async (req) => {
 
     // Email notification channel via Resend
     if ((channels.includes('email') || channels.includes('n8n')) && destEmail) {
+      const safeName = escapeHtml(name);
+      const safePhone = escapeHtml(phone);
+      const safeEmail = escapeHtml(email);
+      const safeMessage = escapeHtml(message);
+      const safeBusinessName = escapeHtml(businessName);
       const emailHtml = `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%); padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 22px;">ליד חדש התקבל!</h1>
-            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">${businessName || 'דף הנחיתה שלך'}</p>
+            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0 0; font-size: 14px;">${safeBusinessName || 'דף הנחיתה שלך'}</p>
           </div>
           <div style="background: white; padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
             <table style="width: 100%; border-collapse: collapse;">
-              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F; width: 100px;">שם:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${name || 'לא צוין'}</td></tr>
-              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">טלפון:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;"><a href="tel:${phone}" style="color: #27AE60; font-weight: bold;">${phone}</a></td></tr>
-              ${email ? `<tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">מייל:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;"><a href="mailto:${email}">${email}</a></td></tr>` : ''}
-              ${message ? `<tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">הודעה:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${message}</td></tr>` : ''}
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F; width: 100px;">שם:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeName || 'לא צוין'}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">טלפון:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;"><a href="tel:${safePhone}" style="color: #27AE60; font-weight: bold;">${safePhone}</a></td></tr>
+              ${safeEmail ? `<tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">מייל:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;"><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>` : ''}
+              ${safeMessage ? `<tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">הודעה:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeMessage}</td></tr>` : ''}
             </table>
             <div style="margin-top: 20px; text-align: center;">
-              <a href="tel:${phone}" style="display: inline-block; background: #27AE60; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">התקשר עכשיו</a>
+              <a href="tel:${safePhone}" style="display: inline-block; background: #27AE60; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">התקשר עכשיו</a>
             </div>
           </div>
         </div>
@@ -254,10 +260,10 @@ Deno.serve(async (req) => {
       message: 'Lead saved and notifications sent',
       leadId: leadResult.id,
       channels
-    });
+    }, 200, req);
 
   } catch (error) {
     console.error('submitLeadToN8N error:', error);
-    return errorResponse((error as Error).message);
+    return errorResponse((error as Error).message, 500, req);
   }
 });

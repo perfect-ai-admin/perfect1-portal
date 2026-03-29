@@ -1,16 +1,16 @@
 // Migrated from Base44: sendPartnershipLead
 // Public endpoint — submit a partnership lead/inquiry and send notification email
 
-import { supabaseAdmin, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml } from '../_shared/supabaseAdmin.ts';
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
     const { name, email, phone, company, message } = await req.json();
 
     if (!name || !email) {
-      return errorResponse('name and email are required', 400);
+      return errorResponse('name and email are required', 400, req);
     }
 
     // Insert to leads table
@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
 
     if (leadErr) {
       console.error('sendPartnershipLead: insert failed:', leadErr.message);
-      return errorResponse(leadErr.message);
+      return errorResponse(leadErr.message, 500, req);
     }
 
     // Send notification email via Resend
@@ -48,15 +48,15 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             from: 'One-Pai Partnerships <no-reply@one-pai.com>',
             to: ['partnerships@one-pai.com', 'yosi5919@gmail.com'],
-            subject: `פנייה לשותפות חדשה — ${name}${company ? ` (${company})` : ''}`,
+            subject: `פנייה לשותפות חדשה — ${escapeHtml(name)}${company ? ` (${escapeHtml(company)})` : ''}`,
             html: `
               <div style="direction: rtl; font-family: Arial, sans-serif;">
                 <h2>פנייה לשותפות חדשה!</h2>
-                <p><strong>שם:</strong> ${name}</p>
-                <p><strong>אימייל:</strong> ${email}</p>
-                <p><strong>טלפון:</strong> ${phone || 'לא צוין'}</p>
-                <p><strong>חברה:</strong> ${company || 'לא צוין'}</p>
-                ${message ? `<p><strong>הודעה:</strong></p><p>${message}</p>` : ''}
+                <p><strong>שם:</strong> ${escapeHtml(name)}</p>
+                <p><strong>אימייל:</strong> ${escapeHtml(email)}</p>
+                <p><strong>טלפון:</strong> ${escapeHtml(phone) || 'לא צוין'}</p>
+                <p><strong>חברה:</strong> ${escapeHtml(company) || 'לא צוין'}</p>
+                ${message ? `<p><strong>הודעה:</strong></p><p>${escapeHtml(message)}</p>` : ''}
               </div>
             `
           })
@@ -66,9 +66,9 @@ Deno.serve(async (req) => {
       }
     }
 
-    return jsonResponse({ success: true, lead_id: lead.id });
+    return jsonResponse({ success: true, lead_id: lead.id }, 200, req);
   } catch (error) {
     console.error('sendPartnershipLead error:', (error as Error).message);
-    return errorResponse((error as Error).message);
+    return errorResponse((error as Error).message, 500, req);
   }
 });

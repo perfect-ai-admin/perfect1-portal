@@ -249,6 +249,6 @@
     { "slug": "authorities", "category": "sgirat-tikim", "title": "סגירת תיקים מול רשויות — מדריך שלב אחר שלב" },
     { "slug": "close-osek-patur", "category": "sgirat-tikim", "title": "סגירת עוסק פטור — מדריך שלב אחר שלב" },
     { "slug": "close-company", "category": "sgirat-tikim", "title": "סגירת חברה בע\"מ — מדריך מלא" },
-    { "slug": "bituach-leumi", "category": "osek-patur", "title": "ביטוח לאומי לעוסק פטור — כל מה שצריך לדעת" }
+    { "slug": "taxation", "category": "guides", "title": "מדריך מיסוי וחשבונאות לעסקים" }
   ]
 }

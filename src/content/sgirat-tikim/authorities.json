@@ -233,6 +233,6 @@
     { "slug": "close-osek-patur", "category": "sgirat-tikim", "title": "סגירת עוסק פטור — מדריך שלב אחר שלב" },
     { "slug": "close-osek-murshe", "category": "sgirat-tikim", "title": "סגירת עוסק מורשה — מדריך מלא" },
     { "slug": "consequences", "category": "sgirat-tikim", "title": "חובות והשלכות סגירת עסק" },
-    { "slug": "close-company", "category": "sgirat-tikim", "title": "סגירת חברה בע\"מ — מדריך מלא" }
+    { "slug": "taxation", "category": "guides", "title": "מדריך מיסוי וחשבונאות לעסקים" }
   ]
 }

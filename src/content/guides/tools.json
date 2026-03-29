@@ -231,8 +231,8 @@
   ],
   "relatedArticles": [
     { "slug": "freelancers", "category": "guides", "title": "מדריך לפרילנסרים בישראל" },
-    { "slug": "opening-business", "category": "guides", "title": "מדריך פתיחת עסק בישראל" },
     { "slug": "taxation", "category": "guides", "title": "מדריך מיסוי לעסקים בישראל" },
-    { "slug": "comparisons", "category": "guides", "title": "השוואת סוגי עסקים — פטור, מורשה או חברה" }
+    { "slug": "management", "category": "osek-patur", "title": "ניהול עוסק פטור — כלים שימושיים" },
+    { "slug": "management", "category": "osek-murshe", "title": "ניהול עוסק מורשה — כלים שימושיים" }
   ]
 }

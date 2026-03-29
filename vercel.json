@@ -1,6 +1,19 @@
 {
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/osek-patur", "destination": "/osek-patur/index.html" },
+    { "source": "/osek-patur/:slug", "destination": "/osek-patur/:slug/index.html" },
+    { "source": "/osek-murshe", "destination": "/osek-murshe/index.html" },
+    { "source": "/osek-murshe/:slug", "destination": "/osek-murshe/:slug/index.html" },
+    { "source": "/hevra-bam", "destination": "/hevra-bam/index.html" },
+    { "source": "/hevra-bam/:slug", "destination": "/hevra-bam/:slug/index.html" },
+    { "source": "/sgirat-tikim", "destination": "/sgirat-tikim/index.html" },
+    { "source": "/sgirat-tikim/:slug", "destination": "/sgirat-tikim/:slug/index.html" },
+    { "source": "/guides", "destination": "/guides/index.html" },
+    { "source": "/guides/:slug", "destination": "/guides/:slug/index.html" },
+    { "source": "/compare/:slug", "destination": "/compare/:slug/index.html" },
+    { "source": "/CRM", "destination": "/index.html" },
+    { "source": "/CRM/:path*", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [

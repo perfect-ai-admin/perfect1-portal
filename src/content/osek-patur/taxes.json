@@ -253,9 +253,9 @@
     }
   ],
   "relatedArticles": [
-    { "slug": "how-to-open", "category": "osek-patur", "title": "איך פותחים עוסק פטור — מדריך מלא 2026" },
     { "slug": "management", "category": "osek-patur", "title": "ניהול עוסק פטור — המדריך המלא" },
     { "slug": "income-ceiling", "category": "osek-patur", "title": "תקרת הכנסות עוסק פטור 2026" },
-    { "slug": "accountant", "category": "osek-patur", "title": "רואה חשבון לעוסק פטור — האם צריך ומה העלות?" }
+    { "slug": "taxation", "category": "guides", "title": "מדריך מיסוי וחשבונאות לעסקים" },
+    { "slug": "taxes", "category": "osek-murshe", "title": "מע\"מ ומסים לעוסק מורשה — השוואה" }
   ]
 }

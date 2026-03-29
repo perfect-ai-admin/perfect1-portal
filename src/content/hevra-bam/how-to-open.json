@@ -304,14 +304,19 @@
       "title": "כמה עולה להקים ולנהל חברה בע\"מ ב-2026"
     },
     {
-      "slug": "tax-benefits",
+      "slug": "shareholders",
       "category": "hevra-bam",
-      "title": "הטבות מס לחברה בע\"מ"
+      "title": "בעלי מניות ושכר בחברה בע\"מ"
     },
     {
-      "slug": "osek-murshe-vs-hevra",
-      "category": "hevra-bam",
-      "title": "עוסק מורשה או חברה בע\"מ — מה עדיף?"
+      "slug": "opening-business",
+      "category": "guides",
+      "title": "מדריך לפתיחת עסק בישראל"
+    },
+    {
+      "slug": "osek-patur-vs-murshe",
+      "category": "comparisons",
+      "title": "עוסק פטור או מורשה — מה מתאים לך?"
     }
   ]
 }

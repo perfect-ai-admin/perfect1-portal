@@ -3,7 +3,7 @@
 // Supported channels: whatsapp, email, phone (SMS), webhook, n8n
 // Returns: { results: { [channel]: { success: boolean, message: string } } }
 
-import { supabaseAdmin, getCustomer, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCustomer, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
 
 async function testWhatsApp(phone: string): Promise<{ success: boolean; message: string }> {
   // WhatsApp is typically via an external provider (Twilio, etc.)
@@ -89,16 +89,16 @@ async function testWebhook(webhookUrl: string, headers: Record<string, string> =
 }
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
     const customer = await getCustomer(req);
-    if (!customer) return errorResponse('Unauthorized', 401);
+    if (!customer) return errorResponse('Unauthorized', 401, req);
 
     const body = await req.json();
     const { pageId } = body;
 
-    if (!pageId) return errorResponse('pageId is required', 400);
+    if (!pageId) return errorResponse('pageId is required', 400, req);
 
     // Fetch the landing page
     const { data: page, error: fetchErr } = await supabaseAdmin
@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
       .eq('customer_id', customer.id)
       .single();
 
-    if (fetchErr || !page) return errorResponse('Landing page not found or access denied', 404);
+    if (fetchErr || !page) return errorResponse('Landing page not found or access denied', 404, req);
 
     const channels: string[] = page.lead_channels || [];
     const results: Record<string, { success: boolean; message: string }> = {};
@@ -155,12 +155,12 @@ Deno.serve(async (req) => {
       return jsonResponse({
         results: {},
         message: 'לא הוגדרו ערוצי קבלת לידים. בחר לפחות ערוץ אחד.',
-      });
+      }, 200, req);
     }
 
-    return jsonResponse({ results });
+    return jsonResponse({ results }, 200, req);
   } catch (error) {
     console.error('testLeadChannels error:', (error as Error).message);
-    return errorResponse((error as Error).message);
+    return errorResponse((error as Error).message, 500, req);
   }
 });

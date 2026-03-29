@@ -1,24 +1,24 @@
 // Migrated from Base44: submitLead
 // Creates a new lead and sends email notification
 
-import { supabaseAdmin, getUser, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getUser, getCorsHeaders, jsonResponse, errorResponse, escapeHtml } from '../_shared/supabaseAdmin.ts';
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { headers: getCorsHeaders(req) });
   }
 
   try {
     if (req.method !== 'POST') {
-      return errorResponse('Method not allowed', 405);
+      return errorResponse('Method not allowed', 405, req);
     }
 
     const payload = await req.json();
 
     // Validate required fields
     if (!payload.name || !payload.phone) {
-      return errorResponse('Name and phone are required', 400);
+      return errorResponse('Name and phone are required', 400, req);
     }
 
     // Create lead using service role (public endpoint, no auth required)
@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
 
     if (leadError) {
       console.error('Error creating lead:', leadError);
-      return errorResponse(leadError.message, 500);
+      return errorResponse(leadError.message, 500, req);
     }
 
     // Handle Email Notification
@@ -92,11 +92,11 @@ Deno.serve(async (req) => {
             html: `
               <div style="direction: rtl; font-family: Arial, sans-serif;">
                 <h2>ליד חדש התקבל!</h2>
-                <p><strong>שם:</strong> ${payload.name}</p>
-                <p><strong>טלפון:</strong> ${payload.phone}</p>
-                <p><strong>אימייל:</strong> ${payload.email || 'לא צוין'}</p>
-                <p><strong>מקצוע:</strong> ${payload.profession || 'לא צוין'}</p>
-                <p><strong>מקור:</strong> ${payload.source_page || 'דף נחיתה'}</p>
+                <p><strong>שם:</strong> ${escapeHtml(payload.name)}</p>
+                <p><strong>טלפון:</strong> ${escapeHtml(payload.phone)}</p>
+                <p><strong>אימייל:</strong> ${escapeHtml(payload.email) || 'לא צוין'}</p>
+                <p><strong>מקצוע:</strong> ${escapeHtml(payload.profession) || 'לא צוין'}</p>
+                <p><strong>מקור:</strong> ${escapeHtml(payload.source_page) || 'דף נחיתה'}</p>
               </div>
             `
           })
@@ -107,9 +107,9 @@ Deno.serve(async (req) => {
       // Don't fail the request if email fails
     }
 
-    return jsonResponse({ success: true, lead });
+    return jsonResponse({ success: true, lead }, 200, req);
   } catch (error) {
     console.error('Error submitting lead:', error);
-    return errorResponse(error.message, 500);
+    return errorResponse(error.message, 500, req);
   }
 });

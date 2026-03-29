@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Portal: Homepage -->
+  <!-- Homepage -->
   <url>
     <loc>https://www.perfect1.co.il/</loc>
     <lastmod>2026-03-28</lastmod>
@@ -14,7 +14,7 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Portal: Category Hubs -->
+  <!-- Category Hubs -->
   <url>
     <loc>https://www.perfect1.co.il/osek-patur</loc>
     <lastmod>2026-03-28</lastmod>
@@ -46,7 +46,7 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- Portal: Osek Patur Articles -->
+  <!-- Osek Patur Articles (10) -->
   <url>
     <loc>https://www.perfect1.co.il/osek-patur/how-to-open</loc>
     <lastmod>2026-03-28</lastmod>
@@ -77,8 +77,38 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-patur/taxes</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-patur/management</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-patur/rights</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-patur/status-change</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-patur/faq</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-  <!-- Portal: Osek Murshe Articles -->
+  <!-- Osek Murshe Articles (8) -->
   <url>
     <loc>https://www.perfect1.co.il/osek-murshe/how-to-open</loc>
     <lastmod>2026-03-28</lastmod>
@@ -97,8 +127,38 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/taxes</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/management</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/reports</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/status-change</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/faq</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-  <!-- Portal: Hevra BAM Articles -->
+  <!-- Hevra BAM Articles (7) -->
   <url>
     <loc>https://www.perfect1.co.il/hevra-bam/how-to-open</loc>
     <lastmod>2026-03-28</lastmod>
@@ -111,8 +171,38 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.perfect1.co.il/hevra-bam/management</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/hevra-bam/reports</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/hevra-bam/shareholders</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/hevra-bam/transition</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/hevra-bam/faq</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-  <!-- Portal: Sgirat Tikim Articles -->
+  <!-- Sgirat Tikim Articles (6) -->
   <url>
     <loc>https://www.perfect1.co.il/sgirat-tikim/close-osek-patur</loc>
     <lastmod>2026-03-28</lastmod>
@@ -125,16 +215,76 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.perfect1.co.il/sgirat-tikim/close-company</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/sgirat-tikim/authorities</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/sgirat-tikim/consequences</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/sgirat-tikim/faq</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-  <!-- Portal: Guides Articles -->
+  <!-- Guides Articles (7) -->
   <url>
     <loc>https://www.perfect1.co.il/guides/which-business-type</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://www.perfect1.co.il/guides/opening-business</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/guides/freelancers</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/guides/taxation</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/guides/tools</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/guides/comparisons</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/guides/faq</loc>
+    <lastmod>2026-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-  <!-- Portal: Comparison Pages -->
+  <!-- Comparison Pages (1) -->
   <url>
     <loc>https://www.perfect1.co.il/compare/osek-patur-vs-murshe</loc>
     <lastmod>2026-03-28</lastmod>
