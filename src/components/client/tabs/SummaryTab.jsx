@@ -26,7 +26,7 @@ export default function SummaryTab({ data }) {
         user_id: data.id
       });
       setShowGoalDialog(false);
-      window.location.href = createPageUrl('ClientDashboard') + '?tab=goals';
+      window.location.href = createPageUrl('APP') + '?tab=goals';
     } catch (error) {
       console.error('Error creating goal:', error);
     }

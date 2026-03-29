@@ -5,6 +5,25 @@
 
 import { supabaseAdmin, getCustomer, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
 
+// Hebrew to Latin transliteration map for DNS-safe subdomain generation
+const hebrewMap: Record<string, string> = {
+  '\u05D0': 'a', '\u05D1': 'b', '\u05D2': 'g', '\u05D3': 'd', '\u05D4': 'h',
+  '\u05D5': 'v', '\u05D6': 'z', '\u05D7': 'ch', '\u05D8': 't', '\u05D9': 'y',
+  '\u05DA': 'k', '\u05DB': 'k', '\u05DC': 'l', '\u05DD': 'm', '\u05DE': 'm',
+  '\u05DF': 'n', '\u05E0': 'n', '\u05E1': 's', '\u05E2': 'a', '\u05E3': 'p',
+  '\u05E4': 'p', '\u05E5': 'tz', '\u05E6': 'tz', '\u05E7': 'k', '\u05E8': 'r',
+  '\u05E9': 'sh', '\u05EA': 't',
+};
+
+// Transliterate Hebrew to Latin characters
+function transliterate(text: string): string {
+  let result = '';
+  for (const char of text) {
+    result += hebrewMap[char] || char;
+  }
+  return result;
+}
+
 // Generate a short unique slug for the card
 function generateSlug(name: string): string {
   const base = name
@@ -14,6 +33,39 @@ function generateSlug(name: string): string {
     .slice(0, 30);
   const suffix = Math.random().toString(36).slice(2, 7);
   return `${base}-${suffix}`;
+}
+
+// Generate a DNS-safe subdomain from a name (transliterates Hebrew)
+function generateSubdomain(name: string): string {
+  const transliterated = transliterate(name);
+  return transliterated
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 63);
+}
+
+// Ensure subdomain is unique by appending a short suffix if needed
+async function ensureUniqueSubdomain(base: string): Promise<string> {
+  // Check if the base subdomain is already taken
+  const { data: existingCard } = await supabaseAdmin
+    .from('digital_cards')
+    .select('id')
+    .eq('subdomain', base)
+    .maybeSingle();
+
+  const { data: existingPage } = await supabaseAdmin
+    .from('landing_pages')
+    .select('id')
+    .eq('subdomain', base)
+    .maybeSingle();
+
+  if (!existingCard && !existingPage) return base;
+
+  // Add a short random suffix
+  const suffix = Math.random().toString(36).slice(2, 5);
+  return `${base}-${suffix}`.slice(0, 63);
 }
 
 Deno.serve(async (req) => {
@@ -51,6 +103,8 @@ Deno.serve(async (req) => {
     } = formData;
 
     const slug = generateSlug(fullName || customer.full_name || 'card');
+    const subdomainBase = generateSubdomain(fullName || customer.full_name || 'card');
+    const subdomain = await ensureUniqueSubdomain(subdomainBase);
 
     const services = [service1, service2, service3].filter(Boolean);
 
@@ -59,6 +113,7 @@ Deno.serve(async (req) => {
       .insert({
         customer_id: customer.id,
         slug,
+        subdomain,
         name: fullName || customer.full_name || '',
         full_name: fullName || customer.full_name || '',
         profession: profession || '',
@@ -91,11 +146,15 @@ Deno.serve(async (req) => {
       data: { card_id: card.id, slug }
     }).catch((e: Error) => console.warn('activity_log insert failed:', e.message));
 
+    const subdomainUrl = `https://${card.subdomain}.one-pai.com`;
+
     return jsonResponse({
       success: true,
       card_id: card.id,
       slug: card.slug,
+      subdomain: card.subdomain,
       card_url: `/card/${card.slug}`,
+      public_url: subdomainUrl,
       card,
     });
   } catch (error) {

@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, ArrowRight, ShieldCheck, X, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
 import { auth, invokeFunction } from '@/api/supabaseClient';
+import { trackBeginCheckout, trackSubscriptionPurchase } from '@/components/tracking/EventTracker';
 
 /**
  * SubscriptionCheckoutDialog – popup checkout for plan subscriptions.
@@ -55,7 +56,19 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
     try {
       await invokeFunction('tranzilaConfirmPayment', {
         payment_id: handshakeData.paymentId,
-        transaction_id: transactionId || ''
+        transaction_id: transactionId || '',
+        tranzila_response: '000'
+      });
+      // מעקב המרה — מנוי
+      trackSubscriptionPurchase({
+        paymentId: handshakeData.paymentId,
+        transaction_id: transactionId || '',
+        product_name: product?.name || '',
+        tier_name: product?.tierName || '',
+        billing_cycle: product?.billingCycle || 'monthly',
+        amount: amount,
+        is_recurring: isRecurring,
+        payment_method: 'tranzila'
       });
       toast.success('התשלום בוצע בהצלחה! 🎉');
       if (onPaymentSuccess) await onPaymentSuccess(handshakeData.paymentId);
@@ -113,7 +126,13 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
     const pollInterval = setInterval(async () => {
       if (paymentConfirmedRef.current) { clearInterval(pollInterval); return; }
       pollCount++;
-      if (pollCount > 240) { clearInterval(pollInterval); return; }
+      if (pollCount > 240) {
+        clearInterval(pollInterval);
+        toast.info('התשלום עדיין בעיבוד. נעדכן אותך במייל כשיאושר.');
+        setPaymentStep('summary');
+        setHandshakeData(null);
+        return;
+      }
       try {
         const pollRes = await invokeFunction('getPaymentStatus', { payment_id: handshakeData.paymentId });
         const payments = pollRes?.payments || [];
@@ -131,6 +150,7 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
   const handleProceed = async () => {
     if (!product) return;
     setIframeLoading(true);
+    trackBeginCheckout(product);
     try {
       const data = await invokeFunction('tranzilaCreatePayment', {
         product_type: 'plan',
@@ -138,7 +158,7 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
         amount,
         product_id: product.productId || '',
       });
-      if (!data?.success || !data?.thtk) {
+      if (!data?.success || !data?.supplier) {
         toast.error('שגיאה בהתחלת התשלום');
         setIframeLoading(false);
         return;
@@ -254,8 +274,7 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
                 <input type="hidden" name="currency" value="1" />
                 <input type="hidden" name="cred_type" value="1" />
                 <input type="hidden" name="tranmode" value="A" />
-                <input type="hidden" name="new_process" value="1" />
-                <input type="hidden" name="thtk" value={handshakeData.thtk} />
+                <input type="hidden" name="TranzilaPW" value={handshakeData.tranzilaPW || ''} />
                 <input type="hidden" name="myid" value="" />
                 <input type="hidden" name="myid_lable" value="תעודת זהות" />
                 <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />

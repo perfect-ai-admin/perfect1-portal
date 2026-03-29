@@ -85,6 +85,7 @@ export function useLogout() {
     onSuccess: () => {
       queryClient.setQueryData(queryKeys.user.me, null);
       queryClient.clear();
+      window.location.href = '/login';
     }
   });
 }

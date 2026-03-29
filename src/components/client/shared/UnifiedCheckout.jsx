@@ -124,7 +124,7 @@ export default function UnifiedCheckout({ items = [], totalPrice = 0, onBack, on
             }))
         });
 
-        if (response.success && response.thtk) {
+        if (response.success && response.supplier) {
              // Navigate to Checkout page with Tranzila payment
              const params = new URLSearchParams({
                  type: 'cart',

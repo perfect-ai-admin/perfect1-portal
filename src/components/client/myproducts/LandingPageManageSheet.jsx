@@ -67,7 +67,9 @@ export default function LandingPageManageSheet({ pageId, open, onOpenChange }) {
     }
   };
 
-  const publicUrl = page?.slug ? `https://perfect-dashboard.com/LP?s=${page.slug}` : null;
+  const publicUrl = page?.subdomain
+    ? `https://${page.subdomain}.one-pai.com`
+    : page?.slug ? `https://perfect-dashboard.com/LP?s=${page.slug}` : null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

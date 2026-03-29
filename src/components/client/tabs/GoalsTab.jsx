@@ -11,19 +11,23 @@ import { Button } from '@/components/ui/button';
 
 // Hooks
 import { useGoals, useUpdateGoal, useDeleteGoal, useGenerateGoalPlan, useCreateGoal } from '@/components/hooks/useGoals';
+import { useBusinessJourney } from '@/components/hooks/useBusinessJourney';
 
 export default function GoalsTab({ user, data, openAddGoal = false }) {
   const queryClient = useQueryClient();
-  
+
+  // Fetch journey data (business_state, client_tasks) from customers table
+  const { data: activeJourney } = useBusinessJourney(user?.email);
+
   // Mutations
   const updateGoalMutation = useUpdateGoal();
   const deleteGoalMutation = useDeleteGoal();
   const createGoalMutation = useCreateGoal();
   const generateGoalPlanMutation = useGenerateGoalPlan();
 
-  // Query - Fetch goals using hook
-  // We use useMemo to ensure filters object reference is stable if needed, though useGoals handles it
-  const { data: fetchedGoals = [], isLoading } = useGoals(user?.id ? { user_id: user.id } : {});
+  // Query - Fetch goals using customer_id (different from auth user.id)
+  const customerId = activeJourney?.customer_id;
+  const { data: fetchedGoals = [], isLoading } = useGoals(customerId ? { customer_id: customerId } : {});
 
   // Clean, memoized goals list from Server State
   const goals = useMemo(() => {
@@ -44,21 +48,21 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
 
   const goalsLoaded = !isLoading;
 
-  // Check for recommended goal (First task of journey)
-  const firstJourneyTask = user?.client_tasks?.[0];
-  
+  // Check for recommended goal (First task of journey) - from customers table
+  const firstJourneyTask = activeJourney?.tasks?.[0] || user?.client_tasks?.[0];
+
   // Define the "Recommended Goal" as the current journey step
   const recommendedGoal = useMemo(() => firstJourneyTask ? {
     goal_id: 'journey_step_' + firstJourneyTask.id,
     name: firstJourneyTask.title,
     title: firstJourneyTask.title,
     description: firstJourneyTask.description,
-    reason: user?.business_state?.description || 'זה הצעד הראשון בתוכנית הצמיחה שלך',
+    reason: activeJourney?.business_state?.summary || 'זה הצעד הראשון בתוכנית הצמיחה שלך',
     icon: Target,
     color: 'from-purple-500 to-indigo-600',
     isJourneyTask: true,
     originalTask: firstJourneyTask
-  } : null, [firstJourneyTask, user?.business_state?.description]);
+  } : null, [firstJourneyTask, activeJourney?.business_state?.summary]);
 
   // Check if this specific journey task has been converted to a goal already
   const hasStartedRecommendedGoal = useMemo(() => goals.some(g => 
@@ -240,9 +244,9 @@ export default function GoalsTab({ user, data, openAddGoal = false }) {
          // Check if this is the FIRST goal ever for this user
          const isFirstGoalEver = goals.length === 0 && !goals.some(g => g.is_first_goal);
          
-         const goalToCreate = { 
-           ...newGoal, 
-           user_id: user.id,
+         const goalToCreate = {
+           ...newGoal,
+           customer_id: customerId,
            plan_summary: 'בונה את תוכנית הפעולה שלך...', // Initial optimistic state
            is_first_goal: isFirstGoalEver // סימון אוטומטי של מטרה ראשונה
          };

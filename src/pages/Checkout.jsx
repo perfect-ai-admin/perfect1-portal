@@ -7,6 +7,7 @@ import { Loader2, ArrowRight, ShieldCheck, Check, CreditCard, CheckCircle, Home 
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 import { auth, invokeFunction } from '@/api/supabaseClient';
+import { trackBeginCheckout, trackSubscriptionPurchase, trackPurchase } from '@/components/tracking/EventTracker';
 
 /**
  * Checkout page – dedicated to SUBSCRIPTION / RECURRING payments only.
@@ -24,10 +25,11 @@ export default function Checkout() {
   const location = useLocation();
   const urlParams = new URLSearchParams(window.location.search);
 
-  const productType = urlParams.get('type'); // 'plan'
+  const productType = urlParams.get('type'); // 'plan' | 'cart'
   const productId = urlParams.get('id');
   const tierName = urlParams.get('tier');
   const priceParam = urlParams.get('price');
+  const existingPaymentId = urlParams.get('payment_id');
 
   const [user, setUser] = useState(null);
   const [product, setProduct] = useState(null);
@@ -62,8 +64,19 @@ export default function Checkout() {
           isRecurring: !isYearly, // monthly = recurring, yearly = one-time annual
           billingCycle,
         });
+      } else if (productType === 'cart' && existingPaymentId) {
+        // Cart flow: product details come from URL params, payment_id reuses existing handshake
+        const productName = urlParams.get('name') || 'עגלת קניות';
+        const cartPrice = priceParam ? Number(priceParam) : 0;
+        setProduct({
+          name: productName,
+          description: '',
+          price: cartPrice,
+          isRecurring: false,
+          billingCycle: 'one-time',
+        });
       } else if (productType === 'plan' && productId) {
-       
+
         const plans = [];
         if (plans.length > 0) {
           const plan = plans[0];
@@ -85,8 +98,34 @@ export default function Checkout() {
 
   const handleProceedToPayment = async () => {
     setIframeLoading(true);
+    trackBeginCheckout(product);
     try {
       const amt = product.price;
+
+      // If a payment_id was passed via URL (e.g. from UnifiedCheckout cart flow),
+      // reuse the existing handshake instead of creating a new one.
+      if (existingPaymentId) {
+        const statusRes = await invokeFunction('getPaymentStatus', { payment_id: existingPaymentId });
+        const existingPayment = statusRes?.payments?.[0];
+        if (!existingPayment) {
+          toast.error('שגיאה בטעינת פרטי התשלום');
+          setIframeLoading(false);
+          return;
+        }
+        setHandshakeData({
+          supplier: existingPayment.supplier || 'fxperfectone',
+          tranzilaPW: existingPayment.tranzilaPW || '',
+          notifyUrl: existingPayment.notify_url,
+          paymentId: existingPaymentId,
+        });
+        setPaymentStep('payment');
+        setTimeout(() => {
+          document.getElementById('tranzila-form')?.submit();
+          setIframeLoading(false);
+        }, 200);
+        return;
+      }
+
       const data = await invokeFunction('tranzilaCreatePayment', {
         product_type: 'plan',
         product_name: product.name,
@@ -94,7 +133,7 @@ export default function Checkout() {
         product_id: productId || '',
       });
 
-      if (!data?.success || !data?.thtk) {
+      if (!data?.success || !data?.supplier) {
         toast.error('שגיאה בהתחלת התשלום');
         setIframeLoading(false);
         return;
@@ -123,7 +162,20 @@ export default function Checkout() {
     try {
       await invokeFunction('tranzilaConfirmPayment', {
         payment_id: handshakeData.paymentId,
-        transaction_id: transactionId || ''
+        transaction_id: transactionId || '',
+        tranzila_response: '000'
+      });
+      // מעקב המרה — מנוי או חד-פעמי שנתי
+      const trackFn = isRecurring ? trackSubscriptionPurchase : trackPurchase;
+      trackFn({
+        paymentId: handshakeData.paymentId,
+        transaction_id: transactionId || '',
+        product_name: product?.name || '',
+        tier_name: product?.tierName || '',
+        billing_cycle: product?.billingCycle || 'monthly',
+        amount: amount,
+        is_recurring: isRecurring,
+        payment_method: 'tranzila'
       });
       toast.success('התשלום בוצע בהצלחה! 🎉');
       setPaymentStep('success');
@@ -186,7 +238,13 @@ export default function Checkout() {
     const pollInterval = setInterval(async () => {
       if (paymentConfirmedRef.current) { clearInterval(pollInterval); return; }
       pollCount++;
-      if (pollCount > 240) { clearInterval(pollInterval); return; }
+      if (pollCount > 240) {
+        clearInterval(pollInterval);
+        toast.info('התשלום עדיין בעיבוד. נעדכן אותך במייל כשיאושר.');
+        setPaymentStep('summary');
+        setHandshakeData(null);
+        return;
+      }
       try {
         const pollRes = await invokeFunction('getPaymentStatus', { payment_id: handshakeData.paymentId });
         const payments = pollRes?.payments || [];
@@ -394,7 +452,7 @@ export default function Checkout() {
                     לאזור האישי
                   </Button>
                   <Button
-                    onClick={() => navigate('/ClientDashboard')}
+                    onClick={() => navigate('/APP')}
                     variant="outline"
                     className="h-12"
                   >
@@ -430,8 +488,7 @@ export default function Checkout() {
                     <input type="hidden" name="currency" value="1" />
                     <input type="hidden" name="cred_type" value="1" />
                     <input type="hidden" name="tranmode" value="A" />
-                    <input type="hidden" name="new_process" value="1" />
-                    <input type="hidden" name="thtk" value={handshakeData.thtk} />
+                    <input type="hidden" name="TranzilaPW" value={handshakeData.tranzilaPW || ''} />
                     <input type="hidden" name="myid" value="" />
                     <input type="hidden" name="myid_lable" value="תעודת זהות" />
                     <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />

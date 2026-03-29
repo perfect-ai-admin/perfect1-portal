@@ -98,10 +98,11 @@ export default function ProgressTab({ data, onNavigate, user }) {
   
   // Hooks
   const { data: currentUserData } = useAppAuth();
-  const { data: activeJourney } = useBusinessJourney(user?.id);
+  const { data: activeJourney } = useBusinessJourney(user?.email);
   
-  // Fetch all goals and filter locally (consistent with GoalsTab)
-  const { data: allGoals = [] } = useGoals(user?.id ? { user_id: user.id } : {});
+  // Fetch all goals using customer_id (resolved from activeJourney)
+  const customerId = activeJourney?.customer_id;
+  const { data: allGoals = [] } = useGoals(customerId ? { customer_id: customerId } : {});
   
   const activeGoals = React.useMemo(() => {
     return allGoals.filter(g => ['active', 'selected', 'completed'].includes(g.status));
@@ -128,10 +129,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const [goalTemplateForStep, setGoalTemplateForStep] = useState(null);
   const [showGoalSelectionConfirmation, setShowGoalSelectionConfirmation] = useState(false);
 
-  // Use dynamic tasks from Active Journey if available
-  // Fallback to User entity client_tasks (legacy), then to Default Milestones
+  // Use dynamic tasks from Active Journey (reads from customers.client_tasks)
+  // Fallback to Default Milestones
   const activeMilestones = (activeJourney?.tasks?.length > 0 ? activeJourney.tasks : null)
-    || (currentUserData?.client_tasks?.length > 0 ? currentUserData.client_tasks : null)
     || MILESTONES;
 
   // Determine current/completed based on is_completed or status field in tasks
@@ -170,7 +170,9 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const primaryGoal = activeGoals.find(g => g.isPrimary) || activeGoals[0];
   const secondaryGoalsList = activeGoals.filter(g => g.id !== primaryGoal?.id);
 
-  const isJourneyCompleted = currentUserData?.business_journey_completed;
+  // activeJourney comes from useBusinessJourney which reads from customers table
+  // It returns non-null only when business_journey_completed_at exists
+  const isJourneyCompleted = !!activeJourney;
 
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
   const [isGoalsExpanded, setIsGoalsExpanded] = useState(false);
@@ -181,9 +183,13 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleQuestionnaireComplete = async () => {
     setShowQuestionnaire(false);
-    await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
+    toast.success('התוכנית העסקית שלך מוכנה! מרענן...');
+    // Invalidate all journey-related queries to force refetch
     await queryClient.invalidateQueries({ queryKey: JOURNEY_QUERY_KEY });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
     await queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+    // Force page reload to ensure fresh data
+    setTimeout(() => window.location.reload(), 500);
   };
 
   const handleResetJourney = async () => {
@@ -291,7 +297,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
       // Use hook
       const createdGoal = await createGoalMutation.mutateAsync({
         ...newGoal,
-        user_id: user?.id,
+        customer_id: customerId,
         status: 'active',
         plan_summary: 'בונה תוכנית...',
         tasks: [],
@@ -319,8 +325,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
               _context: {
                 activeGoalsCount,
                 goalPosition: activeGoalsCount + 1,
-                businessState: currentUserData?.business_state,
-                businessJourneyAnswers: currentUserData?.business_journey_answers
+                businessState: activeJourney?.business_state,
+                businessJourneyAnswers: activeJourney?.answers
               }
             }
           });
@@ -347,7 +353,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
     goal_id: 'journey_step_' + firstJourneyTask.id,
     title: firstJourneyTask.title,
     description: firstJourneyTask.description,
-    reason: currentUserData?.business_state?.description || 'זה הצעד הראשון בתוכנית הצמיחה שלך',
+    reason: activeJourney?.business_state?.summary || activeJourney?.plan?.summary || 'זה הצעד הראשון בתוכנית הצמיחה שלך',
     isJourneyTask: true,
     originalTask: firstJourneyTask
   } : null;

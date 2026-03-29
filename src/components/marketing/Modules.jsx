@@ -17,7 +17,7 @@ import {
 
 import { getSignupUrl } from '@/components/utils/tracking';
 
-const SIGNUP_URL = "https://perfect-dashboard.com/login?from_url=https%3A%2F%2Fperfect-dashboard.com%2FClientDashboard"; // Fallback
+const SIGNUP_URL = "https://perfect-dashboard.com/login?from_url=https%3A%2F%2Fperfect-dashboard.com%2FAPP"; // Fallback
 
 const modules = [
   {

@@ -34,7 +34,7 @@ export const SupabaseAuthProvider = ({ children }) => {
     await supabase.auth.signOut();
     setUser(null);
     setIsAuthenticated(false);
-    if (shouldRedirect) window.location.href = '/';
+    if (shouldRedirect) window.location.href = '/login';
   }, []);
 
   const login = useCallback(async (email, password) => {

@@ -19,30 +19,49 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
     email: '',
   });
 
+  const paymentConfirmedRef = useRef(false);
+
+  const confirmPayment = async (transactionId) => {
+    if (paymentConfirmedRef.current || !paymentIdRef.current) return;
+    paymentConfirmedRef.current = true;
+    try {
+      await invokeFunction('tranzilaConfirmPayment', {
+        payment_id: paymentIdRef.current,
+        transaction_id: transactionId || '',
+        tranzila_response: '000'
+      });
+      toast.success('התשלום בוצע בהצלחה!');
+      onSuccess({ email: cardData.email, businessName });
+    } catch (err) {
+      console.error('Confirm payment error:', err);
+      paymentConfirmedRef.current = false;
+      toast.error('שגיאה באישור התשלום. נסה שוב.');
+      setError('שגיאה באישור התשלום. אנא פנה לתמיכה.');
+      setShowIframe(false);
+    }
+  };
+
   // Listen for Tranzila iframe postMessage
   useEffect(() => {
-    const handleMessage = async (event) => {
-      if (event.data && typeof event.data === 'string' && paymentIdRef.current) {
-        try {
-          const parsed = JSON.parse(event.data);
-          if (parsed.Response === '000') {
-            await invokeFunction('tranzilaConfirmPayment', {
-              payment_id: paymentIdRef.current,
-              transaction_id: parsed.ConfirmationCode || ''
-            });
-            toast.success('התשלום בוצע בהצלחה!');
-            onSuccess({ email: cardData.email, businessName });
-          }
-        } catch (e) {
-          if (event.data.includes('Response=000')) {
-            const params = new URLSearchParams(event.data);
-            await invokeFunction('tranzilaConfirmPayment', {
-              payment_id: paymentIdRef.current,
-              transaction_id: params.get('ConfirmationCode') || ''
-            });
-            toast.success('התשלום בוצע בהצלחה!');
-            onSuccess({ email: cardData.email, businessName });
-          }
+    const handleMessage = (event) => {
+      if (!event.data || typeof event.data !== 'string' || !paymentIdRef.current) return;
+      if (paymentConfirmedRef.current) return;
+
+      try {
+        const parsed = JSON.parse(event.data);
+        if (parsed.Response === '000') {
+          confirmPayment(parsed.ConfirmationCode || '');
+        } else if (parsed.Response && parsed.Response !== '000') {
+          toast.error('התשלום נכשל. אנא בדוק את פרטי הכרטיס.');
+          setError('התשלום נכשל. אנא בדוק את פרטי הכרטיס ונסה שנית.');
+        }
+      } catch (_) {
+        if (event.data.includes('Response=000')) {
+          const params = new URLSearchParams(event.data);
+          confirmPayment(params.get('ConfirmationCode') || '');
+        } else if (event.data.includes('Response=') && !event.data.includes('Response=000')) {
+          toast.error('התשלום נכשל. אנא בדוק את פרטי הכרטיס.');
+          setError('התשלום נכשל. אנא בדוק את פרטי הכרטיס ונסה שנית.');
         }
       }
     };
@@ -86,7 +105,7 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
         metadata: { businessName, slogan, logoUrl }
       });
 
-      if (!data?.success || !data?.thtk) {
+      if (!data?.success || !data?.supplier) {
         setError('שגיאה בהתחלת התשלום');
         setIsProcessing(false);
         return;
@@ -235,9 +254,9 @@ export default function LogoCheckout({ businessName, slogan, logoUrl, onBack, on
                 <input type="hidden" name="currency" value="1" />
                 <input type="hidden" name="cred_type" value="1" />
                 <input type="hidden" name="tranmode" value="A" />
-                <input type="hidden" name="new_process" value="1" />
-                <input type="hidden" name="thtk" value={handshakeData.thtk} />
-                <input type="hidden" name="myid" value={handshakeData.paymentId || ''} />
+                <input type="hidden" name="TranzilaPW" value={handshakeData.tranzilaPW || ''} />
+                <input type="hidden" name="myid" value="" />
+                <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />
                 {handshakeData.notifyUrl && (
                   <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
                 )}

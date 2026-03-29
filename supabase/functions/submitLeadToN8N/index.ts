@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
         phone: phone.trim(),
         email: email || '',
         source: businessName || 'Landing Page',
-        page_url: pageSlug ? `https://one-pai.com/LP?s=${pageSlug}` : '',
+        page_url: landingPage?.subdomain ? `https://${landingPage.subdomain}.one-pai.com` : (pageSlug ? `https://one-pai.com/LP?s=${pageSlug}` : ''),
         status: 'new',
         journey_stage: 'lead_new'
       };
@@ -139,7 +139,7 @@ Deno.serve(async (req) => {
           email: email || '',
           message: message || '',
           source: businessName || pageSlug || 'landing-page',
-          page_url: pageSlug ? `https://one-pai.com/LP?s=${pageSlug}` : '',
+          page_url: landingPage?.subdomain ? `https://${landingPage.subdomain}.one-pai.com` : (pageSlug ? `https://one-pai.com/LP?s=${pageSlug}` : ''),
           timestamp: new Date().toISOString(),
           lead_id: leadResult.id
         };

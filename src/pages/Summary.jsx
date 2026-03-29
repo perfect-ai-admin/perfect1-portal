@@ -26,7 +26,7 @@ import { useBusinessJourney } from '@/components/hooks/useBusinessJourney';
 import { auth } from '@/api/supabaseClient';
 export default function Summary() {
   const { data: user, isLoading: isUserLoading } = useAppAuth();
-  const { data: activeJourney } = useBusinessJourney(user?.id);
+  const { data: activeJourney } = useBusinessJourney(user?.email);
   const { data: goals = [] } = useGoals(user?.id ? { user_id: user.id } : {});
   const createGoalMutation = useCreateGoal();
   const logoutMutation = useLogout();
@@ -98,7 +98,7 @@ export default function Summary() {
         user_id: user.id
       });
       setShowGoalDialog(false);
-      navigate(createPageUrl('ClientDashboard') + '?tab=goals');
+      navigate(createPageUrl('APP') + '?tab=goals');
     } catch (error) {
       console.error('Error creating goal:', error);
     }
@@ -106,7 +106,7 @@ export default function Summary() {
 
   const handleTabChange = (tabId) => {
     if (tabId === 'summary') return;
-    navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
+    navigate(`${createPageUrl('APP')}?tab=${tabId}`);
   };
 
   const handleLogout = async () => {
@@ -131,13 +131,13 @@ export default function Summary() {
     );
   }
 
-  const businessState = user?.business_state || {};
+  const businessState = activeJourney?.business_state || user?.business_state || {};
   const stage = businessState?.stage || 'unknown';
-  const primaryChallenge = businessState?.primary_challenge;
+  const primaryChallenge = businessState?.main_challenge || businessState?.primary_challenge;
   const unifiedRecommendation = businessState?.unified_recommendation || {};
-  
+
   // Prefer active journey tasks
-  const clientTasks = activeJourney?.tasks || user?.client_tasks || [];
+  const clientTasks = activeJourney?.tasks || [];
 
   const stageLabels = {
     pre_revenue: 'לפני הכנסה ראשונה',
@@ -305,7 +305,7 @@ export default function Summary() {
                               </div>
                               
                               <Button 
-                                  onClick={() => navigate(createPageUrl('ClientDashboard') + '?tab=goals')}
+                                  onClick={() => navigate(createPageUrl('APP') + '?tab=goals')}
                                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 rounded-lg transition-all"
                               >
                                   מעבר לביצוע

@@ -151,7 +151,7 @@ export default function ShoppingCartButton() {
     if (itemsToCheckout.length === 0) return;
     
     setIsOpen(false);
-    navigate(createPageUrl('ClientDashboard') + '?tab=checkout', { 
+    navigate(createPageUrl('APP') + '?tab=checkout', { 
       state: { 
         items: itemsToCheckout,
         totalPrice: itemsToCheckout.reduce((sum, item) => sum + (item.price || ITEM_PRICE), 0)

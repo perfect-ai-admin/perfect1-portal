@@ -123,7 +123,7 @@ export default function MyProducts() {
             preview_image: imageUrl,
             download_url: downloadUrl,
             linked_entity_id: p.product_id || p.metadata?.landingPageId || '',
-            published_url: (p.product_type === 'landing-page' && p.metadata?.slug) ? `/LP?s=${p.metadata.slug}` : (metaType === 'presentation' && p.metadata?.presentationUrl) ? p.metadata.presentationUrl : '',
+            published_url: (p.product_type === 'landing-page' && p.metadata?.subdomain) ? `https://${p.metadata.subdomain}.one-pai.com` : (p.product_type === 'landing-page' && p.metadata?.slug) ? `/LP?s=${p.metadata.slug}` : (metaType === 'presentation' && p.metadata?.presentationUrl) ? p.metadata.presentationUrl : '',
             created_date: p.completed_at || p.created_date,
             metadata: { from_payment: true, ...p.metadata }
           });
@@ -151,8 +151,8 @@ export default function MyProducts() {
             status: 'active',
             purchase_price: 0,
             preview_image: card.qr_image_url || '',
-            download_url: card.public_url || '',
-            published_url: card.public_url || '',
+            download_url: card.subdomain ? `https://${card.subdomain}.one-pai.com` : (card.public_url || ''),
+            published_url: card.subdomain ? `https://${card.subdomain}.one-pai.com` : (card.public_url || ''),
             created_date: card.created_date,
             metadata: { type: 'digital_card', cardId: card.id, fullName: card.full_name, profession: card.profession }
           });
@@ -285,7 +285,7 @@ export default function MyProducts() {
             <div className="flex items-center justify-between h-14">
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <button 
-                  onClick={() => navigate(createPageUrl('ClientDashboard'))}
+                  onClick={() => navigate(createPageUrl('APP'))}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <ArrowRight className="w-5 h-5" />
@@ -310,7 +310,7 @@ export default function MyProducts() {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuItem onClick={() => navigate(createPageUrl('ClientDashboard'))}>
+                    <DropdownMenuItem onClick={() => navigate(createPageUrl('APP'))}>
                       <ArrowRight className="w-4 h-4 ml-2" />
                       חזרה לדשבורד
                     </DropdownMenuItem>
@@ -384,7 +384,7 @@ export default function MyProducts() {
             </div>
           ) : products.length === 0 ? (
             <EmptyProducts 
-              onGoToStore={() => navigate(createPageUrl('ClientDashboard') + '?tab=marketing')} 
+              onGoToStore={() => navigate(createPageUrl('APP') + '?tab=marketing')} 
             />
           ) : (
             <div className="space-y-4">

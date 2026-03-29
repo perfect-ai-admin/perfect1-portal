@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
-import { invokeFunction } from '@/api/supabaseClient';
+import { supabase } from '@/api/supabaseClient';
 
 // Profession Question (Free Text)
 const PROFESSION_QUESTION = {
@@ -324,9 +324,34 @@ export default function BusinessJourneyQuestionnaire({ onComplete, userId }) {
   const handleSubmit = async (finalAnswers) => {
     setIsSubmitting(true);
     try {
-      // Call the "Brain" function to analyze and update user
-      await invokeFunction('analyzeBusinessJourney', { answers: finalAnswers });
-      
+      // Get current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) {
+        throw new Error('No auth session');
+      }
+
+      // Direct fetch to edge function (bypass supabase.functions.invoke)
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://fnsnnezhikgqajdbtwoa.supabase.co';
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/analyzeBusinessJourney`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'apikey': anonKey,
+        },
+        body: JSON.stringify({ answers: finalAnswers }),
+      });
+
+      const responseData = await response.json().catch(() => null);
+      console.log('analyzeBusinessJourney response:', response.status, responseData);
+
+      if (!response.ok) {
+        throw new Error(responseData?.error || `Server error ${response.status}`);
+      }
+
       onComplete();
     } catch (error) {
       console.error("Error saving answers:", error);

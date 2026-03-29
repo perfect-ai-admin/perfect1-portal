@@ -94,9 +94,9 @@ export default function LandingPageManager() {
     }
   };
 
-  const publicUrl = page?.slug 
-    ? `https://perfect-dashboard.com/LP?s=${page.slug}` 
-    : null;
+  const publicUrl = page?.subdomain
+    ? `https://${page.subdomain}.one-pai.com`
+    : page?.slug ? `https://perfect-dashboard.com/LP?s=${page.slug}` : null;
 
   if (loading) {
     return (

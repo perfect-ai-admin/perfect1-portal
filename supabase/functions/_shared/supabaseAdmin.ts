@@ -74,21 +74,33 @@ export function escapeHtml(str: string | null | undefined): string {
 const ALLOWED_ORIGINS = [
   'https://perfect1.co.il',
   'https://www.perfect1.co.il',
+  'https://perfect-dashboard.com',
+  'https://www.perfect-dashboard.com',
   'https://one-pai.com',
   'https://www.one-pai.com',
   'http://localhost:5173',
+  'http://localhost:3000',
 ];
 
+// בדוק האם origin מותר — כולל Vercel preview domains
+function isAllowedOrigin(origin: string): boolean {
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  // אפשר את כל דומיינים של Vercel
+  if (origin.startsWith('https://') && origin.endsWith('.vercel.app')) return true;
+  return false;
+}
+
+// החזר CORS headers מותאמים ל-origin של הבקשה
 export function getCorsHeaders(req?: Request): Record<string, string> {
   const origin = req?.headers?.get('Origin') || '';
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  const allowedOrigin = isAllowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   };
 }
 
-// Legacy constant — kept for backwards compat but prefer getCorsHeaders(req)
+// corsHeaders — ברירת מחדל (backwards compatibility, ל-OPTIONS בלי req)
 export const corsHeaders = {
   'Access-Control-Allow-Origin': ALLOWED_ORIGINS[0],
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',

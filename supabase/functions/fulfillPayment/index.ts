@@ -1,14 +1,30 @@
 // Migrated from Base44: fulfillPayment
 // Unified payment fulfillment — called after payment confirmed (Stripe/Tranzila)
 
-import { supabaseAdmin, corsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+
+// תיקון XSS: escape ערכים דינמיים שמוכנסים לתבנית HTML של המייל
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
+
+  // תיקון 1: הגנה על הפונקציה — פנימית בלבד, רק עם service_role_key
+  const authHeader = req.headers.get('Authorization') || '';
+  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  if (!authHeader.includes(serviceKey)) {
+    return errorResponse('Forbidden: internal only', 403, req);
+  }
 
   try {
     const { payment_id, trigger_source } = await req.json();
-    if (!payment_id) return errorResponse('Missing payment_id', 400);
+    if (!payment_id) return errorResponse('Missing payment_id', 400, req);
 
     // Get payment record
     const { data: payment, error: payErr } = await supabaseAdmin
@@ -17,7 +33,12 @@ Deno.serve(async (req) => {
       .eq('id', payment_id)
       .single();
 
-    if (payErr || !payment) return errorResponse('Payment not found', 404);
+    if (payErr || !payment) return errorResponse('Payment not found', 404, req);
+
+    // תיקון 2: בדוק שהתשלום אכן הושלם לפני מימוש
+    if (payment.status !== 'completed') {
+      return errorResponse('Payment not completed', 400, req);
+    }
 
     const { product_type, product_id, customer_id } = payment;
     console.log(`[fulfillPayment] type=${product_type}, source=${trigger_source}`);
@@ -65,6 +86,11 @@ Deno.serve(async (req) => {
             .eq('id', item.data.landingPageId);
         }
       }
+
+    } else if (product_type === 'one-time' || product_type === 'logo') {
+      // One-time purchase (logo, digital asset, etc.) — mark payment as fulfilled
+      // No additional resource to provision; status update + confirmation email is sufficient
+      console.log(`One-time purchase fulfilled: type=${product_type}, payment=${payment_id}`);
     }
 
     // Log activity
@@ -80,14 +106,20 @@ Deno.serve(async (req) => {
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (resendApiKey && customer?.email) {
       try {
+        // תיקון XSS: escape כל ערך דינמי לפני הכנסה ל-HTML
+        const safeName = escapeHtml(customer.full_name || '');
+        const safeProductName = escapeHtml(payment.product_name || product_type);
+        const safeAmount = escapeHtml(String(payment.amount));
+        const safeCurrency = escapeHtml(payment.currency);
+
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${resendApiKey}` },
           body: JSON.stringify({
             from: 'One-Pai <no-reply@one-pai.com>',
             to: [customer.email],
-            subject: `תודה על הרכישה! - ${payment.product_name || product_type}`,
-            html: `<div dir="rtl" style="font-family:Arial,sans-serif;"><h2>תודה על הרכישה!</h2><p>שלום ${customer.full_name || ''},</p><p>הרכישה שלך בוצעה בהצלחה.</p><p><strong>מוצר:</strong> ${payment.product_name || product_type}</p><p><strong>סכום:</strong> ${payment.amount} ${payment.currency}</p></div>`
+            subject: `תודה על הרכישה! - ${safeProductName}`,
+            html: `<div dir="rtl" style="font-family:Arial,sans-serif;"><h2>תודה על הרכישה!</h2><p>שלום ${safeName},</p><p>הרכישה שלך בוצעה בהצלחה.</p><p><strong>מוצר:</strong> ${safeProductName}</p><p><strong>סכום:</strong> ${safeAmount} ${safeCurrency}</p></div>`
           })
         });
       } catch (e) { console.error('Email failed:', e); }
@@ -96,6 +128,6 @@ Deno.serve(async (req) => {
     return jsonResponse({ success: true, payment_id, product_type });
   } catch (error) {
     console.error('fulfillPayment error:', (error as Error).message);
-    return errorResponse((error as Error).message);
+    return errorResponse('שגיאה בעיבוד הבקשה', 500, req);
   }
 });

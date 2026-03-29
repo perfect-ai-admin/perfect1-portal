@@ -190,7 +190,7 @@ export default function LogoProjectPage() {
                 {message.text}
               </div>
               {message.action === 'buyCredits' && (
-                <a href="/credits" className="ml-2 underline hover:no-underline font-bold">Buy Credits →</a>
+                <a href="/CreditsPage" className="ml-2 underline hover:no-underline font-bold">Buy Credits →</a>
               )}
             </motion.div>
           )}

@@ -6,11 +6,18 @@ import { pagesConfig } from './pages.config'
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { SupabaseAuthProvider as AuthProvider, useAuth } from '@/lib/SupabaseAuthContext';
+
+// Dynamic route pages
+const GoalPage = React.lazy(() => import('@/pages/GoalPage'));
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import DigitalCard from './pages/DigitalBusinessCard';
 import { HelmetProvider } from 'react-helmet-async';
 import './portal/styles/portal.css';
+import { isClientSubdomain } from '@/utils/subdomain';
+
+// Lazy-load SubdomainPage — only loaded when accessing a client subdomain
+const SubdomainPage = React.lazy(() => import('@/pages/SubdomainPage'));
 
 const PortalHomePage = React.lazy(() => import('./portal/templates/PortalHomePage'));
 const CategoryHubPage = React.lazy(() => import('./portal/templates/CategoryHubPage'));
@@ -83,6 +90,11 @@ const AuthenticatedApp = () => {
             }
           />
         ))}
+        <Route path="/goal/:goalCode" element={
+          <LayoutWrapper currentPageName="GoalPage">
+            <GoalPage />
+          </LayoutWrapper>
+        } />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Suspense>
@@ -144,6 +156,18 @@ const AppRoutes = () => {
 
 
 function App() {
+  // If we're on a client subdomain (e.g., studio-dana.one-pai.com),
+  // render only the SubdomainPage — skip auth, layout, and normal routing.
+  if (isClientSubdomain()) {
+    return (
+      <QueryClientProvider client={queryClientInstance}>
+        <Suspense fallback={<PageLoader />}>
+          <SubdomainPage />
+        </Suspense>
+        <Toaster />
+      </QueryClientProvider>
+    );
+  }
 
   return (
     <AuthProvider>

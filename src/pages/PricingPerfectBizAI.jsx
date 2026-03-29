@@ -305,7 +305,7 @@ export default function PricingPerfectBizAI() {
 
   const handleTabChange = (tabId) => {
     // Navigate to dashboard with specific tab
-    navigate(`${createPageUrl('ClientDashboard')}?tab=${tabId}`);
+    navigate(`${createPageUrl('APP')}?tab=${tabId}`);
   };
 
   if (isLoading) {

@@ -109,7 +109,7 @@ export default function LogoThankYou() {
             <div className="border-t border-gray-100 pt-8">
               <h3 className="text-lg font-bold text-gray-900 mb-4 text-center">מה הצעד הבא?</h3>
               <div className="grid grid-cols-1 gap-3">
-                 <Link to={createPageUrl('ClientDashboard')} className="group block">
+                 <Link to={createPageUrl('APP')} className="group block">
                   <div className="bg-white border-2 border-gray-100 hover:border-blue-500 hover:shadow-lg transition-all rounded-xl p-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-colors">

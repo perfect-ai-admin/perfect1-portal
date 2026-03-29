@@ -74,7 +74,7 @@ export default function GoalPage() {
     return (
       <div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center justify-center gap-4">
         <p className="text-gray-600">לא נמצאה המטרה המבוקשת</p>
-        <Button onClick={() => navigate('/journey')}>חזור למסע</Button>
+        <Button onClick={() => navigate('/JourneyDashboard')}>חזור למסע</Button>
       </div>
     );
   }
@@ -98,7 +98,7 @@ export default function GoalPage() {
           >
             <Button
               variant="ghost"
-              onClick={() => navigate('/journey')}
+              onClick={() => navigate('/JourneyDashboard')}
               className="mb-4 text-[#1E3A5F]"
             >
               <ChevronRight className="ml-2 w-4 h-4" />

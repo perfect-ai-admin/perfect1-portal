@@ -196,10 +196,10 @@ export default function GoalMentorChat({ goalCode, goalData, customerGoalId, onG
             pointsEarned={100}
             nextGoalName="המטרה הבאה שלך"
             onContinue={() => {
-              window.location.href = '/journey';
+              window.location.href = '/JourneyDashboard';
             }}
             onLater={() => {
-              window.location.href = '/journey';
+              window.location.href = '/JourneyDashboard';
             }}
           />
         )}

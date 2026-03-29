@@ -293,7 +293,7 @@ export default function CheckoutSuccess() {
                         {/* CTA Buttons */}
                         <div className="flex flex-col gap-3">
                             <Button 
-                                onClick={() => navigate('/ClientDashboard')}
+                                onClick={() => navigate('/APP')}
                                 className="bg-[#27AE60] hover:bg-[#2ECC71] h-12 text-lg w-full"
                             >
                                 <Home className="w-5 h-5 ml-2" />
@@ -301,7 +301,7 @@ export default function CheckoutSuccess() {
                             </Button>
                             {details?.product_type === 'goal' && (
                                 <Button 
-                                    onClick={() => navigate('/ClientDashboard?tab=goals')}
+                                    onClick={() => navigate('/APP?tab=goals')}
                                     variant="outline"
                                     className="h-12"
                                 >

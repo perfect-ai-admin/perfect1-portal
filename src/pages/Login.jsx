@@ -17,7 +17,9 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const redirectTo = searchParams.get('returnTo') || searchParams.get('redirect') || searchParams.get('from_url') || '/APP';
+  const rawRedirect = searchParams.get('returnTo') || searchParams.get('redirect') || searchParams.get('from_url') || '/APP';
+  // If from_url is a full URL, extract just the pathname
+  const redirectTo = rawRedirect.startsWith('http') ? new URL(rawRedirect).pathname : rawRedirect;
 
   // If already logged in, redirect
   useEffect(() => {

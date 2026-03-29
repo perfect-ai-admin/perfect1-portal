@@ -41,7 +41,17 @@ Deno.serve(async (req) => {
 
     if (updateErr) return errorResponse(updateErr.message);
 
-    return jsonResponse({ success: true, page: updatedPage });
+    // Build subdomain URL
+    const subdomainUrl = updatedPage.subdomain
+      ? `https://${updatedPage.subdomain}.one-pai.com`
+      : null;
+
+    return jsonResponse({
+      success: true,
+      page: updatedPage,
+      url: subdomainUrl,
+      public_url: subdomainUrl,
+    });
   } catch (error) {
     console.error('publishLandingPage error:', (error as Error).message);
     return errorResponse((error as Error).message);

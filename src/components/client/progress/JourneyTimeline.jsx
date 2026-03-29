@@ -20,7 +20,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { entities, auth } from '@/api/supabaseClient';
+import { auth } from '@/api/supabaseClient';
+import { useBusinessJourney } from '@/components/hooks/useBusinessJourney';
 
 export default function JourneyTimeline({ onStartTask, onResetJourney }) {
   const navigate = useNavigate();
@@ -29,24 +30,12 @@ export default function JourneyTimeline({ onStartTask, onResetJourney }) {
     queryFn: async () => await auth.me(),
   });
 
-  // Fetch active journey from BusinessJourney entity (primary source)
-  const { data: activeJourney } = useQuery({
-    queryKey: ['businessJourney', 'active', user?.id],
-    queryFn: async () => {
-      if (!user?.id) return null;
-      const journeys = await entities.BusinessJourney.filter({ 
-        user_id: user.id, 
-        status: 'active' 
-      });
-      return journeys.length > 0 ? journeys[0] : null;
-    },
-    enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
-  });
+  // Fetch journey data from customers table (business_state, client_tasks)
+  const { data: activeJourney } = useBusinessJourney(user?.email);
 
-  // Primary: BusinessJourney entity tasks (only if non-empty), Fallback: User entity client_tasks
-  const clientTasks = (activeJourney?.tasks?.length > 0 ? activeJourney.tasks : null) || user?.client_tasks || [];
-  const businessState = activeJourney?.business_metrics || user?.business_state || {};
+  // Tasks from customers.client_tasks (set by analyzeBusinessJourney)
+  const clientTasks = activeJourney?.tasks || [];
+  const businessState = activeJourney?.business_state || {};
 
   // Map task to icon based on keywords
   const getIconForTask = (title) => {

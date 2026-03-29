@@ -8,6 +8,24 @@ import OpenAI from 'npm:openai';
 
 const openai = new OpenAI({ apiKey: Deno.env.get('OPENAI_API_KEY') });
 
+// Hebrew to Latin transliteration map for DNS-safe subdomain generation
+const hebrewMap: Record<string, string> = {
+  '\u05D0': 'a', '\u05D1': 'b', '\u05D2': 'g', '\u05D3': 'd', '\u05D4': 'h',
+  '\u05D5': 'v', '\u05D6': 'z', '\u05D7': 'ch', '\u05D8': 't', '\u05D9': 'y',
+  '\u05DA': 'k', '\u05DB': 'k', '\u05DC': 'l', '\u05DD': 'm', '\u05DE': 'm',
+  '\u05DF': 'n', '\u05E0': 'n', '\u05E1': 's', '\u05E2': 'a', '\u05E3': 'p',
+  '\u05E4': 'p', '\u05E5': 'tz', '\u05E6': 'tz', '\u05E7': 'k', '\u05E8': 'r',
+  '\u05E9': 'sh', '\u05EA': 't',
+};
+
+function transliterate(text: string): string {
+  let result = '';
+  for (const char of text) {
+    result += hebrewMap[char] || char;
+  }
+  return result;
+}
+
 // Build a slug from business name
 function buildSlug(name: string): string {
   const base = (name || 'page')
@@ -19,6 +37,37 @@ function buildSlug(name: string): string {
     .slice(0, 30) || 'page';
   const suffix = Math.random().toString(36).slice(2, 6);
   return `${base}-${suffix}`;
+}
+
+// Generate a DNS-safe subdomain from a business name
+function generateSubdomain(name: string): string {
+  const transliterated = transliterate(name);
+  return transliterated
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 63) || 'page';
+}
+
+// Ensure subdomain is unique across both tables
+async function ensureUniqueSubdomain(base: string): Promise<string> {
+  const { data: existingCard } = await supabaseAdmin
+    .from('digital_cards')
+    .select('id')
+    .eq('subdomain', base)
+    .maybeSingle();
+
+  const { data: existingPage } = await supabaseAdmin
+    .from('landing_pages')
+    .select('id')
+    .eq('subdomain', base)
+    .maybeSingle();
+
+  if (!existingCard && !existingPage) return base;
+
+  const suffix = Math.random().toString(36).slice(2, 5);
+  return `${base}-${suffix}`.slice(0, 63);
 }
 
 Deno.serve(async (req) => {
@@ -128,6 +177,8 @@ Colors: ${preferredColors || 'כחול ולבן'}
     }
 
     const slug = buildSlug(businessName || '');
+    const subdomainBase = generateSubdomain(businessName || '');
+    const subdomain = await ensureUniqueSubdomain(subdomainBase);
 
     // Determine lead channel settings
     const leadChannels: string[] = Array.isArray(ctaTypes) ? ctaTypes : [];
@@ -139,6 +190,7 @@ Colors: ${preferredColors || 'כחול ולבן'}
       .insert({
         customer_id: customer.id,
         slug,
+        subdomain,
         title: (aiContent.headline as string) || businessName || 'דף נחיתה',
         headline: (aiContent.headline as string) || '',
         sub_headline: (aiContent.sub_headline as string) || '',
