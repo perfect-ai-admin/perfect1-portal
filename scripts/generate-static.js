@@ -354,12 +354,49 @@ function generate() {
 // This ensures Vercel serves the SPA shell for non-portal routes
 function generateSPAFallbacks() {
   const spaRoutes = [
+    // Landing pages
     '/OsekPaturLanding',
     '/OsekPaturSteps',
+    '/open-osek-patur',
     '/ThankYou',
     '/DigitalCard',
+    // Auth
     '/login',
+    '/AgentLogin',
+    // App pages
     '/APP',
+    '/Home',
+    '/About',
+    '/Privacy',
+    '/Terms',
+    '/FAQ',
+    '/Pricing',
+    '/Features',
+    '/Summary',
+    '/Checkout',
+    '/CheckoutSuccess',
+    '/MyProducts',
+    '/Branding',
+    // Product pages
+    '/SmartLogo',
+    '/DigitalBusinessCard',
+    '/BrandedLandingPage',
+    '/BusinessPresentation',
+    '/BusinessSticker',
+    '/SocialDesigns',
+    '/AiMentor',
+    // Blog
+    '/blog/logo-leasek',
+    '/blog/kartis-bikur-digitali',
+    '/blog/daf-nchita',
+    '/blog/matzget-iskit',
+    '/blog/matzget-mashkiim',
+    '/blog/sticker-leasek',
+    // Admin / CRM
+    '/AdminDashboard',
+    '/AgentCRM',
+    '/AgentsManager',
+    '/LeadsAdmin',
     '/CRM',
     '/CRM/leads',
     '/CRM/dashboard',
