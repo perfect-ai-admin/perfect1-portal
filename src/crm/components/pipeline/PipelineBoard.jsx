@@ -15,7 +15,7 @@ export default function PipelineBoard() {
   const [filterTemperature, setFilterTemperature] = useState('all');
   const [search, setSearch] = useState('');
 
-  const { data: leads = [], isLoading } = usePipelineLeads({});
+  const { data: leads = [], isLoading, isError, error } = usePipelineLeads({});
   const { data: agents = [] } = useAgents();
   const updateStage = useUpdateLeadStage();
 
@@ -74,6 +74,17 @@ export default function PipelineBoard() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="w-8 h-8 border-4 border-slate-200 border-t-[#1E3A5F] rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-red-500 font-medium mb-2">שגיאה בטעינת לידים</p>
+          <p className="text-sm text-slate-500">{error?.message || 'נסה לרענן את הדף'}</p>
+        </div>
       </div>
     );
   }

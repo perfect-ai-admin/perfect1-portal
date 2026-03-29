@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Columns3, Users, ListTodo, Settings, ChevronRight, ChevronLeft,
-  Bell, Menu, X
+  Bell, Menu, X, LogOut
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { entities } from '@/api/supabaseClient';
+import { entities, supabase } from '@/api/supabaseClient';
 
 const NAV_ITEMS = [
   { to: '/CRM', label: 'Pipeline', icon: Columns3, exact: true },
@@ -19,7 +19,33 @@ const NAV_ITEMS = [
 export default function CRMLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Auth check — redirect to login if not authenticated
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate('/login?returnTo=/CRM', { replace: true });
+      } else {
+        setUser(session.user);
+        setAuthChecked(true);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate('/login?returnTo=/CRM', { replace: true });
+      } else {
+        setUser(session.user);
+        setAuthChecked(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['crm-notifications-unread'],
@@ -31,6 +57,22 @@ export default function CRMLayout() {
   });
 
   const unreadCount = notifications.length;
+
+  if (!authChecked) {
+    return (
+      <div dir="rtl" className="flex items-center justify-center h-screen bg-slate-50">
+        <div className="text-center">
+          <div className="w-10 h-10 border-4 border-slate-200 border-t-[#1E3A5F] rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-500">מתחבר למערכת...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
 
   const SidebarContent = () => (
     <nav className="flex flex-col gap-1 p-3">
@@ -116,6 +158,9 @@ export default function CRMLayout() {
           </div>
 
           <div className="flex items-center gap-2">
+            {user && (
+              <span className="text-xs text-slate-500 hidden sm:block">{user.email}</span>
+            )}
             <Button variant="ghost" size="icon" className="relative h-8 w-8">
               <Bell size={18} />
               {unreadCount > 0 && (
@@ -123,6 +168,9 @@ export default function CRMLayout() {
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleLogout} title="התנתק">
+              <LogOut size={16} />
             </Button>
           </div>
         </header>
