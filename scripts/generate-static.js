@@ -361,6 +361,10 @@ function generateSPAFallbacks() {
     '/login',
     '/APP',
     '/CRM',
+    '/CRM/leads',
+    '/CRM/dashboard',
+    '/CRM/tasks',
+    '/CRM/settings',
   ];
 
   const baseHtml = getBaseHtml();
