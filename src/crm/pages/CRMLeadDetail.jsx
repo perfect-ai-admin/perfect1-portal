@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import {
   ArrowRight, Phone, MessageCircle, StickyNote, ListTodo,
-  User, Clock, Tag, MapPin, Briefcase, Calendar
+  User, Clock, Tag, MapPin, Briefcase, Calendar, Trash2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -21,6 +21,7 @@ import CommLogger from '../components/communications/CommLogger';
 import TaskList from '../components/tasks/TaskList';
 import TaskForm from '../components/tasks/TaskForm';
 
+import DeleteLeadDialog from '../components/DeleteLeadDialog';
 import { useLeadDetail, useUpdateLeadStage, useAgents, useServiceCatalog } from '../hooks/useCRM';
 import { PIPELINE_STAGES, TEMPERATURE_OPTIONS } from '../constants/pipeline';
 
@@ -30,6 +31,7 @@ export default function CRMLeadDetail() {
   const [showCommLogger, setShowCommLogger] = useState(false);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [showLostDialog, setShowLostDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [pendingStage, setPendingStage] = useState(null);
 
   const { data, isLoading, error } = useLeadDetail(id);
@@ -142,6 +144,14 @@ export default function CRMLeadDetail() {
           <Button size="sm" variant="outline" onClick={() => setShowTaskForm(!showTaskForm)}>
             <ListTodo size={14} className="ml-1" /> משימה
           </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-red-500 border-red-200 hover:bg-red-50"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            <Trash2 size={14} className="ml-1" /> מחק
+          </Button>
         </div>
       </div>
 
@@ -162,6 +172,32 @@ export default function CRMLeadDetail() {
                       {s.label}
                     </span>
                   </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Agent selector */}
+          <div className="bg-white rounded-lg border border-slate-200 p-4">
+            <h3 className="text-sm font-medium text-slate-500 mb-2">שיוך נציג</h3>
+            <Select
+              value={lead.agent_id || ''}
+              onValueChange={(newAgentId) => {
+                updateStage.mutate(
+                  { lead_id: id, new_stage: lead.pipeline_stage, agent_id: newAgentId },
+                  {
+                    onSuccess: () => toast.success('הנציג עודכן'),
+                    onError: (err) => toast.error(`שגיאה: ${err.message}`),
+                  }
+                );
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="בחר נציג..." />
+              </SelectTrigger>
+              <SelectContent>
+                {agents.map(a => (
+                  <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -263,6 +299,14 @@ export default function CRMLeadDetail() {
         onOpenChange={setShowLostDialog}
         onConfirm={handleLostConfirm}
         isLoading={updateStage.isPending}
+      />
+
+      {/* Delete Dialog */}
+      <DeleteLeadDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        lead={lead}
+        onDeleted={() => navigate('/CRM')}
       />
     </div>
   );

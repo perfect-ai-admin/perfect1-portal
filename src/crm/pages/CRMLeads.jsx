@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Search, Download, Filter, ChevronDown, ChevronUp
+  Search, Download, ChevronDown, ChevronUp, UserPlus, Trash2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -13,7 +13,9 @@ import { he } from 'date-fns/locale';
 import StatusBadge from '../components/shared/StatusBadge';
 import TemperatureBadge from '../components/shared/TemperatureBadge';
 import SLAIndicator from '../components/shared/SLAIndicator';
-import { usePipelineLeads, useAgents, useUpdateLeadStage } from '../hooks/useCRM';
+import CreateLeadDialog from '../components/CreateLeadDialog';
+import DeleteLeadDialog from '../components/DeleteLeadDialog';
+import { usePipelineLeads, useAgents, useUpdateLeadStage, useBulkAction, useExportLeads } from '../hooks/useCRM';
 import { PIPELINE_STAGES, TEMPERATURE_OPTIONS } from '../constants/pipeline';
 import { toast } from 'sonner';
 
@@ -27,10 +29,16 @@ export default function CRMLeads() {
   const [sortAsc, setSortAsc] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [bulkAgent, setBulkAgent] = useState('');
+  const [bulkStage, setBulkStage] = useState('');
+  const [bulkTemp, setBulkTemp] = useState('');
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: leads = [], isLoading } = usePipelineLeads({});
   const { data: agents = [] } = useAgents();
   const updateStage = useUpdateLeadStage();
+  const bulkAction = useBulkAction();
+  const exportLeads = useExportLeads();
 
   // Filter + sort
   const filtered = useMemo(() => {
@@ -86,16 +94,61 @@ export default function CRMLeads() {
 
   const handleBulkAssign = async () => {
     if (!bulkAgent || selectedIds.size === 0) return;
-    for (const id of selectedIds) {
-      await updateStage.mutateAsync({
-        lead_id: id,
-        new_stage: leads.find(l => l.id === id)?.pipeline_stage || 'new_lead',
-        agent_id: bulkAgent,
-      });
-    }
-    toast.success(`${selectedIds.size} לידים שויכו`);
-    setSelectedIds(new Set());
-    setBulkAgent('');
+    bulkAction.mutate(
+      { action: 'assign_agent', lead_ids: [...selectedIds], agent_id: bulkAgent },
+      {
+        onSuccess: () => {
+          toast.success(`${selectedIds.size} לידים שויכו`);
+          setSelectedIds(new Set());
+          setBulkAgent('');
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
+
+  const handleBulkStage = () => {
+    if (!bulkStage || selectedIds.size === 0) return;
+    bulkAction.mutate(
+      { action: 'change_stage', lead_ids: [...selectedIds], new_stage: bulkStage },
+      {
+        onSuccess: () => {
+          toast.success(`שלב עודכן ל-${selectedIds.size} לידים`);
+          setSelectedIds(new Set());
+          setBulkStage('');
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
+
+  const handleBulkTemp = () => {
+    if (!bulkTemp || selectedIds.size === 0) return;
+    bulkAction.mutate(
+      { action: 'change_temperature', lead_ids: [...selectedIds], temperature: bulkTemp },
+      {
+        onSuccess: () => {
+          toast.success(`טמפרטורה עודכנה ל-${selectedIds.size} לידים`);
+          setSelectedIds(new Set());
+          setBulkTemp('');
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.size === 0) return;
+    bulkAction.mutate(
+      { action: 'delete', lead_ids: [...selectedIds] },
+      {
+        onSuccess: () => {
+          toast.success(`${selectedIds.size} לידים נמחקו`);
+          setSelectedIds(new Set());
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
   };
 
   const SortIcon = ({ field }) => {
@@ -104,18 +157,12 @@ export default function CRMLeads() {
   };
 
   const handleExport = () => {
-    const headers = ['שם', 'טלפון', 'אימייל', 'שלב', 'טמפרטורה', 'נציג', 'תאריך'];
-    const rows = filtered.map(l => [
-      l.name, l.phone, l.email, l.pipeline_stage, l.temperature, l.agent_name, l.created_at
-    ]);
-    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `crm-leads-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    exportLeads.mutate(
+      { stage: filterStage !== 'all' ? filterStage : undefined },
+      {
+        onError: (err) => toast.error(`שגיאה בייצוא: ${err.message}`),
+      }
+    );
   };
 
   if (isLoading) {
@@ -130,9 +177,14 @@ export default function CRMLeads() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#1E3A5F]">לידים ({filtered.length})</h1>
-        <Button variant="outline" size="sm" onClick={handleExport}>
-          <Download size={14} className="ml-1" /> ייצוא CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={handleExport} disabled={exportLeads.isPending}>
+            <Download size={14} className="ml-1" /> {exportLeads.isPending ? 'מייצא...' : 'ייצוא CSV'}
+          </Button>
+          <Button size="sm" onClick={() => setShowCreateDialog(true)} className="bg-[#1E3A5F] hover:bg-[#16324f]">
+            <UserPlus size={14} className="ml-1" /> ליד חדש
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -177,20 +229,56 @@ export default function CRMLeads() {
 
       {/* Bulk actions */}
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-          <span className="text-sm font-medium">{selectedIds.size} נבחרו</span>
+        <div className="flex flex-wrap items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <span className="text-sm font-semibold text-blue-800 ml-1">{selectedIds.size} נבחרו</span>
+
           <Select value={bulkAgent} onValueChange={setBulkAgent}>
-            <SelectTrigger className="w-[160px]"><SelectValue placeholder="שייך לנציג..." /></SelectTrigger>
+            <SelectTrigger className="w-[150px] h-8 text-xs"><SelectValue placeholder="שייך לנציג..." /></SelectTrigger>
             <SelectContent>
               {agents.map(a => (
                 <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Button size="sm" onClick={handleBulkAssign} disabled={!bulkAgent}>
+          <Button size="sm" className="h-8 text-xs" onClick={handleBulkAssign} disabled={!bulkAgent || bulkAction.isPending}>
             שייך
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+
+          <Select value={bulkStage} onValueChange={setBulkStage}>
+            <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue placeholder="שנה שלב..." /></SelectTrigger>
+            <SelectContent>
+              {PIPELINE_STAGES.map(s => (
+                <SelectItem key={s.slug} value={s.slug}>{s.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button size="sm" className="h-8 text-xs" onClick={handleBulkStage} disabled={!bulkStage || bulkAction.isPending}>
+            עדכן שלב
+          </Button>
+
+          <Select value={bulkTemp} onValueChange={setBulkTemp}>
+            <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder="טמפרטורה..." /></SelectTrigger>
+            <SelectContent>
+              {TEMPERATURE_OPTIONS.map(t => (
+                <SelectItem key={t.value} value={t.value}>{t.emoji} {t.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button size="sm" className="h-8 text-xs" onClick={handleBulkTemp} disabled={!bulkTemp || bulkAction.isPending}>
+            עדכן
+          </Button>
+
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 text-xs text-red-500 border-red-200 hover:bg-red-50"
+            onClick={handleBulkDelete}
+            disabled={bulkAction.isPending}
+          >
+            <Trash2 size={12} className="ml-1" /> מחק
+          </Button>
+
+          <Button size="sm" variant="ghost" className="h-8 text-xs" onClick={() => setSelectedIds(new Set())}>
             בטל
           </Button>
         </div>
@@ -252,6 +340,16 @@ export default function CRMLeads() {
           <div className="text-center py-8 text-slate-400">אין לידים מתאימים</div>
         )}
       </div>
+
+      <CreateLeadDialog open={showCreateDialog} onOpenChange={setShowCreateDialog} />
+      {deleteTarget && (
+        <DeleteLeadDialog
+          open={!!deleteTarget}
+          onOpenChange={(v) => !v && setDeleteTarget(null)}
+          lead={deleteTarget}
+          onDeleted={() => setDeleteTarget(null)}
+        />
+      )}
     </div>
   );
 }

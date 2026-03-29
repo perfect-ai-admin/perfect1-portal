@@ -2,8 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCRMDashboard } from '../hooks/useCRM';
 import { STAGE_MAP, OPEN_STAGES } from '../constants/pipeline';
+import { format } from 'date-fns';
+import { he } from 'date-fns/locale';
 import {
-  Users, TrendingUp, AlertTriangle, CheckCircle, Clock, UserX
+  Users, TrendingUp, AlertTriangle, CheckCircle, Clock, UserX, Activity
 } from 'lucide-react';
 
 export default function CRMDashboard() {
@@ -20,7 +22,7 @@ export default function CRMDashboard() {
 
   if (!data) return null;
 
-  const { kpis, stage_counts, top_agents, today_tasks } = data;
+  const { kpis, stage_counts, top_agents, today_tasks, recent_activity } = data;
 
   return (
     <div className="space-y-6">
@@ -144,6 +146,51 @@ export default function CRMDashboard() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* Recent Activity */}
+      <div className="bg-white rounded-lg border border-slate-200 p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Activity size={16} className="text-slate-400" />
+          <h2 className="text-sm font-medium text-slate-500">פעילות אחרונה</h2>
+        </div>
+        {(recent_activity || []).length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-4">אין פעילות אחרונה</p>
+        ) : (
+          <div className="space-y-2">
+            {(recent_activity || []).slice(0, 10).map((item, i) => {
+              const fromStage = item.from_stage ? STAGE_MAP[item.from_stage] : null;
+              const toStage = item.to_stage ? STAGE_MAP[item.to_stage] : null;
+              return (
+                <div
+                  key={item.id || i}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer"
+                  onClick={() => item.lead_id && navigate(`/CRM/leads/${item.lead_id}`)}
+                >
+                  <div className="w-2 h-2 rounded-full flex-shrink-0 bg-slate-300" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-slate-700 truncate">
+                      <span className="font-medium">{item.lead_name || 'ליד'}</span>
+                      {fromStage && toStage && (
+                        <span className="text-slate-400 mx-1">
+                          עבר מ-{fromStage.label} ← {toStage.label}
+                        </span>
+                      )}
+                      {item.agent_name && (
+                        <span className="text-xs text-slate-400"> ע"י {item.agent_name}</span>
+                      )}
+                    </p>
+                  </div>
+                  <span className="text-xs text-slate-400 flex-shrink-0">
+                    {item.created_at
+                      ? format(new Date(item.created_at), 'dd/MM HH:mm', { locale: he })
+                      : ''}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
