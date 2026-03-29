@@ -67,7 +67,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://perfect-dashboard.com/APP',
+        redirectTo: `${window.location.origin}${redirectTo}`,
       }
     });
     if (error) setError(error.message);
