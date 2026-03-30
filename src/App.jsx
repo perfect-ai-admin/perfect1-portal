@@ -45,6 +45,7 @@ const OpenOsekPatur = lazyWithRetry(() => import('./pages/OpenOsekPatur'));
 const ThankYou = lazyWithRetry(() => import('./pages/ThankYou'));
 const PaturVsMursheLanding = lazyWithRetry(() => import('./pages/PaturVsMursheLanding'));
 const PaturVsMursheQuiz = lazyWithRetry(() => import('./pages/PaturVsMursheQuiz'));
+const AccountantLanding = lazyWithRetry(() => import('./pages/AccountantLanding'));
 
 // Shared public pages (available on both domains)
 const About = lazyWithRetry(() => import('./pages/About'));
@@ -143,6 +144,7 @@ const PortalRoutes = () => (
     <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
     <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
     <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
+    <Route path="/accountant-osek-patur" element={<Suspense fallback={<PageLoader />}><AccountantLanding /></Suspense>} />
     <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
 
     {/* Portal public pages */}
@@ -215,6 +217,7 @@ const DevRoutes = () => (
     <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
     <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
     <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
+    <Route path="/accountant-osek-patur" element={<Suspense fallback={<PageLoader />}><AccountantLanding /></Suspense>} />
     <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
 
     {/* Portal public pages */}
