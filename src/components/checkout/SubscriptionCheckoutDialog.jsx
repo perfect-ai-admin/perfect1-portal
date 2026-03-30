@@ -192,6 +192,8 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
         iframeParams.set('recur_start_date', recurStartDate);
       }
       const iframeUrl = `https://direct.tranzila.com/${data.supplier}/newiframe.php?${iframeParams.toString()}`;
+      console.log('[Tranzila] iframe URL:', iframeUrl);
+      console.log('[Tranzila] data from server:', JSON.stringify(data));
       setHandshakeData({ ...data, paymentId: data.paymentId, iframeUrl });
       setPaymentStep('payment');
       setIframeLoading(false);
