@@ -2,9 +2,12 @@ import React from 'react';
 import Header from '@/components/marketing/Header';
 import Footer from '@/components/marketing/Footer';
 import SEOHead from '@/components/seo/SEOHead';
+import PortalLeadForm from '@/portal/components/PortalLeadForm';
+import WhatsAppButton from '@/portal/components/WhatsAppButton';
 import { getSignupUrl } from '@/components/utils/tracking';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PORTAL_CTA } from '@/portal/config/navigation';
 
 /**
  * ArticleLayout - Shared layout for SEO blog articles
@@ -100,20 +103,41 @@ export default function ArticleLayout({
           </section>
         )}
 
+        {/* Lead Form */}
+        <section id="portal-lead-form" className="py-16 bg-gray-50">
+          <div className="max-w-2xl mx-auto px-4">
+            <PortalLeadForm
+              sourcePage={`blog-${canonical || 'article'}`}
+              title="רוצה ייעוץ אישי?"
+              subtitle="השאר פרטים ומומחה יחזור אליך עם תשובות מותאמות"
+              ctaText="שלח פרטים וקבל ייעוץ חינם"
+            />
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="py-16 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-center">
           <div className="max-w-3xl mx-auto px-4">
             <h2 className="text-3xl font-black mb-6">{ctaText || 'מוכנים להתחיל?'}</h2>
-            <a href={SIGNUP_URL}>
-              <Button className="h-14 px-10 text-lg rounded-2xl bg-white text-violet-700 hover:bg-gray-50 shadow-xl font-bold">
-                התחל עכשיו בחינם
-                <ArrowLeft className="mr-2 h-5 w-5" />
-              </Button>
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href={SIGNUP_URL}>
+                <Button className="h-14 px-10 text-lg rounded-2xl bg-white text-violet-700 hover:bg-gray-50 shadow-xl font-bold w-full sm:w-auto">
+                  התחל עכשיו בחינם
+                  <ArrowLeft className="mr-2 h-5 w-5" />
+                </Button>
+              </a>
+              <a href={`tel:${PORTAL_CTA.phone}`}>
+                <Button variant="outline" className="h-14 px-8 text-lg rounded-2xl border-2 border-white text-white hover:bg-white/10 font-bold w-full sm:w-auto">
+                  <Phone className="ml-2 h-5 w-5" />
+                  שיחה עם נציג
+                </Button>
+              </a>
+            </div>
           </div>
         </section>
       </main>
       <Footer />
+      <WhatsAppButton />
     </>
   );
 }

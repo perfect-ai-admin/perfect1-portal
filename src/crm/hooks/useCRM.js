@@ -1,12 +1,66 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { invokeFunction, entities, supabase, supabaseAdmin } from '@/api/supabaseClient';
 
-// ---- Queries ----
+// ---- Queries (direct DB via supabaseAdmin) ----
 
 export function usePipelineLeads(filters = {}) {
   return useQuery({
     queryKey: ['crm-leads', filters],
-    queryFn: () => invokeFunction('crmListLeads', filters),
+    queryFn: async () => {
+      let query = supabaseAdmin
+        .from('leads')
+        .select('*')
+        .eq('source', 'sales_portal')
+        .order('created_at', { ascending: false })
+        .limit(500);
+
+      if (filters.pipeline_stage && filters.pipeline_stage !== 'all') {
+        query = query.eq('pipeline_stage', filters.pipeline_stage);
+      }
+      if (filters.agent_id && filters.agent_id !== 'all') {
+        query = query.eq('agent_id', filters.agent_id);
+      }
+      if (filters.search) {
+        query = query.or(`name.ilike.%${filters.search}%,phone.ilike.%${filters.search}%,email.ilike.%${filters.search}%`);
+      }
+
+      const { data: leads, error } = await query;
+      if (error) throw new Error(error.message);
+
+      // Fetch agents for joining
+      const { data: agents } = await supabaseAdmin
+        .from('ai_agents')
+        .select('id, name')
+        .eq('source', 'sales_portal');
+
+      const agentMap = {};
+      (agents || []).forEach(a => { agentMap[a.id] = a.name; });
+
+      // Fetch last note per lead
+      const leadIds = (leads || []).map(l => l.id);
+      const noteMap = {};
+      if (leadIds.length > 0) {
+        const { data: notes } = await supabaseAdmin
+          .from('communications')
+          .select('lead_id, content')
+          .in('lead_id', leadIds)
+          .eq('channel', 'note')
+          .eq('source', 'sales_portal')
+          .order('created_at', { ascending: false });
+
+        (notes || []).forEach(n => {
+          if (!noteMap[n.lead_id] && n.content) {
+            noteMap[n.lead_id] = n.content;
+          }
+        });
+      }
+
+      return (leads || []).map(lead => ({
+        ...lead,
+        agent_name: lead.agent_id ? agentMap[lead.agent_id] || null : null,
+        last_note: noteMap[lead.id] || null,
+      }));
+    },
     refetchInterval: 30000,
   });
 }
@@ -14,7 +68,40 @@ export function usePipelineLeads(filters = {}) {
 export function useLeadDetail(leadId) {
   return useQuery({
     queryKey: ['crm-lead', leadId],
-    queryFn: () => invokeFunction('crmGetLead', { lead_id: leadId }),
+    queryFn: async () => {
+      // Fetch lead
+      const { data: lead, error: leadErr } = await supabaseAdmin
+        .from('leads')
+        .select('*')
+        .eq('id', leadId)
+        .eq('source', 'sales_portal')
+        .single();
+      if (leadErr || !lead) throw new Error(leadErr?.message || 'Lead not found');
+
+      // Fetch related data in parallel
+      const [commsResult, tasksResult, historyResult, agentResult] = await Promise.all([
+        supabaseAdmin.from('communications').select('*')
+          .eq('lead_id', leadId).eq('source', 'sales_portal')
+          .order('created_at', { ascending: false }),
+        supabaseAdmin.from('tasks').select('*')
+          .eq('lead_id', leadId).eq('source', 'sales_portal')
+          .order('due_date', { ascending: true }),
+        supabaseAdmin.from('status_history').select('*')
+          .eq('entity_type', 'lead').eq('entity_id', leadId).eq('source', 'sales_portal')
+          .order('created_at', { ascending: false }),
+        lead.agent_id
+          ? supabaseAdmin.from('ai_agents').select('id, name, phone, email').eq('id', lead.agent_id).single()
+          : Promise.resolve({ data: null }),
+      ]);
+
+      return {
+        lead,
+        agent: agentResult.data || null,
+        communications: commsResult.data || [],
+        tasks: tasksResult.data || [],
+        status_history: historyResult.data || [],
+      };
+    },
     enabled: !!leadId,
   });
 }
@@ -22,7 +109,76 @@ export function useLeadDetail(leadId) {
 export function useCRMDashboard() {
   return useQuery({
     queryKey: ['crm-dashboard'],
-    queryFn: () => invokeFunction('crmGetDashboard', {}),
+    queryFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayISO = today.toISOString();
+      const now = new Date().toISOString();
+
+      const { data: allLeads } = await supabaseAdmin
+        .from('leads')
+        .select('id, pipeline_stage, temperature, agent_id, sla_deadline, created_at, converted_at, estimated_value, contact_attempts')
+        .eq('source', 'sales_portal')
+        .limit(2000);
+
+      const leads = allLeads || [];
+      const closedStages = ['converted', 'not_interested', 'disqualified', 'duplicate', 'spam'];
+
+      const stageCounts = {};
+      leads.forEach(l => {
+        const stage = l.pipeline_stage || 'new_lead';
+        stageCounts[stage] = (stageCounts[stage] || 0) + 1;
+      });
+
+      const newToday = leads.filter(l => l.created_at >= todayISO).length;
+      const converted = leads.filter(l => l.pipeline_stage === 'converted').length;
+      const activeLeads = leads.filter(l => !closedStages.includes(l.pipeline_stage));
+      const slaBreaches = activeLeads.filter(l => l.sla_deadline && l.sla_deadline < now).length;
+      const noActivity = activeLeads.filter(l => (l.contact_attempts || 0) === 0).length;
+      const totalProcessed = leads.filter(l => closedStages.includes(l.pipeline_stage)).length;
+      const conversionRate = totalProcessed > 0 ? Math.round((converted / totalProcessed) * 100) : 0;
+
+      // Agent performance
+      const agentStats = {};
+      leads.forEach(l => {
+        if (!l.agent_id) return;
+        if (!agentStats[l.agent_id]) agentStats[l.agent_id] = { total: 0, active: 0, converted: 0 };
+        agentStats[l.agent_id].total++;
+        if (!closedStages.includes(l.pipeline_stage)) agentStats[l.agent_id].active++;
+        if (l.pipeline_stage === 'converted') agentStats[l.agent_id].converted++;
+      });
+
+      const { data: agents } = await supabaseAdmin
+        .from('ai_agents').select('id, name').eq('source', 'sales_portal');
+      const agentMap = {};
+      (agents || []).forEach(a => { agentMap[a.id] = a.name; });
+
+      const topAgents = Object.entries(agentStats)
+        .map(([id, stats]) => ({ id, name: agentMap[id] || 'לא ידוע', ...stats }))
+        .sort((a, b) => b.converted - a.converted)
+        .slice(0, 5);
+
+      const { data: todayTasks } = await supabaseAdmin
+        .from('tasks').select('id, title, lead_id, assigned_to, priority, due_date')
+        .eq('source', 'sales_portal').eq('status', 'pending')
+        .lte('due_date', new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString())
+        .order('due_date', { ascending: true }).limit(20);
+
+      return {
+        kpis: {
+          new_today: newToday,
+          active_leads: activeLeads.length,
+          converted,
+          conversion_rate: conversionRate,
+          sla_breaches: slaBreaches,
+          no_activity: noActivity,
+          total_leads: leads.length,
+        },
+        stage_counts: stageCounts,
+        top_agents: topAgents,
+        today_tasks: todayTasks || [],
+      };
+    },
     refetchInterval: 60000,
   });
 }
@@ -48,29 +204,27 @@ export function useLostReasons() {
   });
 }
 
-// ---- Mutations (direct DB via admin client — bypasses Edge Functions CORS) ----
+// ---- Mutations (direct DB via supabaseAdmin) ----
 
 export function useUpdateLeadStage() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (payload) => {
-      const { lead_id, new_stage, change_reason, lost_reason_id, lost_reason_note, follow_up_date } = payload;
+      const { lead_id, new_stage, change_reason, lost_reason_id, lost_reason_note, follow_up_date, agent_id } = payload;
 
-      // Get current lead
       const { data: lead, error: getErr } = await supabaseAdmin
         .from('leads')
         .select('pipeline_stage')
         .eq('id', lead_id)
         .eq('source', 'sales_portal')
         .single();
-      if (getErr || !lead) throw new Error('ליד לא נמצא');
+      if (getErr || !lead) throw new Error(getErr?.message || 'ליד לא נמצא');
 
       const old_stage = lead.pipeline_stage;
       const closedStages = ['not_interested', 'disqualified', 'duplicate', 'spam', 'converted'];
       const newStatus = new_stage === 'converted' ? 'converted'
         : closedStages.includes(new_stage) ? 'closed' : 'active';
 
-      // Update lead
       const updates = {
         pipeline_stage: new_stage,
         status: newStatus,
@@ -81,6 +235,7 @@ export function useUpdateLeadStage() {
       if (new_stage === 'converted') updates.converted_at = new Date().toISOString();
       if (new_stage === 'spam') updates.is_spam = true;
       if (lost_reason_note) updates.lost_reason_note = lost_reason_note;
+      if (agent_id !== undefined) updates.agent_id = agent_id || null;
 
       const { error: updateErr } = await supabaseAdmin
         .from('leads')
@@ -89,8 +244,8 @@ export function useUpdateLeadStage() {
         .eq('source', 'sales_portal');
       if (updateErr) throw new Error(updateErr.message);
 
-      // Write status history
-      await supabaseAdmin.from('status_history').insert({
+      // Write status history (non-blocking)
+      supabaseAdmin.from('status_history').insert({
         entity_type: 'lead',
         entity_id: lead_id,
         old_stage,
@@ -100,7 +255,7 @@ export function useUpdateLeadStage() {
         change_reason: change_reason || null,
         source: 'sales_portal',
         metadata: { lost_reason_id, lost_reason_note, follow_up_date },
-      });
+      }).then(({ error }) => { if (error) console.warn('status_history:', error.message); });
 
       return { success: true, new_stage };
     },
@@ -115,7 +270,25 @@ export function useUpdateLeadStage() {
 export function useCreateLead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload) => invokeFunction('crmCreateLead', payload),
+    mutationFn: async (payload) => {
+      const { data, error } = await supabaseAdmin
+        .from('leads')
+        .insert({
+          name: payload.name || null,
+          phone: payload.phone || null,
+          email: payload.email || null,
+          service_type: payload.service_type || null,
+          pipeline_stage: 'new_lead',
+          status: 'active',
+          source: 'sales_portal',
+          lead_source: payload.lead_source || 'manual',
+          notes: payload.notes || null,
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['crm-leads'] });
       qc.invalidateQueries({ queryKey: ['crm-dashboard'] });
@@ -129,40 +302,29 @@ export function useDeleteLead() {
     mutationFn: async (payload) => {
       const { lead_id, hard_delete } = payload;
 
-      // Verify lead exists
       const { data: lead, error: getErr } = await supabaseAdmin
         .from('leads')
         .select('id, pipeline_stage')
         .eq('id', lead_id)
         .eq('source', 'sales_portal')
         .single();
-      if (getErr || !lead) throw new Error('ליד לא נמצא');
+      if (getErr || !lead) throw new Error(getErr?.message || 'ליד לא נמצא');
 
       if (hard_delete) {
-        // Delete related data first
-        await supabaseAdmin.from('communications').delete().eq('lead_id', lead_id).eq('source', 'sales_portal');
-        await supabaseAdmin.from('tasks').delete().eq('lead_id', lead_id).eq('source', 'sales_portal');
-        await supabaseAdmin.from('status_history').delete().eq('entity_id', lead_id).eq('entity_type', 'lead').eq('source', 'sales_portal');
-        // Delete the lead
+        await Promise.allSettled([
+          supabaseAdmin.from('communications').delete().eq('lead_id', lead_id).eq('source', 'sales_portal'),
+          supabaseAdmin.from('tasks').delete().eq('lead_id', lead_id).eq('source', 'sales_portal'),
+          supabaseAdmin.from('status_history').delete().eq('entity_id', lead_id).eq('entity_type', 'lead').eq('source', 'sales_portal'),
+        ]);
         const { error } = await supabaseAdmin.from('leads').delete().eq('id', lead_id).eq('source', 'sales_portal');
         if (error) throw new Error(error.message);
       } else {
-        // Soft delete
         const { error } = await supabaseAdmin
           .from('leads')
           .update({ pipeline_stage: 'disqualified', status: 'closed', updated_at: new Date().toISOString(), sla_deadline: null })
           .eq('id', lead_id)
           .eq('source', 'sales_portal');
         if (error) throw new Error(error.message);
-
-        await supabaseAdmin.from('status_history').insert({
-          entity_type: 'lead',
-          entity_id: lead_id,
-          old_stage: lead.pipeline_stage,
-          new_stage: 'disqualified',
-          change_reason: 'נמחק מה-CRM',
-          source: 'sales_portal',
-        });
       }
 
       return { success: true, deleted: lead_id };
@@ -205,11 +367,12 @@ export function useBulkAction() {
           .eq('source', 'sales_portal');
         if (error) throw new Error(error.message);
       } else if (action === 'delete') {
-        const { error } = await supabaseAdmin
-          .from('leads')
-          .update({ pipeline_stage: 'disqualified', status: 'closed', updated_at: new Date().toISOString(), sla_deadline: null })
-          .in('id', lead_ids)
-          .eq('source', 'sales_portal');
+        await Promise.allSettled([
+          supabaseAdmin.from('communications').delete().in('lead_id', lead_ids).eq('source', 'sales_portal'),
+          supabaseAdmin.from('tasks').delete().in('lead_id', lead_ids).eq('source', 'sales_portal'),
+          supabaseAdmin.from('status_history').delete().in('entity_id', lead_ids).eq('entity_type', 'lead').eq('source', 'sales_portal'),
+        ]);
+        const { error } = await supabaseAdmin.from('leads').delete().in('id', lead_ids).eq('source', 'sales_portal');
         if (error) throw new Error(error.message);
       }
 
@@ -225,21 +388,26 @@ export function useBulkAction() {
 export function useExportLeads() {
   return useMutation({
     mutationFn: async (filters) => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      const res = await fetch(
-        `https://fnsnnezhikgqajdbtwoa.supabase.co/functions/v1/crmExportLeads`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(filters || {}),
-        }
-      );
-      if (!res.ok) throw new Error('Export failed');
-      const blob = await res.blob();
+      // Export directly from DB
+      let query = supabaseAdmin
+        .from('leads')
+        .select('name, phone, email, pipeline_stage, status, service_type, lead_source, notes, created_at, updated_at')
+        .eq('source', 'sales_portal')
+        .order('created_at', { ascending: false });
+
+      if (filters?.stage) query = query.eq('pipeline_stage', filters.stage);
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+
+      // Build CSV
+      const headers = ['שם', 'טלפון', 'אימייל', 'שלב', 'סטטוס', 'סוג שירות', 'מקור', 'הערות', 'נוצר', 'עודכן'];
+      const rows = (data || []).map(l => [
+        l.name, l.phone, l.email, l.pipeline_stage, l.status,
+        l.service_type, l.lead_source, l.notes, l.created_at, l.updated_at,
+      ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`).join(','));
+
+      const csv = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -272,7 +440,6 @@ export function useAddCommunication() {
         .single();
       if (error) throw new Error(error.message);
 
-      // Update lead timestamp
       if (payload.lead_id) {
         await supabaseAdmin
           .from('leads')
@@ -293,7 +460,24 @@ export function useAddCommunication() {
 export function useAddTask() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload) => invokeFunction('crmAddTask', payload),
+    mutationFn: async (payload) => {
+      const { data, error } = await supabaseAdmin
+        .from('tasks')
+        .insert({
+          title: payload.title,
+          description: payload.description || null,
+          task_type: payload.task_type || 'general',
+          lead_id: payload.lead_id || null,
+          priority: payload.priority || 'medium',
+          status: 'pending',
+          due_date: payload.due_date || null,
+          source: 'sales_portal',
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
     onSuccess: (_, variables) => {
       qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
       qc.invalidateQueries({ queryKey: ['crm-tasks'] });
@@ -304,7 +488,15 @@ export function useAddTask() {
 export function useCompleteTask() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload) => invokeFunction('crmCompleteTask', payload),
+    mutationFn: async (payload) => {
+      const { error } = await supabaseAdmin
+        .from('tasks')
+        .update({ status: 'completed', completed_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq('id', payload.task_id)
+        .eq('source', 'sales_portal');
+      if (error) throw new Error(error.message);
+      return { success: true };
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['crm-lead'] });
       qc.invalidateQueries({ queryKey: ['crm-tasks'] });

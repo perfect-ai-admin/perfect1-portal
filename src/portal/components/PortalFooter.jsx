@@ -53,6 +53,29 @@ export default function PortalFooter() {
         </div>
       </div>
 
+      {/* Disclaimer */}
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <p className="text-xs text-white/30 text-center leading-relaxed">
+            האתר מופעל על ידי חברה פרטית המספקת שירותי ייעוץ וליווי עסקי.
+            האתר אינו אתר ממשלתי ואינו פועל מטעם רשות המסים, מע״מ או ביטוח לאומי.
+          </p>
+        </div>
+      </div>
+
+      {/* Company Info */}
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-white/40 text-center">
+            <span>פרפקט וואן — ח.פ 516309747</span>
+            <span className="hidden sm:inline">|</span>
+            <a href="tel:0502277087" className="hover:text-white/70 transition-colors">טלפון: 050-227-7087</a>
+            <span className="hidden sm:inline">|</span>
+            <a href="mailto:yositaxes@gmail.com" className="hover:text-white/70 transition-colors">yositaxes@gmail.com</a>
+          </div>
+        </div>
+      </div>
+
       {/* Bottom Bar */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
@@ -62,8 +85,7 @@ export default function PortalFooter() {
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm text-white/40">
             <Link to="/About" className="hover:text-white/70 transition-colors">אודות</Link>
             <Link to="/Privacy" className="hover:text-white/70 transition-colors">מדיניות פרטיות</Link>
-            <Link to="/Terms" className="hover:text-white/70 transition-colors">תקנון</Link>
-            <span className="text-xs sm:text-sm">שירות פרטי — לא אתר ממשלתי</span>
+            <Link to="/Terms" className="hover:text-white/70 transition-colors">תנאי שימוש</Link>
           </div>
         </div>
       </div>

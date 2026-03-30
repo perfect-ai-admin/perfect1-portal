@@ -61,7 +61,16 @@ export default function CategoryHubPage({ category }) {
           <div className="max-w-5xl mx-auto px-4">
             <div className="mb-3 sm:mb-4"><Breadcrumbs items={[{ label: title }]} /></div>
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight">{title}</h1>
-            <p className="text-base sm:text-xl text-white/80 max-w-2xl leading-relaxed">{description}</p>
+            <p className="text-base sm:text-xl text-white/80 max-w-2xl leading-relaxed mb-6">{description}</p>
+            {/* Hero Compact Lead Form */}
+            <div className="max-w-lg bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-4 sm:p-5">
+              <PortalLeadForm
+                sourcePage={`category-hero-${category}`}
+                variant="compact"
+                ctaText="קבל ייעוץ חינם"
+                className="[&_input]:bg-white/10 [&_input]:border-white/20 [&_input]:text-white [&_input]:placeholder:text-white/50"
+              />
+            </div>
           </div>
         </section>
 
@@ -96,46 +105,50 @@ export default function CategoryHubPage({ category }) {
               <h2 className="portal-h2 mb-8">מאמרים ומדריכים</h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {articles.map((article, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    <ArticleCard
-                      title={article.title}
-                      description={article.description}
-                      href={`/${category}/${article.slug}`}
-                      readTime={article.readTime}
-                    />
-                  </motion.div>
+                  <React.Fragment key={i}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: (i % 6) * 0.05 }}
+                    >
+                      <ArticleCard
+                        title={article.title}
+                        description={article.description}
+                        href={`/${category}/${article.slug}`}
+                        readTime={article.readTime}
+                      />
+                    </motion.div>
+                    {/* CTA Banner after every 6 articles */}
+                    {(i + 1) % 6 === 0 && i < articles.length - 1 && (
+                      <div className="sm:col-span-2 lg:col-span-3">
+                        <div className="bg-gradient-to-l from-portal-navy to-portal-navy-light rounded-2xl p-6 text-white text-center">
+                          <p className="font-bold text-lg mb-1">לא יודע מאיפה להתחיל?</p>
+                          <p className="text-white/70 text-sm mb-4">השאר פרטים ומומחה יחזור אליך עם תשובות</p>
+                          <PortalLeadForm
+                            sourcePage={`category-banner-${category}`}
+                            variant="compact"
+                            ctaText="קבל ייעוץ חינם"
+                            className="max-w-lg mx-auto [&_input]:bg-white/10 [&_input]:border-white/20 [&_input]:text-white [&_input]:placeholder:text-white/50"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </React.Fragment>
                 ))}
               </div>
             </div>
           </section>
         )}
 
-        {/* Lead Form */}
-        <section id="portal-lead-form" className="py-16 bg-white">
-          <div className="max-w-2xl mx-auto px-4">
-            <PortalLeadForm
-              sourcePage={`category-${category}`}
-              title="צריך עזרה? השאר פרטים"
-              subtitle="מומחה יחזור אליך עם כל המידע שתצטרך"
-              ctaText="שלח פרטים"
-            />
-          </div>
-        </section>
-
         {/* FAQ */}
         {faq.length > 0 && (
-          <section className="py-12 md:py-16 bg-portal-bg">
+          <section className="py-12 md:py-16 bg-white">
             <div className="max-w-3xl mx-auto px-4">
               <h2 className="portal-h2 text-center mb-8">שאלות נפוצות</h2>
               <Accordion type="single" collapsible className="space-y-3">
                 {faq.map((item, i) => (
-                  <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-xl border border-gray-200 px-4 sm:px-6 overflow-hidden">
+                  <AccordionItem key={i} value={`faq-${i}`} className="bg-portal-bg rounded-xl border border-gray-200 px-4 sm:px-6 overflow-hidden">
                     <AccordionTrigger className="text-right font-bold text-base sm:text-lg text-portal-navy hover:no-underline py-4 sm:py-5">
                       {item.question}
                     </AccordionTrigger>
@@ -148,6 +161,18 @@ export default function CategoryHubPage({ category }) {
             </div>
           </section>
         )}
+
+        {/* Lead Form - after FAQ */}
+        <section id="portal-lead-form" className="py-16 bg-portal-bg">
+          <div className="max-w-2xl mx-auto px-4">
+            <PortalLeadForm
+              sourcePage={`category-${category}`}
+              title="צריך עזרה? השאר פרטים"
+              subtitle="מומחה יחזור אליך עם כל המידע שתצטרך"
+              ctaText="שלח פרטים"
+            />
+          </div>
+        </section>
       </main>
 
       <PortalFooter />

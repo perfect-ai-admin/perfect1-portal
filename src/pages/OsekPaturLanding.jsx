@@ -12,7 +12,7 @@ import {
   Briefcase, Building2, Star, BadgeCheck, HandCoins,
   ClipboardCheck
 } from 'lucide-react';
-import { invokeFunction } from '@/api/supabaseClient';
+import { submitPortalLead } from '@/api/portalSupabaseClient';
 import { PORTAL_CTA } from '@/portal/config/navigation';
 
 // ============================
@@ -66,7 +66,7 @@ function LeadForm({
     try {
       const params = new URLSearchParams(window.location.search);
 
-      await invokeFunction('submitLead', {
+      await submitPortalLead({
         name: form.name,
         phone: form.phone,
         profession: 'osek_patur',
@@ -81,7 +81,7 @@ function LeadForm({
       });
 
       // Redirect to ThankYou — conversion tracking fires there
-      navigate(`/ThankYou?source=${encodeURIComponent(`landing-osek-patur-${variant}`)}&name=${encodeURIComponent(form.name)}`);
+      navigate('/ThankYou', { state: { source: `landing-osek-patur-${variant}`, name: form.name } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
     } finally {

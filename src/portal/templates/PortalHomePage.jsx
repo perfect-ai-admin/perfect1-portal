@@ -67,19 +67,24 @@ export default function PortalHomePage() {
               <p className="text-lg sm:text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light">
                 כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                <a href={`tel:${PORTAL_CTA.phone}`}>
-                  <Button className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-2xl bg-portal-teal hover:bg-portal-teal-dark text-white font-bold shadow-lg w-full sm:w-auto">
-                    <Phone className="ml-2 h-5 w-5" />
-                    בדיקת התאמה לפתיחת עסק
-                  </Button>
-                </a>
-                <a href={PORTAL_CTA.whatsapp} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-2xl border-2 border-portal-navy text-portal-navy hover:bg-portal-navy/5 font-bold w-full sm:w-auto">
-                    <MessageCircle className="ml-2 h-5 w-5" />
-                    שיחה עם נציג
-                  </Button>
-                </a>
+              {/* Hero Lead Form */}
+              <div className="max-w-xl mx-auto bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-lg">
+                <PortalLeadForm
+                  sourcePage="homepage-hero"
+                  variant="compact"
+                  ctaText="בדיקת התאמה חינם"
+                />
+                <div className="flex items-center justify-center gap-4 mt-3">
+                  <span className="text-xs text-gray-400">או:</span>
+                  <a href={`tel:${PORTAL_CTA.phone}`} className="inline-flex items-center gap-1.5 text-portal-teal hover:underline text-sm font-medium">
+                    <Phone className="w-4 h-4" />
+                    {PORTAL_CTA.phone}
+                  </a>
+                  <a href={PORTAL_CTA.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-green-600 hover:underline text-sm font-medium">
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp
+                  </a>
+                </div>
               </div>
             </motion.div>
           </div>

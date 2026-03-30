@@ -94,14 +94,34 @@ export default function SEOArticlePage({ category }) {
 
         {/* Article Body */}
         <article className="py-10 md:py-14">
-          <div className="max-w-3xl mx-auto px-4">
-            {/* Table of Contents */}
-            {content.toc && content.toc.length > 0 && (
-              <TableOfContents items={content.toc} />
-            )}
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex gap-8">
+              {/* Main Content */}
+              <div className="flex-1 max-w-3xl">
+                {/* Table of Contents */}
+                {content.toc && content.toc.length > 0 && (
+                  <TableOfContents items={content.toc} />
+                )}
 
-            {/* Content Sections */}
-            <ContentRenderer sections={content.sections || []} />
+                {/* Content Sections */}
+                <ContentRenderer sections={content.sections || []} sourcePage={`article-${category}-${slug}`} />
+              </div>
+
+              {/* Sidebar - Desktop Only */}
+              <aside className="hidden lg:block w-[300px] flex-shrink-0">
+                <div className="sticky top-24">
+                  <div className="bg-portal-bg rounded-2xl border border-gray-200 p-5">
+                    <PortalLeadForm
+                      sourcePage={`sidebar-${category}-${slug}`}
+                      variant="compact"
+                      title="קבל ייעוץ חינם"
+                      ctaText="שלח פרטים"
+                    />
+                    <p className="text-xs text-gray-400 text-center mt-2">ללא התחייבות</p>
+                  </div>
+                </div>
+              </aside>
+            </div>
           </div>
         </article>
 

@@ -207,8 +207,13 @@ const SectionComparison = ({ section }) => {
   );
 };
 
-const SectionCTAInline = ({ section }) => (
-  <InlineCTA title={section.title} buttonText={section.buttonText || section.button} variant={section.variant} />
+const SectionCTAInline = ({ section, sourcePage }) => (
+  <InlineCTA
+    title={section.title}
+    buttonText={section.buttonText || section.button}
+    variant={section.variant}
+    sourcePage={sourcePage}
+  />
 );
 
 const SECTION_MAP = {
@@ -222,13 +227,13 @@ const SECTION_MAP = {
   'cta-inline': SectionCTAInline,
 };
 
-export default function ContentRenderer({ sections = [] }) {
+export default function ContentRenderer({ sections = [], sourcePage = 'article' }) {
   return (
     <div className="space-y-8">
       {sections.map((section, index) => {
         const Component = SECTION_MAP[section.type];
         if (!Component) return null;
-        return <Component key={index} section={section} />;
+        return <Component key={index} section={section} sourcePage={sourcePage} />;
       })}
     </div>
   );

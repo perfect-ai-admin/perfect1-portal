@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from "@/components/ui/checkbox";
 import { User, Phone, Mail, Loader2, CheckCircle, Send } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { trackLeadSubmit } from '../tracking/EventTracker';
 import { entities, invokeFunction } from '@/api/supabaseClient';
@@ -44,6 +44,7 @@ export default function UnifiedLeadForm({
     "מורה פרטי", "מדריך ילדים", "קואוצ'ר", "מורה לשפות", "אחר"
   ]
 }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -144,7 +145,7 @@ export default function UnifiedLeadForm({
       } else {
         // Default: redirect אחרי 1.5 שניות
         await new Promise(resolve => setTimeout(resolve, 1500));
-        window.location.href = `/ThankYou?source=${encodeURIComponent(effectiveSource)}&name=${encodeURIComponent(formData.name)}`;
+        navigate('/ThankYou', { state: { source: effectiveSource, name: formData.name } });
       }
     } catch (submitError) {
       console.error('Error submitting lead:', submitError);

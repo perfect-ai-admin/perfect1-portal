@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useDeleteLead } from '../hooks/useCRM';
 
 export default function DeleteLeadDialog({ open, onOpenChange, lead, onDeleted }) {
-  const [hardDelete, setHardDelete] = useState(false);
+  const [hardDelete, setHardDelete] = useState(true);
   const deleteLead = useDeleteLead();
 
   const handleDelete = () => {

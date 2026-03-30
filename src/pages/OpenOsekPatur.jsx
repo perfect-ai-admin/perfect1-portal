@@ -9,7 +9,7 @@ import {
   Shield, FileCheck, Headphones, Zap, Star,
   ClipboardCheck, AlertTriangle, Users, Clock
 } from 'lucide-react';
-import { invokeFunction } from '@/api/supabaseClient';
+import { submitPortalLead } from '@/api/portalSupabaseClient';
 import { PORTAL_CTA } from '@/portal/config/navigation';
 
 // ============================
@@ -55,7 +55,7 @@ function LeadForm({ id, variant = 'hero', ctaText = 'קבלו ליווי לפת�
     try {
       const params = new URLSearchParams(window.location.search);
 
-      await invokeFunction('submitLead', {
+      await submitPortalLead({
         name: form.name,
         phone: form.phone,
         profession: 'osek_patur',

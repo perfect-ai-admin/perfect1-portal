@@ -69,10 +69,29 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-400 text-sm">
-            © {currentYear} פרפקט וואן. כל הזכויות שמורות.
+        {/* Company Info & Disclaimer */}
+        <div className="pt-8 border-t border-gray-200 space-y-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs text-gray-400 text-center">
+            <span>פרפקט וואן — ח.פ 516309747</span>
+            <span className="hidden sm:inline">|</span>
+            <a href="tel:0502277087" className="hover:text-gray-600 transition-colors">טלפון: 050-227-7087</a>
+            <span className="hidden sm:inline">|</span>
+            <a href="mailto:yositaxes@gmail.com" className="hover:text-gray-600 transition-colors">yositaxes@gmail.com</a>
+          </div>
+          <p className="text-xs text-gray-300 text-center leading-relaxed">
+            האתר מופעל על ידי חברה פרטית המספקת שירותי ייעוץ וליווי עסקי.
+            האתר אינו אתר ממשלתי ואינו פועל מטעם רשות המסים, מע״מ או ביטוח לאומי.
           </p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-gray-400 text-sm">
+              © {currentYear} פרפקט וואן. כל הזכויות שמורות.
+            </p>
+            <div className="flex items-center gap-4 text-sm text-gray-400">
+              <a href="/About" className="hover:text-gray-600 transition-colors">אודות</a>
+              <a href="/Privacy" className="hover:text-gray-600 transition-colors">מדיניות פרטיות</a>
+              <a href="/Terms" className="hover:text-gray-600 transition-colors">תנאי שימוש</a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

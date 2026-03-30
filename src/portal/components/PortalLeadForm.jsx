@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, CheckCircle2, Phone } from 'lucide-react';
-import { invokeFunction } from '@/api/supabaseClient';
+import { Loader2, CheckCircle2, Phone, Shield, Clock, Users } from 'lucide-react';
+import { submitPortalLead } from '@/api/portalSupabaseClient';
 
 const BUSINESS_TYPES = [
   { value: 'osek_patur', label: 'פתיחת עוסק פטור' },
@@ -45,7 +45,7 @@ export default function PortalLeadForm({
       // Get UTM params from URL
       const params = new URLSearchParams(window.location.search);
 
-      await invokeFunction('submitLead', {
+      await submitPortalLead({
         name: form.name,
         phone: form.phone,
         profession: form.businessType,
@@ -60,7 +60,7 @@ export default function PortalLeadForm({
       });
 
       // Redirect to ThankYou page — conversion tracking fires there
-      navigate(`/ThankYou?source=${encodeURIComponent(sourcePage)}&name=${encodeURIComponent(form.name)}`);
+      navigate('/ThankYou', { state: { source: sourcePage, name: form.name } });
     } catch (err) {
       setError('שגיאה בשליחה, נסה שוב');
     } finally {
@@ -134,9 +134,11 @@ export default function PortalLeadForm({
       </form>
 
       {!isCompact && (
-        <p className="text-xs text-gray-400 text-center mt-3">
-          המידע שלך מאובטח ולא יועבר לצד שלישי
-        </p>
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-gray-400">
+          <span className="inline-flex items-center gap-1"><Shield className="w-3.5 h-3.5" />100% חינם, ללא התחייבות</span>
+          <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" />זמן תגובה: עד 2 שעות</span>
+          <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />1,200+ בעלי עסקים נעזרו</span>
+        </div>
       )}
     </div>
   );

@@ -6,8 +6,11 @@ const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY || 'eyJhbGc
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Admin client for CRM mutations (bypasses RLS, no CORS issues)
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+// Admin client for CRM write operations — bypasses RLS
+// persistSession: false ensures it always uses the service key, not the user's session
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
 
 // Invoke a Supabase Edge Function by name
 export async function invokeFunction(name, payload = {}) {

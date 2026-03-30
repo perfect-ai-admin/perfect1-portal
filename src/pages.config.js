@@ -6,38 +6,52 @@
 
 import React from 'react';
 
+// Retry wrapper for lazy imports — handles stale chunk errors after deploy
+function lazyRetry(importFn) {
+  return React.lazy(() =>
+    importFn().catch(() => {
+      const key = 'chunk_reload';
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, '1');
+        window.location.reload();
+      }
+      return importFn();
+    })
+  );
+}
+
 // --- Landing / public pages (static imports — very lightweight) ---
 import Home from './pages/Home';
 import S from './pages/S';
 import Features from './pages/Features';
 
 // --- Landing / public pages (lazy — medium/heavy) ---
-const AdminUsers = React.lazy(() => import('./pages/AdminUsers'));
-const AiMentor = React.lazy(() => import('./pages/AiMentor'));
-const AvatarAi = React.lazy(() => import('./pages/AvatarAi'));
-const BrandedLandingPage = React.lazy(() => import('./pages/BrandedLandingPage'));
-const BrandedQuote = React.lazy(() => import('./pages/BrandedQuote'));
-const Branding = React.lazy(() => import('./pages/Branding'));
-const BusinessPresentation = React.lazy(() => import('./pages/BusinessPresentation'));
-const BusinessSticker = React.lazy(() => import('./pages/BusinessSticker'));
-const DigitalBusinessCard = React.lazy(() => import('./pages/DigitalBusinessCard'));
-const About = React.lazy(() => import('./pages/About'));
-const FAQ = React.lazy(() => import('./pages/FAQ'));
-const Goal = React.lazy(() => import('./pages/Goal'));
-const Pricing = React.lazy(() => import('./pages/Pricing'));
-const Privacy = React.lazy(() => import('./pages/Privacy'));
-const SmartLogo = React.lazy(() => import('./pages/SmartLogo'));
-const SocialDesigns = React.lazy(() => import('./pages/SocialDesigns'));
-const Terms = React.lazy(() => import('./pages/Terms'));
-const OsekPaturLanding = React.lazy(() => import('./pages/OsekPaturLanding'));
+const AdminUsers = lazyRetry(() => import('./pages/AdminUsers'));
+const AiMentor = lazyRetry(() => import('./pages/AiMentor'));
+const AvatarAi = lazyRetry(() => import('./pages/AvatarAi'));
+const BrandedLandingPage = lazyRetry(() => import('./pages/BrandedLandingPage'));
+const BrandedQuote = lazyRetry(() => import('./pages/BrandedQuote'));
+const Branding = lazyRetry(() => import('./pages/Branding'));
+const BusinessPresentation = lazyRetry(() => import('./pages/BusinessPresentation'));
+const BusinessSticker = lazyRetry(() => import('./pages/BusinessSticker'));
+const DigitalBusinessCard = lazyRetry(() => import('./pages/DigitalBusinessCard'));
+const About = lazyRetry(() => import('./pages/About'));
+const FAQ = lazyRetry(() => import('./pages/FAQ'));
+const Goal = lazyRetry(() => import('./pages/Goal'));
+const Pricing = lazyRetry(() => import('./pages/Pricing'));
+const Privacy = lazyRetry(() => import('./pages/Privacy'));
+const SmartLogo = lazyRetry(() => import('./pages/SmartLogo'));
+const SocialDesigns = lazyRetry(() => import('./pages/SocialDesigns'));
+const Terms = lazyRetry(() => import('./pages/Terms'));
+const OsekPaturLanding = lazyRetry(() => import('./pages/OsekPaturLanding'));
 
 // --- SEO Blog articles (lazy) ---
-const BlogLogoArticle = React.lazy(() => import('./pages/blog/LogoArticle'));
-const BlogDigitalCardArticle = React.lazy(() => import('./pages/blog/DigitalCardArticle'));
-const BlogLandingPageArticle = React.lazy(() => import('./pages/blog/LandingPageArticle'));
-const BlogPresentationArticle = React.lazy(() => import('./pages/blog/PresentationArticle'));
-const BlogInvestorDeckArticle = React.lazy(() => import('./pages/blog/InvestorDeckArticle'));
-const BlogStickerArticle = React.lazy(() => import('./pages/blog/StickerArticle'));
+const BlogLogoArticle = lazyRetry(() => import('./pages/blog/LogoArticle'));
+const BlogDigitalCardArticle = lazyRetry(() => import('./pages/blog/DigitalCardArticle'));
+const BlogLandingPageArticle = lazyRetry(() => import('./pages/blog/LandingPageArticle'));
+const BlogPresentationArticle = lazyRetry(() => import('./pages/blog/PresentationArticle'));
+const BlogInvestorDeckArticle = lazyRetry(() => import('./pages/blog/InvestorDeckArticle'));
+const BlogStickerArticle = lazyRetry(() => import('./pages/blog/StickerArticle'));
 
 // --- Application pages (static imports — lightweight) ---
 import Login from './pages/Login';
@@ -49,20 +63,20 @@ import LogoThankYou from './pages/LogoThankYou';
 import PricingPerfectBizAI from './pages/PricingPerfectBizAI';
 
 // --- Application pages (lazy — heavy, loaded on demand) ---
-const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
-const AgentCRM = React.lazy(() => import('./pages/AgentCRM'));
-const AgentsManager = React.lazy(() => import('./pages/AgentsManager'));
-const ClientDashboard = React.lazy(() => import('./pages/ClientDashboard'));
-const CloseOsekPaturCRM = React.lazy(() => import('./pages/CloseOsekPaturCRM'));
-const CreditsPage = React.lazy(() => import('./pages/CreditsPage'));
-const GoalPage = React.lazy(() => import('./pages/GoalPage'));
-const JourneyDashboard = React.lazy(() => import('./pages/JourneyDashboard'));
-const LandingPageManager = React.lazy(() => import('./pages/LandingPageManager'));
-const LandingPagePreview = React.lazy(() => import('./pages/LandingPagePreview'));
-const LeadsAdmin = React.lazy(() => import('./pages/LeadsAdmin'));
-const LogoProjectPage = React.lazy(() => import('./pages/LogoProjectPage'));
-const MyProducts = React.lazy(() => import('./pages/MyProducts'));
-const Summary = React.lazy(() => import('./pages/Summary'));
+const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'));
+const AgentCRM = lazyRetry(() => import('./pages/AgentCRM'));
+const AgentsManager = lazyRetry(() => import('./pages/AgentsManager'));
+const ClientDashboard = lazyRetry(() => import('./pages/ClientDashboard'));
+const CloseOsekPaturCRM = lazyRetry(() => import('./pages/CloseOsekPaturCRM'));
+const CreditsPage = lazyRetry(() => import('./pages/CreditsPage'));
+const GoalPage = lazyRetry(() => import('./pages/GoalPage'));
+const JourneyDashboard = lazyRetry(() => import('./pages/JourneyDashboard'));
+const LandingPageManager = lazyRetry(() => import('./pages/LandingPageManager'));
+const LandingPagePreview = lazyRetry(() => import('./pages/LandingPagePreview'));
+const LeadsAdmin = lazyRetry(() => import('./pages/LeadsAdmin'));
+const LogoProjectPage = lazyRetry(() => import('./pages/LogoProjectPage'));
+const MyProducts = lazyRetry(() => import('./pages/MyProducts'));
+const Summary = lazyRetry(() => import('./pages/Summary'));
 
 
 import __Layout from './Layout.jsx';

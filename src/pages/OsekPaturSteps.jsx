@@ -12,7 +12,7 @@ import {
   CreditCard, Building2, FileText, UserCheck,
   BookOpen, AlertCircle
 } from 'lucide-react';
-import { invokeFunction } from '@/api/supabaseClient';
+import { submitPortalLead } from '@/api/portalSupabaseClient';
 import { PORTAL_CTA } from '@/portal/config/navigation';
 
 // ============================
@@ -65,7 +65,7 @@ function StepsLeadForm({
     try {
       const params = new URLSearchParams(window.location.search);
 
-      await invokeFunction('submitLead', {
+      await submitPortalLead({
         name: form.name,
         phone: form.phone,
         profession: 'osek_patur',
@@ -80,7 +80,7 @@ function StepsLeadForm({
       });
 
       // Redirect to ThankYou — conversion tracking fires there
-      navigate(`/ThankYou?source=${encodeURIComponent(`steps-osek-patur-${variant}`)}&name=${encodeURIComponent(form.name)}`);
+      navigate('/ThankYou', { state: { source: `steps-osek-patur-${variant}`, name: form.name } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
     } finally {
@@ -139,7 +139,7 @@ function StepsLeadForm({
       </form>
 
       <p className="text-xs text-center mt-2 text-gray-400">
-        ללא התחייבות · המידע שלך מאובטח · נחזור אליך תוך דקות
+        ללא התחייבות · המידע שלך מאובטח · נחזור אליך בהקדם
       </p>
     </div>
   );
@@ -364,10 +364,10 @@ export default function OsekPaturSteps() {
         {/* SEO Head */}
         <Helmet>
           <title>איך פותחים עוסק פטור – המדריך המלא לפתיחת עוסק פטור בישראל</title>
-          <meta name="description" content="רוצים לפתוח עוסק פטור? במדריך הזה תגלו איך פותחים עוסק פטור בישראל, מהם השלבים ומה צריך להכין. בדקו גם איך לפתוח עוסק פטור בקלות." />
+          <meta name="description" content="רוצים לפתוח עוסק פטור? במדריך הזה תגלו איך פותחים עוסק פטור בישראל, מהם השלבים ומה צריך להכין. קבלו ליווי מקצועי בתהליך." />
           <meta name="keywords" content="איך פותחים עוסק פטור, שלבים לפתיחת עוסק פטור, איך לפתוח עוסק פטור, פתיחת עוסק פטור מדריך, איך לפתוח עוסק פטור בישראל, פתיחת עוסק פטור, עוסק פטור שלבים" />
           <link rel="canonical" href="https://www.perfect1.co.il/OsekPaturSteps" />
-          <meta property="og:title" content="איך פותחים עוסק פטור – המדריך המלא + אפשרות לפתוח בקלות" />
+          <meta property="og:title" content="איך פותחים עוסק פטור – המדריך המלא + ליווי מקצועי בתהליך" />
           <meta property="og:description" content="המדריך המלא לפתיחת עוסק פטור בישראל: שלבים, מסמכים, טיפים ואפשרות לליווי מקצועי שחוסך זמן וטעויות." />
           <meta property="og:type" content="article" />
           <meta property="og:url" content="https://www.perfect1.co.il/OsekPaturSteps" />
@@ -420,21 +420,22 @@ export default function OsekPaturSteps() {
                   <br />
                   <span className="text-2xl sm:text-3xl md:text-4xl" style={{ color: '#F59E0B' }}>בישראל?</span>
                   <br />
-                  <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white/80">המדריך המלא + אפשרות לפתוח בקלות</span>
+                  <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white/80">המדריך המלא + ליווי מקצועי בתהליך</span>
                 </h1>
 
-                <p className="text-lg md:text-xl text-white/85 mb-6 leading-relaxed max-w-lg">
-                  רוצים לפתוח עוסק פטור ולא יודעים מאיפה להתחיל?
-                  <br />
-                  בדיקה קצרה יכולה לחסוך זמן, טעויות ובירוקרטיה.
+                <p className="text-lg md:text-xl text-white/85 mb-4 leading-relaxed max-w-lg">
+                  בדקו האם עוסק פטור מתאים לכם וקבלו ליווי מקצועי בתהליך פתיחת העסק.
+                </p>
+                <p className="text-sm text-white/50 mb-6 max-w-lg">
+                  פרפקט וואן היא חברה פרטית לליווי עסקי המסייעת לעצמאים בתהליך פתיחת העסק מול הרשויות.
                 </p>
 
                 {/* Trust badges */}
                 <div className="flex flex-wrap gap-x-5 gap-y-2 mb-6">
                   {[
-                    'פתיחה מהירה',
-                    'בלי בירוקרטיה',
-                    'ליווי מקצועי',
+                    'ליווי מקצועי צמוד',
+                    'חיסכון בזמן ובטעויות',
+                    'שירות פרטי ואמין',
                   ].map((text, i) => (
                     <div key={i} className="flex items-center gap-2 text-white/80 text-sm">
                       <CheckCircle2 className="w-4 h-4 text-green-400" />
@@ -452,7 +453,7 @@ export default function OsekPaturSteps() {
                       </div>
                     ))}
                   </div>
-                  <span>+5,000 לקוחות כבר פתחו איתנו</span>
+                  <span>+5,000 עצמאים קיבלו ליווי מאיתנו</span>
                 </div>
               </div>
 
@@ -621,7 +622,7 @@ export default function OsekPaturSteps() {
               {[
                 { label: 'לבד', time: '2-4 שבועות', color: 'bg-red-50 border-red-200 text-red-700' },
                 { label: 'עם רו"ח', time: '1-2 שבועות', color: 'bg-amber-50 border-amber-200 text-amber-700' },
-                { label: 'עם ליווי שלנו', time: 'ימים ספורים', color: 'bg-green-50 border-green-200 text-green-700' },
+                { label: 'עם ליווי שלנו', time: 'מהיר ויעיל', color: 'bg-green-50 border-green-200 text-green-700' },
               ].map((item, i) => (
                 <div key={i} className={`text-center p-4 rounded-xl border-2 ${item.color}`}>
                   <div className="font-bold text-sm mb-1">{item.label}</div>
@@ -714,7 +715,7 @@ export default function OsekPaturSteps() {
                 { icon: Headphones, title: 'ליווי מקצועי', desc: 'מומחים שמכירים כל פרט בתהליך' },
                 { icon: ClipboardCheck, title: 'תהליך ברור', desc: 'שלב אחרי שלב, בלי הפתעות' },
                 { icon: Clock, title: 'חיסכון בזמן', desc: 'פתיחה מהירה בלי ביורוקרטיה' },
-                { icon: Zap, title: 'מענה מהיר', desc: 'חוזרים אליכם תוך דקות' },
+                { icon: Zap, title: 'מענה מהיר', desc: 'חוזרים אליכם בהקדם' },
                 { icon: Shield, title: 'בלי טעויות', desc: 'עושים הכל נכון מההתחלה' },
                 { icon: HandCoins, title: 'שקיפות מלאה', desc: 'בלי עלויות נסתרות' },
                 { icon: Users, title: 'ניסיון מוכח', desc: 'אלפי לקוחות מרוצים' },
@@ -780,9 +781,9 @@ export default function OsekPaturSteps() {
         <section className="py-14 md:py-20" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #152D4A 50%, #0F766E 100%)' }}>
           <div className="max-w-lg mx-auto px-4">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white text-center mb-3">
-              רוצים לפתוח עוסק פטור
+              רוצים ליווי בפתיחת עוסק פטור
               <br />
-              <span style={{ color: '#F59E0B' }}>בצורה פשוטה?</span>
+              <span style={{ color: '#F59E0B' }}>בצורה פשוטה ומקצועית?</span>
             </h2>
             <p className="text-white/80 text-center mb-8 text-lg">
               השאירו פרטים ונחזור אליכם עם הסבר ברור איך להתחיל.
@@ -794,9 +795,9 @@ export default function OsekPaturSteps() {
               <StepsLeadForm
                 id="final-lead-form"
                 variant="final"
-                title="התחילו לפתוח עוסק פטור"
-                subtitle="ללא התחייבות · נחזור אליכם תוך דקות"
-                ctaText="התחילו לפתוח עוסק פטור"
+                title="קבלו הכוונה לפתיחת עוסק פטור"
+                subtitle="ללא התחייבות · נחזור אליכם בהקדם"
+                ctaText="קבלו הכוונה לפתיחת עוסק פטור"
               />
             </div>
 
@@ -808,15 +809,20 @@ export default function OsekPaturSteps() {
                   </div>
                 ))}
               </div>
-              <span>+5,000 לקוחות כבר פתחו איתנו</span>
+              <span>+5,000 עצמאים קיבלו ליווי מאיתנו</span>
             </div>
           </div>
         </section>
 
         {/* ===== FOOTER ===== */}
         <footer className="bg-portal-navy text-white/60 py-6">
-          <div className="max-w-6xl mx-auto px-4 text-center text-sm">
+          <div className="max-w-6xl mx-auto px-4 text-center text-sm space-y-3">
             <p>© {new Date().getFullYear()} פרפקט וואן — ליווי עסקי מקצועי. כל הזכויות שמורות.</p>
+            <div className="border-t border-white/10 pt-3 text-white/40 text-xs leading-relaxed max-w-2xl mx-auto">
+              <p>האתר מופעל על ידי משרד פרטי לליווי עסקי.</p>
+              <p>אנו מספקים שירותי ייעוץ וליווי בתהליך פתיחת עוסק פטור.</p>
+              <p>האתר אינו אתר ממשלתי ואינו פועל מטעם רשות המסים, מע״מ או ביטוח לאומי.</p>
+            </div>
           </div>
         </footer>
 

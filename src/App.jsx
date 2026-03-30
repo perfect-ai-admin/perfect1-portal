@@ -161,7 +161,18 @@ const PortalRoutes = () => (
     <Route path="/Terms" element={<Suspense fallback={<PageLoader />}><Terms /></Suspense>} />
     <Route path="/Privacy" element={<Suspense fallback={<PageLoader />}><Privacy /></Suspense>} />
 
-    <Route path="/*" element={<PageNotFound />} />
+    {/* CRM Routes — protected by auth inside CRMLayout */}
+    <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
+      <Route index element={<CRMPipeline />} />
+      <Route path="leads" element={<CRMLeads />} />
+      <Route path="leads/:id" element={<CRMLeadDetail />} />
+      <Route path="dashboard" element={<CRMDashboard />} />
+      <Route path="tasks" element={<CRMTasks />} />
+      <Route path="settings" element={<CRMSettings />} />
+    </Route>
+
+    {/* All other app routes (login, APP, etc.) */}
+    <Route path="/*" element={<AuthenticatedApp />} />
   </Routes>
 );
 
