@@ -221,9 +221,16 @@ export function useUpdateLeadStage() {
       if (getErr || !lead) throw new Error(getErr?.message || 'ליד לא נמצא');
 
       const old_stage = lead.pipeline_stage;
-      const closedStages = ['not_interested', 'disqualified', 'duplicate', 'spam', 'converted'];
-      const newStatus = new_stage === 'converted' ? 'converted'
-        : closedStages.includes(new_stage) ? 'closed' : 'active';
+      // Valid status values: new, contacted, qualified, converted, closed
+      const closedStages = ['not_interested', 'disqualified', 'duplicate', 'spam'];
+      const contactedStages = ['contacted', 'no_answer', 'qualifying'];
+      const qualifiedStages = ['qualified', 'proposal_sent', 'follow_up', 'awaiting_docs'];
+
+      let newStatus = 'new';
+      if (new_stage === 'converted') newStatus = 'converted';
+      else if (closedStages.includes(new_stage)) newStatus = 'closed';
+      else if (qualifiedStages.includes(new_stage)) newStatus = 'qualified';
+      else if (contactedStages.includes(new_stage)) newStatus = 'contacted';
 
       const updates = {
         pipeline_stage: new_stage,
@@ -279,7 +286,7 @@ export function useCreateLead() {
           email: payload.email || null,
           service_type: payload.service_type || null,
           pipeline_stage: 'new_lead',
-          status: 'active',
+          status: 'new',
           source: 'sales_portal',
           lead_source: payload.lead_source || 'manual',
           notes: payload.notes || null,
@@ -346,12 +353,20 @@ export function useBulkAction() {
 
       if (action === 'change_stage') {
         const new_stage = payload.new_stage || payload.value;
-        const closedStages = ['converted', 'not_interested', 'disqualified', 'duplicate', 'spam'];
+        const closedStages = ['not_interested', 'disqualified', 'duplicate', 'spam'];
+        const contactedStages = ['contacted', 'no_answer', 'qualifying'];
+        const qualifiedStages = ['qualified', 'proposal_sent', 'follow_up', 'awaiting_docs'];
+        let bulkStatus = 'new';
+        if (new_stage === 'converted') bulkStatus = 'converted';
+        else if (closedStages.includes(new_stage)) bulkStatus = 'closed';
+        else if (qualifiedStages.includes(new_stage)) bulkStatus = 'qualified';
+        else if (contactedStages.includes(new_stage)) bulkStatus = 'contacted';
+
         const { error } = await supabaseAdmin
           .from('leads')
           .update({
             pipeline_stage: new_stage,
-            status: closedStages.includes(new_stage) ? (new_stage === 'converted' ? 'converted' : 'closed') : 'active',
+            status: bulkStatus,
             pipeline_entered_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
