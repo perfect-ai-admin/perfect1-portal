@@ -49,9 +49,9 @@ Deno.serve(async (req) => {
       updates.status = 'active';
     }
 
-    if (closedLostStages.includes(new_stage) && lost_reason_id) {
-      updates.lost_reason_id = lost_reason_id;
-      updates.lost_reason_note = lost_reason_note || null;
+    if (closedLostStages.includes(new_stage)) {
+      if (lost_reason_id) updates.lost_reason_id = lost_reason_id;
+      if (lost_reason_note) updates.lost_reason_note = lost_reason_note;
     }
 
     if (new_stage === 'converted') {

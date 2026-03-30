@@ -4,43 +4,40 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useQuery } from '@tanstack/react-query';
-import { entities } from '@/api/supabaseClient';
 import { LOST_REASON_CATEGORIES } from '../../constants/pipeline';
 
+const RECOVERABLE_REASONS = ['timing', 'not_opening_business', 'just_info'];
+
 export default function LostReasonDialog({ open, onOpenChange, onConfirm, isLoading }) {
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedReasonId, setSelectedReasonId] = useState('');
+  const [selectedReason, setSelectedReason] = useState('');
   const [note, setNote] = useState('');
   const [followUpDate, setFollowUpDate] = useState('');
 
-  const { data: reasons = [] } = useQuery({
-    queryKey: ['lost-reasons'],
-    queryFn: () => entities.LostReason.list('sort_order'),
-  });
-
-  const filteredReasons = selectedCategory
-    ? reasons.filter(r => r.category === selectedCategory)
-    : reasons;
-
-  const selectedReason = reasons.find(r => r.id === selectedReasonId);
+  const isRecoverable = RECOVERABLE_REASONS.includes(selectedReason);
+  const reasonLabel = LOST_REASON_CATEGORIES.find(r => r.value === selectedReason)?.label || '';
 
   const handleConfirm = () => {
-    if (!selectedReasonId) return;
+    if (!selectedReason) return;
     onConfirm({
-      lost_reason_id: selectedReasonId,
-      lost_reason_note: note,
+      lost_reason_id: selectedReason,
+      lost_reason_note: note || reasonLabel,
       follow_up_date: followUpDate || null,
     });
     // Reset
-    setSelectedCategory('');
-    setSelectedReasonId('');
+    setSelectedReason('');
+    setNote('');
+    setFollowUpDate('');
+  };
+
+  const handleClose = () => {
+    onOpenChange(false);
+    setSelectedReason('');
     setNote('');
     setFollowUpDate('');
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md" dir="rtl">
         <DialogHeader>
           <DialogTitle>סיבת סגירה</DialogTitle>
@@ -48,24 +45,12 @@ export default function LostReasonDialog({ open, onOpenChange, onConfirm, isLoad
 
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-1 block">קטגוריה</label>
-            <Select value={selectedCategory} onValueChange={(v) => { setSelectedCategory(v); setSelectedReasonId(''); }}>
-              <SelectTrigger><SelectValue placeholder="בחר קטגוריה" /></SelectTrigger>
+            <label className="text-sm font-medium mb-1 block">למה הליד לא רלוונטי?</label>
+            <Select value={selectedReason} onValueChange={setSelectedReason}>
+              <SelectTrigger><SelectValue placeholder="בחר סיבה" /></SelectTrigger>
               <SelectContent>
                 {LOST_REASON_CATEGORIES.map(c => (
                   <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium mb-1 block">סיבה</label>
-            <Select value={selectedReasonId} onValueChange={setSelectedReasonId}>
-              <SelectTrigger><SelectValue placeholder="בחר סיבה" /></SelectTrigger>
-              <SelectContent>
-                {filteredReasons.map(r => (
-                  <SelectItem key={r.id} value={r.id}>{r.reason_text}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -81,7 +66,7 @@ export default function LostReasonDialog({ open, onOpenChange, onConfirm, isLoad
             />
           </div>
 
-          {selectedReason?.is_recoverable && (
+          {isRecoverable && (
             <div>
               <label className="text-sm font-medium mb-1 block">תאריך מעקב עתידי</label>
               <Input
@@ -89,19 +74,17 @@ export default function LostReasonDialog({ open, onOpenChange, onConfirm, isLoad
                 value={followUpDate}
                 onChange={e => setFollowUpDate(e.target.value)}
               />
-              {selectedReason.follow_up_days && !followUpDate && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  מומלץ: בעוד {selectedReason.follow_up_days} ימים
-                </p>
-              )}
+              <p className="text-xs text-muted-foreground mt-1">
+                אם יש סיכוי שהליד יחזור — קבע תאריך לחזור אליו
+              </p>
             </div>
           )}
 
           <div className="flex gap-2 justify-end pt-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>ביטול</Button>
+            <Button variant="outline" onClick={handleClose}>ביטול</Button>
             <Button
               onClick={handleConfirm}
-              disabled={!selectedReasonId || isLoading}
+              disabled={!selectedReason || isLoading}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               {isLoading ? 'שומר...' : 'סגור ליד'}

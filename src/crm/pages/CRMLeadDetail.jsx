@@ -13,8 +13,6 @@ import { he } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 import StatusBadge from '../components/shared/StatusBadge';
-import TemperatureBadge from '../components/shared/TemperatureBadge';
-import SLAIndicator from '../components/shared/SLAIndicator';
 import LostReasonDialog from '../components/shared/LostReasonDialog';
 import CommTimeline from '../components/communications/CommTimeline';
 import CommLogger from '../components/communications/CommLogger';
@@ -23,7 +21,7 @@ import TaskForm from '../components/tasks/TaskForm';
 
 import DeleteLeadDialog from '../components/DeleteLeadDialog';
 import { useLeadDetail, useUpdateLeadStage, useAgents, useServiceCatalog } from '../hooks/useCRM';
-import { PIPELINE_STAGES, TEMPERATURE_OPTIONS } from '../constants/pipeline';
+import { PIPELINE_STAGES, LOST_REASON_CATEGORIES } from '../constants/pipeline';
 
 export default function CRMLeadDetail() {
   const { id } = useParams();
@@ -61,6 +59,7 @@ export default function CRMLeadDetail() {
   const { lead, agent, lost_reason, communications, tasks, status_history } = data;
 
   const handleStageChange = (newStage) => {
+    if (newStage === lead.pipeline_stage) return;
     const closedLostStages = ['not_interested', 'disqualified'];
     if (closedLostStages.includes(newStage)) {
       setPendingStage(newStage);
@@ -72,7 +71,10 @@ export default function CRMLeadDetail() {
       { lead_id: id, new_stage: newStage },
       {
         onSuccess: () => toast.success('השלב עודכן'),
-        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+        onError: (err) => {
+          console.error('Stage update failed:', err);
+          toast.error(`שגיאה בעדכון שלב: ${err.message}`);
+        },
       }
     );
   };
@@ -122,8 +124,6 @@ export default function CRMLeadDetail() {
         <div className="flex flex-wrap items-center gap-3 mb-3">
           <h1 className="text-xl font-bold text-slate-900">{lead.name || 'ללא שם'}</h1>
           <StatusBadge stage={lead.pipeline_stage} size="md" />
-          {lead.temperature && <TemperatureBadge temperature={lead.temperature} />}
-          {lead.sla_deadline && <SLAIndicator deadline={lead.sla_deadline} />}
         </div>
 
         {/* CTA buttons */}
@@ -162,8 +162,8 @@ export default function CRMLeadDetail() {
           {/* Stage selector */}
           <div className="bg-white rounded-lg border border-slate-200 p-4">
             <h3 className="text-sm font-medium text-slate-500 mb-2">שלב</h3>
-            <Select value={lead.pipeline_stage} onValueChange={handleStageChange}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+            <Select key={lead.pipeline_stage} value={lead.pipeline_stage} onValueChange={handleStageChange}>
+              <SelectTrigger><SelectValue placeholder="בחר שלב..." /></SelectTrigger>
               <SelectContent>
                 {PIPELINE_STAGES.map(s => (
                   <SelectItem key={s.slug} value={s.slug}>
@@ -243,11 +243,16 @@ export default function CRMLeadDetail() {
             )}
 
             {/* Lost reason */}
-            {lost_reason && (
+            {(lost_reason || lead.lost_reason_id || lead.lost_reason_note) && (
               <div className="border-t border-red-100 pt-2 mt-2">
                 <p className="text-xs font-medium text-red-400 mb-1">סיבת סגירה</p>
-                <p className="text-sm text-red-600">{lost_reason.reason_text}</p>
-                {lead.lost_reason_note && (
+                <p className="text-sm text-red-600">
+                  {lost_reason?.reason_text
+                    || LOST_REASON_CATEGORIES.find(r => r.value === lead.lost_reason_id)?.label
+                    || lead.lost_reason_note
+                    || lead.lost_reason_id}
+                </p>
+                {lead.lost_reason_note && !lost_reason?.reason_text && lead.lost_reason_note !== lead.lost_reason_id && (
                   <p className="text-xs text-slate-500 mt-1">{lead.lost_reason_note}</p>
                 )}
               </div>

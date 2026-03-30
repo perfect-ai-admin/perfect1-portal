@@ -1,22 +1,23 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Search, Download, ChevronDown, ChevronUp, UserPlus, Trash2
+  Search, Download, ChevronDown, ChevronUp, UserPlus, Trash2,
+  MessageSquare, Save, X
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
 
 import StatusBadge from '../components/shared/StatusBadge';
-import TemperatureBadge from '../components/shared/TemperatureBadge';
-import SLAIndicator from '../components/shared/SLAIndicator';
+import LostReasonDialog from '../components/shared/LostReasonDialog';
 import CreateLeadDialog from '../components/CreateLeadDialog';
 import DeleteLeadDialog from '../components/DeleteLeadDialog';
-import { usePipelineLeads, useAgents, useUpdateLeadStage, useBulkAction, useExportLeads } from '../hooks/useCRM';
-import { PIPELINE_STAGES, TEMPERATURE_OPTIONS } from '../constants/pipeline';
+import { usePipelineLeads, useAgents, useUpdateLeadStage, useAddCommunication, useBulkAction, useExportLeads } from '../hooks/useCRM';
+import { PIPELINE_STAGES } from '../constants/pipeline';
 import { toast } from 'sonner';
 
 export default function CRMLeads() {
@@ -24,21 +25,74 @@ export default function CRMLeads() {
   const [search, setSearch] = useState('');
   const [filterStage, setFilterStage] = useState('all');
   const [filterAgent, setFilterAgent] = useState('all');
-  const [filterTemp, setFilterTemp] = useState('all');
   const [sortField, setSortField] = useState('created_at');
   const [sortAsc, setSortAsc] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [bulkAgent, setBulkAgent] = useState('');
   const [bulkStage, setBulkStage] = useState('');
-  const [bulkTemp, setBulkTemp] = useState('');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [editingNote, setEditingNote] = useState(null); // lead id being edited
+  const [noteText, setNoteText] = useState('');
+  const [showLostDialog, setShowLostDialog] = useState(false);
+  const [pendingLostLead, setPendingLostLead] = useState(null);
+  const [pendingLostStage, setPendingLostStage] = useState(null);
 
   const { data: leads = [], isLoading } = usePipelineLeads({});
   const { data: agents = [] } = useAgents();
   const updateStage = useUpdateLeadStage();
+  const addComm = useAddCommunication();
   const bulkAction = useBulkAction();
   const exportLeads = useExportLeads();
+
+  // Inline stage change from the table
+  const handleInlineStageChange = (leadId, newStage) => {
+    const closedLostStages = ['not_interested', 'disqualified'];
+    if (closedLostStages.includes(newStage)) {
+      setPendingLostLead(leadId);
+      setPendingLostStage(newStage);
+      setShowLostDialog(true);
+      return;
+    }
+    updateStage.mutate(
+      { lead_id: leadId, new_stage: newStage },
+      {
+        onSuccess: () => toast.success('שלב עודכן'),
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
+
+  const handleLostConfirm = (lostData) => {
+    updateStage.mutate(
+      { lead_id: pendingLostLead, new_stage: pendingLostStage, ...lostData },
+      {
+        onSuccess: () => {
+          toast.success('הליד נסגר');
+          setShowLostDialog(false);
+          setPendingLostLead(null);
+          setPendingLostStage(null);
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
+
+  // Quick note save
+  const handleSaveNote = (leadId) => {
+    if (!noteText.trim()) return;
+    addComm.mutate(
+      { lead_id: leadId, channel: 'note', direction: 'internal', content: noteText.trim() },
+      {
+        onSuccess: () => {
+          toast.success('הערה נשמרה');
+          setEditingNote(null);
+          setNoteText('');
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
 
   // Filter + sort
   const filtered = useMemo(() => {
@@ -46,7 +100,6 @@ export default function CRMLeads() {
 
     if (filterStage !== 'all') result = result.filter(l => l.pipeline_stage === filterStage);
     if (filterAgent !== 'all') result = result.filter(l => l.agent_id === filterAgent);
-    if (filterTemp !== 'all') result = result.filter(l => l.temperature === filterTemp);
     if (search) {
       const s = search.toLowerCase();
       result = result.filter(l =>
@@ -64,7 +117,7 @@ export default function CRMLeads() {
     });
 
     return result;
-  }, [leads, filterStage, filterAgent, filterTemp, search, sortField, sortAsc]);
+  }, [leads, filterStage, filterAgent, search, sortField, sortAsc]);
 
   const toggleSort = (field) => {
     if (sortField === field) {
@@ -116,21 +169,6 @@ export default function CRMLeads() {
           toast.success(`שלב עודכן ל-${selectedIds.size} לידים`);
           setSelectedIds(new Set());
           setBulkStage('');
-        },
-        onError: (err) => toast.error(`שגיאה: ${err.message}`),
-      }
-    );
-  };
-
-  const handleBulkTemp = () => {
-    if (!bulkTemp || selectedIds.size === 0) return;
-    bulkAction.mutate(
-      { action: 'change_temperature', lead_ids: [...selectedIds], temperature: bulkTemp },
-      {
-        onSuccess: () => {
-          toast.success(`טמפרטורה עודכנה ל-${selectedIds.size} לידים`);
-          setSelectedIds(new Set());
-          setBulkTemp('');
         },
         onError: (err) => toast.error(`שגיאה: ${err.message}`),
       }
@@ -216,15 +254,6 @@ export default function CRMLeads() {
             ))}
           </SelectContent>
         </Select>
-        <Select value={filterTemp} onValueChange={setFilterTemp}>
-          <SelectTrigger className="w-[120px]"><SelectValue placeholder="טמפרטורה" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">הכל</SelectItem>
-            {TEMPERATURE_OPTIONS.map(t => (
-              <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Bulk actions */}
@@ -254,18 +283,6 @@ export default function CRMLeads() {
           </Select>
           <Button size="sm" className="h-8 text-xs" onClick={handleBulkStage} disabled={!bulkStage || bulkAction.isPending}>
             עדכן שלב
-          </Button>
-
-          <Select value={bulkTemp} onValueChange={setBulkTemp}>
-            <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder="טמפרטורה..." /></SelectTrigger>
-            <SelectContent>
-              {TEMPERATURE_OPTIONS.map(t => (
-                <SelectItem key={t.value} value={t.value}>{t.emoji} {t.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button size="sm" className="h-8 text-xs" onClick={handleBulkTemp} disabled={!bulkTemp || bulkAction.isPending}>
-            עדכן
           </Button>
 
           <Button
@@ -303,11 +320,10 @@ export default function CRMLeads() {
               </th>
               <th className="p-3 text-right">טלפון</th>
               <th className="p-3 text-right">שלב</th>
-              <th className="p-3 text-right">טמפרטורה</th>
-              <th className="p-3 text-right">SLA</th>
+              <th className="p-3 text-right">הערה אחרונה</th>
               <th className="p-3 text-right">נציג</th>
               <th className="p-3 text-right">מקור</th>
-              <th className="p-3 text-right">שירות</th>
+              <th className="p-3 w-10"></th>
             </tr>
           </thead>
           <tbody>
@@ -328,12 +344,83 @@ export default function CRMLeads() {
                 </td>
                 <td className="p-3 font-medium">{lead.name || 'ללא שם'}</td>
                 <td className="p-3 text-slate-600 font-mono text-xs" dir="ltr">{lead.phone}</td>
-                <td className="p-3"><StatusBadge stage={lead.pipeline_stage} /></td>
-                <td className="p-3">{lead.temperature && <TemperatureBadge temperature={lead.temperature} />}</td>
-                <td className="p-3"><SLAIndicator deadline={lead.sla_deadline} /></td>
+                <td className="p-3" onClick={e => e.stopPropagation()}>
+                  <Select
+                    value={lead.pipeline_stage}
+                    onValueChange={(val) => handleInlineStageChange(lead.id, val)}
+                  >
+                    <SelectTrigger className="h-7 text-xs w-[130px] border-none bg-transparent hover:bg-slate-100 px-1">
+                      <StatusBadge stage={lead.pipeline_stage} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PIPELINE_STAGES.map(s => (
+                        <SelectItem key={s.slug} value={s.slug}>
+                          <span className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
+                            {s.label}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </td>
+                <td className="p-3 max-w-[200px]" onClick={e => e.stopPropagation()}>
+                  {editingNote === lead.id ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        value={noteText}
+                        onChange={e => setNoteText(e.target.value)}
+                        placeholder="כתוב הערה..."
+                        className="h-7 text-xs"
+                        autoFocus
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') handleSaveNote(lead.id);
+                          if (e.key === 'Escape') { setEditingNote(null); setNoteText(''); }
+                        }}
+                      />
+                      <button
+                        onClick={() => handleSaveNote(lead.id)}
+                        className="text-green-600 hover:text-green-700 p-0.5"
+                        disabled={addComm.isPending}
+                      >
+                        <Save size={14} />
+                      </button>
+                      <button
+                        onClick={() => { setEditingNote(null); setNoteText(''); }}
+                        className="text-slate-400 hover:text-slate-600 p-0.5"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      className="flex items-center gap-1 group"
+                      onClick={() => { setEditingNote(lead.id); setNoteText(''); }}
+                    >
+                      {lead.last_note ? (
+                        <span className="text-xs text-slate-500 truncate max-w-[160px]" title={lead.last_note}>
+                          {lead.last_note}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-slate-300 group-hover:text-slate-500">
+                          + הוסף הערה
+                        </span>
+                      )}
+                      <MessageSquare size={12} className="text-slate-300 group-hover:text-slate-500 flex-shrink-0" />
+                    </div>
+                  )}
+                </td>
                 <td className="p-3 text-xs text-slate-500">{lead.agent_name}</td>
                 <td className="p-3 text-xs text-slate-400 truncate max-w-[120px]" title={lead.source_page}>{lead.source_page}</td>
-                <td className="p-3 text-xs text-slate-500">{lead.service_type}</td>
+                <td className="p-3" onClick={e => e.stopPropagation()}>
+                  <button
+                    onClick={() => setDeleteTarget(lead)}
+                    className="p-1 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+                    title="מחק ליד"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -352,6 +439,16 @@ export default function CRMLeads() {
           onDeleted={() => setDeleteTarget(null)}
         />
       )}
+
+      <LostReasonDialog
+        open={showLostDialog}
+        onOpenChange={(v) => {
+          setShowLostDialog(v);
+          if (!v) { setPendingLostLead(null); setPendingLostStage(null); }
+        }}
+        onConfirm={handleLostConfirm}
+        isLoading={updateStage.isPending}
+      />
     </div>
   );
 }

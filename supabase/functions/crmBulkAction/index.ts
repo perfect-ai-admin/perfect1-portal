@@ -10,7 +10,10 @@ Deno.serve(async (req) => {
   try {
     const admin = await requireAdmin(req);
 
-    const { lead_ids, action, value } = await req.json();
+    const body = await req.json();
+    const { lead_ids, action } = body;
+    // Support both 'value' (generic) and specific field names from client
+    const value = body.value || body.new_stage || body.agent_id || body.temperature;
 
     if (!lead_ids || !Array.isArray(lead_ids) || lead_ids.length === 0) {
       return errorResponse('lead_ids array is required', 400, req);

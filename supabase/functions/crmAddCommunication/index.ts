@@ -11,11 +11,15 @@ Deno.serve(async (req) => {
     const admin = await requireAdmin(req);
 
     const {
-      lead_id, client_id, channel, direction, subject, content,
+      lead_id, client_id, channel, direction, subject, content, summary,
       duration_seconds, outcome, follow_up_needed, follow_up_date, next_step
     } = await req.json();
 
-    if (!channel || !direction) {
+    // For notes, direction defaults to 'internal'
+    const actualDirection = direction || (channel === 'note' ? 'internal' : null);
+    const actualContent = content || summary || null;
+
+    if (!channel || !actualDirection) {
       return errorResponse('channel and direction are required', 400, req);
     }
     if (!lead_id && !client_id) {
@@ -30,9 +34,9 @@ Deno.serve(async (req) => {
         client_id: client_id || null,
         agent_id: admin.id,
         channel,
-        direction,
+        direction: actualDirection,
         subject: subject || null,
-        content: content || null,
+        content: actualContent,
         duration_seconds: duration_seconds || null,
         outcome: outcome || null,
         follow_up_needed: follow_up_needed || false,

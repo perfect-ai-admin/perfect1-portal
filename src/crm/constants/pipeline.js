@@ -66,11 +66,13 @@ export const TASK_TYPE_OPTIONS = [
 ];
 
 export const LOST_REASON_CATEGORIES = [
-  { value: 'price', label: 'מחיר' },
-  { value: 'timing', label: 'תזמון' },
-  { value: 'competitor', label: 'מתחרה' },
-  { value: 'need', label: 'צורך' },
-  { value: 'trust', label: 'אמון' },
-  { value: 'communication', label: 'תקשורת' },
+  { value: 'already_has_accountant', label: 'כבר יש רואה חשבון' },
+  { value: 'price', label: 'יקר / לא שווה' },
+  { value: 'not_opening_business', label: 'לא פותח עסק כרגע' },
+  { value: 'timing', label: 'לא מתאים עכשיו — אולי בהמשך' },
+  { value: 'went_to_competitor', label: 'סגר עם מישהו אחר' },
+  { value: 'no_answer', label: 'לא עונה / לא חוזר' },
+  { value: 'wrong_number', label: 'מספר שגוי / לא רלוונטי' },
+  { value: 'just_info', label: 'רק רצה מידע — לא צריך שירות' },
   { value: 'other', label: 'אחר' },
 ];

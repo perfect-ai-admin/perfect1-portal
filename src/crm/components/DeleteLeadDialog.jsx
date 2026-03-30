@@ -18,7 +18,10 @@ export default function DeleteLeadDialog({ open, onOpenChange, lead, onDeleted }
           onOpenChange(false);
           onDeleted?.();
         },
-        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+        onError: (err) => {
+          console.error('Delete lead failed:', err);
+          toast.error(`שגיאה במחיקה: ${err.message}`);
+        },
       }
     );
   };

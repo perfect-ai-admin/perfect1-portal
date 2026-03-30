@@ -27,8 +27,8 @@ Deno.serve(async (req) => {
     if (getErr || !lead) return errorResponse('Lead not found', 404, req);
 
     if (hard_delete) {
-      // Delete related data first
-      await Promise.all([
+      // Delete related data first (ignore errors — tables may be empty or not exist)
+      await Promise.allSettled([
         supabaseAdmin.from('communications').delete().eq('lead_id', lead_id).eq('source', 'sales_portal'),
         supabaseAdmin.from('tasks').delete().eq('lead_id', lead_id).eq('source', 'sales_portal'),
         supabaseAdmin.from('status_history').delete().eq('entity_id', lead_id).eq('entity_type', 'lead').eq('source', 'sales_portal'),

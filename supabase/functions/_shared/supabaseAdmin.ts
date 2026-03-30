@@ -54,7 +54,7 @@ export async function findCustomer(identifier: string) {
 export async function requireAdmin(req: Request) {
   const customer = await getCustomer(req);
   if (!customer || customer.role !== 'admin') {
-    throw errorResponse('Forbidden: Admin access required', 403);
+    throw errorResponse('Forbidden: Admin access required', 403, req);
   }
   return customer;
 }

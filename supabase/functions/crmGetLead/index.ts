@@ -47,8 +47,9 @@ Deno.serve(async (req) => {
       lead.agent_id
         ? supabaseAdmin.from('ai_agents').select('id, name, phone, email').eq('id', lead.agent_id).single()
         : Promise.resolve({ data: null }),
+      // lost_reason_id may be a UUID (old) or slug string (new) — try both
       lead.lost_reason_id
-        ? supabaseAdmin.from('lost_reasons').select('*').eq('id', lead.lost_reason_id).single()
+        ? supabaseAdmin.from('lost_reasons').select('*').eq('id', lead.lost_reason_id).maybeSingle()
         : Promise.resolve({ data: null }),
     ]);
 

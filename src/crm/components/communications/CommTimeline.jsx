@@ -2,6 +2,7 @@ import React from 'react';
 import { Phone, MessageCircle, Mail, MessageSquare, Users, FileText, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
+import { STAGE_MAP } from '../../constants/pipeline';
 
 const CHANNEL_ICONS = {
   phone: Phone,
@@ -85,15 +86,21 @@ function CommItem({ comm }) {
   const dirIcon = comm.direction === 'inbound' ? ArrowDownLeft : ArrowUpRight;
   const DirIcon = dirIcon;
 
+  const isNote = comm.channel === 'note' || comm.direction === 'internal';
+
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-3">
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">{channelLabel}</span>
-          <DirIcon size={12} className="text-slate-400" />
-          <span className="text-xs text-slate-400">
-            {comm.direction === 'inbound' ? 'נכנס' : 'יוצא'}
-          </span>
+          {!isNote && (
+            <>
+              <DirIcon size={12} className="text-slate-400" />
+              <span className="text-xs text-slate-400">
+                {comm.direction === 'inbound' ? 'נכנס' : 'יוצא'}
+              </span>
+            </>
+          )}
           {comm.outcome && (
             <span className="text-xs bg-slate-100 px-2 py-0.5 rounded">
               {OUTCOME_LABELS[comm.outcome] || comm.outcome}
@@ -127,11 +134,11 @@ function HistoryItem({ item }) {
           <span className="text-slate-500">שינוי שלב: </span>
           {item.old_stage && (
             <>
-              <span className="font-medium">{item.old_stage}</span>
+              <span className="font-medium">{STAGE_MAP[item.old_stage]?.label || item.old_stage}</span>
               <span className="text-slate-400 mx-1">&larr;</span>
             </>
           )}
-          <span className="font-medium text-[#1E3A5F]">{item.new_stage}</span>
+          <span className="font-medium text-[#1E3A5F]">{STAGE_MAP[item.new_stage]?.label || item.new_stage}</span>
         </div>
         <span className="text-xs text-slate-400">
           {format(new Date(item.created_at), 'dd/MM HH:mm', { locale: he })}

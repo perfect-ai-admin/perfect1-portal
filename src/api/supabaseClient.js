@@ -2,13 +2,30 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://fnsnnezhikgqajdbtwoa.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuc25uZXpoaWtncWFqZGJ0d29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5Nzg5MDAsImV4cCI6MjA4NDU1NDkwMH0.EGdw5eJ-rJ9v1cMxS0EZHPcAvJ0FJ3Won38I8VbfrY4';
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuc25uZXpoaWtncWFqZGJ0d29hIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODk3ODkwMCwiZXhwIjoyMDg0NTU0OTAwfQ.ncDeHwwY3lD88i3dS98-7ETV4als0pzFn7Cz6UXC_RM';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Admin client for CRM mutations (bypasses RLS, no CORS issues)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 // Invoke a Supabase Edge Function by name
 export async function invokeFunction(name, payload = {}) {
   const { data, error } = await supabase.functions.invoke(name, { body: payload });
-  if (error) throw error;
+  if (error) {
+    // Extract meaningful error message from edge function response
+    let msg = error.message;
+    if (error.context && typeof error.context.json === 'function') {
+      try {
+        const body = await error.context.json();
+        msg = body?.error || body?.message || msg;
+      } catch {}
+    }
+    console.error(`[invokeFunction] ${name} failed:`, msg, error);
+    const enriched = new Error(msg);
+    enriched.originalError = error;
+    throw enriched;
+  }
   return data;
 }
 
