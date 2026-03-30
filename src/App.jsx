@@ -43,6 +43,8 @@ const OsekPaturLanding = lazyWithRetry(() => import('./pages/OsekPaturLanding'))
 const OsekPaturSteps = lazyWithRetry(() => import('./pages/OsekPaturSteps'));
 const OpenOsekPatur = lazyWithRetry(() => import('./pages/OpenOsekPatur'));
 const ThankYou = lazyWithRetry(() => import('./pages/ThankYou'));
+const PaturVsMursheLanding = lazyWithRetry(() => import('./pages/PaturVsMursheLanding'));
+const PaturVsMursheQuiz = lazyWithRetry(() => import('./pages/PaturVsMursheQuiz'));
 
 // Shared public pages (available on both domains)
 const About = lazyWithRetry(() => import('./pages/About'));
@@ -139,6 +141,8 @@ const PortalRoutes = () => (
     <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
     <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
     <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
+    <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
+    <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
     <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
 
     {/* Portal public pages */}
@@ -209,6 +213,8 @@ const DevRoutes = () => (
     <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
     <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
     <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
+    <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
+    <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
     <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
 
     {/* Portal public pages */}
