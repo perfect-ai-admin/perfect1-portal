@@ -214,7 +214,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
   const [showPhonePrompt, setShowPhonePrompt] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isSubmittingPhone, setIsSubmittingPhone] = useState(false);
-  
+
   const updateUserPhoneMutation = useUpdateUserPhone();
   const initialFocusRef = useRef(null);
 
@@ -256,6 +256,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
   const handleCreate = async () => {
     if (!selectedTemplate || !goalTitle) return;
+    if (isCreating) return;
+    setIsCreating(true);
 
     // Check if phone number is missing (only for new goals)
     if (!editingGoal && !showPhonePrompt) {
@@ -266,6 +268,7 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
         
         if (!hasPhone) {
           setShowPhonePrompt(true);
+          setIsCreating(false);
           return;
         }
       } catch (error) {
@@ -323,6 +326,8 @@ export default function GoalTemplatesFixed({ onCreateGoal, onClose, hasPrimaryGo
 
   const handlePhoneSubmit = async () => {
     if (!phoneNumber || phoneNumber.length < 9) return;
+    if (isCreating) return;
+    setIsCreating(true);
     setIsSubmittingPhone(true);
     try {
       await updateUserPhoneMutation.mutateAsync({ phone: phoneNumber });

@@ -143,6 +143,7 @@ export default function ProgressTab({ data, onNavigate, user }) {
   const completedMilestones = [];
   const currentMilestone = nextStep?.id;
   const whyMattersRef = React.useRef(null);
+  const isCreatingGoalRef = React.useRef(false);
   const [whyExpanded, setWhyExpanded] = useState(false);
   
   const quickStats = {
@@ -282,6 +283,13 @@ export default function ProgressTab({ data, onNavigate, user }) {
   };
 
   const handleGoalCreated = async (newGoal) => {
+    // Prevent duplicate creation
+    if (isCreatingGoalRef.current) {
+      console.warn('Goal creation already in progress, ignoring duplicate call');
+      return;
+    }
+    isCreatingGoalRef.current = true;
+
     // Close dialog IMMEDIATELY
     setShowGoalCreation(false);
     setGoalTemplateForStep(null);
@@ -344,6 +352,8 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
     } catch (error) {
       console.error("Error creating goal:", error);
+    } finally {
+      isCreatingGoalRef.current = false;
     }
   };
 
