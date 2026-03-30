@@ -346,7 +346,7 @@ export default function CRMLeads() {
                 <td className="p-3 text-slate-600 font-mono text-xs" dir="ltr">{lead.phone}</td>
                 <td className="p-3" onClick={e => e.stopPropagation()}>
                   <Select
-                    value={lead.pipeline_stage}
+                    value={lead.pipeline_stage || 'new_lead'}
                     onValueChange={(val) => handleInlineStageChange(lead.id, val)}
                   >
                     <SelectTrigger className="h-7 text-xs w-[130px] border-none bg-transparent hover:bg-slate-100 px-1">

@@ -162,7 +162,7 @@ export default function CRMLeadDetail() {
           {/* Stage selector */}
           <div className="bg-white rounded-lg border border-slate-200 p-4">
             <h3 className="text-sm font-medium text-slate-500 mb-2">שלב</h3>
-            <Select key={lead.pipeline_stage} value={lead.pipeline_stage} onValueChange={handleStageChange}>
+            <Select key={lead.pipeline_stage || 'new_lead'} value={lead.pipeline_stage || 'new_lead'} onValueChange={handleStageChange}>
               <SelectTrigger><SelectValue placeholder="בחר שלב..." /></SelectTrigger>
               <SelectContent>
                 {PIPELINE_STAGES.map(s => (

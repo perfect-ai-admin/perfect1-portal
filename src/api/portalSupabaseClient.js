@@ -17,6 +17,8 @@ export async function submitPortalLead(leadData) {
       profession: leadData.profession || null,
       source: leadData.source || 'sales_portal',
       source_page: leadData.source_page || null,
+      pipeline_stage: 'new_lead',
+      status: 'new',
       utm_source: leadData.utm_source || null,
       utm_medium: leadData.utm_medium || null,
       utm_campaign: leadData.utm_campaign || null,
