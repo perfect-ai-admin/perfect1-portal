@@ -163,12 +163,38 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
         setIframeLoading(false);
         return;
       }
-      setHandshakeData({ ...data, paymentId: data.paymentId });
+      // Build iframe URL with all params
+      const iframeParams = new URLSearchParams({
+        supplier: data.supplier,
+        sum: String(amount),
+        currency: '1',
+        cred_type: '1',
+        tranmode: 'A',
+        TranzilaPW: data.tranzilaPW || '',
+        o_cred_oid: data.paymentId || '',
+        notify_url_address: data.notifyUrl || '',
+        lang: 'il',
+        nologo: '1',
+        trBgColor: 'FFFFFF',
+        trTextColor: '1E3A5F',
+        trButtonColor: '27AE60',
+        buttonLabel: 'לתשלום',
+      });
+      if (user) {
+        iframeParams.set('contact', user.full_name || '');
+        iframeParams.set('email', user.email || '');
+        iframeParams.set('pdesc', product.name || '');
+      }
+      if (isRecurring) {
+        iframeParams.set('recur_payments', '998');
+        iframeParams.set('recur_sum', String(amount));
+        iframeParams.set('recur_transaction', '4_approved');
+        iframeParams.set('recur_start_date', recurStartDate);
+      }
+      const iframeUrl = `https://direct.tranzila.com/${data.supplier}/newiframe.php?${iframeParams.toString()}`;
+      setHandshakeData({ ...data, paymentId: data.paymentId, iframeUrl });
       setPaymentStep('payment');
-      setTimeout(() => {
-        document.getElementById('tranzila-sub-form')?.submit();
-        setIframeLoading(false);
-      }, 300);
+      setIframeLoading(false);
     } catch (error) {
       console.error('Payment init error:', error);
       toast.error('שגיאה בהתחלת תהליך התשלום');
@@ -262,58 +288,12 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
                 {product.name} – ₪{amount}
               </p>
 
-              {/* Hidden form */}
-              <form
-                id="tranzila-sub-form"
-                action={`https://direct.tranzila.com/${handshakeData.supplier}/iframenew.php`}
-                target="tranzila-sub-iframe"
-                method="POST"
-                style={{ display: 'none' }}
-              >
-                <input type="hidden" name="sum" value={String(amount)} />
-                <input type="hidden" name="currency" value="1" />
-                <input type="hidden" name="cred_type" value="1" />
-                <input type="hidden" name="tranmode" value="A" />
-                <input type="hidden" name="TranzilaPW" value={handshakeData.tranzilaPW || ''} />
-                <input type="hidden" name="myid" value="" />
-                <input type="hidden" name="myid_lable" value="תעודת זהות" />
-                <input type="hidden" name="o_cred_oid" value={handshakeData.paymentId || ''} />
-                {handshakeData.notifyUrl && (
-                  <input type="hidden" name="notify_url_address" value={handshakeData.notifyUrl} />
-                )}
-                <input type="hidden" name="success_url_address" value="about:blank" />
-                <input type="hidden" name="fail_url_address" value="about:blank" />
-                <input type="hidden" name="lang" value="il" />
-                <input type="hidden" name="nologo" value="1" />
-                <input type="hidden" name="trBgColor" value="FFFFFF" />
-                <input type="hidden" name="trTextColor" value="1E3A5F" />
-                <input type="hidden" name="trButtonColor" value="27AE60" />
-                <input type="hidden" name="buttonLabel" value="לתשלום" />
-                <input type="hidden" name="accessibility" value="2" />
-
-                {isRecurring && (
-                  <>
-                    <input type="hidden" name="recur_payments" value="998" />
-                    <input type="hidden" name="recur_sum" value={String(amount)} />
-                    <input type="hidden" name="recur_transaction" value="4_approved" />
-                    <input type="hidden" name="recur_start_date" value={recurStartDate} />
-                  </>
-                )}
-
-                {user && (
-                  <>
-                    <input type="hidden" name="contact" value={user.full_name || ''} />
-                    <input type="hidden" name="email" value={user.email || ''} />
-                    <input type="hidden" name="pdesc" value={product.name} />
-                  </>
-                )}
-              </form>
-
-              {/* Iframe */}
+              {/* Iframe — loads Tranzila payment form directly */}
               <div className="w-full rounded-xl overflow-hidden border border-gray-200 bg-white" style={{ minHeight: '460px' }}>
                 <iframe
                   id="tranzila-sub-iframe"
                   name="tranzila-sub-iframe"
+                  src={handshakeData.iframeUrl}
                   allowpaymentrequest="true"
                   allow="payment"
                   style={{ width: '100%', height: '460px', border: 'none' }}
