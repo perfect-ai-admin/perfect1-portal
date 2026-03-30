@@ -8,34 +8,55 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { SupabaseAuthProvider as AuthProvider, useAuth } from '@/lib/SupabaseAuthContext';
 
+// Retry wrapper for lazy imports — handles stale chunk errors after deploy
+function lazyWithRetry(importFn) {
+  return React.lazy(() =>
+    importFn().catch(() => {
+      // Chunk failed to load (likely stale after deploy) — reload once
+      const key = 'chunk_reload';
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, '1');
+        window.location.reload();
+      }
+      return importFn();
+    })
+  );
+}
+
 // Dynamic route pages
-const GoalPage = React.lazy(() => import('@/pages/GoalPage'));
+const GoalPage = lazyWithRetry(() => import('@/pages/GoalPage'));
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import DigitalCard from './pages/DigitalBusinessCard';
 import { HelmetProvider } from 'react-helmet-async';
 import './portal/styles/portal.css';
 import { isClientSubdomain } from '@/utils/subdomain';
+import { isPortalDomain, isAppDomain, isLocalDev } from '@/utils/domain';
 
 // Lazy-load SubdomainPage — only loaded when accessing a client subdomain
-const SubdomainPage = React.lazy(() => import('@/pages/SubdomainPage'));
+const SubdomainPage = lazyWithRetry(() => import('@/pages/SubdomainPage'));
 
-const PortalHomePage = React.lazy(() => import('./portal/templates/PortalHomePage'));
-const CategoryHubPage = React.lazy(() => import('./portal/templates/CategoryHubPage'));
-const SEOArticlePage = React.lazy(() => import('./portal/templates/SEOArticlePage'));
-const ComparisonPage = React.lazy(() => import('./portal/templates/ComparisonPage'));
-const OsekPaturLanding = React.lazy(() => import('./pages/OsekPaturLanding'));
-const OsekPaturSteps = React.lazy(() => import('./pages/OsekPaturSteps'));
-const OpenOsekPatur = React.lazy(() => import('./pages/OpenOsekPatur'));
-const ThankYou = React.lazy(() => import('./pages/ThankYou'));
+const PortalHomePage = lazyWithRetry(() => import('./portal/templates/PortalHomePage'));
+const CategoryHubPage = lazyWithRetry(() => import('./portal/templates/CategoryHubPage'));
+const SEOArticlePage = lazyWithRetry(() => import('./portal/templates/SEOArticlePage'));
+const ComparisonPage = lazyWithRetry(() => import('./portal/templates/ComparisonPage'));
+const OsekPaturLanding = lazyWithRetry(() => import('./pages/OsekPaturLanding'));
+const OsekPaturSteps = lazyWithRetry(() => import('./pages/OsekPaturSteps'));
+const OpenOsekPatur = lazyWithRetry(() => import('./pages/OpenOsekPatur'));
+const ThankYou = lazyWithRetry(() => import('./pages/ThankYou'));
+
+// Shared public pages (available on both domains)
+const About = lazyWithRetry(() => import('./pages/About'));
+const Privacy = lazyWithRetry(() => import('./pages/Privacy'));
+const Terms = lazyWithRetry(() => import('./pages/Terms'));
 
 // CRM Pages
-const CRMLayout = React.lazy(() => import('./crm/pages/CRMLayout'));
-const CRMPipeline = React.lazy(() => import('./crm/pages/CRMPipeline'));
-const CRMLeadDetail = React.lazy(() => import('./crm/pages/CRMLeadDetail'));
-const CRMLeads = React.lazy(() => import('./crm/pages/CRMLeads'));
-const CRMDashboard = React.lazy(() => import('./crm/pages/CRMDashboard'));
-const CRMTasks = React.lazy(() => import('./crm/pages/CRMTasks'));
-const CRMSettings = React.lazy(() => import('./crm/pages/CRMSettings'));
+const CRMLayout = lazyWithRetry(() => import('./crm/pages/CRMLayout'));
+const CRMPipeline = lazyWithRetry(() => import('./crm/pages/CRMPipeline'));
+const CRMLeadDetail = lazyWithRetry(() => import('./crm/pages/CRMLeadDetail'));
+const CRMLeads = lazyWithRetry(() => import('./crm/pages/CRMLeads'));
+const CRMDashboard = lazyWithRetry(() => import('./crm/pages/CRMDashboard'));
+const CRMTasks = lazyWithRetry(() => import('./crm/pages/CRMTasks'));
+const CRMSettings = lazyWithRetry(() => import('./crm/pages/CRMSettings'));
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -111,47 +132,113 @@ const PortalWrapper = ({ children }) => (
   </HelmetProvider>
 );
 
+// Portal-only routes (perfect1.co.il)
+const PortalRoutes = () => (
+  <Routes>
+    {/* Landing pages */}
+    <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
+    <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
+    <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
+    <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
+
+    {/* Portal public pages */}
+    <Route path="/" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
+    <Route path="/opening-business-israel" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
+    <Route path="/osek-patur" element={<PortalWrapper><CategoryHubPage category="osek-patur" /></PortalWrapper>} />
+    <Route path="/osek-patur/:slug" element={<PortalWrapper><SEOArticlePage category="osek-patur" /></PortalWrapper>} />
+    <Route path="/osek-murshe" element={<PortalWrapper><CategoryHubPage category="osek-murshe" /></PortalWrapper>} />
+    <Route path="/osek-murshe/:slug" element={<PortalWrapper><SEOArticlePage category="osek-murshe" /></PortalWrapper>} />
+    <Route path="/hevra-bam" element={<PortalWrapper><CategoryHubPage category="hevra-bam" /></PortalWrapper>} />
+    <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
+    <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
+    <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
+    <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
+    <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
+    <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
+
+    {/* Shared public pages */}
+    <Route path="/About" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
+    <Route path="/Terms" element={<Suspense fallback={<PageLoader />}><Terms /></Suspense>} />
+    <Route path="/Privacy" element={<Suspense fallback={<PageLoader />}><Privacy /></Suspense>} />
+
+    <Route path="/*" element={<PageNotFound />} />
+  </Routes>
+);
+
+// App-only routes (perfect-dashboard.com)
+const AppOnlyRoutes = () => (
+  <Routes>
+    {/* Digital card — public */}
+    <Route path="/card/:slug" element={<DigitalCard />} />
+    <Route path="/DigitalCard" element={<DigitalCard />} />
+
+    {/* CRM Routes — protected by auth inside CRMLayout */}
+    <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
+      <Route index element={<CRMPipeline />} />
+      <Route path="leads" element={<CRMLeads />} />
+      <Route path="leads/:id" element={<CRMLeadDetail />} />
+      <Route path="dashboard" element={<CRMDashboard />} />
+      <Route path="tasks" element={<CRMTasks />} />
+      <Route path="settings" element={<CRMSettings />} />
+    </Route>
+
+    {/* All other app routes (login, APP, pages, etc.) */}
+    <Route path="/*" element={<AuthenticatedApp />} />
+  </Routes>
+);
+
+// Localhost — all routes available for development
+const DevRoutes = () => (
+  <Routes>
+    {/* Digital card — public */}
+    <Route path="/card/:slug" element={<DigitalCard />} />
+    <Route path="/DigitalCard" element={<DigitalCard />} />
+
+    {/* Landing pages */}
+    <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
+    <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
+    <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
+    <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
+
+    {/* Portal public pages */}
+    <Route path="/portal" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
+    <Route path="/opening-business-israel" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
+    <Route path="/osek-patur" element={<PortalWrapper><CategoryHubPage category="osek-patur" /></PortalWrapper>} />
+    <Route path="/osek-patur/:slug" element={<PortalWrapper><SEOArticlePage category="osek-patur" /></PortalWrapper>} />
+    <Route path="/osek-murshe" element={<PortalWrapper><CategoryHubPage category="osek-murshe" /></PortalWrapper>} />
+    <Route path="/osek-murshe/:slug" element={<PortalWrapper><SEOArticlePage category="osek-murshe" /></PortalWrapper>} />
+    <Route path="/hevra-bam" element={<PortalWrapper><CategoryHubPage category="hevra-bam" /></PortalWrapper>} />
+    <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
+    <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
+    <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
+    <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
+    <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
+    <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
+
+    {/* CRM Routes */}
+    <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
+      <Route index element={<CRMPipeline />} />
+      <Route path="leads" element={<CRMLeads />} />
+      <Route path="leads/:id" element={<CRMLeadDetail />} />
+      <Route path="dashboard" element={<CRMDashboard />} />
+      <Route path="tasks" element={<CRMTasks />} />
+      <Route path="settings" element={<CRMSettings />} />
+    </Route>
+
+    {/* App routes (login, APP, etc.) */}
+    <Route path="/*" element={<AuthenticatedApp />} />
+  </Routes>
+);
+
 const AppRoutes = () => {
-  return (
-    <Routes>
-      {/* Standalone public page - completely outside auth & layout */}
-      <Route path="/card/:slug" element={<DigitalCard />} />
-      <Route path="/DigitalCard" element={<DigitalCard />} />
+  // Portal domain (perfect1.co.il) — only portal/SEO routes
+  if (isPortalDomain()) return <PortalRoutes />;
 
-      {/* Landing pages - standalone (no auth, no portal wrapper) */}
-      <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
-      <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
-      <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
-      <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
+  // App domain (perfect-dashboard.com) — only app/CRM routes
+  if (isAppDomain()) return <AppOnlyRoutes />;
 
-      {/* Portal public pages */}
-      <Route path="/" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
-      <Route path="/opening-business-israel" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
-      <Route path="/osek-patur" element={<PortalWrapper><CategoryHubPage category="osek-patur" /></PortalWrapper>} />
-      <Route path="/osek-patur/:slug" element={<PortalWrapper><SEOArticlePage category="osek-patur" /></PortalWrapper>} />
-      <Route path="/osek-murshe" element={<PortalWrapper><CategoryHubPage category="osek-murshe" /></PortalWrapper>} />
-      <Route path="/osek-murshe/:slug" element={<PortalWrapper><SEOArticlePage category="osek-murshe" /></PortalWrapper>} />
-      <Route path="/hevra-bam" element={<PortalWrapper><CategoryHubPage category="hevra-bam" /></PortalWrapper>} />
-      <Route path="/hevra-bam/:slug" element={<PortalWrapper><SEOArticlePage category="hevra-bam" /></PortalWrapper>} />
-      <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
-      <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
-      <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
-      <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
-      <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
-
-      {/* CRM Routes — protected by auth inside CRMLayout */}
-      <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
-        <Route index element={<CRMPipeline />} />
-        <Route path="leads" element={<CRMLeads />} />
-        <Route path="leads/:id" element={<CRMLeadDetail />} />
-        <Route path="dashboard" element={<CRMDashboard />} />
-        <Route path="tasks" element={<CRMTasks />} />
-        <Route path="settings" element={<CRMSettings />} />
-      </Route>
-
-      <Route path="/*" element={<AuthenticatedApp />} />
-    </Routes>
-  );
+  // Localhost — everything available for development
+  return <DevRoutes />;
 };
 
 
