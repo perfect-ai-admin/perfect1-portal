@@ -151,7 +151,7 @@ function LeadForm({
         </Button>
       </form>
 
-      <p className={`text-xs text-center mt-2 ${isHero ? 'text-white/60' : 'text-gray-400'}`}>
+      <p className={`text-xs text-center mt-2 ${variant === 'hero' ? 'text-white/60' : 'text-gray-400'}`}>
         🔒 ללא התחייבות · המידע שלך מאובטח · נחזור אליך תוך דקות
       </p>
     </div>
