@@ -48,6 +48,16 @@ function discoverRoutes() {
     }
   }
 
+  // Public pages (products, blog, static)
+  const publicPages = [
+    '/About', '/FAQ', '/Pricing', '/Features', '/Privacy', '/Terms',
+    '/SmartLogo', '/DigitalBusinessCard', '/BusinessPresentation', '/BusinessSticker',
+    '/OsekPaturLanding', '/OsekPaturSteps',
+    '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
+    '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
+  ];
+  routes.push(...publicPages);
+
   return routes;
 }
 

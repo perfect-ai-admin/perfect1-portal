@@ -30,7 +30,7 @@ export async function invokeFunction(name, payload = {}) {
 }
 
 // --- Multi-tenancy: project source identifier ---
-const PROJECT_SOURCE = 'sales_portal';
+const PROJECT_SOURCE = 'main';
 
 // Tables that are shared reference data — no source filtering needed
 const SHARED_TABLES = new Set([

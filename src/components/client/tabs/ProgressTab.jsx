@@ -183,13 +183,11 @@ export default function ProgressTab({ data, onNavigate, user }) {
 
   const handleQuestionnaireComplete = async () => {
     setShowQuestionnaire(false);
-    toast.success('התוכנית העסקית שלך מוכנה! מרענן...');
-    // Invalidate all journey-related queries to force refetch
+    toast.success('התוכנית העסקית שלך מוכנה!');
+    // Invalidate all journey-related queries to force refetch (no page reload needed)
     await queryClient.invalidateQueries({ queryKey: JOURNEY_QUERY_KEY });
     await queryClient.invalidateQueries({ queryKey: queryKeys.user.me });
     await queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
-    // Force page reload to ensure fresh data
-    setTimeout(() => window.location.reload(), 500);
   };
 
   const handleResetJourney = async () => {
@@ -304,18 +302,23 @@ export default function ProgressTab({ data, onNavigate, user }) {
         is_first_goal: isFirstGoalEver
       });
 
+      // Trigger mentor WhatsApp message IMMEDIATELY (don't wait for AI plan)
+      try {
+        invokeFunction('webhookGoalMentor', {
+          event_type: 'goal_started',
+          customer_id: customerId,
+          goal_id: createdGoal.id,
+          data: { goal_title: newGoal.title || createdGoal.title }
+        }).catch(mentorErr => console.warn('Mentor webhook failed (non-fatal):', mentorErr));
+      } catch (mentorErr) {
+        console.warn('Mentor webhook failed (non-fatal):', mentorErr);
+      }
+
       // Generate AI plan in background without blocking
       setTimeout(async () => {
         try {
           const activeGoalsCount = activeGoals?.filter(g => g.status === 'active').length || 0;
 
-          // Call backend function via direct invoke (because this specific flow handles existing ID and complex context, 
-          // and useGenerateGoalPlan hook might be too simple/different signature. 
-          // Or we can use the hook if it supports passing goalId.
-          // The current hook useGenerateGoalPlan expects goalData and returns data.
-          // I'll stick to direct invoke here for the specific "background update" pattern,
-          // BUT invalidate queries at the end.
-          
           await invokeFunction('generateGoalPlan', {
             goalId: createdGoal.id,
             title: createdGoal.title,

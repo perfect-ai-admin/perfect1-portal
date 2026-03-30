@@ -271,13 +271,26 @@ export default function MentorOverview() {
               });
 
               // Update Goal with tasks and status
-              await entities.UserGoal.update(activeFirstGoal.id, { 
+              await entities.UserGoal.update(activeFirstGoal.id, {
                   flow_step: 8,
                   tasks: tasks,
                   plan_summary: finalData?.insight || 'יצאנו לדרך עם מיקרו-פעולה ראשונה!',
                   status: 'active'
               });
-              
+
+              // Trigger mentor WhatsApp message for first goal completion
+              try {
+                const { invokeFunction } = await import('@/api/supabaseClient');
+                await invokeFunction('webhookGoalMentor', {
+                  event_type: 'goal_started',
+                  customer_id: activeFirstGoal.customer_id,
+                  goal_id: activeFirstGoal.id,
+                  data: { goal_title: activeFirstGoal.title }
+                });
+              } catch (mentorErr) {
+                console.warn('Mentor webhook failed (non-fatal):', mentorErr);
+              }
+
               refetchGoals();
               toast.success('התוכנית מוכנה! בהצלחה בצעד הראשון');
             }} 
