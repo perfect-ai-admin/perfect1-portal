@@ -1,9 +1,7 @@
-# robots.txt — perfect1.co.il
+# robots.txt — www.perfect1.co.il
 # Updated: 2026-03-29
 
 User-agent: *
-
-# === Portal SEO Pages — Allow ===
 Allow: /
 Allow: /opening-business-israel
 Allow: /osek-patur
@@ -12,73 +10,58 @@ Allow: /hevra-bam
 Allow: /sgirat-tikim
 Allow: /guides
 Allow: /compare
-
-# === Public Pages — Allow ===
 Allow: /About
 Allow: /FAQ
 Allow: /Pricing
-Allow: /Features
 Allow: /Privacy
 Allow: /Terms
-
-# === Product Pages — Allow ===
+Allow: /Features
 Allow: /SmartLogo
 Allow: /DigitalBusinessCard
-Allow: /BrandedLandingPage
 Allow: /BusinessPresentation
 Allow: /BusinessSticker
-Allow: /SocialDesigns
-Allow: /AiMentor
-Allow: /Branding
-
-# === Blog — Allow ===
-Allow: /blog/
-
-# === Landing Pages ===
 Allow: /OsekPaturLanding
+Allow: /OsekPaturSteps
+Allow: /blog
 
-# === System / Admin — Disallow ===
-Disallow: /login
-Disallow: /AgentLogin
+# Admin & CRM pages
 Disallow: /AdminDashboard
 Disallow: /AdminUsers
 Disallow: /AgentCRM
+Disallow: /AgentLogin
 Disallow: /AgentsManager
 Disallow: /LeadsAdmin
 Disallow: /CloseOsekPaturCRM
-
-# === CRM — Disallow ===
 Disallow: /CRM
 Disallow: /CRM/
 
-# === App / Authenticated — Disallow ===
-Disallow: /APP
+# Internal app pages
+Disallow: /login
 Disallow: /Checkout
 Disallow: /CheckoutSuccess
-Disallow: /MyProducts
-Disallow: /Summary
-Disallow: /DigitalCard
-Disallow: /card/
+Disallow: /APP
+Disallow: /AiMentor
+Disallow: /AvatarAi
+Disallow: /BrandedQuote
+Disallow: /BrandedLandingPage
 Disallow: /CreditsPage
-Disallow: /GoalPage
 Disallow: /Goal
+Disallow: /GoalPage
+Disallow: /Home
 Disallow: /InviteUser
 Disallow: /JourneyDashboard
 Disallow: /LandingPageManager
 Disallow: /LandingPagePreview
 Disallow: /LogoProjectPage
 Disallow: /LogoThankYou
-
-# === Thank You / Conversion — Disallow ===
-Disallow: /ThankYou
-Disallow: /open-osek-patur
-
-# === Duplicate Content — Disallow ===
-Disallow: /Home
-Disallow: /OsekPaturSteps
-Disallow: /S
-Disallow: /AvatarAi
-Disallow: /BrandedQuote
+Disallow: /MyProducts
 Disallow: /PricingPerfectBizAI
+Disallow: /S
+Disallow: /Summary
+Disallow: /ThankYou
+Disallow: /SocialDesigns
+Disallow: /Branding
+Disallow: /open-osek-patur
+Disallow: /card
 
 Sitemap: https://www.perfect1.co.il/sitemap.xml

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { auth } from '@/api/supabaseClient';
 
+import { Helmet } from 'react-helmet-async';
 import ClientFooter from './components/client/ClientFooter';
 import CriticalCSS from './components/performance/CriticalCSS';
 import ResourceHints from './components/performance/ResourceHints';
@@ -90,6 +91,9 @@ export default function Layout({ children, currentPageName }) {
 
     return (
       <HelmetProvider>
+        <Helmet>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
         <CriticalCSS />
         <ResourceHints priorityImages={['/logo.png']} />
         <WebVitalsMonitor />

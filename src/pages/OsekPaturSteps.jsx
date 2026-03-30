@@ -366,12 +366,12 @@ export default function OsekPaturSteps() {
           <title>איך פותחים עוסק פטור – המדריך המלא לפתיחת עוסק פטור בישראל</title>
           <meta name="description" content="רוצים לפתוח עוסק פטור? במדריך הזה תגלו איך פותחים עוסק פטור בישראל, מהם השלבים ומה צריך להכין. בדקו גם איך לפתוח עוסק פטור בקלות." />
           <meta name="keywords" content="איך פותחים עוסק פטור, שלבים לפתיחת עוסק פטור, איך לפתוח עוסק פטור, פתיחת עוסק פטור מדריך, איך לפתוח עוסק פטור בישראל, פתיחת עוסק פטור, עוסק פטור שלבים" />
-          <link rel="canonical" href="https://perfect1.co.il/OsekPaturSteps" />
+          <link rel="canonical" href="https://www.perfect1.co.il/OsekPaturSteps" />
           <meta property="og:title" content="איך פותחים עוסק פטור – המדריך המלא + אפשרות לפתוח בקלות" />
           <meta property="og:description" content="המדריך המלא לפתיחת עוסק פטור בישראל: שלבים, מסמכים, טיפים ואפשרות לליווי מקצועי שחוסך זמן וטעויות." />
           <meta property="og:type" content="article" />
-          <meta property="og:url" content="https://perfect1.co.il/OsekPaturSteps" />
-          <meta property="og:image" content="https://perfect1.co.il/og-image.png" />
+          <meta property="og:url" content="https://www.perfect1.co.il/OsekPaturSteps" />
+          <meta property="og:image" content="https://www.perfect1.co.il/og-image.png" />
           <meta property="og:locale" content="he_IL" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="robots" content="index, follow" />

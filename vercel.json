@@ -1,5 +1,13 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/:path(.*)",
+      "has": [{ "type": "host", "value": "perfect1.co.il" }],
+      "destination": "https://www.perfect1.co.il/:path",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/osek-patur", "destination": "/osek-patur/index.html" },
     { "source": "/osek-patur/:slug", "destination": "/osek-patur/:slug/index.html" },

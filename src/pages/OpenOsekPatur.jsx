@@ -308,12 +308,12 @@ export default function OpenOsekPatur() {
           <title>פתיחת עוסק פטור בישראל – בליווי מקצועי | פרפקט וואן</title>
           <meta name="description" content="בדקו האם עוסק פטור מתאים לכם וקבלו הכוונה מקצועית בתהליך פתיחת העסק מול הרשויות. ליווי צמוד, חיסכון בזמן, בלי בירוקרטיה." />
           <meta name="keywords" content="פתיחת עוסק פטור, עוסק פטור בישראל, פתיחת עסק, ליווי מקצועי עוסק פטור, פתיחת תיק עוסק פטור" />
-          <link rel="canonical" href="https://perfect1.co.il/open-osek-patur" />
+          <link rel="canonical" href="https://www.perfect1.co.il/open-osek-patur" />
           <meta property="og:title" content="פתיחת עוסק פטור בישראל – בליווי מקצועי" />
           <meta property="og:description" content="בדקו התאמה וקבלו הכוונה מקצועית לפתיחת עוסק פטור. ליווי צמוד מול הרשויות, בלי בירוקרטיה." />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://perfect1.co.il/open-osek-patur" />
-          <meta property="og:image" content="https://perfect1.co.il/og-image.png" />
+          <meta property="og:url" content="https://www.perfect1.co.il/open-osek-patur" />
+          <meta property="og:image" content="https://www.perfect1.co.il/og-image.png" />
           <meta property="og:locale" content="he_IL" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="robots" content="noindex, nofollow" />

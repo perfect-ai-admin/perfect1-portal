@@ -382,12 +382,12 @@ export default function OsekPaturLanding() {
           <title>פתיחת עוסק פטור אונליין | ליווי מקצועי מהתחלה ועד הסוף - פרפקט וואן</title>
           <meta name="description" content="רוצים לפתוח עוסק פטור? קבלו ליווי מקצועי מלא — בדיקת התאמה חינם, הכוונה לפתיחת תיקים במס הכנסה, מע״מ וביטוח לאומי. בלי בירוקרטיה, בלי טעויות. התחילו עכשיו!" />
           <meta name="keywords" content="פתיחת עוסק פטור, איך פותחים עוסק פטור, פתיחת עוסק פטור אונליין, כמה עולה לפתוח עוסק פטור, פתיחת תיק עוסק פטור, פתיחת עוסק פטור מס הכנסה, פתיחת עוסק פטור ביטוח לאומי, עוסק פטור למתחילים" />
-          <link rel="canonical" href="https://perfect1.co.il/OsekPaturLanding" />
+          <link rel="canonical" href="https://www.perfect1.co.il/OsekPaturLanding" />
           <meta property="og:title" content="פתיחת עוסק פטור אונליין — ליווי מקצועי מ-א׳ ועד ת׳" />
           <meta property="og:description" content="בדיקת התאמה חינם לפתיחת עוסק פטור. ליווי מקצועי, בלי בירוקרטיה, בלי טעויות. השאירו פרטים ונחזור אליכם תוך דקות." />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://perfect1.co.il/OsekPaturLanding" />
-          <meta property="og:image" content="https://perfect1.co.il/og-image.png" />
+          <meta property="og:url" content="https://www.perfect1.co.il/OsekPaturLanding" />
+          <meta property="og:image" content="https://www.perfect1.co.il/og-image.png" />
           <meta property="og:locale" content="he_IL" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="robots" content="index, follow" />

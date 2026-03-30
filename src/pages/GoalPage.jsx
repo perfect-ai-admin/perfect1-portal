@@ -84,7 +84,8 @@ export default function GoalPage() {
       <Helmet>
         <title>{`${goal.name} | Perfect One`}</title>
         <meta name="description" content={goal.description} />
-        <link rel="canonical" href={`https://perfect-dashboard.com/goal/${goalCode}`} />
+        <link rel="canonical" href={`https://www.perfect1.co.il/GoalPage`} />
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       <main className="min-h-screen bg-[#F8F9FA] py-8">

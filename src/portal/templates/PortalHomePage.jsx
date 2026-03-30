@@ -43,7 +43,7 @@ export default function PortalHomePage() {
       <SEOHead
         title="פתיחת עסק בישראל — מדריכים, מידע וליווי אישי | פרפקט וואן"
         description="כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד. מדריכים מקיפים + ליווי אישי."
-        canonical="/opening-business-israel"
+        canonical="/"
         keywords="פתיחת עסק, עוסק פטור, עוסק מורשה, חברה בע״מ, סגירת תיקים, פתיחת עסק בישראל"
       />
       <SchemaMarkup type="home" faqItems={HOME_FAQ} />
