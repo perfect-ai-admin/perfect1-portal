@@ -1,20 +1,15 @@
 /**
- * Portal Supabase Client — separate database for perfect1.co.il
- * Used only for lead submissions from the portal/landing pages.
+ * Portal Lead Submission — writes to the MAIN database so leads appear in CRM.
+ * Previously used a separate portal DB, but that caused leads to be invisible in CRM.
  */
-import { createClient } from '@supabase/supabase-js';
-
-const portalSupabaseUrl = 'https://rtlpqjqdmomyptcdkmrq.supabase.co';
-const portalSupabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Njc0NjMsImV4cCI6MjA5MDQ0MzQ2M30.NceenXJ43_B3NN9MVz4b5wR4t1Si0hRfYedfmtoujXQ';
-
-export const portalSupabase = createClient(portalSupabaseUrl, portalSupabaseAnonKey);
+import { supabaseAdmin } from './supabaseClient';
 
 /**
- * Submit a lead to the portal database.
- * Direct insert — no Edge Function needed.
+ * Submit a lead to the main database (visible in CRM).
+ * Uses supabaseAdmin to bypass RLS.
  */
 export async function submitPortalLead(leadData) {
-  const { error } = await portalSupabase
+  const { error } = await supabaseAdmin
     .from('leads')
     .insert({
       name: leadData.name,
