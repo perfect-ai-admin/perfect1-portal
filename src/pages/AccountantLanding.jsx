@@ -60,17 +60,29 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
     }
   };
 
-  const isHero = variant === 'hero';
+  const isDark = variant === 'final';
+  const isLight = variant === 'hero' || variant === 'mid';
+
+  const wrapperClass = isDark
+    ? 'bg-white/10 backdrop-blur-sm border border-white/20'
+    : 'bg-white shadow-2xl border border-gray-100';
+
+  const titleClass = isDark ? 'text-white' : 'text-gray-900';
+  const subtitleClass = isDark ? 'text-white/70' : 'text-gray-500';
+  const inputClass = isDark
+    ? 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-green-400'
+    : 'bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500';
+  const trustClass = isDark ? 'text-white/50' : 'text-gray-400';
 
   return (
-    <div id={id} className={`rounded-2xl p-5 sm:p-7 ${isHero ? 'bg-white shadow-2xl border border-gray-100' : 'bg-white/10 backdrop-blur-sm border border-white/20'}`}>
+    <div id={id} className={`rounded-2xl p-5 sm:p-7 ${wrapperClass}`}>
       {title && (
-        <h3 className={`text-lg sm:text-xl font-bold mb-1 text-center ${isHero ? 'text-gray-900' : 'text-white'}`}>
+        <h3 className={`text-lg sm:text-xl font-bold mb-1 text-center ${titleClass}`}>
           {title}
         </h3>
       )}
       {subtitle && (
-        <p className={`text-sm text-center mb-4 ${isHero ? 'text-gray-500' : 'text-white/70'}`}>{subtitle}</p>
+        <p className={`text-sm text-center mb-4 ${subtitleClass}`}>{subtitle}</p>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-3">
@@ -79,10 +91,7 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
           onChange={(e) => setForm(p => ({ ...p, name: e.target.value }))}
           placeholder="שם מלא"
           required
-          className={`h-13 rounded-xl text-base ${isHero
-            ? 'bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-            : 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-green-400'
-          }`}
+          className={`h-13 rounded-xl text-base ${inputClass}`}
         />
         <Input
           value={form.phone}
@@ -90,10 +99,7 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
           placeholder="טלפון"
           type="tel"
           required
-          className={`h-13 rounded-xl text-base ${isHero
-            ? 'bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500'
-            : 'bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-green-400'
-          }`}
+          className={`h-13 rounded-xl text-base ${inputClass}`}
         />
         <Button
           type="submit"
@@ -106,7 +112,7 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
 
       {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
 
-      <div className={`flex items-center justify-center gap-4 mt-3 text-xs ${isHero ? 'text-gray-400' : 'text-white/50'}`}>
+      <div className={`flex items-center justify-center gap-4 mt-3 text-xs ${trustClass}`}>
         <span className="inline-flex items-center gap-1"><Shield className="w-3.5 h-3.5" />בדיקה ללא התחייבות</span>
         <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" />מענה תוך דקות</span>
       </div>
