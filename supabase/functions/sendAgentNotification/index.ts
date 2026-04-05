@@ -29,7 +29,7 @@ async function sendViaResend(to: string, subject: string, html: string): Promise
 
 async function sendViaWhatsApp(phone: string, message: string): Promise<void> {
   const instanceId = Deno.env.get('GREENAPI_INSTANCE_ID');
-  const token = Deno.env.get('GREENAPI_TOKEN');
+  const token = Deno.env.get('GREENAPI_API_TOKEN');
   if (!instanceId || !token) throw new Error('GreenAPI credentials not configured');
 
   const chatId = phone.replace('+', '') + '@c.us';

@@ -107,19 +107,22 @@ Deno.serve(async (req) => {
     const intent = classifyIntent(page_slug, page_url, page_title);
     console.log(`Intent classified: ${intent.page_intent} / ${intent.flow_type} for slug=${page_slug}`);
 
-    // 2. Check for existing active session (avoid duplicate bots)
+    // 2. Close any existing active sessions for this phone (allows fresh session on new lead)
     const cleanPhone = formatPhone(phone);
     const { data: existingSessions } = await supabaseAdmin
       .from('bot_sessions')
-      .select('id, completed_at')
+      .select('id')
       .eq('phone', cleanPhone)
-      .is('completed_at', null)
-      .order('created_at', { ascending: false })
-      .limit(1);
+      .is('completed_at', null);
 
     if (existingSessions && existingSessions.length > 0) {
-      console.log('Active session already exists, skipping');
-      return jsonResponse({ success: true, message: 'Active session exists', session_id: existingSessions[0].id }, 200, req);
+      console.log(`Closing ${existingSessions.length} existing session(s) for phone ${cleanPhone}`);
+      // Close all existing active sessions
+      await supabaseAdmin
+        .from('bot_sessions')
+        .update({ completed_at: new Date().toISOString() })
+        .eq('phone', cleanPhone)
+        .is('completed_at', null);
     }
 
     // 3. Create bot_session
