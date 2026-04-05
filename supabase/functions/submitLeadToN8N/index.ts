@@ -7,11 +7,16 @@ import { classifyIntent } from '../_shared/botIntentClassifier.ts';
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
 async function sendWhatsAppAcknowledgment(phone: string, leadName: string): Promise<void> {
+  console.log('📱 sendWhatsAppAcknowledgment called with phone:', phone);
+
   const greenApiToken = Deno.env.get('GREENAPI_API_TOKEN');
   const greenApiInstance = Deno.env.get('GREENAPI_INSTANCE_ID');
 
+  console.log('🔑 greenApiToken exists:', greenApiToken ? 'YES' : 'NO');
+  console.log('🔑 greenApiInstance exists:', greenApiInstance ? 'YES' : 'NO');
+
   if (!greenApiToken || !greenApiInstance) {
-    console.warn('GreenAPI credentials missing, skipping WhatsApp acknowledgment');
+    console.warn('❌ GreenAPI credentials missing, skipping WhatsApp acknowledgment');
     return;
   }
 
@@ -19,17 +24,25 @@ async function sendWhatsAppAcknowledgment(phone: string, leadName: string): Prom
   const fullPhone = cleanPhone.startsWith('972') ? cleanPhone :
                     cleanPhone.startsWith('0') ? '972' + cleanPhone.substring(1) : '972' + cleanPhone;
 
+  console.log('📞 Formatted phone:', fullPhone);
+
   const waMessage = `שלום ${leadName} 👋\n\nקיבלנו את פרטיך! 📝\nנציג שלנו יחזור אליך בהקדם ביותר 📞\n\nתודה שבחרת בנו! 🙏`;
 
+  const url = `https://api.green-api.com/waInstance${greenApiInstance}/sendMessage/${greenApiToken}`;
+  console.log('🌐 Sending to GreenAPI URL:', url.substring(0, 50) + '...');
+
   try {
-    await fetch(`https://api.green-api.com/waInstance${greenApiInstance}/sendMessage/${greenApiToken}`, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chatId: `${fullPhone}@c.us`, message: waMessage })
     });
-    console.log('WhatsApp acknowledgment sent to:', fullPhone);
+    console.log('✅ GreenAPI response status:', res.status);
+    const responseText = await res.text();
+    console.log('✅ GreenAPI response:', responseText);
+    console.log('✅ WhatsApp acknowledgment sent to:', fullPhone);
   } catch (e: any) {
-    console.warn('WhatsApp acknowledgment failed:', e.message);
+    console.warn('❌ WhatsApp acknowledgment failed:', e.message);
   }
 }
 
@@ -137,7 +150,11 @@ Deno.serve(async (req) => {
 
     // 2b. Trigger bot flow for this lead
     const BOT_START_FLOW_URL = Deno.env.get('BOT_START_FLOW_URL');
+    console.log('🔍 BOT_START_FLOW_URL check:', BOT_START_FLOW_URL ? 'SET' : 'NOT SET');
+    console.log('🔍 leadResult exists:', leadResult ? 'YES' : 'NO');
+
     if (BOT_START_FLOW_URL && leadResult) {
+      console.log('✅ Starting botStartFlow with lead_id:', leadResult.id);
       try {
         const botRes = await fetch(BOT_START_FLOW_URL, {
           method: 'POST',
@@ -150,14 +167,14 @@ Deno.serve(async (req) => {
             page_slug: pageSlug || null,
           })
         });
-        console.log('botStartFlow response status:', botRes.status);
+        console.log('✅ botStartFlow response status:', botRes.status);
+        const responseText = await botRes.text();
+        console.log('✅ botStartFlow response:', responseText);
       } catch (e: any) {
-        console.warn('botStartFlow call failed:', e.message);
+        console.warn('❌ botStartFlow call failed:', e.message);
       }
     } else {
-      if (!BOT_START_FLOW_URL) {
-        console.warn('BOT_START_FLOW_URL not configured');
-      }
+      console.warn('❌ Skipping botStartFlow - BOT_START_FLOW_URL or leadResult missing');
     }
 
     // 3. Also save crm_lead (per-user CRM view)

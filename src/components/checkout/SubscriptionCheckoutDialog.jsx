@@ -85,7 +85,7 @@ export default function SubscriptionCheckoutDialog({ open, onClose, product, onP
           <h2 className="text-lg font-bold text-gray-900">
             {paymentStep === 'summary' ? 'סיכום הזמנה' : 'תשלום מאובטח'}
           </h2>
-          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+          <button onClick={onClose} aria-label="סגור דיאלוג" className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>

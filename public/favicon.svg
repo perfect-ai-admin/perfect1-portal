@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <style>
+      .bg { fill: #1E3A5F; }
+      .icon { fill: #D4AF37; }
+    </style>
+  </defs>
+  <rect class="bg" width="180" height="180" rx="40"/>
+  <circle class="bg" cx="90" cy="90" r="90"/>
+  <text x="50%" y="50%" font-size="100" font-weight="bold" font-family="Arial, sans-serif" fill="#D4AF37" text-anchor="middle" dominant-baseline="central">P</text>
+</svg>
