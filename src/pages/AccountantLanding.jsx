@@ -275,21 +275,6 @@ export default function AccountantLanding() {
                   </p>
                 </motion.div>
 
-                {/* Trust badges */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="flex flex-wrap gap-x-5 gap-y-2 justify-center md:justify-start mb-6"
-                >
-                  {['בדיקה ללא התחייבות', 'מענה תוך דקות', 'הצעת מחיר חינם'].map((text, i) => (
-                    <div key={i} className="flex items-center gap-2 text-white/80 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-green-400" />
-                      <span>{text}</span>
-                    </div>
-                  ))}
-                </motion.div>
-
                 {/* Social proof */}
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -321,6 +306,21 @@ export default function AccountantLanding() {
                   subtitle="השאירו פרטים ונחזור עם הצעה מותאמת לעסק שלכם"
                   ctaText="קבלו הצעת מחיר לניהול עוסק פטור"
                 />
+
+                {/* Trust badges - below form */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="flex flex-wrap gap-x-5 gap-y-2 justify-center md:justify-start mt-6"
+                >
+                  {['בדיקה ללא התחייבות', 'מענה תוך דקות', 'הצעת מחיר חינם'].map((text, i) => (
+                    <div key={i} className="flex items-center gap-2 text-white/80 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-green-400" />
+                      <span>{text}</span>
+                    </div>
+                  ))}
+                </motion.div>
               </motion.div>
             </div>
           </div>

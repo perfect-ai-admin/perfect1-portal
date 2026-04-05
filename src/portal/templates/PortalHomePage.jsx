@@ -35,7 +35,13 @@ const HOME_FAQ = [
   { question: 'מה קורה אם לא סוגרים תיק של עסק לא פעיל?', answer: 'עסק פתוח שלא נסגר כראוי ממשיך לצבור חובות לביטוח לאומי, קנסות על אי-הגשת דוחות למס הכנסה, ועלול לגרום לבעיות בדירוג האשראי. חשוב לסגור בצורה מסודרת.' },
 ];
 
-export default function PortalHomePage() {
+// Memoize components to prevent unnecessary re-renders
+const MemoizedCategoryCard = React.memo(CategoryCard);
+const MemoizedTrustSection = React.memo(TrustSection);
+const MemoizedStatsCounter = React.memo(StatsCounter);
+const MemoizedArticleCard = React.memo(ArticleCard);
+
+function PortalHomePage() {
   const { categories, loading } = useCategoryList();
 
   return (
@@ -97,7 +103,7 @@ export default function PortalHomePage() {
             <p className="text-center text-gray-500 text-lg mb-10">בחר קטגוריה כדי לקבל מדריכים, מידע והמלצות</p>
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {(categories || []).slice(0, 4).map((cat) => (
-                <CategoryCard
+                <MemoizedCategoryCard
                   key={cat.id}
                   title={cat.title}
                   description={cat.description}
@@ -126,10 +132,10 @@ export default function PortalHomePage() {
         </section>
 
         {/* Trust */}
-        <TrustSection />
+        <MemoizedTrustSection />
 
         {/* Stats */}
-        <StatsCounter />
+        <MemoizedStatsCounter />
 
         {/* Popular Articles */}
         <section className="py-16 md:py-20 bg-white">
@@ -138,7 +144,7 @@ export default function PortalHomePage() {
             <p className="text-center text-gray-500 text-lg mb-10">המאמרים הכי מבוקשים באתר</p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {POPULAR_ARTICLES.map((article, i) => (
-                <ArticleCard key={i} {...article} />
+                <MemoizedArticleCard key={i} {...article} />
               ))}
             </div>
           </div>
@@ -182,3 +188,5 @@ export default function PortalHomePage() {
     </>
   );
 }
+
+export default React.memo(PortalHomePage);
