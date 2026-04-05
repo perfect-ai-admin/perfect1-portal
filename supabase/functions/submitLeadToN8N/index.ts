@@ -153,38 +153,33 @@ Deno.serve(async (req) => {
     // 2a. Send WhatsApp acknowledgment to the lead
     await sendWhatsAppAcknowledgment(phone.trim(), name || 'לקוח');
 
-    // 2b. Trigger bot flow via N8N webhook (or via Edge Function if available)
-    const BOT_START_FLOW_URL = Deno.env.get('BOT_START_FLOW_URL');
-    const N8N_WEBHOOK_URL = 'https://n8n.perfect-1.one/webhook/perfect-one-osek-patur';
-
+    // 2b. Trigger bot flow via N8N webhook (direct call, no Edge Function dependency)
+    // Note: Database trigger (notify_n8n_new_lead) also calls N8N automatically
     if (leadResult) {
+      const N8N_WEBHOOK_URL = 'https://n8n.perfect-1.one/webhook/perfect-one-osek-patur';
       const payload = {
         _event_type: 'new_lead',
         lead_id: leadResult.id,
         name: name || 'אתר',
         phone: phone.trim(),
-        email: email || null,
-        page_slug: pageSlug || null,
-        page_title: 'Lead from sales portal',
+        email: email || '',
+        page_slug: pageSlug || 'unknown',
         service_type: intent.service_type,
       };
 
-      // Try Edge Function first (if configured), fallback to N8N webhook
-      const urlToUse = BOT_START_FLOW_URL || N8N_WEBHOOK_URL;
-      console.log(`✅ Sending bot trigger to: ${urlToUse.includes('functions') ? 'Edge Function' : 'N8N Webhook'}`);
-
+      console.log('✅ Sending lead to N8N webhook');
       try {
-        const botRes = await fetch(urlToUse, {
+        const botRes = await fetch(N8N_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(5000)
         });
-        console.log('✅ Bot trigger response status:', botRes.status);
+        console.log('✅ N8N webhook response:', botRes.status);
       } catch (e: any) {
-        console.warn('⚠️ Bot trigger failed:', e.message);
+        console.warn('⚠️ N8N webhook call failed (non-blocking):', e.message);
+        // Don't throw - webhook call is fire-and-forget
       }
-    } else {
-      console.warn('❌ Skipping bot trigger - leadResult missing');
     }
 
     // 3. Also save crm_lead (per-user CRM view)
