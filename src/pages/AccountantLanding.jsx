@@ -164,7 +164,7 @@ function FAQItem({ q, a }) {
 const faqData = [
   {
     q: 'כמה עולה רואה חשבון לעוסק פטור?',
-    a: 'העלות נעה בין 150-300 ₪ לחודש, תלוי בהיקף הפעילות ומספר העסקאות. ניתן לקבל הצעת מחיר מותאמת אישית.',
+    a: 'העלות נעה בין 99-149 ₪ לחודש, תלוי בהיקף הפעילות ומספר העסקאות. ניתן לקבל הצעת מחיר מותאמת אישית.',
   },
   {
     q: 'האם עוסק פטור חייב רואה חשבון?',
@@ -347,7 +347,7 @@ export default function AccountantLanding() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8 text-center">
                 <p className="text-gray-500 text-sm mb-2">טווח מחירים מקובל</p>
                 <p className="text-5xl sm:text-6xl font-extrabold mb-2" style={{ color: '#D97706' }}>
-                  150–300 ₪
+                  99–149 ₪
                 </p>
                 <p className="text-gray-500 text-base">לחודש</p>
               </div>
