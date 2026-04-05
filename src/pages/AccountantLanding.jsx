@@ -52,6 +52,29 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
         utm_content: params.get('utm_content') || '',
         referrer: document.referrer || '',
       });
+
+      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט
+      try {
+        await fetch(
+          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              name: form.name,
+              phone: form.phone,
+              pageSlug: 'landing-accountant-osek-patur',
+              businessName: 'דף נחיתה - landing-accountant-osek-patur'
+            })
+          }
+        ).catch(e => console.warn('submitLeadToN8N call failed:', e.message));
+      } catch (submitErr) {
+        console.warn('submitLeadToN8N error:', submitErr.message);
+      }
+
       navigate('/ThankYou', { state: { source: 'landing-accountant-osek-patur', name: form.name } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
@@ -548,7 +571,7 @@ export default function AccountantLanding() {
               />
 
               {/* Social proof */}
-              <div className="flex items-center gap-2 text-white/50 text-sm justify-center mt-6">
+              <div className="hidden sm:flex items-center gap-2 text-white/50 text-sm justify-center mt-6">
                 <div className="flex -space-x-2 rtl:space-x-reverse">
                   {[...Array(4)].map((_, i) => (
                     <div key={i} className="w-7 h-7 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-xs text-white/70">
