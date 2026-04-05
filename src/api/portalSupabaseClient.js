@@ -25,6 +25,8 @@ export async function submitPortalLead(leadData) {
       utm_term: leadData.utm_term || null,
       utm_content: leadData.utm_content || null,
       referrer: leadData.referrer || null,
+      page_intent: leadData.page_intent || null,
+      service_type: leadData.service_type || null,
     });
 
   if (error) {

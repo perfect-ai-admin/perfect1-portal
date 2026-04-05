@@ -170,7 +170,7 @@ function StepsLeadForm({
 // ============================
 function InlineCTA({ text, buttonText = 'השאירו פרטים', targetId = 'hero-lead-form' }) {
   const scroll = () => {
-    const el = document.getElementById(targetId);
+    const el = document.getElementById(targetId) || document.getElementById('hero-lead-form-mobile');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -230,7 +230,7 @@ function StickyMobileCTA() {
   }, []);
 
   const scrollToForm = () => {
-    const form = document.getElementById('hero-lead-form');
+    const form = document.getElementById('hero-lead-form') || document.getElementById('hero-lead-form-mobile');
     if (form) form.scrollIntoView({ behavior: 'smooth' });
   };
 
