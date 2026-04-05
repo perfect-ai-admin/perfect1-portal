@@ -91,15 +91,29 @@ function StepsLeadForm({
   return (
     <div id={id} className={className}>
       {title && (
-        <h3 className="font-bold text-center mb-1 text-xl text-portal-navy">
+        <h3 className="font-bold text-center mb-1 text-xl md:text-2xl text-portal-navy">
           {title}
         </h3>
       )}
       {subtitle && (
-        <p className="text-center mb-4 text-sm text-gray-500">
+        <p className="text-center mb-5 text-sm text-gray-500">
           {subtitle}
         </p>
       )}
+
+      {/* Trust badges */}
+      <div className="flex items-center justify-center gap-3 mb-5 flex-wrap">
+        {[
+          { icon: Shield, text: 'מאובטח 100%' },
+          { icon: Users, text: '+5,000 עצמאים' },
+          { icon: Star, text: 'דירוג 5 כוכבים' },
+        ].map(({ icon: Icon, text }) => (
+          <div key={text} className="flex items-center gap-1.5 bg-green-50 border border-green-100 rounded-full px-3 py-1">
+            <Icon className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
+            <span className="text-xs font-semibold text-green-700">{text}</span>
+          </div>
+        ))}
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <Input
@@ -107,7 +121,7 @@ function StepsLeadForm({
           onChange={(e) => set('name', e.target.value)}
           placeholder="שם מלא"
           required
-          className="h-[52px] rounded-xl text-base border-gray-200 bg-white focus:border-portal-teal focus:ring-portal-teal text-right"
+          className="h-[58px] rounded-xl text-lg border-2 border-gray-200 bg-gray-50 focus:bg-white focus:border-portal-teal focus:ring-portal-teal text-right font-medium placeholder:text-gray-400"
         />
         <Input
           value={form.phone}
@@ -116,7 +130,7 @@ function StepsLeadForm({
           type="tel"
           required
           dir="ltr"
-          className="h-[52px] rounded-xl text-base border-gray-200 bg-white focus:border-portal-teal focus:ring-portal-teal text-right"
+          className="h-[58px] rounded-xl text-lg border-2 border-gray-200 bg-gray-50 focus:bg-white focus:border-portal-teal focus:ring-portal-teal text-right font-medium placeholder:text-gray-400"
         />
 
         {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
@@ -124,8 +138,8 @@ function StepsLeadForm({
         <Button
           type="submit"
           disabled={loading}
-          className="w-full rounded-2xl text-lg font-bold shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-          style={{ height: '56px', backgroundColor: '#F59E0B', color: '#1E3A5F', fontSize: '18px' }}
+          className="w-full rounded-2xl font-extrabold shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] hover:brightness-105"
+          style={{ height: '62px', backgroundColor: '#F59E0B', color: '#1E3A5F', fontSize: '19px' }}
         >
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -138,9 +152,15 @@ function StepsLeadForm({
         </Button>
       </form>
 
-      <p className="text-xs text-center mt-2 text-gray-400">
-        ללא התחייבות · המידע שלך מאובטח · נחזור אליך בהקדם
-      </p>
+      {/* Urgency + security note */}
+      <div className="mt-4 text-center">
+        <p className="text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 mb-2">
+          חוזרים אליכם תוך שעה בשעות הפעילות
+        </p>
+        <p className="text-xs text-gray-400">
+          ללא התחייבות · המידע שלך מאובטח · שירות חינם
+        </p>
+      </div>
     </div>
   );
 }
@@ -155,12 +175,13 @@ function InlineCTA({ text, buttonText = 'השאירו פרטים', targetId = 'h
   };
 
   return (
-    <div className="bg-portal-teal/5 border border-portal-teal/20 rounded-2xl p-5 sm:p-6 text-center my-8">
-      <p className="text-lg font-semibold text-portal-navy mb-3">{text}</p>
+    <div className="bg-portal-teal/5 border-2 border-portal-teal/25 rounded-2xl p-6 sm:p-7 text-center my-10">
+      <p className="text-lg font-bold text-portal-navy mb-1">{text}</p>
+      <p className="text-sm text-gray-500 mb-4">ייעוץ ראשוני חינם · חוזרים אליכם תוך שעה</p>
       <button
         onClick={scroll}
-        className="inline-flex items-center gap-2 font-bold text-white px-6 py-3 rounded-xl transition-all hover:scale-[1.02]"
-        style={{ backgroundColor: '#0F766E' }}
+        className="inline-flex items-center gap-2 font-extrabold text-portal-navy px-8 py-4 rounded-xl transition-all hover:scale-[1.02] shadow-md text-base"
+        style={{ backgroundColor: '#F59E0B' }}
       >
         <Phone className="w-4 h-4" />
         {buttonText}
@@ -406,36 +427,23 @@ export default function OsekPaturSteps() {
             }} />
           </div>
 
-          <div className="relative max-w-6xl mx-auto px-4 py-4 sm:py-6 md:py-16">
-            <div className="grid md:grid-cols-2 gap-3 md:gap-12 items-start">
+          <div className="relative max-w-6xl mx-auto px-4 py-8 sm:py-10 md:py-16">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-start">
               {/* Content */}
               <div className="order-1">
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 mb-2 md:mb-5">
+                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 mb-4 md:mb-5">
                   <BookOpen className="w-3.5 h-3.5 text-yellow-400" />
-                  <span className="text-white/90 text-xs md:text-sm font-medium">המדריך המלא</span>
+                  <span className="text-white/90 text-xs md:text-sm font-medium">המדריך המלא לפתיחת עוסק פטור</span>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight mb-2 md:mb-5">
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight mb-3 md:mb-5">
                   איך פותחים עוסק פטור
                   <br />
-                  <span className="text-xl sm:text-2xl md:text-4xl" style={{ color: '#F59E0B' }}>בישראל?</span>
+                  <span className="text-xl sm:text-2xl md:text-4xl" style={{ color: '#F59E0B' }}>בישראל — שלב אחרי שלב</span>
                 </h1>
 
-                {/* Mobile: Form right after hero text */}
-                <div className="md:hidden mb-3">
-                  <div className="bg-white rounded-2xl shadow-xl p-5">
-                    <StepsLeadForm
-                      id="hero-lead-form-mobile"
-                      variant="hero"
-                      title="בדקו איך לפתוח עוסק פטור"
-                      subtitle="בדיקה חינם"
-                      ctaText="קבלו ליווי עכשיו"
-                    />
-                  </div>
-                </div>
-
-                {/* Desktop: Social proof */}
-                <div className="hidden md:flex items-center gap-3 text-white/60 text-sm mb-6">
+                {/* Social proof — both mobile and desktop */}
+                <div className="flex items-center gap-3 text-white/70 text-sm mb-5">
                   <div className="flex -space-x-2 space-x-reverse">
                     {['י', 'ד', 'ש', 'מ'].map((letter, i) => (
                       <div key={i} className="w-8 h-8 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-white text-xs font-bold">
@@ -443,19 +451,42 @@ export default function OsekPaturSteps() {
                       </div>
                     ))}
                   </div>
-                  <span>+5,000 עצמאים קיבלו ליווי מאיתנו</span>
+                  <span className="font-medium">+5,000 עצמאים קיבלו ליווי מאיתנו</span>
+                </div>
+
+                {/* Mobile: Form right after hero text */}
+                <div className="md:hidden mb-4">
+                  <div className="bg-white rounded-2xl shadow-2xl p-6">
+                    <div className="text-center mb-4">
+                      <p className="text-sm font-bold text-portal-navy bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 inline-block">
+                        רוצים לפתוח עוסק פטור? נעשה את זה יחד
+                      </p>
+                    </div>
+                    <StepsLeadForm
+                      id="hero-lead-form-mobile"
+                      variant="hero"
+                      title="השאירו פרטים לליווי אישי"
+                      subtitle="ייעוץ ראשוני חינם · חוזרים תוך שעה"
+                      ctaText="קבלו ליווי חינם עכשיו"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Form - Desktop only */}
               <div className="hidden md:block order-2">
-                <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md mx-auto md:mx-0">
+                <div className="bg-white rounded-3xl shadow-2xl p-7 sm:p-8 max-w-md mx-auto md:mx-0">
+                  <div className="text-center mb-5">
+                    <p className="text-sm font-bold text-portal-navy bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 inline-block">
+                      ייעוץ ראשוני חינם — בלי התחייבות
+                    </p>
+                  </div>
                   <StepsLeadForm
                     id="hero-lead-form"
                     variant="hero"
-                    title="בדקו איך לפתוח עוסק פטור"
-                    subtitle="בדיקה חינם + הכוונה אישית"
-                    ctaText="קבלו ליווי עכשיו"
+                    title="השאירו פרטים לליווי אישי"
+                    subtitle="מומחה יחזור אליכם תוך שעה"
+                    ctaText="קבלו ליווי חינם עכשיו"
                   />
                 </div>
               </div>
@@ -724,20 +755,25 @@ export default function OsekPaturSteps() {
         </section>
 
         {/* ===== MID-PAGE CTA ===== */}
-        <section className="py-10 md:py-14" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0F766E 100%)' }}>
+        <section className="py-12 md:py-16" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0F766E 100%)' }}>
           <div className="max-w-lg mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-2">
-              מוכנים להתחיל?
+              מוכנים לפתוח עוסק פטור?
             </h2>
-            <p className="text-white/80 text-center mb-6">
-              השאירו פרטים ונחזור אליכם עם הסבר ברור איך להתחיל
+            <p className="text-white/80 text-center mb-2 text-lg">
+              השאירו פרטים ונחזור אליכם עם הכוונה ברורה
+            </p>
+            <p className="text-yellow-300 text-center mb-7 text-sm font-semibold">
+              ייעוץ ראשוני חינם לגמרי · ללא התחייבות
             </p>
 
-            <div className="bg-white rounded-3xl shadow-2xl p-6">
+            <div className="bg-white rounded-3xl shadow-2xl p-7">
               <StepsLeadForm
                 id="mid-lead-form"
                 variant="mid"
-                ctaText="קבלו ליווי לפתיחת עוסק פטור"
+                title="קבלו הכוונה לפתיחת עוסק פטור"
+                subtitle="מומחה יחזור אליכם תוך שעה"
+                ctaText="קבלו ליווי חינם עכשיו"
               />
             </div>
           </div>
@@ -771,23 +807,26 @@ export default function OsekPaturSteps() {
         <section className="py-14 md:py-20" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #152D4A 50%, #0F766E 100%)' }}>
           <div className="max-w-lg mx-auto px-4">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white text-center mb-3">
-              רוצים ליווי בפתיחת עוסק פטור
+              רוצים לפתוח עוסק פטור
               <br />
-              <span style={{ color: '#F59E0B' }}>בצורה פשוטה ומקצועית?</span>
+              <span style={{ color: '#F59E0B' }}>בלי בירוקרטיה ובלי טעויות?</span>
             </h2>
-            <p className="text-white/80 text-center mb-8 text-lg">
-              השאירו פרטים ונחזור אליכם עם הסבר ברור איך להתחיל.
+            <p className="text-white/80 text-center mb-2 text-lg">
+              אנחנו מלווים עצמאים חדשים לאורך כל התהליך —
               <br />
-              בלי בירוקרטיה, בלי טעויות.
+              מהרישום ועד הפתיחה הרשמית.
+            </p>
+            <p className="text-yellow-300 text-center mb-8 text-sm font-bold">
+              הייעוץ הראשוני חינם לגמרי · חוזרים אליכם תוך שעה
             </p>
 
-            <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8">
+            <div className="bg-white rounded-3xl shadow-2xl p-7 sm:p-8">
               <StepsLeadForm
                 id="final-lead-form"
                 variant="final"
-                title="קבלו הכוונה לפתיחת עוסק פטור"
-                subtitle="ללא התחייבות · נחזור אליכם בהקדם"
-                ctaText="קבלו הכוונה לפתיחת עוסק פטור"
+                title="השאירו פרטים ונתחיל"
+                subtitle="ייעוץ ראשוני חינם · ללא התחייבות"
+                ctaText="קבלו ליווי חינם עכשיו"
               />
             </div>
 
