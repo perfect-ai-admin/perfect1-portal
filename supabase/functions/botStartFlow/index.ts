@@ -156,7 +156,7 @@ Deno.serve(async (req) => {
     // 4. Update lead with bot fields
     if (lead_id) {
       console.log(`Updating lead ${lead_id} with bot fields`);
-      const { error: leadUpdateErr } = await supabaseAdmin.from('leads').update({
+      const { data: updatedLead, error: leadUpdateErr } = await supabaseAdmin.from('leads').update({
         page_intent: intent.page_intent,
         flow_type: intent.flow_type,
         bot_current_step: 'opening',
@@ -164,15 +164,17 @@ Deno.serve(async (req) => {
         bot_messages_count: 0,
         interaction_type: 'bot',
         service_type: intent.service_type,
-      }).eq('id', lead_id);
+      }).eq('id', lead_id).select();
 
       if (leadUpdateErr) {
-        console.error(`Error updating lead: ${leadUpdateErr.message}`);
+        console.error(`❌ Error updating lead ${lead_id}: ${leadUpdateErr.message}`);
+      } else if (!updatedLead || updatedLead.length === 0) {
+        console.warn(`⚠️ Lead ${lead_id} not updated — 0 rows affected (check RLS or lead existence)`);
       } else {
-        console.log(`Lead ${lead_id} updated successfully`);
+        console.log(`✅ Lead ${lead_id} updated successfully — ${updatedLead.length} row(s) updated`);
       }
     } else {
-      console.warn('No lead_id provided to botStartFlow');
+      console.warn('⚠️ No lead_id provided to botStartFlow');
     }
 
     // 5. Build and send opening message
