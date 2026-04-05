@@ -153,33 +153,38 @@ Deno.serve(async (req) => {
     // 2a. Send WhatsApp acknowledgment to the lead
     await sendWhatsAppAcknowledgment(phone.trim(), name || 'לקוח');
 
-    // 2b. Trigger bot flow for this lead
+    // 2b. Trigger bot flow via N8N webhook (or via Edge Function if available)
     const BOT_START_FLOW_URL = Deno.env.get('BOT_START_FLOW_URL');
-    console.log('🔍 BOT_START_FLOW_URL check:', BOT_START_FLOW_URL ? 'SET' : 'NOT SET');
-    console.log('🔍 leadResult exists:', leadResult ? 'YES' : 'NO');
+    const N8N_WEBHOOK_URL = 'https://n8n.perfect-1.one/webhook/perfect-one-osek-patur';
 
-    if (BOT_START_FLOW_URL && leadResult) {
-      console.log('✅ Starting botStartFlow with lead_id:', leadResult.id);
+    if (leadResult) {
+      const payload = {
+        _event_type: 'new_lead',
+        lead_id: leadResult.id,
+        name: name || 'אתר',
+        phone: phone.trim(),
+        email: email || null,
+        page_slug: pageSlug || null,
+        page_title: 'Lead from sales portal',
+        service_type: intent.service_type,
+      };
+
+      // Try Edge Function first (if configured), fallback to N8N webhook
+      const urlToUse = BOT_START_FLOW_URL || N8N_WEBHOOK_URL;
+      console.log(`✅ Sending bot trigger to: ${urlToUse.includes('functions') ? 'Edge Function' : 'N8N Webhook'}`);
+
       try {
-        const botRes = await fetch(BOT_START_FLOW_URL, {
+        const botRes = await fetch(urlToUse, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            lead_id: leadResult.id,
-            lead_name: name || 'אתר',
-            phone: phone.trim(),
-            email: email || null,
-            page_slug: pageSlug || null,
-          })
+          body: JSON.stringify(payload)
         });
-        console.log('✅ botStartFlow response status:', botRes.status);
-        const responseText = await botRes.text();
-        console.log('✅ botStartFlow response:', responseText);
+        console.log('✅ Bot trigger response status:', botRes.status);
       } catch (e: any) {
-        console.warn('❌ botStartFlow call failed:', e.message);
+        console.warn('⚠️ Bot trigger failed:', e.message);
       }
     } else {
-      console.warn('❌ Skipping botStartFlow - BOT_START_FLOW_URL or leadResult missing');
+      console.warn('❌ Skipping bot trigger - leadResult missing');
     }
 
     // 3. Also save crm_lead (per-user CRM view)
