@@ -126,13 +126,11 @@ const AuthenticatedApp = () => {
 };
 
 const PortalWrapper = ({ children }) => (
-  <HelmetProvider>
-    <Suspense fallback={<PageLoader />}>
-      <div dir="rtl" className="portal-root">
-        {children}
-      </div>
-    </Suspense>
-  </HelmetProvider>
+  <Suspense fallback={<PageLoader />}>
+    <div dir="rtl" className="portal-root">
+      {children}
+    </div>
+  </Suspense>
 );
 
 // Portal-only routes (perfect1.co.il)
@@ -277,15 +275,17 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <NavigationTracker />
-          <AppRoutes />
-        </Router>
-        <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
+    <HelmetProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <NavigationTracker />
+            <AppRoutes />
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </AuthProvider>
+    </HelmetProvider>
   )
 }
 
