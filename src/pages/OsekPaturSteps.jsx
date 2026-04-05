@@ -143,16 +143,16 @@ function FAQItem({ question, answer, isOpen, onClick }) {
     <div className="border-b border-gray-200 last:border-0">
       <button
         onClick={onClick}
-        className="w-full flex items-center justify-between py-5 px-1 text-right hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between py-4 px-4 text-right hover:bg-gray-50 transition-colors min-h-[56px]"
         aria-expanded={isOpen}
       >
-        <span className="text-base md:text-lg font-semibold text-portal-navy pl-4">{question}</span>
+        <span className="text-[15px] md:text-lg font-semibold text-portal-navy pl-4 leading-snug">{question}</span>
         {isOpen
           ? <ChevronUp className="w-5 h-5 text-portal-teal flex-shrink-0" />
           : <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />}
       </button>
       {isOpen && (
-        <div className="pb-5 px-1 text-gray-600 leading-relaxed text-base">
+        <div className="pb-5 px-4 text-gray-600 leading-relaxed text-[15px]">
           {answer}
         </div>
       )}
@@ -165,7 +165,7 @@ function FAQItem({ question, answer, isOpen, onClick }) {
 // ============================
 function Section({ children, className = '', id }) {
   return (
-    <section id={id} className={`py-14 md:py-20 ${className}`}>
+    <section id={id} className={`py-10 md:py-20 ${className}`}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         {children}
       </div>
@@ -305,19 +305,62 @@ export default function OsekPaturSteps() {
         style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0F4C75 60%, #1a6b8a 100%)' }}
       >
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, #F59E0B 0%, transparent 50%), radial-gradient(circle at 80% 20%, #34D399 0%, transparent 50%)' }} />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-10 md:py-20">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-10 items-center">
-            {/* Left — text (on mobile: order-1 = top) */}
-            <div className="text-right order-1 md:order-1">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-8 md:py-20">
+
+          {/* Mobile: single column stack. Desktop: 2 columns */}
+          <div className="flex flex-col md:grid md:grid-cols-2 md:gap-10 md:items-center">
+
+            {/* === Block 1: Badge + Title + Subtitle (mobile: top) === */}
+            <div className="text-right md:hidden mb-5">
+              <div className="inline-flex items-center gap-2 bg-yellow-400/30 border border-yellow-400/60 rounded-full px-3 py-1.5 mb-4">
+                <BookOpen className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+                <span className="text-yellow-200 text-sm font-bold">מדריך מקיף לשנת 2026</span>
+              </div>
+              <h1 className="text-[28px] font-extrabold text-white leading-tight mb-3">
+                איך פותחים<br />
+                <span className="text-yellow-400">עוסק פטור</span> בישראל?
+              </h1>
+              <p className="text-white/85 text-base leading-relaxed mb-4">
+                המדריך המלא — שלב אחרי שלב, מה צריך להכין, אילו טעויות להימנע, ולמה כדאי לא לעשות את זה לבד.
+              </p>
+            </div>
+
+            {/* === Block 2: Checkmarks (mobile: before form) === */}
+            <div className="md:hidden flex flex-col gap-2.5 mb-5">
+              {[
+                { icon: CheckCircle2, text: 'פתיחה מלאה ב-3 שלבים פשוטים' },
+                { icon: Clock, text: 'זמן ממוצע: שעה עם ליווי מקצועי' },
+                { icon: Zap, text: 'ליווי מקצועי ב-0 עלות ייעוץ ראשוני' },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-3">
+                  <Icon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  <span className="text-white font-medium text-[15px]">{text}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* === Block 3: Form (mobile: after checkmarks) === */}
+            <div className="md:order-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 md:p-8">
+              <LeadForm
+                id="hero-form"
+                variant="hero"
+                title="קבלו ליווי לפתיחת עוסק פטור"
+                subtitle="מלאו פרטים — נחזור אליכם תוך שעה"
+                ctaText="בדקו איך לפתוח עוסק פטור"
+              />
+            </div>
+
+            {/* === Desktop only: text + checkmarks in left column === */}
+            <div className="hidden md:block text-right md:order-1">
               <div className="inline-flex items-center gap-2 bg-yellow-400/30 border border-yellow-400/60 rounded-full px-4 py-2 mb-5">
                 <BookOpen className="w-4 h-4 text-yellow-300" />
                 <span className="text-yellow-200 text-sm font-bold">מדריך מקיף לשנת 2026</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              <h1 className="text-4xl font-extrabold text-white leading-tight mb-4">
                 איך פותחים<br />
                 <span className="text-yellow-400">עוסק פטור</span> בישראל?
               </h1>
-              <p className="text-white/85 text-lg sm:text-xl leading-relaxed mb-7">
+              <p className="text-white/85 text-xl leading-relaxed mb-7">
                 המדריך המלא — שלב אחרי שלב, מה צריך להכין, אילו טעויות להימנע, ולמה כדאי לא לעשות את זה לבד.
               </p>
               <div className="flex flex-col gap-3">
@@ -328,46 +371,36 @@ export default function OsekPaturSteps() {
                 ].map(({ icon: Icon, text }) => (
                   <div key={text} className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-2.5">
                     <Icon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                    <span className="text-white font-medium text-base sm:text-lg">{text}</span>
+                    <span className="text-white font-medium text-lg">{text}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right — form (on mobile: order-2 = below text) */}
-            <div className="order-2 md:order-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-6 md:p-8">
-              <LeadForm
-                id="hero-form"
-                variant="hero"
-                title="קבלו ליווי לפתיחת עוסק פטור"
-                subtitle="מלאו פרטים — נחזור אליכם תוך שעה"
-                ctaText="בדקו איך לפתוח עוסק פטור"
-              />
-            </div>
           </div>
         </div>
       </section>
 
       {/* ===== מה תמצאו במדריך ===== */}
       <Section className="bg-gray-50">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">מה תמצאו במדריך הזה?</h2>
-          <p className="text-gray-500 text-base max-w-xl mx-auto">כל מה שצריך לדעת לפני שפותחים — בלי ז'רגון, בלי שטויות</p>
+        <div className="text-center mb-7">
+          <h2 className="text-[22px] md:text-3xl font-extrabold text-portal-navy mb-2">מה תמצאו במדריך הזה?</h2>
+          <p className="text-gray-500 text-[15px] max-w-xl mx-auto">כל מה שצריך לדעת לפני שפותחים — בלי ז'רגון, בלי שטויות</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
           {[
-            { icon: ClipboardList, title: '3 שלבי הרישום', desc: 'מס הכנסה, מע"מ וביטוח לאומי — בסדר הנכון' },
-            { icon: FileText, title: 'מה צריך להכין', desc: 'רשימת מסמכים ומידע שתצטרכו לפני שמתחילים' },
-            { icon: AlertTriangle, title: '5 טעויות נפוצות', desc: 'הדברים שאנשים עושים לא נכון — ואיך להימנע' },
-            { icon: UserCheck, title: 'לבד מול ליווי', desc: 'יתרונות וחסרונות — מה באמת כדאי לבחור' },
-            { icon: HelpCircle, title: '7 שאלות נפוצות', desc: 'תשובות ישירות לשאלות שכולם שואלים' },
+            { icon: ClipboardList, title: '3 שלבי הרישום', desc: 'מס הכנסה, מע"מ וביטוח לאומי' },
+            { icon: FileText, title: 'מה צריך להכין', desc: 'רשימת מסמכים ומידע מראש' },
+            { icon: AlertTriangle, title: '5 טעויות נפוצות', desc: 'ואיך להימנע מהן' },
+            { icon: UserCheck, title: 'לבד מול ליווי', desc: 'מה באמת כדאי לבחור' },
+            { icon: HelpCircle, title: '7 שאלות נפוצות', desc: 'תשובות ישירות וברורות' },
           ].map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-                <Icon className="w-6 h-6 text-portal-teal" />
+            <div key={title} className="bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-3">
+                <Icon className="w-5 h-5 text-portal-teal" />
               </div>
-              <h3 className="font-bold text-portal-navy mb-1.5 text-base">{title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+              <h3 className="font-bold text-portal-navy mb-1 text-[14px] md:text-base">{title}</h3>
+              <p className="text-gray-500 text-xs md:text-sm leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
@@ -375,25 +408,25 @@ export default function OsekPaturSteps() {
 
       {/* ===== מה זה עוסק פטור ===== */}
       <Section>
-        <div className="grid md:grid-cols-2 gap-10 items-center">
+        <div className="flex flex-col md:grid md:grid-cols-2 md:gap-10 md:items-center gap-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-4">מה זה בכלל עוסק פטור?</h2>
-            <p className="text-gray-600 leading-relaxed mb-4 text-base">
+            <h2 className="text-[22px] md:text-3xl font-extrabold text-portal-navy mb-3">מה זה בכלל עוסק פטור?</h2>
+            <p className="text-gray-600 leading-relaxed mb-3 text-[15px]">
               עוסק פטור הוא סטטוס עסקי שמיועד לבעלי עסקים קטנים ועצמאים שהמחזור השנתי שלהם נמוך מהתקרה הקבועה בחוק (כ-120,000 ש"ח בשנה).
             </p>
-            <p className="text-gray-600 leading-relaxed mb-4 text-base">
+            <p className="text-gray-600 leading-relaxed mb-3 text-[15px]">
               היתרון המרכזי: <strong className="text-portal-navy">לא גובים מע"מ מהלקוחות ולא מגישים דוחות מע"מ.</strong> זה הופך את הניהול לפשוט הרבה יותר.
             </p>
-            <p className="text-gray-600 leading-relaxed mb-6 text-base">
+            <p className="text-gray-600 leading-relaxed mb-5 text-[15px]">
               פרילנסרים, מורים פרטיים, יועצים, מעצבים, צלמים — רבים מהם מתחילים כעוסק פטור ועוברים לעוסק מורשה רק כשהעסק גדל.
             </p>
-            <a href="/osek-patur" className="inline-flex items-center gap-2 text-portal-teal font-semibold hover:underline">
+            <a href="/osek-patur" className="inline-flex items-center gap-2 text-portal-teal font-semibold hover:underline text-[15px]">
               <ArrowLeft className="w-4 h-4" />
               קראו עוד על עוסק פטור
             </a>
           </div>
-          <div className="bg-blue-50 rounded-3xl p-7 border border-blue-100">
-            <h3 className="font-bold text-portal-navy mb-5 text-lg">מי מתאים לעוסק פטור?</h3>
+          <div className="bg-blue-50 rounded-2xl p-5 md:p-7 border border-blue-100">
+            <h3 className="font-bold text-portal-navy mb-4 text-[17px]">מי מתאים לעוסק פטור?</h3>
             {[
               'פרילנסרים ועצמאים בתחילת הדרך',
               'מחזור עסקי עד ~120,000 ש"ח בשנה',
@@ -403,11 +436,11 @@ export default function OsekPaturSteps() {
             ].map(item => (
               <div key={item} className="flex items-start gap-3 mb-3 last:mb-0">
                 <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <span className="text-gray-700 text-base">{item}</span>
+                <span className="text-gray-700 text-[15px]">{item}</span>
               </div>
             ))}
-            <div className="mt-6 pt-5 border-t border-blue-200">
-              <p className="text-sm text-blue-700 font-medium">
+            <div className="mt-5 pt-4 border-t border-blue-200">
+              <p className="text-[13px] text-blue-700 font-medium">
                 לא בטוחים שעוסק פטור מתאים לכם?{' '}
                 <a href="/patur-vs-murshe" className="underline">קראו השוואה מלאה</a>
               </p>
@@ -418,30 +451,30 @@ export default function OsekPaturSteps() {
 
       {/* ===== שלבי הפתיחה + טופס ===== */}
       <Section id="steps" className="bg-gray-50">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">3 שלבים לפתיחת עוסק פטור</h2>
-          <p className="text-gray-500 text-base">בצדו הנכון של הבירוקרטיה — מהיר יותר ממה שחשבתם</p>
+        <div className="text-center mb-7">
+          <h2 className="text-[22px] md:text-3xl font-extrabold text-portal-navy mb-2">3 שלבים לפתיחת עוסק פטור</h2>
+          <p className="text-gray-500 text-[15px]">בצדו הנכון של הבירוקרטיה — מהיר יותר ממה שחשבתם</p>
         </div>
 
-        <div className="space-y-6 mb-12">
+        <div className="space-y-4 mb-8">
           {steps.map(({ num, title, body, icon: Icon }, i) => (
-            <div key={num} className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm flex gap-5 items-start">
-              <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-portal-navy flex items-center justify-center">
-                <span className="text-white font-extrabold text-xl">{num}</span>
+            <div key={num} className="bg-white rounded-2xl p-4 md:p-8 border border-gray-100 shadow-sm flex gap-4 items-start">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-portal-navy flex items-center justify-center">
+                <span className="text-white font-extrabold text-lg">{num}</span>
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <Icon className="w-5 h-5 text-portal-teal" />
-                  <h3 className="font-bold text-portal-navy text-lg">{title}</h3>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Icon className="w-4 h-4 text-portal-teal flex-shrink-0" />
+                  <h3 className="font-bold text-portal-navy text-[16px] md:text-lg">{title}</h3>
                 </div>
-                <p className="text-gray-600 leading-relaxed">{body}</p>
+                <p className="text-gray-600 leading-relaxed text-[14px] md:text-base">{body}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* טופס שני — באמצע */}
-        <div className="bg-white rounded-3xl p-7 md:p-10 border border-blue-100 shadow-md max-w-lg mx-auto">
+        <div className="bg-white rounded-2xl p-5 md:p-10 border border-blue-100 shadow-md max-w-lg mx-auto">
           <LeadForm
             id="mid-form-steps"
             variant="mid-steps"
@@ -454,10 +487,10 @@ export default function OsekPaturSteps() {
 
       {/* ===== מה צריך להכין ===== */}
       <Section>
-        <div className="grid md:grid-cols-2 gap-10 items-start">
+        <div className="flex flex-col md:grid md:grid-cols-2 md:gap-10 md:items-start gap-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-4">מה צריך להכין לפני שמתחילים?</h2>
-            <p className="text-gray-600 mb-6 text-base leading-relaxed">
+            <h2 className="text-[22px] md:text-3xl font-extrabold text-portal-navy mb-3">מה צריך להכין לפני שמתחילים?</h2>
+            <p className="text-gray-600 mb-5 text-[15px] leading-relaxed">
               לפני שיושבים ממלאים טפסים, כדאי להכין מראש את כל המידע. ככה זה הולך הרבה יותר מהר.
             </p>
             <ul className="space-y-3">
@@ -466,24 +499,24 @@ export default function OsekPaturSteps() {
                   <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                   </div>
-                  <span className="text-gray-700 text-base">{item}</span>
+                  <span className="text-gray-700 text-[15px]">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="bg-yellow-50 rounded-3xl p-7 border border-yellow-100">
-            <div className="flex items-center gap-2 mb-5">
-              <Lightbulb className="w-6 h-6 text-yellow-600" />
-              <h3 className="font-bold text-portal-navy text-lg">טיפ חשוב</h3>
+          <div className="bg-yellow-50 rounded-2xl p-5 md:p-7 border border-yellow-100">
+            <div className="flex items-center gap-2 mb-4">
+              <Lightbulb className="w-6 h-6 text-yellow-600 flex-shrink-0" />
+              <h3 className="font-bold text-portal-navy text-[17px]">טיפ חשוב</h3>
             </div>
-            <p className="text-gray-700 leading-relaxed mb-5">
+            <p className="text-gray-700 leading-relaxed mb-4 text-[15px]">
               בחירת קוד הענף הנכון היא אחת ההחלטות הכי חשובות בשלב הרישום. קוד לא מתאים עלול ליצור בעיות בדיווחים ולגרום לספקות בביקורת.
             </p>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed text-[15px]">
               יועץ מקצועי מכיר את כל הקודים ויכול לחסוך מכם הרבה כאב ראש — עוד לפני שמתחילים.
             </p>
             {/* טופס שלישי */}
-            <div className="mt-7 pt-6 border-t border-yellow-200">
+            <div className="mt-6 pt-5 border-t border-yellow-200">
               <LeadForm
                 id="mid-form-checklist"
                 variant="mid-checklist"
@@ -497,26 +530,26 @@ export default function OsekPaturSteps() {
 
       {/* ===== טעויות נפוצות ===== */}
       <Section className="bg-red-50">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">5 טעויות נפוצות שאנשים עושים</h2>
-          <p className="text-gray-500 text-base">הימנעות מהן יכולה לחסוך לכם אלפי שקלים וכאב ראש</p>
+        <div className="text-center mb-7">
+          <h2 className="text-[22px] md:text-3xl font-extrabold text-portal-navy mb-2">5 טעויות נפוצות שאנשים עושים</h2>
+          <p className="text-gray-500 text-[15px]">הימנעות מהן יכולה לחסוך לכם אלפי שקלים וכאב ראש</p>
         </div>
-        <div className="grid md:grid-cols-2 gap-5 mb-10">
+        <div className="grid md:grid-cols-2 gap-3 md:gap-5 mb-7">
           {mistakes.map(({ title, desc }) => (
-            <div key={title} className="bg-white rounded-2xl p-6 border border-red-100 shadow-sm flex gap-4 items-start">
-              <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="w-5 h-5 text-red-500" />
+            <div key={title} className="bg-white rounded-xl p-4 md:p-6 border border-red-100 shadow-sm flex gap-3 items-start">
+              <div className="w-9 h-9 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-4 h-4 text-red-500" />
               </div>
               <div>
-                <h3 className="font-bold text-portal-navy mb-1.5 text-base">{title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{desc}</p>
+                <h3 className="font-bold text-portal-navy mb-1 text-[14px] md:text-base">{title}</h3>
+                <p className="text-gray-600 text-[13px] md:text-sm leading-relaxed">{desc}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* טופס רביעי */}
-        <div className="bg-white rounded-3xl p-7 md:p-9 border border-red-100 shadow-md max-w-lg mx-auto">
+        <div className="bg-white rounded-2xl p-5 md:p-9 border border-red-100 shadow-md max-w-lg mx-auto">
           <LeadForm
             id="mid-form-mistakes"
             variant="mid-mistakes"
@@ -529,35 +562,35 @@ export default function OsekPaturSteps() {
 
       {/* ===== לבד מול ליווי ===== */}
       <Section>
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">לפתוח לבד או עם ליווי?</h2>
-          <p className="text-gray-500 text-base">השוואה כנה — כדי שתחליטו בעצמכם</p>
+        <div className="text-center mb-7">
+          <h2 className="text-[22px] md:text-3xl font-extrabold text-portal-navy mb-2">לפתוח לבד או עם ליווי?</h2>
+          <p className="text-gray-500 text-[15px]">השוואה כנה — כדי שתחליטו בעצמכם</p>
         </div>
-        <div className="grid md:grid-cols-2 gap-6 mb-10">
-          <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-            <h3 className="font-bold text-gray-700 mb-5 text-lg flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold">✗</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="bg-gray-50 rounded-2xl p-5 border border-gray-200">
+            <h3 className="font-bold text-gray-700 mb-4 text-[16px] flex items-center gap-2">
+              <span className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold flex-shrink-0">✗</span>
               לבד (ללא ליווי)
             </h3>
             <ul className="space-y-3">
               {withoutUs.map((item, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                  <span className="text-red-400 text-lg mt-0.5 flex-shrink-0">✗</span>
-                  <span className="text-gray-600 text-sm leading-relaxed">{item}</span>
+                  <span className="text-red-400 text-base mt-0.5 flex-shrink-0 leading-none">✗</span>
+                  <span className="text-gray-600 text-[14px] leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="bg-green-50 rounded-2xl p-6 border border-green-200">
-            <h3 className="font-bold text-green-700 mb-5 text-lg flex items-center gap-2">
-              <span className="w-7 h-7 rounded-full bg-green-200 flex items-center justify-center text-sm font-bold">✓</span>
+          <div className="bg-green-50 rounded-2xl p-5 border border-green-200">
+            <h3 className="font-bold text-green-700 mb-4 text-[16px] flex items-center gap-2">
+              <span className="w-7 h-7 rounded-full bg-green-200 flex items-center justify-center text-sm font-bold flex-shrink-0">✓</span>
               עם ליווי פרפקט וואן
             </h3>
             <ul className="space-y-3">
               {withUs.map((item, i) => (
                 <li key={i} className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
+                  <span className="text-gray-700 text-[14px] leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
@@ -567,23 +600,23 @@ export default function OsekPaturSteps() {
 
       {/* ===== מה השירות כולל ===== */}
       <Section className="bg-portal-navy text-white">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3">השירות שלנו — מה כולל?</h2>
-          <p className="text-white/70 text-base">ליווי מלא מהיום הראשון ועד שהעסק פועל</p>
+        <div className="text-center mb-7">
+          <h2 className="text-[22px] md:text-3xl font-extrabold text-white mb-2">השירות שלנו — מה כולל?</h2>
+          <p className="text-white/70 text-[15px]">ליווי מלא מהיום הראשון ועד שהעסק פועל</p>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-8">
           {[
-            { icon: Phone, title: 'פגישת ייעוץ חינם', desc: 'בודקים יחד איזה סטטוס מתאים לכם ומה הצעדים הבאים' },
-            { icon: FileText, title: 'רישום מלא', desc: 'פותחים תיק במס הכנסה, מע"מ וביטוח לאומי — אנחנו מטפלים' },
-            { icon: Shield, title: 'מניעת טעויות', desc: 'מוודאים שהכל נעשה נכון — קוד ענף, טפסים, סדר פעולות' },
-            { icon: Clock, title: 'חיסכון בזמן', desc: 'מה שלוקח ימים לבד — לוקח שעות איתנו' },
-            { icon: Users, title: 'מענה לשאלות', desc: 'אחרי הפתיחה — נשאר זמינים לשאלות ולדוחות עתידיים' },
-            { icon: BadgeCheck, title: 'ניסיון של שנים', desc: 'ליווינו אלפי עצמאים — אנחנו יודעים מה עובד' },
+            { icon: Phone, title: 'פגישת ייעוץ חינם', desc: 'בודקים יחד מה הצעדים הבאים' },
+            { icon: FileText, title: 'רישום מלא', desc: 'מס הכנסה, מע"מ, ביטוח לאומי' },
+            { icon: Shield, title: 'מניעת טעויות', desc: 'קוד ענף, טפסים, סדר פעולות' },
+            { icon: Clock, title: 'חיסכון בזמן', desc: 'מה שלוקח ימים לבד — שעות איתנו' },
+            { icon: Users, title: 'מענה לשאלות', desc: 'זמינים גם אחרי הפתיחה' },
+            { icon: BadgeCheck, title: 'ניסיון של שנים', desc: 'ליווינו אלפי עצמאים' },
           ].map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="bg-white/10 border border-white/20 rounded-2xl p-5 hover:bg-white/15 transition-colors">
-              <Icon className="w-6 h-6 text-yellow-400 mb-3" />
-              <h3 className="font-bold text-white mb-1.5 text-base">{title}</h3>
-              <p className="text-white/70 text-sm leading-relaxed">{desc}</p>
+            <div key={title} className="bg-white/10 border border-white/20 rounded-xl p-4 md:p-5">
+              <Icon className="w-5 h-5 text-yellow-400 mb-2" />
+              <h3 className="font-bold text-white mb-1 text-[14px] md:text-base">{title}</h3>
+              <p className="text-white/70 text-[12px] md:text-sm leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
@@ -591,11 +624,11 @@ export default function OsekPaturSteps() {
 
       {/* ===== FAQ ===== */}
       <Section>
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">שאלות נפוצות</h2>
-          <p className="text-gray-500 text-base">תשובות ישירות לשאלות שרוב האנשים שואלים</p>
+        <div className="text-center mb-7">
+          <h2 className="text-[22px] md:text-3xl font-extrabold text-portal-navy mb-2">שאלות נפוצות</h2>
+          <p className="text-gray-500 text-[15px]">תשובות ישירות לשאלות שרוב האנשים שואלים</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm max-w-2xl mx-auto">
+        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm max-w-2xl mx-auto">
           {faqs.map((faq, i) => (
             <FAQItem
               key={i}
@@ -610,23 +643,23 @@ export default function OsekPaturSteps() {
 
       {/* ===== FINAL CTA ===== */}
       <section
-        className="py-16 md:py-24 relative overflow-hidden"
+        className="py-12 md:py-24 relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #0F4C75 0%, #1E3A5F 100%)' }}
       >
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 30% 70%, #F59E0B 0%, transparent 50%)' }} />
         <div className="relative max-w-lg mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/40 rounded-full px-4 py-1.5 mb-6">
-            <Star className="w-4 h-4 text-yellow-300" />
-            <span className="text-yellow-200 text-sm font-semibold">+5,000 עצמאים כבר נפתחו איתנו</span>
+          <div className="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/40 rounded-full px-4 py-1.5 mb-5">
+            <Star className="w-4 h-4 text-yellow-300 flex-shrink-0" />
+            <span className="text-yellow-200 text-[13px] font-semibold">+5,000 עצמאים כבר נפתחו איתנו</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+          <h2 className="text-[26px] md:text-4xl font-extrabold text-white mb-3">
             מוכנים לפתוח את<br />
             <span className="text-yellow-400">עוסק הפטור שלכם?</span>
           </h2>
-          <p className="text-white/80 text-lg mb-8">
+          <p className="text-white/80 text-[15px] md:text-lg mb-6">
             מלאו פרטים — ניצור קשר תוך שעה ונתאם ייעוץ חינמי
           </p>
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-7">
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 md:p-7">
             <LeadForm
               id="final-form"
               variant="final"
