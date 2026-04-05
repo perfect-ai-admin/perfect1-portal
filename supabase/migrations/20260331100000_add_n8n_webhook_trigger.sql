@@ -5,6 +5,39 @@
 -- Enable pg_net for HTTP calls from database
 CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
 
+-- Function that sends webhook to n8n when new lead is created
+CREATE OR REPLACE FUNCTION notify_n8n_new_lead()
+RETURNS TRIGGER AS $$
+DECLARE
+  webhook_url TEXT := 'https://n8n.perfect-1.one/webhook/perfect-one-osek-patur';
+  payload JSONB;
+BEGIN
+  -- Build payload for N8N V2 (Supabase new lead format)
+  payload := jsonb_build_object(
+    '_event_type', 'new_lead',
+    'name', NEW.name,
+    'phone', NEW.phone,
+    'email', COALESCE(NEW.email, ''),
+    'page_slug', COALESCE(NEW.source_page, 'osek-patur'),
+    'page_title', COALESCE(NEW.page_intent, 'עוסק פטור'),
+    'service_type', COALESCE(NEW.service_type, 'osek_patur'),
+    'utm_source', COALESCE(NEW.utm_source, ''),
+    'utm_medium', COALESCE(NEW.utm_medium, ''),
+    'utm_campaign', COALESCE(NEW.utm_campaign, '')\n  );
+
+  -- Send webhook (fire-and-forget, non-blocking)
+  PERFORM net.http_post(
+    webhook_url,
+    payload,
+    '{}'::jsonb,
+    '{\"Content-Type\": \"application/json\"}'::jsonb,
+    5000
+  );
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Function that sends webhook to n8n when lead changes
 CREATE OR REPLACE FUNCTION notify_n8n_lead_change()
 RETURNS TRIGGER AS $$
@@ -92,7 +125,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Create trigger on leads table (UPDATE only - INSERT handled by submitLeadToN8N)
+-- Create triggers on leads table
+-- INSERT trigger: send new lead to N8N (for V2 workflow)
+DROP TRIGGER IF EXISTS trg_notify_n8n_new_lead ON leads;
+CREATE TRIGGER trg_notify_n8n_new_lead
+  AFTER INSERT
+  ON leads
+  FOR EACH ROW
+  EXECUTE FUNCTION notify_n8n_new_lead();
+
+-- UPDATE trigger: send status changes to N8N
 DROP TRIGGER IF EXISTS trg_notify_n8n_lead_change ON leads;
 CREATE TRIGGER trg_notify_n8n_lead_change
   AFTER UPDATE OF pipeline_stage, status, lost_reason_id
