@@ -9,7 +9,7 @@ CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
 CREATE OR REPLACE FUNCTION notify_n8n_lead_change()
 RETURNS TRIGGER AS $$
 DECLARE
-  webhook_url TEXT := 'https://n8n.perfect-1.one/webhook/dc453dae-dcc0-484e-85c8-0d47299fc4c2';
+  webhook_url TEXT := 'https://n8n.perfect-1.one/webhook/perfect-one-osek-patur';
   payload JSONB;
   event_type TEXT;
   lost_reason_text TEXT;
@@ -17,10 +17,8 @@ DECLARE
   mapped_reason TEXT;
   agent_name_val TEXT;
 BEGIN
-  -- Determine event type
-  IF TG_OP = 'INSERT' THEN
-    event_type := 'new_lead';
-  ELSIF OLD.pipeline_stage IS DISTINCT FROM NEW.pipeline_stage THEN
+  -- Determine event type (INSERT handled by submitLeadToN8N - webhook only for status changes)
+  IF OLD.pipeline_stage IS DISTINCT FROM NEW.pipeline_stage THEN
     event_type := 'status_change';
   ELSE
     -- No relevant change, skip
@@ -94,10 +92,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Create trigger on leads table
+-- Create trigger on leads table (UPDATE only - INSERT handled by submitLeadToN8N)
 DROP TRIGGER IF EXISTS trg_notify_n8n_lead_change ON leads;
 CREATE TRIGGER trg_notify_n8n_lead_change
-  AFTER INSERT OR UPDATE OF pipeline_stage, status, lost_reason_id
+  AFTER UPDATE OF pipeline_stage, status, lost_reason_id
   ON leads
   FOR EACH ROW
   EXECUTE FUNCTION notify_n8n_lead_change();
