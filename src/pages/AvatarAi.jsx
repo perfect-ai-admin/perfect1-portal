@@ -135,7 +135,12 @@ export default function AvatarAiPage() {
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 w-full px-12">
                     {/* Avatar Preview */}
                     <div className="w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-fuchsia-500 shadow-[0_0_40px_rgba(232,121,249,0.3)] bg-gray-800 overflow-hidden relative">
-                         <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=500" alt="Avatar" className="w-full h-full object-cover opacity-90" />
+                         <img
+                           src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=500"
+                           alt="Avatar"
+                           loading="lazy"
+                           decoding="async"
+                           className="w-full h-full object-cover opacity-90" />
                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent h-20 flex items-end justify-center pb-4">
                              <div className="flex gap-1">
                                  <div className="w-1 h-4 bg-fuchsia-500 rounded-full animate-pulse" />

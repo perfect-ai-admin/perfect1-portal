@@ -306,7 +306,7 @@ export default function LogoProjectPage() {
                           </div>
                         </div>
                       ) : (
-                        <img src={gen.image_url} alt="Generated logo" className="w-full h-56 object-cover rounded-t-lg" />
+                        <img src={gen.image_url} alt="Generated logo" loading="lazy" decoding="async" className="w-full h-56 object-cover rounded-t-lg" />
                       )}
                       <div className="p-4 space-y-3">
                         <p className="text-xs text-gray-500 font-medium">{new Date(gen.created_at).toLocaleDateString()}</p>

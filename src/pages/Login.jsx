@@ -96,7 +96,7 @@ export default function Login() {
             onClick={handleGoogleLogin}
             type="button"
           >
-            <img src="https://www.google.com/favicon.ico" alt="" className="w-4 h-4 ml-2" />
+            <img src="https://www.google.com/favicon.ico" alt="" loading="lazy" decoding="async" className="w-4 h-4 ml-2" />
             המשך עם Google
           </Button>
 
