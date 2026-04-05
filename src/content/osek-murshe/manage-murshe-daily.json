@@ -26,7 +26,7 @@
         "ניהול הנהלת חשבונות (או יעוץ עם רואה חשבון)",
         "דיווח חודשי של מע\"מ",
         "דוח שנתי למס הכנסה",
-        "תשלום מקדמות מס"
+        "<a href=\"https://www.btl.gov.il\" target=\"_blank\" rel=\"noopener\">ביטוח לאומי</a> ותשלום מקדמות מס"
       ]
     },
     {
@@ -68,7 +68,7 @@
     {
       "type": "callout",
       "title": "המלצה",
-      "content": "רוב עוסקי מורשה משתמשים בתוכנות כמו Wave, Zoho או QuickBooks בזמן שכן בסכנה של פספוס דוחות וטעויות. זה שווה כל שקל."
+      "content": "רוב עוסקי מורשה משתמשים בתוכנות כמו <a href=\"https://wave.com\" target=\"_blank\" rel=\"noopener\">Wave</a>, <a href=\"https://zoho.com\" target=\"_blank\" rel=\"noopener\">Zoho</a> או QuickBooks בזמן שכן בסכנה של פספוס דוחות וטעויות. זה שווה כל שקל."
     },
     {
       "type": "text",

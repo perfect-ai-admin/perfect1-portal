@@ -49,12 +49,12 @@
         {
           "step": 3,
           "title": "הגש בקשה לשינוי סטטוס",
-          "description": "מלא את ספח 5329 בקשה לרישום כעוסק מורשה. הגשת לרשות המסים"
+          "description": "מלא את ספח 5329 בקשה לרישום כעוסק מורשה. <a href=\"https://taxes.gov.il\" target=\"_blank\" rel=\"noopener\">הגשת לרשות המסים</a>"
         },
         {
           "step": 4,
           "title": "פתח תיק מע\"מ",
-          "description": "אחרי אישור סטטוס עוסק מורשה, הגש בקשה לפתיחת תיק מע\"מ ברשות"
+          "description": "אחרי אישור סטטוס עוסק מורשה, <a href=\"https://taxes.gov.il/vat\" target=\"_blank\" rel=\"noopener\">הגש בקשה לפתיחת תיק מע\"מ</a> ברשות"
         },
         {
           "step": 5,
