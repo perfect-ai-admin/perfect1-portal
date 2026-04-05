@@ -325,7 +325,18 @@ export default function OsekPaturSteps() {
               </p>
             </div>
 
-            {/* === Block 2: Checkmarks (mobile: before form) === */}
+            {/* === Block 2: Form (mobile: before checkmarks) === */}
+            <div className="md:order-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 md:p-8">
+              <LeadForm
+                id="hero-form"
+                variant="hero"
+                title="קבלו ליווי לפתיחת עוסק פטור"
+                subtitle="מלאו פרטים — נחזור אליכם תוך שעה"
+                ctaText="בדקו איך לפתוח עוסק פטור"
+              />
+            </div>
+
+            {/* === Block 3: Checkmarks (mobile: after form) === */}
             <div className="md:hidden flex flex-col gap-2.5 mb-5">
               {[
                 { icon: CheckCircle2, text: 'פתיחה מלאה ב-3 שלבים פשוטים' },
@@ -337,17 +348,6 @@ export default function OsekPaturSteps() {
                   <span className="text-white font-medium text-[15px]">{text}</span>
                 </div>
               ))}
-            </div>
-
-            {/* === Block 3: Form (mobile: after checkmarks) === */}
-            <div className="md:order-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-5 md:p-8">
-              <LeadForm
-                id="hero-form"
-                variant="hero"
-                title="קבלו ליווי לפתיחת עוסק פטור"
-                subtitle="מלאו פרטים — נחזור אליכם תוך שעה"
-                ctaText="בדקו איך לפתוח עוסק פטור"
-              />
             </div>
 
             {/* === Desktop only: text + checkmarks in left column === */}
