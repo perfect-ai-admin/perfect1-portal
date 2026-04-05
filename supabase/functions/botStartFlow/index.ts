@@ -109,20 +109,30 @@ Deno.serve(async (req) => {
 
     // 2. Close any existing active sessions for this phone (allows fresh session on new lead)
     const cleanPhone = formatPhone(phone);
-    const { data: existingSessions } = await supabaseAdmin
+    const { data: existingSessions, error: sessionQueryErr } = await supabaseAdmin
       .from('bot_sessions')
       .select('id')
       .eq('phone', cleanPhone)
       .is('completed_at', null);
 
+    if (sessionQueryErr) {
+      console.warn(`Warning: Could not query existing sessions: ${sessionQueryErr.message}`);
+    }
+
     if (existingSessions && existingSessions.length > 0) {
       console.log(`Closing ${existingSessions.length} existing session(s) for phone ${cleanPhone}`);
       // Close all existing active sessions
-      await supabaseAdmin
+      const { error: closeErr } = await supabaseAdmin
         .from('bot_sessions')
         .update({ completed_at: new Date().toISOString() })
         .eq('phone', cleanPhone)
         .is('completed_at', null);
+
+      if (closeErr) {
+        console.warn(`Warning: Could not close existing sessions: ${closeErr.message}`);
+      } else {
+        console.log(`Successfully closed ${existingSessions.length} session(s)`);
+      }
     }
 
     // 3. Create bot_session
@@ -145,7 +155,8 @@ Deno.serve(async (req) => {
 
     // 4. Update lead with bot fields
     if (lead_id) {
-      await supabaseAdmin.from('leads').update({
+      console.log(`Updating lead ${lead_id} with bot fields`);
+      const { error: leadUpdateErr } = await supabaseAdmin.from('leads').update({
         page_intent: intent.page_intent,
         flow_type: intent.flow_type,
         bot_current_step: 'opening',
@@ -154,6 +165,14 @@ Deno.serve(async (req) => {
         interaction_type: 'bot',
         service_type: intent.service_type,
       }).eq('id', lead_id);
+
+      if (leadUpdateErr) {
+        console.error(`Error updating lead: ${leadUpdateErr.message}`);
+      } else {
+        console.log(`Lead ${lead_id} updated successfully`);
+      }
+    } else {
+      console.warn('No lead_id provided to botStartFlow');
     }
 
     // 5. Build and send opening message
