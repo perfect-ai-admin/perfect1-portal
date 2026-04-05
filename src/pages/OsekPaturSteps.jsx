@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { submitPortalLead } from '@/api/portalSupabaseClient';
 import { PORTAL_CTA } from '@/portal/config/navigation';
-import InlineCTA from '@/portal/components/InlineCTA';
 
 // ============================
 // Lead Form Component
@@ -166,6 +165,35 @@ function StepsLeadForm({
   );
 }
 
+
+// ============================
+// Inline CTA — scroll to lead form
+// ============================
+function InlineCTA({ title, buttonText = 'השאירו פרטים' }) {
+  const scrollToForm = () => {
+    const form =
+      document.getElementById('hero-lead-form') ||
+      document.getElementById('hero-lead-form-mobile');
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <div className="my-10 bg-gradient-to-l from-portal-navy to-portal-navy-light rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+      <h3 className="text-lg sm:text-xl font-bold text-center sm:text-right">{title}</h3>
+      <button
+        onClick={scrollToForm}
+        className="flex-shrink-0 h-12 px-6 rounded-xl text-base font-bold shadow-lg transition-all hover:scale-[1.03] active:scale-[0.97]"
+        style={{ backgroundColor: '#F59E0B', color: '#1E3A5F' }}
+      >
+        {buttonText}
+      </button>
+    </div>
+  );
+}
 
 // ============================
 // FAQ Accordion
