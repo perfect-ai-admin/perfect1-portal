@@ -21,7 +21,7 @@ function LeadForm({
   variant = 'hero', // hero | mid | final
   title,
   subtitle,
-  ctaText = 'בדקו התאמה עכשיו',
+  ctaText = 'פתיחת עוסק בקליק',
   className = '',
 }) {
   const navigate = useNavigate();
