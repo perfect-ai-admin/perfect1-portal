@@ -1,31 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { HelmetProvider } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Loader2, CheckCircle2, Phone, Clock,
-  Shield, Headphones, Zap,
-  Users, AlertTriangle, ChevronDown, ChevronUp,
-  Star, HandCoins, ClipboardCheck,
-  CreditCard, Building2, FileText, UserCheck,
-  BookOpen, AlertCircle
+  Loader2, Phone, Shield, Clock, Users, Star,
+  CheckCircle2, ChevronDown, ChevronUp, AlertTriangle,
+  BookOpen, FileText, Zap, HelpCircle, ArrowLeft,
+  ClipboardList, UserCheck, BadgeCheck, Lightbulb
 } from 'lucide-react';
 import { submitPortalLead } from '@/api/portalSupabaseClient';
-import { PORTAL_CTA } from '@/portal/config/navigation';
 
 // ============================
-// Lead Form Component
+// Lead Form
 // ============================
-function StepsLeadForm({
-  id,
-  variant = 'default',
-  title,
-  subtitle,
-  ctaText = 'קבלו ליווי לפתיחת עוסק פטור',
-  className = '',
-}) {
+function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'בדקו איך לפתוח עוסק פטור', className = '' }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', phone: '' });
   const [loading, setLoading] = useState(false);
@@ -33,38 +22,20 @@ function StepsLeadForm({
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
-  const trackEvent = (eventName, data = {}) => {
-    if (window.dataLayer) {
-      window.dataLayer.push({ event: eventName, ...data });
-    }
-    if (window.fbq) {
-      window.fbq('track', eventName === 'lead_submitted' ? 'Lead' : 'CustomEvent', {
-        content_name: 'osek_patur_steps',
-        ...data,
-      });
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.phone.trim()) {
-      setError('נא למלא שם וטלפון');
-      return;
-    }
-
+    if (!form.name.trim() || !form.phone.trim()) { setError('נא למלא שם וטלפון'); return; }
     const phoneClean = form.phone.replace(/[-\s]/g, '');
-    if (!/^0\d{8,9}$/.test(phoneClean)) {
-      setError('מספר טלפון לא תקין');
-      return;
-    }
+    if (!/^0\d{8,9}$/.test(phoneClean)) { setError('מספר טלפון לא תקין'); return; }
 
     setLoading(true);
     setError('');
-    trackEvent('form_start', { form_location: variant });
+
+    if (window.dataLayer) window.dataLayer.push({ event: 'lead_submitted', form_location: variant, page: 'osek_patur_steps' });
+    if (window.fbq) window.fbq('track', 'Lead', { content_name: 'osek_patur_steps', form_location: variant });
 
     try {
       const params = new URLSearchParams(window.location.search);
-
       await submitPortalLead({
         name: form.name,
         phone: form.phone,
@@ -79,38 +50,50 @@ function StepsLeadForm({
         referrer: document.referrer || '',
       });
 
-      // Redirect to ThankYou — conversion tracking fires there
+      try {
+        await fetch(
+          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
+            body: JSON.stringify({ name: form.name, phone: form.phone, pageSlug: `steps-osek-patur-${variant}`, businessName: 'שלבי פתיחת עוסק פטור' })
+          }
+        ).catch(() => {});
+      } catch (_) {}
+
       navigate('/ThankYou', { state: { source: `steps-osek-patur-${variant}`, name: form.name } });
-    } catch (err) {
-      setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
+    } catch {
+      setError('שגיאה בשליחה, נסו שוב');
     } finally {
       setLoading(false);
     }
   };
 
+  const isHero = variant === 'hero';
+
   return (
     <div id={id} className={className}>
       {title && (
-        <h3 className="font-bold text-center mb-1 text-xl md:text-2xl text-portal-navy">
+        <h3 className={`font-bold text-center mb-1 text-xl md:text-2xl ${isHero ? 'text-white' : 'text-portal-navy'}`}>
           {title}
         </h3>
       )}
       {subtitle && (
-        <p className="text-center mb-5 text-sm text-gray-500">
+        <p className={`text-center mb-5 text-sm ${isHero ? 'text-white/70' : 'text-gray-500'}`}>
           {subtitle}
         </p>
       )}
 
       {/* Trust badges */}
-      <div className="flex items-center justify-center gap-3 mb-5 flex-wrap">
+      <div className="flex items-center justify-center gap-2 mb-4 flex-wrap">
         {[
-          { icon: Shield, text: 'מאובטח 100%' },
+          { icon: Shield, text: 'ללא התחייבות' },
           { icon: Users, text: '+5,000 עצמאים' },
           { icon: Star, text: 'דירוג 5 כוכבים' },
         ].map(({ icon: Icon, text }) => (
-          <div key={text} className="flex items-center gap-1.5 bg-green-50 border border-green-100 rounded-full px-3 py-1">
-            <Icon className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />
-            <span className="text-xs font-semibold text-green-700">{text}</span>
+          <div key={text} className={`flex items-center gap-1.5 rounded-full px-3 py-1 ${isHero ? 'bg-white/20 border border-white/30' : 'bg-green-50 border border-green-100'}`}>
+            <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${isHero ? 'text-yellow-300' : 'text-green-600'}`} />
+            <span className={`text-xs font-semibold ${isHero ? 'text-white' : 'text-green-700'}`}>{text}</span>
           </div>
         ))}
       </div>
@@ -121,7 +104,7 @@ function StepsLeadForm({
           onChange={(e) => set('name', e.target.value)}
           placeholder="שם מלא"
           required
-          className="h-[58px] rounded-xl text-lg border-2 border-gray-200 bg-gray-50 focus:bg-white focus:border-portal-teal focus:ring-portal-teal text-right font-medium placeholder:text-gray-400"
+          className="h-[56px] rounded-xl text-lg border-2 border-gray-200 bg-white focus:border-portal-teal focus:ring-portal-teal text-right font-medium placeholder:text-gray-400"
         />
         <Input
           value={form.phone}
@@ -130,88 +113,43 @@ function StepsLeadForm({
           type="tel"
           required
           dir="ltr"
-          className="h-[58px] rounded-xl text-lg border-2 border-gray-200 bg-gray-50 focus:bg-white focus:border-portal-teal focus:ring-portal-teal text-right font-medium placeholder:text-gray-400"
+          className="h-[56px] rounded-xl text-lg border-2 border-gray-200 bg-white focus:border-portal-teal focus:ring-portal-teal text-right font-medium placeholder:text-gray-400"
         />
-
         {error && <p className="text-red-500 text-sm text-center font-medium">{error}</p>}
-
         <Button
           type="submit"
           disabled={loading}
-          className="w-full rounded-2xl font-extrabold shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] hover:brightness-105"
-          style={{ height: '62px', backgroundColor: '#F59E0B', color: '#1E3A5F', fontSize: '19px' }}
+          className="w-full rounded-2xl font-extrabold shadow-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+          style={{ height: '60px', backgroundColor: '#F59E0B', color: '#1E3A5F', fontSize: '18px' }}
         >
-          {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : (
-            <>
-              <Phone className="ml-2 h-5 w-5" />
-              {ctaText}
-            </>
+          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+            <><Phone className="ml-2 h-5 w-5" />{ctaText}</>
           )}
         </Button>
       </form>
 
-      {/* Urgency + security note */}
-      <div className="mt-4 text-center">
-        <p className="text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 mb-2">
-          חוזרים אליכם תוך שעה בשעות הפעילות
-        </p>
-        <p className="text-xs text-gray-400">
-          ללא התחייבות · המידע שלך מאובטח · שירות חינם
-        </p>
-      </div>
-    </div>
-  );
-}
-
-
-// ============================
-// Inline CTA — scroll to lead form
-// ============================
-function InlineCTA({ title, buttonText = 'השאירו פרטים' }) {
-  const scrollToForm = () => {
-    const form =
-      document.getElementById('hero-lead-form') ||
-      document.getElementById('hero-lead-form-mobile');
-    if (form) {
-      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <div className="my-10 bg-gradient-to-l from-portal-navy to-portal-navy-light rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
-      <h3 className="text-lg sm:text-xl font-bold text-center sm:text-right">{title}</h3>
-      <button
-        onClick={scrollToForm}
-        className="flex-shrink-0 h-12 px-6 rounded-xl text-base font-bold shadow-lg transition-all hover:scale-[1.03] active:scale-[0.97]"
-        style={{ backgroundColor: '#F59E0B', color: '#1E3A5F' }}
-      >
-        {buttonText}
-      </button>
+      <p className={`text-xs text-center mt-3 ${isHero ? 'text-white/60' : 'text-gray-400'}`}>
+        🔒 חינם · ללא התחייבות · נחזור אליכם תוך שעה
+      </p>
     </div>
   );
 }
 
 // ============================
-// FAQ Accordion
+// FAQ Item
 // ============================
 function FAQItem({ question, answer, isOpen, onClick }) {
   return (
     <div className="border-b border-gray-200 last:border-0">
       <button
         onClick={onClick}
-        className="w-full flex items-center justify-between py-5 px-1 text-right hover:bg-gray-50/50 transition-colors"
+        className="w-full flex items-center justify-between py-5 px-1 text-right hover:bg-gray-50 transition-colors"
         aria-expanded={isOpen}
       >
-        <span className="text-lg font-semibold text-portal-navy pr-0 pl-4">{question}</span>
-        {isOpen ? (
-          <ChevronUp className="w-5 h-5 text-portal-teal flex-shrink-0" />
-        ) : (
-          <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
-        )}
+        <span className="text-base md:text-lg font-semibold text-portal-navy pl-4">{question}</span>
+        {isOpen
+          ? <ChevronUp className="w-5 h-5 text-portal-teal flex-shrink-0" />
+          : <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />}
       </button>
       {isOpen && (
         <div className="pb-5 px-1 text-gray-600 leading-relaxed text-base">
@@ -223,651 +161,500 @@ function FAQItem({ question, answer, isOpen, onClick }) {
 }
 
 // ============================
-// Sticky Mobile CTA
+// Section Wrapper
 // ============================
-function StickyMobileCTA() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsVisible(window.scrollY > 600);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToForm = () => {
-    const form = document.getElementById('hero-lead-form') || document.getElementById('hero-lead-form-mobile');
-    if (form) form.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  if (!isVisible) return null;
-
+function Section({ children, className = '', id }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      <div className="bg-white/95 backdrop-blur-lg border-t border-gray-200 px-3 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
-        <div className="flex items-center gap-2">
-          <a
-            href={`tel:${PORTAL_CTA.phone}`}
-            className="flex-1 flex items-center justify-center gap-1.5 h-12 bg-portal-teal hover:bg-portal-teal-dark text-white rounded-xl font-bold text-sm transition-colors"
-          >
-            <Phone className="w-4 h-4" />
-            התקשרו עכשיו
-          </a>
-          <button
-            onClick={scrollToForm}
-            className="flex-[1.3] flex items-center justify-center gap-1.5 h-12 font-bold text-sm transition-all rounded-xl"
-            style={{ backgroundColor: '#F59E0B', color: '#1E3A5F' }}
-          >
-            <ClipboardCheck className="w-4 h-4" />
-            השאירו פרטים
-          </button>
-        </div>
+    <section id={id} className={`py-14 md:py-20 ${className}`}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        {children}
       </div>
-    </div>
+    </section>
   );
 }
-
-// ============================
-// Schema Markup
-// ============================
-function StepsSchemaMarkup({ faqItems }) {
-  const articleSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: 'איך פותחים עוסק פטור – המדריך המלא לפתיחת עוסק פטור בישראל',
-    description: 'רוצים לפתוח עוסק פטור? במדריך הזה תגלו איך פותחים עוסק פטור בישראל, מהם השלבים ומה צריך להכין.',
-    datePublished: '2026-03-28',
-    dateModified: '2026-03-28',
-    author: { '@type': 'Organization', name: 'פרפקט וואן', url: 'https://perfect1.co.il' },
-    publisher: { '@type': 'Organization', name: 'פרפקט וואן', url: 'https://perfect1.co.il' },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://perfect1.co.il/OsekPaturSteps' },
-  };
-
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqItems.map(item => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: { '@type': 'Answer', text: item.answer },
-    })),
-  };
-
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'פרפקט וואן', item: 'https://perfect1.co.il' },
-      { '@type': 'ListItem', position: 2, name: 'עוסק פטור', item: 'https://perfect1.co.il/osek-patur' },
-      { '@type': 'ListItem', position: 3, name: 'איך פותחים עוסק פטור', item: 'https://perfect1.co.il/OsekPaturSteps' },
-    ],
-  };
-
-  const howToSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'HowTo',
-    name: 'איך פותחים עוסק פטור בישראל',
-    description: 'שלבים לפתיחת עוסק פטור בישראל — פתיחת תיק במע"מ, מס הכנסה וביטוח לאומי.',
-    step: [
-      { '@type': 'HowToStep', position: 1, name: 'פתיחת תיק במע"מ', text: 'פונים למשרד מע"מ האזורי או באתר רשות המסים, ממלאים טופס 821 ומגישים עם תעודת זהות ואסמכתא על כתובת.' },
-      { '@type': 'HowToStep', position: 2, name: 'פתיחת תיק במס הכנסה', text: 'פונים לפקיד שומה באזור המגורים, ממלאים טופס 5329 ומצרפים אישור פתיחת תיק מע"מ.' },
-      { '@type': 'HowToStep', position: 3, name: 'פתיחת תיק בביטוח לאומי', text: 'נרשמים כעצמאי באתר ביטוח לאומי או בסניף, ומתחילים לשלם דמי ביטוח לאומי ודמי בריאות.' },
-    ],
-  };
-
-  return (
-    <Helmet>
-      <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
-    </Helmet>
-  );
-}
-
-// ============================
-// FAQ Data
-// ============================
-const FAQ_ITEMS = [
-  {
-    question: 'איך פותחים עוסק פטור?',
-    answer: 'פותחים עוסק פטור בשלושה שלבים: פתיחת תיק במע"מ, פתיחת תיק במס הכנסה, ופתיחת תיק בביטוח לאומי. התהליך כולל מילוי טפסים, הגשת מסמכים ובחירת סיווג עיסוק מתאים. עם ליווי מקצועי, אפשר לעשות את זה מהר ובלי טעויות.',
-  },
-  {
-    question: 'כמה עולה לפתוח עוסק פטור?',
-    answer: 'פתיחת התיקים ברשויות היא ללא עלות. העלות העיקרית היא של ליווי מקצועי או רואה חשבון, שיכולה לנוע בין מאות בודדות לכמה אלפי שקלים, תלוי בהיקף השירות. השאירו פרטים ונתאים לכם הצעה.',
-  },
-  {
-    question: 'כמה זמן לוקח לפתוח עוסק פטור?',
-    answer: 'התהליך יכול לקחת בין מספר ימים לשבועות, תלוי במהירות ההגשה ובזמינות המשרדים. עם ליווי מקצועי, התהליך מתקצר משמעותית כי נמנעים מטעויות ומביורוקרטיה מיותרת.',
-  },
-  {
-    question: 'האם חייבים רואה חשבון לעוסק פטור?',
-    answer: 'מבחינה חוקית — לא חייבים. עוסק פטור פטור מהנהלת חשבונות כפולה. אבל רואה חשבון או ליווי מקצועי עוזר להימנע מטעויות, לוודא שהדיווחים נכונים, ולחסוך כסף במס באמצעות תכנון נכון.',
-  },
-  {
-    question: 'מה ההבדל בין עוסק פטור לעוסק מורשה?',
-    answer: 'עוסק פטור פטור מגביית מע"מ ומדיווחים מורכבים, אבל מוגבל בתקרת הכנסות (כ-120,000 ₪ בשנה נכון ל-2026). עוסק מורשה גובה מע"מ, יכול לקזז מע"מ על הוצאות, ואין מגבלת הכנסות. לא בטוחים מה מתאים? השאירו פרטים ונבדוק יחד.',
-  },
-  {
-    question: 'האם אפשר לפתוח עוסק פטור גם אם אני שכיר?',
-    answer: 'בהחלט. הרבה שכירים פותחים עוסק פטור במקביל לעבודה שלהם כדי לקבל הכנסות צדדיות באופן חוקי. חשוב להבין את ההשלכות על המיסוי ועל ביטוח לאומי — וזה בדיוק מה שאנחנו עוזרים בו.',
-  },
-  {
-    question: 'מה קורה אם עוברים את תקרת ההכנסות?',
-    answer: 'אם ההכנסות עוברות את התקרה, חובה לעבור למעמד עוסק מורשה. המעבר כולל רישום מחדש במע"מ והתחלת גביית מע"מ מלקוחות. עם ליווי מקצועי, המעבר פשוט ומסודר.',
-  },
-];
 
 // ============================
 // Main Page
 // ============================
 export default function OsekPaturSteps() {
-  const [openFAQ, setOpenFAQ] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
 
-  // Scroll depth tracking
-  useEffect(() => {
-    let tracked = {};
-    const handleScroll = () => {
-      const scrollPercent = Math.round(
-        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-      );
-      [25, 50, 75, 100].forEach((threshold) => {
-        if (scrollPercent >= threshold && !tracked[threshold]) {
-          tracked[threshold] = true;
-          if (window.dataLayer) {
-            window.dataLayer.push({ event: 'scroll_depth', scroll_percent: threshold, page: 'osek_patur_steps' });
-          }
-        }
-      });
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const faqs = [
+    {
+      question: 'כמה זמן לוקח לפתוח עוסק פטור?',
+      answer: 'הפתיחה עצמה לוקחת בין 10 דקות לשעה, תלוי אם עושים את זה לבד או עם ליווי. ברוב המקרים, הרישום אצל מס הכנסה ומע"מ מאושר באותו יום.',
+    },
+    {
+      question: 'מה ההבדל בין עוסק פטור למורשה?',
+      answer: 'עוסק פטור מתאים להכנסות עד כ-120,000 ש"ח בשנה ולא מוציא חשבונית מע"מ. עוסק מורשה מתאים להכנסות גבוהות יותר ומוציא חשבונית מס. אם אתם בתחילת הדרך — כמעט תמיד כדאי להתחיל כעוסק פטור.',
+    },
+    {
+      question: 'האם חייבים רואה חשבון כדי לפתוח עוסק פטור?',
+      answer: 'חוקית — לא. אבל בפועל, ליווי מקצועי עוזר מאוד להימנע מטעויות, לבחור את הסיווג הנכון, ולהגיש דוחות בצורה תקינה. הרבה אנשים מתחרטים שחסכו בהתחלה.',
+    },
+    {
+      question: 'האם עוסק פטור משלם מע"מ?',
+      answer: 'עוסק פטור פטור מגביית מע"מ מלקוחותיו ואינו מגיש דוחות מע"מ. בתמורה, אינו יכול לנכות מע"מ על הוצאות. זו בדיוק הסיבה שמתאים לעסקים קטנים.',
+    },
+    {
+      question: 'מה עושים כשמגיעים לתקרת ההכנסות?',
+      answer: 'כשהמחזור עובר את תקרת הפטור (כ-120,000 ש"ח), יש חובה לעבור לעוסק מורשה תוך 30 יום. ניתן לעשות זאת בצורה פשוטה ובתיאום עם יועץ מס.',
+    },
+    {
+      question: 'האם עוסק פטור משלם ביטוח לאומי?',
+      answer: 'כן. עוסק פטור הוא עצמאי לכל דבר ומשלם דמי ביטוח לאומי בהתאם להכנסתו הנטו. יש לדווח לביטוח הלאומי על פתיחת העסק בנפרד.',
+    },
+    {
+      question: 'מה ההגדרה של "הכנסה" לצורך התקרה?',
+      answer: 'מחזור העסק — כל ההכנסות מהעסק לפני הוצאות. לא מדובר ברווח נקי אלא בסך התקבולים.',
+    },
+  ];
+
+  const steps = [
+    {
+      num: '01',
+      title: 'רישום במס הכנסה ומע"מ',
+      body: 'פותחים תיק עצמאי במס הכנסה ותיק במע"מ (כעוסק פטור). ניתן לעשות את זה אונליין דרך שע"מ, או פיזית בסניף קרוב.',
+      icon: FileText,
+    },
+    {
+      num: '02',
+      title: 'רישום בביטוח לאומי',
+      body: 'מדווחים על פתיחת עסק לביטוח הלאומי ומגדירים תשלומי דמי ביטוח. זה שלב שרבים שוכחים וזה עלול לעלות כסף.',
+      icon: Shield,
+    },
+    {
+      num: '03',
+      title: 'פתיחת חשבון עסקי ועבודה',
+      body: 'מומלץ לפתוח חשבון בנק נפרד לעסק, להפיק קבלות ולשמור קבלות הוצאות. מכאן — אתם עוסק פטור לכל דבר.',
+      icon: BadgeCheck,
+    },
+  ];
+
+  const mustHave = [
+    'תעודת זהות',
+    'מספר חשבון בנק',
+    'כתובת עסק (יכולה להיות הבית)',
+    'תיאור קצר של פעילות העסק',
+    'קוד ענף מתאים (ייעוץ / שיווק / אמנות וכו\')',
+    'טופס 5329 (נרשמים ממלאים בקלות)',
+  ];
+
+  const mistakes = [
+    { title: 'לא לדווח לביטוח לאומי', desc: 'פותחים תיק במע"מ אבל שוכחים לעדכן את ביטוח לאומי — ונצברים קנסות.' },
+    { title: 'לא לשמור קבלות', desc: 'ללא קבלות הוצאות אי אפשר לנכות הוצאות — משלמים יותר מס בסוף השנה.' },
+    { title: 'לחצות את התקרה בלי לדעת', desc: 'אנשים לא עוקבים אחרי המחזור ועוברים את תקרת הפטור בלי לדעת.' },
+    { title: 'לא לבחור ענף נכון', desc: 'קוד ענף שגוי עלול לגרום לבעיות בדיווחים שנתיים ולבלבול מול רשויות.' },
+    { title: 'להשתמש בחשבון פרטי', desc: 'ערבוב כספים אישיים ועסקיים מסבך הכל — גם בדוח וגם בשליטה על העסק.' },
+  ];
+
+  const withUs = [
+    'פגישת ייעוץ ראשונית חינם',
+    'ליווי מלא ברישום מול מס הכנסה',
+    'פתיחת תיק ביטוח לאומי',
+    'הנחיות ניהול קבלות ודוחות',
+    'מענה על שאלות לאחר הפתיחה',
+    'תזכורות לדוחות ותשלומים',
+  ];
+
+  const withoutUs = [
+    'מתחילים ללא הכוונה — מבלבל ומבזבז זמן',
+    'טעויות ברישום שקשה לתקן',
+    'שוכחים שלבים קריטיים (כמו ביטוח לאומי)',
+    'ספק לגבי קוד הענף הנכון',
+    'קנסות ועיכובים מיותרים',
+  ];
+
+  const schemaArticle = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'איך פותחים עוסק פטור בישראל? המדריך המלא לשנת 2026',
+    description: 'מדריך שלב אחרי שלב לפתיחת עוסק פטור בישראל — מה צריך, מה לא לשכוח, וטעויות נפוצות שחשוב להימנע מהן.',
+    datePublished: '2026-01-01',
+    dateModified: '2026-04-05',
+    author: { '@type': 'Organization', name: 'פרפקט וואן' },
+    publisher: { '@type': 'Organization', name: 'פרפקט וואן', url: 'https://perfect1.co.il' },
+    url: 'https://perfect1.co.il/osek-patur/steps',
+    inLanguage: 'he',
+  };
+
+  const schemaFaq = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: typeof f.answer === 'string' ? f.answer : f.question },
+    })),
+  };
 
   return (
-    <HelmetProvider>
-      <div dir="rtl" className="portal-root min-h-screen" style={{ fontFamily: "'Heebo', sans-serif" }}>
-        {/* SEO Head */}
-        <Helmet>
-          <title>איך פותחים עוסק פטור – המדריך המלא לפתיחת עוסק פטור בישראל</title>
-          <meta name="description" content="רוצים לפתוח עוסק פטור? במדריך הזה תגלו איך פותחים עוסק פטור בישראל, מהם השלבים ומה צריך להכין. קבלו ליווי מקצועי בתהליך." />
-          <meta name="keywords" content="איך פותחים עוסק פטור, שלבים לפתיחת עוסק פטור, איך לפתוח עוסק פטור, פתיחת עוסק פטור מדריך, איך לפתוח עוסק פטור בישראל, פתיחת עוסק פטור, עוסק פטור שלבים" />
-          <link rel="canonical" href="https://www.perfect1.co.il/OsekPaturSteps" />
-          <meta property="og:title" content="איך פותחים עוסק פטור – המדריך המלא + ליווי מקצועי בתהליך" />
-          <meta property="og:description" content="המדריך המלא לפתיחת עוסק פטור בישראל: שלבים, מסמכים, טיפים ואפשרות לליווי מקצועי שחוסך זמן וטעויות." />
-          <meta property="og:type" content="article" />
-          <meta property="og:url" content="https://www.perfect1.co.il/OsekPaturSteps" />
-          <meta property="og:image" content="https://www.perfect1.co.il/og-image.png" />
-          <meta property="og:locale" content="he_IL" />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="robots" content="index, follow" />
-        </Helmet>
+    <div dir="rtl" className="bg-white min-h-screen font-sans">
+      <Helmet>
+        <title>איך פותחים עוסק פטור בישראל? המדריך המלא 2026 | פרפקט וואן</title>
+        <meta name="description" content="מדריך שלב אחרי שלב לפתיחת עוסק פטור — מה צריך, שלבי הרישום, טעויות נפוצות וכיצד לחסוך זמן וכסף. ליווי מקצועי זמין." />
+        <meta name="keywords" content="פתיחת עוסק פטור, שלבי פתיחת עוסק פטור, איך פותחים עוסק פטור, רישום עוסק פטור, מדריך עוסק פטור" />
+        <link rel="canonical" href="https://perfect1.co.il/osek-patur/steps" />
+        <script type="application/ld+json">{JSON.stringify(schemaArticle)}</script>
+        <script type="application/ld+json">{JSON.stringify(schemaFaq)}</script>
+      </Helmet>
 
-        <StepsSchemaMarkup faqItems={FAQ_ITEMS} />
-
-        {/* ===== HEADER ===== */}
-        <header className="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
-          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold text-portal-navy">פרפקט וואן</span>
-              <span className="text-xs text-gray-400 hidden sm:inline">| ליווי עסקי מקצועי</span>
-            </a>
-            <a
-              href={`tel:${PORTAL_CTA.phone}`}
-              className="flex items-center gap-2 text-portal-teal font-bold text-sm hover:underline"
-            >
-              <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline">{PORTAL_CTA.phone}</span>
-              <span className="sm:hidden">התקשרו</span>
-            </a>
-          </div>
-        </header>
-
-        {/* ===== 1. HERO SECTION ===== */}
-        <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #152D4A 50%, #0F766E 100%)' }}>
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute inset-0" style={{
-              backgroundImage: 'radial-gradient(circle at 25% 25%, white 2%, transparent 2%), radial-gradient(circle at 75% 75%, white 1.5%, transparent 1.5%)',
-              backgroundSize: '60px 60px',
-            }} />
-          </div>
-
-          <div className="relative max-w-6xl mx-auto px-4 py-8 sm:py-10 md:py-16">
-            <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-start">
-              {/* Content */}
-              <div className="order-1">
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 mb-4 md:mb-5">
-                  <BookOpen className="w-3.5 h-3.5 text-yellow-400" />
-                  <span className="text-white/90 text-xs md:text-sm font-medium">המדריך המלא לפתיחת עוסק פטור</span>
-                </div>
-
-                <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white leading-tight mb-3 md:mb-5">
-                  איך פותחים עוסק פטור
-                  <br />
-                  <span className="text-xl sm:text-2xl md:text-4xl" style={{ color: '#F59E0B' }}>בישראל — שלב אחרי שלב</span>
-                </h1>
-
-                {/* Social proof — both mobile and desktop */}
-                <div className="flex items-center gap-3 text-white/70 text-sm mb-5">
-                  <div className="flex -space-x-2 space-x-reverse">
-                    {['י', 'ד', 'ש', 'מ'].map((letter, i) => (
-                      <div key={i} className="w-8 h-8 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-white text-xs font-bold">
-                        {letter}
-                      </div>
-                    ))}
-                  </div>
-                  <span className="font-medium">+5,000 עצמאים קיבלו ליווי מאיתנו</span>
-                </div>
-
-                {/* Mobile: Form right after hero text */}
-                <div className="md:hidden mb-4">
-                  <div className="bg-white rounded-2xl shadow-2xl p-6">
-                    <div className="text-center mb-4">
-                      <p className="text-sm font-bold text-portal-navy bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 inline-block">
-                        רוצים לפתוח עוסק פטור? נעשה את זה יחד
-                      </p>
-                    </div>
-                    <StepsLeadForm
-                      id="hero-lead-form-mobile"
-                      variant="hero"
-                      title="השאירו פרטים לליווי אישי"
-                      subtitle="ייעוץ ראשוני חינם · חוזרים תוך שעה"
-                      ctaText="קבלו ליווי חינם עכשיו"
-                    />
-                  </div>
-                </div>
+      {/* ===== HERO ===== */}
+      <section
+        className="relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0F4C75 60%, #1a6b8a 100%)' }}
+      >
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, #F59E0B 0%, transparent 50%), radial-gradient(circle at 80% 20%, #34D399 0%, transparent 50%)' }} />
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-14 md:py-20">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            {/* Left — text */}
+            <div className="text-right order-2 md:order-1">
+              <div className="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/40 rounded-full px-4 py-1.5 mb-5">
+                <BookOpen className="w-4 h-4 text-yellow-300" />
+                <span className="text-yellow-200 text-sm font-semibold">מדריך מקיף לשנת 2026</span>
               </div>
-
-              {/* Form - Desktop only */}
-              <div className="hidden md:block order-2">
-                <div className="bg-white rounded-3xl shadow-2xl p-7 sm:p-8 max-w-md mx-auto md:mx-0">
-                  <div className="text-center mb-5">
-                    <p className="text-sm font-bold text-portal-navy bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 inline-block">
-                      ייעוץ ראשוני חינם — בלי התחייבות
-                    </p>
-                  </div>
-                  <StepsLeadForm
-                    id="hero-lead-form"
-                    variant="hero"
-                    title="השאירו פרטים לליווי אישי"
-                    subtitle="מומחה יחזור אליכם תוך שעה"
-                    ctaText="קבלו ליווי חינם עכשיו"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ===== 2. מה זה עוסק פטור ===== */}
-        <section className="py-12 md:py-16 bg-white">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy mb-4">
-              מה זה עוסק פטור?
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4">
-              עוסק פטור הוא עסק קטן שמחזור ההכנסות השנתי שלו נמוך מהתקרה שנקבעה על ידי המדינה (כ-120,000 ₪ נכון ל-2026). עוסק פטור <strong>לא גובה מע"מ</strong> מלקוחות, ולכן מתאים במיוחד למי שמתחיל לעבוד כעצמאי.
-            </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4">
-              המעמד הזה מתאים לפרילנסרים, נותני שירותים, מורים פרטיים, מעצבים, צלמים, יועצים ועוד — בעיקר למי שרוצה להתחיל לעבוד עצמאי בצורה פשוטה וחוקית.
-            </p>
-
-            <InlineCTA
-              title="רוצים לבדוק אם עוסק פטור מתאים לכם?"
-              buttonText="השאירו פרטים ונחזור אליכם"
-              sourcePage="osek-patur-steps-what-is"
-            />
-          </div>
-        </section>
-
-        {/* ===== 3. שלבים לפתיחת עוסק פטור ===== */}
-        <section className="py-12 md:py-16" style={{ backgroundColor: '#F8F9FA' }}>
-          <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-3">
-              שלבים לפתיחת עוסק פטור בישראל
-            </h2>
-            <p className="text-gray-500 text-center mb-10 text-lg">
-              התהליך כולל שלושה שלבים עיקריים:
-            </p>
-
-            <div className="space-y-4 md:space-y-6">
-              {[
-                {
-                  num: '1',
-                  title: 'פתיחת תיק במע"מ',
-                  desc: 'פונים למשרד מע"מ האזורי או מגישים באתר רשות המסים. ממלאים טופס 821, מצרפים תעודת זהות ואסמכתא על כתובת העסק. בשלב הזה בוחרים את סיווג העיסוק — וזה אחד הדברים שהכי חשוב לעשות נכון.',
-                  icon: Building2,
-                  color: 'bg-portal-teal',
-                },
-                {
-                  num: '2',
-                  title: 'פתיחת תיק במס הכנסה',
-                  desc: 'פונים לפקיד שומה באזור המגורים שלכם. ממלאים טופס 5329 ומצרפים את אישור פתיחת התיק במע"מ. כאן קובעים את גובה המקדמות ואת אופן הדיווח השנתי.',
-                  icon: FileText,
-                  color: 'bg-portal-navy',
-                },
-                {
-                  num: '3',
-                  title: 'פתיחת תיק בביטוח לאומי',
-                  desc: 'נרשמים כעצמאי באתר ביטוח לאומי או בסניף. מתחילים לשלם דמי ביטוח לאומי ודמי בריאות. גובה התשלום תלוי בגובה ההכנסה — ובשנה הראשונה יש הנחות.',
-                  icon: Shield,
-                  color: 'bg-amber-500',
-                },
-              ].map((step, i) => (
-                <div key={i} className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-gray-100 flex gap-4 sm:gap-5 items-start">
-                  <div className={`w-12 h-12 ${step.color} rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0`}>
-                    {step.num}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <step.icon className="w-5 h-5 text-portal-teal" />
-                      <h3 className="font-bold text-lg text-portal-navy">{step.title}</h3>
-                    </div>
-                    <p className="text-gray-600 leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Warning about mistakes */}
-            <div className="mt-10 bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 sm:p-6">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-bold text-amber-800 text-lg mb-2">למרות שזה נשמע פשוט...</h3>
-                  <p className="text-amber-700 mb-3">הרבה אנשים מסתבכים עם:</p>
-                  <ul className="space-y-2">
-                    {[
-                      'טעויות בטפסים שגורמות לעיכובים',
-                      'בחירת סיווג עיסוק לא מתאים',
-                      'אי הבנה של חובות דיווח ותשלום',
-                      'פתיחת תיקים בסדר הלא נכון',
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-amber-700">
-                        <AlertTriangle className="w-4 h-4 mt-1 flex-shrink-0" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <InlineCTA
-              title="רוצים לפתוח נכון מההתחלה?"
-              buttonText="השאירו פרטים ונעזור לכם"
-              sourcePage="osek-patur-steps-steps"
-            />
-          </div>
-        </section>
-
-        {/* ===== 4. מה צריך להכין ===== */}
-        <section className="py-12 md:py-16 bg-white">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy mb-6">
-              מה צריך להכין לפתיחת עוסק פטור?
-            </h2>
-
-            <div className="grid sm:grid-cols-2 gap-3">
-              {[
-                { icon: UserCheck, text: 'תעודת זהות (או דרכון לתושבי חוץ)' },
-                { icon: CreditCard, text: 'פרטי חשבון בנק' },
-                { icon: FileText, text: 'תיאור הפעילות העסקית שלכם' },
-                { icon: Building2, text: 'כתובת העסק (יכולה להיות הבית)' },
-                { icon: ClipboardCheck, text: 'טפסים לרשויות (821, 5329)' },
-                { icon: BookOpen, text: 'מידע על הכנסות צפויות' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
-                  <div className="w-10 h-10 bg-portal-teal/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <item.icon className="w-5 h-5 text-portal-teal" />
-                  </div>
-                  <span className="text-gray-700 font-medium">{item.text}</span>
-                </div>
-              ))}
-            </div>
-
-            <InlineCTA
-              title="לא בטוחים מה צריך? אנחנו נסביר הכל"
-              buttonText="השאירו פרטים"
-              sourcePage="osek-patur-steps-docs"
-            />
-          </div>
-        </section>
-
-        {/* ===== 5. כמה זמן לוקח ===== */}
-        <section className="py-12 md:py-16" style={{ backgroundColor: '#F0FDFA' }}>
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy mb-4">
-              כמה זמן לוקח לפתוח עוסק פטור?
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4">
-              התהליך יכול לקחת <strong>בין מספר ימים לשבועות</strong>, תלוי בהגשה נכונה של המסמכים ובזמינות המשרדים הרלוונטיים.
-            </p>
-            <p className="text-lg text-gray-600 leading-relaxed mb-4">
-              חלק מהתהליך ניתן לבצע אונליין, אבל ייתכן שתצטרכו להגיע פיזית למשרדי מע"מ או מס הכנסה. עם ליווי מקצועי, התהליך מתקצר משמעותית כי <strong>נמנעים מטעויות וחזרות מיותרות</strong>.
-            </p>
-
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-8">
-              {[
-                { label: 'לבד', time: '2-4 שבועות', color: 'bg-red-50 border-red-200 text-red-700' },
-                { label: 'עם רו"ח', time: '1-2 שבועות', color: 'bg-amber-50 border-amber-200 text-amber-700' },
-                { label: 'עם ליווי שלנו', time: 'מהיר ויעיל', color: 'bg-green-50 border-green-200 text-green-700' },
-              ].map((item, i) => (
-                <div key={i} className={`text-center p-4 rounded-xl border-2 ${item.color}`}>
-                  <div className="font-bold text-sm mb-1">{item.label}</div>
-                  <div className="text-lg font-extrabold">{item.time}</div>
-                </div>
-              ))}
-            </div>
-
-            <InlineCTA
-              title="רוצים לפתוח מהר ובלי טעויות?"
-              buttonText="בדקו עכשיו"
-              sourcePage="osek-patur-steps-costs"
-            />
-          </div>
-        </section>
-
-        {/* ===== 6. למה לא כדאי לפתוח לבד ===== */}
-        <section className="py-12 md:py-16 bg-white">
-          <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-3">
-              האם כדאי לפתוח עוסק פטור לבד?
-            </h2>
-            <p className="text-gray-500 text-center mb-10 text-lg max-w-2xl mx-auto">
-              אפשר — אבל הנה מה שקורה לרוב האנשים שמנסים:
-            </p>
-
-            <div className="grid sm:grid-cols-2 gap-6">
-              {/* לבד */}
-              <div className="rounded-2xl border-2 border-red-200 bg-red-50/30 p-6">
-                <h3 className="font-bold text-red-600 text-lg mb-4 flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5" />
-                  לפתוח לבד
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    'רישום פעילות לא נכון שמוביל לבעיות',
-                    'חוסר הבנה של חובות דיווח ותשלום',
-                    'פתיחת תיקים בסדר לא נכון',
-                    'ביקורים מיותרים במשרדים',
-                    'עיכובים של שבועות בגלל טעויות',
-                    'חשש ואי ודאות לאורך כל הדרך',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-red-700">
-                      <span className="text-red-400 mt-0.5">✗</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* עם ליווי */}
-              <div className="rounded-2xl border-2 border-green-200 bg-green-50/30 p-6">
-                <h3 className="font-bold text-green-700 text-lg mb-4 flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5" />
-                  עם ליווי מקצועי
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    'סיווג מדויק מההתחלה',
-                    'הכוונה ברורה לכל שלב',
-                    'חיסכון בזמן ובביקורים',
-                    'מענה מהיר לכל שאלה',
-                    'הכל מסודר ונכון מהפעם הראשונה',
-                    'שקט נפשי ובטחון שעשיתם נכון',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-green-700">
-                      <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <InlineCTA
-              title="בדיקה קצרה יכולה לחסוך הרבה כאב ראש"
-              buttonText="השאירו פרטים"
-              sourcePage="osek-patur-steps-mistakes"
-            />
-          </div>
-        </section>
-
-        {/* ===== 7. יתרונות השירות ===== */}
-        <section className="py-12 md:py-16" style={{ backgroundColor: '#F8F9FA' }}>
-          <div className="max-w-5xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-10">
-              למה לבחור בליווי של פרפקט וואן?
-            </h2>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { icon: Headphones, title: 'ליווי מקצועי', desc: 'מומחים שמכירים כל פרט בתהליך' },
-                { icon: ClipboardCheck, title: 'תהליך ברור', desc: 'שלב אחרי שלב, בלי הפתעות' },
-                { icon: Clock, title: 'חיסכון בזמן', desc: 'פתיחה מהירה בלי ביורוקרטיה' },
-                { icon: Zap, title: 'מענה מהיר', desc: 'חוזרים אליכם בהקדם' },
-                { icon: Shield, title: 'בלי טעויות', desc: 'עושים הכל נכון מההתחלה' },
-                { icon: HandCoins, title: 'שקיפות מלאה', desc: 'בלי עלויות נסתרות' },
-                { icon: Users, title: 'ניסיון מוכח', desc: 'אלפי לקוחות מרוצים' },
-                { icon: Star, title: '5 כוכבים', desc: 'שביעות רצון גבוהה מאוד' },
-              ].map((item, i) => (
-                <div key={i} className="text-center p-4 md:p-5 rounded-2xl bg-white shadow-sm border border-gray-100 hover:border-portal-teal/20 transition-colors">
-                  <div className="w-12 h-12 bg-portal-teal/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <item.icon className="w-6 h-6 text-portal-teal" />
-                  </div>
-                  <h3 className="font-bold text-portal-navy text-sm md:text-base mb-1">{item.title}</h3>
-                  <p className="text-gray-500 text-xs md:text-sm">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ===== MID-PAGE CTA ===== */}
-        <section className="py-12 md:py-16" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0F766E 100%)' }}>
-          <div className="max-w-lg mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-2">
-              מוכנים לפתוח עוסק פטור?
-            </h2>
-            <p className="text-white/80 text-center mb-2 text-lg">
-              השאירו פרטים ונחזור אליכם עם הכוונה ברורה
-            </p>
-            <p className="text-yellow-300 text-center mb-7 text-sm font-semibold">
-              ייעוץ ראשוני חינם לגמרי · ללא התחייבות
-            </p>
-
-            <div className="bg-white rounded-3xl shadow-2xl p-7">
-              <StepsLeadForm
-                id="mid-lead-form"
-                variant="mid"
-                title="קבלו הכוונה לפתיחת עוסק פטור"
-                subtitle="מומחה יחזור אליכם תוך שעה"
-                ctaText="קבלו ליווי חינם עכשיו"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* ===== 8. FAQ ===== */}
-        <section className="py-12 md:py-16 bg-white">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-3">
-              שאלות נפוצות על פתיחת עוסק פטור
-            </h2>
-            <p className="text-gray-500 text-center mb-8">
-              התשובות לשאלות שרוב האנשים שואלים
-            </p>
-
-            <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-200">
-              {FAQ_ITEMS.map((item, i) => (
-                <FAQItem
-                  key={i}
-                  question={item.question}
-                  answer={item.answer}
-                  isOpen={openFAQ === i}
-                  onClick={() => setOpenFAQ(openFAQ === i ? null : i)}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ===== 9. FINAL CTA ===== */}
-        <section className="py-14 md:py-20" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #152D4A 50%, #0F766E 100%)' }}>
-          <div className="max-w-lg mx-auto px-4">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white text-center mb-3">
-              רוצים לפתוח עוסק פטור
-              <br />
-              <span style={{ color: '#F59E0B' }}>בלי בירוקרטיה ובלי טעויות?</span>
-            </h2>
-            <p className="text-white/80 text-center mb-2 text-lg">
-              אנחנו מלווים עצמאים חדשים לאורך כל התהליך —
-              <br />
-              מהרישום ועד הפתיחה הרשמית.
-            </p>
-            <p className="text-yellow-300 text-center mb-8 text-sm font-bold">
-              הייעוץ הראשוני חינם לגמרי · חוזרים אליכם תוך שעה
-            </p>
-
-            <div className="bg-white rounded-3xl shadow-2xl p-7 sm:p-8">
-              <StepsLeadForm
-                id="final-lead-form"
-                variant="final"
-                title="השאירו פרטים ונתחיל"
-                subtitle="ייעוץ ראשוני חינם · ללא התחייבות"
-                ctaText="קבלו ליווי חינם עכשיו"
-              />
-            </div>
-
-            <div className="flex items-center justify-center gap-3 mt-6 text-white/60 text-sm">
-              <div className="flex -space-x-2 space-x-reverse">
-                {['י', 'ד', 'ש', 'מ'].map((letter, i) => (
-                  <div key={i} className="w-7 h-7 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-white text-xs font-bold">
-                    {letter}
+              <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+                איך פותחים<br />
+                <span className="text-yellow-400">עוסק פטור</span> בישראל?
+              </h1>
+              <p className="text-white/80 text-lg leading-relaxed mb-6">
+                המדריך המלא — שלב אחרי שלב, מה צריך להכין, אילו טעויות להימנע, ולמה כדאי לא לעשות את זה לבד.
+              </p>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  { icon: CheckCircle2, text: 'פתיחה מלאה ב-3 שלבים פשוטים' },
+                  { icon: Clock, text: 'זמן ממוצע: שעה עם ליווי מקצועי' },
+                  { icon: Zap, text: 'ליווי מקצועי ב-0 עלות ייעוץ ראשוני' },
+                ].map(({ icon: Icon, text }) => (
+                  <div key={text} className="flex items-center gap-2.5">
+                    <Icon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                    <span className="text-white/90 text-base">{text}</span>
                   </div>
                 ))}
               </div>
-              <span>+5,000 עצמאים קיבלו ליווי מאיתנו</span>
+            </div>
+
+            {/* Right — form */}
+            <div className="order-1 md:order-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-6 md:p-8">
+              <LeadForm
+                id="hero-form"
+                variant="hero"
+                title="קבלו ליווי לפתיחת עוסק פטור"
+                subtitle="מלאו פרטים — נחזור אליכם תוך שעה"
+                ctaText="בדקו איך לפתוח עוסק פטור"
+              />
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ===== FOOTER ===== */}
-        <footer className="bg-portal-navy text-white/60 py-6">
-          <div className="max-w-6xl mx-auto px-4 text-center text-sm space-y-3">
-            <p>© {new Date().getFullYear()} פרפקט וואן — ליווי עסקי מקצועי. כל הזכויות שמורות.</p>
-            <div className="border-t border-white/10 pt-3 text-white/40 text-xs leading-relaxed max-w-2xl mx-auto">
-              <p>האתר מופעל על ידי משרד פרטי לליווי עסקי.</p>
-              <p>אנו מספקים שירותי ייעוץ וליווי בתהליך פתיחת עוסק פטור.</p>
-              <p>האתר אינו אתר ממשלתי ואינו פועל מטעם רשות המסים, מע״מ או ביטוח לאומי.</p>
+      {/* ===== מה תמצאו במדריך ===== */}
+      <Section className="bg-gray-50">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">מה תמצאו במדריך הזה?</h2>
+          <p className="text-gray-500 text-base max-w-xl mx-auto">כל מה שצריך לדעת לפני שפותחים — בלי ז'רגון, בלי שטויות</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          {[
+            { icon: ClipboardList, title: '3 שלבי הרישום', desc: 'מס הכנסה, מע"מ וביטוח לאומי — בסדר הנכון' },
+            { icon: FileText, title: 'מה צריך להכין', desc: 'רשימת מסמכים ומידע שתצטרכו לפני שמתחילים' },
+            { icon: AlertTriangle, title: '5 טעויות נפוצות', desc: 'הדברים שאנשים עושים לא נכון — ואיך להימנע' },
+            { icon: UserCheck, title: 'לבד מול ליווי', desc: 'יתרונות וחסרונות — מה באמת כדאי לבחור' },
+            { icon: HelpCircle, title: '7 שאלות נפוצות', desc: 'תשובות ישירות לשאלות שכולם שואלים' },
+          ].map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
+                <Icon className="w-6 h-6 text-portal-teal" />
+              </div>
+              <h3 className="font-bold text-portal-navy mb-1.5 text-base">{title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ===== מה זה עוסק פטור ===== */}
+      <Section>
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-4">מה זה בכלל עוסק פטור?</h2>
+            <p className="text-gray-600 leading-relaxed mb-4 text-base">
+              עוסק פטור הוא סטטוס עסקי שמיועד לבעלי עסקים קטנים ועצמאים שהמחזור השנתי שלהם נמוך מהתקרה הקבועה בחוק (כ-120,000 ש"ח בשנה).
+            </p>
+            <p className="text-gray-600 leading-relaxed mb-4 text-base">
+              היתרון המרכזי: <strong className="text-portal-navy">לא גובים מע"מ מהלקוחות ולא מגישים דוחות מע"מ.</strong> זה הופך את הניהול לפשוט הרבה יותר.
+            </p>
+            <p className="text-gray-600 leading-relaxed mb-6 text-base">
+              פרילנסרים, מורים פרטיים, יועצים, מעצבים, צלמים — רבים מהם מתחילים כעוסק פטור ועוברים לעוסק מורשה רק כשהעסק גדל.
+            </p>
+            <a href="/osek-patur" className="inline-flex items-center gap-2 text-portal-teal font-semibold hover:underline">
+              <ArrowLeft className="w-4 h-4" />
+              קראו עוד על עוסק פטור
+            </a>
+          </div>
+          <div className="bg-blue-50 rounded-3xl p-7 border border-blue-100">
+            <h3 className="font-bold text-portal-navy mb-5 text-lg">מי מתאים לעוסק פטור?</h3>
+            {[
+              'פרילנסרים ועצמאים בתחילת הדרך',
+              'מחזור עסקי עד ~120,000 ש"ח בשנה',
+              'שירות ישיר לאנשים פרטיים (לא לעסקים)',
+              'מי שרוצה ניהול חשבונאי פשוט',
+              'עבודה מהבית או בלי עלויות גבוהות',
+            ].map(item => (
+              <div key={item} className="flex items-start gap-3 mb-3 last:mb-0">
+                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700 text-base">{item}</span>
+              </div>
+            ))}
+            <div className="mt-6 pt-5 border-t border-blue-200">
+              <p className="text-sm text-blue-700 font-medium">
+                לא בטוחים שעוסק פטור מתאים לכם?{' '}
+                <a href="/patur-vs-murshe" className="underline">קראו השוואה מלאה</a>
+              </p>
             </div>
           </div>
-        </footer>
+        </div>
+      </Section>
 
-        {/* Sticky Mobile CTA */}
-        <StickyMobileCTA />
+      {/* ===== שלבי הפתיחה + טופס ===== */}
+      <Section id="steps" className="bg-gray-50">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">3 שלבים לפתיחת עוסק פטור</h2>
+          <p className="text-gray-500 text-base">בצדו הנכון של הבירוקרטיה — מהיר יותר ממה שחשבתם</p>
+        </div>
+
+        <div className="space-y-6 mb-12">
+          {steps.map(({ num, title, body, icon: Icon }, i) => (
+            <div key={num} className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm flex gap-5 items-start">
+              <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-portal-navy flex items-center justify-center">
+                <span className="text-white font-extrabold text-xl">{num}</span>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className="w-5 h-5 text-portal-teal" />
+                  <h3 className="font-bold text-portal-navy text-lg">{title}</h3>
+                </div>
+                <p className="text-gray-600 leading-relaxed">{body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* טופס שני — באמצע */}
+        <div className="bg-white rounded-3xl p-7 md:p-10 border border-blue-100 shadow-md max-w-lg mx-auto">
+          <LeadForm
+            id="mid-form-steps"
+            variant="mid-steps"
+            title="רוצים שנעשה את זה בשבילכם?"
+            subtitle="ליווי מלא בכל 3 השלבים — בלי לחכות בתורים"
+            ctaText="קבלו ליווי לפתיחת עוסק פטור"
+          />
+        </div>
+      </Section>
+
+      {/* ===== מה צריך להכין ===== */}
+      <Section>
+        <div className="grid md:grid-cols-2 gap-10 items-start">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-4">מה צריך להכין לפני שמתחילים?</h2>
+            <p className="text-gray-600 mb-6 text-base leading-relaxed">
+              לפני שיושבים ממלאים טפסים, כדאי להכין מראש את כל המידע. ככה זה הולך הרבה יותר מהר.
+            </p>
+            <ul className="space-y-3">
+              {mustHave.map((item, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700 text-base">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-yellow-50 rounded-3xl p-7 border border-yellow-100">
+            <div className="flex items-center gap-2 mb-5">
+              <Lightbulb className="w-6 h-6 text-yellow-600" />
+              <h3 className="font-bold text-portal-navy text-lg">טיפ חשוב</h3>
+            </div>
+            <p className="text-gray-700 leading-relaxed mb-5">
+              בחירת קוד הענף הנכון היא אחת ההחלטות הכי חשובות בשלב הרישום. קוד לא מתאים עלול ליצור בעיות בדיווחים ולגרום לספקות בביקורת.
+            </p>
+            <p className="text-gray-700 leading-relaxed">
+              יועץ מקצועי מכיר את כל הקודים ויכול לחסוך מכם הרבה כאב ראש — עוד לפני שמתחילים.
+            </p>
+            {/* טופס שלישי */}
+            <div className="mt-7 pt-6 border-t border-yellow-200">
+              <LeadForm
+                id="mid-form-checklist"
+                variant="mid-checklist"
+                title="רוצים עזרה בבחירת קוד הענף?"
+                ctaText="שלחו פרטים — ניצור קשר"
+              />
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ===== טעויות נפוצות ===== */}
+      <Section className="bg-red-50">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">5 טעויות נפוצות שאנשים עושים</h2>
+          <p className="text-gray-500 text-base">הימנעות מהן יכולה לחסוך לכם אלפי שקלים וכאב ראש</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-5 mb-10">
+          {mistakes.map(({ title, desc }) => (
+            <div key={title} className="bg-white rounded-2xl p-6 border border-red-100 shadow-sm flex gap-4 items-start">
+              <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <h3 className="font-bold text-portal-navy mb-1.5 text-base">{title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* טופס רביעי */}
+        <div className="bg-white rounded-3xl p-7 md:p-9 border border-red-100 shadow-md max-w-lg mx-auto">
+          <LeadForm
+            id="mid-form-mistakes"
+            variant="mid-mistakes"
+            title="רוצים ליווי שמונע את הטעויות?"
+            subtitle="נבדוק יחד שהכל עובר תקין — מהרישום הראשון"
+            ctaText="קבלו ייעוץ חינם"
+          />
+        </div>
+      </Section>
+
+      {/* ===== לבד מול ליווי ===== */}
+      <Section>
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">לפתוח לבד או עם ליווי?</h2>
+          <p className="text-gray-500 text-base">השוואה כנה — כדי שתחליטו בעצמכם</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 mb-10">
+          <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+            <h3 className="font-bold text-gray-700 mb-5 text-lg flex items-center gap-2">
+              <span className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold">✗</span>
+              לבד (ללא ליווי)
+            </h3>
+            <ul className="space-y-3">
+              {withoutUs.map((item, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <span className="text-red-400 text-lg mt-0.5 flex-shrink-0">✗</span>
+                  <span className="text-gray-600 text-sm leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-green-50 rounded-2xl p-6 border border-green-200">
+            <h3 className="font-bold text-green-700 mb-5 text-lg flex items-center gap-2">
+              <span className="w-7 h-7 rounded-full bg-green-200 flex items-center justify-center text-sm font-bold">✓</span>
+              עם ליווי פרפקט וואן
+            </h3>
+            <ul className="space-y-3">
+              {withUs.map((item, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700 text-sm leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
+
+      {/* ===== מה השירות כולל ===== */}
+      <Section className="bg-portal-navy text-white">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3">השירות שלנו — מה כולל?</h2>
+          <p className="text-white/70 text-base">ליווי מלא מהיום הראשון ועד שהעסק פועל</p>
+        </div>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+          {[
+            { icon: Phone, title: 'פגישת ייעוץ חינם', desc: 'בודקים יחד איזה סטטוס מתאים לכם ומה הצעדים הבאים' },
+            { icon: FileText, title: 'רישום מלא', desc: 'פותחים תיק במס הכנסה, מע"מ וביטוח לאומי — אנחנו מטפלים' },
+            { icon: Shield, title: 'מניעת טעויות', desc: 'מוודאים שהכל נעשה נכון — קוד ענף, טפסים, סדר פעולות' },
+            { icon: Clock, title: 'חיסכון בזמן', desc: 'מה שלוקח ימים לבד — לוקח שעות איתנו' },
+            { icon: Users, title: 'מענה לשאלות', desc: 'אחרי הפתיחה — נשאר זמינים לשאלות ולדוחות עתידיים' },
+            { icon: BadgeCheck, title: 'ניסיון של שנים', desc: 'ליווינו אלפי עצמאים — אנחנו יודעים מה עובד' },
+          ].map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="bg-white/10 border border-white/20 rounded-2xl p-5 hover:bg-white/15 transition-colors">
+              <Icon className="w-6 h-6 text-yellow-400 mb-3" />
+              <h3 className="font-bold text-white mb-1.5 text-base">{title}</h3>
+              <p className="text-white/70 text-sm leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ===== FAQ ===== */}
+      <Section>
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-3">שאלות נפוצות</h2>
+          <p className="text-gray-500 text-base">תשובות ישירות לשאלות שרוב האנשים שואלים</p>
+        </div>
+        <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm max-w-2xl mx-auto">
+          {faqs.map((faq, i) => (
+            <FAQItem
+              key={i}
+              question={faq.question}
+              answer={faq.answer}
+              isOpen={openFaq === i}
+              onClick={() => setOpenFaq(openFaq === i ? null : i)}
+            />
+          ))}
+        </div>
+      </Section>
+
+      {/* ===== FINAL CTA ===== */}
+      <section
+        className="py-16 md:py-24 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #0F4C75 0%, #1E3A5F 100%)' }}
+      >
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 30% 70%, #F59E0B 0%, transparent 50%)' }} />
+        <div className="relative max-w-lg mx-auto px-4 sm:px-6 text-center">
+          <div className="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/40 rounded-full px-4 py-1.5 mb-6">
+            <Star className="w-4 h-4 text-yellow-300" />
+            <span className="text-yellow-200 text-sm font-semibold">+5,000 עצמאים כבר נפתחו איתנו</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+            מוכנים לפתוח את<br />
+            <span className="text-yellow-400">עוסק הפטור שלכם?</span>
+          </h2>
+          <p className="text-white/80 text-lg mb-8">
+            מלאו פרטים — ניצור קשר תוך שעה ונתאם ייעוץ חינמי
+          </p>
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-7">
+            <LeadForm
+              id="final-form"
+              variant="final"
+              title="השאירו פרטים — נחזור אליכם"
+              ctaText="פתחו עוסק פטור עכשיו"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FOOTER LINKS ===== */}
+      <div className="bg-gray-50 border-t border-gray-200 py-8">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <p className="text-gray-500 text-sm mb-4">קישורים קשורים</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            {[
+              { href: '/osek-patur', label: 'עוסק פטור — כל מה שצריך לדעת' },
+              { href: '/patur-vs-murshe', label: 'עוסק פטור או מורשה?' },
+              { href: '/osek-patur/open', label: 'פתיחת עוסק פטור' },
+              { href: '/osek-patur/accountant', label: 'רואה חשבון לעוסק פטור' },
+            ].map(({ href, label }) => (
+              <a key={href} href={href} className="text-portal-teal hover:underline text-sm font-medium">
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
-    </HelmetProvider>
+    </div>
   );
 }
