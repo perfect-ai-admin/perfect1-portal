@@ -97,6 +97,22 @@ Deno.serve(async (req) => {
     if (leadErr) throw new Error(leadErr.message);
     console.log('Lead saved to CRM:', leadResult.id);
 
+    // 2b. Trigger bot flow for this lead
+    const BOT_START_FLOW_URL = Deno.env.get('BOT_START_FLOW_URL');
+    if (BOT_START_FLOW_URL && leadResult) {
+      fetch(BOT_START_FLOW_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lead_id: leadResult.id,
+          lead_name: name || 'אתר',
+          phone: phone.trim(),
+          email: email || null,
+          page_slug: pageSlug || null,
+        })
+      }).catch(e => console.warn('botStartFlow call failed:', e.message));
+    }
+
     // 3. Also save crm_lead (per-user CRM view)
     try {
       const crmLeadData: Record<string, any> = {
