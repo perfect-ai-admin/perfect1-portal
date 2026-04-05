@@ -586,30 +586,57 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
+        {/* ===== WHO IS IT FOR ===== */}
+        <section className="py-12 md:py-16" style={{ backgroundColor: '#F8F9FA' }}>
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-3">
+              מי יכול לפתוח עוסק פטור?
+            </h2>
+            <p className="text-gray-500 text-center mb-10 max-w-2xl mx-auto">
+              השירות מתאים לכל מי שמתחיל את דרכו כעצמאי בישראל
+            </p>
+
+            <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              {[
+                'פרילנסרים',
+                'נותני שירותים',
+                'עסקים קטנים בתחילת הדרך',
+                'מי שרוצה להתחיל לעבוד בצורה חוקית',
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                  <CheckCircle2 className="w-6 h-6 text-portal-teal flex-shrink-0" />
+                  <span className="text-portal-navy font-semibold">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ===== BENEFITS SECTION ===== */}
         <section className="py-12 md:py-16 bg-white">
           <div className="max-w-5xl mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-10">
-              למה לבחור בליווי מקצועי?
+            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-3">
+              למה לפתוח עוסק פטור דרכנו
             </h2>
+            <p className="text-gray-500 text-center mb-10 max-w-2xl mx-auto">
+              4 סיבות שהופכות את התהליך לקל, מהיר ובלי דאגות
+            </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-3xl mx-auto">
               {[
-                { icon: Zap, title: 'תהליך מהיר', desc: 'חוסכים לכם ימים של בירוקרטיה' },
-                { icon: Shield, title: 'בלי טעויות', desc: 'עושים הכל נכון מההתחלה' },
-                { icon: Headphones, title: 'מענה מהיר', desc: 'שאלות? אנחנו כאן בשבילכם' },
-                { icon: BadgeCheck, title: 'ליווי אישי', desc: 'הכל מותאם למצב שלכם' },
-                { icon: Clock, title: 'חיסכון בזמן', desc: 'אתם עושים מה שאתם טובים בו' },
-                { icon: HandCoins, title: 'שקיפות מלאה', desc: 'בלי הפתעות, בלי עלויות נסתרות' },
-                { icon: Users, title: 'ניסיון מוכח', desc: 'אלפי לקוחות כבר פתחו איתנו' },
-                { icon: Star, title: 'שירות 5 כוכבים', desc: 'שביעות רצון גבוהה מאוד' },
+                { icon: Clock, title: 'חיסכון בזמן מול הרשויות', desc: 'אנחנו מטפלים בבירוקרטיה — אתם מתרכזים בעסק' },
+                { icon: Shield, title: 'מניעת טעויות בתהליך', desc: 'עושים הכל נכון מההתחלה, בלי תיקונים יקרים אחר כך' },
+                { icon: Headphones, title: 'ליווי מקצועי בהתחלה', desc: 'רואה חשבון זמין לכל שאלה בדרך' },
+                { icon: BadgeCheck, title: 'התחלה מסודרת של העסק', desc: 'הכל פתוח כמו שצריך — ברשויות ומול הבנק' },
               ].map((item, i) => (
-                <div key={i} className="text-center p-4 md:p-5 rounded-2xl bg-gray-50 hover:bg-portal-teal/5 transition-colors border border-transparent hover:border-portal-teal/20">
-                  <div className="w-12 h-12 bg-portal-teal/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-gray-50 hover:bg-portal-teal/5 transition-colors border border-gray-100 hover:border-portal-teal/20">
+                  <div className="w-12 h-12 bg-portal-teal/10 rounded-xl flex items-center justify-center flex-shrink-0">
                     <item.icon className="w-6 h-6 text-portal-teal" />
                   </div>
-                  <h3 className="font-bold text-portal-navy text-sm md:text-base mb-1">{item.title}</h3>
-                  <p className="text-gray-500 text-xs md:text-sm">{item.desc}</p>
+                  <div>
+                    <h3 className="font-bold text-portal-navy text-base md:text-lg mb-1">{item.title}</h3>
+                    <p className="text-gray-500 text-sm">{item.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -620,18 +647,18 @@ export default function OsekPaturLanding() {
         <section className="py-12 md:py-16" style={{ backgroundColor: '#F8F9FA' }}>
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-3">
-              איך זה עובד? 4 שלבים פשוטים
+              כך נפתח העסק שלך ב-4 שלבים
             </h2>
             <p className="text-gray-500 text-center mb-10">
-              מהרגע שאתם משאירים פרטים — אנחנו לוקחים את זה משם
+              תהליך פשוט וברור — מההתחלה ועד שהעסק פעיל
             </p>
 
             <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-4 md:gap-4">
               {[
-                { num: '1', title: 'משאירים פרטים', desc: 'ממלאים שם וטלפון — 10 שניות', color: 'bg-portal-teal' },
-                { num: '2', title: 'בודקים התאמה', desc: 'נחזור אליכם ונבין מה מתאים לכם', color: 'bg-portal-navy' },
-                { num: '3', title: 'מלווים בפתיחה', desc: 'הכוונה מלאה לכל השלבים', color: 'bg-portal-teal' },
-                { num: '4', title: 'מתחילים לעבוד!', desc: 'העסק פתוח — אתם מוכנים', color: 'bg-amber-500' },
+                { num: '1', title: 'השארת פרטים בטופס', desc: 'ממלאים שם וטלפון — 10 שניות', color: 'bg-portal-teal' },
+                { num: '2', title: 'שיחה קצרה עם הצוות', desc: 'נבין את הצרכים ונבדוק התאמה', color: 'bg-portal-navy' },
+                { num: '3', title: 'פתיחת תיק ברשויות', desc: 'מס הכנסה, מע״מ וביטוח לאומי', color: 'bg-portal-teal' },
+                { num: '4', title: 'התחלת פעילות העסק', desc: 'העסק פעיל — מוכנים לעבוד', color: 'bg-amber-500' },
               ].map((step, i) => (
                 <div key={i} className="relative flex md:flex-col items-start md:items-center gap-4 md:gap-0 md:text-center bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                   <div className={`w-12 h-12 ${step.color} rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0 md:mb-3`}>
@@ -847,13 +874,13 @@ export default function OsekPaturLanding() {
         </section>
 
         {/* ===== FAQ SECTION ===== */}
-        <section className="py-12 md:py-16 bg-white">
+        <section className="py-12 md:py-16" style={{ backgroundColor: '#F8F9FA' }}>
           <div className="max-w-3xl mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-10">
               שאלות נפוצות על פתיחת עוסק פטור
             </h2>
 
-            <div className="bg-gray-50 rounded-2xl p-4 md:p-6">
+            <div className="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100">
               {FAQ_ITEMS.map((item, i) => (
                 <FAQItem
                   key={i}
