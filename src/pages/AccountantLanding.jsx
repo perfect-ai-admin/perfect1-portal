@@ -138,7 +138,7 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
 
       {error && <p className="text-red-500 text-xs sm:text-sm text-center mt-2">{error}</p>}
 
-      <div className={`hidden sm:flex items-center justify-center gap-3 mt-2 text-xs ${trustClass}`}>
+      <div className={`hidden md:flex items-center justify-center gap-3 mt-2 text-xs ${trustClass}`}>
         <span className="inline-flex items-center gap-1"><Shield className="w-3 h-3" />בדיקה ללא התחייבות</span>
         <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />מענה בדקות</span>
       </div>
