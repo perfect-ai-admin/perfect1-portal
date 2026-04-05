@@ -300,7 +300,7 @@ export default function AccountantLanding() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.6, delay: 0.5 }}
-                  className="flex items-center gap-2 text-white/60 text-sm justify-center md:justify-start"
+                  className="hidden md:flex items-center gap-2 text-white/60 text-sm justify-center md:justify-start"
                 >
                   <div className="flex -space-x-2 rtl:space-x-reverse">
                     {[...Array(4)].map((_, i) => (
