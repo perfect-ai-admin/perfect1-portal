@@ -21,7 +21,7 @@ function LeadForm({
   variant = 'hero', // hero | mid | final
   title,
   subtitle,
-  ctaText = 'פתיחת עוסק בקליק',
+  ctaText = 'בדיקת זכאות לפתיחת עוסק פטור',
   className = '',
 }) {
   const navigate = useNavigate();
@@ -160,7 +160,7 @@ function LeadForm({
             <>
               <Phone className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />
               <span className="hidden sm:inline">{ctaText}</span>
-              <span className="sm:hidden">פתיחת עוסק בקליק</span>
+              <span className="sm:hidden">בדיקת זכאות עוסק פטור</span>
             </>
           )}
         </Button>
@@ -451,13 +451,13 @@ export default function OsekPaturLanding() {
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
-                  פותחים עוסק פטור
+                  פתיחת עוסק פטור
                   <br />
-                  <span style={{ color: '#F59E0B' }}>בלי בירוקרטיה, בלי טעויות</span>
+                  <span style={{ color: '#F59E0B' }}>בליווי רואה חשבון</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 leading-relaxed max-w-lg">
-                  רוצים להתחיל לעבוד עצמאי? אנחנו מלווים אתכם בכל שלב — מבדיקת ההתאמה ועד פתיחת התיקים. בלי לחפש לבד, בלי טעויות.
+                  פותחים עבורך תיק במס הכנסה, מע״מ וביטוח לאומי – במהירות ובלי טעויות.
                 </p>
 
                 {/* Mobile: Form right after the hero text */}
@@ -467,8 +467,8 @@ export default function OsekPaturLanding() {
                       id="hero-lead-form-mobile"
                       variant="hero"
                       title="השאירו פרטים — נחזור תוך דקות"
-                      subtitle="בדיקת התאמה חינם, ללא התחייבות"
-                      ctaText="פתיחת עוסק בקליק →"
+                      subtitle="השאירו פרטים ונחזור אליכם תוך מספר דקות לבדיקת התאמה לפתיחת עוסק פטור"
+                      ctaText="בדיקת זכאות לפתיחת עוסק פטור →"
                     />
                   </div>
                 </div>
@@ -477,19 +477,15 @@ export default function OsekPaturLanding() {
                 <div className="flex flex-wrap gap-x-5 gap-y-2 mb-6">
                   <div className="flex items-center gap-2 text-white/80 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-green-400" />
-                    <span>ליווי צמוד מההתחלה</span>
+                    <span>פתיחת תיק מלאה ברשויות</span>
                   </div>
                   <div className="flex items-center gap-2 text-white/80 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-green-400" />
-                    <span>מענה תוך דקות</span>
+                    <span>ליווי מקצועי לאורך התהליך</span>
                   </div>
                   <div className="flex items-center gap-2 text-white/80 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-green-400" />
-                    <span>חיסכון בזמן ובכסף</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-white/80 text-sm">
-                    <CheckCircle2 className="w-4 h-4 text-green-400" />
-                    <span>אלפי לקוחות מרוצים</span>
+                    <span>מאות עסקים שנפתחו בהצלחה</span>
                   </div>
                 </div>
 
@@ -502,7 +498,7 @@ export default function OsekPaturLanding() {
                       </div>
                     ))}
                   </div>
-                  <span>+5,000 לקוחות כבר פתחו איתנו</span>
+                  <span>מאות לקוחות כבר פתחו איתנו</span>
                 </div>
               </div>
 
@@ -514,7 +510,7 @@ export default function OsekPaturLanding() {
                     variant="hero"
                     title="השאירו פרטים — נחזור תוך דקות"
                     subtitle="בדיקת התאמה חינם, ללא התחייבות"
-                    ctaText="פתיחת עוסק בקליק →"
+                    ctaText="בדיקת זכאות לפתיחת עוסק פטור →"
                   />
                 </div>
               </div>
@@ -784,7 +780,7 @@ export default function OsekPaturLanding() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center mb-10">
               {[
-                { num: '5,000+', label: 'לקוחות מרוצים' },
+                { num: '500+', label: 'עסקים שנפתחו בהצלחה' },
                 { num: '8+', label: 'שנות ניסיון' },
                 { num: '98%', label: 'שביעות רצון' },
                 { num: '< 1 שעה', label: 'זמן תגובה ממוצע' },
@@ -806,6 +802,44 @@ export default function OsekPaturLanding() {
                   <item.icon className="w-8 h-8 text-portal-teal mx-auto mb-3" />
                   <h3 className="font-bold text-portal-navy mb-1">{item.title}</h3>
                   <p className="text-gray-500 text-sm">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== TESTIMONIALS / REVIEWS ===== */}
+        <section className="py-12 md:py-16 bg-white">
+          <div className="max-w-5xl mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-portal-navy text-center mb-3">
+              לקוחות מספרים
+            </h2>
+            <p className="text-gray-500 text-center mb-10">
+              ביקורות אמיתיות מעסקים שנפתחו אצלנו
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-5">
+              {[
+                { stars: 5, text: 'פתיחת העסק הייתה מהירה ופשוטה. ליוו אותי מא׳ ועד ת׳ ובאמת חסכו לי ימים של בירוקרטיה.', name: 'יעל כ.', role: 'מעצבת גרפית' },
+                { stars: 5, text: 'קיבלתי ליווי מקצועי לאורך כל הדרך. כל שאלה קיבלה מענה מהיר. ממליץ בחום!', name: 'דני ש.', role: 'יועץ עסקי' },
+                { stars: 5, text: 'שירות מצוין. הכל הוסבר בצורה ברורה, בלי ז\'רגון מבלבל. התיק נפתח בדיוק כמו שצריך.', name: 'מיכל ר.', role: 'מורה פרטית' },
+              ].map((review, i) => (
+                <div key={i} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                  <div className="flex gap-1 mb-3" dir="ltr">
+                    {[...Array(review.stars)].map((_, j) => (
+                      <Star key={j} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 leading-relaxed mb-4">"{review.text}"</p>
+                  <div className="flex items-center gap-3 pt-3 border-t border-gray-200">
+                    <div className="w-10 h-10 rounded-full bg-portal-teal/10 flex items-center justify-center text-portal-teal font-bold">
+                      {review.name[0]}
+                    </div>
+                    <div>
+                      <div className="font-bold text-portal-navy text-sm">{review.name}</div>
+                      <div className="text-gray-500 text-xs">{review.role}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -879,18 +913,76 @@ export default function OsekPaturLanding() {
           </div>
         </section>
 
-        {/* ===== MINIMAL FOOTER ===== */}
-        <footer className="bg-portal-navy py-6">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <p className="text-white/50 text-sm mb-2">
-              © {new Date().getFullYear()} פרפקט וואן — ליווי עסקי מקצועי
-            </p>
-            <p className="text-white/30 text-xs">
-              שירות פרטי — לא אתר ממשלתי |{' '}
-              <a href="/Privacy" className="hover:text-white/50 underline">מדיניות פרטיות</a>
-              {' '}|{' '}
-              <a href="/Terms" className="hover:text-white/50 underline">תנאי שימוש</a>
-            </p>
+        {/* ===== DISCLOSURE (גילוי נאות) ===== */}
+        <section className="bg-gray-100 border-t border-b border-gray-200 py-6">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="bg-white rounded-xl p-5 border-r-4 border-amber-500">
+              <h3 className="font-bold text-portal-navy mb-2 text-sm">גילוי נאות</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                פרפקט וואן הינה חברה פרטית המספקת שירותי סיוע וליווי בתהליך פתיחת עסק.
+                האתר אינו אתר ממשלתי ואינו קשור לרשות המסים, למס הכנסה, למע״מ או לביטוח לאומי.
+                השירות ניתן בתשלום, בכפוף להצעת מחיר אישית.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== FOOTER WITH BUSINESS INFO ===== */}
+        <footer className="bg-portal-navy py-10">
+          <div className="max-w-5xl mx-auto px-4">
+            <div className="grid md:grid-cols-3 gap-6 text-right mb-8">
+              {/* Company */}
+              <div>
+                <h3 className="text-white font-bold mb-3">פרפקט וואן</h3>
+                <p className="text-white/60 text-sm leading-relaxed">
+                  ליווי עסקי מקצועי לפתיחת עוסק פטור, עוסק מורשה וחברות בע״מ. מאות עסקים שנפתחו בהצלחה.
+                </p>
+              </div>
+
+              {/* Contact */}
+              <div>
+                <h3 className="text-white font-bold mb-3">יצירת קשר</h3>
+                <ul className="space-y-2 text-white/60 text-sm">
+                  <li>
+                    <a href={`tel:${PORTAL_CTA.phone}`} className="hover:text-white flex items-center gap-2">
+                      <Phone className="w-3.5 h-3.5" />
+                      <span dir="ltr">{PORTAL_CTA.phone}</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="mailto:info@perfect1.co.il" className="hover:text-white">
+                      info@perfect1.co.il
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href={`${PORTAL_CTA.whatsapp}?text=${encodeURIComponent('היי, אני רוצה לפתוח עוסק פטור')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white"
+                    >
+                      WhatsApp
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Legal */}
+              <div>
+                <h3 className="text-white font-bold mb-3">מידע משפטי</h3>
+                <ul className="space-y-2 text-white/60 text-sm">
+                  <li><a href="/Privacy" className="hover:text-white">מדיניות פרטיות</a></li>
+                  <li><a href="/Terms" className="hover:text-white">תנאי שימוש</a></li>
+                  <li><a href="/Accessibility" className="hover:text-white">הצהרת נגישות</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="border-t border-white/10 pt-5 text-center">
+              <p className="text-white/50 text-xs">
+                © {new Date().getFullYear()} פרפקט וואן — כל הזכויות שמורות | שירות פרטי, לא אתר ממשלתי
+              </p>
+            </div>
           </div>
         </footer>
 
