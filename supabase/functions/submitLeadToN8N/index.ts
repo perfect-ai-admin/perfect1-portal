@@ -5,6 +5,33 @@ import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml 
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
+async function sendWhatsAppAcknowledgment(phone: string, leadName: string): Promise<void> {
+  const greenApiToken = Deno.env.get('GREENAPI_API_TOKEN');
+  const greenApiInstance = Deno.env.get('GREENAPI_INSTANCE_ID');
+
+  if (!greenApiToken || !greenApiInstance) {
+    console.warn('GreenAPI credentials missing, skipping WhatsApp acknowledgment');
+    return;
+  }
+
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  const fullPhone = cleanPhone.startsWith('972') ? cleanPhone :
+                    cleanPhone.startsWith('0') ? '972' + cleanPhone.substring(1) : '972' + cleanPhone;
+
+  const waMessage = `שלום ${leadName} 👋\n\nקיבלנו את פרטיך! 📝\nנציג שלנו יחזור אליך בהקדם ביותר 📞\n\nתודה שבחרת בנו! 🙏`;
+
+  try {
+    await fetch(`https://api.green-api.com/waInstance${greenApiInstance}/sendMessage/${greenApiToken}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatId: `${fullPhone}@c.us`, message: waMessage })
+    });
+    console.log('WhatsApp acknowledgment sent to:', fullPhone);
+  } catch (e: any) {
+    console.warn('WhatsApp acknowledgment failed:', e.message);
+  }
+}
+
 async function sendEmailViaResend(to: string, subject: string, html: string, fromName: string): Promise<void> {
   if (!RESEND_API_KEY) {
     console.warn('RESEND_API_KEY not configured, skipping email');
@@ -96,6 +123,9 @@ Deno.serve(async (req) => {
       .single();
     if (leadErr) throw new Error(leadErr.message);
     console.log('Lead saved to CRM:', leadResult.id);
+
+    // 2a. Send WhatsApp acknowledgment to the lead
+    await sendWhatsAppAcknowledgment(phone.trim(), name || 'לקוח');
 
     // 2b. Trigger bot flow for this lead
     const BOT_START_FLOW_URL = Deno.env.get('BOT_START_FLOW_URL');

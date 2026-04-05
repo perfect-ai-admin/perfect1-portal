@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 
-import MetricQuadrant from '../business/MetricQuadrant';
-import ExpenseDonutChart from '../business/ExpenseDonutChart';
-import RevenueLineChart from '../business/RevenueLineChart';
-import BarChart from '../business/BarChart';
-import HeatmapCalendar from '../business/HeatmapCalendar';
-import InsightsEngine from '../business/InsightsEngine';
-import FocusDashboard from '../business/FocusDashboard';
-import BusinessStateTimeline from '../business/BusinessStateTimeline';
-import RevenueFromDocuments from '../business/RevenueFromDocuments';
+// Lazy-load chart components for better performance
+const MetricQuadrant = lazy(() => import('../business/MetricQuadrant'));
+const ExpenseDonutChart = lazy(() => import('../business/ExpenseDonutChart'));
+const RevenueLineChart = lazy(() => import('../business/RevenueLineChart'));
+const BarChart = lazy(() => import('../business/BarChart'));
+const HeatmapCalendar = lazy(() => import('../business/HeatmapCalendar'));
+const InsightsEngine = lazy(() => import('../business/InsightsEngine'));
+const FocusDashboard = lazy(() => import('../business/FocusDashboard'));
+const BusinessStateTimeline = lazy(() => import('../business/BusinessStateTimeline'));
+const RevenueFromDocuments = lazy(() => import('../business/RevenueFromDocuments'));
 import useRevenueFromDocuments from '../../hooks/useRevenueFromDocuments';
 import CollapsibleSection from '@/components/common/CollapsibleSection';
 import { TrendingUp, DollarSign, PieChart, Download, BarChart3, Sparkles, Receipt } from 'lucide-react';
@@ -91,26 +92,29 @@ const BusinessTab = React.memo(({ data }) => {
       };
 
       if (format === 'pdf') {
-        // Generate PDF
-        const { jsPDF } = await import('jspdf');
+        // Lazy-load PDF generation libraries
+        const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
+          import('jspdf'),
+          import('html2canvas')
+        ]);
         const doc = new jsPDF();
-        
+
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(20);
         doc.text('דוח עסקי', 105, 20, { align: 'center' });
-        
+
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
         doc.text(`תקופה: ${period === 'month' ? 'חודש נוכחי' : period === 'quarter' ? 'רבעון נוכחי' : 'שנה נוכחית'}`, 20, 35);
         doc.text(`תאריך: ${new Date().toLocaleDateString('he-IL')}`, 20, 42);
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text('סיכום פיננסי:', 20, 55);
         doc.setFont('helvetica', 'normal');
         doc.text(`הכנסות: ${formatCurrency(exportData.metrics.totalRevenue)}`, 20, 65);
         doc.text(`הוצאות: ${formatCurrency(exportData.metrics.totalExpenses)}`, 20, 72);
         doc.text(`רווח נקי: ${formatCurrency(exportData.metrics.netProfit)}`, 20, 79);
-        
+
         doc.save('business-report.pdf');
       } else if (format === 'csv') {
         // Generate CSV
@@ -133,6 +137,10 @@ const BusinessTab = React.memo(({ data }) => {
       setIsExporting(false);
     }
   };
+
+  const SkeletonLoader = () => (
+    <div className="w-full h-64 bg-gray-100 rounded-lg animate-pulse" />
+  );
 
   return (
     <motion.div
@@ -204,48 +212,50 @@ const BusinessTab = React.memo(({ data }) => {
       </div>
 
       {/* KPI Stack - Mobile Optimized */}
-      <div className="hidden md:grid md:grid-cols-4 gap-3">
-        <MetricQuadrant
-          title="הכנסות"
-          value={totalRevenue}
-          change={`${revenueChange > 0 ? '+' : ''}${revenueChange}%`}
-          trend={revenueTrend}
-          chartData={revenueData}
-          icon={TrendingUp}
-          isCurrency={true}
-          compact={true}
-        />
-        <MetricQuadrant
-          title="הוצאות"
-          value={totalExpenses}
-          change="0%"
-          trend={0}
-          chartData={revenueData}
-          icon={DollarSign}
-          isCurrency={true}
-          compact={true}
-        />
-        <MetricQuadrant
-          title="רווח נקי"
-          value={netProfit}
-          change={`${revenueChange > 0 ? '+' : ''}${revenueChange}%`}
-          trend={revenueTrend}
-          chartData={revenueData}
-          icon={PieChart}
-          isCurrency={true}
-          compact={true}
-        />
-        <MetricQuadrant
-          title="ביצוע"
-          value={performance}
-          change="0%"
-          trend={0}
-          chartData={revenueData}
-          icon={BarChart3}
-          isPercentage={true}
-          compact={true}
-        />
-      </div>
+      <Suspense fallback={<SkeletonLoader />}>
+        <div className="hidden md:grid md:grid-cols-4 gap-3">
+          <MetricQuadrant
+            title="הכנסות"
+            value={totalRevenue}
+            change={`${revenueChange > 0 ? '+' : ''}${revenueChange}%`}
+            trend={revenueTrend}
+            chartData={revenueData}
+            icon={TrendingUp}
+            isCurrency={true}
+            compact={true}
+          />
+          <MetricQuadrant
+            title="הוצאות"
+            value={totalExpenses}
+            change="0%"
+            trend={0}
+            chartData={revenueData}
+            icon={DollarSign}
+            isCurrency={true}
+            compact={true}
+          />
+          <MetricQuadrant
+            title="רווח נקי"
+            value={netProfit}
+            change={`${revenueChange > 0 ? '+' : ''}${revenueChange}%`}
+            trend={revenueTrend}
+            chartData={revenueData}
+            icon={PieChart}
+            isCurrency={true}
+            compact={true}
+          />
+          <MetricQuadrant
+            title="ביצוע"
+            value={performance}
+            change="0%"
+            trend={0}
+            chartData={revenueData}
+            icon={BarChart3}
+            isPercentage={true}
+            compact={true}
+          />
+        </div>
+      </Suspense>
 
       {/* KPI List - Mobile */}
       <div className="md:hidden space-y-2">
@@ -278,84 +288,100 @@ const BusinessTab = React.memo(({ data }) => {
 
       {/* Revenue Summary from Documents */}
       <CollapsibleSection title="ריכוז הכנסות" icon={Receipt} defaultOpen={true}>
-        <RevenueFromDocuments period={period} />
+        <Suspense fallback={<SkeletonLoader />}>
+          <RevenueFromDocuments period={period} />
+        </Suspense>
       </CollapsibleSection>
 
       {/* Charts Section - Mobile Optimized */}
       <div className="space-y-3">
-        <div className="bg-white rounded-lg border border-gray-200 p-3 relative overflow-hidden">
-          {!hasRealData && (
-            <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
-              נתונים לדוגמה
-            </div>
-          )}
-          <h3 className="text-sm font-bold text-gray-900 mb-2">
-            {hasRealData ? 'מגמת הכנסות (מ-iCount)' : 'מגמת הכנסות'}
-          </h3>
-          <RevenueLineChart data={revenueData} period={period} />
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-3 relative overflow-hidden">
-          {!hasRealData && (
-            <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
-              נתונים לדוגמה
-            </div>
-          )}
-          <h3 className="text-sm font-bold text-gray-900 mb-2">פילוח הוצאות</h3>
-          <ExpenseDonutChart data={expenseData} />
-        </div>
-      </div>
-
-      {/* Additional Insights - Collapsible on Mobile */}
-      <CollapsibleSection title="ניתוח מפורט" defaultOpen={false}>
-        <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
-          <div className="bg-white rounded-lg shadow p-3 md:p-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">השוואת הכנסות והוצאות</h3>
-            <BarChart 
-              data={revenueData.map(item => ({
-                name: item.period || item.name,
-                הכנסות: item.value || 0,
-                הוצאות: hasRealData ? 0 : Math.round((item.value || 0) * 0.4)
-              }))}
-              dataKeys={['הכנסות', 'הוצאות']}
-              colors={['#22C55E', '#EF4444']}
-              height={220}
-            />
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-3 md:p-4 relative">
+        <Suspense fallback={<SkeletonLoader />}>
+          <div className="bg-white rounded-lg border border-gray-200 p-3 relative overflow-hidden">
             {!hasRealData && (
               <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
                 נתונים לדוגמה
               </div>
             )}
-            <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">תעדוף פעילות</h3>
-            <div className="flex items-center justify-center overflow-x-auto">
-              <HeatmapCalendar 
-                data={heatmapData}
-                cellSize={8}
-                cellGap={1}
+            <h3 className="text-sm font-bold text-gray-900 mb-2">
+              {hasRealData ? 'מגמת הכנסות (מ-iCount)' : 'מגמת הכנסות'}
+            </h3>
+            <RevenueLineChart data={revenueData} period={period} />
+          </div>
+        </Suspense>
+        <Suspense fallback={<SkeletonLoader />}>
+          <div className="bg-white rounded-lg border border-gray-200 p-3 relative overflow-hidden">
+            {!hasRealData && (
+              <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
+                נתונים לדוגמה
+              </div>
+            )}
+            <h3 className="text-sm font-bold text-gray-900 mb-2">פילוח הוצאות</h3>
+            <ExpenseDonutChart data={expenseData} />
+          </div>
+        </Suspense>
+      </div>
+
+      {/* Additional Insights - Collapsible on Mobile */}
+      <CollapsibleSection title="ניתוח מפורט" defaultOpen={false}>
+        <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
+          <Suspense fallback={<SkeletonLoader />}>
+            <div className="bg-white rounded-lg shadow p-3 md:p-4">
+              <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">השוואת הכנסות והוצאות</h3>
+              <BarChart
+                data={revenueData.map(item => ({
+                  name: item.period || item.name,
+                  הכנסות: item.value || 0,
+                  הוצאות: hasRealData ? 0 : Math.round((item.value || 0) * 0.4)
+                }))}
+                dataKeys={['הכנסות', 'הוצאות']}
+                colors={['#22C55E', '#EF4444']}
+                height={220}
               />
             </div>
-          </div>
+          </Suspense>
+
+          <Suspense fallback={<SkeletonLoader />}>
+            <div className="bg-white rounded-lg shadow p-3 md:p-4 relative">
+              {!hasRealData && (
+                <div className="absolute top-3 left-3 px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] rounded-full font-medium z-10">
+                  נתונים לדוגמה
+                </div>
+              )}
+              <h3 className="text-sm font-bold text-gray-900 mb-2 md:mb-3">תעדוף פעילות</h3>
+              <div className="flex items-center justify-center overflow-x-auto">
+                <HeatmapCalendar
+                  data={heatmapData}
+                  cellSize={8}
+                  cellGap={1}
+                />
+              </div>
+            </div>
+          </Suspense>
         </div>
       </CollapsibleSection>
 
       {/* Focus Dashboard */}
       {data.business_state?.focus_state && (
-        <FocusDashboard focusState={data.business_state.focus_state} />
+        <Suspense fallback={<SkeletonLoader />}>
+          <FocusDashboard focusState={data.business_state.focus_state} />
+        </Suspense>
       )}
 
       {/* Business State Timeline */}
       {data.business_state?.decision_log && (
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">היסטוריית החלטות</h3>
-          <BusinessStateTimeline decisionLog={data.business_state.decision_log} />
-        </div>
+        <Suspense fallback={<SkeletonLoader />}>
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">היסטוריית החלטות</h3>
+            <BusinessStateTimeline decisionLog={data.business_state.decision_log} />
+          </div>
+        </Suspense>
       )}
 
       {/* AI-Powered Insights */}
       <CollapsibleSection title="תובנות חכמות" icon={Sparkles} defaultOpen={false}>
-        <InsightsEngine clientData={data} period={period} />
+        <Suspense fallback={<SkeletonLoader />}>
+          <InsightsEngine clientData={data} period={period} />
+        </Suspense>
       </CollapsibleSection>
 
 

@@ -53,6 +53,29 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'בדקו �
         utm_content: params.get('utm_content') || '',
         referrer: document.referrer || '',
       });
+
+      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט
+      try {
+        await fetch(
+          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              name: form.name,
+              phone: form.phone,
+              pageSlug: `landing-patur-vs-murshe-${variant}`,
+              businessName: `דף נחיתה - landing-patur-vs-murshe-${variant}`
+            })
+          }
+        ).catch(e => console.warn('submitLeadToN8N call failed:', e.message));
+      } catch (submitErr) {
+        console.warn('submitLeadToN8N error:', submitErr.message);
+      }
+
       navigate('/ThankYou', { state: { source: `landing-patur-vs-murshe-${variant}`, name: form.name } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');

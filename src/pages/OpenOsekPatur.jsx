@@ -69,6 +69,28 @@ function LeadForm({ id, variant = 'hero', ctaText = 'קבלו ליווי לפת�
         referrer: document.referrer || '',
       });
 
+      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט
+      try {
+        await fetch(
+          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              name: form.name,
+              phone: form.phone,
+              pageSlug: `open-osek-patur-${variant}`,
+              businessName: `דף נחיתה - open-osek-patur-${variant}`
+            })
+          }
+        ).catch(e => console.warn('submitLeadToN8N call failed:', e.message));
+      } catch (submitErr) {
+        console.warn('submitLeadToN8N error:', submitErr.message);
+      }
+
       navigate('/ThankYou', { state: { source: `open-osek-patur-${variant}`, name: form.name } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
