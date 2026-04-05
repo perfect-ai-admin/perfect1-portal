@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { submitPortalLead } from '@/api/portalSupabaseClient';
 import { PORTAL_CTA } from '@/portal/config/navigation';
+import InlineCTA from '@/portal/components/InlineCTA';
 
 // ============================
 // Lead Form Component
@@ -165,30 +166,6 @@ function StepsLeadForm({
   );
 }
 
-// ============================
-// Inline CTA (mini)
-// ============================
-function InlineCTA({ text, buttonText = 'השאירו פרטים', targetId = 'hero-lead-form' }) {
-  const scroll = () => {
-    const el = document.getElementById(targetId) || document.getElementById('hero-lead-form-mobile');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  return (
-    <div className="bg-portal-teal/5 border-2 border-portal-teal/25 rounded-2xl p-6 sm:p-7 text-center my-10">
-      <p className="text-lg font-bold text-portal-navy mb-1">{text}</p>
-      <p className="text-sm text-gray-500 mb-4">ייעוץ ראשוני חינם · חוזרים אליכם תוך שעה</p>
-      <button
-        onClick={scroll}
-        className="inline-flex items-center gap-2 font-extrabold text-portal-navy px-8 py-4 rounded-xl transition-all hover:scale-[1.02] shadow-md text-base"
-        style={{ backgroundColor: '#F59E0B' }}
-      >
-        <Phone className="w-4 h-4" />
-        {buttonText}
-      </button>
-    </div>
-  );
-}
 
 // ============================
 // FAQ Accordion
@@ -508,8 +485,9 @@ export default function OsekPaturSteps() {
             </p>
 
             <InlineCTA
-              text="רוצים לבדוק אם עוסק פטור מתאים לכם?"
+              title="רוצים לבדוק אם עוסק פטור מתאים לכם?"
               buttonText="השאירו פרטים ונחזור אליכם"
+              sourcePage="osek-patur-steps-what-is"
             />
           </div>
         </section>
@@ -588,8 +566,9 @@ export default function OsekPaturSteps() {
             </div>
 
             <InlineCTA
-              text="רוצים לפתוח נכון מההתחלה?"
+              title="רוצים לפתוח נכון מההתחלה?"
               buttonText="השאירו פרטים ונעזור לכם"
+              sourcePage="osek-patur-steps-steps"
             />
           </div>
         </section>
@@ -620,8 +599,9 @@ export default function OsekPaturSteps() {
             </div>
 
             <InlineCTA
-              text="לא בטוחים מה צריך? אנחנו נסביר הכל"
+              title="לא בטוחים מה צריך? אנחנו נסביר הכל"
               buttonText="השאירו פרטים"
+              sourcePage="osek-patur-steps-docs"
             />
           </div>
         </section>
@@ -653,8 +633,9 @@ export default function OsekPaturSteps() {
             </div>
 
             <InlineCTA
-              text="רוצים לפתוח מהר ובלי טעויות?"
+              title="רוצים לפתוח מהר ובלי טעויות?"
               buttonText="בדקו עכשיו"
+              sourcePage="osek-patur-steps-costs"
             />
           </div>
         </section>
@@ -718,8 +699,9 @@ export default function OsekPaturSteps() {
             </div>
 
             <InlineCTA
-              text="בדיקה קצרה יכולה לחסוך הרבה כאב ראש"
+              title="בדיקה קצרה יכולה לחסוך הרבה כאב ראש"
               buttonText="השאירו פרטים"
+              sourcePage="osek-patur-steps-mistakes"
             />
           </div>
         </section>
