@@ -78,6 +78,28 @@ function LeadForm({
         referrer: document.referrer || '',
       });
 
+      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט
+      try {
+        await fetch(
+          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+            },
+            body: JSON.stringify({
+              name: form.name,
+              phone: form.phone,
+              pageSlug: `landing-osek-patur-${variant}`,
+              businessName: `דף נחיתה - landing-osek-patur-${variant}`
+            })
+          }
+        ).catch(e => console.warn('submitLeadToN8N call failed:', e.message));
+      } catch (submitErr) {
+        console.warn('submitLeadToN8N error:', submitErr.message);
+      }
+
       // Redirect to ThankYou — conversion tracking fires there
       navigate('/ThankYou', { state: { source: `landing-osek-patur-${variant}`, name: form.name } });
     } catch (err) {
@@ -446,7 +468,7 @@ export default function OsekPaturLanding() {
                       variant="hero"
                       title="השאירו פרטים — נחזור תוך דקות"
                       subtitle="בדיקת התאמה חינם, ללא התחייבות"
-                      ctaText="בדקו התאמה עכשיו →"
+                      ctaText="פתיחת עוסק בקליק →"
                     />
                   </div>
                 </div>
@@ -492,7 +514,7 @@ export default function OsekPaturLanding() {
                     variant="hero"
                     title="השאירו פרטים — נחזור תוך דקות"
                     subtitle="בדיקת התאמה חינם, ללא התחייבות"
-                    ctaText="בדקו התאמה עכשיו →"
+                    ctaText="פתיחת עוסק בקליק →"
                   />
                 </div>
               </div>
