@@ -138,7 +138,7 @@ function LeadForm({
             <>
               <Phone className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />
               <span className="hidden sm:inline">{ctaText}</span>
-              <span className="sm:hidden">קבלו הצעה</span>
+              <span className="sm:hidden">פתיחת עוסק בקליק</span>
             </>
           )}
         </Button>
