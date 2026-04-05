@@ -33,25 +33,29 @@ const generateArticleSchema = (data) => ({
 const generateFAQSchema = (faqItems) => ({
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqItems.map(item => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: item.answer,
-    },
-  })),
+  mainEntity: faqItems
+    .filter(item => item.question && item.answer) // Only include complete Q&A pairs
+    .map(item => ({
+      '@type': 'Question',
+      name: item.question.trim(),
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer.trim(),
+      },
+    })),
 });
 
 const generateBreadcrumbSchema = (breadcrumbs) => ({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
-  itemListElement: breadcrumbs.map((crumb, index) => ({
-    '@type': 'ListItem',
-    position: index + 1,
-    name: crumb.label,
-    item: crumb.href ? `https://www.perfect1.co.il${crumb.href}` : undefined,
-  })),
+  itemListElement: breadcrumbs
+    .filter(crumb => crumb.href) // Only include breadcrumbs with href
+    .map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.label,
+      item: `https://www.perfect1.co.il${crumb.href}`,
+    })),
 });
 
 const generateOrganizationSchema = () => ({

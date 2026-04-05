@@ -61,7 +61,6 @@ Disallow: /Summary
 Disallow: /ThankYou
 Disallow: /SocialDesigns
 Disallow: /Branding
-Disallow: /open-osek-patur
 Disallow: /card
 
 Sitemap: https://www.perfect1.co.il/sitemap.xml
