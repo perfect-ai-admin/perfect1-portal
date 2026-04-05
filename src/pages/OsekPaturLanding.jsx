@@ -193,7 +193,9 @@ function LandingStickyMobileCTA() {
   }, []);
 
   const scrollToForm = () => {
-    const form = document.getElementById('hero-lead-form');
+    const form =
+      document.getElementById('hero-lead-form-mobile') ||
+      document.getElementById('hero-lead-form');
     if (form) {
       form.scrollIntoView({ behavior: 'smooth' });
     }
