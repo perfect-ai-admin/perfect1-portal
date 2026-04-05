@@ -2,6 +2,7 @@
 // Saves a lead from a landing page form and routes it to configured notification channels
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml } from '../_shared/supabaseAdmin.ts';
+import { classifyIntent } from '../_shared/botIntentClassifier.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
@@ -94,6 +95,10 @@ Deno.serve(async (req) => {
       channels = ['n8n'];
     }
 
+    // Classify intent from page slug
+    const intent = classifyIntent(pageSlug);
+    console.log(`Intent classified: ${intent.page_intent} / ${intent.flow_type} for slug=${pageSlug}`);
+
     const destPhone = landingPage?.destination_phone || '';
     const destEmail = landingPage?.destination_email || '';
 
@@ -105,7 +110,10 @@ Deno.serve(async (req) => {
       phone: phone.trim(),
       email: email || '',
       notes: message || '',
-      source_page: businessName || pageSlug || 'landing-page',
+      source_page: pageSlug || businessName || 'landing-page',
+      page_intent: intent.page_intent,
+      flow_type: intent.flow_type,
+      service_type: intent.service_type,
       source: 'sales_portal',
       interaction_type: 'form',
       status: 'new',
