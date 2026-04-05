@@ -23,6 +23,9 @@ Allow: /BusinessSticker
 Allow: /OsekPaturLanding
 Allow: /OsekPaturSteps
 Allow: /blog
+Allow: /patur-vs-murshe
+Allow: /patur-vs-murshe-quiz
+Allow: /accountant-osek-patur
 
 # Admin & CRM pages
 Disallow: /AdminDashboard
