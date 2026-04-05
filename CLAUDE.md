@@ -195,7 +195,18 @@
 
 - **שפת תוכן:** עברית בלבד
 - **RTL:** כל הטקסט מימין לשמאל
-- **מותג:** פרפקט וואן | perfect-dashboard.com
+- **מותג:** פרפקט וואן | perfect1.co.il
 - **CTA בכל עמוד:** טופס לידים + WhatsApp
 - **אין SSR** — האתר הוא SPA (React + Vite), אז התוכן מוגש כ-JSON ומרונדר בצד לקוח
-- **שם הפרויקט ב-base44:** 5bisnes
+
+---
+
+## ⚠️ זהירות — Repository הנכון
+
+**עבוד רק עם: `perfect-ai-admin/perfect1-portal`**
+
+**אל תתקשר עם: `perfect-ai-admin/5bisnes`** (repo אחר לחלוטין)
+
+**Deployment:**
+- GitHub Actions: https://github.com/perfect-ai-admin/perfect1-portal/actions
+- Live site: https://perfect1.co.il
