@@ -4,12 +4,10 @@ import { HelmetProvider } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
-  Loader2, CheckCircle2, Phone, MessageCircle, Clock,
-  Shield, FileCheck, Headphones, Zap, ArrowLeft,
-  Users, AlertTriangle, ChevronDown, ChevronUp,
-  Briefcase, Building2, Star, BadgeCheck, HandCoins,
+  Loader2, CheckCircle2, Phone, Clock,
+  Shield, FileCheck, Headphones, Zap,
+  Users, AlertTriangle, ChevronDown, ChevronUp, Star, BadgeCheck, HandCoins,
   ClipboardCheck
 } from 'lucide-react';
 import { submitPortalLead } from '@/api/portalSupabaseClient';

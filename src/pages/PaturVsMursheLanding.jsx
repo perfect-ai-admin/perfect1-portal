@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Loader2, CheckCircle2, Phone, Shield, Clock, Users,
+  Loader2, CheckCircle2, Shield, Clock,
   AlertTriangle, ChevronDown, ChevronUp, FileCheck,
   Headphones, Zap, UserCheck, HandCoins,
 } from 'lucide-react';

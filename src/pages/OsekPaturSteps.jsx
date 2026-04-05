@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Loader2, CheckCircle2, Phone, Clock,
-  Shield, FileCheck, Headphones, Zap,
+  Shield, Headphones, Zap,
   Users, AlertTriangle, ChevronDown, ChevronUp,
-  Star, BadgeCheck, HandCoins, ClipboardCheck,
+  Star, HandCoins, ClipboardCheck,
   CreditCard, Building2, FileText, UserCheck,
   BookOpen, AlertCircle
 } from 'lucide-react';

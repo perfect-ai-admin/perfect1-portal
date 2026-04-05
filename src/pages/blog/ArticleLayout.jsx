@@ -5,7 +5,7 @@ import SEOHead from '@/components/seo/SEOHead';
 import PortalLeadForm from '@/portal/components/PortalLeadForm';
 import WhatsAppButton from '@/portal/components/WhatsAppButton';
 import { getSignupUrl } from '@/components/utils/tracking';
-import { ArrowLeft, Phone, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PORTAL_CTA } from '@/portal/config/navigation';
 
