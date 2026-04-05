@@ -82,6 +82,11 @@ Deno.serve(async (req) => {
       return errorResponse('Phone is required', 400, req);
     }
 
+    // Diagnostic: log environment variables
+    const BOT_START_FLOW_URL_CHECK = Deno.env.get('BOT_START_FLOW_URL');
+    console.log('🔧 DIAGNOSTIC: BOT_START_FLOW_URL =', BOT_START_FLOW_URL_CHECK ? '✓ SET' : '❌ NOT SET');
+    console.log('🔧 DIAGNOSTIC: BOT_START_FLOW_URL value:', BOT_START_FLOW_URL_CHECK || '(empty)');
+
     // 1. Find the landing page by slug to get lead destination settings
     let landingPage: any = null;
     if (pageSlug) {
