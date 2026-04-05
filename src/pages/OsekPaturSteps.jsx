@@ -305,37 +305,37 @@ export default function OsekPaturSteps() {
         style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0F4C75 60%, #1a6b8a 100%)' }}
       >
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, #F59E0B 0%, transparent 50%), radial-gradient(circle at 80% 20%, #34D399 0%, transparent 50%)' }} />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-14 md:py-20">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            {/* Left — text */}
-            <div className="text-right order-2 md:order-1">
-              <div className="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/40 rounded-full px-4 py-1.5 mb-5">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-10 md:py-20">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-10 items-center">
+            {/* Left — text (on mobile: order-1 = top) */}
+            <div className="text-right order-1 md:order-1">
+              <div className="inline-flex items-center gap-2 bg-yellow-400/30 border border-yellow-400/60 rounded-full px-4 py-2 mb-5">
                 <BookOpen className="w-4 h-4 text-yellow-300" />
-                <span className="text-yellow-200 text-sm font-semibold">מדריך מקיף לשנת 2026</span>
+                <span className="text-yellow-200 text-sm font-bold">מדריך מקיף לשנת 2026</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-4xl font-extrabold text-white leading-tight mb-4">
                 איך פותחים<br />
                 <span className="text-yellow-400">עוסק פטור</span> בישראל?
               </h1>
-              <p className="text-white/80 text-lg leading-relaxed mb-6">
+              <p className="text-white/85 text-lg sm:text-xl leading-relaxed mb-7">
                 המדריך המלא — שלב אחרי שלב, מה צריך להכין, אילו טעויות להימנע, ולמה כדאי לא לעשות את זה לבד.
               </p>
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-3">
                 {[
                   { icon: CheckCircle2, text: 'פתיחה מלאה ב-3 שלבים פשוטים' },
                   { icon: Clock, text: 'זמן ממוצע: שעה עם ליווי מקצועי' },
                   { icon: Zap, text: 'ליווי מקצועי ב-0 עלות ייעוץ ראשוני' },
                 ].map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex items-center gap-2.5">
+                  <div key={text} className="flex items-center gap-3 bg-white/10 rounded-xl px-4 py-2.5">
                     <Icon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                    <span className="text-white/90 text-base">{text}</span>
+                    <span className="text-white font-medium text-base sm:text-lg">{text}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right — form */}
-            <div className="order-1 md:order-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-6 md:p-8">
+            {/* Right — form (on mobile: order-2 = below text) */}
+            <div className="order-2 md:order-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-6 md:p-8">
               <LeadForm
                 id="hero-form"
                 variant="hero"
