@@ -12,24 +12,24 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-// Invoke a Supabase Edge Function by name
+// Invoke a Supabase Edge Function by name.
+// Uses direct fetch with anon key to avoid 401 when user has expired session in localStorage.
 export async function invokeFunction(name, payload = {}) {
-  const { data, error } = await supabase.functions.invoke(name, { body: payload });
-  if (error) {
-    // Extract meaningful error message from edge function response
-    let msg = error.message;
-    if (error.context && typeof error.context.json === 'function') {
-      try {
-        const body = await error.context.json();
-        msg = body?.error || body?.message || msg;
-      } catch {}
-    }
-    console.error(`[invokeFunction] ${name} failed:`, msg, error);
-    const enriched = new Error(msg);
-    enriched.originalError = error;
-    throw enriched;
+  const resp = await fetch(`${supabaseUrl}/functions/v1/${name}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${supabaseAnonKey}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!resp.ok) {
+    let msg = `Edge function ${name} returned ${resp.status}`;
+    try { const body = await resp.json(); msg = body?.error || body?.message || msg; } catch {}
+    console.error(`[invokeFunction] ${name} failed:`, msg);
+    throw new Error(msg);
   }
-  return data;
+  try { return await resp.json(); } catch { return null; }
 }
 
 // --- Multi-tenancy: project source identifier ---
