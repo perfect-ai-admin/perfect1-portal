@@ -107,6 +107,11 @@
             }
             localStorage.setItem('lead_utm_ts', String(Date.now()));
           }
+          // Capture Google Click ID for offline conversion import
+          var gclid = p.get('gclid');
+          if (gclid) localStorage.setItem('lead_gclid', gclid);
+          var fbclid = p.get('fbclid');
+          if (fbclid) localStorage.setItem('lead_fbclid', fbclid);
           if (document.referrer && !localStorage.getItem('lead_referrer')) {
             try {
               var rh = new URL(document.referrer).hostname;

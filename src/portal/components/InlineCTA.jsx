@@ -33,7 +33,7 @@ export default function InlineCTA({
         businessName: `דף נחיתה - ${sourcePage || 'unnamed'}`,
       });
 
-      navigate('/ThankYou', { state: { source: sourcePage, name: form.name } });
+      navigate('/ThankYou', { state: { source: sourcePage, name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסה שוב');
     } finally {

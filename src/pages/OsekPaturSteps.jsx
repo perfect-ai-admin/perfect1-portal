@@ -31,9 +31,6 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'בדקו �
     setLoading(true);
     setError('');
 
-    if (window.dataLayer) window.dataLayer.push({ event: 'lead_submitted', form_location: variant, page: 'osek_patur_steps' });
-    if (window.fbq) window.fbq('track', 'Lead', { content_name: 'osek_patur_steps', form_location: variant });
-
     try {
       await invokeFunction('submitLeadToN8N', {
         name: form.name,
@@ -42,7 +39,7 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'בדקו �
         businessName: 'שלבי פתיחת עוסק פטור',
       });
 
-      navigate('/ThankYou', { state: { source: `steps-osek-patur-${variant}`, name: form.name } });
+      navigate('/ThankYou', { state: { source: `steps-osek-patur-${variant}`, name: form.name, fromForm: true } });
     } catch {
       setError('שגיאה בשליחה, נסו שוב');
     } finally {

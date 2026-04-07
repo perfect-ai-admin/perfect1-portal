@@ -46,7 +46,7 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'בדקו �
         businessName: `דף נחיתה - landing-patur-vs-murshe-${variant}`,
       });
 
-      navigate('/ThankYou', { state: { source: `landing-patur-vs-murshe-${variant}`, name: form.name } });
+      navigate('/ThankYou', { state: { source: `landing-patur-vs-murshe-${variant}`, name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
     } finally {

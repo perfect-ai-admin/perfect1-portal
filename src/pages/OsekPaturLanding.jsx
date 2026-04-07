@@ -70,10 +70,8 @@ function LeadForm({
         businessName: `דף נחיתה - landing-osek-patur-${variant}`,
       });
 
-      trackEvent('lead_submitted', { form_location: variant });
-
-      // Redirect to ThankYou — conversion tracking fires there
-      navigate('/ThankYou', { state: { source: `landing-osek-patur-${variant}`, name: form.name } });
+      // Conversion tracking fires on ThankYou page (single source of truth)
+      navigate('/ThankYou', { state: { source: `landing-osek-patur-${variant}`, name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
     } finally {

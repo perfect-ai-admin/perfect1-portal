@@ -60,7 +60,7 @@ function LeadForm({ id, variant = 'hero', ctaText = 'קבלו ליווי לפת�
         businessName: `דף נחיתה - open-osek-patur-${variant}`,
       });
 
-      navigate('/ThankYou', { state: { source: `open-osek-patur-${variant}`, name: form.name } });
+      navigate('/ThankYou', { state: { source: `open-osek-patur-${variant}`, name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
     } finally {

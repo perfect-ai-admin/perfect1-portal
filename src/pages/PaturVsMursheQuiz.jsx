@@ -90,7 +90,7 @@ export default function PaturVsMursheQuiz() {
         businessName: 'דף נחיתה - landing-patur-vs-murshe-quiz',
       });
 
-      navigate('/ThankYou', { state: { source: 'landing-patur-vs-murshe-quiz', name: form.name } });
+      navigate('/ThankYou', { state: { source: 'landing-patur-vs-murshe-quiz', name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב');
     } finally {

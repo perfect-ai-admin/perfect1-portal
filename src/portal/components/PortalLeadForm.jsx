@@ -51,7 +51,7 @@ export default function PortalLeadForm({
       });
 
       // Redirect to ThankYou page — conversion tracking fires there
-      navigate('/ThankYou', { state: { source: sourcePage, name: form.name } });
+      navigate('/ThankYou', { state: { source: sourcePage, name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסה שוב');
     } finally {

@@ -45,7 +45,7 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
         businessName: 'דף נחיתה - landing-accountant-osek-patur',
       });
 
-      navigate('/ThankYou', { state: { source: 'landing-accountant-osek-patur', name: form.name } });
+      navigate('/ThankYou', { state: { source: 'landing-accountant-osek-patur', name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסו שוב או התקשרו אלינו');
     } finally {

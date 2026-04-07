@@ -98,17 +98,7 @@ export default function UnifiedLeadForm({
       });
       const newLead = { id: result?.leadId, name: formData.name, phone: formData.phone };
 
-      // Tracking
-      trackLeadSubmit(newLead);
-
-      // Push to dataLayer for GTM - NO PII (Google policy compliant)
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'lead_submit',
-        lead_source: sourcePage,
-        lead_has_email: !!newLead.email,
-        lead_has_profession: !!newLead.profession
-      });
+      // Conversion tracking fires on ThankYou page (single source of truth)
 
       // Email notification
       try {
@@ -139,7 +129,7 @@ export default function UnifiedLeadForm({
       } else {
         // Default: redirect אחרי 1.5 שניות
         await new Promise(resolve => setTimeout(resolve, 1500));
-        navigate('/ThankYou', { state: { source: effectiveSource, name: formData.name } });
+        navigate('/ThankYou', { state: { source: effectiveSource, name: formData.name, fromForm: true } });
       }
     } catch (submitError) {
       console.error('Error submitting lead:', submitError);

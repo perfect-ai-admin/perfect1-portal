@@ -26,37 +26,38 @@ export default function ThankYou() {
   const location = useLocation();
   const source = location.state?.source || '';
   const name = location.state?.name || '';
+  const fromForm = location.state?.fromForm === true;
   const hasFired = useRef(false);
 
-  // Fire conversion events ONCE on page load
+  // Fire conversion events ONCE — only if navigated from a real form submission
   useEffect(() => {
     if (hasFired.current) return;
+    if (!fromForm) return; // Block false conversions from direct navigation / refresh
+
+    // Deduplicate across page refreshes
+    const dedupeKey = `conversion_fired_${Date.now().toString().slice(0, -4)}`;
+    if (sessionStorage.getItem('last_conversion_key')) return;
+    sessionStorage.setItem('last_conversion_key', dedupeKey);
+
     hasFired.current = true;
 
-    // Google Tag Manager — conversion event
+    // Google Ads conversion tracking (direct gtag — single source of truth)
+    if (window.gtag) {
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-10811556085/PzlFCIrkg_gbEPWBraMo',
+        value: 1.0,
+        currency: 'ILS',
+      });
+    }
+
+    // GTM dataLayer — single event for GTM triggers
     if (window.dataLayer) {
       window.dataLayer.push({
-        event: 'conversion',
+        event: 'lead_submitted',
         conversion_type: 'lead',
         source_page: source,
         page_path: '/ThankYou',
       });
-
-      // Also push the standard lead_submitted for backward compatibility
-      window.dataLayer.push({
-        event: 'lead_submitted',
-        source_page: source,
-        page_path: '/ThankYou',
-      });
-
-      // Google Ads conversion tracking
-      if (window.gtag) {
-        window.gtag('event', 'conversion', {
-          send_to: 'AW-10811556085/PzlFCIrkg_gbEPWBraMo',
-          value: 1.0,
-          currency: 'ILS',
-        });
-      }
     }
 
     // Facebook Pixel
@@ -66,7 +67,7 @@ export default function ThankYou() {
         content_category: 'lead_conversion',
       });
     }
-  }, [source]);
+  }, [source, fromForm]);
 
   const sourceLabel = getSourceLabel(source);
   const displayName = name ? ` ${name}` : '';
