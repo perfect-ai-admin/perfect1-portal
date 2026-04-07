@@ -522,6 +522,7 @@ function generateSPAFallbacks() {
   const spaRoutes = [
     // Landing pages
     '/open-osek-patur',
+    '/open-osek-patur-online',
     '/ThankYou',
     '/DigitalCard',
     '/patur-vs-murshe',
