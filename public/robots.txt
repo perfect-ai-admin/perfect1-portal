@@ -1,5 +1,5 @@
 # robots.txt — www.perfect1.co.il
-# Updated: 2026-03-29
+# Updated: 2026-04-07
 
 User-agent: *
 Allow: /
@@ -11,21 +11,26 @@ Allow: /sgirat-tikim
 Allow: /guides
 Allow: /compare
 Allow: /About
-Allow: /FAQ
-Allow: /Pricing
 Allow: /Privacy
 Allow: /Terms
-Allow: /Features
-Allow: /SmartLogo
-Allow: /DigitalBusinessCard
-Allow: /BusinessPresentation
-Allow: /BusinessSticker
 Allow: /OsekPaturLanding
 Allow: /OsekPaturSteps
+Allow: /open-osek-patur
 Allow: /blog
 Allow: /patur-vs-murshe
 Allow: /patur-vs-murshe-quiz
 Allow: /accountant-osek-patur
+
+# Product pages (belong to perfect-dashboard.com, not this site)
+Disallow: /Pricing
+Disallow: /Features
+Disallow: /FAQ
+Disallow: /SmartLogo
+Disallow: /DigitalBusinessCard
+Disallow: /BusinessPresentation
+Disallow: /BusinessSticker
+Disallow: /SocialDesigns
+Disallow: /Branding
 
 # Admin & CRM pages
 Disallow: /AdminDashboard
@@ -62,8 +67,6 @@ Disallow: /PricingPerfectBizAI
 Disallow: /S
 Disallow: /Summary
 Disallow: /ThankYou
-Disallow: /SocialDesigns
-Disallow: /Branding
 Disallow: /card
 
 Sitemap: https://www.perfect1.co.il/sitemap.xml
