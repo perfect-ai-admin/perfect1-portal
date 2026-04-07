@@ -78,7 +78,7 @@ function PortalHomePage() {
                 <PortalLeadForm
                   sourcePage="homepage-hero"
                   variant="compact"
-                  ctaText="בדיקת התאמה חינם"
+                  ctaText="לייעוץ חינם עם רו״ח"
                 />
                 <div className="flex items-center justify-center gap-4 mt-3">
                   <span className="text-xs text-gray-400">או:</span>
@@ -155,9 +155,8 @@ function PortalHomePage() {
           <div className="max-w-2xl mx-auto px-4">
             <PortalLeadForm
               sourcePage="homepage"
-              title="לא בטוח מה מתאים לך? השאר פרטים"
-              subtitle="ניצור איתך קשר תוך שעות ספורות ונעזור לך לבחור את המסלול הנכון"
-              ctaText="שלח פרטים וקבל ייעוץ חינם"
+              title="רואה חשבון ייעץ לך — בחינם"
+              subtitle="השאר שם וטלפון, רו״ח מוסמך יחזור אליך תוך 30 דקות ויעזור לך לבחור את המסלול הנכון"
             />
           </div>
         </section>

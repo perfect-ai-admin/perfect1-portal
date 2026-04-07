@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, CheckCircle2, Phone, Shield, Clock, Users } from 'lucide-react';
+import { Loader2, Phone, Shield, Clock, Users, Star, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { invokeFunction } from '@/api/supabaseClient';
 
 const BUSINESS_TYPES = [
@@ -15,19 +15,26 @@ const BUSINESS_TYPES = [
   { value: 'consultation', label: 'ייעוץ כללי' },
 ];
 
+const SOCIAL_PROOF_NAMES = ['דני מ.', 'מיכל ש.', 'אורן כ.', 'נועה ל.', 'יוסי ב.', 'רונית ג.'];
+
 export default function PortalLeadForm({
   sourcePage = 'portal',
-  ctaText = 'שלח פרטים',
-  title = 'השאירו פרטים ונחזור אליכם',
-  subtitle,
+  ctaText = 'לייעוץ חינם עם רואה חשבון',
+  title = 'ייעוץ מקצועי חינם עם רואה חשבון',
+  subtitle = 'השאירו פרטים — רואה חשבון מוסמך יחזור אליכם תוך דקות',
   variant = 'default',
   className = '',
 }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', phone: '', businessType: '' });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [recentName, setRecentName] = useState('');
+
+  // Social proof — rotate a "recent signup" name
+  useEffect(() => {
+    setRecentName(SOCIAL_PROOF_NAMES[Math.floor(Math.random() * SOCIAL_PROOF_NAMES.length)]);
+  }, []);
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
@@ -42,7 +49,6 @@ export default function PortalLeadForm({
     setError('');
 
     try {
-      // שליחה דרך Edge Function — שומר ליד, שולח WhatsApp, וקורא ל-N8N
       await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone: form.phone,
@@ -50,7 +56,6 @@ export default function PortalLeadForm({
         businessName: `פורטל - ${sourcePage}`,
       });
 
-      // Redirect to ThankYou page — conversion tracking fires there
       navigate('/ThankYou', { state: { source: sourcePage, name: form.name, fromForm: true } });
     } catch (err) {
       setError('שגיאה בשליחה, נסה שוב');
@@ -61,38 +66,91 @@ export default function PortalLeadForm({
 
   const isCompact = variant === 'compact';
 
+  if (isCompact) {
+    return (
+      <div className={className}>
+        <form onSubmit={handleSubmit} className="flex flex-wrap gap-3 items-end">
+          <div className="flex-1 min-w-[140px]">
+            <Input
+              value={form.name}
+              onChange={(e) => set('name', e.target.value)}
+              placeholder="שם מלא"
+              required
+              className="h-12 rounded-xl text-base border-gray-200 focus:border-portal-teal focus:ring-portal-teal"
+            />
+          </div>
+          <div className="flex-1 min-w-[140px]">
+            <Input
+              value={form.phone}
+              onChange={(e) => set('phone', e.target.value)}
+              placeholder="050-0000000"
+              type="tel"
+              required
+              className="h-12 rounded-xl text-base border-gray-200 focus:border-portal-teal focus:ring-portal-teal"
+            />
+          </div>
+          {error && <p className="text-red-500 text-sm w-full">{error}</p>}
+          <Button
+            type="submit"
+            disabled={loading}
+            className="h-12 px-6 rounded-2xl text-base font-bold shadow-lg bg-portal-teal hover:bg-portal-teal-dark text-white"
+          >
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+              <><Phone className="ml-2 h-5 w-5" />{ctaText}</>
+            )}
+          </Button>
+        </form>
+      </div>
+    );
+  }
+
   return (
-    <div className={className}>
-      {title && !isCompact && <h2 className="text-xl sm:text-2xl font-bold text-portal-navy mb-2 text-center">{title}</h2>}
-      {subtitle && !isCompact && <p className="text-gray-500 text-center mb-6">{subtitle}</p>}
+    <div className={`bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden ${className}`}>
+      {/* Header strip */}
+      <div className="bg-gradient-to-l from-portal-navy to-portal-navy-light px-6 py-4 text-center">
+        <h2 className="text-xl sm:text-2xl font-bold text-white">{title}</h2>
+        <p className="text-white/80 text-sm mt-1">{subtitle}</p>
+      </div>
 
-      <form onSubmit={handleSubmit} className={`${isCompact ? 'flex flex-wrap gap-3 items-end' : 'space-y-4 max-w-md mx-auto'}`}>
-        <div className={isCompact ? 'flex-1 min-w-[140px]' : ''}>
-          {!isCompact && <Label className="mb-1.5 block text-portal-navy font-medium">שם מלא *</Label>}
-          <Input
-            value={form.name}
-            onChange={(e) => set('name', e.target.value)}
-            placeholder="שם מלא"
-            required
-            className="h-12 rounded-xl text-base border-gray-200 focus:border-portal-teal focus:ring-portal-teal"
-          />
+      <div className="p-6">
+        {/* Social proof banner */}
+        <div className="flex items-center justify-center gap-2 mb-5 py-2.5 px-4 bg-amber-50 rounded-xl border border-amber-100">
+          <div className="flex -space-x-1 space-x-reverse">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+            ))}
+          </div>
+          <span className="text-sm text-gray-700 font-medium">
+            {recentName} קיבל/ה ייעוץ חינם לפני 12 דקות
+          </span>
         </div>
 
-        <div className={isCompact ? 'flex-1 min-w-[140px]' : ''}>
-          {!isCompact && <Label className="mb-1.5 block text-portal-navy font-medium">טלפון *</Label>}
-          <Input
-            value={form.phone}
-            onChange={(e) => set('phone', e.target.value)}
-            placeholder="050-0000000"
-            type="tel"
-            required
-            className="h-12 rounded-xl text-base border-gray-200 focus:border-portal-teal focus:ring-portal-teal"
-          />
-        </div>
-
-        {!isCompact && (
+        <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
           <div>
-            <Label className="mb-1.5 block text-portal-navy font-medium">סוג שירות</Label>
+            <Label className="mb-1.5 block text-portal-navy font-medium">שם מלא *</Label>
+            <Input
+              value={form.name}
+              onChange={(e) => set('name', e.target.value)}
+              placeholder="איך קוראים לך?"
+              required
+              className="h-12 rounded-xl text-base border-gray-200 focus:border-portal-teal focus:ring-portal-teal"
+            />
+          </div>
+
+          <div>
+            <Label className="mb-1.5 block text-portal-navy font-medium">טלפון *</Label>
+            <Input
+              value={form.phone}
+              onChange={(e) => set('phone', e.target.value)}
+              placeholder="050-0000000"
+              type="tel"
+              required
+              className="h-12 rounded-xl text-base border-gray-200 focus:border-portal-teal focus:ring-portal-teal"
+            />
+          </div>
+
+          <div>
+            <Label className="mb-1.5 block text-portal-navy font-medium">במה נוכל לעזור?</Label>
             <Select value={form.businessType} onValueChange={(v) => set('businessType', v)}>
               <SelectTrigger className="h-12 rounded-xl text-base border-gray-200">
                 <SelectValue placeholder="בחר סוג שירות" />
@@ -104,33 +162,48 @@ export default function PortalLeadForm({
               </SelectContent>
             </Select>
           </div>
-        )}
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <Button
-          type="submit"
-          disabled={loading}
-          className={`h-12 sm:h-14 rounded-2xl text-base sm:text-lg font-bold shadow-lg bg-portal-teal hover:bg-portal-teal-dark text-white ${isCompact ? 'px-6' : 'w-full'}`}
-        >
-          {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : (
-            <>
-              <Phone className="ml-2 h-5 w-5" />
-              {ctaText}
-            </>
-          )}
-        </Button>
-      </form>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full h-14 rounded-2xl text-lg font-bold shadow-lg bg-portal-teal hover:bg-portal-teal-dark hover:scale-[1.02] active:scale-100 transition-all text-white"
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                <ArrowLeft className="ml-2 h-5 w-5" />
+                {ctaText}
+              </>
+            )}
+          </Button>
+        </form>
 
-      {!isCompact && (
-        <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-gray-400">
-          <span className="inline-flex items-center gap-1"><Shield className="w-3.5 h-3.5" />100% חינם, ללא התחייבות</span>
-          <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" />זמן תגובה: עד 2 שעות</span>
+        {/* Value props */}
+        <div className="mt-5 space-y-2">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <CheckCircle2 className="w-4 h-4 text-portal-teal flex-shrink-0" />
+            <span>רואה חשבון מוסמך — לא נציג מכירות</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <CheckCircle2 className="w-4 h-4 text-portal-teal flex-shrink-0" />
+            <span>שיחת ייעוץ ראשונה חינם, ללא התחייבות</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <CheckCircle2 className="w-4 h-4 text-portal-teal flex-shrink-0" />
+            <span>חוזרים אליך תוך 30 דקות בשעות העבודה</span>
+          </div>
+        </div>
+
+        {/* Trust bar */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-5 pt-4 border-t border-gray-100 text-xs text-gray-400">
+          <span className="inline-flex items-center gap-1"><Shield className="w-3.5 h-3.5" />מידע מאובטח</span>
+          <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" />זמינים א׳–ה׳ 9:00–18:00</span>
           <span className="inline-flex items-center gap-1"><Users className="w-3.5 h-3.5" />1,200+ בעלי עסקים נעזרו</span>
         </div>
-      )}
+      </div>
     </div>
   );
 }

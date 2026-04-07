@@ -72,7 +72,7 @@ export default function CategoryHubPage({ category }) {
               <PortalLeadForm
                 sourcePage={`category-hero-${category}`}
                 variant="compact"
-                ctaText="קבל ייעוץ חינם"
+                ctaText="לייעוץ חינם עם רו״ח"
                 className="[&_input]:bg-white/10 [&_input]:border-white/20 [&_input]:text-white [&_input]:placeholder:text-white/50"
               />
             </div>
@@ -128,12 +128,12 @@ export default function CategoryHubPage({ category }) {
                     {(i + 1) % 6 === 0 && i < articles.length - 1 && (
                       <div className="sm:col-span-2 lg:col-span-3">
                         <div className="bg-gradient-to-l from-portal-navy to-portal-navy-light rounded-2xl p-6 text-white text-center">
-                          <p className="font-bold text-lg mb-1">לא יודע מאיפה להתחיל?</p>
-                          <p className="text-white/70 text-sm mb-4">השאר פרטים ומומחה יחזור אליך עם תשובות</p>
+                          <p className="font-bold text-lg mb-1">צריך עזרה? רו״ח ייעץ לך בחינם</p>
+                          <p className="text-white/70 text-sm mb-4">השאר שם וטלפון — נחזור אליך תוך 30 דקות</p>
                           <PortalLeadForm
                             sourcePage={`category-banner-${category}`}
                             variant="compact"
-                            ctaText="קבל ייעוץ חינם"
+                            ctaText="לייעוץ חינם עם רו״ח"
                             className="max-w-lg mx-auto [&_input]:bg-white/10 [&_input]:border-white/20 [&_input]:text-white [&_input]:placeholder:text-white/50"
                           />
                         </div>
@@ -172,9 +172,8 @@ export default function CategoryHubPage({ category }) {
           <div className="max-w-2xl mx-auto px-4">
             <PortalLeadForm
               sourcePage={`category-${category}`}
-              title="צריך עזרה? השאר פרטים"
-              subtitle="מומחה יחזור אליך עם כל המידע שתצטרך"
-              ctaText="שלח פרטים"
+              title="רוצה ייעוץ אישי מרו״ח? חינם וללא התחייבות"
+              subtitle="השאר שם וטלפון — רואה חשבון מוסמך יחזור אליך תוך 30 דקות"
             />
           </div>
         </section>

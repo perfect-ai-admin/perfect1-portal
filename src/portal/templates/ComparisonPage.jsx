@@ -134,9 +134,8 @@ export default function ComparisonPage() {
           <div className="max-w-2xl mx-auto px-4">
             <PortalLeadForm
               sourcePage={`comparison-${slug}`}
-              title="לא בטוח מה מתאים לך?"
-              subtitle="השאר פרטים ונציג יחזור אליך עם המלצה אישית"
-              ctaText="קבל המלצה אישית"
+              title="לא בטוח מה מתאים לך? רו״ח ייעץ לך — חינם"
+              subtitle="השאר שם וטלפון, רואה חשבון מוסמך יחזור אליך עם המלצה אישית"
             />
           </div>
         </section>

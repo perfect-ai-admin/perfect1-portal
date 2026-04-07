@@ -108,9 +108,8 @@ export default function ArticleLayout({
           <div className="max-w-2xl mx-auto px-4">
             <PortalLeadForm
               sourcePage={`blog-${canonical || 'article'}`}
-              title="רוצה ייעוץ אישי?"
-              subtitle="השאר פרטים ומומחה יחזור אליך עם תשובות מותאמות"
-              ctaText="שלח פרטים וקבל ייעוץ חינם"
+              title="ייעוץ מקצועי חינם עם רואה חשבון"
+              subtitle="השאר שם וטלפון — רו״ח מוסמך יחזור אליך תוך 30 דקות"
             />
           </div>
         </section>

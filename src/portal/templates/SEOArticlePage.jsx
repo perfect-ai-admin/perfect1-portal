@@ -121,8 +121,7 @@ export default function SEOArticlePage({ category }) {
                     <PortalLeadForm
                       sourcePage={`sidebar-${category}-${slug}`}
                       variant="compact"
-                      title="קבל ייעוץ חינם"
-                      ctaText="שלח פרטים"
+                      ctaText="לייעוץ חינם עם רו״ח"
                     />
                     <p className="text-xs text-gray-400 text-center mt-2">ללא התחייבות</p>
                   </div>
@@ -157,9 +156,8 @@ export default function SEOArticlePage({ category }) {
           <div className="max-w-2xl mx-auto px-4">
             <PortalLeadForm
               sourcePage={`article-${category}-${slug}`}
-              title={content.leadForm?.title || "רוצה שנעזור לך?"}
-              subtitle="השאר פרטים ונחזור אליך עם מידע מותאם אישית"
-              ctaText={content.leadForm?.ctaText || "שלח פרטים"}
+              title={content.leadForm?.title || "ייעוץ מקצועי חינם עם רואה חשבון"}
+              subtitle="השאר שם וטלפון — רו״ח מוסמך יחזור אליך תוך 30 דקות"
             />
           </div>
         </section>
