@@ -76,7 +76,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { name, phone, email, message, pageSlug, businessName } = await req.json();
+    const {
+      name, phone, email, message, pageSlug, businessName,
+      gclid, fbclid, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
+      referrer, landingUrl,
+    } = await req.json();
 
     if (!phone) {
       return errorResponse('Phone is required', 400, req);
@@ -122,12 +126,20 @@ Deno.serve(async (req) => {
 
     console.log(`Lead channels: ${JSON.stringify(channels)}, phone: ${destPhone}, email: ${destEmail}`);
 
+    // Build attribution notes (gclid/fbclid/landingUrl stored here until DB columns are added)
+    const attrParts: string[] = [];
+    if (message) attrParts.push(message);
+    if (gclid) attrParts.push(`gclid=${gclid}`);
+    if (fbclid) attrParts.push(`fbclid=${fbclid}`);
+    if (landingUrl) attrParts.push(`landingUrl=${landingUrl}`);
+    const notesField = attrParts.join(' | ');
+
     // 2. Save to leads table (CRM)
-    const leadData = {
+    const leadData: Record<string, any> = {
       name: name || 'אתר',
       phone: phone.trim(),
       email: email || '',
-      notes: message || '',
+      notes: notesField,
       source_page: pageSlug || businessName || 'landing-page',
       page_intent: intent.page_intent,
       flow_type: intent.flow_type,
@@ -139,7 +151,14 @@ Deno.serve(async (req) => {
       temperature: 'warm',
       contact_attempts: 0,
       sla_deadline: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
-      priority: 'medium'
+      priority: 'medium',
+      // Attribution data — saved to existing DB columns
+      ...(utm_source && { utm_source }),
+      ...(utm_medium && { utm_medium }),
+      ...(utm_campaign && { utm_campaign }),
+      ...(utm_term && { utm_term }),
+      ...(utm_content && { utm_content }),
+      ...(referrer && { referrer }),
     };
 
     const { data: leadResult, error: leadErr } = await supabaseAdmin
