@@ -12,6 +12,7 @@ export default function SEOHead({
   schema,
   keywords,
   noindex = false,
+  type = 'website',
 }) {
   const siteUrl = 'https://www.perfect1.co.il';
   const fullCanonical = canonical
@@ -32,7 +33,7 @@ export default function SEOHead({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={fullCanonical} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={type} />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content="he_IL" />
       <meta property="og:image" content={ogImage || defaultOgImage} />

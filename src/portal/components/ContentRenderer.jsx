@@ -28,6 +28,12 @@ const SectionText = ({ section }) => {
   return (
     <div id={section.id} className="scroll-mt-24">
       {section.title && <Tag className={`${className} mb-4`}>{section.title}</Tag>}
+      {/* answerBlock: direct answer paragraph for featured snippets (40-60 words) */}
+      {section.answerBlock && (
+        <p className="portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
+          {section.answerBlock}
+        </p>
+      )}
       <div className="portal-body">
         <ReactMarkdown components={markdownComponents}>{section.content}</ReactMarkdown>
       </div>
@@ -38,6 +44,11 @@ const SectionText = ({ section }) => {
 const SectionList = ({ section }) => (
   <div id={section.id} className="scroll-mt-24">
     {section.title && <h2 className="portal-h2 mb-4">{section.title}</h2>}
+    {section.answerBlock && (
+      <p className="portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
+        {section.answerBlock}
+      </p>
+    )}
     {section.description && (
       <p className="portal-body mb-4">{section.description}</p>
     )}
@@ -65,6 +76,11 @@ const SectionSteps = ({ section }) => {
   return (
     <div id={section.id} className="scroll-mt-24">
       {section.title && <h2 className="portal-h2 mb-4 sm:mb-6">{section.title}</h2>}
+      {section.answerBlock && (
+        <p className="portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
+          {section.answerBlock}
+        </p>
+      )}
       <div className="space-y-4 sm:space-y-6">
         {steps.map((step, i) => (
           <div key={i} className="flex gap-3 sm:gap-4">
@@ -108,6 +124,11 @@ const SectionCallout = ({ section }) => {
 const SectionFAQ = ({ section }) => (
   <div id={section.id} className="scroll-mt-24">
     {section.title && <h2 className="portal-h2 mb-6">{section.title || 'שאלות נפוצות'}</h2>}
+    {section.answerBlock && (
+      <p className="portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
+        {section.answerBlock}
+      </p>
+    )}
     <Accordion type="single" collapsible className="space-y-3">
       {(section.items || []).map((item, i) => (
         <AccordionItem key={i} value={`faq-${i}`} className="bg-white rounded-xl border border-gray-200 px-4 sm:px-6 overflow-hidden">

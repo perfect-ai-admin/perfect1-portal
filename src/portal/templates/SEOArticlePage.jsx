@@ -44,9 +44,14 @@ export default function SEOArticlePage({ category }) {
     );
   }
 
-  // Extract FAQ items from sections for schema
-  const faqSection = content.sections?.find(s => s.type === 'faq');
-  const faqItems = faqSection?.items || [];
+  // Extract ALL FAQ items from all faq-type sections for schema (not just the first one)
+  const faqItems = (content.sections || [])
+    .filter(s => s.type === 'faq')
+    .flatMap(s => s.items || []);
+
+  // Extract HowTo steps from steps-type sections for schema
+  const stepsSection = content.sections?.find(s => s.type === 'steps');
+  const howToSteps = stepsSection ? (stepsSection.steps || stepsSection.items || []) : [];
 
   // Related articles — construct href from category + slug
   const relatedArticles = (content.relatedArticles || []).map(article => ({
@@ -63,11 +68,13 @@ export default function SEOArticlePage({ category }) {
         description={content.metaDescription}
         canonical={`/${category}/${slug}`}
         keywords={content.keywords?.join(', ')}
+        type="article"
       />
       <SchemaMarkup
         type="article"
         data={{ ...content, canonical: `https://www.perfect1.co.il/${category}/${slug}` }}
         faqItems={faqItems}
+        howToSteps={howToSteps}
         breadcrumbs={breadcrumbs}
       />
       <PortalHeader />

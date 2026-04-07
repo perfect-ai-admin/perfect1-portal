@@ -40,8 +40,10 @@ export default function ComparisonPage() {
     );
   }
 
-  const faqSection = content.sections?.find(s => s.type === 'faq');
-  const faqItems = faqSection?.items || [];
+  // Extract ALL FAQ items from all faq-type sections
+  const faqItems = (content.sections || [])
+    .filter(s => s.type === 'faq')
+    .flatMap(s => s.items || []);
 
   return (
     <>
@@ -50,6 +52,7 @@ export default function ComparisonPage() {
         description={content.metaDescription}
         canonical={`/compare/${slug}`}
         keywords={content.keywords?.join(', ')}
+        type="article"
       />
       <SchemaMarkup
         type="article"

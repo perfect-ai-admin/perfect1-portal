@@ -52,7 +52,12 @@ export default function CategoryHubPage({ category }) {
         canonical={`/${category}`}
         keywords={content.keywords?.join(', ')}
       />
-      <SchemaMarkup type="category" data={content} faqItems={faq} breadcrumbs={[{ label: title }]} />
+      <SchemaMarkup
+        type="category"
+        data={{ ...content, url: `https://www.perfect1.co.il/${category}` }}
+        faqItems={faq}
+        breadcrumbs={[{ label: title, href: `/${category}` }]}
+      />
       <PortalHeader />
 
       <main className="pt-14 sm:pt-16 md:pt-[72px]">

@@ -21,10 +21,10 @@ import { PORTAL_CTA } from '../config/navigation';
 const POPULAR_ARTICLES = [
   { title: 'איך פותחים עוסק פטור — מדריך מלא', description: 'שלב אחר שלב: מה צריך, כמה עולה, וכמה זמן לוקח', href: '/osek-patur/how-to-open', readTime: 12, category: 'עוסק פטור' },
   { title: 'עוסק פטור או מורשה — מה מתאים לך?', description: 'השוואה מלאה עם יתרונות וחסרונות של כל אופציה', href: '/compare/osek-patur-vs-murshe', readTime: 10, category: 'השוואות' },
-  { title: 'כמה עולה רואה חשבון לעוסק מורשה?', description: 'מחירון מעודכן, מה כלול בשירות, ואיך לחסוך', href: '/osek-murshe/accountant-cost', readTime: 8, category: 'עוסק מורשה' },
+  { title: 'כמה עולה עוסק מורשה? כל העלויות', description: 'פירוט מלא של עלויות פתיחה, הוצאות שוטפות ומחיר רואה חשבון', href: '/osek-murshe/cost', readTime: 8, category: 'עוסק מורשה' },
   { title: 'איך סוגרים עוסק פטור', description: 'תהליך הסגירה מול מס הכנסה, מע"מ וביטוח לאומי', href: '/sgirat-tikim/close-osek-patur', readTime: 9, category: 'סגירת תיקים' },
   { title: 'פתיחת חברה בע"מ — המדריך המלא', description: 'כל מה שצריך לדעת לפני שפותחים חברה', href: '/hevra-bam/how-to-open', readTime: 15, category: 'חברה בע"מ' },
-  { title: 'הוצאות מוכרות לעצמאים', description: 'רשימת הוצאות שאפשר לקזז מהמס — עדכני ל-2026', href: '/guides/recognized-expenses', readTime: 11, category: 'מדריכים' },
+  { title: 'מדריך מיסוי לעסקים — כל מה שצריך', description: 'מס הכנסה, מע"מ, ביטוח לאומי והוצאות מוכרות — עדכני ל-2026', href: '/guides/taxation', readTime: 11, category: 'מדריכים' },
 ];
 
 const HOME_FAQ = [

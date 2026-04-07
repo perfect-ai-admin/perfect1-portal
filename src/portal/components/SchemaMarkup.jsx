@@ -3,15 +3,15 @@ import { Helmet } from 'react-helmet-async';
 
 const generateArticleSchema = (data) => ({
   '@context': 'https://schema.org',
-  '@type': 'Article',
+  '@type': 'BlogPosting',
   headline: data.heroTitle || data.title,
   description: data.metaDescription,
   datePublished: data.publishDate,
   dateModified: data.updatedDate || data.publishDate,
   author: {
-    '@type': 'Organization',
-    name: data.author?.name || 'פרפקט וואן',
-    url: 'https://www.perfect1.co.il',
+    '@type': 'Person',
+    name: data.author?.name || 'צוות פרפקט וואן',
+    url: 'https://www.perfect1.co.il/about',
   },
   publisher: {
     '@type': 'Organization',
@@ -22,12 +22,32 @@ const generateArticleSchema = (data) => ({
       url: 'https://www.perfect1.co.il/og-image.png',
     },
   },
-  image: 'https://www.perfect1.co.il/og-image.png',
+  image: {
+    '@type': 'ImageObject',
+    url: 'https://www.perfect1.co.il/og-image.png',
+    width: 1200,
+    height: 630,
+  },
   mainEntityOfPage: {
     '@type': 'WebPage',
     '@id': data.canonical,
   },
   inLanguage: 'he',
+  keywords: Array.isArray(data.keywords) ? data.keywords.join(', ') : data.keywords,
+});
+
+const generateHowToSchema = (data, steps) => ({
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: data.heroTitle || data.title,
+  description: data.metaDescription,
+  inLanguage: 'he',
+  step: steps.map((step, i) => ({
+    '@type': 'HowToStep',
+    position: step.number || i + 1,
+    name: step.title,
+    text: step.description,
+  })),
 });
 
 const generateFAQSchema = (faqItems) => ({
@@ -80,7 +100,7 @@ const generateOrganizationSchema = () => ({
   },
 });
 
-export default function SchemaMarkup({ type, data = {}, breadcrumbs = [], faqItems = [] }) {
+export default function SchemaMarkup({ type, data = {}, breadcrumbs = [], faqItems = [], howToSteps = [] }) {
   const schemas = [];
 
   if (type === 'article' && data.title) {
@@ -91,6 +111,23 @@ export default function SchemaMarkup({ type, data = {}, breadcrumbs = [], faqIte
     schemas.push(generateOrganizationSchema());
   }
 
+  if (type === 'category' && data.title) {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: data.title,
+      description: data.description || data.metaDescription,
+      url: data.canonical || data.url,
+      inLanguage: 'he',
+    });
+  }
+
+  // HowTo schema — for step-by-step articles (can coexist with FAQ schema)
+  if (howToSteps.length > 0) {
+    schemas.push(generateHowToSchema(data, howToSteps));
+  }
+
+  // FAQ schema — all FAQ items from all sections
   if (faqItems.length > 0) {
     schemas.push(generateFAQSchema(faqItems));
   }

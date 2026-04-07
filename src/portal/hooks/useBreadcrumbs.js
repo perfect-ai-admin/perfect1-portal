@@ -4,7 +4,7 @@ import { PORTAL_CATEGORIES } from '../config/navigation';
 export function useBreadcrumbs(articleTitle) {
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
-  const breadcrumbs = [];
+  const breadcrumbs = [{ label: 'בית', href: '/' }];
 
   if (parts.length >= 1) {
     const category = PORTAL_CATEGORIES.find(c => c.id === parts[0]);
