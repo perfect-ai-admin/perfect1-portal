@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import { Link } from 'react-router-dom';
 import {
   CheckCircle2, AlertCircle, Info, Lightbulb, ArrowLeft,
   ChevronDown
@@ -10,6 +11,17 @@ import {
 } from '@/components/ui/accordion';
 import InlineCTA from './InlineCTA';
 
+// Custom link renderer: internal links use React Router, external links open in new tab
+const markdownComponents = {
+  a: ({ href, children, ...props }) => {
+    const isInternal = href && (href.startsWith('/') || href.startsWith('#'));
+    if (isInternal) {
+      return <Link to={href} className="text-portal-teal font-medium hover:underline">{children}</Link>;
+    }
+    return <a href={href} target="_blank" rel="noopener noreferrer" className="text-portal-teal font-medium hover:underline" {...props}>{children}</a>;
+  },
+};
+
 const SectionText = ({ section }) => {
   const Tag = section.heading === 'h3' ? 'h3' : 'h2';
   const className = section.heading === 'h3' ? 'portal-h3' : 'portal-h2';
@@ -17,7 +29,7 @@ const SectionText = ({ section }) => {
     <div id={section.id} className="scroll-mt-24">
       {section.title && <Tag className={`${className} mb-4`}>{section.title}</Tag>}
       <div className="portal-body">
-        <ReactMarkdown>{section.content}</ReactMarkdown>
+        <ReactMarkdown components={markdownComponents}>{section.content}</ReactMarkdown>
       </div>
     </div>
   );
@@ -87,7 +99,7 @@ const SectionCallout = ({ section }) => {
       <Icon className="w-6 h-6 shrink-0 mt-0.5" />
       <div className="portal-body text-current">
         {section.title && <strong className="block mb-1">{section.title}</strong>}
-        <ReactMarkdown>{bodyText}</ReactMarkdown>
+        <ReactMarkdown components={markdownComponents}>{bodyText}</ReactMarkdown>
       </div>
     </div>
   );
@@ -103,7 +115,7 @@ const SectionFAQ = ({ section }) => (
             {item.question}
           </AccordionTrigger>
           <AccordionContent className="portal-body pb-5 text-gray-600">
-            <ReactMarkdown>{item.answer}</ReactMarkdown>
+            <ReactMarkdown components={markdownComponents}>{item.answer}</ReactMarkdown>
           </AccordionContent>
         </AccordionItem>
       ))}

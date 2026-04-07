@@ -7,7 +7,7 @@
   "heroTitle": "מעבר בין סטטוסים — מתי ואיך לשנות סטטוס עסקי",
   "heroSubtitle": "מעוסק פטור למורשה, ממורשה לחברה בע\"מ, או בחזרה — מדריך מלא על כל סוגי המעברים, מתי כדאי, ואיך עושים את זה נכון.",
   "publishDate": "2026-03-28",
-  "updatedDate": "2026-03-28",
+  "updatedDate": "2026-04-07",
   "author": {
     "name": "צוות פרפקט וואן",
     "role": "מומחי עסקים"
@@ -262,5 +262,11 @@
       "question": "כמה זמן לוקח לפתוח חברה?",
       "answer": "רישום ברשם החברות: 3-14 ימים. כולל כל התהליך (ייעוץ, מסמכים, חשבונות): 2-4 שבועות."
     }
+  ],
+  "relatedArticles": [
+    { "slug": "how-to-open", "category": "osek-murshe", "title": "איך לפתוח עוסק מורשה — מדריך מלא 2026" },
+    { "slug": "opening-business", "category": "guides", "title": "מדריך פתיחת עסק בישראל 2026" },
+    { "slug": "osek-patur-vs-murshe", "category": "comparisons", "title": "עוסק פטור מול עוסק מורשה — השוואה מלאה" },
+    { "slug": "how-to-open", "category": "hevra-bam", "title": "פתיחת חברה בע\"מ — מדריך מלא" }
   ]
 }
