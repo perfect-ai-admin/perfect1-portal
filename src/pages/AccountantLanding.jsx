@@ -8,7 +8,7 @@ import {
   Calculator, FileCheck, DollarSign, Headphones, Zap, UserCheck,
   AlertTriangle,
 } from 'lucide-react';
-import { submitPortalLead } from '@/api/portalSupabaseClient';
+import { invokeFunction } from '@/api/supabaseClient';
 import { motion } from 'framer-motion';
 
 // ─── Fade-in on scroll ───
@@ -38,42 +38,12 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'קבלו �
     setError('');
 
     try {
-      const params = new URLSearchParams(window.location.search);
-      await submitPortalLead({
+      await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone: form.phone,
-        profession: 'accountant_osek_patur',
-        source: 'sales_portal',
-        source_page: 'landing-accountant-osek-patur',
-        utm_source: params.get('utm_source') || '',
-        utm_medium: params.get('utm_medium') || '',
-        utm_campaign: params.get('utm_campaign') || '',
-        utm_term: params.get('utm_term') || '',
-        utm_content: params.get('utm_content') || '',
-        referrer: document.referrer || '',
+        pageSlug: 'landing-accountant-osek-patur',
+        businessName: 'דף נחיתה - landing-accountant-osek-patur',
       });
-
-      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט
-      try {
-        await fetch(
-          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify({
-              name: form.name,
-              phone: form.phone,
-              pageSlug: 'landing-accountant-osek-patur',
-              businessName: 'דף נחיתה - landing-accountant-osek-patur'
-            })
-          }
-        ).catch(e => console.warn('submitLeadToN8N call failed:', e.message));
-      } catch (submitErr) {
-        console.warn('submitLeadToN8N error:', submitErr.message);
-      }
 
       navigate('/ThankYou', { state: { source: 'landing-accountant-osek-patur', name: form.name } });
     } catch (err) {

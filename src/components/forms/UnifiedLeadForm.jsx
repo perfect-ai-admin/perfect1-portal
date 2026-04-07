@@ -88,51 +88,15 @@ export default function UnifiedLeadForm({
       const landingUrl = localStorage.getItem('lead_landing_url') || '';
       const effectiveSource = sourcePage || landingUrl || window.location.pathname;
 
-      // יצירת לד
-      const newLead = await entities.Lead.create({
+      // שליחה דרך Edge Function — שומר ליד, שולח WhatsApp, וקורא ל-N8N
+      const result = await invokeFunction('submitLeadToN8N', {
         name: formData.name,
         phone: formData.phone,
         email: formData.email || undefined,
-        profession: showProfession ? formData.profession : undefined,
-        source_page: effectiveSource,
-        status: 'new',
-        utm_source: getUtm('utm_source'),
-        utm_medium: getUtm('utm_medium'),
-        utm_campaign: getUtm('utm_campaign'),
-        utm_term: getUtm('utm_term'),
-        utm_content: getUtm('utm_content'),
-        referrer
+        pageSlug: effectiveSource,
+        businessName: sourcePage || 'Landing Page',
       });
-
-      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט וודוא שהלידים משודרים לN8N
-      try {
-        const submitResponse = await fetch(
-          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify({
-              name: formData.name,
-              phone: formData.phone,
-              email: formData.email || undefined,
-              pageSlug: effectiveSource,
-              businessName: sourcePage || 'Landing Page'
-            })
-          }
-        );
-
-        if (!submitResponse.ok) {
-          console.warn('submitLeadToN8N response not ok:', submitResponse.status);
-        } else {
-          console.log('Lead sent to submitLeadToN8N successfully');
-        }
-      } catch (submitErr) {
-        console.warn('submitLeadToN8N call failed:', submitErr.message);
-        // Continue anyway - lead was created in DB
-      }
+      const newLead = { id: result?.leadId, name: formData.name, phone: formData.phone };
 
       // Tracking
       trackLeadSubmit(newLead);

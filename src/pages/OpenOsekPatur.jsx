@@ -9,7 +9,7 @@ import {
   Shield, FileCheck, Headphones, Zap, Star,
   ClipboardCheck, AlertTriangle, Users, Clock
 } from 'lucide-react';
-import { submitPortalLead } from '@/api/portalSupabaseClient';
+import { invokeFunction } from '@/api/supabaseClient';
 import { PORTAL_CTA } from '@/portal/config/navigation';
 
 // ============================
@@ -53,43 +53,12 @@ function LeadForm({ id, variant = 'hero', ctaText = 'קבלו ליווי לפת�
     trackEvent('form_start', { form_location: variant });
 
     try {
-      const params = new URLSearchParams(window.location.search);
-
-      await submitPortalLead({
+      await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone: form.phone,
-        profession: 'osek_patur',
-        source: 'sales_portal',
-        source_page: `open-osek-patur-${variant}`,
-        utm_source: params.get('utm_source') || '',
-        utm_medium: params.get('utm_medium') || '',
-        utm_campaign: params.get('utm_campaign') || '',
-        utm_term: params.get('utm_term') || '',
-        utm_content: params.get('utm_content') || '',
-        referrer: document.referrer || '',
+        pageSlug: `open-osek-patur-${variant}`,
+        businessName: `דף נחיתה - open-osek-patur-${variant}`,
       });
-
-      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט
-      try {
-        await fetch(
-          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify({
-              name: form.name,
-              phone: form.phone,
-              pageSlug: `open-osek-patur-${variant}`,
-              businessName: `דף נחיתה - open-osek-patur-${variant}`
-            })
-          }
-        ).catch(e => console.warn('submitLeadToN8N call failed:', e.message));
-      } catch (submitErr) {
-        console.warn('submitLeadToN8N error:', submitErr.message);
-      }
 
       navigate('/ThankYou', { state: { source: `open-osek-patur-${variant}`, name: form.name } });
     } catch (err) {

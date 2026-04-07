@@ -5,8 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, CheckCircle2, Phone, Shield, Clock, Users } from 'lucide-react';
-import { submitPortalLead } from '@/api/portalSupabaseClient';
-import { classifyPageIntent } from '@/utils/pageIntentClassifier';
+import { invokeFunction } from '@/api/supabaseClient';
 
 const BUSINESS_TYPES = [
   { value: 'osek_patur', label: 'פתיחת עוסק פטור' },
@@ -43,47 +42,13 @@ export default function PortalLeadForm({
     setError('');
 
     try {
-      // Get UTM params from URL
-      const params = new URLSearchParams(window.location.search);
-
-      const { intent, service_type } = classifyPageIntent(sourcePage);
-      await submitPortalLead({
+      // שליחה דרך Edge Function — שומר ליד, שולח WhatsApp, וקורא ל-N8N
+      await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone: form.phone,
-        profession: form.businessType,
-        source: 'sales_portal',
-        source_page: `פורטל עסקי - ${sourcePage}`,
-        page_intent: intent,
-        service_type: service_type,
-        utm_source: params.get('utm_source') || '',
-        utm_medium: params.get('utm_medium') || '',
-        utm_campaign: params.get('utm_campaign') || '',
-        utm_term: params.get('utm_term') || '',
-        utm_content: params.get('utm_content') || '',
-        referrer: document.referrer || '',
+        pageSlug: sourcePage,
+        businessName: `פורטל - ${sourcePage}`,
       });
-
-      // קריאה ל-submitLeadToN8N כדי להפעיל את הבוט
-      try {
-        await fetch(
-          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-            },
-            body: JSON.stringify({
-              name: form.name,
-              phone: form.phone,
-              pageSlug: sourcePage,
-              businessName: `פורטל - ${sourcePage}`
-            })
-          }
-        ).catch(e => console.warn('submitLeadToN8N call failed:', e.message));
-      } catch (submitErr) {
-        console.warn('submitLeadToN8N error:', submitErr.message);
-      }
 
       // Redirect to ThankYou page — conversion tracking fires there
       navigate('/ThankYou', { state: { source: sourcePage, name: form.name } });
