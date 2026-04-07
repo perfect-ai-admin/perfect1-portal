@@ -338,7 +338,7 @@ export default function OpenOsekPatur() {
           <meta property="og:image" content="https://www.perfect1.co.il/og-image.png" />
           <meta property="og:locale" content="he_IL" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="robots" content="noindex, nofollow" />
+          <meta name="robots" content="index, follow" />
         </Helmet>
 
         <SchemaMarkup faqItems={FAQ_ITEMS} />
