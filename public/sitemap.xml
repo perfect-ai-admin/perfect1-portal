@@ -342,38 +342,15 @@
     <priority>0.3</priority>
   </url>
 
-  <!-- Landing Pages -->
-  <url>
-    <loc>https://www.perfect1.co.il/OsekPaturLanding</loc>
-    <lastmod>2026-03-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/OsekPaturSteps</loc>
-    <lastmod>2026-03-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- Paid landing pages removed from sitemap (noindex, follow) -->
+  <!-- /OsekPaturLanding, /OsekPaturSteps, /patur-vs-murshe-quiz, /accountant-osek-patur -->
 
-  <!-- Landing Pages -->
+  <!-- Organic landing pages (keep in sitemap) -->
   <url>
     <loc>https://www.perfect1.co.il/patur-vs-murshe</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/patur-vs-murshe-quiz</loc>
-    <lastmod>2026-03-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/accountant-osek-patur</loc>
-    <lastmod>2026-03-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.perfect1.co.il/open-osek-patur</loc>

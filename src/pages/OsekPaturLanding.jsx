@@ -377,7 +377,7 @@ export default function OsekPaturLanding() {
           <meta property="og:image" content="https://www.perfect1.co.il/og-image.png" />
           <meta property="og:locale" content="he_IL" />
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="robots" content="index, follow" />
+          <meta name="robots" content="noindex, follow" />
         </Helmet>
 
         <LandingSchemaMarkup faqItems={FAQ_ITEMS} />

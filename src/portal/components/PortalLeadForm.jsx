@@ -49,11 +49,18 @@ export default function PortalLeadForm({
     setError('');
 
     try {
+      const getUtm = (key) => new URLSearchParams(window.location.search).get(key) || localStorage.getItem(`lead_${key}`) || '';
       await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone: form.phone,
         pageSlug: sourcePage,
         businessName: `פורטל - ${sourcePage}`,
+        gclid: localStorage.getItem('lead_gclid') || '',
+        fbclid: localStorage.getItem('lead_fbclid') || '',
+        utm_source: getUtm('utm_source'),
+        utm_medium: getUtm('utm_medium'),
+        utm_campaign: getUtm('utm_campaign'),
+        referrer: document.referrer || localStorage.getItem('lead_referrer') || '',
       });
 
       navigate('/ThankYou', { state: { source: sourcePage, name: form.name, fromForm: true } });

@@ -95,6 +95,15 @@ export default function UnifiedLeadForm({
         email: formData.email || undefined,
         pageSlug: effectiveSource,
         businessName: sourcePage || 'Landing Page',
+        gclid: localStorage.getItem('lead_gclid') || '',
+        fbclid: localStorage.getItem('lead_fbclid') || '',
+        utm_source: getUtm('utm_source'),
+        utm_medium: getUtm('utm_medium'),
+        utm_campaign: getUtm('utm_campaign'),
+        utm_term: getUtm('utm_term'),
+        utm_content: getUtm('utm_content'),
+        referrer,
+        landingUrl,
       });
       const newLead = { id: result?.leadId, name: formData.name, phone: formData.phone };
 

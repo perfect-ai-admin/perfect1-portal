@@ -189,6 +189,7 @@ export default function AccountantLanding() {
           <title>רואה חשבון לעוסק פטור – כמה עולה ניהול עוסק פטור? | פרפקט וואן</title>
           <meta name="description" content="מחפשים רואה חשבון לעוסק פטור? בדיקה קצרה יכולה לחסוך מאות שקלים בשנה. קבלו הצעת מחיר לניהול עוסק פטור." />
           <meta name="keywords" content="רואה חשבון לעוסק פטור, כמה עולה רואה חשבון לעוסק פטור, ניהול עוסק פטור, עלות רואה חשבון לעוסק פטור" />
+          <meta name="robots" content="noindex, follow" />
           <link rel="canonical" href="https://www.perfect1.co.il/accountant-osek-patur" />
           <meta property="og:title" content="רואה חשבון לעוסק פטור – כמה עולה ניהול עוסק פטור? | פרפקט וואן" />
           <meta property="og:description" content="מחפשים רואה חשבון לעוסק פטור? בדיקה קצרה יכולה לחסוך מאות שקלים בשנה. קבלו הצעת מחיר לניהול עוסק פטור." />

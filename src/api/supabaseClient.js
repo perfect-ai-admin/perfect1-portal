@@ -14,6 +14,8 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 
 // Invoke a Supabase Edge Function by name.
 // Uses direct fetch with anon key to avoid 401 when user has expired session in localStorage.
+const N8N_WEBHOOK_URL = 'https://n8n.perfect-1.one/webhook/perfect-one-osek-patur';
+
 export async function invokeFunction(name, payload = {}) {
   const resp = await fetch(`${supabaseUrl}/functions/v1/${name}`, {
     method: 'POST',
@@ -29,7 +31,31 @@ export async function invokeFunction(name, payload = {}) {
     console.error(`[invokeFunction] ${name} failed:`, msg);
     throw new Error(msg);
   }
-  try { return await resp.json(); } catch { return null; }
+  let result = null;
+  try { result = await resp.json(); } catch {}
+
+  // Client-side fallback: send lead directly to N8N webhook
+  // Edge Function cannot reliably reach N8N from Supabase network
+  if (name === 'submitLeadToN8N' && payload.phone) {
+    try {
+      await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _event_type: 'new_lead',
+          name: payload.name || 'אתר',
+          phone: payload.phone,
+          email: payload.email || '',
+          page_slug: payload.pageSlug || 'unknown',
+          service_type: 'osek_patur',
+        }),
+      });
+    } catch (e) {
+      console.warn('[invokeFunction] N8N webhook fallback failed:', e.message);
+    }
+  }
+
+  return result;
 }
 
 // --- Multi-tenancy: project source identifier ---

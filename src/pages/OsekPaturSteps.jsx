@@ -272,7 +272,8 @@ export default function OsekPaturSteps() {
         <title>איך פותחים עוסק פטור בישראל? המדריך המלא 2026 | פרפקט וואן</title>
         <meta name="description" content="מדריך שלב אחרי שלב לפתיחת עוסק פטור — מה צריך, שלבי הרישום, טעויות נפוצות וכיצד לחסוך זמן וכסף. ליווי מקצועי זמין." />
         <meta name="keywords" content="פתיחת עוסק פטור, שלבי פתיחת עוסק פטור, איך פותחים עוסק פטור, רישום עוסק פטור, מדריך עוסק פטור" />
-        <link rel="canonical" href="https://perfect1.co.il/osek-patur/steps" />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://www.perfect1.co.il/OsekPaturSteps" />
         <script type="application/ld+json">{JSON.stringify(schemaArticle)}</script>
         <script type="application/ld+json">{JSON.stringify(schemaFaq)}</script>
       </Helmet>

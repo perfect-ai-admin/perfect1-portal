@@ -34,10 +34,11 @@ export default function ThankYou() {
     if (hasFired.current) return;
     if (!fromForm) return; // Block false conversions from direct navigation / refresh
 
-    // Deduplicate across page refreshes
-    const dedupeKey = `conversion_fired_${Date.now().toString().slice(0, -4)}`;
-    if (sessionStorage.getItem('last_conversion_key')) return;
-    sessionStorage.setItem('last_conversion_key', dedupeKey);
+    // Deduplicate: prevent double-fire on same page load, but allow new form submissions
+    const now = Date.now();
+    const lastFired = parseInt(sessionStorage.getItem('last_conversion_ts') || '0', 10);
+    if (now - lastFired < 5000) return; // Block if fired within last 5 seconds
+    sessionStorage.setItem('last_conversion_ts', String(now));
 
     hasFired.current = true;
 

@@ -108,6 +108,7 @@ export default function PaturVsMursheQuiz() {
           <title>עוסק פטור או מורשה – בדיקה חכמה תוך 30 שניות</title>
           <meta name="description" content="בדקו תוך 30 שניות האם עוסק פטור או עוסק מורשה מתאים לכם. בדיקה חינם ללא התחייבות." />
           <meta name="keywords" content="עוסק פטור או מורשה, מה ההבדל בין עוסק פטור למורשה, מה עדיף עוסק פטור או מורשה, איך לבחור עוסק פטור או מורשה" />
+          <meta name="robots" content="noindex, follow" />
           <link rel="canonical" href="https://www.perfect1.co.il/patur-vs-murshe-quiz" />
           <meta property="og:title" content="עוסק פטור או מורשה – בדיקה חכמה תוך 30 שניות" />
           <meta property="og:description" content="בדקו תוך 30 שניות האם עוסק פטור או עוסק מורשה מתאים לכם." />
