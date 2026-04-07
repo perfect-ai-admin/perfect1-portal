@@ -59,6 +59,7 @@ const BlogStickerArticle = lazyWithRetry(() => import('./pages/blog/StickerArtic
 const About = lazyWithRetry(() => import('./pages/About'));
 const Privacy = lazyWithRetry(() => import('./pages/Privacy'));
 const Terms = lazyWithRetry(() => import('./pages/Terms'));
+const Login = lazyWithRetry(() => import('./pages/Login'));
 
 // CRM Pages
 const CRMLayout = lazyWithRetry(() => import('./crm/pages/CRMLayout'));
@@ -172,6 +173,9 @@ const PortalRoutes = () => (
     <Route path="/About" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
     <Route path="/Terms" element={<Suspense fallback={<PageLoader />}><Terms /></Suspense>} />
     <Route path="/Privacy" element={<Suspense fallback={<PageLoader />}><Privacy /></Suspense>} />
+
+    {/* Login — needed for CRM auth redirect */}
+    <Route path="/login" element={<Suspense fallback={<PageLoader />}><Login /></Suspense>} />
 
     {/* CRM Routes — protected by auth inside CRMLayout */}
     <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
