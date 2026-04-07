@@ -46,6 +46,7 @@ const ThankYou = lazyWithRetry(() => import('./pages/ThankYou'));
 const PaturVsMursheLanding = lazyWithRetry(() => import('./pages/PaturVsMursheLanding'));
 const PaturVsMursheQuiz = lazyWithRetry(() => import('./pages/PaturVsMursheQuiz'));
 const AccountantLanding = lazyWithRetry(() => import('./pages/AccountantLanding'));
+const OpenOsekPaturOnline = lazyWithRetry(() => import('./pages/OpenOsekPaturOnline'));
 
 // Blog articles (portal-only)
 const BlogLogoArticle = lazyWithRetry(() => import('./pages/blog/LogoArticle'));
@@ -152,6 +153,7 @@ const PortalRoutes = () => (
     <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
     <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
     <Route path="/accountant-osek-patur" element={<Suspense fallback={<PageLoader />}><AccountantLanding /></Suspense>} />
+    <Route path="/open-osek-patur-online" element={<Suspense fallback={<PageLoader />}><OpenOsekPaturOnline /></Suspense>} />
     <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
 
     {/* Portal public pages */}
@@ -236,6 +238,7 @@ const DevRoutes = () => (
     <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
     <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
     <Route path="/accountant-osek-patur" element={<Suspense fallback={<PageLoader />}><AccountantLanding /></Suspense>} />
+    <Route path="/open-osek-patur-online" element={<Suspense fallback={<PageLoader />}><OpenOsekPaturOnline /></Suspense>} />
     <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
 
     {/* Portal public pages */}
