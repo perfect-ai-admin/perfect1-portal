@@ -53,6 +53,8 @@ function discoverRoutes() {
     '/About', '/FAQ', '/Pricing', '/Features', '/Privacy', '/Terms',
     '/SmartLogo', '/DigitalBusinessCard', '/BusinessPresentation', '/BusinessSticker',
     '/OsekPaturLanding', '/OsekPaturSteps',
+    '/patur-vs-murshe', '/patur-vs-murshe-quiz',
+    '/accountant-osek-patur', '/open-osek-patur',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
     '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
   ];
