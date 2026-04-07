@@ -19,6 +19,7 @@
     { "source": "/OsekPaturLanding", "destination": "/index.html" },
     { "source": "/OsekPaturSteps", "destination": "/index.html" },
     { "source": "/open-osek-patur", "destination": "/index.html" },
+    { "source": "/open-osek-patur-online", "destination": "/index.html" },
     { "source": "/ThankYou", "destination": "/index.html" },
     { "source": "/About", "destination": "/index.html" },
     { "source": "/Terms", "destination": "/index.html" },
