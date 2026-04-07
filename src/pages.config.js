@@ -35,23 +35,12 @@ const Branding = lazyRetry(() => import('./pages/Branding'));
 const BusinessPresentation = lazyRetry(() => import('./pages/BusinessPresentation'));
 const BusinessSticker = lazyRetry(() => import('./pages/BusinessSticker'));
 const DigitalBusinessCard = lazyRetry(() => import('./pages/DigitalBusinessCard'));
-const About = lazyRetry(() => import('./pages/About'));
 const FAQ = lazyRetry(() => import('./pages/FAQ'));
 const Goal = lazyRetry(() => import('./pages/Goal'));
 const Pricing = lazyRetry(() => import('./pages/Pricing'));
-const Privacy = lazyRetry(() => import('./pages/Privacy'));
 const SmartLogo = lazyRetry(() => import('./pages/SmartLogo'));
 const SocialDesigns = lazyRetry(() => import('./pages/SocialDesigns'));
-const Terms = lazyRetry(() => import('./pages/Terms'));
-const OsekPaturLanding = lazyRetry(() => import('./pages/OsekPaturLanding'));
-
-// --- SEO Blog articles (lazy) ---
-const BlogLogoArticle = lazyRetry(() => import('./pages/blog/LogoArticle'));
-const BlogDigitalCardArticle = lazyRetry(() => import('./pages/blog/DigitalCardArticle'));
-const BlogLandingPageArticle = lazyRetry(() => import('./pages/blog/LandingPageArticle'));
-const BlogPresentationArticle = lazyRetry(() => import('./pages/blog/PresentationArticle'));
-const BlogInvestorDeckArticle = lazyRetry(() => import('./pages/blog/InvestorDeckArticle'));
-const BlogStickerArticle = lazyRetry(() => import('./pages/blog/StickerArticle'));
+// Portal-only pages (About, Privacy, Terms, Blog, OsekPatur) — served via PortalRoutes in App.jsx
 
 // --- Application pages (static imports — lightweight) ---
 import Login from './pages/Login';
@@ -83,8 +72,7 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    // Landing / public pages
-    "About": About,
+    // App pages (perfect-dashboard.com only)
     "AdminUsers": AdminUsers,
     "AiMentor": AiMentor,
     "AvatarAi": AvatarAi,
@@ -99,19 +87,9 @@ export const PAGES = {
     "Goal": Goal,
     "Home": Home,
     "Pricing": Pricing,
-    "Privacy": Privacy,
     "S": S,
     "SmartLogo": SmartLogo,
     "SocialDesigns": SocialDesigns,
-    "Terms": Terms,
-    "OsekPaturSteps": OsekPaturLanding,
-    // SEO Blog articles
-    "blog/logo-leasek": BlogLogoArticle,
-    "blog/kartis-bikur-digitali": BlogDigitalCardArticle,
-    "blog/daf-nchita": BlogLandingPageArticle,
-    "blog/matzget-iskit": BlogPresentationArticle,
-    "blog/matzget-mashkiim": BlogInvestorDeckArticle,
-    "blog/sticker-leasek": BlogStickerArticle,
     // Application pages
     "login": Login,
     "AdminDashboard": AdminDashboard,

@@ -47,6 +47,14 @@ const PaturVsMursheLanding = lazyWithRetry(() => import('./pages/PaturVsMursheLa
 const PaturVsMursheQuiz = lazyWithRetry(() => import('./pages/PaturVsMursheQuiz'));
 const AccountantLanding = lazyWithRetry(() => import('./pages/AccountantLanding'));
 
+// Blog articles (portal-only)
+const BlogLogoArticle = lazyWithRetry(() => import('./pages/blog/LogoArticle'));
+const BlogDigitalCardArticle = lazyWithRetry(() => import('./pages/blog/DigitalCardArticle'));
+const BlogLandingPageArticle = lazyWithRetry(() => import('./pages/blog/LandingPageArticle'));
+const BlogPresentationArticle = lazyWithRetry(() => import('./pages/blog/PresentationArticle'));
+const BlogInvestorDeckArticle = lazyWithRetry(() => import('./pages/blog/InvestorDeckArticle'));
+const BlogStickerArticle = lazyWithRetry(() => import('./pages/blog/StickerArticle'));
+
 // Shared public pages (available on both domains)
 const About = lazyWithRetry(() => import('./pages/About'));
 const Privacy = lazyWithRetry(() => import('./pages/Privacy'));
@@ -175,8 +183,16 @@ const PortalRoutes = () => (
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
-    {/* All other app routes (login, APP, etc.) */}
-    <Route path="/*" element={<AuthenticatedApp />} />
+    {/* Blog articles (portal-only) */}
+    <Route path="/blog/logo-leasek" element={<Suspense fallback={<PageLoader />}><BlogLogoArticle /></Suspense>} />
+    <Route path="/blog/kartis-bikur-digitali" element={<Suspense fallback={<PageLoader />}><BlogDigitalCardArticle /></Suspense>} />
+    <Route path="/blog/daf-nchita" element={<Suspense fallback={<PageLoader />}><BlogLandingPageArticle /></Suspense>} />
+    <Route path="/blog/matzget-iskit" element={<Suspense fallback={<PageLoader />}><BlogPresentationArticle /></Suspense>} />
+    <Route path="/blog/matzget-mashkiim" element={<Suspense fallback={<PageLoader />}><BlogInvestorDeckArticle /></Suspense>} />
+    <Route path="/blog/sticker-leasek" element={<Suspense fallback={<PageLoader />}><BlogStickerArticle /></Suspense>} />
+
+    {/* 404 — no product pages on portal */}
+    <Route path="*" element={<PageNotFound />} />
   </Routes>
 );
 

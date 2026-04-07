@@ -4,10 +4,10 @@ import ArticleLayout from './ArticleLayout';
 const articleSchema = {
   "@context": "https://schema.org", "@type": "Article",
   "headline": "דף נחיתה לעסק: המדריך המלא לבניית דף נחיתה ממיר 2026",
-  "author": { "@type": "Organization", "name": "ClientDashboard" },
-  "publisher": { "@type": "Organization", "name": "ClientDashboard", "url": "https://perfect-dashboard.com" },
+  "author": { "@type": "Organization", "name": "פרפקט וואן" },
+  "publisher": { "@type": "Organization", "name": "פרפקט וואן", "url": "https://perfect1.co.il" },
   "datePublished": "2026-03-01", "dateModified": "2026-03-28",
-  "mainEntityOfPage": "https://perfect-dashboard.com/blog/daf-nchita", "inLanguage": "he"
+  "mainEntityOfPage": "https://perfect1.co.il/blog/daf-nchita", "inLanguage": "he"
 };
 
 const faqSchema = {

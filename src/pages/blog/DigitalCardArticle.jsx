@@ -6,11 +6,11 @@ const articleSchema = {
   "@type": "Article",
   "headline": "כרטיס ביקור דיגיטלי: המדריך המלא ל-2026",
   "description": "כל מה שצריך לדעת על כרטיס ביקור דיגיטלי - מה זה, למה זה חשוב, כמה זה עולה, ואיך ליצור אחד תוך דקות.",
-  "author": { "@type": "Organization", "name": "ClientDashboard" },
-  "publisher": { "@type": "Organization", "name": "ClientDashboard", "url": "https://perfect-dashboard.com" },
+  "author": { "@type": "Organization", "name": "פרפקט וואן" },
+  "publisher": { "@type": "Organization", "name": "פרפקט וואן", "url": "https://perfect1.co.il" },
   "datePublished": "2026-03-01",
   "dateModified": "2026-03-28",
-  "mainEntityOfPage": "https://perfect-dashboard.com/blog/kartis-bikur-digitali",
+  "mainEntityOfPage": "https://perfect1.co.il/blog/kartis-bikur-digitali",
   "inLanguage": "he"
 };
 

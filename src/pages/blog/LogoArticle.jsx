@@ -6,11 +6,11 @@ const articleSchema = {
   "@type": "Article",
   "headline": "לוגו לעסק: המדריך המלא לעיצוב לוגו מקצועי ב-2026",
   "description": "כל מה שצריך לדעת על עיצוב לוגו לעסק - סוגי לוגו, עלויות, טיפים לעיצוב נכון, וכלי AI שחוסכים אלפי שקלים.",
-  "author": { "@type": "Organization", "name": "ClientDashboard" },
-  "publisher": { "@type": "Organization", "name": "ClientDashboard", "url": "https://perfect-dashboard.com" },
+  "author": { "@type": "Organization", "name": "פרפקט וואן" },
+  "publisher": { "@type": "Organization", "name": "פרפקט וואן", "url": "https://perfect1.co.il" },
   "datePublished": "2026-03-01",
   "dateModified": "2026-03-28",
-  "mainEntityOfPage": "https://perfect-dashboard.com/blog/logo-leasek",
+  "mainEntityOfPage": "https://perfect1.co.il/blog/logo-leasek",
   "inLanguage": "he"
 };
 
