@@ -24,7 +24,7 @@
     <meta name="twitter:title" content="פרפקט וואן — פתיחת עסק בישראל" />
     <meta name="twitter:description" content="מדריכים מקיפים לפתיחת עסק: עוסק פטור, עוסק מורשה, חברה בע״מ. כל המידע במקום אחד." />
     <meta name="twitter:image" content="https://www.perfect1.co.il/og-image.png" />
-    <link rel="canonical" href="https://www.perfect1.co.il/" />
+    <!-- canonical is set dynamically per page by react-helmet-async -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -81,9 +81,7 @@
     fbq('init', '955672476938832');
     fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=955672476938832&ev=PageView&noscript=1"
-    /></noscript>
+    <!-- Meta Pixel noscript moved to body (parse5 disallows img in head noscript) -->
     <!-- End Meta Pixel Code -->
     <!-- Google Ads gtag.js + Conversion Linker -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085"></script>
@@ -127,6 +125,11 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNK9CCRQ"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    <!-- Meta Pixel (noscript) -->
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=955672476938832&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

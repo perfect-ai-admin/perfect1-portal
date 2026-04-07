@@ -9,7 +9,7 @@ import {
   BookOpen, FileText, Zap, HelpCircle, ArrowLeft,
   ClipboardList, UserCheck, BadgeCheck, Lightbulb
 } from 'lucide-react';
-import { submitPortalLead } from '@/api/portalSupabaseClient';
+import { invokeFunction } from '@/api/supabaseClient';
 
 // ============================
 // Lead Form
@@ -35,31 +35,12 @@ function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'בדקו �
     if (window.fbq) window.fbq('track', 'Lead', { content_name: 'osek_patur_steps', form_location: variant });
 
     try {
-      const params = new URLSearchParams(window.location.search);
-      await submitPortalLead({
+      await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone: form.phone,
-        profession: 'osek_patur',
-        source: 'sales_portal',
-        source_page: `steps-osek-patur-${variant}`,
-        utm_source: params.get('utm_source') || '',
-        utm_medium: params.get('utm_medium') || '',
-        utm_campaign: params.get('utm_campaign') || '',
-        utm_term: params.get('utm_term') || '',
-        utm_content: params.get('utm_content') || '',
-        referrer: document.referrer || '',
+        pageSlug: `steps-osek-patur-${variant}`,
+        businessName: 'שלבי פתיחת עוסק פטור',
       });
-
-      try {
-        await fetch(
-          import.meta.env.VITE_SUPABASE_URL + '/functions/v1/submitLeadToN8N',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}` },
-            body: JSON.stringify({ name: form.name, phone: form.phone, pageSlug: `steps-osek-patur-${variant}`, businessName: 'שלבי פתיחת עוסק פטור' })
-          }
-        ).catch(() => {});
-      } catch (_) {}
 
       navigate('/ThankYou', { state: { source: `steps-osek-patur-${variant}`, name: form.name } });
     } catch {
@@ -356,10 +337,10 @@ export default function OsekPaturSteps() {
                 <BookOpen className="w-4 h-4 text-yellow-300" />
                 <span className="text-yellow-200 text-sm font-bold">מדריך מקיף לשנת 2026</span>
               </div>
-              <h1 className="text-4xl font-extrabold text-white leading-tight mb-4">
+              <div className="text-4xl font-extrabold text-white leading-tight mb-4" aria-hidden="true">
                 איך פותחים<br />
                 <span className="text-yellow-400">עוסק פטור</span> בישראל?
-              </h1>
+              </div>
               <p className="text-white/85 text-xl leading-relaxed mb-7">
                 המדריך המלא — שלב אחרי שלב, מה צריך להכין, אילו טעויות להימנע, ולמה כדאי לא לעשות את זה לבד.
               </p>
