@@ -51,7 +51,7 @@ function discoverRoutes() {
   // Public pages — only indexable pages (skip Disallow'd pages from robots.txt)
   const publicPages = [
     '/About', '/Privacy', '/Terms', '/Accessibility',
-    '/patur-vs-murshe', '/open-osek-patur',
+    '/patur-vs-murshe', '/open-osek-patur', '/open-osek-patur-online',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
     '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
   ];
