@@ -42,6 +42,13 @@ export default function OpenOsekPaturOnline() {
   const [errors, setErrors] = useState({});
   const formRef = useRef(null);
 
+  // Tranzila payment state
+  const [thtk, setThtk] = useState(null);
+  const [tranzilaSupplier, setTranzilaSupplier] = useState('');
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
   // Form data
   const [form, setForm] = useState({
     name: '',
@@ -50,6 +57,7 @@ export default function OpenOsekPaturOnline() {
     businessName: '',
     income: '',
     file: null,
+    consent: true,
   });
 
   // URL params
@@ -111,9 +119,51 @@ export default function OpenOsekPaturOnline() {
     set('file', f);
   }, []);
 
-  // ---- Submit ----
-  const handleSubmit = async () => {
-    setLoading(true);
+  // ---- Tranzila Handshake (Step 4) ----
+  useEffect(() => {
+    if (step === 4 && !thtk && !paymentLoading && !paymentError) {
+      setPaymentLoading(true);
+      invokeFunction('tranzilaHandshake', { sum: 299 })
+        .then((data) => {
+          setThtk(data.thtk);
+          setTranzilaSupplier(data.supplier);
+        })
+        .catch((err) => {
+          console.error('Handshake failed:', err);
+          setPaymentError('שגיאה בטעינת טופס התשלום. נסו לרענן את הדף.');
+        })
+        .finally(() => setPaymentLoading(false));
+    }
+  }, [step]);
+
+  // Auto-submit Tranzila form when thtk is ready
+  useEffect(() => {
+    if (thtk && step === 4) {
+      setTimeout(() => {
+        document.getElementById('tranzila-form')?.submit();
+      }, 200);
+    }
+  }, [thtk, step]);
+
+  // Listen for Tranzila postMessage on payment completion
+  useEffect(() => {
+    const handler = (event) => {
+      if (event.origin && event.origin.includes('tranzila.com')) {
+        const data = event.data;
+        if (data && (data.Response === '000' || data.response === '000')) {
+          handlePaymentSuccess(data);
+        }
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [form, phone]);
+
+  // ---- Payment Success ----
+  const handlePaymentSuccess = async (txData) => {
+    if (paymentSuccess) return; // prevent double processing
+    setPaymentSuccess(true);
+
     try {
       // Upload file to Supabase Storage
       let fileUrl = '';
@@ -128,7 +178,7 @@ export default function OpenOsekPaturOnline() {
         }
       }
 
-      // Submit lead
+      // Submit lead with payment info
       await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone,
@@ -138,30 +188,39 @@ export default function OpenOsekPaturOnline() {
         id_number: form.idNumber,
         income: form.income,
         file_url: fileUrl,
+        message: `תשלום 299 ₪ - ${txData.ConfirmationCode || txData.confirmationCode || ''}`,
         gclid,
         utm_source: utmSource,
         utm_campaign: utmCampaign,
         referrer,
         landingUrl: window.location.href,
       });
-
-      goTo(5);
-    } catch {
-      setErrors({ general: 'שגיאה בשליחה, נסו שוב' });
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error('Lead submission after payment failed:', err);
     }
+
+    // Tracking
+    window.dataLayer?.push({ event: 'purchase', value: 299, currency: 'ILS' });
+    if (window.gtag) window.gtag('event', 'conversion', { send_to: 'AW-XXXXX/XXXXX', value: 299, currency: 'ILS' });
+    if (window.fbq) window.fbq('track', 'Purchase', { value: 299, currency: 'ILS' });
+
+    goTo(5);
+  };
+
+  // ---- Legacy Submit (fallback - no longer primary flow) ----
+  const handleSubmit = async () => {
+    if (!form.consent) {
+      setErrors({ general: 'יש לאשר את תנאי השימוש ומדיניות הפרטיות' });
+      return;
+    }
+    // Move to step 4 (payment) — actual submission happens after payment success
+    goTo(4);
   };
 
   // ---- Confetti on thank-you ----
   useEffect(() => {
     if (step === 5) {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-
-      // Tracking
-      if (window.gtag) window.gtag('event', 'conversion', { send_to: 'AW-XXXXX/XXXXX', value: 299, currency: 'ILS' });
-      if (window.fbq) window.fbq('track', 'Purchase', { value: 299, currency: 'ILS' });
-      window.dataLayer?.push({ event: 'lead_submitted', value: 299 });
     }
   }, [step]);
 
@@ -357,9 +416,33 @@ export default function OpenOsekPaturOnline() {
                     <p className="text-xs text-gray-400 mt-1">נדרש לצורך פתיחת התיק ברשויות</p>
                   </FieldGroup>
 
+                  <label className="flex items-start gap-2 cursor-pointer text-xs text-gray-500 leading-relaxed">
+                    <input
+                      type="checkbox"
+                      checked={form.consent}
+                      onChange={(e) => set('consent', e.target.checked)}
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 shrink-0"
+                    />
+                    <span>
+                      אני מאשר/ת את{' '}
+                      <a href="/Terms" target="_blank" className="underline text-blue-600 hover:text-blue-800">תנאי השימוש</a>
+                      {' '}ו<a href="/Privacy" target="_blank" className="underline text-blue-600 hover:text-blue-800">מדיניות הפרטיות</a>
+                      {' '}ומסכימ/ה לקבלת פניות ותוכן שיווקי.
+                    </span>
+                  </label>
+
+                  {errors.consent && <p className="text-red-500 text-xs">{errors.consent}</p>}
+
                   <NavButtons
                     onBack={() => goTo(2)}
-                    onNext={() => validateStep3() && goTo(4)}
+                    onNext={() => {
+                      if (!validateStep3()) return;
+                      if (!form.consent) {
+                        setErrors(prev => ({ ...prev, consent: 'יש לאשר את תנאי השימוש' }));
+                        return;
+                      }
+                      goTo(4);
+                    }}
                     nextLabel="המשך לתשלום"
                   />
                 </motion.div>
@@ -381,12 +464,9 @@ export default function OpenOsekPaturOnline() {
 
                   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
                     <div className="text-center">
-                      <div className="text-4xl font-bold text-blue-600">299 <span className="text-lg">\u20AA</span></div>
+                      <div className="text-4xl font-bold text-blue-600">299 <span className="text-lg">{'\u20AA'}</span></div>
                       <p className="text-gray-500 mt-1">תשלום חד-פעמי</p>
                     </div>
-                    <p className="text-sm text-gray-600 text-center">
-                      מיד לאחר התשלום נתחיל את פתיחת התיק עבורך
-                    </p>
                     <ul className="space-y-2 text-sm text-gray-700">
                       <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> דוח שנתי</li>
                       <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> ליווי שוטף</li>
@@ -394,16 +474,79 @@ export default function OpenOsekPaturOnline() {
                     </ul>
                   </div>
 
-                  {errors.general && <p className="text-red-500 text-sm text-center">{errors.general}</p>}
+                  {/* Tranzila Payment iframe */}
+                  {paymentLoading && (
+                    <div className="flex flex-col items-center gap-3 py-8">
+                      <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                      <p className="text-gray-500">טוען טופס תשלום מאובטח...</p>
+                    </div>
+                  )}
 
-                  <NavButtons
-                    onBack={() => goTo(3)}
-                    onNext={handleSubmit}
-                    nextLabel={loading ? '' : 'לתשלום מאובטח (299 \u20AA)'}
-                    nextIcon={loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Shield className="w-5 h-5" />}
-                    nextDisabled={loading}
-                    nextClass="bg-green-600 hover:bg-green-700 shadow-lg shadow-green-200"
-                  />
+                  {paymentError && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+                      <p className="text-red-600 text-sm">{paymentError}</p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-3"
+                        onClick={() => {
+                          setPaymentError('');
+                          setThtk(null);
+                        }}
+                      >
+                        נסה שוב
+                      </Button>
+                    </div>
+                  )}
+
+                  {thtk && tranzilaSupplier && (
+                    <>
+                      <form
+                        id="tranzila-form"
+                        action={`https://direct.tranzila.com/${tranzilaSupplier}/iframenew.php`}
+                        target="tranzila-iframe"
+                        method="POST"
+                        style={{ display: 'none' }}
+                      >
+                        <input type="hidden" name="sum" value="299" />
+                        <input type="hidden" name="currency" value="1" />
+                        <input type="hidden" name="cred_type" value="1" />
+                        <input type="hidden" name="new_process" value="1" />
+                        <input type="hidden" name="thtk" value={thtk} />
+                        <input type="hidden" name="lang" value="il" />
+                        <input type="hidden" name="nologo" value="1" />
+                        <input type="hidden" name="trBgColor" value="FFFFFF" />
+                        <input type="hidden" name="trTextColor" value="1a1a1a" />
+                        <input type="hidden" name="trButtonColor" value="2563EB" />
+                        <input type="hidden" name="buttonLabel" value="שלם 299 ₪" />
+                        <input type="hidden" name="contact" value={form.name} />
+                        <input type="hidden" name="email" value={form.email} />
+                        <input type="hidden" name="phone" value={phone} />
+                        <input type="hidden" name="company" value={form.businessName} />
+                        <input type="hidden" name="pdesc" value="פתיחת עוסק פטור אונליין" />
+                      </form>
+
+                      <iframe
+                        name="tranzila-iframe"
+                        id="tranzila-iframe"
+                        title="טופס תשלום מאובטח"
+                        allowpaymentrequest="true"
+                        className="w-full rounded-xl border-0"
+                        style={{ height: '500px', minHeight: '500px' }}
+                      />
+                    </>
+                  )}
+
+                  <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+                    <Shield className="w-4 h-4" />
+                    <span>תשלום מאובטח SSL | סליקה על ידי טרנזילה</span>
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <Button variant="outline" onClick={() => goTo(3)} className="rounded-xl h-12 px-4">
+                      <ChevronLeft className="w-4 h-4 ml-1" /> חזור
+                    </Button>
+                  </div>
                 </motion.div>
               )}
 
