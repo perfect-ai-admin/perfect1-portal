@@ -466,6 +466,11 @@ const PUBLIC_PAGES_SEO = {
     description: 'מדריך לעיצוב סטיקר מקצועי לעסק: סוגים, גדלים, עיצוב וטיפים למיתוג אפקטיבי.',
     keywords: 'סטיקר לעסק, עיצוב סטיקר, סטיקר מותאם אישית, סטיקר עסקי',
   },
+  '/Accessibility': {
+    title: 'הצהרת נגישות | פרפקט וואן',
+    description: 'הצהרת הנגישות של אתר פרפקט וואן — מחויבות לנגישות דיגיטלית לכלל המשתמשים.',
+    keywords: 'נגישות, הצהרת נגישות, נגישות אתר',
+  },
 };
 
 // Generate HTML for public pages with unique SEO meta tags
@@ -532,6 +537,7 @@ function generateSPAFallbacks() {
     '/DigitalCard',
     '/patur-vs-murshe',
     '/patur-vs-murshe-quiz',
+    '/opening-business-israel',
     // Auth
     '/login',
     '/AgentLogin',
