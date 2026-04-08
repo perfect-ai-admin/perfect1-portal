@@ -191,27 +191,10 @@ Deno.serve(async (req) => {
       }
     }
 
-    // N8N channel
-    if (channels.includes('n8n')) {
-      const N8N_URL = Deno.env.get('N8N_WEBHOOK_URL');
-      if (N8N_URL) {
-        notifications.push(
-          fetch(N8N_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: name || 'אתר', phone, email: email || '',
-              message: message || '', pageSlug, businessName,
-              timestamp: new Date().toISOString(), source: 'landing-page', status: 'new'
-            })
-          }).then(r => console.log('N8N status:', r.status))
-            .catch(e => console.warn('N8N failed:', e.message))
-        );
-      }
-    }
+    // N8N channel — handled by DB trigger (trg_notify_n8n_new_lead), no direct call needed
 
-    // WhatsApp notification channel via GreenAPI
-    if ((channels.includes('whatsapp') || channels.includes('n8n')) && destPhone) {
+    // WhatsApp notification to business owner (not to lead — bot handles that via n8n)
+    if (channels.includes('whatsapp') && destPhone) {
       const greenApiToken = Deno.env.get('GREENAPI_API_TOKEN');
       const greenApiInstance = Deno.env.get('GREENAPI_INSTANCE_ID');
       if (greenApiToken && greenApiInstance) {
@@ -234,7 +217,7 @@ Deno.serve(async (req) => {
     }
 
     // Email notification channel via Resend
-    if ((channels.includes('email') || channels.includes('n8n')) && destEmail) {
+    if (channels.includes('email') && destEmail) {
       const safeName = escapeHtml(name);
       const safePhone = escapeHtml(phone);
       const safeEmail = escapeHtml(email);
