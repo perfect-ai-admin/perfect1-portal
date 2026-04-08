@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { HelmetProvider } from 'react-helmet-async';
 import { Link, useLocation } from 'react-router-dom';
 import { CheckCircle2, Phone, ArrowRight, BookOpen, MessageCircle } from 'lucide-react';
 import { PORTAL_CTA } from '@/portal/config/navigation';
@@ -74,7 +73,7 @@ export default function ThankYou() {
   const displayName = name ? ` ${name}` : '';
 
   return (
-    <HelmetProvider>
+    <>
       <div dir="rtl" className="portal-root min-h-screen" style={{ fontFamily: "'Heebo', sans-serif" }}>
         <Helmet>
           <title>תודה שהשארת פרטים | פרפקט וואן</title>
@@ -191,6 +190,6 @@ export default function ThankYou() {
           </div>
         </footer>
       </div>
-    </HelmetProvider>
+    </>
   );
 }

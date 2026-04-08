@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { HelmetProvider } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -173,7 +172,7 @@ const comparisonRows = [
 // ─── Main Page ───
 export default function PaturVsMursheLanding() {
   return (
-    <HelmetProvider>
+    <>
       <div className="min-h-screen bg-white" dir="rtl">
         {/* SEO Head */}
         <Helmet>
@@ -542,6 +541,6 @@ export default function PaturVsMursheLanding() {
           </div>
         </footer>
       </div>
-    </HelmetProvider>
+    </>
   );
 }

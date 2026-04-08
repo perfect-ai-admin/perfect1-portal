@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { HelmetProvider } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -381,7 +380,7 @@ export default function OsekPaturLanding() {
   };
 
   return (
-    <HelmetProvider>
+    <>
       <div dir="rtl" className="portal-root min-h-screen" style={{ fontFamily: "'Heebo', sans-serif" }}>
         {/* SEO Head */}
         <Helmet>
@@ -1005,6 +1004,6 @@ export default function OsekPaturLanding() {
         {/* Sticky Mobile CTA */}
         <LandingStickyMobileCTA />
       </div>
-    </HelmetProvider>
+    </>
   );
 }

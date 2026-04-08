@@ -6,20 +6,47 @@ import { pagesConfig } from './pages.config'
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
+import GeneralErrorBoundary from '@/components/GeneralErrorBoundary';
 import { SupabaseAuthProvider as AuthProvider, useAuth } from '@/lib/SupabaseAuthContext';
 
 // Retry wrapper for lazy imports — handles stale chunk errors after deploy
-function lazyWithRetry(importFn) {
-  return React.lazy(() =>
-    importFn().catch(() => {
-      // Chunk failed to load (likely stale after deploy) — reload once
-      const key = 'chunk_reload';
-      if (!sessionStorage.getItem(key)) {
-        sessionStorage.setItem(key, '1');
-        window.location.reload();
-      }
-      return importFn();
-    })
+function lazyWithRetry(importFn, retries = 2) {
+  return React.lazy(() => {
+    const attempt = (remaining) =>
+      importFn().catch((err) => {
+        if (remaining > 0) {
+          // Wait briefly then retry (new chunk URL might work)
+          return new Promise((r) => setTimeout(r, 500)).then(() => attempt(remaining - 1));
+        }
+        // All retries failed — reload page once to get fresh HTML with new chunk URLs
+        const key = 'chunk_reload';
+        if (!sessionStorage.getItem(key)) {
+          sessionStorage.setItem(key, '1');
+          window.location.reload();
+        }
+        // If we already reloaded and it still fails, show a fallback module
+        return { default: () => React.createElement(ChunkErrorFallback) };
+      });
+    // Clear reload flag on successful load
+    return attempt(retries).then((mod) => {
+      sessionStorage.removeItem('chunk_reload');
+      return mod;
+    });
+  });
+}
+
+// Fallback component shown when chunk loading fails even after retries + reload
+function ChunkErrorFallback() {
+  return React.createElement('div', {
+    dir: 'rtl',
+    style: { minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Heebo, sans-serif', padding: '2rem', textAlign: 'center' }
+  },
+    React.createElement('h2', { style: { fontSize: '1.5rem', marginBottom: '1rem', color: '#1E3A5F' } }, 'הדף לא נטען כראוי'),
+    React.createElement('p', { style: { color: '#666', marginBottom: '1.5rem' } }, 'ייתכן שהתבצע עדכון לאתר. נסו לרענן את הדף.'),
+    React.createElement('button', {
+      onClick: () => { sessionStorage.removeItem('chunk_reload'); window.location.reload(); },
+      style: { padding: '12px 32px', background: '#1E3A5F', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1rem', cursor: 'pointer' }
+    }, 'רענון הדף')
   );
 }
 
@@ -82,6 +109,15 @@ const PageLoader = () => (
   </div>
 );
 
+// Safe wrapper: Error Boundary + Suspense for every lazy-loaded route
+const SafePage = ({ children }) => (
+  <GeneralErrorBoundary>
+    <Suspense fallback={<PageLoader />}>
+      {children}
+    </Suspense>
+  </GeneralErrorBoundary>
+);
+
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -141,25 +177,27 @@ const AuthenticatedApp = () => {
 };
 
 const PortalWrapper = ({ children }) => (
-  <Suspense fallback={<PageLoader />}>
-    <div dir="rtl" className="portal-root">
-      {children}
-    </div>
-  </Suspense>
+  <GeneralErrorBoundary>
+    <Suspense fallback={<PageLoader />}>
+      <div dir="rtl" className="portal-root">
+        {children}
+      </div>
+    </Suspense>
+  </GeneralErrorBoundary>
 );
 
 // Portal-only routes (perfect1.co.il)
 const PortalRoutes = () => (
   <Routes>
     {/* Landing pages */}
-    <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
-    <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
-    <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
-    <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
-    <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
-    <Route path="/accountant-osek-patur" element={<Suspense fallback={<PageLoader />}><AccountantLanding /></Suspense>} />
-    <Route path="/open-osek-patur-online" element={<Suspense fallback={<PageLoader />}><OpenOsekPaturOnline /></Suspense>} />
-    <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
+    <Route path="/OsekPaturLanding" element={<SafePage><OsekPaturLanding /></SafePage>} />
+    <Route path="/OsekPaturSteps" element={<SafePage><OsekPaturSteps /></SafePage>} />
+    <Route path="/open-osek-patur" element={<SafePage><OpenOsekPatur /></SafePage>} />
+    <Route path="/patur-vs-murshe" element={<SafePage><PaturVsMursheLanding /></SafePage>} />
+    <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />
+    <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
+    <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
+    <Route path="/ThankYou" element={<SafePage><ThankYou /></SafePage>} />
 
     {/* Portal public pages */}
     <Route path="/" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
@@ -177,16 +215,16 @@ const PortalRoutes = () => (
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
 
     {/* Shared public pages */}
-    <Route path="/About" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
-    <Route path="/Terms" element={<Suspense fallback={<PageLoader />}><Terms /></Suspense>} />
-    <Route path="/Privacy" element={<Suspense fallback={<PageLoader />}><Privacy /></Suspense>} />
-    <Route path="/Accessibility" element={<Suspense fallback={<PageLoader />}><AccessibilityPage /></Suspense>} />
+    <Route path="/About" element={<SafePage><About /></SafePage>} />
+    <Route path="/Terms" element={<SafePage><Terms /></SafePage>} />
+    <Route path="/Privacy" element={<SafePage><Privacy /></SafePage>} />
+    <Route path="/Accessibility" element={<SafePage><AccessibilityPage /></SafePage>} />
 
     {/* Login — needed for CRM auth redirect */}
-    <Route path="/login" element={<Suspense fallback={<PageLoader />}><Login /></Suspense>} />
+    <Route path="/login" element={<SafePage><Login /></SafePage>} />
 
     {/* CRM Routes — protected by auth inside CRMLayout */}
-    <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
+    <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>
       <Route index element={<CRMPipeline />} />
       <Route path="leads" element={<CRMLeads />} />
       <Route path="leads/:id" element={<CRMLeadDetail />} />
@@ -196,12 +234,12 @@ const PortalRoutes = () => (
     </Route>
 
     {/* Blog articles (portal-only) */}
-    <Route path="/blog/logo-leasek" element={<Suspense fallback={<PageLoader />}><BlogLogoArticle /></Suspense>} />
-    <Route path="/blog/kartis-bikur-digitali" element={<Suspense fallback={<PageLoader />}><BlogDigitalCardArticle /></Suspense>} />
-    <Route path="/blog/daf-nchita" element={<Suspense fallback={<PageLoader />}><BlogLandingPageArticle /></Suspense>} />
-    <Route path="/blog/matzget-iskit" element={<Suspense fallback={<PageLoader />}><BlogPresentationArticle /></Suspense>} />
-    <Route path="/blog/matzget-mashkiim" element={<Suspense fallback={<PageLoader />}><BlogInvestorDeckArticle /></Suspense>} />
-    <Route path="/blog/sticker-leasek" element={<Suspense fallback={<PageLoader />}><BlogStickerArticle /></Suspense>} />
+    <Route path="/blog/logo-leasek" element={<SafePage><BlogLogoArticle /></SafePage>} />
+    <Route path="/blog/kartis-bikur-digitali" element={<SafePage><BlogDigitalCardArticle /></SafePage>} />
+    <Route path="/blog/daf-nchita" element={<SafePage><BlogLandingPageArticle /></SafePage>} />
+    <Route path="/blog/matzget-iskit" element={<SafePage><BlogPresentationArticle /></SafePage>} />
+    <Route path="/blog/matzget-mashkiim" element={<SafePage><BlogInvestorDeckArticle /></SafePage>} />
+    <Route path="/blog/sticker-leasek" element={<SafePage><BlogStickerArticle /></SafePage>} />
 
     {/* 404 — no product pages on portal */}
     <Route path="*" element={<PageNotFound />} />
@@ -216,7 +254,7 @@ const AppOnlyRoutes = () => (
     <Route path="/DigitalCard" element={<DigitalCard />} />
 
     {/* CRM Routes — protected by auth inside CRMLayout */}
-    <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
+    <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>
       <Route index element={<CRMPipeline />} />
       <Route path="leads" element={<CRMLeads />} />
       <Route path="leads/:id" element={<CRMLeadDetail />} />
@@ -238,14 +276,14 @@ const DevRoutes = () => (
     <Route path="/DigitalCard" element={<DigitalCard />} />
 
     {/* Landing pages */}
-    <Route path="/OsekPaturLanding" element={<Suspense fallback={<PageLoader />}><OsekPaturLanding /></Suspense>} />
-    <Route path="/OsekPaturSteps" element={<Suspense fallback={<PageLoader />}><OsekPaturSteps /></Suspense>} />
-    <Route path="/open-osek-patur" element={<Suspense fallback={<PageLoader />}><OpenOsekPatur /></Suspense>} />
-    <Route path="/patur-vs-murshe" element={<Suspense fallback={<PageLoader />}><PaturVsMursheLanding /></Suspense>} />
-    <Route path="/patur-vs-murshe-quiz" element={<Suspense fallback={<PageLoader />}><PaturVsMursheQuiz /></Suspense>} />
-    <Route path="/accountant-osek-patur" element={<Suspense fallback={<PageLoader />}><AccountantLanding /></Suspense>} />
-    <Route path="/open-osek-patur-online" element={<Suspense fallback={<PageLoader />}><OpenOsekPaturOnline /></Suspense>} />
-    <Route path="/ThankYou" element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>} />
+    <Route path="/OsekPaturLanding" element={<SafePage><OsekPaturLanding /></SafePage>} />
+    <Route path="/OsekPaturSteps" element={<SafePage><OsekPaturSteps /></SafePage>} />
+    <Route path="/open-osek-patur" element={<SafePage><OpenOsekPatur /></SafePage>} />
+    <Route path="/patur-vs-murshe" element={<SafePage><PaturVsMursheLanding /></SafePage>} />
+    <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />
+    <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
+    <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
+    <Route path="/ThankYou" element={<SafePage><ThankYou /></SafePage>} />
 
     {/* Portal public pages */}
     <Route path="/portal" element={<PortalWrapper><PortalHomePage /></PortalWrapper>} />
@@ -263,7 +301,7 @@ const DevRoutes = () => (
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
 
     {/* CRM Routes */}
-    <Route path="/CRM" element={<Suspense fallback={<PageLoader />}><CRMLayout /></Suspense>}>
+    <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>
       <Route index element={<CRMPipeline />} />
       <Route path="leads" element={<CRMLeads />} />
       <Route path="leads/:id" element={<CRMLeadDetail />} />
@@ -273,7 +311,7 @@ const DevRoutes = () => (
     </Route>
 
     {/* Shared public pages */}
-    <Route path="/Accessibility" element={<Suspense fallback={<PageLoader />}><AccessibilityPage /></Suspense>} />
+    <Route path="/Accessibility" element={<SafePage><AccessibilityPage /></SafePage>} />
 
     {/* App routes (login, APP, etc.) */}
     <Route path="/*" element={<AuthenticatedApp />} />

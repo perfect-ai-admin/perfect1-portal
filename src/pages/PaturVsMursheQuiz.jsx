@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { HelmetProvider } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -102,7 +101,7 @@ export default function PaturVsMursheQuiz() {
   const isForm = step === STEPS.length;
 
   return (
-    <HelmetProvider>
+    <>
       <div className="min-h-screen" dir="rtl" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #152D4A 50%, #0F766E 100%)' }}>
         <Helmet>
           <title>עוסק פטור או מורשה – בדיקה חכמה תוך 30 שניות</title>
@@ -293,6 +292,6 @@ export default function PaturVsMursheQuiz() {
           <p>האתר מופעל על ידי חברה פרטית. אינו אתר ממשלתי.</p>
         </footer>
       </div>
-    </HelmetProvider>
+    </>
   );
 }

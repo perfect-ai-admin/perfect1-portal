@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -182,7 +182,7 @@ const breadcrumbSchema = {
 // ─── Main Page ───
 export default function AccountantLanding() {
   return (
-    <HelmetProvider>
+    <>
       <div className="min-h-screen bg-white" dir="rtl">
         {/* SEO Head */}
         <Helmet>
@@ -561,6 +561,6 @@ export default function AccountantLanding() {
           </div>
         </footer>
       </div>
-    </HelmetProvider>
+    </>
   );
 }
