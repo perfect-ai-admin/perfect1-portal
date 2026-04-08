@@ -13,14 +13,17 @@ Allow: /compare
 Allow: /About
 Allow: /Privacy
 Allow: /Terms
-Allow: /OsekPaturLanding
-Allow: /OsekPaturSteps
 Allow: /open-osek-patur
 Allow: /blog
 Allow: /Accessibility
 Allow: /patur-vs-murshe
+
+# Paid landing pages — noindex but crawlable for Google Ads
+Allow: /OsekPaturLanding
+Allow: /OsekPaturSteps
 Allow: /patur-vs-murshe-quiz
 Allow: /accountant-osek-patur
+Allow: /open-osek-patur-online
 
 # Product pages (belong to perfect-dashboard.com, not this site)
 Disallow: /Pricing
