@@ -14,7 +14,7 @@ import { invokeFunction } from '@/api/supabaseClient';
 // ============================
 // Lead Form
 // ============================
-function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'בדקו איך לפתוח עוסק פטור', className = '' }) {
+function LeadForm({ id, variant = 'hero', title, subtitle, ctaText = 'פתיחת עוסק פטור בקליק', className = '' }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', phone: '' });
   const [loading, setLoading] = useState(false);
@@ -309,9 +309,9 @@ export default function OsekPaturSteps() {
               <LeadForm
                 id="hero-form"
                 variant="hero"
-                title="קבלו ליווי לפתיחת עוסק פטור"
+                title="תרצה שנפתח עבורך את התיק?"
                 subtitle="מלאו פרטים — נחזור אליכם תוך שעה"
-                ctaText="בדקו איך לפתוח עוסק פטור"
+                ctaText="פתיחת עוסק פטור בקליק"
               />
             </div>
 
@@ -459,7 +459,7 @@ export default function OsekPaturSteps() {
             variant="mid-steps"
             title="רוצים שנעשה את זה בשבילכם?"
             subtitle="ליווי מלא בכל 3 השלבים — בלי לחכות בתורים"
-            ctaText="קבלו ליווי לפתיחת עוסק פטור"
+            ctaText="פתיחת עוסק פטור בקליק"
           />
         </div>
       </Section>
