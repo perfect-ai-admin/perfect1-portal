@@ -30,20 +30,21 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "פרפקט וואן",
+      "alternateName": "Perfect One",
       "url": "https://www.perfect1.co.il",
+      "logo": "https://www.perfect1.co.il/og-image.png",
       "description": "מדריכים מקיפים לפתיחת עסק בישראל: עוסק פטור, עוסק מורשה, חברה בע״מ. מידע, כלים וליווי מקצועי.",
       "sameAs": [],
+      "areaServed": {
+        "@type": "Country",
+        "name": "IL"
+      },
+      "knowsLanguage": ["he", "en"],
       "contactPoint": {
         "@type": "ContactPoint",
+        "telephone": "+972-50-227-7087",
         "contactType": "customer service",
         "availableLanguage": ["Hebrew", "English"]
-      },
-      "offers": {
-        "@type": "AggregateOffer",
-        "lowPrice": "29",
-        "highPrice": "299",
-        "priceCurrency": "ILS",
-        "offerCount": "6"
       }
     }
     </script>
@@ -53,18 +54,26 @@
       "@type": "WebSite",
       "name": "פרפקט וואן",
       "url": "https://www.perfect1.co.il",
-      "inLanguage": "he"
+      "inLanguage": "he",
+      "description": "מדריכים מקיפים לפתיחת עסק בישראל: עוסק פטור, עוסק מורשה, חברה בע״מ. מידע, כלים וליווי מקצועי.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "פרפקט וואן",
+        "url": "https://www.perfect1.co.il"
+      }
     }
     </script>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <!-- Tracking scripts — deferred until cookie consent -->
+    <script>window.dataLayer = window.dataLayer || [];</script>
+    <!-- Google Tag Manager (blocked until consent) -->
+    <script type="text/plain" data-cookie-consent>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-PNK9CCRQ');</script>
     <!-- End Google Tag Manager -->
-    <!-- Meta Pixel Code -->
-    <script>
+    <!-- Meta Pixel Code (blocked until consent) -->
+    <script type="text/plain" data-cookie-consent>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -76,15 +85,31 @@
     fbq('init', '955672476938832');
     fbq('track', 'PageView');
     </script>
-    <!-- Meta Pixel noscript moved to body (parse5 disallows img in head noscript) -->
     <!-- End Meta Pixel Code -->
-    <!-- Google Ads gtag.js + Conversion Linker -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
+    <!-- Google Ads gtag.js + Conversion Linker (blocked until consent) -->
+    <script type="text/plain" data-cookie-consent async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085"></script>
+    <script type="text/plain" data-cookie-consent>
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'AW-10811556085');
+    </script>
+    <!-- Auto-activate if user already consented (before React loads) -->
+    <script>
+      (function(){
+        try {
+          if (localStorage.getItem('cookie_consent') === 'all') {
+            document.querySelectorAll('script[data-cookie-consent]').forEach(function(el){
+              var s = document.createElement('script');
+              for (var i = 0; i < el.attributes.length; i++) {
+                var a = el.attributes[i];
+                if (a.name !== 'data-cookie-consent' && a.name !== 'type') s.setAttribute(a.name, a.value);
+              }
+              s.textContent = el.textContent;
+              el.parentNode.replaceChild(s, el);
+            });
+          }
+        } catch(e) {}
+      })();
     </script>
     <script>
       // Capture UTM params & referrer BEFORE React loads or any auth redirect.
@@ -121,15 +146,8 @@
     </script>
   </head>
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PNK9CCRQ"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <!-- Meta Pixel (noscript) -->
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=955672476938832&ev=PageView&noscript=1"
-    /></noscript>
-    <!-- End Meta Pixel (noscript) -->
+    <!-- GTM & Meta Pixel noscript — only active after consent via JS -->
+    <!-- These are intentionally removed from noscript to comply with cookie consent requirements -->
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

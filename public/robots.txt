@@ -17,6 +17,7 @@ Allow: /OsekPaturLanding
 Allow: /OsekPaturSteps
 Allow: /open-osek-patur
 Allow: /blog
+Allow: /Accessibility
 Allow: /patur-vs-murshe
 Allow: /patur-vs-murshe-quiz
 Allow: /accountant-osek-patur

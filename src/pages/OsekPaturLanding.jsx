@@ -25,7 +25,7 @@ function LeadForm({
   className = '',
 }) {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', phone: '' });
+  const [form, setForm] = useState({ name: '', phone: '', consent: true });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -47,6 +47,10 @@ function LeadForm({
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim()) {
       setError('נא למלא שם וטלפון');
+      return;
+    }
+    if (!form.consent) {
+      setError('יש לאשר את תנאי השימוש ומדיניות הפרטיות');
       return;
     }
 
@@ -112,6 +116,21 @@ function LeadForm({
         />
 
         {error && <p className="text-red-400 text-xs sm:text-sm text-center font-medium">{error}</p>}
+
+        <label className={`flex items-start gap-2 cursor-pointer text-xs leading-relaxed ${variant === 'hero' ? 'text-white/80' : 'text-gray-500'}`}>
+          <input
+            type="checkbox"
+            checked={form.consent}
+            onChange={(e) => set('consent', e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-gray-300 shrink-0"
+          />
+          <span>
+            אני מאשר/ת את{' '}
+            <a href="/Terms" target="_blank" className="underline hover:opacity-80">תנאי השימוש</a>
+            {' '}ו<a href="/Privacy" target="_blank" className="underline hover:opacity-80">מדיניות הפרטיות</a>
+            {' '}ומסכימ/ה לקבלת פניות.
+          </span>
+        </label>
 
         <Button
           type="submit"

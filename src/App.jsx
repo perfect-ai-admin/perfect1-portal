@@ -61,6 +61,11 @@ const About = lazyWithRetry(() => import('./pages/About'));
 const Privacy = lazyWithRetry(() => import('./pages/Privacy'));
 const Terms = lazyWithRetry(() => import('./pages/Terms'));
 const Login = lazyWithRetry(() => import('./pages/Login'));
+const AccessibilityPage = lazyWithRetry(() => import('./pages/Accessibility'));
+
+// Legal & Accessibility components
+import CookieConsent from '@/components/legal/CookieConsent';
+import AccessibilityWidget from '@/components/legal/AccessibilityWidget';
 
 // CRM Pages
 const CRMLayout = lazyWithRetry(() => import('./crm/pages/CRMLayout'));
@@ -175,6 +180,7 @@ const PortalRoutes = () => (
     <Route path="/About" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
     <Route path="/Terms" element={<Suspense fallback={<PageLoader />}><Terms /></Suspense>} />
     <Route path="/Privacy" element={<Suspense fallback={<PageLoader />}><Privacy /></Suspense>} />
+    <Route path="/Accessibility" element={<Suspense fallback={<PageLoader />}><AccessibilityPage /></Suspense>} />
 
     {/* Login — needed for CRM auth redirect */}
     <Route path="/login" element={<Suspense fallback={<PageLoader />}><Login /></Suspense>} />
@@ -266,6 +272,9 @@ const DevRoutes = () => (
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
+    {/* Shared public pages */}
+    <Route path="/Accessibility" element={<Suspense fallback={<PageLoader />}><AccessibilityPage /></Suspense>} />
+
     {/* App routes (login, APP, etc.) */}
     <Route path="/*" element={<AuthenticatedApp />} />
   </Routes>
@@ -305,6 +314,8 @@ function App() {
             <NavigationTracker />
             <AppRoutes />
           </Router>
+          <CookieConsent />
+          <AccessibilityWidget />
           <Toaster />
         </QueryClientProvider>
       </AuthProvider>

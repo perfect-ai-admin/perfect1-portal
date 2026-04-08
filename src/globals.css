@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+/* Font loaded via index.html <link> tag — no duplicate @import needed */
 
 @tailwind base;
 @tailwind components;
@@ -413,4 +413,14 @@ body[data-sheet-open] {
   font-family: Arial, sans-serif !important;
   letter-spacing: 0.05em !important;
   line-height: 1.8 !important;
+}
+
+/* Cookie consent slide-up */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
 }

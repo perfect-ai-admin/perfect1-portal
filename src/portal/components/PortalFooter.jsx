@@ -86,6 +86,7 @@ export default function PortalFooter() {
             <Link to="/About" className="hover:text-white/70 transition-colors">אודות</Link>
             <Link to="/Privacy" className="hover:text-white/70 transition-colors">מדיניות פרטיות</Link>
             <Link to="/Terms" className="hover:text-white/70 transition-colors">תנאי שימוש</Link>
+            <Link to="/Accessibility" className="hover:text-white/70 transition-colors">הצהרת נגישות</Link>
           </div>
         </div>
       </div>

@@ -48,13 +48,10 @@ function discoverRoutes() {
     }
   }
 
-  // Public pages (products, blog, static)
+  // Public pages — only indexable pages (skip Disallow'd pages from robots.txt)
   const publicPages = [
-    '/About', '/FAQ', '/Pricing', '/Features', '/Privacy', '/Terms',
-    '/SmartLogo', '/DigitalBusinessCard', '/BusinessPresentation', '/BusinessSticker',
-    '/OsekPaturLanding', '/OsekPaturSteps',
-    '/patur-vs-murshe', '/patur-vs-murshe-quiz',
-    '/accountant-osek-patur', '/open-osek-patur',
+    '/About', '/Privacy', '/Terms', '/Accessibility',
+    '/patur-vs-murshe', '/open-osek-patur',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
     '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
   ];

@@ -70,9 +70,7 @@ export default function CriticalCSS() {
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       
-      {/* DNS Prefetch */}
-      <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-      <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      {/* DNS Prefetch — tracking domains removed, loaded only after cookie consent */}
     </Helmet>
   );
 }

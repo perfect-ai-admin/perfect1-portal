@@ -10,8 +10,7 @@ export default function ResourceHints({ priorityImages = [], prefetchPages = [] 
     <Helmet>
       {/* DNS Prefetch - חיבור מוקדם לשרתים חיצוניים */}
       <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-      <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-      <link rel="dns-prefetch" href="https://connect.facebook.net" />
+      {/* GTM + Facebook DNS prefetch removed — loaded only after cookie consent */}
       
       {/* Preconnect - חיבור מלא מוקדם */}
       <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
