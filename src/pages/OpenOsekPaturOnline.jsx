@@ -55,6 +55,7 @@ export default function OpenOsekPaturOnline() {
     idNumber: '',
     email: '',
     businessName: '',
+    businessType: '',
     income: '',
     file: null,
     consent: true,
@@ -369,6 +370,15 @@ export default function OpenOsekPaturOnline() {
                     />
                   </FieldGroup>
 
+                  <FieldGroup label="סוג העסק (מה העסק עושה?)" error={errors.businessType}>
+                    <Input
+                      value={form.businessType || ''}
+                      onChange={e => set('businessType', e.target.value)}
+                      placeholder="לדוגמה: עיצוב גרפי, צילום, שיעורים פרטיים..."
+                      className="h-12 rounded-xl text-right"
+                    />
+                  </FieldGroup>
+
                   <FieldGroup label="צפי הכנסה חודשי" error={errors.income}>
                     <Select value={form.income} onValueChange={v => set('income', v)}>
                       <SelectTrigger className="h-12 rounded-xl text-right">
@@ -474,13 +484,21 @@ export default function OpenOsekPaturOnline() {
                   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-4">
                     <div className="text-center">
                       <div className="text-4xl font-bold text-blue-600">299 <span className="text-lg">{'\u20AA'}</span></div>
-                      <p className="text-gray-500 mt-1">תשלום חד-פעמי</p>
+                      <p className="text-gray-600 font-medium mt-1">תשלום חד-פעמי בלבד — בלי מנוי, בלי הפתעות</p>
                     </div>
-                    <ul className="space-y-2 text-sm text-gray-700">
-                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> דוח שנתי</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> ליווי שוטף</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> אפליקציה להוצאת קבלות</li>
-                    </ul>
+
+                    <div className="bg-blue-50 rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-bold text-blue-900">מה קורה אחרי התשלום?</p>
+                      <ul className="space-y-2 text-sm text-blue-800">
+                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> <strong>פתיחת תיק ברשויות</strong> — מס הכנסה, מע"מ וביטוח לאומי</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> <strong>תוך 72 שעות</strong> התיק שלך פתוח ומוכן לעבודה</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" /> <strong>איש קשר בוואטסאפ</strong> — זמין לכל שאלה לאורך הדרך</li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center">
+                      <p className="text-sm text-amber-800 font-semibold">⚡ 347 עסקים כבר פתחו איתנו החודש</p>
+                    </div>
                   </div>
 
                   {/* Tranzila Payment iframe */}
