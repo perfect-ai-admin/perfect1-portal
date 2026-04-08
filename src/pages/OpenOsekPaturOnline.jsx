@@ -119,21 +119,22 @@ export default function OpenOsekPaturOnline() {
     set('file', f);
   }, []);
 
-  // ---- Tranzila Handshake (Step 4) ----
+  // ---- Tranzila Handshake via N8N proxy (Step 4) ----
   useEffect(() => {
     if (step === 4 && !thtk && !paymentLoading && !paymentError) {
       setPaymentLoading(true);
-      const SUPPLIER = 'fxperfectone';
-      const SUM = 299;
-      fetch(`https://api.tranzila.com/v1/handshake/create?supplier=${SUPPLIER}&sum=${SUM}`)
-        .then(res => res.text())
-        .then(text => {
-          const m = text.match(/thtk=(.+)/);
-          if (m && m[1]) {
-            setThtk(m[1].trim());
-            setTranzilaSupplier(SUPPLIER);
+      fetch('https://n8n.perfect-1.one/webhook/tranzila-handshake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sum: 299 }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.thtk) {
+            setThtk(data.thtk);
+            setTranzilaSupplier(data.supplier);
           } else {
-            throw new Error('Invalid handshake response');
+            throw new Error('No thtk in response');
           }
         })
         .catch((err) => {
