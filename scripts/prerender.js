@@ -48,10 +48,13 @@ function discoverRoutes() {
     }
   }
 
-  // Public pages — only indexable pages (skip Disallow'd pages from robots.txt)
+  // Public pages — all pages that need static HTML (including noindex landing pages)
   const publicPages = [
     '/About', '/Privacy', '/Terms', '/Accessibility',
-    '/patur-vs-murshe', '/open-osek-patur', '/open-osek-patur-online',
+    '/patur-vs-murshe', '/patur-vs-murshe-quiz',
+    '/open-osek-patur', '/open-osek-patur-online',
+    '/OsekPaturLanding', '/OsekPaturSteps',
+    '/accountant-osek-patur', '/ThankYou',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
     '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
   ];

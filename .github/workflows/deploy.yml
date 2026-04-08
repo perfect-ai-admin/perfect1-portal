@@ -58,7 +58,7 @@ jobs:
                 "continue": true
               },
               { "handle": "filesystem" },
-              { "src": "/(.*)", "dest": "/index.html", "status": 200 }
+              { "src": "/(.*)", "dest": "/index.html", "status": 200, "headers": { "Content-Type": "text/html; charset=utf-8" } }
             ]
           }
           VERCEL_CONFIG
