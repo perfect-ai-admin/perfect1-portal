@@ -6,46 +6,6 @@ import { classifyIntent } from '../_shared/botIntentClassifier.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
-async function sendWhatsAppAcknowledgment(phone: string, leadName: string): Promise<void> {
-  console.log('📱 sendWhatsAppAcknowledgment called with phone:', phone);
-
-  const greenApiToken = Deno.env.get('GREENAPI_API_TOKEN');
-  const greenApiInstance = Deno.env.get('GREENAPI_INSTANCE_ID');
-
-  console.log('🔑 greenApiToken exists:', greenApiToken ? 'YES' : 'NO');
-  console.log('🔑 greenApiInstance exists:', greenApiInstance ? 'YES' : 'NO');
-
-  if (!greenApiToken || !greenApiInstance) {
-    console.warn('❌ GreenAPI credentials missing, skipping WhatsApp acknowledgment');
-    return;
-  }
-
-  const cleanPhone = phone.replace(/[^0-9]/g, '');
-  const fullPhone = cleanPhone.startsWith('972') ? cleanPhone :
-                    cleanPhone.startsWith('0') ? '972' + cleanPhone.substring(1) : '972' + cleanPhone;
-
-  console.log('📞 Formatted phone:', fullPhone);
-
-  const waMessage = `שלום ${leadName} 👋\n\nקיבלנו את פרטיך! 📝\nנציג שלנו יחזור אליך בהקדם ביותר 📞\n\nתודה שבחרת בנו! 🙏`;
-
-  const url = `https://api.green-api.com/waInstance${greenApiInstance}/sendMessage/${greenApiToken}`;
-  console.log('🌐 Sending to GreenAPI URL:', url.substring(0, 50) + '...');
-
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chatId: `${fullPhone}@c.us`, message: waMessage })
-    });
-    console.log('✅ GreenAPI response status:', res.status);
-    const responseText = await res.text();
-    console.log('✅ GreenAPI response:', responseText);
-    console.log('✅ WhatsApp acknowledgment sent to:', fullPhone);
-  } catch (e: any) {
-    console.warn('❌ WhatsApp acknowledgment failed:', e.message);
-  }
-}
-
 async function sendEmailViaResend(to: string, subject: string, html: string, fromName: string): Promise<void> {
   if (!RESEND_API_KEY) {
     console.warn('RESEND_API_KEY not configured, skipping email');
@@ -169,37 +129,8 @@ Deno.serve(async (req) => {
     if (leadErr) throw new Error(leadErr.message);
     console.log('Lead saved to CRM:', leadResult.id);
 
-    // 2a. Send WhatsApp acknowledgment to the lead
-    await sendWhatsAppAcknowledgment(phone.trim(), name || 'לקוח');
-
-    // 2b. Trigger bot flow via N8N webhook (direct call, no Edge Function dependency)
-    // Note: Database trigger (notify_n8n_new_lead) also calls N8N automatically
-    if (leadResult) {
-      const N8N_WEBHOOK_URL = 'https://n8n.perfect-1.one/webhook/perfect-one-osek-patur';
-      const payload = {
-        _event_type: 'new_lead',
-        lead_id: leadResult.id,
-        name: name || 'אתר',
-        phone: phone.trim(),
-        email: email || '',
-        page_slug: pageSlug || 'unknown',
-        service_type: intent.service_type,
-      };
-
-      console.log('✅ Sending lead to N8N webhook');
-      try {
-        const botRes = await fetch(N8N_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          signal: AbortSignal.timeout(5000)
-        });
-        console.log('✅ N8N webhook response:', botRes.status);
-      } catch (e: any) {
-        console.warn('⚠️ N8N webhook call failed (non-blocking):', e.message);
-        // Don't throw - webhook call is fire-and-forget
-      }
-    }
+    // N8N is triggered automatically by DB trigger (trg_notify_n8n_new_lead)
+    // No direct webhook call or WhatsApp acknowledgment needed here
 
     // 3. Also save crm_lead (per-user CRM view)
     try {
