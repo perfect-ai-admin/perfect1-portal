@@ -123,10 +123,18 @@ export default function OpenOsekPaturOnline() {
   useEffect(() => {
     if (step === 4 && !thtk && !paymentLoading && !paymentError) {
       setPaymentLoading(true);
-      invokeFunction('tranzilaHandshake', { sum: 299 })
-        .then((data) => {
-          setThtk(data.thtk);
-          setTranzilaSupplier(data.supplier);
+      const SUPPLIER = 'fxperfectone';
+      const SUM = 299;
+      fetch(`https://api.tranzila.com/v1/handshake/create?supplier=${SUPPLIER}&sum=${SUM}`)
+        .then(res => res.text())
+        .then(text => {
+          const m = text.match(/thtk=(.+)/);
+          if (m && m[1]) {
+            setThtk(m[1].trim());
+            setTranzilaSupplier(SUPPLIER);
+          } else {
+            throw new Error('Invalid handshake response');
+          }
         })
         .catch((err) => {
           console.error('Handshake failed:', err);
