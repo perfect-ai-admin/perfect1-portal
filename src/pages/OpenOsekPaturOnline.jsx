@@ -120,40 +120,19 @@ export default function OpenOsekPaturOnline() {
     set('file', f);
   }, []);
 
-  // ---- Tranzila Handshake via N8N proxy (Step 4) ----
+  // ---- Tranzila direct iframe (no handshake — simpler, more reliable) ----
   useEffect(() => {
-    if (step === 4 && !thtk && !paymentLoading && !paymentError) {
-      setPaymentLoading(true);
-      fetch('https://n8n.perfect-1.one/webhook/tranzila-handshake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sum: 299 }),
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.thtk) {
-            setThtk(data.thtk);
-            setTranzilaSupplier(data.supplier);
-          } else {
-            throw new Error('No thtk in response');
-          }
-        })
-        .catch((err) => {
-          console.error('Handshake failed:', err);
-          setPaymentError('שגיאה בטעינת טופס התשלום. נסו לרענן את הדף.');
-        })
-        .finally(() => setPaymentLoading(false));
+    if (step === 4 && !thtk) {
+      // Load iframe directly without handshake
+      setTranzilaSupplier('fxperfectone');
+      setThtk('direct'); // flag to show iframe
+      setTimeout(() => {
+        document.getElementById('tranzila-form')?.submit();
+      }, 300);
     }
   }, [step]);
 
-  // Auto-submit Tranzila form when thtk is ready
-  useEffect(() => {
-    if (thtk && step === 4) {
-      setTimeout(() => {
-        document.getElementById('tranzila-form')?.submit();
-      }, 200);
-    }
-  }, [thtk, step]);
+  // (auto-submit handled in the step-4 effect above)
 
   // Listen for Tranzila postMessage on payment completion
   useEffect(() => {
@@ -538,8 +517,7 @@ export default function OpenOsekPaturOnline() {
                         <input type="hidden" name="sum" value="299" />
                         <input type="hidden" name="currency" value="1" />
                         <input type="hidden" name="cred_type" value="1" />
-                        <input type="hidden" name="new_process" value="1" />
-                        <input type="hidden" name="thtk" value={thtk} />
+                        <input type="hidden" name="tranmode" value="A" />
                         <input type="hidden" name="lang" value="il" />
                         <input type="hidden" name="nologo" value="1" />
                         <input type="hidden" name="trBgColor" value="FFFFFF" />
