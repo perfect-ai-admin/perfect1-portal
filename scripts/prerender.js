@@ -54,7 +54,7 @@ function discoverRoutes() {
     '/patur-vs-murshe', '/patur-vs-murshe-quiz',
     '/open-osek-patur', '/open-osek-patur-online',
     '/OsekPaturLanding', '/OsekPaturSteps',
-    '/accountant-osek-patur', '/ThankYou',
+    '/accountant-osek-patur', '/ThankYou', '/CRM', '/login',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
     '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
   ];
