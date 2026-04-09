@@ -32,6 +32,24 @@ const SOURCE_LABELS = {
   bot: 'בוט',
 };
 
+// Map source_page slugs to actual site paths
+function buildLandingUrl(sourcePage) {
+  if (!sourcePage) return null;
+  const s = sourcePage.toLowerCase();
+  // Landing pages with variant suffix (landing-osek-patur-hero → /OsekPaturLanding)
+  if (s.startsWith('landing-osek-patur')) return 'https://www.perfect1.co.il/OsekPaturLanding';
+  if (s.startsWith('landing-patur-vs-murshe-quiz')) return 'https://www.perfect1.co.il/patur-vs-murshe-quiz';
+  if (s.startsWith('landing-patur-vs-murshe')) return 'https://www.perfect1.co.il/patur-vs-murshe';
+  if (s.startsWith('landing-accountant')) return 'https://www.perfect1.co.il/accountant-osek-patur';
+  if (s.startsWith('steps-osek-patur')) return 'https://www.perfect1.co.il/OsekPaturSteps';
+  if (s.startsWith('open-osek-patur')) return 'https://www.perfect1.co.il/open-osek-patur-online';
+  // Portal content pages (osek-patur, hevra-bam, etc.)
+  if (/^[a-z0-9-]+$/.test(s) && !['portal', 'main', 'manual', 'bot'].includes(s)) {
+    return `https://www.perfect1.co.il/${sourcePage}`;
+  }
+  return null;
+}
+
 // Follow-up date color logic
 function getFollowupColor(dateStr) {
   if (!dateStr) return null;
@@ -649,33 +667,20 @@ export default function CRMLeads() {
                   <td className="p-3 text-xs" onClick={e => e.stopPropagation()}>
                     <div className="flex flex-col gap-0.5">
                       {(() => {
-                        // Build the actual landing page URL
                         const landingUrl = lead.landing_url;
                         const sourcePage = lead.source_page;
+                        // Priority: landing_url (full URL) > source_page (slug → mapped URL)
+                        const href = landingUrl
+                          ? (landingUrl.startsWith('http') ? landingUrl : 'https://' + landingUrl)
+                          : buildLandingUrl(sourcePage);
 
-                        if (landingUrl) {
-                          // Full URL stored — use as-is
-                          const href = landingUrl.startsWith('http') ? landingUrl : 'https://' + landingUrl;
-                          const label = (() => { try { return new URL(href).pathname || '/'; } catch { return landingUrl; } })();
+                        if (href) {
                           return (
                             <a href={href} target="_blank" rel="noopener noreferrer"
                               className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium"
                               title={href}>
                               <ExternalLink size={10} className="flex-shrink-0" />
-                              <span className="truncate max-w-[120px]">{label === '/' ? 'דף הבית' : label}</span>
-                            </a>
-                          );
-                        }
-
-                        if (sourcePage && sourcePage !== 'portal' && sourcePage !== 'main' && sourcePage !== 'הוספה ידנית') {
-                          // source_page is a slug like "osek-patur" — build link to perfect1.co.il
-                          const href = `https://perfect1.co.il/${sourcePage}`;
-                          return (
-                            <a href={href} target="_blank" rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium"
-                              title={href}>
-                              <ExternalLink size={10} className="flex-shrink-0" />
-                              <span className="truncate max-w-[120px]">{sourcePage}</span>
+                              <span className="truncate max-w-[120px]">{sourcePage || (() => { try { const p = new URL(href).pathname; return p === '/' ? 'דף הבית' : p; } catch { return href; } })()}</span>
                             </a>
                           );
                         }

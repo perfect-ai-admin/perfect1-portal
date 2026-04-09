@@ -369,28 +369,35 @@ export default function CRMLeadDetail() {
               {(() => {
                 const landingUrl = lead.landing_url;
                 const sourcePage = lead.source_page;
+                const s = (sourcePage || '').toLowerCase();
+                // Map source_page slug to actual site URL
+                let href = null;
                 if (landingUrl) {
-                  const href = landingUrl.startsWith('http') ? landingUrl : 'https://' + landingUrl;
-                  return (
-                    <div className="flex items-center gap-2 mb-1">
-                      <ExternalLink size={12} className="text-blue-400" />
-                      <a href={href} target="_blank" rel="noopener noreferrer"
-                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline truncate max-w-[200px]"
-                        title={href}>
-                        {(() => { try { const p = new URL(href).pathname; return p === '/' ? 'דף הבית' : p; } catch { return landingUrl; } })()}
-                      </a>
-                    </div>
-                  );
+                  href = landingUrl.startsWith('http') ? landingUrl : 'https://' + landingUrl;
+                } else if (s.startsWith('landing-osek-patur')) {
+                  href = 'https://www.perfect1.co.il/OsekPaturLanding';
+                } else if (s.startsWith('landing-patur-vs-murshe-quiz')) {
+                  href = 'https://www.perfect1.co.il/patur-vs-murshe-quiz';
+                } else if (s.startsWith('landing-patur-vs-murshe')) {
+                  href = 'https://www.perfect1.co.il/patur-vs-murshe';
+                } else if (s.startsWith('landing-accountant')) {
+                  href = 'https://www.perfect1.co.il/accountant-osek-patur';
+                } else if (s.startsWith('steps-osek-patur')) {
+                  href = 'https://www.perfect1.co.il/OsekPaturSteps';
+                } else if (s.startsWith('open-osek-patur')) {
+                  href = 'https://www.perfect1.co.il/open-osek-patur-online';
+                } else if (sourcePage && /^[a-z0-9-]+$/.test(s) && !['portal','main','manual','bot'].includes(s) && s !== 'הוספה ידנית') {
+                  href = `https://www.perfect1.co.il/${sourcePage}`;
                 }
-                if (sourcePage && sourcePage !== 'portal' && sourcePage !== 'main' && sourcePage !== 'הוספה ידנית') {
-                  const href = `https://perfect1.co.il/${sourcePage}`;
+
+                if (href) {
                   return (
                     <div className="flex items-center gap-2 mb-1">
                       <ExternalLink size={12} className="text-blue-400" />
                       <a href={href} target="_blank" rel="noopener noreferrer"
                         className="text-xs text-blue-600 hover:text-blue-800 hover:underline truncate max-w-[200px]"
                         title={href}>
-                        {sourcePage}
+                        {sourcePage || (() => { try { return new URL(href).pathname; } catch { return href; } })()}
                       </a>
                     </div>
                   );
