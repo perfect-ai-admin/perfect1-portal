@@ -1,7 +1,7 @@
 // Migrated from Base44: submitLeadToN8N
 // Saves a lead from a landing page form and routes it to configured notification channels
 
-import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, escapeHtml, checkRateLimit, validatePhone, validateEmail, sanitizeString, logSecurityEvent } from '../_shared/supabaseAdmin.ts';
 import { classifyIntent } from '../_shared/botIntentClassifier.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
@@ -46,10 +46,27 @@ Deno.serve(async (req) => {
       return errorResponse('Phone is required', 400, req);
     }
 
-    // Diagnostic: log environment variables
-    const BOT_START_FLOW_URL_CHECK = Deno.env.get('BOT_START_FLOW_URL');
-    console.log('🔧 DIAGNOSTIC: BOT_START_FLOW_URL =', BOT_START_FLOW_URL_CHECK ? '✓ SET' : '❌ NOT SET');
-    console.log('🔧 DIAGNOSTIC: BOT_START_FLOW_URL value:', BOT_START_FLOW_URL_CHECK || '(empty)');
+    // Rate limiting: max 5 submissions per IP per minute
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    if (!checkRateLimit(`lead:${clientIp}`, 5, 60_000)) {
+      logSecurityEvent('RATE_LIMIT_EXCEEDED', { ip: clientIp, endpoint: 'submitLeadToN8N' });
+      return errorResponse('Too many requests. Please wait a moment.', 429, req);
+    }
+
+    // Input validation
+    const cleanPhone = validatePhone(phone);
+    if (!cleanPhone) {
+      return errorResponse('Invalid phone number format', 400, req);
+    }
+
+    if (email && !validateEmail(email)) {
+      return errorResponse('Invalid email format', 400, req);
+    }
+
+    // Sanitize text inputs
+    const safeName = sanitizeString(name, 100);
+    const safeMessage = sanitizeString(message, 1000);
+    const safeBusinessName = sanitizeString(businessName, 200);
 
     // 1. Find the landing page by slug to get lead destination settings
     let landingPage: any = null;
@@ -79,25 +96,22 @@ Deno.serve(async (req) => {
 
     // Classify intent from page slug
     const intent = classifyIntent(pageSlug);
-    console.log(`Intent classified: ${intent.page_intent} / ${intent.flow_type} for slug=${pageSlug}`);
 
     const destPhone = landingPage?.destination_phone || '';
     const destEmail = landingPage?.destination_email || '';
 
-    console.log(`Lead channels: ${JSON.stringify(channels)}, phone: ${destPhone}, email: ${destEmail}`);
-
     // Build attribution notes (gclid/fbclid/landingUrl stored here until DB columns are added)
     const attrParts: string[] = [];
-    if (message) attrParts.push(message);
-    if (gclid) attrParts.push(`gclid=${gclid}`);
-    if (fbclid) attrParts.push(`fbclid=${fbclid}`);
-    if (landingUrl) attrParts.push(`landingUrl=${landingUrl}`);
+    if (safeMessage) attrParts.push(safeMessage);
+    if (gclid) attrParts.push(`gclid=${sanitizeString(gclid, 100)}`);
+    if (fbclid) attrParts.push(`fbclid=${sanitizeString(fbclid, 100)}`);
+    if (landingUrl) attrParts.push(`landingUrl=${sanitizeString(landingUrl, 500)}`);
     const notesField = attrParts.join(' | ');
 
     // 2. Save to leads table (CRM)
     const leadData: Record<string, any> = {
-      name: name || 'אתר',
-      phone: phone.trim(),
+      name: safeName || 'אתר',
+      phone: cleanPhone,
       email: email || '',
       notes: notesField,
       source_page: pageSlug || businessName || 'landing-page',
@@ -129,8 +143,27 @@ Deno.serve(async (req) => {
     if (leadErr) throw new Error(leadErr.message);
     console.log('Lead saved to CRM:', leadResult.id);
 
-    // N8N is triggered automatically by DB trigger (trg_notify_n8n_new_lead)
-    // No direct webhook call or WhatsApp acknowledgment needed here
+    // Send lead to n8n webhook (DB trigger was disabled, so we send directly)
+    try {
+      const n8nPayload = {
+        _event_type: 'new_lead',
+        lead_id: leadResult.id,
+        name: safeName || 'אתר',
+        phone: cleanPhone,
+        email: email || '',
+        page_slug: pageSlug || 'open-osek-patur',
+        service_type: intent.service_type || 'osek_patur',
+      };
+      await fetch('https://n8n.perfect-1.one/webhook/perfect-one-osek-patur', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(n8nPayload),
+        signal: AbortSignal.timeout(5000),
+      });
+      console.log('N8N webhook sent for lead:', leadResult.id);
+    } catch (e: any) {
+      console.warn('N8N webhook failed (non-blocking):', e.message);
+    }
 
     // 3. Also save crm_lead (per-user CRM view)
     try {
@@ -285,7 +318,7 @@ Deno.serve(async (req) => {
     }, 200, req);
 
   } catch (error) {
-    console.error('submitLeadToN8N error:', error);
-    return errorResponse((error as Error).message, 500, req);
+    console.error('submitLeadToN8N error:', (error as Error).message);
+    return errorResponse('An error occurred while processing your request', 500, req);
   }
 });
