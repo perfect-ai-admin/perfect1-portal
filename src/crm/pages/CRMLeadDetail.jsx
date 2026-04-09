@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import {
   ArrowRight, Phone, MessageCircle, StickyNote, ListTodo,
-  User, Clock, Tag, MapPin, Briefcase, Calendar, Trash2
+  User, Clock, Tag, MapPin, Briefcase, Calendar, Trash2, Send, X as XIcon
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -20,7 +20,7 @@ import TaskList from '../components/tasks/TaskList';
 import TaskForm from '../components/tasks/TaskForm';
 
 import DeleteLeadDialog from '../components/DeleteLeadDialog';
-import { useLeadDetail, useUpdateLeadStage, useAgents, useServiceCatalog } from '../hooks/useCRM';
+import { useLeadDetail, useUpdateLeadStage, useAgents, useServiceCatalog, useAddCommunication } from '../hooks/useCRM';
 import { PIPELINE_STAGES, LOST_REASON_CATEGORIES } from '../constants/pipeline';
 
 export default function CRMLeadDetail() {
@@ -30,12 +30,15 @@ export default function CRMLeadDetail() {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [showLostDialog, setShowLostDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showWhatsAppDialog, setShowWhatsAppDialog] = useState(false);
+  const [waMessage, setWaMessage] = useState('');
   const [pendingStage, setPendingStage] = useState(null);
 
   const { data, isLoading, error } = useLeadDetail(id);
   const updateStage = useUpdateLeadStage();
   const { data: agents = [] } = useAgents();
   const { data: services = [] } = useServiceCatalog();
+  const addComm = useAddCommunication();
 
   if (isLoading) {
     return (
@@ -106,6 +109,41 @@ export default function CRMLeadDetail() {
     window.open(`https://wa.me/${intlPhone}`, '_blank');
   };
 
+  const getIntlPhone = () => {
+    const phone = (lead.phone || '').replace(/\D/g, '');
+    return phone.startsWith('0') ? '972' + phone.slice(1) : phone;
+  };
+
+  const handleWaSend = () => {
+    if (!waMessage.trim()) return;
+    const encoded = encodeURIComponent(waMessage.trim());
+    window.open(`https://wa.me/${getIntlPhone()}?text=${encoded}`, '_blank');
+    setShowWhatsAppDialog(false);
+    setWaMessage('');
+  };
+
+  const handleWaSendAndSave = () => {
+    if (!waMessage.trim()) return;
+    const encoded = encodeURIComponent(waMessage.trim());
+    window.open(`https://wa.me/${getIntlPhone()}?text=${encoded}`, '_blank');
+    addComm.mutate(
+      {
+        lead_id: id,
+        channel: 'whatsapp',
+        direction: 'outbound',
+        content: waMessage.trim(),
+      },
+      {
+        onSuccess: () => {
+          toast.success('ההודעה נשמרה');
+          setShowWhatsAppDialog(false);
+          setWaMessage('');
+        },
+        onError: (err) => toast.error(`שגיאה בשמירה: ${err.message}`),
+      }
+    );
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
       {/* Back button */}
@@ -136,6 +174,11 @@ export default function CRMLeadDetail() {
           {lead.phone && (
             <Button size="sm" variant="outline" onClick={handleWhatsApp} className="text-green-600 border-green-300 hover:bg-green-50">
               <MessageCircle size={14} className="ml-1" /> WhatsApp
+            </Button>
+          )}
+          {lead.phone && (
+            <Button size="sm" variant="outline" onClick={() => setShowWhatsAppDialog(true)} className="text-green-700 border-green-300 hover:bg-green-50">
+              <Send size={14} className="ml-1" /> שלח הודעה
             </Button>
           )}
           <Button size="sm" variant="outline" onClick={() => setShowCommLogger(!showCommLogger)}>
@@ -313,6 +356,48 @@ export default function CRMLeadDetail() {
         lead={lead}
         onDeleted={() => navigate('/CRM')}
       />
+
+      {/* WhatsApp Send Dialog */}
+      {showWhatsAppDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowWhatsAppDialog(false)} />
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-slate-900">שלח הודעת WhatsApp</h3>
+              <button onClick={() => setShowWhatsAppDialog(false)} className="p-1 rounded hover:bg-slate-100">
+                <XIcon size={18} />
+              </button>
+            </div>
+            <p className="text-sm text-slate-500 mb-3">ל: {lead.name} ({lead.phone})</p>
+            <textarea
+              value={waMessage}
+              onChange={e => setWaMessage(e.target.value)}
+              placeholder="כתוב הודעה..."
+              rows={4}
+              className="w-full border border-slate-200 rounded-lg p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              autoFocus
+            />
+            <div className="flex gap-2 mt-4 justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleWaSend}
+                disabled={!waMessage.trim()}
+              >
+                <Send size={14} className="ml-1" /> שלח
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleWaSendAndSave}
+                disabled={!waMessage.trim() || addComm.isPending}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Send size={14} className="ml-1" /> {addComm.isPending ? 'שומר...' : 'שלח ושמור'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

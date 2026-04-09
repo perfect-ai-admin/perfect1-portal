@@ -149,10 +149,10 @@ export default function CRMLayout() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden h-8 w-8"
+              className="md:hidden h-10 w-10"
               onClick={() => setMobileOpen(true)}
             >
-              <Menu size={18} />
+              <Menu size={22} />
             </Button>
             <Breadcrumbs />
           </div>
@@ -176,7 +176,7 @@ export default function CRMLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-4 md:p-6">
+        <main className="flex-1 overflow-auto p-2 md:p-6">
           <Outlet />
         </main>
       </div>

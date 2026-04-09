@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Search, Download, ChevronDown, ChevronUp, UserPlus, Trash2,
-  MessageSquare, Save, X
+  MessageSquare, Save, X, Phone, MessageCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -301,8 +301,61 @@ export default function CRMLeads() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-lg overflow-auto">
+      {/* Mobile Card List */}
+      <div className="md:hidden space-y-2">
+        {filtered.map(lead => {
+          const phone = (lead.phone || '').replace(/\D/g, '');
+          const intlPhone = phone.startsWith('0') ? '972' + phone.slice(1) : phone;
+          return (
+            <div
+              key={lead.id}
+              className="bg-white border border-slate-200 rounded-lg p-3 cursor-pointer active:bg-slate-50"
+              onClick={() => navigate(`/CRM/leads/${lead.id}`)}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-sm text-slate-900 truncate">{lead.name || 'ללא שם'}</h3>
+                  <p className="text-xs text-slate-500 font-mono mt-0.5" dir="ltr">{lead.phone}</p>
+                </div>
+                <StatusBadge stage={lead.pipeline_stage} />
+              </div>
+              {lead.last_note && (
+                <p className="text-xs text-slate-400 truncate mb-2">{lead.last_note}</p>
+              )}
+              <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                {lead.phone && (
+                  <button
+                    onClick={e => { e.stopPropagation(); window.open(`tel:${lead.phone}`, '_self'); }}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 min-h-[44px] text-sm"
+                  >
+                    <Phone size={16} /> התקשר
+                  </button>
+                )}
+                {lead.phone && (
+                  <button
+                    onClick={e => { e.stopPropagation(); window.open(`https://wa.me/${intlPhone}`, '_blank'); }}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 min-h-[44px] text-sm"
+                  >
+                    <MessageCircle size={16} /> WhatsApp
+                  </button>
+                )}
+                <button
+                  onClick={e => { e.stopPropagation(); setDeleteTarget(lead); }}
+                  className="p-2 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div className="text-center py-8 text-slate-400">אין לידים מתאימים</div>
+        )}
+      </div>
+
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-white border border-slate-200 rounded-lg overflow-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">

@@ -134,9 +134,9 @@ export default function PipelineBoard() {
 
       {/* Kanban Board */}
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex-1 flex gap-3 overflow-x-auto pb-4">
+        <div className="flex-1 flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory md:snap-none scroll-smooth -mx-2 px-2">
           {OPEN_STAGES.map(stage => (
-            <div key={stage.slug} className="flex-shrink-0 w-[280px]">
+            <div key={stage.slug} className="flex-shrink-0 w-[75vw] md:w-[280px] snap-start">
               {/* Column Header */}
               <div
                 className="flex items-center justify-between px-3 py-2 rounded-t-lg mb-2"

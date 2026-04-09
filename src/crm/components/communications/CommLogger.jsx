@@ -54,12 +54,12 @@ export default function CommLogger({ leadId, clientId, onSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 bg-white border border-slate-200 rounded-lg p-4">
-      <div className="flex gap-3">
+    <form onSubmit={handleSubmit} className="space-y-3 bg-white border border-slate-200 rounded-lg p-3 md:p-4">
+      <div className="flex flex-col md:flex-row gap-3">
         <div className="flex-1">
           <label className="text-xs font-medium text-slate-500 mb-1 block">ערוץ</label>
           <Select value={channel} onValueChange={setChannel}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
             <SelectContent>
               {CHANNEL_OPTIONS.map(c => (
                 <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
@@ -71,7 +71,7 @@ export default function CommLogger({ leadId, clientId, onSuccess }) {
         <div className="flex-1">
           <label className="text-xs font-medium text-slate-500 mb-1 block">כיוון</label>
           <Select value={direction} onValueChange={setDirection}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="outbound">יוצא</SelectItem>
               <SelectItem value="inbound">נכנס</SelectItem>
@@ -82,7 +82,7 @@ export default function CommLogger({ leadId, clientId, onSuccess }) {
         <div className="flex-1">
           <label className="text-xs font-medium text-slate-500 mb-1 block">תוצאה</label>
           <Select value={outcome} onValueChange={setOutcome}>
-            <SelectTrigger><SelectValue placeholder="בחר..." /></SelectTrigger>
+            <SelectTrigger className="h-10"><SelectValue placeholder="בחר..." /></SelectTrigger>
             <SelectContent>
               {OUTCOME_OPTIONS.map(o => (
                 <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
@@ -97,7 +97,8 @@ export default function CommLogger({ leadId, clientId, onSuccess }) {
           value={content}
           onChange={e => setContent(e.target.value)}
           placeholder="תוכן השיחה / ההערה..."
-          rows={3}
+          rows={4}
+          className="min-h-[100px]"
         />
       </div>
 
@@ -129,8 +130,40 @@ export default function CommLogger({ leadId, clientId, onSuccess }) {
         />
       )}
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={addComm.isPending} className="bg-[#1E3A5F] hover:bg-[#152d4a]">
+      <div className="flex flex-wrap gap-2 justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={addComm.isPending || !content.trim()}
+          className="min-h-[44px]"
+          onClick={() => {
+            if (!content.trim()) { toast.error('יש להזין תוכן'); return; }
+            addComm.mutate(
+              {
+                lead_id: leadId || null,
+                client_id: clientId || null,
+                channel: 'note',
+                direction: 'internal',
+                content: content.trim(),
+                outcome: null,
+                follow_up_needed: false,
+                follow_up_date: null,
+                next_step: null,
+              },
+              {
+                onSuccess: () => {
+                  toast.success('הערה נשמרה');
+                  setContent('');
+                  onSuccess?.();
+                },
+                onError: (err) => toast.error(`שגיאה: ${err.message}`),
+              }
+            );
+          }}
+        >
+          הערה מהירה
+        </Button>
+        <Button type="submit" disabled={addComm.isPending} className="bg-[#1E3A5F] hover:bg-[#152d4a] min-h-[44px]">
           {addComm.isPending ? 'שומר...' : 'שמור'}
         </Button>
       </div>
