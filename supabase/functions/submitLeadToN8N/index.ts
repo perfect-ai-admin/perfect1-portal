@@ -109,7 +109,16 @@ Deno.serve(async (req) => {
     if (landingUrl) attrParts.push(`landingUrl=${sanitizeString(landingUrl, 500)}`);
     const notesField = attrParts.join(' | ');
 
-    // 2. Save to leads table (CRM)
+    // Sanitize questionnaire fields
+    const safeBusinessType = sanitizeString(businessType, 200);
+    const safeIdNumber = id_number ? id_number.replace(/[^0-9]/g, '').slice(0, 9) : '';
+    const safeIncome = sanitizeString(income, 50);
+    const safeIsEmployee = sanitizeString(is_employee, 10);
+    const safeSalary = sanitizeString(salary, 50);
+    const safeFileUrl = sanitizeString(file_url, 1000);
+    const safeLandingUrl = sanitizeString(landingUrl, 500);
+
+    // 2. Save to leads table (CRM) — including all questionnaire data
     const leadData: Record<string, any> = {
       name: safeName || 'אתר',
       phone: cleanPhone,
@@ -127,7 +136,27 @@ Deno.serve(async (req) => {
       contact_attempts: 0,
       sla_deadline: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
       priority: 'medium',
-      // Attribution data — saved to existing DB columns
+      // Questionnaire data
+      ...(safeIdNumber && { id_number: safeIdNumber }),
+      ...(safeBusinessName && { business_name: safeBusinessName }),
+      ...(safeBusinessType && { business_type: safeBusinessType }),
+      ...(safeIncome && { income: safeIncome }),
+      ...(safeIsEmployee && { is_employee: safeIsEmployee }),
+      ...(safeSalary && { salary: safeSalary }),
+      ...(safeFileUrl && { file_url: safeFileUrl }),
+      ...(safeLandingUrl && { landing_url: safeLandingUrl }),
+      // Store full questionnaire as JSONB for future reference
+      questionnaire_data: {
+        id_number: safeIdNumber || null,
+        business_name: safeBusinessName || null,
+        business_type: safeBusinessType || null,
+        income: safeIncome || null,
+        is_employee: safeIsEmployee || null,
+        salary: safeSalary || null,
+        file_url: safeFileUrl || null,
+        submitted_at: new Date().toISOString(),
+      },
+      // Attribution data
       ...(utm_source && { utm_source }),
       ...(utm_medium && { utm_medium }),
       ...(utm_campaign && { utm_campaign }),

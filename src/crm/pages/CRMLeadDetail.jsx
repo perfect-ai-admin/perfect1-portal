@@ -21,6 +21,8 @@ import CommTimeline from '../components/communications/CommTimeline';
 import CommLogger from '../components/communications/CommLogger';
 import WhatsAppConversation from '../components/communications/WhatsAppConversation';
 import PaymentStatusPanel from '../components/communications/PaymentStatusPanel';
+import QuestionnairePanel from '../components/shared/QuestionnairePanel';
+import DocumentsPanel from '../components/shared/DocumentsPanel';
 import TaskList from '../components/tasks/TaskList';
 import TaskForm from '../components/tasks/TaskForm';
 
@@ -313,6 +315,12 @@ export default function CRMLeadDetail() {
 
           {/* Payment status */}
           <PaymentStatusPanel leadId={id} />
+
+          {/* Questionnaire data */}
+          <QuestionnairePanel lead={lead} />
+
+          {/* Documents */}
+          <DocumentsPanel lead={lead} />
 
           {/* Agent selector */}
           <div className="bg-white rounded-lg border border-slate-200 p-4">

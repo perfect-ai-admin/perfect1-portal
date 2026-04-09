@@ -103,7 +103,7 @@ Deno.serve(async (req) => {
           .single();
 
         if (lead) {
-          // Create or update client record
+          // Create or update client record — copy all questionnaire data
           const { data: client } = await supabaseAdmin
             .from('clients')
             .upsert({
@@ -111,6 +111,14 @@ Deno.serve(async (req) => {
               name: lead.name,
               phone: lead.phone,
               email: lead.email,
+              id_number: lead.id_number || null,
+              business_name: lead.business_name || null,
+              business_type: lead.business_type || null,
+              income: lead.income || null,
+              is_employee: lead.is_employee || null,
+              salary: lead.salary || null,
+              file_url: lead.file_url || null,
+              questionnaire_data: lead.questionnaire_data || {},
               service_type: lead.service_type || product_type,
               monthly_fee: payment.amount,
               onboarding_status: 'not_started',
