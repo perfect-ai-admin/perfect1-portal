@@ -227,7 +227,7 @@ Deno.serve(async (req) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${resendApiKey}` },
                 body: JSON.stringify({
-                  from: 'Perfect One <no-reply@perfect1.co.il>',
+                  from: 'Perfect One <onboarding@resend.dev>',
                   to: ['yosi5919@gmail.com'],
                   subject: `💰 תשלום התקבל! ${lead.name} — ₪${payment.amount} — פתיחת תיק`,
                   html: `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;">

@@ -103,31 +103,45 @@ Deno.serve(async (req) => {
           .single();
 
         if (lead) {
-          // Create or update client record — copy all questionnaire data
-          const { data: client } = await supabaseAdmin
+          // Create client record — copy all questionnaire data
+          // Check if client already exists for this lead
+          const { data: existingClient } = await supabaseAdmin
             .from('clients')
-            .upsert({
-              lead_id: lead.id,
-              name: lead.name,
-              phone: lead.phone,
-              email: lead.email,
-              id_number: lead.id_number || null,
-              business_name: lead.business_name || null,
-              business_type: lead.business_type || null,
-              income: lead.income || null,
-              is_employee: lead.is_employee || null,
-              salary: lead.salary || null,
-              file_url: lead.file_url || null,
-              questionnaire_data: lead.questionnaire_data || {},
-              service_type: lead.service_type || product_type,
-              monthly_fee: payment.amount,
-              onboarding_status: 'not_started',
-              agent_id: lead.agent_id,
-              status: 'active',
-              source: 'sales_portal',
-            }, { onConflict: 'lead_id', ignoreDuplicates: false })
             .select('id')
-            .single();
+            .eq('lead_id', lead.id)
+            .maybeSingle();
+
+          let client = existingClient;
+          if (!existingClient) {
+            const { data: newClient, error: clientErr } = await supabaseAdmin
+              .from('clients')
+              .insert({
+                lead_id: lead.id,
+                name: lead.name,
+                phone: lead.phone,
+                email: lead.email,
+                id_number: lead.id_number || null,
+                business_name: lead.business_name || null,
+                business_type: lead.business_type || null,
+                income: lead.income || null,
+                is_employee: lead.is_employee || null,
+                salary: lead.salary || null,
+                file_url: lead.file_url || null,
+                questionnaire_data: lead.questionnaire_data || {},
+                service_type: lead.service_type || product_type,
+                monthly_fee: payment.amount,
+                onboarding_status: 'not_started',
+                agent_id: lead.agent_id,
+                status: 'active',
+                source: 'sales_portal',
+              })
+              .select('id')
+              .single();
+            if (clientErr) {
+              console.error('Client creation failed:', clientErr.message);
+            }
+            client = newClient;
+          }
 
           if (client) {
             // Link client back to lead
