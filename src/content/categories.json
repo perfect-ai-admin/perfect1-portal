@@ -9,7 +9,7 @@
       "metaDescription": "מדריכים מקיפים לעוסק פטור: פתיחה, ניהול, מיסים, זכויות וחובות. כל המידע במקום אחד עם אפשרות לליווי אישי.",
       "icon": "FileText",
       "color": "teal",
-      "stats": { "articles": 10, "guides": 6 }
+      "stats": { "articles": 11, "guides": 6 }
     },
     {
       "id": "osek-murshe",
@@ -20,7 +20,7 @@
       "metaDescription": "כל מה שצריך לדעת על עוסק מורשה: פתיחה, מע\"מ, מס הכנסה, דוחות וחשבוניות. מדריכים + ליווי אישי.",
       "icon": "Briefcase",
       "color": "blue",
-      "stats": { "articles": 11, "guides": 6 }
+      "stats": { "articles": 14, "guides": 6 }
     },
     {
       "id": "hevra-bam",
@@ -31,7 +31,7 @@
       "metaDescription": "מדריכים להקמת חברה בע\"מ: רישום, ניהול, דוחות, בעלי מניות ושכר. כל המידע + ליווי מקצועי.",
       "icon": "Building2",
       "color": "indigo",
-      "stats": { "articles": 7, "guides": 6 }
+      "stats": { "articles": 8, "guides": 6 }
     },
     {
       "id": "sgirat-tikim",

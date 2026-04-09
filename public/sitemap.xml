@@ -176,7 +176,35 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Hevra BAM Articles (7) -->
+  <!-- New Osek Murshe Articles (3) -->
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/tax-deductions</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/income-tax</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/osek-murshe/bituach-leumi</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- New Osek Patur Article (1) -->
+  <url>
+    <loc>https://www.perfect1.co.il/osek-patur/bituach-leumi</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Hevra BAM Articles (7 + 1 new) -->
   <url>
     <loc>https://www.perfect1.co.il/hevra-bam/how-to-open</loc>
     <lastmod>2026-04-08</lastmod>
@@ -216,6 +244,12 @@
   <url>
     <loc>https://www.perfect1.co.il/hevra-bam/faq</loc>
     <lastmod>2026-04-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/hevra-bam/taxes</loc>
+    <lastmod>2026-04-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

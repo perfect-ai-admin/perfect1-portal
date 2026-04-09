@@ -16,7 +16,10 @@
   "articles": [
     { "slug": "how-to-open", "title": "איך פותחים עוסק מורשה — מדריך מלא 2026", "readTime": 14 },
     { "slug": "cost", "title": "כמה עולה עוסק מורשה? פירוט עלויות מלא 2026", "readTime": 10 },
-    { "slug": "vat-guide", "title": "מדריך מע\"מ לעוסק מורשה — כל מה שצריך לדעת", "readTime": 12 }
+    { "slug": "vat-guide", "title": "מדריך מע\"מ לעוסק מורשה — כל מה שצריך לדעת", "readTime": 12 },
+    { "slug": "tax-deductions", "title": "הוצאות מוכרות עוסק מורשה — רשימה מלאה 2026", "readTime": 12 },
+    { "slug": "income-tax", "title": "מס הכנסה עוסק מורשה — מדרגות, מקדמות ודיווח 2026", "readTime": 11 },
+    { "slug": "bituach-leumi", "title": "ביטוח לאומי עוסק מורשה — תשלומים וזכויות 2026", "readTime": 10 }
   ],
   "faq": [
     {
