@@ -30,7 +30,7 @@ const SectionText = ({ section }) => {
       {section.title && <Tag className={`${className} mb-4`}>{section.title}</Tag>}
       {/* answerBlock: direct answer paragraph for featured snippets (40-60 words) */}
       {section.answerBlock && (
-        <p className="portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
+        <p className="answer-block portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
           {section.answerBlock}
         </p>
       )}
@@ -77,7 +77,7 @@ const SectionSteps = ({ section }) => {
     <div id={section.id} className="scroll-mt-24">
       {section.title && <h2 className="portal-h2 mb-4 sm:mb-6">{section.title}</h2>}
       {section.answerBlock && (
-        <p className="portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
+        <p className="answer-block portal-body font-medium text-portal-navy bg-portal-bg border-r-4 border-portal-teal px-4 py-3 rounded-lg mb-4">
           {section.answerBlock}
         </p>
       )}

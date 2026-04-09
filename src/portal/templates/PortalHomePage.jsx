@@ -21,10 +21,10 @@ import { PORTAL_CTA } from '../config/navigation';
 const POPULAR_ARTICLES = [
   { title: 'איך פותחים עוסק פטור — מדריך מלא', description: 'שלב אחר שלב: מה צריך, כמה עולה, וכמה זמן לוקח', href: '/osek-patur/how-to-open', readTime: 12, category: 'עוסק פטור' },
   { title: 'עוסק פטור או מורשה — מה מתאים לך?', description: 'השוואה מלאה עם יתרונות וחסרונות של כל אופציה', href: '/compare/osek-patur-vs-murshe', readTime: 10, category: 'השוואות' },
-  { title: 'כמה עולה עוסק מורשה? כל העלויות', description: 'פירוט מלא של עלויות פתיחה, הוצאות שוטפות ומחיר רואה חשבון', href: '/osek-murshe/cost', readTime: 8, category: 'עוסק מורשה' },
-  { title: 'איך סוגרים עוסק פטור', description: 'תהליך הסגירה מול מס הכנסה, מע"מ וביטוח לאומי', href: '/sgirat-tikim/close-osek-patur', readTime: 9, category: 'סגירת תיקים' },
+  { title: 'הוצאות מוכרות עוסק מורשה — רשימה מלאה', description: 'כל ההוצאות שאפשר לנכות, אחוזי הכרה וטיפים לחיסכון במס', href: '/osek-murshe/tax-deductions', readTime: 12, category: 'עוסק מורשה' },
+  { title: 'מס הכנסה עוסק מורשה — מדרגות ודיווח', description: 'מדרגות מס, מקדמות, נקודות זיכוי וטיפים להפחתת מס 2026', href: '/osek-murshe/income-tax', readTime: 11, category: 'עוסק מורשה' },
   { title: 'פתיחת חברה בע"מ — המדריך המלא', description: 'כל מה שצריך לדעת לפני שפותחים חברה', href: '/hevra-bam/how-to-open', readTime: 15, category: 'חברה בע"מ' },
-  { title: 'מדריך מיסוי לעסקים — כל מה שצריך', description: 'מס הכנסה, מע"מ, ביטוח לאומי והוצאות מוכרות — עדכני ל-2026', href: '/guides/taxation', readTime: 11, category: 'מדריכים' },
+  { title: 'מיסוי חברה בע"מ — מס חברות ודיבידנד', description: 'מס חברות 23%, דיבידנד, משכורת מול דיבידנד ותכנון מס חכם', href: '/hevra-bam/taxes', readTime: 12, category: 'חברה בע"מ' },
 ];
 
 const HOME_FAQ = [
@@ -70,7 +70,7 @@ function PortalHomePage() {
                 <br />
                 <span className="text-portal-teal">מדריכים, מידע וליווי אישי</span>
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light">
                 כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד.
               </p>
               {/* Hero Lead Form */}
@@ -81,7 +81,7 @@ function PortalHomePage() {
                   ctaText="לייעוץ חינם עם רו״ח"
                 />
                 <div className="flex items-center justify-center gap-4 mt-3">
-                  <span className="text-xs text-gray-400">או:</span>
+                  <span className="text-xs text-gray-500">או:</span>
                   <a href={`tel:${PORTAL_CTA.phone}`} className="inline-flex items-center gap-1.5 text-portal-teal hover:underline text-sm font-medium">
                     <Phone className="w-4 h-4" />
                     {PORTAL_CTA.phone}
@@ -100,7 +100,7 @@ function PortalHomePage() {
         <section className="py-16 md:py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="portal-h2 text-center mb-3">באיזה נושא אתה מחפש מידע?</h2>
-            <p className="text-center text-gray-500 text-lg mb-10">בחר קטגוריה כדי לקבל מדריכים, מידע והמלצות</p>
+            <p className="text-center text-gray-600 text-lg mb-10">בחר קטגוריה כדי לקבל מדריכים, מידע והמלצות</p>
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
               {(categories || []).slice(0, 4).map((cat) => (
                 <MemoizedCategoryCard
@@ -141,7 +141,7 @@ function PortalHomePage() {
         <section className="py-16 md:py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="portal-h2 text-center mb-3">מדריכים פופולריים</h2>
-            <p className="text-center text-gray-500 text-lg mb-10">המאמרים הכי מבוקשים באתר</p>
+            <p className="text-center text-gray-600 text-lg mb-10">המאמרים הכי מבוקשים באתר</p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {POPULAR_ARTICLES.map((article, i) => (
                 <MemoizedArticleCard key={i} {...article} />

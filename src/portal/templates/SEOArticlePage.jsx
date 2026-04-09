@@ -69,6 +69,8 @@ export default function SEOArticlePage({ category }) {
         canonical={`/${category}/${slug}`}
         keywords={content.keywords?.join(', ')}
         type="article"
+        publishDate={content.publishDate}
+        updatedDate={content.updatedDate}
       />
       <SchemaMarkup
         type="article"
@@ -88,7 +90,7 @@ export default function SEOArticlePage({ category }) {
               {content.heroTitle || content.title}
             </h1>
             {content.heroSubtitle && (
-              <p className="text-xl text-gray-500 leading-relaxed">{content.heroSubtitle}</p>
+              <p className="hero-subtitle text-xl text-gray-600 leading-relaxed">{content.heroSubtitle}</p>
             )}
             <AuthorBlock
               author={content.author}
@@ -123,7 +125,7 @@ export default function SEOArticlePage({ category }) {
                       variant="compact"
                       ctaText="לייעוץ חינם עם רו״ח"
                     />
-                    <p className="text-xs text-gray-400 text-center mt-2">ללא התחייבות</p>
+                    <p className="text-xs text-gray-500 text-center mt-2">ללא התחייבות</p>
                   </div>
                 </div>
               </aside>

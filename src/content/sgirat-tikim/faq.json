@@ -75,6 +75,7 @@
       "id": "process-questions",
       "type": "faq",
       "title": "שאלות על התהליך והבירוקרטיה",
+      "description": "לפירוט מלא של תהליך הסגירה מול כל הרשויות, ראו את [המדריך לסגירת תיקים מול רשויות המס](/sgirat-tikim/authorities). על השלכות אי-הסגירה, ראו [חובות והשלכות סגירת עסק](/sgirat-tikim/consequences).",
       "items": [
         {
           "question": "אילו טפסים צריך למלא לסגירת עסק?",

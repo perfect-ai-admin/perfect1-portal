@@ -1,0 +1,34 @@
+# Perfect1.co.il — פרפקט וואן
+
+> פורטל מידע עסקי ישראלי — מדריכים לפתיחה, ניהול וסגירת עסקים בישראל.
+
+## מה האתר הזה
+
+פרפקט וואן (perfect1.co.il) הוא פורטל מידע עסקי בעברית המספק מדריכים מקיפים, מעודכנים ואמינים לבעלי עסקים בישראל. האתר מכסה את כל סוגי העסקים: עוסק פטור, עוסק מורשה, חברה בע"מ, וסגירת עסקים.
+
+## קטגוריות תוכן
+
+- [עוסק פטור](https://www.perfect1.co.il/osek-patur): מדריכים לפתיחה, ניהול, מיסוי וזכויות של עוסק פטור בישראל
+- [עוסק מורשה](https://www.perfect1.co.il/osek-murshe): מדריכים מקיפים לעוסק מורשה — מע"מ, מס הכנסה, ביטוח לאומי, הוצאות מוכרות
+- [חברה בע"מ](https://www.perfect1.co.il/hevra-bam): הקמה, ניהול, מיסוי ודוחות של חברה בע"מ
+- [סגירת תיקים](https://www.perfect1.co.il/sgirat-tikim): סגירת עסק מול מס הכנסה, מע"מ וביטוח לאומי
+- [מדריכים](https://www.perfect1.co.il/guides): מדריכים כלליים לפתיחת עסק, פרילנסרים, מיסוי וכלים
+
+## מאמרים מרכזיים
+
+- [פתיחת עוסק פטור](https://www.perfect1.co.il/osek-patur/how-to-open)
+- [פתיחת עוסק מורשה](https://www.perfect1.co.il/osek-murshe/how-to-open)
+- [פתיחת חברה בע"מ](https://www.perfect1.co.il/hevra-bam/how-to-open)
+- [הוצאות מוכרות עוסק מורשה](https://www.perfect1.co.il/osek-murshe/tax-deductions)
+- [מס הכנסה עוסק מורשה](https://www.perfect1.co.il/osek-murshe/income-tax)
+- [ביטוח לאומי עוסק מורשה](https://www.perfect1.co.il/osek-murshe/bituach-leumi)
+- [מיסוי חברה בע"מ](https://www.perfect1.co.il/hevra-bam/taxes)
+- [עוסק פטור או מורשה — השוואה](https://www.perfect1.co.il/compare/osek-patur-vs-murshe)
+
+## מידע על האתר
+
+- שפה: עברית
+- מיקוד גאוגרפי: ישראל
+- תחום: מידע עסקי, מיסוי, חשבונאות, רגולציה עסקית
+- עדכון: מאמרים מתעדכנים באופן שוטף עם מספרים ותעריפים לשנת 2026
+- מותג: פרפקט וואן | Perfect1

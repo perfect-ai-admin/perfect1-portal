@@ -1,39 +1,77 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-const generateArticleSchema = (data) => ({
-  '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: data.heroTitle || data.title,
-  description: data.metaDescription,
-  datePublished: data.publishDate,
-  dateModified: data.updatedDate || data.publishDate,
-  author: {
-    '@type': 'Person',
-    name: data.author?.name || 'צוות פרפקט וואן',
-    url: 'https://www.perfect1.co.il/about',
-  },
-  publisher: {
-    '@type': 'Organization',
-    name: 'פרפקט וואן',
-    url: 'https://www.perfect1.co.il',
-    logo: {
+const generateArticleSchema = (data) => {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: data.heroTitle || data.title,
+    description: data.metaDescription,
+    datePublished: data.publishDate,
+    dateModified: data.updatedDate || data.publishDate,
+    author: {
+      '@type': 'Organization',
+      name: 'פרפקט וואן',
+      url: 'https://www.perfect1.co.il',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'פרפקט וואן',
+      url: 'https://www.perfect1.co.il',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.perfect1.co.il/og-image.png',
+      },
+    },
+    image: {
       '@type': 'ImageObject',
       url: 'https://www.perfect1.co.il/og-image.png',
+      width: 1200,
+      height: 630,
     },
-  },
-  image: {
-    '@type': 'ImageObject',
-    url: 'https://www.perfect1.co.il/og-image.png',
-    width: 1200,
-    height: 630,
-  },
-  mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': data.canonical,
-  },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': data.canonical,
+    },
+    inLanguage: 'he',
+    keywords: Array.isArray(data.keywords) ? data.keywords.join(', ') : data.keywords,
+  };
+
+  // Speakable for voice search / AI reading (AEO)
+  const firstSection = data.sections?.find(s => s.answerBlock);
+  if (firstSection) {
+    schema.speakable = {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['.answer-block', 'h1', '.hero-subtitle'],
+    };
+  }
+
+  // about — entity linking for GEO
+  if (data.keywords?.length > 0) {
+    schema.about = data.keywords.slice(0, 3).map(kw => ({
+      '@type': 'Thing',
+      name: kw,
+    }));
+  }
+
+  return schema;
+};
+
+const generateWebSiteSchema = () => ({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'פרפקט וואן',
+  alternateName: 'Perfect1',
+  url: 'https://www.perfect1.co.il',
   inLanguage: 'he',
-  keywords: Array.isArray(data.keywords) ? data.keywords.join(', ') : data.keywords,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://www.perfect1.co.il/?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
 });
 
 const generateHowToSchema = (data, steps) => ({
@@ -82,8 +120,9 @@ const generateOrganizationSchema = () => ({
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'פרפקט וואן',
+  alternateName: 'Perfect1',
   url: 'https://www.perfect1.co.il',
-  description: 'ליווי מקצועי לפתיחה, ניהול וסגירת עסקים בישראל',
+  description: 'פורטל מידע עסקי מוביל בישראל — מדריכים מקצועיים לפתיחה, ניהול ומיסוי עסקים. ליווי אישי עם רואי חשבון.',
   logo: {
     '@type': 'ImageObject',
     url: 'https://www.perfect1.co.il/og-image.png',
@@ -92,12 +131,27 @@ const generateOrganizationSchema = () => ({
     '@type': 'Country',
     name: 'Israel',
   },
+  knowsAbout: [
+    'פתיחת עוסק פטור',
+    'פתיחת עוסק מורשה',
+    'הקמת חברה בע"מ',
+    'סגירת עסק בישראל',
+    'מיסוי עצמאים',
+    'מס הכנסה',
+    'ביטוח לאומי לעצמאים',
+    'הוצאות מוכרות',
+    'חשבונאות לעסקים קטנים',
+  ],
   serviceType: ['פתיחת עוסק פטור', 'פתיחת עוסק מורשה', 'הקמת חברה בע"מ', 'סגירת תיקים'],
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
+    telephone: '+972-50-227-7087',
     availableLanguage: ['Hebrew', 'English'],
   },
+  sameAs: [
+    'https://wa.me/972502277087',
+  ],
 });
 
 export default function SchemaMarkup({ type, data = {}, breadcrumbs = [], faqItems = [], howToSteps = [] }) {
@@ -109,6 +163,7 @@ export default function SchemaMarkup({ type, data = {}, breadcrumbs = [], faqIte
 
   if (type === 'home') {
     schemas.push(generateOrganizationSchema());
+    schemas.push(generateWebSiteSchema());
   }
 
   if (type === 'category' && data.title) {
@@ -120,6 +175,22 @@ export default function SchemaMarkup({ type, data = {}, breadcrumbs = [], faqIte
       url: data.canonical || data.url,
       inLanguage: 'he',
     });
+
+    // ItemList schema for category articles (GEO — helps AI understand content structure)
+    if (data.articles?.length > 0) {
+      schemas.push({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: data.title,
+        numberOfItems: data.articles.length,
+        itemListElement: data.articles.map((article, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: article.title,
+          url: `https://www.perfect1.co.il/${data.slug || data.id}/${article.slug}`,
+        })),
+      });
+    }
   }
 
   // HowTo schema — for step-by-step articles (can coexist with FAQ schema)

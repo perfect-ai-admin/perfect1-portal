@@ -1,5 +1,30 @@
 # robots.txt — www.perfect1.co.il
-# Updated: 2026-04-07
+# Updated: 2026-04-09
+
+# AI Crawlers — allow for GEO (Generative Engine Optimization)
+User-agent: GPTBot
+Allow: /osek-patur
+Allow: /osek-murshe
+Allow: /hevra-bam
+Allow: /sgirat-tikim
+Allow: /guides
+Allow: /compare
+Allow: /blog
+Disallow: /CRM
+Disallow: /Admin
+Disallow: /login
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
 
 User-agent: *
 Allow: /

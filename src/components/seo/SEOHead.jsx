@@ -13,6 +13,8 @@ export default function SEOHead({
   keywords,
   noindex = false,
   type = 'website',
+  publishDate,
+  updatedDate,
 }) {
   const siteUrl = 'https://www.perfect1.co.il';
   const fullCanonical = canonical
@@ -29,6 +31,11 @@ export default function SEOHead({
       <link rel="canonical" href={fullCanonical} />
       {noindex && <meta name="robots" content="noindex, nofollow" />}
 
+      {/* Language / hreflang */}
+      <html lang="he" dir="rtl" />
+      <link rel="alternate" hrefLang="he" href={fullCanonical} />
+      <link rel="alternate" hrefLang="x-default" href={fullCanonical} />
+
       {/* Open Graph */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -37,6 +44,14 @@ export default function SEOHead({
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content="he_IL" />
       <meta property="og:image" content={ogImage || defaultOgImage} />
+
+      {/* Article dates for OG (AEO signal) */}
+      {type === 'article' && publishDate && (
+        <meta property="article:published_time" content={publishDate} />
+      )}
+      {type === 'article' && updatedDate && (
+        <meta property="article:modified_time" content={updatedDate} />
+      )}
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
