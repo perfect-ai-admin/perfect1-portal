@@ -93,13 +93,76 @@ Deno.serve(async (req) => {
       console.log(`One-time purchase fulfilled: type=${product_type}, payment=${payment_id}`);
     }
 
+    // === CRM Integration: create client from lead if payment linked ===
+    if (payment.lead_id) {
+      try {
+        const { data: lead } = await supabaseAdmin
+          .from('leads')
+          .select('*')
+          .eq('id', payment.lead_id)
+          .single();
+
+        if (lead) {
+          // Create or update client record
+          const { data: client } = await supabaseAdmin
+            .from('clients')
+            .upsert({
+              lead_id: lead.id,
+              name: lead.name,
+              phone: lead.phone,
+              email: lead.email,
+              service_type: lead.service_type || product_type,
+              monthly_fee: payment.amount,
+              onboarding_status: 'not_started',
+              agent_id: lead.agent_id,
+              status: 'active',
+              source: 'sales_portal',
+            }, { onConflict: 'lead_id', ignoreDuplicates: false })
+            .select('id')
+            .single();
+
+          if (client) {
+            // Link client back to lead
+            await supabaseAdmin.from('leads').update({
+              client_id: client.id,
+            }).eq('id', lead.id);
+
+            console.log(`Client ${client.id} created from lead ${lead.id}`);
+          }
+
+          // Trigger n8n post-purchase webhook (non-blocking)
+          try {
+            await fetch('https://n8n.perfect-1.one/webhook/perfect-one-post-purchase', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                _event_type: 'payment_confirmed',
+                lead_id: lead.id,
+                client_id: client?.id,
+                phone: lead.phone,
+                name: lead.name,
+                service_type: lead.service_type || product_type,
+                payment_id,
+                amount: payment.amount,
+              }),
+              signal: AbortSignal.timeout(5000),
+            });
+          } catch (e: any) {
+            console.warn('n8n post-purchase webhook failed:', e.message);
+          }
+        }
+      } catch (e: any) {
+        console.error('CRM client creation failed:', e.message);
+      }
+    }
+
     // Log activity
     await supabaseAdmin.from('activity_log').insert({
-      customer_id,
+      customer_id: customer_id || null,
       action: 'payment_fulfilled',
       entity_type: 'payment',
       entity_id: payment_id,
-      metadata: { product_type, product_id, amount: payment.amount, source: trigger_source }
+      metadata: { product_type, product_id, amount: payment.amount, source: trigger_source, lead_id: payment.lead_id }
     });
 
     // Send confirmation email via Resend

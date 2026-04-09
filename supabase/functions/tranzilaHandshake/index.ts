@@ -1,19 +1,20 @@
 // tranzilaHandshake — Creates Tranzila handshake token for public payment pages (no auth required)
+// Now also creates a payment record if lead_id is provided
 
-import { getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
+import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
-    const { sum } = await req.json();
+    const { sum, lead_id } = await req.json();
 
     if (typeof sum !== 'number' || sum <= 0) {
       return errorResponse('Invalid sum', 400, req);
     }
 
     const supplier = Deno.env.get('TRANZILA_TERMINAL_NAME');
-    const tranzilaPW = Deno.env.get('TRANZILA_TERMINAL_PASSWORD') || '';
+    const tranzilaPW = Deno.env.get('TRANZILA_TERMINAL_PASSWORd') || Deno.env.get('TRANZILA_TERMINAL_PASSWORD') || '';
 
     if (!supplier) return errorResponse('Terminal not configured', 500, req);
 
@@ -37,7 +38,41 @@ Deno.serve(async (req) => {
 
     const thtk = match[1].trim();
 
-    return jsonResponse({ thtk, supplier, sum }, 200, req);
+    // If lead_id provided, create payment record and return paymentId + notifyUrl
+    let paymentId = null;
+    let notifyUrl = '';
+
+    if (lead_id) {
+      const { data: payment, error: payErr } = await supabaseAdmin
+        .from('payments')
+        .insert({
+          lead_id,
+          product_type: 'osek_patur',
+          product_name: 'פתיחת עוסק פטור אונליין',
+          amount: sum,
+          currency: 'ILS',
+          payment_method: 'tranzila',
+          status: 'pending',
+          source: 'sales_portal',
+        })
+        .select('id')
+        .single();
+
+      if (!payErr && payment) {
+        paymentId = payment.id;
+
+        // Update lead with payment reference
+        await supabaseAdmin.from('leads').update({
+          payment_status: 'pending',
+          payment_id: payment.id,
+        }).eq('id', lead_id);
+      }
+
+      const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+      notifyUrl = `${supabaseUrl}/functions/v1/tranzilaConfirmPayment`;
+    }
+
+    return jsonResponse({ thtk, supplier, sum, paymentId, notifyUrl }, 200, req);
   } catch (error) {
     console.error('tranzilaHandshake error:', (error as Error).message);
     return errorResponse('Internal error', 500, req);

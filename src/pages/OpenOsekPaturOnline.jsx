@@ -132,29 +132,86 @@ export default function OpenOsekPaturOnline() {
     set('file', f);
   }, []);
 
-  // ---- Tranzila Handshake via N8N proxy (Step 4) ----
+  // Lead ID + Payment ID created before payment
+  const [leadId, setLeadId] = useState(null);
+  const [paymentId, setPaymentId] = useState(null);
+  const [notifyUrl, setNotifyUrl] = useState('');
+
+  // ---- Create Lead + Payment + Tranzila Handshake (Step 4) ----
   useEffect(() => {
     if (step === 4 && !thtk && !paymentLoading && !paymentError) {
       setPaymentLoading(true);
-      fetch('https://n8n.perfect-1.one/webhook/tranzila-handshake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sum: 299 }),
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.thtk) {
-            setThtk(data.thtk);
-            setTranzilaSupplier(data.supplier);
-          } else {
-            throw new Error('No thtk in response');
+      (async () => {
+        try {
+          // Step A: Create lead in CRM via submitLeadToN8N
+          let fileUrl = '';
+          if (form.file) {
+            const fileName = `${crypto.randomUUID()}_${form.file.name}`;
+            const { error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, form.file, {
+              contentType: form.file.type,
+            });
+            if (!uploadErr) {
+              const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
+              fileUrl = urlData.publicUrl;
+            }
           }
-        })
-        .catch((err) => {
-          console.error('Handshake failed:', err);
+
+          const leadResult = await invokeFunction('submitLeadToN8N', {
+            name: form.name,
+            phone,
+            email: form.email,
+            pageSlug: 'open-osek-patur-online',
+            businessName: form.businessName,
+            businessType: form.businessType,
+            id_number: form.idNumber,
+            income: form.income,
+            is_employee: form.isEmployee,
+            salary: form.salary,
+            file_url: fileUrl,
+            message: 'ממתין לתשלום - 299 ₪',
+            gclid,
+            utm_source: utmSource,
+            utm_campaign: utmCampaign,
+            referrer,
+            landingUrl: window.location.href,
+          });
+
+          const createdLeadId = leadResult?.leadId || leadResult?.lead_id || leadResult?.id || null;
+          if (createdLeadId) setLeadId(createdLeadId);
+
+          // Step B: Create payment record + get Tranzila handshake
+          const handshakeResult = await invokeFunction('tranzilaHandshake', {
+            sum: 299,
+            lead_id: createdLeadId,
+          });
+
+          if (handshakeResult?.thtk) {
+            setThtk(handshakeResult.thtk);
+            setTranzilaSupplier(handshakeResult.supplier);
+            if (handshakeResult.paymentId) setPaymentId(handshakeResult.paymentId);
+            if (handshakeResult.notifyUrl) setNotifyUrl(handshakeResult.notifyUrl);
+          } else {
+            // Fallback: old n8n handshake if edge function doesn't support lead_id yet
+            const n8nRes = await fetch('https://n8n.perfect-1.one/webhook/tranzila-handshake', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ sum: 299 }),
+            });
+            const n8nData = await n8nRes.json();
+            if (n8nData.thtk) {
+              setThtk(n8nData.thtk);
+              setTranzilaSupplier(n8nData.supplier);
+            } else {
+              throw new Error('No thtk from handshake');
+            }
+          }
+        } catch (err) {
+          console.error('Setup failed:', err);
           setPaymentError('שגיאה בטעינת טופס התשלום. נסו לרענן את הדף.');
-        })
-        .finally(() => setPaymentLoading(false));
+        } finally {
+          setPaymentLoading(false);
+        }
+      })();
     }
   }, [step]);
 
@@ -189,41 +246,17 @@ export default function OpenOsekPaturOnline() {
     setPaymentSuccess(true);
 
     try {
-      // Upload file to Supabase Storage
-      let fileUrl = '';
-      if (form.file) {
-        const fileName = `${crypto.randomUUID()}_${form.file.name}`;
-        const { error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, form.file, {
-          contentType: form.file.type,
-        });
-        if (!uploadErr) {
-          const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
-          fileUrl = urlData.publicUrl;
-        }
+      // Confirm payment via our edge function (links to lead, triggers post-purchase flow)
+      const txId = txData.ConfirmationCode || txData.confirmationCode || txData.index || '';
+      if (paymentId) {
+        await invokeFunction('tranzilaConfirmPayment', {
+          payment_id: paymentId,
+          transaction_id: txId,
+          tranzila_response: '000',
+        }).catch(err => console.warn('Client-side confirm (backup):', err));
       }
-
-      // Submit lead with payment info
-      await invokeFunction('submitLeadToN8N', {
-        name: form.name,
-        phone,
-        email: form.email,
-        pageSlug: 'open-osek-patur-online',
-        businessName: form.businessName,
-        businessType: form.businessType,
-        id_number: form.idNumber,
-        income: form.income,
-        is_employee: form.isEmployee,
-        salary: form.salary,
-        file_url: fileUrl,
-        message: `תשלום 299 ₪ - ${txData.ConfirmationCode || txData.confirmationCode || ''}`,
-        gclid,
-        utm_source: utmSource,
-        utm_campaign: utmCampaign,
-        referrer,
-        landingUrl: window.location.href,
-      });
     } catch (err) {
-      console.error('Lead submission after payment failed:', err);
+      console.error('Payment confirmation failed:', err);
     }
 
     // Tracking
@@ -606,6 +639,8 @@ export default function OpenOsekPaturOnline() {
                         <input type="hidden" name="phone" value={phone} />
                         <input type="hidden" name="company" value={form.businessName} />
                         <input type="hidden" name="pdesc" value="פתיחת עוסק פטור אונליין" />
+                        {paymentId && <input type="hidden" name="o_cred_oid" value={paymentId} />}
+                        {notifyUrl && <input type="hidden" name="notify_url_address" value={notifyUrl} />}
                       </form>
 
                       {/* Desktop: show iframe inline. Mobile: opens in new tab */}

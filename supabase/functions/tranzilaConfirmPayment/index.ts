@@ -83,6 +83,37 @@ Deno.serve(async (req) => {
 
     if (payErr || !payment) return errorResponse('Payment not found', 404, req);
 
+    // Fallback: if payment has no lead_id, try to find lead by customer phone
+    if (!payment.lead_id && payment.customer_id) {
+      try {
+        const { data: customer } = await supabaseAdmin
+          .from('customers')
+          .select('phone_e164, phone')
+          .eq('id', payment.customer_id)
+          .single();
+        const custPhone = customer?.phone_e164 || customer?.phone;
+        if (custPhone) {
+          const cleanPhone = custPhone.replace(/[^0-9]/g, '');
+          const normalizedPhone = cleanPhone.startsWith('972') ? cleanPhone : cleanPhone.startsWith('0') ? '972' + cleanPhone.substring(1) : cleanPhone;
+          const { data: matchedLead } = await supabaseAdmin
+            .from('leads')
+            .select('id')
+            .or(`phone.eq.${normalizedPhone},phone.eq.0${normalizedPhone.substring(3)}`)
+            .eq('source', 'sales_portal')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          if (matchedLead) {
+            payment.lead_id = matchedLead.id;
+            await supabaseAdmin.from('payments').update({ lead_id: matchedLead.id }).eq('id', payment_id);
+            console.log(`Linked payment ${payment_id} to lead ${matchedLead.id} via phone fallback`);
+          }
+        }
+      } catch (e: any) {
+        console.warn('Phone-based lead lookup failed:', e.message);
+      }
+    }
+
     const isSuccess = tranzilaResponse === '000' || tranzilaResponse === '0' || tranzilaResponse === 0;
 
     if (isSuccess) {
@@ -131,6 +162,113 @@ Deno.serve(async (req) => {
       }
 
       console.log(`Payment ${payment_id} confirmed successfully`);
+
+      // === CRM Integration: update lead if payment is linked ===
+      if (payment.lead_id) {
+        try {
+          // Update lead to "שילם – פתיחת תיק"
+          await supabaseAdmin.from('leads').update({
+            payment_status: 'paid',
+            paid_at: new Date().toISOString(),
+            pipeline_stage: 'paid_opening_file',
+            status: 'qualified',
+          }).eq('id', payment.lead_id);
+
+          // Log status history
+          await supabaseAdmin.from('status_history').insert({
+            entity_type: 'lead',
+            entity_id: payment.lead_id,
+            new_stage: 'paid_opening_file',
+            new_status: 'payment_confirmed',
+            change_reason: 'payment_confirmed',
+            source: 'sales_portal',
+            metadata: { payment_id, transaction_id, amount: payment.amount },
+          });
+
+          // Fetch full lead data for email
+          const { data: lead } = await supabaseAdmin
+            .from('leads')
+            .select('*')
+            .eq('id', payment.lead_id)
+            .single();
+
+          // Fetch bot session answers (questionnaire data)
+          const { data: botSession } = await supabaseAdmin
+            .from('bot_sessions')
+            .select('answers, flow_type, temperature')
+            .eq('lead_id', payment.lead_id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          // Fetch WhatsApp conversation
+          const { data: waMessages } = await supabaseAdmin
+            .from('whatsapp_messages')
+            .select('direction, message_text, sender_type, created_at')
+            .eq('lead_id', payment.lead_id)
+            .order('created_at', { ascending: true });
+
+          // Send email with all lead data
+          const resendApiKey = Deno.env.get('RESEND_API_KEY');
+          if (resendApiKey && lead) {
+            const answersHtml = botSession?.answers
+              ? Object.entries(botSession.answers).map(([k, v]) => `<tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">${k}</td><td style="padding:4px 8px;border:1px solid #ddd;">${v}</td></tr>`).join('')
+              : '<tr><td colspan="2">אין תשובות שאלון</td></tr>';
+
+            const conversationHtml = (waMessages || []).map(m =>
+              `<div style="margin:4px 0;padding:6px 10px;border-radius:8px;${m.direction === 'outbound' ? 'background:#dcfce7;text-align:right;' : 'background:#f1f5f9;text-align:left;'}">
+                <small style="color:#666;">${m.sender_type} | ${new Date(m.created_at).toLocaleString('he-IL')}</small><br/>
+                ${m.message_text || ''}
+              </div>`
+            ).join('');
+
+            try {
+              await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${resendApiKey}` },
+                body: JSON.stringify({
+                  from: 'Perfect One <no-reply@perfect1.co.il>',
+                  to: ['yosi5919@gmail.com'],
+                  subject: `💰 תשלום התקבל! ${lead.name} — ₪${payment.amount} — פתיחת תיק`,
+                  html: `<div dir="rtl" style="font-family:Arial,sans-serif;max-width:600px;">
+                    <h2 style="color:#10B981;">💰 תשלום התקבל — פתיחת תיק</h2>
+                    <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">שם</td><td style="padding:4px 8px;border:1px solid #ddd;">${lead.name || ''}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">טלפון</td><td style="padding:4px 8px;border:1px solid #ddd;">${lead.phone || ''}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">אימייל</td><td style="padding:4px 8px;border:1px solid #ddd;">${lead.email || ''}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">שירות</td><td style="padding:4px 8px;border:1px solid #ddd;">${lead.service_type || payment.product_type || ''}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">סכום</td><td style="padding:4px 8px;border:1px solid #ddd;">₪${payment.amount}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">מזהה תשלום</td><td style="padding:4px 8px;border:1px solid #ddd;">${payment_id}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">Transaction ID</td><td style="padding:4px 8px;border:1px solid #ddd;">${transaction_id}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">ת.ז.</td><td style="padding:4px 8px;border:1px solid #ddd;">${lead.id_number || 'לא הוזן'}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">עיר</td><td style="padding:4px 8px;border:1px solid #ddd;">${lead.city || 'לא הוזן'}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">טמפרטורה</td><td style="padding:4px 8px;border:1px solid #ddd;">${botSession?.temperature || lead.temperature || ''}</td></tr>
+                      <tr><td style="padding:4px 8px;border:1px solid #ddd;font-weight:bold;">מקור</td><td style="padding:4px 8px;border:1px solid #ddd;">${lead.source_page || lead.landing_url || ''}</td></tr>
+                    </table>
+                    <h3 style="color:#1E3A5F;">📋 תשובות השאלון</h3>
+                    <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+                      ${answersHtml}
+                    </table>
+                    <h3 style="color:#1E3A5F;">💬 שיחת WhatsApp</h3>
+                    <div style="background:#f8fafc;padding:12px;border-radius:8px;max-height:400px;overflow:auto;">
+                      ${conversationHtml || '<p>אין שיחה</p>'}
+                    </div>
+                    <hr style="margin:24px 0;"/>
+                    <p style="color:#666;font-size:12px;">נשלח אוטומטית מ-Perfect One CRM</p>
+                  </div>`
+                })
+              });
+              console.log(`Payment email sent for lead ${payment.lead_id}`);
+            } catch (emailErr: any) {
+              console.error('Payment email failed:', emailErr.message);
+            }
+          }
+
+          console.log(`Lead ${payment.lead_id} updated to paid_opening_file`);
+        } catch (e: any) {
+          console.error('Lead update after payment failed:', e.message);
+        }
+      }
     } else {
       // Mark payment as failed
       const { error: updateErr } = await supabaseAdmin
@@ -144,6 +282,18 @@ Deno.serve(async (req) => {
       if (updateErr) {
         console.error('tranzilaConfirmPayment failed update error:', updateErr.message);
         return errorResponse('שגיאה בעיבוד הבקשה', 500, req);
+      }
+
+      // === CRM Integration: update lead payment_status to failed ===
+      if (payment.lead_id) {
+        try {
+          await supabaseAdmin.from('leads').update({
+            payment_status: 'failed',
+            updated_at: new Date().toISOString(),
+          }).eq('id', payment.lead_id);
+        } catch (e: any) {
+          console.error('Lead failed-payment update error:', e.message);
+        }
       }
 
       console.log(`Payment ${payment_id} failed with Response: ${tranzilaResponse}`);

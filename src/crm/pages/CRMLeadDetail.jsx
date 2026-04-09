@@ -212,38 +212,38 @@ export default function CRMLeadDetail() {
         {/* CTA buttons */}
         <div className="flex flex-wrap gap-2">
           {lead.phone && (
-            <Button size="sm" variant="outline" onClick={handleCall}>
-              <Phone size={14} className="ml-1" /> התקשר
+            <Button size="sm" onClick={handleCall} className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5">
+              <Phone size={14} /> התקשר
             </Button>
           )}
           {lead.phone && (
-            <Button size="sm" variant="outline" onClick={handleWhatsApp} className="text-green-600 border-green-300 hover:bg-green-50">
-              <MessageCircle size={14} className="ml-1" /> WhatsApp
+            <Button size="sm" onClick={handleWhatsApp} className="bg-green-600 hover:bg-green-700 text-white gap-1.5">
+              <MessageCircle size={14} /> WhatsApp
             </Button>
           )}
           {lead.phone && (
-            <Button size="sm" variant="outline" onClick={() => setShowWhatsAppDialog(true)} className="text-green-700 border-green-300 hover:bg-green-50">
-              <Send size={14} className="ml-1" /> שלח הודעה
+            <Button size="sm" variant="outline" onClick={() => setShowWhatsAppDialog(true)} className="text-green-700 border-green-300 hover:bg-green-50 gap-1.5">
+              <Send size={14} /> שלח הודעה
             </Button>
           )}
           {lead.email && (
-            <Button size="sm" variant="outline" onClick={handleEmail} className="text-purple-600 border-purple-300 hover:bg-purple-50">
-              <Mail size={14} className="ml-1" /> שלח מייל
+            <Button size="sm" variant="outline" onClick={handleEmail} className="text-purple-600 border-purple-300 hover:bg-purple-50 gap-1.5">
+              <Mail size={14} /> מייל
             </Button>
           )}
-          <Button size="sm" variant="outline" onClick={() => setShowCommLogger(!showCommLogger)}>
-            <StickyNote size={14} className="ml-1" /> תקשורת
+          <Button size="sm" variant="outline" onClick={() => setShowCommLogger(!showCommLogger)} className="gap-1.5">
+            <StickyNote size={14} /> תקשורת
           </Button>
-          <Button size="sm" variant="outline" onClick={() => setShowTaskForm(!showTaskForm)}>
-            <ListTodo size={14} className="ml-1" /> משימה
+          <Button size="sm" variant="outline" onClick={() => setShowTaskForm(!showTaskForm)} className="gap-1.5">
+            <ListTodo size={14} /> משימה
           </Button>
           <Button
             size="sm"
-            variant="outline"
-            className="text-red-500 border-red-200 hover:bg-red-50"
+            variant="ghost"
+            className="text-red-400 hover:text-red-600 hover:bg-red-50 gap-1.5"
             onClick={() => setShowDeleteDialog(true)}
           >
-            <Trash2 size={14} className="ml-1" /> מחק
+            <Trash2 size={14} /> מחק
           </Button>
         </div>
       </div>
@@ -474,18 +474,18 @@ export default function CRMLeadDetail() {
           )}
 
           <Tabs defaultValue="notes" className="w-full">
-            <TabsList className="w-full justify-start">
-              <TabsTrigger value="notes">
-                הערות ({notes.length})
+            <TabsList className="w-full justify-start gap-1">
+              <TabsTrigger value="notes" className="gap-1">
+                <FileText size={14} /> הערות {notes.length > 0 && <span className="text-xs bg-slate-200 px-1.5 rounded-full">{notes.length}</span>}
               </TabsTrigger>
-              <TabsTrigger value="whatsapp" className="text-green-700">
-                שיחה {waMessages.length > 0 && `(${waMessages.length})`}
+              <TabsTrigger value="whatsapp" className="gap-1">
+                <MessageCircle size={14} className="text-green-600" /> WhatsApp {waMessages.length > 0 && <span className="text-xs bg-green-100 text-green-700 px-1.5 rounded-full">{waMessages.length}</span>}
               </TabsTrigger>
-              <TabsTrigger value="timeline">
-                Timeline ({communications.length + status_history.length})
+              <TabsTrigger value="timeline" className="gap-1">
+                <Clock size={14} /> פעילות {(communications.length + status_history.length) > 0 && <span className="text-xs bg-slate-200 px-1.5 rounded-full">{communications.length + status_history.length}</span>}
               </TabsTrigger>
-              <TabsTrigger value="tasks">
-                משימות ({tasks.length})
+              <TabsTrigger value="tasks" className="gap-1">
+                <ListTodo size={14} /> משימות {tasks.length > 0 && <span className="text-xs bg-slate-200 px-1.5 rounded-full">{tasks.length}</span>}
               </TabsTrigger>
             </TabsList>
 

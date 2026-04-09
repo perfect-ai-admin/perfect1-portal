@@ -10,6 +10,7 @@ export const PIPELINE_STAGES = [
   { slug: 'payment_pending', label: 'ממתין לתשלום', color: '#8B5CF6', slaHours: 24, type: 'open' },
   { slug: 'follow_up', label: 'במעקב', color: '#14B8A6', slaHours: 48, type: 'open' },
   { slug: 'awaiting_docs', label: 'ממתין למסמכים', color: '#0EA5E9', slaHours: 120, type: 'open' },
+  { slug: 'paid_opening_file', label: 'שילם – פתיחת תיק', color: '#10B981', type: 'open' },
   { slug: 'converted', label: 'נסגר', color: '#22C55E', type: 'closed_won' },
   { slug: 'not_interested', label: 'לא מעוניין', color: '#EF4444', type: 'closed_lost' },
   { slug: 'disqualified', label: 'פסול', color: '#6B7280', type: 'closed_lost' },

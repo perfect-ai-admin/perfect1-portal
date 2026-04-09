@@ -645,22 +645,32 @@ export default function CRMLeads() {
                       </div>
                     )}
                   </td>
-                  {/* Source with link */}
+                  {/* Source with domain link */}
                   <td className="p-3 text-xs" onClick={e => e.stopPropagation()}>
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-slate-500">{SOURCE_LABELS[lead.lead_source] || lead.lead_source || lead.source_page || '—'}</span>
-                      {lead.landing_url && (
-                        <a
-                          href={lead.landing_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:text-blue-700 flex items-center gap-0.5 truncate max-w-[120px]"
-                          title={lead.landing_url}
-                        >
-                          <ExternalLink size={10} />
-                          <span className="truncate">{new URL(lead.landing_url).pathname || '/'}</span>
-                        </a>
-                      )}
+                      {(() => {
+                        const sourceUrl = lead.landing_url || lead.source_page;
+                        if (sourceUrl) {
+                          try {
+                            const domain = new URL(sourceUrl.startsWith('http') ? sourceUrl : 'https://' + sourceUrl).hostname.replace('www.', '');
+                            return (
+                              <a
+                                href={sourceUrl.startsWith('http') ? sourceUrl : 'https://' + sourceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium"
+                                title={sourceUrl}
+                              >
+                                <ExternalLink size={10} className="flex-shrink-0" />
+                                <span className="truncate max-w-[110px]">{domain}</span>
+                              </a>
+                            );
+                          } catch {
+                            return <span className="text-slate-500 truncate max-w-[120px]">{sourceUrl}</span>;
+                          }
+                        }
+                        return <span className="text-slate-400">{SOURCE_LABELS[lead.lead_source] || lead.lead_source || '—'}</span>;
+                      })()}
                       {lead.utm_source && (
                         <span className="text-slate-400 truncate max-w-[120px]" title={`${lead.utm_source}${lead.utm_campaign ? ' / ' + lead.utm_campaign : ''}`}>
                           {lead.utm_source}{lead.utm_campaign ? ` / ${lead.utm_campaign}` : ''}
@@ -670,41 +680,31 @@ export default function CRMLeads() {
                   </td>
                   {/* Quick actions */}
                   <td className="p-3" onClick={e => e.stopPropagation()}>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5">
                       {lead.phone && (
                         <button
                           onClick={() => window.open(`tel:${lead.phone}`, '_self')}
-                          className="p-1.5 rounded text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                          title="התקשר"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs text-blue-600 hover:bg-blue-50 transition-colors"
                         >
-                          <Phone size={14} />
+                          <Phone size={12} /> חייג
                         </button>
                       )}
                       {lead.phone && (
                         <button
                           onClick={() => window.open(`https://wa.me/${intlPhone}`, '_blank')}
-                          className="p-1.5 rounded text-slate-400 hover:text-green-600 hover:bg-green-50 transition-colors"
-                          title="WhatsApp"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs text-green-600 hover:bg-green-50 transition-colors"
                         >
-                          <MessageCircle size={14} />
+                          <MessageCircle size={12} />
                         </button>
                       )}
                       {lead.email && (
                         <button
                           onClick={() => window.open(`mailto:${lead.email}`, '_self')}
-                          className="p-1.5 rounded text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
-                          title="שלח מייל"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs text-purple-600 hover:bg-purple-50 transition-colors"
                         >
-                          <Mail size={14} />
+                          <Mail size={12} />
                         </button>
                       )}
-                      <button
-                        onClick={() => setDeleteTarget(lead)}
-                        className="p-1.5 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors"
-                        title="מחק ליד"
-                      >
-                        <Trash2 size={14} />
-                      </button>
                     </div>
                   </td>
                 </tr>

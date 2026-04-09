@@ -9,8 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { entities, supabase } from '@/api/supabaseClient';
 
 const NAV_ITEMS = [
-  { to: '/CRM', label: 'Pipeline', icon: Columns3, exact: true },
-  { to: '/CRM/leads', label: 'לידים', icon: Users },
+  { to: '/CRM', label: 'לידים', icon: Users, exact: true },
   { to: '/CRM/dashboard', label: 'דשבורד', icon: LayoutDashboard },
   { to: '/CRM/tasks', label: 'משימות', icon: ListTodo },
   { to: '/CRM/settings', label: 'הגדרות', icon: Settings },

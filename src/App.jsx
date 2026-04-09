@@ -225,7 +225,7 @@ const PortalRoutes = () => (
 
     {/* CRM Routes — protected by auth inside CRMLayout */}
     <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>
-      <Route index element={<CRMPipeline />} />
+      <Route index element={<CRMLeads />} />
       <Route path="leads" element={<CRMLeads />} />
       <Route path="leads/:id" element={<CRMLeadDetail />} />
       <Route path="dashboard" element={<CRMDashboard />} />
@@ -255,7 +255,7 @@ const AppOnlyRoutes = () => (
 
     {/* CRM Routes — protected by auth inside CRMLayout */}
     <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>
-      <Route index element={<CRMPipeline />} />
+      <Route index element={<CRMLeads />} />
       <Route path="leads" element={<CRMLeads />} />
       <Route path="leads/:id" element={<CRMLeadDetail />} />
       <Route path="dashboard" element={<CRMDashboard />} />
@@ -302,7 +302,7 @@ const DevRoutes = () => (
 
     {/* CRM Routes */}
     <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>
-      <Route index element={<CRMPipeline />} />
+      <Route index element={<CRMLeads />} />
       <Route path="leads" element={<CRMLeads />} />
       <Route path="leads/:id" element={<CRMLeadDetail />} />
       <Route path="dashboard" element={<CRMDashboard />} />
