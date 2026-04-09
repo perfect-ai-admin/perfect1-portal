@@ -66,6 +66,7 @@ const PortalHomePage = lazyWithRetry(() => import('./portal/templates/PortalHome
 const CategoryHubPage = lazyWithRetry(() => import('./portal/templates/CategoryHubPage'));
 const SEOArticlePage = lazyWithRetry(() => import('./portal/templates/SEOArticlePage'));
 const ComparisonPage = lazyWithRetry(() => import('./portal/templates/ComparisonPage'));
+const CalculatorsPage = lazyWithRetry(() => import('./portal/templates/CalculatorsPage'));
 const OsekPaturLanding = lazyWithRetry(() => import('./pages/OsekPaturLanding'));
 const OsekPaturSteps = lazyWithRetry(() => import('./pages/OsekPaturSteps'));
 const OpenOsekPatur = lazyWithRetry(() => import('./pages/OpenOsekPatur'));
@@ -213,6 +214,7 @@ const PortalRoutes = () => (
     <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
     <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
+    <Route path="/calculators" element={<PortalWrapper><CalculatorsPage /></PortalWrapper>} />
 
     {/* Shared public pages */}
     <Route path="/About" element={<SafePage><About /></SafePage>} />
@@ -299,6 +301,7 @@ const DevRoutes = () => (
     <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
     <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
+    <Route path="/calculators" element={<PortalWrapper><CalculatorsPage /></PortalWrapper>} />
 
     {/* CRM Routes */}
     <Route path="/CRM" element={<SafePage><CRMLayout /></SafePage>}>

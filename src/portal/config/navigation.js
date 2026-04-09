@@ -75,7 +75,7 @@ export const PORTAL_CATEGORIES = [
       { title: 'השוואות', href: '/guides/comparisons', description: 'טבלאות השוואה — עוסק פטור מול מורשה, תוכנות, שירותים' },
       { title: 'מיסוי וחשבונאות', href: '/guides/taxation', description: 'מדריכי מס הכנסה, מע"מ, ביטוח לאומי ורואה חשבון' },
       { title: 'מדריכים לעצמאים', href: '/guides/freelancers', description: 'טיפים לפרילנסרים — תמחור, לקוחות, חוזים וביטוח' },
-      { title: 'כלים ומחשבונים', href: '/guides/tools', description: 'כלים חינמיים לחישוב מס, השוואת עלויות וניהול עסק' },
+      { title: 'כלים ומחשבונים', href: '/calculators', description: 'מחשבון נטו לעצמאי, חישוב מס והערכת הוצאות' },
       { title: 'שאלות נפוצות', href: '/guides/faq', description: 'תשובות לשאלות כלליות על עסקים בישראל' },
     ]
   }
