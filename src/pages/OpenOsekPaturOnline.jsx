@@ -533,7 +533,7 @@ export default function OpenOsekPaturOnline() {
                       <form
                         id="tranzila-form"
                         action={`https://direct.tranzila.com/${tranzilaSupplier}/iframenew.php`}
-                        target="tranzila-iframe"
+                        target={window.innerWidth < 768 ? '_blank' : 'tranzila-iframe'}
                         method="POST"
                         style={{ display: 'none' }}
                       >
@@ -559,14 +559,25 @@ export default function OpenOsekPaturOnline() {
                         <input type="hidden" name="pdesc" value="פתיחת עוסק פטור אונליין" />
                       </form>
 
+                      {/* Desktop: show iframe inline. Mobile: opens in new tab */}
                       <iframe
                         name="tranzila-iframe"
                         id="tranzila-iframe"
                         title="טופס תשלום מאובטח"
                         allowpaymentrequest="true"
-                        className="w-full rounded-xl border-0"
-                        style={{ height: '500px', minHeight: '500px' }}
+                        className="w-full rounded-xl border-0 hidden md:block"
+                        style={{ height: '550px', minHeight: '550px' }}
                       />
+                      <div className="md:hidden text-center space-y-3 py-4">
+                        <p className="text-sm text-gray-600">דף התשלום נפתח בחלון חדש.</p>
+                        <p className="text-xs text-gray-400">אם הדף לא נפתח, לחצו כאן:</p>
+                        <Button
+                          onClick={() => document.getElementById('tranzila-form')?.submit()}
+                          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 w-full text-base font-semibold"
+                        >
+                          פתח דף תשלום
+                        </Button>
+                      </div>
                     </>
                   )}
 
