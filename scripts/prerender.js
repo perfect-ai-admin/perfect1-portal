@@ -55,6 +55,7 @@ function discoverRoutes() {
     '/open-osek-patur', '/open-osek-patur-online',
     '/OsekPaturLanding', '/OsekPaturSteps',
     '/accountant-osek-patur', '/ThankYou', '/CRM', '/login',
+    '/calculators',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
     '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
   ];
