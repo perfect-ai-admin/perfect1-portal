@@ -645,31 +645,42 @@ export default function CRMLeads() {
                       </div>
                     )}
                   </td>
-                  {/* Source with domain link */}
+                  {/* Source with landing page link */}
                   <td className="p-3 text-xs" onClick={e => e.stopPropagation()}>
                     <div className="flex flex-col gap-0.5">
                       {(() => {
-                        const sourceUrl = lead.landing_url || lead.source_page;
-                        if (sourceUrl) {
-                          try {
-                            const domain = new URL(sourceUrl.startsWith('http') ? sourceUrl : 'https://' + sourceUrl).hostname.replace('www.', '');
-                            return (
-                              <a
-                                href={sourceUrl.startsWith('http') ? sourceUrl : 'https://' + sourceUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium"
-                                title={sourceUrl}
-                              >
-                                <ExternalLink size={10} className="flex-shrink-0" />
-                                <span className="truncate max-w-[110px]">{domain}</span>
-                              </a>
-                            );
-                          } catch {
-                            return <span className="text-slate-500 truncate max-w-[120px]">{sourceUrl}</span>;
-                          }
+                        // Build the actual landing page URL
+                        const landingUrl = lead.landing_url;
+                        const sourcePage = lead.source_page;
+
+                        if (landingUrl) {
+                          // Full URL stored — use as-is
+                          const href = landingUrl.startsWith('http') ? landingUrl : 'https://' + landingUrl;
+                          const label = (() => { try { return new URL(href).pathname || '/'; } catch { return landingUrl; } })();
+                          return (
+                            <a href={href} target="_blank" rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium"
+                              title={href}>
+                              <ExternalLink size={10} className="flex-shrink-0" />
+                              <span className="truncate max-w-[120px]">{label === '/' ? 'דף הבית' : label}</span>
+                            </a>
+                          );
                         }
-                        return <span className="text-slate-400">{SOURCE_LABELS[lead.lead_source] || lead.lead_source || '—'}</span>;
+
+                        if (sourcePage && sourcePage !== 'portal' && sourcePage !== 'main' && sourcePage !== 'הוספה ידנית') {
+                          // source_page is a slug like "osek-patur" — build link to perfect1.co.il
+                          const href = `https://perfect1.co.il/${sourcePage}`;
+                          return (
+                            <a href={href} target="_blank" rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 font-medium"
+                              title={href}>
+                              <ExternalLink size={10} className="flex-shrink-0" />
+                              <span className="truncate max-w-[120px]">{sourcePage}</span>
+                            </a>
+                          );
+                        }
+
+                        return <span className="text-slate-400">{SOURCE_LABELS[lead.lead_source] || sourcePage || lead.lead_source || '—'}</span>;
                       })()}
                       {lead.utm_source && (
                         <span className="text-slate-400 truncate max-w-[120px]" title={`${lead.utm_source}${lead.utm_campaign ? ' / ' + lead.utm_campaign : ''}`}>

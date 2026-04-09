@@ -366,30 +366,45 @@ export default function CRMLeadDetail() {
                 </div>
               )}
 
-              {lead.landing_url && (
-                <div className="flex items-center gap-2 mb-1">
-                  <ExternalLink size={12} className="text-blue-400" />
-                  <a
-                    href={lead.landing_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-blue-600 hover:text-blue-800 hover:underline truncate max-w-[200px]"
-                    title={lead.landing_url}
-                  >
-                    {(() => {
-                      try { return new URL(lead.landing_url).pathname || '/'; }
-                      catch { return lead.landing_url; }
-                    })()}
-                  </a>
-                </div>
-              )}
-
-              {lead.source_page && !lead.landing_url && (
-                <div className="flex items-center gap-2 mb-1">
-                  <Globe size={12} className="text-slate-400" />
-                  <span className="text-xs text-slate-500 truncate">{lead.source_page}</span>
-                </div>
-              )}
+              {(() => {
+                const landingUrl = lead.landing_url;
+                const sourcePage = lead.source_page;
+                if (landingUrl) {
+                  const href = landingUrl.startsWith('http') ? landingUrl : 'https://' + landingUrl;
+                  return (
+                    <div className="flex items-center gap-2 mb-1">
+                      <ExternalLink size={12} className="text-blue-400" />
+                      <a href={href} target="_blank" rel="noopener noreferrer"
+                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline truncate max-w-[200px]"
+                        title={href}>
+                        {(() => { try { const p = new URL(href).pathname; return p === '/' ? 'דף הבית' : p; } catch { return landingUrl; } })()}
+                      </a>
+                    </div>
+                  );
+                }
+                if (sourcePage && sourcePage !== 'portal' && sourcePage !== 'main' && sourcePage !== 'הוספה ידנית') {
+                  const href = `https://perfect1.co.il/${sourcePage}`;
+                  return (
+                    <div className="flex items-center gap-2 mb-1">
+                      <ExternalLink size={12} className="text-blue-400" />
+                      <a href={href} target="_blank" rel="noopener noreferrer"
+                        className="text-xs text-blue-600 hover:text-blue-800 hover:underline truncate max-w-[200px]"
+                        title={href}>
+                        {sourcePage}
+                      </a>
+                    </div>
+                  );
+                }
+                if (sourcePage) {
+                  return (
+                    <div className="flex items-center gap-2 mb-1">
+                      <Globe size={12} className="text-slate-400" />
+                      <span className="text-xs text-slate-500">{sourcePage}</span>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
 
               {/* UTM data */}
               {(lead.utm_source || lead.utm_campaign || lead.utm_term) && (
