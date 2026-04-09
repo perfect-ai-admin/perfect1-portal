@@ -143,7 +143,7 @@ export default function PaturVsMursheQuiz() {
   const [phase, setPhase] = useState('hero');
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [form, setForm] = useState({ name: '', phone: '', email: '' });
+  const [form, setForm] = useState({ name: '', phone: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -194,7 +194,7 @@ export default function PaturVsMursheQuiz() {
       await invokeFunction('submitLeadToN8N', {
         name: form.name,
         phone: form.phone,
-        email: form.email || undefined,
+
         pageSlug: 'landing-patur-vs-murshe-quiz',
         businessName: 'דף נחיתה - landing-patur-vs-murshe-quiz',
         quizResult: result?.type,
@@ -456,14 +456,6 @@ export default function PaturVsMursheQuiz() {
                       required
                       className="h-14 rounded-xl text-base bg-gray-50 border-gray-200 focus:border-green-500 focus:ring-green-500"
                     />
-                    <Input
-                      value={form.email}
-                      onChange={(e) => setForm(p => ({ ...p, email: e.target.value }))}
-                      placeholder="אימייל (אופציונלי)"
-                      type="email"
-                      className="h-14 rounded-xl text-base bg-gray-50 border-gray-200 focus:border-green-500 focus:ring-green-500"
-                    />
-
                     <Button
                       type="submit"
                       disabled={loading}
