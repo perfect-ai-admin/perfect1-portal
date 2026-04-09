@@ -28,6 +28,14 @@ const INCOME_OPTIONS = [
   { value: 'above-20000', label: 'מעל 20,000 \u20AA' },
 ];
 
+const SALARY_OPTIONS = [
+  { value: 'up-to-5000', label: 'עד 5,000 \u20AA' },
+  { value: '5000-10000', label: '5,000\u201310,000 \u20AA' },
+  { value: '10000-15000', label: '10,000\u201315,000 \u20AA' },
+  { value: '15000-25000', label: '15,000\u201325,000 \u20AA' },
+  { value: 'above-25000', label: 'מעל 25,000 \u20AA' },
+];
+
 const slideVariants = {
   enter: (dir) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
   center: { x: 0, opacity: 1 },
@@ -54,6 +62,8 @@ export default function OpenOsekPaturOnline() {
     name: '',
     idNumber: '',
     email: '',
+    isEmployee: '',
+    salary: '',
     businessName: '',
     businessType: '',
     income: '',
@@ -85,6 +95,8 @@ export default function OpenOsekPaturOnline() {
     if (!form.name.trim()) e.name = 'שדה חובה';
     if (!/^\d{9}$/.test(form.idNumber)) e.idNumber = 'נדרשות 9 ספרות';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'אימייל לא תקין';
+    if (!form.isEmployee) e.isEmployee = 'יש לבחור';
+    if (form.isEmployee === 'yes' && !form.salary) e.salary = 'יש לבחור טווח שכר';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -197,8 +209,11 @@ export default function OpenOsekPaturOnline() {
         email: form.email,
         pageSlug: 'open-osek-patur-online',
         businessName: form.businessName,
+        businessType: form.businessType,
         id_number: form.idNumber,
         income: form.income,
+        is_employee: form.isEmployee,
+        salary: form.salary,
         file_url: fileUrl,
         message: `תשלום 299 ₪ - ${txData.ConfirmationCode || txData.confirmationCode || ''}`,
         gclid,
@@ -344,6 +359,40 @@ export default function OpenOsekPaturOnline() {
                       dir="ltr"
                     />
                   </FieldGroup>
+
+                  <FieldGroup label="עובד/ת שכיר/ה במקביל?" error={errors.isEmployee}>
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => { set('isEmployee', 'yes'); }}
+                        className={`flex-1 h-12 rounded-xl border-2 font-semibold transition-colors ${form.isEmployee === 'yes' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`}
+                      >
+                        כן
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { set('isEmployee', 'no'); set('salary', ''); }}
+                        className={`flex-1 h-12 rounded-xl border-2 font-semibold transition-colors ${form.isEmployee === 'no' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`}
+                      >
+                        לא
+                      </button>
+                    </div>
+                  </FieldGroup>
+
+                  {form.isEmployee === 'yes' && (
+                    <FieldGroup label="גובה השכר החודשי (ברוטו)" error={errors.salary}>
+                      <Select value={form.salary} onValueChange={v => set('salary', v)}>
+                        <SelectTrigger className="h-12 rounded-xl text-right">
+                          <SelectValue placeholder="בחר טווח שכר" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {SALARY_OPTIONS.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FieldGroup>
+                  )}
 
                   <NavButtons onNext={() => validateStep1() && goTo(2)} />
                 </motion.div>

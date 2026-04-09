@@ -37,7 +37,8 @@ Deno.serve(async (req) => {
 
   try {
     const {
-      name, phone, email, message, pageSlug, businessName,
+      name, phone, email, message, pageSlug, businessName, businessType,
+      id_number, income, is_employee, salary, file_url,
       gclid, fbclid, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
       referrer, landingUrl,
     } = await req.json();
@@ -304,6 +305,62 @@ Deno.serve(async (req) => {
             .catch(e => console.warn('SMS/WA failed:', e.message))
         );
       }
+    }
+
+    // Send detailed email for paid open-osek-patur-online leads
+    if (pageSlug === 'open-osek-patur-online' && message && message.includes('תשלום')) {
+      const safeFields = {
+        name: escapeHtml(name || ''),
+        phone: escapeHtml(phone || ''),
+        email: escapeHtml(email || ''),
+        idNumber: escapeHtml(id_number || ''),
+        businessName: escapeHtml(businessName || ''),
+        businessType: escapeHtml(businessType || ''),
+        income: escapeHtml(income || ''),
+        isEmployee: is_employee === 'yes' ? 'כן' : 'לא',
+        salary: escapeHtml(salary || ''),
+        fileUrl: escapeHtml(file_url || ''),
+        message: escapeHtml(message || ''),
+      };
+      const paidEmailHtml = `
+        <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 22px;">💰 ליד חדש ששילם — פתיחת עוסק פטור</h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">${safeFields.message}</p>
+          </div>
+          <div style="background: white; padding: 24px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+            <h3 style="color: #1E3A5F; margin: 0 0 12px 0;">פרטים אישיים</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F; width: 130px;">שם מלא:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeFields.name}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">ת.ז.:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeFields.idNumber}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">טלפון:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;"><a href="tel:${safeFields.phone}" style="color: #27AE60; font-weight: bold;">${safeFields.phone}</a></td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">אימייל:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;"><a href="mailto:${safeFields.email}">${safeFields.email}</a></td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">עובד שכיר במקביל:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeFields.isEmployee}</td></tr>
+              ${is_employee === 'yes' ? `<tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">גובה שכר:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeFields.salary}</td></tr>` : ''}
+            </table>
+            <h3 style="color: #1E3A5F; margin: 16px 0 12px 0;">פרטי העסק</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F; width: 130px;">שם העסק:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeFields.businessName}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">סוג העסק:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeFields.businessType}</td></tr>
+              <tr><td style="padding: 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: #1E3A5F;">צפי הכנסה חודשי:</td><td style="padding: 10px; border-bottom: 1px solid #f0f0f0;">${safeFields.income}</td></tr>
+            </table>
+            ${safeFields.fileUrl ? `<div style="margin-top: 16px;"><a href="${safeFields.fileUrl}" style="display: inline-block; background: #2563EB; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">📎 צפה בצילום ת.ז.</a></div>` : ''}
+            <div style="margin-top: 20px; text-align: center;">
+              <a href="tel:${safeFields.phone}" style="display: inline-block; background: #27AE60; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">📞 התקשר ללקוח</a>
+            </div>
+            <p style="color: #999; font-size: 12px; text-align: center; margin-top: 16px;">${new Date().toLocaleString('he-IL')}</p>
+          </div>
+        </div>
+      `;
+      notifications.push(
+        sendEmailViaResend(
+          'Yosi5919@gmail.com',
+          `💰 ליד ששילם — ${name || 'ללא שם'} — פתיחת עוסק פטור`,
+          paidEmailHtml,
+          'פרפקט וואן'
+        ).then(() => console.log('Paid lead email sent to Yosi5919@gmail.com'))
+          .catch(e => console.warn('Paid lead email failed:', e.message))
+      );
     }
 
     if (notifications.length > 0) {
