@@ -7,6 +7,7 @@ export const PIPELINE_STAGES = [
   { slug: 'qualifying', label: 'בסינון', color: '#06B6D4', slaHours: 48, type: 'open' },
   { slug: 'qualified', label: 'מתאים', color: '#8B5CF6', slaHours: 24, type: 'open' },
   { slug: 'proposal_sent', label: 'נשלחה הצעה', color: '#4F46E5', slaHours: 72, type: 'open' },
+  { slug: 'payment_pending', label: 'ממתין לתשלום', color: '#8B5CF6', slaHours: 24, type: 'open' },
   { slug: 'follow_up', label: 'במעקב', color: '#14B8A6', slaHours: 48, type: 'open' },
   { slug: 'awaiting_docs', label: 'ממתין למסמכים', color: '#0EA5E9', slaHours: 120, type: 'open' },
   { slug: 'converted', label: 'נסגר', color: '#22C55E', type: 'closed_won' },
@@ -63,6 +64,22 @@ export const TASK_TYPE_OPTIONS = [
   { value: 'meeting', label: 'פגישה' },
   { value: 'onboarding_step', label: 'שלב קליטה' },
   { value: 'general', label: 'כללי' },
+];
+
+export const PAYMENT_STATUS_OPTIONS = [
+  { value: 'none', label: 'אין', color: '#9CA3AF' },
+  { value: 'link_sent', label: 'קישור נשלח', color: '#3B82F6' },
+  { value: 'pending', label: 'ממתין', color: '#F59E0B' },
+  { value: 'paid', label: 'שולם', color: '#22C55E' },
+  { value: 'failed', label: 'נכשל', color: '#EF4444' },
+];
+
+export const ONBOARDING_STATUS_OPTIONS = [
+  { value: 'not_started', label: 'לא התחיל', color: '#9CA3AF' },
+  { value: 'in_progress', label: 'בתהליך', color: '#3B82F6' },
+  { value: 'docs_pending', label: 'ממתין למסמכים', color: '#F59E0B' },
+  { value: 'docs_received', label: 'מסמכים התקבלו', color: '#8B5CF6' },
+  { value: 'completed', label: 'הסתיים', color: '#22C55E' },
 ];
 
 export const LOST_REASON_CATEGORIES = [

@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import {
   ArrowRight, Phone, MessageCircle, StickyNote, ListTodo,
-  User, Clock, Tag, MapPin, Briefcase, Calendar, Trash2, Send, X as XIcon
+  User, Clock, Tag, MapPin, Briefcase, Calendar, Trash2, Send, X as XIcon,
+  ExternalLink, Mail, Globe, Target, FileText
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, parseISO, isToday, isBefore, startOfDay } from 'date-fns';
 import { he } from 'date-fns/locale';
 import { toast } from 'sonner';
 
@@ -16,12 +19,27 @@ import StatusBadge from '../components/shared/StatusBadge';
 import LostReasonDialog from '../components/shared/LostReasonDialog';
 import CommTimeline from '../components/communications/CommTimeline';
 import CommLogger from '../components/communications/CommLogger';
+import WhatsAppConversation from '../components/communications/WhatsAppConversation';
+import PaymentStatusPanel from '../components/communications/PaymentStatusPanel';
 import TaskList from '../components/tasks/TaskList';
 import TaskForm from '../components/tasks/TaskForm';
 
 import DeleteLeadDialog from '../components/DeleteLeadDialog';
-import { useLeadDetail, useUpdateLeadStage, useAgents, useServiceCatalog, useAddCommunication } from '../hooks/useCRM';
+import {
+  useLeadDetail, useUpdateLeadStage, useAgents, useServiceCatalog,
+  useAddCommunication, useLeadNotes, useAddLeadNote, useUpdateFollowupDate,
+  useWhatsAppMessages, useSendWhatsAppMessage,
+} from '../hooks/useCRM';
 import { PIPELINE_STAGES, LOST_REASON_CATEGORIES } from '../constants/pipeline';
+
+function getFollowupColor(dateStr) {
+  if (!dateStr) return null;
+  const date = typeof dateStr === 'string' ? parseISO(dateStr) : dateStr;
+  const today = startOfDay(new Date());
+  if (isBefore(date, today)) return { bg: 'bg-red-50', text: 'text-red-600', border: 'border-red-200', label: 'באיחור' };
+  if (isToday(date)) return { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-200', label: 'היום' };
+  return { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200', label: '' };
+}
 
 export default function CRMLeadDetail() {
   const { id } = useParams();
@@ -33,12 +51,19 @@ export default function CRMLeadDetail() {
   const [showWhatsAppDialog, setShowWhatsAppDialog] = useState(false);
   const [waMessage, setWaMessage] = useState('');
   const [pendingStage, setPendingStage] = useState(null);
+  const [newNote, setNewNote] = useState('');
+  const [editingFollowup, setEditingFollowup] = useState(false);
 
   const { data, isLoading, error } = useLeadDetail(id);
   const updateStage = useUpdateLeadStage();
   const { data: agents = [] } = useAgents();
   const { data: services = [] } = useServiceCatalog();
   const addComm = useAddCommunication();
+  const { data: notes = [], isLoading: notesLoading } = useLeadNotes(id);
+  const addNote = useAddLeadNote();
+  const updateFollowup = useUpdateFollowupDate();
+  const { data: waMessages = [] } = useWhatsAppMessages(id);
+  const sendWaDirect = useSendWhatsAppMessage();
 
   if (isLoading) {
     return (
@@ -59,7 +84,7 @@ export default function CRMLeadDetail() {
     );
   }
 
-  const { lead, agent, lost_reason, communications, tasks, status_history } = data;
+  const { lead, agent, lost_reason, communications, tasks, status_history, payments = [], bot_events = [] } = data;
 
   const handleStageChange = (newStage) => {
     if (newStage === lead.pipeline_stage) return;
@@ -74,21 +99,14 @@ export default function CRMLeadDetail() {
       { lead_id: id, new_stage: newStage },
       {
         onSuccess: () => toast.success('השלב עודכן'),
-        onError: (err) => {
-          console.error('Stage update failed:', err);
-          toast.error(`שגיאה בעדכון שלב: ${err.message}`);
-        },
+        onError: (err) => toast.error(`שגיאה בעדכון שלב: ${err.message}`),
       }
     );
   };
 
   const handleLostConfirm = (lostData) => {
     updateStage.mutate(
-      {
-        lead_id: id,
-        new_stage: pendingStage,
-        ...lostData,
-      },
+      { lead_id: id, new_stage: pendingStage, ...lostData },
       {
         onSuccess: () => {
           toast.success('הליד נסגר');
@@ -99,15 +117,15 @@ export default function CRMLeadDetail() {
     );
   };
 
-  const handleCall = () => {
-    window.open(`tel:${lead.phone}`, '_self');
-  };
+  const handleCall = () => window.open(`tel:${lead.phone}`, '_self');
 
   const handleWhatsApp = () => {
     const phone = (lead.phone || '').replace(/\D/g, '');
     const intlPhone = phone.startsWith('0') ? '972' + phone.slice(1) : phone;
     window.open(`https://wa.me/${intlPhone}`, '_blank');
   };
+
+  const handleEmail = () => window.open(`mailto:${lead.email}`, '_self');
 
   const getIntlPhone = () => {
     const phone = (lead.phone || '').replace(/\D/g, '');
@@ -124,25 +142,47 @@ export default function CRMLeadDetail() {
 
   const handleWaSendAndSave = () => {
     if (!waMessage.trim()) return;
-    const encoded = encodeURIComponent(waMessage.trim());
-    window.open(`https://wa.me/${getIntlPhone()}?text=${encoded}`, '_blank');
-    addComm.mutate(
-      {
-        lead_id: id,
-        channel: 'whatsapp',
-        direction: 'outbound',
-        content: waMessage.trim(),
-      },
+    sendWaDirect.mutate(
+      { lead_id: id, message: waMessage.trim() },
       {
         onSuccess: () => {
-          toast.success('ההודעה נשמרה');
+          toast.success('ההודעה נשלחה ונשמרה');
           setShowWhatsAppDialog(false);
           setWaMessage('');
         },
-        onError: (err) => toast.error(`שגיאה בשמירה: ${err.message}`),
+        onError: (err) => toast.error(`שגיאה בשליחה: ${err.message}`),
       }
     );
   };
+
+  const handleAddNote = () => {
+    if (!newNote.trim()) return;
+    addNote.mutate(
+      { lead_id: id, note: newNote.trim() },
+      {
+        onSuccess: () => {
+          toast.success('הערה נשמרה');
+          setNewNote('');
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
+
+  const handleFollowupChange = (date) => {
+    updateFollowup.mutate(
+      { lead_id: id, next_followup_date: date || null },
+      {
+        onSuccess: () => {
+          toast.success('תאריך חזרה עודכן');
+          setEditingFollowup(false);
+        },
+        onError: (err) => toast.error(`שגיאה: ${err.message}`),
+      }
+    );
+  };
+
+  const followupColor = getFollowupColor(lead.next_followup_date);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -162,6 +202,11 @@ export default function CRMLeadDetail() {
         <div className="flex flex-wrap items-center gap-3 mb-3">
           <h1 className="text-xl font-bold text-slate-900">{lead.name || 'ללא שם'}</h1>
           <StatusBadge stage={lead.pipeline_stage} size="md" />
+          {followupColor && (
+            <span className={`text-xs px-2 py-1 rounded border ${followupColor.bg} ${followupColor.text} ${followupColor.border}`}>
+              {followupColor.label} {lead.next_followup_date && format(parseISO(lead.next_followup_date), 'dd/MM/yyyy')}
+            </span>
+          )}
         </div>
 
         {/* CTA buttons */}
@@ -181,8 +226,13 @@ export default function CRMLeadDetail() {
               <Send size={14} className="ml-1" /> שלח הודעה
             </Button>
           )}
+          {lead.email && (
+            <Button size="sm" variant="outline" onClick={handleEmail} className="text-purple-600 border-purple-300 hover:bg-purple-50">
+              <Mail size={14} className="ml-1" /> שלח מייל
+            </Button>
+          )}
           <Button size="sm" variant="outline" onClick={() => setShowCommLogger(!showCommLogger)}>
-            <StickyNote size={14} className="ml-1" /> הוסף הערה
+            <StickyNote size={14} className="ml-1" /> תקשורת
           </Button>
           <Button size="sm" variant="outline" onClick={() => setShowTaskForm(!showTaskForm)}>
             <ListTodo size={14} className="ml-1" /> משימה
@@ -220,6 +270,50 @@ export default function CRMLeadDetail() {
             </Select>
           </div>
 
+          {/* Follow-up date */}
+          <div className="bg-white rounded-lg border border-slate-200 p-4">
+            <h3 className="text-sm font-medium text-slate-500 mb-2">תאריך חזרה ללקוח</h3>
+            {editingFollowup ? (
+              <div className="flex items-center gap-2">
+                <Input
+                  type="date"
+                  defaultValue={lead.next_followup_date || ''}
+                  autoFocus
+                  onChange={e => handleFollowupChange(e.target.value)}
+                  className="flex-1"
+                />
+                {lead.next_followup_date && (
+                  <Button size="sm" variant="ghost" className="text-red-500" onClick={() => handleFollowupChange(null)}>
+                    נקה
+                  </Button>
+                )}
+                <Button size="sm" variant="ghost" onClick={() => setEditingFollowup(false)}>
+                  <XIcon size={14} />
+                </Button>
+              </div>
+            ) : (
+              <div
+                className="cursor-pointer p-2 rounded border border-dashed border-slate-200 hover:border-slate-400 transition-colors"
+                onClick={() => setEditingFollowup(true)}
+              >
+                {lead.next_followup_date ? (
+                  <div className="flex items-center gap-2">
+                    <Calendar size={14} className={followupColor?.text || 'text-slate-400'} />
+                    <span className={`text-sm font-medium ${followupColor?.text || 'text-slate-600'}`}>
+                      {followupColor?.label ? `${followupColor.label} — ` : ''}
+                      {format(parseISO(lead.next_followup_date), 'dd/MM/yyyy')}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-sm text-slate-400">+ הגדר תאריך חזרה</span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Payment status */}
+          <PaymentStatusPanel leadId={id} />
+
           {/* Agent selector */}
           <div className="bg-white rounded-lg border border-slate-200 p-4">
             <h3 className="text-sm font-medium text-slate-500 mb-2">שיוך נציג</h3>
@@ -252,7 +346,7 @@ export default function CRMLeadDetail() {
 
             <InfoRow icon={User} label="שם" value={lead.name} />
             <InfoRow icon={Phone} label="טלפון" value={lead.phone} dir="ltr" />
-            {lead.email && <InfoRow icon={MessageCircle} label="אימייל" value={lead.email} dir="ltr" />}
+            {lead.email && <InfoRow icon={Mail} label="אימייל" value={lead.email} dir="ltr" />}
             {lead.city && <InfoRow icon={MapPin} label="עיר" value={lead.city} />}
             {lead.service_type && <InfoRow icon={Briefcase} label="שירות" value={lead.service_type} />}
             {agent && <InfoRow icon={User} label="נציג" value={agent.name} />}
@@ -261,17 +355,79 @@ export default function CRMLeadDetail() {
               <InfoRow icon={Phone} label="ניסיונות קשר" value={lead.contact_attempts} />
             )}
 
-            {/* Source / UTM */}
-            {(lead.utm_source || lead.page_url) && (
-              <>
-                <div className="border-t border-slate-100 pt-2 mt-2">
-                  <p className="text-xs font-medium text-slate-400 mb-1">מקור</p>
-                  {lead.utm_source && <p className="text-xs text-slate-600">UTM: {lead.utm_source}</p>}
-                  {lead.utm_campaign && <p className="text-xs text-slate-600">קמפיין: {lead.utm_campaign}</p>}
-                  {lead.page_url && <p className="text-xs text-slate-500 truncate">{lead.page_url}</p>}
+            {/* Source / UTM / Landing */}
+            <div className="border-t border-slate-100 pt-2 mt-2">
+              <p className="text-xs font-medium text-slate-400 mb-2">מקור הגעה</p>
+
+              {lead.lead_source && (
+                <div className="flex items-center gap-2 mb-1">
+                  <Globe size={12} className="text-slate-400" />
+                  <span className="text-xs text-slate-600">{lead.lead_source}</span>
                 </div>
-              </>
-            )}
+              )}
+
+              {lead.landing_url && (
+                <div className="flex items-center gap-2 mb-1">
+                  <ExternalLink size={12} className="text-blue-400" />
+                  <a
+                    href={lead.landing_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:text-blue-800 hover:underline truncate max-w-[200px]"
+                    title={lead.landing_url}
+                  >
+                    {(() => {
+                      try { return new URL(lead.landing_url).pathname || '/'; }
+                      catch { return lead.landing_url; }
+                    })()}
+                  </a>
+                </div>
+              )}
+
+              {lead.source_page && !lead.landing_url && (
+                <div className="flex items-center gap-2 mb-1">
+                  <Globe size={12} className="text-slate-400" />
+                  <span className="text-xs text-slate-500 truncate">{lead.source_page}</span>
+                </div>
+              )}
+
+              {/* UTM data */}
+              {(lead.utm_source || lead.utm_campaign || lead.utm_term) && (
+                <div className="mt-2 space-y-1">
+                  <p className="text-xs font-medium text-slate-400">נתוני שיווק</p>
+                  {lead.utm_source && (
+                    <div className="flex items-center gap-2">
+                      <Target size={12} className="text-slate-400" />
+                      <span className="text-xs text-slate-500">מקור: <span className="text-slate-700">{lead.utm_source}</span></span>
+                    </div>
+                  )}
+                  {lead.utm_campaign && (
+                    <div className="flex items-center gap-2">
+                      <Target size={12} className="text-slate-400" />
+                      <span className="text-xs text-slate-500">קמפיין: <span className="text-slate-700">{lead.utm_campaign}</span></span>
+                    </div>
+                  )}
+                  {lead.utm_term && (
+                    <div className="flex items-center gap-2">
+                      <Target size={12} className="text-slate-400" />
+                      <span className="text-xs text-slate-500">מילת מפתח: <span className="text-slate-700">{lead.utm_term}</span></span>
+                    </div>
+                  )}
+                  {lead.gclid && (
+                    <div className="flex items-center gap-2">
+                      <Tag size={12} className="text-slate-400" />
+                      <span className="text-xs text-slate-500">Google Ads click</span>
+                    </div>
+                  )}
+                  {lead.fbclid && (
+                    <div className="flex items-center gap-2">
+                      <Tag size={12} className="text-slate-400" />
+                      <span className="text-xs text-slate-500">Facebook Ad click</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Tags */}
             {lead.tags?.length > 0 && (
@@ -317,8 +473,14 @@ export default function CRMLeadDetail() {
             </div>
           )}
 
-          <Tabs defaultValue="timeline" className="w-full">
+          <Tabs defaultValue="notes" className="w-full">
             <TabsList className="w-full justify-start">
+              <TabsTrigger value="notes">
+                הערות ({notes.length})
+              </TabsTrigger>
+              <TabsTrigger value="whatsapp" className="text-green-700">
+                שיחה {waMessages.length > 0 && `(${waMessages.length})`}
+              </TabsTrigger>
               <TabsTrigger value="timeline">
                 Timeline ({communications.length + status_history.length})
               </TabsTrigger>
@@ -327,10 +489,68 @@ export default function CRMLeadDetail() {
               </TabsTrigger>
             </TabsList>
 
+            {/* Notes Tab */}
+            <TabsContent value="notes" className="mt-4 space-y-4">
+              {/* Add note form */}
+              <div className="bg-white border border-slate-200 rounded-lg p-4">
+                <Textarea
+                  value={newNote}
+                  onChange={e => setNewNote(e.target.value)}
+                  placeholder="כתוב הערה חדשה..."
+                  rows={3}
+                  className="mb-3"
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleAddNote();
+                  }}
+                />
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-slate-400">Ctrl+Enter לשמירה</span>
+                  <Button
+                    size="sm"
+                    onClick={handleAddNote}
+                    disabled={!newNote.trim() || addNote.isPending}
+                    className="bg-[#1E3A5F] hover:bg-[#152d4a]"
+                  >
+                    {addNote.isPending ? 'שומר...' : 'שמור הערה'}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Notes list */}
+              {notesLoading ? (
+                <div className="text-center py-4 text-slate-400">טוען הערות...</div>
+              ) : notes.length === 0 ? (
+                <div className="text-center py-8 text-slate-400">
+                  <FileText size={32} className="mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">אין הערות עדיין</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {notes.map(note => (
+                    <div key={note.id} className="bg-white border border-slate-200 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-slate-400">
+                          {format(new Date(note.created_at), 'dd/MM/yyyy HH:mm', { locale: he })}
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-700 whitespace-pre-wrap">{note.note}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="whatsapp" className="mt-4">
+              <WhatsAppConversation leadId={id} />
+            </TabsContent>
+
             <TabsContent value="timeline" className="mt-4">
               <CommTimeline
                 communications={communications}
                 statusHistory={status_history}
+                whatsappMessages={waMessages}
+                payments={payments}
+                botEvents={bot_events}
               />
             </TabsContent>
 
@@ -389,10 +609,10 @@ export default function CRMLeadDetail() {
               <Button
                 size="sm"
                 onClick={handleWaSendAndSave}
-                disabled={!waMessage.trim() || addComm.isPending}
+                disabled={!waMessage.trim() || sendWaDirect.isPending}
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
-                <Send size={14} className="ml-1" /> {addComm.isPending ? 'שומר...' : 'שלח ושמור'}
+                <Send size={14} className="ml-1" /> {sendWaDirect.isPending ? 'שולח...' : 'שלח ושמור'}
               </Button>
             </div>
           </div>

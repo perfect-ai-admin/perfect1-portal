@@ -37,21 +37,19 @@ export function usePipelineLeads(filters = {}) {
       const agentMap = {};
       (agents || []).forEach(a => { agentMap[a.id] = a.name; });
 
-      // Fetch last note per lead
+      // Fetch last note per lead from lead_notes table
       const leadIds = (leads || []).map(l => l.id);
       const noteMap = {};
       if (leadIds.length > 0) {
         const { data: notes } = await supabase
-          .from('communications')
-          .select('lead_id, content')
+          .from('lead_notes')
+          .select('lead_id, note')
           .in('lead_id', leadIds)
-          .eq('channel', 'note')
-          .eq('source', 'sales_portal')
           .order('created_at', { ascending: false });
 
         (notes || []).forEach(n => {
-          if (!noteMap[n.lead_id] && n.content) {
-            noteMap[n.lead_id] = n.content;
+          if (!noteMap[n.lead_id] && n.note) {
+            noteMap[n.lead_id] = n.note;
           }
         });
       }
@@ -80,7 +78,7 @@ export function useLeadDetail(leadId) {
       if (leadErr || !lead) throw new Error(leadErr?.message || 'Lead not found');
 
       // Fetch related data in parallel
-      const [commsResult, tasksResult, historyResult, agentResult] = await Promise.all([
+      const [commsResult, tasksResult, historyResult, agentResult, paymentsResult, botEventsResult] = await Promise.all([
         supabase.from('communications').select('*')
           .eq('lead_id', leadId).eq('source', 'sales_portal')
           .order('created_at', { ascending: false }),
@@ -93,6 +91,12 @@ export function useLeadDetail(leadId) {
         lead.agent_id
           ? supabase.from('ai_agents').select('id, name, phone, email').eq('id', lead.agent_id).single()
           : Promise.resolve({ data: null }),
+        supabase.from('payments').select('*')
+          .eq('lead_id', leadId)
+          .order('created_at', { ascending: false }),
+        supabase.from('bot_events').select('*')
+          .eq('lead_id', leadId)
+          .order('created_at', { ascending: false }),
       ]);
 
       return {
@@ -101,6 +105,8 @@ export function useLeadDetail(leadId) {
         communications: commsResult.data || [],
         tasks: tasksResult.data || [],
         status_history: historyResult.data || [],
+        payments: paymentsResult.data || [],
+        bot_events: botEventsResult.data || [],
       };
     },
     enabled: !!leadId,
@@ -516,6 +522,136 @@ export function useCompleteTask() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['crm-lead'] });
       qc.invalidateQueries({ queryKey: ['crm-tasks'] });
+    },
+  });
+}
+
+// ---- Lead Notes ----
+
+export function useLeadNotes(leadId) {
+  return useQuery({
+    queryKey: ['lead-notes', leadId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('lead_notes')
+        .select('*')
+        .eq('lead_id', leadId)
+        .order('created_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      return data || [];
+    },
+    enabled: !!leadId,
+  });
+}
+
+export function useAddLeadNote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload) => {
+      const { data, error } = await supabase
+        .from('lead_notes')
+        .insert({
+          lead_id: payload.lead_id,
+          note: payload.note,
+          created_by: payload.created_by || null,
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['lead-notes', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['crm-leads'] });
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
+    },
+  });
+}
+
+// ---- WhatsApp Messages ----
+
+export function useWhatsAppMessages(leadId) {
+  return useQuery({
+    queryKey: ['whatsapp-messages', leadId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('whatsapp_messages')
+        .select('*')
+        .eq('lead_id', leadId)
+        .order('created_at', { ascending: true });
+      if (error) throw new Error(error.message);
+      return data || [];
+    },
+    enabled: !!leadId,
+    refetchInterval: 10000,
+  });
+}
+
+export function useSendWhatsAppMessage() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ lead_id, message, message_type }) => {
+      return invokeFunction('crmSendWhatsApp', { lead_id, message, message_type });
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['whatsapp-messages', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
+    },
+  });
+}
+
+// ---- Payment ----
+
+export function useLeadPaymentStatus(leadId) {
+  return useQuery({
+    queryKey: ['lead-payment', leadId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('payment_status, payment_id, payment_link_sent_at, paid_at')
+        .eq('id', leadId)
+        .single();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+    enabled: !!leadId,
+  });
+}
+
+export function useCreatePaymentLink() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ lead_id, amount, product_type, product_name, send_via_whatsapp }) => {
+      return invokeFunction('crmCreatePaymentLink', {
+        lead_id, amount, product_type, product_name,
+        send_via_whatsapp: send_via_whatsapp !== false,
+      });
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['lead-payment', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['whatsapp-messages', variables.lead_id] });
+    },
+  });
+}
+
+// ---- Follow-up Date ----
+
+export function useUpdateFollowupDate() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ lead_id, next_followup_date }) => {
+      const { error } = await supabase
+        .from('leads')
+        .update({ next_followup_date, updated_at: new Date().toISOString() })
+        .eq('id', lead_id)
+        .eq('source', 'sales_portal');
+      if (error) throw new Error(error.message);
+      return { success: true };
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['crm-leads'] });
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
     },
   });
 }
