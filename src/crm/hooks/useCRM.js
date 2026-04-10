@@ -285,19 +285,41 @@ export function useCreateLead() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (payload) => {
+      // Check for duplicate by phone
+      if (payload.phone && !payload.force_create) {
+        const { data: existing } = await supabase
+          .from('leads')
+          .select('id, name, phone')
+          .eq('phone', payload.phone)
+          .eq('source', 'sales_portal')
+          .limit(1)
+          .maybeSingle();
+        if (existing) {
+          return { warning: 'duplicate_found', duplicate: existing };
+        }
+      }
+
+      const insertData = {
+        name: payload.name || null,
+        phone: payload.phone || null,
+        email: payload.email || null,
+        service_type: payload.service_type || null,
+        pipeline_stage: 'new_lead',
+        status: 'new',
+        source: 'sales_portal',
+        interaction_type: 'manual',
+        notes: payload.notes || null,
+      };
+
+      // Optional fields only if provided
+      if (payload.city) insertData.city = payload.city;
+      if (payload.temperature) insertData.temperature = payload.temperature;
+      if (payload.agent_id) insertData.agent_id = payload.agent_id;
+      if (payload.estimated_value) insertData.estimated_value = payload.estimated_value;
+
       const { data, error } = await supabase
         .from('leads')
-        .insert({
-          name: payload.name || null,
-          phone: payload.phone || null,
-          email: payload.email || null,
-          service_type: payload.service_type || null,
-          pipeline_stage: 'new_lead',
-          status: 'new',
-          source: 'sales_portal',
-          lead_source: payload.lead_source || 'manual',
-          notes: payload.notes || null,
-        })
+        .insert(insertData)
         .select()
         .single();
       if (error) throw new Error(error.message);
