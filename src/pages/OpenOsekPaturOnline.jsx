@@ -71,8 +71,10 @@ export default function OpenOsekPaturOnline() {
     consent: true,
   });
 
-  // URL params
-  const phone = searchParams.get('phone') || '';
+  // URL params (phone may be prefilled from a previous landing page; if not,
+  // the user enters it manually in step 1 — without it submitLeadToN8N
+  // returns 400 "Phone is required" and the entire payment flow breaks).
+  const [phone, setPhone] = useState(searchParams.get('phone') || '');
   const gclid = searchParams.get('gclid') || '';
   const utmSource = searchParams.get('utm_source') || '';
   const utmCampaign = searchParams.get('utm_campaign') || '';
@@ -95,6 +97,10 @@ export default function OpenOsekPaturOnline() {
     if (!form.name.trim()) e.name = 'שדה חובה';
     if (!/^\d{9}$/.test(form.idNumber)) e.idNumber = 'נדרשות 9 ספרות';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'אימייל לא תקין';
+    // Israeli mobile: 10 digits starting with 05, optionally allow leading
+    // country code +972 / 972 which we strip to its local form.
+    const phoneDigits = phone.replace(/\D/g, '').replace(/^972/, '0');
+    if (!/^05\d{8}$/.test(phoneDigits)) e.phone = 'מספר נייד ישראלי לא תקין';
     if (!form.isEmployee) e.isEmployee = 'יש לבחור';
     if (form.isEmployee === 'yes' && !form.salary) e.salary = 'יש לבחור טווח שכר';
     setErrors(e);
@@ -156,9 +162,13 @@ export default function OpenOsekPaturOnline() {
             }
           }
 
+          // Normalize phone before sending to backend (matches the regex
+          // used in step-1 validation: strips +972 and any non-digits).
+          const normalizedPhone = phone.replace(/\D/g, '').replace(/^972/, '0');
+
           const leadResult = await invokeFunction('submitLeadToN8N', {
             name: form.name,
-            phone,
+            phone: normalizedPhone,
             email: form.email,
             pageSlug: 'open-osek-patur-online',
             businessName: form.businessName,
@@ -206,8 +216,13 @@ export default function OpenOsekPaturOnline() {
             }
           }
         } catch (err) {
+          // Surface the real backend error message so we (and the user) can
+          // tell apart "Phone is required" / "Terminal not configured" /
+          // network failures, instead of a single generic banner that hides
+          // the root cause for hours.
           console.error('Setup failed:', err);
-          setPaymentError('שגיאה בטעינת טופס התשלום. נסו לרענן את הדף.');
+          const detail = (err && err.message) ? `: ${err.message}` : '';
+          setPaymentError(`שגיאה בטעינת טופס התשלום${detail}`);
         } finally {
           setPaymentLoading(false);
         }
@@ -399,6 +414,22 @@ export default function OpenOsekPaturOnline() {
                       value={form.email}
                       onChange={e => set('email', e.target.value)}
                       placeholder="name@example.com"
+                      className="h-12 rounded-xl text-left"
+                      dir="ltr"
+                    />
+                  </FieldGroup>
+
+                  <FieldGroup label="טלפון נייד" error={errors.phone}>
+                    <Input
+                      type="tel"
+                      value={phone}
+                      onChange={e => {
+                        setPhone(e.target.value.replace(/[^\d+]/g, '').slice(0, 13));
+                        setErrors(prev => ({ ...prev, phone: '' }));
+                      }}
+                      placeholder="050-1234567"
+                      inputMode="tel"
+                      autoComplete="tel"
                       className="h-12 rounded-xl text-left"
                       dir="ltr"
                     />
