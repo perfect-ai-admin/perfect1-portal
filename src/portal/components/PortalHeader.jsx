@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, Phone, MessageCircle, FileText, Briefcase, Building2, FolderX, BookOpen } from 'lucide-react';
+import { Menu, X, ChevronDown, Phone, MessageCircle, FileText, Briefcase, Building2, FolderX, BookOpen, Calculator } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { PORTAL_CATEGORIES, PORTAL_BRAND, PORTAL_CTA } from '../config/navigation';
 
-const ICONS = { FileText, Briefcase, Building2, FolderX, BookOpen };
+const ICONS = { FileText, Briefcase, Building2, FolderX, BookOpen, Calculator };
 
 const COLOR_DOTS = {
   teal: 'bg-teal-500',
@@ -13,6 +13,7 @@ const COLOR_DOTS = {
   indigo: 'bg-indigo-500',
   red: 'bg-red-500',
   amber: 'bg-amber-500',
+  emerald: 'bg-emerald-500',
 };
 
 export default function PortalHeader() {
@@ -114,12 +115,12 @@ export default function PortalHeader() {
 
         {/* Mobile: CTA + Menu */}
         <div className="lg:hidden flex items-center gap-2">
-          <a href={`tel:${PORTAL_CTA.phone}`} className="flex items-center justify-center w-9 h-9 rounded-full bg-portal-teal text-white">
+          <a href={`tel:${PORTAL_CTA.phone}`} aria-label="התקשר אלינו" className="flex items-center justify-center w-9 h-9 rounded-full bg-portal-teal text-white">
             <Phone className="w-4 h-4" />
           </a>
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <button className="p-2 text-portal-navy">
+              <button aria-label="פתח תפריט ניווט" className="p-2 text-portal-navy">
                 <Menu className="w-6 h-6" />
               </button>
             </SheetTrigger>

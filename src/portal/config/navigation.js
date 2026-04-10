@@ -75,8 +75,22 @@ export const PORTAL_CATEGORIES = [
       { title: 'השוואות', href: '/guides/comparisons', description: 'טבלאות השוואה — עוסק פטור מול מורשה, תוכנות, שירותים' },
       { title: 'מיסוי וחשבונאות', href: '/guides/taxation', description: 'מדריכי מס הכנסה, מע"מ, ביטוח לאומי ורואה חשבון' },
       { title: 'מדריכים לעצמאים', href: '/guides/freelancers', description: 'טיפים לפרילנסרים — תמחור, לקוחות, חוזים וביטוח' },
-      { title: 'כלים ומחשבונים', href: '/calculators', description: 'מחשבון נטו לעצמאי, חישוב מס והערכת הוצאות' },
       { title: 'שאלות נפוצות', href: '/guides/faq', description: 'תשובות לשאלות כלליות על עסקים בישראל' },
+    ]
+  },
+  {
+    id: 'calculators',
+    title: 'מחשבונים',
+    href: '/calculators',
+    icon: 'Calculator',
+    description: 'מחשבונים חינמיים לעצמאים ולעסקים',
+    color: 'emerald',
+    subcategories: [
+      { title: 'מחשבון נטו לעצמאי', href: '/calculators#net-income', description: 'כמה נשאר נטו אחרי מס הכנסה, ביטוח לאומי והוצאות' },
+      { title: 'מחשבון מס לעצמאי', href: '/calculators', description: 'חישוב מס הכנסה לפי מדרגות מס ונקודות זיכוי (בקרוב)' },
+      { title: 'מחשבון נקודות זיכוי', href: '/calculators', description: 'חישוב שווי נקודות הזיכוי והפחתת המס (בקרוב)' },
+      { title: 'מחשבון תקרת עוסק פטור', href: '/calculators', description: 'בדיקת תקרת ההכנסות השנתית לעוסק פטור (בקרוב)' },
+      { title: 'פטור או מורשה?', href: '/calculators', description: 'כלי החלטה בין עוסק פטור לעוסק מורשה (בקרוב)' },
     ]
   }
 ];
