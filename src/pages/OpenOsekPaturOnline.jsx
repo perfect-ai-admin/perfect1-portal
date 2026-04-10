@@ -215,12 +215,23 @@ export default function OpenOsekPaturOnline() {
     }
   }, [step]);
 
-  // Auto-submit Tranzila form when thtk is ready
+  // Auto-submit Tranzila form when thtk is ready.
+  // IMPORTANT: The form targets the inline iframe (`tranzila-iframe`) on ALL
+  // devices including mobile. We do NOT auto-submit to `_blank` — mobile
+  // browsers block programmatic popups without a user gesture, which broke
+  // the mobile checkout entirely (users got stuck on step 4 with no payment
+  // form visible). If the iframe still fails to load, the "פתח בחלון חדש"
+  // button below provides a user-gesture fallback.
   useEffect(() => {
     if (thtk && thtk !== 'direct' && step === 4) {
-      setTimeout(() => {
-        document.getElementById('tranzila-form')?.submit();
+      const t = setTimeout(() => {
+        const f = document.getElementById('tranzila-form');
+        const iframe = document.getElementById('tranzila-iframe');
+        // Guard: ensure iframe exists and is in the DOM before submitting,
+        // otherwise the form would fall back to navigating the top window.
+        if (f && iframe) f.submit();
       }, 300);
+      return () => clearTimeout(t);
     }
   }, [thtk, step]);
 
@@ -615,7 +626,7 @@ export default function OpenOsekPaturOnline() {
                       <form
                         id="tranzila-form"
                         action={`https://direct.tranzila.com/${tranzilaSupplier}/iframenew.php`}
-                        target={window.innerWidth < 768 ? '_blank' : 'tranzila-iframe'}
+                        target="tranzila-iframe"
                         method="POST"
                         style={{ display: 'none' }}
                       >
@@ -643,23 +654,36 @@ export default function OpenOsekPaturOnline() {
                         {notifyUrl && <input type="hidden" name="notify_url_address" value={notifyUrl} />}
                       </form>
 
-                      {/* Desktop: show iframe inline. Mobile: opens in new tab */}
+                      {/* Inline iframe on ALL devices (desktop + mobile).
+                          On mobile we give it extra height because Tranzila's
+                          form stacks vertically on narrow viewports. */}
                       <iframe
                         name="tranzila-iframe"
                         id="tranzila-iframe"
                         title="טופס תשלום מאובטח"
                         allowpaymentrequest="true"
-                        className="w-full rounded-xl border-0 hidden md:block"
-                        style={{ height: '550px', minHeight: '550px' }}
+                        className="w-full rounded-xl border-0 block bg-white"
+                        style={{ height: 'min(720px, 85vh)', minHeight: '600px' }}
                       />
-                      <div className="md:hidden text-center space-y-3 py-4">
-                        <p className="text-sm text-gray-600">דף התשלום נפתח בחלון חדש.</p>
-                        <p className="text-xs text-gray-400">אם הדף לא נפתח, לחצו כאן:</p>
+
+                      {/* User-gesture fallback: if something goes wrong with
+                          the inline iframe, the user can tap this button to
+                          re-submit (a click is a valid user gesture so no
+                          popup blocker will interfere). */}
+                      <div className="text-center space-y-2 py-3">
+                        <p className="text-xs text-gray-400">
+                          טופס התשלום לא נטען? לחצו כאן כדי לנסות שוב:
+                        </p>
                         <Button
-                          onClick={() => document.getElementById('tranzila-form')?.submit()}
-                          className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-12 w-full text-base font-semibold"
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            const f = document.getElementById('tranzila-form');
+                            if (f) f.submit();
+                          }}
+                          className="rounded-xl h-11 px-6 text-sm"
                         >
-                          פתח דף תשלום
+                          טען טופס תשלום מחדש
                         </Button>
                       </div>
                     </>
