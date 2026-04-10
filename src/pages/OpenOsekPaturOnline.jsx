@@ -291,7 +291,7 @@ export default function OpenOsekPaturOnline() {
     <>
       <Helmet>
         <title>פתיחת עוסק פטור אונליין | פרפקט וואן</title>
-        <meta name="robots" content="noindex, follow" />
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
       </Helmet>
 
       <div dir="rtl" className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">

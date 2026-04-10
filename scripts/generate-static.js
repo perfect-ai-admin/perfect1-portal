@@ -509,8 +509,12 @@ function generatePublicPages() {
     html = html.replace(/<meta name="twitter:description"[^>]*>/, '');
 
     // Build page-specific meta tags
+    const robotsTag = seo.noindex
+      ? `<meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />`
+      : '';
     const metaTags = `
     <title>${escapeHtml(seo.title)}</title>
+    ${robotsTag}
     <meta name="description" content="${escapeHtml(seo.description)}" />
     <meta name="keywords" content="${escapeHtml(seo.keywords)}" />
     <link rel="canonical" href="${url}" />

@@ -48,7 +48,9 @@ Allow: /OsekPaturLanding
 Allow: /OsekPaturSteps
 Allow: /patur-vs-murshe-quiz
 Allow: /accountant-osek-patur
-Allow: /open-osek-patur-online
+
+# Fully blocked — no organic, no paid, no crawl at all
+Disallow: /open-osek-patur-online
 
 # Product pages (belong to perfect-dashboard.com, not this site)
 Disallow: /Pricing
