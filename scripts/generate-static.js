@@ -662,9 +662,51 @@ function generateHomePage() {
 
   html = html.replace('<head>', `<head>\n    <meta name="prerender-status" content="200">\n    ${metaTags}`);
 
+  // Inject static HTML inside #root so Googlebot sees H1 + intro + 18
+  // internal links WITHOUT needing to execute JavaScript. React hydrates
+  // over this on the client and replaces it with the full interactive UI.
+  const HOME_LINKS = [
+    { href: '/osek-patur', title: 'עוסק פטור — רכזת מלאה', cat: 'קטגוריה' },
+    { href: '/osek-murshe', title: 'עוסק מורשה — רכזת מלאה', cat: 'קטגוריה' },
+    { href: '/hevra-bam', title: 'חברה בע״מ — רכזת מלאה', cat: 'קטגוריה' },
+    { href: '/sgirat-tikim', title: 'סגירת תיקים — רכזת מלאה', cat: 'קטגוריה' },
+    { href: '/guides', title: 'מדריכים לעסקים', cat: 'קטגוריה' },
+    { href: '/osek-patur/how-to-open', title: 'איך פותחים עוסק פטור — מדריך מלא 2026', cat: 'עוסק פטור' },
+    { href: '/osek-patur/cost', title: 'כמה עולה לפתוח עוסק פטור', cat: 'עוסק פטור' },
+    { href: '/osek-patur/income-ceiling', title: 'תקרת הכנסות עוסק פטור 2026', cat: 'עוסק פטור' },
+    { href: '/osek-patur/bituach-leumi', title: 'ביטוח לאומי עוסק פטור', cat: 'עוסק פטור' },
+    { href: '/osek-murshe/how-to-open', title: 'פתיחת עוסק מורשה — מדריך מלא', cat: 'עוסק מורשה' },
+    { href: '/osek-murshe/vat-guide', title: 'מעמ עוסק מורשה — מדריך חשבוניות', cat: 'עוסק מורשה' },
+    { href: '/osek-murshe/tax-deductions', title: 'הוצאות מוכרות עוסק מורשה', cat: 'עוסק מורשה' },
+    { href: '/osek-murshe/income-tax', title: 'מס הכנסה עוסק מורשה — מדרגות ודיווח', cat: 'עוסק מורשה' },
+    { href: '/hevra-bam/how-to-open', title: 'פתיחת חברה בע״מ — המדריך המלא', cat: 'חברה בע״מ' },
+    { href: '/hevra-bam/taxes', title: 'מיסוי חברה בע״מ — מס חברות ודיבידנד', cat: 'חברה בע״מ' },
+    { href: '/compare/osek-patur-vs-murshe', title: 'עוסק פטור או מורשה — מה מתאים לך', cat: 'השוואה' },
+    { href: '/guides/which-business-type', title: 'איזה סוג עסק לפתוח', cat: 'מדריך' },
+    { href: '/calculators', title: 'מחשבון הכנסה נטו לעצמאים', cat: 'כלי' },
+  ];
+
+  const linksHtml = HOME_LINKS.map(l =>
+    `      <li><a href="${l.href}"><strong>${escapeHtml(l.title)}</strong> <span>${escapeHtml(l.cat)}</span></a></li>`
+  ).join('\n');
+
+  const staticBody = `<div dir="rtl" class="portal-root" style="font-family:Heebo,sans-serif">
+    <h1>פתיחת עסק בישראל — מדריכים, מידע וליווי אישי</h1>
+    <p>כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד. מדריכים מקיפים, כלים מעשיים וליווי אישי של רואה חשבון.</p>
+    <h2>מדריכים וקטגוריות ראשיות</h2>
+    <ul>
+${linksHtml}
+    </ul>
+  </div>`;
+
+  html = html.replace(
+    '<div id="root"></div>',
+    `<div id="root">${staticBody}</div>`
+  );
+
   // Write to dist/index.html (overwrites the base)
   writeFileSync(join(DIST_DIR, 'index.html'), html, 'utf-8');
-  console.log(`\n🏠 Generated HomePage (/) with canonical + unique meta`);
+  console.log(`\n🏠 Generated HomePage (/) with canonical + meta + ${HOME_LINKS.length} static internal links`);
 }
 
 // Order matters: generateHomePage() overwrites dist/index.html,
