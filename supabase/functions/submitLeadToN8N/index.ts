@@ -173,7 +173,34 @@ Deno.serve(async (req) => {
     if (leadErr) throw new Error(leadErr.message);
     console.log('Lead saved to CRM:', leadResult.id);
 
-    // Send lead to n8n webhook (DB trigger was disabled, so we send directly)
+    // Trigger botStartFlow directly (Supabase edge function)
+    // This creates a bot_session, sends the WhatsApp greeting, and stores the message in whatsapp_messages
+    try {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      const botStartRes = await fetch(`${supabaseUrl}/functions/v1/botStartFlow`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${serviceKey}`,
+          'apikey': serviceKey,
+        },
+        body: JSON.stringify({
+          lead_id: leadResult.id,
+          lead_name: safeName || 'אתר',
+          phone: cleanPhone,
+          email: email || '',
+          page_slug: pageSlug || 'open-osek-patur',
+          page_title: safeBusinessName || '',
+        }),
+        signal: AbortSignal.timeout(10000),
+      });
+      console.log('botStartFlow triggered for lead:', leadResult.id, 'status:', botStartRes.status);
+    } catch (e: any) {
+      console.warn('botStartFlow trigger failed (non-blocking):', e.message);
+    }
+
+    // Also notify n8n (for any downstream automations, owner notifications, etc)
     try {
       const n8nPayload = {
         _event_type: 'new_lead',
