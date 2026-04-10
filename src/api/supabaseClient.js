@@ -1,28 +1,41 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://fnsnnezhikgqajdbtwoa.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuc25uZXpoaWtncWFqZGJ0d29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5Nzg5MDAsImV4cCI6MjA4NDU1NDkwMH0.EGdw5eJ-rJ9v1cMxS0EZHPcAvJ0FJ3Won38I8VbfrY4';
-const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuc25uZXpoaWtncWFqZGJ0d29hIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODk3ODkwMCwiZXhwIjoyMDg0NTU0OTAwfQ.ncDeHwwY3lD88i3dS98-7ETV4als0pzFn7Cz6UXC_RM';
+// SECURITY: No hardcoded fallbacks — keys MUST come from environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase configuration. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Admin client for CRM write operations — bypasses RLS
-// persistSession: false ensures it always uses the service key, not the user's session
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: { autoRefreshToken: false, persistSession: false },
-});
+// SECURITY: Service role key removed from frontend — all admin operations go through Edge Functions
+// Use invokeFunction() to call server-side functions that use the service role key
 
 // Invoke a Supabase Edge Function by name.
 // Uses direct fetch with anon key to avoid 401 when user has expired session in localStorage.
+// NOTE: Supabase's gateway requires BOTH `apikey` and `Authorization` headers
+// on public edge function calls. Omitting `apikey` causes the gateway to
+// reject the request before it reaches Deno, which surfaces in the browser
+// as a generic `TypeError: Failed to fetch` rather than an HTTP error.
 export async function invokeFunction(name, payload = {}) {
-  const resp = await fetch(`${supabaseUrl}/functions/v1/${name}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${supabaseAnonKey}`,
-    },
-    body: JSON.stringify(payload),
-  });
+  let resp;
+  try {
+    resp = await fetch(`${supabaseUrl}/functions/v1/${name}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+        'apikey': supabaseAnonKey,
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (networkErr) {
+    // fetch itself threw — network, CORS, DNS, offline, or extension blocker.
+    console.error(`[invokeFunction] ${name} network error:`, networkErr);
+    throw new Error(`Network error calling ${name}: ${networkErr.message || 'Failed to fetch'}`);
+  }
   if (!resp.ok) {
     let msg = `Edge function ${name} returned ${resp.status}`;
     try { const body = await resp.json(); msg = body?.error || body?.message || msg; } catch {}

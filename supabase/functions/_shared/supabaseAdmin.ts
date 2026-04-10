@@ -91,20 +91,74 @@ function isAllowedOrigin(origin: string): boolean {
 }
 
 // החזר CORS headers מותאמים ל-origin של הבקשה
+// IMPORTANT: `Access-Control-Allow-Methods` must be present in the preflight
+// response — without it, strict browsers (recent Chrome/Safari) may reject
+// the preflight for POST+JSON requests with a generic "Failed to fetch".
 export function getCorsHeaders(req?: Request): Record<string, string> {
   const origin = req?.headers?.get('Origin') || '';
   const allowedOrigin = isAllowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Max-Age': '86400',
+    'Vary': 'Origin',
   };
 }
 
 // corsHeaders — ברירת מחדל (backwards compatibility, ל-OPTIONS בלי req)
 export const corsHeaders = {
   'Access-Control-Allow-Origin': ALLOWED_ORIGINS[0],
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Max-Age': '86400',
+  'Vary': 'Origin',
 };
+
+// --- Rate limiting (in-memory, per Edge Function instance) ---
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+export function checkRateLimit(
+  identifier: string,
+  maxRequests = 10,
+  windowMs = 60_000,
+): boolean {
+  const now = Date.now();
+  const entry = rateLimitStore.get(identifier);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(identifier, { count: 1, resetAt: now + windowMs });
+    return true;
+  }
+
+  if (entry.count >= maxRequests) return false;
+
+  entry.count++;
+  return true;
+}
+
+// --- Input validation helpers ---
+const ISRAELI_PHONE_RE = /^(\+972|972|0)(5[0-9]|7[2-9])\d{7}$/;
+
+export function validatePhone(phone: string): string | null {
+  const cleaned = phone.replace(/[\s\-()]/g, '');
+  if (ISRAELI_PHONE_RE.test(cleaned)) return cleaned;
+  return null;
+}
+
+export function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+export function sanitizeString(str: string, maxLen = 500): string {
+  if (!str) return '';
+  return str.slice(0, maxLen).replace(/[<>]/g, '');
+}
+
+// --- Security logging ---
+export function logSecurityEvent(event: string, details: Record<string, unknown>) {
+  console.warn(`[SECURITY] ${event}`, JSON.stringify(details));
+}
 
 // Standard response helpers
 export function jsonResponse(data: unknown, status = 200, req?: Request) {

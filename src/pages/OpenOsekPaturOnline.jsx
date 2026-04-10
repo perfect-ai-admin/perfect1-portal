@@ -71,10 +71,11 @@ export default function OpenOsekPaturOnline() {
     consent: true,
   });
 
-  // URL params (phone may be prefilled from a previous landing page; if not,
-  // the user enters it manually in step 1 — without it submitLeadToN8N
-  // returns 400 "Phone is required" and the entire payment flow breaks).
-  const [phone, setPhone] = useState(searchParams.get('phone') || '');
+  // URL params — phone may be prefilled from a previous landing page, but
+  // this flow intentionally does NOT ask for phone on-page. Phone is
+  // captured by Tranzila on the payment form and linked back to the lead
+  // in handlePaymentSuccess after a successful charge.
+  const phone = searchParams.get('phone') || '';
   const gclid = searchParams.get('gclid') || '';
   const utmSource = searchParams.get('utm_source') || '';
   const utmCampaign = searchParams.get('utm_campaign') || '';
@@ -97,10 +98,6 @@ export default function OpenOsekPaturOnline() {
     if (!form.name.trim()) e.name = 'שדה חובה';
     if (!/^\d{9}$/.test(form.idNumber)) e.idNumber = 'נדרשות 9 ספרות';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'אימייל לא תקין';
-    // Israeli mobile: 10 digits starting with 05, optionally allow leading
-    // country code +972 / 972 which we strip to its local form.
-    const phoneDigits = phone.replace(/\D/g, '').replace(/^972/, '0');
-    if (!/^05\d{8}$/.test(phoneDigits)) e.phone = 'מספר נייד ישראלי לא תקין';
     if (!form.isEmployee) e.isEmployee = 'יש לבחור';
     if (form.isEmployee === 'yes' && !form.salary) e.salary = 'יש לבחור טווח שכר';
     setErrors(e);
@@ -143,56 +140,63 @@ export default function OpenOsekPaturOnline() {
   const [paymentId, setPaymentId] = useState(null);
   const [notifyUrl, setNotifyUrl] = useState('');
 
-  // ---- Create Lead + Payment + Tranzila Handshake (Step 4) ----
+  // ---- Tranzila Handshake (Step 4) ----
+  // IMPORTANT: This flow does NOT ask for a phone number on-page.
+  // Creating a lead upfront would fail because submitLeadToN8N enforces
+  // `phone` as required — Tranzila's payment form collects the phone as
+  // part of the billing info, and we link everything together in
+  // `handlePaymentSuccess` / `tranzilaConfirmPayment` after the charge.
+  // File uploads (ID photo) are still uploaded now so we have the URL
+  // ready to attach to the lead once it's created post-payment.
   useEffect(() => {
     if (step === 4 && !thtk && !paymentLoading && !paymentError) {
       setPaymentLoading(true);
       (async () => {
         try {
-          // Step A: Create lead in CRM via submitLeadToN8N
+          // Upload ID photo to storage (best-effort — don't block payment
+          // if storage is down, we'll just save the form data without it).
           let fileUrl = '';
           if (form.file) {
-            const fileName = `${crypto.randomUUID()}_${form.file.name}`;
-            const { error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, form.file, {
-              contentType: form.file.type,
-            });
-            if (!uploadErr) {
-              const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
-              fileUrl = urlData.publicUrl;
+            try {
+              const fileName = `${crypto.randomUUID()}_${form.file.name}`;
+              const { error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, form.file, {
+                contentType: form.file.type,
+              });
+              if (!uploadErr) {
+                const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
+                fileUrl = urlData.publicUrl;
+              }
+            } catch (uploadErr) {
+              console.warn('File upload failed, continuing without it:', uploadErr);
             }
           }
 
-          // Normalize phone before sending to backend (matches the regex
-          // used in step-1 validation: strips +972 and any non-digits).
-          const normalizedPhone = phone.replace(/\D/g, '').replace(/^972/, '0');
+          // Stash form data in sessionStorage so handlePaymentSuccess can
+          // submit it as a lead after the charge completes (with Tranzila's
+          // phone number).
+          try {
+            sessionStorage.setItem('pendingLead', JSON.stringify({
+              name: form.name,
+              email: form.email,
+              businessName: form.businessName,
+              businessType: form.businessType,
+              id_number: form.idNumber,
+              income: form.income,
+              is_employee: form.isEmployee,
+              salary: form.salary,
+              file_url: fileUrl,
+              gclid,
+              utm_source: utmSource,
+              utm_campaign: utmCampaign,
+              referrer,
+              landingUrl: window.location.href,
+            }));
+          } catch {}
 
-          const leadResult = await invokeFunction('submitLeadToN8N', {
-            name: form.name,
-            phone: normalizedPhone,
-            email: form.email,
-            pageSlug: 'open-osek-patur-online',
-            businessName: form.businessName,
-            businessType: form.businessType,
-            id_number: form.idNumber,
-            income: form.income,
-            is_employee: form.isEmployee,
-            salary: form.salary,
-            file_url: fileUrl,
-            message: 'ממתין לתשלום - 299 ₪',
-            gclid,
-            utm_source: utmSource,
-            utm_campaign: utmCampaign,
-            referrer,
-            landingUrl: window.location.href,
-          });
-
-          const createdLeadId = leadResult?.leadId || leadResult?.lead_id || leadResult?.id || null;
-          if (createdLeadId) setLeadId(createdLeadId);
-
-          // Step B: Create payment record + get Tranzila handshake
+          // Call Tranzila handshake directly — no lead_id yet, it's
+          // optional on the backend.
           const handshakeResult = await invokeFunction('tranzilaHandshake', {
             sum: 299,
-            lead_id: createdLeadId,
           });
 
           if (handshakeResult?.thtk) {
@@ -271,8 +275,32 @@ export default function OpenOsekPaturOnline() {
     if (paymentSuccess) return; // prevent double processing
     setPaymentSuccess(true);
 
+    // Extract the phone Tranzila collected from the payer. Tranzila sends
+    // several possible field names depending on terminal configuration.
+    const tranzilaPhone = (
+      txData.contact_cell || txData.phone || txData.contact_phone ||
+      txData.cell || phone || ''
+    ).toString();
+
     try {
-      // Confirm payment via our edge function (links to lead, triggers post-purchase flow)
+      // 1. Create the lead now that we finally have a phone number.
+      let pending = null;
+      try {
+        const raw = sessionStorage.getItem('pendingLead');
+        if (raw) pending = JSON.parse(raw);
+      } catch {}
+
+      if (pending && tranzilaPhone) {
+        await invokeFunction('submitLeadToN8N', {
+          ...pending,
+          phone: tranzilaPhone.replace(/\D/g, '').replace(/^972/, '0'),
+          pageSlug: 'open-osek-patur-online',
+          message: 'שולם 299 ₪ — עוסק פטור אונליין',
+        }).catch(err => console.warn('Post-payment lead creation failed:', err));
+        try { sessionStorage.removeItem('pendingLead'); } catch {}
+      }
+
+      // 2. Confirm payment via our edge function (triggers post-purchase flow).
       const txId = txData.ConfirmationCode || txData.confirmationCode || txData.index || '';
       if (paymentId) {
         await invokeFunction('tranzilaConfirmPayment', {
@@ -414,22 +442,6 @@ export default function OpenOsekPaturOnline() {
                       value={form.email}
                       onChange={e => set('email', e.target.value)}
                       placeholder="name@example.com"
-                      className="h-12 rounded-xl text-left"
-                      dir="ltr"
-                    />
-                  </FieldGroup>
-
-                  <FieldGroup label="טלפון נייד" error={errors.phone}>
-                    <Input
-                      type="tel"
-                      value={phone}
-                      onChange={e => {
-                        setPhone(e.target.value.replace(/[^\d+]/g, '').slice(0, 13));
-                        setErrors(prev => ({ ...prev, phone: '' }));
-                      }}
-                      placeholder="050-1234567"
-                      inputMode="tel"
-                      autoComplete="tel"
                       className="h-12 rounded-xl text-left"
                       dir="ltr"
                     />
