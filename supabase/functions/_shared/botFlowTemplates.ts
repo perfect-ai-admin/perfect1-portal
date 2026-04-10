@@ -306,6 +306,43 @@ const GENERIC_FLOW: BotFlow = {
   ],
 };
 
+// Accountant callback flow — triggered after lead picks "talk to accountant"
+// 5 free-text questions to profile the lead before the real call
+export const SERVICES_PDF_URL = 'https://rtlpqjqdmomyptcdkmrq.supabase.co/storage/v1/object/public/public-assets/perfect-one-services.pdf';
+
+export const ACCOUNTANT_CALLBACK_FLOW: BotFlow = {
+  flow_type: 'accountant_callback_flow',
+  goal: 'Keep the lead engaged + collect profile info before accountant calls back',
+  tone: 'מנומס, אנושי, קצר',
+  max_steps: 4,
+  steps: [
+    {
+      step_id: 'ac_q1',
+      question: 'באיזה תחום העסק שאתה רוצה לפתוח? 🎯\n\nלדוגמה: שיווק, בנייה, קוסמטיקה, אונליין, ייעוץ, קמעונאות...',
+      buttons: [],
+      crm_field: 'business_field',
+    },
+    {
+      step_id: 'ac_q2',
+      question: 'איך חשבת להביא לקוחות לעסק? 🚀\n\nלדוגמה:\n• פרסום בגוגל / פייסבוק\n• אינסטגרם / טיקטוק\n• המלצות מחברים\n• עבודה מול חברות',
+      buttons: [],
+      crm_field: 'lead_gen_plan',
+    },
+    {
+      step_id: 'ac_q3',
+      question: 'מה המטרה העסקית שלך בשנה הקרובה? 💼\n\nלדוגמה:\n• הכנסה נוספת לצד העבודה\n• עסק עיקרי / עצמאי במשרה מלאה\n• להגיע להכנסה חודשית מסוימת',
+      buttons: [],
+      crm_field: 'yearly_goal',
+    },
+    {
+      step_id: 'ac_q4',
+      question: 'איך חשבת להגיע למטרה הזו? 🛤️\n\nאפשר לשתף בקצרה — איזה צעדים תכננת לקחת?',
+      buttons: [],
+      crm_field: 'goal_plan',
+    },
+  ],
+};
+
 // Flow map
 const FLOW_MAP: Record<string, BotFlow> = {
   osek_patur_universal_flow: OSEK_PATUR_UNIVERSAL_FLOW,
@@ -315,6 +352,7 @@ const FLOW_MAP: Record<string, BotFlow> = {
   pricing_flow: PRICING_FLOW,
   accounting_svc_flow: ACCOUNTING_SVC_FLOW,
   generic_flow: GENERIC_FLOW,
+  accountant_callback_flow: ACCOUNTANT_CALLBACK_FLOW,
 };
 
 /**
@@ -374,6 +412,29 @@ export function buildCtaMessage(temperature: string): { text: string; buttons: B
       { id: 'cta_question', label: '❓ לשאול שאלה', action: 'handoff' },
     ],
   };
+}
+
+/**
+ * Build accountant-callback opening message (sent immediately after lead picks "talk to accountant")
+ * Includes the services PDF link so they can see what we offer while waiting.
+ */
+export function buildAccountantCallbackOpening(leadName: string): string {
+  const name = leadName || '';
+  return `שלום ${name} 👋\n\nמצוין, רואה חשבון מהמשרד יחזור אליך בהקדם לשיחה קצרה.\n\nבינתיים כדי שתכיר אותנו קצת יותר — כאן תוכל לראות את כל השירותים שלנו:\n👉 ${SERVICES_PDF_URL}\n\nוכדי שנוכל לעזור לך בצורה הכי מדויקת בשיחה עם רואה החשבון, אשמח להכיר קצת את התוכנית שלך. אפשר לענות כאן בכמה מילים 👇`;
+}
+
+/**
+ * Optional conversion tip after first question (shared by social proof)
+ */
+export function buildAccountantQ1Followup(): string {
+  return `אגב — הרבה אנשים שפותחים עוסק פטור עושים את זה כי הם רוצים להתחיל להכניס כסף כבר בחודשים הקרובים 💰\nמעניין לשמוע מה הכיוון שלך.`;
+}
+
+/**
+ * Build final thank-you message after all 4 questions
+ */
+export function buildAccountantCallbackClosing(): string {
+  return `מעולה, תודה על השיתוף 🙏\n\nזה יעזור לרואה החשבון להבין בדיוק איך לעזור לך.\nנעדכן אותו בפרטים ששלחת והוא יחזור אליך בהקדם.\n\nאם יש לך שאלה בינתיים — אפשר לשאול כאן 💬`;
 }
 
 /**
