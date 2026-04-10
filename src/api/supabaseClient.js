@@ -1,11 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
 
-// SECURITY: No hardcoded fallbacks — keys MUST come from environment variables
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// IMPORTANT: keys should come from environment variables (VITE_SUPABASE_URL /
+// VITE_SUPABASE_ANON_KEY). We keep inert placeholders as a last-resort fallback
+// because `createClient(undefined, undefined)` throws synchronously at module
+// load time, which would take down the ENTIRE React app on every route —
+// including portal pages that use the separate `portalSupabaseClient` and
+// don't actually need this client at all. With placeholders, the module loads
+// and only individual calls to the app DB fail at runtime (recoverable),
+// instead of a hard white-screen on every page.
+const ENV_URL = import.meta.env.VITE_SUPABASE_URL;
+const ENV_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase configuration. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
+const supabaseUrl = ENV_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey =
+  ENV_KEY ||
+  // Syntactically valid JWT placeholder — prevents createClient from throwing.
+  // Any real API call will fail at runtime with a clear 401/403 instead of
+  // crashing module load.
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwbGFjZWhvbGRlciIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MTcwMDAwMDAwMX0.placeholder';
+
+if (!ENV_URL || !ENV_KEY) {
+  // Warn loudly so ops notices the missing Vercel env vars, but do NOT throw.
+  // eslint-disable-next-line no-console
+  console.error(
+    '[supabaseClient] Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. ' +
+      'App-DB calls will fail, but the app will still render. Set these in Vercel.'
+  );
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
