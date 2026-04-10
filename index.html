@@ -7,24 +7,16 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <title>פרפקט וואן — פתיחת עסק בישראל | מדריכים, מידע וליווי אישי</title>
-    <meta name="description" content="מדריכים מקיפים לפתיחת עסק בישראל: עוסק פטור, עוסק מורשה, חברה בע״מ. כל המידע על מיסוי, רישום, עלויות וניהול — במקום אחד עם ליווי מקצועי." />
-    <meta name="keywords" content="פתיחת עסק בישראל, עוסק פטור, עוסק מורשה, חברה בע״מ, מדריך עסקי, מיסוי עצמאים, רישום עסק" />
-    <meta property="og:title" content="פרפקט וואן — פתיחת עסק בישראל | מדריכים וליווי אישי" />
-    <meta property="og:description" content="מדריכים מקיפים לפתיחת עסק בישראל: עוסק פטור, עוסק מורשה, חברה בע״מ. כל המידע במקום אחד." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.perfect1.co.il/" />
-    <meta property="og:locale" content="he_IL" />
-    <meta property="og:site_name" content="פרפקט וואן" />
-    <meta property="og:image" content="https://www.perfect1.co.il/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="פרפקט וואן — פתיחת עסק בישראל" />
-    <meta name="twitter:description" content="מדריכים מקיפים לפתיחת עסק: עוסק פטור, עוסק מורשה, חברה בע״מ. כל המידע במקום אחד." />
-    <meta name="twitter:image" content="https://www.perfect1.co.il/og-image.png" />
-    <!-- canonical is set dynamically per page by react-helmet-async -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
+    <title>פרפקט וואן — פתיחת עסק בישראל</title>
+    <!--
+      NOTE: Per-page <title>, <meta description>, <link canonical>, og:*, twitter:*
+      are injected at build time by scripts/generate-static.js and then hydrated
+      at runtime by react-helmet-async (src/components/seo/SEOHead.jsx).
+      DO NOT add static meta tags here — they would duplicate the generated ones.
+    -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -63,16 +55,38 @@
       }
     }
     </script>
-    <!-- Tracking scripts — deferred until cookie consent -->
-    <script>window.dataLayer = window.dataLayer || [];</script>
-    <!-- Google Tag Manager (blocked until consent) -->
-    <script type="text/plain" data-cookie-consent>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <!-- === Google Consent Mode v2 — MUST load before any Google tag === -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      // Set consent defaults BEFORE gtag.js loads
+      var _consentState = 'denied';
+      try { if (localStorage.getItem('cookie_consent') === 'all') _consentState = 'granted'; } catch(e) {}
+      gtag('consent', 'default', {
+        ad_storage: _consentState,
+        ad_user_data: _consentState,
+        ad_personalization: _consentState,
+        analytics_storage: _consentState,
+        wait_for_update: 500
+      });
+    </script>
+
+    <!-- Google Ads gtag.js — loads ALWAYS, respects Consent Mode -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'AW-10811556085', { allow_enhanced_conversions: true });
+    </script>
+
+    <!-- Google Tag Manager — loads ALWAYS, respects Consent Mode -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-PNK9CCRQ');</script>
-    <!-- End Google Tag Manager -->
-    <!-- Meta Pixel Code (blocked until consent) -->
+
+    <!-- Meta Pixel Code (blocked until consent — no consent mode equivalent) -->
     <script type="text/plain" data-cookie-consent>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -86,14 +100,8 @@
     fbq('track', 'PageView');
     </script>
     <!-- End Meta Pixel Code -->
-    <!-- Google Ads gtag.js + Conversion Linker (blocked until consent) -->
-    <script type="text/plain" data-cookie-consent async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085"></script>
-    <script type="text/plain" data-cookie-consent>
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'AW-10811556085');
-    </script>
-    <!-- Auto-activate if user already consented (before React loads) -->
+
+    <!-- Auto-activate consent-gated scripts (FB Pixel) if already consented -->
     <script>
       (function(){
         try {

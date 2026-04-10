@@ -1,6 +1,13 @@
 {
   "cleanUrls": true,
-  "redirects": [],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "perfect1.co.il" }],
+      "destination": "https://www.perfect1.co.il/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],

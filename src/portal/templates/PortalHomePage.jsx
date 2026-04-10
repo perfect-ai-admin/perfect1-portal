@@ -18,13 +18,33 @@ import SchemaMarkup from '../components/SchemaMarkup';
 import { useCategoryList } from '../hooks/usePortalContent';
 import { PORTAL_CTA } from '../config/navigation';
 
+// 18 internal links covering all categories — reduces crawl depth from home to ≤2
+// for every important article. Replaces the old 6-link list.
 const POPULAR_ARTICLES = [
+  // עוסק פטור (4)
   { title: 'איך פותחים עוסק פטור — מדריך מלא', description: 'שלב אחר שלב: מה צריך, כמה עולה, וכמה זמן לוקח', href: '/osek-patur/how-to-open', readTime: 12, category: 'עוסק פטור' },
-  { title: 'עוסק פטור או מורשה — מה מתאים לך?', description: 'השוואה מלאה עם יתרונות וחסרונות של כל אופציה', href: '/compare/osek-patur-vs-murshe', readTime: 10, category: 'השוואות' },
+  { title: 'כמה עולה לפתוח עוסק פטור?', description: 'פירוט עלויות מלא 2026 — רישום, רואה חשבון, ביטוח לאומי ומקדמות', href: '/osek-patur/cost', readTime: 8, category: 'עוסק פטור' },
+  { title: 'תקרת הכנסות עוסק פטור 2026', description: 'מה הסכום המקסימלי, מה קורה אם חורגים, ומתי לעבור לעוסק מורשה', href: '/osek-patur/income-ceiling', readTime: 9, category: 'עוסק פטור' },
+  { title: 'ביטוח לאומי עוסק פטור', description: 'כמה משלמים, מתי, ואיך מחשבים את הדמים השנתיים', href: '/osek-patur/bituach-leumi', readTime: 10, category: 'עוסק פטור' },
+  // עוסק מורשה (5)
+  { title: 'פתיחת עוסק מורשה — מדריך מלא', description: 'כל מה שצריך לדעת: תנאים, מסמכים, שלבים ועלויות', href: '/osek-murshe/how-to-open', readTime: 14, category: 'עוסק מורשה' },
+  { title: 'מעמ עוסק מורשה — מדריך חשבוניות', description: 'איך גובים מעמ, דיווח דו-חודשי, חשבונית מס וקיזוז תשומות', href: '/osek-murshe/vat-guide', readTime: 11, category: 'עוסק מורשה' },
   { title: 'הוצאות מוכרות עוסק מורשה — רשימה מלאה', description: 'כל ההוצאות שאפשר לנכות, אחוזי הכרה וטיפים לחיסכון במס', href: '/osek-murshe/tax-deductions', readTime: 12, category: 'עוסק מורשה' },
   { title: 'מס הכנסה עוסק מורשה — מדרגות ודיווח', description: 'מדרגות מס, מקדמות, נקודות זיכוי וטיפים להפחתת מס 2026', href: '/osek-murshe/income-tax', readTime: 11, category: 'עוסק מורשה' },
-  { title: 'פתיחת חברה בע"מ — המדריך המלא', description: 'כל מה שצריך לדעת לפני שפותחים חברה', href: '/hevra-bam/how-to-open', readTime: 15, category: 'חברה בע"מ' },
-  { title: 'מיסוי חברה בע"מ — מס חברות ודיבידנד', description: 'מס חברות 23%, דיבידנד, משכורת מול דיבידנד ותכנון מס חכם', href: '/hevra-bam/taxes', readTime: 12, category: 'חברה בע"מ' },
+  { title: 'ביטוח לאומי עוסק מורשה', description: 'חישוב דמי ביטוח, הטבות ותכנון תשלומים לעוסק מורשה', href: '/osek-murshe/bituach-leumi', readTime: 10, category: 'עוסק מורשה' },
+  // חברה בע"מ (3)
+  { title: 'פתיחת חברה בע״מ — המדריך המלא', description: 'כל מה שצריך לדעת לפני שפותחים חברה בע״מ בישראל', href: '/hevra-bam/how-to-open', readTime: 15, category: 'חברה בע"מ' },
+  { title: 'עלות הקמת חברה בע״מ', description: 'אגרת רישום, שכ״ט עו״ד, רואה חשבון ועלויות שוטפות', href: '/hevra-bam/cost', readTime: 9, category: 'חברה בע"מ' },
+  { title: 'מיסוי חברה בע״מ — מס חברות ודיבידנד', description: 'מס חברות 23%, דיבידנד, משכורת מול דיבידנד ותכנון מס חכם', href: '/hevra-bam/taxes', readTime: 12, category: 'חברה בע"מ' },
+  // סגירת תיקים (2)
+  { title: 'סגירת עוסק פטור — איך עושים נכון', description: 'צעדים מדויקים לסגירת תיק במס הכנסה, מעמ וביטוח לאומי', href: '/sgirat-tikim/close-osek-patur', readTime: 8, category: 'סגירת תיקים' },
+  { title: 'סגירת חברה בע״מ — פירוק מרצון', description: 'תהליך פירוק חברה, עלויות, חובות והשלכות מס', href: '/sgirat-tikim/close-company', readTime: 11, category: 'סגירת תיקים' },
+  // מדריכים + השוואות (3)
+  { title: 'איזה סוג עסק לפתוח? — עצמאי vs חברה', description: 'מדריך בחירה בין עוסק פטור, עוסק מורשה וחברה בע״מ', href: '/guides/which-business-type', readTime: 10, category: 'מדריכים' },
+  { title: 'פתיחת עסק בישראל — מדריך 2026', description: 'כל השלבים לפתיחת עסק בישראל — מהרעיון ועד ההפעלה', href: '/guides/opening-business', readTime: 13, category: 'מדריכים' },
+  { title: 'עוסק פטור או מורשה — מה מתאים לך?', description: 'השוואה מלאה עם יתרונות וחסרונות של כל אופציה', href: '/compare/osek-patur-vs-murshe', readTime: 10, category: 'השוואות' },
+  // מחשבון
+  { title: 'מחשבון הכנסה נטו לעצמאים', description: 'חשב כמה תישאר לך נטו אחרי מס הכנסה, מעמ וביטוח לאומי', href: '/calculators', readTime: 5, category: 'כלים' },
 ];
 
 const HOME_FAQ = [

@@ -139,8 +139,15 @@ function generateSchema(route) {
     }))
   });
 
-  // Article schema
+  // Article schema — E-E-A-T optimized with full author + publisher + image
   if (type === 'article' && data.sections) {
+    const author = {
+      '@type': 'Person',
+      name: data.author?.name || 'צוות פרפקט וואן',
+    };
+    if (data.author?.role) author.jobTitle = data.author.role;
+    if (data.author?.url) author.url = data.author.url;
+
     schemas.push({
       '@context': 'https://schema.org',
       '@type': 'Article',
@@ -148,14 +155,19 @@ function generateSchema(route) {
       description: data.metaDescription || '',
       datePublished: data.publishDate || '',
       dateModified: data.updatedDate || data.publishDate || '',
-      author: {
-        '@type': 'Person',
-        name: data.author?.name || BRAND
-      },
+      image: `${BASE_URL}/og-image.png`,
+      inLanguage: 'he-IL',
+      author,
       publisher: {
         '@type': 'Organization',
         name: BRAND,
-        url: BASE_URL
+        url: BASE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${BASE_URL}/og-image.png`,
+          width: 1200,
+          height: 630
+        }
       },
       mainEntityOfPage: { '@type': 'WebPage', '@id': url }
     });
@@ -598,6 +610,66 @@ function generateSPAFallbacks() {
   }
 }
 
+// Generate the HomePage (/) with unique SEO meta tags + canonical.
+// This is CRITICAL — without this, Vercel serves the raw dist/index.html
+// as the homepage, which has no canonical tag and generic meta.
+function generateHomePage() {
+  const baseHtml = getBaseHtml();
+  const url = `${BASE_URL}/`;
+
+  const title = 'פתיחת עסק בישראל — מדריכים, מידע וליווי אישי | פרפקט וואן';
+  const description = 'כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד. מדריכים מקיפים + ליווי אישי.';
+  const keywords = 'פתיחת עסק, עוסק פטור, עוסק מורשה, חברה בע״מ, סגירת תיקים, פתיחת עסק בישראל';
+
+  let html = baseHtml;
+
+  // Strip any existing meta tags the base may carry
+  html = html.replace(/<title>[\s\S]*?<\/title>/, '');
+  html = html.replace(/<meta name="description"[^>]*>/g, '');
+  html = html.replace(/<meta name="keywords"[^>]*>/g, '');
+  html = html.replace(/<link rel="canonical"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:title"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:description"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:url"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:type"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:site_name"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:locale"[^>]*>/g, '');
+  html = html.replace(/<meta property="og:image[^>]*>/g, '');
+  html = html.replace(/<meta name="twitter:card"[^>]*>/g, '');
+  html = html.replace(/<meta name="twitter:title"[^>]*>/g, '');
+  html = html.replace(/<meta name="twitter:description"[^>]*>/g, '');
+  html = html.replace(/<meta name="twitter:image"[^>]*>/g, '');
+
+  const metaTags = `
+    <title>${escapeHtml(title)}</title>
+    <meta name="description" content="${escapeHtml(description)}" />
+    <meta name="keywords" content="${escapeHtml(keywords)}" />
+    <link rel="canonical" href="${url}" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(description)}" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="he_IL" />
+    <meta property="og:site_name" content="${BRAND}" />
+    <meta property="og:image" content="${BASE_URL}/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(description)}" />
+    <meta name="twitter:image" content="${BASE_URL}/og-image.png" />
+  `;
+
+  html = html.replace('<head>', `<head>\n    <meta name="prerender-status" content="200">\n    ${metaTags}`);
+
+  // Write to dist/index.html (overwrites the base)
+  writeFileSync(join(DIST_DIR, 'index.html'), html, 'utf-8');
+  console.log(`\n🏠 Generated HomePage (/) with canonical + unique meta`);
+}
+
+// Order matters: generateHomePage() overwrites dist/index.html,
+// so SPA fallbacks (which copy the base HTML) must run BEFORE it.
 generate();
 generatePublicPages();
 generateSPAFallbacks();
+generateHomePage();
