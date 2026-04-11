@@ -1,30 +1,32 @@
 import { createClient } from '@supabase/supabase-js';
 
-// IMPORTANT: keys should come from environment variables (VITE_SUPABASE_URL /
-// VITE_SUPABASE_ANON_KEY). We keep inert placeholders as a last-resort fallback
-// because `createClient(undefined, undefined)` throws synchronously at module
-// load time, which would take down the ENTIRE React app on every route —
-// including portal pages that use the separate `portalSupabaseClient` and
-// don't actually need this client at all. With placeholders, the module loads
-// and only individual calls to the app DB fail at runtime (recoverable),
-// instead of a hard white-screen on every page.
+// Prefer env vars (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY) but fall back
+// to hardcoded values pointing at the real production project. These are the
+// ANON key (public by design — it's the role=anon JWT that every browser sees
+// anyway) and the public URL, so there's no secret here. The fallback exists
+// because:
+//   1. If env vars are missing in Vercel, `createClient(undefined, undefined)`
+//      throws synchronously at module load and white-screens the whole app.
+//   2. A placeholder URL (e.g. placeholder.supabase.co) looks safer but
+//      silently breaks every edge-function call with a DNS "Failed to fetch"
+//      that is much harder to diagnose than an obvious 401.
+// Real service-role keys MUST NEVER live in frontend code — those stay in
+// edge-function env vars only.
+const PROD_SUPABASE_URL = 'https://rtlpqjqdmomyptcdkmrq.supabase.co';
+const PROD_SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0bHBxanFkbW9teXB0Y2RrbXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4Njc0NjMsImV4cCI6MjA5MDQ0MzQ2M30.NceenXJ43_B3NN9MVz4b5wR4t1Si0hRfYedfmtoujXQ';
+
 const ENV_URL = import.meta.env.VITE_SUPABASE_URL;
 const ENV_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-const supabaseUrl = ENV_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey =
-  ENV_KEY ||
-  // Syntactically valid JWT placeholder — prevents createClient from throwing.
-  // Any real API call will fail at runtime with a clear 401/403 instead of
-  // crashing module load.
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwbGFjZWhvbGRlciIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MTcwMDAwMDAwMX0.placeholder';
+const supabaseUrl = ENV_URL || PROD_SUPABASE_URL;
+const supabaseAnonKey = ENV_KEY || PROD_SUPABASE_ANON_KEY;
 
 if (!ENV_URL || !ENV_KEY) {
-  // Warn loudly so ops notices the missing Vercel env vars, but do NOT throw.
   // eslint-disable-next-line no-console
-  console.error(
-    '[supabaseClient] Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. ' +
-      'App-DB calls will fail, but the app will still render. Set these in Vercel.'
+  console.warn(
+    '[supabaseClient] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY not set — ' +
+      'using hardcoded production fallback. Set these in Vercel for clarity.'
   );
 }
 
