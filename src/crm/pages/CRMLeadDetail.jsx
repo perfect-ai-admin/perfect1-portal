@@ -23,6 +23,7 @@ import WhatsAppConversation from '../components/communications/WhatsAppConversat
 import PaymentStatusPanel from '../components/communications/PaymentStatusPanel';
 import QuestionnairePanel from '../components/shared/QuestionnairePanel';
 import DocumentsPanel from '../components/shared/DocumentsPanel';
+import LeadScorePanel from '../components/shared/LeadScorePanel';
 import TaskList from '../components/tasks/TaskList';
 import TaskForm from '../components/tasks/TaskForm';
 
@@ -312,6 +313,9 @@ export default function CRMLeadDetail() {
               </div>
             )}
           </div>
+
+          {/* Lead Score */}
+          <LeadScorePanel lead={lead} />
 
           {/* Payment status */}
           <PaymentStatusPanel leadId={id} />

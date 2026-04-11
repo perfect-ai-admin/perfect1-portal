@@ -8,13 +8,43 @@ import {
   getFlow, getStep, getNextStepId,
   buildCtaMessage, buildPricingMessage, buttonToOutcome,
   buildAccountantCallbackOpening, buildAccountantQ1Followup, buildAccountantCallbackClosing,
-  BotButton, CTA_BUTTONS,
+  buildPrePaymentRecoveryClosing, buildPostPaymentOnboardingClosing,
+  buildSalesRecoveryMessage, buildGenericAnswer, recoveryButtonToAction,
+  SALES_RECOVERY_BUTTONS, BotButton, CTA_BUTTONS,
 } from '../_shared/botFlowTemplates.ts';
 import { classifyIntent } from '../_shared/botIntentClassifier.ts';
 import {
   formatPhone, sendAndStoreMessage, sendAndStoreButtons,
   storeInboundMessage, linkMessageToSession,
 } from '../_shared/whatsappHelper.ts';
+import { detectIntent, looksLikeIdNumber, getSimpleFAQAnswer } from '../_shared/intentDetection.ts';
+import { addLeadScore, logLeadEvent } from '../_shared/leadScoring.ts';
+
+// Extract media URL from Green API webhook payload
+// Supports: image, document, video, audio
+function extractMediaFromGreenApi(body: any): { url: string | null; type: string | null; caption: string } {
+  const md = body.messageData || {};
+  const typeMessage = md.typeMessage || body.typeMessage || '';
+
+  if (typeMessage === 'imageMessage' || md.fileMessageData?.mimeType?.startsWith('image/')) {
+    return {
+      url: md.fileMessageData?.downloadUrl || md.imageMessageData?.downloadUrl || null,
+      type: 'image',
+      caption: md.fileMessageData?.caption || md.imageMessageData?.caption || '',
+    };
+  }
+  if (typeMessage === 'documentMessage' || (md.fileMessageData && !md.fileMessageData.mimeType?.startsWith('image/'))) {
+    return {
+      url: md.fileMessageData?.downloadUrl || null,
+      type: 'document',
+      caption: md.fileMessageData?.caption || '',
+    };
+  }
+  if (typeMessage === 'videoMessage') {
+    return { url: md.fileMessageData?.downloadUrl || null, type: 'video', caption: md.fileMessageData?.caption || '' };
+  }
+  return { url: null, type: null, caption: '' };
+}
 
 const OWNER_PHONE = '972502277087';
 const OWNER_EMAIL = 'yosi5919@gmail.com';
@@ -217,6 +247,101 @@ Deno.serve(async (req) => {
     const flow = getFlow(session.flow_type);
     const sendOpts = botSendOpts(cleanPhone, session.lead_id, session.id);
 
+    // === MEDIA DETECTION ===
+    // If lead sent an image/document/video, treat it as identity document upload
+    const media = extractMediaFromGreenApi(body);
+    if (media.url && session.lead_id) {
+      console.log('[MEDIA] Received', media.type, 'from', cleanPhone);
+
+      // Check if the lead is in a state where we expect identity
+      const { data: leadForMedia } = await supabaseAdmin
+        .from('leads')
+        .select('name, email, payment_status, bot_state, identity_file_url')
+        .eq('id', session.lead_id)
+        .single();
+
+      // If already has identity — just log and thank
+      if (leadForMedia?.identity_file_url) {
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'תודה, קיבלנו את הקובץ. אם זה מסמך נוסף אשמור אותו בכרטיס שלך 📎' });
+        await supabaseAdmin.from('lead_events').insert({
+          lead_id: session.lead_id,
+          event_type: 'media_received_extra',
+          event_data: { media_url: media.url, type: media.type, caption: media.caption },
+          source: 'sales_portal',
+        });
+        return jsonResponse({ success: true, message: 'Extra media received' }, 200, req);
+      }
+
+      // Save as identity document
+      const docType = media.type === 'image' ? 'image_document' : (media.type || 'unknown');
+      await supabaseAdmin.from('leads').update({
+        identity_file_url: media.url,
+        identity_document_type: docType,
+        identity_uploaded_at: new Date().toISOString(),
+      }).eq('id', session.lead_id);
+
+      await addLeadScore(supabaseAdmin, session.lead_id, 'identity_sent', {
+        media_type: media.type,
+        caption: media.caption,
+      });
+
+      // Thank the user
+      await sendAndStoreMessage(supabaseAdmin, {
+        ...sendOpts,
+        message: 'תודה רבה! 🙏\nקיבלנו את המסמך המזהה שלך. אנחנו מתחילים לטפל בפתיחת התיק שלך.\n\nתוך 72 שעות התיק שלך יהיה פתוח ומוכן לעבודה 🚀',
+      });
+
+      // Email notification to owner
+      try {
+        const resendApiKey = Deno.env.get('RESEND_API_KEY');
+        if (resendApiKey && leadForMedia) {
+          await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${resendApiKey}` },
+            body: JSON.stringify({
+              from: 'Perfect One <onboarding@resend.dev>',
+              to: ['yosi5919@gmail.com'],
+              subject: `📄 מסמך מזהה התקבל — ${leadForMedia.name || cleanPhone}`,
+              html: `<div dir="rtl" style="font-family:Arial,sans-serif;">
+                <h2>📄 מסמך מזהה התקבל מ-${escapeHtml(leadForMedia.name || cleanPhone)}</h2>
+                <p><strong>טלפון:</strong> ${escapeHtml(cleanPhone)}</p>
+                <p><strong>סוג מסמך:</strong> ${escapeHtml(docType)}</p>
+                ${media.caption ? `<p><strong>כיתוב:</strong> ${escapeHtml(media.caption)}</p>` : ''}
+                <p><a href="${media.url}">👆 לחץ לצפייה בקובץ</a></p>
+                <p style="color:#666;font-size:12px;">Lead ID: ${session.lead_id}</p>
+              </div>`,
+            }),
+          });
+        }
+      } catch (e: any) { console.warn('Media email failed:', e.message); }
+
+      return jsonResponse({ success: true, message: 'Identity document saved' }, 200, req);
+    }
+
+    // === ID NUMBER AS TEXT ===
+    // If user sends just an ID number as text and we don't have identity yet
+    const possibleId = looksLikeIdNumber(messageText);
+    if (possibleId && session.lead_id && !media.url) {
+      const { data: leadForId } = await supabaseAdmin
+        .from('leads')
+        .select('identity_id_number, payment_status')
+        .eq('id', session.lead_id)
+        .single();
+
+      // Only accept ID number if paid + no identity yet
+      if (leadForId?.payment_status === 'paid' && !leadForId?.identity_id_number) {
+        await supabaseAdmin.from('leads').update({
+          identity_id_number: possibleId,
+          identity_document_type: 'national_id_text',
+          identity_uploaded_at: new Date().toISOString(),
+        }).eq('id', session.lead_id);
+
+        await addLeadScore(supabaseAdmin, session.lead_id, 'identity_sent', { id_number: 'masked' });
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'תודה! קיבלנו את מספר הזהות. אנחנו ממשיכים בתהליך ✅' });
+        return jsonResponse({ success: true, message: 'ID number saved' }, 200, req);
+      }
+    }
+
     // Special handling for osek_patur_universal_flow "waiting_for_start"
     if (session.current_step === 'waiting_for_start' && flow.flow_type === 'osek_patur_universal_flow') {
       const step1 = getStep(session.flow_type, 'step_1');
@@ -250,9 +375,10 @@ Deno.serve(async (req) => {
       return jsonResponse({ success: true, session_id: session.id, next_step: 'step_1' }, 200, req);
     }
 
-    // === ACCOUNTANT CALLBACK FLOW — free-text questionnaire ===
-    // If we're in this flow, every inbound message is a free-text answer to the current question
-    if (session.flow_type === 'accountant_callback_flow') {
+    // === FREE-TEXT QUESTIONNAIRE FLOWS ===
+    // These flows collect free-text answers: accountant_callback, pre_payment_recovery, post_payment_onboarding
+    const FREE_TEXT_FLOWS = ['accountant_callback_flow', 'pre_payment_recovery_flow', 'post_payment_onboarding_flow'];
+    if (FREE_TEXT_FLOWS.includes(session.flow_type)) {
       const currentStepDef = getStep(session.flow_type, session.current_step);
 
       if (!currentStepDef) {
@@ -287,19 +413,35 @@ Deno.serve(async (req) => {
       };
 
       if (isLastQuestion) {
-        console.log('[AC_FLOW] Last question answered. Sending closing + notifying owner. Session:', session.id);
+        // Pick the right closing + storage key based on flow type
+        let closingMsg = buildAccountantCallbackClosing();
+        let storageKey = 'accountant_callback';
+        let outcomeLabel = 'accountant_questionnaire_completed';
+        let eventType = 'bot_accountant_questionnaire_completed';
 
-        // All 4 questions answered — send closing + notify owner
-        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: buildAccountantCallbackClosing() });
+        if (session.flow_type === 'pre_payment_recovery_flow') {
+          closingMsg = buildPrePaymentRecoveryClosing();
+          storageKey = 'pre_payment_recovery';
+          outcomeLabel = 'pre_payment_questionnaire_completed';
+          eventType = 'bot_pre_payment_questionnaire_completed';
+        } else if (session.flow_type === 'post_payment_onboarding_flow') {
+          closingMsg = buildPostPaymentOnboardingClosing();
+          storageKey = 'post_payment_onboarding';
+          outcomeLabel = 'post_payment_questionnaire_completed';
+          eventType = 'bot_post_payment_questionnaire_completed';
+        }
+
+        console.log(`[FREE_TEXT_FLOW] Last question answered. flow=${session.flow_type}. Session: ${session.id}`);
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: closingMsg });
 
         acSessionUpdate.current_step = 'completed';
         acSessionUpdate.completed_at = new Date().toISOString();
-        acSessionUpdate.outcome_state = 'accountant_questionnaire_completed';
-        acLeadUpdate.bot_current_step = 'accountant_questionnaire_completed';
+        acSessionUpdate.outcome_state = outcomeLabel;
+        acLeadUpdate.bot_current_step = outcomeLabel;
         acLeadUpdate.bot_completed_at = new Date().toISOString();
-        acLeadUpdate.bot_outcome_state = 'accountant_questionnaire_completed';
+        acLeadUpdate.bot_outcome_state = outcomeLabel;
 
-        // Persist all answers to leads.questionnaire_data.accountant_callback
+        // Persist all answers to leads.questionnaire_data.<storageKey>
         if (session.lead_id) {
           try {
             const { data: leadRow, error: fetchErr } = await supabaseAdmin
@@ -309,33 +451,34 @@ Deno.serve(async (req) => {
               .single();
 
             if (fetchErr) {
-              console.error('[AC_FLOW] Failed to fetch lead:', fetchErr.message);
+              console.error('[FREE_TEXT_FLOW] Failed to fetch lead:', fetchErr.message);
             }
 
             const existingQd = leadRow?.questionnaire_data || {};
-            existingQd.accountant_callback = {
+            existingQd[storageKey] = {
               ...acAnswers,
               completed_at: new Date().toISOString(),
             };
             acLeadUpdate.questionnaire_data = existingQd;
-            console.log('[AC_FLOW] Prepared questionnaire_data with accountant_callback');
 
-            // Fire owner notification (non-blocking)
-            notifyOwnerOnAccountantFlowComplete(
-              session.lead_id,
-              cleanPhone,
-              leadRow?.name || 'לקוח',
-              acAnswers,
-            ).catch(e => console.warn('[AC_FLOW] notifyOwner failed:', e));
+            // Fire owner notification ONLY for accountant_callback flow
+            if (session.flow_type === 'accountant_callback_flow') {
+              notifyOwnerOnAccountantFlowComplete(
+                session.lead_id,
+                cleanPhone,
+                leadRow?.name || 'לקוח',
+                acAnswers,
+              ).catch(e => console.warn('[FREE_TEXT_FLOW] notifyOwner failed:', e));
+            }
           } catch (e: any) {
-            console.error('[AC_FLOW] Exception in lead fetch/prep:', e.message);
+            console.error('[FREE_TEXT_FLOW] Exception in lead fetch/prep:', e.message);
           }
         }
 
         await supabaseAdmin.from('bot_events').insert({
           session_id: session.id,
           lead_id: session.lead_id,
-          event_type: 'bot_accountant_questionnaire_completed',
+          event_type: eventType,
           event_data: { answers: acAnswers },
         });
       } else {
@@ -358,9 +501,150 @@ Deno.serve(async (req) => {
       if (session.lead_id) {
         const { error: leadUpdateErr } = await supabaseAdmin.from('leads').update(acLeadUpdate).eq('id', session.lead_id);
         if (leadUpdateErr) console.error('[AC_FLOW] Lead update error:', leadUpdateErr.message);
+
+        // Bump lead score for answering a questionnaire question
+        if (!isLastQuestion) {
+          await addLeadScore(supabaseAdmin, session.lead_id, 'questionnaire_answered', { flow: 'accountant_callback', step: currentStepDef.step_id });
+        }
       }
 
       return jsonResponse({ success: true, session_id: session.id, next_step: acSessionUpdate.current_step }, 200, req);
+    }
+
+    // === FREE QUESTION FLOW — bot answers + sales recovery ===
+    if (session.flow_type === 'free_question_flow') {
+      // Check if user clicked a recovery button
+      const recoveryAction = recoveryButtonToAction(buttonId);
+      if (recoveryAction) {
+        if (recoveryAction === 'pay') {
+          // Send payment link
+          const payMsg = `מעולה! 🚀\nהנה הקישור לפתיחת תיק אונליין:\n👉 https://perfect1.co.il/open-osek-patur-online?phone=${cleanPhone.replace('972', '0')}\n\nתוך כמה דקות אתה מסיים את התהליך.`;
+          await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: payMsg, message_type: 'payment_link' });
+          await addLeadScore(supabaseAdmin, session.lead_id, 'payment_link_clicked', { source: 'free_question_recovery' });
+
+          await supabaseAdmin.from('bot_sessions').update({
+            current_step: 'recovered_to_payment',
+            completed_at: new Date().toISOString(),
+            outcome_state: 'recovered_to_payment',
+          }).eq('id', session.id);
+
+          if (session.lead_id) {
+            await supabaseAdmin.from('leads').update({
+              bot_state: 'payment_started',
+              selected_path: 'online_opening_payment',
+              next_recommended_action: 'waiting_for_payment',
+            }).eq('id', session.lead_id);
+          }
+          return jsonResponse({ success: true, recovery: 'pay' }, 200, req);
+        }
+
+        if (recoveryAction === 'accountant') {
+          // Pivot to accountant_callback_flow
+          let leadName = 'לקוח';
+          if (session.lead_id) {
+            const { data: lr } = await supabaseAdmin.from('leads').select('name').eq('id', session.lead_id).single();
+            if (lr?.name) leadName = lr.name;
+          }
+          await supabaseAdmin.from('bot_sessions').update({
+            completed_at: new Date().toISOString(),
+            outcome_state: 'recovered_to_accountant',
+          }).eq('id', session.id);
+
+          const { data: acSession } = await supabaseAdmin.from('bot_sessions').insert({
+            lead_id: session.lead_id,
+            phone: cleanPhone,
+            flow_type: 'accountant_callback_flow',
+            page_intent: 'accountant_callback',
+            current_step: 'ac_q1',
+            temperature: 'warm',
+            messages_count: 0,
+          }).select().single();
+
+          const newOpts = { phone: cleanPhone, lead_id: session.lead_id, session_id: acSession?.id || null, sender_type: 'bot' as const };
+          await sendAndStoreMessage(supabaseAdmin, { ...newOpts, message: buildAccountantCallbackOpening(leadName) });
+          const q1 = getStep('accountant_callback_flow', 'ac_q1');
+          if (q1) await sendAndStoreMessage(supabaseAdmin, { ...newOpts, message: q1.question });
+
+          if (acSession) {
+            await supabaseAdmin.from('bot_sessions').update({ messages_count: 2, last_message_at: new Date().toISOString() }).eq('id', acSession.id);
+          }
+          if (session.lead_id) {
+            await supabaseAdmin.from('leads').update({
+              bot_state: 'awaiting_accountant_callback',
+              selected_path: 'accountant_callback',
+              flow_type: 'accountant_callback_flow',
+              bot_current_step: 'ac_q1',
+            }).eq('id', session.lead_id);
+            await addLeadScore(supabaseAdmin, session.lead_id, 'accountant_callback_requested', { source: 'free_question_recovery' });
+          }
+          return jsonResponse({ success: true, recovery: 'accountant' }, 200, req);
+        }
+
+        // keep_asking — stay in free question mode
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'מעולה, אני כאן 😊 שאל אותי כל שאלה.' });
+        return jsonResponse({ success: true, recovery: 'keep_asking' }, 200, req);
+      }
+
+      // Regular free-text question — answer + store + recovery every 2 answers
+      const userText = (messageText || '').trim();
+      if (!userText) {
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'אשמח לענות לך 😊 אפשר לשאול אותי כל דבר.' });
+        return jsonResponse({ success: true }, 200, req);
+      }
+
+      // Try FAQ answer, fallback to generic
+      const faqAnswer = getSimpleFAQAnswer(userText);
+      const answer = faqAnswer || buildGenericAnswer();
+
+      await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: answer });
+
+      // Update session answers history
+      const fqAnswers = session.answers || {};
+      const history = Array.isArray(fqAnswers.history) ? fqAnswers.history : [];
+      history.push({ q: userText, a: answer, at: new Date().toISOString() });
+      fqAnswers.history = history;
+
+      const questionCount = history.length;
+      const newMessagesCount = (session.messages_count || 0) + 1;
+
+      // Every 2 questions (or first one if no FAQ match) — offer sales recovery
+      const shouldOfferRecovery = questionCount % 2 === 0 || !faqAnswer;
+
+      if (shouldOfferRecovery) {
+        await sendAndStoreButtons(supabaseAdmin, {
+          ...sendOpts,
+          message: buildSalesRecoveryMessage(),
+          buttons: SALES_RECOVERY_BUTTONS,
+        });
+      }
+
+      await supabaseAdmin.from('bot_sessions').update({
+        answers: fqAnswers,
+        messages_count: newMessagesCount,
+        last_message_at: new Date().toISOString(),
+      }).eq('id', session.id);
+
+      if (session.lead_id) {
+        // Persist to questionnaire_data.free_question_history
+        const { data: leadRow } = await supabaseAdmin
+          .from('leads').select('questionnaire_data').eq('id', session.lead_id).single();
+        const qd = leadRow?.questionnaire_data || {};
+        qd.free_question_history = fqAnswers.history;
+
+        await supabaseAdmin.from('leads').update({
+          questionnaire_data: qd,
+          bot_state: 'free_question_mode',
+          bot_last_message_at: new Date().toISOString(),
+          bot_messages_count: newMessagesCount,
+        }).eq('id', session.lead_id);
+
+        await addLeadScore(supabaseAdmin, session.lead_id, 'asked_meaningful_question', {
+          question_count: questionCount,
+          question_preview: userText.substring(0, 100),
+        });
+      }
+
+      return jsonResponse({ success: true, free_question: true, questions_asked: questionCount }, 200, req);
     }
 
     // === CTA STATE — user is choosing from final CTA buttons ===
@@ -505,6 +789,59 @@ Deno.serve(async (req) => {
         return jsonResponse({ success: true, outcome: 'pivot_to_accountant_flow', new_session_id: newSession?.id }, 200, req);
       }
 
+      // === SPECIAL CASE: asked_question → pivot to free_question_flow ===
+      // Never send to handoff — the bot stays active and answers questions
+      if (outcome === 'asked_question') {
+        await supabaseAdmin.from('bot_sessions').update({
+          completed_at: new Date().toISOString(),
+          outcome_state: 'pivot_to_free_question_flow',
+          current_step: 'completed',
+        }).eq('id', session.id);
+
+        // Create new free_question session
+        const { data: fqSession } = await supabaseAdmin
+          .from('bot_sessions')
+          .insert({
+            lead_id: session.lead_id || null,
+            phone: cleanPhone,
+            flow_type: 'free_question_flow',
+            page_intent: 'free_question',
+            page_slug: session.page_slug,
+            current_step: 'free_question_mode',
+            temperature: session.temperature || 'warm',
+            messages_count: 0,
+            answers: { history: [] },
+          })
+          .select()
+          .single();
+
+        const fqOpts = { phone: cleanPhone, lead_id: session.lead_id, session_id: fqSession?.id || null, sender_type: 'bot' as const };
+
+        // Friendly invitation
+        await sendAndStoreMessage(supabaseAdmin, {
+          ...fqOpts,
+          message: 'שאל אותי כל שאלה על פתיחת עוסק פטור, מיסוי, הנהלת חשבונות או כל דבר אחר 💬\nאני כאן לענות ולעזור לך להחליט מה הכי נכון לך.',
+        });
+
+        if (session.lead_id) {
+          await supabaseAdmin.from('leads').update({
+            bot_state: 'free_question_mode',
+            selected_path: 'free_question',
+            flow_type: 'free_question_flow',
+            bot_current_step: 'free_question_mode',
+            bot_outcome_state: 'pivot_to_free_question_flow',
+            bot_last_message_at: new Date().toISOString(),
+          }).eq('id', session.lead_id);
+
+          await logLeadEvent(supabaseAdmin, session.lead_id, 'path_selected', {
+            path: 'free_question',
+            source: 'cta_question',
+          }, { from: session.flow_type, to: 'free_question_flow' });
+        }
+
+        return jsonResponse({ success: true, outcome: 'pivot_to_free_question_flow', new_session_id: fqSession?.id }, 200, req);
+      }
+
       sessionUpdate.outcome_state = outcome;
       sessionUpdate.completed_at = new Date().toISOString();
       sessionUpdate.current_step = 'completed';
@@ -513,7 +850,7 @@ Deno.serve(async (req) => {
       leadUpdate.bot_current_step = 'completed';
 
       // Send appropriate message + set handoff if needed
-      if (outcome === 'handoff_to_agent' || outcome === 'asked_question') {
+      if (outcome === 'handoff_to_agent') {
         await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'מעביר אותך לנציג שלנו שיחזור אליך בהקדם 🙂' });
         leadUpdate.bot_handoff_reason = matchedButton.label;
         leadUpdate.handoff_mode = 'agent';
@@ -522,7 +859,34 @@ Deno.serve(async (req) => {
       } else if (outcome === 'requested_quote') {
         await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'נשלח לך הצעת מחיר מותאמת בקרוב! 📝' });
       } else if (outcome === 'started_checkout') {
-        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'מעולה! נציג שלנו ייצור איתך קשר להתחלת התהליך 🚀' });
+        // Send actual payment link instead of "agent will contact you"
+        const payLink = `https://perfect1.co.il/open-osek-patur-online?phone=${cleanPhone.replace('972', '0')}`;
+        await sendAndStoreMessage(supabaseAdmin, {
+          ...sendOpts,
+          message: `מעולה! 🚀\nהנה הקישור לפתיחת תיק אונליין:\n👉 ${payLink}\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.`,
+          message_type: 'payment_link',
+        });
+        leadUpdate.bot_state = 'payment_started';
+        leadUpdate.selected_path = 'online_opening_payment';
+        leadUpdate.payment_link_clicked_at = new Date().toISOString();
+
+        // Score + trigger abandoned checkout watcher via n8n
+        if (session.lead_id) {
+          await addLeadScore(supabaseAdmin, session.lead_id, 'payment_link_clicked', { source: 'bot_cta' });
+          // Fire n8n abandoned checkout timer (7 minutes)
+          try {
+            await fetch('https://n8n.perfect-1.one/webhook/abandoned-checkout-timer', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                lead_id: session.lead_id,
+                phone: cleanPhone,
+                triggered_at: new Date().toISOString(),
+              }),
+              signal: AbortSignal.timeout(5000),
+            });
+          } catch (e: any) { console.warn('abandoned-checkout-timer webhook failed:', e.message); }
+        }
       }
 
       await supabaseAdmin.from('bot_sessions').update(sessionUpdate).eq('id', session.id);

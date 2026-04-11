@@ -1,6 +1,7 @@
 // tranzilaConfirmPayment — Called from client after payment OR via Tranzila notify webhook
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, getUser } from '../_shared/supabaseAdmin.ts';
+import { sendAndStoreMessage, formatPhone } from '../_shared/whatsappHelper.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
@@ -191,6 +192,24 @@ Deno.serve(async (req) => {
             .select('*')
             .eq('id', payment.lead_id)
             .single();
+
+          // Send immediate "thanks + please send ID" WhatsApp to customer
+          if (lead?.phone) {
+            try {
+              const customerPhone = formatPhone(lead.phone);
+              const thanksMsg = `תודה, קיבלנו את התשלום שלך 🙏\nאנחנו מתחילים לטפל בפתיחת התיק שלך.\n\nכדי שנוכל להתקדם, יש לשלוח לנו כאן אחד מהבאים:\n\n📄 צילום רישיון נהיגה\n📄 צילום דרכון\n📄 או מספר ת״ז של אחד ההורים\n\nברגע שנקבל את הפרטים נמשיך לטפל עבורך.`;
+
+              await sendAndStoreMessage(supabaseAdmin, {
+                phone: customerPhone,
+                message: thanksMsg,
+                lead_id: payment.lead_id,
+                sender_type: 'system',
+                message_type: 'text',
+              });
+            } catch (e: any) {
+              console.warn('Failed to send post-payment thanks msg:', e.message);
+            }
+          }
 
           // Fetch bot session answers (questionnaire data)
           const { data: botSession } = await supabaseAdmin

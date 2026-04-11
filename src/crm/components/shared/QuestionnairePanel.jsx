@@ -30,6 +30,22 @@ const ACCOUNTANT_FIELDS = [
   { key: 'goal_plan', label: 'איך יגיע למטרה', icon: Route },
 ];
 
+const PRE_PAYMENT_FIELDS = [
+  { key: 'business_field', label: 'תחום העסק', icon: Briefcase },
+  { key: 'offer_type', label: 'מוצר/שירות', icon: Building2 },
+  { key: 'lead_gen_plan', label: 'איך מביא לקוחות', icon: Rocket },
+  { key: 'near_term_goal', label: 'מטרה קרובה', icon: Target },
+  { key: 'important_notes', label: 'הערות חשובות', icon: MessageSquare },
+];
+
+const POST_PAYMENT_FIELDS = [
+  { key: 'business_field', label: 'תחום הפעילות', icon: Briefcase },
+  { key: 'offer_type', label: 'מוצר/שירות', icon: Building2 },
+  { key: 'business_stage', label: 'שלב העסק', icon: Target },
+  { key: 'lead_gen_plan', label: 'איך מביא לקוחות', icon: Rocket },
+  { key: 'short_term_goal', label: 'מטרה קצרת טווח', icon: Route },
+];
+
 export default function QuestionnairePanel({ lead }) {
   // Merge direct columns + questionnaire_data JSONB
   const data = {
@@ -43,10 +59,17 @@ export default function QuestionnairePanel({ lead }) {
   };
 
   const accountantAnswers = lead.questionnaire_data?.accountant_callback || null;
+  const prePaymentAnswers = lead.questionnaire_data?.pre_payment_recovery || null;
+  const postPaymentAnswers = lead.questionnaire_data?.post_payment_onboarding || null;
+  const freeQuestionHistory = lead.questionnaire_data?.free_question_history || null;
+
   const hasFormData = FIELD_CONFIG.some(f => data[f.key]);
   const hasAccountantData = accountantAnswers && ACCOUNTANT_FIELDS.some(f => accountantAnswers[f.key]);
+  const hasPrePayment = prePaymentAnswers && PRE_PAYMENT_FIELDS.some(f => prePaymentAnswers[f.key]);
+  const hasPostPayment = postPaymentAnswers && POST_PAYMENT_FIELDS.some(f => postPaymentAnswers[f.key]);
+  const hasFreeQuestions = Array.isArray(freeQuestionHistory) && freeQuestionHistory.length > 0;
 
-  if (!hasFormData && !hasAccountantData) return null;
+  if (!hasFormData && !hasAccountantData && !hasPrePayment && !hasPostPayment && !hasFreeQuestions) return null;
 
   return (
     <>
@@ -76,34 +99,90 @@ export default function QuestionnairePanel({ lead }) {
       )}
 
       {hasAccountantData && (
-        <div className="bg-white rounded-lg border border-blue-200 p-4">
-          <h3 className="text-sm font-medium text-blue-700 mb-3 flex items-center gap-1.5">
-            <Phone size={14} />
-            שאלון שיחה עם רו״ח
+        <FreeTextQuestionnaireBlock
+          title="שאלון שיחה עם רו״ח"
+          icon={Phone}
+          color="blue"
+          fields={ACCOUNTANT_FIELDS}
+          answers={accountantAnswers}
+        />
+      )}
+
+      {hasPrePayment && (
+        <FreeTextQuestionnaireBlock
+          title="שאלון לפני תשלום (abandoned recovery)"
+          icon={ClipboardList}
+          color="amber"
+          fields={PRE_PAYMENT_FIELDS}
+          answers={prePaymentAnswers}
+        />
+      )}
+
+      {hasPostPayment && (
+        <FreeTextQuestionnaireBlock
+          title="שאלון אחרי תשלום (onboarding)"
+          icon={Target}
+          color="green"
+          fields={POST_PAYMENT_FIELDS}
+          answers={postPaymentAnswers}
+        />
+      )}
+
+      {hasFreeQuestions && (
+        <div className="bg-white rounded-lg border border-purple-200 p-4">
+          <h3 className="text-sm font-medium text-purple-700 mb-3 flex items-center gap-1.5">
+            <MessageSquare size={14} />
+            שאלות שהלקוח שאל ({freeQuestionHistory.length})
           </h3>
-          <div className="space-y-3">
-            {ACCOUNTANT_FIELDS.map(({ key, label, icon: Icon }) => {
-              const value = accountantAnswers[key];
-              if (!value) return null;
-              return (
-                <div key={key} className="flex items-start gap-2">
-                  <Icon size={13} className="text-blue-400 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs text-blue-500 font-medium mb-0.5">{label}</div>
-                    <div className="text-sm text-slate-700 whitespace-pre-wrap break-words">{value}</div>
-                  </div>
-                </div>
-              );
-            })}
-            {accountantAnswers.completed_at && (
-              <div className="text-[10px] text-slate-400 pt-2 border-t border-blue-100">
-                הושלם: {new Date(accountantAnswers.completed_at).toLocaleString('he-IL')}
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {freeQuestionHistory.map((item, i) => (
+              <div key={i} className="bg-purple-50 rounded p-2 text-xs">
+                <div className="font-medium text-purple-900 mb-1">❓ {item.q}</div>
+                <div className="text-slate-600">{item.a?.substring(0, 100)}{item.a?.length > 100 ? '...' : ''}</div>
               </div>
-            )}
+            ))}
           </div>
         </div>
       )}
     </>
+  );
+}
+
+function FreeTextQuestionnaireBlock({ title, icon: Icon, color, fields, answers }) {
+  const colorMap = {
+    blue: { border: 'border-blue-200', text: 'text-blue-700', iconColor: 'text-blue-400', labelColor: 'text-blue-500' },
+    amber: { border: 'border-amber-200', text: 'text-amber-700', iconColor: 'text-amber-400', labelColor: 'text-amber-500' },
+    green: { border: 'border-green-200', text: 'text-green-700', iconColor: 'text-green-400', labelColor: 'text-green-500' },
+  };
+  const c = colorMap[color] || colorMap.blue;
+
+  return (
+    <div className={`bg-white rounded-lg border ${c.border} p-4`}>
+      <h3 className={`text-sm font-medium ${c.text} mb-3 flex items-center gap-1.5`}>
+        <Icon size={14} />
+        {title}
+      </h3>
+      <div className="space-y-3">
+        {fields.map(({ key, label, icon: FieldIcon }) => {
+          const value = answers[key];
+          if (!value) return null;
+          return (
+            <div key={key} className="flex items-start gap-2">
+              <FieldIcon size={13} className={`${c.iconColor} flex-shrink-0 mt-0.5`} />
+              <div className="flex-1 min-w-0">
+                <div className={`text-xs ${c.labelColor} font-medium mb-0.5`}>{label}</div>
+                <div className="text-sm text-slate-700 whitespace-pre-wrap break-words">{value}</div>
+              </div>
+            </div>
+          );
+        })}
+        {answers.completed_at && (
+          <div className={`text-[10px] text-slate-400 pt-2 border-t ${c.border}`}>
+            הושלם: {new Date(answers.completed_at).toLocaleString('he-IL')}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

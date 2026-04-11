@@ -23,6 +23,74 @@ export interface BotFlow {
   steps: BotStep[];
 }
 
+// ============================================================================
+// SERVICE COPY VARIANTS — שפת השירות לכל service_type
+// ============================================================================
+// במקום שלכל flow יהיה עותק נפרד, שומרים "וריאנט קופי" לפי service_type.
+// buildServiceOpening() מחזיר פתיחה ייעודית לפי service_type כך שליד שהגיע
+// מעמוד עוסק זעיר מקבל את כל ההודעות במינוח של זעיר, וליד מעוסק פטור מקבל
+// פטור. כל ערך כאן הוא נקודת אמת יחידה לניסוחים של אותו מסלול.
+// ============================================================================
+export interface ServiceCopy {
+  service_name: string;           // "עוסק פטור" / "עוסק זעיר"
+  service_name_with_action: string; // "פתיחת עוסק פטור" / "פתיחת עוסק זעיר"
+  opening_intro: string;          // פתיחה עם שם + ברכה
+  opening_value: string;          // שורת ערך אחרי הפתיחה
+  open_now_cta: string;           // כפתור "להתחיל עכשיו"
+  callback_cta: string;           // כפתור "לדבר עם רואה חשבון"
+  question_cta: string;           // כפתור "לשאול שאלה"
+  payment_success: string;        // הודעה אחרי תשלום מוצלח
+  payment_recovery: string;       // הודעת follow-up אחרי אי השלמת תשלום
+  questionnaire_intro: string;    // פתיח שאלון אחרי תשלום
+}
+
+export const SERVICE_COPY: Record<string, ServiceCopy> = {
+  open_osek_patur: {
+    service_name: 'עוסק פטור',
+    service_name_with_action: 'פתיחת עוסק פטור',
+    opening_intro: 'ראיתי שהשארת פרטים לגבי פתיחת עוסק פטור.',
+    opening_value: 'אני כאן לעזור לך להתחיל בצורה מסודרת מול מע״מ, מס הכנסה וביטוח לאומי. רק כמה שאלות קצרות כדי להתחיל.\n\nכבר מעל 5,000 עצמאים נעזרו בשירות.',
+    open_now_cta: '🚀 לפתוח עוסק פטור עכשיו',
+    callback_cta: '📞 לדבר עם רואה חשבון על עוסק פטור',
+    question_cta: '❓ יש לי שאלה על עוסק פטור',
+    payment_success: 'קיבלנו את התשלום עבור פתיחת עוסק פטור ✅\nמתחילים לטפל בתיק שלך. נחזור אליך בהקדם עם השלב הבא.',
+    payment_recovery: 'ראיתי שהתחלת תהליך פתיחת עוסק פטור אבל לא סיימת את התשלום. רוצה שנשלח לך שוב את הקישור?',
+    questionnaire_intro: 'כדי לפתוח את תיק העוסק הפטור שלך כמו שצריך, אשמח שתענה על כמה שאלות קצרות.',
+  },
+  open_osek_zeir: {
+    service_name: 'עוסק זעיר',
+    service_name_with_action: 'פתיחת עוסק זעיר',
+    opening_intro: 'ראיתי שהשארת פרטים לגבי פתיחת עוסק זעיר.',
+    opening_value: 'אני כאן לעזור לך להתחיל את המסלול הזעיר בצורה מסודרת — מסלול מוזל ופשוט לעצמאים קטנים בתחילת הדרך. רק כמה שאלות קצרות כדי להתחיל.',
+    open_now_cta: '🚀 לפתוח עוסק זעיר עכשיו',
+    callback_cta: '📞 לדבר עם רואה חשבון על עוסק זעיר',
+    question_cta: '❓ יש לי שאלה על עוסק זעיר',
+    payment_success: 'קיבלנו את התשלום עבור פתיחת עוסק זעיר ✅\nמתחילים לטפל במסלול הזעיר שלך. נחזור אליך בהקדם עם השלב הבא.',
+    payment_recovery: 'ראיתי שהתחלת תהליך פתיחת עוסק זעיר אבל לא סיימת את התשלום. רוצה שנשלח לך שוב את הקישור למסלול הזעיר?',
+    questionnaire_intro: 'כדי לפתוח את תיק העוסק הזעיר שלך כמו שצריך, אשמח שתענה על כמה שאלות קצרות.',
+  },
+};
+
+/**
+ * מחזיר את וריאנט הקופי של מסלול ספציפי. אם service_type לא מוכר —
+ * מחזיר null (הקוד הקורא ייפול חזרה לניסוח ג'נרי מבוסס page_intent).
+ */
+export function getServiceCopy(serviceType?: string): ServiceCopy | null {
+  if (!serviceType) return null;
+  return SERVICE_COPY[serviceType] || null;
+}
+
+/**
+ * בונה הודעת פתיחה מלאה לליד לפי service_type. שימוש נכון בפונקציה הזאת
+ * מבטיח שליד שהגיע מעוסק פטור יקבל ניסוחי פטור, וליד מעוסק זעיר יקבל
+ * ניסוחי זעיר — ללא ערבוב.
+ */
+export function buildServiceOpening(leadName: string, serviceType: string): string | null {
+  const copy = getServiceCopy(serviceType);
+  if (!copy) return null;
+  return `שלום ${leadName} 👋\n${copy.opening_intro}\n${copy.opening_value}`;
+}
+
 // Context phrase by intent
 const CONTEXT_PHRASES: Record<string, string> = {
   service: 'השארת פרטים לגבי {{page_title}}',
@@ -343,6 +411,105 @@ export const ACCOUNTANT_CALLBACK_FLOW: BotFlow = {
   ],
 };
 
+/**
+ * Pre-payment recovery flow — triggered 7 min after lead clicks pay link
+ * but hasn't completed payment. 5 free-text questions to keep them engaged.
+ */
+export const PRE_PAYMENT_RECOVERY_FLOW: BotFlow = {
+  flow_type: 'pre_payment_recovery_flow',
+  goal: 'Re-engage abandoned checkout + collect qualifying info',
+  tone: 'אמפתי, לא לוחץ, אנושי',
+  max_steps: 5,
+  steps: [
+    { step_id: 'pp_q1', question: 'באיזה תחום העסק שאתה רוצה לפתוח? 🎯', buttons: [], crm_field: 'business_field' },
+    { step_id: 'pp_q2', question: 'מה השירות או המוצר שאתה מתכנן למכור? 🛍️', buttons: [], crm_field: 'offer_type' },
+    { step_id: 'pp_q3', question: 'איך חשבת להביא לקוחות לעסק? 🚀', buttons: [], crm_field: 'lead_gen_plan' },
+    { step_id: 'pp_q4', question: 'מה המטרה שלך בחודשים הקרובים? 💼', buttons: [], crm_field: 'near_term_goal' },
+    { step_id: 'pp_q5', question: 'יש משהו שחשוב לנו לדעת מראש כדי לעזור לך נכון? 💡', buttons: [], crm_field: 'important_notes' },
+  ],
+};
+
+export function buildPrePaymentRecoveryOpening(leadName: string): string {
+  const name = leadName || '';
+  return `שלום ${name} 👋\n\nראיתי שהתחלת את התהליך לפתיחת תיק אונליין אבל עדיין לא הושלם התשלום.\n\nבינתיים, כדי שנוכל להכיר את העסק שלך טוב יותר ולהתקדם מהר יותר, אשמח לשאול אותך כמה שאלות קצרות 👇`;
+}
+
+export function buildPrePaymentRecoveryClosing(): string {
+  return `תודה רבה על השיתוף 🙏\n\nכשתהיה מוכן, הנה שוב הקישור לפתיחת התיק:\n👉 https://perfect1.co.il/open-osek-patur-online\n\nאם יש לך שאלה — אני כאן 💬`;
+}
+
+/**
+ * Post-payment onboarding flow — triggered 7 min after successful payment
+ * to deeply understand the business for better service delivery.
+ */
+export const POST_PAYMENT_ONBOARDING_FLOW: BotFlow = {
+  flow_type: 'post_payment_onboarding_flow',
+  goal: 'Deep-dive into business profile after payment for service delivery',
+  tone: 'ברוך הבא, מקצועי, מעניין',
+  max_steps: 5,
+  steps: [
+    { step_id: 'po_q1', question: 'מה תחום הפעילות שלך? 🎯', buttons: [], crm_field: 'business_field' },
+    { step_id: 'po_q2', question: 'מה בדיוק אתה מתכנן למכור או איזה שירות לתת? 🛍️', buttons: [], crm_field: 'offer_type' },
+    { step_id: 'po_q3', question: 'האם כבר התחלת לפעול או שאתה רק בתחילת הדרך? 🏁', buttons: [], crm_field: 'business_stage' },
+    { step_id: 'po_q4', question: 'איך אתה מתכנן להביא לקוחות? 🚀', buttons: [], crm_field: 'lead_gen_plan' },
+    { step_id: 'po_q5', question: 'מה המטרה שלך מהעסק בתקופה הקרובה? 💼', buttons: [], crm_field: 'short_term_goal' },
+  ],
+};
+
+export function buildPostPaymentOnboardingOpening(leadName: string): string {
+  const name = leadName || '';
+  return `שלום ${name} 👋\n\nכדי שנפתח עבורך את התיק בצורה מדויקת ונכיר את הפעילות שלך טוב יותר, אשמח לשאול אותך כמה שאלות קצרות 👇`;
+}
+
+export function buildPostPaymentOnboardingClosing(): string {
+  return `מעולה, תודה על כל המידע 🙏\n\nאנחנו כבר מתחילים לטפל בפתיחת התיק שלך.\nתוך 72 שעות התיק יהיה פתוח ומוכן לעבודה 🚀\n\nאם יש לך שאלה בדרך — אני כאן 💬`;
+}
+
+/**
+ * Free Question Mode — lead asks free-text questions, bot answers,
+ * then (after 1-2 answers) gently offers a next action.
+ */
+export const FREE_QUESTION_FLOW: BotFlow = {
+  flow_type: 'free_question_flow',
+  goal: 'Answer questions + recover the sale. Never dead-end.',
+  tone: 'אנושי, עוזר, לא אגרסיבי',
+  max_steps: 999,
+  steps: [],
+};
+
+// Sales-recovery menu shown periodically in free_question_mode
+export const SALES_RECOVERY_BUTTONS: BotButton[] = [
+  { id: 'recovery_pay', label: '💳 לפתוח תיק אונליין', action: 'cta', temperature_signal: 'hot' },
+  { id: 'recovery_call', label: '📞 לדבר עם רואה חשבון', action: 'cta' },
+  { id: 'recovery_keep_asking', label: '❓ להמשיך לשאול כאן' },
+];
+
+/**
+ * Build a sales-recovery follow-up after answering a free question.
+ */
+export function buildSalesRecoveryMessage(): string {
+  return `כדי שאוכל לכוון אותך הכי נכון, אשמח להבין מה הכי רלוונטי לך כרגע 👇`;
+}
+
+/**
+ * Generic helpful fallback answer when we can't match the question.
+ */
+export function buildGenericAnswer(): string {
+  return `שאלה מצוינת 👍\nאני כאן לענות על כל שאלה לגבי פתיחת עוסק פטור, מיסוי, הנהלת חשבונות, ועוד.\nאפשר לשאול אותי בחופשיות — או לעבור ישר לפעולה:`;
+}
+
+/**
+ * Map recovery button → next action
+ */
+export function recoveryButtonToAction(buttonId: string): 'pay' | 'accountant' | 'keep_asking' | null {
+  switch (buttonId) {
+    case 'recovery_pay': return 'pay';
+    case 'recovery_call': return 'accountant';
+    case 'recovery_keep_asking': return 'keep_asking';
+    default: return null;
+  }
+}
+
 // Flow map
 const FLOW_MAP: Record<string, BotFlow> = {
   osek_patur_universal_flow: OSEK_PATUR_UNIVERSAL_FLOW,
@@ -353,6 +520,9 @@ const FLOW_MAP: Record<string, BotFlow> = {
   accounting_svc_flow: ACCOUNTING_SVC_FLOW,
   generic_flow: GENERIC_FLOW,
   accountant_callback_flow: ACCOUNTANT_CALLBACK_FLOW,
+  free_question_flow: FREE_QUESTION_FLOW,
+  pre_payment_recovery_flow: PRE_PAYMENT_RECOVERY_FLOW,
+  post_payment_onboarding_flow: POST_PAYMENT_ONBOARDING_FLOW,
 };
 
 /**
