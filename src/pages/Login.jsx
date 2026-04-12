@@ -65,6 +65,18 @@ export default function Login() {
     }
   };
 
+  const [googleEnabled, setGoogleEnabled] = useState(null); // null = loading, true/false = known
+
+  // Probe Supabase auth settings once to know if Google OAuth is available
+  useEffect(() => {
+    fetch(`${supabase.supabaseUrl}/auth/v1/settings`, {
+      headers: { apikey: supabase.supabaseKey },
+    })
+      .then((r) => r.json())
+      .then((s) => setGoogleEnabled(s?.external?.google === true))
+      .catch(() => setGoogleEnabled(false));
+  }, []);
+
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -90,24 +102,28 @@ export default function Login() {
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            variant="outline"
-            className="w-full h-11 text-sm font-medium"
-            onClick={handleGoogleLogin}
-            type="button"
-          >
-            <img src="https://www.google.com/favicon.ico" alt="" loading="lazy" decoding="async" className="w-4 h-4 ml-2" />
-            המשך עם Google
-          </Button>
+          {googleEnabled && (
+            <>
+              <Button
+                variant="outline"
+                className="w-full h-11 text-sm font-medium"
+                onClick={handleGoogleLogin}
+                type="button"
+              >
+                <img src="https://www.google.com/favicon.ico" alt="" loading="lazy" decoding="async" className="w-4 h-4 ml-2" />
+                המשך עם Google
+              </Button>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">או</span>
-            </div>
-          </div>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-gray-500">או</span>
+                </div>
+              </div>
+            </>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
