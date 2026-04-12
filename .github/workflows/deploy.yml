@@ -84,7 +84,7 @@ jobs:
         if: success()
         run: |
           npm install googleapis@latest --no-save
-          node scripts/notify-google-indexing.js
+          node scripts/notify-google-indexing.cjs
         env:
           GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
         continue-on-error: true
