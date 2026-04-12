@@ -69,6 +69,37 @@ Deno.serve(async (req) => {
     const safeMessage = sanitizeString(message, 1000);
     const safeBusinessName = sanitizeString(businessName, 200);
 
+    // ★ INSTANT WhatsApp greeting — send BEFORE any DB writes for minimum latency
+    // botStartFlow will be called later to create the session, but the greeting
+    // goes out NOW so the user sees it within 1-2 seconds of submitting the form.
+    if (cleanPhone) {
+      const GREEN_API_TOKEN = Deno.env.get('GREENAPI_API_TOKEN');
+      const GREEN_API_INSTANCE = Deno.env.get('GREENAPI_INSTANCE_ID');
+      if (GREEN_API_TOKEN && GREEN_API_INSTANCE) {
+        const greetingMsg = `שלום! 👋\n\nהגעת ל*פרפקט וואן* — מומחים בפתיחה וניהול עסקים בישראל.\n\nאיך נוכל לעזור לך היום?`;
+        const greetingButtons = [
+          { buttonId: 'start_now', buttonText: 'פתיחת עוסק פטור אונליין' },
+          { buttonId: 'cta_call', buttonText: 'שיחה עם רואה חשבון' },
+          { buttonId: 'cta_question', buttonText: 'יש לי שאלה' },
+        ];
+        // Fire-and-forget — don't await, don't block
+        fetch(
+          `https://api.green-api.com/waInstance${GREEN_API_INSTANCE}/sendInteractiveButtonsReply/${GREEN_API_TOKEN}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chatId: `${cleanPhone}@c.us`,
+              body: greetingMsg,
+              buttons: greetingButtons,
+              footer: 'פרפקט וואן',
+            }),
+          },
+        ).then(r => console.log('Instant greeting sent:', cleanPhone, r.status))
+         .catch(e => console.warn('Instant greeting failed:', e.message));
+      }
+    }
+
     // 1. Find the landing page by slug to get lead destination settings
     let landingPage: any = null;
     if (pageSlug) {

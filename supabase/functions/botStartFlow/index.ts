@@ -101,19 +101,22 @@ Deno.serve(async (req) => {
       sender_type: 'bot' as const,
     };
 
-    // 5. Send the ONE AND ONLY greeting message — always the same, 3 options
-    // This is the entry point of the entire bot flow.
-    // The user replies with 1, 2, or 3 and botHandleReply routes accordingly.
+    // 5. The greeting WhatsApp is already sent instantly by submitLeadToN8N
+    // (before DB writes, for minimum latency). Here we just STORE it in DB
+    // so WhatsApp conversation history is complete.
     const greetingMsg = `שלום! 👋\n\nהגעת ל*פרפקט וואן* — מומחים בפתיחה וניהול עסקים בישראל.\n\nאיך נוכל לעזור לך היום?`;
 
-    // Send with Interactive Reply Buttons (sendInteractiveButtonsReply API)
-    // These render as clickable buttons, not as a duplicate numbered list
-    const greetingButtons = [
-      { id: 'start_now', label: 'פתיחת עוסק פטור אונליין' },
-      { id: 'cta_call', label: 'שיחה עם רואה חשבון' },
-      { id: 'cta_question', label: 'יש לי שאלה' },
-    ];
-    await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: greetingMsg, buttons: greetingButtons });
+    // Store the greeting in whatsapp_messages (already sent via Green API)
+    await supabaseAdmin.from('whatsapp_messages').insert({
+      phone: cleanPhone,
+      direction: 'outbound',
+      message_text: greetingMsg,
+      message_type: 'button',
+      sender_type: 'bot',
+      lead_id: lead_id || null,
+      session_id: session.id,
+      source: 'sales_portal',
+    });
 
     // 6. Update session — greeting sent, waiting for user choice (1/2/3)
     await supabaseAdmin.from('bot_sessions').update({
