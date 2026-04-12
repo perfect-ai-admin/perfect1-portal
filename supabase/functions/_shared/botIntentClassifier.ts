@@ -20,6 +20,26 @@ const PAGE_INTENT_MAP: Record<string, IntentResult> = {
   'landing-osek-patur-mid': { page_intent: 'service', service_type: 'open_osek_patur', flow_type: 'service_flow', flow_variant: 'open_osek_patur', pricing: { setup: '250 ₪ + מע״מ', monthly: '200 ₪ + מע״מ', includes: ['דוח שנתי', 'ליווי שוטף', 'אפליקציה להוצאת קבלות', 'מנהלת תיק'] } },
   'landing-osek-patur-final': { page_intent: 'service', service_type: 'open_osek_patur', flow_type: 'service_flow', flow_variant: 'open_osek_patur', pricing: { setup: '250 ₪ + מע״מ', monthly: '200 ₪ + מע״מ', includes: ['דוח שנתי', 'ליווי שוטף', 'אפליקציה להוצאת קבלות', 'מנהלת תיק'] } },
   'landing-accountant-osek-patur': { page_intent: 'accounting_service', service_type: 'accountant_osek_patur', flow_type: 'accounting_svc_flow', flow_variant: 'accountant_patur', pricing: { setup: '250 ₪ + מע״מ', monthly: '200 ₪ + מע״מ', includes: ['דוח שנתי', 'ליווי וייעוץ', 'התנהלות מול הרשויות', 'אפליקציה להוצאת קבלות', 'מנהלת תיק זמינה'] } },
+
+  // ====================================================================
+  // OSEK ZEIR — מסלול נפרד לחלוטין מעוסק פטור
+  // service_type='open_osek_zeir' הוא הדגל היחיד שהבוט / CRM / analytics
+  // בודקים כדי להחליט האם לדבר בשפת "זעיר" או "פטור".
+  // אסור להחזיר כאן open_osek_patur עבור slug של זעיר.
+  // ====================================================================
+  'open-osek-zeir': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'open-osek-zeir-online': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'open-osek-zair': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'open-osek-zair-online': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'osek-zeir-landing': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'osek-zair-landing': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  // Landing variants sent from OsekZeirLanding.jsx with hero/mid/final suffix
+  'landing-osek-zeir-hero': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'landing-osek-zeir-mid': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'landing-osek-zeir-final': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'landing-osek-zair-hero': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'landing-osek-zair-mid': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
+  'landing-osek-zair-final': { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' },
   'accountant-osek-patur': { page_intent: 'accounting_service', service_type: 'accountant_osek_patur', flow_type: 'accounting_svc_flow', flow_variant: 'accountant_patur', pricing: { setup: '250 ₪ + מע״מ', monthly: '200 ₪ + מע״מ', includes: ['דוח שנתי', 'ליווי וייעוץ', 'התנהלות מול הרשויות', 'אפליקציה להוצאת קבלות', 'מנהלת תיק זמינה'] } },
   'patur-vs-murshe': { page_intent: 'comparison', service_type: 'patur_vs_murshe', flow_type: 'comparison_flow', flow_variant: 'patur_vs_murshe' },
   'patur-vs-murshe-quiz': { page_intent: 'comparison', service_type: 'patur_vs_murshe', flow_type: 'comparison_flow', flow_variant: 'patur_vs_murshe' },
@@ -119,6 +139,18 @@ export function classifyIntent(pageSlug?: string, pageUrl?: string, pageTitle?: 
 
   if (url.includes('/accountant') || title.includes('רואה חשבון')) {
     return { page_intent: 'accounting_service', service_type: 'accounting', flow_type: 'accounting_svc_flow', flow_variant: 'generic_accounting' };
+  }
+
+  // Osek Zeir URL-pattern fallback — must be checked BEFORE the generic
+  // "open-" fallback below so zeir never slips into a patur-flavored flow.
+  if (
+    cleanSlug.includes('osek-zeir') ||
+    cleanSlug.includes('osek-zair') ||
+    url.includes('osek-zeir') ||
+    url.includes('osek-zair') ||
+    title.includes('עוסק זעיר')
+  ) {
+    return { page_intent: 'service', service_type: 'open_osek_zeir', flow_type: 'service_flow', flow_variant: 'open_osek_zeir' };
   }
 
   if (cleanSlug.startsWith('open-') || cleanSlug.startsWith('close-') || title.includes('פתיחת') || title.includes('סגירת')) {

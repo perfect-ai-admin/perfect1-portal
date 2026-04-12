@@ -75,6 +75,9 @@ const PaturVsMursheLanding = lazyWithRetry(() => import('./pages/PaturVsMursheLa
 const PaturVsMursheQuiz = lazyWithRetry(() => import('./pages/PaturVsMursheQuiz'));
 const AccountantLanding = lazyWithRetry(() => import('./pages/AccountantLanding'));
 const OpenOsekPaturOnline = lazyWithRetry(() => import('./pages/OpenOsekPaturOnline'));
+// עוסק זעיר — מסלול נפרד לחלוטין מעוסק פטור. שני עמודים ייעודיים עם קופי משלהם.
+const OsekZeirLanding = lazyWithRetry(() => import('./pages/OsekZeirLanding'));
+const OpenOsekZeirOnline = lazyWithRetry(() => import('./pages/OpenOsekZeirOnline'));
 
 // Blog articles (portal-only)
 const BlogLogoArticle = lazyWithRetry(() => import('./pages/blog/LogoArticle'));
@@ -198,6 +201,11 @@ const PortalRoutes = () => (
     <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
+    {/* Osek Zeir — מסלול נפרד לחלוטין. חייב להישאר מנותק מעוסק פטור בכל המסרים */}
+    <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
+    <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />
+    <Route path="/open-osek-zeir-online" element={<SafePage><OpenOsekZeirOnline /></SafePage>} />
+    <Route path="/open-osek-zair-online" element={<SafePage><OpenOsekZeirOnline /></SafePage>} />
     <Route path="/ThankYou" element={<SafePage><ThankYou /></SafePage>} />
 
     {/* Portal public pages */}
@@ -285,6 +293,11 @@ const DevRoutes = () => (
     <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
+    {/* Osek Zeir — מסלול נפרד לחלוטין (Dev) */}
+    <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
+    <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />
+    <Route path="/open-osek-zeir-online" element={<SafePage><OpenOsekZeirOnline /></SafePage>} />
+    <Route path="/open-osek-zair-online" element={<SafePage><OpenOsekZeirOnline /></SafePage>} />
     <Route path="/ThankYou" element={<SafePage><ThankYou /></SafePage>} />
 
     {/* Portal public pages */}

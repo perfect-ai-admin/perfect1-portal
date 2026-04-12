@@ -5,7 +5,7 @@
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse } from '../_shared/supabaseAdmin.ts';
 import { classifyIntent } from '../_shared/botIntentClassifier.ts';
-import { buildOpeningMessage, buildPricingMessage, getFlow, getStep } from '../_shared/botFlowTemplates.ts';
+import { buildOpeningMessage, buildPricingMessage, getFlow, getStep, buildServiceOpening, getServiceCopy } from '../_shared/botFlowTemplates.ts';
 import { formatPhone, sendAndStoreMessage, sendAndStoreButtons } from '../_shared/whatsappHelper.ts';
 
 Deno.serve(async (req) => {
@@ -123,7 +123,12 @@ Deno.serve(async (req) => {
         }).eq('id', lead_id);
       }
     } else {
-      const openingMsg = buildOpeningMessage(name, intent.page_intent, page_title || page_slug || '');
+      // אם יש service_type עם וריאנט קופי ייעודי (עוסק פטור / עוסק זעיר),
+      // משתמשים בפתיחה הייעודית במקום בניסוח הג'נרי המבוסס על page_title.
+      // זה מה שמבטיח שליד מעוסק זעיר יקבל "ראיתי שהשארת פרטים לגבי פתיחת
+      // עוסק זעיר" ולא "ראיתי שהשארת פרטים לגבי דף נחיתה..." או מינוח פטור.
+      const serviceOpening = buildServiceOpening(name, intent.service_type);
+      const openingMsg = serviceOpening || buildOpeningMessage(name, intent.page_intent, page_title || page_slug || '');
 
       if (intent.flow_type === 'pricing_flow' && intent.pricing) {
         await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: openingMsg });

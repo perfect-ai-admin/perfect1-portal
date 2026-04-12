@@ -484,6 +484,18 @@ const PUBLIC_PAGES_SEO = {
     description: 'הצהרת הנגישות של אתר פרפקט וואן — מחויבות לנגישות דיגיטלית לכלל המשתמשים.',
     keywords: 'נגישות, הצהרת נגישות, נגישות אתר',
   },
+  // ========== עוסק זעיר — מסלול נפרד לחלוטין מעוסק פטור ==========
+  '/OsekZeirLanding': {
+    title: 'פתיחת עוסק זעיר אונליין | מסלול מוזל לעצמאים מתחילים — פרפקט וואן',
+    description: 'רוצים לפתוח עוסק זעיר? מסלול ייעודי לעצמאים קטנים בתחילת הדרך. בדיקת התאמה חינם, ליווי מקצועי, בלי בירוקרטיה מיותרת.',
+    keywords: 'פתיחת עוסק זעיר, עוסק זעיר אונליין, מה זה עוסק זעיר, עוסק זעיר למתחילים',
+  },
+  '/open-osek-zeir-online': {
+    title: 'פתיחת עוסק זעיר אונליין — השלם את התהליך | פרפקט וואן',
+    description: 'השלם את פתיחת העוסק הזעיר שלך אונליין תוך 2 דקות. מלא פרטים, העלה תעודת זהות ושלם — אנחנו מטפלים בהכל.',
+    keywords: 'פתיחת עוסק זעיר אונליין, עוסק זעיר, תהליך פתיחת עוסק זעיר',
+    noindex: true,
+  },
 };
 
 // Generate HTML for public pages with unique SEO meta tags
@@ -550,6 +562,9 @@ function generateSPAFallbacks() {
   const spaRoutes = [
     // Landing pages
     '/open-osek-patur',
+    // Osek Zeir — alternative URL aliases (primary routes get full SEO pages above)
+    '/osek-zair-landing',
+    '/open-osek-zair-online',
     '/ThankYou',
     '/DigitalCard',
     '/patur-vs-murshe',

@@ -7,7 +7,10 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
-    const { sum, lead_id } = await req.json();
+    // service_type אופציונלי: אם העמוד שולח 'osek_zeir' — ההזמנה תירשם
+     // כ"פתיחת עוסק זעיר אונליין" ולא תתערבב עם עוסק פטור במסך התשלום /
+     // ב-reporting של Tranzila / בטבלת payments. ברירת מחדל: osek_patur.
+    const { sum, lead_id, service_type } = await req.json();
 
     if (typeof sum !== 'number' || sum <= 0) {
       return errorResponse('Invalid sum', 400, req);
@@ -43,12 +46,16 @@ Deno.serve(async (req) => {
     let notifyUrl = '';
 
     if (lead_id) {
+      const isZeir = service_type === 'osek_zeir' || service_type === 'open_osek_zeir';
+      const productType = isZeir ? 'osek_zeir' : 'osek_patur';
+      const productName = isZeir ? 'פתיחת עוסק זעיר אונליין' : 'פתיחת עוסק פטור אונליין';
+
       const { data: payment, error: payErr } = await supabaseAdmin
         .from('payments')
         .insert({
           lead_id,
-          product_type: 'osek_patur',
-          product_name: 'פתיחת עוסק פטור אונליין',
+          product_type: productType,
+          product_name: productName,
           amount: sum,
           currency: 'ILS',
           payment_method: 'tranzila',
