@@ -170,6 +170,64 @@ Deno.serve(async (req) => {
 
     const cleanPhone = formatPhone(phone);
 
+    // === SYSTEM MESSAGES (from pg_cron scanners — not real user input) ===
+    if (messageText === '_system_reminder' || messageText === '_system_recovery') {
+      // Find active session
+      const { data: sysSessions } = await supabaseAdmin
+        .from('bot_sessions')
+        .select('id, lead_id, flow_type, current_step, phone')
+        .eq('phone', cleanPhone)
+        .is('completed_at', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      const sysSession = sysSessions?.[0];
+      if (!sysSession) {
+        return jsonResponse({ success: true, skipped: true, reason: 'no_active_session' }, 200, req);
+      }
+
+      const sysSendOpts = botSendOpts(cleanPhone, sysSession.lead_id, sysSession.id);
+
+      if (messageText === '_system_reminder') {
+        // Gentle reminder for incomplete questionnaire
+        const reminderMsg = `היי 👋\nאני רואה שהתחלנו שיחה אבל עוד לא סיימנו.\nאשמח להמשיך — אפשר לענות כאן בכל זמן שנוח 😊`;
+        await sendAndStoreMessage(supabaseAdmin, { ...sysSendOpts, message: reminderMsg, sender_type: 'system' });
+
+        await supabaseAdmin.from('bot_sessions').update({
+          last_message_at: new Date().toISOString(),
+        }).eq('id', sysSession.id);
+
+        await logLeadEvent(supabaseAdmin, sysSession.lead_id, 'system_reminder_sent', {
+          flow_type: sysSession.flow_type,
+          current_step: sysSession.current_step,
+        });
+
+        return jsonResponse({ success: true, action: 'reminder_sent', session_id: sysSession.id }, 200, req);
+      }
+
+      if (messageText === '_system_recovery') {
+        // Recovery for free_question_flow — offer next action
+        const recoveryMsg = `היי 👋\nאני כאן אם יש לך שאלות נוספות.\n\nבינתיים, אשמח לדעת — מה הכי רלוונטי לך כרגע? 👇`;
+        await sendAndStoreMessage(supabaseAdmin, { ...sysSendOpts, message: recoveryMsg, sender_type: 'system' });
+        await sendAndStoreButtons(supabaseAdmin, {
+          ...sysSendOpts,
+          sender_type: 'system',
+          message: '',
+          buttons: SALES_RECOVERY_BUTTONS,
+        });
+
+        await supabaseAdmin.from('bot_sessions').update({
+          last_message_at: new Date().toISOString(),
+        }).eq('id', sysSession.id);
+
+        await logLeadEvent(supabaseAdmin, sysSession.lead_id, 'system_recovery_sent', {
+          flow_type: sysSession.flow_type,
+        });
+
+        return jsonResponse({ success: true, action: 'recovery_sent', session_id: sysSession.id }, 200, req);
+      }
+    }
+
     // === Store inbound message (dedup by greenapi_message_id) ===
     const storedInbound = await storeInboundMessage(supabaseAdmin, {
       phone: cleanPhone,
