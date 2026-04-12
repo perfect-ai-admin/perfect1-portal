@@ -472,7 +472,7 @@ Deno.serve(async (req) => {
         await new Promise(r => setTimeout(r, 30000));
 
         const q1 = getStep('accountant_callback_flow', 'ac_q1');
-        const combinedQ1 = `כדי שנוכל לעזור לך בצורה הכי מדויקת בשיחה עם רואה החשבון, אשמח להכיר קצת את התוכנית שלך 👇\n\n${q1?.question || 'באיזה תחום העסק שאתה רוצה לפתוח?'}`;
+        const combinedQ1 = `כדי שרואה החשבון יוכל לעזור לך בצורה הכי טובה, אשמח לשמוע ממך כמה דברים קצרים 😊\n\nזה ייקח פחות מדקה — ויחסוך לך זמן בשיחה.\n\n${q1?.question || 'ספר לי קצת — באיזה תחום אתה רוצה לפתוח את העסק?'}`;
         await sendAndStoreMessage(supabaseAdmin, { ...acOpts, message: combinedQ1 });
 
         if (acSession) {
@@ -764,7 +764,7 @@ Deno.serve(async (req) => {
           // Wait 30 seconds before sending combined question
           await new Promise(r => setTimeout(r, 30000));
           const q1 = getStep('accountant_callback_flow', 'ac_q1');
-          const combinedQ1 = `כדי שנוכל לעזור לך בצורה הכי מדויקת בשיחה עם רואה החשבון, אשמח להכיר קצת את התוכנית שלך 👇\n\n${q1?.question || 'באיזה תחום העסק שאתה רוצה לפתוח?'}`;
+          const combinedQ1 = `כדי שרואה החשבון יוכל לעזור לך בצורה הכי טובה, אשמח לשמוע ממך כמה דברים קצרים 😊\n\nזה ייקח פחות מדקה — ויחסוך לך זמן בשיחה.\n\n${q1?.question || 'ספר לי קצת — באיזה תחום אתה רוצה לפתוח את העסק?'}`;
           await sendAndStoreMessage(supabaseAdmin, { ...newOpts, message: combinedQ1 });
 
           if (acSession) {
@@ -961,7 +961,7 @@ Deno.serve(async (req) => {
         // 2) Wait 30 seconds, then send combined question
         await new Promise(r => setTimeout(r, 30000));
         const q1 = getStep('accountant_callback_flow', 'ac_q1');
-        const combinedQ1 = `כדי שנוכל לעזור לך בצורה הכי מדויקת בשיחה עם רואה החשבון, אשמח להכיר קצת את התוכנית שלך 👇\n\n${q1?.question || 'באיזה תחום העסק שאתה רוצה לפתוח?'}`;
+        const combinedQ1 = `כדי שרואה החשבון יוכל לעזור לך בצורה הכי טובה, אשמח לשמוע ממך כמה דברים קצרים 😊\n\nזה ייקח פחות מדקה — ויחסוך לך זמן בשיחה.\n\n${q1?.question || 'ספר לי קצת — באיזה תחום אתה רוצה לפתוח את העסק?'}`;
         await sendAndStoreMessage(supabaseAdmin, { ...newSessionOpts, message: combinedQ1 });
 
         if (newSession) {
