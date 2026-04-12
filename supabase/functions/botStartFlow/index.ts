@@ -106,8 +106,14 @@ Deno.serve(async (req) => {
     // The user replies with 1, 2, or 3 and botHandleReply routes accordingly.
     const greetingMsg = `שלום! 👋\n\nהגעת ל*פרפקט וואן* — מומחים בפתיחה וניהול עסקים בישראל.\n\nאיך נוכל לעזור לך היום?\n\n1️⃣ *פתיחת עוסק פטור אונליין*\nנפתח לך את התיק במס הכנסה, מע"מ וביטוח לאומי.\n\n2️⃣ *שיחה עם רואה חשבון*\nנחזור אליך בהקדם\n\n3️⃣ *יש לי שאלה*\nשאל ונענה מיד\n\nשלח מספר (1, 2 או 3)`;
 
-    // Send as plain text only — no buttons (buttons cause duplicate numbered list in WhatsApp)
-    await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: greetingMsg });
+    // Send with Interactive Reply Buttons (sendInteractiveButtonsReply API)
+    // These render as clickable buttons, not as a duplicate numbered list
+    const greetingButtons = [
+      { id: 'start_now', label: 'פתיחת עוסק פטור' },
+      { id: 'cta_call', label: 'שיחה עם רואה חשבון' },
+      { id: 'cta_question', label: 'יש לי שאלה' },
+    ];
+    await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: greetingMsg, buttons: greetingButtons });
 
     // 6. Update session — greeting sent, waiting for user choice (1/2/3)
     await supabaseAdmin.from('bot_sessions').update({
