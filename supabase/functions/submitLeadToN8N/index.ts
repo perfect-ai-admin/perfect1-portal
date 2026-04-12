@@ -43,8 +43,8 @@ Deno.serve(async (req) => {
       referrer, landingUrl,
     } = await req.json();
 
-    if (!phone) {
-      return errorResponse('Phone is required', 400, req);
+    if (!phone && !email && !name) {
+      return errorResponse('At least one of phone, email or name is required', 400, req);
     }
 
     // Rate limiting: max 5 submissions per IP per minute
@@ -54,9 +54,9 @@ Deno.serve(async (req) => {
       return errorResponse('Too many requests. Please wait a moment.', 429, req);
     }
 
-    // Input validation
-    const cleanPhone = validatePhone(phone);
-    if (!cleanPhone) {
+    // Input validation — phone is optional (payment-first flows may not have it)
+    const cleanPhone = phone ? validatePhone(phone) : null;
+    if (phone && !cleanPhone) {
       return errorResponse('Invalid phone number format', 400, req);
     }
 
@@ -173,12 +173,12 @@ Deno.serve(async (req) => {
     if (leadErr) throw new Error(leadErr.message);
     console.log('Lead saved to CRM:', leadResult.id);
 
-    // Trigger botStartFlow directly (Supabase edge function)
-    // This creates a bot_session, sends the WhatsApp greeting, and stores the message in whatsapp_messages
-    try {
+    // Trigger botStartFlow — FIRE AND FORGET (no await)
+    // The WhatsApp greeting is sent async so the lead form gets an instant response.
+    if (cleanPhone) {
       const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
       const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-      const botStartRes = await fetch(`${supabaseUrl}/functions/v1/botStartFlow`, {
+      fetch(`${supabaseUrl}/functions/v1/botStartFlow`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,33 +193,27 @@ Deno.serve(async (req) => {
           page_slug: pageSlug || 'open-osek-patur',
           page_title: safeBusinessName || '',
         }),
-        signal: AbortSignal.timeout(10000),
-      });
-      console.log('botStartFlow triggered for lead:', leadResult.id, 'status:', botStartRes.status);
-    } catch (e: any) {
-      console.warn('botStartFlow trigger failed (non-blocking):', e.message);
+      }).then(r => console.log('botStartFlow triggered:', leadResult.id, r.status))
+        .catch(e => console.warn('botStartFlow fire-and-forget failed:', e.message));
     }
 
-    // Also notify n8n (for any downstream automations, owner notifications, etc)
-    try {
+    // Also notify n8n — fire and forget (no await)
+    {
       const n8nPayload = {
         _event_type: 'new_lead',
         lead_id: leadResult.id,
         name: safeName || 'אתר',
-        phone: cleanPhone,
+        phone: cleanPhone || '',
         email: email || '',
         page_slug: pageSlug || 'open-osek-patur',
         service_type: intent.service_type || 'osek_patur',
       };
-      await fetch('https://n8n.perfect-1.one/webhook/perfect-one-osek-patur', {
+      fetch('https://n8n.perfect-1.one/webhook/perfect-one-osek-patur', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(n8nPayload),
-        signal: AbortSignal.timeout(5000),
-      });
-      console.log('N8N webhook sent for lead:', leadResult.id);
-    } catch (e: any) {
-      console.warn('N8N webhook failed (non-blocking):', e.message);
+      }).then(() => console.log('N8N webhook sent for lead:', leadResult.id))
+        .catch((e: any) => console.warn('N8N webhook failed:', e.message));
     }
 
     // 3. Also save crm_lead (per-user CRM view)
