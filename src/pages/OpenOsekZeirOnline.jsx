@@ -204,7 +204,7 @@ export default function OpenOsekZeirOnline() {
             const n8nRes = await fetch('https://n8n.perfect-1.one/webhook/tranzila-handshake', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ sum: 299 }),
+              body: JSON.stringify({ sum: 299, service_type: 'osek_zeir' }),
             });
             const n8nData = await n8nRes.json();
             if (n8nData.thtk) {
@@ -281,11 +281,12 @@ export default function OpenOsekZeirOnline() {
       }
 
       const txId = txData.ConfirmationCode || txData.confirmationCode || txData.index || '';
+      const txResponse = txData.Response || txData.response || '000';
       if (paymentId) {
         await invokeFunction('tranzilaConfirmPayment', {
           payment_id: paymentId,
           transaction_id: txId,
-          tranzila_response: '000',
+          tranzila_response: String(txResponse),
         }).catch(err => console.warn('Client-side confirm (backup):', err));
       }
     } catch (err) {

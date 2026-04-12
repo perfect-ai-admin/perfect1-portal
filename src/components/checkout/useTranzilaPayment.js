@@ -170,7 +170,7 @@ export default function useTranzilaPayment({ onSuccess, onTimeout } = {}) {
       if (payments?.length > 0 && payments[0].status === 'completed') {
         await confirmPayment('manual-check');
       } else {
-        await confirmPayment('manual');
+        toast.error('התשלום עדיין לא התקבל. נסה שוב בעוד רגע.');
       }
     } catch (e) {
       toast.error('לא הצלחנו לאמת את התשלום. נסה שוב בעוד רגע.');

@@ -324,11 +324,12 @@ export default function OpenOsekPaturOnline() {
 
       // 2. Confirm payment via our edge function (triggers post-purchase flow).
       const txId = txData.ConfirmationCode || txData.confirmationCode || txData.index || '';
+      const txResponse = txData.Response || txData.response || '000';
       if (paymentId) {
         await invokeFunction('tranzilaConfirmPayment', {
           payment_id: paymentId,
           transaction_id: txId,
-          tranzila_response: '000',
+          tranzila_response: String(txResponse),
         }).catch(err => console.warn('Client-side confirm (backup):', err));
       }
     } catch (err) {
