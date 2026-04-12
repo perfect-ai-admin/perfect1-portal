@@ -61,7 +61,6 @@ export default function OpenOsekPaturOnline() {
   // Form data
   const [form, setForm] = useState({
     name: '',
-    phone: '',
     idNumber: '',
     email: '',
     isEmployee: '',
@@ -73,11 +72,6 @@ export default function OpenOsekPaturOnline() {
     consent: true,
   });
 
-  // Prefill phone from URL param if available (e.g. from ad campaigns)
-  const phoneParam = searchParams.get('phone') || '';
-  useEffect(() => {
-    if (phoneParam && !form.phone) set('phone', phoneParam);
-  }, []);
   const gclid = searchParams.get('gclid') || '';
   const utmSource = searchParams.get('utm_source') || '';
   const utmCampaign = searchParams.get('utm_campaign') || '';
@@ -98,7 +92,6 @@ export default function OpenOsekPaturOnline() {
   const validateStep1 = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'שדה חובה';
-    if (!/^05\d{8}$/.test(form.phone.replace(/\D/g, ''))) e.phone = 'מספר טלפון לא תקין';
     if (!/^\d{9}$/.test(form.idNumber)) e.idNumber = 'נדרשות 9 ספרות';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'אימייל לא תקין';
     if (!form.isEmployee) e.isEmployee = 'יש לבחור';
@@ -180,7 +173,7 @@ export default function OpenOsekPaturOnline() {
           try {
             sessionStorage.setItem('pendingLead', JSON.stringify({
               name: form.name,
-              phone: form.phone.replace(/\D/g, ''),
+              phone: '',
               email: form.email,
               businessName: form.businessName,
               businessType: form.businessType,
@@ -445,18 +438,6 @@ export default function OpenOsekPaturOnline() {
                       onChange={e => set('name', e.target.value)}
                       placeholder="ישראל ישראלי"
                       className="h-12 rounded-xl text-right"
-                    />
-                  </FieldGroup>
-
-                  <FieldGroup label="טלפון נייד" error={errors.phone}>
-                    <Input
-                      value={form.phone}
-                      onChange={e => set('phone', e.target.value.replace(/[^\d-]/g, '').slice(0, 11))}
-                      placeholder="050-1234567"
-                      inputMode="tel"
-                      type="tel"
-                      className="h-12 rounded-xl text-left"
-                      dir="ltr"
                     />
                   </FieldGroup>
 
@@ -725,7 +706,7 @@ export default function OpenOsekPaturOnline() {
                         <input type="hidden" name="accessibility" value="2" />
                         <input type="hidden" name="contact" value={form.name} />
                         <input type="hidden" name="email" value={form.email} />
-                        <input type="hidden" name="phone" value={phone} />
+                        <input type="hidden" name="phone" value="" />
                         <input type="hidden" name="company" value={form.businessName} />
                         <input type="hidden" name="pdesc" value="פתיחת עוסק פטור אונליין" />
                         {paymentId && <input type="hidden" name="o_cred_oid" value={paymentId} />}
