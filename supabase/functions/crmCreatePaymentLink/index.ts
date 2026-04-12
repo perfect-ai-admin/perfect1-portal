@@ -6,7 +6,7 @@ import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, getUser } f
 import { sendAndStoreMessage, formatPhone } from '../_shared/whatsappHelper.ts';
 
 const TRANZILA_TERMINAL = Deno.env.get('TRANZILA_TERMINAL_NAME');
-const TRANZILA_PASSWORD = Deno.env.get('TRANZILA_TERMINAL_PASSWORd') || Deno.env.get('TRANZILA_TERMINAL_PASSWORD');
+const TRANZILA_PASSWORD = Deno.env.get('TRANZILA_TERMINAL_PASSWORD') || Deno.env.get('TRANZILA_TERMINAL_PASSWORd');
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
@@ -23,6 +23,10 @@ Deno.serve(async (req) => {
 
     if (amount <= 0 || amount > 100000) {
       return errorResponse('Amount must be between 1 and 100,000', 400, req);
+    }
+
+    if (!TRANZILA_TERMINAL) {
+      return errorResponse('Terminal not configured', 500, req);
     }
 
     // Fetch lead
@@ -44,8 +48,7 @@ Deno.serve(async (req) => {
     let paymentLink: string;
 
     if (lead.payment_status === 'link_sent' && paymentId) {
-      // Resend existing link
-      console.log('Resending existing payment link for lead:', lead_id);
+      console.log('Resending payment link for lead:', lead_id);
     } else {
       // Create new payment record
       const { data: payment, error: payErr } = await supabaseAdmin
@@ -70,11 +73,40 @@ Deno.serve(async (req) => {
       paymentId = payment.id;
     }
 
-    // Build payment link
+    // Create handshake token (secure — password never exposed in URL)
+    const handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${encodeURIComponent(TRANZILA_TERMINAL)}&sum=${amount}&TranzilaPW=${encodeURIComponent(TRANZILA_PASSWORD || '')}`;
+    const handshakeRes = await fetch(handshakeUrl);
+    const handshakeText = await handshakeRes.text();
+    const thtkMatch = handshakeText.match(/thtk=(.+)/);
+
+    if (!handshakeRes.ok || !thtkMatch?.[1]) {
+      console.error('[crmCreatePaymentLink] Handshake failed:', handshakeRes.status, handshakeText);
+      return errorResponse('Payment gateway handshake failed', 502, req);
+    }
+
+    const thtk = thtkMatch[1].trim();
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const notifyUrl = `${supabaseUrl}/functions/v1/tranzilaConfirmPayment`;
 
-    paymentLink = `https://direct.tranzila.com/${TRANZILA_TERMINAL}/iframeapitokeep.php?sum=${amount}&currency=1&cred_type=1&tranmode=A&TranzilaPW=${TRANZILA_PASSWORD}&o_cred_oid=${paymentId}&notify_url_address=${encodeURIComponent(notifyUrl)}&lang=il`;
+    const linkParams = new URLSearchParams({
+      supplier: TRANZILA_TERMINAL,
+      sum: String(amount),
+      currency: '1',
+      cred_type: '1',
+      tranmode: 'A',
+      thtk,
+      o_cred_oid: paymentId,
+      notify_url_address: notifyUrl,
+      lang: 'il',
+      nologo: '1',
+      trBgColor: 'FFFFFF',
+      trTextColor: '1E3A5F',
+      trButtonColor: '27AE60',
+      buttonLabel: 'לתשלום',
+      pdesc: product_name || product_type,
+    });
+
+    paymentLink = `https://direct.tranzila.com/${TRANZILA_TERMINAL}/newiframe.php?${linkParams.toString()}`;
 
     // Update lead payment_status
     await supabaseAdmin.from('leads').update({

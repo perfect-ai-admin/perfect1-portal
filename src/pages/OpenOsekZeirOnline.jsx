@@ -63,6 +63,7 @@ export default function OpenOsekZeirOnline() {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const paymentProcessedRef = useRef(false);
 
   // Form data
   const [form, setForm] = useState({
@@ -250,7 +251,8 @@ export default function OpenOsekZeirOnline() {
 
   // ---- Payment Success ----
   const handlePaymentSuccess = async (txData) => {
-    if (paymentSuccess) return;
+    if (paymentProcessedRef.current) return;
+    paymentProcessedRef.current = true;
     setPaymentSuccess(true);
 
     const tranzilaPhone = (

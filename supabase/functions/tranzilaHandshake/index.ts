@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
     }
 
     const supplier = Deno.env.get('TRANZILA_TERMINAL_NAME');
-    const tranzilaPW = Deno.env.get('TRANZILA_TERMINAL_PASSWORd') || Deno.env.get('TRANZILA_TERMINAL_PASSWORD') || '';
+    const tranzilaPW = Deno.env.get('TRANZILA_TERMINAL_PASSWORD') || Deno.env.get('TRANZILA_TERMINAL_PASSWORd') || '';
 
     if (!supplier) return errorResponse('Terminal not configured', 500, req);
 
@@ -41,42 +41,46 @@ Deno.serve(async (req) => {
 
     const thtk = match[1].trim();
 
-    // If lead_id provided, create payment record and return paymentId + notifyUrl
-    let paymentId = null;
-    let notifyUrl = '';
+    // Always create a payment record so post-payment automation works
+    // even when the user arrives via a direct link (no lead_id yet).
+    const isZeir = service_type === 'osek_zeir' || service_type === 'open_osek_zeir';
+    const productType = isZeir ? 'osek_zeir' : 'osek_patur';
+    const productName = isZeir ? 'פתיחת עוסק זעיר אונליין' : 'פתיחת עוסק פטור אונליין';
+
+    const insertData: Record<string, unknown> = {
+      product_type: productType,
+      product_name: productName,
+      amount: sum,
+      currency: 'ILS',
+      payment_method: 'tranzila',
+      status: 'pending',
+      source: 'sales_portal',
+    };
 
     if (lead_id) {
-      const isZeir = service_type === 'osek_zeir' || service_type === 'open_osek_zeir';
-      const productType = isZeir ? 'osek_zeir' : 'osek_patur';
-      const productName = isZeir ? 'פתיחת עוסק זעיר אונליין' : 'פתיחת עוסק פטור אונליין';
+      insertData.lead_id = lead_id;
+    }
 
-      const { data: payment, error: payErr } = await supabaseAdmin
-        .from('payments')
-        .insert({
-          lead_id,
-          product_type: productType,
-          product_name: productName,
-          amount: sum,
-          currency: 'ILS',
-          payment_method: 'tranzila',
-          status: 'pending',
-          source: 'sales_portal',
-        })
-        .select('id')
-        .single();
+    const { data: payment, error: payErr } = await supabaseAdmin
+      .from('payments')
+      .insert(insertData)
+      .select('id')
+      .single();
 
-      if (!payErr && payment) {
-        paymentId = payment.id;
+    let paymentId = null;
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+    const notifyUrl = `${supabaseUrl}/functions/v1/tranzilaConfirmPayment`;
 
-        // Update lead with payment reference
+    if (!payErr && payment) {
+      paymentId = payment.id;
+
+      // If lead_id provided, update lead with payment reference
+      if (lead_id) {
         await supabaseAdmin.from('leads').update({
           payment_status: 'pending',
           payment_id: payment.id,
         }).eq('id', lead_id);
       }
-
-      const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
-      notifyUrl = `${supabaseUrl}/functions/v1/tranzilaConfirmPayment`;
     }
 
     return jsonResponse({ thtk, supplier, sum, paymentId, notifyUrl }, 200, req);

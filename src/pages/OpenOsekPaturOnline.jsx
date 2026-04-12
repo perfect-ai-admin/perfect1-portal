@@ -56,10 +56,12 @@ export default function OpenOsekPaturOnline() {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentError, setPaymentError] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const paymentProcessedRef = useRef(false);
 
   // Form data
   const [form, setForm] = useState({
     name: '',
+    phone: '',
     idNumber: '',
     email: '',
     isEmployee: '',
@@ -71,11 +73,11 @@ export default function OpenOsekPaturOnline() {
     consent: true,
   });
 
-  // URL params — phone may be prefilled from a previous landing page, but
-  // this flow intentionally does NOT ask for phone on-page. Phone is
-  // captured by Tranzila on the payment form and linked back to the lead
-  // in handlePaymentSuccess after a successful charge.
-  const phone = searchParams.get('phone') || '';
+  // Prefill phone from URL param if available (e.g. from ad campaigns)
+  const phoneParam = searchParams.get('phone') || '';
+  useEffect(() => {
+    if (phoneParam && !form.phone) set('phone', phoneParam);
+  }, []);
   const gclid = searchParams.get('gclid') || '';
   const utmSource = searchParams.get('utm_source') || '';
   const utmCampaign = searchParams.get('utm_campaign') || '';
@@ -96,6 +98,7 @@ export default function OpenOsekPaturOnline() {
   const validateStep1 = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'שדה חובה';
+    if (!/^05\d{8}$/.test(form.phone.replace(/\D/g, ''))) e.phone = 'מספר טלפון לא תקין';
     if (!/^\d{9}$/.test(form.idNumber)) e.idNumber = 'נדרשות 9 ספרות';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'אימייל לא תקין';
     if (!form.isEmployee) e.isEmployee = 'יש לבחור';
@@ -177,6 +180,7 @@ export default function OpenOsekPaturOnline() {
           try {
             sessionStorage.setItem('pendingLead', JSON.stringify({
               name: form.name,
+              phone: form.phone.replace(/\D/g, ''),
               email: form.email,
               businessName: form.businessName,
               businessType: form.businessType,
@@ -268,18 +272,23 @@ export default function OpenOsekPaturOnline() {
     };
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);
-  }, [form, phone]);
+  }, [form]);
 
   // ---- Payment Success ----
   const handlePaymentSuccess = async (txData) => {
-    if (paymentSuccess) return; // prevent double processing
+    if (paymentProcessedRef.current) return;
+    paymentProcessedRef.current = true;
     setPaymentSuccess(true);
 
     // ── Phone extraction (ordered by reliability) ──
-    // 1. Tranzila postMessage fields (terminal-dependent naming)
-    // 2. URL query param ?phone= (from ad campaigns)
-    // 3. null → skip lead creation entirely
+    // 1. Form phone field (always collected in step 1)
+    // 2. Tranzila postMessage fields (terminal-dependent naming)
+    // 3. URL query param ?phone= (from ad campaigns)
+    // 4. null → skip lead creation entirely
+    let pendingForPhone = null;
+    try { pendingForPhone = JSON.parse(sessionStorage.getItem('pendingLead') || 'null'); } catch {}
     const rawPhone = (
+      pendingForPhone?.phone ||
       txData.contact_cell ||
       txData.phone ||
       txData.contact_phone ||
@@ -294,31 +303,23 @@ export default function OpenOsekPaturOnline() {
       : null;
 
     try {
-      // 1. Create the lead — only if we have a valid phone.
+      // 1. Create the lead — always, even without phone.
       let pending = null;
       try {
         const raw = sessionStorage.getItem('pendingLead');
         if (raw) pending = JSON.parse(raw);
       } catch {}
 
-      if (pending && cleanPhone && /^05\d{8}$/.test(cleanPhone)) {
+      if (pending) {
         await invokeFunction('submitLeadToN8N', {
           ...pending,
-          phone: cleanPhone,
+          phone: cleanPhone || '',
           name: pending.name || 'לקוח',
           businessType: pending.businessType || pending.business_type || '',
           pageSlug: 'open-osek-patur-online',
           message: 'שולם 299 ₪ — עוסק פטור אונליין',
         }).catch(err => console.warn('Post-payment lead creation failed:', err));
         try { sessionStorage.removeItem('pendingLead'); } catch {}
-      } else if (pending) {
-        // Payment succeeded but we have no phone → can't create a lead.
-        // Log clearly so ops can match this to the Tranzila transaction
-        // and follow up manually.
-        console.error(
-          '[handlePaymentSuccess] No valid phone — lead NOT created.',
-          { rawPhone, cleanPhone, txData }
-        );
       }
 
       // 2. Confirm payment via our edge function (triggers post-purchase flow).
@@ -443,6 +444,18 @@ export default function OpenOsekPaturOnline() {
                       onChange={e => set('name', e.target.value)}
                       placeholder="ישראל ישראלי"
                       className="h-12 rounded-xl text-right"
+                    />
+                  </FieldGroup>
+
+                  <FieldGroup label="טלפון נייד" error={errors.phone}>
+                    <Input
+                      value={form.phone}
+                      onChange={e => set('phone', e.target.value.replace(/[^\d-]/g, '').slice(0, 11))}
+                      placeholder="050-1234567"
+                      inputMode="tel"
+                      type="tel"
+                      className="h-12 rounded-xl text-left"
+                      dir="ltr"
                     />
                   </FieldGroup>
 

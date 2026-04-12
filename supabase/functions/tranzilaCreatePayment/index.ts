@@ -30,8 +30,19 @@ Deno.serve(async (req) => {
     }
 
     const terminalName = Deno.env.get('TRANZILA_TERMINAL_NAME');
-    const tranzilaPW = Deno.env.get('TRANZILA_TERMINAL_PASSWORD') || '';
+    const tranzilaPW = Deno.env.get('TRANZILA_TERMINAL_PASSWORD') || Deno.env.get('TRANZILA_TERMINAL_PASSWORd') || '';
     if (!terminalName) return errorResponse('Terminal not configured', 500, req);
+
+    // Create handshake token so password is never sent to the client
+    const handshakeUrl = `https://api.tranzila.com/v1/handshake/create?supplier=${encodeURIComponent(terminalName)}&sum=${amount}&TranzilaPW=${encodeURIComponent(tranzilaPW)}`;
+    const handshakeRes = await fetch(handshakeUrl);
+    const handshakeText = await handshakeRes.text();
+    const thtkMatch = handshakeText.match(/thtk=(.+)/);
+    if (!handshakeRes.ok || !thtkMatch?.[1]) {
+      console.error('[tranzilaCreatePayment] Handshake failed:', handshakeRes.status, handshakeText);
+      return errorResponse('Payment gateway handshake failed', 502, req);
+    }
+    const thtk = thtkMatch[1].trim();
 
     const insertData: Record<string, unknown> = {
       customer_id: customer.id,
@@ -74,7 +85,7 @@ Deno.serve(async (req) => {
     return jsonResponse({
       success: true,
       supplier: terminalName,
-      tranzilaPW,
+      thtk,
       paymentId: payment.id,
       notifyUrl,
     });

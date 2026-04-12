@@ -64,7 +64,7 @@ export default function useTranzilaPayment({ onSuccess, onTimeout } = {}) {
         currency: '1',
         cred_type: '1',
         tranmode: 'A',
-        TranzilaPW: data.tranzilaPW || '',
+        ...(data.thtk ? { thtk: data.thtk } : {}),
         o_cred_oid: data.paymentId || '',
         notify_url_address: data.notifyUrl || '',
         lang: 'il',

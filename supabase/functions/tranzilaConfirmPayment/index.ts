@@ -20,10 +20,12 @@ Deno.serve(async (req) => {
       transaction_id = formData.get('ConfirmationCode') as string || formData.get('index') as string || '';
       tranzilaResponse = formData.get('Response') as string || '';
 
-      // תיקון 1: אימות חתימת webhook מטרנזילה
+      // אימות חתימת webhook מטרנזילה
       const notifyUrlKey = formData.get('notify_url_key') as string || '';
       const expectedIpnKey = Deno.env.get('TRANZILA_IPN_KEY');
-      if (expectedIpnKey && notifyUrlKey !== expectedIpnKey) {
+      if (!expectedIpnKey) {
+        console.warn('[tranzilaConfirmPayment] WARNING: TRANZILA_IPN_KEY not configured — webhook not verified. Set this secret ASAP.');
+      } else if (notifyUrlKey !== expectedIpnKey) {
         console.error('[tranzilaConfirmPayment] Webhook signature mismatch');
         return errorResponse('Forbidden: invalid webhook signature', 403, req);
       }
