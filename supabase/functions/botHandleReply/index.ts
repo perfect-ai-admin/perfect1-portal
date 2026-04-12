@@ -696,10 +696,6 @@ Deno.serve(async (req) => {
         // Send next question
         const nextStep = getStep(session.flow_type, nextAcStepId);
         if (nextStep) {
-          // After Q1 (business_field) send a social-proof follow-up before Q2
-          if (currentStepDef.step_id === 'ac_q1') {
-            await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: buildAccountantQ1Followup() });
-          }
           await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: nextStep.question });
           acSessionUpdate.current_step = nextAcStepId;
           acLeadUpdate.bot_current_step = nextAcStepId;
