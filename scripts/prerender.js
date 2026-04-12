@@ -25,7 +25,7 @@ function discoverRoutes() {
     '/opening-business-israel',
   ];
 
-  const categories = ['osek-patur', 'osek-murshe', 'hevra-bam', 'sgirat-tikim', 'guides'];
+  const categories = ['osek-patur', 'osek-murshe', 'hevra-bam', 'osek-zeir', 'sgirat-tikim', 'guides'];
 
   for (const cat of categories) {
     routes.push(`/${cat}`);

@@ -48,6 +48,22 @@ export const PORTAL_CATEGORIES = [
     ]
   },
   {
+    id: 'osek-zeir',
+    title: 'עוסק זעיר',
+    href: '/osek-zeir',
+    icon: 'Sparkles',
+    description: 'מדריכים על עוסק זעיר — פתיחה, מיסוי, ניהול והשוואות',
+    color: 'amber',
+    subcategories: [
+      { title: 'מה זה עוסק זעיר?', href: '/osek-zeir/what-is', description: 'הגדרה, תנאי זכאות, יתרונות וחסרונות — כל מה שצריך לדעת' },
+      { title: 'פתיחת עוסק זעיר', href: '/osek-zeir/how-to-open', description: 'מדריך שלב אחר שלב — מסמכים, רישום, עלויות ולוחות זמנים' },
+      { title: 'עוסק זעיר מול עוסק פטור', href: '/osek-zeir/zeir-vs-patur', description: 'טבלת השוואה מלאה, יתרונות וחסרונות, ומי בוחר מה' },
+      { title: 'מיסוי עוסק זעיר', href: '/osek-zeir/taxes', description: 'מס הכנסה, ביטוח לאומי, מקדמות ודיווחים' },
+      { title: 'ניהול יומיומי', href: '/osek-zeir/management', description: 'קבלות, ניהול ספרים, חשבון בנק וכלים דיגיטליים' },
+      { title: 'שאלות נפוצות', href: '/osek-zeir/faq', description: '20+ תשובות לשאלות הנפוצות ביותר על עוסק זעיר' },
+    ]
+  },
+  {
     id: 'sgirat-tikim',
     title: 'סגירת תיקים',
     href: '/sgirat-tikim',
