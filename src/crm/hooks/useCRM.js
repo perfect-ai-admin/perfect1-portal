@@ -11,9 +11,13 @@ export function usePipelineLeads(filters = {}) {
       let query = supabase
         .from('leads')
         .select('*')
-        .eq('source', 'sales_portal')
         .order('created_at', { ascending: false })
         .limit(500);
+
+      // Filter by source only if explicitly requested
+      if (filters.source && filters.source !== 'all') {
+        query = query.eq('source', filters.source);
+      }
 
       if (filters.pipeline_stage && filters.pipeline_stage !== 'all') {
         query = query.eq('pipeline_stage', filters.pipeline_stage);
@@ -31,8 +35,7 @@ export function usePipelineLeads(filters = {}) {
       // Fetch agents for joining
       const { data: agents } = await supabase
         .from('ai_agents')
-        .select('id, name')
-        .eq('source', 'sales_portal');
+        .select('id, name');
 
       const agentMap = {};
       (agents || []).forEach(a => { agentMap[a.id] = a.name; });
