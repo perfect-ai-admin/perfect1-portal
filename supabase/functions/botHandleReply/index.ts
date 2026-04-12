@@ -159,10 +159,12 @@ Deno.serve(async (req) => {
     // Support both direct call and GreenAPI webhook format
     let phone = body.phone || body.senderData?.sender || '';
     let messageText = body.message || body.messageData?.textMessageData?.textMessage || body.messageData?.extendedTextMessageData?.text || '';
-    // Interactive Reply Buttons use interactiveResponseMessage; old buttons use buttonsResponseMessage
+    // Interactive Reply Buttons — Green API sends selectedId in multiple possible paths
     const buttonId = body.button_id
-      || body.messageData?.interactiveResponseMessage?.buttonReplyMessage?.selectedButtonId
-      || body.messageData?.buttonsResponseMessage?.selectedButtonId
+      || body.messageData?.interactiveButtonsResponse?.selectedId                          // actual Green API format for sendInteractiveButtonsReply
+      || body.messageData?.interactiveResponseMessage?.buttonReplyMessage?.selectedButtonId // documented format
+      || body.messageData?.buttonsResponseMessage?.selectedButtonId                         // old sendButtons format
+      || body._buttonId                                                                    // extracted by n8n proxy
       || '';
     const greenApiMsgId = body.idMessage || body.messageData?.idMessage || null;
 
@@ -543,7 +545,7 @@ Deno.serve(async (req) => {
         ...sendOpts,
         message: 'לא הבנתי 🙂\nבבקשה בחר אחת מהאפשרויות:',
         buttons: [
-          { id: 'start_now', label: 'פתיחת עוסק פטור' },
+          { id: 'start_now', label: 'פתיחת עוסק פטור אונליין' },
           { id: 'cta_call', label: 'שיחה עם רואה חשבון' },
           { id: 'cta_question', label: 'יש לי שאלה' },
         ],

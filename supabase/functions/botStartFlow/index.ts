@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
     // Send with Interactive Reply Buttons (sendInteractiveButtonsReply API)
     // These render as clickable buttons, not as a duplicate numbered list
     const greetingButtons = [
-      { id: 'start_now', label: 'פתיחת עוסק פטור' },
+      { id: 'start_now', label: 'פתיחת עוסק פטור אונליין' },
       { id: 'cta_call', label: 'שיחה עם רואה חשבון' },
       { id: 'cta_question', label: 'יש לי שאלה' },
     ];
