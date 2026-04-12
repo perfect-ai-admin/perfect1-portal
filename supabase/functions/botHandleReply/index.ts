@@ -464,9 +464,16 @@ Deno.serve(async (req) => {
         }).select().single();
 
         const acOpts = { phone: cleanPhone, lead_id: session.lead_id, session_id: acSession?.id || null, sender_type: 'bot' as const };
+
+        // 1) Immediate opening message
         await sendAndStoreMessage(supabaseAdmin, { ...acOpts, message: buildAccountantCallbackOpening(leadName) });
+
+        // 2) Wait 30 seconds, then send first question as a SINGLE combined message
+        await new Promise(r => setTimeout(r, 30000));
+
         const q1 = getStep('accountant_callback_flow', 'ac_q1');
-        if (q1) await sendAndStoreMessage(supabaseAdmin, { ...acOpts, message: q1.question });
+        const combinedQ1 = `כדי שנוכל לעזור לך בצורה הכי מדויקת בשיחה עם רואה החשבון, אשמח להכיר קצת את התוכנית שלך 👇\n\n${q1?.question || 'באיזה תחום העסק שאתה רוצה לפתוח?'}`;
+        await sendAndStoreMessage(supabaseAdmin, { ...acOpts, message: combinedQ1 });
 
         if (acSession) {
           await supabaseAdmin.from('bot_sessions').update({ messages_count: 2, last_message_at: new Date().toISOString() }).eq('id', acSession.id);
@@ -754,8 +761,11 @@ Deno.serve(async (req) => {
 
           const newOpts = { phone: cleanPhone, lead_id: session.lead_id, session_id: acSession?.id || null, sender_type: 'bot' as const };
           await sendAndStoreMessage(supabaseAdmin, { ...newOpts, message: buildAccountantCallbackOpening(leadName) });
+          // Wait 30 seconds before sending combined question
+          await new Promise(r => setTimeout(r, 30000));
           const q1 = getStep('accountant_callback_flow', 'ac_q1');
-          if (q1) await sendAndStoreMessage(supabaseAdmin, { ...newOpts, message: q1.question });
+          const combinedQ1 = `כדי שנוכל לעזור לך בצורה הכי מדויקת בשיחה עם רואה החשבון, אשמח להכיר קצת את התוכנית שלך 👇\n\n${q1?.question || 'באיזה תחום העסק שאתה רוצה לפתוח?'}`;
+          await sendAndStoreMessage(supabaseAdmin, { ...newOpts, message: combinedQ1 });
 
           if (acSession) {
             await supabaseAdmin.from('bot_sessions').update({ messages_count: 2, last_message_at: new Date().toISOString() }).eq('id', acSession.id);
@@ -948,11 +958,11 @@ Deno.serve(async (req) => {
         // 1) Opening (includes services PDF link)
         await sendAndStoreMessage(supabaseAdmin, { ...newSessionOpts, message: buildAccountantCallbackOpening(leadName) });
 
-        // 2) First question (business field)
+        // 2) Wait 30 seconds, then send combined question
+        await new Promise(r => setTimeout(r, 30000));
         const q1 = getStep('accountant_callback_flow', 'ac_q1');
-        if (q1) {
-          await sendAndStoreMessage(supabaseAdmin, { ...newSessionOpts, message: q1.question });
-        }
+        const combinedQ1 = `כדי שנוכל לעזור לך בצורה הכי מדויקת בשיחה עם רואה החשבון, אשמח להכיר קצת את התוכנית שלך 👇\n\n${q1?.question || 'באיזה תחום העסק שאתה רוצה לפתוח?'}`;
+        await sendAndStoreMessage(supabaseAdmin, { ...newSessionOpts, message: combinedQ1 });
 
         if (newSession) {
           await supabaseAdmin.from('bot_sessions').update({
