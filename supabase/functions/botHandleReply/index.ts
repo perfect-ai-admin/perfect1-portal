@@ -412,12 +412,10 @@ Deno.serve(async (req) => {
 
       // Match: "1" or "start_now" → payment path
       if (choice === '1' || choice === 'start_now' || choice.includes('פתיחת עוסק')) {
-        const payLink = `https://perfect1.co.il/open-osek-patur-online?phone=${cleanPhone.replace('972', '0')}`;
-        await sendAndStoreUrlButton(supabaseAdmin, {
+        await sendAndStoreMessage(supabaseAdmin, {
           ...sendOpts,
-          message: `מעולה! 🚀\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.`,
-          buttonText: 'לפתוח תיק עכשיו 🚀',
-          url: payLink,
+          message: `מעולה! 🚀\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.\n\n👉 https://perfect1.co.il/open-osek-patur-online`,
+          message_type: 'payment_link',
         });
 
         await supabaseAdmin.from('bot_sessions').update({
@@ -725,12 +723,10 @@ Deno.serve(async (req) => {
       if (recoveryAction) {
         if (recoveryAction === 'pay') {
           // Send payment link with URL button
-          const recPayLink = `https://perfect1.co.il/open-osek-patur-online?phone=${cleanPhone.replace('972', '0')}`;
-          await sendAndStoreUrlButton(supabaseAdmin, {
+          await sendAndStoreMessage(supabaseAdmin, {
             ...sendOpts,
-            message: `מעולה! 🚀\n\nתוך כמה דקות אתה מסיים את התהליך.`,
-            buttonText: 'לפתוח תיק עכשיו 🚀',
-            url: recPayLink,
+            message: `מעולה! 🚀\n\nתוך כמה דקות אתה מסיים את התהליך.\n\n👉 https://perfect1.co.il/open-osek-patur-online`,
+            message_type: 'payment_link',
           });
           await addLeadScore(supabaseAdmin, session.lead_id, 'payment_link_clicked', { source: 'free_question_recovery' });
 
@@ -1075,12 +1071,10 @@ Deno.serve(async (req) => {
         await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'נשלח לך הצעת מחיר מותאמת בקרוב! 📝' });
       } else if (outcome === 'started_checkout') {
         // Send actual payment link with URL button
-        const payLink = `https://perfect1.co.il/open-osek-patur-online?phone=${cleanPhone.replace('972', '0')}`;
-        await sendAndStoreUrlButton(supabaseAdmin, {
+        await sendAndStoreMessage(supabaseAdmin, {
           ...sendOpts,
-          message: `מעולה! 🚀\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.`,
-          buttonText: 'לפתוח תיק עכשיו 🚀',
-          url: payLink,
+          message: `מעולה! 🚀\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.\n\n👉 https://perfect1.co.il/open-osek-patur-online`,
+          message_type: 'payment_link',
         });
         leadUpdate.bot_state = 'payment_started';
         leadUpdate.selected_path = 'online_opening_payment';
