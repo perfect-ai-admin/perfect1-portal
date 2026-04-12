@@ -414,7 +414,7 @@ Deno.serve(async (req) => {
       if (choice === '1' || choice === 'start_now' || choice.includes('פתיחת עוסק')) {
         await sendAndStoreMessage(supabaseAdmin, {
           ...sendOpts,
-          message: `מעולה! 🚀\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.\n\n👉 https://perfect1.co.il/open-osek-patur-online`,
+          message: `מעולה! 🎉\n\nלפתיחת עוסק פטור אונליין, לחץ על הקישור:\nhttps://perfect1.co.il/open-osek-patur-online\n\nהתהליך פשוט ומהיר — פתיחת תיק במס הכנסה, מע״מ וביטוח לאומי!\n\nאם יש שאלות, אני כאן 😊`,
           message_type: 'payment_link',
         });
 
@@ -725,7 +725,7 @@ Deno.serve(async (req) => {
           // Send payment link with URL button
           await sendAndStoreMessage(supabaseAdmin, {
             ...sendOpts,
-            message: `מעולה! 🚀\n\nתוך כמה דקות אתה מסיים את התהליך.\n\n👉 https://perfect1.co.il/open-osek-patur-online`,
+            message: `מעולה! 🎉\n\nלפתיחת עוסק פטור אונליין, לחץ על הקישור:\nhttps://perfect1.co.il/open-osek-patur-online\n\nהתהליך פשוט ומהיר — פתיחת תיק במס הכנסה, מע״מ וביטוח לאומי!\n\nאם יש שאלות, אני כאן 😊`,
             message_type: 'payment_link',
           });
           await addLeadScore(supabaseAdmin, session.lead_id, 'payment_link_clicked', { source: 'free_question_recovery' });
@@ -1073,7 +1073,7 @@ Deno.serve(async (req) => {
         // Send actual payment link with URL button
         await sendAndStoreMessage(supabaseAdmin, {
           ...sendOpts,
-          message: `מעולה! 🚀\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.\n\n👉 https://perfect1.co.il/open-osek-patur-online`,
+          message: `מעולה! 🎉\n\nלפתיחת עוסק פטור אונליין, לחץ על הקישור:\nhttps://perfect1.co.il/open-osek-patur-online\n\nהתהליך פשוט ומהיר — פתיחת תיק במס הכנסה, מע״מ וביטוח לאומי!\n\nאם יש שאלות, אני כאן 😊`,
           message_type: 'payment_link',
         });
         leadUpdate.bot_state = 'payment_started';
