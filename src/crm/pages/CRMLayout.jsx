@@ -23,27 +23,57 @@ export default function CRMLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Auth check — redirect to login if not authenticated
+  // Auth check — redirect to login if not authenticated.
+  // Hardened: handles getSession() rejection (corrupt JWT from old deploy, network blip,
+  // etc.) so the spinner never leaks into an infinite "מתחבר למערכת..." state.
+  // Also enforces a 5s safety timeout — if Supabase hangs we redirect to login instead
+  // of showing a frozen page.
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let cancelled = false;
+
+    // Safety net: if nothing resolves within 5s, force redirect to login.
+    const safetyTimer = setTimeout(() => {
+      if (!cancelled) {
+        // eslint-disable-next-line no-console
+        console.warn('[CRMLayout] auth check timed out — redirecting to login');
+        navigate('/login?returnTo=/CRM', { replace: true });
+      }
+    }, 5000);
+
+    const handleSession = (session) => {
+      if (cancelled) return;
+      clearTimeout(safetyTimer);
       if (!session) {
         navigate('/login?returnTo=/CRM', { replace: true });
       } else {
         setUser(session.user);
         setAuthChecked(true);
       }
-    });
+    };
+
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => handleSession(session))
+      .catch((err) => {
+        // Corrupt token, network error, or project-mismatch — clear and bounce to login.
+        // eslint-disable-next-line no-console
+        console.error('[CRMLayout] getSession failed:', err);
+        try { supabase.auth.signOut(); } catch {}
+        if (!cancelled) {
+          clearTimeout(safetyTimer);
+          navigate('/login?returnTo=/CRM', { replace: true });
+        }
+      });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) {
-        navigate('/login?returnTo=/CRM', { replace: true });
-      } else {
-        setUser(session.user);
-        setAuthChecked(true);
-      }
+      handleSession(session);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      clearTimeout(safetyTimer);
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const { data: notifications = [] } = useQuery({

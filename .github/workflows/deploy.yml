@@ -38,6 +38,14 @@ jobs:
         env:
           CHROME_PATH: /usr/bin/google-chrome-stable
 
+      # Smoke test — fails the build if any critical route renders a white screen,
+      # hits the GeneralErrorBoundary fallback, or hangs in an auth spinner.
+      # This is the last line of defense before the bits reach production.
+      - name: Smoke test critical routes
+        run: node scripts/smoke-test-routes.js
+        env:
+          CHROME_PATH: /usr/bin/google-chrome-stable
+
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
