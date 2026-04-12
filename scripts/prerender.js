@@ -54,6 +54,9 @@ function discoverRoutes() {
     '/patur-vs-murshe', '/patur-vs-murshe-quiz',
     '/open-osek-patur', '/open-osek-patur-online',
     '/OsekPaturLanding', '/OsekPaturSteps',
+    // עוסק זעיר — מסלול נפרד
+    '/OsekZeirLanding', '/osek-zair-landing',
+    '/open-osek-zeir-online', '/open-osek-zair-online',
     '/accountant-osek-patur', '/ThankYou', '/CRM', '/login',
     '/calculators',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
