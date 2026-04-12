@@ -275,29 +275,50 @@ export default function OpenOsekPaturOnline() {
     if (paymentSuccess) return; // prevent double processing
     setPaymentSuccess(true);
 
-    // Extract the phone Tranzila collected from the payer. Tranzila sends
-    // several possible field names depending on terminal configuration.
-    const tranzilaPhone = (
-      txData.contact_cell || txData.phone || txData.contact_phone ||
-      txData.cell || phone || ''
-    ).toString();
+    // ── Phone extraction (ordered by reliability) ──
+    // 1. Tranzila postMessage fields (terminal-dependent naming)
+    // 2. URL query param ?phone= (from ad campaigns)
+    // 3. null → skip lead creation entirely
+    const rawPhone = (
+      txData.contact_cell ||
+      txData.phone ||
+      txData.contact_phone ||
+      txData.cell ||
+      new URLSearchParams(window.location.search).get('phone') ||
+      null
+    );
+
+    // Normalize to 05XXXXXXXX (strip country prefix, non-digits)
+    const cleanPhone = rawPhone
+      ? rawPhone.toString().replace(/\D/g, '').replace(/^972/, '0')
+      : null;
 
     try {
-      // 1. Create the lead now that we finally have a phone number.
+      // 1. Create the lead — only if we have a valid phone.
       let pending = null;
       try {
         const raw = sessionStorage.getItem('pendingLead');
         if (raw) pending = JSON.parse(raw);
       } catch {}
 
-      if (pending && tranzilaPhone) {
+      if (pending && cleanPhone && /^05\d{8}$/.test(cleanPhone)) {
         await invokeFunction('submitLeadToN8N', {
           ...pending,
-          phone: tranzilaPhone.replace(/\D/g, '').replace(/^972/, '0'),
+          phone: cleanPhone,
+          name: pending.name || 'לקוח',
+          businessType: pending.businessType || pending.business_type || '',
           pageSlug: 'open-osek-patur-online',
           message: 'שולם 299 ₪ — עוסק פטור אונליין',
         }).catch(err => console.warn('Post-payment lead creation failed:', err));
         try { sessionStorage.removeItem('pendingLead'); } catch {}
+      } else if (pending) {
+        // Payment succeeded but we have no phone → can't create a lead.
+        // Log clearly so ops can match this to the Tranzila transaction
+        // and follow up manually.
+        console.error(
+          '[handlePaymentSuccess] No valid phone — lead NOT created.',
+          { rawPhone, cleanPhone, txData }
+        );
       }
 
       // 2. Confirm payment via our edge function (triggers post-purchase flow).
