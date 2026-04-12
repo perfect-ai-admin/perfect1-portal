@@ -159,7 +159,11 @@ Deno.serve(async (req) => {
     // Support both direct call and GreenAPI webhook format
     let phone = body.phone || body.senderData?.sender || '';
     let messageText = body.message || body.messageData?.textMessageData?.textMessage || body.messageData?.extendedTextMessageData?.text || '';
-    const buttonId = body.button_id || body.messageData?.buttonsResponseMessage?.selectedButtonId || '';
+    // Interactive Reply Buttons use interactiveResponseMessage; old buttons use buttonsResponseMessage
+    const buttonId = body.button_id
+      || body.messageData?.interactiveResponseMessage?.buttonReplyMessage?.selectedButtonId
+      || body.messageData?.buttonsResponseMessage?.selectedButtonId
+      || '';
     const greenApiMsgId = body.idMessage || body.messageData?.idMessage || null;
 
     // Clean phone from @c.us format
@@ -534,10 +538,15 @@ Deno.serve(async (req) => {
         return jsonResponse({ success: true, path: 'free_question', session_id: fqSession?.id }, 200, req);
       }
 
-      // Unrecognized — resend the menu
-      await sendAndStoreMessage(supabaseAdmin, {
+      // Unrecognized — resend with buttons
+      await sendAndStoreButtons(supabaseAdmin, {
         ...sendOpts,
-        message: 'לא הבנתי 🙂\nבבקשה שלח 1, 2 או 3:\n\n1️⃣ פתיחת עוסק פטור אונליין\n2️⃣ שיחה עם רואה חשבון\n3️⃣ יש לי שאלה',
+        message: 'לא הבנתי 🙂\nבבקשה בחר אחת מהאפשרויות:',
+        buttons: [
+          { id: 'start_now', label: 'פתיחת עוסק פטור' },
+          { id: 'cta_call', label: 'שיחה עם רואה חשבון' },
+          { id: 'cta_question', label: 'יש לי שאלה' },
+        ],
       });
       return jsonResponse({ success: true, message: 'Resent entry menu' }, 200, req);
     }

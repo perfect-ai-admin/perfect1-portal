@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
     // 5. Send the ONE AND ONLY greeting message — always the same, 3 options
     // This is the entry point of the entire bot flow.
     // The user replies with 1, 2, or 3 and botHandleReply routes accordingly.
-    const greetingMsg = `שלום! 👋\n\nהגעת ל*פרפקט וואן* — מומחים בפתיחה וניהול עסקים בישראל.\n\nאיך נוכל לעזור לך היום?\n\n1️⃣ *פתיחת עוסק פטור אונליין*\nנפתח לך את התיק במס הכנסה, מע"מ וביטוח לאומי.\n\n2️⃣ *שיחה עם רואה חשבון*\nנחזור אליך בהקדם\n\n3️⃣ *יש לי שאלה*\nשאל ונענה מיד\n\nשלח מספר (1, 2 או 3)`;
+    const greetingMsg = `שלום! 👋\n\nהגעת ל*פרפקט וואן* — מומחים בפתיחה וניהול עסקים בישראל.\n\nאיך נוכל לעזור לך היום?`;
 
     // Send with Interactive Reply Buttons (sendInteractiveButtonsReply API)
     // These render as clickable buttons, not as a duplicate numbered list
