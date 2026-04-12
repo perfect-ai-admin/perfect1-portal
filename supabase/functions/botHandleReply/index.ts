@@ -400,6 +400,140 @@ Deno.serve(async (req) => {
       }
     }
 
+    // === ENTRY MENU — user picks 1, 2, or 3 from the greeting ===
+    if (session.current_step === 'entry_menu') {
+      const choice = (buttonId || messageText || '').trim();
+
+      // Match: "1" or "start_now" → payment path
+      if (choice === '1' || choice === 'start_now' || choice.includes('פתיחת עוסק')) {
+        const payLink = `https://perfect1.co.il/open-osek-patur-online?phone=${cleanPhone.replace('972', '0')}`;
+        await sendAndStoreMessage(supabaseAdmin, {
+          ...sendOpts,
+          message: `מעולה! 🚀\nהנה הקישור לפתיחת תיק אונליין:\n👉 ${payLink}\n\nממלאים טופס קצר → משלמים → אנחנו פותחים לך את התיק ברשויות תוך 72 שעות.`,
+          message_type: 'payment_link',
+        });
+
+        await supabaseAdmin.from('bot_sessions').update({
+          current_step: 'completed',
+          completed_at: new Date().toISOString(),
+          outcome_state: 'started_checkout',
+          messages_count: (session.messages_count || 0) + 1,
+          last_message_at: new Date().toISOString(),
+        }).eq('id', session.id);
+
+        if (session.lead_id) {
+          await supabaseAdmin.from('leads').update({
+            bot_state: 'payment_started',
+            selected_path: 'online_opening_payment',
+            bot_current_step: 'payment_link_sent',
+            bot_outcome_state: 'started_checkout',
+            payment_link_clicked_at: new Date().toISOString(),
+            bot_last_message_at: new Date().toISOString(),
+          }).eq('id', session.lead_id);
+          await addLeadScore(supabaseAdmin, session.lead_id, 'payment_link_clicked', { source: 'entry_menu' });
+        }
+
+        return jsonResponse({ success: true, path: 'payment', session_id: session.id }, 200, req);
+      }
+
+      // Match: "2" or "cta_call" → accountant callback
+      if (choice === '2' || choice === 'cta_call' || choice.includes('רואה חשבון') || choice.includes('שיחה')) {
+        // Close current session
+        await supabaseAdmin.from('bot_sessions').update({
+          completed_at: new Date().toISOString(),
+          outcome_state: 'pivot_to_accountant_flow',
+          current_step: 'completed',
+        }).eq('id', session.id);
+
+        let leadName = 'לקוח';
+        if (session.lead_id) {
+          const { data: lr } = await supabaseAdmin.from('leads').select('name').eq('id', session.lead_id).single();
+          if (lr?.name) leadName = lr.name;
+        }
+
+        // Create accountant callback session
+        const { data: acSession } = await supabaseAdmin.from('bot_sessions').insert({
+          lead_id: session.lead_id,
+          phone: cleanPhone,
+          flow_type: 'accountant_callback_flow',
+          page_intent: 'accountant_callback',
+          page_slug: session.page_slug,
+          current_step: 'ac_q1',
+          temperature: 'warm',
+          messages_count: 0,
+        }).select().single();
+
+        const acOpts = { phone: cleanPhone, lead_id: session.lead_id, session_id: acSession?.id || null, sender_type: 'bot' as const };
+        await sendAndStoreMessage(supabaseAdmin, { ...acOpts, message: buildAccountantCallbackOpening(leadName) });
+        const q1 = getStep('accountant_callback_flow', 'ac_q1');
+        if (q1) await sendAndStoreMessage(supabaseAdmin, { ...acOpts, message: q1.question });
+
+        if (acSession) {
+          await supabaseAdmin.from('bot_sessions').update({ messages_count: 2, last_message_at: new Date().toISOString() }).eq('id', acSession.id);
+        }
+        if (session.lead_id) {
+          await supabaseAdmin.from('leads').update({
+            bot_state: 'awaiting_accountant_callback',
+            selected_path: 'accountant_callback',
+            flow_type: 'accountant_callback_flow',
+            bot_current_step: 'ac_q1',
+            bot_last_message_at: new Date().toISOString(),
+          }).eq('id', session.lead_id);
+          await addLeadScore(supabaseAdmin, session.lead_id, 'accountant_callback_requested', { source: 'entry_menu' });
+        }
+
+        return jsonResponse({ success: true, path: 'accountant', session_id: acSession?.id }, 200, req);
+      }
+
+      // Match: "3" or "cta_question" → free question flow
+      if (choice === '3' || choice === 'cta_question' || choice.includes('שאלה')) {
+        // Close current session
+        await supabaseAdmin.from('bot_sessions').update({
+          completed_at: new Date().toISOString(),
+          outcome_state: 'pivot_to_free_question_flow',
+          current_step: 'completed',
+        }).eq('id', session.id);
+
+        const { data: fqSession } = await supabaseAdmin.from('bot_sessions').insert({
+          lead_id: session.lead_id,
+          phone: cleanPhone,
+          flow_type: 'free_question_flow',
+          page_intent: 'free_question',
+          page_slug: session.page_slug,
+          current_step: 'free_question_mode',
+          temperature: 'warm',
+          messages_count: 0,
+          answers: { history: [] },
+        }).select().single();
+
+        const fqOpts = { phone: cleanPhone, lead_id: session.lead_id, session_id: fqSession?.id || null, sender_type: 'bot' as const };
+        await sendAndStoreMessage(supabaseAdmin, {
+          ...fqOpts,
+          message: 'שאל אותי כל שאלה על פתיחת עוסק פטור, מיסוי, הנהלת חשבונות או כל דבר אחר 💬\nאני כאן לענות ולעזור לך להחליט מה הכי נכון לך.',
+        });
+
+        if (session.lead_id) {
+          await supabaseAdmin.from('leads').update({
+            bot_state: 'free_question_mode',
+            selected_path: 'free_question',
+            flow_type: 'free_question_flow',
+            bot_current_step: 'free_question_mode',
+            bot_last_message_at: new Date().toISOString(),
+          }).eq('id', session.lead_id);
+          await addLeadScore(supabaseAdmin, session.lead_id, 'asked_meaningful_question', { source: 'entry_menu' });
+        }
+
+        return jsonResponse({ success: true, path: 'free_question', session_id: fqSession?.id }, 200, req);
+      }
+
+      // Unrecognized — resend the menu
+      await sendAndStoreMessage(supabaseAdmin, {
+        ...sendOpts,
+        message: 'לא הבנתי 🙂\nבבקשה שלח 1, 2 או 3:\n\n1️⃣ פתיחת עוסק פטור אונליין\n2️⃣ שיחה עם רואה חשבון\n3️⃣ יש לי שאלה',
+      });
+      return jsonResponse({ success: true, message: 'Resent entry menu' }, 200, req);
+    }
+
     // Special handling for osek_patur_universal_flow "waiting_for_start"
     if (session.current_step === 'waiting_for_start' && flow.flow_type === 'osek_patur_universal_flow') {
       const step1 = getStep(session.flow_type, 'step_1');

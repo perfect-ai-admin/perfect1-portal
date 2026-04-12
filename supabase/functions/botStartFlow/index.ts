@@ -101,71 +101,33 @@ Deno.serve(async (req) => {
       sender_type: 'bot' as const,
     };
 
-    // 5. Build and send opening message
-    const name = lead_name || 'שם';
+    // 5. Send the ONE AND ONLY greeting message — always the same, 3 options
+    // This is the entry point of the entire bot flow.
+    // The user replies with 1, 2, or 3 and botHandleReply routes accordingly.
+    const greetingMsg = `שלום! 👋\n\nהגעת ל*פרפקט וואן* — מומחים בפתיחה וניהול עסקים בישראל.\n\nאיך נוכל לעזור לך היום?\n\n1️⃣ *פתיחת עוסק פטור אונליין*\nנפתח לך את התיק במס הכנסה, מע"מ וביטוח לאומי.\n\n2️⃣ *שיחה עם רואה חשבון*\nנחזור אליך בהקדם\n\n3️⃣ *יש לי שאלה*\nשאל ונענה מיד\n\nשלח מספר (1, 2 או 3)`;
 
-    if (intent.flow_type === 'osek_patur_universal_flow') {
-      const specialMsg = `שלום ${name} 👋\nראיתי שהשארת פרטים לגבי פתיחת עוסק פטור.\nאני כאן לעזור לך להתחיל בצורה מסודרת מול:\n✔ מע״מ\n✔ מס הכנסה\n✔ ביטוח לאומי\nרק כמה שאלות קצרות כדי להתחיל.\n\nכבר מעל 5,000 עצמאים נעזרו בשירות.`;
-      const startBtn = [{ id: 'start_flow', label: '👉 בוא נתחיל' }];
-      await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: specialMsg, buttons: startBtn });
+    const greetingButtons = [
+      { id: 'start_now', label: '1️⃣ פתיחת עוסק פטור' },
+      { id: 'cta_call', label: '2️⃣ שיחה עם רואה חשבון' },
+      { id: 'cta_question', label: '3️⃣ יש לי שאלה' },
+    ];
 
-      await supabaseAdmin.from('bot_sessions').update({
-        current_step: 'waiting_for_start',
-        messages_count: 1,
-        last_message_at: new Date().toISOString(),
-      }).eq('id', session.id);
+    await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: greetingMsg, buttons: greetingButtons });
 
-      if (lead_id) {
-        await supabaseAdmin.from('leads').update({
-          bot_current_step: 'waiting_for_start',
-          bot_messages_count: 1,
-          bot_last_message_at: new Date().toISOString(),
-        }).eq('id', lead_id);
-      }
-    } else {
-      // אם יש service_type עם וריאנט קופי ייעודי (עוסק פטור / עוסק זעיר),
-      // משתמשים בפתיחה הייעודית במקום בניסוח הג'נרי המבוסס על page_title.
-      // זה מה שמבטיח שליד מעוסק זעיר יקבל "ראיתי שהשארת פרטים לגבי פתיחת
-      // עוסק זעיר" ולא "ראיתי שהשארת פרטים לגבי דף נחיתה..." או מינוח פטור.
-      const serviceOpening = buildServiceOpening(name, intent.service_type);
-      const openingMsg = serviceOpening || buildOpeningMessage(name, intent.page_intent, page_title || page_slug || '');
+    // 6. Update session — greeting sent, waiting for user choice (1/2/3)
+    await supabaseAdmin.from('bot_sessions').update({
+      current_step: 'entry_menu',
+      messages_count: 1,
+      last_message_at: new Date().toISOString(),
+    }).eq('id', session.id);
 
-      if (intent.flow_type === 'pricing_flow' && intent.pricing) {
-        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: openingMsg });
-        const pricingMsg = buildPricingMessage(intent.pricing);
-        const flow = getFlow(intent.flow_type);
-        const step = flow.steps[0];
-        if (step) {
-          await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: pricingMsg, buttons: step.buttons });
-        } else {
-          await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: pricingMsg });
-        }
-      } else {
-        const flow = getFlow(intent.flow_type);
-        const step = flow.steps[0];
-        if (step) {
-          const fullMsg = openingMsg + '\n\n' + step.question;
-          await sendAndStoreButtons(supabaseAdmin, { ...sendOpts, message: fullMsg, buttons: step.buttons });
-        } else {
-          await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: openingMsg });
-        }
-      }
-
-      // 6. Update session — opening sent
-      await supabaseAdmin.from('bot_sessions').update({
-        current_step: 'step_1',
-        messages_count: 1,
-        last_message_at: new Date().toISOString(),
-      }).eq('id', session.id);
-
-      // 7. Update lead
-      if (lead_id) {
-        await supabaseAdmin.from('leads').update({
-          bot_current_step: 'step_1',
-          bot_messages_count: 1,
-          bot_last_message_at: new Date().toISOString(),
-        }).eq('id', lead_id);
-      }
+    // 7. Update lead
+    if (lead_id) {
+      await supabaseAdmin.from('leads').update({
+        bot_current_step: 'entry_menu',
+        bot_messages_count: 1,
+        bot_last_message_at: new Date().toISOString(),
+      }).eq('id', lead_id);
     }
 
     // 8. Log event
