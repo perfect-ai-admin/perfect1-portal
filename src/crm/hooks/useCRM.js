@@ -402,24 +402,22 @@ export function useBulkAction() {
             pipeline_entered_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
-          .in('id', lead_ids)
-          .eq('source', 'sales_portal');
+          .in('id', lead_ids);
         if (error) throw new Error(error.message);
       } else if (action === 'assign_agent') {
         const agent_id = payload.agent_id || payload.value;
         const { error } = await supabase
           .from('leads')
           .update({ agent_id: agent_id || null, updated_at: new Date().toISOString() })
-          .in('id', lead_ids)
-          .eq('source', 'sales_portal');
+          .in('id', lead_ids);
         if (error) throw new Error(error.message);
       } else if (action === 'delete') {
         await Promise.allSettled([
-          supabase.from('communications').delete().in('lead_id', lead_ids).eq('source', 'sales_portal'),
-          supabase.from('tasks').delete().in('lead_id', lead_ids).eq('source', 'sales_portal'),
-          supabase.from('status_history').delete().in('entity_id', lead_ids).eq('entity_type', 'lead').eq('source', 'sales_portal'),
+          supabase.from('communications').delete().in('lead_id', lead_ids),
+          supabase.from('tasks').delete().in('lead_id', lead_ids),
+          supabase.from('status_history').delete().in('entity_id', lead_ids).eq('entity_type', 'lead'),
         ]);
-        const { error } = await supabase.from('leads').delete().in('id', lead_ids).eq('source', 'sales_portal');
+        const { error } = await supabase.from('leads').delete().in('id', lead_ids);
         if (error) throw new Error(error.message);
       }
 
