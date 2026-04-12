@@ -484,7 +484,19 @@
   <!-- Calculators -->
   <url>
     <loc>https://www.perfect1.co.il/calculators</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/calculators/net-income</loc>
+    <lastmod>2026-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.perfect1.co.il/calculators/credit-points</loc>
+    <lastmod>2026-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

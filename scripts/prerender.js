@@ -58,7 +58,7 @@ function discoverRoutes() {
     '/OsekZeirLanding', '/osek-zair-landing',
     '/open-osek-zeir-online', '/open-osek-zair-online',
     '/accountant-osek-patur', '/ThankYou', '/CRM', '/login',
-    '/calculators',
+    '/calculators', '/calculators/net-income', '/calculators/credit-points',
     '/blog/logo-leasek', '/blog/kartis-bikur-digitali', '/blog/daf-nchita',
     '/blog/matzget-iskit', '/blog/matzget-mashkiim', '/blog/sticker-leasek',
   ];
