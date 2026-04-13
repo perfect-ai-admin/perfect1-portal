@@ -1,12 +1,13 @@
-// crmCreateAgreement — Create agreement via Make.com → FillFaster bridge
-// Flow: CRM → this function → Make webhook → FillFaster "Create Submission Link" → response with link
+// crmCreateAgreement — Create agreement via n8n → FillFaster bridge
+// Flow: CRM → this function → n8n webhook → FillFaster "Create Submission Link" → response with link
 // Authenticated: requires logged-in user
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, getUser } from '../_shared/supabaseAdmin.ts';
 import { sendAndStoreMessage } from '../_shared/whatsappHelper.ts';
 
-const MAKE_WEBHOOK_URL = Deno.env.get('MAKE_FILLFASTER_WEBHOOK_URL');
-const MAKE_TIMEOUT_MS = 30_000;
+// Bridge webhook — n8n workflow that calls FillFaster "Create Submission Link"
+const BRIDGE_WEBHOOK_URL = Deno.env.get('N8N_FILLFASTER_WEBHOOK_URL') || Deno.env.get('MAKE_FILLFASTER_WEBHOOK_URL');
+const BRIDGE_TIMEOUT_MS = 30_000;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
@@ -21,9 +22,9 @@ Deno.serve(async (req) => {
     if (!lead_id || !template_key || !fillfaster_form_id) {
       return errorResponse('lead_id, template_key, and fillfaster_form_id are required', 400, req);
     }
-    if (!MAKE_WEBHOOK_URL) {
-      console.error('[AGREEMENT_ERROR] MAKE_FILLFASTER_WEBHOOK_URL not set');
-      return errorResponse('Make.com webhook not configured', 500, req);
+    if (!BRIDGE_WEBHOOK_URL) {
+      console.error('[AGREEMENT_ERROR] N8N_FILLFASTER_WEBHOOK_URL not set');
+      return errorResponse('FillFaster bridge webhook not configured', 500, req);
     }
 
     // --- Fetch lead ---
@@ -67,14 +68,14 @@ Deno.serve(async (req) => {
       lead_email: lead.email || '',
     };
 
-    console.log('[crmCreateAgreement] Sending to Make:', JSON.stringify(makePayload));
+    console.log('[crmCreateAgreement] Sending to n8n bridge:', JSON.stringify(makePayload));
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), MAKE_TIMEOUT_MS);
+    const timeout = setTimeout(() => controller.abort(), BRIDGE_TIMEOUT_MS);
 
-    let makeResponse: Response;
+    let bridgeResponse: Response;
     try {
-      makeResponse = await fetch(MAKE_WEBHOOK_URL, {
+      bridgeResponse = await fetch(BRIDGE_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(makePayload),
@@ -83,33 +84,31 @@ Deno.serve(async (req) => {
     } catch (fetchErr) {
       clearTimeout(timeout);
       const msg = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
-      console.error('[AGREEMENT_ERROR] Make webhook failed:', msg);
-      return errorResponse(`Make.com webhook unreachable: ${msg}`, 502, req);
+      console.error('[AGREEMENT_ERROR] n8n bridge failed:', msg);
+      return errorResponse(`n8n bridge unreachable: ${msg}`, 502, req);
     }
     clearTimeout(timeout);
 
-    const makeText = await makeResponse.text();
-    console.log('[crmCreateAgreement] Make response:', makeResponse.status, makeText);
+    const bridgeText = await bridgeResponse.text();
+    console.log('[crmCreateAgreement] n8n response:', bridgeResponse.status, bridgeText);
 
-    if (!makeResponse.ok) {
-      console.error('[AGREEMENT_ERROR] Make returned error:', makeResponse.status, makeText);
-      return errorResponse(`Make.com error: ${makeResponse.status}`, 502, req);
+    if (!bridgeResponse.ok) {
+      console.error('[AGREEMENT_ERROR] n8n returned error:', bridgeResponse.status, bridgeText);
+      return errorResponse(`n8n bridge error: ${bridgeResponse.status}`, 502, req);
     }
 
-    // --- Parse Make response ---
-    let makeResult: Record<string, unknown>;
+    // --- Parse n8n response ---
+    let bridgeResult: Record<string, unknown>;
     try {
-      makeResult = JSON.parse(makeText);
+      bridgeResult = JSON.parse(bridgeText);
     } catch {
-      // Make sometimes returns "Accepted" text for async scenarios
-      // In that case we save without submission_link and let webhook fill it later
-      console.warn('[crmCreateAgreement] Make returned non-JSON:', makeText.slice(0, 200));
-      makeResult = {};
+      console.warn('[crmCreateAgreement] n8n returned non-JSON:', bridgeText.slice(0, 200));
+      bridgeResult = {};
     }
 
-    // Extract submission_id and submission_link from Make response
-    const submission_id = String(makeResult.submission_id || makeResult.id || makeResult.submissionId || '');
-    const submission_link = String(makeResult.submission_link || makeResult.link || makeResult.url || makeResult.submissionLink || '');
+    // Extract submission_id and submission_link from n8n response
+    const submission_id = String(bridgeResult.submission_id || bridgeResult.id || bridgeResult.submissionId || '');
+    const submission_link = String(bridgeResult.submission_link || bridgeResult.link || bridgeResult.url || bridgeResult.submissionLink || '');
 
     console.log('[crmCreateAgreement] Extracted | id:', submission_id, '| link:', submission_link ? 'YES' : 'NONE');
 
@@ -183,7 +182,7 @@ Deno.serve(async (req) => {
         has_link: hasLink,
         whatsapp_sent: whatsappSent,
         created_by: user.id,
-        bridge: 'make.com',
+        bridge: 'n8n',
       },
     });
 
