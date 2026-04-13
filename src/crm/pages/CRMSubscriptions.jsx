@@ -64,10 +64,19 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
     }
 
     if (mode === 'card') {
-      if (!ccno || !expdate || !cvv || !myid || !contactName) {
-        toast.error('יש למלא את כל פרטי הכרטיס');
-        return;
-      }
+      const cleanCard = ccno.replace(/\s/g, '');
+      if (!/^\d{13,19}$/.test(cleanCard)) { toast.error('מספר כרטיס לא תקין'); return; }
+      const expClean = expdate.replace('/', '');
+      if (!/^\d{4}$/.test(expClean)) { toast.error('תאריך תפוגה לא תקין'); return; }
+      const expM = parseInt(expClean.slice(0, 2), 10);
+      const expY = parseInt('20' + expClean.slice(2, 4), 10);
+      if (expM < 1 || expM > 12) { toast.error('חודש תפוגה לא תקין'); return; }
+      const now = new Date();
+      if (expY < now.getFullYear() || (expY === now.getFullYear() && expM < now.getMonth() + 1)) { toast.error('כרטיס פג תוקף'); return; }
+      if (!/^\d{3,4}$/.test(cvv)) { toast.error('CVV לא תקין'); return; }
+      if (!myid || !/^\d{5,9}$/.test(myid)) { toast.error('מספר ת.ז. לא תקין'); return; }
+      if (!contactName.trim()) { toast.error('יש להזין שם בעל הכרטיס'); return; }
+      if (Number(monthlyPrice) <= 0) { toast.error('סכום חיוב לא תקין'); return; }
       try {
         const result = await createSubWithCard.mutateAsync({
           lead_id: leadId,
@@ -156,31 +165,31 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
 
           {/* Card mode — card fields */}
           {mode === 'card' && (
-            <div className="space-y-3 border rounded-lg p-3 bg-slate-50">
+            <div className="space-y-3 border rounded-lg p-3 bg-slate-50" data-sensitive="true" data-hj-suppress data-clarity-mask="true">
               <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
                 פרטי הכרטיס מועברים בצורה מוצפנת ישירות לטרנזילה ואינם נשמרים במערכת.
               </p>
               <div>
                 <label className="text-sm font-medium mb-1 block">מספר כרטיס</label>
-                <Input value={ccno} onChange={e => setCcno(e.target.value.replace(/[^\d\s]/g, '').slice(0, 19))} placeholder="4580 1234 5678 9012" inputMode="numeric" dir="ltr" />
+                <Input value={ccno} onChange={e => setCcno(e.target.value.replace(/[^\d\s]/g, '').slice(0, 19))} placeholder="4580 1234 5678 9012" inputMode="numeric" dir="ltr" autoComplete="off" data-lpignore="true" />
               </div>
               <div className="flex gap-2">
                 <div className="flex-1">
                   <label className="text-sm font-medium mb-1 block">תוקף (MM/YY)</label>
-                  <Input value={expdate} onChange={e => { let v = e.target.value.replace(/\D/g, '').slice(0, 4); if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2); setExpdate(v); }} placeholder="12/27" inputMode="numeric" dir="ltr" />
+                  <Input value={expdate} onChange={e => { let v = e.target.value.replace(/\D/g, '').slice(0, 4); if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2); setExpdate(v); }} placeholder="12/27" inputMode="numeric" dir="ltr" autoComplete="off" />
                 </div>
                 <div className="w-24">
                   <label className="text-sm font-medium mb-1 block">CVV</label>
-                  <Input value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="123" inputMode="numeric" type="password" dir="ltr" />
+                  <Input value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="123" inputMode="numeric" type="password" dir="ltr" autoComplete="off" />
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium mb-1 block">ת.ז. בעל הכרטיס</label>
-                <Input value={myid} onChange={e => setMyid(e.target.value.replace(/\D/g, '').slice(0, 9))} placeholder="123456789" inputMode="numeric" dir="ltr" />
+                <Input value={myid} onChange={e => setMyid(e.target.value.replace(/\D/g, '').slice(0, 9))} placeholder="123456789" inputMode="numeric" dir="ltr" autoComplete="off" />
               </div>
               <div>
                 <label className="text-sm font-medium mb-1 block">שם בעל הכרטיס</label>
-                <Input value={contactName} onChange={e => setContactName(e.target.value)} placeholder="ישראל ישראלי" />
+                <Input value={contactName} onChange={e => setContactName(e.target.value)} placeholder="ישראל ישראלי" autoComplete="off" />
               </div>
             </div>
           )}

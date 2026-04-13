@@ -49,11 +49,37 @@ Deno.serve(async (req) => {
     if (!/^\d{13,19}$/.test(cleanCcno)) {
       return errorResponse('מספר כרטיס לא תקין', 400, req);
     }
-    if (!/^\d{4}$/.test(expdate || '')) {
+    const cleanExpdate = (expdate || '').replace(/\D/g, '');
+    if (!/^\d{4}$/.test(cleanExpdate)) {
       return errorResponse('תאריך תפוגה לא תקין — נדרש MMYY', 400, req);
+    }
+    // Validate expiry is not in the past
+    const expMonth = parseInt(cleanExpdate.slice(0, 2), 10);
+    const expYear = parseInt('20' + cleanExpdate.slice(2, 4), 10);
+    if (expMonth < 1 || expMonth > 12) {
+      return errorResponse('חודש תפוגה לא תקין', 400, req);
+    }
+    const now = new Date();
+    if (expYear < now.getFullYear() || (expYear === now.getFullYear() && expMonth < now.getMonth() + 1)) {
+      return errorResponse('כרטיס פג תוקף', 400, req);
     }
     if (!/^\d{3,4}$/.test(cvv || '')) {
       return errorResponse('CVV לא תקין', 400, req);
+    }
+    if (myid && !/^\d{5,9}$/.test(myid)) {
+      return errorResponse('מספר ת.ז. לא תקין', 400, req);
+    }
+
+    // Idempotency: prevent duplicate subscription for same lead in same minute
+    const { data: recentSub } = await supabaseAdmin
+      .from('subscriptions')
+      .select('id')
+      .eq('lead_id', lead_id)
+      .eq('plan_name', plan_name)
+      .in('status', ['active', 'pending_first_charge'])
+      .limit(1);
+    if (recentSub && recentSub.length > 0) {
+      return errorResponse('ליד זה כבר יש מנוי פעיל לתוכנית זו', 409, req);
     }
 
     // Derive card info BEFORE discarding sensitive data
@@ -78,7 +104,7 @@ Deno.serve(async (req) => {
       cred_type: '1',
       tranmode: 'A',
       ccno: cleanCcno,
-      expdate,
+      expdate: cleanExpdate,
       mycvv: cvv,
       myid: myid || '',
       contact: contact_name || '',
@@ -185,7 +211,10 @@ Deno.serve(async (req) => {
     }, 200, req);
 
   } catch (error) {
-    console.error('crmCreateSubscriptionWithCard error:', (error as Error).message);
+    // SECURITY: Never log the full error — it may contain card data from JSON parse
+    const errMsg = (error as Error).message || 'unknown';
+    const safeMsg = errMsg.replace(/\d{10,19}/g, '****').replace(/\d{3,4}/g, '***');
+    console.error('[crmCreateSubWithCard] Error:', safeMsg);
     return errorResponse('שגיאה פנימית', 500, req);
   }
 });
