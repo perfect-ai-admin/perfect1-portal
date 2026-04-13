@@ -51,17 +51,10 @@ Deno.serve(async (req) => {
 
     console.log('[crmCreateAgreement] Start | lead:', lead_id, '| template:', template_key, '| form:', fillfaster_form_id);
 
-    // --- Build prefill_data (FillFaster field name: prefill_data, NOT prefilled_data) ---
+    // --- Build prefill_data from extra_fields sent by frontend ---
+    // Field names are in Hebrew to match FillFaster form field labels
+    // Frontend sends: שם מלא, ת.ז, עלות סגירת תיק, etc.
     const prefill_data: Record<string, string> = {};
-    if (lead.name) prefill_data.full_name = lead.name;
-    if (lead.id_number) prefill_data.id_number = lead.id_number;
-    if (lead.phone) prefill_data.phone = lead.phone;
-    if (lead.email) prefill_data.email = lead.email;
-    if (lead.business_name) prefill_data.business_name = lead.business_name;
-    if (lead.city) prefill_data.city = lead.city;
-    if (lead.service_type) prefill_data.service_name = lead.service_type;
-
-    // Merge extra fields from frontend (amount, start_date, etc.)
     if (extra_fields && typeof extra_fields === 'object') {
       for (const [k, v] of Object.entries(extra_fields)) {
         if (v !== undefined && v !== null && v !== '') prefill_data[k] = String(v);
