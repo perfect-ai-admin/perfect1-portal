@@ -4,16 +4,22 @@
 
 export const AGREEMENT_TEMPLATES = [
   {
-    key: 'service_agreement',
-    label: 'הסכם שירות',
-    fillfaster_form_id: '', // Set from FillFaster dashboard → form URL contains the fid
-    description: 'הסכם שירות לפתיחת עוסק/חברה',
+    key: 'close_file',
+    label: 'הסכם סגירת תיק',
+    fillfaster_form_id: 'TZy1cCklEd',
+    description: 'הסכם סגירת תיק לקוח',
   },
   {
-    key: 'nda',
-    label: 'הסכם סודיות',
-    fillfaster_form_id: '', // Set from FillFaster dashboard
-    description: 'הסכם סודיות (NDA)',
+    key: 'accounting_murshe',
+    label: 'הסכם הנהלת חשבונות מורשה',
+    fillfaster_form_id: 'GfctNMEZS0',
+    description: 'הסכם הנהלת חשבונות לעוסק מורשה',
+  },
+  {
+    key: 'employment',
+    label: 'הסכם עבודה',
+    fillfaster_form_id: 'ActW7DVPne',
+    description: 'הסכם עבודה כללי',
   },
 ];
 
