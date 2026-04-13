@@ -103,22 +103,28 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
         toast.error(`שגיאה: ${err.message}`);
       }
     } else {
+      const payload = {
+        lead_id: leadId,
+        plan_name: planName,
+        monthly_price: Number(monthlyPrice),
+        send_via_whatsapp: sendWhatsapp,
+        recur_payments: recurPayments ? Number(recurPayments) : undefined,
+      };
+      console.log('[handleCreate] LINK MODE — calling crmCreateSubscription with:', JSON.stringify(payload));
       try {
-        const result = await createSub.mutateAsync({
-          lead_id: leadId,
-          plan_name: planName,
-          monthly_price: Number(monthlyPrice),
-          send_via_whatsapp: sendWhatsapp,
-          recur_payments: recurPayments ? Number(recurPayments) : undefined,
-        });
-        toast.success('מנוי נוצר — קישור תשלום נשלח');
+        // Add timeout to prevent stuck pending state
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout — נסה שוב')), 30000));
+        const result = await Promise.race([createSub.mutateAsync(payload), timeoutPromise]);
+        console.log('[handleCreate] LINK SUCCESS:', JSON.stringify(result));
+        toast.success('מנוי נוצר בהצלחה!');
         if (result?.payment_link) {
-          navigator.clipboard?.writeText(result.payment_link);
-          toast.success('קישור הועתק');
+          try { await navigator.clipboard?.writeText(result.payment_link); } catch {}
+          toast.success('קישור תשלום הועתק ללוח');
         }
         onOpenChange(false);
         clearForm();
       } catch (err) {
+        console.error('[handleCreate] LINK FAILED:', err?.message || err);
         toast.error(`שגיאה: ${err.message}`);
       }
     }
@@ -328,7 +334,7 @@ export default function CRMSubscriptions() {
   return (
     <div className="space-y-4" dir="rtl">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-[#1E3A5F]">מנויים</h1>
+        <h1 className="text-xl font-bold text-[#1E3A5F]">מנויים <span className="text-xs text-slate-300 font-normal">v2.1</span></h1>
         <Button size="sm" onClick={() => setShowCreate(true)} className="bg-[#1E3A5F] hover:bg-[#16324f]">
           <Plus className="w-4 h-4 ml-1" /> יצירת מנוי
         </Button>
