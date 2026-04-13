@@ -698,10 +698,15 @@ export function useLeadAgreements(leadId) {
         .select('*')
         .eq('lead_id', leadId)
         .order('created_at', { ascending: false });
-      if (error) throw new Error(error.message);
+      // Return empty array if table doesn't exist or query fails
+      if (error) {
+        console.warn('[useLeadAgreements] Query error:', error.message);
+        return [];
+      }
       return data || [];
     },
     enabled: !!leadId,
+    retry: false,
   });
 }
 
