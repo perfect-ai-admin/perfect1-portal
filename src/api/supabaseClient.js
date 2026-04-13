@@ -53,8 +53,15 @@ export async function invokeFunction(name, payload = {}) {
       const { data } = await supabase.auth.refreshSession();
       session = data?.session;
     }
-    if (session?.access_token) authToken = session.access_token;
-  } catch { /* fall back to anon key */ }
+    if (session?.access_token) {
+      authToken = session.access_token;
+      console.log(`[invokeFunction] Using user session token for ${name}`);
+    } else {
+      console.warn(`[invokeFunction] No session found for ${name} — using anon key (will get 401 on protected functions)`);
+    }
+  } catch (e) {
+    console.warn(`[invokeFunction] Session check failed for ${name}:`, e);
+  }
 
   let resp;
   try {
