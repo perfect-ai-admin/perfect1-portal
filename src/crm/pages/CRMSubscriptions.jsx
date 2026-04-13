@@ -119,7 +119,7 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) clearForm(); onOpenChange(v); }}>
-      <DialogContent className="sm:max-w-md" dir="rtl">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto" dir="rtl">
         <DialogHeader>
           <DialogTitle>יצירת מנוי חדש</DialogTitle>
         </DialogHeader>
