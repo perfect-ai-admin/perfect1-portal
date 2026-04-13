@@ -84,4 +84,10 @@ export const useAuth = () => {
   return context;
 };
 
+// Safe version — returns defaults when outside AuthProvider (e.g. portal domain)
+export const useAuthSafe = () => {
+  const context = useContext(AuthContext);
+  return context || { isAuthenticated: false, isLoadingAuth: false, user: null, session: null };
+};
+
 export default AuthContext;
