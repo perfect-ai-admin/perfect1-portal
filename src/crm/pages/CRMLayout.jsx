@@ -3,16 +3,18 @@ import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Columns3, Users, ListTodo, Settings, ChevronRight, ChevronLeft,
-  Bell, Menu, X, LogOut, CreditCard
+  Bell, Menu, X, LogOut, CreditCard, AlertTriangle
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { entities, supabase } from '@/api/supabaseClient';
+import { useOpenAlertCount } from '../hooks/useCRM';
 
 const NAV_ITEMS = [
   { to: '/CRM', label: 'לידים', icon: Users, exact: true },
   { to: '/CRM/dashboard', label: 'דשבורד', icon: LayoutDashboard },
   { to: '/CRM/tasks', label: 'משימות', icon: ListTodo },
   { to: '/CRM/subscriptions', label: 'מנויים', icon: CreditCard },
+  { to: '/CRM/billing-alerts', label: 'התראות בילינג', icon: AlertTriangle, badgeKey: 'billingAlerts' },
   { to: '/CRM/settings', label: 'הגדרות', icon: Settings },
 ];
 
@@ -104,6 +106,8 @@ export default function CRMLayout() {
     navigate('/login');
   };
 
+  const { data: openAlertCount } = useOpenAlertCount();
+
   const SidebarContent = () => (
     <nav className="flex flex-col gap-1 p-3">
       {NAV_ITEMS.map(item => {
@@ -111,6 +115,7 @@ export default function CRMLayout() {
         const isActive = item.exact
           ? location.pathname === item.to
           : location.pathname.startsWith(item.to);
+        const badge = item.badgeKey === 'billingAlerts' && openAlertCount > 0 ? openAlertCount : null;
 
         return (
           <NavLink
@@ -124,7 +129,10 @@ export default function CRMLayout() {
             }`}
           >
             <Icon size={18} />
-            {sidebarOpen && <span>{item.label}</span>}
+            {sidebarOpen && <span className="flex-1">{item.label}</span>}
+            {sidebarOpen && badge && (
+              <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">{badge}</span>
+            )}
           </NavLink>
         );
       })}

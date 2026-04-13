@@ -903,3 +903,89 @@ export function useUpdateSubscription() {
     },
   });
 }
+
+// ---- Billing Alerts ----
+
+export function useBillingAlerts(filters = {}) {
+  return useQuery({
+    queryKey: ['billing-alerts', filters],
+    queryFn: async () => {
+      let query = supabase
+        .from('billing_alerts')
+        .select('*, subscriptions!billing_alerts_subscription_id_fkey(plan_name, monthly_price, status, next_charge_date, lead_id, leads!subscriptions_lead_id_fkey(name, phone))')
+        .order('created_at', { ascending: false });
+
+      if (filters.resolved === false) query = query.eq('resolved', false);
+      if (filters.resolved === true) query = query.eq('resolved', true);
+      if (filters.alert_type) query = query.eq('alert_type', filters.alert_type);
+
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data || []).map(a => ({
+        ...a,
+        plan_name: a.subscriptions?.plan_name || '',
+        monthly_price: a.subscriptions?.monthly_price || 0,
+        sub_status: a.subscriptions?.status || '',
+        next_charge_date: a.subscriptions?.next_charge_date || '',
+        lead_name: a.subscriptions?.leads?.name || '',
+        lead_phone: a.subscriptions?.leads?.phone || '',
+      }));
+    },
+    refetchInterval: 30000,
+  });
+}
+
+export function useOpenAlertCount() {
+  return useQuery({
+    queryKey: ['billing-alerts-count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('billing_alerts')
+        .select('id', { count: 'exact', head: true })
+        .eq('resolved', false);
+      if (error) return 0;
+      return count || 0;
+    },
+    refetchInterval: 60000,
+  });
+}
+
+export function useResolveAlert() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ alert_id, notes }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const { error } = await supabase
+        .from('billing_alerts')
+        .update({
+          resolved: true,
+          resolved_at: new Date().toISOString(),
+          resolved_by: user?.id || null,
+          notes: notes || null,
+        })
+        .eq('id', alert_id)
+        .eq('resolved', false); // Guard: only resolve if not already resolved
+
+      if (error) throw new Error(error.message);
+
+      // Audit log
+      supabase.from('status_history').insert({
+        entity_type: 'billing_alert',
+        entity_id: alert_id,
+        new_stage: 'resolved',
+        change_reason: 'alert_resolved',
+        source: 'sales_portal',
+        metadata: { resolved_by: user?.id, notes },
+      }).then(({ error: logErr }) => {
+        if (logErr) console.warn('alert audit log:', logErr.message);
+      });
+
+      return { success: true };
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['billing-alerts'] });
+      qc.invalidateQueries({ queryKey: ['billing-alerts-count'] });
+    },
+  });
+}

@@ -109,6 +109,7 @@ const CRMDashboard = lazyWithRetry(() => import('./crm/pages/CRMDashboard'));
 const CRMTasks = lazyWithRetry(() => import('./crm/pages/CRMTasks'));
 const CRMSettings = lazyWithRetry(() => import('./crm/pages/CRMSettings'));
 const CRMSubscriptions = lazyWithRetry(() => import('./crm/pages/CRMSubscriptions'));
+const CRMBillingAlerts = lazyWithRetry(() => import('./crm/pages/CRMBillingAlerts'));
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -248,6 +249,7 @@ const PortalRoutes = () => (
       <Route path="dashboard" element={<CRMDashboard />} />
       <Route path="tasks" element={<CRMTasks />} />
       <Route path="subscriptions" element={<CRMSubscriptions />} />
+      <Route path="billing-alerts" element={<CRMBillingAlerts />} />
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
@@ -279,6 +281,7 @@ const AppOnlyRoutes = () => (
       <Route path="dashboard" element={<CRMDashboard />} />
       <Route path="tasks" element={<CRMTasks />} />
       <Route path="subscriptions" element={<CRMSubscriptions />} />
+      <Route path="billing-alerts" element={<CRMBillingAlerts />} />
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
@@ -337,6 +340,7 @@ const DevRoutes = () => (
       <Route path="dashboard" element={<CRMDashboard />} />
       <Route path="tasks" element={<CRMTasks />} />
       <Route path="subscriptions" element={<CRMSubscriptions />} />
+      <Route path="billing-alerts" element={<CRMBillingAlerts />} />
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
@@ -349,14 +353,17 @@ const DevRoutes = () => (
 );
 
 const AppRoutes = () => {
-  // Portal domain (perfect1.co.il) — only portal/SEO routes
+  // Portal domain (perfect1.co.il) — portal + CRM + login
   if (isPortalDomain()) return <PortalRoutes />;
 
   // App domain (perfect-dashboard.com) — only app/CRM routes
   if (isAppDomain()) return <AppOnlyRoutes />;
 
   // Localhost — everything available for development
-  return <DevRoutes />;
+  if (isLocalDev()) return <DevRoutes />;
+
+  // Production fallback (Vercel preview, unknown domains) — portal only, no app leakage
+  return <PortalRoutes />;
 };
 
 
@@ -374,9 +381,8 @@ function App() {
     );
   }
 
-  // Portal domain doesn't need auth — skip AuthProvider to avoid Supabase network call
-  const needsAuth = !isPortalDomain();
-
+  // AuthProvider is always active — CRM and Login routes need it on every domain.
+  // SupabaseAuthProvider handles missing sessions gracefully (isAuthenticated=false).
   const appContent = (
     <QueryClientProvider client={queryClientInstance}>
       <Router>
@@ -391,7 +397,7 @@ function App() {
 
   return (
     <HelmetProvider>
-      {needsAuth ? <AuthProvider>{appContent}</AuthProvider> : appContent}
+      <AuthProvider>{appContent}</AuthProvider>
     </HelmetProvider>
   )
 }
