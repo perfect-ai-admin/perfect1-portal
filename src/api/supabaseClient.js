@@ -42,12 +42,32 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // reject the request before it reaches Deno, which surfaces in the browser
 // as a generic `TypeError: Failed to fetch` rather than an HTTP error.
 export async function invokeFunction(name, payload = {}) {
-  // Get user session token — use anon key as fallback (edge functions handle auth internally)
+  // Get valid user session token for edge function auth
   let authToken = supabaseAnonKey;
   try {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.access_token) authToken = session.access_token;
+    let { data: { session } } = await supabase.auth.getSession();
+
+    // Check if token is expired or about to expire (within 60s)
+    if (session?.expires_at) {
+      const expiresAt = session.expires_at * 1000; // convert to ms
+      if (Date.now() > expiresAt - 60000) {
+        // Token expired or expiring soon — refresh it
+        const { data, error } = await supabase.auth.refreshSession();
+        if (!error && data?.session) {
+          session = data.session;
+        }
+      }
+    }
+
+    if (session?.access_token) {
+      authToken = session.access_token;
+    }
   } catch { /* use anon key */ }
+
+  // Guard: warn if no auth session for CRM functions
+  if (authToken === supabaseAnonKey && name.startsWith('crm')) {
+    console.warn(`[invokeFunction] No auth session for protected function ${name} — may get 401`);
+  }
 
   let resp;
   try {
@@ -66,6 +86,32 @@ export async function invokeFunction(name, payload = {}) {
     throw new Error(`Network error calling ${name}: ${networkErr.message || 'Failed to fetch'}`);
   }
   if (!resp.ok) {
+    // Handle 401 specifically — session expired
+    if (resp.status === 401) {
+      console.error(`[invokeFunction] ${name}: 401 — session expired, attempting refresh`);
+      // Try to refresh and retry once
+      try {
+        const { data, error } = await supabase.auth.refreshSession();
+        if (!error && data?.session?.access_token) {
+          // Retry with fresh token
+          const retryResp = await fetch(`${supabaseUrl}/functions/v1/${name}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${data.session.access_token}`,
+              'apikey': supabaseAnonKey,
+            },
+            body: JSON.stringify(payload),
+          });
+          if (retryResp.ok) {
+            let result = null;
+            try { result = await retryResp.json(); } catch {}
+            return result;
+          }
+        }
+      } catch {}
+      throw new Error('פג תוקף ההתחברות — יש לרענן את הדף ולנסות שוב');
+    }
     let msg = `Edge function ${name} returned ${resp.status}`;
     try { const body = await resp.json(); msg = body?.error || body?.message || msg; } catch {}
     console.error(`[invokeFunction] ${name} failed:`, msg);
