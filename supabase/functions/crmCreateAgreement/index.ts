@@ -1,12 +1,12 @@
-// crmCreateAgreement — Create FillFaster submission and send signing link via WhatsApp
+// crmCreateAgreement — Create agreement via Make.com → FillFaster bridge
+// Flow: CRM → this function → Make webhook → FillFaster "Create Submission Link" → response with link
 // Authenticated: requires logged-in user
-// FillFaster API: POST /v1/submission with { fid, prefill_data, user_data }
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, getUser } from '../_shared/supabaseAdmin.ts';
-import { sendAndStoreMessage, formatPhone } from '../_shared/whatsappHelper.ts';
+import { sendAndStoreMessage } from '../_shared/whatsappHelper.ts';
 
-const FILLFASTER_TOKEN = Deno.env.get('FILLFASTER_API_TOKEN');
-const FILLFASTER_BASE = Deno.env.get('FILLFASTER_BASE_URL') || 'https://api.fillfaster.com';
+const MAKE_WEBHOOK_URL = Deno.env.get('MAKE_FILLFASTER_WEBHOOK_URL');
+const MAKE_TIMEOUT_MS = 30_000;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
@@ -21,15 +21,15 @@ Deno.serve(async (req) => {
     if (!lead_id || !template_key || !fillfaster_form_id) {
       return errorResponse('lead_id, template_key, and fillfaster_form_id are required', 400, req);
     }
-    if (!FILLFASTER_TOKEN) {
-      console.error('[AGREEMENT_ERROR] FILLFASTER_API_TOKEN not set');
-      return errorResponse('FillFaster API token not configured', 500, req);
+    if (!MAKE_WEBHOOK_URL) {
+      console.error('[AGREEMENT_ERROR] MAKE_FILLFASTER_WEBHOOK_URL not set');
+      return errorResponse('Make.com webhook not configured', 500, req);
     }
 
     // --- Fetch lead ---
     const { data: lead, error: leadErr } = await supabaseAdmin
       .from('leads')
-      .select('id, name, phone, email, id_number, business_name, city, service_type, agreement_status')
+      .select('id, name, phone, email, id_number, business_name, city, service_type')
       .eq('id', lead_id)
       .single();
 
@@ -38,11 +38,9 @@ Deno.serve(async (req) => {
       return errorResponse('Lead has no phone number — cannot send WhatsApp', 400, req);
     }
 
-    console.log('[crmCreateAgreement] Start | lead:', lead_id, '| template:', template_key, '| form:', fillfaster_form_id);
+    console.log('[crmCreateAgreement] Start | lead:', lead_id, '| template:', template_key);
 
-    // --- Build prefill_data from extra_fields sent by frontend ---
-    // Field names are in Hebrew to match FillFaster form field labels
-    // Frontend sends: שם מלא, ת.ז, עלות סגירת תיק, etc.
+    // --- Build prefill_data from frontend fields (Hebrew names matching FillFaster form) ---
     const prefill_data: Record<string, string> = {};
     if (extra_fields && typeof extra_fields === 'object') {
       for (const [k, v] of Object.entries(extra_fields)) {
@@ -50,7 +48,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // --- Build user_data (internal — returned in webhook for CRM matching) ---
+    // --- Build user_data (internal — returned in FillFaster webhook) ---
     const user_data = {
       lead_id,
       agent_id: user.id,
@@ -58,50 +56,65 @@ Deno.serve(async (req) => {
       crm_user_id: user.id,
     };
 
-    // --- Call FillFaster API ---
-    // Docs: POST with { fid, prefill_data, user_data } + Bearer token
-    const ffPayload = {
+    // --- Call Make.com webhook (bridge to FillFaster) ---
+    const makePayload = {
       fid: fillfaster_form_id,
       prefill_data,
       user_data,
+      template_key,
+      template_label: template_label || template_key,
+      lead_name: lead.name || '',
+      lead_email: lead.email || '',
     };
 
-    console.log('[crmCreateAgreement] FillFaster request payload:', JSON.stringify(ffPayload));
+    console.log('[crmCreateAgreement] Sending to Make:', JSON.stringify(makePayload));
 
-    const ffResponse = await fetch(`${FILLFASTER_BASE}/v1/submission`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${FILLFASTER_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(ffPayload),
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), MAKE_TIMEOUT_MS);
 
-    const ffText = await ffResponse.text();
-    console.log('[crmCreateAgreement] FillFaster response:', ffResponse.status, ffText);
-
-    if (!ffResponse.ok) {
-      console.error('[AGREEMENT_ERROR] FillFaster API failed:', ffResponse.status, ffText);
-      return errorResponse(`FillFaster API error: ${ffResponse.status} — ${ffText}`, 502, req);
-    }
-
-    let ffResult: Record<string, unknown>;
+    let makeResponse: Response;
     try {
-      ffResult = JSON.parse(ffText);
+      makeResponse = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(makePayload),
+        signal: controller.signal,
+      });
+    } catch (fetchErr) {
+      clearTimeout(timeout);
+      const msg = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
+      console.error('[AGREEMENT_ERROR] Make webhook failed:', msg);
+      return errorResponse(`Make.com webhook unreachable: ${msg}`, 502, req);
+    }
+    clearTimeout(timeout);
+
+    const makeText = await makeResponse.text();
+    console.log('[crmCreateAgreement] Make response:', makeResponse.status, makeText);
+
+    if (!makeResponse.ok) {
+      console.error('[AGREEMENT_ERROR] Make returned error:', makeResponse.status, makeText);
+      return errorResponse(`Make.com error: ${makeResponse.status}`, 502, req);
+    }
+
+    // --- Parse Make response ---
+    let makeResult: Record<string, unknown>;
+    try {
+      makeResult = JSON.parse(makeText);
     } catch {
-      return errorResponse(`FillFaster returned non-JSON response: ${ffText.slice(0, 200)}`, 502, req);
+      // Make sometimes returns "Accepted" text for async scenarios
+      // In that case we save without submission_link and let webhook fill it later
+      console.warn('[crmCreateAgreement] Make returned non-JSON:', makeText.slice(0, 200));
+      makeResult = {};
     }
 
-    // Extract submission_id and submission_link — try multiple possible field names
-    const submission_id = (ffResult.submission_id || ffResult.id || ffResult.submissionId) as string;
-    const submission_link = (ffResult.submission_link || ffResult.link || ffResult.url || ffResult.submissionLink) as string;
+    // Extract submission_id and submission_link from Make response
+    const submission_id = String(makeResult.submission_id || makeResult.id || makeResult.submissionId || '');
+    const submission_link = String(makeResult.submission_link || makeResult.link || makeResult.url || makeResult.submissionLink || '');
 
-    if (!submission_id || !submission_link) {
-      console.error('[crmCreateAgreement] Unexpected response shape:', JSON.stringify(ffResult));
-      return errorResponse('FillFaster returned unexpected response — missing submission_id or link', 502, req);
-    }
+    console.log('[crmCreateAgreement] Extracted | id:', submission_id, '| link:', submission_link ? 'YES' : 'NONE');
 
-    // --- Save agreement record (status='pending' until WhatsApp confirmed) ---
+    // --- Save agreement record ---
+    const hasLink = !!submission_link;
     const { data: agreement, error: agErr } = await supabaseAdmin
       .from('agreements')
       .insert({
@@ -109,9 +122,10 @@ Deno.serve(async (req) => {
         template_key,
         template_label: template_label || template_key,
         fillfaster_form_id,
-        fillfaster_submission_id: submission_id,
-        submission_link,
-        status: 'pending',
+        fillfaster_submission_id: submission_id || null,
+        submission_link: submission_link || null,
+        status: hasLink ? 'sent' : 'pending',
+        sent_at: hasLink ? new Date().toISOString() : null,
         prefilled_data: prefill_data,
         user_data,
         agent_id: user.id,
@@ -120,15 +134,15 @@ Deno.serve(async (req) => {
       .single();
 
     if (agErr || !agreement) {
-      console.error('[crmCreateAgreement] DB insert failed:', agErr);
+      console.error('[AGREEMENT_ERROR] DB insert failed:', agErr);
       return errorResponse('Failed to save agreement record', 500, req);
     }
 
     console.log('[crmCreateAgreement] Agreement saved:', agreement.id);
 
-    // --- Send WhatsApp ---
+    // --- Send WhatsApp (only if link exists and requested) ---
     let whatsappSent = false;
-    if (send_via_whatsapp !== false) {
+    if (send_via_whatsapp !== false && hasLink && lead.phone) {
       const templateName = template_label || 'הסכם שירות';
       const waMessage = `שלום ${lead.name || ''} 👋\n\nהכנו עבורך ${templateName} לחתימה דיגיטלית.\nלחצ/י על הקישור הבא כדי לעיין ולחתום:\n\n${submission_link}\n\nהחתימה מאובטחת ותקפה משפטית.\nלשאלות — אנחנו כאן! 🙂`;
 
@@ -141,25 +155,16 @@ Deno.serve(async (req) => {
           message_type: 'text',
         });
         whatsappSent = waResult?.success === true;
-        console.log('[crmCreateAgreement] WhatsApp result:', JSON.stringify(waResult));
+        console.log('[crmCreateAgreement] WhatsApp:', whatsappSent ? 'SENT' : 'FAILED');
       } catch (waErr) {
-        console.error('[crmCreateAgreement] WhatsApp send failed:', waErr);
+        console.error('[AGREEMENT_ERROR] WhatsApp failed:', waErr);
       }
     }
 
-    // --- Update agreement status based on WhatsApp result ---
-    const finalStatus = whatsappSent || send_via_whatsapp === false ? 'sent' : 'pending';
-    const now = new Date().toISOString();
-
-    await supabaseAdmin.from('agreements').update({
-      status: finalStatus,
-      sent_at: finalStatus === 'sent' ? now : null,
-      updated_at: now,
-    }).eq('id', agreement.id);
-
     // --- Update lead ---
+    const now = new Date().toISOString();
     await supabaseAdmin.from('leads').update({
-      agreement_status: finalStatus,
+      agreement_status: hasLink ? 'sent' : 'pending',
       agreement_id: agreement.id,
       updated_at: now,
     }).eq('id', lead_id);
@@ -168,27 +173,29 @@ Deno.serve(async (req) => {
     await supabaseAdmin.from('status_history').insert({
       entity_type: 'lead',
       entity_id: lead_id,
-      new_status: `agreement_${finalStatus}`,
+      new_status: `agreement_${hasLink ? 'sent' : 'pending'}`,
       change_reason: 'agreement_created',
       source: 'sales_portal',
       metadata: {
         agreement_id: agreement.id,
         template_key,
-        submission_id,
+        submission_id: submission_id || null,
+        has_link: hasLink,
         whatsapp_sent: whatsappSent,
         created_by: user.id,
+        bridge: 'make.com',
       },
     });
 
-    console.log('[crmCreateAgreement] Done | agreement:', agreement.id, '| status:', finalStatus, '| wa:', whatsappSent);
+    console.log('[crmCreateAgreement] Done | agreement:', agreement.id, '| link:', hasLink, '| wa:', whatsappSent);
 
     return jsonResponse({
       success: true,
       agreement_id: agreement.id,
-      submission_id,
-      submission_link,
+      submission_id: submission_id || null,
+      submission_link: submission_link || null,
       whatsapp_sent: whatsappSent,
-      status: finalStatus,
+      status: hasLink ? 'sent' : 'pending',
     }, 200, req);
 
   } catch (error) {
