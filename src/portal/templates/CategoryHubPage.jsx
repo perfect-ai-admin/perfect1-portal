@@ -93,9 +93,9 @@ export default function CategoryHubPage({ category }) {
                   >
                     <div>
                       <h3 className="font-bold text-portal-navy group-hover:text-portal-teal transition-colors">{sub.title}</h3>
-                      {sub.count && <span className="text-sm text-gray-400">{sub.count} מאמרים</span>}
+                      {sub.count && <span className="text-sm text-gray-500">{sub.count} מאמרים</span>}
                     </div>
-                    <ArrowLeft className="w-5 h-5 text-gray-300 group-hover:text-portal-teal transition-colors" />
+                    <ArrowLeft className="w-5 h-5 text-gray-500 group-hover:text-portal-teal transition-colors" aria-hidden="true" />
                   </Link>
                 ))}
               </div>

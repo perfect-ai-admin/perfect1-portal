@@ -71,7 +71,7 @@ export default function NetIncomeCalcPage() {
               <p className="hero-subtitle text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 בדקו כמה נשאר לכם נטו אחרי הוצאות, מס הכנסה וביטוח לאומי — לפי חישוב משוער לעצמאים בישראל
               </p>
-              <p className="text-sm text-gray-400 mt-3">עצמאים רבים לא באמת יודעים כמה נשאר להם נטו אחרי מסים והוצאות. המחשבון הזה נותן לכם הערכה מהירה ופשוטה.</p>
+              <p className="text-sm text-gray-600 mt-3">עצמאים רבים לא באמת יודעים כמה נשאר להם נטו אחרי מסים והוצאות. המחשבון הזה נותן לכם הערכה מהירה ופשוטה.</p>
             </div>
             <NetIncomeCalculator />
             <div className="mt-12">
@@ -118,7 +118,7 @@ export default function NetIncomeCalcPage() {
                 <details key={i} className="group bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                   <summary className="flex items-center justify-between cursor-pointer px-5 py-4 hover:bg-gray-50 transition-colors">
                     <span className="font-medium text-portal-navy">{item.q}</span>
-                    <ChevronLeft className="w-5 h-5 text-gray-400 transition-transform group-open:rotate-[-90deg]" />
+                    <ChevronLeft className="w-5 h-5 text-gray-500 transition-transform group-open:rotate-[-90deg]" aria-hidden="true" />
                   </summary>
                   <div className="px-5 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</div>
                 </details>

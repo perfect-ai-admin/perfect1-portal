@@ -20,10 +20,10 @@ function lazyRetry(importFn) {
   );
 }
 
-// --- Landing / public pages (static imports — very lightweight) ---
-import Home from './pages/Home';
-import S from './pages/S';
-import Features from './pages/Features';
+// --- Landing / public pages (lazy — not needed on portal domain) ---
+const Home = lazyRetry(() => import('./pages/Home'));
+const S = lazyRetry(() => import('./pages/S'));
+const Features = lazyRetry(() => import('./pages/Features'));
 
 // --- Landing / public pages (lazy — medium/heavy) ---
 const AdminUsers = lazyRetry(() => import('./pages/AdminUsers'));
@@ -42,14 +42,14 @@ const SmartLogo = lazyRetry(() => import('./pages/SmartLogo'));
 const SocialDesigns = lazyRetry(() => import('./pages/SocialDesigns'));
 // Portal-only pages (About, Privacy, Terms, Blog, OsekPatur) — served via PortalRoutes in App.jsx
 
-// --- Application pages (static imports — lightweight) ---
-import Login from './pages/Login';
-import AgentLogin from './pages/AgentLogin';
-import Checkout from './pages/Checkout';
-import CheckoutSuccess from './pages/CheckoutSuccess';
-import InviteUser from './pages/InviteUser';
-import LogoThankYou from './pages/LogoThankYou';
-import PricingPerfectBizAI from './pages/PricingPerfectBizAI';
+// --- Application pages (lazy — not needed on portal domain) ---
+const Login = lazyRetry(() => import('./pages/Login'));
+const AgentLogin = lazyRetry(() => import('./pages/AgentLogin'));
+const Checkout = lazyRetry(() => import('./pages/Checkout'));
+const CheckoutSuccess = lazyRetry(() => import('./pages/CheckoutSuccess'));
+const InviteUser = lazyRetry(() => import('./pages/InviteUser'));
+const LogoThankYou = lazyRetry(() => import('./pages/LogoThankYou'));
+const PricingPerfectBizAI = lazyRetry(() => import('./pages/PricingPerfectBizAI'));
 
 // --- Application pages (lazy — heavy, loaded on demand) ---
 const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'));

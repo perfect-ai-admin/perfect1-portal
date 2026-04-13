@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// framer-motion removed — CSS animation instead (saves ~120KB from initial bundle)
 import { ArrowLeft, Phone, MessageCircle, Search, CheckCircle2, Shield, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -80,7 +80,7 @@ function PortalHomePage() {
         <section className="relative py-14 sm:py-20 md:py-32 overflow-hidden bg-gradient-to-b from-portal-bg to-white">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-50/50 via-transparent to-transparent -z-10" />
           <div className="max-w-6xl mx-auto px-4 text-center">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="animate-fade-in-up">
               <div className="inline-flex items-center gap-2 bg-portal-teal/10 text-portal-teal rounded-full px-4 py-1.5 text-sm font-medium mb-6">
                 <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-portal-teal opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-portal-teal"></span></span>
                 מרכז מידע מקצועי
@@ -112,7 +112,7 @@ function PortalHomePage() {
                   </a>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 

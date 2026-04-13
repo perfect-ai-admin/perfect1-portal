@@ -34,8 +34,8 @@ const CALCULATORS = [
     title: 'מחשבון מס לעצמאי',
     description: 'חישוב מס הכנסה לפי מדרגות מס — כמה תשלמו בפועל',
     icon: DollarSign,
-    color: 'bg-gray-50 border-gray-200 text-gray-400',
-    iconColor: 'text-gray-300',
+    color: 'bg-gray-50 border-gray-200 text-gray-500',
+    iconColor: 'text-gray-400',
     live: false,
   },
   {
@@ -43,8 +43,8 @@ const CALCULATORS = [
     title: 'מחשבון תקרת עוסק פטור',
     description: 'בדיקת תקרת ההכנסות השנתית — האם עברתם את המותר?',
     icon: BarChart3,
-    color: 'bg-gray-50 border-gray-200 text-gray-400',
-    iconColor: 'text-gray-300',
+    color: 'bg-gray-50 border-gray-200 text-gray-500',
+    iconColor: 'text-gray-400',
     live: false,
   },
   {
@@ -52,8 +52,8 @@ const CALCULATORS = [
     title: 'פטור או מורשה?',
     description: 'כלי החלטה שעוזר להבין מה עדיף — עוסק פטור או מורשה',
     icon: HelpCircle,
-    color: 'bg-gray-50 border-gray-200 text-gray-400',
-    iconColor: 'text-gray-300',
+    color: 'bg-gray-50 border-gray-200 text-gray-500',
+    iconColor: 'text-gray-400',
     live: false,
   },
 ];

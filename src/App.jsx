@@ -53,7 +53,7 @@ function ChunkErrorFallback() {
 // Dynamic route pages
 const GoalPage = lazyWithRetry(() => import('@/pages/GoalPage'));
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import DigitalCard from './pages/DigitalBusinessCard';
+const DigitalCard = lazyWithRetry(() => import('./pages/DigitalBusinessCard'));
 import { HelmetProvider } from 'react-helmet-async';
 import './portal/styles/portal.css';
 import { isClientSubdomain } from '@/utils/subdomain';
@@ -97,8 +97,8 @@ const Login = lazyWithRetry(() => import('./pages/Login'));
 const AccessibilityPage = lazyWithRetry(() => import('./pages/Accessibility'));
 
 // Legal & Accessibility components
-import CookieConsent from '@/components/legal/CookieConsent';
-import AccessibilityWidget from '@/components/legal/AccessibilityWidget';
+const CookieConsent = lazyWithRetry(() => import('@/components/legal/CookieConsent'));
+const AccessibilityWidget = lazyWithRetry(() => import('@/components/legal/AccessibilityWidget'));
 
 // CRM Pages
 const CRMLayout = lazyWithRetry(() => import('./crm/pages/CRMLayout'));

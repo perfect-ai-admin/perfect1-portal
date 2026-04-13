@@ -80,7 +80,7 @@ export default function PortalHeader() {
               {openDropdown === cat.id && (
                 <div className="absolute top-full right-0 mt-1 w-80 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
                   <div className="px-4 py-2.5 border-b border-gray-100 mb-1">
-                    <p className="text-xs text-gray-400 font-medium">{cat.description}</p>
+                    <p className="text-xs text-gray-500 font-medium">{cat.description}</p>
                   </div>
                   {cat.subcategories.map((sub) => (
                     <Link
@@ -90,7 +90,7 @@ export default function PortalHeader() {
                     >
                       <span className="block text-sm font-medium text-gray-700 group-hover:text-portal-teal">{sub.title}</span>
                       {sub.description && (
-                        <span className="block text-xs text-gray-400 mt-0.5 leading-relaxed">{sub.description}</span>
+                        <span className="block text-xs text-gray-500 mt-0.5 leading-relaxed">{sub.description}</span>
                       )}
                     </Link>
                   ))}
@@ -158,9 +158,9 @@ export default function PortalHeader() {
                         </div>
                         <div className="flex-1 text-right">
                           <span className="block text-base font-bold">{cat.title}</span>
-                          <span className="block text-xs text-gray-400 mt-0.5">{cat.description}</span>
+                          <span className="block text-xs text-gray-500 mt-0.5">{cat.description}</span>
                         </div>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
                       </button>
 
                       {/* Subcategories - expandable */}
