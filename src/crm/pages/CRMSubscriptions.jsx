@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import TranzilaIframe from '@/components/checkout/TranzilaIframe';
-import { invokeFunction } from '@/api/supabaseClient';
+import { invokeFunction, supabase } from '@/api/supabaseClient';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   useSubscriptions,
   useSubscriptionKPIs,
@@ -320,6 +321,7 @@ export default function CRMSubscriptions() {
   const [pauseDialog, setPauseDialog] = useState(null);
   const [pauseReason, setPauseReason] = useState('');
 
+  const qc = useQueryClient();
   const { data: subs, isLoading } = useSubscriptions({ status: statusFilter || undefined });
   const { data: kpis } = useSubscriptionKPIs();
   const updateSub = useUpdateSubscription();
@@ -351,13 +353,27 @@ export default function CRMSubscriptions() {
   };
 
   const handleCancel = async (id) => {
-    if (!confirm('האם לבטל את המנוי? שים לב שצריך לבטל גם ב-My Tranzila.')) return;
+    if (!confirm('האם לבטל את המנוי?\n\nשים לב: יש לבטל גם בממשק My Tranzila כדי לעצור חיובים.')) return;
     try {
       await updateSub.mutateAsync({ id, status: 'cancelled', cancellation_reason: 'ביטול ידני מ-CRM' });
       toast.success('מנוי בוטל');
       toast('חשוב: יש לבטל גם בממשק My Tranzila', { icon: '⚠️' });
     } catch (err) {
       toast.error(err.message);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('האם למחוק את המנוי לצמיתות?\n\nפעולה זו אינה ניתנת לביטול.')) return;
+    try {
+      const { error } = await supabase.from('subscriptions').delete().eq('id', id);
+      if (error) throw new Error(error.message);
+      toast.success('מנוי נמחק');
+      // Refresh
+      qc.invalidateQueries({ queryKey: ['crm-subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['crm-subscription-kpis'] });
+    } catch (err) {
+      toast.error(`שגיאה: ${err.message}`);
     }
   };
 
@@ -454,23 +470,28 @@ export default function CRMSubscriptions() {
                       </span>
                     </td>
                     <td className="p-3">
-                      <div className="flex gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => setHistorySubId(sub.id)} title="היסטוריה">
-                          <History className="w-4 h-4" />
+                      <div className="flex gap-1 flex-wrap">
+                        <Button variant="ghost" size="sm" onClick={() => setHistorySubId(sub.id)} title="היסטוריית חיובים">
+                          <History className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">היסטוריה</span>
                         </Button>
                         {sub.status === 'active' && (
-                          <Button variant="ghost" size="sm" onClick={() => setPauseDialog(sub.id)} title="השהה">
-                            <Pause className="w-4 h-4 text-yellow-600" />
+                          <Button variant="ghost" size="sm" onClick={() => setPauseDialog(sub.id)} title="השהה מנוי" className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50">
+                            <Pause className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">השהה</span>
                           </Button>
                         )}
                         {sub.status === 'paused' && (
-                          <Button variant="ghost" size="sm" onClick={() => handleResume(sub.id)} title="הפעל">
-                            <Play className="w-4 h-4 text-green-600" />
+                          <Button variant="ghost" size="sm" onClick={() => handleResume(sub.id)} title="הפעל מחדש" className="text-green-600 hover:text-green-700 hover:bg-green-50">
+                            <Play className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">הפעל</span>
                           </Button>
                         )}
                         {(sub.status === 'active' || sub.status === 'paused') && (
-                          <Button variant="ghost" size="sm" onClick={() => handleCancel(sub.id)} title="בטל">
-                            <Trash2 className="w-4 h-4 text-red-500" />
+                          <Button variant="ghost" size="sm" onClick={() => handleCancel(sub.id)} title="בטל מנוי" className="text-orange-600 hover:text-orange-700 hover:bg-orange-50">
+                            <XCircle className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">בטל</span>
+                          </Button>
+                        )}
+                        {(sub.status === 'cancelled' || sub.status === 'failed') && (
+                          <Button variant="ghost" size="sm" onClick={() => handleDelete(sub.id)} title="מחק לצמיתות" className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">מחק</span>
                           </Button>
                         )}
                       </div>
