@@ -3,7 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Columns3, Users, ListTodo, Settings, ChevronRight, ChevronLeft,
-  Bell, Menu, X, LogOut
+  Bell, Menu, X, LogOut, CreditCard
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { entities, supabase } from '@/api/supabaseClient';
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: '/CRM', label: 'לידים', icon: Users, exact: true },
   { to: '/CRM/dashboard', label: 'דשבורד', icon: LayoutDashboard },
   { to: '/CRM/tasks', label: 'משימות', icon: ListTodo },
+  { to: '/CRM/subscriptions', label: 'מנויים', icon: CreditCard },
   { to: '/CRM/settings', label: 'הגדרות', icon: Settings },
 ];
 

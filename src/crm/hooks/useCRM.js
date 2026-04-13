@@ -746,3 +746,120 @@ export function useAgreementStats() {
     retry: false,
   });
 }
+
+// ---- Subscriptions (Recurring Billing) ----
+
+export function useSubscriptions(filters = {}) {
+  return useQuery({
+    queryKey: ['crm-subscriptions', filters],
+    queryFn: async () => {
+      let query = supabase
+        .from('subscriptions')
+        .select('*, leads!subscriptions_lead_id_fkey(name, phone)')
+        .order('created_at', { ascending: false });
+
+      if (filters.status) query = query.eq('status', filters.status);
+      if (filters.search) {
+        // Search by lead name — need to filter client-side after join
+      }
+
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      return (data || []).map(s => ({
+        ...s,
+        lead_name: s.leads?.name || '',
+        lead_phone: s.leads?.phone || '',
+      }));
+    },
+    refetchInterval: 30000,
+  });
+}
+
+export function useSubscriptionKPIs() {
+  return useQuery({
+    queryKey: ['crm-subscription-kpis'],
+    queryFn: async () => {
+      const { data: subs } = await supabase
+        .from('subscriptions')
+        .select('status, monthly_price, cancelled_at');
+
+      const active = (subs || []).filter(s => s.status === 'active');
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+      const { count: failedCount } = await supabase
+        .from('billing_transactions')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'failed')
+        .gte('created_at', startOfMonth);
+
+      const cancelledThisMonth = (subs || []).filter(
+        s => s.status === 'cancelled' && s.cancelled_at && s.cancelled_at >= startOfMonth
+      ).length;
+
+      return {
+        active_count: active.length,
+        mrr: active.reduce((sum, s) => sum + (s.monthly_price || 0), 0),
+        failed_this_month: failedCount || 0,
+        cancelled_this_month: cancelledThisMonth,
+      };
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useBillingHistory(subscriptionId) {
+  return useQuery({
+    queryKey: ['billing-history', subscriptionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('billing_transactions')
+        .select('*')
+        .eq('subscription_id', subscriptionId)
+        .order('charge_date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return data || [];
+    },
+    enabled: !!subscriptionId,
+  });
+}
+
+export function useCreateSubscription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload) => invokeFunction('crmCreateSubscription', payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm-subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['crm-subscription-kpis'] });
+      qc.invalidateQueries({ queryKey: ['crm-leads'] });
+    },
+  });
+}
+
+export function useUpdateSubscription() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...updates }) => {
+      const now = new Date().toISOString();
+      const patch = { ...updates, updated_at: now };
+
+      if (updates.status === 'paused') patch.paused_at = now;
+      if (updates.status === 'cancelled') patch.cancelled_at = now;
+      if (updates.status === 'active') {
+        patch.paused_at = null;
+        patch.pause_reason = null;
+      }
+
+      const { error } = await supabase
+        .from('subscriptions')
+        .update(patch)
+        .eq('id', id);
+      if (error) throw new Error(error.message);
+      return { success: true };
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm-subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['crm-subscription-kpis'] });
+    },
+  });
+}

@@ -31,6 +31,19 @@ Deno.serve(async (req) => {
       }
 
       console.log(`[tranzilaConfirmPayment] Notify callback: payment_id=${payment_id}, Response=${tranzilaResponse}, txn=${transaction_id}`);
+
+      // === Check if this is a recurring subscription charge ===
+      if (payment_id) {
+        const { data: sub } = await supabaseAdmin
+          .from('subscriptions')
+          .select('*')
+          .eq('id', payment_id)
+          .maybeSingle();
+
+        if (sub) {
+          return await handleRecurringChargeNotify(sub, transaction_id, tranzilaResponse, Object.fromEntries(formData), req);
+        }
+      }
     } else {
       // === Client-side JSON call ===
       const payload = await req.json();
@@ -326,3 +339,80 @@ Deno.serve(async (req) => {
     return errorResponse('שגיאה בעיבוד הבקשה', 500, req);
   }
 });
+
+// === Recurring subscription charge handler ===
+async function handleRecurringChargeNotify(
+  sub: Record<string, unknown>,
+  transactionId: string,
+  tranzilaResponse: string,
+  rawPayload: Record<string, unknown>,
+  req: Request,
+) {
+  const isSuccess = tranzilaResponse === '000' || tranzilaResponse === '0';
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Idempotency: check if we already processed this charge
+  if (transactionId) {
+    const { data: existing } = await supabaseAdmin
+      .from('billing_transactions')
+      .select('id')
+      .eq('subscription_id', sub.id)
+      .eq('tranzila_transaction_id', transactionId)
+      .maybeSingle();
+
+    if (existing) {
+      console.log(`[recurring] Already processed txn=${transactionId} for sub=${sub.id}`);
+      return jsonResponse({ success: true, already_processed: true }, 200, req);
+    }
+  }
+
+  // Insert billing transaction
+  await supabaseAdmin.from('billing_transactions').insert({
+    subscription_id: sub.id,
+    lead_id: sub.lead_id,
+    client_id: sub.client_id,
+    charge_date: today,
+    amount: sub.monthly_price,
+    currency: sub.currency || 'ILS',
+    status: isSuccess ? 'success' : 'failed',
+    tranzila_transaction_id: transactionId || null,
+    tranzila_response_code: tranzilaResponse,
+    failure_reason: isSuccess ? null : `Tranzila Response: ${tranzilaResponse}`,
+    notify_payload: rawPayload,
+  });
+
+  if (isSuccess) {
+    // Calculate next charge date: 15th of next month
+    const d = new Date();
+    let y = d.getFullYear();
+    let m = d.getMonth() + 2;
+    if (m > 12) { m = m - 12; y++; }
+    const nextCharge = `${y}-${String(m).padStart(2, '0')}-15`;
+
+    const newStatus = sub.status === 'pending_first_charge' ? 'active' : (sub.status as string);
+
+    await supabaseAdmin.from('subscriptions').update({
+      last_charge_date: today,
+      next_charge_date: nextCharge,
+      status: newStatus,
+      failure_count: 0,
+      updated_at: new Date().toISOString(),
+    }).eq('id', sub.id);
+
+    console.log(`[recurring] Charge success sub=${sub.id}, next=${nextCharge}`);
+  } else {
+    const newFailCount = ((sub.failure_count as number) || 0) + 1;
+    const newStatus = newFailCount >= 3 ? 'failed' : (sub.status as string);
+
+    await supabaseAdmin.from('subscriptions').update({
+      failure_count: newFailCount,
+      last_failure_reason: `Tranzila Response: ${tranzilaResponse}`,
+      status: newStatus,
+      updated_at: new Date().toISOString(),
+    }).eq('id', sub.id);
+
+    console.log(`[recurring] Charge failed sub=${sub.id}, failures=${newFailCount}`);
+  }
+
+  return jsonResponse({ success: true, subscription_id: sub.id, charge_result: isSuccess ? 'success' : 'failed' }, 200, req);
+}

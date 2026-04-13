@@ -108,6 +108,7 @@ const CRMLeads = lazyWithRetry(() => import('./crm/pages/CRMLeads'));
 const CRMDashboard = lazyWithRetry(() => import('./crm/pages/CRMDashboard'));
 const CRMTasks = lazyWithRetry(() => import('./crm/pages/CRMTasks'));
 const CRMSettings = lazyWithRetry(() => import('./crm/pages/CRMSettings'));
+const CRMSubscriptions = lazyWithRetry(() => import('./crm/pages/CRMSubscriptions'));
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -246,6 +247,7 @@ const PortalRoutes = () => (
       <Route path="leads/:id" element={<CRMLeadDetail />} />
       <Route path="dashboard" element={<CRMDashboard />} />
       <Route path="tasks" element={<CRMTasks />} />
+      <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
@@ -276,6 +278,7 @@ const AppOnlyRoutes = () => (
       <Route path="leads/:id" element={<CRMLeadDetail />} />
       <Route path="dashboard" element={<CRMDashboard />} />
       <Route path="tasks" element={<CRMTasks />} />
+      <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
@@ -333,6 +336,7 @@ const DevRoutes = () => (
       <Route path="leads/:id" element={<CRMLeadDetail />} />
       <Route path="dashboard" element={<CRMDashboard />} />
       <Route path="tasks" element={<CRMTasks />} />
+      <Route path="subscriptions" element={<CRMSubscriptions />} />
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
