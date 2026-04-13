@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreditCard, Users, TrendingUp, AlertTriangle, XCircle, Plus, Pause, Play, Trash2, History } from 'lucide-react';
+import { CreditCard, Users, TrendingUp, AlertTriangle, XCircle, Plus, Pause, Play, Trash2, History, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,6 +9,7 @@ import {
   useSubscriptions,
   useSubscriptionKPIs,
   useCreateSubscription,
+  useCreateSubscriptionWithCard,
   useUpdateSubscription,
   useBillingHistory,
   usePipelineLeads,
@@ -41,49 +42,97 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
   const [planName, setPlanName] = useState('');
   const [monthlyPrice, setMonthlyPrice] = useState('');
   const [sendWhatsapp, setSendWhatsapp] = useState(true);
+  const [mode, setMode] = useState('link'); // 'link' | 'card'
+  const [ccno, setCcno] = useState('');
+  const [expdate, setExpdate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [myid, setMyid] = useState('');
+  const [contactName, setContactName] = useState('');
   const createSub = useCreateSubscription();
+  const createSubWithCard = useCreateSubscriptionWithCard();
   const { data: leads } = usePipelineLeads({});
+
+  const clearForm = () => {
+    setLeadId(''); setPlanName(''); setMonthlyPrice('');
+    setCcno(''); setExpdate(''); setCvv(''); setMyid(''); setContactName('');
+  };
 
   const handleCreate = async () => {
     if (!leadId || !planName || !monthlyPrice) {
       toast.error('יש למלא את כל השדות');
       return;
     }
-    try {
-      const result = await createSub.mutateAsync({
-        lead_id: leadId,
-        plan_name: planName,
-        monthly_price: Number(monthlyPrice),
-        send_via_whatsapp: sendWhatsapp,
-      });
-      toast.success('מנוי נוצר בהצלחה');
-      if (result?.payment_link) {
-        navigator.clipboard?.writeText(result.payment_link);
-        toast.success('קישור תשלום הועתק');
+
+    if (mode === 'card') {
+      if (!ccno || !expdate || !cvv || !myid || !contactName) {
+        toast.error('יש למלא את כל פרטי הכרטיס');
+        return;
       }
-      onOpenChange(false);
-      setLeadId(''); setPlanName(''); setMonthlyPrice('');
-    } catch (err) {
-      toast.error(`שגיאה: ${err.message}`);
+      try {
+        const result = await createSubWithCard.mutateAsync({
+          lead_id: leadId,
+          plan_name: planName,
+          monthly_price: Number(monthlyPrice),
+          ccno: ccno.replace(/\s/g, ''),
+          expdate: expdate.replace('/', ''),
+          cvv,
+          myid,
+          contact_name: contactName,
+        });
+        toast.success(`מנוי נוצר — כרטיס *${result.card_last4}`);
+        onOpenChange(false);
+        clearForm();
+      } catch (err) {
+        toast.error(`שגיאה: ${err.message}`);
+      }
+    } else {
+      try {
+        const result = await createSub.mutateAsync({
+          lead_id: leadId,
+          plan_name: planName,
+          monthly_price: Number(monthlyPrice),
+          send_via_whatsapp: sendWhatsapp,
+        });
+        toast.success('מנוי נוצר — קישור תשלום נשלח');
+        if (result?.payment_link) {
+          navigator.clipboard?.writeText(result.payment_link);
+          toast.success('קישור הועתק');
+        }
+        onOpenChange(false);
+        clearForm();
+      } catch (err) {
+        toast.error(`שגיאה: ${err.message}`);
+      }
     }
   };
 
+  const isPending = createSub.isPending || createSubWithCard.isPending;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) clearForm(); onOpenChange(v); }}>
       <DialogContent className="sm:max-w-md" dir="rtl">
         <DialogHeader>
           <DialogTitle>יצירת מנוי חדש</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+          {/* Mode toggle */}
+          <div className="flex border rounded-lg overflow-hidden">
+            <button onClick={() => setMode('link')} className={`flex-1 py-2 text-sm font-medium transition-colors ${mode === 'link' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}>
+              שלח לינק
+            </button>
+            <button onClick={() => setMode('card')} className={`flex-1 py-2 text-sm font-medium transition-colors ${mode === 'card' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}>
+              <Lock className="w-3 h-3 inline ml-1" />הזן כרטיס
+            </button>
+          </div>
+
+          {/* Lead + Plan + Amount */}
           <div>
             <label className="text-sm font-medium mb-1 block">ליד</label>
             <Select value={leadId} onValueChange={setLeadId}>
               <SelectTrigger><SelectValue placeholder="בחר ליד" /></SelectTrigger>
               <SelectContent>
                 {(leads || []).slice(0, 50).map(l => (
-                  <SelectItem key={l.id} value={l.id}>
-                    {l.name} — {l.phone}
-                  </SelectItem>
+                  <SelectItem key={l.id} value={l.id}>{l.name} — {l.phone}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -96,14 +145,50 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
             <label className="text-sm font-medium mb-1 block">סכום חודשי (₪)</label>
             <Input type="number" value={monthlyPrice} onChange={e => setMonthlyPrice(e.target.value)} placeholder="299" />
           </div>
-          <div className="flex items-center gap-2">
-            <input type="checkbox" checked={sendWhatsapp} onChange={e => setSendWhatsapp(e.target.checked)} id="wa-toggle" />
-            <label htmlFor="wa-toggle" className="text-sm">שלח קישור תשלום ב-WhatsApp</label>
-          </div>
+
+          {/* Link mode — WhatsApp toggle */}
+          {mode === 'link' && (
+            <div className="flex items-center gap-2">
+              <input type="checkbox" checked={sendWhatsapp} onChange={e => setSendWhatsapp(e.target.checked)} id="wa-toggle" />
+              <label htmlFor="wa-toggle" className="text-sm">שלח קישור תשלום ב-WhatsApp</label>
+            </div>
+          )}
+
+          {/* Card mode — card fields */}
+          {mode === 'card' && (
+            <div className="space-y-3 border rounded-lg p-3 bg-slate-50">
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
+                פרטי הכרטיס מועברים בצורה מוצפנת ישירות לטרנזילה ואינם נשמרים במערכת.
+              </p>
+              <div>
+                <label className="text-sm font-medium mb-1 block">מספר כרטיס</label>
+                <Input value={ccno} onChange={e => setCcno(e.target.value.replace(/[^\d\s]/g, '').slice(0, 19))} placeholder="4580 1234 5678 9012" inputMode="numeric" dir="ltr" />
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <label className="text-sm font-medium mb-1 block">תוקף (MM/YY)</label>
+                  <Input value={expdate} onChange={e => { let v = e.target.value.replace(/\D/g, '').slice(0, 4); if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2); setExpdate(v); }} placeholder="12/27" inputMode="numeric" dir="ltr" />
+                </div>
+                <div className="w-24">
+                  <label className="text-sm font-medium mb-1 block">CVV</label>
+                  <Input value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="123" inputMode="numeric" type="password" dir="ltr" />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">ת.ז. בעל הכרטיס</label>
+                <Input value={myid} onChange={e => setMyid(e.target.value.replace(/\D/g, '').slice(0, 9))} placeholder="123456789" inputMode="numeric" dir="ltr" />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">שם בעל הכרטיס</label>
+                <Input value={contactName} onChange={e => setContactName(e.target.value)} placeholder="ישראל ישראלי" />
+              </div>
+            </div>
+          )}
+
           <div className="flex gap-2 justify-end pt-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>ביטול</Button>
-            <Button onClick={handleCreate} disabled={createSub.isPending} className="bg-blue-600 hover:bg-blue-700 text-white">
-              {createSub.isPending ? 'יוצר...' : 'צור מנוי'}
+            <Button variant="outline" onClick={() => { clearForm(); onOpenChange(false); }}>ביטול</Button>
+            <Button onClick={handleCreate} disabled={isPending} className="bg-blue-600 hover:bg-blue-700 text-white">
+              {isPending ? 'מעבד...' : mode === 'card' ? 'צור מנוי וחייב עכשיו' : 'צור מנוי'}
             </Button>
           </div>
         </div>
@@ -258,6 +343,7 @@ export default function CRMSubscriptions() {
                 <th className="p-3 text-right font-medium text-slate-600">סכום</th>
                 <th className="p-3 text-right font-medium text-slate-600">חיוב אחרון</th>
                 <th className="p-3 text-right font-medium text-slate-600">חיוב הבא</th>
+                <th className="p-3 text-right font-medium text-slate-600">כרטיס</th>
                 <th className="p-3 text-right font-medium text-slate-600">סטטוס</th>
                 <th className="p-3 text-right font-medium text-slate-600">פעולות</th>
               </tr>
@@ -275,6 +361,9 @@ export default function CRMSubscriptions() {
                     <td className="p-3 font-medium">₪{sub.monthly_price}</td>
                     <td className="p-3 text-slate-500">{sub.last_charge_date || '—'}</td>
                     <td className="p-3 text-slate-500">{sub.next_charge_date || '—'}</td>
+                    <td className="p-3 text-slate-500 font-mono text-xs">
+                      {sub.card_last4 ? `${sub.card_brand || ''} *${sub.card_last4}` : '—'}
+                    </td>
                     <td className="p-3">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${badge.color}`}>
                         {badge.label}

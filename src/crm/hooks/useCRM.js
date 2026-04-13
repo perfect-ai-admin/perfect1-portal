@@ -841,6 +841,18 @@ export function useCreateSubscription() {
   });
 }
 
+export function useCreateSubscriptionWithCard() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload) => invokeFunction('crmCreateSubscriptionWithCard', payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm-subscriptions'] });
+      qc.invalidateQueries({ queryKey: ['crm-subscription-kpis'] });
+      qc.invalidateQueries({ queryKey: ['crm-leads'] });
+    },
+  });
+}
+
 export function useUpdateSubscription() {
   const qc = useQueryClient();
   return useMutation({
