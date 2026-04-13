@@ -366,8 +366,11 @@ async function handleRecurringChargeNotify(
     }
   }
 
-  // Insert billing transaction
-  await supabaseAdmin.from('billing_transactions').insert({
+  // Determine if subscription is paused/cancelled (Tranzila charged despite CRM pause)
+  const chargedWhileSuspended = sub.status === 'paused' || sub.status === 'cancelled';
+
+  // Insert billing transaction (DB-level dedup via UNIQUE index)
+  const { error: insertErr } = await supabaseAdmin.from('billing_transactions').insert({
     subscription_id: sub.id,
     lead_id: sub.lead_id,
     client_id: sub.client_id,
@@ -377,9 +380,26 @@ async function handleRecurringChargeNotify(
     status: isSuccess ? 'success' : 'failed',
     tranzila_transaction_id: transactionId || null,
     tranzila_response_code: tranzilaResponse,
-    failure_reason: isSuccess ? null : `Tranzila Response: ${tranzilaResponse}`,
+    failure_reason: chargedWhileSuspended
+      ? `charged_while_${sub.status}`
+      : (isSuccess ? null : `Tranzila Response: ${tranzilaResponse}`),
     notify_payload: rawPayload,
   });
+
+  // DB-level dedup: unique constraint violation = already processed
+  if (insertErr) {
+    if (insertErr.code === '23505' || String(insertErr.message || '').includes('duplicate')) {
+      console.log(`[recurring] DB dedup — txn=${transactionId} sub=${sub.id}`);
+      return jsonResponse({ success: true, already_processed: true }, 200, req);
+    }
+    console.error('[recurring] billing_transactions insert failed:', insertErr);
+  }
+
+  // If subscription is paused/cancelled, don't change status — just log the charge
+  if (chargedWhileSuspended) {
+    console.warn(`[recurring] Charged while ${sub.status}! sub=${sub.id} txn=${transactionId}. Manual action needed in My Tranzila.`);
+    return jsonResponse({ success: true, subscription_id: sub.id, warning: `charged_while_${sub.status}` }, 200, req);
+  }
 
   if (isSuccess) {
     // Calculate next charge date: 15th of next month
@@ -389,7 +409,7 @@ async function handleRecurringChargeNotify(
     if (m > 12) { m = m - 12; y++; }
     const nextCharge = `${y}-${String(m).padStart(2, '0')}-15`;
 
-    const newStatus = sub.status === 'pending_first_charge' ? 'active' : (sub.status as string);
+    const newStatus = (sub.status === 'pending_first_charge' || sub.status === 'failed') ? 'active' : (sub.status as string);
 
     await supabaseAdmin.from('subscriptions').update({
       last_charge_date: today,

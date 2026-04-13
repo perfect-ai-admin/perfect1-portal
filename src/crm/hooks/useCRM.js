@@ -846,6 +846,15 @@ export function useUpdateSubscription() {
   return useMutation({
     mutationFn: async ({ id, ...updates }) => {
       const now = new Date().toISOString();
+
+      // Fetch current status for audit log
+      const { data: current } = await supabase
+        .from('subscriptions')
+        .select('status, lead_id')
+        .eq('id', id)
+        .single();
+
+      const oldStatus = current?.status || 'unknown';
       const patch = { ...updates, updated_at: now };
 
       if (updates.status === 'paused') patch.paused_at = now;
@@ -860,6 +869,20 @@ export function useUpdateSubscription() {
         .update(patch)
         .eq('id', id);
       if (error) throw new Error(error.message);
+
+      // Audit log (non-blocking)
+      supabase.from('status_history').insert({
+        entity_type: 'subscription',
+        entity_id: id,
+        old_stage: oldStatus,
+        new_stage: updates.status,
+        change_reason: updates.cancellation_reason || updates.pause_reason || `subscription_${updates.status}`,
+        source: 'sales_portal',
+        metadata: { lead_id: current?.lead_id, action: updates.status },
+      }).then(({ error: logErr }) => {
+        if (logErr) console.warn('subscription audit log:', logErr.message);
+      });
+
       return { success: true };
     },
     onSuccess: () => {
