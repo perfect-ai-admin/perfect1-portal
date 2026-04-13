@@ -3,6 +3,13 @@ import { supabase } from '@/api/supabaseClient';
 
 const AuthContext = createContext(null);
 
+// Check if current path needs auth (CRM, login, app pages)
+function pathNeedsAuth() {
+  const p = window.location.pathname;
+  return p.startsWith('/CRM') || p.startsWith('/login') || p.startsWith('/APP')
+    || p.startsWith('/Checkout') || p.startsWith('/agent') || p.startsWith('/Admin');
+}
+
 export const SupabaseAuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,6 +17,14 @@ export const SupabaseAuthProvider = ({ children }) => {
   const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
+    // On portal pages (articles, homepage, calculators) — skip auth check entirely.
+    // This saves ~200-500ms network call + avoids loading Supabase auth eagerly.
+    // Auth initializes only when user navigates to CRM/login/app routes.
+    if (!pathNeedsAuth()) {
+      setIsLoadingAuth(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
