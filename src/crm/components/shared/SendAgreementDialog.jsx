@@ -43,15 +43,22 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
   };
 
   const handleCreate = (sendWhatsapp) => {
+    console.log('[SendAgreement] handleCreate called', { sendWhatsapp, templateKey, selectedTemplate: selectedTemplate?.key, agentValues, clientName, clientId });
+
     if (!templateKey || !selectedTemplate) {
       toast.error('יש לבחור סוג הסכם');
       return;
     }
-    if (!validateFields()) return;
+    if (!validateFields()) {
+      console.log('[SendAgreement] validation failed');
+      return;
+    }
     if (sendWhatsapp && missingPhone) {
       toast.error('ללקוח אין מספר טלפון — לא ניתן לשלוח ב-WhatsApp');
       return;
     }
+
+    console.log('[SendAgreement] calling createAgreement.mutate');
 
     // Build extra_fields: agent values + editable name/id
     const allFields = {
@@ -71,13 +78,17 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
       },
       {
         onSuccess: (data) => {
+          console.log('[SendAgreement] SUCCESS', data);
           toast.success(sendWhatsapp ? 'הסכם נשלח ב-WhatsApp' : 'קישור חתימה נוצר');
           setCreatedResult({
             submission_link: data?.submission_link,
             whatsapp_sent: data?.whatsapp_sent,
           });
         },
-        onError: (err) => toast.error(err.message || 'שגיאה ביצירת הסכם'),
+        onError: (err) => {
+          console.error('[SendAgreement] ERROR', err);
+          toast.error(err.message || 'שגיאה ביצירת הסכם');
+        },
       }
     );
   };
