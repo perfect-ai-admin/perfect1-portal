@@ -713,12 +713,22 @@ function generateHomePage() {
   ).join('\n');
 
   const staticBody = `<div dir="rtl" class="portal-root" style="font-family:Heebo,sans-serif">
-    <h1>פתיחת עסק בישראל — מדריכים, מידע וליווי אישי</h1>
-    <p>כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד. מדריכים מקיפים, כלים מעשיים וליווי אישי של רואה חשבון.</p>
-    <h2>מדריכים וקטגוריות ראשיות</h2>
-    <ul>
+    <header style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid #e5e7eb;height:56px;display:flex;align-items:center;justify-content:center">
+      <span style="font-size:1.25rem;font-weight:800;color:#1B2B4B">פרפקט וואן</span>
+    </header>
+    <main style="padding-top:56px">
+      <section style="position:relative;padding:3.5rem 1rem;overflow:hidden;background:linear-gradient(to bottom,#F8F9FA,#fff);text-align:center">
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(20,184,166,0.1);color:#14B8A6;border-radius:9999px;padding:0.375rem 1rem;font-size:0.875rem;font-weight:500;margin-bottom:1.5rem">מרכז מידע מקצועי</div>
+        <h1 style="font-size:1.875rem;font-weight:800;color:#1B2B4B;line-height:1.15;margin-bottom:1.25rem">פתיחת עסק בישראל<br/><span style="color:#14B8A6">מדריכים, מידע וליווי אישי</span></h1>
+        <p style="font-size:1.125rem;color:#4B5563;max-width:48rem;margin:0 auto 2rem;line-height:1.75;font-weight:300">כל מה שצריך לדעת על פתיחת עוסק פטור, עוסק מורשה, חברה בע״מ וסגירת תיקים — במקום אחד.</p>
+      </section>
+    </main>
+    <nav style="max-width:72rem;margin:0 auto;padding:0 1rem" aria-label="קטגוריות ומדריכים">
+      <h2 style="font-size:1.5rem;font-weight:700;color:#1B2B4B;margin-bottom:1rem">מדריכים וקטגוריות ראשיות</h2>
+      <ul style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem">
 ${linksHtml}
-    </ul>
+      </ul>
+    </nav>
   </div>`;
 
   html = html.replace(

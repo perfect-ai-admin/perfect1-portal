@@ -11,6 +11,35 @@
     <link rel="dns-prefetch" href="//www.google-analytics.com" />
     <link rel="dns-prefetch" href="//www.googleadservices.com" />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" />
+    <!-- Critical CSS — inline above-the-fold styles for instant FCP -->
+    <style>
+      /* Reset + base */
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      html{scroll-behavior:smooth}
+      body{font-family:'Heebo',sans-serif;direction:rtl;text-align:right;background:#F8F9FA;-webkit-font-smoothing:antialiased}
+      /* Portal root */
+      .portal-root{font-family:'Heebo',sans-serif;direction:rtl;text-align:right;background-color:#F8F9FA;min-height:100vh}
+      /* Header skeleton */
+      header,.portal-header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid #e5e7eb;height:56px}
+      @media(min-width:640px){header,.portal-header{height:64px}}
+      @media(min-width:768px){header,.portal-header{height:72px}}
+      /* Hero section */
+      .hero-section{position:relative;padding:3.5rem 0;overflow:hidden;background:linear-gradient(to bottom,#F8F9FA,#fff)}
+      @media(min-width:640px){.hero-section{padding:5rem 0}}
+      @media(min-width:768px){.hero-section{padding:8rem 0}}
+      /* Hero text */
+      h1{font-size:1.875rem;font-weight:800;color:#1B2B4B;line-height:1.15;margin-bottom:1.25rem}
+      @media(min-width:640px){h1{font-size:2.25rem}}
+      @media(min-width:768px){h1{font-size:3rem}}
+      @media(min-width:1024px){h1{font-size:3.75rem}}
+      /* Animation */
+      @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+      .animate-fade-in-up{animation:fadeInUp .6s ease-out both}
+      /* Hide prerendered content once React mounts */
+      #root>.portal-root>h1,#root>.portal-root>p,#root>.portal-root>h2,#root>.portal-root>ul{position:absolute;clip:rect(0,0,0,0);overflow:hidden}
+      /* Spinner */
+      @keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
     <title>פרפקט וואן — פתיחת עסק בישראל</title>
@@ -75,19 +104,33 @@
       });
     </script>
 
-    <!-- Google Ads gtag.js — loads ALWAYS, respects Consent Mode -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10811556085"></script>
+    <!-- Google Ads + GTM — deferred until after first paint for better FCP -->
     <script>
-      gtag('js', new Date());
-      gtag('config', 'AW-10811556085', { allow_enhanced_conversions: true });
+      // Load GTM + Ads after first paint to not compete with critical resources
+      function _loadAnalytics() {
+        if (window._analyticsLoaded) return;
+        window._analyticsLoaded = true;
+        // Google Ads gtag.js
+        var g = document.createElement('script');
+        g.async = true;
+        g.src = 'https://www.googletagmanager.com/gtag/js?id=AW-10811556085';
+        document.head.appendChild(g);
+        gtag('js', new Date());
+        gtag('config', 'AW-10811556085', { allow_enhanced_conversions: true });
+        // GTM
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-PNK9CCRQ');
+      }
+      // Fire after first paint or after 2s max
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(_loadAnalytics, { timeout: 2000 });
+      } else {
+        setTimeout(_loadAnalytics, 1500);
+      }
     </script>
-
-    <!-- Google Tag Manager — loads ALWAYS, respects Consent Mode -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PNK9CCRQ');</script>
 
     <!-- Meta Pixel Code (blocked until consent — no consent mode equivalent) -->
     <script type="text/plain" data-cookie-consent>
