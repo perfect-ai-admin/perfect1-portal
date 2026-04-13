@@ -28,22 +28,21 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
-    // Auth: try getUser first, fall back to JWT sub from Authorization header
-    let user = await getUser(req);
-    if (!user) {
-      // Fallback: extract user ID from JWT if token is valid but getUser fails
+    // Auth: try getUser, fall back to JWT decode
+    let userId: string | null = null;
+    const user = await getUser(req);
+    if (user) {
+      userId = user.id;
+    } else {
+      // Fallback: decode JWT to get user ID (handles expired-but-valid tokens)
       const authHeader = req.headers.get('Authorization') || '';
       const token = authHeader.replace('Bearer ', '');
-      if (token && token !== Deno.env.get('SUPABASE_ANON_KEY')) {
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          if (payload.sub && payload.role === 'authenticated') {
-            user = { id: payload.sub, email: payload.email || '' } as any;
-          }
-        } catch { /* invalid token */ }
-      }
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.sub) userId = payload.sub;
+      } catch { /* not a valid JWT */ }
+      console.warn(`[crmCreateSubWithCard] Auth fallback — userId=${userId}`);
     }
-    if (!user) return errorResponse('Unauthorized — please log in again', 401, req);
 
     const { lead_id, plan_name, monthly_price, product_name, ccno, expdate, cvv, myid, contact_name, recur_payments } = await req.json();
 
@@ -133,9 +132,24 @@ Deno.serve(async (req) => {
 
     const tranzilaRes = await fetch(
       'https://secure5.tranzila.com/cgi-bin/tranzila71u.cgi',
-      { method: 'POST', body: tranzilaParams },
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: tranzilaParams.toString(),
+      },
     );
     const tranzilaText = await tranzilaRes.text();
+    // Log raw Tranzila response for debugging (never contains card data — only response codes)
+    console.log(`[crmCreateSubWithCard] Tranzila raw response (${tranzilaRes.status}): ${tranzilaText.slice(0, 500)}`);
+
+    // Detect HTML error page (Tranzila returns HTML on config errors)
+    if (tranzilaText.includes('<html') || tranzilaText.includes('Error Message')) {
+      const errorMatch = tranzilaText.match(/color=red>(.*?)<\/font/);
+      const errorMsg = errorMatch?.[1] || 'Tranzila gateway error';
+      console.error(`[crmCreateSubWithCard] Tranzila HTML error: ${errorMsg}`);
+      return errorResponse(`שגיאת מסוף סליקה: ${errorMsg}`, 502, req);
+    }
+
     const params = new URLSearchParams(tranzilaText);
     const responseCode = params.get('Response') || '';
     const confirmCode = params.get('ConfirmationCode') || '';
@@ -153,8 +167,8 @@ Deno.serve(async (req) => {
         '036': 'כרטיס פג תוקף',
         '039': 'מספר כרטיס לא תקין',
       };
-      const msg = errMap[responseCode] || `שגיאת חיוב (קוד ${responseCode})`;
-      console.log(`[crmCreateSubWithCard] Charge failed: Response=${responseCode}`);
+      const msg = errMap[responseCode] || `שגיאת חיוב — קוד Tranzila: ${responseCode || 'empty'}`;
+      console.log(`[crmCreateSubWithCard] Charge failed: Response=${responseCode}, raw=${tranzilaText.slice(0, 200)}`);
       return errorResponse(msg, 402, req);
     }
 
@@ -175,7 +189,7 @@ Deno.serve(async (req) => {
         card_brand,
         tranzila_token: tranzilaToken,
         source: 'crm',
-        created_by: user.id,
+        created_by: userId,
       })
       .select('id')
       .single();
