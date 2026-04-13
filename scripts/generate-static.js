@@ -736,6 +736,13 @@ ${linksHtml}
     `<div id="root">${staticBody}</div>`
   );
 
+  // Make the main CSS non-blocking — critical CSS is already inline in <head>.
+  // This is the #1 LCP optimization: 257KB CSS no longer blocks first paint.
+  html = html.replace(
+    /<link rel="stylesheet" crossorigin href="(\/assets\/index-[^"]+\.css)">/,
+    '<link rel="preload" as="style" crossorigin href="$1"><link rel="stylesheet" crossorigin href="$1" media="print" onload="this.media=\'all\'">'
+  );
+
   // Write to dist/index.html (overwrites the base)
   writeFileSync(join(DIST_DIR, 'index.html'), html, 'utf-8');
   console.log(`\n🏠 Generated HomePage (/) with canonical + meta + ${HOME_LINKS.length} static internal links`);

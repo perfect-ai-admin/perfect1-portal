@@ -35,8 +35,7 @@
       /* Animation */
       @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
       .animate-fade-in-up{animation:fadeInUp .6s ease-out both}
-      /* Hide prerendered content once React mounts */
-      #root>.portal-root>h1,#root>.portal-root>p,#root>.portal-root>h2,#root>.portal-root>ul{position:absolute;clip:rect(0,0,0,0);overflow:hidden}
+      /* Prerendered content is visible until React hydrates and replaces #root contents */
       /* Spinner */
       @keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}
     </style>
