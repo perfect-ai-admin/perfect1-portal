@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+// framer-motion removed — CSS animation instead
 import { ArrowLeft } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import SEOHead from '@/components/seo/SEOHead';
@@ -111,11 +111,9 @@ export default function CategoryHubPage({ category }) {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {articles.map((article, i) => (
                   <React.Fragment key={i}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: (i % 6) * 0.05 }}
+                    <div
+                      className="animate-fade-in-up"
+                      style={{ animationDelay: `${(i % 6) * 0.05}s` }}
                     >
                       <ArticleCard
                         title={article.title}
@@ -123,7 +121,7 @@ export default function CategoryHubPage({ category }) {
                         href={`/${category}/${article.slug}`}
                         readTime={article.readTime}
                       />
-                    </motion.div>
+                    </div>
                     {/* CTA Banner after every 6 articles */}
                     {(i + 1) % 6 === 0 && i < articles.length - 1 && (
                       <div className="sm:col-span-2 lg:col-span-3">

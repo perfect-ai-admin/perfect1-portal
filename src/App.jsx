@@ -374,19 +374,24 @@ function App() {
     );
   }
 
+  // Portal domain doesn't need auth — skip AuthProvider to avoid Supabase network call
+  const needsAuth = !isPortalDomain();
+
+  const appContent = (
+    <QueryClientProvider client={queryClientInstance}>
+      <Router>
+        <NavigationTracker />
+        <AppRoutes />
+      </Router>
+      <CookieConsent />
+      <AccessibilityWidget />
+      <Toaster />
+    </QueryClientProvider>
+  );
+
   return (
     <HelmetProvider>
-      <AuthProvider>
-        <QueryClientProvider client={queryClientInstance}>
-          <Router>
-            <NavigationTracker />
-            <AppRoutes />
-          </Router>
-          <CookieConsent />
-          <AccessibilityWidget />
-          <Toaster />
-        </QueryClientProvider>
-      </AuthProvider>
+      {needsAuth ? <AuthProvider>{appContent}</AuthProvider> : appContent}
     </HelmetProvider>
   )
 }

@@ -14,6 +14,16 @@ export default defineConfig({
     },
   },
   build: {
+    modulePreload: {
+      resolveDependencies: (filename, deps) => {
+        // Don't preload heavy vendor chunks that portal doesn't need
+        return deps.filter(dep =>
+          !dep.includes('vendor-supabase') &&
+          !dep.includes('vendor-motion') &&
+          !dep.includes('vendor-form')
+        );
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks: {
@@ -33,10 +43,7 @@ export default defineConfig({
             '@radix-ui/react-accordion',
           ],
           'vendor-query': ['@tanstack/react-query'],
-          'vendor-charts': ['recharts'],
-          'vendor-stripe': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
           'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-pdf': ['jspdf', 'html2canvas'],
           'vendor-form': ['react-hook-form', '@hookform/resolvers'],
           'vendor-motion': ['framer-motion'],
         },

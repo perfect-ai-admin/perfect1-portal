@@ -64,7 +64,7 @@ export default function Layout({ children, currentPageName }) {
         <HelmetProvider>
         <div dir="rtl">
           <style>{`
-            @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+            /* Font loaded non-blocking in index.html — no @import needed */
             :root {
               --font-sans: 'Assistant', sans-serif;
               --font-heading: 'Assistant', sans-serif;

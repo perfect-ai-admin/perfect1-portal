@@ -68,7 +68,7 @@ const MyProducts = lazyRetry(() => import('./pages/MyProducts'));
 const Summary = lazyRetry(() => import('./pages/Summary'));
 
 
-import __Layout from './Layout.jsx';
+const __Layout = lazyRetry(() => import('./Layout.jsx'));
 
 
 export const PAGES = {
