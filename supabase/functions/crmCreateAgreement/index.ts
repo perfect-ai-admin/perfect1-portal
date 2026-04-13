@@ -15,17 +15,6 @@ Deno.serve(async (req) => {
     const user = await getUser(req);
     if (!user) return errorResponse('Unauthorized', 401, req);
 
-    // --- Feature flag ---
-    const { data: flagRow } = await supabaseAdmin
-      .from('system_settings')
-      .select('value')
-      .eq('key', 'agreements_enabled')
-      .single();
-    const flagEnabled = flagRow?.value === true || flagRow?.value === 'true';
-    if (!flagEnabled) {
-      return errorResponse('Agreement feature is currently disabled', 403, req);
-    }
-
     const { lead_id, template_key, fillfaster_form_id, template_label, extra_fields, send_via_whatsapp } = await req.json();
 
     // --- Validation ---

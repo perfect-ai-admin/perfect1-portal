@@ -33,18 +33,6 @@ Deno.serve(async (req) => {
       return jsonResponse({ received: true, error: 'missing submission_id or event_name' }, 200);
     }
 
-    // --- Feature flag check ---
-    const { data: flagRow } = await supabaseAdmin
-      .from('system_settings')
-      .select('value')
-      .eq('key', 'agreements_enabled')
-      .single();
-    const enabled = flagRow?.value === true || flagRow?.value === 'true';
-    if (!enabled) {
-      console.log('[fillfasterWebhook] Feature flag OFF — accepting webhook but skipping processing');
-      return jsonResponse({ received: true, feature_disabled: true });
-    }
-
     // --- Find agreement by submission_id ---
     const { data: agreement, error: agErr } = await supabaseAdmin
       .from('agreements')
