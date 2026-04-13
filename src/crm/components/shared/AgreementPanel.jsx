@@ -8,7 +8,6 @@ import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { useLeadAgreements, useResendAgreement, useAddCommunication } from '../../hooks/useCRM';
-import { useFeatureFlag } from '../../hooks/useFeatureFlag';
 import SendAgreementDialog from './SendAgreementDialog';
 
 const STATUS_CONFIG = {
@@ -27,13 +26,11 @@ function fmtDate(dateStr) {
 }
 
 export default function AgreementPanel({ lead }) {
-  const { enabled, isLoading: flagLoading } = useFeatureFlag('agreements_enabled');
   const { data: agreements = [], isLoading, isError } = useLeadAgreements(lead?.id);
   const resend = useResendAgreement();
   const addComm = useAddCommunication();
   const [showDialog, setShowDialog] = useState(false);
 
-  if (flagLoading || !enabled) return null;
   if (isLoading) return null;
 
   const latestAgreement = agreements[0];
