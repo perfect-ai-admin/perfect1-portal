@@ -58,8 +58,11 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
   };
 
   const handleCreate = async () => {
+    console.log('[handleCreate] mode:', mode, 'leadId:', leadId, 'planName:', planName, 'monthlyPrice:', monthlyPrice, 'ccno:', ccno ? `*${ccno.slice(-4)}` : 'empty');
+
     if (!leadId || !planName || !monthlyPrice) {
       toast.error('יש למלא את כל השדות');
+      console.log('[handleCreate] BLOCKED — missing required field');
       return;
     }
 
@@ -77,6 +80,7 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
       if (!myid || !/^\d{5,9}$/.test(myid)) { toast.error('מספר ת.ז. לא תקין'); return; }
       if (!contactName.trim()) { toast.error('יש להזין שם בעל הכרטיס'); return; }
       if (Number(monthlyPrice) <= 0) { toast.error('סכום חיוב לא תקין'); return; }
+      console.log('[handleCreate] All validations passed — calling crmCreateSubscriptionWithCard');
       try {
         const result = await createSubWithCard.mutateAsync({
           lead_id: leadId,
@@ -88,10 +92,12 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
           myid,
           contact_name: contactName,
         });
+        console.log('[handleCreate] SUCCESS — subscription created:', result);
         toast.success(`מנוי נוצר — כרטיס *${result.card_last4}`);
         onOpenChange(false);
         clearForm();
       } catch (err) {
+        console.error('[handleCreate] FAILED:', err);
         toast.error(`שגיאה: ${err.message}`);
       }
     } else {
