@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,6 +24,12 @@ export default function CRMLayout() {
   const [authChecked, setAuthChecked] = useState(false);
   const [user, setUser] = useState(null);
   const location = useLocation();
+  const mainRef = useRef(null);
+
+  // Scroll main content to top on route change
+  useEffect(() => {
+    mainRef.current?.scrollTo(0, 0);
+  }, [location.pathname]);
   const navigate = useNavigate();
 
   // Auth check — redirect to login if not authenticated.
@@ -215,7 +221,7 @@ export default function CRMLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-2 md:p-6">
+        <main ref={mainRef} className="flex-1 overflow-auto p-3 md:p-6">
           <Outlet />
         </main>
       </div>
