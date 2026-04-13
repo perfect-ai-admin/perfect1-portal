@@ -90,6 +90,9 @@ export default function CRMLayout() {
 
   const unreadCount = notifications.length;
 
+  // Must be called before any conditional return (Rules of Hooks)
+  const { data: openAlertCount } = useOpenAlertCount();
+
   if (!authChecked) {
     return (
       <div dir="rtl" className="flex items-center justify-center h-screen bg-slate-50">
@@ -105,8 +108,6 @@ export default function CRMLayout() {
     await supabase.auth.signOut();
     navigate('/login');
   };
-
-  const { data: openAlertCount } = useOpenAlertCount();
 
   const SidebarContent = () => (
     <nav className="flex flex-col gap-1 p-3">
