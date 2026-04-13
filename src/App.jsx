@@ -7,7 +7,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import GeneralErrorBoundary from '@/components/GeneralErrorBoundary';
-import { SupabaseAuthProvider as AuthProvider, useAuth } from '@/lib/SupabaseAuthContext';
+import { LazyAuthProvider as AuthProvider, useAuthFromContext as useAuth } from '@/lib/LazyAuthProvider';
 
 // Retry wrapper for lazy imports — handles stale chunk errors after deploy
 function lazyWithRetry(importFn, retries = 2) {

@@ -1,7 +1,6 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { supabase } from '@/api/supabaseClient';
-
-const AuthContext = createContext(null);
+import { AuthContext } from '@/lib/LazyAuthProvider';
 
 // Check if current path needs auth (CRM, login, app pages)
 function pathNeedsAuth() {
@@ -105,4 +104,5 @@ export const useAuthSafe = () => {
   return context || { isAuthenticated: false, isLoadingAuth: false, user: null, session: null };
 };
 
+export { AuthContext };
 export default AuthContext;

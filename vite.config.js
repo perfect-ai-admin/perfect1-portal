@@ -16,11 +16,12 @@ export default defineConfig({
   build: {
     modulePreload: {
       resolveDependencies: (filename, deps) => {
-        // Don't preload heavy vendor chunks that portal doesn't need
+        // Don't preload heavy vendor chunks that portal homepage doesn't need
         return deps.filter(dep =>
           !dep.includes('vendor-supabase') &&
           !dep.includes('vendor-motion') &&
-          !dep.includes('vendor-form')
+          !dep.includes('vendor-form') &&
+          !dep.includes('vendor-ui-heavy')
         );
       },
     },
@@ -28,7 +29,15 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-ui': [
+          // Core UI — used on homepage (accordion for FAQ, slot/label for form)
+          'vendor-ui-core': [
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-label',
+            '@radix-ui/react-slot',
+            '@radix-ui/react-collapsible',
+          ],
+          // Heavy UI — used on inner pages / CRM only
+          'vendor-ui-heavy': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
             '@radix-ui/react-tabs',
@@ -37,10 +46,6 @@ export default defineConfig({
             '@radix-ui/react-select',
             '@radix-ui/react-switch',
             '@radix-ui/react-checkbox',
-            '@radix-ui/react-label',
-            '@radix-ui/react-slot',
-            '@radix-ui/react-collapsible',
-            '@radix-ui/react-accordion',
           ],
           'vendor-query': ['@tanstack/react-query'],
           'vendor-supabase': ['@supabase/supabase-js'],
