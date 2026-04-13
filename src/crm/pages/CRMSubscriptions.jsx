@@ -484,12 +484,12 @@ export default function CRMSubscriptions() {
                             <Play className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">הפעל</span>
                           </Button>
                         )}
-                        {(sub.status === 'active' || sub.status === 'paused') && (
+                        {(sub.status === 'active' || sub.status === 'paused' || sub.status === 'pending_first_charge') && (
                           <Button variant="ghost" size="sm" onClick={() => handleCancel(sub.id)} title="בטל מנוי" className="text-orange-600 hover:text-orange-700 hover:bg-orange-50">
                             <XCircle className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">בטל</span>
                           </Button>
                         )}
-                        {(sub.status === 'cancelled' || sub.status === 'failed') && (
+                        {(sub.status === 'cancelled' || sub.status === 'failed' || sub.status === 'pending_first_charge') && (
                           <Button variant="ghost" size="sm" onClick={() => handleDelete(sub.id)} title="מחק לצמיתות" className="text-red-500 hover:text-red-700 hover:bg-red-50">
                             <Trash2 className="w-4 h-4 ml-1" /><span className="text-xs hidden md:inline">מחק</span>
                           </Button>
