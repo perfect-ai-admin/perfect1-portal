@@ -7,6 +7,7 @@ import { he } from 'date-fns/locale';
 import {
   Users, TrendingUp, AlertTriangle, CheckCircle, Clock, UserX, Activity
 } from 'lucide-react';
+import AgreementStatsWidget from '../components/shared/AgreementStatsWidget';
 
 export default function CRMDashboard() {
   const navigate = useNavigate();
@@ -123,6 +124,9 @@ export default function CRMDashboard() {
           )}
         </div>
       </div>
+
+      {/* Agreements Widget */}
+      <AgreementStatsWidget />
 
       {/* Today's Tasks */}
       <div className="bg-white rounded-lg border border-slate-200 p-4">
