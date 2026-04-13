@@ -35,6 +35,9 @@ jobs:
       - name: Build app
         run: npm run build:no-prerender
 
+      - name: Generate static HTML (SPA fallbacks + SEO pages)
+        run: node scripts/generate-static.js
+
       - name: Prerender portal pages
         run: node scripts/prerender.js
         env:
