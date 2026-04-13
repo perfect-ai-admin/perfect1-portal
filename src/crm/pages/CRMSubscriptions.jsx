@@ -308,12 +308,19 @@ export default function CRMSubscriptions() {
         </Button>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* KPI Cards + Create Button */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <KPICard icon={Users} label="מנויים פעילים" value={kpis?.active_count ?? '—'} color="#22C55E" />
         <KPICard icon={TrendingUp} label="הכנסה חודשית" value={kpis?.mrr ? `₪${kpis.mrr.toLocaleString()}` : '—'} color="#3B82F6" />
         <KPICard icon={AlertTriangle} label="כשלים החודש" value={kpis?.failed_this_month ?? '—'} color="#F59E0B" />
         <KPICard icon={XCircle} label="ביטולים החודש" value={kpis?.cancelled_this_month ?? '—'} color="#EF4444" />
+        <button
+          onClick={() => setShowCreate(true)}
+          className="bg-[#1E3A5F] hover:bg-[#16324f] text-white rounded-lg border border-[#1E3A5F] p-4 flex items-center justify-center gap-2 transition-colors col-span-2 md:col-span-1"
+        >
+          <Plus className="w-5 h-5" />
+          <span className="font-bold text-sm">יצירת מנוי</span>
+        </button>
       </div>
 
       {/* Filters */}
@@ -341,7 +348,13 @@ export default function CRMSubscriptions() {
       {isLoading ? (
         <div className="text-center py-12 text-slate-400">טוען מנויים...</div>
       ) : !filtered.length ? (
-        <div className="text-center py-12 text-slate-400">אין מנויים</div>
+        <div className="text-center py-16 space-y-4">
+          <CreditCard className="w-12 h-12 text-slate-300 mx-auto" />
+          <p className="text-slate-400 text-lg">אין מנויים עדיין</p>
+          <Button onClick={() => setShowCreate(true)} className="bg-[#1E3A5F] hover:bg-[#16324f] text-white">
+            <Plus className="w-4 h-4 ml-1" /> צור מנוי ראשון
+          </Button>
+        </div>
       ) : (
         <div className="bg-white border border-slate-200 rounded-lg overflow-auto">
           <table className="w-full text-sm">
