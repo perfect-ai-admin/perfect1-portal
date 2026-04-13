@@ -42,10 +42,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // reject the request before it reaches Deno, which surfaces in the browser
 // as a generic `TypeError: Failed to fetch` rather than an HTTP error.
 export async function invokeFunction(name, payload = {}) {
-  // Get user session token if available — required for authenticated edge functions
+  // Get fresh user session token — required for authenticated edge functions
   let authToken = supabaseAnonKey;
   try {
-    const { data: { session } } = await supabase.auth.getSession();
+    // getSession returns cached token which may be expired.
+    // If expired, refreshSession will get a new one automatically.
+    let { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      // Try refreshing
+      const { data } = await supabase.auth.refreshSession();
+      session = data?.session;
+    }
     if (session?.access_token) authToken = session.access_token;
   } catch { /* fall back to anon key */ }
 

@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
     const user = await getUser(req);
     if (!user) return errorResponse('Unauthorized', 401, req);
 
-    const { lead_id, plan_name, monthly_price, product_name, send_via_whatsapp } = await req.json();
+    const { lead_id, plan_name, monthly_price, product_name, send_via_whatsapp, recur_payments: reqRecurPayments } = await req.json();
 
     if (!lead_id || !plan_name || !monthly_price) {
       return errorResponse('lead_id, plan_name, and monthly_price are required', 400, req);
@@ -49,6 +49,7 @@ Deno.serve(async (req) => {
 
     // Create subscription record
     const recurStartDate = getRecurStartDate();
+    const numPayments = reqRecurPayments && Number(reqRecurPayments) > 0 ? Number(reqRecurPayments) : 998;
     const { data: sub, error: subErr } = await supabaseAdmin
       .from('subscriptions')
       .insert({
@@ -58,7 +59,7 @@ Deno.serve(async (req) => {
         status: 'pending_first_charge',
         start_date: new Date().toISOString().slice(0, 10),
         next_charge_date: recurStartDate,
-        recur_payments: 998,
+        recur_payments: numPayments,
         source: 'crm',
         created_by: user.id,
       })
@@ -121,7 +122,7 @@ Deno.serve(async (req) => {
       notify_url_address: notifyUrl,
       // Recurring params
       recur_sum: String(monthly_price),
-      recur_payments: '998',
+      recur_payments: String(numPayments),
       recur_transaction: '4_approved',
       recur_start_date: recurStartDate,
       // Display

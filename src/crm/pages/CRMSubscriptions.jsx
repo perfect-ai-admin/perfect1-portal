@@ -48,13 +48,14 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
   const [cvv, setCvv] = useState('');
   const [myid, setMyid] = useState('');
   const [contactName, setContactName] = useState('');
+  const [recurPayments, setRecurPayments] = useState('');
   const createSub = useCreateSubscription();
   const createSubWithCard = useCreateSubscriptionWithCard();
   const { data: leads } = usePipelineLeads({});
 
   const clearForm = () => {
     setLeadId(''); setPlanName(''); setMonthlyPrice('');
-    setCcno(''); setExpdate(''); setCvv(''); setMyid(''); setContactName('');
+    setCcno(''); setExpdate(''); setCvv(''); setMyid(''); setContactName(''); setRecurPayments('');
   };
 
   const handleCreate = async () => {
@@ -91,6 +92,7 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
           cvv,
           myid,
           contact_name: contactName,
+          recur_payments: recurPayments ? Number(recurPayments) : undefined,
         });
         console.log('[handleCreate] SUCCESS — subscription created:', result);
         toast.success(`מנוי נוצר — כרטיס *${result.card_last4}`);
@@ -107,6 +109,7 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
           plan_name: planName,
           monthly_price: Number(monthlyPrice),
           send_via_whatsapp: sendWhatsapp,
+          recur_payments: recurPayments ? Number(recurPayments) : undefined,
         });
         toast.success('מנוי נוצר — קישור תשלום נשלח');
         if (result?.payment_link) {
@@ -159,6 +162,23 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
           <div>
             <label className="text-sm font-medium mb-1 block">סכום חודשי (₪)</label>
             <Input type="number" value={monthlyPrice} onChange={e => setMonthlyPrice(e.target.value)} placeholder="299" />
+          </div>
+
+          {/* Number of payments */}
+          <div>
+            <label className="text-sm font-medium mb-1 block">מספר תשלומים</label>
+            <div className="flex gap-2 items-center">
+              <Input
+                type="number"
+                value={recurPayments}
+                onChange={e => setRecurPayments(e.target.value)}
+                placeholder="ללא הגבלה"
+                className="w-32"
+                min="1"
+                max="999"
+              />
+              <span className="text-xs text-slate-400">{recurPayments ? `${recurPayments} חיובים` : 'חיוב חודשי ללא הגבלה'}</span>
+            </div>
           </div>
 
           {/* Link mode — WhatsApp toggle */}

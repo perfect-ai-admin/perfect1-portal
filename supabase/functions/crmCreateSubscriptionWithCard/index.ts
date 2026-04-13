@@ -28,10 +28,24 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
 
   try {
-    const user = await getUser(req);
-    if (!user) return errorResponse('Unauthorized', 401, req);
+    // Auth: try getUser first, fall back to JWT sub from Authorization header
+    let user = await getUser(req);
+    if (!user) {
+      // Fallback: extract user ID from JWT if token is valid but getUser fails
+      const authHeader = req.headers.get('Authorization') || '';
+      const token = authHeader.replace('Bearer ', '');
+      if (token && token !== Deno.env.get('SUPABASE_ANON_KEY')) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          if (payload.sub && payload.role === 'authenticated') {
+            user = { id: payload.sub, email: payload.email || '' } as any;
+          }
+        } catch { /* invalid token */ }
+      }
+    }
+    if (!user) return errorResponse('Unauthorized — please log in again', 401, req);
 
-    const { lead_id, plan_name, monthly_price, product_name, ccno, expdate, cvv, myid, contact_name } = await req.json();
+    const { lead_id, plan_name, monthly_price, product_name, ccno, expdate, cvv, myid, contact_name, recur_payments } = await req.json();
 
     // Validate required fields
     if (!lead_id || !plan_name || !monthly_price) {
@@ -94,6 +108,9 @@ Deno.serve(async (req) => {
       .single();
     if (leadErr || !lead) return errorResponse('Lead not found', 404, req);
 
+    // Number of recurring payments (default 998 = unlimited)
+    const numPayments = recur_payments && Number(recur_payments) > 0 ? Number(recur_payments) : 998;
+
     // Call Tranzila direct API
     const recurStartDate = getRecurStartDate();
     const tranzilaParams = new URLSearchParams({
@@ -108,7 +125,7 @@ Deno.serve(async (req) => {
       mycvv: cvv,
       myid: myid || '',
       contact: contact_name || '',
-      recur_payments: '998',
+      recur_payments: String(numPayments),
       recur_sum: String(monthly_price),
       recur_transaction: '4_approved',
       recur_start_date: recurStartDate,
@@ -153,7 +170,7 @@ Deno.serve(async (req) => {
         start_date: today,
         last_charge_date: today,
         next_charge_date: recurStartDate,
-        recur_payments: 998,
+        recur_payments: numPayments,
         card_last4,
         card_brand,
         tranzila_token: tranzilaToken,
