@@ -300,10 +300,10 @@ export default function CRMSubscriptions() {
   };
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="space-y-4" dir="rtl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">מנויים</h1>
-        <Button onClick={() => setShowCreate(true)} className="bg-blue-600 hover:bg-blue-700 text-white">
+        <h1 className="text-xl font-bold text-[#1E3A5F]">מנויים</h1>
+        <Button size="sm" onClick={() => setShowCreate(true)} className="bg-[#1E3A5F] hover:bg-[#16324f]">
           <Plus className="w-4 h-4 ml-1" /> יצירת מנוי
         </Button>
       </div>
