@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { CreditCard, Users, TrendingUp, AlertTriangle, XCircle, Plus, Pause, Play, Trash2, History, Lock } from 'lucide-react';
+import React, { useState, useRef, useCallback } from 'react';
+import { CreditCard, Users, TrendingUp, AlertTriangle, XCircle, Plus, Pause, Play, Trash2, History, Lock, Loader2, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import TranzilaIframe from '@/components/checkout/TranzilaIframe';
+import { invokeFunction } from '@/api/supabaseClient';
 import {
   useSubscriptions,
   useSubscriptionKPIs,
   useCreateSubscription,
-  useCreateSubscriptionWithCard,
   useUpdateSubscription,
   useBillingHistory,
   usePipelineLeads,
@@ -38,201 +39,230 @@ function KPICard({ icon: Icon, label, value, color }) {
 }
 
 function CreateSubscriptionDialog({ open, onOpenChange }) {
+  // Step 1: form fields, Step 2: iframe payment
+  const [step, setStep] = useState(1);
   const [leadId, setLeadId] = useState('');
   const [planName, setPlanName] = useState('');
   const [monthlyPrice, setMonthlyPrice] = useState('');
   const [sendWhatsapp, setSendWhatsapp] = useState(true);
   const [mode, setMode] = useState('link'); // 'link' | 'card'
-  const [ccno, setCcno] = useState('');
-  const [expdate, setExpdate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [myid, setMyid] = useState('');
-  const [contactName, setContactName] = useState('');
   const [recurPayments, setRecurPayments] = useState('');
+  const [iframeUrl, setIframeUrl] = useState('');
+  const [subscriptionId, setSubscriptionId] = useState('');
+  const [paymentId, setPaymentId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const confirmedRef = useRef(false);
   const createSub = useCreateSubscription();
-  const createSubWithCard = useCreateSubscriptionWithCard();
   const { data: leads } = usePipelineLeads({});
 
   const clearForm = () => {
-    setLeadId(''); setPlanName(''); setMonthlyPrice('');
-    setCcno(''); setExpdate(''); setCvv(''); setMyid(''); setContactName(''); setRecurPayments('');
+    setStep(1); setLeadId(''); setPlanName(''); setMonthlyPrice('');
+    setRecurPayments(''); setIframeUrl(''); setSubscriptionId('');
+    setPaymentId(''); setLoading(false); setPaymentSuccess(false);
+    confirmedRef.current = false;
   };
 
-  const handleCreate = async () => {
-    console.log('[handleCreate] mode:', mode, 'leadId:', leadId, 'planName:', planName, 'monthlyPrice:', monthlyPrice, 'ccno:', ccno ? `*${ccno.slice(-4)}` : 'empty');
-
+  // Handle "שלח לינק" mode
+  const handleSendLink = async () => {
     if (!leadId || !planName || !monthlyPrice) {
       toast.error('יש למלא את כל השדות');
-      console.log('[handleCreate] BLOCKED — missing required field');
       return;
     }
-
-    if (mode === 'card') {
-      const cleanCard = ccno.replace(/\s/g, '');
-      if (!/^\d{13,19}$/.test(cleanCard)) { toast.error('מספר כרטיס לא תקין'); return; }
-      const expClean = expdate.replace('/', '');
-      if (!/^\d{4}$/.test(expClean)) { toast.error('תאריך תפוגה לא תקין'); return; }
-      const expM = parseInt(expClean.slice(0, 2), 10);
-      const expY = parseInt('20' + expClean.slice(2, 4), 10);
-      if (expM < 1 || expM > 12) { toast.error('חודש תפוגה לא תקין'); return; }
-      const now = new Date();
-      if (expY < now.getFullYear() || (expY === now.getFullYear() && expM < now.getMonth() + 1)) { toast.error('כרטיס פג תוקף'); return; }
-      if (!/^\d{3,4}$/.test(cvv)) { toast.error('CVV לא תקין'); return; }
-      if (!myid || !/^\d{5,9}$/.test(myid)) { toast.error('מספר ת.ז. לא תקין'); return; }
-      if (!contactName.trim()) { toast.error('יש להזין שם בעל הכרטיס'); return; }
-      if (Number(monthlyPrice) <= 0) { toast.error('סכום חיוב לא תקין'); return; }
-      console.log('[handleCreate] All validations passed — calling crmCreateSubscriptionWithCard');
-      try {
-        const result = await createSubWithCard.mutateAsync({
-          lead_id: leadId,
-          plan_name: planName,
-          monthly_price: Number(monthlyPrice),
-          ccno: ccno.replace(/\s/g, ''),
-          expdate: expdate.replace('/', ''),
-          cvv,
-          myid,
-          contact_name: contactName,
-          recur_payments: recurPayments ? Number(recurPayments) : undefined,
-        });
-        console.log('[handleCreate] SUCCESS — subscription created:', result);
-        toast.success(`מנוי נוצר — כרטיס *${result.card_last4}`);
-        onOpenChange(false);
-        clearForm();
-      } catch (err) {
-        console.error('[handleCreate] FAILED:', err);
-        toast.error(`שגיאה: ${err.message}`);
-      }
-    } else {
-      const payload = {
+    setLoading(true);
+    try {
+      const result = await createSub.mutateAsync({
         lead_id: leadId,
         plan_name: planName,
         monthly_price: Number(monthlyPrice),
         send_via_whatsapp: sendWhatsapp,
         recur_payments: recurPayments ? Number(recurPayments) : undefined,
-      };
-      console.log('[handleCreate] LINK MODE — calling crmCreateSubscription with:', JSON.stringify(payload));
-      try {
-        // Add timeout to prevent stuck pending state
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout — נסה שוב')), 30000));
-        const result = await Promise.race([createSub.mutateAsync(payload), timeoutPromise]);
-        console.log('[handleCreate] LINK SUCCESS:', JSON.stringify(result));
-        toast.success('מנוי נוצר בהצלחה!');
-        if (result?.payment_link) {
-          try { await navigator.clipboard?.writeText(result.payment_link); } catch {}
-          toast.success('קישור תשלום הועתק ללוח');
-        }
-        onOpenChange(false);
-        clearForm();
-      } catch (err) {
-        console.error('[handleCreate] LINK FAILED:', err?.message || err);
-        toast.error(`שגיאה: ${err.message}`);
+      });
+      toast.success('מנוי נוצר — קישור תשלום נשלח!');
+      if (result?.payment_link) {
+        try { await navigator.clipboard?.writeText(result.payment_link); } catch {}
+        toast.success('קישור הועתק ללוח');
       }
+      onOpenChange(false);
+      clearForm();
+    } catch (err) {
+      toast.error(`שגיאה: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const isPending = createSub.isPending || createSubWithCard.isPending;
+  // Handle "הזן כרטיס" mode — step 1: create subscription + load iframe
+  const handleStartCardPayment = async () => {
+    if (!leadId || !planName || !monthlyPrice) {
+      toast.error('יש למלא את כל השדות');
+      return;
+    }
+    setLoading(true);
+    try {
+      // Create subscription + get Tranzila iframe URL (reuses crmCreateSubscription)
+      const result = await invokeFunction('crmCreateSubscription', {
+        lead_id: leadId,
+        plan_name: planName,
+        monthly_price: Number(monthlyPrice),
+        send_via_whatsapp: false, // Don't send WhatsApp — agent enters card directly
+        recur_payments: recurPayments ? Number(recurPayments) : undefined,
+      });
+
+      if (!result?.payment_link || !result?.subscription_id) {
+        throw new Error('לא התקבל קישור תשלום');
+      }
+
+      setSubscriptionId(result.subscription_id);
+      setPaymentId(result.payment_id);
+      setIframeUrl(result.payment_link);
+      setStep(2);
+    } catch (err) {
+      toast.error(`שגיאה: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Called when TranzilaIframe detects successful payment
+  const handlePaymentDetected = useCallback(async (confirmationCode) => {
+    if (confirmedRef.current) return;
+    confirmedRef.current = true;
+
+    // Confirm payment via our edge function
+    try {
+      await invokeFunction('tranzilaConfirmPayment', {
+        payment_id: paymentId,
+        transaction_id: confirmationCode || '',
+        tranzila_response: '000',
+      });
+    } catch {
+      // Webhook will handle it if client confirm fails
+    }
+
+    setPaymentSuccess(true);
+    toast.success('תשלום התקבל — המנוי פעיל!');
+  }, [paymentId]);
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) clearForm(); onOpenChange(v); }}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto" dir="rtl">
+      <DialogContent className={`${step === 2 ? 'sm:max-w-xl' : 'sm:max-w-md'} max-h-[90vh] overflow-y-auto`} dir="rtl">
         <DialogHeader>
-          <DialogTitle>יצירת מנוי חדש</DialogTitle>
+          <DialogTitle>
+            {paymentSuccess ? 'מנוי נוצר בהצלחה!' : step === 2 ? 'הזנת פרטי כרטיס' : 'יצירת מנוי חדש'}
+          </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          {/* Mode toggle */}
-          <div className="flex border rounded-lg overflow-hidden">
-            <button onClick={() => setMode('link')} className={`flex-1 py-2 text-sm font-medium transition-colors ${mode === 'link' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}>
-              שלח לינק
-            </button>
-            <button onClick={() => setMode('card')} className={`flex-1 py-2 text-sm font-medium transition-colors ${mode === 'card' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}>
-              <Lock className="w-3 h-3 inline ml-1" />הזן כרטיס
-            </button>
-          </div>
 
-          {/* Lead + Plan + Amount */}
-          <div>
-            <label className="text-sm font-medium mb-1 block">ליד</label>
-            <Select value={leadId} onValueChange={setLeadId}>
-              <SelectTrigger><SelectValue placeholder="בחר ליד" /></SelectTrigger>
-              <SelectContent>
-                {(leads || []).slice(0, 50).map(l => (
-                  <SelectItem key={l.id} value={l.id}>{l.name} — {l.phone}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-1 block">שם תוכנית</label>
-            <Input value={planName} onChange={e => setPlanName(e.target.value)} placeholder="למשל: הנהלת חשבונות חודשית" />
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-1 block">סכום חודשי (₪)</label>
-            <Input type="number" value={monthlyPrice} onChange={e => setMonthlyPrice(e.target.value)} placeholder="299" />
-          </div>
-
-          {/* Number of payments */}
-          <div>
-            <label className="text-sm font-medium mb-1 block">מספר תשלומים</label>
-            <div className="flex gap-2 items-center">
-              <Input
-                type="number"
-                value={recurPayments}
-                onChange={e => setRecurPayments(e.target.value)}
-                placeholder="ללא הגבלה"
-                className="w-32"
-                min="1"
-                max="999"
-              />
-              <span className="text-xs text-slate-400">{recurPayments ? `${recurPayments} חיובים` : 'חיוב חודשי ללא הגבלה'}</span>
-            </div>
-          </div>
-
-          {/* Link mode — WhatsApp toggle */}
-          {mode === 'link' && (
-            <div className="flex items-center gap-2">
-              <input type="checkbox" checked={sendWhatsapp} onChange={e => setSendWhatsapp(e.target.checked)} id="wa-toggle" />
-              <label htmlFor="wa-toggle" className="text-sm">שלח קישור תשלום ב-WhatsApp</label>
-            </div>
-          )}
-
-          {/* Card mode — card fields */}
-          {mode === 'card' && (
-            <div className="space-y-3 border rounded-lg p-3 bg-slate-50" data-sensitive="true" data-hj-suppress data-clarity-mask="true">
-              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
-                פרטי הכרטיס מועברים בצורה מוצפנת ישירות לטרנזילה ואינם נשמרים במערכת.
-              </p>
-              <div>
-                <label className="text-sm font-medium mb-1 block">מספר כרטיס</label>
-                <Input value={ccno} onChange={e => setCcno(e.target.value.replace(/[^\d\s]/g, '').slice(0, 19))} placeholder="4580 1234 5678 9012" inputMode="numeric" dir="ltr" autoComplete="off" data-lpignore="true" />
-              </div>
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <label className="text-sm font-medium mb-1 block">תוקף (MM/YY)</label>
-                  <Input value={expdate} onChange={e => { let v = e.target.value.replace(/\D/g, '').slice(0, 4); if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2); setExpdate(v); }} placeholder="12/27" inputMode="numeric" dir="ltr" autoComplete="off" />
-                </div>
-                <div className="w-24">
-                  <label className="text-sm font-medium mb-1 block">CVV</label>
-                  <Input value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="123" inputMode="numeric" type="password" dir="ltr" autoComplete="off" />
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">ת.ז. בעל הכרטיס</label>
-                <Input value={myid} onChange={e => setMyid(e.target.value.replace(/\D/g, '').slice(0, 9))} placeholder="123456789" inputMode="numeric" dir="ltr" autoComplete="off" />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">שם בעל הכרטיס</label>
-                <Input value={contactName} onChange={e => setContactName(e.target.value)} placeholder="ישראל ישראלי" autoComplete="off" />
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-2 justify-end pt-2">
-            <Button variant="outline" onClick={() => { clearForm(); onOpenChange(false); }}>ביטול</Button>
-            <Button onClick={handleCreate} disabled={isPending} className="bg-blue-600 hover:bg-blue-700 text-white">
-              {isPending ? 'מעבד...' : mode === 'card' ? 'צור מנוי וחייב עכשיו' : 'צור מנוי'}
+        {/* Step 2 success */}
+        {paymentSuccess && (
+          <div className="text-center py-8 space-y-4">
+            <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
+            <p className="text-lg font-bold text-green-700">התשלום התקבל!</p>
+            <p className="text-slate-500">המנוי פעיל והחיוב החוזר יתבצע ב-15 לכל חודש.</p>
+            <Button onClick={() => { onOpenChange(false); clearForm(); }} className="bg-green-600 hover:bg-green-700 text-white">
+              סגור
             </Button>
           </div>
-        </div>
+        )}
+
+        {/* Step 2: iframe */}
+        {step === 2 && !paymentSuccess && (
+          <div className="space-y-3">
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
+              פרטי הכרטיס מוזנים ישירות בטופס המאובטח של Tranzila. המערכת לא שומרת או רואה את פרטי הכרטיס.
+            </p>
+            <TranzilaIframe
+              iframeUrl={iframeUrl}
+              paymentId={paymentId}
+              onPaymentDetected={handlePaymentDetected}
+              confirmedRef={confirmedRef}
+              id="subscription-tranzila-iframe"
+            />
+            <div className="flex justify-end">
+              <Button variant="outline" size="sm" onClick={() => { setStep(1); setIframeUrl(''); }}>
+                חזור
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 1: form */}
+        {step === 1 && !paymentSuccess && (
+          <div className="space-y-4">
+            {/* Mode toggle */}
+            <div className="flex border rounded-lg overflow-hidden">
+              <button onClick={() => setMode('link')} className={`flex-1 py-2 text-sm font-medium transition-colors ${mode === 'link' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}>
+                שלח לינק ללקוח
+              </button>
+              <button onClick={() => setMode('card')} className={`flex-1 py-2 text-sm font-medium transition-colors ${mode === 'card' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}>
+                <Lock className="w-3 h-3 inline ml-1" />הזן כרטיס עכשיו
+              </button>
+            </div>
+
+            {/* Lead */}
+            <div>
+              <label className="text-sm font-medium mb-1 block">ליד</label>
+              <Select value={leadId} onValueChange={setLeadId}>
+                <SelectTrigger><SelectValue placeholder="בחר ליד" /></SelectTrigger>
+                <SelectContent>
+                  {(leads || []).slice(0, 50).map(l => (
+                    <SelectItem key={l.id} value={l.id}>{l.name} — {l.phone}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Plan */}
+            <div>
+              <label className="text-sm font-medium mb-1 block">שם תוכנית</label>
+              <Input value={planName} onChange={e => setPlanName(e.target.value)} placeholder="למשל: הנהלת חשבונות חודשית" />
+            </div>
+
+            {/* Amount */}
+            <div>
+              <label className="text-sm font-medium mb-1 block">סכום חודשי (₪)</label>
+              <Input type="number" value={monthlyPrice} onChange={e => setMonthlyPrice(e.target.value)} placeholder="299" />
+            </div>
+
+            {/* Recur payments */}
+            <div>
+              <label className="text-sm font-medium mb-1 block">מספר תשלומים</label>
+              <div className="flex gap-2 items-center">
+                <Input type="number" value={recurPayments} onChange={e => setRecurPayments(e.target.value)} placeholder="ללא הגבלה" className="w-32" min="1" max="999" />
+                <span className="text-xs text-slate-400">{recurPayments ? `${recurPayments} חיובים` : 'חיוב חודשי ללא הגבלה'}</span>
+              </div>
+            </div>
+
+            {/* Link mode — WhatsApp toggle */}
+            {mode === 'link' && (
+              <div className="flex items-center gap-2">
+                <input type="checkbox" checked={sendWhatsapp} onChange={e => setSendWhatsapp(e.target.checked)} id="wa-toggle" />
+                <label htmlFor="wa-toggle" className="text-sm">שלח קישור תשלום ב-WhatsApp</label>
+              </div>
+            )}
+
+            {/* Card mode — info */}
+            {mode === 'card' && (
+              <p className="text-xs text-slate-500 bg-slate-50 rounded p-2">
+                בשלב הבא ייפתח טופס תשלום מאובטח של Tranzila. הזן את פרטי הכרטיס ישירות בטופס.
+              </p>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2 justify-end pt-2">
+              <Button variant="outline" onClick={() => { clearForm(); onOpenChange(false); }}>ביטול</Button>
+              {mode === 'link' ? (
+                <Button onClick={handleSendLink} disabled={loading || createSub.isPending} className="bg-blue-600 hover:bg-blue-700 text-white">
+                  {loading || createSub.isPending ? <><Loader2 className="w-4 h-4 animate-spin ml-1" /> שולח...</> : 'צור מנוי ושלח לינק'}
+                </Button>
+              ) : (
+                <Button onClick={handleStartCardPayment} disabled={loading} className="bg-[#1E3A5F] hover:bg-[#16324f] text-white">
+                  {loading ? <><Loader2 className="w-4 h-4 animate-spin ml-1" /> מכין טופס...</> : 'המשך להזנת כרטיס'}
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
