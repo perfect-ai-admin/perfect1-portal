@@ -100,7 +100,7 @@ export default function About() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 mb-1">אתר</p>
-                    <p className="font-semibold text-gray-900">perfect-dashboard.com</p>
+                    <p className="font-semibold text-gray-900">perfect1.co.il</p>
                   </div>
                 </div>
                 <div className="space-y-4">

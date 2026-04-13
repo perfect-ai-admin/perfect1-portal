@@ -326,7 +326,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
 
       // Last fallback: construct URL from slug
       if (!url && pageSlug) {
-        url = `https://perfect-dashboard.com/LP?s=${pageSlug}`;
+        url = `https://www.perfect1.co.il/LP?s=${pageSlug}`;
       }
 
       // CRITICAL: Move away from the preview/draft screen and show published URL
@@ -1269,7 +1269,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                              <div className="w-3 h-3 rounded-full bg-green-400" />
                            </div>
                            <div className="flex-1 bg-white h-6 rounded-md shadow-sm border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-mono">
-                              {createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `perfect-dashboard.com/LP?s=${pageSlug}`}
+                              {createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `www.perfect1.co.il/LP?s=${pageSlug}`}
                            </div>
                         </div>
 
@@ -1379,7 +1379,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                </div>
                                <div className="flex flex-col">
                                   <span className="text-sm font-bold text-gray-900 leading-tight">{createdPageData?.business_name}</span>
-                                  <span className="text-xs text-slate-500 dir-ltr font-mono">{createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `perfect-dashboard.com/LP/${pageSlug}`}</span>
+                                  <span className="text-xs text-slate-500 dir-ltr font-mono">{createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `www.perfect1.co.il/LP/${pageSlug}`}</span>
                                </div>
                            </div>
                            <DialogClose asChild>
@@ -1448,7 +1448,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                              <div className="w-3 h-3 rounded-full bg-green-400" />
                            </div>
                            <div className="flex-1 bg-white h-6 rounded-md shadow-sm border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-mono">
-                              {createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `perfect-dashboard.com/LP?s=${pageSlug}`}
+                              {createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `www.perfect1.co.il/LP?s=${pageSlug}`}
                            </div>
                         </div>
                         
@@ -1572,7 +1572,7 @@ export default function LandingPageQuestionnaire({ onComplete, onClose, onSwitch
                                </div>
                                <div className="flex flex-col">
                                   <span className="text-sm font-bold text-gray-900 leading-tight">{createdPageData?.business_name}</span>
-                                  <span className="text-xs text-slate-500 dir-ltr font-mono">{createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `perfect-dashboard.com/LP/${pageSlug}`}</span>
+                                  <span className="text-xs text-slate-500 dir-ltr font-mono">{createdPageData?.subdomain ? `${createdPageData.subdomain}.one-pai.com` : `www.perfect1.co.il/LP/${pageSlug}`}</span>
                                </div>
                            </div>
                            <DialogClose asChild>

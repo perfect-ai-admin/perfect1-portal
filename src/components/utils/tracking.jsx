@@ -1,7 +1,7 @@
 export const getSignupUrl = () => {
-  const baseUrl = "https://perfect-dashboard.com/login";
+  const baseUrl = "https://www.perfect1.co.il/login";
   // After login, redirect to the app
-  const targetAfterLogin = "https://perfect-dashboard.com/APP";
+  const targetAfterLogin = "https://www.perfect1.co.il/APP";
   
   const url = new URL(baseUrl);
 

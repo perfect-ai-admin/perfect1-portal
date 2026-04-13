@@ -608,6 +608,7 @@ function generateSPAFallbacks() {
     '/CRM/leads',
     '/CRM/dashboard',
     '/CRM/tasks',
+    '/CRM/billing-alerts',
     '/CRM/settings',
   ];
 

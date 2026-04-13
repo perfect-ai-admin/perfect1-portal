@@ -17,7 +17,7 @@ import Header from '@/components/marketing/Header';
 import Footer from '@/components/marketing/Footer';
 import SEOHead from '@/components/seo/SEOHead';
 
-const SIGNUP_URL = "https://perfect-dashboard.com/login?from_url=https%3A%2F%2Fperfect-dashboard.com%2FAPP";
+const SIGNUP_URL = "https://www.perfect1.co.il/login?from_url=https%3A%2F%2Fwww.perfect1.co.il%2FAPP";
 
 const stickerSchema = {
   "@context": "https://schema.org",
@@ -25,7 +25,7 @@ const stickerSchema = {
   "name": "סטיקר ממותג לעסק לוואטסאפ",
   "description": "סטיקר ממותג לוואטסאפ עם הלוגו והמסר של העסק. נוכחות יומיומית בטלפון של הלקוח. מחיר חד פעמי 29 שקל.",
   "brand": { "@type": "Brand", "name": "ClientDashboard" },
-  "url": "https://perfect-dashboard.com/BusinessSticker",
+  "url": "https://www.perfect1.co.il/BusinessSticker",
   "offers": {
     "@type": "Offer",
     "price": "29",

@@ -4,7 +4,7 @@ import { ArrowLeft, Share2, Check, Zap } from 'lucide-react';
 import Header from '@/components/marketing/Header';
 import Footer from '@/components/marketing/Footer';
 
-const SIGNUP_URL = "https://perfect-dashboard.com/login?from_url=https%3A%2F%2Fperfect-dashboard.com%2FAPP";
+const SIGNUP_URL = "https://www.perfect1.co.il/login?from_url=https%3A%2F%2Fwww.perfect1.co.il%2FAPP";
 
 export default function SocialDesignsPage() {
   return (

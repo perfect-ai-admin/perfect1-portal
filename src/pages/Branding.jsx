@@ -4,7 +4,7 @@ import { ArrowLeft, Tag, Presentation, FileText, Palette, Share2, CreditCard, Ma
 import Header from '@/components/marketing/Header';
 import Footer from '@/components/marketing/Footer';
 
-const SIGNUP_URL = "https://perfect-dashboard.com/login";
+const SIGNUP_URL = "https://www.perfect1.co.il/login";
 
 const brandingProducts = [
   {

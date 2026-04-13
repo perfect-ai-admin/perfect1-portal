@@ -23,7 +23,7 @@ const landingPageSchema = {
   "name": "דף נחיתה לעסק - בניית דף נחיתה עם AI",
   "description": "בניית דף נחיתה מקצועי ומעוצב לעסק תוך 30 שניות עם AI. כולל דומיין ואירוח, קופירייטינג שיווקי ועיצוב רספונסיבי.",
   "brand": { "@type": "Brand", "name": "ClientDashboard" },
-  "url": "https://perfect-dashboard.com/BrandedLandingPage",
+  "url": "https://www.perfect1.co.il/BrandedLandingPage",
   "offers": {
     "@type": "Offer",
     "price": "299",

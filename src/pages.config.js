@@ -72,7 +72,7 @@ const __Layout = lazyRetry(() => import('./Layout.jsx'));
 
 
 export const PAGES = {
-    // App pages (perfect-dashboard.com only)
+    // App pages (perfect1.co.il only)
     "AdminUsers": AdminUsers,
     "AiMentor": AiMentor,
     "AvatarAi": AvatarAi,

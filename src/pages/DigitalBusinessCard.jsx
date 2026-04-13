@@ -26,7 +26,7 @@ const digitalCardSchema = {
   "name": "כרטיס ביקור דיגיטלי חכם לעסקים",
   "description": "כרטיס ביקור דיגיטלי חכם עם QR Code, שמירה באנשי קשר, כפתורי וואטסאפ וניווט. תשלום חד פעמי של 149 שקל.",
   "brand": { "@type": "Brand", "name": "ClientDashboard" },
-  "url": "https://perfect-dashboard.com/DigitalBusinessCard",
+  "url": "https://www.perfect1.co.il/DigitalBusinessCard",
   "offers": {
     "@type": "Offer",
     "price": "149",

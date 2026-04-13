@@ -1,8 +1,8 @@
 /**
  * domain.js — Domain detection for separating Portal vs App
  *
- * Portal domain: perfect1.co.il (SEO articles, landing pages)
- * App domain:    perfect-dashboard.com (CRM, tools, authenticated app)
+ * Primary domain: perfect1.co.il (Portal + CRM + Login)
+ * Legacy domain:  perfect-dashboard.com (CRM/tools only, being phased out)
  */
 
 const PORTAL_DOMAINS = [
@@ -48,8 +48,9 @@ export function getPortalUrl() {
 }
 
 /**
- * Get the correct base URL for the app domain
+ * Get the correct base URL for the app domain.
+ * All links now point to the primary domain (perfect1.co.il).
  */
 export function getAppUrl() {
-  return 'https://perfect-dashboard.com';
+  return 'https://www.perfect1.co.il';
 }

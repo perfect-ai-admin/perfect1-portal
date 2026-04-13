@@ -24,7 +24,7 @@ const presentationSchema = {
   "name": "מצגת עסקית ומצגת משקיעים עם AI",
   "description": "יצירת מצגת עסקית מקצועית או מצגת משקיעים תוך 30 שניות עם בינה מלאכותית. כולל עיצוב, קופירייטינג וניתוח נתונים מאקסל.",
   "brand": { "@type": "Brand", "name": "ClientDashboard" },
-  "url": "https://perfect-dashboard.com/BusinessPresentation",
+  "url": "https://www.perfect1.co.il/BusinessPresentation",
   "offers": {
     "@type": "Offer",
     "price": "149",

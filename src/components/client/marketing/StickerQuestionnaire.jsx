@@ -1020,7 +1020,7 @@ export default function StickerQuestionnaire({ onComplete, onClose }) {
                   </div>
                   <p><strong>שם העסק:</strong> ${formData.businessName || '-'}</p>
                   <p><strong>טקסט:</strong> ${formData.exampleSentence || '-'}</p>
-                  <p style="margin-top: 20px;">ניתן להוריד את הסטיקר גם מ<a href="https://perfect-dashboard.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
+                  <p style="margin-top: 20px;">ניתן להוריד את הסטיקר גם מ<a href="https://www.perfect1.co.il/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
                   <p style="color: #888; font-size: 12px; margin-top: 30px;">צוות Perfect One</p>
                 </div>
               `

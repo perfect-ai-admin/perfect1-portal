@@ -785,7 +785,7 @@ export default function PricingPerfectBizAI() {
           onPaymentSuccess={async () => {
             const isPreview = window.location.hostname.includes('preview');
             if (isPreview) {
-              window.location.href = 'https://perfect-dashboard.com/MyProducts';
+              window.location.href = 'https://www.perfect1.co.il/MyProducts';
             } else {
               navigate(createPageUrl('MyProducts'));
             }

@@ -686,7 +686,7 @@ export default function BusinessCardQuestionnaire({ onComplete, onClose }) {
                         </a>
                       </div>
                       <p><strong>קישור ישיר:</strong> <a href="${cardResult.public_url}" style="color: #1E3A5F;">${cardResult.public_url}</a></p>
-                      <p style="margin-top: 20px;">ניתן לגשת לכרטיס גם מ<a href="https://perfect-dashboard.com/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
+                      <p style="margin-top: 20px;">ניתן לגשת לכרטיס גם מ<a href="https://www.perfect1.co.il/MyProducts" style="color: #1E3A5F;">המוצרים שלי</a>.</p>
                       <p style="color: #888; font-size: 12px; margin-top: 30px;">צוות Perfect One</p>
                     </div>
                   `

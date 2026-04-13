@@ -9,9 +9,9 @@
 const APP_DOMAINS = [
   'one-pai.com',
   'www.one-pai.com',
+  'perfect1.co.il',
   'perfect-dashboard.com',
   'www.perfect-dashboard.com',
-  'perfect1.co.il',
   'www.perfect1.co.il',
   'localhost',
 ];

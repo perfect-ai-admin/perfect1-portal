@@ -18,13 +18,13 @@ const smartLogoSchema = {
   "name": "לוגו לעסק - עיצוב לוגו עם AI",
   "description": "יצירת לוגו מקצועי לעסק עם בינה מלאכותית. 8 סגנונות לבחירה, תוצאה תוך דקות, במחיר של 39 שקל בלבד.",
   "brand": { "@type": "Brand", "name": "ClientDashboard" },
-  "url": "https://perfect-dashboard.com/SmartLogo",
+  "url": "https://www.perfect1.co.il/SmartLogo",
   "offers": {
     "@type": "Offer",
     "price": "39",
     "priceCurrency": "ILS",
     "availability": "https://schema.org/InStock",
-    "url": "https://perfect-dashboard.com/SmartLogo"
+    "url": "https://www.perfect1.co.il/SmartLogo"
   },
   "aggregateRating": {
     "@type": "AggregateRating",
