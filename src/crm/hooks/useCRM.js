@@ -710,14 +710,42 @@ export function useLeadAgreements(leadId) {
   });
 }
 
+// Step 1: Save agreement internally (no external API)
 export function useCreateAgreement() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ lead_id, template_key, fillfaster_form_id, template_label, extra_fields, send_via_whatsapp }) => {
+    mutationFn: async ({ lead_id, template_key, fillfaster_form_id, template_label, extra_fields }) => {
       return invokeFunction('crmCreateAgreement', {
         lead_id, template_key, fillfaster_form_id, template_label, extra_fields,
-        send_via_whatsapp: send_via_whatsapp !== false,
       });
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['lead-agreements', variables.lead_id] });
+    },
+  });
+}
+
+// Step 2: Generate FillFaster signing link (calls n8n bridge)
+export function useGenerateAgreementLink() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ agreement_id, lead_id }) => {
+      return invokeFunction('crmGenerateAgreementLink', { agreement_id });
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['lead-agreements', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
+    },
+  });
+}
+
+// Step 3: Send agreement link via WhatsApp
+export function useSendAgreementWhatsApp() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ agreement_id, lead_id }) => {
+      return invokeFunction('crmSendAgreementWhatsApp', { agreement_id });
     },
     onSuccess: (_, variables) => {
       qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
@@ -727,18 +755,9 @@ export function useCreateAgreement() {
   });
 }
 
+// Resend = same as step 3 (alias)
 export function useResendAgreement() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async ({ agreement_id, lead_id }) => {
-      return invokeFunction('crmResendAgreement', { agreement_id });
-    },
-    onSuccess: (_, variables) => {
-      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
-      qc.invalidateQueries({ queryKey: ['lead-agreements', variables.lead_id] });
-      qc.invalidateQueries({ queryKey: ['whatsapp-messages', variables.lead_id] });
-    },
-  });
+  return useSendAgreementWhatsApp();
 }
 
 // ---- Agreement Stats (dashboard) ----

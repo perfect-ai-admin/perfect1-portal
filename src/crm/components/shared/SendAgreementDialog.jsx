@@ -3,10 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Send, RefreshCw, FileText, AlertCircle, Link2, Copy, ExternalLink, Check, Phone } from 'lucide-react';
+import { Save, Link2, Send, RefreshCw, FileText, AlertCircle, Check, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { useCreateAgreement } from '../../hooks/useCRM';
-import { AGREEMENT_TEMPLATES, buildPrefillData } from '../../config/agreementTemplates';
+import { AGREEMENT_TEMPLATES } from '../../config/agreementTemplates';
 
 export default function SendAgreementDialog({ lead, open, onOpenChange }) {
   const createAgreement = useCreateAgreement();
@@ -14,10 +14,9 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
   const [agentValues, setAgentValues] = useState({});
   const [clientName, setClientName] = useState('');
   const [clientId, setClientId] = useState('');
-  const [createdResult, setCreatedResult] = useState(null);
+  const [savedResult, setSavedResult] = useState(null);
 
   const selectedTemplate = AGREEMENT_TEMPLATES.find(t => t.key === templateKey);
-  const missingPhone = !lead?.phone;
   const hasTemplates = AGREEMENT_TEMPLATES.some(t => t.fillfaster_form_id);
 
   const handleTemplateChange = (key) => {
@@ -27,45 +26,17 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
     setClientId(lead?.id_number || '');
   };
 
-  const handleFieldChange = (fieldName, value) => {
-    setAgentValues(prev => ({ ...prev, [fieldName]: value }));
-  };
-
-  const validateFields = () => {
-    if (!selectedTemplate?.agentFields) return true;
-    for (const field of selectedTemplate.agentFields) {
-      if (field.required && !agentValues[field.name]) {
-        toast.error(`יש למלא: ${field.label}`);
-        return false;
-      }
-    }
-    return true;
-  };
-
-  const handleCreate = (sendWhatsapp) => {
-    console.log('[SendAgreement] handleCreate called', { sendWhatsapp, templateKey, selectedTemplate: selectedTemplate?.key, agentValues, clientName, clientId });
-
+  const handleSave = () => {
     if (!templateKey || !selectedTemplate) {
       toast.error('יש לבחור סוג הסכם');
       return;
     }
-    if (!validateFields()) {
-      console.log('[SendAgreement] validation failed');
-      return;
-    }
-    if (sendWhatsapp && missingPhone) {
-      toast.error('ללקוח אין מספר טלפון — לא ניתן לשלוח ב-WhatsApp');
+    if (!selectedTemplate.fillfaster_form_id) {
+      toast.error('תבנית לא מוגדרת');
       return;
     }
 
-    console.log('[SendAgreement] calling createAgreement.mutate');
-
-    // Build extra_fields: agent values + editable name/id
-    const allFields = {
-      ...agentValues,
-      'שם מלא': clientName,
-      'ת.ז': clientId,
-    };
+    const allFields = { ...agentValues, 'שם מלא': clientName, 'ת.ז': clientId };
 
     createAgreement.mutate(
       {
@@ -74,30 +45,15 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
         fillfaster_form_id: selectedTemplate.fillfaster_form_id,
         template_label: selectedTemplate.label,
         extra_fields: allFields,
-        send_via_whatsapp: sendWhatsapp,
       },
       {
         onSuccess: (data) => {
-          console.log('[SendAgreement] SUCCESS', data);
-          toast.success(sendWhatsapp ? 'הסכם נשלח ב-WhatsApp' : 'קישור חתימה נוצר');
-          setCreatedResult({
-            submission_link: data?.submission_link,
-            whatsapp_sent: data?.whatsapp_sent,
-          });
+          toast.success('הסכם נשמר בהצלחה');
+          setSavedResult({ agreement_id: data?.agreement_id });
         },
-        onError: (err) => {
-          console.error('[SendAgreement] ERROR', err);
-          toast.error(err.message || 'שגיאה ביצירת הסכם');
-        },
+        onError: (err) => toast.error(err.message || 'שגיאה בשמירת ההסכם'),
       }
     );
-  };
-
-  const handleCopyLink = () => {
-    if (createdResult?.submission_link) {
-      navigator.clipboard.writeText(createdResult.submission_link);
-      toast.success('קישור הועתק ללוח');
-    }
   };
 
   const handleClose = () => {
@@ -105,67 +61,33 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
     setAgentValues({});
     setClientName('');
     setClientId('');
-    setCreatedResult(null);
+    setSavedResult(null);
     onOpenChange(false);
   };
 
   // ---- Success screen ----
-  if (createdResult) {
+  if (savedResult) {
     return (
       <Dialog open={open} onOpenChange={() => handleClose()}>
         <DialogContent className="max-w-md" dir="rtl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base text-green-700">
               <Check size={18} />
-              הסכם נוצר בהצלחה
+              הסכם נשמר בהצלחה
             </DialogTitle>
           </DialogHeader>
-
-          <div className="space-y-4 py-2">
-            {createdResult.whatsapp_sent && (
-              <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
-                <Send size={14} />
-                נשלח ב-WhatsApp ל-{lead?.phone}
-              </div>
-            )}
-            {createdResult.whatsapp_sent === false && (
-              <div className="flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
-                <Link2 size={14} />
-                קישור נוצר — לא נשלח WhatsApp
-              </div>
-            )}
-
-            {createdResult.submission_link && (
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-slate-600 block">קישור חתימה:</label>
-                <div className="flex gap-2">
-                  <Input
-                    value={createdResult.submission_link}
-                    readOnly
-                    className="text-xs font-mono flex-1"
-                    onClick={(e) => e.target.select()}
-                  />
-                  <Button size="sm" variant="outline" onClick={handleCopyLink} className="flex-shrink-0">
-                    <Copy size={14} />
-                  </Button>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="flex-1 text-xs"
-                    onClick={() => window.open(createdResult.submission_link, '_blank')}>
-                    <ExternalLink size={12} className="ml-1" />
-                    פתח קישור
-                  </Button>
-                  <Button size="sm" variant="outline" className="flex-1 text-xs" onClick={handleCopyLink}>
-                    <Copy size={12} className="ml-1" />
-                    העתק קישור
-                  </Button>
-                </div>
-              </div>
-            )}
+          <div className="space-y-3 py-2">
+            <p className="text-sm text-slate-600">
+              ההסכם נשמר במערכת. כדי ליצור קישור חתימה או לשלוח ללקוח — השתמש בכפתורים בפאנל ההסכמים.
+            </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700 space-y-1">
+              <p><strong>שלב הבא:</strong></p>
+              <p>1. לחץ "צור קישור" בפאנל ההסכמים כדי לקבל קישור חתימה</p>
+              <p>2. לאחר מכן תוכל לשלוח את הקישור ב-WhatsApp או להעתיק אותו</p>
+            </div>
           </div>
-
           <DialogFooter>
-            <Button onClick={handleClose} className="text-xs w-full">סגור</Button>
+            <Button onClick={handleClose} className="w-full text-xs">סגור</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -179,7 +101,7 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <FileText size={18} />
-            שליחת הסכם לחתימה
+            יצירת הסכם חדש
           </DialogTitle>
         </DialogHeader>
 
@@ -202,6 +124,7 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
                 {AGREEMENT_TEMPLATES.map(t => (
                   <SelectItem key={t.key} value={t.key} disabled={!t.fillfaster_form_id}>
                     {t.label}
+                    {!t.fillfaster_form_id && ' (לא מוגדר)'}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -211,36 +134,25 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
             )}
           </div>
 
-          {/* Client details — editable */}
+          {/* Client details */}
           {selectedTemplate && (
             <div className="space-y-2">
               <p className="text-[10px] text-slate-500 font-medium">פרטי לקוח:</p>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[10px] text-slate-500 mb-1 block">שם מלא <span className="text-red-400">*</span></label>
-                  <Input
-                    value={clientName}
-                    onChange={(e) => setClientName(e.target.value)}
-                    placeholder="שם מלא"
-                    className="text-xs"
-                  />
+                  <label className="text-[10px] text-slate-500 mb-1 block">שם מלא</label>
+                  <Input value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="שם מלא" className="text-xs" />
                 </div>
                 <div>
-                  <label className="text-[10px] text-slate-500 mb-1 block">ת.ז <span className="text-red-400">*</span></label>
-                  <Input
-                    value={clientId}
-                    onChange={(e) => setClientId(e.target.value)}
-                    placeholder="מספר תעודת זהות"
-                    className="text-xs font-mono"
-                    maxLength={9}
-                  />
+                  <label className="text-[10px] text-slate-500 mb-1 block">ת.ז</label>
+                  <Input value={clientId} onChange={(e) => setClientId(e.target.value)} placeholder="מספר ת.ז" className="text-xs font-mono" maxLength={9} />
                 </div>
               </div>
             </div>
           )}
 
-          {/* Agent fields — dynamic per template */}
-          {selectedTemplate?.agentFields && selectedTemplate.agentFields.length > 0 && (
+          {/* Agent fields */}
+          {selectedTemplate?.agentFields?.length > 0 && (
             <div className="space-y-2">
               <p className="text-[10px] text-slate-500 font-medium">שדות למילוי:</p>
               <div className="grid grid-cols-2 gap-2">
@@ -252,10 +164,9 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
                     <Input
                       type={field.type || 'text'}
                       value={agentValues[field.name] || ''}
-                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      onChange={(e) => setAgentValues(prev => ({ ...prev, [field.name]: e.target.value }))}
                       placeholder={field.placeholder || ''}
                       className="text-xs"
-                      min={field.type === 'number' ? '0' : undefined}
                     />
                   </div>
                 ))}
@@ -263,21 +174,6 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
             </div>
           )}
 
-          {/* WhatsApp target */}
-          {lead?.phone && selectedTemplate && (
-            <div className="flex items-center gap-2 p-2 bg-green-50 border border-green-100 rounded-lg text-xs text-green-700">
-              <Phone size={12} />
-              WhatsApp יישלח ל: <span className="font-mono font-medium">{lead.phone}</span>
-            </div>
-          )}
-          {missingPhone && selectedTemplate && (
-            <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
-              <AlertCircle size={14} />
-              אין מספר טלפון — ניתן רק ליצור קישור
-            </div>
-          )}
-
-          {/* Client fills note */}
           {selectedTemplate && (
             <p className="text-[10px] text-slate-400 text-center">
               פרטי כרטיס אשראי ימולאו ע״י הלקוח בטופס החתימה
@@ -287,26 +183,16 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
 
         <DialogFooter className="flex flex-col gap-2 sm:flex-col">
           <Button
-            onClick={() => handleCreate(true)}
-            disabled={createAgreement.isPending || !templateKey || missingPhone || !hasTemplates}
-            className="w-full text-xs bg-green-600 hover:bg-green-700"
+            onClick={handleSave}
+            disabled={createAgreement.isPending || !templateKey || !hasTemplates}
+            className="w-full text-xs bg-blue-600 hover:bg-blue-700"
           >
             {createAgreement.isPending ? (
               <RefreshCw size={12} className="animate-spin ml-1" />
             ) : (
-              <Send size={12} className="ml-1" />
+              <Save size={12} className="ml-1" />
             )}
-            שלח הסכם ב-WhatsApp
-          </Button>
-
-          <Button
-            variant="outline"
-            onClick={() => handleCreate(false)}
-            disabled={createAgreement.isPending || !templateKey || !hasTemplates}
-            className="w-full text-xs"
-          >
-            <Link2 size={12} className="ml-1" />
-            צור קישור בלבד (ללא שליחה)
+            שמור הסכם
           </Button>
 
           <Button variant="ghost" onClick={handleClose} className="w-full text-xs text-slate-500">
