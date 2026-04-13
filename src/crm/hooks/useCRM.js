@@ -252,7 +252,15 @@ export function useUpdateLeadStage() {
       if (new_stage === 'converted') updates.converted_at = new Date().toISOString();
       if (new_stage === 'spam') updates.is_spam = true;
       if (lost_reason_note) updates.lost_reason_note = lost_reason_note;
+      else if (lost_reason_id) updates.lost_reason_note = lost_reason_id;
       if (agent_id !== undefined) updates.agent_id = agent_id || null;
+      // Clear followup fields when closing a lead
+      if (closedStages.includes(new_stage)) {
+        updates.next_followup_date = null;
+        updates.followup_sequence_name = null;
+        updates.followup_sequence_step = 0;
+        updates.followup_paused = true;
+      }
 
       const { error: updateErr } = await supabase
         .from('leads')
@@ -676,5 +684,65 @@ export function useUpdateFollowupDate() {
       qc.invalidateQueries({ queryKey: ['crm-leads'] });
       qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
     },
+  });
+}
+
+// ---- Agreements (FillFaster) ----
+
+export function useLeadAgreements(leadId) {
+  return useQuery({
+    queryKey: ['lead-agreements', leadId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('agreements')
+        .select('*')
+        .eq('lead_id', leadId)
+        .order('created_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      return data || [];
+    },
+    enabled: !!leadId,
+  });
+}
+
+export function useCreateAgreement() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ lead_id, template_key, fillfaster_form_id, template_label, extra_fields, send_via_whatsapp }) => {
+      return invokeFunction('crmCreateAgreement', {
+        lead_id, template_key, fillfaster_form_id, template_label, extra_fields,
+        send_via_whatsapp: send_via_whatsapp !== false,
+      });
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['lead-agreements', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['whatsapp-messages', variables.lead_id] });
+    },
+  });
+}
+
+export function useResendAgreement() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ agreement_id, lead_id }) => {
+      return invokeFunction('crmResendAgreement', { agreement_id });
+    },
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['lead-agreements', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['whatsapp-messages', variables.lead_id] });
+    },
+  });
+}
+
+// ---- Agreement Stats (dashboard) ----
+
+export function useAgreementStats() {
+  return useQuery({
+    queryKey: ['agreement-stats'],
+    queryFn: async () => invokeFunction('agreementStats', { days: 30 }),
+    staleTime: 5 * 60_000,
+    retry: false,
   });
 }
