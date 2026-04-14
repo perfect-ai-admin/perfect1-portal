@@ -714,14 +714,15 @@ export function useLeadAgreements(leadId) {
 export function useCreateAgreement() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ lead_id, template_key, fillfaster_form_id, template_label, extra_fields }) => {
+    mutationFn: async ({ lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp }) => {
       return invokeFunction('crmCreateAgreement', {
-        lead_id, template_key, fillfaster_form_id, template_label, extra_fields,
+        lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp,
       });
     },
     onSuccess: (_, variables) => {
       qc.invalidateQueries({ queryKey: ['crm-lead', variables.lead_id] });
       qc.invalidateQueries({ queryKey: ['lead-agreements', variables.lead_id] });
+      qc.invalidateQueries({ queryKey: ['whatsapp-messages', variables.lead_id] });
     },
   });
 }

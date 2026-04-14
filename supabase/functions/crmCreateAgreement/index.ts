@@ -1,8 +1,9 @@
-// crmCreateAgreement — Save agreement record internally (no external API calls)
-// This is step 1 of the agreement flow: save → generate link → send
-// Authenticated: requires logged-in user
+// crmCreateAgreement — Save agreement + send template link via WhatsApp
+// Simple flow: save to DB → send WhatsApp with template link → done
+// No external API dependency — uses fixed FillFaster template links
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, getUser } from '../_shared/supabaseAdmin.ts';
+import { sendAndStoreMessage } from '../_shared/whatsappHelper.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
@@ -11,47 +12,39 @@ Deno.serve(async (req) => {
     const user = await getUser(req);
     if (!user) return errorResponse('Unauthorized', 401, req);
 
-    const { lead_id, template_key, fillfaster_form_id, template_label, extra_fields } = await req.json();
+    const { lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp } = await req.json();
 
-    if (!lead_id || !template_key || !fillfaster_form_id) {
-      return errorResponse('lead_id, template_key, and fillfaster_form_id are required', 400, req);
+    if (!lead_id || !template_key || !template_link) {
+      return errorResponse('lead_id, template_key, and template_link are required', 400, req);
     }
 
-    // Fetch lead to validate it exists
+    // Fetch lead
     const { data: lead, error: leadErr } = await supabaseAdmin
       .from('leads')
-      .select('id, name')
+      .select('id, name, phone')
       .eq('id', lead_id)
       .single();
 
     if (leadErr || !lead) return errorResponse('Lead not found', 404, req);
 
-    // Build prefill_data from frontend fields
-    const prefill_data: Record<string, string> = {};
-    if (extra_fields && typeof extra_fields === 'object') {
-      for (const [k, v] of Object.entries(extra_fields)) {
-        if (v !== undefined && v !== null && v !== '') prefill_data[k] = String(v);
-      }
-    }
+    const now = new Date().toISOString();
 
-    const user_data = { lead_id, agent_id: user.id, template_key, crm_user_id: user.id };
-
-    // Save agreement — purely internal, no external API
-    const insertData: Record<string, unknown> = {
-      lead_id,
-      template_key,
-      template_label: template_label || template_key,
-      fillfaster_form_id,
-      status: 'pending',
-      prefilled_data: prefill_data,
-      user_data,
-      agent_id: user.id,
-    };
-
+    // Save agreement
     const { data: agreement, error: agErr } = await supabaseAdmin
       .from('agreements')
-      .insert(insertData)
-      .select('id, status')
+      .insert({
+        lead_id,
+        template_key,
+        template_label: template_label || template_key,
+        fillfaster_form_id: template_key,
+        submission_link: template_link,
+        status: 'sent',
+        sent_at: now,
+        prefilled_data: {},
+        user_data: { lead_id, agent_id: user.id, template_key },
+        agent_id: user.id,
+      })
+      .select('id')
       .single();
 
     if (agErr || !agreement) {
@@ -61,27 +54,49 @@ Deno.serve(async (req) => {
 
     // Update lead
     await supabaseAdmin.from('leads').update({
-      agreement_status: 'pending',
+      agreement_status: 'sent',
       agreement_id: agreement.id,
-      updated_at: new Date().toISOString(),
+      updated_at: now,
     }).eq('id', lead_id);
+
+    // Send WhatsApp
+    let whatsappSent = false;
+    if (send_whatsapp !== false && lead.phone) {
+      const message = whatsapp_message || `היי ${lead.name || ''} 👋\n\nמצרף/ה לך הסכם לחתימה דיגיטלית:\n${template_link}\n\nאחרי החתימה נמשיך לשלב הבא.\nלשאלות — אנחנו כאן! 🙂`;
+
+      try {
+        const waResult = await sendAndStoreMessage(supabaseAdmin, {
+          phone: lead.phone,
+          message,
+          lead_id,
+          sender_type: 'system',
+          message_type: 'text',
+        });
+        whatsappSent = waResult?.success === true;
+        console.log('[crmCreateAgreement] WhatsApp:', whatsappSent ? 'SENT' : 'FAILED');
+      } catch (waErr) {
+        console.error('[crmCreateAgreement] WhatsApp error:', waErr);
+      }
+    }
 
     // Log
     await supabaseAdmin.from('status_history').insert({
       entity_type: 'lead',
       entity_id: lead_id,
-      new_status: 'agreement_pending',
+      new_status: 'agreement_sent',
       change_reason: 'agreement_created',
       source: 'sales_portal',
-      metadata: { agreement_id: agreement.id, template_key, created_by: user.id },
+      metadata: { agreement_id: agreement.id, template_key, whatsapp_sent: whatsappSent, link_type: 'shared_template' },
     });
 
-    console.log('[crmCreateAgreement] Saved | agreement:', agreement.id);
+    console.log('[crmCreateAgreement] Done | agreement:', agreement.id, '| wa:', whatsappSent);
 
     return jsonResponse({
       success: true,
       agreement_id: agreement.id,
-      status: 'pending',
+      submission_link: template_link,
+      whatsapp_sent: whatsappSent,
+      status: 'sent',
     }, 200, req);
 
   } catch (error) {
