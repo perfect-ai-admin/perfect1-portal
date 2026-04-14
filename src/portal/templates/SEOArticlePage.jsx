@@ -104,7 +104,7 @@ export default function SEOArticlePage({ category }) {
                 <PortalLeadForm
                   sourcePage={`hero-${category}-${slug}`}
                   variant="compact"
-                  ctaText="לפתיחת עוסק פטור — ייעוץ חינם"
+                  ctaText={content.heroFormCta || "לייעוץ חינם — התחילו עכשיו"}
                 />
                 <div className="flex items-center justify-center gap-4 mt-3">
                   <span className="text-xs text-gray-500">או:</span>

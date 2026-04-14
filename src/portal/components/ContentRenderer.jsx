@@ -10,6 +10,9 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from '@/components/ui/accordion';
 import InlineCTA from './InlineCTA';
+import CostCalculator from './CostCalculator';
+import PricingCards from './PricingCards';
+import StatsBar from './StatsBar';
 
 // Custom link renderer: internal links use React Router, external links open in new tab
 const markdownComponents = {
@@ -258,6 +261,9 @@ const SECTION_MAP = {
   quote: SectionQuote,
   comparison: SectionComparison,
   'cta-inline': SectionCTAInline,
+  calculator: CostCalculator,
+  'pricing-cards': PricingCards,
+  'stats-bar': StatsBar,
 };
 
 export default function ContentRenderer({ sections = [], sourcePage = 'article' }) {
