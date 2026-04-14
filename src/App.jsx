@@ -72,6 +72,7 @@ const CreditPointsCalcPage = lazyWithRetry(() => import('./portal/templates/Cred
 const OsekPaturLanding = lazyWithRetry(() => import('./pages/OsekPaturLanding'));
 const OsekPaturLandingB = lazyWithRetry(() => import('./pages/OsekPaturLandingB'));
 const OsekPaturSteps = lazyWithRetry(() => import('./pages/OsekPaturSteps'));
+const OsekPaturStepsB = lazyWithRetry(() => import('./pages/OsekPaturStepsB'));
 const OpenOsekPatur = lazyWithRetry(() => import('./pages/OpenOsekPatur'));
 const ThankYou = lazyWithRetry(() => import('./pages/ThankYou'));
 const PaturVsMursheLanding = lazyWithRetry(() => import('./pages/PaturVsMursheLanding'));
@@ -202,6 +203,7 @@ const PortalRoutes = () => (
     <Route path="/OsekPaturLanding" element={<SafePage><OsekPaturLanding /></SafePage>} />
     <Route path="/OsekPaturLandingB" element={<SafePage><OsekPaturLandingB /></SafePage>} />
     <Route path="/OsekPaturSteps" element={<SafePage><OsekPaturSteps /></SafePage>} />
+    <Route path="/OsekPaturStepsB" element={<SafePage><OsekPaturStepsB /></SafePage>} />
     <Route path="/open-osek-patur" element={<SafePage><OpenOsekPatur /></SafePage>} />
     <Route path="/patur-vs-murshe" element={<SafePage><PaturVsMursheLanding /></SafePage>} />
     <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />
@@ -309,6 +311,7 @@ const DevRoutes = () => (
     <Route path="/OsekPaturLanding" element={<SafePage><OsekPaturLanding /></SafePage>} />
     <Route path="/OsekPaturLandingB" element={<SafePage><OsekPaturLandingB /></SafePage>} />
     <Route path="/OsekPaturSteps" element={<SafePage><OsekPaturSteps /></SafePage>} />
+    <Route path="/OsekPaturStepsB" element={<SafePage><OsekPaturStepsB /></SafePage>} />
     <Route path="/open-osek-patur" element={<SafePage><OpenOsekPatur /></SafePage>} />
     <Route path="/patur-vs-murshe" element={<SafePage><PaturVsMursheLanding /></SafePage>} />
     <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />

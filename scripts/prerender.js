@@ -53,7 +53,7 @@ function discoverRoutes() {
     '/About', '/Privacy', '/Terms', '/Accessibility',
     '/patur-vs-murshe', '/patur-vs-murshe-quiz',
     '/open-osek-patur', '/open-osek-patur-online',
-    '/OsekPaturLanding', '/OsekPaturLandingB', '/OsekPaturSteps',
+    '/OsekPaturLanding', '/OsekPaturLandingB', '/OsekPaturSteps', '/OsekPaturStepsB',
     // עוסק זעיר — מסלול נפרד
     '/OsekZeirLanding', '/osek-zair-landing',
     '/open-osek-zeir-online', '/open-osek-zair-online',
