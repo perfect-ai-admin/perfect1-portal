@@ -98,6 +98,25 @@ export default function SEOArticlePage({ category }) {
               updatedDate={content.updatedDate}
               readTime={content.readTime}
             />
+            {/* Hero Lead Form — shown when article has heroForm: true */}
+            {content.heroForm && (
+              <div className="mt-6 sm:mt-8 max-w-xl bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-lg">
+                <PortalLeadForm
+                  sourcePage={`hero-${category}-${slug}`}
+                  variant="compact"
+                  ctaText="לפתיחת עוסק פטור — ייעוץ חינם"
+                />
+                <div className="flex items-center justify-center gap-4 mt-3">
+                  <span className="text-xs text-gray-500">או:</span>
+                  <a href="https://wa.me/972502277087" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-green-600 hover:underline text-sm font-medium">
+                    WhatsApp
+                  </a>
+                  <a href="tel:050-227-7087" className="inline-flex items-center gap-1.5 text-portal-teal hover:underline text-sm font-medium">
+                    050-227-7087
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
