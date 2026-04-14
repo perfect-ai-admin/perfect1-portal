@@ -225,6 +225,12 @@ const PortalRoutes = () => (
     <Route path="/osek-zeir/:slug" element={<PortalWrapper><SEOArticlePage category="osek-zeir" /></PortalWrapper>} />
     <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
+    <Route path="/misui" element={<PortalWrapper><CategoryHubPage category="misui" /></PortalWrapper>} />
+    <Route path="/misui/:slug" element={<PortalWrapper><SEOArticlePage category="misui" /></PortalWrapper>} />
+    <Route path="/maam" element={<PortalWrapper><CategoryHubPage category="maam" /></PortalWrapper>} />
+    <Route path="/maam/:slug" element={<PortalWrapper><SEOArticlePage category="maam" /></PortalWrapper>} />
+    <Route path="/miktzoa" element={<PortalWrapper><CategoryHubPage category="miktzoa" /></PortalWrapper>} />
+    <Route path="/miktzoa/:slug" element={<PortalWrapper><SEOArticlePage category="miktzoa" /></PortalWrapper>} />
     <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
     <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />
@@ -325,6 +331,12 @@ const DevRoutes = () => (
     <Route path="/osek-zeir/:slug" element={<PortalWrapper><SEOArticlePage category="osek-zeir" /></PortalWrapper>} />
     <Route path="/sgirat-tikim" element={<PortalWrapper><CategoryHubPage category="sgirat-tikim" /></PortalWrapper>} />
     <Route path="/sgirat-tikim/:slug" element={<PortalWrapper><SEOArticlePage category="sgirat-tikim" /></PortalWrapper>} />
+    <Route path="/misui" element={<PortalWrapper><CategoryHubPage category="misui" /></PortalWrapper>} />
+    <Route path="/misui/:slug" element={<PortalWrapper><SEOArticlePage category="misui" /></PortalWrapper>} />
+    <Route path="/maam" element={<PortalWrapper><CategoryHubPage category="maam" /></PortalWrapper>} />
+    <Route path="/maam/:slug" element={<PortalWrapper><SEOArticlePage category="maam" /></PortalWrapper>} />
+    <Route path="/miktzoa" element={<PortalWrapper><CategoryHubPage category="miktzoa" /></PortalWrapper>} />
+    <Route path="/miktzoa/:slug" element={<PortalWrapper><SEOArticlePage category="miktzoa" /></PortalWrapper>} />
     <Route path="/guides" element={<PortalWrapper><CategoryHubPage category="guides" /></PortalWrapper>} />
     <Route path="/guides/:slug" element={<PortalWrapper><SEOArticlePage category="guides" /></PortalWrapper>} />
     <Route path="/compare/:slug" element={<PortalWrapper><ComparisonPage /></PortalWrapper>} />

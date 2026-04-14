@@ -26,6 +26,7 @@ const CATEGORY_URL_MAP = {
   'comparisons': '/compare',
   'osek-zeir': '/osek-zeir',
   'misui': '/misui',
+  'maam': '/maam',
   'hashbonaut': '/hashbonaut',
   'mishpati': '/mishpati',
   'shivuk': '/shivuk',

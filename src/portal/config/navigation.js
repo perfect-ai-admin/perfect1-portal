@@ -80,6 +80,42 @@ export const PORTAL_CATEGORIES = [
     ]
   },
   {
+    id: 'misui',
+    title: 'מיסוי לעצמאים',
+    href: '/misui',
+    icon: 'Calculator',
+    description: 'מדרגות מס, מקדמות, ניכויים ותכנון מס לעצמאים',
+    color: 'purple',
+    subcategories: [
+      { title: 'מדרגות מס הכנסה 2026', href: '/misui/tax-brackets', description: 'טבלת מדרגות מס, חישוב לדוגמה, נקודות זיכוי וטיפים להפחתת מס' },
+      { title: 'מקדמות מס הכנסה', href: '/misui/advance-payments', description: 'איך נקבעות מקדמות, הפחתה, קנסות ומה עושים בשנה הראשונה' },
+    ]
+  },
+  {
+    id: 'maam',
+    title: 'מע"מ',
+    href: '/maam',
+    icon: 'Receipt',
+    description: 'דיווח מע"מ, חשבוניות, קיזוז תשומות והחזרים',
+    color: 'orange',
+    subcategories: [
+      { title: 'מה זה מע"מ?', href: '/maam/what-is-vat', description: 'הסבר מלא: שיעור מע"מ, מי חייב, חשבוניות, דיווח וקיזוז' },
+    ]
+  },
+  {
+    id: 'miktzoa',
+    title: 'מדריכים לפי מקצוע',
+    href: '/miktzoa',
+    icon: 'Briefcase',
+    description: 'מדריכים מותאמים לפתיחת עסק לפי תחום',
+    color: 'cyan',
+    subcategories: [
+      { title: 'מאמן כושר', href: '/miktzoa/fitness-trainer', description: 'עוסק פטור למאמן כושר — רישום, מיסוי, ביטוח והוצאות מוכרות' },
+      { title: 'מעצב גרפי', href: '/miktzoa/graphic-designer', description: 'עוסק פטור למעצב גרפי — פרילנס, תמחור, הוצאות ולקוחות בחו"ל' },
+      { title: 'מורה פרטי', href: '/miktzoa/private-tutor', description: 'עוסק פטור למורה פרטי — רישום, קבלות, הוצאות ודיווח' },
+    ]
+  },
+  {
     id: 'guides',
     title: 'מידע ומדריכים',
     href: '/guides',

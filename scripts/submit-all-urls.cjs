@@ -18,6 +18,9 @@ const CATEGORY_URL_MAP = {
   'guides': '/guides',
   'comparisons': '/compare',
   'osek-zeir': '/osek-zeir',
+  'misui': '/misui',
+  'maam': '/maam',
+  'miktzoa': '/miktzoa',
 };
 
 function getAllContentUrls() {
