@@ -104,7 +104,7 @@ export default function AgreementPanel({ lead }) {
           const config = STATUS_CONFIG[ag.status] || STATUS_CONFIG.draft;
           const StatusIcon = config.icon;
           const hasLink = !!ag.submission_link;
-          const isDraft = ag.status === 'draft';
+          const isDraft = ag.status === 'draft' || ag.status === 'pending';
           const isLinkReady = ag.status === 'link_ready';
           const isSent = ag.status === 'sent' || ag.status === 'opened';
           const isSigned = ag.status === 'signed';

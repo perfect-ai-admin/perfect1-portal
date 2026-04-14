@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       template_key,
       template_label: template_label || template_key,
       fillfaster_form_id,
-      status: 'draft',
+      status: 'pending',
       prefilled_data: prefill_data,
       user_data,
       agent_id: user.id,
@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
 
     // Update lead
     await supabaseAdmin.from('leads').update({
-      agreement_status: 'draft',
+      agreement_status: 'pending',
       agreement_id: agreement.id,
       updated_at: new Date().toISOString(),
     }).eq('id', lead_id);
@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
     await supabaseAdmin.from('status_history').insert({
       entity_type: 'lead',
       entity_id: lead_id,
-      new_status: 'agreement_draft',
+      new_status: 'agreement_pending',
       change_reason: 'agreement_created',
       source: 'sales_portal',
       metadata: { agreement_id: agreement.id, template_key, created_by: user.id },
@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
     return jsonResponse({
       success: true,
       agreement_id: agreement.id,
-      status: 'draft',
+      status: 'pending',
     }, 200, req);
 
   } catch (error) {
