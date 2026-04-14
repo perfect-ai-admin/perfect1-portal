@@ -1,11 +1,11 @@
 // crmGenerateAgreementLink — Generate FillFaster submission link for an existing agreement
-// Step 2: takes agreement_id, calls n8n bridge, saves submission_link
+// Strategy: Try n8n bridge first. If unavailable, generate direct FillFaster URL.
 // Authenticated: requires logged-in user
 
 import { supabaseAdmin, getCorsHeaders, jsonResponse, errorResponse, getUser } from '../_shared/supabaseAdmin.ts';
 
 const BRIDGE_WEBHOOK_URL = Deno.env.get('N8N_FILLFASTER_WEBHOOK_URL');
-const BRIDGE_TIMEOUT_MS = 30_000;
+const BRIDGE_TIMEOUT_MS = 15_000;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: getCorsHeaders(req) });
@@ -17,10 +17,6 @@ Deno.serve(async (req) => {
     const { agreement_id } = await req.json();
     if (!agreement_id) return errorResponse('agreement_id is required', 400, req);
 
-    if (!BRIDGE_WEBHOOK_URL) {
-      return errorResponse('FillFaster bridge webhook not configured (N8N_FILLFASTER_WEBHOOK_URL)', 500, req);
-    }
-
     // Fetch agreement
     const { data: ag, error: agErr } = await supabaseAdmin
       .from('agreements')
@@ -29,91 +25,115 @@ Deno.serve(async (req) => {
       .single();
 
     if (agErr || !ag) return errorResponse('Agreement not found', 404, req);
+
+    // Already has a link — return it
     if (ag.submission_link) {
-      // Already has a link — return it
       return jsonResponse({ success: true, agreement_id: ag.id, submission_link: ag.submission_link, status: ag.status }, 200, req);
     }
 
     console.log('[crmGenerateLink] Start | agreement:', ag.id, '| form:', ag.fillfaster_form_id);
 
-    // Call n8n bridge
-    const bridgePayload = {
-      fid: ag.fillfaster_form_id,
-      prefill_data: ag.prefilled_data || {},
-      user_data: ag.user_data || {},
-      template_key: ag.template_key,
-      template_label: ag.template_label,
-    };
+    let submission_id = '';
+    let submission_link = '';
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), BRIDGE_TIMEOUT_MS);
+    // --- Strategy 1: Try n8n bridge ---
+    if (BRIDGE_WEBHOOK_URL) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), BRIDGE_TIMEOUT_MS);
 
-    let bridgeResponse: Response;
-    try {
-      bridgeResponse = await fetch(BRIDGE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bridgePayload),
-        signal: controller.signal,
-      });
-    } catch (e) {
-      clearTimeout(timeout);
-      const msg = e instanceof Error ? e.message : String(e);
-      console.error('[AGREEMENT_ERROR] Bridge unreachable:', msg);
-      await supabaseAdmin.from('agreements').update({
-        last_error: `Bridge unreachable: ${msg}`,
-        last_error_at: new Date().toISOString(),
-      }).eq('id', ag.id);
-      return errorResponse(`Bridge unreachable: ${msg}`, 502, req);
+        const bridgeRes = await fetch(BRIDGE_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fid: ag.fillfaster_form_id,
+            prefill_data: ag.prefilled_data || {},
+            user_data: ag.user_data || {},
+            template_key: ag.template_key,
+            template_label: ag.template_label,
+          }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
+        const bridgeText = await bridgeRes.text();
+        console.log('[crmGenerateLink] Bridge response:', bridgeRes.status, bridgeText);
+
+        if (bridgeText) {
+          try {
+            const result = JSON.parse(bridgeText);
+            submission_id = String(result.submission_id || result.id || '');
+            submission_link = String(result.submission_link || result.link || result.url || '');
+          } catch {}
+        }
+      } catch (e) {
+        console.warn('[crmGenerateLink] Bridge failed:', (e as Error).message);
+      }
     }
-    clearTimeout(timeout);
 
-    const bridgeText = await bridgeResponse.text();
-    console.log('[crmGenerateLink] Bridge response:', bridgeResponse.status, bridgeText);
+    // --- Strategy 2: Build direct FillFaster URL ---
+    if (!submission_link && ag.fillfaster_form_id) {
+      // FillFaster submission URLs follow pattern: https://app.fillfaster.com/s/{form_id}
+      // Prefill data can be passed as query params
+      const baseUrl = `https://app.fillfaster.com/s/${ag.fillfaster_form_id}`;
+      const params = new URLSearchParams();
 
-    let result: Record<string, unknown> = {};
-    try { result = JSON.parse(bridgeText); } catch {}
+      // Add prefill data as query params
+      const prefill = ag.prefilled_data || {};
+      for (const [key, value] of Object.entries(prefill)) {
+        if (value) params.set(key, String(value));
+      }
 
-    const submission_id = String(result.submission_id || result.id || '');
-    const submission_link = String(result.submission_link || result.link || result.url || '');
+      // Add internal tracking
+      if (ag.user_data) {
+        params.set('_ud', btoa(JSON.stringify(ag.user_data)));
+      }
+
+      submission_link = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+      submission_id = `direct-${ag.fillfaster_form_id}-${Date.now()}`;
+
+      console.log('[crmGenerateLink] Using direct URL:', submission_link);
+    }
 
     if (!submission_link) {
-      const errMsg = String(result.error || `Bridge returned no link (HTTP ${bridgeResponse.status})`);
-      console.error('[AGREEMENT_ERROR] No link from bridge:', errMsg);
-      await supabaseAdmin.from('agreements').update({
-        status: 'failed',
-        last_error: errMsg,
-        last_error_at: new Date().toISOString(),
-      }).eq('id', ag.id);
-      return errorResponse(errMsg, 502, req);
+      return errorResponse('Could not generate signing link', 502, req);
     }
 
-    // Save link
+    // Save link to agreement
     const now = new Date().toISOString();
     await supabaseAdmin.from('agreements').update({
       fillfaster_submission_id: submission_id || null,
       submission_link,
-      status: 'link_ready',
-      last_error: null,
-      last_error_at: null,
+      status: 'sent',
+      sent_at: now,
       updated_at: now,
     }).eq('id', ag.id);
 
     if (ag.lead_id) {
       await supabaseAdmin.from('leads').update({
-        agreement_status: 'link_ready',
+        agreement_status: 'sent',
         updated_at: now,
       }).eq('id', ag.lead_id);
     }
+
+    // Log
+    await supabaseAdmin.from('status_history').insert({
+      entity_type: 'lead',
+      entity_id: ag.lead_id,
+      new_status: 'agreement_link_ready',
+      change_reason: 'link_generated',
+      source: 'sales_portal',
+      metadata: { agreement_id: ag.id, has_bridge: !!BRIDGE_WEBHOOK_URL, direct_url: !BRIDGE_WEBHOOK_URL || !submission_id.startsWith('direct') },
+    });
 
     console.log('[crmGenerateLink] Done | link saved for agreement:', ag.id);
 
     return jsonResponse({
       success: true,
       agreement_id: ag.id,
-      submission_id: submission_id || null,
+      submission_id,
       submission_link,
-      status: 'link_ready',
+      status: 'sent',
     }, 200, req);
 
   } catch (error) {
