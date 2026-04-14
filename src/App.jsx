@@ -84,13 +84,7 @@ const OsekZeirLanding = lazyWithRetry(() => import('./pages/OsekZeirLanding'));
 const OpenOsekZeirOnline = lazyWithRetry(() => import('./pages/OpenOsekZeirOnline'));
 const OpenCompanyOnline = lazyWithRetry(() => import('./pages/OpenCompanyOnline'));
 
-// Blog articles (portal-only)
-const BlogLogoArticle = lazyWithRetry(() => import('./pages/blog/LogoArticle'));
-const BlogDigitalCardArticle = lazyWithRetry(() => import('./pages/blog/DigitalCardArticle'));
-const BlogLandingPageArticle = lazyWithRetry(() => import('./pages/blog/LandingPageArticle'));
-const BlogPresentationArticle = lazyWithRetry(() => import('./pages/blog/PresentationArticle'));
-const BlogInvestorDeckArticle = lazyWithRetry(() => import('./pages/blog/InvestorDeckArticle'));
-const BlogStickerArticle = lazyWithRetry(() => import('./pages/blog/StickerArticle'));
+// Blog articles REMOVED — these belong to perfect-dashboard.com, not the portal
 
 // Shared public pages (available on both domains)
 const About = lazyWithRetry(() => import('./pages/About'));
@@ -265,13 +259,7 @@ const PortalRoutes = () => (
       <Route path="settings" element={<CRMSettings />} />
     </Route>
 
-    {/* Blog articles (portal-only) */}
-    <Route path="/blog/logo-leasek" element={<SafePage><BlogLogoArticle /></SafePage>} />
-    <Route path="/blog/kartis-bikur-digitali" element={<SafePage><BlogDigitalCardArticle /></SafePage>} />
-    <Route path="/blog/daf-nchita" element={<SafePage><BlogLandingPageArticle /></SafePage>} />
-    <Route path="/blog/matzget-iskit" element={<SafePage><BlogPresentationArticle /></SafePage>} />
-    <Route path="/blog/matzget-mashkiim" element={<SafePage><BlogInvestorDeckArticle /></SafePage>} />
-    <Route path="/blog/sticker-leasek" element={<SafePage><BlogStickerArticle /></SafePage>} />
+    {/* Blog articles REMOVED — belong to perfect-dashboard.com */}
 
     {/* 404 — no product pages on portal */}
     <Route path="*" element={<PageNotFound />} />

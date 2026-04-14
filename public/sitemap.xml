@@ -443,43 +443,7 @@
     <priority>0.6</priority>
   </url>
 
-  <!-- Blog articles -->
-  <url>
-    <loc>https://www.perfect1.co.il/blog/logo-leasek</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/blog/kartis-bikur-digitali</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/blog/daf-nchita</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/blog/matzget-iskit</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/blog/matzget-mashkiim</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://www.perfect1.co.il/blog/sticker-leasek</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+  <!-- Blog articles REMOVED — belong to perfect-dashboard.com -->
 
   <!-- Calculators -->
   <url>
