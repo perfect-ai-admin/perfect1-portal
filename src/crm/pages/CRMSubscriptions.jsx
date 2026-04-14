@@ -366,10 +366,16 @@ export default function CRMSubscriptions() {
   const handleDelete = async (id) => {
     if (!confirm('האם למחוק את המנוי לצמיתות?\n\nפעולה זו אינה ניתנת לביטול.')) return;
     try {
+      // Remove linked payments first (FK constraint)
+      await supabase.from('payments').update({ subscription_id: null }).eq('subscription_id', id);
+      // Remove billing transactions
+      await supabase.from('billing_transactions').delete().eq('subscription_id', id);
+      // Remove billing alerts
+      await supabase.from('billing_alerts').delete().eq('subscription_id', id);
+      // Now delete subscription
       const { error } = await supabase.from('subscriptions').delete().eq('id', id);
       if (error) throw new Error(error.message);
       toast.success('מנוי נמחק');
-      // Refresh
       qc.invalidateQueries({ queryKey: ['crm-subscriptions'] });
       qc.invalidateQueries({ queryKey: ['crm-subscription-kpis'] });
     } catch (err) {
