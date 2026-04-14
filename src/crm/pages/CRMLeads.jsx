@@ -304,17 +304,6 @@ export default function CRMLeads() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-[#1E3A5F]">לידים ({filtered.length})</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleExport} disabled={exportLeads.isPending}>
-            <Download size={14} className="ml-1" /> {exportLeads.isPending ? 'מייצא...' : 'ייצוא CSV'}
-          </Button>
-          <Button size="sm" onClick={() => setShowCreateDialog(true)} className="bg-[#1E3A5F] hover:bg-[#16324f]">
-            <UserPlus size={14} className="ml-1" /> ליד חדש
-          </Button>
-        </div>
-      </div>
 
       {/* Follow-up summary bar */}
       {(followupStats.overdue > 0 || followupStats.today > 0) && (
@@ -360,8 +349,8 @@ export default function CRMLeads() {
         </div>
       )}
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3">
+      {/* Filters + Actions */}
+      <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <Input
@@ -398,6 +387,14 @@ export default function CRMLeads() {
             ))}
           </SelectContent>
         </Select>
+        <div className="mr-auto flex gap-2">
+          <Button size="sm" onClick={() => setShowCreateDialog(true)} className="bg-[#1E3A5F] hover:bg-[#16324f]">
+            <UserPlus size={14} className="ml-1" /> ליד חדש
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleExport} disabled={exportLeads.isPending}>
+            <Download size={14} className="ml-1" /> CSV
+          </Button>
+        </div>
       </div>
 
       {/* Bulk actions */}
