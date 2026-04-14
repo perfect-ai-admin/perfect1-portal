@@ -91,6 +91,12 @@ export default function AgreementPanel({ lead }) {
                       שלח שוב
                     </Button>
                   )}
+                  {ag.status === 'signed' && ag.signed_pdf_url && (
+                    <Button size="sm" className="h-7 text-[10px] px-2 bg-green-600 hover:bg-green-700 text-white"
+                      onClick={() => window.open(ag.signed_pdf_url, '_blank')}>
+                      <FileText size={10} className="ml-1" /> PDF חתום
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

@@ -47,8 +47,8 @@ Deno.serve(async (req) => {
 
     const now = new Date().toISOString();
 
-    // --- Save to agreement_events (audit trail) ---
-    await saveAgreementEvent(agreement.id, eventName, body);
+    // --- Save to agreement_events (audit trail, non-blocking) ---
+    saveAgreementEvent(agreement.id, eventName, body);
 
     // --- Idempotency: skip if already in terminal state ---
     if (agreement.status === 'signed' && eventName !== 'submitted') {
