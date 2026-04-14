@@ -714,9 +714,9 @@ export function useLeadAgreements(leadId) {
 export function useCreateAgreement() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp }) => {
+    mutationFn: async ({ lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp, extra_fields }) => {
       return invokeFunction('crmCreateAgreement', {
-        lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp,
+        lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp, extra_fields,
       });
     },
     onSuccess: (_, variables) => {

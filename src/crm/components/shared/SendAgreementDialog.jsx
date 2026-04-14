@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Send, RefreshCw, FileText, Phone, Check } from 'lucide-react';
 import { toast } from 'sonner';
@@ -10,15 +11,43 @@ import { AGREEMENT_TEMPLATES } from '../../config/agreementTemplates';
 export default function SendAgreementDialog({ lead, open, onOpenChange }) {
   const createAgreement = useCreateAgreement();
   const [templateKey, setTemplateKey] = useState('');
+  const [fieldValues, setFieldValues] = useState({});
   const [sent, setSent] = useState(false);
 
   const selectedTemplate = AGREEMENT_TEMPLATES.find(t => t.key === templateKey);
   const hasPhone = !!lead?.phone;
 
+  // Auto-fill fields from lead data when template changes
+  useEffect(() => {
+    if (!selectedTemplate) return;
+    const values = {};
+    for (const field of selectedTemplate.fields) {
+      if (field.autoFill === 'name') values[field.name] = lead?.name || '';
+      else if (field.autoFill === 'id_number') values[field.name] = lead?.id_number || '';
+      else values[field.name] = '';
+    }
+    setFieldValues(values);
+  }, [templateKey, lead]);
+
+  const handleFieldChange = (name, value) => {
+    setFieldValues(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSend = () => {
     if (!selectedTemplate) { toast.error('יש לבחור סוג הסכם'); return; }
 
-    const message = selectedTemplate.whatsapp_message(lead?.name || '', selectedTemplate.template_link);
+    // Validate required fields
+    for (const field of selectedTemplate.fields) {
+      if (field.required && !fieldValues[field.name]?.toString().trim()) {
+        toast.error(`יש למלא: ${field.label}`);
+        return;
+      }
+    }
+
+    const message = selectedTemplate.whatsapp_message(
+      fieldValues['שם מלא'] || lead?.name || '',
+      selectedTemplate.template_link
+    );
 
     createAgreement.mutate(
       {
@@ -28,13 +57,18 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
         template_link: selectedTemplate.template_link,
         whatsapp_message: message,
         send_whatsapp: true,
+        extra_fields: fieldValues,
       },
       {
         onSuccess: (data) => {
           if (data?.whatsapp_sent) {
             setSent(true);
           } else {
-            toast.error('ההסכם נשמר אבל שליחת WhatsApp נכשלה');
+            toast.success('ההסכם נשמר');
+            if (data?.submission_link) {
+              toast.info('WhatsApp לא נשלח — הקישור נשמר');
+            }
+            setSent(true);
           }
         },
         onError: (err) => toast.error(err.message || 'שגיאה'),
@@ -44,6 +78,7 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
 
   const handleClose = () => {
     setTemplateKey('');
+    setFieldValues({});
     setSent(false);
     onOpenChange(false);
   };
@@ -70,7 +105,7 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm" dir="rtl">
+      <DialogContent className="max-w-md" dir="rtl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <FileText size={18} />
@@ -79,7 +114,7 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          {/* Template */}
+          {/* Template selection */}
           <div>
             <label className="text-xs font-medium text-slate-600 mb-1 block">סוג הסכם</label>
             <Select value={templateKey} onValueChange={setTemplateKey}>
@@ -92,18 +127,32 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
                 ))}
               </SelectContent>
             </Select>
+            {selectedTemplate?.description && (
+              <p className="text-[10px] text-slate-400 mt-1">{selectedTemplate.description}</p>
+            )}
           </div>
 
-          {/* Lead info */}
+          {/* Dynamic fields per template */}
           {selectedTemplate && (
-            <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 space-y-1 text-xs">
-              <div className="flex justify-between">
-                <span className="text-slate-400">לקוח</span>
-                <span className="text-slate-700 font-medium">{lead?.name || '—'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">טלפון</span>
-                <span className="text-slate-700 font-mono">{lead?.phone || '—'}</span>
+            <div className="space-y-2">
+              <p className="text-[10px] text-slate-500 font-medium">פרטי ההסכם:</p>
+              <div className="grid grid-cols-2 gap-2">
+                {selectedTemplate.fields.map((field) => (
+                  <div key={field.name} className={field.type === 'text' && field.name === 'שם מלא' ? 'col-span-2' : ''}>
+                    <label className="text-[10px] text-slate-500 mb-1 block">
+                      {field.label} {field.required && <span className="text-red-400">*</span>}
+                    </label>
+                    <Input
+                      type={field.type || 'text'}
+                      value={fieldValues[field.name] || ''}
+                      onChange={(e) => handleFieldChange(field.name, e.target.value)}
+                      placeholder={field.placeholder || ''}
+                      className="text-xs"
+                      maxLength={field.maxLength}
+                      min={field.type === 'number' ? '0' : undefined}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -119,6 +168,13 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
             <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600">
               אין מספר טלפון — לא ניתן לשלוח
             </div>
+          )}
+
+          {/* Note */}
+          {selectedTemplate && (
+            <p className="text-[10px] text-slate-400 text-center">
+              פרטי כרטיס אשראי ימולאו ע״י הלקוח בטופס החתימה
+            </p>
           )}
         </div>
 

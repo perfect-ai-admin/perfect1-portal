@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     const user = await getUser(req);
     if (!user) return errorResponse('Unauthorized', 401, req);
 
-    const { lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp } = await req.json();
+    const { lead_id, template_key, template_label, template_link, whatsapp_message, send_whatsapp, extra_fields } = await req.json();
 
     if (!lead_id || !template_key || !template_link) {
       return errorResponse('lead_id, template_key, and template_link are required', 400, req);
@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
         submission_link: template_link,
         status: 'sent',
         sent_at: now,
-        prefilled_data: {},
+        prefilled_data: extra_fields || {},
         user_data: { lead_id, agent_id: user.id, template_key },
         agent_id: user.id,
       })
