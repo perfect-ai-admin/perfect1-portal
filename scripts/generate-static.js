@@ -550,6 +550,10 @@ function generateSPAFallbacks() {
   const spaRoutes = [
     // Landing pages
     '/open-osek-patur',
+    // Calculators (React pages, not JSON content)
+    '/calculators',
+    '/calculators/net-income',
+    '/calculators/credit-points',
     // Osek Zeir — alternative URL aliases (primary routes get full SEO pages above)
     '/osek-zair-landing',
     '/open-osek-zair-online',
