@@ -82,6 +82,7 @@ const OpenOsekPaturOnline = lazyWithRetry(() => import('./pages/OpenOsekPaturOnl
 // עוסק זעיר — מסלול נפרד לחלוטין מעוסק פטור. שני עמודים ייעודיים עם קופי משלהם.
 const OsekZeirLanding = lazyWithRetry(() => import('./pages/OsekZeirLanding'));
 const OpenOsekZeirOnline = lazyWithRetry(() => import('./pages/OpenOsekZeirOnline'));
+const OpenCompanyOnline = lazyWithRetry(() => import('./pages/OpenCompanyOnline'));
 
 // Blog articles (portal-only)
 const BlogLogoArticle = lazyWithRetry(() => import('./pages/blog/LogoArticle'));
@@ -209,6 +210,7 @@ const PortalRoutes = () => (
     <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
+    <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
     {/* Osek Zeir — מסלול נפרד לחלוטין. חייב להישאר מנותק מעוסק פטור בכל המסרים */}
     <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
     <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />
@@ -317,6 +319,7 @@ const DevRoutes = () => (
     <Route path="/patur-vs-murshe-quiz" element={<SafePage><PaturVsMursheQuiz /></SafePage>} />
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
+    <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
     {/* Osek Zeir — מסלול נפרד לחלוטין (Dev) */}
     <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
     <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />
