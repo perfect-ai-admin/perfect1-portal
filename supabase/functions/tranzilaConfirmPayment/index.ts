@@ -49,43 +49,47 @@ Deno.serve(async (req) => {
       const payload = await req.json();
       payment_id = payload.payment_id || '';
       transaction_id = payload.transaction_id || '';
-
-      // תיקון 3: קבל את tranzila_response מה-payload במקום hardcoded '000'
       tranzilaResponse = payload.tranzila_response ?? '';
+
       if (tranzilaResponse === '') {
         return errorResponse('Missing tranzila_response', 400, req);
       }
 
-      // תיקון 2: אימות משתמש בנתיב client
+      // Auth: require logged-in user
       const user = await getUser(req);
       if (!user) {
         return errorResponse('Unauthorized', 401, req);
       }
 
-      // שלוף payment לפני שנמשיך כדי לאמת ownership
       if (!payment_id) return errorResponse('Missing payment_id', 400, req);
 
+      // Ownership check: support both customer-based payments AND CRM lead-based payments
       const { data: paymentCheck, error: payCheckErr } = await supabaseAdmin
         .from('payments')
-        .select('customer_id')
+        .select('customer_id, lead_id, source')
         .eq('id', payment_id)
         .single();
 
       if (payCheckErr || !paymentCheck) return errorResponse('Payment not found', 404, req);
 
-      // בדוק שה-payment שייך למשתמש המחובר
-      const { data: customerRecord } = await supabaseAdmin
-        .from('customers')
-        .select('id')
-        .eq('email', user.email)
-        .single();
+      // CRM payments (source='sales_portal' or has lead_id but no customer_id) — allow any authenticated CRM user
+      const isCrmPayment = paymentCheck.source === 'sales_portal' || (paymentCheck.lead_id && !paymentCheck.customer_id);
 
-      if (!customerRecord || paymentCheck.customer_id !== customerRecord.id) {
-        console.error(`[tranzilaConfirmPayment] Ownership mismatch: user=${user.id}, payment_customer=${paymentCheck.customer_id}`);
-        return errorResponse('Forbidden', 403, req);
+      if (!isCrmPayment) {
+        // Regular customer payment — verify ownership via customers table
+        const { data: customerRecord } = await supabaseAdmin
+          .from('customers')
+          .select('id')
+          .eq('email', user.email)
+          .single();
+
+        if (!customerRecord || paymentCheck.customer_id !== customerRecord.id) {
+          console.error(`[tranzilaConfirmPayment] Ownership mismatch: user=${user.id}, payment_customer=${paymentCheck.customer_id}`);
+          return errorResponse('Forbidden', 403, req);
+        }
       }
 
-      console.log(`[tranzilaConfirmPayment] Client call: payment_id=${payment_id}, txn=${transaction_id}`);
+      console.log(`[tranzilaConfirmPayment] Client call: payment_id=${payment_id}, txn=${transaction_id}, isCrm=${isCrmPayment}`);
     }
 
     if (!payment_id) return errorResponse('Missing payment_id', 400, req);
@@ -402,6 +406,29 @@ async function handleRecurringChargeNotify(
   }
 
   if (isSuccess) {
+    // Update the pending payment record for this subscription → completed
+    const { data: pendingPayment } = await supabaseAdmin
+      .from('payments')
+      .select('id')
+      .eq('subscription_id', sub.id)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (pendingPayment) {
+      await supabaseAdmin.from('payments').update({
+        status: 'completed',
+        metadata: {
+          transaction_id: transactionId,
+          tranzila_response: tranzilaResponse,
+          confirmed_at: new Date().toISOString(),
+          confirmed_via: 'recurring_webhook',
+        },
+      }).eq('id', pendingPayment.id).eq('status', 'pending');
+      console.log(`[recurring] Updated payment ${pendingPayment.id} → completed`);
+    }
+
     // Calculate next charge date: 15th of next month
     const d = new Date();
     let y = d.getFullYear();
