@@ -70,6 +70,7 @@ const CalculatorsPage = lazyWithRetry(() => import('./portal/templates/Calculato
 const NetIncomeCalcPage = lazyWithRetry(() => import('./portal/templates/NetIncomeCalcPage'));
 const CreditPointsCalcPage = lazyWithRetry(() => import('./portal/templates/CreditPointsCalcPage'));
 const OsekPaturLanding = lazyWithRetry(() => import('./pages/OsekPaturLanding'));
+const OsekPaturLandingB = lazyWithRetry(() => import('./pages/OsekPaturLandingB'));
 const OsekPaturSteps = lazyWithRetry(() => import('./pages/OsekPaturSteps'));
 const OpenOsekPatur = lazyWithRetry(() => import('./pages/OpenOsekPatur'));
 const ThankYou = lazyWithRetry(() => import('./pages/ThankYou'));
@@ -199,6 +200,7 @@ const PortalRoutes = () => (
   <Routes>
     {/* Landing pages */}
     <Route path="/OsekPaturLanding" element={<SafePage><OsekPaturLanding /></SafePage>} />
+    <Route path="/OsekPaturLandingB" element={<SafePage><OsekPaturLandingB /></SafePage>} />
     <Route path="/OsekPaturSteps" element={<SafePage><OsekPaturSteps /></SafePage>} />
     <Route path="/open-osek-patur" element={<SafePage><OpenOsekPatur /></SafePage>} />
     <Route path="/patur-vs-murshe" element={<SafePage><PaturVsMursheLanding /></SafePage>} />
@@ -305,6 +307,7 @@ const DevRoutes = () => (
 
     {/* Landing pages */}
     <Route path="/OsekPaturLanding" element={<SafePage><OsekPaturLanding /></SafePage>} />
+    <Route path="/OsekPaturLandingB" element={<SafePage><OsekPaturLandingB /></SafePage>} />
     <Route path="/OsekPaturSteps" element={<SafePage><OsekPaturSteps /></SafePage>} />
     <Route path="/open-osek-patur" element={<SafePage><OpenOsekPatur /></SafePage>} />
     <Route path="/patur-vs-murshe" element={<SafePage><PaturVsMursheLanding /></SafePage>} />
