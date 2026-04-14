@@ -4,11 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Building2, Users, FileText, CreditCard, Shield, Clock,
   CheckCircle2, ChevronLeft, ChevronRight, Loader2, Phone,
   Star, Zap, ArrowLeft, X, Check, ShieldCheck, Plus, Minus,
-  MessageCircle, BadgeCheck, Sparkles
+  MessageCircle, BadgeCheck, Sparkles, Globe, UserPlus, ScrollText
 } from 'lucide-react';
 import { invokeFunction } from '@/api/supabaseClient';
 import CheckoutDialog from '@/components/checkout/CheckoutDialog';
@@ -46,10 +47,11 @@ const UPSELL_SERVICES = [
 
 // ============ WIZARD STEPS CONFIG ============
 const STEPS = [
-  { id: 'company', icon: Building2, title: 'פרטי החברה', color: 'bg-indigo-100 text-indigo-600' },
+  { id: 'company', icon: Building2, title: 'שמות ומטרות החברה', color: 'bg-indigo-100 text-indigo-600' },
+  { id: 'capital', icon: ScrollText, title: 'הון מניות ותקנון', color: 'bg-violet-100 text-violet-600' },
   { id: 'shareholders', icon: Users, title: 'בעלי מניות', color: 'bg-blue-100 text-blue-600' },
-  { id: 'director', icon: BadgeCheck, title: 'דירקטור', color: 'bg-purple-100 text-purple-600' },
-  { id: 'contact', icon: Phone, title: 'פרטי קשר', color: 'bg-green-100 text-green-600' },
+  { id: 'directors', icon: BadgeCheck, title: 'דירקטורים', color: 'bg-purple-100 text-purple-600' },
+  { id: 'contact', icon: Phone, title: 'פרטי קשר וסיום', color: 'bg-green-100 text-green-600' },
 ];
 
 const COMPANY_GOALS = [
@@ -58,8 +60,12 @@ const COMPANY_GOALS = [
   'מסחר ויבוא',
   'טכנולוגיה ופיתוח תוכנה',
   'נדל"ן והשקעות',
+  'ייצור',
+  'מזון ומסעדנות',
   'אחר',
 ];
+
+const EMPTY_PERSON = { fullName: '', idNumber: '', birthDate: '', address: '', email: '', phone: '' };
 
 // ============ MAIN PAGE ============
 export default function OpenCompanyOnline() {
@@ -76,65 +82,100 @@ export default function OpenCompanyOnline() {
     const saved = localStorage.getItem('openCompanyForm');
     if (saved) try { return JSON.parse(saved); } catch {}
     return {
-      companyName1: '',
-      companyName2: '',
+      // Step 1 — company names & goals
+      companyNameHe1: '',
+      companyNameHe2: '',
+      companyNameHe3: '',
+      companyNameEn: '',
       companyGoal: COMPANY_GOALS[0],
       companyGoalOther: '',
-      shareholderCount: 1,
-      shareholders: [{ fullName: '', idNumber: '', address: '' }],
-      shareDistribution: '',
-      directorName: '',
-      directorId: '',
-      directorAddress: '',
-      directorIsShareholder: true,
       registeredAddress: '',
+      // Step 2 — capital & articles
+      shareCount: '100',
+      shareParValue: '1',
+      articlesType: 'standard',
+      // Step 3 — shareholders
+      shareholderCount: 1,
+      shareholders: [{ ...EMPTY_PERSON }],
+      shareDistribution: '',
+      // Step 4 — directors
+      directorCount: 1,
+      directors: [{ ...EMPTY_PERSON }],
+      directorIsShareholder: [true],
+      // Step 5 — contact + notes
       contactName: '',
       contactPhone: '',
       contactEmail: '',
+      notes: '',
     };
   });
 
-  // persist
   useEffect(() => {
     localStorage.setItem('openCompanyForm', JSON.stringify(form));
   }, [form]);
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
 
-  const setShareholder = (idx, key, val) => {
+  const setPerson = (list, idx, key, val) => {
     setForm(prev => {
-      const arr = [...prev.shareholders];
+      const arr = [...prev[list]];
       arr[idx] = { ...arr[idx], [key]: val };
-      return { ...prev, shareholders: arr };
+      return { ...prev, [list]: arr };
     });
   };
 
-  const setShareholderCount = (count) => {
+  const setPersonCount = (list, countKey, count) => {
     const n = Math.max(1, Math.min(10, count));
     setForm(prev => {
-      const arr = [...prev.shareholders];
-      while (arr.length < n) arr.push({ fullName: '', idNumber: '', address: '' });
-      return { ...prev, shareholderCount: n, shareholders: arr.slice(0, n) };
+      const arr = [...prev[list]];
+      while (arr.length < n) arr.push({ ...EMPTY_PERSON });
+      const update = { [list]: arr.slice(0, n), [countKey]: n };
+      // grow directorIsShareholder array if directors
+      if (list === 'directors') {
+        const flags = [...(prev.directorIsShareholder || [])];
+        while (flags.length < n) flags.push(false);
+        update.directorIsShareholder = flags.slice(0, n);
+      }
+      return { ...prev, ...update };
     });
   };
 
-  // Validation
+  const setDirectorIsShareholder = (idx, val) => {
+    setForm(prev => {
+      const flags = [...(prev.directorIsShareholder || [])];
+      flags[idx] = val;
+      const directors = [...prev.directors];
+      if (val && prev.shareholders[idx]) {
+        directors[idx] = { ...prev.shareholders[idx] };
+      }
+      return { ...prev, directorIsShareholder: flags, directors };
+    });
+  };
+
+  // Validation per step
   const validate = () => {
     const e = {};
     if (step === 0) {
-      if (!form.companyName1.trim()) e.companyName1 = 'חובה';
+      if (!form.companyNameHe1.trim()) e.companyNameHe1 = 'חובה לבחור שם אחד לפחות';
+      if (!form.companyNameEn.trim()) e.companyNameEn = 'חובה — נדרש לרשם החברות';
     }
     if (step === 1) {
+      if (!form.shareCount || Number(form.shareCount) < 1) e.shareCount = 'מינימום 1';
+    }
+    if (step === 2) {
       form.shareholders.slice(0, form.shareholderCount).forEach((s, i) => {
         if (!s.fullName.trim()) e[`sh_name_${i}`] = 'חובה';
         if (!s.idNumber.trim()) e[`sh_id_${i}`] = 'חובה';
       });
     }
-    if (step === 2) {
-      if (!form.directorName.trim()) e.directorName = 'חובה';
-      if (!form.directorId.trim()) e.directorId = 'חובה';
-    }
     if (step === 3) {
+      form.directors.slice(0, form.directorCount).forEach((d, i) => {
+        if (form.directorIsShareholder[i]) return; // filled from shareholder
+        if (!d.fullName.trim()) e[`dir_name_${i}`] = 'חובה';
+        if (!d.idNumber.trim()) e[`dir_id_${i}`] = 'חובה';
+      });
+    }
+    if (step === 4) {
       if (!form.contactName.trim()) e.contactName = 'חובה';
       if (!form.contactPhone.trim()) e.contactPhone = 'חובה';
       const ph = form.contactPhone.replace(/[-\s]/g, '');
@@ -149,7 +190,6 @@ export default function OpenCompanyOnline() {
     if (step < STEPS.length - 1) {
       setStep(s => s + 1);
     } else {
-      // Last step — submit lead + open payment
       submitLead();
       setShowCheckout(true);
     }
@@ -164,8 +204,8 @@ export default function OpenCompanyOnline() {
         phone: form.contactPhone,
         email: form.contactEmail,
         pageSlug: 'open-hevra-bam-online',
-        businessName: form.companyName1,
-        notes: `חברה: ${form.companyName1}, ${form.shareholderCount} בעלי מניות, מטרה: ${form.companyGoal}`,
+        businessName: form.companyNameHe1,
+        notes: `חברה: ${form.companyNameHe1} / ${form.companyNameEn}, ${form.shareholderCount} בעלי מניות, ${form.directorCount} דירקטורים, מטרה: ${form.companyGoal}, תקנון: ${form.articlesType}, הון: ${form.shareCount} מניות. הערות: ${form.notes}`,
       });
     } catch {}
   };
@@ -214,12 +254,10 @@ export default function OpenCompanyOnline() {
         {/* ===== HERO ===== */}
         {!started && !showUpsell && (
           <div className="relative overflow-hidden">
-            {/* Background */}
             <div className="absolute inset-0 bg-gradient-to-bl from-indigo-950 via-indigo-900 to-indigo-800" />
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_20%,white_1px,transparent_1px)] bg-[length:24px_24px]" />
 
             <div className="relative max-w-4xl mx-auto px-4 pt-20 pb-16 sm:pt-28 sm:pb-24">
-              {/* Badge */}
               <div className="flex justify-center mb-6">
                 <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur text-white/90 px-4 py-1.5 rounded-full text-sm font-medium border border-white/10">
                   <Zap className="w-4 h-4 text-amber-400" />
@@ -234,19 +272,18 @@ export default function OpenCompanyOnline() {
               </h1>
 
               <p className="text-lg sm:text-xl text-white/70 text-center max-w-2xl mx-auto mb-8">
-                מלאו שאלון קצר (3 דקות), שלמו אונליין — ואנחנו מטפלים ברישום ברשם החברות.
+                מלאו שאלון מלא (5 דקות), שלמו אונליין — ואנחנו מטפלים ברישום ברשם החברות.
                 <br className="hidden sm:block" />
                 תעודת התאגדות תוך 7 ימי עסקים.
               </p>
 
-              {/* CTA */}
               <div className="flex flex-col items-center gap-4">
                 <Button
                   onClick={() => setStarted(true)}
                   className="h-14 sm:h-16 px-10 sm:px-14 text-lg sm:text-xl font-extrabold rounded-2xl bg-amber-500 hover:bg-amber-400 text-indigo-950 shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all"
                 >
                   <Sparkles className="ml-2 w-5 h-5" />
-                  התחילו עכשיו — 3 דקות בלבד
+                  התחילו עכשיו
                 </Button>
 
                 <div className="flex items-center gap-4 text-white/50 text-sm">
@@ -260,7 +297,6 @@ export default function OpenCompanyOnline() {
                 </div>
               </div>
 
-              {/* Trust */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-12 max-w-3xl mx-auto">
                 {[
                   { icon: Shield, text: 'תשלום מאובטח' },
@@ -283,7 +319,7 @@ export default function OpenCompanyOnline() {
                 <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
                   {[
                     'בדיקת זמינות שם החברה',
-                    'הכנת תקנון מצוי',
+                    'הכנת תקנון (מצוי או מותאם)',
                     'הגשה מקוונת לרשם החברות',
                     'מעקב סטטוס עד קבלת תעודה',
                     'אימות מסמכים ע"י עו"ד',
@@ -298,7 +334,7 @@ export default function OpenCompanyOnline() {
               </div>
             </div>
 
-            {/* SEO Content block below hero */}
+            {/* SEO Content */}
             <div className="bg-white py-12 sm:py-16">
               <div className="max-w-3xl mx-auto px-4 space-y-8 text-gray-700 leading-relaxed">
                 <div>
@@ -309,7 +345,7 @@ export default function OpenCompanyOnline() {
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">איך התהליך עובד?</h2>
                   <div className="grid sm:grid-cols-4 gap-4">
                     {[
-                      { num: '1', title: 'ממלאים שאלון', desc: 'פרטי החברה, בעלי מניות ודירקטור' },
+                      { num: '1', title: 'ממלאים שאלון', desc: 'שמות, בעלי מניות, דירקטורים ופרטי קשר' },
                       { num: '2', title: 'משלמים אונליין', desc: '450₪ בלבד — אשראי, Bit או Google Pay' },
                       { num: '3', title: 'אנחנו מטפלים', desc: 'הכנת מסמכים, אימות והגשה לרשם' },
                       { num: '4', title: 'מקבלים תעודה', desc: 'תעודת התאגדות תוך 7 ימי עסקים' },
@@ -323,7 +359,6 @@ export default function OpenCompanyOnline() {
                   </div>
                 </div>
 
-                {/* Second CTA */}
                 <div className="text-center pt-4">
                   <Button
                     onClick={() => { setStarted(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
@@ -342,6 +377,7 @@ export default function OpenCompanyOnline() {
                       { q: 'האם אפשר להקים חברה עם בעל מניות אחד?', a: 'כן, חוק החברות מאפשר הקמת "חברת יחיד" עם בעל מניות ודירקטור אחד.' },
                       { q: 'מה לא כלול ב-450₪?', a: 'אגרת רשם החברות (כ-2,145₪ בהגשה מקוונת) משולמת ישירות לרשם. אנחנו מטפלים בכל השאר.' },
                       { q: 'האם אני חייב עורך דין?', a: 'אימות חתימות חייב להתבצע ע"י עו"ד — זה כלול בשירות שלנו.' },
+                      { q: 'למה צריך שם באנגלית?', a: 'רשם החברות דורש שם חברה באנגלית לצד השם בעברית. השם באנגלית מופיע בתעודת ההתאגדות ובמסמכים רשמיים.' },
                     ].map((faq, i) => (
                       <details key={i} className="group bg-gray-50 rounded-xl px-5 py-4">
                         <summary className="font-bold text-gray-900 cursor-pointer list-none flex items-center justify-between">
@@ -402,10 +438,11 @@ export default function OpenCompanyOnline() {
                   transition={{ duration: 0.2 }}
                   className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 space-y-4"
                 >
-                  {step === 0 && <StepCompany form={form} set={set} errors={errors} />}
-                  {step === 1 && <StepShareholders form={form} setShareholder={setShareholder} setCount={setShareholderCount} errors={errors} />}
-                  {step === 2 && <StepDirector form={form} set={set} errors={errors} />}
-                  {step === 3 && <StepContact form={form} set={set} errors={errors} />}
+                  {step === 0 && <StepCompanyNames form={form} set={set} errors={errors} />}
+                  {step === 1 && <StepCapital form={form} set={set} errors={errors} />}
+                  {step === 2 && <StepShareholders form={form} setPerson={setPerson} setCount={setPersonCount} set={set} errors={errors} />}
+                  {step === 3 && <StepDirectors form={form} setPerson={setPerson} setCount={setPersonCount} setDirIsSh={setDirectorIsShareholder} errors={errors} />}
+                  {step === 4 && <StepContact form={form} set={set} errors={errors} />}
                 </motion.div>
               </AnimatePresence>
 
@@ -432,7 +469,6 @@ export default function OpenCompanyOnline() {
                 </Button>
               </div>
 
-              {/* Price reminder */}
               <p className="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
                 <ShieldCheck className="w-3 h-3" />תשלום מאובטח · 450₪ בלבד · ללא התחייבות
               </p>
@@ -444,7 +480,6 @@ export default function OpenCompanyOnline() {
         {showUpsell && (
           <div className="min-h-screen bg-gradient-to-b from-green-50 to-white pt-10 pb-20 px-4">
             <div className="max-w-2xl mx-auto">
-              {/* Success banner */}
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                   <CheckCircle2 className="w-8 h-8 text-green-600" />
@@ -453,7 +488,6 @@ export default function OpenCompanyOnline() {
                 <p className="text-gray-500">הצוות שלנו יתחיל לטפל ברישום החברה תוך יום עסקים.</p>
               </div>
 
-              {/* Upsell */}
               <div className="bg-white rounded-2xl border-2 border-indigo-100 p-5 sm:p-6 mb-6">
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-5 h-5 text-amber-500" />
@@ -497,7 +531,6 @@ export default function OpenCompanyOnline() {
                 )}
               </div>
 
-              {/* Upsell Actions */}
               <div className="flex flex-col gap-3">
                 {selectedUpsells.length > 0 && (
                   <Button
@@ -526,11 +559,16 @@ export default function OpenCompanyOnline() {
           onClose={() => setShowCheckout(false)}
           product={{
             name: 'פתיחת חברה בע"מ אונליין',
-            description: `חברה: ${form.companyName1} · ${form.shareholderCount} בעלי מניות`,
+            description: `חברה: ${form.companyNameHe1} / ${form.companyNameEn} · ${form.shareholderCount} בעלי מניות · ${form.directorCount} דירקטורים`,
             price: 450,
             product_type: 'one-time',
             product_id: 'open-hevra-bam',
-            metadata: { companyName: form.companyName1, shareholders: form.shareholderCount },
+            metadata: {
+              companyNameHe: form.companyNameHe1,
+              companyNameEn: form.companyNameEn,
+              shareholders: form.shareholderCount,
+              directors: form.directorCount,
+            },
           }}
           onPaymentSuccess={handlePaymentSuccess}
         />
@@ -563,17 +601,33 @@ function FieldError({ error }) {
   return <p className="text-red-500 text-xs mt-0.5">{error}</p>;
 }
 
-function StepCompany({ form, set, errors }) {
+function Hint({ text }) {
+  return <p className="text-xs text-gray-400 mt-0.5">{text}</p>;
+}
+
+// ---- Step 1: Company Names & Goals ----
+function StepCompanyNames({ form, set, errors }) {
   return (
     <>
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 block">שם החברה המבוקש (ראשון) *</label>
-        <Input value={form.companyName1} onChange={e => set('companyName1', e.target.value)} placeholder='לדוגמה: "אביב טכנולוגיות בע"מ"' className="h-11" />
-        <FieldError error={errors.companyName1} />
+        <label className="text-sm font-medium text-gray-700 mb-1 block">שם החברה בעברית (ראשון) *</label>
+        <Input value={form.companyNameHe1} onChange={e => set('companyNameHe1', e.target.value)} placeholder='לדוגמה: אביב טכנולוגיות בע"מ' className="h-11" />
+        <FieldError error={errors.companyNameHe1} />
+        <Hint text='חייב להסתיים ב-בע"מ. נבדוק זמינות ברשם.' />
       </div>
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 block">שם חלופי (למקרה שהשם תפוס)</label>
-        <Input value={form.companyName2} onChange={e => set('companyName2', e.target.value)} placeholder="שם חלופי" className="h-11" />
+        <label className="text-sm font-medium text-gray-700 mb-1 block">שם חלופי שני</label>
+        <Input value={form.companyNameHe2} onChange={e => set('companyNameHe2', e.target.value)} placeholder="למקרה שהשם הראשון תפוס" className="h-11" />
+      </div>
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1 block">שם חלופי שלישי</label>
+        <Input value={form.companyNameHe3} onChange={e => set('companyNameHe3', e.target.value)} placeholder="למקרה שגם השני תפוס" className="h-11" />
+      </div>
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1 block">שם החברה באנגלית *</label>
+        <Input value={form.companyNameEn} onChange={e => set('companyNameEn', e.target.value)} placeholder='e.g. Aviv Technologies Ltd.' className="h-11" dir="ltr" />
+        <FieldError error={errors.companyNameEn} />
+        <Hint text="נדרש לרשם החברות. חייב להסתיים ב-Ltd." />
       </div>
       <div>
         <label className="text-sm font-medium text-gray-700 mb-1 block">מטרת החברה</label>
@@ -599,22 +653,83 @@ function StepCompany({ form, set, errors }) {
       <div>
         <label className="text-sm font-medium text-gray-700 mb-1 block">כתובת רשומה לחברה</label>
         <Input value={form.registeredAddress} onChange={e => set('registeredAddress', e.target.value)} placeholder="עיר, רחוב, מספר" className="h-11" />
+        <Hint text="הכתובת לקבלת דואר רשמי מרשם החברות ומרשויות המס" />
       </div>
     </>
   );
 }
 
-function StepShareholders({ form, setShareholder, setCount, errors }) {
+// ---- Step 2: Share Capital & Articles ----
+function StepCapital({ form, set, errors }) {
+  return (
+    <>
+      <p className="text-sm text-gray-500">הגדרת הון המניות הרשום וסוג התקנון. אם לא בטוחים — השאירו את ברירת המחדל.</p>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-1 block">כמות מניות רשומות *</label>
+          <Input value={form.shareCount} onChange={e => set('shareCount', e.target.value)} placeholder="100" type="number" min="1" className="h-11" dir="ltr" />
+          <FieldError error={errors.shareCount} />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-1 block">ערך נקוב למניה (₪)</label>
+          <Input value={form.shareParValue} onChange={e => set('shareParValue', e.target.value)} placeholder="1" type="number" min="0.01" step="0.01" className="h-11" dir="ltr" />
+        </div>
+      </div>
+      <Hint text="ברירת מחדל: 100 מניות רגילות בנות 1₪ כל אחת. מתאים לרוב החברות." />
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-2 block">סוג תקנון</label>
+        <div className="space-y-2">
+          {[
+            { value: 'standard', label: 'תקנון מצוי (ברירת מחדל)', desc: 'מתאים לחברת יחיד או שותפים שמסכימים על הכללים הסטנדרטיים' },
+            { value: 'custom', label: 'תקנון מותאם אישית', desc: 'מומלץ כשיש שותפים — כולל מנגנוני הצבעה, העברת מניות ויציאה' },
+          ].map(opt => (
+            <label
+              key={opt.value}
+              className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                form.articlesType === opt.value
+                  ? 'border-indigo-500 bg-indigo-50/50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <input
+                type="radio"
+                name="articlesType"
+                checked={form.articlesType === opt.value}
+                onChange={() => set('articlesType', opt.value)}
+                className="mt-0.5 w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+              />
+              <div>
+                <span className="text-sm font-medium text-gray-900">{opt.label}</span>
+                <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
+              </div>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {form.articlesType === 'custom' && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm text-amber-800">
+          <strong>שימו לב:</strong> תקנון מותאם כלול בשירות ללא עלות נוספת. עו"ד מצוות שלנו יכין אותו בהתאם לצרכים שלכם.
+        </div>
+      )}
+    </>
+  );
+}
+
+// ---- Step 3: Shareholders ----
+function StepShareholders({ form, setPerson, setCount, set, errors }) {
   return (
     <>
       <div>
         <label className="text-sm font-medium text-gray-700 mb-2 block">מספר בעלי מניות</label>
         <div className="flex items-center gap-3">
-          <button onClick={() => setCount(form.shareholderCount - 1)} className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">
+          <button onClick={() => setCount('shareholders', 'shareholderCount', form.shareholderCount - 1)} className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">
             <Minus className="w-4 h-4" />
           </button>
           <span className="text-xl font-bold text-gray-900 w-8 text-center">{form.shareholderCount}</span>
-          <button onClick={() => setCount(form.shareholderCount + 1)} className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">
+          <button onClick={() => setCount('shareholders', 'shareholderCount', form.shareholderCount + 1)} className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">
             <Plus className="w-4 h-4" />
           </button>
         </div>
@@ -623,85 +738,111 @@ function StepShareholders({ form, setShareholder, setCount, errors }) {
       {form.shareholders.slice(0, form.shareholderCount).map((sh, i) => (
         <div key={i} className="p-3 bg-gray-50 rounded-xl space-y-2">
           <p className="text-sm font-bold text-gray-700">בעל מניות {i + 1}</p>
-          <Input value={sh.fullName} onChange={e => setShareholder(i, 'fullName', e.target.value)} placeholder="שם מלא *" className="h-10" />
+          <Input value={sh.fullName} onChange={e => setPerson('shareholders', i, 'fullName', e.target.value)} placeholder="שם מלא (כמו בת.ז.) *" className="h-10" />
           <FieldError error={errors[`sh_name_${i}`]} />
-          <Input value={sh.idNumber} onChange={e => setShareholder(i, 'idNumber', e.target.value)} placeholder="מספר ת.ז. *" className="h-10" dir="ltr" />
+          <Input value={sh.idNumber} onChange={e => setPerson('shareholders', i, 'idNumber', e.target.value)} placeholder="מספר ת.ז. *" className="h-10" dir="ltr" />
           <FieldError error={errors[`sh_id_${i}`]} />
-          <Input value={sh.address} onChange={e => setShareholder(i, 'address', e.target.value)} placeholder="כתובת" className="h-10" />
+          <Input value={sh.birthDate} onChange={e => setPerson('shareholders', i, 'birthDate', e.target.value)} placeholder="תאריך לידה" type="date" className="h-10" dir="ltr" />
+          <Input value={sh.address} onChange={e => setPerson('shareholders', i, 'address', e.target.value)} placeholder="כתובת מגורים" className="h-10" />
+          <Input value={sh.email} onChange={e => setPerson('shareholders', i, 'email', e.target.value)} placeholder="אימייל" type="email" className="h-10" dir="ltr" />
+          <Input value={sh.phone} onChange={e => setPerson('shareholders', i, 'phone', e.target.value)} placeholder="טלפון" type="tel" className="h-10" dir="ltr" />
         </div>
       ))}
 
       {form.shareholderCount > 1 && (
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1 block">חלוקת מניות (אופציונלי)</label>
-          <Input value={form.shareDistribution} onChange={e => set('shareDistribution', e.target.value)} placeholder='לדוגמה: "50%-50%" או "60%-40%"' className="h-11" />
+          <label className="text-sm font-medium text-gray-700 mb-1 block">חלוקת מניות</label>
+          <Input value={form.shareDistribution} onChange={e => set('shareDistribution', e.target.value)} placeholder='לדוגמה: "50%-50%" או "60%-20%-20%"' className="h-11" />
+          <Hint text="אם לא תמלאו — המניות יחולקו שווה בשווה" />
         </div>
       )}
     </>
   );
 }
 
-function StepDirector({ form, set, errors }) {
+// ---- Step 4: Directors ----
+function StepDirectors({ form, setPerson, setCount, setDirIsSh, errors }) {
   return (
     <>
-      <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
-        <input
-          type="checkbox"
-          checked={form.directorIsShareholder}
-          onChange={e => {
-            set('directorIsShareholder', e.target.checked);
-            if (e.target.checked && form.shareholders[0]) {
-              set('directorName', form.shareholders[0].fullName);
-              set('directorId', form.shareholders[0].idNumber);
-              set('directorAddress', form.shareholders[0].address);
-            }
-          }}
-          className="w-5 h-5 rounded border-gray-300 text-indigo-600"
-        />
-        <span className="text-sm text-gray-700">הדירקטור הוא בעל המניות הראשון</span>
-      </label>
+      <p className="text-sm text-gray-500">חברה חייבת לפחות דירקטור אחד. הדירקטור חייב להיות אדם בגיר (18+).</p>
 
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 block">שם מלא של הדירקטור *</label>
-        <Input
-          value={form.directorName}
-          onChange={e => set('directorName', e.target.value)}
-          placeholder="שם מלא"
-          className="h-11"
-          disabled={form.directorIsShareholder}
-        />
-        <FieldError error={errors.directorName} />
+        <label className="text-sm font-medium text-gray-700 mb-2 block">מספר דירקטורים</label>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setCount('directors', 'directorCount', form.directorCount - 1)} className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">
+            <Minus className="w-4 h-4" />
+          </button>
+          <span className="text-xl font-bold text-gray-900 w-8 text-center">{form.directorCount}</span>
+          <button onClick={() => setCount('directors', 'directorCount', form.directorCount + 1)} className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50">
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
       </div>
-      <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 block">ת.ז. דירקטור *</label>
-        <Input
-          value={form.directorId}
-          onChange={e => set('directorId', e.target.value)}
-          placeholder="מספר ת.ז."
-          className="h-11"
-          dir="ltr"
-          disabled={form.directorIsShareholder}
-        />
-        <FieldError error={errors.directorId} />
-      </div>
-      <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 block">כתובת דירקטור</label>
-        <Input
-          value={form.directorAddress}
-          onChange={e => set('directorAddress', e.target.value)}
-          placeholder="כתובת"
-          className="h-11"
-          disabled={form.directorIsShareholder}
-        />
-      </div>
+
+      {form.directors.slice(0, form.directorCount).map((dir, i) => {
+        const isSh = form.directorIsShareholder?.[i] || false;
+        const canLinkShareholder = i < form.shareholderCount;
+        return (
+          <div key={i} className="p-3 bg-gray-50 rounded-xl space-y-2">
+            <p className="text-sm font-bold text-gray-700">דירקטור {i + 1}</p>
+
+            {canLinkShareholder && (
+              <label className="flex items-center gap-2 p-2 bg-white rounded-lg border cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isSh}
+                  onChange={e => setDirIsSh(i, e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 text-indigo-600"
+                />
+                <span className="text-xs text-gray-600">זהה לבעל מניות {i + 1} ({form.shareholders[i]?.fullName || '—'})</span>
+              </label>
+            )}
+
+            <Input
+              value={dir.fullName}
+              onChange={e => setPerson('directors', i, 'fullName', e.target.value)}
+              placeholder="שם מלא (כמו בת.ז.) *"
+              className="h-10"
+              disabled={isSh}
+            />
+            <FieldError error={errors[`dir_name_${i}`]} />
+            <Input
+              value={dir.idNumber}
+              onChange={e => setPerson('directors', i, 'idNumber', e.target.value)}
+              placeholder="מספר ת.ז. *"
+              className="h-10"
+              dir="ltr"
+              disabled={isSh}
+            />
+            <FieldError error={errors[`dir_id_${i}`]} />
+            <Input
+              value={dir.birthDate}
+              onChange={e => setPerson('directors', i, 'birthDate', e.target.value)}
+              placeholder="תאריך לידה"
+              type="date"
+              className="h-10"
+              dir="ltr"
+              disabled={isSh}
+            />
+            <Input
+              value={dir.address}
+              onChange={e => setPerson('directors', i, 'address', e.target.value)}
+              placeholder="כתובת מגורים"
+              className="h-10"
+              disabled={isSh}
+            />
+          </div>
+        );
+      })}
     </>
   );
 }
 
+// ---- Step 5: Contact & Notes ----
 function StepContact({ form, set, errors }) {
   return (
     <>
-      <p className="text-sm text-gray-500">פרטים ליצירת קשר — ניצור אתכם קשר לאישור הפרטים ועדכונים על הסטטוס.</p>
+      <p className="text-sm text-gray-500">פרטי איש הקשר לתיאום — ניצור אתכם קשר לאישור פרטים, חתימה על מסמכים ועדכוני סטטוס.</p>
       <div>
         <label className="text-sm font-medium text-gray-700 mb-1 block">שם מלא *</label>
         <Input value={form.contactName} onChange={e => set('contactName', e.target.value)} placeholder="שם מלא" className="h-11" />
@@ -716,6 +857,36 @@ function StepContact({ form, set, errors }) {
         <label className="text-sm font-medium text-gray-700 mb-1 block">אימייל</label>
         <Input value={form.contactEmail} onChange={e => set('contactEmail', e.target.value)} placeholder="email@example.com" type="email" dir="ltr" className="h-11" />
       </div>
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1 block">הערות / בקשות מיוחדות</label>
+        <Textarea
+          value={form.notes}
+          onChange={e => set('notes', e.target.value)}
+          placeholder="פרטים נוספים שחשוב לנו לדעת — למשל: לוח זמנים דחוף, צורך בהסכם מייסדים, שאלות מיוחדות..."
+          className="min-h-[80px] resize-none"
+        />
+      </div>
+
+      {/* Summary */}
+      <div className="bg-indigo-50 rounded-xl p-4 space-y-1.5 text-sm">
+        <p className="font-bold text-indigo-900 mb-2">סיכום הפרטים:</p>
+        <SummaryRow label="שם החברה" value={`${form.companyNameHe1} / ${form.companyNameEn}`} />
+        <SummaryRow label="מטרה" value={form.companyGoal === 'אחר' ? form.companyGoalOther : form.companyGoal} />
+        <SummaryRow label="הון מניות" value={`${form.shareCount} מניות × ${form.shareParValue}₪`} />
+        <SummaryRow label="תקנון" value={form.articlesType === 'custom' ? 'מותאם אישית' : 'מצוי (ברירת מחדל)'} />
+        <SummaryRow label="בעלי מניות" value={form.shareholders.slice(0, form.shareholderCount).map(s => s.fullName).filter(Boolean).join(', ') || '—'} />
+        <SummaryRow label="דירקטורים" value={form.directors.slice(0, form.directorCount).map(d => d.fullName).filter(Boolean).join(', ') || '—'} />
+        {form.shareDistribution && <SummaryRow label="חלוקת מניות" value={form.shareDistribution} />}
+      </div>
     </>
+  );
+}
+
+function SummaryRow({ label, value }) {
+  return (
+    <div className="flex items-start gap-2">
+      <span className="text-indigo-600 font-medium whitespace-nowrap">{label}:</span>
+      <span className="text-indigo-900">{value}</span>
+    </div>
   );
 }
