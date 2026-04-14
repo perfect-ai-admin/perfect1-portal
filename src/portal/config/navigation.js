@@ -113,6 +113,7 @@ export const PORTAL_CATEGORIES = [
       { title: 'מאמן כושר', href: '/miktzoa/fitness-trainer', description: 'עוסק פטור למאמן כושר — רישום, מיסוי, ביטוח והוצאות מוכרות' },
       { title: 'מעצב גרפי', href: '/miktzoa/graphic-designer', description: 'עוסק פטור למעצב גרפי — פרילנס, תמחור, הוצאות ולקוחות בחו"ל' },
       { title: 'מורה פרטי', href: '/miktzoa/private-tutor', description: 'עוסק פטור למורה פרטי — רישום, קבלות, הוצאות ודיווח' },
+      { title: 'שליח וולט', href: '/miktzoa/wolt-courier', description: 'עוסק פטור לשליח Wolt — רישום, מיסוי, הוצאות מוכרות וקבלות' },
     ]
   },
   {

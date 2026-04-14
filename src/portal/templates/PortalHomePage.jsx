@@ -43,6 +43,8 @@ const POPULAR_ARTICLES = [
   { title: 'איזה סוג עסק לפתוח? — עצמאי vs חברה', description: 'מדריך בחירה בין עוסק פטור, עוסק מורשה וחברה בע״מ', href: '/guides/which-business-type', readTime: 10, category: 'מדריכים' },
   { title: 'פתיחת עסק בישראל — מדריך 2026', description: 'כל השלבים לפתיחת עסק בישראל — מהרעיון ועד ההפעלה', href: '/guides/opening-business', readTime: 13, category: 'מדריכים' },
   { title: 'עוסק פטור או מורשה — מה מתאים לך?', description: 'השוואה מלאה עם יתרונות וחסרונות של כל אופציה', href: '/compare/osek-patur-vs-murshe', readTime: 10, category: 'השוואות' },
+  // מדריכים לפי מקצוע
+  { title: 'עוסק פטור לשליח וולט — המדריך המלא', description: 'רישום, מיסוי, הוצאות מוכרות, קבלות וטיפים לשליחי Wolt', href: '/miktzoa/wolt-courier', readTime: 15, category: 'לפי מקצוע' },
   // מחשבון
   { title: 'מחשבון הכנסה נטו לעצמאים', description: 'חשב כמה תישאר לך נטו אחרי מס הכנסה, מעמ וביטוח לאומי', href: '/calculators', readTime: 5, category: 'כלים' },
 ];
