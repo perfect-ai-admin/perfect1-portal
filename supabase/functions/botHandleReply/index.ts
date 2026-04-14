@@ -792,7 +792,7 @@ Deno.serve(async (req) => {
         }
 
         // keep_asking — stay in free question mode
-        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'מעולה, אני כאן 😊 שאל אותי כל שאלה.' });
+        await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: 'בכיף! 😊\nשאל אותי מה שבא לך — אני כאן לענות.' });
         return jsonResponse({ success: true, recovery: 'keep_asking' }, 200, req);
       }
 
@@ -803,31 +803,25 @@ Deno.serve(async (req) => {
         return jsonResponse({ success: true }, 200, req);
       }
 
-      // Try FAQ answer, fallback to generic
+      // Answer the question with FAQ or smart fallback
       const faqAnswer = getSimpleFAQAnswer(userText);
-      const answer = faqAnswer || buildGenericAnswer();
-
-      await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: answer });
+      await sendAndStoreMessage(supabaseAdmin, { ...sendOpts, message: faqAnswer });
 
       // Update session answers history
       const fqAnswers = session.answers || {};
       const history = Array.isArray(fqAnswers.history) ? fqAnswers.history : [];
-      history.push({ q: userText, a: answer, at: new Date().toISOString() });
+      history.push({ q: userText, a: faqAnswer, at: new Date().toISOString() });
       fqAnswers.history = history;
 
       const questionCount = history.length;
       const newMessagesCount = (session.messages_count || 0) + 1;
 
-      // Every 2 questions (or first one if no FAQ match) — offer sales recovery
-      const shouldOfferRecovery = questionCount % 2 === 0 || !faqAnswer;
-
-      if (shouldOfferRecovery) {
-        await sendAndStoreButtons(supabaseAdmin, {
-          ...sendOpts,
-          message: buildSalesRecoveryMessage(),
-          buttons: SALES_RECOVERY_BUTTONS,
-        });
-      }
+      // ALWAYS send action buttons after every answer
+      await sendAndStoreButtons(supabaseAdmin, {
+        ...sendOpts,
+        message: 'מה תרצה לעשות עכשיו?',
+        buttons: SALES_RECOVERY_BUTTONS,
+      });
 
       await supabaseAdmin.from('bot_sessions').update({
         answers: fqAnswers,
