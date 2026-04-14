@@ -188,37 +188,17 @@ export default function CRMLayout() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden h-10 w-10"
-              onClick={() => setMobileOpen(true)}
-            >
-              <Menu size={22} />
-            </Button>
-            <Breadcrumbs />
-          </div>
-
-          <div className="flex items-center gap-2">
-            {user && (
-              <span className="text-xs text-slate-500 hidden sm:block">{user.email}</span>
-            )}
-            <Button variant="ghost" size="icon" className="relative h-8 w-8">
-              <Bell size={18} />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -left-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleLogout} title="התנתק">
-              <LogOut size={16} />
-            </Button>
-          </div>
-        </header>
+        {/* Mobile menu button only */}
+        <div className="md:hidden flex items-center px-4 py-2 bg-white border-b border-slate-200">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10"
+            onClick={() => setMobileOpen(true)}
+          >
+            <Menu size={22} />
+          </Button>
+        </div>
 
         {/* Page Content */}
         <main ref={mainRef} className="flex-1 overflow-auto p-3 md:p-6">
