@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import SEOHead from '@/components/seo/SEOHead';
 import PortalHeader from '../components/PortalHeader';
 import PortalFooter from '../components/PortalFooter';
@@ -98,8 +98,37 @@ export default function SEOArticlePage({ category }) {
               updatedDate={content.updatedDate}
               readTime={content.readTime}
             />
-            {/* Hero Lead Form — shown when article has heroForm: true */}
-            {content.heroForm && (
+            {/* Hero Banner — service offer with price + CTA button */}
+            {content.heroBanner && (
+              <div className="mt-6 sm:mt-8 max-w-xl bg-gradient-to-l from-indigo-900 to-indigo-800 rounded-2xl p-5 sm:p-6 shadow-xl text-white relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_20%_50%,white_1px,transparent_1px)] bg-[length:20px_20px]" />
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-4xl sm:text-5xl font-black text-amber-400">{content.heroBanner.price}<span className="text-lg font-bold">{content.heroBanner.priceLabel}</span></span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold mb-1">{content.heroBanner.title}</h3>
+                  <p className="text-white/70 text-sm mb-4">{content.heroBanner.subtitle}</p>
+                  <Link
+                    to={content.heroBanner.buttonLink}
+                    className="inline-flex items-center justify-center w-full h-12 sm:h-13 rounded-xl bg-amber-500 hover:bg-amber-400 text-indigo-950 font-extrabold text-base sm:text-lg shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                  >
+                    {content.heroBanner.buttonText}
+                  </Link>
+                  {content.heroBanner.badges && (
+                    <div className="flex items-center justify-center gap-3 mt-3 flex-wrap">
+                      {content.heroBanner.badges.map((b, i) => (
+                        <span key={i} className="text-xs text-white/60 flex items-center gap-1">
+                          <svg className="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                          {b}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {/* Hero Lead Form — shown when article has heroForm: true (and no heroBanner) */}
+            {content.heroForm && !content.heroBanner && (
               <div className="mt-6 sm:mt-8 max-w-xl bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 shadow-lg">
                 <PortalLeadForm
                   sourcePage={`hero-${category}-${slug}`}
@@ -138,14 +167,38 @@ export default function SEOArticlePage({ category }) {
               {/* Sidebar - Desktop Only */}
               <aside className="hidden lg:block w-[300px] flex-shrink-0">
                 <div className="sticky top-24">
-                  <div className="bg-portal-bg rounded-2xl border border-gray-200 p-5">
-                    <PortalLeadForm
-                      sourcePage={`sidebar-${category}-${slug}`}
-                      variant="compact"
-                      ctaText="לייעוץ חינם עם רו״ח"
-                    />
-                    <p className="text-xs text-gray-500 text-center mt-2">ללא התחייבות</p>
-                  </div>
+                  {content.heroBanner ? (
+                    <div className="bg-gradient-to-b from-indigo-900 to-indigo-800 rounded-2xl p-5 text-white">
+                      <p className="text-3xl font-black text-amber-400 mb-1">{content.heroBanner.price}<span className="text-sm font-bold">{content.heroBanner.priceLabel}</span></p>
+                      <p className="font-bold text-sm mb-1">{content.heroBanner.title}</p>
+                      <p className="text-white/60 text-xs mb-4">{content.heroBanner.subtitle}</p>
+                      <Link
+                        to={content.heroBanner.buttonLink}
+                        className="flex items-center justify-center w-full h-11 rounded-xl bg-amber-500 hover:bg-amber-400 text-indigo-950 font-extrabold text-sm shadow-lg hover:scale-[1.02] transition-all"
+                      >
+                        {content.heroBanner.buttonText}
+                      </Link>
+                      {content.heroBanner.badges && (
+                        <div className="mt-3 space-y-1.5">
+                          {content.heroBanner.badges.map((b, i) => (
+                            <div key={i} className="flex items-center gap-1.5 text-white/60 text-xs">
+                              <svg className="w-3 h-3 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                              {b}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-portal-bg rounded-2xl border border-gray-200 p-5">
+                      <PortalLeadForm
+                        sourcePage={`sidebar-${category}-${slug}`}
+                        variant="compact"
+                        ctaText="לייעוץ חינם עם רו״ח"
+                      />
+                      <p className="text-xs text-gray-500 text-center mt-2">ללא התחייבות</p>
+                    </div>
+                  )}
                 </div>
               </aside>
             </div>
@@ -186,7 +239,18 @@ export default function SEOArticlePage({ category }) {
 
       <PortalFooter />
       <WhatsAppButton />
-      <StickyMobileCTA />
+      {content.heroBanner ? (
+        <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-indigo-900/95 backdrop-blur border-t border-indigo-700 px-4 py-2.5 safe-area-pb">
+          <Link
+            to={content.heroBanner.buttonLink}
+            className="flex items-center justify-center gap-2 w-full h-11 rounded-xl bg-amber-500 hover:bg-amber-400 text-indigo-950 font-extrabold text-base shadow-lg"
+          >
+            {content.heroBanner.buttonText}
+          </Link>
+        </div>
+      ) : (
+        <StickyMobileCTA />
+      )}
     </>
   );
 }

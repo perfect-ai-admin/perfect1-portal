@@ -247,6 +247,8 @@ const SectionCTAInline = ({ section, sourcePage }) => (
   <InlineCTA
     title={section.title}
     buttonText={section.buttonText || section.button}
+    buttonLink={section.buttonLink}
+    description={section.description}
     variant={section.variant}
     sourcePage={sourcePage}
   />

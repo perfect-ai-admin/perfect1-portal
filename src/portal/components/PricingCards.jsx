@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Check, Star, Zap, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PORTAL_CTA } from '../config/navigation';
@@ -27,22 +28,20 @@ const DEFAULT_PLANS = [
   },
   {
     id: 'standard',
-    name: 'ליווי מקצועי',
-    price: '2,990₪',
+    name: 'פתיחה אונליין',
+    price: '450₪',
     priceNote: '+ אגרות רשם',
-    description: 'הדרך הבטוחה — רו"ח + עו"ד מלווים מא\' עד ת\'',
+    description: 'הדרך המהירה — מלאו שאלון, שלמו, ואנחנו מטפלים בכל השאר',
     badge: 'הכי פופולרי',
     features: [
       'הכנת כל המסמכים על ידי עו"ד',
-      'תקנון מותאם אישית',
-      'הגשה מקוונת לרשם החברות',
-      'פתיחת תיקים: מס הכנסה, מע"מ, ביט"ל',
-      'פתיחת חשבון בנק עסקי',
-      'רו"ח צמוד לשנה הראשונה',
+      'אימות חתימות + הגשה מקוונת',
+      'מעקב סטטוס עד תעודת התאגדות',
+      'תמיכה טלפונית לאורך התהליך',
     ],
     missing: [],
-    cta: 'התחל עכשיו',
-    ctaLink: '#portal-lead-form',
+    cta: 'התחילו עכשיו — 450₪',
+    ctaLink: '/open-hevra-bam-online',
     variant: 'primary',
   },
   {
@@ -84,6 +83,7 @@ export default function PricingCards({ section }) {
 }
 
 function PlanCard({ plan }) {
+  const navigate = useNavigate();
   const isPrimary = plan.variant === 'primary';
   const isGold = plan.variant === 'gold';
 
@@ -91,6 +91,8 @@ function PlanCard({ plan }) {
     if (link?.startsWith('#')) {
       const el = document.getElementById(link.slice(1));
       el?.scrollIntoView({ behavior: 'smooth' });
+    } else if (link?.startsWith('/')) {
+      navigate(link);
     } else if (link?.startsWith('http') || link?.startsWith('https')) {
       window.open(link, '_blank', 'noopener');
     }

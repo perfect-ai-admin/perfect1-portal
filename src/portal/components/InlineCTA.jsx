@@ -9,6 +9,8 @@ import { invokeFunction } from '@/api/supabaseClient';
 export default function InlineCTA({
   title = 'צריך עזרה? רואה חשבון מוסמך ייעץ לך — בחינם',
   buttonText = 'לייעוץ חינם',
+  buttonLink,
+  description,
   variant = 'default',
   sourcePage = 'inline-cta'
 }) {
@@ -47,6 +49,30 @@ export default function InlineCTA({
       setLoading(false);
     }
   };
+
+  // Link mode — show a big CTA button linking to another page instead of a form
+  if (buttonLink && buttonLink.startsWith('/')) {
+    return (
+      <div className="my-10 bg-gradient-to-l from-indigo-900 to-indigo-800 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_50%,white_1px,transparent_1px)] bg-[length:20px_20px]" />
+        <div className="relative text-center">
+          <h3 className="text-xl sm:text-2xl font-bold mb-2">{title}</h3>
+          {description && <p className="text-white/70 text-sm mb-5">{description}</p>}
+          <Button
+            onClick={() => navigate(buttonLink)}
+            className="h-13 px-8 sm:px-12 text-base sm:text-lg font-extrabold rounded-xl bg-amber-500 hover:bg-amber-400 text-indigo-950 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+          >
+            <ArrowLeft className="ml-2 w-5 h-5" />{buttonText}
+          </Button>
+          <div className="flex items-center justify-center gap-4 mt-4 text-white/50 text-xs">
+            <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-amber-400" />תשלום מאובטח</span>
+            <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-amber-400" />רו"ח + עו"ד</span>
+            <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-amber-400" />7 ימי עסקים</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="my-10 bg-gradient-to-l from-portal-navy to-portal-navy-light rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden">
