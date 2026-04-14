@@ -44,18 +44,12 @@ export default function SendAgreementDialog({ lead, open, onOpenChange }) {
       }
     }
 
-    const message = selectedTemplate.whatsapp_message(
-      fieldValues['שם מלא'] || lead?.name || '',
-      selectedTemplate.template_link
-    );
-
     createAgreement.mutate(
       {
         lead_id: lead.id,
         template_key: selectedTemplate.key,
         template_label: selectedTemplate.label,
         template_link: selectedTemplate.template_link,
-        whatsapp_message: message,
         send_whatsapp: true,
         extra_fields: fieldValues,
       },
