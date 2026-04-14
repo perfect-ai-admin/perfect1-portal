@@ -66,19 +66,23 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
 
   // Handle "שלח לינק" mode
   const handleSendLink = async () => {
+    console.log('[handleSendLink] START', { leadId, planName, monthlyPrice, sendWhatsapp, mode });
     if (!leadId || !planName || !monthlyPrice) {
       toast.error('יש למלא את כל השדות');
       return;
     }
     setLoading(true);
     try {
-      const result = await createSub.mutateAsync({
+      const payload = {
         lead_id: leadId,
         plan_name: planName,
         monthly_price: Number(monthlyPrice),
         send_via_whatsapp: sendWhatsapp,
         recur_payments: recurPayments ? Number(recurPayments) : undefined,
-      });
+      };
+      console.log('[handleSendLink] calling crmCreateSubscription:', payload);
+      const result = await createSub.mutateAsync(payload);
+      console.log('[handleSendLink] SUCCESS:', result);
       toast.success('מנוי נוצר — קישור תשלום נשלח!');
       if (result?.payment_link) {
         try { await navigator.clipboard?.writeText(result.payment_link); } catch {}
@@ -87,6 +91,7 @@ function CreateSubscriptionDialog({ open, onOpenChange }) {
       onOpenChange(false);
       clearForm();
     } catch (err) {
+      console.error('[handleSendLink] FAILED:', err);
       toast.error(`שגיאה: ${err.message}`);
     } finally {
       setLoading(false);
