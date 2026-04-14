@@ -71,11 +71,10 @@ Deno.serve(async (req) => {
       }
     }
 
-    // --- Strategy 2: Build direct FillFaster URL ---
+    // --- Strategy 2: Build direct FillFaster form URL ---
     if (!submission_link && ag.fillfaster_form_id) {
-      // FillFaster submission URLs follow pattern: https://app.fillfaster.com/s/{form_id}
-      // Prefill data can be passed as query params
-      const baseUrl = `https://app.fillfaster.com/s/${ag.fillfaster_form_id}`;
+      // FillFaster public form URL: https://app.fillfaster.com/fill/{form_id}
+      const baseUrl = `https://app.fillfaster.com/fill/${ag.fillfaster_form_id}`;
       const params = new URLSearchParams();
 
       // Add prefill data as query params
