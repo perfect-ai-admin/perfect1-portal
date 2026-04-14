@@ -37,19 +37,20 @@ Deno.serve(async (req) => {
     const user_data = { lead_id, agent_id: user.id, template_key, crm_user_id: user.id };
 
     // Save agreement — purely internal, no external API
+    const insertData: Record<string, unknown> = {
+      lead_id,
+      template_key,
+      template_label: template_label || template_key,
+      fillfaster_form_id,
+      status: 'draft',
+      prefilled_data: prefill_data,
+      user_data,
+      agent_id: user.id,
+    };
+
     const { data: agreement, error: agErr } = await supabaseAdmin
       .from('agreements')
-      .insert({
-        lead_id,
-        template_key,
-        template_label: template_label || template_key,
-        fillfaster_form_id,
-        status: 'draft',
-        delivery_status: 'not_sent',
-        prefilled_data: prefill_data,
-        user_data,
-        agent_id: user.id,
-      })
+      .insert(insertData)
       .select('id, status')
       .single();
 
