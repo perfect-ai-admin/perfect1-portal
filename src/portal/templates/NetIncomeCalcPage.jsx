@@ -126,7 +126,7 @@ export default function NetIncomeCalcPage() {
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6" id="income-10000">
               <h3 className="text-xl font-bold text-portal-navy mb-3 flex items-center gap-2">
                 <TrendingDown className="w-5 h-5 text-portal-teal" />
-                כמה מס משלם עצמאי שמרוויח 10,000 ש"ח בחודש
+                <Link to="/misui/tax-10000" className="hover:text-portal-teal transition-colors">כמה מס משלם עצמאי שמרוויח 10,000 ש"ח בחודש</Link>
               </h3>
               <p className="answer-block text-gray-700 leading-relaxed mb-4">
                 עצמאי שמרוויח 10,000 ש"ח בחודש (120,000 ש"ח בשנה) משלם כ-454 ש"ח מס הכנסה בחודש וכ-785 ש"ח ביטוח לאומי ומס בריאות. סה"כ ניכויים: כ-1,239 ש"ח בחודש. נשאר כ-8,760 ש"ח נטו — כ-87.6% מההכנסה.
@@ -137,13 +137,16 @@ export default function NetIncomeCalcPage() {
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">ביטוח לאומי</div><div className="font-bold text-red-600">~9,400 ש"ח</div></div>
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">נטו שנתי</div><div className="font-bold text-green-600">~105,150 ש"ח</div></div>
               </div>
+              <Link to="/misui/tax-10000" className="inline-flex items-center gap-2 mt-4 text-portal-teal font-medium hover:underline">
+                לחישוב מלא + טיפים להפחתת מס →
+              </Link>
             </div>
 
             {/* 20,000 */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6" id="income-20000">
               <h3 className="text-xl font-bold text-portal-navy mb-3 flex items-center gap-2">
                 <TrendingDown className="w-5 h-5 text-portal-teal" />
-                כמה מס משלם עצמאי שמרוויח 20,000 ש"ח בחודש
+                <Link to="/misui/tax-20000" className="hover:text-portal-teal transition-colors">כמה מס משלם עצמאי שמרוויח 20,000 ש"ח בחודש</Link>
               </h3>
               <p className="answer-block text-gray-700 leading-relaxed mb-4">
                 עצמאי שמרוויח 20,000 ש"ח בחודש (240,000 ש"ח בשנה) משלם כ-2,874 ש"ח מס הכנסה בחודש וכ-1,907 ש"ח ביטוח לאומי ומס בריאות. סה"כ ניכויים: כ-4,781 ש"ח בחודש. נשאר כ-15,220 ש"ח נטו — כ-76.1% מההכנסה.
@@ -154,13 +157,16 @@ export default function NetIncomeCalcPage() {
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">ביטוח לאומי</div><div className="font-bold text-red-600">~22,900 ש"ח</div></div>
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">נטו שנתי</div><div className="font-bold text-green-600">~182,600 ש"ח</div></div>
               </div>
+              <Link to="/misui/tax-20000" className="inline-flex items-center gap-2 mt-4 text-portal-teal font-medium hover:underline">
+                לחישוב מלא + טיפים להפחתת מס →
+              </Link>
             </div>
 
             {/* 30,000 */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6" id="income-30000">
               <h3 className="text-xl font-bold text-portal-navy mb-3 flex items-center gap-2">
                 <TrendingDown className="w-5 h-5 text-portal-teal" />
-                כמה מס משלם עצמאי שמרוויח 30,000 ש"ח בחודש
+                <Link to="/misui/tax-30000" className="hover:text-portal-teal transition-colors">כמה מס משלם עצמאי שמרוויח 30,000 ש"ח בחודש</Link>
               </h3>
               <p className="answer-block text-gray-700 leading-relaxed mb-4">
                 עצמאי שמרוויח 30,000 ש"ח בחודש (360,000 ש"ח בשנה) משלם כ-6,276 ש"ח מס הכנסה בחודש וכ-3,030 ש"ח ביטוח לאומי ומס בריאות. סה"כ ניכויים: כ-9,306 ש"ח בחודש. נשאר כ-20,694 ש"ח נטו — כ-69% מההכנסה.
@@ -171,13 +177,16 @@ export default function NetIncomeCalcPage() {
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">ביטוח לאומי</div><div className="font-bold text-red-600">~36,350 ש"ח</div></div>
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">נטו שנתי</div><div className="font-bold text-green-600">~248,350 ש"ח</div></div>
               </div>
+              <Link to="/misui/tax-30000" className="inline-flex items-center gap-2 mt-4 text-portal-teal font-medium hover:underline">
+                לחישוב מלא + טיפים להפחתת מס →
+              </Link>
             </div>
 
             {/* 50,000 */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6" id="income-50000">
               <h3 className="text-xl font-bold text-portal-navy mb-3 flex items-center gap-2">
                 <TrendingDown className="w-5 h-5 text-portal-teal" />
-                כמה מס משלם עצמאי שמרוויח 50,000 ש"ח בחודש
+                <Link to="/misui/tax-50000" className="hover:text-portal-teal transition-colors">כמה מס משלם עצמאי שמרוויח 50,000 ש"ח בחודש</Link>
               </h3>
               <p className="answer-block text-gray-700 leading-relaxed mb-4">
                 עצמאי שמרוויח 50,000 ש"ח בחודש (600,000 ש"ח בשנה) משלם כ-13,674 ש"ח מס הכנסה בחודש וכ-5,167 ש"ח ביטוח לאומי ומס בריאות. סה"כ ניכויים: כ-18,841 ש"ח בחודש. נשאר כ-31,160 ש"ח נטו — כ-62.3% מההכנסה.
@@ -188,6 +197,9 @@ export default function NetIncomeCalcPage() {
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">ביטוח לאומי</div><div className="font-bold text-red-600">~62,000 ש"ח</div></div>
                 <div className="bg-portal-bg rounded-lg p-3"><div className="text-xs text-gray-500">נטו שנתי</div><div className="font-bold text-green-600">~373,900 ש"ח</div></div>
               </div>
+              <Link to="/misui/tax-50000" className="inline-flex items-center gap-2 mt-4 text-portal-teal font-medium hover:underline">
+                לחישוב מלא + טיפים להפחתת מס →
+              </Link>
             </div>
 
             <p className="text-xs text-gray-500 mt-4 text-center">* החישובים מבוססים על מדרגות מס הכנסה וביטוח לאומי 2026, ללא הוצאות מוכרות, עם 2.75 נקודות זיכוי בסיסיות. לחישוב מדויק השתמשו במחשבון למעלה.</p>
@@ -200,12 +212,15 @@ export default function NetIncomeCalcPage() {
             <h2 className="text-2xl sm:text-3xl font-bold text-portal-navy mb-6">מדריכים קשורים</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {[
+                { href: '/misui/tax-10000', label: 'מס על 10,000 ₪ בחודש', desc: 'חישוב מלא: מס הכנסה, ביטוח לאומי, ונטו' },
+                { href: '/misui/tax-20000', label: 'מס על 20,000 ₪ בחודש', desc: 'חישוב מלא: מס הכנסה, ביטוח לאומי, ונטו' },
+                { href: '/misui/tax-30000', label: 'מס על 30,000 ₪ בחודש', desc: 'חישוב מלא: מס הכנסה, ביטוח לאומי, ונטו' },
+                { href: '/misui/tax-50000', label: 'מס על 50,000 ₪ בחודש', desc: 'חישוב מלא: מס הכנסה, ביטוח לאומי, ונטו' },
                 { href: '/misui/tax-brackets', label: 'מדרגות מס הכנסה 2026', desc: 'כל מדרגות המס העדכניות לשכירים ועצמאים' },
                 { href: '/misui/advance-payments', label: 'מקדמות מס הכנסה', desc: 'איך עובדות מקדמות ואיך מפחיתים אותן' },
                 { href: '/osek-patur/taxes', label: 'מיסוי עוסק פטור', desc: 'כל מה שצריך לדעת על מס הכנסה לעוסק פטור' },
                 { href: '/osek-murshe/income-tax', label: 'מס הכנסה עוסק מורשה', desc: 'מדריך דיווח ותשלום מס לעוסק מורשה' },
                 { href: '/osek-murshe/tax-deductions', label: 'הוצאות מוכרות לעצמאי', desc: 'אילו הוצאות מפחיתות מס ואיך מדווחים' },
-                { href: '/guides/taxes-101', label: 'מדריך מיסים לעסקים', desc: 'מדריך מקיף למיסוי עצמאים בישראל' },
               ].map(({ href, label, desc }) => (
                 <Link key={href} to={href} className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 hover:border-portal-teal/30 hover:bg-portal-bg/50 transition-colors group">
                   <ArrowLeft className="w-5 h-5 text-portal-teal flex-shrink-0 mt-0.5 group-hover:translate-x-[-2px] transition-transform" />

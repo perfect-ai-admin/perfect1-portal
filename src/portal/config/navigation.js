@@ -79,22 +79,7 @@ export const PORTAL_CATEGORIES = [
       { title: 'שאלות נפוצות', href: '/sgirat-tikim/faq', description: 'תשובות לשאלות נפוצות על סגירת עסק ותיקים' },
     ]
   },
-  {
-    id: 'misui',
-    title: 'מיסוי לעצמאים',
-    href: '/misui',
-    icon: 'Calculator',
-    description: 'מדרגות מס, מקדמות, ניכויים ותכנון מס לעצמאים',
-    color: 'purple',
-    subcategories: [
-      { title: 'מדרגות מס הכנסה 2026', href: '/misui/tax-brackets', description: 'טבלת מדרגות מס, חישוב לדוגמה, נקודות זיכוי וטיפים להפחתת מס' },
-      { title: 'מקדמות מס הכנסה', href: '/misui/advance-payments', description: 'איך נקבעות מקדמות, הפחתה, קנסות ומה עושים בשנה הראשונה' },
-      { title: 'מס על 10,000 ₪', href: '/misui/tax-10000', description: 'כמה מס משלם עצמאי שמרוויח 10,000 ₪ — חישוב מלא' },
-      { title: 'מס על 20,000 ₪', href: '/misui/tax-20000', description: 'כמה מס משלם עצמאי שמרוויח 20,000 ₪ — חישוב מלא' },
-      { title: 'מס על 30,000 ₪', href: '/misui/tax-30000', description: 'כמה מס משלם עצמאי שמרוויח 30,000 ₪ — חישוב מלא' },
-      { title: 'מס על 50,000 ₪', href: '/misui/tax-50000', description: 'כמה מס משלם עצמאי שמרוויח 50,000 ₪ — חישוב מלא' },
-    ]
-  },
+  // misui (מיסוי לעצמאים) — accessible via /calculators/net-income, not main nav
   {
     id: 'maam',
     title: 'מע"מ',

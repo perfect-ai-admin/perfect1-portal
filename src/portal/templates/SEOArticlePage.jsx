@@ -149,6 +149,79 @@ export default function SEOArticlePage({ category }) {
           </div>
         </section>
 
+        {/* Calculator Result Card — prominent calc-style visual at top of article */}
+        {content.resultCard && (
+          <section className="py-8 sm:py-12 bg-gradient-to-b from-portal-bg to-white border-b border-gray-100">
+            <div className="max-w-3xl mx-auto px-4">
+              <div className="bg-white rounded-3xl border-2 border-portal-teal/20 shadow-2xl overflow-hidden">
+                {/* Header bar */}
+                <div className="bg-gradient-to-l from-portal-navy to-indigo-900 px-6 py-4 text-white flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-portal-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    <span className="text-sm font-medium">תוצאת חישוב</span>
+                  </div>
+                  <span className="text-xs bg-portal-teal text-portal-navy px-2 py-0.5 rounded-full font-bold">2026</span>
+                </div>
+
+                {/* Input row */}
+                <div className="px-6 py-5 bg-portal-bg/30 border-b border-gray-100">
+                  <div className="text-xs text-gray-500 mb-1">הכנסה חודשית</div>
+                  <div className="text-3xl sm:text-4xl font-black text-portal-navy">{content.resultCard.input}</div>
+                </div>
+
+                {/* Breakdown grid */}
+                <div className="grid grid-cols-3 divide-x divide-x-reverse divide-gray-100">
+                  <div className="px-4 py-5 text-center">
+                    <div className="text-xs text-gray-500 mb-1">מס הכנסה</div>
+                    <div className="text-xl sm:text-2xl font-bold text-red-600">-{content.resultCard.incomeTax}</div>
+                  </div>
+                  <div className="px-4 py-5 text-center">
+                    <div className="text-xs text-gray-500 mb-1">ביטוח לאומי</div>
+                    <div className="text-xl sm:text-2xl font-bold text-red-600">-{content.resultCard.bituachLeumi}</div>
+                  </div>
+                  <div className="px-4 py-5 text-center">
+                    <div className="text-xs text-gray-500 mb-1">ביטוח בריאות</div>
+                    <div className="text-xl sm:text-2xl font-bold text-red-600">-{content.resultCard.bituachBriut}</div>
+                  </div>
+                </div>
+
+                {/* Net result */}
+                <div className="px-6 py-6 bg-gradient-to-l from-portal-teal/10 to-emerald-50 border-t-2 border-portal-teal/30 text-center">
+                  <div className="text-xs text-portal-navy/60 mb-1 font-medium">נשאר נטו בחודש</div>
+                  <div className="text-4xl sm:text-5xl font-black text-portal-teal">{content.resultCard.net}</div>
+                  {content.resultCard.percent && (
+                    <div className="text-sm text-gray-500 mt-1">{content.resultCard.percent} מההכנסה</div>
+                  )}
+                </div>
+
+                {/* CTA */}
+                <div className="px-6 py-4 bg-white border-t border-gray-100">
+                  <Link
+                    to="/calculators/net-income"
+                    className="block w-full text-center py-3 rounded-xl bg-portal-navy hover:bg-indigo-900 text-white font-bold transition-colors"
+                  >
+                    לחישוב מותאם אישית — השתמשו במחשבון →
+                  </Link>
+                </div>
+              </div>
+
+              {/* Quick links to other income levels */}
+              <div className="mt-6 flex flex-wrap gap-2 justify-center">
+                <span className="text-sm text-gray-500 w-full text-center mb-2">חישוב לסכום אחר:</span>
+                {['10000', '20000', '30000', '50000'].filter(s => !slug?.includes(s)).map(amount => (
+                  <Link
+                    key={amount}
+                    to={`/misui/tax-${amount}`}
+                    className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-portal-navy hover:border-portal-teal hover:text-portal-teal transition-colors"
+                  >
+                    {Number(amount).toLocaleString('he-IL')} ₪
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Article Body */}
         <article className="py-10 md:py-14">
           <div className="max-w-6xl mx-auto px-4">
