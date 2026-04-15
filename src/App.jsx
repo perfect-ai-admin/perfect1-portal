@@ -70,6 +70,7 @@ const CalculatorsPage = lazyWithRetry(() => import('./portal/templates/Calculato
 const NetIncomeCalcPage = lazyWithRetry(() => import('./portal/templates/NetIncomeCalcPage'));
 const CreditPointsCalcPage = lazyWithRetry(() => import('./portal/templates/CreditPointsCalcPage'));
 const OsekPaturLanding = lazyWithRetry(() => import('./pages/OsekPaturLanding'));
+const AtzmaimBerega = lazyWithRetry(() => import('./pages/AtzmaimBerega'));
 const OsekPaturLandingB = lazyWithRetry(() => import('./pages/OsekPaturLandingB'));
 const OsekPaturSteps = lazyWithRetry(() => import('./pages/OsekPaturSteps'));
 const OsekPaturStepsB = lazyWithRetry(() => import('./pages/OsekPaturStepsB'));
@@ -205,6 +206,7 @@ const PortalRoutes = () => (
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
     <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
+    <Route path="/atzmaim-berega" element={<SafePage><AtzmaimBerega /></SafePage>} />
     {/* Osek Zeir — מסלול נפרד לחלוטין. חייב להישאר מנותק מעוסק פטור בכל המסרים */}
     <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
     <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />
@@ -312,6 +314,7 @@ const DevRoutes = () => (
     <Route path="/accountant-osek-patur" element={<SafePage><AccountantLanding /></SafePage>} />
     <Route path="/open-osek-patur-online" element={<SafePage><OpenOsekPaturOnline /></SafePage>} />
     <Route path="/open-hevra-bam-online" element={<SafePage><OpenCompanyOnline /></SafePage>} />
+    <Route path="/atzmaim-berega" element={<SafePage><AtzmaimBerega /></SafePage>} />
     {/* Osek Zeir — מסלול נפרד לחלוטין (Dev) */}
     <Route path="/OsekZeirLanding" element={<SafePage><OsekZeirLanding /></SafePage>} />
     <Route path="/osek-zair-landing" element={<SafePage><OsekZeirLanding /></SafePage>} />
