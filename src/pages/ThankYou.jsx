@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useLocation } from 'react-router-dom';
-import { CheckCircle2, Phone, ArrowRight, BookOpen, MessageCircle } from 'lucide-react';
+import { CheckCircle2, Sparkles, ArrowLeft, Layers, Megaphone, DollarSign, Target } from 'lucide-react';
 import { PORTAL_CTA } from '@/portal/config/navigation';
 
 // Source page display names
@@ -80,113 +80,119 @@ export default function ThankYou() {
           <meta name="robots" content="noindex, nofollow" />
         </Helmet>
 
-        {/* Header */}
-        <header className="bg-white/90 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
-          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold text-portal-navy">פרפקט וואן</span>
-              <span className="text-xs text-gray-400 hidden sm:inline">| ליווי עסקי מקצועי</span>
-            </Link>
-            <a
-              href={`tel:${PORTAL_CTA.phone}`}
-              className="flex items-center gap-2 text-portal-teal font-bold text-sm hover:underline"
-            >
-              <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline">{PORTAL_CTA.phone}</span>
-              <span className="sm:hidden">התקשרו</span>
-            </a>
+        {/* Minimal brand bar — no navigation */}
+        <div className="bg-white border-b border-gray-100">
+          <div className="max-w-3xl mx-auto px-4 py-4 text-center">
+            <span className="text-xl font-bold text-portal-navy">פרפקט וואן</span>
           </div>
-        </header>
+        </div>
 
-        {/* Main Content */}
-        <main className="min-h-[80vh] flex items-center justify-center py-12 px-4">
-          <div className="max-w-lg mx-auto text-center">
-            {/* Success Icon */}
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce" style={{ animationIterationCount: 3, animationDuration: '0.6s' }}>
-              <CheckCircle2 className="w-10 h-10 text-green-600" />
+        <main className="py-10 md:py-14 px-4">
+          <div className="max-w-2xl mx-auto">
+            {/* BLOCK 1 — Confirmation */}
+            <div className="text-center mb-10">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5 animate-bounce" style={{ animationIterationCount: 3, animationDuration: '0.6s' }}>
+                <CheckCircle2 className="w-10 h-10 text-green-600" />
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-portal-navy mb-3">
+                הבקשה שלך התקבלה{displayName} ✅
+              </h1>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                תודה שהשארת פרטים.
+                <br />
+                אחד מאנשי הצוות שלנו יחזור אליך בהקדם כדי לעזור לך להתחיל את הדרך כעצמאי.
+              </p>
             </div>
 
-            {/* Thank You Message */}
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-portal-navy mb-3">
-              תודה{displayName}!
-            </h1>
-            <p className="text-xl text-gray-600 mb-2">
-              הפרטים שלך נקלטו בהצלחה
-            </p>
-            <p className="text-lg text-gray-500 mb-8">
-              ניצור איתך קשר <strong className="text-portal-teal">תוך דקות ספורות</strong> בשעות הפעילות
-            </p>
+            {/* BLOCK 2 — Complementary offer */}
+            <div className="rounded-3xl p-6 md:p-10 mb-8 shadow-xl border border-white/10" style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #152D4A 50%, #0F766E 100%)' }}>
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-4">
+                <Sparkles className="w-4 h-4 text-yellow-400" />
+                <span className="text-white/90 text-sm font-medium">הצעה מיוחדת ללקוחות שלנו</span>
+              </div>
 
-            {/* What Happens Next */}
-            <div className="bg-portal-bg rounded-2xl border border-gray-200 p-6 sm:p-8 mb-8 text-right">
-              <h2 className="font-bold text-lg text-portal-navy mb-4 text-center">מה קורה עכשיו?</h2>
-              <div className="space-y-4">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-4 leading-tight">
+                בינתיים — רוצה ללמוד איך להקים
+                <br />
+                <span style={{ color: '#F59E0B' }}>עסק חכם בעזרת AI?</span>
+              </h2>
+
+              <p className="text-white/85 text-base md:text-lg mb-5 leading-relaxed">
+                בנינו תוכנית מיוחדת בשם <strong className="text-white">"עצמאים ברגע"</strong> —
+                תוכנית קצרה של 4 מפגשים שמראה איך לבנות עסק חכם מההתחלה:
+              </p>
+
+              <ul className="space-y-2.5 mb-6">
                 {[
-                  { num: '1', text: 'נציג שלנו יתקשר אליך לשיחה קצרה', time: 'תוך דקות' },
-                  { num: '2', text: 'נבין את המצב שלך ומה מתאים לך', time: '5 דקות' },
-                  { num: '3', text: 'נכווין אותך לשלבים הבאים — בלי סיבוכים', time: 'מיידי' },
-                ].map((step, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-portal-teal rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                      {step.num}
+                  'בניית נכסים דיגיטליים לעסק',
+                  'יצירת קמפיינים בעזרת AI',
+                  'תמחור נכון לשירותים',
+                  'בניית מערכת שמביאה לקוחות',
+                ].map((text, i) => (
+                  <li key={i} className="flex items-start gap-2 text-white/90">
+                    <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* BLOCK 3 — What you get */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 md:p-8 mb-8 shadow-sm">
+              <h3 className="text-xl md:text-2xl font-extrabold text-portal-navy mb-5 text-center">מה מקבלים בתוכנית</h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  { icon: Target, text: '4 מפגשים אישיים' },
+                  { icon: Layers, text: 'בניית נכסים דיגיטליים לעסק' },
+                  { icon: Megaphone, text: 'כלים חכמים לשיווק בעזרת AI' },
+                  { icon: DollarSign, text: 'איך להביא לקוחות ראשונים' },
+                ].map(({ icon: Icon, text }, i) => (
+                  <div key={i} className="flex items-center gap-3 bg-gray-50 rounded-xl p-4 border border-gray-100">
+                    <div className="w-10 h-10 rounded-full bg-portal-teal/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5 text-portal-teal" />
                     </div>
-                    <div className="flex-1">
-                      <p className="text-gray-700 font-medium">{step.text}</p>
-                      <p className="text-xs text-gray-400">{step.time}</p>
-                    </div>
+                    <span className="text-portal-navy font-semibold text-sm">{text}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-              <a
-                href={`tel:${PORTAL_CTA.phone}`}
-                className="flex items-center justify-center gap-2 h-14 bg-portal-teal hover:bg-portal-teal-dark text-white rounded-xl font-bold transition-colors"
+            {/* BLOCK 4 — CTA */}
+            <div className="text-center mb-10">
+              <h3 className="text-2xl md:text-3xl font-extrabold text-portal-navy mb-5">
+                רוצה לראות איך זה עובד?
+              </h3>
+              <Link
+                to="/atzmaim-berega"
+                className="inline-flex items-center justify-center gap-3 rounded-2xl font-extrabold shadow-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+                style={{
+                  backgroundColor: '#F59E0B',
+                  color: '#1E3A5F',
+                  padding: '18px 32px',
+                  fontSize: 'clamp(16px, 2.2vw, 20px)',
+                  minHeight: '60px',
+                  minWidth: '280px',
+                }}
               >
-                <Phone className="w-5 h-5" />
-                התקשרו עכשיו
-              </a>
-              <a
-                href={`https://wa.me/972${PORTAL_CTA.phone.replace(/^0/, '').replace(/-/g, '')}?text=היי, השארתי פרטים באתר ורציתי לברר`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 h-14 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold transition-colors"
-              >
-                <MessageCircle className="w-5 h-5" />
-                שלחו הודעה בוואטסאפ
-              </a>
+                <Sparkles className="w-5 h-5" />
+                למידע על תוכנית "עצמאים ברגע"
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
             </div>
 
-            {/* Suggested Content */}
-            <div className="border-t border-gray-200 pt-8">
-              <h3 className="font-bold text-portal-navy mb-4">בינתיים, אפשר לקרוא:</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-right">
-                {[
-                  { title: 'מדריך פתיחת עוסק פטור', href: '/OsekPaturSteps', icon: BookOpen },
-                  { title: 'עוסק פטור או מורשה?', href: '/compare/osek-patur-vs-murshe', icon: ArrowRight },
-                  { title: 'מדריכים לעסקים', href: '/guides', icon: BookOpen },
-                  { title: 'כל מה שצריך על עוסק פטור', href: '/osek-patur', icon: ArrowRight },
-                ].map((item, i) => (
-                  <Link
-                    key={i}
-                    to={item.href}
-                    className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-portal-teal/40 hover:bg-portal-teal/5 transition-colors"
-                  >
-                    <item.icon className="w-4 h-4 text-portal-teal flex-shrink-0" />
-                    <span className="text-sm font-medium text-gray-700">{item.title}</span>
-                  </Link>
-                ))}
-              </div>
+            {/* BLOCK 5 — Trust */}
+            <div className="text-center border-t border-gray-200 pt-8">
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
+                התוכנית מיועדת לעצמאים בתחילת הדרך שרוצים להקים עסק בצורה חכמה ומסודרת,
+                בעזרת כלים טכנולוגיים מתקדמים.
+              </p>
             </div>
           </div>
         </main>
 
-        {/* Footer */}
         <footer className="bg-portal-navy text-white/60 py-6">
-          <div className="max-w-6xl mx-auto px-4 text-center text-sm">
-            <p>© {new Date().getFullYear()} פרפקט וואן — ליווי עסקי מקצועי. כל הזכויות שמורות.</p>
+          <div className="max-w-6xl mx-auto px-4 text-center text-xs">
+            <p>© {new Date().getFullYear()} פרפקט וואן · perfect1.co.il</p>
           </div>
         </footer>
       </div>
