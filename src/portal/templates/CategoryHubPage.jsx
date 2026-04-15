@@ -118,7 +118,7 @@ export default function CategoryHubPage({ category }) {
                       <ArticleCard
                         title={article.title}
                         description={article.description}
-                        href={`/${category}/${article.slug}`}
+                        href={article.href || `/${category}/${article.slug}`}
                         readTime={article.readTime}
                       />
                     </div>

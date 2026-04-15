@@ -20,7 +20,12 @@
     { "slug": "taxation", "title": "מדריך מיסוי לעסקים בישראל — כל מה שצריך לדעת 2026", "readTime": 15 },
     { "slug": "freelancers", "title": "מדריך מקיף לפרילנסרים בישראל 2026", "readTime": 14 },
     { "slug": "tools", "title": "כלים ומחשבונים לעסקים קטנים — המדריך המלא 2026", "readTime": 12 },
-    { "slug": "faq", "title": "שאלות נפוצות על עסקים בישראל — כל התשובות במקום אחד", "readTime": 13 }
+    { "slug": "faq", "title": "שאלות נפוצות על עסקים בישראל — כל התשובות במקום אחד", "readTime": 13 },
+    { "slug": "../maam/what-is-vat", "title": "מה זה מע״מ? מדריך מלא לעוסקים 2026", "readTime": 14, "href": "/maam/what-is-vat" },
+    { "slug": "../miktzoa/fitness-trainer", "title": "עוסק פטור למאמן כושר — המדריך המלא", "readTime": 12, "href": "/miktzoa/fitness-trainer" },
+    { "slug": "../miktzoa/graphic-designer", "title": "עוסק פטור למעצב גרפי — המדריך המלא", "readTime": 12, "href": "/miktzoa/graphic-designer" },
+    { "slug": "../miktzoa/private-tutor", "title": "עוסק פטור למורה פרטי — המדריך המלא", "readTime": 12, "href": "/miktzoa/private-tutor" },
+    { "slug": "../miktzoa/wolt-courier", "title": "עוסק פטור לשליח Wolt — המדריך המלא", "readTime": 15, "href": "/miktzoa/wolt-courier" }
   ],
   "faq": [
     {

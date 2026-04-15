@@ -80,31 +80,8 @@ export const PORTAL_CATEGORIES = [
     ]
   },
   // misui (מיסוי לעצמאים) — accessible via /calculators/net-income, not main nav
-  {
-    id: 'maam',
-    title: 'מע"מ',
-    href: '/maam',
-    icon: 'Receipt',
-    description: 'דיווח מע"מ, חשבוניות, קיזוז תשומות והחזרים',
-    color: 'orange',
-    subcategories: [
-      { title: 'מה זה מע"מ?', href: '/maam/what-is-vat', description: 'הסבר מלא: שיעור מע"מ, מי חייב, חשבוניות, דיווח וקיזוז' },
-    ]
-  },
-  {
-    id: 'miktzoa',
-    title: 'מדריכים לפי מקצוע',
-    href: '/miktzoa',
-    icon: 'Briefcase',
-    description: 'מדריכים מותאמים לפתיחת עסק לפי תחום',
-    color: 'cyan',
-    subcategories: [
-      { title: 'מאמן כושר', href: '/miktzoa/fitness-trainer', description: 'עוסק פטור למאמן כושר — רישום, מיסוי, ביטוח והוצאות מוכרות' },
-      { title: 'מעצב גרפי', href: '/miktzoa/graphic-designer', description: 'עוסק פטור למעצב גרפי — פרילנס, תמחור, הוצאות ולקוחות בחו"ל' },
-      { title: 'מורה פרטי', href: '/miktzoa/private-tutor', description: 'עוסק פטור למורה פרטי — רישום, קבלות, הוצאות ודיווח' },
-      { title: 'שליח וולט', href: '/miktzoa/wolt-courier', description: 'עוסק פטור לשליח Wolt — רישום, מיסוי, הוצאות מוכרות וקבלות' },
-    ]
-  },
+  // maam (מע"מ) — moved under מידע ומדריכים → מיסוי וחשבונאות
+  // miktzoa (מדריכים לפי מקצוע) — moved under מידע ומדריכים → מדריכים לפתיחת עסק
   {
     id: 'guides',
     title: 'מידע ומדריכים',
@@ -114,8 +91,9 @@ export const PORTAL_CATEGORIES = [
     color: 'amber',
     subcategories: [
       { title: 'מדריכים לפתיחת עסק', href: '/guides/opening-business', description: 'כל מה שצריך לדעת לפני שפותחים עסק בישראל' },
+      { title: 'מדריכים לפי מקצוע', href: '/miktzoa', description: 'מאמן כושר, מעצב גרפי, מורה פרטי, שליח וולט ועוד' },
+      { title: 'מיסוי וחשבונאות', href: '/guides/taxation', description: 'מס הכנסה, מע"מ, ביטוח לאומי ורואה חשבון' },
       { title: 'השוואות', href: '/guides/comparisons', description: 'טבלאות השוואה — עוסק פטור מול מורשה, תוכנות, שירותים' },
-      { title: 'מיסוי וחשבונאות', href: '/guides/taxation', description: 'מדריכי מס הכנסה, מע"מ, ביטוח לאומי ורואה חשבון' },
       { title: 'מדריכים לעצמאים', href: '/guides/freelancers', description: 'טיפים לפרילנסרים — תמחור, לקוחות, חוזים וביטוח' },
       { title: 'שאלות נפוצות', href: '/guides/faq', description: 'תשובות לשאלות כלליות על עסקים בישראל' },
     ]
